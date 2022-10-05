@@ -92,18 +92,17 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
                 headerCell.setCellValue(column.getText());
             });
 
+            final Thread writeSheetThread = new Thread("Export to Excel File: Writing Sheet") {
+                @Override
+                public void run() {
+                    // get a copy of the table data so that users can continue working
+                    final List<ObservableList<String>> data = getTable().getItems();
 
-                    final Thread writeSheetThread = new Thread("Export to Excel File: Writing Sheet") {
-                        @Override
-                        public void run() {
-                            // get a copy of the table data so that users can continue working
-                            final List<ObservableList<String>> data = getTable().getItems();
-
-                            writeRecords(sheet, visibleIndices, data, 1);
-                        }
-                    };
-                    writeSheetThread.start();
-                    writeSheetThread.join();
+                    writeRecords(sheet, visibleIndices, data, 1);
+                }
+            };
+            writeSheetThread.start();
+            writeSheetThread.join();
 
 
             // The sheet has now been created. Time to write it to the file
