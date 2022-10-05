@@ -55,7 +55,7 @@ public class AnalyticExportResultsMenu {
     private static final String EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION = "Excel files (*" + FileExtensionConstants.XLSX + ")";
 
     private static final ImageView EXPORT_ICON = new ImageView(UserInterfaceIconProvider.UPLOAD.buildImage(16));
-    private static final int WIDTH = 120;
+    private static final int WIDTH = 200;
 
     private MenuButton exportButton;
     private MenuItem exportCsvMenu;
@@ -125,7 +125,7 @@ public class AnalyticExportResultsMenu {
      */
     private MenuButton createMenuButton(final ImageView icon) {
         final MenuButton button = new MenuButton();
-
+        button.setText("Export");
         button.setGraphic(icon);
         button.setMaxWidth(WIDTH);
         button.setPopupSide(Side.RIGHT);

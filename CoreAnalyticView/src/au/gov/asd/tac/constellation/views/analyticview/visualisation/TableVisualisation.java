@@ -43,6 +43,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
 
@@ -66,12 +67,14 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
         this.tableVisualisation = new VBox();
 
         this.tableFilter = new TextField();
-        tableFilter.setPromptText("Type here to filter results");
+        tableFilter.setPromptText("Type here to filter results: ");
+        tableFilter.setStyle("-fx-prompt-text-fill: gray;");
 
         AnalyticExportResultsMenu menu = new AnalyticExportResultsMenu(table);
         menu.init();
         HBox optionsPanel = new HBox();
         optionsPanel.getChildren().addAll(tableFilter, menu.getExportButton());
+        HBox.setHgrow(tableFilter, Priority.ALWAYS);
 
         table.setPlaceholder(new Label("No results"));
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);

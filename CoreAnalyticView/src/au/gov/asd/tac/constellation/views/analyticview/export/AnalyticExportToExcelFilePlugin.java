@@ -97,8 +97,7 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
                         @Override
                         public void run() {
                             // get a copy of the table data so that users can continue working
-                            final List<ObservableList<String>> data = getTable().getSelectionModel()
-                                    .getSelectedItems();
+                            final List<ObservableList<String>> data = getTable().getItems();
 
                             writeRecords(sheet, visibleIndices, data, 1);
                         }
