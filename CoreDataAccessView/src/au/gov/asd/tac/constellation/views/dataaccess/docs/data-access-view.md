@@ -93,7 +93,7 @@ page for more details on the Workflow Options menu.
 ## Configuring Data Access Categories
 
 Refer to the
-[Preferences](../constellation/CorePreferences/src/au/gov/asd/tac/constellation/preferences/docs/dataaccess-category-preferences.md)
+[Preferences](../constellation/CorePreferences/src/au/gov/asd/tac/constellation/preferences/docs/dataaccessview-preferences.md)
 page for more details on Configuring Data Access Categories.
 
 
