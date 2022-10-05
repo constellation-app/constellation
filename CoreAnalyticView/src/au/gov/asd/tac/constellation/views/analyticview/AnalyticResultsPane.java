@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisual
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -115,6 +116,8 @@ public class AnalyticResultsPane extends VBox {
                 }
             });
             graphVisualisationPane.getItems().clear();
+            Label applyResults = new Label("Apply Results: ");
+            graphVisualisationPane.getItems().add(applyResults);
             AnalyticUtilities.getGraphVisualisationTranslators().forEach(translator -> {
                 if (translator.getResultType().isAssignableFrom(result.getClass())) {
                     translator.setQuestion(question);
