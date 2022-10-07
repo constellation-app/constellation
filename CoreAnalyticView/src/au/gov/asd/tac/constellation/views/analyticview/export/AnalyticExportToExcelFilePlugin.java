@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,7 +33,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import org.apache.poi.ss.usermodel.Cell;
@@ -49,11 +49,10 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
 
     private static final Logger LOGGER = Logger.getLogger(AnalyticExportToExcelFilePlugin.class.getName());
-
     private static final String ANALYTIC_EXPORT_TO_EXCEL_PLUGIN = "Analytic View: Export to Excel";
 
     private final File file;
-    private final TableView<ObservableList<String>> table;
+    private final TableView<ScoreResult.ElementScore> table;
     private final String sheetName;
 
     /**
@@ -64,7 +63,7 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
      * @param sheetName the name of the sheet in the Excel spreadsheet
      */
     public AnalyticExportToExcelFilePlugin(final File file,
-            final TableView<ObservableList<String>> table,
+            final TableView<ScoreResult.ElementScore> table,
             final String sheetName) {
         this.file = file;
         this.table = table;
@@ -87,7 +86,7 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
             // iterate through the visible columns and print each ones name to the sheet
             final Row headerRow = sheet.createRow(0);
             visibleIndices.forEach(index -> {
-                final TableColumn<ObservableList<String>, ?> column = table.getColumns().get(index);
+                final TableColumn<ScoreResult.ElementScore, ?> column = table.getColumns().get(index);
                 final Cell headerCell = headerRow.createCell(visibleIndices.indexOf(index));
                 headerCell.setCellValue(column.getText());
             });
@@ -96,7 +95,7 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
                 @Override
                 public void run() {
                     // get a copy of the table data so that users can continue working
-                    final List<ObservableList<String>> data = getTable().getItems();
+                    final TableView<ScoreResult.ElementScore> data = getTable();
 
                     writeRecords(sheet, visibleIndices, data, 1);
                 }
@@ -104,14 +103,13 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
             writeSheetThread.start();
             writeSheetThread.join();
 
-
             // The sheet has now been created. Time to write it to the file
             final Thread outputThread = new Thread("Export to Excel File: Writing File") {
                 @Override
                 public void run() {
                     try (final FileOutputStream fileStream = new FileOutputStream(getFile())) {
                         workbook.write(fileStream);
-                        LOGGER.log(Level.INFO, "Table View data written to Excel file");
+                        LOGGER.log(Level.INFO, "Analytic View data written to Excel file");
                     } catch (final IOException ex) {
                         interaction.notify(PluginNotificationLevel.ERROR, ex.getLocalizedMessage());
                     }
@@ -144,10 +142,9 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
      *
      * @return the table
      */
-    public TableView<ObservableList<String>> getTable() {
+    public TableView<ScoreResult.ElementScore> getTable() {
         return table;
     }
-
 
     /**
      * Gets the name of the sheet in the exported excel file.
@@ -168,16 +165,20 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
      */
     private static void writeRecords(final Sheet sheet,
             final List<Integer> visibleIndices,
-            final List<ObservableList<String>> data,
+            final TableView<ScoreResult.ElementScore> data,
             final int startIndex) {
         final AtomicInteger rowIndex = new AtomicInteger(startIndex);
-        data.forEach(item -> {
-            final Row itemRow = sheet.createRow(rowIndex.getAndIncrement());
 
-            visibleIndices.forEach(index -> {
-                final Cell itemCell = itemRow.createCell(visibleIndices.indexOf(index));
-                itemCell.setCellValue(item.get(index));
-            });
-        });
+        for (int i = 0; i < data.getItems().size(); i++) {
+            String item = data.getColumns().get(0).getCellData(i).toString();
+            String itemData = data.getColumns().get(1).getCellData(i).toString();
+
+            final Row itemRow = sheet.createRow(rowIndex.getAndIncrement());
+            final Cell itemCellIdentifier = itemRow.createCell(0);
+            final Cell itemCellScore = itemRow.createCell(1);
+
+            itemCellIdentifier.setCellValue(item);
+            itemCellScore.setCellValue(itemData);
+        }
     }
 }

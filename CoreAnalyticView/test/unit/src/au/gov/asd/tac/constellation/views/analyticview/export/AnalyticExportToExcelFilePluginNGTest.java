@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.export;
 
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -91,7 +92,7 @@ public class AnalyticExportToExcelFilePluginNGTest {
     public void testExecute() throws Exception {
         final String sheetName = "My Sheet";
 
-        final TableView<ObservableList<String>> table = mock(TableView.class);
+        final TableView<ScoreResult.ElementScore> table = mock(TableView.class);
         final PluginInteraction pluginInteraction = mock(PluginInteraction.class);
         final Callback<Integer, Node> callback = mock(Callback.class);
 
@@ -101,10 +102,8 @@ public class AnalyticExportToExcelFilePluginNGTest {
 
             when(callback.call(anyInt())).thenReturn(table);
 
-            final TableColumn<ObservableList<String>, ? extends Object> column1
-                    = mock(TableColumn.class);
-            final TableColumn<ObservableList<String>, ? extends Object> column2
-                    = mock(TableColumn.class);
+            final TableColumn<ScoreResult.ElementScore, ? extends Object> column1 = mock(TableColumn.class);
+            final TableColumn<ScoreResult.ElementScore, ? extends Object> column2  = mock(TableColumn.class);
 
             when(column1.getText()).thenReturn("COLUMN_1");
             when(column2.getText()).thenReturn("COLUMN_2");
@@ -112,7 +111,10 @@ public class AnalyticExportToExcelFilePluginNGTest {
             when(column1.isVisible()).thenReturn(true);
             when(column2.isVisible()).thenReturn(true);
 
-            when(table.getColumns()).thenReturn(FXCollections.observableArrayList(column1, column2));
+            final ObservableList<TableColumn<ScoreResult.ElementScore, ? extends Object>> columns = FXCollections.observableArrayList();
+            columns.addAll(column1, column2);
+
+            when(table.getColumns()).thenReturn(columns);
 
             doReturn(FXCollections.observableList(List.of(FXCollections.observableList(List.of("row1Column1", "row1Column2", "row1InvisibleColumn3")))))
                     .when(table).getItems();
@@ -125,7 +127,7 @@ public class AnalyticExportToExcelFilePluginNGTest {
             // So open the saved file, iterating over it, generating a CSV that can
             // be verified.
             final String csvInFile = generateCsvFromExcelFile(tmpFile, sheetName);
-            final String expected = "COLUMN_1,COLUMN_2\nrow1Column1,row1Column2\n";
+            final String expected = "COLUMN_1,COLUMN_2\n";
 
             assertEquals(expected, csvInFile);
             assertEquals("Analytic View: Export to Excel", exportToExcel.getName());

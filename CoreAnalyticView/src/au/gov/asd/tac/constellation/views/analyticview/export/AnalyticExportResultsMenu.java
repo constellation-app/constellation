@@ -81,9 +81,9 @@ public class AnalyticExportResultsMenu {
         exportExcelMenu = createExportMenu(
                 EXPORT_XLSX,
                 EXPORT_XLSX_FILE_CHOOSER_TITLE,
-                FileExtensionConstants.COMMA_SEPARATED_VALUE,
+                FileExtensionConstants.XLSX,
                 EXPORT_XLSX_FILE_CHOOSER_DESCRIPTION,
-                file -> new AnalyticExportToCsvFilePlugin(file, table)
+                file -> new AnalyticExportToExcelFilePlugin(file, table, "Export")
         );
 
         exportButton.getItems().addAll(exportCsvMenu, exportExcelMenu);
