@@ -33,7 +33,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
@@ -48,8 +48,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -159,10 +157,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         final int elementCount = elementType.getElementCount(graph);
 
-        // do this if add to selection
-        if (ADD_TO.equals(currentSelection)) {
-            clearSelection(graph);
-        }
         findInCurrentSelectionList = new FindResultsList(graph.getId());
         final FindResultsList findAllMatchingResultsList = new FindResultsList(graph.getId());
 
@@ -303,6 +297,12 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         // if the user clicked find next or prev
         if (!selectAll) {
+            
+            // do this if ignore selection
+            if (IGNORE.equals(currentSelection)) {
+                clearSelection(graph);
+            }
+            
             // Clean the find results list to only contain unique graph elements
             final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
             foundResult.clear();
@@ -603,7 +603,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
     /**
      * This function checks to see if a graph elements color attribute matches
-     * the criteria specified by the ColourCriteriaValues.
+ the criteria specified by the ColorCriteriaValues.
      *
      * @param values the color criteriaValues
      * @param attributeInt the int of the attribute
@@ -612,7 +612,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @return
      */
     private boolean searchAsColor(final FindCriteriaValues values, final int attributeInt, final int currElement, final GraphWriteMethods graph) {
-        final ColourCriteriaValues colorValues = (ColourCriteriaValues) values;
+        final ColorCriteriaValues colorValues = (ColorCriteriaValues) values;
         final ConstellationColor color = graph.getObjectValue(attributeInt, currElement);
         boolean matches = false;
 

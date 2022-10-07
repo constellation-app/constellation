@@ -116,7 +116,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
             final Label attrLabel = new Label("Attribute");
             attrLabel.setAlignment(Pos.CENTER);
             attrLabel.setPrefWidth(150);
-            final Label colorLabel = new Label("Colour");
+            final Label colorLabel = new Label("Color");
             colorLabel.setPrefWidth(40);
             colorLabel.setAlignment(Pos.CENTER);
             final Label sizeLabel = new Label("Size");

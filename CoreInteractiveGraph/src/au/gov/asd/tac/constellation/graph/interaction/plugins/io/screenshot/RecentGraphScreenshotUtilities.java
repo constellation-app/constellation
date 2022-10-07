@@ -27,19 +27,25 @@ import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
 import org.openide.util.NbPreferences;
 
 /**
@@ -83,13 +89,55 @@ public class RecentGraphScreenshotUtilities {
     }
 
     /**
+     * Creates a MD5 hash of the filepath.
+     *
+     * @param filepath The filepath of the graph
+     * @return MD5 hash of filepath
+     */
+    protected static String hashFilePath(final String filepath) {
+        final MessageDigest md;
+        try {
+            md = MessageDigest.getInstance("SHA-256");
+            md.update(filepath.getBytes(StandardCharsets.UTF_8));
+            final byte[] digest = md.digest();
+            return DatatypeConverter.printHexBinary(digest).toUpperCase();
+        } catch (final NoSuchAlgorithmException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+        }
+        return filepath;
+    }
+
+    /**
+     * Finds the path for the screenshot
+     *
+     * @param filepath the filepath for the graph
+     * @param filename the filename of the graph
+     * @return the filepath to the screenshot png
+     */
+    public static Optional<File> findScreenshot(final String filepath, final String filename) {
+        final String screenshotFilenameFormat = getScreenshotsDir() + File.separator + "%s" + FileExtensionConstants.PNG;
+        final String screenshotHash = RecentGraphScreenshotUtilities.hashFilePath(filepath);
+        final String screenshotFilename = String.format(screenshotFilenameFormat, screenshotHash);
+        final String legacyScreenshotFilename = String.format(screenshotFilenameFormat, filename);
+
+        if (new File(screenshotFilename).exists()) {
+            return Optional.of(new File(screenshotFilename));
+        } else if (new File(legacyScreenshotFilename).exists()) {
+            return Optional.of(new File(legacyScreenshotFilename));
+        }
+        return Optional.empty();
+    }
+
+    /**
      * Take a screenshot of the graph and save it to the screenshots directory
      * so that it can be used by the Welcome View.
      *
-     * @param filename The filename of the graph
+     * @param filepath The filepath of the graph
      */
-    public static void takeScreenshot(final String filename) {
-        final String imageFile = getScreenshotsDir() + File.separator + filename + FileExtensionConstants.PNG;
+    public static void takeScreenshot(final String filepath) {
+        final String pathHash = hashFilePath(filepath);
+        final String imageFile = getScreenshotsDir() + File.separator + pathHash + FileExtensionConstants.PNG;
+
         final Path source = Paths.get(imageFile);
         final GraphNode graphNode = GraphNode.getGraphNode(GraphManager.getDefault().getActiveGraph());
         final VisualManager visualManager = graphNode.getVisualManager();
@@ -166,10 +214,26 @@ public class RecentGraphScreenshotUtilities {
             filesInDirectory.addAll(Arrays.asList(screenShotsDir.listFiles()));
         }
 
-        RecentFiles.getUniqueRecentFiles().forEach(item -> filesInHistory.add(item.getFileName() + FileExtensionConstants.PNG));
+        RecentFiles.getUniqueRecentFiles().forEach(item -> {
+            filesInHistory.add(item.getFileName() + FileExtensionConstants.PNG);
+            findScreenshot(item.getPath(), item.getFileName()).ifPresent(file
+                    -> filesInHistory.add(file.getAbsolutePath())
+            );
+        });
 
         filesInDirectory.forEach(file -> {
-            if (!filesInHistory.contains(file.getName())) {
+            // Backward compatible with <filename>.png and newer <hashed filepath>.png
+            final boolean[] found = new boolean[1];
+            filesInHistory
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .forEach(f -> {
+                        if (f.contains(file.getName())) {
+                            found[0] = true;
+                        }
+                    });
+
+            if (!found[0]) {
                 try {
                     Files.delete(file.toPath());
                 } catch (final IOException ex) {

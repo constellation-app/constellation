@@ -66,11 +66,11 @@ public class ColorAttributeDescriptionNGTest {
     }
 
     /**
-     * Test of convertFromObject method, of class ColorAttributeDescription. Invalid colour passed through
+     * Test of convertFromObject method, of class ColorAttributeDescription. Invalid color passed through
      */
     @Test(expectedExceptions = {IllegalArgumentException.class})
-    public void testConvertFromObjectNotAColour() {
-        System.out.println("convertFromObjectNotAColour");
+    public void testConvertFromObjectNotAColor() {
+        System.out.println("convertFromObjectNotAColor");
 
         final ColorAttributeDescription instance = new ColorAttributeDescription();        
         instance.convertFromObject(true);

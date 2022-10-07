@@ -123,7 +123,7 @@ public final class ElementGraphLabelV0 implements Serializable {
             final String attributeName = labelProperties.get(0);
             final ConstellationColor color = ConstellationColor.getColorValue(labelProperties.get(1));
             if (color == null) {
-                throw new IllegalArgumentException("Undefined colour for label.");
+                throw new IllegalArgumentException("Undefined color for label.");
             }
             final float size;
             try {

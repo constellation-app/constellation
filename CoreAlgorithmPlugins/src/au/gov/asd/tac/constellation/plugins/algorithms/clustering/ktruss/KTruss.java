@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;

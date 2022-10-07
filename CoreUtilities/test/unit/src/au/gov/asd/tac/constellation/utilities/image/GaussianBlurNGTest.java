@@ -225,7 +225,7 @@ public class GaussianBlurNGTest {
 
         // since the result numbers don't really say much 
         // (due to using the using the signed bit as part of the ARGB value), 
-        // we'll compare the expected alpha and colour values contained within
+        // we'll compare the expected alpha and color values contained within
 
         // alpha
         assertEquals(targetChannel[0] >>> 24, 0);
@@ -234,7 +234,7 @@ public class GaussianBlurNGTest {
         assertEquals(targetChannel[3] >>> 24, 192);
         assertEquals(targetChannel[4] >>> 24, 192);
 
-        //colour
+        //color
         assertEquals(targetChannel[0] & 0xFFFFFF, 0x0034F8);
         assertEquals(targetChannel[1] & 0xFFFFFF, 0x3E9350);
         assertEquals(targetChannel[2] & 0xFFFFFF, 0xB2C01A);

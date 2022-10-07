@@ -64,7 +64,7 @@ public final class NewNebulaAction implements ActionListener {
         params.addParameter(fileParam);
 
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
-        colorParam.setName("Nebula colour");
+        colorParam.setName("Nebula color");
         params.addParameter(colorParam);
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_NewNebulaAction(), params);
@@ -74,7 +74,7 @@ public final class NewNebulaAction implements ActionListener {
             if (!fpv.get().isEmpty()) {
                 final Properties props = new Properties();
                 final ConstellationColor c = colorParam.getColorValue();
-                props.setProperty("colour", String.format("%f,%f,%f", c.getRed(), c.getGreen(), c.getBlue()));
+                props.setProperty("color", String.format("%f,%f,%f", c.getRed(), c.getGreen(), c.getBlue()));
 
                 File f = fpv.get().get(0);
                 if (!StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.NEBULA)) {

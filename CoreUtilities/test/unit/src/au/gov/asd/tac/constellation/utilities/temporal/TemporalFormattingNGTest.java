@@ -319,7 +319,7 @@ public class TemporalFormattingNGTest {
                 .withZoneSameInstant(TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
         assertEquals(result1, expectedResult1);
         
-        final ZonedDateTime result2 = TemporalFormatting.zonedDateTimeFromLong(1000000000000L);
+        final ZonedDateTime result2 = TemporalFormatting.zonedDateTimeFromLong(1000000000L);
         final ZonedDateTime expectedResult2 = ZonedDateTime.parse("2001-09-09T01:46:40+00:00")
                 .withZoneSameInstant(TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
         assertEquals(result2, expectedResult2);
@@ -335,7 +335,7 @@ public class TemporalFormattingNGTest {
         final String result1 = TemporalFormatting.zonedDateTimeStringFromLong(0);
         assertEquals(result1, "1970-01-01 00:00:00.000 +00:00");
         
-        final String result2 = TemporalFormatting.zonedDateTimeStringFromLong(1000000000000L);
+        final String result2 = TemporalFormatting.zonedDateTimeStringFromLong(1000000000L);
         assertEquals(result2, "2001-09-09 01:46:40.000 +00:00");
     }
     

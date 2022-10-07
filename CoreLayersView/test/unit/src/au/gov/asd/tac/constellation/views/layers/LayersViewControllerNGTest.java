@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
@@ -24,12 +25,14 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.views.layers.query.Query;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.openide.util.Exceptions;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -290,4 +293,109 @@ public class LayersViewControllerNGTest {
         }
     }
 
+    /**
+     * Test of deleteLayer, in LayersViewController
+     */
+    @Test
+    public void testDeleteLayer() {
+        LayersViewController instance = LayersViewController.getDefault().init(null);
+        instance.createLayer();
+        instance.deleteLayer(2);
+        assertEquals(instance.getVxQueryCollection().getHighestQueryIndex(), 3);
+
+    }
+
+    /**
+     * Test of deselectAll, in LayersViewController
+     */
+    @Test
+    public void testDeselectAll() {
+        LayersViewController instance = LayersViewController.getDefault().init(null);
+        instance.createLayer();
+        instance.createLayer();
+        instance.getVxQueryCollection().setVisibilityOnAll(true);
+        instance.getTxQueryCollection().setVisibilityOnAll(true);
+
+        instance.deselectAll();
+        assertEquals(instance.getVxQueryCollection().isVisibilityOnAll(), false);
+    }
+
+    /**
+     * Test of changeLayerVisibility, in LayersViewController
+     */
+    @Test
+    public void testChangeLayerVisibility() {
+        LayersViewController instance = LayersViewController.getDefault().init(null);
+        instance.createLayer();
+        int index1 = 2;
+        Query query1 = new Query(GraphElementType.VERTEX, "Type == 'Event'");
+        instance.getVxQueryCollection().getQuery(index1).setQuery(query1);
+        instance.getTxQueryCollection().getQuery(index1).setQuery(null);
+
+        instance.changeLayerVisibility(index1, true);
+        assertTrue(instance.getVxQueryCollection().getQuery(index1).isVisible());
+
+        instance.createLayer();
+        int index2 = 3;
+        Query query2 = new Query(GraphElementType.TRANSACTION, "Type == 'Network'");
+        instance.getTxQueryCollection().getQuery(index2).setQuery(query2);
+        instance.getVxQueryCollection().getQuery(index2).setQuery(null);
+
+        instance.changeLayerVisibility(index2, true);
+        assertTrue(instance.getTxQueryCollection().getQuery(index2).isVisible());
+    }
+
+    /**
+     * Test of updateDescription, in LayersViewController
+     */
+    @Test
+    public void testUpdateDescription() {
+        LayersViewController instance = LayersViewController.getDefault().init(null);
+        String description1 = "Vertex Description";
+        int index1 = 2;
+        Query query1 = new Query(GraphElementType.VERTEX, "Type == 'Event'");
+        instance.getVxQueryCollection().getQuery(index1).setQuery(query1);
+        instance.getTxQueryCollection().getQuery(index1).setQuery(null);
+
+        instance.updateDescription(description1, index1);
+        assertEquals(instance.getVxQueryCollection().getQuery(index1).getDescription(), description1);
+
+        String description2 = "Transaction Description";
+        int index2 = 3;
+        Query query2 = new Query(GraphElementType.TRANSACTION, "Type == 'Network'");
+        instance.getTxQueryCollection().getQuery(index2).setQuery(query2);
+        instance.getVxQueryCollection().getQuery(index2).setQuery(null);
+
+        instance.updateDescription(description2, index2);
+        assertEquals(instance.getTxQueryCollection().getQuery(index2).getDescription(), description2);
+    }
+
+    /**
+     * Test of updateQuery, in LayersViewController
+     */
+    @Test
+    public void testUpdateQuery() {
+        LayersViewController instance = LayersViewController.getDefault().init(null);
+        String queryString1 = "Type == 'Word'";
+        int index1 = 2;
+        Query query1 = new Query(GraphElementType.VERTEX, "Type == 'Event'");
+        instance.getVxQueryCollection().getQuery(index1).setQuery(query1);
+        instance.getTxQueryCollection().getQuery(index1).setQuery(null);
+        assertEquals(instance.getVxQueryCollection().getQuery(index1).getQueryString(), "Type == 'Event'");
+
+        instance.updateQuery(queryString1, index1, "Vertex Query: ");
+        assertEquals(instance.getVxQueryCollection().getQuery(index1).getQueryString(), queryString1);
+
+        String queryString2 = "Type == 'Unknown'";
+        int index2 = 3;
+        Query query2 = new Query(GraphElementType.TRANSACTION, "Type == 'Network'");
+        instance.getTxQueryCollection().getQuery(index2).setQuery(query2);
+        instance.getVxQueryCollection().getQuery(index2).setQuery(null);
+        assertEquals(instance.getTxQueryCollection().getQuery(index2).getQueryString(), "Type == 'Network'");
+        
+        instance.updateQuery(queryString2, index2, "Transaction Query: ");
+        assertEquals(instance.getTxQueryCollection().getQuery(index2).getQueryString(), queryString2);
+
+    }
+    
 }

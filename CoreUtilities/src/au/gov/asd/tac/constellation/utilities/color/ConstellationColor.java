@@ -503,27 +503,27 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
             return -1;
         } else {
             if (redColorValue != o.redColorValue) {
-                return compareColourComponents(redColorValue, o.redColorValue);
+                return compareColorComponents(redColorValue, o.redColorValue);
             } else if (greenColorValue != o.greenColorValue) {
-                return compareColourComponents(greenColorValue, o.greenColorValue);
+                return compareColorComponents(greenColorValue, o.greenColorValue);
             }
-            return blueColorValue != o.blueColorValue ? compareColourComponents(blueColorValue, o.blueColorValue)
-                    : compareColourComponents(alpha, o.alpha);
+            return blueColorValue != o.blueColorValue ? compareColorComponents(blueColorValue, o.blueColorValue)
+                    : compareColorComponents(alpha, o.alpha);
         }
     }
     
     /**
-     * Compare two colour components and return the result. 
-     * 1 if colour1Compoment has higher value.
-     * -1 if colour2Compoment has higher value.
+     * Compare two color components and return the result. 
+     * 1 if color1Compoment has higher value.
+     * -1 if color2Compoment has higher value.
      * 0 if values are the same.
      * 
-     * @param colour1Component the first colour component value to compare
-     * @param colour2Component the second colour component value to compare
+     * @param color1Component the first color component value to compare
+     * @param color2Component the second color component value to compare
      * @return integer representing the result of the comparison
      */
-    private int compareColourComponents(final float colour1Component, final float colour2Component) {
-        return colour1Component == colour2Component ? 0 : (int) ((colour1Component - colour2Component) / Math.abs(colour1Component - colour2Component)); 
+    private int compareColorComponents(final float color1Component, final float color2Component) {
+        return color1Component == color2Component ? 0 : (int) ((color1Component - color2Component) / Math.abs(color1Component - color2Component)); 
     }
 
     /**

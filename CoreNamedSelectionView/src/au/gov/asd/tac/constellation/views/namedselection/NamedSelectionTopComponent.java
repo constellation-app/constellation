@@ -1049,17 +1049,17 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                 }
             }
 
-            if (isSelected) { // Change the colour if the named selection has been selected:
+            if (isSelected) { // Change the color if the named selection has been selected:
                 super.setBackground(list.getSelectionBackground());
                 super.setLockedStatusSelected(value.isLocked());
                 lblNamedSelection.setForeground(list.getSelectionForeground());
                 lblShortcutKey.setForeground(list.getSelectionForeground());
                 lblShortcutText.setForeground(list.getSelectionForeground());
-            } else { // Change colouring for non selected items:
+            } else { // Change coloring for non selected items:
                 super.setBackground(list.getBackground());
                 super.setLockedStatus(value.isLocked());
                 lblNamedSelection.setForeground(list.getForeground());
-                lblShortcutKey.setForeground(list.getSelectionBackground()); // Make the shortcut key a contrasting colour.
+                lblShortcutKey.setForeground(list.getSelectionBackground()); // Make the shortcut key a contrasting color.
                 lblShortcutText.setForeground(java.awt.SystemColor.controlDkShadow); // Less prominent than selection name.
             }
 

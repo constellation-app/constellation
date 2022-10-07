@@ -31,23 +31,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.netbeans.api.annotations.common</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>1.27.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.openide.awt</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>7.67.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.openide.util</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -108,6 +91,7 @@
                 <package>au.gov.asd.tac.constellation.graph.value.operations</package>
                 <package>au.gov.asd.tac.constellation.graph.value.readables</package>
                 <package>au.gov.asd.tac.constellation.graph.value.stores</package>
+                <package>au.gov.asd.tac.constellation.graph.value.utilities</package>
                 <package>au.gov.asd.tac.constellation.graph.value.values</package>
                 <package>au.gov.asd.tac.constellation.graph.value.variables</package>
                 <package>au.gov.asd.tac.constellation.graph.value.writables</package>

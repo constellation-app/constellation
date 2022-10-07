@@ -423,11 +423,11 @@ public class TemporalFormatting {
      * represented by the given long.
      *
      * @param value A long representing an instant in time; the number of
-     * milliseconds since epoch.
+     * seconds since epoch.
      * @return A ZonedDateTime object in UTC, corresponding to the given long.
      */
     public static ZonedDateTime zonedDateTimeFromLong(final long value) {
-        return ZonedDateTime.ofInstant(Instant.ofEpochMilli(value), TimeZoneUtilities.UTC);
+        return ZonedDateTime.ofInstant(Instant.ofEpochSecond(value), TimeZoneUtilities.UTC);
     }
 
     /**
@@ -435,7 +435,7 @@ public class TemporalFormatting {
      * corresponding to the instant represented by the given long.
      *
      * @param value A long representing an instant in time; the number of
-     * milliseconds since epoch.
+     * seconds since epoch.
      * @return A formatted String corresponding to the given long.
      */
     public static String zonedDateTimeStringFromLong(final long value) {

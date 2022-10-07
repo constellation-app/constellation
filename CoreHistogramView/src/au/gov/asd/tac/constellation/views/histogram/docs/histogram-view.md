@@ -49,7 +49,7 @@ It is blue for unselected elements, and red for selected elements. When
 only a portion of the elements sharing a property value are selected on
 the graph, the count value will also change to the ratio of selected
 elements / total elements sharing that property value. It will also be
-coloured both red and blue, with the proportion of red matching the
+colored both red and blue, with the proportion of red matching the
 ratio of selected / unselected.
 
 Left clicking on a row in the Histogram Panel will select all elements
@@ -238,7 +238,7 @@ The Selection Mode will toggle the interactivity of the Histogram View.
     selection on the graph until the adjacent "Select" button is
     pressed. This mode will allow for filtering on the existing graph
     selection. Clicking on a row with selected (red) elements will
-    change their colour to yellow. Pressing the adjacent "Select" button
+    change their color to yellow. Pressing the adjacent "Select" button
     will change the selection on the graph to all yellow elements.
     Holding the shift key while left clicking will change red elements
     of rows to yellow. Holding the ctrl key while left clicking will
@@ -252,7 +252,7 @@ The Selection Mode will toggle the interactivity of the Histogram View.
     selection on the graph until the adjacent "Select" button is
     pressed. This mode will allow for adding rows to the existing graph
     selection. Clicking on a row with unselected (blue) elements will
-    change their colour to yellow. Pressing the adjacent **Select**
+    change their color to yellow. Pressing the adjacent **Select**
     button will change the selection on the graph to all yellow
     elements. Holding the shift key while left clicking will change blue
     elements of rows to yellow. Holding the ctrl key while left clicking

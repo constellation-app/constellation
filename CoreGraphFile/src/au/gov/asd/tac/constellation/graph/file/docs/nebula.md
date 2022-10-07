@@ -8,7 +8,7 @@ saved, and closed together.
 To create a nebula, save or copy some .star files into a directory of
 your choice. Then select the menu item Experimental -> Tools -> New
 Nebula, which will ask you for a directory and name for a nebula file,
-and a colour to represent the nebula. The nebula will automatically be
+and a color to represent the nebula. The nebula will automatically be
 added to the File -> Open Recent list. Alternatively, you can manually
 create a text file called "name.nebula" in that directory, where "name"
 can be any name you like.
@@ -17,8 +17,8 @@ You can open the nebula in the same way that you open a .star file. When
 opened, Constellation will look for .star files in the same directory as
 the nebula file, and open them.
 
-If a nebula does not have a colour assigned, it will be assigned a
-random colour. This colour will appear next to the graph icon in the tab
+If a nebula does not have a color assigned, it will be assigned a
+random color. This color will appear next to the graph icon in the tab
 at the top of the graph window for each graph that is a member of the
 nebula. This serves to distinguish the members of multiple nebulae from
 each other. Each graph's tab tooltip will also be prepended with the
@@ -46,12 +46,12 @@ individually acting on each graph; a nebula just makes these actions
 more efficient. Any of the .star files can still be opened individually
 without opening the nebula file.
 
-## Colour Assignment
+## Color Assignment
 
-You can assign your own colour to the nebula. Edit the nebula file using
-your favourite text editor and add a "colour = \<COLOUR>" line (or
-change the existing line). \<COLOUR> can be a colour name (e.g. red or
-teal), a HTML colour (e.g. #ff0000 or #008080), or an RGB colour with
+You can assign your own color to the nebula. Edit the nebula file using
+your favourite text editor and add a "color = \<COLOR>" line (or
+change the existing line). \<COLOR> can be a color name (e.g. red or
+teal), a HTML color (e.g. #ff0000 or #008080), or an RGB color with
 each element having a value between 0 and 1 (e.g. 1,0,0 or 0,0.5,0.5).
 
 NOTE: "color" as a spelling also works

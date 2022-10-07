@@ -41,7 +41,7 @@ import org.openide.util.NbPreferences;
         position = 0)
 @org.openide.util.NbBundle.Messages({
     "GraphOption_DisplayName=Graph",
-    "GraphOption_Keywords=blaze size blaze opacity blaze colour"
+    "GraphOption_Keywords=blaze size blaze opacity blaze color"
 })
 
 public final class GraphOptionsPanelController extends OptionsPanelController {
@@ -61,7 +61,7 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         final String presetColorsString = NbPreferences.forModule(GraphPreferenceKeys.class)
                 .get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
 
-        // set the colours here - below generates a list of coloured icons.
+        // set the colors here - below generates a list of colored icons.
         final List<Color> colors = new ArrayList<>();
         for (final String currentColor : presetColorsString.split(";")) {
             if (StringUtils.isNotBlank(currentColor) && !"null".equals(currentColor)) {
