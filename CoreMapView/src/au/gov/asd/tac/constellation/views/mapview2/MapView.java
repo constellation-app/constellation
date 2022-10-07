@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -45,6 +46,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
@@ -67,6 +69,13 @@ public class MapView extends ScrollPane {
     private final Image mapImage;
     private final ImageView mapDisplay;
     private final List<String> countryDrawings = new ArrayList<String>();
+
+    public static final double minLong = -169.1110266;
+    public static final double maxLong = 190.48712;
+
+    public static final double minLat = -58.488473;
+    public static final double maxLat = 83.63001;
+
 
     private Canvas mapCanvas;
     private Group countryGroup;
@@ -234,7 +243,7 @@ public class MapView extends ScrollPane {
         this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
         //drawMarker();
         //draw();
-        mapGroupHolder.setPrefWidth(1010);
+        mapGroupHolder.setPrefWidth(1010.33);
         //mapGroupHolder.setPrefHeight(967.25);
         mapGroupHolder.setPrefHeight(1224);
         //drawMarker(51.509865, -0.118092, 0.05);
@@ -247,25 +256,23 @@ public class MapView extends ScrollPane {
     }
 
     public void drawMarker(double lattitude, double longitude, double xyScale) {
-        double minLong = -169.1110266;
-        double maxLong = 190.48712;
-        double minLat = -58.488473;
-        double maxLat = 83.63001;
+
 
         double lonDelta = maxLong - minLong;
 
-        double xScale = mapGroupHolder.getPrefWidth() / (maxLong - minLong);
+        //double xScale = mapGroupHolder.getPrefWidth() / (maxLong - minLong);
         //double yScale = mapGroupHolder.getPrefHeight() / (maxLat - minLat);
 
-        double x = (longitude - minLong) * xScale;
+        //double x = (longitude - minLong) * xScale;
 
-        double minLatRad = minLat * (Math.PI / 180);
+        //double minLatRad = minLat * (Math.PI / 180);
 
-        double worldMapWidth = ((mapGroupHolder.getPrefWidth() / lonDelta) * 360) / (2 * Math.PI);
-        double yOffset = (worldMapWidth / 2 * Math.log((1 + Math.sin(minLatRad)) / (1 - Math.sin(minLatRad))));
-
-        double lattitudeRad = lattitude * (Math.PI / 180);
+        //double worldMapWidth = ((mapGroupHolder.getPrefWidth() / lonDelta) * 360) / (2 * Math.PI);
+        //double yOffset = (worldMapWidth / 2 * Math.log((1 + Math.sin(minLatRad)) / (1 - Math.sin(minLatRad))));
         //double y = mapGroupHolder.getPrefHeight() - ((worldMapWidth * Math.log((1 + Math.sin(lattitudeRad)) / (1 - Math.sin(lattitudeRad)))) - yOffset);
+        double x = (longitude - minLong) * (mapGroupHolder.getPrefWidth() / lonDelta);
+        double lattitudeRad = lattitude * (Math.PI / 180);
+
         double y = Math.log(Math.tan((Math.PI / 4) + (lattitudeRad / 2)));
         y = (mapGroupHolder.getPrefHeight() / 2) - (mapGroupHolder.getPrefWidth() * y / (2 * Math.PI));
 
@@ -278,8 +285,9 @@ public class MapView extends ScrollPane {
         //x = 600;
         //y = 600;
 
-        String markerPath = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
+        String markerPath = "";
         markerPath = "M " + x + "," + y + " Z " + markerPath;
+
 
         //LOGGER.log(Level.SEVERE, markerPath);
 
@@ -292,12 +300,38 @@ public class MapView extends ScrollPane {
         marker.setFill(Color.RED);
         marker.setScaleX(xyScale);
         marker.setScaleY(xyScale);
+        //marker.rotateProperty().set(90.0);
+
+        marker.setOnMouseEntered((new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                marker.setFill(Color.ORANGE);
+                e.consume();
+            }
+        }));
+
+        marker.setOnMouseExited((new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                marker.setFill(Color.RED);
+                e.consume();
+            }
+        }));
 
         gc.rect(x, y, 50, 50);
 
         countryGroup.getChildren().add(marker);
         //drawMarker();
         //draw();
+    }
+
+    public void drawLine(double x, double y, double x2, double y2) {
+
+    }
+
+    public void drawMarker(AbstractMarker marker) {
+        marker.setMarkerPosition(95, 244, mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+
+        countryGroup.getChildren().add(marker.getMarker());
+
     }
 
     private void parseMapSVG() {
@@ -352,17 +386,5 @@ public class MapView extends ScrollPane {
         gc.fill();
     }
 
-    private static class ReadLocationData extends SimpleEditPlugin {
-
-        @Override
-        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-            final int vertexCount = graph.getVertexCount();
-            for (int vertexPos = 0; vertexPos < vertexCount; ++vertexPos) {
-                // do something
-            }
-        }
-
-
-    }
 
 }

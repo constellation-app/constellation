@@ -628,7 +628,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            LOGGER.log(Level.SEVERE, "inside edit mehtod");
+            LOGGER.log(Level.SEVERE, "inside edit method");
             switch (graphElementType) {
                 case VERTEX:
                     final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);

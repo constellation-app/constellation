@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.views.mapview.layers.MapLayer;
 import au.gov.asd.tac.constellation.views.mapview.overlays.MapOverlay;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
+import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -165,6 +166,10 @@ public class MapViewPane extends BorderPane {
         if (mapView != null) {
             mapView.drawMarker(lat, lon, scale);
         }
+    }
+
+    public void drawMarker(AbstractMarker marker) {
+        mapView.drawMarker(marker);
     }
 
     //public void drawMarker()
