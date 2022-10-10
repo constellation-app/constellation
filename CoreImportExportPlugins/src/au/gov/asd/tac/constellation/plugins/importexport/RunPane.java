@@ -29,7 +29,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -43,9 +42,8 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
@@ -481,15 +479,8 @@ public final class RunPane extends BorderPane implements KeyListener {
         // If the validation fails (when the active column doesn't match the attribute node format), return it back to the list
         if (column != null && !column.validate(currentRows)) {
             if (draggingAttributeNode != null) {
-                final Optional<ButtonType> confirm = NotifyDisplayer.displayConfirmationAlert("Delimited Importer", "Attribute mismatch", "Column " + column.getLabel()
-                        + " cannot be converted to " + draggingAttributeNode.getAttribute().getName()
-                        + " attribute format. Try changing the format by right clicking the attribute.", new ButtonType("Skip invalid rows", ButtonBar.ButtonData.YES), new ButtonType("Cancel Import", ButtonBar.ButtonData.NO));
-
-                if (confirm.isPresent() && confirm.get().getButtonData() == ButtonBar.ButtonData.NO) {
-                    draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
-                } else {
-                    this.importController.setSkipInvalidRows(true);
-                }
+                NotifyDisplayer.displayAlert("Delimited Importer", "Attribute mismatch", "Column " + column.getLabel()
+                        + " attribute format. Try changing the format by right clicking the attribute.", Alert.AlertType.ERROR);
             }
             column.validate(currentRows);
         }
