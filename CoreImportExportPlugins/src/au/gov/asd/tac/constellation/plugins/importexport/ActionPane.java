@@ -64,15 +64,15 @@ public class ActionPane extends BorderPane {
         });
 
         runBox.getChildren().add(importButton);
-        
+
         skipInvalidRowsCheckBox = new CheckBox("Skip Invalid Rows");
         skipInvalidRowsCheckBox.setSelected(false);
         skipInvalidRowsCheckBox.setDisable(true);
         
-         skipInvalidRowsCheckBox.setOnAction((ActionEvent t) -> {
+        skipInvalidRowsCheckBox.setOnAction((ActionEvent t) -> {
             controller.setSkipInvalidRows(skipInvalidRowsCheckBox.isSelected());
         });
-         
+
         runBox.getChildren().add(skipInvalidRowsCheckBox);
     }
 
@@ -95,6 +95,6 @@ public class ActionPane extends BorderPane {
     public void disableButton(final boolean isEnabled) {
         importButton.setDisable(isEnabled);
         skipInvalidRowsCheckBox.setDisable(isEnabled);
-    }    
-     
+    }
+
 }
