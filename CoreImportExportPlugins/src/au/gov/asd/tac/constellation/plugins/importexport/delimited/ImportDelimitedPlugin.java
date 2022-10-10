@@ -88,8 +88,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     public static final String SKIP_INVALID_ROWS_ID = PluginParameter.buildId(ImportDelimitedPlugin.class, "skip_invalid_rows");
 
     public static final String IMPORTED_ROWS = "IMPORTED_ROWS";
-    public static final String SKIPPED_ROWS = "SKIPPED_ROWS";    
-    
+    public static final String SKIPPED_ROWS = "SKIPPED_ROWS";
+
     @Override
     public PluginParameters createParameters() {
         final PluginParameters params = new PluginParameters();
@@ -282,17 +282,18 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
             if (data != null) {
                 for (final ImportDefinition definition : definitions) {
+
                     if (definition.getDefinitions(AttributeType.SOURCE_VERTEX).isEmpty()) {
                         // No source vertex definitions are set, the only option left is destination vertexes being mapped.
                         // Process destination vertexes if defintions are defined, otherwise there is nothing to do.
                         if (!definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
-                            results = processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, file.getName());
+                            results = processDestinationVertices(definition, graph, data, initialiseWithSchema, skipInvalidRows, interaction, file.getName());
                             importedRowsPerFile += results.get(IMPORTED_ROWS);
                             skippedRowsPerFile += results.get(SKIPPED_ROWS);
                         }
                     } else if (definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
                         // Source defintions exist, but no destination definitions exist. Process the source definitions.
-                        results = processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, file.getName());
+                        results = processSourceVertices(definition, graph, data, initialiseWithSchema, skipInvalidRows, interaction, file.getName());
                         importedRowsPerFile += results.get(IMPORTED_ROWS);
                         skippedRowsPerFile += results.get(SKIPPED_ROWS);
                     } else {
@@ -309,7 +310,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             }
             totalImportedRows += importedRowsPerFile;
             totalSkippedRows += skippedRowsPerFile;
-            
+
             LOGGER.log(Level.INFO, "Imported {0} rows of data from file {1} containing {2} total rows. Skipped {3} rows due to error.", new Object[]{importedRowsPerFile, file.getPath(), dataSize, skippedRowsPerFile});
         }
 
@@ -355,6 +356,16 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
+    private static Map<String, Integer> processSourceVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, 
+            final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
+        return processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
+    }
+    
+    private static Map<String, Integer> processDestinationVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, 
+            final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
+        return processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
+    }
+    
     private static Map<String, Integer> processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType,
             final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
@@ -376,8 +387,8 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             if (filter == null || filter.passesFilter(i - 1, row)) {
 
                 final int vertexId = graph.addVertex();
-                
-                try {                   
+
+                try {
 
                     for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
                         attributeDefinition.setValue(graph, vertexId, row, (i - 1));
@@ -390,7 +401,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     // Count the number of processed rows to notify in the status message
                     ++importedRows;
 
-                } catch (final DateTimeException | IllegalArgumentException | SecurityException  ex ) {
+                } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
                     if (skipInvalidRows) {
                         graph.removeVertex(vertexId);
                         ++skippedRow;
@@ -439,10 +450,10 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
                 final int sourceVertexId = graph.addVertex();
                 final int destinationVertexId = graph.addVertex();
-                    
+
                 final boolean isDirected = directedIx == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN || Boolean.parseBoolean(row[directedIx]);
                 final int transactionId = graph.addTransaction(sourceVertexId, destinationVertexId, isDirected);
-                
+
                 try {
                     for (final ImportAttributeDefinition attributeDefinition : transactionDefinitions) {
                         if (attributeDefinition.getOverriddenAttributeId() != Graph.NOT_FOUND) {
@@ -461,12 +472,12 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                         graph.getSchema().completeVertex(graph, sourceVertexId);
                         graph.getSchema().completeVertex(graph, destinationVertexId);
                         graph.getSchema().completeTransaction(graph, transactionId);
-                    }                  
+                    }
 
                     // Count the number of processed rows to notify in the status message
                     ++importedRows;
 
-                } catch (final DateTimeException | IllegalArgumentException | SecurityException  ex ) {
+                } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
                     if (skipInvalidRows) {
                         graph.removeTransaction(transactionId);
                         graph.removeVertex(sourceVertexId);
