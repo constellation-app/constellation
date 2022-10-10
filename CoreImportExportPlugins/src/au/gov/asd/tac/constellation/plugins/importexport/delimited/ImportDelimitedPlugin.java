@@ -375,8 +375,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             final String[] row = data.get(i);
             if (filter == null || filter.passesFilter(i - 1, row)) {
 
-                try {
-                    final int vertexId = graph.addVertex();
+                final int vertexId = graph.addVertex();
+                
+                try {                   
 
                     for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
                         attributeDefinition.setValue(graph, vertexId, row, (i - 1));
@@ -391,6 +392,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
                 } catch (final DateTimeException | IllegalArgumentException | SecurityException  ex ) {
                     if (skipInvalidRows) {
+                        graph.removeVertex(vertexId);
                         ++skippedRow;
                     } else {
                         throw ex;
@@ -435,12 +437,13 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
             if (filter == null || filter.passesFilter(i - 1, row)) {
 
+                final int sourceVertexId = graph.addVertex();
+                final int destinationVertexId = graph.addVertex();
+                    
+                final boolean isDirected = directedIx == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN || Boolean.parseBoolean(row[directedIx]);
+                final int transactionId = graph.addTransaction(sourceVertexId, destinationVertexId, isDirected);
+                
                 try {
-                    final int sourceVertexId = graph.addVertex();
-                    final int destinationVertexId = graph.addVertex();
-                    final boolean isDirected = directedIx == ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN || Boolean.parseBoolean(row[directedIx]);
-                    final int transactionId = graph.addTransaction(sourceVertexId, destinationVertexId, isDirected);
-
                     for (final ImportAttributeDefinition attributeDefinition : transactionDefinitions) {
                         if (attributeDefinition.getOverriddenAttributeId() != Graph.NOT_FOUND) {
                             attributeDefinition.setValue(graph, transactionId, row, (i - 1));
@@ -465,6 +468,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
 
                 } catch (final DateTimeException | IllegalArgumentException | SecurityException  ex ) {
                     if (skipInvalidRows) {
+                        graph.removeTransaction(transactionId);
+                        graph.removeVertex(sourceVertexId);
+                        graph.removeVertex(destinationVertexId);
                         ++skippedRow;
                     } else {
                         throw ex;
