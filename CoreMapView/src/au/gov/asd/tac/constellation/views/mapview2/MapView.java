@@ -250,6 +250,14 @@ public class MapView extends ScrollPane {
         //drawMarker(-22.908333, -43.196388, 0.05);
         //drawMarker(31.224361, 121.469170, 0.05);
         //drawMarker(-33.868820, 151.209296, 0.05);
+
+        String line = "M 0,0 Z l 100,100 z";
+        SVGPath linePath = new SVGPath();
+        linePath.setStroke(Color.BLACK);
+        linePath.setStrokeWidth(25);
+        linePath.setContent(line);
+        countryGroup.getChildren().add(linePath);
+
         mapGroupHolder.getChildren().add(countryGroup);
 
 

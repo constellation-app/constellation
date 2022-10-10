@@ -276,8 +276,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
                 try {
                     for (GraphElementType elementType : elementTypes) {
-                        final int lonID;
-                        final int latID;
+                        int lonID = GraphConstants.NOT_FOUND;
+                        int latID = GraphConstants.NOT_FOUND;
 
                         int elementCount;
 
@@ -286,9 +286,12 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                 lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
                                 latID = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
                                 elementCount = graph.getVertexCount();
-                                LOGGER.log(Level.SEVERE, "Lattitude: " + latID + ", Longitude: " + lonID);
+                                //LOGGER.log(Level.SEVERE, "Lattitude: " + latID + ", Longitude: " + lonID);
 
                                 //double lon = graph.getDoubleValue(latID, latID)
+                                break;
+                            case TRANSACTION:
+                                elementCount = graph.getTransactionCount();
                                 break;
                             default:
                                 continue;
@@ -303,7 +306,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
                                     break;
                                 case TRANSACTION:
-                                    continue;
+                                    elementID = graph.getTransaction(elementPos);
+                                    break;
                                 default:
                                     break;
                             }
@@ -316,7 +320,14 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                 mapViewTopComponent.mapViewPane.drawMarker(p);
                                 //mapViewTopComponent.drawMarkerOnMap(elementLat, elementLon, 0.05);
 
-                            }                            
+                            }
+
+                            if (elementType == GraphElementType.TRANSACTION) {
+                                LOGGER.log(Level.SEVERE, "Transaction id is: " + elementID);
+                                int sourceID = graph.getTransactionSourceVertex(elementID);
+                                int destinationID = graph.getTransactionDestinationVertex(elementID);
+
+                            }
                         }
 
                     }
