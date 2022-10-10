@@ -212,7 +212,7 @@ public final class GraphRenderable implements GLRenderable {
                     addTask(connectionLabelBatcher.setBackgroundColor(access));
                     addTask(nodeLabelBatcher.setBackgroundColor(access));
                 };
-            case HIGHLIGHT_COLOUR:
+            case HIGHLIGHT_COLOR:
                 return (change, access) -> {
                     addTask(nodeLabelBatcher.setHighlightColor(access));
                     addTask(connectionLabelBatcher.setHighlightColor(access));

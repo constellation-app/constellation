@@ -84,7 +84,7 @@ public class GLVisualProcessorTester {
         changeSet.add(new VisualChangeBuilder(VisualProperty.VERTICES_REBUILD).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_REBUILD).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.BACKGROUND_COLOR).build());
-        changeSet.add(new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOUR).build());
+        changeSet.add(new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOR).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_OPACITY).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.BLAZE_SIZE).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.DRAW_FLAGS).build());

@@ -38,8 +38,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -83,8 +85,10 @@ public abstract class ImportController<D> {
     private final Set<Integer> keys;
 
     // preference to show or hide all graph schema attributes
-    private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);   
+    private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
     
+    private static final Object LOCK = new Object();
+
 
     protected ImportController() {
         showAllSchemaAttributes = false;
@@ -110,7 +114,7 @@ public abstract class ImportController<D> {
      * @param alertType Type of alert being displayed, range from undefined,
      * info through to warnings and errors.
      */
-    public void displayAlert(String header, String message, Alert.AlertType alertType) {
+    public void displayAlert(final String header, final String message, final AlertType alertType) {
         final Alert dialog;
         dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.setTitle("Delimited Importer");
@@ -192,9 +196,10 @@ public abstract class ImportController<D> {
         final Graph graph = destination.getGraph();
         final ReadableGraph rg = graph.getReadableGraph();
         try {
-            updateAutoAddedAttributes(GraphElementType.VERTEX, autoAddedVertexAttributes, rg, showSchemaAttributes);
-            updateAutoAddedAttributes(GraphElementType.TRANSACTION, autoAddedTransactionAttributes, rg,
-                    showSchemaAttributes);
+            synchronized (LOCK) {
+                updateAutoAddedAttributes(GraphElementType.VERTEX, autoAddedVertexAttributes, rg, showSchemaAttributes);
+                updateAutoAddedAttributes(GraphElementType.TRANSACTION, autoAddedTransactionAttributes, rg, showSchemaAttributes);               
+            }
         } finally {
             rg.release();
         }
@@ -257,10 +262,10 @@ public abstract class ImportController<D> {
         attributes.clear();
 
         // Add attributes from the graph
-        int attributeCount = rg.getAttributeCount(elementType);
+        final int attributeCount = rg.getAttributeCount(elementType);
         for (int i = 0; i < attributeCount; i++) {
-            int attributeId = rg.getAttribute(elementType, i);
-            Attribute attribute = new GraphAttribute(rg, attributeId);
+            final int attributeId = rg.getAttribute(elementType, i);
+            final Attribute attribute = new GraphAttribute(rg, attributeId);
             attributes.put(attribute.getName(), attribute);
         }
 
@@ -284,7 +289,7 @@ public abstract class ImportController<D> {
         }
 
         // Add primary keys
-        for (int key : rg.getPrimaryKey(elementType)) {
+        for (final int key : rg.getPrimaryKey(elementType)) {
             keys.add(key);
         }
     }
@@ -304,21 +309,23 @@ public abstract class ImportController<D> {
     public void updateDisplayedAttributes() {
         if (configurationPane != null) {
 
-            displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes,
-                    manuallyAddedVertexAttributes);
-            displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes,
-                    manuallyAddedTransactionAttributes);
+            synchronized (LOCK) {
+                displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes, 
+                        manuallyAddedVertexAttributes);
+                displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes, 
+                        manuallyAddedTransactionAttributes);
+            }
 
             //This adds the previously allocated attributes if they are missing
-            for (Attribute attribute : configurationPane.getAllocatedAttributes()) {
+            for (final Attribute attribute : configurationPane.getAllocatedAttributes()) {
                 if (attribute.getElementType() == GraphElementType.VERTEX) {
                     if (!displayedVertexAttributes.containsKey(attribute.getName())) {
-                        Attribute newAttribute = new NewAttribute(attribute);
+                        final Attribute newAttribute = new NewAttribute(attribute);
                         displayedVertexAttributes.put(newAttribute.getName(), newAttribute);
                     }
                 } else {
                     if (!displayedTransactionAttributes.containsKey(attribute.getName())) {
-                        Attribute newAttribute = new NewAttribute(attribute);
+                        final Attribute newAttribute = new NewAttribute(attribute);
                         displayedTransactionAttributes.put(newAttribute.getName(), newAttribute);
                     }
                 }
@@ -331,7 +338,7 @@ public abstract class ImportController<D> {
     private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes,
             final Map<String, Attribute> manuallyAddedAttributes) {
         final Map<String, Attribute> displayedAttributes = new HashMap<>();
-        if (attributeFilter != null && attributeFilter.length() > 0) {
+        if (StringUtils.isNotBlank(attributeFilter)) {
             for (final String attributeName : autoAddedAttributes.keySet()) {
                 if (attributeName.toLowerCase(Locale.ENGLISH).contains(attributeFilter.toLowerCase(Locale.ENGLISH))) {
                     displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
@@ -350,7 +357,7 @@ public abstract class ImportController<D> {
     }
 
     public void createManualAttribute(final Attribute attribute) {
-        Map<String, Attribute> attributes = attribute.getElementType() == GraphElementType.VERTEX
+        final Map<String, Attribute> attributes = attribute.getElementType() == GraphElementType.VERTEX
                 ? manuallyAddedVertexAttributes : manuallyAddedTransactionAttributes;
 
         if (!attributes.containsKey(attribute.getName())) {
@@ -377,6 +384,7 @@ public abstract class ImportController<D> {
      * A List&lt;ImportDefinition&gt; where each list element corresponds to a
      * RunPane tab.
      *
+     * @param isFilesIncludeHeadersEnabled
      * @return A List&lt;ImportDefinition&gt; where each list element
      * corresponds to a RunPane tab.
      */

@@ -28,7 +28,7 @@ uniform samplerBuffer xyzTexture;
 uniform mat4 mvMatrix;
 
 // Each column is a node (bottom or top) label with the following structure:
-// [0..2] rgb colour (note label colours do not habve an alpha)
+// [0..2] rgb color (note label colors do not habve an alpha)
 // [3] label size
 uniform mat4 labelBottomInfo;
 uniform mat4 labelTopInfo;
@@ -55,7 +55,7 @@ in vec4 glyphLocationData;
 // [3] Unused
 in ivec4 graphLocationData;
 
-// Information about the texture location, colour and scale of the glyph
+// Information about the texture location, color and scale of the glyph
 out int glyphIndex;
 out vec4 labelColor;
 out float glyphScale;
@@ -97,7 +97,7 @@ void main(void) {
     float nradius = mixedVertex.w;
 
 
-    // Get the size and colour of this label from the relevant label information matrix
+    // Get the size and color of this label from the relevant label information matrix
     mat4 labelInfo = totalScale < 0 ? labelBottomInfo : labelTopInfo;
     float labelScale = labelInfo[labelNumber][3] * LABEL_TO_NRADIUS_UNITS * LABEL_AESTHETIC_SCALE;
     glyphScale = nradius * labelScale;
@@ -107,7 +107,7 @@ void main(void) {
     float alpha = (glyphVis > max(visibilityLow, 0) && (glyphVis <= visibilityHigh || glyphVis > 1.0)) ?
         1 - smoothstep((LABEL_VISIBLE_DISTANCE - 20) * glyphScale, LABEL_VISIBLE_DISTANCE * glyphScale, distance) : 0.0;
 
-    // Set the colour (and background information if this glyph is the background)
+    // Set the color (and background information if this glyph is the background)
     if (glyphIndex == backgroundGlyphIndex) {
         labelColor = vec4(backgroundColor.xyz * BACKGROUND_DARKENING_FACTOR, alpha);
         backgroundScalingFactor = abs(2 * glyphXOffset);

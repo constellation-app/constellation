@@ -107,9 +107,9 @@ public class NotesViewPane extends BorderPane {
 
     private static final int DEFAULT_SPACING = 5;
     private static final int OPTIONS_SPACING = 150;
-    private static final String PROMPT_COLOUR = "#909090";
-    private static final String USER_COLOUR = "#942483";
-    private static final String AUTO_COLOUR = "#1c5aa6";
+    private static final String PROMPT_COLOR = "#909090";
+    private static final String USER_COLOR = "#942483";
+    private static final String AUTO_COLOR = "#1c5aa6";
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
@@ -208,7 +208,7 @@ public class NotesViewPane extends BorderPane {
         // TextField to enter new note title.
         final TextField titleField = new TextField();
         titleField.setPromptText("Type a title...");
-        titleField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOUR + ";");
+        titleField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";");
 
         // Checkbox to apply note to selection.
         final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
@@ -219,7 +219,7 @@ public class NotesViewPane extends BorderPane {
         // TextArea to enter new note content.
         final TextArea contentField = new TextArea();
         contentField.setPromptText("Type a note...");
-        contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOUR + ";");
+        contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";");
         contentField.setWrapText(true);
         contentField.setOnKeyPressed(key -> {
             // If tab is typed and shift isn't being held dowm.
@@ -578,7 +578,7 @@ public class NotesViewPane extends BorderPane {
             throw new IllegalStateException("Not processing on the JavaFX Application Thread");
         }
         
-        final String noteColour = newNote.isUserCreated() ? USER_COLOUR : AUTO_COLOUR;
+        final String noteColor = newNote.isUserCreated() ? USER_COLOR : AUTO_COLOR;
 
         // Define dateTime label
         final Label dateTimeLabel = new Label((new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(newNote.getDateTime())))));
@@ -665,7 +665,7 @@ public class NotesViewPane extends BorderPane {
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
         noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                + noteColour + "; -fx-background-radius: 10 10 10 10;");
+                + noteColor + "; -fx-background-radius: 10 10 10 10;");
         notesListVBox.getChildren().add(noteBody);
 
         if (newNote.isUserCreated()) {

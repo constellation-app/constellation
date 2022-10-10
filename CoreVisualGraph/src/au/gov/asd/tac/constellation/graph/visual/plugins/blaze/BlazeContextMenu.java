@@ -45,14 +45,14 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Add, remove and colour blazes.
+ * Add, remove and color blazes.
  * <p>
  * Modify blazes on one or more vertices. If no vertices are selected, modify
  * the right-clicked vertex. If some vertices are selected, modify them as well
  * as the right-clicked vertex.
  * <p>
- * The blaze popup menu provides default colour options (Blue, Red and Yellow),
- * as well as options to add a custom colour or remove the blaze(s) entirely.
+ * The blaze popup menu provides default color options (Blue, Red and Yellow),
+ * as well as options to add a custom color or remove the blaze(s) entirely.
  * The remaining list will be populated with colors saved from the users
  * presets.
  *

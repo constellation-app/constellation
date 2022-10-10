@@ -18,17 +18,21 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.logging.Logger;
+import static org.mockito.ArgumentMatchers.anyString;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import org.mockito.stubbing.Answer;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -137,12 +141,12 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         System.out.println("refreshScreenshotDirNotNull");
 
         final File file1 = mock(File.class);
-        when(file1.getName()).thenReturn("file1.png");
-        when(file1.toPath()).thenReturn(Paths.get("path\'file1.png"));
+        when(file1.getName()).thenReturn("file1.star.png");
+        when(file1.toPath()).thenReturn(Paths.get("path\'file1.star.png"));
 
         final File file2 = mock(File.class);
-        when(file2.getName()).thenReturn("file2.png");
-        when(file2.toPath()).thenReturn(Paths.get("path\'file2.png"));
+        when(file2.getName()).thenReturn("file2.star.png");
+        when(file2.toPath()).thenReturn(Paths.get("path\'file2.star.png"));
 
         final File screenShotsDir = mock(File.class);
         when(screenShotsDir.listFiles()).thenReturn(new File[]{file1, file2});
@@ -150,9 +154,10 @@ public class RecentGraphScreenshotUtilitiesNGTest {
         // getScreenshotsDir() will return a file structure with files therefore there will be files in filesInDirectory to iterate through.
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(screenShotsDir);
         recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.refreshScreenshotsDir()).thenCallRealMethod();
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.findScreenshot(anyString(), anyString())).thenReturn(Optional.of(file1));
 
         // Return a HistoryItem from getUniqueRecentFiles() to add to filesInHistory.
-        recentFilesMock.when(() -> RecentFiles.getUniqueRecentFiles()).thenReturn(new ArrayList<>(Arrays.asList(new HistoryItem(1, "file1"))));
+        recentFilesMock.when(() -> RecentFiles.getUniqueRecentFiles()).thenReturn(new ArrayList<>(Arrays.asList(new HistoryItem(1, "file1.star"))));
         filesMock.when(() -> Files.delete(Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
 
         RecentGraphScreenshotUtilities.refreshScreenshotsDir();
@@ -162,7 +167,116 @@ public class RecentGraphScreenshotUtilitiesNGTest {
 
         // Files.delete() will be called only on file2 since it is not in filesInHistory.
         filesMock.verify(() -> Files.delete(Mockito.any()), times(1));
-        filesMock.verify(() -> Files.delete(Mockito.eq(Paths.get("path\'file2.png"))), times(1));
+        filesMock.verify(() -> Files.delete(Mockito.eq(Paths.get("path\'file2.star.png"))), times(1));
+    }
+
+    /**
+     * Test of refreshScreenshotHashed method, of class
+     * RecentGraphScreenshotUtilities, where a path should be hashed path should
+     * be found in the directory
+     */
+    @Test
+    public void testRefreshScreenshotsHashed() {
+        System.out.println("refreshScreenshotDirNotNull");
+
+        final File file1 = mock(File.class);
+        when(file1.getName()).thenReturn("1901de09374733aff5b72e9400d18482.png");
+        when(file1.toPath()).thenReturn(Paths.get("1901de09374733aff5b72e9400d18482.png"));
+
+        final File screenShotsDir = mock(File.class);
+        when(screenShotsDir.listFiles()).thenReturn(new File[]{file1});
+
+        // getScreenshotsDir() will return a file structure with files therefore there will be files in filesInDirectory to iterate through.
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(screenShotsDir);
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.refreshScreenshotsDir()).thenCallRealMethod();
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.findScreenshot(anyString(), anyString())).thenReturn(Optional.of(file1));
+
+        // Return a HistoryItem from getUniqueRecentFiles() to add to filesInHistory.
+        recentFilesMock.when(() -> RecentFiles.getUniqueRecentFiles()).thenReturn(new ArrayList<>(Arrays.asList(new HistoryItem(1, "/path/to/helloworld"))));
+        filesMock.when(() -> Files.delete(Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
+
+        RecentGraphScreenshotUtilities.refreshScreenshotsDir();
+
+        recentGraphScreenshotUtilitiesMock.verify(() -> RecentGraphScreenshotUtilities.getScreenshotsDir(), times(1));
+        recentFilesMock.verify(() -> RecentFiles.getUniqueRecentFiles(), times(1));
+
+        // Files.delete() will be called only on file2 since it is not in filesInHistory.
+        filesMock.verify(() -> Files.delete(Mockito.any()), times(1));
+    }
+
+    /**
+     * Test of refreshScreenshotHashed method, of class
+     * RecentGraphScreenshotUtilities, where a path should be hashed path should
+     * be found in the directory
+     */
+    @Test
+    public void testRefreshScreenshotsLegacy() {
+        System.out.println("refreshScreenshotDirNotNull");
+
+        final File file1 = mock(File.class);
+        when(file1.getName()).thenReturn("test1.star.png");
+        when(file1.toPath()).thenReturn(Paths.get("path\\to\\userdir\\test1.star.png"));
+
+        final File screenShotsDir = mock(File.class);
+        when(screenShotsDir.listFiles()).thenReturn(new File[]{file1});
+
+        // getScreenshotsDir() will return a file structure with files therefore there will be files in filesInDirectory to iterate through.
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(screenShotsDir);
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.refreshScreenshotsDir()).thenCallRealMethod();
+
+        // Return a HistoryItem from getUniqueRecentFiles() to add to filesInHistory.
+        recentFilesMock.when(() -> RecentFiles.getUniqueRecentFiles()).thenReturn(new ArrayList<>(Arrays.asList(new HistoryItem(1, "path\\to\\userdir\\test1.star"))));
+        filesMock.when(() -> Files.delete(Mockito.any())).thenAnswer((Answer<Void>) invocation -> null);
+
+        RecentGraphScreenshotUtilities.refreshScreenshotsDir();
+
+        recentGraphScreenshotUtilitiesMock.verify(() -> RecentGraphScreenshotUtilities.getScreenshotsDir(), times(1));
+        recentFilesMock.verify(() -> RecentFiles.getUniqueRecentFiles(), times(1));
+
+        // Files.delete() will be called only on file2 since it is not in filesInHistory.
+        filesMock.verifyNoInteractions();
+    }
+
+    @Test
+    public void testHashFilePath() {
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.hashFilePath(anyString())).thenCallRealMethod();
+        final String actual = RecentGraphScreenshotUtilities.hashFilePath("/test/path");
+        final String expected = "0C695C8BFF7AF91D321C237BDF969ADDBFB859BE8095D880F1D034737FBC35D2";
+
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testFindScreenshotWithValidLegacyFile() throws IOException {
+        File testFile = File.createTempFile("file", ".png");
+
+        final File screenShotsDir = mock(File.class);
+        when(screenShotsDir.toString()).thenReturn(testFile.getParent());
+
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.hashFilePath(anyString())).thenReturn("hash123");
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(screenShotsDir);
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.findScreenshot(anyString(), anyString())).thenCallRealMethod();
+
+        final Optional<File> actual = RecentGraphScreenshotUtilities.findScreenshot(testFile.getParent(), testFile.getName().replace(".png", ""));
+        final Optional<File> expected = Optional.of(new File(testFile.getParent() + File.separator + testFile.getName()));
+
+        testFile.delete();
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void testFindScreenshotButNotFound() throws IOException {
+        final File screenShotsDir = mock(File.class);
+        when(screenShotsDir.toString()).thenReturn("/screenshots");
+
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.hashFilePath(anyString())).thenReturn("hash123");
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.getScreenshotsDir()).thenReturn(screenShotsDir);
+        recentGraphScreenshotUtilitiesMock.when(() -> RecentGraphScreenshotUtilities.findScreenshot(anyString(), anyString())).thenCallRealMethod();
+
+        final Optional<File> actual = RecentGraphScreenshotUtilities.findScreenshot("/not/found", "file");
+        final Optional<File> expected = Optional.empty();
+
+        assertEquals(actual, expected);
     }
 
     // Couldn't find a way to mock LOGGER.log() to assert whether it was ever invoked.

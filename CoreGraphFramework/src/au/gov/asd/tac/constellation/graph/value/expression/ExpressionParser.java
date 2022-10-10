@@ -39,6 +39,7 @@ public class ExpressionParser {
     private static final String QUERY_ERROR = "Query Error";
     private static final String MALFORMED_QUERY = "Malformed Query";
     private static final String QUERY_ERROR_MSG = "There was a query error: {0}";
+    private static final String NULL_INPUT_ERROR = "Input String was null";
     private static final String NESTED_PARENTHESIS_ERROR = "Invalid nesting of parenthesis";
     private static final String ENDS_WITH_OPERATOR_ERROR = "An expression cannot end with an operator";
     private static final String END_OF_QUOTED_STRING_ERROR = "Unexpected end of expression while in quoted string.\nCould not find the pair to: %s";
@@ -458,6 +459,10 @@ public class ExpressionParser {
     }
 
     public static SequenceExpression parse(String expression) {
+        if (expression == null) {
+            LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, NULL_INPUT_ERROR);
+            return null;
+        }
 
         ParseState state = ParseState.READING_WHITESPACE;
         final char[] content = new char[expression.length()];

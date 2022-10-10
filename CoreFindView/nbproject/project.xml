@@ -79,14 +79,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.views.attributeeditor</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.netbeans.spi.quicksearch</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>

@@ -128,10 +128,10 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
             angleHBox.getChildren().addAll(northButton, northEastButton, eastButton, southEastButton, southButton, southWestButton, westButton, northWestButton);
             angleLabel.setLabelFor(angleHBox);
 
-            final Label colourLabel = new Label("Colour");
-            colourLabel.setFont(Font.font(Font.getDefault().getFamily(), FontPosture.ITALIC, 14));
+            final Label colorLabel = new Label("Color");
+            colorLabel.setFont(Font.font(Font.getDefault().getFamily(), FontPosture.ITALIC, 14));
             final Separator separator = new Separator();
-            final VBox colourSeparator = new VBox(colourLabel, separator);
+            final VBox colorSeparator = new VBox(colorLabel, separator);
 
             final Label namedLabel = new Label("Named:");
             final ObservableList<ConstellationColor> namedColors = FXCollections.observableArrayList();
@@ -195,7 +195,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
             controls.addRow(0, angleLabel, angleTextField);
             controls.add(angleHBox, 0, 1, 2, 1);
-            controls.add(colourSeparator, 0, 2, 2, 1);
+            controls.add(colorSeparator, 0, 2, 2, 1);
             controls.addRow(3, namedLabel, colorCombo);
             controls.addRow(4, pickerLabel, picker);
             controls.addRow(5, noValueCheckBox);

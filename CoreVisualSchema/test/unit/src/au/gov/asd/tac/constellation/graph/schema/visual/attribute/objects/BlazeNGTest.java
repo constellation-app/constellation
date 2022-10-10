@@ -90,7 +90,7 @@ public class BlazeNGTest {
             Blaze instance = Blaze.valueOf("99;fruitsalad");
             fail("Exception not thrown");
         } catch (IllegalBlazeFormatException ex) {
-            assertTrue("Undefined colour for blaze.".equals(ex.getMessage()));
+            assertTrue("Undefined color for blaze.".equals(ex.getMessage()));
         } catch (Exception ex) {
             fail("Incorrect exception thrown");
         }

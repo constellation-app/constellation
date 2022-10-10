@@ -2339,7 +2339,7 @@
     -fx-border-style: solid;
     -fx-border-color: 
         /* 
-          Inner border: we have different colours along the top, right, bottom and left.
+          Inner border: we have different colors along the top, right, bottom and left.
           Refer to RT-12298 for the spec.
         */
         derive(-fx-base, 80%) 
@@ -2358,7 +2358,7 @@
     -fx-border-style: solid;
     -fx-border-color: 
         /* 
-          Inner border: we have different colours along the top, right, bottom and left.
+          Inner border: we have different colors along the top, right, bottom and left.
           Refer to RT-12298 for the spec.
         */
         derive(-fx-base, 80%) 

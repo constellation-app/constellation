@@ -36,17 +36,17 @@ public class AttributePreferenceKey {
     public static final String GRAPH_SHOW_ALL = "graphShowAll";
     public static final String NODE_SHOW_ALL = "nodeShowAll";
     public static final String TRANSACTION_SHOW_ALL = "transactionShowAll";
-    public static final String PRIMARY_KEY_ATTRIBUTE_COLOUR = "primaryKeyAttributeColour";
-    public static final String CUSTOM_ATTRIBUTE_COLOUR = "customAttributeColour";
-    public static final String SCHEMA_ATTRIBUTE_COLOUR = "schemaAttributeColour";
-    public static final String HIDDEN_ATTRIBUTE_COLOUR = "hiddenAttributeColour";
+    public static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "primaryKeyAttributeColor";
+    public static final String CUSTOM_ATTRIBUTE_COLOR = "customAttributeColor";
+    public static final String SCHEMA_ATTRIBUTE_COLOR = "schemaAttributeColor";
+    public static final String HIDDEN_ATTRIBUTE_COLOR = "hiddenAttributeColor";
     protected static final Set<String> ATTRIBUTE_COLOR_PREFS = new HashSet<>();
 
     static {
         SPLIT_CHAR_SET.add(SPLIT_CHAR);
-        ATTRIBUTE_COLOR_PREFS.add(PRIMARY_KEY_ATTRIBUTE_COLOUR);
-        ATTRIBUTE_COLOR_PREFS.add(CUSTOM_ATTRIBUTE_COLOUR);
-        ATTRIBUTE_COLOR_PREFS.add(SCHEMA_ATTRIBUTE_COLOUR);
-        ATTRIBUTE_COLOR_PREFS.add(HIDDEN_ATTRIBUTE_COLOUR);
+        ATTRIBUTE_COLOR_PREFS.add(PRIMARY_KEY_ATTRIBUTE_COLOR);
+        ATTRIBUTE_COLOR_PREFS.add(CUSTOM_ATTRIBUTE_COLOR);
+        ATTRIBUTE_COLOR_PREFS.add(SCHEMA_ATTRIBUTE_COLOR);
+        ATTRIBUTE_COLOR_PREFS.add(HIDDEN_ATTRIBUTE_COLOR);
     }
 }
