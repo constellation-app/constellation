@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -327,17 +328,24 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
                             if (elementType == GraphElementType.TRANSACTION) {
                                 LOGGER.log(Level.SEVERE, "Transaction id is: " + elementID);
-                                int sourceID = graph.getTransactionSourceVertex(elementID);
-                                int destinationID = graph.getTransactionDestinationVertex(elementID);
 
-                                final float sourceLat = graph.getObjectValue(latID, sourceID);
-                                final float sourceLon = graph.getObjectValue(lonID, sourceID);
+                                int dateTimeID = TemporalConcept.TransactionAttribute.DATETIME.get(graph);
 
-                                final float destLat = graph.getObjectValue(latID, destinationID);
-                                final float destLon = graph.getObjectValue(lonID, destinationID);
+                                String dateTime = graph.getStringValue(dateTimeID, elementID);
 
-                                LineMarker l = new LineMarker(mapViewTopComponent, elementID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, 0, 149);
-                                mapViewTopComponent.mapViewPane.drawMarker(l);
+                                if (!dateTime.isBlank()) {
+                                    int sourceID = graph.getTransactionSourceVertex(elementID);
+                                    int destinationID = graph.getTransactionDestinationVertex(elementID);
+
+                                    final float sourceLat = graph.getObjectValue(latID, sourceID);
+                                    final float sourceLon = graph.getObjectValue(lonID, sourceID);
+
+                                    final float destLat = graph.getObjectValue(latID, destinationID);
+                                    final float destLon = graph.getObjectValue(lonID, destinationID);
+
+                                    LineMarker l = new LineMarker(mapViewTopComponent, elementID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, 0, 149);
+                                    mapViewTopComponent.mapViewPane.drawMarker(l);
+                                }
 
 
                             }
@@ -345,6 +353,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
                     }
                 } catch (Exception e) {
+                    LOGGER.log(Level.SEVERE, "EXCEPTION CAUGHT!!");
                     LOGGER.log(Level.SEVERE, e.getMessage());
                 }
 
