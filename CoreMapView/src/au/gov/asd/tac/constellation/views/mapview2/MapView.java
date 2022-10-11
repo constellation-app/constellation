@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
+import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -251,13 +252,9 @@ public class MapView extends ScrollPane {
         //drawMarker(31.224361, 121.469170, 0.05);
         //drawMarker(-33.868820, 151.209296, 0.05);
 
-        String line = "M 0,0 Z l 100,100 z";
-        SVGPath linePath = new SVGPath();
-        linePath.setStroke(Color.BLACK);
-        linePath.setStrokeWidth(25);
-        linePath.setContent(line);
-        countryGroup.getChildren().add(linePath);
-
+        drawMarker(-33.870453, 151.208755, 0.05);
+        drawMarker(-31.953512, 115.857048, 0.05);
+        drawLine(0, 0, 0, 0);
         mapGroupHolder.getChildren().add(countryGroup);
 
 
@@ -293,7 +290,7 @@ public class MapView extends ScrollPane {
         //x = 600;
         //y = 600;
 
-        String markerPath = "";
+        String markerPath = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
         markerPath = "M " + x + "," + y + " Z " + markerPath;
 
 
@@ -331,12 +328,43 @@ public class MapView extends ScrollPane {
         //draw();
     }
 
-    public void drawLine(double x, double y, double x2, double y2) {
+    private double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
+        return (longitude - minLong) * (mapWidth / lonDelta);
+    }
 
+    private double latToY(double lattitude, double mapWidth, double mapHeight) {
+        lattitude = lattitude * (Math.PI / 180);
+        double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
+        y = (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
+
+        return y;
+    }
+
+    public void drawLine(double lon1, double lat1, double lon2, double lat2) {
+
+        double perthX = longToX(115.857048, minLong, mapGroupHolder.getPrefWidth(), maxLong - minLong);
+        double perthY = latToY(-31.953512, mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+
+        double sydX = longToX(151.208755, minLong, mapGroupHolder.getPrefWidth(), maxLong - minLong);
+        double sydY = latToY(-33.870453, mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+
+        perthX += 0;
+        perthY -= 149;
+
+        sydY -= 149;
+
+        LOGGER.log(Level.SEVERE, "Y coord is: " + perthY);
+
+        String line = "M " + perthX + ", " + perthY + " Z L " + sydX + "," + sydY + " z";
+        SVGPath linePath = new SVGPath();
+        linePath.setStroke(Color.BLACK);
+        linePath.setStrokeWidth(1);
+        linePath.setContent(line);
+        countryGroup.getChildren().add(linePath);
     }
 
     public void drawMarker(AbstractMarker marker) {
-        marker.setMarkerPosition(95, 244, mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+        marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
 
         countryGroup.getChildren().add(marker.getMarker());
 

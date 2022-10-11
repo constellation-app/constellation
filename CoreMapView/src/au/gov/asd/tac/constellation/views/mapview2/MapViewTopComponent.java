@@ -315,7 +315,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             if (lonID != GraphConstants.NOT_FOUND && latID != GraphConstants.NOT_FOUND && elementID != -99 && elementType == GraphElementType.VERTEX) {
                                 final float elementLat = graph.getObjectValue(latID, elementID);
                                 final float elementLon = graph.getObjectValue(lonID, elementID);
-                                PointMarker p = new PointMarker(mapViewTopComponent, elementID, (double) elementLat, (double) elementLon, 0.05);
+                                PointMarker p = new PointMarker(mapViewTopComponent, elementID, (double) elementLat, (double) elementLon, 0.05, 95, 244);
                                 mapViewTopComponent.addMarker(p);
                                 mapViewTopComponent.mapViewPane.drawMarker(p);
                                 //mapViewTopComponent.drawMarkerOnMap(elementLat, elementLon, 0.05);

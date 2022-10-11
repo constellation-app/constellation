@@ -27,11 +27,16 @@ public abstract class AbstractMarker {
     protected int id;
     protected boolean isSelected = false;
 
+    protected int xOffset;
+    protected int yOffset;
+
     protected MapViewTopComponent parentComponent;
 
-    public AbstractMarker(MapViewTopComponent parentComponent, int id) {
+    public AbstractMarker(MapViewTopComponent parentComponent, int id, int xOffset, int yOffset) {
         this.parentComponent = parentComponent;
         this.id = id;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
     }
 
     public int getID() {
@@ -50,7 +55,7 @@ public abstract class AbstractMarker {
         return y;
     }
 
-    public void setMarkerPosition(double xOffset, double yOffset, double mapWidth, double mapHeight) {
+    public void setMarkerPosition(double mapWidth, double mapHeight) {
 
     }
 

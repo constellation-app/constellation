@@ -37,8 +37,8 @@ public class PointMarker extends AbstractMarker {
     private double scale;
 
 
-    public PointMarker(MapViewTopComponent topComponent, int id, double lattitude, double longitude, double scale) {
-        super(topComponent, id);
+    public PointMarker(MapViewTopComponent topComponent, int id, double lattitude, double longitude, double scale, int xOffset, int yOffset) {
+        super(topComponent, id, xOffset, yOffset);
         markerPath = new SVGPath();
         //markerPath.setContent(path);
 
@@ -98,15 +98,24 @@ public class PointMarker extends AbstractMarker {
     }
 
     @Override
-    public void setMarkerPosition(double xOffset, double yOffset, double mapWidth, double mapHeight) {
-        double x = super.longToX(longitude, MapView.minLong, mapWidth, MapView.maxLong - MapView.minLong);
-        double y = super.latToY(lattitude, mapWidth, mapHeight);
+    public void setMarkerPosition(double mapWidth, double mapHeight) {
+        x = super.longToX(longitude, MapView.minLong, mapWidth, MapView.maxLong - MapView.minLong);
+        y = super.latToY(lattitude, mapWidth, mapHeight);
         x += xOffset;
         y -= yOffset;
+
         path = "M " + x + ", " + y + " Z " + path;
 
         markerPath.setContent(path);
 
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
     }
 
     @Override
