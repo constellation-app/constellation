@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 
 /**
@@ -47,6 +48,8 @@ public class LineMarker extends AbstractMarker {
         lat2 = lattitude2;
         lon2 = longitude2;
 
+        markerPath.setStroke(Color.BLACK);
+        markerPath.setStrokeWidth(1);
 
     }
 

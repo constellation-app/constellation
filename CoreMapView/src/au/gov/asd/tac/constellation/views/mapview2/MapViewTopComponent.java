@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
+import au.gov.asd.tac.constellation.views.mapview2.markers.LineMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -291,6 +292,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                 //double lon = graph.getDoubleValue(latID, latID)
                                 break;
                             case TRANSACTION:
+                                lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
+                                latID = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
                                 elementCount = graph.getTransactionCount();
                                 break;
                             default:
@@ -326,6 +329,16 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                 LOGGER.log(Level.SEVERE, "Transaction id is: " + elementID);
                                 int sourceID = graph.getTransactionSourceVertex(elementID);
                                 int destinationID = graph.getTransactionDestinationVertex(elementID);
+
+                                final float sourceLat = graph.getObjectValue(latID, sourceID);
+                                final float sourceLon = graph.getObjectValue(lonID, sourceID);
+
+                                final float destLat = graph.getObjectValue(latID, destinationID);
+                                final float destLon = graph.getObjectValue(lonID, destinationID);
+
+                                LineMarker l = new LineMarker(mapViewTopComponent, elementID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, 0, 149);
+                                mapViewTopComponent.mapViewPane.drawMarker(l);
+
 
                             }
                         }
