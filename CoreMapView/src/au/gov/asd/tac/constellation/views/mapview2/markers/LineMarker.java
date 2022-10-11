@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 
@@ -50,6 +52,36 @@ public class LineMarker extends AbstractMarker {
 
         markerPath.setStroke(Color.BLACK);
         markerPath.setStrokeWidth(1);
+
+        markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+
+                if (!isSelected) {
+                    markerPath.setStroke(Color.ORANGE);
+                }
+                e.consume();
+            }
+        });
+
+        markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+
+                if (!isSelected) {
+                    markerPath.setStroke(Color.BLACK);
+                }
+
+                e.consume();
+            }
+        });
+
+        markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+                isSelected = true;
+                markerPath.setStroke(Color.BLUE);
+                parentComponent.addNodeId(id, false);
+                e.consume();
+            }
+        });
 
     }
 

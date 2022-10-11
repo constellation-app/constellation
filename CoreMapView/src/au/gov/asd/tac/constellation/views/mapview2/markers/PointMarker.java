@@ -78,7 +78,7 @@ public class PointMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
                 isSelected = true;
                 markerPath.setFill(Color.BLUE);
-                parentComponent.addNodeId(id);
+                parentComponent.addNodeId(id, true);
                 e.consume();
             }
         });

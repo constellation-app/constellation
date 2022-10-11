@@ -197,9 +197,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         mapViewPane.drawMarker(lat, lon, scale);
     }
 
-    public void addNodeId(int nodeID) {
+    public void addNodeId(int nodeID, boolean selectingVertex) {
         selectedNodeList.add(nodeID);
-        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList)).executeLater(getCurrentGraph());
+        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, selectingVertex)).executeLater(getCurrentGraph());
     }
 
     public void drawMarkerOnMap() {
@@ -344,6 +344,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                     final float destLon = graph.getObjectValue(lonID, destinationID);
 
                                     LineMarker l = new LineMarker(mapViewTopComponent, elementID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, 0, 149);
+                                    mapViewTopComponent.addMarker(l);
                                     mapViewTopComponent.mapViewPane.drawMarker(l);
                                 }
 
@@ -369,19 +370,31 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     public static class SelectOnGraphPlugin extends SimpleEditPlugin {
 
         private List<Integer> selectedNodeList = new ArrayList<Integer>();
+        private boolean isSelectingVertex = true;
 
-        public SelectOnGraphPlugin(List<Integer> selectedNodeList) {
+        public SelectOnGraphPlugin(List<Integer> selectedNodeList, boolean isSelectingVertex) {
             this.selectedNodeList = selectedNodeList;
+            this.isSelectingVertex = isSelectingVertex;
         }
 
         @Override
         protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-            final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-            final int vertexCount = graph.getVertexCount();
+            if (isSelectingVertex) {
+                final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+                final int vertexCount = graph.getVertexCount();
 
-            for (int i = 0; i < vertexCount; ++i) {
-                final int vertexID = graph.getVertex(i);
-                graph.setBooleanValue(vertexSelectedAttribute, vertexID, selectedNodeList.contains(vertexID));
+                for (int i = 0; i < vertexCount; ++i) {
+                    final int vertexID = graph.getVertex(i);
+                    graph.setBooleanValue(vertexSelectedAttribute, vertexID, selectedNodeList.contains(vertexID));
+                }
+            } else {
+                final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+                final int transactionCount = graph.getTransactionCount();
+
+                for (int i = 0; i < transactionCount; ++i) {
+                    final int transactionID = graph.getTransaction(i);
+                    graph.setBooleanValue(transactionSelectedAttribute, transactionID, selectedNodeList.contains(transactionID));
+                }
             }
         }
 
