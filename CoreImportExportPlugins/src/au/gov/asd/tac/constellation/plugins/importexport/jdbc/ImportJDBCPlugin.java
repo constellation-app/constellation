@@ -331,7 +331,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
             } else {
                 // No rows were imported list all files that resulted in failures.
                 sbHeader.append("No data found to import");                
-                sbMessage.append(String.format("Please check the connection %s or node mappings. No data was extracted.", connectionName));
+                sbMessage.append(String.format("Please check the connection %s or specified mappings. No data was extracted.", connectionName));
             }
             NotificationDisplayer.getDefault().notify(sbHeader.toString(), UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
         });
