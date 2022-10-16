@@ -62,18 +62,15 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
      * @param table the table to extract the rows from
      * @param sheetName the name of the sheet in the Excel spreadsheet
      */
-    public AnalyticExportToExcelFilePlugin(final File file,
-            final TableView<ScoreResult.ElementScore> table,
-            final String sheetName) {
+    public AnalyticExportToExcelFilePlugin(final File file, final TableView<ScoreResult.ElementScore> table, final String sheetName) {
         this.file = file;
         this.table = table;
         this.sheetName = sheetName;
     }
 
     @Override
-    public void execute(final PluginGraphs graphs,
-            final PluginInteraction interaction,
-            final PluginParameters parameters) throws InterruptedException, PluginException {
+    public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters)
+            throws InterruptedException, PluginException {
         try (final SXSSFWorkbook workbook = new SXSSFWorkbook(SXSSFWorkbook.DEFAULT_WINDOW_SIZE)) {
             final Sheet sheet = workbook.createSheet(sheetName);
 
@@ -97,7 +94,9 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
                     // get a copy of the table data so that users can continue working
                     final TableView<ScoreResult.ElementScore> data = getTable();
 
-                    writeRecords(sheet, visibleIndices, data, 1);
+                    if (data != null) {
+                        writeRecords(sheet, data, 1);
+                    }
                 }
             };
             writeSheetThread.start();
@@ -163,10 +162,7 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
      * @param data the table rows to write
      * @param startIndex the current index in the sheet that can be written to
      */
-    private static void writeRecords(final Sheet sheet,
-            final List<Integer> visibleIndices,
-            final TableView<ScoreResult.ElementScore> data,
-            final int startIndex) {
+    private static void writeRecords(final Sheet sheet, final TableView<ScoreResult.ElementScore> data, final int startIndex) {
         final AtomicInteger rowIndex = new AtomicInteger(startIndex);
 
         for (int i = 0; i < data.getItems().size(); i++) {
