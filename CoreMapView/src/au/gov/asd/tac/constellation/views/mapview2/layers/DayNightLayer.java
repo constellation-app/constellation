@@ -56,12 +56,12 @@ public class DayNightLayer extends AbstractMapLayer {
         leftShadowLocation = getShadowPosition(sunLocation, true);
         rightShadowLocation = getShadowPosition(sunLocation, false);
 
-        boolean first = true;
         String leftTwilightCivilPath = "";
         String leftTwighlightNauticalPath = "";
         String leftTwighlightAstronomicalPath = "";
         String leftNightPath = "";
         String rightTwilightCivilPath = "";
+        String rightTwighlightNauticalPath = "";
 
         dayNightGroup.getChildren().add(sun);
 
@@ -71,27 +71,9 @@ public class DayNightLayer extends AbstractMapLayer {
         final float twighlightAstronomicalRadiusMeters = getShadowRadiusFromAngle(12.0);
         final float nightRadiusMeters = getShadowRadiusFromAngle(18.0);
 
-        final Location leftTwighlightCivilRadiusLocation = new Location(
+        /*final Location leftTwighlightCivilRadiusLocation = new Location(
                 leftShadowLocation.lat - Distance.Haversine.kilometersToDecimalDegrees(twighlightCivilRadiusMeters / 1000),
                 leftShadowLocation.lon - Distance.Haversine.kilometersToDecimalDegrees(twighlightCivilRadiusMeters / 1000));
-
-        LOGGER.log(Level.SEVERE, "Lat: " + leftTwighlightCivilRadiusLocation.lat + " Lon: " + leftTwighlightCivilRadiusLocation.lon);
-
-
-        //leftTwighlightCivilRadiusLocation.x = super.longToX(leftTwighlightCivilRadiusLocation.lon, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-        //leftTwighlightCivilRadiusLocation.y = super.latToY(leftTwighlightCivilRadiusLocation.lat, 1010.33, 1224) - 149;
-
-        //leftTwighlightCivilRadiusLocation.x = leftTwighlightCivilRadiusLocation.lon;
-        //leftTwighlightCivilRadiusLocation.y = leftTwighlightCivilRadiusLocation.lat;
-
-        LOGGER.log(Level.SEVERE, "Y: " + leftTwighlightCivilRadiusLocation.y + " X: " + leftTwighlightCivilRadiusLocation.x);
-
-        //leftShadowLocation.x = super.longToX(leftShadowLocation.lon, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-        //leftShadowLocation.y = super.latToY(leftShadowLocation.lat, 1010.33, 1224) - 149;
-
-        //leftShadowLocation.x = leftShadowLocation.lon;
-        //leftShadowLocation.y = leftShadowLocation.lat;
-
         final List<Location> leftTwighlightCivilLocations = generateCircle(leftShadowLocation, leftTwighlightCivilRadiusLocation);
         projectShadowCoordinates(leftTwighlightCivilLocations);
         leftTwilightCivilPath = generatePath(leftTwighlightCivilLocations);
@@ -119,15 +101,27 @@ public class DayNightLayer extends AbstractMapLayer {
         final List<Location> leftNightLocations = generateCircle(leftShadowLocation, leftNightRadiusLocation);
         projectShadowCoordinates(leftNightLocations);
         leftNightPath = generatePath(leftNightLocations);
-        addShadowToGroup(leftNightPath);
+        addShadowToGroup(leftNightPath);*/
+        createShadow(twighlightCivilRadiusMeters, leftShadowLocation);
+        createShadow(twighlightNauticalRadiusMeters, leftShadowLocation);
+        createShadow(twighlightAstronomicalRadiusMeters, leftShadowLocation);
+        createShadow(nightRadiusMeters, leftShadowLocation);
 
-        final Location rightTwighlightCivilRadiusLocation = new Location(
-                rightShadowLocation.lat - Distance.Haversine.kilometersToDecimalDegrees(twighlightCivilRadiusMeters / 1000),
-                rightShadowLocation.lon - Distance.Haversine.kilometersToDecimalDegrees(twighlightCivilRadiusMeters / 1000));
-        final List<Location> rightTwighlightCivilLocations = generateCircle(rightShadowLocation, rightTwighlightCivilRadiusLocation);
-        projectShadowCoordinates(rightTwighlightCivilLocations);
-        rightTwilightCivilPath = generatePath(rightTwighlightCivilLocations);
-        addShadowToGroup(rightTwilightCivilPath);
+        createShadow(twighlightCivilRadiusMeters, rightShadowLocation);
+        createShadow(twighlightNauticalRadiusMeters, rightShadowLocation);
+        createShadow(twighlightAstronomicalRadiusMeters, rightShadowLocation);
+        createShadow(nightRadiusMeters, rightShadowLocation);
+
+    }
+
+    private void createShadow(float shadowRadius, Location shadowLocation) {
+        final Location shadowCoordinates = new Location(
+                shadowLocation.lat - Distance.Haversine.kilometersToDecimalDegrees(shadowRadius / 1000),
+                shadowLocation.lon - Distance.Haversine.kilometersToDecimalDegrees(shadowRadius / 1000));
+        final List<Location> shadowLocations = generateCircle(shadowLocation, shadowCoordinates);
+        projectShadowCoordinates(shadowLocations);
+        String shadowPath = generatePath(shadowLocations);
+        addShadowToGroup(shadowPath);
     }
 
     private void addShadowToGroup(String shadowPath) {

@@ -157,7 +157,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.endShape(PConstants.CLOSE);
 
         // right twilight nautical
-        /*final Location rightTwighlightNauticalRadiusLocation = new Location(
+        final Location rightTwighlightNauticalRadiusLocation = new Location(
                 rightShadowLocation.getLat() - Distance.Haversine.kilometersToDecimalDegrees(twighlightNauticalRadiusMeters / 1000),
                 rightShadowLocation.getLon() - Distance.Haversine.kilometersToDecimalDegrees(twighlightNauticalRadiusMeters / 1000));
         final List<Location> rightTwighlightNauticalLocations = MarkerUtilities.generateCircle(rightShadowLocation, rightTwighlightNauticalRadiusLocation);
@@ -197,7 +197,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.beginShape();
         rightNightPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
-        dayNightImage.endDraw();*/
+        dayNightImage.endDraw();
 
         return dayNightImage;
     }
