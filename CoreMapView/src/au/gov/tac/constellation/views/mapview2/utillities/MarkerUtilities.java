@@ -13,23 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.mapview2;
-
-import javafx.scene.layout.Pane;
+package au.gov.tac.constellation.views.mapview2.utillities;
 
 /**
  *
  * @author altair1673
  */
-public class MapViewTilled {
+public class MarkerUtilities {
 
-    private final int tileWidth = 100;
-    private final int titleHeight = 100;
+    private MarkerUtilities() {
 
-    private final int paneWidth = 800;
-    private final int paneHeight = 800;
+    }
 
-    private final Pane pane = new Pane();
-
-
+    /**
+     * Generate a list of vertices approximating a circle around the given
+     * centre location out to the given delta location.
+     *
+     * @param centre a {@link Location} object representing the centre of the
+     * circle
+     * @param delta a {@link Location} object representing an point on the edge
+     * of the circle
+     * @return a list of {@link Location} objects approximating the circle.
+     */
 }

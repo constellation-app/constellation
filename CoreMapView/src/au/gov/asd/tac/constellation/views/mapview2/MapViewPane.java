@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.gui.MultiChoiceInputPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer;
+//import au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
 import au.gov.asd.tac.constellation.views.mapview.layers.MapLayer;
@@ -90,7 +90,7 @@ public class MapViewPane extends BorderPane {
     private MapView mapView;
 
     //private final Consumer<Graph> updateMarkers;
-    private au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer renderer = null;
+    //private au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer renderer = null;
     private Component glComponent;
 
     private final List<String> dropDownOptions = new ArrayList<>();

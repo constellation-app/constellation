@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import java.io.BufferedReader;
@@ -257,6 +258,10 @@ public class MapView extends ScrollPane {
         drawLine(0, 0, 0, 0);
         mapGroupHolder.getChildren().add(countryGroup);
 
+        DayNightLayer dayNightLayer = new DayNightLayer();
+        dayNightLayer.setUp();
+
+        mapGroupHolder.getChildren().addAll(dayNightLayer.getLayer());
 
     }
 

@@ -27,6 +27,9 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author cygnus_x-1
@@ -41,6 +44,8 @@ public class DayNightLayer extends MapLayer {
     private static final int TWIGHLIGHT_ASTRONOMICAL_COLOR = MarkerUtilities.color(95, 0, 0, 0);
     private static final int NIGHT_COLOR = MarkerUtilities.color(127, 0, 0, 0);
     private static final int EARTH_RADIUS_M = 6_371_008;
+
+    private static final Logger LOGGER = Logger.getLogger("OriginalDayNightMapLogger");
 
     @Override
     public String getName() {
@@ -80,15 +85,20 @@ public class DayNightLayer extends MapLayer {
         final Location leftTwighlightCivilRadiusLocation = new Location(
                 leftShadowLocation.getLat() - Distance.Haversine.kilometersToDecimalDegrees(twighlightCivilRadiusMeters / 1000),
                 leftShadowLocation.getLon() - Distance.Haversine.kilometersToDecimalDegrees(twighlightCivilRadiusMeters / 1000));
+
+
         final List<Location> leftTwighlightCivilLocations = MarkerUtilities.generateCircle(leftShadowLocation, leftTwighlightCivilRadiusLocation);
+
         final List<MapPosition> leftTwighlightCivilPositions = leftTwighlightCivilLocations.stream()
                 .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
                 .collect(Collectors.toList());
+
         dayNightImage.noStroke();
         dayNightImage.fill(TWIGHLIGHT_CIVIL_COLOR);
         dayNightImage.beginShape();
         leftTwighlightCivilPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
+
 
         // left twilight nautical
         final Location leftTwighlightNauticalRadiusLocation = new Location(
@@ -147,7 +157,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.endShape(PConstants.CLOSE);
 
         // right twilight nautical
-        final Location rightTwighlightNauticalRadiusLocation = new Location(
+        /*final Location rightTwighlightNauticalRadiusLocation = new Location(
                 rightShadowLocation.getLat() - Distance.Haversine.kilometersToDecimalDegrees(twighlightNauticalRadiusMeters / 1000),
                 rightShadowLocation.getLon() - Distance.Haversine.kilometersToDecimalDegrees(twighlightNauticalRadiusMeters / 1000));
         final List<Location> rightTwighlightNauticalLocations = MarkerUtilities.generateCircle(rightShadowLocation, rightTwighlightNauticalRadiusLocation);
@@ -187,7 +197,7 @@ public class DayNightLayer extends MapLayer {
         dayNightImage.beginShape();
         rightNightPositions.forEach(position -> dayNightImage.vertex(position.x, position.y));
         dayNightImage.endShape(PConstants.CLOSE);
-        dayNightImage.endDraw();
+        dayNightImage.endDraw();*/
 
         return dayNightImage;
     }
