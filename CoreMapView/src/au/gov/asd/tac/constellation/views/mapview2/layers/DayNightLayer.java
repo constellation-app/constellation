@@ -41,6 +41,11 @@ public class DayNightLayer extends AbstractMapLayer {
     private Location leftShadowLocation = null;
     private Location rightShadowLocation = null;
 
+    private final Color twighlightCivilColour = new Color(0, 0, 0, 0.122);
+    private final Color twighlightNauticalColour = new Color(0, 0, 0, 0.247);
+    private final Color twighlightAstronomicalColour = new Color(0, 0, 0, 0.373);
+    private final Color nightColour = new Color(0, 0, 0, 0.5);
+
     public DayNightLayer() {
         super();
 
@@ -56,13 +61,6 @@ public class DayNightLayer extends AbstractMapLayer {
         leftShadowLocation = getShadowPosition(sunLocation, true);
         rightShadowLocation = getShadowPosition(sunLocation, false);
 
-        String leftTwilightCivilPath = "";
-        String leftTwighlightNauticalPath = "";
-        String leftTwighlightAstronomicalPath = "";
-        String leftNightPath = "";
-        String rightTwilightCivilPath = "";
-        String rightTwighlightNauticalPath = "";
-
         dayNightGroup.getChildren().add(sun);
 
         // calculate shadow radius
@@ -71,82 +69,48 @@ public class DayNightLayer extends AbstractMapLayer {
         final float twighlightAstronomicalRadiusMeters = getShadowRadiusFromAngle(12.0);
         final float nightRadiusMeters = getShadowRadiusFromAngle(18.0);
 
-        /*final Location leftTwighlightCivilRadiusLocation = new Location(
-                leftShadowLocation.lat - Distance.Haversine.kilometersToDecimalDegrees(twighlightCivilRadiusMeters / 1000),
-                leftShadowLocation.lon - Distance.Haversine.kilometersToDecimalDegrees(twighlightCivilRadiusMeters / 1000));
-        final List<Location> leftTwighlightCivilLocations = generateCircle(leftShadowLocation, leftTwighlightCivilRadiusLocation);
-        projectShadowCoordinates(leftTwighlightCivilLocations);
-        leftTwilightCivilPath = generatePath(leftTwighlightCivilLocations);
-        addShadowToGroup(leftTwilightCivilPath);
+        createShadow(twighlightCivilRadiusMeters, leftShadowLocation, twighlightCivilColour);
+        createShadow(twighlightNauticalRadiusMeters, leftShadowLocation, twighlightNauticalColour);
+        createShadow(twighlightAstronomicalRadiusMeters, leftShadowLocation, twighlightAstronomicalColour);
+        createShadow(nightRadiusMeters, leftShadowLocation, nightColour);
 
-        final Location leftTwighlightNauticalRadiusLocation = new Location(
-                leftShadowLocation.lat - Distance.Haversine.kilometersToDecimalDegrees(twighlightNauticalRadiusMeters / 1000),
-                leftShadowLocation.lon - Distance.Haversine.kilometersToDecimalDegrees(twighlightNauticalRadiusMeters / 1000));
-        final List<Location> leftTwighlightNauticalLocations = generateCircle(leftShadowLocation, leftTwighlightNauticalRadiusLocation);
-        projectShadowCoordinates(leftTwighlightNauticalLocations);
-        leftTwighlightNauticalPath = generatePath(leftTwighlightNauticalLocations);
-        addShadowToGroup(leftTwighlightNauticalPath);
-
-        final Location leftTwighlightAstronomicalRadiusLocation = new Location(
-                leftShadowLocation.lat + Distance.Haversine.kilometersToDecimalDegrees(twighlightAstronomicalRadiusMeters / 1000),
-                leftShadowLocation.lon + Distance.Haversine.kilometersToDecimalDegrees(twighlightAstronomicalRadiusMeters / 1000));
-        final List<Location> leftTwighlightAstronomicalLocations = generateCircle(leftShadowLocation, leftTwighlightAstronomicalRadiusLocation);
-        projectShadowCoordinates(leftTwighlightAstronomicalLocations);
-        leftTwighlightAstronomicalPath = generatePath(leftTwighlightAstronomicalLocations);
-        addShadowToGroup(leftTwighlightAstronomicalPath);
-
-        final Location leftNightRadiusLocation = new Location(
-                leftShadowLocation.lat + Distance.Haversine.kilometersToDecimalDegrees(nightRadiusMeters / 1000),
-                leftShadowLocation.lon + Distance.Haversine.kilometersToDecimalDegrees(nightRadiusMeters / 1000));
-        final List<Location> leftNightLocations = generateCircle(leftShadowLocation, leftNightRadiusLocation);
-        projectShadowCoordinates(leftNightLocations);
-        leftNightPath = generatePath(leftNightLocations);
-        addShadowToGroup(leftNightPath);*/
-        createShadow(twighlightCivilRadiusMeters, leftShadowLocation);
-        createShadow(twighlightNauticalRadiusMeters, leftShadowLocation);
-        createShadow(twighlightAstronomicalRadiusMeters, leftShadowLocation);
-        createShadow(nightRadiusMeters, leftShadowLocation);
-
-        createShadow(twighlightCivilRadiusMeters, rightShadowLocation);
-        createShadow(twighlightNauticalRadiusMeters, rightShadowLocation);
-        createShadow(twighlightAstronomicalRadiusMeters, rightShadowLocation);
-        createShadow(nightRadiusMeters, rightShadowLocation);
+        createShadow(twighlightCivilRadiusMeters, rightShadowLocation, twighlightCivilColour);
+        createShadow(twighlightNauticalRadiusMeters, rightShadowLocation, twighlightNauticalColour);
+        createShadow(twighlightAstronomicalRadiusMeters, rightShadowLocation, twighlightAstronomicalColour);
+        createShadow(nightRadiusMeters, rightShadowLocation, nightColour);
 
     }
 
-    private void createShadow(float shadowRadius, Location shadowLocation) {
+    private void createShadow(float shadowRadius, Location shadowLocation, Color colour) {
         final Location shadowCoordinates = new Location(
                 shadowLocation.lat - Distance.Haversine.kilometersToDecimalDegrees(shadowRadius / 1000),
                 shadowLocation.lon - Distance.Haversine.kilometersToDecimalDegrees(shadowRadius / 1000));
         final List<Location> shadowLocations = generateCircle(shadowLocation, shadowCoordinates);
         projectShadowCoordinates(shadowLocations);
         String shadowPath = generatePath(shadowLocations);
-        addShadowToGroup(shadowPath);
+        addShadowToGroup(shadowPath, colour);
     }
 
-    private void addShadowToGroup(String shadowPath) {
-        SVGPath leftTwilightMarker = new SVGPath();
-        leftTwilightMarker.setContent(shadowPath);
-        leftTwilightMarker.setFill(Color.BLACK);
-        leftTwilightMarker.setStroke(Color.BLACK);
-        //leftTwilightMarker.setStrokeWidth(1);
-        //leftTwilightMarker.setOpacity(0.75);
-        dayNightGroup.getChildren().add(leftTwilightMarker);
+    private void addShadowToGroup(String shadowPath, Color colour) {
+        SVGPath shadowMarker = new SVGPath();
+        shadowMarker.setContent(shadowPath);
+        shadowMarker.setFill(colour);
+        //shadowMarker.setStroke(Color.BLACK);
+        //shadowMarker.setOpacity(0.5);
+        shadowMarker.setStrokeWidth(0);
+
+        dayNightGroup.getChildren().add(shadowMarker);
     }
 
     private void projectShadowCoordinates(List<Location> locations) {
         locations.forEach(location -> {
-            double temp = location.x;
-            //location.x = Math.PI * location.x / 180.0;
-            //location.y = Math.PI * location.y / 180.0;
 
-            //location.y = Math.log(Math.tan(0.25 * Math.PI + 0.5 * location.y));
             location.x = super.longToX(location.x, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
             location.y = super.latToY(location.y, 1010.33, 1224) - 149;
-            //location.y = Math.log(Math.tan(0.25 * Math.PI + 0.5 * location.y));
+
 
         });
-        //return locations;
+
     }
 
     private String generatePath(List<Location> locations) {
@@ -158,17 +122,18 @@ public class DayNightLayer extends AbstractMapLayer {
             }
 
             if (first) {
-                path = "M " + locations.get(i).x + "," + locations.get(i).y + " z";
-                //startingX = leftTwighlightCivilLocations.get(i).x;
-                //startingY = leftTwighlightCivilLocations.get(i).y;
+                path = "M" + locations.get(i).x + "," + locations.get(i).y;
+
                 first = false;
-            } else /*if (leftTwighlightCivilLocations.get(i).x != startingX && leftTwighlightCivilLocations.get(i).y != startingY)*/ {
-                path += " L " + locations.get(i).x + "," + locations.get(i).y + " z";
-                path += " M " + locations.get(i).x + "," + locations.get(i).y + " z";
+            } else {
+
+                path += "L" + locations.get(i).x + "," + locations.get(i).y;
+
             }
 
         }
 
+        LOGGER.log(Level.INFO, "Path: " + path);
         return path;
     }
 

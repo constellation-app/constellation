@@ -113,6 +113,7 @@ public class MapView extends ScrollPane {
         mapCanvas = new Canvas();
         gc = mapCanvas.getGraphicsContext2D();
 
+        mapGroupHolder.setBackground(Background.fill(new Color(0.722, 0.871, 0.902, 1)));
 
         countrySVGPaths.clear();
         //setUp();
@@ -399,7 +400,7 @@ public class MapView extends ScrollPane {
                         path = line.substring(startIndex + 3, endIndex - 2);
 
                         SVGPath svgPath = new SVGPath();
-                        svgPath.setFill(Color.GREY);
+                        svgPath.setFill(Color.WHITE);
                         svgPath.setContent(path);
 
                         //LOGGER.log(Level.SEVERE, "Path: " + path);
