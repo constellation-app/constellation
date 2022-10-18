@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultCustomIconProvider;
@@ -200,7 +201,7 @@ public final class GraphJsonWriter implements Cancellable {
                         if (!"".equals(filePath)) {
                             // prepare to put the icon image into the star/zip file
                             try (final FileInputStream is = new FileInputStream(filePath)) {
-                                final ZipEntry zent = new ZipEntry(DefaultCustomIconProvider.USER_ICON_DIR + "/" + icon.getExtendedName() + ".png");
+                                final ZipEntry zent = new ZipEntry(DefaultCustomIconProvider.USER_ICON_DIR + "/" + icon.getExtendedName() + FileExtensionConstants.PNG);
                                 // create an entry in the zip archive to store the icon image
                                 zout.putNextEntry(zent);
                                 // copy the icon image from the constellation folder to the zip archive
