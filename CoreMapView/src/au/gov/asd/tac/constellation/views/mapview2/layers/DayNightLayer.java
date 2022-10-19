@@ -54,6 +54,7 @@ public class DayNightLayer extends AbstractMapLayer {
 
     }
 
+    @Override
     public void setUp() {
         Location sunLocation = getSunLocation(System.currentTimeMillis());
         Circle sun = getSun(sunLocation);
@@ -133,7 +134,6 @@ public class DayNightLayer extends AbstractMapLayer {
 
         }
 
-        LOGGER.log(Level.INFO, "Path: " + path);
         return path;
     }
 
@@ -155,6 +155,7 @@ public class DayNightLayer extends AbstractMapLayer {
         return sun;
     }
 
+    @Override
     public Group getLayer() {
         return dayNightGroup;
     }

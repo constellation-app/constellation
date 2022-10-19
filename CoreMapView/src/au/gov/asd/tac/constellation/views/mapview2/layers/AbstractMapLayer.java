@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
+import javafx.scene.Group;
+
 /**
  *
  * @author altair1673
@@ -40,6 +42,13 @@ public abstract class AbstractMapLayer {
             y = lat;
 
         }
+    }
+
+    public void setUp() {
+    }
+
+    public Group getLayer() {
+        return null;
     }
 
 

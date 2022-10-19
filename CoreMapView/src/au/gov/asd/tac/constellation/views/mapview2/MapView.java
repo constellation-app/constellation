@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
@@ -254,16 +255,23 @@ public class MapView extends ScrollPane {
         //drawMarker(31.224361, 121.469170, 0.05);
         //drawMarker(-33.868820, 151.209296, 0.05);
 
-        drawMarker(-33.870453, 151.208755, 0.05);
-        drawMarker(-31.953512, 115.857048, 0.05);
-        drawLine(0, 0, 0, 0);
+        //drawMarker(-33.870453, 151.208755, 0.05);
+        //drawMarker(-31.953512, 115.857048, 0.05);
+        //drawLine(0, 0, 0, 0);
         mapGroupHolder.getChildren().add(countryGroup);
 
-        DayNightLayer dayNightLayer = new DayNightLayer();
+        /*DayNightLayer dayNightLayer = new DayNightLayer();
         dayNightLayer.setUp();
 
-        mapGroupHolder.getChildren().addAll(dayNightLayer.getLayer());
+        mapGroupHolder.getChildren().addAll(dayNightLayer.getLayer());*/
 
+    }
+
+    public void toggleLayer(AbstractMapLayer layer, boolean toggle) {
+        if (toggle) {
+            layer.setUp();
+            mapGroupHolder.getChildren().add(layer.getLayer());
+        }
     }
 
     public void drawMarker(double lattitude, double longitude, double xyScale) {
@@ -401,6 +409,7 @@ public class MapView extends ScrollPane {
 
                         SVGPath svgPath = new SVGPath();
                         svgPath.setFill(Color.WHITE);
+                        svgPath.setStrokeWidth(5);
                         svgPath.setContent(path);
 
                         //LOGGER.log(Level.SEVERE, "Path: " + path);
@@ -421,12 +430,6 @@ public class MapView extends ScrollPane {
 
     }
 
-    private void draw() {
-        gc.setStroke(Color.BLACK);
-        gc.setFill(Color.RED);
-        gc.stroke();
-        gc.fill();
-    }
 
 
 }

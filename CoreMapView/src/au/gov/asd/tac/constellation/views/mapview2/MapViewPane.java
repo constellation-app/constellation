@@ -32,11 +32,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.embed.swing.SwingNode;
+import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
@@ -47,10 +55,13 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
 import org.controlsfx.control.CheckComboBox;
+import org.controlsfx.control.IndexedCheckModel;
 import org.openide.util.Lookup;
 
 /**
@@ -89,9 +100,10 @@ public class MapViewPane extends BorderPane {
 
     private MapView mapView;
 
+    private static final Logger LOGGER = Logger.getLogger("MapViewPane");
+
     //private final Consumer<Graph> updateMarkers;
     //private au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer renderer = null;
-    private Component glComponent;
 
     private final List<String> dropDownOptions = new ArrayList<>();
 
@@ -119,6 +131,15 @@ public class MapViewPane extends BorderPane {
         layersDropDown = new CheckComboBox(FXCollections.observableList(layers));
         layersDropDown.setTitle("Layers");
         layersDropDown.setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
+
+        /*layersDropDown.addEventHandler(EventType.ROOT, new EventHandler<>() {
+            @Override
+            public void handle(Event event) {
+                testEventHandler();
+
+            }
+
+        });*/
 
         final List<? extends MapOverlay> overlays = new ArrayList<>(Lookup.getDefault().lookupAll(MapOverlay.class));
         setDropDownOptions(overlays);
@@ -162,6 +183,10 @@ public class MapViewPane extends BorderPane {
 
     }
 
+    private void testEventHandler() {
+        LOGGER.log(Level.SEVERE, "test");
+    }
+
     public void drawMarker(double lat, double lon, double scale) {
         if (mapView != null) {
             mapView.drawMarker(lat, lon, scale);
@@ -169,7 +194,9 @@ public class MapViewPane extends BorderPane {
     }
 
     public void drawMarker(AbstractMarker marker) {
-        mapView.drawMarker(marker);
+        if (marker != null) {
+            mapView.drawMarker(marker);
+        }
     }
 
     //public void drawMarker()

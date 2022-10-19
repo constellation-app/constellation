@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.shape.SVGPath;
 
 /**
@@ -23,8 +25,8 @@ import javafx.scene.shape.SVGPath;
  * @author altair1673
  */
 public abstract class AbstractMarker {
-
-    protected int id;
+    protected int markerID = 0;
+    protected List<Integer> idList = new ArrayList();
     protected boolean isSelected = false;
 
     protected int xOffset;
@@ -32,15 +34,24 @@ public abstract class AbstractMarker {
 
     protected MapViewTopComponent parentComponent;
 
-    public AbstractMarker(MapViewTopComponent parentComponent, int id, int xOffset, int yOffset) {
+    public AbstractMarker(MapViewTopComponent parentComponent, int markerID, int nodeId, int xOffset, int yOffset) {
+        this.markerID = markerID;
         this.parentComponent = parentComponent;
-        this.id = id;
+        idList.add(nodeId);
         this.xOffset = xOffset;
         this.yOffset = yOffset;
     }
 
-    public int getID() {
-        return id;
+    public int getWeight() {
+        return idList.size();
+    }
+
+    public void addNodeID(int id) {
+        idList.add(id);
+    }
+
+    public List<Integer> getIdList() {
+        return idList;
     }
 
     protected double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {

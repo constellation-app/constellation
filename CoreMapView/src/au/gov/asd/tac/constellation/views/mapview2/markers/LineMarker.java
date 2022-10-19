@@ -42,8 +42,8 @@ public class LineMarker extends AbstractMarker {
     private double y2;
 
 
-    public LineMarker(MapViewTopComponent parentComponent, int id, double lattitude1, double longitude1, double lattitude2, double longitude2, int xOffset, int yOffset) {
-        super(parentComponent, id, xOffset, yOffset);
+    public LineMarker(MapViewTopComponent parentComponent, int markerID, int id, double lattitude1, double longitude1, double lattitude2, double longitude2, int xOffset, int yOffset) {
+        super(parentComponent, markerID, id, xOffset, yOffset);
 
         lat1 = lattitude1;
         lon1 = longitude1;
@@ -78,7 +78,7 @@ public class LineMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
                 isSelected = true;
                 markerPath.setStroke(Color.BLUE);
-                parentComponent.addNodeId(id, false);
+                parentComponent.addNodeId(markerID, idList, false);
                 e.consume();
             }
         });

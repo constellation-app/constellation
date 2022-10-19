@@ -37,8 +37,8 @@ public class PointMarker extends AbstractMarker {
     private double scale;
 
 
-    public PointMarker(MapViewTopComponent topComponent, int id, double lattitude, double longitude, double scale, int xOffset, int yOffset) {
-        super(topComponent, id, xOffset, yOffset);
+    public PointMarker(MapViewTopComponent topComponent, int markerID, int nodeId, double lattitude, double longitude, double scale, int xOffset, int yOffset) {
+        super(topComponent, markerID, nodeId, xOffset, yOffset);
         markerPath = new SVGPath();
         //markerPath.setContent(path);
 
@@ -78,7 +78,7 @@ public class PointMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
                 isSelected = true;
                 markerPath.setFill(Color.BLUE);
-                parentComponent.addNodeId(id, true);
+                parentComponent.addNodeId(markerID, idList, true);
                 e.consume();
             }
         });

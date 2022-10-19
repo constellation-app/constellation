@@ -43,12 +43,15 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
@@ -97,8 +100,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     private final Logger LOGGER = Logger.getLogger("test");
 
     public final MapViewPane mapViewPane;
-    private final List<AbstractMarker> markers = new ArrayList<>();
+    private final Map<String, AbstractMarker> markers = new HashMap<>();
     private final List<Integer> selectedNodeList = new ArrayList<>();
+
+    private int markerID = 0;
 
     public MapViewTopComponent() {
 
@@ -149,6 +154,17 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     }
 
+    @Override
+    protected void handleComponentClosed() {
+        super.handleComponentClosed();
+        markers.clear();
+        selectedNodeList.clear();
+    }
+
+    public int getNewMarkerID() {
+        return ++markerID;
+    }
+
     public void setMapImage(Component mapComponent) {
 
         SwingUtilities.invokeLater(new Runnable() {
@@ -180,6 +196,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(getCurrentGraph());
     }
 
+    public Map<String, AbstractMarker> getAllMarkers() {
+        return markers;
+    }
+
 
     /**
      * When a new graph is created handle updating the UI
@@ -197,17 +217,18 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         mapViewPane.drawMarker(lat, lon, scale);
     }
 
-    public void addNodeId(int nodeID, boolean selectingVertex) {
-        selectedNodeList.add(nodeID);
-        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, selectingVertex)).executeLater(getCurrentGraph());
+    public void addNodeId(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
+        selectedNodeList.add(markerID);
+        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(getCurrentGraph());
     }
 
     public void drawMarkerOnMap() {
         LOGGER.log(Level.SEVERE, "Length of marker: " + markers.size());
 
-        markers.forEach(marker -> {
-            mapViewPane.drawMarker(marker);
-        });
+        for (Object value : markers.values()) {
+            AbstractMarker m = (AbstractMarker) value;
+            mapViewPane.drawMarker(m);
+        }
     }
 
 
@@ -236,8 +257,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         return getWidth();
     }
 
-    public void addMarker(AbstractMarker e) {
-        markers.add(e);
+    public void addMarker(String key, AbstractMarker e) {
+        markers.put(key, e);
     }
 
     public int getContentHeight() {
@@ -319,9 +340,22 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             if (lonID != GraphConstants.NOT_FOUND && latID != GraphConstants.NOT_FOUND && elementID != -99 && elementType == GraphElementType.VERTEX) {
                                 final float elementLat = graph.getObjectValue(latID, elementID);
                                 final float elementLon = graph.getObjectValue(lonID, elementID);
-                                PointMarker p = new PointMarker(mapViewTopComponent, elementID, (double) elementLat, (double) elementLon, 0.05, 95, 244);
-                                mapViewTopComponent.addMarker(p);
-                                mapViewTopComponent.mapViewPane.drawMarker(p);
+                                PointMarker p = new PointMarker(mapViewTopComponent, mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, 95, 244);
+                                String coordinateKey = (double) elementLat + "," + (double) elementLon;
+                                if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
+                                    mapViewTopComponent.addMarker(coordinateKey, p);
+
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mapViewTopComponent.mapViewPane.drawMarker(p);
+                                        }
+                                    });
+
+                                } else {
+                                    mapViewTopComponent.getAllMarkers().get(coordinateKey).addNodeID(elementID);
+                                }
+
                                 //mapViewTopComponent.drawMarkerOnMap(elementLat, elementLon, 0.05);
 
                             }
@@ -343,9 +377,20 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                     final float destLat = graph.getObjectValue(latID, destinationID);
                                     final float destLon = graph.getObjectValue(lonID, destinationID);
 
-                                    LineMarker l = new LineMarker(mapViewTopComponent, elementID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, 0, 149);
-                                    mapViewTopComponent.addMarker(l);
-                                    mapViewTopComponent.mapViewPane.drawMarker(l);
+                                    String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
+
+                                    LineMarker l = new LineMarker(mapViewTopComponent, mapViewTopComponent.getNewMarkerID(), elementID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, 0, 149);
+                                    if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
+                                        mapViewTopComponent.addMarker(coordinateKey, l);
+                                        Platform.runLater(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                mapViewTopComponent.mapViewPane.drawMarker(l);
+                                            }
+                                        });
+                                    } else {
+                                        mapViewTopComponent.getAllMarkers().get(coordinateKey).addNodeID(elementID);
+                                    }
                                 }
 
 
@@ -354,7 +399,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
                     }
                 } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "EXCEPTION CAUGHT!!");
+                    LOGGER.log(Level.SEVERE, "EXCEPTION CAUGHT!!", e);
                     LOGGER.log(Level.SEVERE, e.getMessage());
                 }
 
