@@ -92,7 +92,11 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
         final ConstellationIcon icon = IconManager.getIcon(iconName);
         if (icon != null && icon.isEditable()) {
             final File iconFile = CUSTOM_ICONS.get(icon);
-            iconFile.delete();
+            try {
+                Files.delete(iconFile.toPath());
+            } catch (Exception e) {
+                iconFile.deleteOnExit();
+            }
             CUSTOM_ICONS.remove(icon);
             removed = true;
         }
