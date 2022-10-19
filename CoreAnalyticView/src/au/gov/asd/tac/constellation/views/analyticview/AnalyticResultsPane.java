@@ -116,7 +116,7 @@ public class AnalyticResultsPane extends VBox {
                 }
             });
             graphVisualisationPane.getItems().clear();
-            Label applyResults = new Label("Apply Results: ");
+            final Label applyResults = new Label("Apply to Results: ");
             graphVisualisationPane.getItems().add(applyResults);
             AnalyticUtilities.getGraphVisualisationTranslators().forEach(translator -> {
                 if (translator.getResultType().isAssignableFrom(result.getClass())) {

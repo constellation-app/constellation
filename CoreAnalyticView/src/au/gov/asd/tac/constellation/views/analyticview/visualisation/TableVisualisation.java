@@ -70,9 +70,9 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
         tableFilter.setPromptText("Type here to filter results: ");
         tableFilter.setStyle("-fx-prompt-text-fill: gray;");
 
-        AnalyticExportResultsMenu menu = new AnalyticExportResultsMenu(table);
+        final AnalyticExportResultsMenu menu = new AnalyticExportResultsMenu(table);
         menu.init();
-        HBox optionsPanel = new HBox();
+        final HBox optionsPanel = new HBox();
         optionsPanel.getChildren().addAll(tableFilter, menu.getExportButton());
         HBox.setHgrow(tableFilter, Priority.ALWAYS);
 

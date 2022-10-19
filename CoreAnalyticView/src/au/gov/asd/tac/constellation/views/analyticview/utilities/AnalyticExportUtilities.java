@@ -56,8 +56,8 @@ public class AnalyticExportUtilities {
         }
 
         for (int i = 0; i < table.getItems().size(); i++) {
-            String item = table.getColumns().get(0).getCellData(i).toString();
-            String itemData = table.getColumns().get(1).getCellData(i).toString();
+            final String item = table.getColumns().get(0).getCellData(i).toString();
+            final String itemData = table.getColumns().get(1).getCellData(i).toString();
             data.append(item + SeparatorConstants.COMMA + itemData);
             data.append(SeparatorConstants.NEWLINE);
         }

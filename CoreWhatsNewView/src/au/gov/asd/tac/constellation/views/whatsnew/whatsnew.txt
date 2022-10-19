@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-10-19 Export from Analytic View
+<p>The ability to export the results from running an analytic in the Analytic View to a CSV or Excel file have been added.</p>
+<p>After running an analytic, an Export button appears at the top of the results table, allowing for the results to be exported to either a CSV or Excel file.</p>
+
 == 2022-08-03 Layers View
 <p>Layers View has had a complete UI rework and is now available under the Views menu.</p>
 <p>Layers View allows you to add vertices and transactions to up to 32 layers by either using the right click context menu or defining a query.</p>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -166,8 +166,8 @@ public class AnalyticExportToExcelFilePlugin extends SimplePlugin {
         final AtomicInteger rowIndex = new AtomicInteger(startIndex);
 
         for (int i = 0; i < data.getItems().size(); i++) {
-            String item = data.getColumns().get(0).getCellData(i).toString();
-            String itemData = data.getColumns().get(1).getCellData(i).toString();
+            final String item = data.getColumns().get(0).getCellData(i).toString();
+            final String itemData = data.getColumns().get(1).getCellData(i).toString();
 
             final Row itemRow = sheet.createRow(rowIndex.getAndIncrement());
             final Cell itemCellIdentifier = itemRow.createCell(0);
