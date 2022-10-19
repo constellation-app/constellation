@@ -185,6 +185,33 @@ public final class ApplicationPreferenceKeys {
      */
     public static final String RULE_PRIORITIES = "customRules";
 
+    /**
+     * Default Font.
+     */
+    public static final String FONT_PREFERENCES = "au/gov/asd/tac/constellation/preferences";
+    public static final String FONT_FAMILY = "fontFamily";
+    public static String FONT_FAMILY_DEFAULT = "Arial";
+    public static final String FONT_SIZE = "fontSize";
+    public static String FONT_SIZE_DEFAULT = "12";
+
+    /**
+     * Online Offline Help
+     */
+    public static final String HELP_KEY = "onlineHelp";
+    public static final boolean ONLINE_HELP = false;
+
+    /**
+     * Anaglyphic Display
+     */
+    public static final String LEFT_COLOR = "anaglyph.left";
+    public static final String RIGHT_COLOR = "anaglyph.right";
+
+    // Why are the default colors green and magenta?
+    // Because the DreamWorks movie Monsters vs Aliens came with a 3D short called
+    // Bob's Big Break which uses those colors.
+    //
+    public static final String LEFT_COLOR_DEFAULT = "Green";
+    public static final String RIGHT_COLOR_DEFAULT = "Magenta";
 
     private ApplicationPreferenceKeys() {
     }

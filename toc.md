@@ -148,7 +148,15 @@
 <div id="TableView" class="collapse" aria-labelledby="TableView" data-parent="#TableView"> <div class="card-body">      <a href="..\constellation\CoreTableView\src\au\gov\asd\tac\constellation\views\tableview\docs\table-view.md">Table View</a><br/>
 </a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#TimelineView" aria-expanded="false" aria-controls="TimelineView">Timeline View</button></h2></div>
 <div id="TimelineView" class="collapse" aria-labelledby="TimelineView" data-parent="#TimelineView"> <div class="card-body">      <a href="..\constellation\CoreTimelineView\src\au\gov\asd\tac\constellation\views\timeline\docs\timeline-view.md">Timeline</a><br/>
-</a> </div> </div> </div></a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Arrangements" aria-expanded="false" aria-controls="Arrangements">Arrangements</button></h2></div>
+</a> </div> </div> </div></a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Preferences" aria-expanded="false" aria-controls="Preferences">Preferences</button></h2></div>
+<div id="Preferences" class="collapse" aria-labelledby="Preferences" data-parent="#Preferences"> <div class="card-body">    <a href="..\constellation\CoreDataAccessView\src\au\gov\asd\tac\constellation\views\dataaccess\docs\data-access-view-preferences.md">Data Access Category</a><br/>
+    <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\application-preferences.md">Application</a><br/>
+    <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\developer-preferences.md">Developer</a><br/>
+    <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\graph-preferences.md">Graph</a><br/>
+    <a href="..\constellation\CoreOpenGLDisplay\src\au\gov\asd\tac\constellation\visual\opengl\docs\label-fonts-preferences.md">Label Fonts</a><br/>
+    <a href="..\constellation\CoreHelp\src\au\gov\asd\tac\constellation\help\docs\help-options.md">Online Help</a><br/>
+    <a href="..\constellation\CoreSecurity\src\au\gov\asd\tac\constellation\security\docs\proxy-preferences.md">Proxy</a><br/>
+</a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Arrangements" aria-expanded="false" aria-controls="Arrangements">Arrangements</button></h2></div>
 <div id="Arrangements" class="collapse" aria-labelledby="Arrangements" data-parent="#Arrangements"> <div class="card-body">    <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\grid.md">Grid</a><br/>
     <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\line.md">Line</a><br/>
     <a href="..\constellation\CoreArrangementPlugins\src\au\gov\asd\tac\constellation\plugins\arrangements\docs\circle.md">Circle</a><br/>
@@ -165,14 +173,6 @@
 <div id="ImportExport" class="collapse" aria-labelledby="ImportExport" data-parent="#ImportExport"> <div class="card-body">    <a href="..\constellation\CoreImportExportPlugins\src\au\gov\asd\tac\constellation\plugins\importexport\docs\import-from-file.md">Import From File</a><br/>
     <a href="..\constellation\CoreImportExportPlugins\src\au\gov\asd\tac\constellation\plugins\importexport\docs\import-from-database.md">Import from Database</a><br/>
     <a href="..\constellation\CoreImportExportPlugins\src\au\gov\asd\tac\constellation\plugins\importexport\docs\export-from-constellation.md">Export From Constellation</a><br/>
-</a> </div> </div> </div><div class="card"><div class="card-header"><h2 class="mb-0"><button href="#" role="button" class="btn btn-link btn-block text-left collapsed" data-toggle="collapse" data-target="#Preferences" aria-expanded="false" aria-controls="Preferences">Preferences</button></h2></div>
-<div id="Preferences" class="collapse" aria-labelledby="Preferences" data-parent="#Preferences"> <div class="card-body">    <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\application-preferences.md">Application</a><br/>
-    <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\application-font-preferences.md">Application Font</a><br/>
-    <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\developer-preferences.md">Developer</a><br/>
-    <a href="..\constellation\CorePreferences\src\au\gov\asd\tac\constellation\preferences\docs\graph-preferences.md">Graph</a><br/>
-    <a href="..\constellation\CoreOpenGLDisplay\src\au\gov\asd\tac\constellation\visual\opengl\docs\label-fonts-preferences.md">Label Fonts</a><br/>
-    <a href="..\constellation\CoreHelp\src\au\gov\asd\tac\constellation\help\docs\help-options.md">Online Help</a><br/>
-    <a href="..\constellation\CoreSecurity\src\au\gov\asd\tac\constellation\security\docs\proxy-preferences.md">Proxy</a><br/>
 </a> </div> </div> </div>
 </div>
 </div>

@@ -28,5 +28,8 @@
                 <tocitem text="Select Top N" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopNPlugin"/>
             </tocitem>
         </tocitem>
-    </tocitem>
+    </tocitem>  
+    <tocitem text="Preferences">
+        <tocitem text="Data Access Category" target="au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewCategoryPanelController"/>
+    </tocitem> 
 </toc>

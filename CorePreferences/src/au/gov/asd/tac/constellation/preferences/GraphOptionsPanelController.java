@@ -38,7 +38,7 @@ import org.openide.util.NbPreferences;
         displayName = "#GraphOption_DisplayName",
         keywords = "#GraphOption_Keywords",
         keywordsCategory = "constellation/GraphPreferences",
-        position = 0)
+        position = 600)
 @org.openide.util.NbBundle.Messages({
     "GraphOption_DisplayName=Graph",
     "GraphOption_Keywords=blaze size blaze opacity blaze color"

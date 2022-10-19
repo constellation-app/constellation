@@ -62,3 +62,13 @@ location accessed for the next session. This can be altered in
 preferences by unticking the "Remember Open/Save Location" option. When
 this is unticked, the open or save location defaults to the user's home
 directory.
+
+## Application Font Preferences
+
+Application Font preferences can be accessed via Setup -> Options ->
+CONSTELLATION -> Application.
+
+## Application Default Font Preferences
+
+This is where the user is able to set their preferred default font and
+default font size for the Constellation application.

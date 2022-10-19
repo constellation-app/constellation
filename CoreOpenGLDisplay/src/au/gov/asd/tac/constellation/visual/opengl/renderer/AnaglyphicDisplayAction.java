@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.renderer;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationOptionsPanelController;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.prefs.Preferences;
@@ -83,11 +85,11 @@ public final class AnaglyphicDisplayAction extends AbstractAction implements Pre
         if (displayAnaglyph.get()) {
             // Get the current color options and convert them to bit masks.
             //
-            final Preferences prefs = NbPreferences.forModule(AnaglyphicDisplayPreferenceKeys.class);
-            final String leftColor = prefs.get(AnaglyphicDisplayPreferenceKeys.LEFT_COLOR, AnaglyphicDisplayPreferenceKeys.LEFT_COLOR_DEFAULT);
-            final String rightColor = prefs.get(AnaglyphicDisplayPreferenceKeys.RIGHT_COLOR, AnaglyphicDisplayPreferenceKeys.RIGHT_COLOR_DEFAULT);
-            LEFT_EYE.set(AnaglyphicDisplayOptionsPanelController.getColorMask(leftColor));
-            RIGHT_EYE.set(AnaglyphicDisplayOptionsPanelController.getColorMask(rightColor));
+            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+            final String leftColor = prefs.get(ApplicationPreferenceKeys.LEFT_COLOR, ApplicationPreferenceKeys.LEFT_COLOR_DEFAULT);
+            final String rightColor = prefs.get(ApplicationPreferenceKeys.RIGHT_COLOR, ApplicationPreferenceKeys.RIGHT_COLOR_DEFAULT);
+            LEFT_EYE.set(ApplicationOptionsPanelController.getColorMask(leftColor));
+            RIGHT_EYE.set(ApplicationOptionsPanelController.getColorMask(rightColor));
         }
     }
 

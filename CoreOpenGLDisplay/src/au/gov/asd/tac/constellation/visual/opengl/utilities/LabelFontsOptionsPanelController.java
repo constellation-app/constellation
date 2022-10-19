@@ -43,7 +43,7 @@ import org.openide.util.NbPreferences;
         displayName = "#LabelFontsOptions_DisplayName",
         keywords = "#LabelFontsOptions_Keywords",
         keywordsCategory = "constellation/Preferences",
-        position = 800)
+        position = 1000)
 @org.openide.util.NbBundle.Messages({
     "LabelFontsOptions_DisplayName=Label Fonts",
     "LabelFontsOptions_Keywords=label font"
