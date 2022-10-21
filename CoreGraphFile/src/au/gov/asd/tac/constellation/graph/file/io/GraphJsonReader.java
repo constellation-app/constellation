@@ -123,7 +123,7 @@ public final class GraphJsonReader {
             // Load the custom icons first
             if (DefaultCustomIconProvider.getIconDirectory() != null) {                
                 final String directoryPath = DefaultCustomIconProvider.getIconDirectory().getAbsolutePath();
-                try (ZipFile zFile = new ZipFile(name)) {
+                try (final ZipFile zFile = new ZipFile(name)) {
                     for (final ZipEntry entry : Collections.list(zFile.entries())) {
                         // Check for Icon entries in the source star/zip file
                         if (entry.getName().startsWith(DefaultCustomIconProvider.USER_ICON_DIR) && !entry.isDirectory()) {

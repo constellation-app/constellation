@@ -214,20 +214,6 @@ public class DefaultCustomIconProviderNGTest {
         assertEquals(iconSet.size(), testFile.listFiles().length);
     }
     
-    public void listCustomIcons(final File testFile){
-        //DefaultCustomIconProvider.reloadIcons();
-        System.out.println("\n <<-*- Listing Icons in Directory -*->> ");
-        for(File f : testFile.listFiles()){
-            String path = f.getAbsolutePath();
-            int lastIndex = f.getAbsolutePath().lastIndexOf("\\") + 1;
-            int lastExt = f.getAbsolutePath().lastIndexOf(".");
-            boolean itsInCache = DefaultCustomIconProvider.containsIcon(path.substring(lastIndex, lastExt));
-            System.out.println(" -->> " + path.substring(lastIndex) + "  [" + (itsInCache?"TRUE":"False") + "]");
-        }
-        System.out.println("\n <<-*** Icon Manager List: " + IconManager.getIconNames(true) + " ***->> ");
-        
-    }
-    
     public void prepareFileDir(final File testFile){
         // reset the icon resource folder to only contain the test_bagel_blue.png file
         List<String> filenames = new ArrayList<>();

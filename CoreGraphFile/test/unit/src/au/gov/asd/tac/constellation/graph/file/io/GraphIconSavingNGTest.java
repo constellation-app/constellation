@@ -99,6 +99,11 @@ public class GraphIconSavingNGTest {
             if (vIconAttr == Graph.NOT_FOUND) {
                 fail();
             }
+            // Note that vIconAttr is not being set to a correct representation of the icon attribute
+            // It should be using IconAttributeDescription.ATTRIBUTE_NAME, but that is a Visual Schema class which is not accessible from this module
+            // The AttributeRegistry, when testing from this module, only contains the base type attributes.
+            // Fortunately, the code that is being tested doesn't require specific access to the schema class,
+            // so we can perform the tests using the string type to store the icon name data            
 
             vxId1 = wg.addVertex();
             wg.setFloatValue(attrX, vxId1, 1.0f);
@@ -191,7 +196,6 @@ public class GraphIconSavingNGTest {
             prepareFileDir(resourcePathFile);
             DefaultCustomIconProvider.reloadIcons();
             
-            // Add a test icon to be removed later
             System.out.println(" __ Defining custom Icon: " + icon.getExtendedName()+ " __");
             IconManager.addIcon(icon);
 
