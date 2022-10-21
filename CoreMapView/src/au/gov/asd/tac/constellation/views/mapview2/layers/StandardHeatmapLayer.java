@@ -15,14 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
+
 /**
  *
  * @author altair1673
  */
 public class StandardHeatmapLayer extends AbstractHeatmapLayer {
 
-    public StandardHeatmapLayer() {
-        super();
+    public StandardHeatmapLayer(MapView parent) {
+        super(parent);
     }
 
 

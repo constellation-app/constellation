@@ -33,6 +33,7 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -68,6 +69,8 @@ import javafx.scene.web.WebView;
  * @author altair1673
  */
 public class MapView extends ScrollPane {
+
+    private MapViewPane parent;
 
     private final StackPane mapStackPane;
     private final Image mapImage;
@@ -106,7 +109,8 @@ public class MapView extends ScrollPane {
     private double canvasTransalateX;
     private double canvasTransalateY;
 
-    public MapView() {
+    public MapView(MapViewPane parent) {
+        this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
 
         mapImage = new Image("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\resources\\world-map.jpg");
@@ -265,10 +269,13 @@ public class MapView extends ScrollPane {
         dayNightLayer.setUp();
 
         mapGroupHolder.getChildren().addAll(dayNightLayer.getLayer());*/
-        StandardHeatmapLayer heatmapLayer = new StandardHeatmapLayer();
+
+    }
+
+    public void toggleHeatmapLayer() {
+        StandardHeatmapLayer heatmapLayer = new StandardHeatmapLayer(this);
         heatmapLayer.setUp();
         mapGroupHolder.getChildren().addAll(heatmapLayer.getLayer());
-
     }
 
     public void toggleLayer(AbstractMapLayer layer, boolean toggle) {
@@ -276,6 +283,10 @@ public class MapView extends ScrollPane {
             layer.setUp();
             mapGroupHolder.getChildren().add(layer.getLayer());
         }
+    }
+
+    public Map<String, AbstractMarker> getAllMarkers() {
+        return parent.getAllMarkers();
     }
 
     public void drawMarker(double lattitude, double longitude, double xyScale) {

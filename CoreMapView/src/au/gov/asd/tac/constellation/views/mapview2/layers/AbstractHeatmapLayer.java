@@ -15,7 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Group;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 
 /**
@@ -26,40 +31,66 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
     protected Group layerGroup;
 
-    public AbstractHeatmapLayer() {
-        super();
+    private static final Logger LOGGER = Logger.getLogger("Test");
+
+    public AbstractHeatmapLayer(MapView parent) {
+        super(parent);
         layerGroup = new Group();
     }
 
     @Override
     public void setUp() {
-        String path = "";
-        int x = 1;
 
-        int lineCounter = 1;
-        for (int i = 0; i < 256; ++i) {
-            path += "l" + x + ",0";
+        for (Object value : parent.getAllMarkers().values()) {
 
-            if ((i + 1) % 16 == 0) {
-                path += "l0,0.01";
-                ++lineCounter;
-            }
+            if (value instanceof PointMarker) {
+                PointMarker marker = (PointMarker) value;
+                int x = 1;
 
-            if (lineCounter % 2 == 0) {
+                int startingX = (int) marker.getX() - 108;
+                int startingY = (int) marker.getY() + 80;
 
-                x = -1;
-            } else {
-                x = 1;
+                LOGGER.log(Level.SEVERE, "X coord: " + marker.getX() + "," + marker.getY());
+
+                int lineCounter = 1;
+                for (int i = 0; i < 625; ++i) {
+                    Rectangle rect = new Rectangle();
+                    rect.setX(startingX);
+                    rect.setY(startingY);
+                    rect.setWidth(1);
+                    rect.setHeight(1);
+                    rect.setOpacity(0.1);
+
+                    //startingX += 1;
+
+                    if ((i + 1) % 25 == 0) {
+                        startingY += 1;
+                        lineCounter += 1;
+                    } else {
+                        startingX += x;
+                    }
+
+
+                    if (lineCounter % 2 == 0) {
+
+                        x = -1;
+                    } else {
+                        x = 1;
+                    }
+
+                    layerGroup.getChildren().add(rect);
+                }
             }
         }
 
-        path = "M100,100" + path;
+
+        /*path = "M100,100" + path;
 
         SVGPath box = new SVGPath();
         box.setStrokeWidth(15);
         box.setContent(path);
 
-        layerGroup.getChildren().add(box);
+        layerGroup.getChildren().add(box);*/
     }
 
     @Override

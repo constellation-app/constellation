@@ -31,6 +31,7 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -175,12 +176,20 @@ public class MapViewPane extends BorderPane {
     }
 
     public void setUpMap() {
-        mapView = new MapView();
+        mapView = new MapView(this);
         Platform.runLater(() -> {
             setCenter(mapView);
 
         });
 
+    }
+
+    public void toggleHeatmapLayer() {
+        mapView.toggleHeatmapLayer();
+    }
+
+    public Map<String, AbstractMarker> getAllMarkers() {
+        return parent.getAllMarkers();
     }
 
     private void testEventHandler() {
@@ -196,6 +205,7 @@ public class MapViewPane extends BorderPane {
     public void drawMarker(AbstractMarker marker) {
         if (marker != null) {
             mapView.drawMarker(marker);
+            toggleHeatmapLayer();
         }
     }
 

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import javafx.scene.Group;
 
 /**
@@ -22,8 +23,10 @@ import javafx.scene.Group;
  * @author altair1673
  */
 public abstract class AbstractMapLayer {
+    protected MapView parent;
 
-    public AbstractMapLayer() {
+    public AbstractMapLayer(MapView parent) {
+        this.parent = parent;
     }
 
     protected class Location {

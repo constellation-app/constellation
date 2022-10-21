@@ -229,6 +229,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
             AbstractMarker m = (AbstractMarker) value;
             mapViewPane.drawMarker(m);
         }
+
     }
 
 
