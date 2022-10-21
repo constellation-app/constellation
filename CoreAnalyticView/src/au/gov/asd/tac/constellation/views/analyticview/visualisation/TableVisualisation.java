@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.views.analyticview.export.AnalyticExportResultsMenu;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticData;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult.ResultListener;
@@ -41,6 +42,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
 
@@ -60,19 +63,25 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
     public TableVisualisation(final AbstractTableTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
-
+        this.table = new TableView<>();
         this.tableVisualisation = new VBox();
 
         this.tableFilter = new TextField();
-        tableFilter.setPromptText("Type here to filter results");
+        tableFilter.setPromptText("Type here to filter results: ");
+        tableFilter.setStyle("-fx-prompt-text-fill: gray;");
 
-        this.table = new TableView<>();
+        final AnalyticExportResultsMenu menu = new AnalyticExportResultsMenu(table);
+        menu.init();
+        final HBox optionsPanel = new HBox();
+        optionsPanel.getChildren().addAll(tableFilter, menu.getExportButton());
+        HBox.setHgrow(tableFilter, Priority.ALWAYS);
+
         table.setPlaceholder(new Label("No results"));
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setId("table-visualisation");
         table.setPadding(new Insets(5));
 
-        tableVisualisation.getChildren().addAll(tableFilter, table);
+        tableVisualisation.getChildren().addAll(optionsPanel, table);
     }
 
     public void addColumn(final String columnName, final int percentWidth) {

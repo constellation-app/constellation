@@ -128,9 +128,12 @@ public final class RecentFiles {
      * @param path The path to be added to the recent file list.
      */
     public static void saved(final String path) {
-        // Convert to use the default name-separator character.
-        final String normPath = new File(path).getPath();
-        RECENT_FILE_SAVED.propertyChange(new PropertyChangeEvent(normPath, PROP_SAVED, null, normPath));
+        // Don't include the temp files
+        if (!path.contains("_tmp")) {
+            // Convert to use the default name-separator character.
+            final String normPath = new File(path).getPath();
+            RECENT_FILE_SAVED.propertyChange(new PropertyChangeEvent(normPath, PROP_SAVED, null, normPath));
+        }
     }
 
     /**

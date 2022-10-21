@@ -103,6 +103,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>org.openide.filesystems.nb</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.18</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>org.openide.util</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -147,6 +155,7 @@
             <public-packages>
                 <package>au.gov.asd.tac.constellation.views.analyticview.aggregators</package>
                 <package>au.gov.asd.tac.constellation.views.analyticview.analytics</package>
+                <package>au.gov.asd.tac.constellation.views.analyticview.export</package>
                 <package>au.gov.asd.tac.constellation.views.analyticview.questions</package>
                 <package>au.gov.asd.tac.constellation.views.analyticview.results</package>
                 <package>au.gov.asd.tac.constellation.views.analyticview.translators</package>
