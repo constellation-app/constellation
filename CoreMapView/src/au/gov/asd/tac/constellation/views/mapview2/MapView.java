@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import java.io.BufferedReader;
@@ -264,6 +265,9 @@ public class MapView extends ScrollPane {
         dayNightLayer.setUp();
 
         mapGroupHolder.getChildren().addAll(dayNightLayer.getLayer());*/
+        StandardHeatmapLayer heatmapLayer = new StandardHeatmapLayer();
+        heatmapLayer.setUp();
+        mapGroupHolder.getChildren().addAll(heatmapLayer.getLayer());
 
     }
 
