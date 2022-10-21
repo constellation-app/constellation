@@ -94,7 +94,7 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
             final File iconFile = CUSTOM_ICONS.get(icon);
             try {
                 Files.delete(iconFile.toPath());
-            } catch (Exception e) {
+            } catch (IOException ioex) {
                 iconFile.deleteOnExit();
             }
             CUSTOM_ICONS.remove(icon);

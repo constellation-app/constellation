@@ -9,7 +9,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-//import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconIconAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
@@ -96,10 +95,10 @@ public class GraphIconSavingNGTest {
                 fail();
             }
 
-//            vIconAttr = wg.addAttribute(GraphElementType.VERTEX, IconAttributeDescription.ATTRIBUTE_NAME, "icon", "icon", "Unknown", null);
-//            if (vIconAttr == Graph.NOT_FOUND) {
-//                fail();
-//            }
+            vIconAttr = wg.addAttribute(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME, "icon", "icon", "Unknown", null);
+            if (vIconAttr == Graph.NOT_FOUND) {
+                fail();
+            }
 
             vxId1 = wg.addVertex();
             wg.setFloatValue(attrX, vxId1, 1.0f);
@@ -136,7 +135,7 @@ public class GraphIconSavingNGTest {
             wg.setFloatValue(attrY, vxId7, 7.7f);
             wg.setBooleanValue(vSelAttr, vxId7, false);
             wg.setStringValue(vNameAttr, vxId7, "name7");
-//            wg.setStringValue(vIconAttr, vxId7, "test_bagel_blue");
+            wg.setStringValue(vIconAttr, vxId7, "test_bagel_blue");
 
             txId1 = wg.addTransaction(vxId1, vxId2, false);
             wg.setBooleanValue(tSelAttr, txId1, false);
@@ -200,16 +199,16 @@ public class GraphIconSavingNGTest {
             assertEquals(resourcePathFile.listFiles().length, 2);
             DefaultCustomIconProvider.reloadIcons();
             
-//            System.out.println(" __ Add custom icon to vertex 0 __");
-//            WritableGraph wg = graph.getWritableGraph("add", true);
-//            try {
-//                int vertex0 = wg.getVertex(0);
-//                wg.setStringValue(vIconAttr, vertex0, icon.getName());
-//            } finally {
-//                wg.commit();
-//            }
-//            System.out.println(" __ Write the updated graph to a star file __");
-//            
+            System.out.println(" __ Add custom icon to vertex 0 __");
+            WritableGraph wg = graph.getWritableGraph("add", true);
+            try {
+                int vertex0 = wg.getVertex(0);
+                wg.setStringValue(vIconAttr, vertex0, icon.getName());
+            } finally {
+                wg.commit();
+            }
+            System.out.println(" __ Write a sample graph with icons to a star file __");
+            
             final ReadableGraph rg = graph.getReadableGraph();
             try {
                 GraphJsonWriter writer = new GraphJsonWriter();
@@ -217,7 +216,9 @@ public class GraphIconSavingNGTest {
             } finally {
                 rg.release();
             }
+            System.out.print("\nTEST: Confirm the star file has been created: ");
             assertTrue("graph(star) file created", graphFile.exists());
+            System.out.println(" *PASSED*\n");
 
             boolean containsIcons = false;
             // confirm the presence of an Icons folder containing an image file.
@@ -229,9 +230,9 @@ public class GraphIconSavingNGTest {
                     }
                 }
             }
-//            System.out.print("\nTEST: Confirm the graph(star) file has Icons included in the archive: ");
-//            assertTrue(containsIcons);
-//            System.out.println(" *PASSED*\n");
+            System.out.print("\nTEST: Confirm the graph(star) file has Icons included in the archive: ");
+            assertTrue(containsIcons);
+            System.out.println(" *PASSED*\n");
             
             System.out.println(" __ Reset the test environment and Reset the icon cache __");
             prepareFileDir(resourcePathFile);
@@ -248,32 +249,31 @@ public class GraphIconSavingNGTest {
             assertTrue(!IconManager.iconExists(icon.getName()));
             System.out.println(" :  *PASSED*\n");
             
-//            System.out.println(" __ Read the star file and load in any missing icons __");
-//
-//            final Graph newGraph = new GraphJsonReader().readGraphZip(graphFile, new TextIoProgress(false));
-//            
-//            ReadableGraph rgr = newGraph.getReadableGraph();
-//            try {
-//                System.out.print("TEST: Confirm the graph data is correct and references the icons correctly: ");
-//                assertEquals("num nodes", 7, rgr.getVertexCount());
-//                assertEquals("num transactions", 5, rgr.getTransactionCount());
-//                assertTrue("node: 'name1' has correct icon", nodeIconFound(rgr, "name1", TEST_ICON_NAME));
-//                System.out.println(" *PASSED*\n");
-//            } finally {
-//                rgr.release();
-//            }
-//
-//            System.out.print("TEST: Confirm correct number of icon files, and correct icon entries in cache: ");            
-//            assertEquals(2, resourcePathFile.listFiles().length);
-//            assertTrue(IconManager.iconExists(icon.getName()));
-//            System.out.println(" *PASSED*\n");
+            System.out.println(" __ Read the star file and load in any missing icons __");
+
+            final Graph newGraph = new GraphJsonReader().readGraphZip(graphFile, new TextIoProgress(false));
+            
+            ReadableGraph rgr = newGraph.getReadableGraph();
+            try {
+                System.out.print("TEST: Confirm we have read back the correct graph: ");
+                assertEquals("num nodes", 7, rgr.getVertexCount());
+                assertEquals("num transactions", 5, rgr.getTransactionCount());
+                assertTrue("node: 'name1' has correct icon", nodeIconFound(rgr, "name1", TEST_ICON_NAME));
+                System.out.println(" *PASSED*\n");
+            } finally {
+                rgr.release();
+            }
+
+            System.out.print("TEST: Confirm correct number of icon files, and correct icon entries in cache: ");            
+            assertEquals(2, resourcePathFile.listFiles().length);
+            assertTrue(IconManager.iconExists(icon.getName()));
+            System.out.println(" *PASSED*\n");
         }        
         graphFile.delete();
-        System.out.println("<<<< TEST COMPLETE >>>>");
+        System.out.println("===== <<<< TEST COMPLETE >>>> =====");
 
     }
-
-
+    
     // determine whether the node of the specified name exists in the graph and contains an icon value
     private boolean nodeIconFound(ReadableGraph graph, String base_name, String iconName) {
         int nameAttrId = graph.getAttribute(GraphElementType.VERTEX, "name");
