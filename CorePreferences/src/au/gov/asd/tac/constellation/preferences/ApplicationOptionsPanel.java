@@ -45,7 +45,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
 
     private final ApplicationOptionsPanelController controller;
     private final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-    private static final String[] EYE_COLORS = new String[]{"Blue", "Cyan", "Green", "Magenta", "Red", "Yellow"};
 
     private static final String USER_HOME_PROPERTY = "user.home";
 
@@ -155,21 +154,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         return fonts;
     }
 
-    public String getLeftColor() {
-        return (String)leftEyeColor.getSelectedItem();
-    }
-
-    public void setLeftColor(final String color) {
-        leftEyeColor.setSelectedItem(color);
-    }
-
-    public String getRightColor() {
-        return (String)rightEyeColor.getSelectedItem();
-    }
-
-    public void setRightColor(final String color) {
-        rightEyeColor.setSelectedItem(color);
-    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -179,12 +163,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new JPanel();
-        jLabel1 = new JLabel();
-        leftEyeColor = new JComboBox<>();
-        jLabel2 = new JLabel();
-        rightEyeColor = new JComboBox<>();
-        jLabel3 = new JLabel();
         userDirectoryLabel = new JLabel();
         userDirectoryText = new JTextField();
         userDirectoryButton = new JButton();
@@ -214,55 +192,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         fontCombo = new JComboBox<>();
         fontSizeSpinner = new JSpinner();
         resetBtn = new JButton();
-        anaglyphicDisplayPanel = new JPanel();
-        jPanel2 = new JPanel();
-        jLabel4 = new JLabel();
-        leftEyeColor1 = new JComboBox<>();
-        jLabel5 = new JLabel();
-        rightEyeColor1 = new JComboBox<>();
-        jLabel6 = new JLabel();
-
-        Mnemonics.setLocalizedText(jLabel1, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.jLabel1.text")); // NOI18N
-
-        leftEyeColor.setModel(new DefaultComboBoxModel<String>(EYE_COLORS));
-
-        Mnemonics.setLocalizedText(jLabel2, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.jLabel2.text")); // NOI18N
-
-        rightEyeColor.setModel(new DefaultComboBoxModel<String>(EYE_COLORS));
-
-        Mnemonics.setLocalizedText(jLabel3, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.jLabel3.text")); // NOI18N
-
-        GroupLayout jPanel1Layout = new GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(leftEyeColor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGap(30, 30, 30)
-                        .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(rightEyeColor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))))
-                .addContainerGap(22, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(leftEyeColor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rightEyeColor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addContainerGap())
-        );
 
         Mnemonics.setLocalizedText(userDirectoryLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.userDirectoryLabel.text")); // NOI18N
 
@@ -510,70 +439,12 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(resetBtn))
         );
 
-        anaglyphicDisplayPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.anaglyphicDisplayPanel.border.title"))); // NOI18N
-
-        Mnemonics.setLocalizedText(jLabel4, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.jLabel4.text")); // NOI18N
-
-        leftEyeColor1.setModel(new DefaultComboBoxModel<String>(EYE_COLORS));
-        leftEyeColor1.setSelectedItem(ApplicationPreferenceKeys.LEFT_COLOR_DEFAULT);
-
-        Mnemonics.setLocalizedText(jLabel5, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.jLabel5.text")); // NOI18N
-
-        rightEyeColor1.setModel(new DefaultComboBoxModel<String>(EYE_COLORS));
-        rightEyeColor1.setSelectedItem(ApplicationPreferenceKeys.RIGHT_COLOR_DEFAULT);
-
-        Mnemonics.setLocalizedText(jLabel6, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.jLabel6.text")); // NOI18N
-
-        GroupLayout jPanel2Layout = new GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6, GroupLayout.PREFERRED_SIZE, 319, GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(leftEyeColor1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                        .addGap(30, 30, 30)
-                        .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addComponent(rightEyeColor1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))))
-                .addContainerGap(262, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                    .addComponent(leftEyeColor1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addComponent(rightEyeColor1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED, 76, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addContainerGap())
-        );
-
-        GroupLayout anaglyphicDisplayPanelLayout = new GroupLayout(anaglyphicDisplayPanel);
-        anaglyphicDisplayPanel.setLayout(anaglyphicDisplayPanelLayout);
-        anaglyphicDisplayPanelLayout.setHorizontalGroup(anaglyphicDisplayPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(anaglyphicDisplayPanelLayout.createSequentialGroup()
-                .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-        anaglyphicDisplayPanelLayout.setVerticalGroup(anaglyphicDisplayPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-        );
-
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
-                    .addComponent(anaglyphicDisplayPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(startupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(autosavePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
@@ -607,14 +478,11 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(openAndSaveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(anaglyphicDisplayPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(62, Short.MAX_VALUE))
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N
         openAndSaveLocationPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.openAndSaveLocationPanel.AccessibleContext.accessibleName")); // NOI18N
-        anaglyphicDisplayPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.anaglyphicDisplayPanel.AccessibleContext.accessibleName")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void userDirectoryButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_userDirectoryButtonActionPerformed
@@ -664,7 +532,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_restDirectoryButtonActionPerformed
 
     private void fontComboActionPerformed(ActionEvent evt) {//GEN-FIRST:event_fontComboActionPerformed
-        // TODO add your handling code here:
+        setFontSize(fontSizeSpinner.getValue().toString());
     }//GEN-LAST:event_fontComboActionPerformed
 
     private void resetBtnActionPerformed(ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
@@ -673,7 +541,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_resetBtnActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private JPanel anaglyphicDisplayPanel;
     private JCheckBox autosaveCheckBox;
     private JLabel autosaveLabel;
     private JPanel autosavePanel;
@@ -684,16 +551,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JPanel fontPanel;
     private JLabel fontSizeLbl;
     private JSpinner fontSizeSpinner;
-    private JLabel jLabel1;
-    private JLabel jLabel2;
-    private JLabel jLabel3;
-    private JLabel jLabel4;
-    private JLabel jLabel5;
-    private JLabel jLabel6;
-    private JPanel jPanel1;
-    private JPanel jPanel2;
-    private JComboBox<String> leftEyeColor;
-    private JComboBox<String> leftEyeColor1;
     private JButton notebookDirectoryButton;
     private JLabel notebookDirectoryLabel;
     private JTextField notebookDirectoryText;
@@ -704,8 +561,6 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
     private JButton restDirectoryButton;
     private JLabel restDirectoryLabel;
     private JTextField restDirectoryText;
-    private JComboBox<String> rightEyeColor;
-    private JComboBox<String> rightEyeColor1;
     private JPanel startupPanel;
     private JCheckBox startupWelcomeCheckbox;
     private JCheckBox startupWhatsNewCheckbox;

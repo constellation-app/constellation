@@ -81,8 +81,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
         applicationOptionsPanel.setRememberOpenSaveLocation(prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT));
         applicationOptionsPanel.setCurrentFont(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT));
         applicationOptionsPanel.setFontSize(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT));
-        applicationOptionsPanel.setLeftColor(prefs.get(ApplicationPreferenceKeys.LEFT_COLOR, ApplicationPreferenceKeys.LEFT_COLOR_DEFAULT));
-        applicationOptionsPanel.setRightColor(prefs.get(ApplicationPreferenceKeys.RIGHT_COLOR, ApplicationPreferenceKeys.RIGHT_COLOR_DEFAULT));
     }
 
     @Override
@@ -108,8 +106,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 prefs.putBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, applicationOptionsPanel.isRememberOpenSaveLocationSelected());
                 prefs.put(ApplicationPreferenceKeys.FONT_FAMILY, applicationOptionsPanel.getCurrentFont());
                 prefs.put(ApplicationPreferenceKeys.FONT_SIZE, applicationOptionsPanel.getFontSize());
-                prefs.put(ApplicationPreferenceKeys.LEFT_COLOR, applicationOptionsPanel.getLeftColor());
-                prefs.put(ApplicationPreferenceKeys.RIGHT_COLOR, applicationOptionsPanel.getRightColor());
             }
         }
     }
@@ -122,8 +118,6 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
     @Override
     public boolean isValid() {
         final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
-        final String leftEye = applicationOptionsPanel.getLeftColor();
-        final String rightEye = applicationOptionsPanel.getRightColor();
 
         return applicationOptionsPanel.getUserDirectory() != null
                 && applicationOptionsPanel.getAustosaveFrequency() > 0
@@ -131,18 +125,13 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getNotebookDirectory() != null
                 && applicationOptionsPanel.getRestDirectory() != null
                 && applicationOptionsPanel.getCurrentFont() != null
-                && applicationOptionsPanel.getFontSize() != null
-                && !leftEye.equals(rightEye);
+                && applicationOptionsPanel.getFontSize() != null;
     }
 
     @Override
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
         final ApplicationOptionsPanel applicationOptionsPanel = getPanel();
-        final String leftColor = applicationOptionsPanel.getLeftColor();
-        final String rightColor = applicationOptionsPanel.getRightColor();
-        final boolean leftChanged = !leftColor.equals(prefs.get(ApplicationPreferenceKeys.LEFT_COLOR, ApplicationPreferenceKeys.LEFT_COLOR_DEFAULT));
-        final boolean rightChanged = !rightColor.equals(prefs.get(ApplicationPreferenceKeys.RIGHT_COLOR, ApplicationPreferenceKeys.LEFT_COLOR_DEFAULT));
 
         return !(applicationOptionsPanel.getUserDirectory().equals(prefs.get(ApplicationPreferenceKeys.USER_DIR, ApplicationPreferenceKeys.USER_DIR_DEFAULT))
                 && applicationOptionsPanel.isAustosaveEnabled() == prefs.getBoolean(ApplicationPreferenceKeys.AUTOSAVE_ENABLED, ApplicationPreferenceKeys.AUTOSAVE_ENABLED_DEFAULT)
@@ -153,10 +142,9 @@ public final class ApplicationOptionsPanelController extends OptionsPanelControl
                 && applicationOptionsPanel.getNotebookDirectory().equals(prefs.get(ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR, ApplicationPreferenceKeys.JUPYTER_NOTEBOOK_DIR_DEFAULT))
                 && applicationOptionsPanel.getRestDirectory().equals(prefs.get(ApplicationPreferenceKeys.REST_DIR, ApplicationPreferenceKeys.REST_DIR_DEFAULT))
                 && applicationOptionsPanel.isDownloadPythonClientSelected() == prefs.getBoolean(ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD, ApplicationPreferenceKeys.PYTHON_REST_CLIENT_DOWNLOAD_DEFAULT)
-                && applicationOptionsPanel.isRememberOpenSaveLocationSelected() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT))
+                && applicationOptionsPanel.isRememberOpenSaveLocationSelected() == prefs.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT)
                 && applicationOptionsPanel.getCurrentFont().equals(prefs.get(ApplicationPreferenceKeys.FONT_FAMILY, ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT))
-                && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT))
-                && leftChanged || rightChanged;
+                && applicationOptionsPanel.getFontSize().equals(prefs.get(ApplicationPreferenceKeys.FONT_SIZE, ApplicationPreferenceKeys.FONT_SIZE_DEFAULT)));
     }
 
     @Override
