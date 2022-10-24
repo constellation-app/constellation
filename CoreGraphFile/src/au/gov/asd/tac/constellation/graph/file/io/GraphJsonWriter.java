@@ -198,7 +198,7 @@ public final class GraphJsonWriter implements Cancellable {
                         if (iconData instanceof FileIconData) {
                             filePath = ((FileIconData) iconData).getFilePath();
                         }
-                        if (!"".equals(filePath)) {
+                        if (!filePath.isEmpty()) {
                             // prepare to put the icon image into the star/zip file
                             try (final FileInputStream is = new FileInputStream(filePath)) {
                                 final ZipEntry zent = new ZipEntry(DefaultCustomIconProvider.USER_ICON_DIR + "/" + icon.getExtendedName() + FileExtensionConstants.PNG);
@@ -427,6 +427,7 @@ public final class GraphJsonWriter implements Cancellable {
 
             jg.writeEndObject();
         } else if (elementType == GraphElementType.VERTEX) {
+            customIconList.clear();
             for (int position = 0; position < graph.getVertexCount(); position++) {
                 final int vxId = graph.getVertex(position);
 
@@ -435,11 +436,11 @@ public final class GraphJsonWriter implements Cancellable {
                 for (final Attribute attr : attrs) {
                     if ("icon".equals(attr.getName())) {
                         // get each of the custom icon images present in the graph being saved
-                        final String attr_data = graph.getStringValue(attr.getId(), vxId);
-                        if (!customIconList.contains(attr_data) && DefaultCustomIconProvider.containsIcon(attr_data)) {
+                        final String attrData = graph.getStringValue(attr.getId(), vxId);
+                        if (!customIconList.contains(attrData) && DefaultCustomIconProvider.containsIcon(attrData)) {
                             // confirmed that the icon is part of the custom set
                             // store it in a custom list (no duplication)
-                            customIconList.add(attr_data);
+                            customIconList.add(attrData);
                         }
                     }
                     final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
