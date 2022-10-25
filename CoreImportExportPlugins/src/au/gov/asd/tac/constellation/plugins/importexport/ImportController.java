@@ -70,7 +70,7 @@ public abstract class ImportController<D> {
     protected boolean showAllSchemaAttributes;
     protected PluginParameters currentParameters;
     protected String attributeFilter = "";
-
+    private boolean skipInvalidRows = false;
     // Attributes that exist in the graph or schema.
     private final Map<String, Attribute> autoAddedVertexAttributes;
     private final Map<String, Attribute> autoAddedTransactionAttributes;
@@ -88,6 +88,7 @@ public abstract class ImportController<D> {
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
     
     private static final Object LOCK = new Object();
+
 
     protected ImportController() {
         showAllSchemaAttributes = false;
@@ -455,4 +456,14 @@ public abstract class ImportController<D> {
     public void setImportPane(final ImportPane importPane) {
         this.importPane = importPane;
     }
+
+    public boolean isSkipInvalidRows() {
+        return skipInvalidRows;
+    }
+
+    public void setSkipInvalidRows(final boolean skipInvalidRows) {
+        this.skipInvalidRows = skipInvalidRows;
+    }
+    
+    
 }

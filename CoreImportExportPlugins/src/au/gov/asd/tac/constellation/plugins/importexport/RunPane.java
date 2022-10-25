@@ -92,7 +92,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private final AttributeList destinationVertexAttributeList;
     private final AttributeList transactionAttributeList;
     private String paneName = "";
-    
+
     private Point2D draggingOffset;
     private AttributeNode draggingAttributeNode;
     private ImportTableColumn mouseOverColumn;
@@ -118,11 +118,11 @@ public final class RunPane extends BorderPane implements KeyListener {
     private String[] currentColumnLabels = new String[0];
 
     private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
-    
+
     // made protected purely so that FilterStartUp load can trigger the process for this on startup
     // needs to declared CompletableFuture rather than simply Future so that we can call thenRun() later on
     protected static final CompletableFuture<Void> FILTER_LOAD;
-    
+
     static {
         FILTER_LOAD = CompletableFuture.supplyAsync(RowFilter::new, Executors.newSingleThreadExecutor())
                 .thenAccept(rf -> rowFilter = rf);
@@ -184,7 +184,7 @@ public final class RunPane extends BorderPane implements KeyListener {
 
         filterField.setPromptText("Currently unavailable. The filter will be ready to use shortly");
         FILTER_LOAD.thenRun(() -> filterField.setPromptText("Start typing to search, e.g. first_name==\"NICK\""));
-        
+
         sampleDataView.setMinHeight(SAMPLEVIEW_MIN_HEIGHT);
         sampleDataView.setPrefHeight(SAMPLEVIEW_HEIGHT);
         sampleDataView.setMaxHeight(Double.MAX_VALUE);
@@ -304,14 +304,17 @@ public final class RunPane extends BorderPane implements KeyListener {
     }
 
     /**
-     * Update name associated with this pane. This value is used in ImportDefinition construction to identify the
-     * source of the ImportDefinition - ultimately being used when performing import to support an import status dialog.
+     * Update name associated with this pane. This value is used in
+     * ImportDefinition construction to identify the source of the
+     * ImportDefinition - ultimately being used when performing import to
+     * support an import status dialog.
+     *
      * @param paneName Value to set paneName to.
      */
     public void setPaneName(String paneName) {
         this.paneName = paneName;
-    } 
-    
+    }
+
     public Point2D getDraggingOffset() {
         return draggingOffset;
     }
@@ -477,10 +480,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         if (column != null && !column.validate(currentRows)) {
             if (draggingAttributeNode != null) {
                 NotifyDisplayer.displayAlert("Delimited Importer", "Attribute mismatch", "Column " + column.getLabel()
-                        + " cannot be converted to " + draggingAttributeNode.getAttribute().getName()
                         + " attribute format. Try changing the format by right clicking the attribute.", Alert.AlertType.ERROR);
-
-                draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
             }
             column.validate(currentRows);
         }
