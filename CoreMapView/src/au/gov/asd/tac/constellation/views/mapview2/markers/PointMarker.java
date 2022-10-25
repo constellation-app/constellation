@@ -52,7 +52,7 @@ public class PointMarker extends AbstractMarker {
 
         markerPath.setFill(Color.RED);
         markerPath.setStroke(Color.BLACK);
-
+        //markerPath.setOpacity(0.5);
 
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {

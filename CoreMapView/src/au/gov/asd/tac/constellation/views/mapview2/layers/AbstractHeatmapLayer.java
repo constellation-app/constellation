@@ -19,8 +19,12 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.tac.constellation.views.mapview2.utillities.Vec3;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Group;
@@ -63,6 +67,11 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
         LOGGER.log(Level.SEVERE, "min: " + min + " max: " + max);
 
         Vec3[][] heatMapColours = new Vec3[25][25];
+        for (int row = 0; row < heatMapColours.length; ++row) {
+            for (int col = 0; col < heatMapColours[0].length; ++col) {
+                heatMapColours[row][col] = new Vec3();
+            }
+        }
 
 
         for (Object value : parent.getAllMarkers().values()) {
@@ -72,17 +81,27 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
                 int x = 1;
 
                 int startingX = (int) marker.getX() - 108;
-                int startingY = (int) marker.getY() + 80;
+                int startingY = (int) marker.getY() + 81;
 
                 float normalizedValue = ((marker.getWeight() - min) / (max - min));
 
                 Vec3 centerColour = getHeatmapColour(normalizedValue);
 
-                populateHeatmapColours(heatMapColours, centerColour);
+                float[][] heatMapWeights = new float[25][25];
+                heatMapWeights[13][13] = normalizedValue;
+
+                //LOGGER.log(Level.SEVERE, "Heatmap center x: " + heatMapColours[13][13].x);
 
                 LOGGER.log(Level.SEVERE, "normalized value: " + normalizedValue);
 
                 LOGGER.log(Level.SEVERE, "X coord: " + marker.getX() + "," + marker.getY());
+
+                calculateHeatmapWeights(heatMapWeights, 13, 13);
+                populateHeatmapColours(heatMapColours, heatMapWeights);
+                gaussianBlur(heatMapColours);
+
+                int heatMapRowIndex = 0;
+                int heatMapColIndex = 0;
 
                 int lineCounter = 1;
                 for (int i = 0; i < 625; ++i) {
@@ -92,8 +111,8 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
                     rect.setWidth(1);
                     rect.setHeight(1);
 
-
-                    rect.setFill(new Color(centerColour.x, centerColour.y, centerColour.z, 1.0));
+                    Vec3 boxColour = heatMapColours[heatMapRowIndex][heatMapColIndex];
+                    rect.setFill(new Color(boxColour.x, boxColour.y, boxColour.z, 1.0));
                     //rect.setFill(Color.ORANGE);
                     rect.setOpacity(0.1);
 
@@ -101,9 +120,11 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
                     if ((i + 1) % 25 == 0) {
                         startingY += 1;
+                        heatMapRowIndex += 1;
                         lineCounter += 1;
                     } else {
                         startingX += x;
+                        heatMapColIndex += x;
                     }
 
 
@@ -129,14 +150,119 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
         layerGroup.getChildren().add(box);*/
     }
 
-    private void populateHeatmapColours(Vec3[][] heatmapColours, Vec3 centerColour) {
-        int row = (int) ((heatmapColours.length + 1) / 2);
-        int col = (int) ((heatmapColours[0].length + 1) / 2);
-        heatmapColours[row][col] = centerColour;
+    private void calculateHeatmapWeights(float[][] heatMapWeights, int row, int col) {
+        Set<String> coordinateSet = new HashSet<>();
 
-        while () {
+        coordinateSet.add(row + "," + col);
+        Deque<Vec3> bfs = new ArrayDeque<>();
 
+        Vec3 coordinate = new Vec3();
+        coordinate.x = row;
+        coordinate.y = col;
+
+        bfs.addLast(coordinate);
+
+        while (!bfs.isEmpty()) {
+            Vec3 current = bfs.pop();
+            if (current != null) {
+                Vec3[] neighbours = new Vec3[8];
+
+                for (int i = 0; i < neighbours.length; ++i) {
+                    neighbours[i] = new Vec3();
+                }
+
+                neighbours[0].x = current.x - 1;
+                neighbours[0].y = current.y - 1;
+                neighbours[1].x = current.x - 1;
+                neighbours[1].y = current.y;
+                neighbours[2].x = current.x - 1;
+                neighbours[2].y = current.y + 1;
+
+                neighbours[3].x = current.x;
+                neighbours[3].y = current.y - 1;
+                neighbours[4].x = current.x;
+                neighbours[4].y = current.y + 1;
+
+                neighbours[5].x = current.x + 1;
+                neighbours[5].y = current.y - 1;
+                neighbours[6].x = current.x + 1;
+                neighbours[6].y = current.y;
+                neighbours[7].x = current.x + 1;
+                neighbours[7].y = current.y + 1;
+
+                for (int i = 0; i < neighbours.length; ++i) {
+                    String currCoord = neighbours[i].x + "," + neighbours[i].y;
+
+                    if (neighbours[i].x >= 0 && neighbours[i].x < heatMapWeights.length && neighbours[i].y >= 0 && neighbours[i].y < heatMapWeights[0].length && !coordinateSet.contains(currCoord)) {
+                        coordinateSet.add(currCoord);
+                        heatMapWeights[(int) neighbours[i].x][(int) neighbours[i].y] = (float) (heatMapWeights[(int) current.x][(int) current.y] - 0.1);
+                        bfs.addLast(neighbours[i]);
+                    }
+                }
+            }
         }
+    }
+
+    private void populateHeatmapColours(Vec3[][] heatmapColours, float[][] heatmapWeights) {
+        if (heatmapWeights.length != heatmapColours.length || heatmapWeights[0].length != heatmapColours[0].length) {
+            return;
+        }
+
+        for (int row = 0; row < heatmapColours.length; ++row) {
+            for (int col = 0; col < heatmapWeights[0].length; ++col) {
+                heatmapColours[row][col] = getHeatmapColour(heatmapWeights[row][col]);
+            }
+        }
+
+    }
+
+    private void gaussianBlur(Vec3[][] heatmapColours) {
+        float[] blurKernel = {1 / 16, 2 / 16, 1 / 16, 2 / 16, 4 / 16, 2 / 16, 1 / 16, 2 / 16, 1 / 16};
+
+        int[][] offsets = {{-1, -1}, {-1, 0}, {-1, 1},
+        {0, -1}, {0, 0}, {0, 1},
+        {1, -1}, {1, 0}, {1, 1}};
+
+        Vec3[] samples = new Vec3[9];
+
+        Vec3[][] blurredColours = new Vec3[heatmapColours.length][heatmapColours[0].length];
+
+        for (int i = 0; i < samples.length; ++i) {
+            samples[i] = new Vec3();
+        }
+
+        for (int row = 0; row < heatmapColours.length; ++row) {
+            for (int col = 0; col < heatmapColours[0].length; ++col) {
+                for (int i = 0; i < offsets.length; ++i) {
+                    Vec3 sampledColour = new Vec3();
+
+                    int sampleRow = row + offsets[i][0];
+                    int sampleCol = col + offsets[i][1];
+
+                    if (sampleRow >= 0 && sampleRow < heatmapColours.length && sampleCol >= 0 && sampleCol < heatmapColours[0].length) {
+                        sampledColour = new Vec3(heatmapColours[sampleRow][sampleCol]);
+                    }
+
+                    samples[i] = new Vec3(sampledColour);
+                    LOGGER.log(Level.SEVERE, "X : " + samples[i].x + " y: " + samples[i].y + " z: " + samples[i].z);
+                }
+
+                blurredColours[row][col] = new Vec3();
+                for (int i = 0; i < blurKernel.length; ++i) {
+                    samples[i].multiplyFloat(blurKernel[i]);
+
+
+                    blurredColours[row][col].addVector(samples[i]);
+                }
+            }
+        }
+
+        for (int row = 0; row < heatmapColours.length; ++row) {
+            for (int col = 0; col < heatmapColours[0].length; ++col) {
+                heatmapColours[row][col] = new Vec3(blurredColours[row][col]);
+            }
+        }
+
     }
 
     private Vec3 getHeatmapColour(float value) {

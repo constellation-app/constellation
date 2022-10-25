@@ -20,9 +20,27 @@ package au.gov.tac.constellation.views.mapview2.utillities;
  * @author altair1673
  */
 public class Vec3 {
-    public float x = 0;
-    public float y = 0;
-    public float z = 0;
+    public double x = 0;
+    public double y = 0;
+    public double z = 0;
+
+    public Vec3(Vec3 vec3) {
+        x = vec3.x;
+        y = vec3.y;
+        z = vec3.z;
+    }
+
+    public void multiplyFloat(float value) {
+        x *= value;
+        y *= value;
+        z *= value;
+    }
+
+    public void addVector(Vec3 value) {
+        x += value.x;
+        y += value.y;
+        z += value.z;
+    }
 
     public Vec3() {
 
