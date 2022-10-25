@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,10 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
-import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
-import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
+import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,6 +53,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean findInCurrentSelection;
     private final boolean selectAll;
     private final boolean getNext;
+    private final boolean searchAllGraphs;
     private final BasicFindReplaceParameters parameters;
 
     private static final int STARTING_INDEX = -1;
@@ -70,6 +71,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.addToSelection = parameters.isAddTo();
         this.removeFromCurrentSelection = parameters.isRemoveFrom();
         this.findInCurrentSelection = parameters.isFindIn();
+        this.searchAllGraphs = parameters.isSearchAllGraphs();
     }
 
     /**

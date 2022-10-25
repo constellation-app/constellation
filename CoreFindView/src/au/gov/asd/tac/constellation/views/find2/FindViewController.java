@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,17 @@
  */
 package au.gov.asd.tac.constellation.views.find2;
 
-import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
-import au.gov.asd.tac.constellation.views.find2.plugins.ReplacePlugin;
-import au.gov.asd.tac.constellation.views.find2.plugins.BasicFindPlugin;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
+import au.gov.asd.tac.constellation.views.find2.plugins.BasicFindPlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.GraphAttributePlugin;
+import au.gov.asd.tac.constellation.views.find2.plugins.ReplacePlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.advanced.AdvancedSearchPlugin;
+import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.find2.utilities;
 
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
-import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import java.util.ArrayList;
 
 /**
@@ -31,7 +30,7 @@ public class FindResultsList extends ArrayList<FindResult> {
     private final AdvancedSearchParameters advancedSearchParameters;
 
     /**
-     * Constructor for a findReuslts list
+     * Constructor for a findResults list
      *
      * @param graphId
      */
@@ -42,7 +41,7 @@ public class FindResultsList extends ArrayList<FindResult> {
     }
 
     /**
-     * Constructor for a findReuslts list
+     * Constructor for a findResults list
      *
      * @param index
      * @param searchParameters
