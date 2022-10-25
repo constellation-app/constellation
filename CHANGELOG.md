@@ -1,5 +1,15 @@
 # Constellation Changes	
 
+## Changes in October 2022
+
+-   Moved `ApplicationFontOptionsPanel`, `ApplicationFontOptionsPanelController` and
+    `ApplicationFontPreferenceKeys` into `ApplicationOptionsPanel`, `ApplicationOptionsPanelController`
+    and `ApplicationPrefrenceKeys` respectively. 
+
+-   Moved `AnaglyphicDisplayPanel`, `AnaglyphicDisplayOptionsPanelController` and
+    `AnaglyphicDisplayPreferenceKeys` into `GraphOptionsPanel`, `GraphOptionsPanelController`
+    and `GraphPreferenceKeys` respectively. 
+
 ## Changes in August 2022
 
 -   Moved `ClusteringConcept`, `HierarchicalStateAttributeDescription` and

@@ -15,14 +15,17 @@
  */
 package au.gov.asd.tac.constellation.preferences;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -41,6 +44,7 @@ import org.openide.util.NbBundle;
 final class ApplicationOptionsPanel extends javax.swing.JPanel {
 
     private final ApplicationOptionsPanelController controller;
+    private final String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
 
     private static final String USER_HOME_PROPERTY = "user.home";
 
@@ -130,6 +134,27 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         this.rememberOpenAndSaveLocationCheckBox.setSelected(rememberSaveLocation);
     }
 
+    public String getCurrentFont() {
+        return fontCombo.getSelectedItem().toString();
+    }
+
+    public void setCurrentFont(final String currentFont) {
+        fontCombo.setSelectedItem(currentFont);
+    }
+
+    public String getFontSize() {
+        return fontSizeSpinner.getValue().toString();
+    }
+
+    public void setFontSize(final String fontSize) {
+        fontSizeSpinner.setValue(Integer.parseInt(fontSize));
+    }
+
+    public String[] getFontList() {
+        return fonts;
+    }
+
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -161,6 +186,12 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         downloadPythonClientCheckBox = new JCheckBox();
         openAndSaveLocationPanel = new JPanel();
         rememberOpenAndSaveLocationCheckBox = new JCheckBox();
+        fontPanel = new JPanel();
+        fontLbl = new JLabel();
+        fontSizeLbl = new JLabel();
+        fontCombo = new JComboBox<>();
+        fontSizeSpinner = new JSpinner();
+        resetBtn = new JButton();
 
         Mnemonics.setLocalizedText(userDirectoryLabel, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.userDirectoryLabel.text")); // NOI18N
 
@@ -197,7 +228,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(autosaveSpinner, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(autosaveLabel, GroupLayout.PREFERRED_SIZE, 230, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(182, Short.MAX_VALUE))
+                .addContainerGap(202, Short.MAX_VALUE))
         );
         autosavePanelLayout.setVerticalGroup(autosavePanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(autosavePanelLayout.createSequentialGroup()
@@ -225,7 +256,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
                     .addComponent(startupWhatsNewCheckbox)
                     .addComponent(startupWelcomeCheckbox))
-                .addContainerGap(349, Short.MAX_VALUE))
+                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         startupPanelLayout.setVerticalGroup(startupPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
             .addGroup(startupPanelLayout.createSequentialGroup()
@@ -265,7 +296,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                     .addGroup(webserverPanelLayout.createSequentialGroup()
                         .addComponent(webserverPortSpinner, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(restDirectoryText, GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE))
+                    .addComponent(restDirectoryText))
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(restDirectoryButton)
                 .addGap(4, 4, 4))
@@ -313,7 +344,7 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                     .addGroup(notebookPanelLayout.createSequentialGroup()
                         .addComponent(notebookDirectoryLabel)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(notebookDirectoryText, GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
+                        .addComponent(notebookDirectoryText)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(notebookDirectoryButton)))
                 .addContainerGap())
@@ -351,23 +382,81 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        fontPanel.setBorder(BorderFactory.createTitledBorder(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.fontPanel.border.title"))); // NOI18N
+
+        Mnemonics.setLocalizedText(fontLbl, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.fontLbl.text")); // NOI18N
+
+        Mnemonics.setLocalizedText(fontSizeLbl, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.fontSizeLbl.text")); // NOI18N
+
+        fontCombo.setModel(new DefaultComboBoxModel(fonts));
+        fontCombo.setSelectedItem(ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT);
+        fontCombo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                fontComboActionPerformed(evt);
+            }
+        });
+
+        fontSizeSpinner.setModel(new SpinnerNumberModel(12, 8, 45, 1));
+
+        Mnemonics.setLocalizedText(resetBtn, NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.resetBtn.text")); // NOI18N
+        resetBtn.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                resetBtnActionPerformed(evt);
+            }
+        });
+
+        GroupLayout fontPanelLayout = new GroupLayout(fontPanel);
+        fontPanel.setLayout(fontPanelLayout);
+        fontPanelLayout.setHorizontalGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(fontPanelLayout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                    .addGroup(fontPanelLayout.createSequentialGroup()
+                        .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(fontLbl)
+                            .addComponent(fontSizeLbl))
+                        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, 240, GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(fontPanelLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(resetBtn)))
+                .addContainerGap())
+        );
+        fontPanelLayout.setVerticalGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.LEADING)
+            .addGroup(fontPanelLayout.createSequentialGroup()
+                .addContainerGap(15, Short.MAX_VALUE)
+                .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(fontLbl)
+                    .addComponent(fontCombo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(fontPanelLayout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                    .addComponent(fontSizeSpinner, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fontSizeLbl))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(resetBtn))
+        );
+
         GroupLayout layout = new GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                    .addComponent(startupPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(autosavePanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                    .addComponent(startupPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(autosavePanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(userDirectoryLabel)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(userDirectoryText)
                         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(userDirectoryButton))
-                    .addComponent(webserverPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(notebookPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(openAndSaveLocationPanel, GroupLayout.Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(webserverPanel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(notebookPanel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(openAndSaveLocationPanel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(fontPanel, GroupLayout.Alignment.LEADING, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -387,7 +476,9 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
                 .addComponent(notebookPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(openAndSaveLocationPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(fontPanel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(32, Short.MAX_VALUE))
         );
 
         notebookPanel.getAccessibleContext().setAccessibleName(NbBundle.getMessage(ApplicationOptionsPanel.class, "ApplicationOptionsPanel.notebookPanel.AccessibleContext.accessibleName")); // NOI18N
@@ -440,18 +531,33 @@ final class ApplicationOptionsPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_restDirectoryButtonActionPerformed
 
+    private void fontComboActionPerformed(ActionEvent evt) {//GEN-FIRST:event_fontComboActionPerformed
+        setFontSize(fontSizeSpinner.getValue().toString());
+    }//GEN-LAST:event_fontComboActionPerformed
+
+    private void resetBtnActionPerformed(ActionEvent evt) {//GEN-FIRST:event_resetBtnActionPerformed
+        fontCombo.setSelectedItem("Arial");
+        fontSizeSpinner.setValue(12);
+    }//GEN-LAST:event_resetBtnActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private JCheckBox autosaveCheckBox;
     private JLabel autosaveLabel;
     private JPanel autosavePanel;
     private JSpinner autosaveSpinner;
     private JCheckBox downloadPythonClientCheckBox;
+    private JComboBox<String> fontCombo;
+    private JLabel fontLbl;
+    private JPanel fontPanel;
+    private JLabel fontSizeLbl;
+    private JSpinner fontSizeSpinner;
     private JButton notebookDirectoryButton;
     private JLabel notebookDirectoryLabel;
     private JTextField notebookDirectoryText;
     private JPanel notebookPanel;
     private JPanel openAndSaveLocationPanel;
     private JCheckBox rememberOpenAndSaveLocationCheckBox;
+    private JButton resetBtn;
     private JButton restDirectoryButton;
     private JLabel restDirectoryLabel;
     private JTextField restDirectoryText;

@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.font;
 
-import au.gov.asd.tac.constellation.preferences.ApplicationFontPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.awt.Font;
 import java.io.ByteArrayOutputStream;
@@ -113,12 +112,12 @@ public class FontUtilitiesNGTest {
     public void testInitAppFontPrefs() throws BackingStoreException {
         // set up by ensuring Preferences for this test do not exist
         final Preferences p = Preferences.userNodeForPackage(FontUtilitiesNGTest.class);
-        p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).removeNode();
+        p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).removeNode();
         
         /* keep the original application preferences for font size and family so
            they can be restored later */
-        final String defaultFontSize = ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT;
-        final String defaultFontFamily = ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT;
+        final String defaultFontSize = ApplicationPreferenceKeys.FONT_SIZE_DEFAULT;
+        final String defaultFontFamily = ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT;
         
         try (final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class)) {
             prefsMockedStatic.when(() -> NbPreferences.root()).thenReturn(p);
@@ -129,37 +128,37 @@ public class FontUtilitiesNGTest {
             
             /* Preferences will be created and set to default values if attempt 
                to get Preferences when they do not exist */
-            ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT = testFontSize1;
-            ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT = testFontFamily1;
+            ApplicationPreferenceKeys.FONT_SIZE_DEFAULT = testFontSize1;
+            ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT = testFontFamily1;
             
             FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();
             final String fontSize = p.node(
-                    ApplicationFontPreferenceKeys.FONT_PREFERENCES).get(
-                            ApplicationFontPreferenceKeys.FONT_SIZE,
-                            ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT);
+                    ApplicationPreferenceKeys.FONT_PREFERENCES).get(
+                            ApplicationPreferenceKeys.FONT_SIZE,
+                            ApplicationPreferenceKeys.FONT_SIZE_DEFAULT);
             final String fontFamily = p.node(
-                    ApplicationFontPreferenceKeys.FONT_PREFERENCES).get(
-                            ApplicationFontPreferenceKeys.FONT_FAMILY,
-                            ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT);
+                    ApplicationPreferenceKeys.FONT_PREFERENCES).get(
+                            ApplicationPreferenceKeys.FONT_FAMILY,
+                            ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT);
             assertEquals(fontSize, testFontSize1);
             assertEquals(fontFamily, testFontFamily1);
             
             /* as Preferences now exist the application default Preferences are 
                set to the values currently in Preferences */
-            p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).put(
-                    ApplicationFontPreferenceKeys.FONT_SIZE, testFontSize2);
-            p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).put(
-                    ApplicationFontPreferenceKeys.FONT_FAMILY, testFontFamily2);
+            p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).put(
+                    ApplicationPreferenceKeys.FONT_SIZE, testFontSize2);
+            p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).put(
+                    ApplicationPreferenceKeys.FONT_FAMILY, testFontFamily2);
             
             FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();
-            assertEquals(ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT, testFontSize2);
-            assertEquals(ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT, testFontFamily2);
+            assertEquals(ApplicationPreferenceKeys.FONT_SIZE_DEFAULT, testFontSize2);
+            assertEquals(ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT, testFontFamily2);
         } finally {
             // clean up, first remove Preferences nodes this test plays with
-            p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).removeNode();
+            p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).removeNode();
             // and set the application Preferences back to their original settings
-            ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT = defaultFontSize;
-            ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT = defaultFontFamily;
+            ApplicationPreferenceKeys.FONT_SIZE_DEFAULT = defaultFontSize;
+            ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT = defaultFontFamily;
         }
     }
     
@@ -175,14 +174,14 @@ public class FontUtilitiesNGTest {
     public void testInitAppFontPrefsException() throws IOException, BackingStoreException {
         // set up by ensuring Preferences for this test do not exist
         final Preferences p = Preferences.userNodeForPackage(FontUtilitiesNGTest.class);
-        p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).removeNode();
+        p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).removeNode();
         
         try (final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class)) {
             prefsMockedStatic.when(() -> NbPreferences.root()).thenReturn(
                 new BorkedPreferences());
             
             FontUtilities.initialiseApplicationFontPreferenceOnFirstUse();
-            assertFalse(p.nodeExists(ApplicationFontPreferenceKeys.FONT_PREFERENCES));
+            assertFalse(p.nodeExists(ApplicationPreferenceKeys.FONT_PREFERENCES));
             assertTrue(getCapturedLog().contains(BackingStoreException.class.getName()));
         }
     }
@@ -219,7 +218,7 @@ public class FontUtilitiesNGTest {
     public void testGetApplicationFontSize() throws BackingStoreException {        
         // set up by ensuring Preferences for this test do not exist
         final Preferences p = Preferences.userNodeForPackage(FontUtilitiesNGTest.class);
-        p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).removeNode();
+        p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).removeNode();
         
         try (
                 final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class);
@@ -239,13 +238,13 @@ public class FontUtilitiesNGTest {
             /* create the Preference and assert that when invoked, the 
                Preference is returned */
             final String fontSizePref = "987654321";
-            p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES)
-                    .put(ApplicationFontPreferenceKeys.FONT_SIZE, fontSizePref);
+            p.node(ApplicationPreferenceKeys.FONT_PREFERENCES)
+                    .put(ApplicationPreferenceKeys.FONT_SIZE, fontSizePref);
             assertEquals(FontUtilities.getApplicationFontSize(), 
                     Integer.parseInt(fontSizePref));
         } finally {
             // clean up, remove Preferences node this test plays with
-            p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).removeNode();
+            p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).removeNode();
         }
     }
     
@@ -262,16 +261,16 @@ public class FontUtilitiesNGTest {
         final Preferences p = Preferences.userNodeForPackage(FontUtilitiesNGTest.class);
 
         // keep the original application Preference so it can be restored later
-        final String defaultFontSize = ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT;
+        final String defaultFontSize = ApplicationPreferenceKeys.FONT_SIZE_DEFAULT;
         
         try (final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class)) {            
             final String dummyPref = "dummy";
-            p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES)
-                    .put(ApplicationFontPreferenceKeys.FONT_SIZE, dummyPref);
+            p.node(ApplicationPreferenceKeys.FONT_PREFERENCES)
+                    .put(ApplicationPreferenceKeys.FONT_SIZE, dummyPref);
                         
             // BackingStoreException when accessing Preferences
             int fontSizeBse = 45698711;
-            ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT = Integer.toString(fontSizeBse);
+            ApplicationPreferenceKeys.FONT_SIZE_DEFAULT = Integer.toString(fontSizeBse);
             prefsMockedStatic.when(() -> NbPreferences.root()).thenReturn(
                 new BorkedPreferences());
             
@@ -280,7 +279,7 @@ public class FontUtilitiesNGTest {
             
             // NumberFormatException when parsing font size pref String
             int fontSizeNfe = 98712366;
-            ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT = Integer.toString(fontSizeNfe);
+            ApplicationPreferenceKeys.FONT_SIZE_DEFAULT = Integer.toString(fontSizeNfe);
             prefsMockedStatic.reset();
             prefsMockedStatic.when(() -> NbPreferences.root()).thenReturn(p);
             
@@ -289,9 +288,9 @@ public class FontUtilitiesNGTest {
                     String.format(INT_PARSE_ERROR_PATTERN, dummyPref)));
         } finally {
             // clean up, first remove Preferences node this test plays with
-            p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).removeNode();
+            p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).removeNode();
             // and set the application Preference back to the original setting
-            ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT = defaultFontSize;
+            ApplicationPreferenceKeys.FONT_SIZE_DEFAULT = defaultFontSize;
         }
     }
     
@@ -304,30 +303,30 @@ public class FontUtilitiesNGTest {
     public void testGetApplicationFontFamily() throws BackingStoreException {
         // set up by ensuring Preferences for this test do not exist
         final Preferences p = Preferences.userNodeForPackage(FontUtilitiesNGTest.class);
-        p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).removeNode();
+        p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).removeNode();
 
         // keep the original application default so it can be restored later
-        final String defaultFontFamily = ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT;
+        final String defaultFontFamily = ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT;
         
         try (final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class)) {
             prefsMockedStatic.when(() -> NbPreferences.root()).thenReturn(p);
 
             // assert that the default value is returned when no Preference exists
             final String testFontFamily1 = "a dummy font family";
-            ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT = testFontFamily1;
+            ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT = testFontFamily1;
             assertEquals(FontUtilities.getApplicationFontFamily(), testFontFamily1);
             
             /* create the Preference and assert that when invoked, the 
                Preference is returned */
             final String testFontFamily2 = "another dummy font family";
-            p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES)
-                    .put(ApplicationFontPreferenceKeys.FONT_FAMILY, testFontFamily2);
+            p.node(ApplicationPreferenceKeys.FONT_PREFERENCES)
+                    .put(ApplicationPreferenceKeys.FONT_FAMILY, testFontFamily2);
             assertEquals(FontUtilities.getApplicationFontFamily(), testFontFamily2);
         } finally {
             // clean up, first remove Preferences node this test plays with
-            p.node(ApplicationFontPreferenceKeys.FONT_PREFERENCES).removeNode();
+            p.node(ApplicationPreferenceKeys.FONT_PREFERENCES).removeNode();
             // and set the application Preference back to the original setting
-            ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT = defaultFontFamily;
+            ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT = defaultFontFamily;
         }
     }
     
@@ -342,11 +341,11 @@ public class FontUtilitiesNGTest {
     @Test
     public void testGetApplicationFontFamilyException() throws IOException, BackingStoreException {
         // keep the original application Preference so it can be restored later
-        final String defaultFontFamily = ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT;
+        final String defaultFontFamily = ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT;
         
         try (final MockedStatic<NbPreferences> prefsMockedStatic = mockStatic(NbPreferences.class)) {
             String fontFamily = "a dummy font family";
-            ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT = fontFamily;
+            ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT = fontFamily;
             prefsMockedStatic.when(() -> NbPreferences.root()).thenReturn(
                 new BorkedPreferences());
             
@@ -354,7 +353,7 @@ public class FontUtilitiesNGTest {
             assertTrue(getCapturedLog().contains(NODE_NOT_EXIST_LOG_MSG));
         } finally {
             // and set the application Preference back to the original setting
-            ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT = defaultFontFamily;
+            ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT = defaultFontFamily;
         }
     }
     
