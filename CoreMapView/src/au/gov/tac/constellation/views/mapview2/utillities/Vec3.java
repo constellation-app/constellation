@@ -36,6 +36,12 @@ public class Vec3 {
         z *= value;
     }
 
+    public void multiplyDouble(double value) {
+        x *= value;
+        y *= value;
+        z *= value;
+    }
+
     public void addVector(Vec3 value) {
         x += value.x;
         y += value.y;

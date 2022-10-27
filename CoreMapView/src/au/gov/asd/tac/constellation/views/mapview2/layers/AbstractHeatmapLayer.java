@@ -52,8 +52,8 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
         Map<String, AbstractMarker> markers = parent.getAllMarkers();
 
-        float max = 1;
-        float min = 0;
+        double max = 1;
+        double min = 0;
 
         for (Object value : markers.values()) {
             if (value instanceof PointMarker) {
@@ -83,18 +83,18 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
                 int startingX = (int) marker.getX() - 108;
                 int startingY = (int) marker.getY() + 81;
 
-                float normalizedValue = ((marker.getWeight() - min) / (max - min));
+                double normalizedValue = ((marker.getWeight() - min) / (max - min));
 
                 Vec3 centerColour = getHeatmapColour(normalizedValue);
 
-                float[][] heatMapWeights = new float[25][25];
+                double[][] heatMapWeights = new double[25][25];
                 heatMapWeights[13][13] = normalizedValue;
 
                 //LOGGER.log(Level.SEVERE, "Heatmap center x: " + heatMapColours[13][13].x);
 
-                LOGGER.log(Level.SEVERE, "normalized value: " + normalizedValue);
+                //LOGGER.log(Level.SEVERE, "normalized value: " + normalizedValue);
 
-                LOGGER.log(Level.SEVERE, "X coord: " + marker.getX() + "," + marker.getY());
+                //LOGGER.log(Level.SEVERE, "X coord: " + marker.getX() + "," + marker.getY());
 
                 calculateHeatmapWeights(heatMapWeights, 13, 13);
                 populateHeatmapColours(heatMapColours, heatMapWeights);
@@ -129,7 +129,6 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
 
                     if (lineCounter % 2 == 0) {
-
                         x = -1;
                     } else {
                         x = 1;
@@ -150,7 +149,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
         layerGroup.getChildren().add(box);*/
     }
 
-    private void calculateHeatmapWeights(float[][] heatMapWeights, int row, int col) {
+    private void calculateHeatmapWeights(double[][] heatMapWeights, int row, int col) {
         Set<String> coordinateSet = new HashSet<>();
 
         coordinateSet.add(row + "," + col);
@@ -195,7 +194,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
                     if (neighbours[i].x >= 0 && neighbours[i].x < heatMapWeights.length && neighbours[i].y >= 0 && neighbours[i].y < heatMapWeights[0].length && !coordinateSet.contains(currCoord)) {
                         coordinateSet.add(currCoord);
-                        heatMapWeights[(int) neighbours[i].x][(int) neighbours[i].y] = (float) (heatMapWeights[(int) current.x][(int) current.y] - 0.1);
+                        heatMapWeights[(int) neighbours[i].x][(int) neighbours[i].y] = heatMapWeights[(int) current.x][(int) current.y] - 0.1;
                         bfs.addLast(neighbours[i]);
                     }
                 }
@@ -203,7 +202,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
         }
     }
 
-    private void populateHeatmapColours(Vec3[][] heatmapColours, float[][] heatmapWeights) {
+    private void populateHeatmapColours(Vec3[][] heatmapColours, double[][] heatmapWeights) {
         if (heatmapWeights.length != heatmapColours.length || heatmapWeights[0].length != heatmapColours[0].length) {
             return;
         }
@@ -217,7 +216,9 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
     }
 
     private void gaussianBlur(Vec3[][] heatmapColours) {
-        float[] blurKernel = {1 / 16, 2 / 16, 1 / 16, 2 / 16, 4 / 16, 2 / 16, 1 / 16, 2 / 16, 1 / 16};
+        double[] blurKernel = {1.0 / 16.0, 2.0 / 16.0, 1.0 / 16.0, 2.0 / 16.0, 4.0 / 16.0, 2.0 / 16.0, 1.0 / 16.0, 2.0 / 16.0, 1.0 / 16.0};
+
+        //double[] blurKernel = {1 / 5, 2 / 5, 1 / 5, 2 / 5, 4 / 5, 2 / 5, 1 / 5, 2 / 5, 1 / 5};
 
         int[][] offsets = {{-1, -1}, {-1, 0}, {-1, 1},
         {0, -1}, {0, 0}, {0, 1},
@@ -227,9 +228,9 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
         Vec3[][] blurredColours = new Vec3[heatmapColours.length][heatmapColours[0].length];
 
-        for (int i = 0; i < samples.length; ++i) {
+        /*for (int i = 0; i < samples.length; ++i) {
             samples[i] = new Vec3();
-        }
+        }*/
 
         for (int row = 0; row < heatmapColours.length; ++row) {
             for (int col = 0; col < heatmapColours[0].length; ++col) {
@@ -240,19 +241,28 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
                     int sampleCol = col + offsets[i][1];
 
                     if (sampleRow >= 0 && sampleRow < heatmapColours.length && sampleCol >= 0 && sampleCol < heatmapColours[0].length) {
+                        //LOGGER.log(Level.SEVERE, "Sampling around box");
                         sampledColour = new Vec3(heatmapColours[sampleRow][sampleCol]);
+
+                        if (sampledColour.z != 1.0) {
+                            //LOGGER.log(Level.SEVERE, "X : " + sampledColour.x + " y: " + sampledColour.y + " z: " + sampledColour.z);
+                        }
                     }
 
                     samples[i] = new Vec3(sampledColour);
-                    LOGGER.log(Level.SEVERE, "X : " + samples[i].x + " y: " + samples[i].y + " z: " + samples[i].z);
+
                 }
 
                 blurredColours[row][col] = new Vec3();
+                LOGGER.log(Level.SEVERE, "Original colour, x : " + heatmapColours[row][col].x + ", y: " + heatmapColours[row][col].y + ", z: " + heatmapColours[row][col].z);
                 for (int i = 0; i < blurKernel.length; ++i) {
-                    samples[i].multiplyFloat(blurKernel[i]);
-
+                    samples[i].multiplyDouble(blurKernel[i]);
 
                     blurredColours[row][col].addVector(samples[i]);
+
+                    if (heatmapColours[row][col].z != 1.0) {
+                        LOGGER.log(Level.SEVERE, "Blurring colour, x : " + blurredColours[row][col].x + ", y: " + blurredColours[row][col].y + ", z: " + blurredColours[row][col].z);
+                    }
                 }
             }
         }
@@ -265,16 +275,17 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
     }
 
-    private Vec3 getHeatmapColour(float value) {
+    private Vec3 getHeatmapColour(double value) {
         //float[][] colours = new float[4][3];
 
         LOGGER.log(Level.SEVERE, "Value passed in: " + value);
 
-        float[][] colours = {{0, 0, 1}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}};
+        //float[][] colours = {{0, 52 / 255, 248 / 255}, {0, 1, 0}, {1, 1, 0}, {1, 42 / 255, 0}};
+        double[][] colours = {{0, 0, 1}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}};
 
         int id1;
         int id2;
-        float fractBetween = 0;
+        double fractBetween = 0;
 
         if (value <= 0) {
             id1 = id2 = 0;
@@ -284,7 +295,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
             value = value * (colours.length - 1);
             id1 = (int) Math.floor(value);
             id2 = id1 + 1;
-            fractBetween = value - (float) id1;
+            fractBetween = value - id1;
         }
         Vec3 heatMapColour = new Vec3();
 
