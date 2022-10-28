@@ -196,6 +196,10 @@ public class MapViewPane extends BorderPane {
         LOGGER.log(Level.SEVERE, "test");
     }
 
+    public Graph getCurrentGraph() {
+        return parent.getCurrentGraph();
+    }
+
     public void drawMarker(double lat, double lon, double scale) {
         if (mapView != null) {
             mapView.drawMarker(lat, lon, scale);

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 
 /**
  *
@@ -27,5 +28,8 @@ public class StandardHeatmapLayer extends AbstractHeatmapLayer {
         super(parent);
     }
 
-
+    @Override
+    public int getWeight(AbstractMarker marker) {
+        return marker.getWeight();
+    }
 }

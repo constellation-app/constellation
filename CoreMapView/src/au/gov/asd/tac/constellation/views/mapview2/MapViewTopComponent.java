@@ -183,6 +183,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         return jfxContainer;
     }
 
+
     /**
      * When a graph is opened handle toggling the find view disabled state
      *

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -287,6 +288,10 @@ public class MapView extends ScrollPane {
 
     public Map<String, AbstractMarker> getAllMarkers() {
         return parent.getAllMarkers();
+    }
+
+    public Graph getCurrentGraph() {
+        return parent.getCurrentGraph();
     }
 
     public void drawMarker(double lattitude, double longitude, double xyScale) {

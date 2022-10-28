@@ -30,6 +30,12 @@ public class Vec3 {
         z = vec3.z;
     }
 
+    public Vec3(double x, double y, double z) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
     public void multiplyFloat(float value) {
         x *= value;
         y *= value;
