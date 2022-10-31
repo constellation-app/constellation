@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -29,10 +30,14 @@ import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
+import java.awt.EventQueue;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * This class does the actual action of finding.
@@ -240,14 +245,32 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                 } else {
                     foundResult.decrementCurrentIndex();
                 }
+
                 final int elementId = foundResult.get(foundResult.getCurrentIndex()).getID();
-                graph.setBooleanValue(selectedAttribute, elementId, !removeFromCurrentSelection);
+                graph.setBooleanValue(selectedAttribute, elementId, !removeFromCurrentSelection);           
             }
             graph.setObjectValue(stateId, 0, foundResult);
-
         }
+
+        // Swap to view the graph where the element is selected
+        if (searchAllGraphs) {
+            final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
+            if (topComponents != null) {
+                for (final TopComponent component : topComponents) {
+                    if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
+                        EventQueue.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((VisualGraphTopComponent) component).requestActive();
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
         //If no results are found, set the meta attribute to null
-        graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult);
+        graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult); 
     }
 
     /**

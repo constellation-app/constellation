@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.find2.plugins;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
@@ -25,9 +26,13 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
+import java.awt.EventQueue;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * Finds String based attributes within the graph and replaces its value.
@@ -45,6 +50,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final boolean ignorecase;
     private final boolean replaceNext;
     private final boolean replaceIn;
+    private final boolean searchAllGraphs;
 
     public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext) {
         this.elementType = parameters.getGraphElement();
@@ -55,6 +61,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
         this.ignorecase = parameters.isIgnoreCase();
         this.replaceNext = replaceNext;
         this.replaceIn = parameters.isReplaceIn();
+        this.searchAllGraphs = parameters.isSearchAllGraphs();
     }
 
     @Override
@@ -65,7 +72,6 @@ public class ReplacePlugin extends SimpleEditPlugin {
         }
 
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
-
         final int elementCount = elementType.getElementCount(graph);
         final String searchString = regex ? findString : Pattern.quote(findString);
         final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
@@ -121,6 +127,23 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                 }
                             }
                         }
+                    }
+                }
+            }
+        }
+
+        // Swap to view the graph where the element is selected 
+        if (searchAllGraphs) {
+            final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
+            if (topComponents != null) {
+                for (final TopComponent component : topComponents) {
+                    if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
+                        EventQueue.invokeLater(new Runnable() {
+                            @Override
+                            public void run() {
+                                ((VisualGraphTopComponent) component).requestActive();
+                            }
+                        });
                     }
                 }
             }

@@ -102,7 +102,7 @@ public class FindViewController {
 
         for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
 
-            //Call the plugin that retrieves all current attributes on the graph
+            // Call the plugin that retrieves all current attributes on the graph
             final GraphAttributePlugin attrPlugin = new GraphAttributePlugin(type, allAttributes, attributeModificationCounter);
             final Future<?> future = PluginExecution.withPlugin(attrPlugin).interactively(true).executeLater(graph);
 
@@ -204,7 +204,7 @@ public class FindViewController {
     }
 
     /**
-     * updates the controllers currentBasicReplaceParameters with the parameters
+     * Updates the controllers currentBasicReplaceParameters with the parameters
      * passed in
      *
      * @param parameters
@@ -214,7 +214,7 @@ public class FindViewController {
     }
 
     /**
-     * updates the controllers currentAdvancedSearchParameters with the
+     * Updates the controllers currentAdvancedSearchParameters with the
      * parameters passed in
      *
      * @param parameters
@@ -225,8 +225,8 @@ public class FindViewController {
 
     /**
      * This function calls the basic find plugin, passing the
-     * currentBasicFindParamters, wether to find all matching element, find the
-     * next element or finding the previous element.
+     * currentBasicFindParameters, whether to find all matching element, find the
+     * next element or find the previous element.
      *
      * @param selectAll true if finding all graph elements
      * @param getNext true if finding the next element, false if the previous
@@ -239,10 +239,10 @@ public class FindViewController {
          * graphs. If not only call it on the active graph.
          */
         if (currentBasicFindParameters.isSearchAllGraphs()) {
-            for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+            for (final Graph currentGraph : GraphManager.getDefault().getAllGraphs().values()) {
                 // check to see the graph is not null
-                if (graph != null && currentBasicFindParameters.isSearchAllGraphs()) {
-                    PluginExecution.withPlugin(basicFindPlugin).executeLater(graph);
+                if (currentGraph != null) {   
+                    PluginExecution.withPlugin(basicFindPlugin).executeLater(currentGraph);
                 }
             }
         } else {
@@ -256,7 +256,7 @@ public class FindViewController {
 
     /**
      * This function calls the basic replace plugin, passing the
-     * currentBasicReplaceParamters, wether to replace all matching element or
+     * currentBasicReplaceParameters, whether to replace all matching element or
      * just replacing the next element.
      *
      * @param replaceAll true if replacing all matching elements
@@ -297,26 +297,21 @@ public class FindViewController {
             for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                 // check to see the graph is not null
                 if (graph != null && currentAdvancedSearchParameters.isSearchAllGraphs()) {
-
                     PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
-
-
                 }
             }
         } else {
             final Graph graph = GraphManager.getDefault().getActiveGraph();
             // check to see the graph is not null
             if (graph != null) {
-
                 PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
-
             }
         }
     }
 
 
     /**
-     * gets the controllers parent
+     * Gets the controllers parent
      *
      * @return parentComponent
      */
@@ -325,7 +320,7 @@ public class FindViewController {
     }
 
     /**
-     * gets the current basic find parameters
+     * Gets the current basic find parameters
      *
      * @return currentBasicFindParameters
      */
@@ -334,7 +329,7 @@ public class FindViewController {
     }
 
     /**
-     * gets the current replace parameters
+     * Gets the current replace parameters
      *
      * @return currentBasicReplaceParameters
      */
@@ -343,7 +338,7 @@ public class FindViewController {
     }
 
     /**
-     * gets the current advanced search parameters
+     * Gets the current advanced search parameters
      *
      * @return
      */
@@ -352,7 +347,7 @@ public class FindViewController {
     }
 
     /**
-     * gets the amount of results found by advanced search
+     * Gets the amount of results found by advanced search
      *
      * @return
      */
