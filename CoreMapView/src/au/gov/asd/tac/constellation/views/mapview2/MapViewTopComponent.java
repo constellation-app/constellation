@@ -275,6 +275,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(getCurrentGraph());
     }
 
+    public void removeUserMarker(int id) {
+        mapViewPane.removeUserMarker(id);
+    }
+
     @PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
     public static class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 

@@ -73,4 +73,8 @@ public abstract class AbstractMarker {
     public SVGPath getMarker() {
         return null;
     }
+
+    public int getMarkerId() {
+        return markerID;
+    }
 }
