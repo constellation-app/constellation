@@ -25,9 +25,11 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.PopularityHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
+import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -77,6 +79,9 @@ public class MapView extends ScrollPane {
     private final Image mapImage;
     private final ImageView mapDisplay;
     private final List<String> countryDrawings = new ArrayList<String>();
+    private final List<AbstractMarker> userMarkers = new ArrayList<AbstractMarker>();
+
+    private int drawnMarkerId = 0;
 
     public static final double minLong = -169.1110266;
     public static final double maxLong = 190.48712;
@@ -87,6 +92,7 @@ public class MapView extends ScrollPane {
 
     private Canvas mapCanvas;
     private Group countryGroup;
+    private Group drawnMarkerGroup;
     private GraphicsContext gc;
     //private WebEngine webEngine;
     //private WebView webView;
@@ -116,6 +122,7 @@ public class MapView extends ScrollPane {
 
         mapImage = new Image("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\resources\\world-map.jpg");
         countryGroup = new Group();
+        drawnMarkerGroup = new Group();
 
         mapCanvas = new Canvas();
         gc = mapCanvas.getGraphicsContext2D();
@@ -128,13 +135,6 @@ public class MapView extends ScrollPane {
         LOGGER.log(Level.SEVERE, "Size of country array: " + countrySVGPaths.size());
 
 
-        //});
-
-            //gc.fill();
-            //gc.stroke();
-
-        //});
-
         mapStackPane = new StackPane();
 
         mapStackPane.setBorder(Border.EMPTY);
@@ -143,12 +143,6 @@ public class MapView extends ScrollPane {
         mapStackPane.getChildren().addAll(mapGroupHolder);
         mapStackPane.setBackground(Background.fill(Color.WHITE));
 
-        /*mapStackPane.minWidth(3000);
-        mapStackPane.minHeight(750);
-        mapStackPane.prefWidth(3000);
-        mapStackPane.prefHeight(750);
-        mapStackPane.maxWidth(3000);
-        mapStackPane.maxHeight(750);*/
 
         mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
@@ -178,19 +172,10 @@ public class MapView extends ScrollPane {
                 mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
                 mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
 
-
-                //countryGroup.setScaleX(newXScale);
-                //countryGroup.setScaleY(newYScale);
                 mapCanvas.setScaleX(newXScale);
                 mapCanvas.setScaleY(newYScale);
                 mapStackPane.setScaleX(newXScale);
                 mapStackPane.setScaleY(newYScale);
-
-                //gc.clearRect(0, 0, mapCanvas.getWidth(), mapCanvas.getHeight());
-                //drawMarker();
-                //countryGroup.getChildren().remove(countryGroup.getChildren().size() - 1);
-                //drawMarker(-22.908333, -43.196388, 0.05 * scaleFactor);
-
             }
         });
 
@@ -270,13 +255,49 @@ public class MapView extends ScrollPane {
         dayNightLayer.setUp();
 
         mapGroupHolder.getChildren().addAll(dayNightLayer.getLayer());*/
+        mapGroupHolder.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                double x = event.getX();
+                double y = event.getY();
+
+                UserPointMarker marker = new UserPointMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0.05, 95, -91);
+                marker.setMarkerPosition(0, 0);
+                drawnMarkerGroup.getChildren().addAll(marker.getMarker());
+                userMarkers.add(marker);
+
+                event.consume();
+            }
+
+        });
+
+        mapGroupHolder.getChildren().addAll(drawnMarkerGroup);
 
     }
 
+    public void removeUserMarker(int id) {
+        for (int i = 0; i < userMarkers.size(); ++i) {
+            if (userMarkers.get(i).getMarkerId() == id) {
+                userMarkers.remove(i);
+                break;
+            }
+        }
+
+        redrawUserMarkers();
+    }
+
+    private void redrawUserMarkers() {
+        drawnMarkerGroup.getChildren().clear();
+
+        userMarkers.forEach((marker) -> {
+            drawnMarkerGroup.getChildren().add(marker.getMarker());
+        });
+    }
+
     public void toggleHeatmapLayer() {
-        StandardHeatmapLayer heatmapLayer = new StandardHeatmapLayer(this);
+        /*PopularityHeatmapLayer heatmapLayer = new PopularityHeatmapLayer(this);
         heatmapLayer.setUp();
-        mapGroupHolder.getChildren().addAll(heatmapLayer.getLayer());
+        mapGroupHolder.getChildren().addAll(heatmapLayer.getLayer());*/
     }
 
     public void toggleLayer(AbstractMapLayer layer, boolean toggle) {

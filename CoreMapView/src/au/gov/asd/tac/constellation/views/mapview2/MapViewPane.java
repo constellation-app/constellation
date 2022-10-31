@@ -175,6 +175,14 @@ public class MapViewPane extends BorderPane {
         setTop(toolBar);
     }
 
+    public MapViewTopComponent getParentComponent()    {
+        return parent;
+    }
+
+    public void removeUserMarker(int id) {
+        mapView.removeUserMarker(id);
+    }
+
     public void setUpMap() {
         mapView = new MapView(this);
         Platform.runLater(() -> {
