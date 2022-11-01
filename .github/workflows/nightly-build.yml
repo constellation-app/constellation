@@ -55,7 +55,7 @@ jobs:
       - name: Build Zips
         uses: addnab/docker-run-action@v3
         with:
-          image: "${RUNNER_IMAGE}"
+          image: ${{ env.RUNNER_IMAGE }}
           options: |
             --volume ${{ github.workspace }}:/code
             --volume /home/runner/.ivy2:/root/.ivy2

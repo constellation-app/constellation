@@ -61,7 +61,7 @@ jobs:
     - name: Run Tests
       uses: addnab/docker-run-action@v3
       with:
-        image: "${RUNNER_IMAGE}"
+        image: ${{ env.RUNNER_IMAGE }}
         options: |
           --mount type=bind,source=${{ github.workspace }},target=/code
           --mount type=bind,source=/home/runner/.ivy2,target=/root/.ivy2
@@ -72,7 +72,7 @@ jobs:
     - name: Run Sonar
       uses: addnab/docker-run-action@v3
       with:
-        image: "${RUNNER_IMAGE}"
+        image: ${{ env.RUNNER_IMAGE }}
         options: |
           --mount type=bind,source=${{ github.workspace }},target=/code
           --workdir /code/constellation
