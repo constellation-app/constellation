@@ -38,7 +38,7 @@ import org.openide.util.NbPreferences;
         displayName = "#GraphOption_DisplayName",
         keywords = "#GraphOption_Keywords",
         keywordsCategory = "constellation/GraphPreferences",
-        position = 0)
+        position = 600)
 @org.openide.util.NbBundle.Messages({
     "GraphOption_DisplayName=Graph",
     "GraphOption_Keywords=blaze size blaze opacity blaze color"
@@ -74,6 +74,8 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
             }
         }
         graphOptionsPanel.setPresetColors(colors);
+        graphOptionsPanel.setLeftColor(prefs.get(GraphPreferenceKeys.LEFT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT));
+        graphOptionsPanel.setRightColor(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.RIGHT_COLOR_DEFAULT));
     }
 
     @Override
@@ -89,6 +91,8 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
                 prefs.putInt(GraphPreferenceKeys.BLAZE_SIZE, graphOptionsPanel.getBlazeSize());
                 prefs.putInt(GraphPreferenceKeys.BLAZE_OPACITY, graphOptionsPanel.getBlazeOpacity());
+                prefs.put(GraphPreferenceKeys.LEFT_COLOR, graphOptionsPanel.getLeftColor());
+                prefs.put(GraphPreferenceKeys.RIGHT_COLOR, graphOptionsPanel.getRightColor());
             }
         }
     }
@@ -101,7 +105,10 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
     // Add code to check valid values. may be needed for expansion of this UI manu.
     @Override
     public boolean isValid() {
-        return true;
+        final GraphOptionsPanel graphOptionsPanel = getPanel();
+        final String leftEye = graphOptionsPanel.getLeftColor();
+        final String rightEye = graphOptionsPanel.getRightColor();
+        return !leftEye.equals(rightEye);
     }
 
     // Check if the preference values are changed upon adding to the UI menu
@@ -109,8 +116,11 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
         final GraphOptionsPanel graphOptionsPanel = getPanel();
+
         return !(graphOptionsPanel.getBlazeSize() == prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)
-                && graphOptionsPanel.getBlazeOpacity() == prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT));
+                && graphOptionsPanel.getBlazeOpacity() == prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)
+                && graphOptionsPanel.getLeftColor().equals(prefs.get(GraphPreferenceKeys.LEFT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT))
+                && graphOptionsPanel.getRightColor().equals(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT)));
     }
 
     @Override

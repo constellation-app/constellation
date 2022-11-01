@@ -34,7 +34,7 @@ import org.openide.util.NbPreferences;
         displayName = "#DeveloperOptions_DisplayName",
         keywords = "#DeveloperOptions_Keywords",
         keywordsCategory = "constellation/Preferences",
-        position = 1000)
+        position = 400)
 @org.openide.util.NbBundle.Messages({
     "DeveloperOptions_DisplayName=Developer",
     "DeveloperOptions_Keywords=developer"

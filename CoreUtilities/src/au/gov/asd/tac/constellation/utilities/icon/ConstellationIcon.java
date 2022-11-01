@@ -48,12 +48,12 @@ public class ConstellationIcon {
     /**
      * A separator used when concatenating elements of a ConstellationIcon name.
      */
-    protected static final String DEFAULT_ICON_SEPARATOR = SeparatorConstants.PERIOD;
+    public static final String DEFAULT_ICON_SEPARATOR = SeparatorConstants.PERIOD;
 
     /**
      * The default file format for a ConstellationIcon.
      */
-    protected static final String DEFAULT_ICON_FORMAT = "png";
+    public static final String DEFAULT_ICON_FORMAT = "png";
 
     /**
      * The default size (ie. height and width) of a ConstellationIcon.
