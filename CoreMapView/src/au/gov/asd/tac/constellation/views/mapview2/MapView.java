@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.PopularityHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
+import au.gov.asd.tac.constellation.views.mapview2.markers.CircleMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import java.io.BufferedReader;
@@ -82,6 +83,7 @@ public class MapView extends ScrollPane {
     private final List<AbstractMarker> userMarkers = new ArrayList<AbstractMarker>();
 
     private int drawnMarkerId = 0;
+    private boolean drawingCircleMarker = false;
 
     public static final double minLong = -169.1110266;
     public static final double maxLong = 190.48712;
@@ -93,6 +95,7 @@ public class MapView extends ScrollPane {
     private Canvas mapCanvas;
     private Group countryGroup;
     private Group drawnMarkerGroup;
+    private Group polygonMarkerGroup;
     private GraphicsContext gc;
     //private WebEngine webEngine;
     //private WebView webView;
@@ -105,6 +108,8 @@ public class MapView extends ScrollPane {
     private double scale = 1.0;
     //private final SVGPath p = new SVGPath();
     private final List<SVGPath> countrySVGPaths = new ArrayList<>();
+
+    private CircleMarker circleMarker = null;
 
     private double mouseAnchorX;
     private double mouseAnchorY;
@@ -123,6 +128,7 @@ public class MapView extends ScrollPane {
         mapImage = new Image("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\resources\\world-map.jpg");
         countryGroup = new Group();
         drawnMarkerGroup = new Group();
+        polygonMarkerGroup = new Group();
 
         mapCanvas = new Canvas();
         gc = mapCanvas.getGraphicsContext2D();
@@ -241,14 +247,7 @@ public class MapView extends ScrollPane {
         mapGroupHolder.setPrefWidth(1010.33);
         //mapGroupHolder.setPrefHeight(967.25);
         mapGroupHolder.setPrefHeight(1224);
-        //drawMarker(51.509865, -0.118092, 0.05);
-        //drawMarker(-22.908333, -43.196388, 0.05);
-        //drawMarker(31.224361, 121.469170, 0.05);
-        //drawMarker(-33.868820, 151.209296, 0.05);
 
-        //drawMarker(-33.870453, 151.208755, 0.05);
-        //drawMarker(-31.953512, 115.857048, 0.05);
-        //drawLine(0, 0, 0, 0);
         mapGroupHolder.getChildren().add(countryGroup);
 
         /*DayNightLayer dayNightLayer = new DayNightLayer();
@@ -258,13 +257,43 @@ public class MapView extends ScrollPane {
         mapGroupHolder.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+
                 double x = event.getX();
                 double y = event.getY();
 
-                UserPointMarker marker = new UserPointMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0.05, 95, -91);
-                marker.setMarkerPosition(0, 0);
-                drawnMarkerGroup.getChildren().addAll(marker.getMarker());
-                userMarkers.add(marker);
+                if (event.isShiftDown()) {
+                    drawingCircleMarker = true;
+                    circleMarker = new CircleMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0, 0, 0);
+                    polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
+
+
+                } else if (!drawingCircleMarker) {
+                    UserPointMarker marker = new UserPointMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0.05, 95, -91);
+                    marker.setMarkerPosition(0, 0);
+                    drawnMarkerGroup.getChildren().addAll(marker.getMarker());
+                    userMarkers.add(marker);
+                } else if (drawingCircleMarker) {
+                    circleMarker = null;
+                    polygonMarkerGroup.getChildren().clear();
+                    drawingCircleMarker = false;
+                }
+                event.consume();
+            }
+
+        });
+
+        mapGroupHolder.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+
+                if (drawingCircleMarker && circleMarker != null) {
+                    double x = event.getX();
+                    double y = event.getY();
+
+                    double distance = Math.sqrt(Math.pow(x - circleMarker.getCenterX(), 2) + Math.pow(y - circleMarker.getCenterY(), 2));
+
+                    circleMarker.setRadius(distance);
+                }
 
                 event.consume();
             }
@@ -272,6 +301,8 @@ public class MapView extends ScrollPane {
         });
 
         mapGroupHolder.getChildren().addAll(drawnMarkerGroup);
+        mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
+
 
     }
 
