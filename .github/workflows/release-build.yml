@@ -1,15 +1,17 @@
 name: Create Release Build
 
 on: workflow_dispatch
- 
+
 jobs:
   create-release-build:
 
     runs-on: ubuntu-latest
 
     env:
-      VERSION: "v2.7.0"
+      VERSION: "v2.8.0"
+      RUNNER_IMAGE: constellationapplication/netbeans-runner:12.0.4
 
+    steps:
       - name: Checkout Constellation repository
         uses: actions/checkout@v2
         with:
@@ -53,9 +55,9 @@ jobs:
       - name: Build Zips
         uses: addnab/docker-run-action@v3
         with:
-          image: constellationapplication/netbeans-runner:12.0.4
+          image: "${RUNNER_IMAGE}"
           options: |
-            --volume ${{ github.workspace }}:/code 
+            --volume ${{ github.workspace }}:/code
             --volume /home/runner/.ivy2:/root/.ivy2
             --workdir /code/constellation-applications
           run: |

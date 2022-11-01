@@ -157,6 +157,7 @@ public class DelimitedImportController extends ImportController {
                                 .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
                                 .set(ImportDelimitedPlugin.PARSER_PARAMETER_IDS_PARAMETER_ID, currentParameters)
                                 .set(ImportDelimitedPlugin.FILES_INCLUDE_HEADERS_PARAMETER_ID, filesIncludeHeaders)
+                                .set(ImportDelimitedPlugin.SKIP_INVALID_ROWS_ID, isSkipInvalidRows())
                                 .followedBy(ArrangementPluginRegistry.GRID_COMPOSITE)
                                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                                 .executeWriteLater(importGraph);
@@ -173,6 +174,7 @@ public class DelimitedImportController extends ImportController {
                     .set(ImportDelimitedPlugin.FILES_PARAMETER_ID, importFiles)
                     .set(ImportDelimitedPlugin.SCHEMA_PARAMETER_ID, schema)
                     .set(ImportDelimitedPlugin.FILES_INCLUDE_HEADERS_PARAMETER_ID, filesIncludeHeaders)
+                    .set(ImportDelimitedPlugin.SKIP_INVALID_ROWS_ID, isSkipInvalidRows())
                     .followedBy(ArrangementPluginRegistry.GRID_COMPOSITE)
                     .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                     .executeWriteLater(importGraph);

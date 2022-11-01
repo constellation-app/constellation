@@ -35,11 +35,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Callback;
 
 /**
- * A colour picker which is the GUI element corresponding to a
+ * A color picker which is the GUI element corresponding to a
  * {@link PluginParameter} of
  * {@link au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType}.
  * <p>
- * Picking a colour will set the colour value for the underlying
+ * Picking a color will set the color value for the underlying
  * {@link PluginParameter}.
  *
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType

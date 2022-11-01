@@ -68,7 +68,7 @@ public class BlazeAttributeInteractionNGTest {
 
         final Blaze blaze = new Blaze(87, ConstellationColor.BANANA);
         final String validResult = instance.getDisplayText(blaze);
-        assertEquals(validResult, "Colour: Banana; Angle: 87");
+        assertEquals(validResult, "Color: Banana; Angle: 87");
     }
 
     /**

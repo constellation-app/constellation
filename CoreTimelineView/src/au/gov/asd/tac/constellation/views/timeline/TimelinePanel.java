@@ -110,9 +110,9 @@ public class TimelinePanel extends Region {
     private long expectedtxMod = Long.MIN_VALUE;
 
     /*
-     If there is no colour set for a node or transaction then set it to clouds.
+     If there is no color set for a node or transaction then set it to clouds.
      */
-    private static final Color FALLBACK_COLOUR = ConstellationColor.CLOUDS.getJavaFXColor();
+    private static final Color FALLBACK_COLOR = ConstellationColor.CLOUDS.getJavaFXColor();
 
     /**
      * Constructs a new TimelinePanel, and sets the parent top component as its
@@ -247,7 +247,7 @@ public class TimelinePanel extends Region {
 
                     // Get the color for this transaction:
                     ConstellationColor col = ConstellationColor.getColorValue(graph.getStringValue(colorTransAttr, transactionID));
-                    final Color transColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
+                    final Color transColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOR;
 
                     // Get the selection status for the transaction:
                     final boolean transSelected = graph.getBooleanValue(selectedTransAttr, transactionID);
@@ -258,9 +258,9 @@ public class TimelinePanel extends Region {
 
                     // Get the color for each vertex:
                     col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceA));
-                    final Color sourceAColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
+                    final Color sourceAColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOR;
                     col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceB));
-                    final Color sourceBColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
+                    final Color sourceBColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOR;
 
                     // Get the selection state for each vertex:
                     final boolean sourceASelected = graph.getBooleanValue(selectedVertAttr, sourceA);

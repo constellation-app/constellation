@@ -26,15 +26,14 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttribute
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
@@ -52,6 +51,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
 
 /**
  * This class handles the logic for selecting the correct elements on the graphs
@@ -59,7 +59,6 @@ import java.util.stream.Collectors;
  *
  * @author Atlas139mkm
  */
-@PluginInfo(pluginType = PluginType.SEARCH, tags = {"SEARCH"})
 public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
     private final boolean selectAll;
@@ -72,6 +71,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     private final String currentSelection;
 
     private FindResultsList findInCurrentSelectionList;
+
 
     private static final String ANY = "Any";
     private static final String ALL = "All";
@@ -151,15 +151,12 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             foundResult = new FindResultsList(newIndex, newParamters, oldList.getGraphId());
         }
 
+
         foundResult.clear();
         graph.setObjectValue(stateId, 0, foundResult);
 
         final int elementCount = elementType.getElementCount(graph);
 
-        // do this if add to selection
-        if (IGNORE.equals(currentSelection)) {
-            clearSelection(graph);
-        }
         findInCurrentSelectionList = new FindResultsList(graph.getId());
         final FindResultsList findAllMatchingResultsList = new FindResultsList(graph.getId());
 
@@ -232,6 +229,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
                             // If the current selection = ignore or add to
                             if ((IGNORE.equals(currentSelection) || ADD_TO.equals(currentSelection))) {
+
                                 // set the elements selection attribute to true
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                                 // add a new find result to the found results list
@@ -260,11 +258,13 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                         }
                     }
                 }
+
                 /**
                  * if match criteria = all and the attributes values match all
                  * of the criteria.
                  */
-                if (allOrAny.equals(ALL) && matchesAllCount == criteriaList.size()) {
+                if (allOrAny.contains(ALL) && matchesAllCount == criteriaList.size()) {
+
                     // add a new find result to the found results list
                     // of the element
                     foundResult.add(new FindResult(currElement, uid, elementType));
@@ -279,6 +279,8 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         }
         findAllMatchingResultsList.addAll(findResultSet);
 
+        final int resultsFoundSize = findAllMatchingResultsList.size();
+
         // if Find in select all the find in results
         if (FIND_IN.equals(currentSelection)) {
             selectFindInResults(FIND_IN.equals(currentSelection), findInCurrentSelectionList, foundResult, graph, selectedAttribute);
@@ -292,8 +294,15 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             selectMatchingAllResults(ALL.equals(allOrAny), findAllMatchingResultsList, foundResult, graph, selectedAttribute);
         }
 
+
         // if the user clicked find next or prev
         if (!selectAll) {
+            
+            // do this if ignore selection
+            if (IGNORE.equals(currentSelection)) {
+                clearSelection(graph);
+            }
+            
             // Clean the find results list to only contain unique graph elements
             final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
             foundResult.clear();
@@ -318,6 +327,9 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         }
         //If no results are found, set the meta attribute to null
         graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult);
+
+        Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(resultsFoundSize));
+
     }
 
     /**
@@ -345,9 +357,11 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                     graph.setBooleanValue(selectedAttribute, fr.getID(), true);
                 }
             }
+
             // clear the found result and add the findAllmatching results to it
             foundResult.clear();
             foundResult.addAll(findAllMatchingResultsList);
+
         }
     }
 
@@ -377,6 +391,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             // clear the foundResult and add the findIncurrentSelection list to it
             foundResult.clear();
             foundResult.addAll(findInCurrentSelectionList);
+
         }
     }
 
@@ -573,6 +588,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @return
      */
     private boolean searchAsBoolean(final FindCriteriaValues values, final int attributeInt, final int currElement, final GraphWriteMethods graph) {
+
         final BooleanCriteriaValues booleanValues = (BooleanCriteriaValues) values;
         final boolean value = graph.getBooleanValue(attributeInt, currElement);
         boolean matches = false;
@@ -581,12 +597,13 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         if (booleanValues.getBoolValue() == value) {
             matches = true;
         }
+
         return matches;
     }
 
     /**
      * This function checks to see if a graph elements color attribute matches
-     * the criteria specified by the ColourCriteriaValues.
+ the criteria specified by the ColorCriteriaValues.
      *
      * @param values the color criteriaValues
      * @param attributeInt the int of the attribute
@@ -595,7 +612,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @return
      */
     private boolean searchAsColor(final FindCriteriaValues values, final int attributeInt, final int currElement, final GraphWriteMethods graph) {
-        final ColourCriteriaValues colorValues = (ColourCriteriaValues) values;
+        final ColorCriteriaValues colorValues = (ColorCriteriaValues) values;
         final ConstellationColor color = graph.getObjectValue(attributeInt, currElement);
         boolean matches = false;
 

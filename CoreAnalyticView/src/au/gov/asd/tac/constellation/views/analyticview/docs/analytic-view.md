@@ -67,5 +67,5 @@ button.
 
 Once a question has finished running, the results are compiled into a
 table which is displayed at the top of the view. You can also visualise
-these results on the graph with options to add colour, size, and
+these results on the graph with options to add color, size, and
 show/hide filters.

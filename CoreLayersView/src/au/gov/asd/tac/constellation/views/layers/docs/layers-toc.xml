@@ -3,7 +3,7 @@
 <toc version="2.0">
     <tocitem text="Views" mergetype="javax.help.SortMerge">
         <tocitem text="Layers View" mergetype="javax.help.SortMerge">
-            <tocitem text="Layers View (Experimental)" target="au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent" />
+            <tocitem text="Layers View" target="au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent" />
         </tocitem>
     </tocitem>
 </toc>

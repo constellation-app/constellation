@@ -22,7 +22,7 @@ displayed with different shapes.
 </tr>
 <tr class="odd">
 <td>color</td>
-<td>The background icon is combined with this colour.</td>
+<td>The background icon is combined with this color.</td>
 </tr>
 <tr class="even">
 <td>selected</td>

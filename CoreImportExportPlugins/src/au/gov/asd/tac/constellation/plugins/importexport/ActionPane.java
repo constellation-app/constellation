@@ -23,6 +23,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -40,7 +41,7 @@ public class ActionPane extends BorderPane {
     private static final Insets PADDING = new Insets(5, 5, 35, 5);
     private static final int HBOX_SPACING = 5;
     private final Button importButton;
-
+    private final CheckBox skipInvalidRowsCheckBox;
     private final ImportController importController;
 
     public ActionPane(final ImportController controller) {
@@ -63,6 +64,16 @@ public class ActionPane extends BorderPane {
         });
 
         runBox.getChildren().add(importButton);
+
+        skipInvalidRowsCheckBox = new CheckBox("Skip Invalid Rows");
+        skipInvalidRowsCheckBox.setSelected(false);
+        skipInvalidRowsCheckBox.setDisable(true);        
+        
+        skipInvalidRowsCheckBox.setOnAction((t) -> {
+            controller.setSkipInvalidRows(skipInvalidRowsCheckBox.isSelected());
+        });
+
+        runBox.getChildren().add(skipInvalidRowsCheckBox);
     }
 
     private void displayAlert(final String title, final String header, final boolean successful) {
@@ -83,5 +94,7 @@ public class ActionPane extends BorderPane {
     // sets the enabled state of the import button
     public void disableButton(final boolean isEnabled) {
         importButton.setDisable(isEnabled);
+        skipInvalidRowsCheckBox.setDisable(isEnabled);
     }
+
 }

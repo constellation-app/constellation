@@ -43,7 +43,7 @@ The following is a high level workflow an analyst can follow (explained
 in detail later on):
 
 1.  Select the file type you want to import with File Parser
-2.  Click on the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_coloured.png" alt="Add File
+2.  Click on the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_colored.png" alt="Add File
     Button" />
     to add files.
 3.  Select your destination graph.
@@ -63,9 +63,9 @@ Hints:
 
 ## Add and Remove Files to Import
 
-Add files to import using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_coloured.png" alt="Add File
+Add files to import using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_colored.png" alt="Add File
 Button" />
-and remove a file using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/minus_coloured.png" alt="Remove File
+and remove a file using the <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/minus_colored.png" alt="Remove File
 Button" />.
 
 All the files that are being added should have the same column structure. When the "Files Include Headers" option is enabled, the column headings of all 
@@ -109,7 +109,17 @@ a graph, select "Show all schema attributes".
 
 If you have a specific format for example the DateTime, then you can
 right click on the DateTime attribute and select the format from the
-drop down list or enter your own.
+drop down list or enter your own Custom Format.
+
+E.g.
+
+-   Select "MM/dd/yyyy HH:mm:ss" (for 05/12/2009 23:59:13)
+-   Enter Custom format "yyyy-MM-dd'T'HH:mmXXX" (for 1999-07-16T19:20-03:30)
+-   Enter Custom format "yyyy-MM-dd HH:mm:ss.SSS XXX" (for 2020-05-09 22:14:14.037 +09:00)
+-   Enter Custom format "yyyy-MM-dd'T'HH:mm:ssXX" (for 2016-06-10T13:53:22+0400)
+
+If the DateTime format is not EPOCH and it doesn't contain a time zone in the Datetime Parameters window, 
+the "Time Zone" field is enabled and you can specify the input time zone specially when it's not GMT.
 
 If you want to create your own attributes then you can by clicking on
 <img src="../constellation/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/docs/resources/plus_black.png" alt="Add Attribute

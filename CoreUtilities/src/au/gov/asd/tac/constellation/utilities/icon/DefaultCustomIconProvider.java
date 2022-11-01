@@ -50,7 +50,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = CustomIconProvider.class)})
 public class DefaultCustomIconProvider implements CustomIconProvider {
 
-    private static final String USER_ICON_DIR = "Icons";
+    public static final String USER_ICON_DIR = "Icons";
     private static final Logger LOGGER = Logger.getLogger(DefaultCustomIconProvider.class.getName());
 
     private static final Map<ConstellationIcon, File> CUSTOM_ICONS = new HashMap<>();
@@ -92,7 +92,11 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
         final ConstellationIcon icon = IconManager.getIcon(iconName);
         if (icon != null && icon.isEditable()) {
             final File iconFile = CUSTOM_ICONS.get(icon);
-            iconFile.deleteOnExit();
+            try {
+                Files.delete(iconFile.toPath());
+            } catch (IOException ioex) {
+                iconFile.deleteOnExit();
+            }
             CUSTOM_ICONS.remove(icon);
             removed = true;
         }
@@ -100,12 +104,40 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
         return removed;
     }
 
+    /**
+     * Check for the presence of a specific icon in the local cache
+     *
+     * @param iconName name of the icon entry we're looking for
+     * @return <b>true</b> if iconName is found in the local cache, otherwise
+     * <b>false</b>
+     */
+    public static boolean containsIcon(final String iconName) {
+        for (final ConstellationIcon custIcon : CUSTOM_ICONS.keySet()) {
+            // check the name of each icon in the local cache
+            if (custIcon.getExtendedName().equalsIgnoreCase(iconName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static void reloadIcons() {
+        // clear the local cache
+        CUSTOM_ICONS.clear();
+        // clear the IconManager cache
+        IconManager.removeIcon("");
+        // load the updated/current set of icons
+        loadIcons();
+        // rebuild cache (done indirectly as part of the iconExists call)
+        IconManager.iconExists("Unknown");
+    }
+
     @Override
     public List<ConstellationIcon> getIcons() {
         return new ArrayList<>(CUSTOM_ICONS.keySet());
     }
 
-    protected static File getIconDirectory() {
+    public static File getIconDirectory() {
         // If for whatever reason we are not running as a netbeans application then it doesn't make sense to check preferences for a user icon directory.
         if (!NetbeansUtilities.isNetbeansApplicationRunning()) {
             return null;
@@ -123,7 +155,7 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
         return iconDir.isDirectory() ? iconDir : null;
     }
 
-    private static void loadIcons() {
+    public static void loadIcons() {
         final File iconDirectory = DefaultCustomIconProvider.getIconDirectory();
         if (iconDirectory != null) {
             try (final Stream<Path> filePathStream = Files.walk(iconDirectory.toPath())) {
@@ -134,12 +166,14 @@ public class DefaultCustomIconProvider implements CustomIconProvider {
                         final String extensionlessFileName = fileName.replace(SeparatorConstants.PERIOD + ConstellationIcon.DEFAULT_ICON_FORMAT, "");
                         final String[] iconNameComponents = extensionlessFileName.split("\\" + ConstellationIcon.DEFAULT_ICON_SEPARATOR);
                         final String iconName = iconNameComponents[iconNameComponents.length - 1];
-                        final List<String> iconCategories = Arrays.asList(Arrays.copyOfRange(iconNameComponents, 0, iconNameComponents.length - 1));
-                        final ConstellationIcon customIcon = new ConstellationIcon.Builder(iconName, new FileIconData(file))
-                                .addCategories(iconCategories)
-                                .setEditable(true)
-                                .build();
-                        CUSTOM_ICONS.put(customIcon, file);
+                        if (!containsIcon(iconName)) {
+                            final List<String> iconCategories = Arrays.asList(Arrays.copyOfRange(iconNameComponents, 0, iconNameComponents.length - 1));
+                            final ConstellationIcon customIcon = new ConstellationIcon.Builder(iconName, new FileIconData(file))
+                                    .addCategories(iconCategories)
+                                    .setEditable(true)
+                                    .build();
+                            CUSTOM_ICONS.put(customIcon, file);
+                        }
                     }
                 });
             } catch (final IOException ex) {

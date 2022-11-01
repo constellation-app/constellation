@@ -119,8 +119,8 @@ public final class ConversationBox extends StackPane {
     private int searchCount;
 
     private static final String FOUND_TEXT = "Showing ";
-    private static final String FOUND_PASS_COLOUR = "-fx-text-fill: yellow;";
-    private static final String FOUND_FAIL_COLOUR = "-fx-text-fill: red;";
+    private static final String FOUND_PASS_COLOR = "-fx-text-fill: yellow;";
+    private static final String FOUND_FAIL_COLOR = "-fx-text-fill: red;";
     private final Label foundLabel = new Label();
 
     private final TextField searchTextField = new TextField();
@@ -243,7 +243,7 @@ public final class ConversationBox extends StackPane {
         searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
         searchTextField.setOnKeyTyped(e -> {
             foundLabel.setText("searching...");
-            foundLabel.setStyle(FOUND_PASS_COLOUR);
+            foundLabel.setStyle(FOUND_PASS_COLOR);
 
             // If they hit enter iterate through the results
             searchCount = "\r".equals(e.getCharacter()) ? (searchCount + 1) % foundCount : 0;
@@ -292,7 +292,7 @@ public final class ConversationBox extends StackPane {
                 ? ""
                 : FOUND_TEXT + (searchCount + 1) + " of " + foundCount
         );
-        foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOUR : FOUND_FAIL_COLOUR);
+        foundLabel.setStyle(foundCount > 0 ? FOUND_PASS_COLOR : FOUND_FAIL_COLOR);
     }
 
     /**

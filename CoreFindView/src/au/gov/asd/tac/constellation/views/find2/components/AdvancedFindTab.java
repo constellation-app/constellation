@@ -28,10 +28,10 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeD
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.AdvancedCriteriaBorderPane;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.BooleanCriteriaPanel;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.ColourCriteriaPanel;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.ColorCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.DateTimeCriteriaPanel;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.IconCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.FloatCriteriaPanel;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.IconCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.StringCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
@@ -89,6 +89,16 @@ public class AdvancedFindTab extends Tab {
     private final Pane widthSpacer = new Pane();
     private final Pane heightSpacer = new Pane();
 
+    private final GridPane currentSelectionPane = new GridPane();
+    private final GridPane matchesFoundPane = new GridPane();
+
+    private final GridPane bottomGrid = new GridPane();
+
+    private boolean firstSearch = true;
+    private final String foundLabelText = "Find: Advanced Search: Number of results found: ";
+    private final Label matchesFoundLabel = new Label("");
+    private final Label matchesFoundCountLabel = new Label("");
+
     protected final HBox buttonsHBox = new HBox();
     protected final VBox buttonsVBox = new VBox();
     protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
@@ -111,6 +121,19 @@ public class AdvancedFindTab extends Tab {
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPreviousAction());
 
+        matchesFoundPane.add(matchesFoundLabel, 0, 0);
+        matchesFoundPane.add(matchesFoundCountLabel, 1, 0);
+        
+        FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> {
+
+            if (firstSearch) {
+                matchesFoundLabel.setText(foundLabelText);
+                firstSearch = false;
+            }
+
+            matchesFoundCountLabel.setText("" + newValue);
+        });
+
     }
 
     /**
@@ -122,16 +145,23 @@ public class AdvancedFindTab extends Tab {
         currentSelectionChoiceBox.getSelectionModel().select(0);
         matchCriteriaChoiceBox.getSelectionModel().select(0);
 
+        currentSelectionPane.add(currentSeletionLabel, 0, 0);
+        currentSelectionPane.add(currentSelectionChoiceBox, 0, 1);
+        currentSelectionPane.setPadding(new Insets(1, 0, 0, 25));
+        currentSelectionPane.setVgap(4.25);
+
+
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 0, 1);
         settingsGrid.add(matchCriteriaLabel, 1, 0);
         settingsGrid.add(matchCriteriaChoiceBox, 1, 1);
-        settingsGrid.add(currentSeletionLabel, 2, 0);
-        settingsGrid.add(currentSelectionChoiceBox, 2, 1);
+        settingsGrid.add(currentSelectionPane, 2, 0, 1, 2);
+
 
         settingsGrid.setPadding(new Insets(5));
         settingsGrid.setHgap(5);
         settingsGrid.setVgap(5);
+
 
         settingsBorderPane.setCenter(settingsGrid);
         settingsBorderPane.setPadding(new Insets(0, 0, 10, 0));
@@ -160,7 +190,10 @@ public class AdvancedFindTab extends Tab {
         buttonsHBox.setPadding(new Insets(10, 10, 5, 10));
         buttonsHBox.setSpacing(5);
 
-        updateGridColours(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
+        matchesFoundPane.setPadding(new Insets(10, 12, 5, 10));
+
+
+        updateGridColors(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
     }
 
     /**
@@ -172,7 +205,12 @@ public class AdvancedFindTab extends Tab {
         buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
 
         buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
-        parentComponent.getParentComponent().setBottom(buttonsHBox);
+
+        bottomGrid.getChildren().clear();
+        bottomGrid.add(buttonsHBox, 0, 0);
+        bottomGrid.add(matchesFoundPane, 0, 1);
+
+        parentComponent.getParentComponent().setBottom(bottomGrid);
     }
 
     /**
@@ -222,7 +260,7 @@ public class AdvancedFindTab extends Tab {
      *
      * @param type
      */
-    private void updateGridColours(final GraphElementType type) {
+    private void updateGridColors(final GraphElementType type) {
         int i = 0;
         final List<AdvancedCriteriaBorderPane> criteriaList = getCorrespondingCriteriaList(type);
 
@@ -258,8 +296,8 @@ public class AdvancedFindTab extends Tab {
             gridPane.add(cirteriaPane, 0, i);
             i++;
         }
-        // update the grid colours to match the new list order
-        updateGridColours(type);
+        // update the grid colors to match the new list order
+        updateGridColors(type);
     }
 
     /**
@@ -278,8 +316,8 @@ public class AdvancedFindTab extends Tab {
         gridPane.add(criteriaList.get(criteriaList.size() - 1), 0, gridPane.getRowCount());
         GridPane.setHgrow(criteriaList.get(criteriaList.size() - 1), Priority.ALWAYS);
 
-        // update the grid colours to match the new list order
-        updateGridColours(type);
+        // update the grid colors to match the new list order
+        updateGridColors(type);
     }
 
     /**
@@ -321,8 +359,8 @@ public class AdvancedFindTab extends Tab {
                             pane.getTypeChoiceBox().getSelectionModel().select(attributeName);
                             GridPane.setHgrow(criteriaList.get(paneIndex), Priority.ALWAYS);
 
-                            // update the colours of the list to match
-                            updateGridColours(type);
+                            // update the colors of the list to match
+                            updateGridColors(type);
 
                             return;
                         }
@@ -356,7 +394,7 @@ public class AdvancedFindTab extends Tab {
             case BooleanAttributeDescription.ATTRIBUTE_NAME:
                 return new BooleanCriteriaPanel(this, attributeName, type);
             case ColorAttributeDescription.ATTRIBUTE_NAME:
-                return new ColourCriteriaPanel(this, attributeName, type);
+                return new ColorCriteriaPanel(this, attributeName, type);
             case ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME:
                 return new DateTimeCriteriaPanel(this, attributeName, type);
             case IconAttributeDescription.ATTRIBUTE_NAME:
@@ -463,6 +501,7 @@ public class AdvancedFindTab extends Tab {
             FindViewController.getDefault().retrieveAdvancedSearch(false, true);
         }
     }
+
 
     /**
      * This action is called when the find next prev is pressed. It calls the

@@ -25,7 +25,7 @@ void main(void) {
     // Lookup the texture
     vec4 color = texture(glyphImageTexture, textureCoordinates);
 
-    // Colour to emit is that passes in with its alpha multiplied by the value from the glyph image texture
+    // Color to emit is that passes in with its alpha multiplied by the value from the glyph image texture
     // If the resulting alpha is below the threshold we discard.
     float alpha = color.r * fLabelColor.a;
     if (alpha < ALPHA_THRESHOLD) {

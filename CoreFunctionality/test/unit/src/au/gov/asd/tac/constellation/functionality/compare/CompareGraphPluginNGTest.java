@@ -63,10 +63,10 @@ import org.testng.annotations.Test;
  */
 public class CompareGraphPluginNGTest {
 
-    public static final ConstellationColor ADDED_COLOUR = ConstellationColor.DARK_GREEN;
-    public static final ConstellationColor REMOVED_COLOUR = ConstellationColor.RED;
-    public static final ConstellationColor CHANGED_COLOUR = ConstellationColor.YELLOW;
-    public static final ConstellationColor UNCHANGED_COLOUR = ConstellationColor.GREY;
+    public static final ConstellationColor ADDED_COLOR = ConstellationColor.DARK_GREEN;
+    public static final ConstellationColor REMOVED_COLOR = ConstellationColor.RED;
+    public static final ConstellationColor CHANGED_COLOR = ConstellationColor.YELLOW;
+    public static final ConstellationColor UNCHANGED_COLOR = ConstellationColor.GREY;
 
     public CompareGraphPluginNGTest() {
     }
@@ -158,7 +158,7 @@ public class CompareGraphPluginNGTest {
         Graph finalGraph = null;
         GraphRecordStore changes = new GraphRecordStore();
         try {
-            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
             System.out.println("changes ==>\n" + changes.toStringVerbose());
             assertEquals(changes.size(), 9);
 
@@ -292,7 +292,7 @@ public class CompareGraphPluginNGTest {
         Graph finalGraph = null;
         GraphRecordStore changes = new GraphRecordStore();
         try {
-            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
             System.out.println("changes ==>\n" + changes.toStringVerbose());
             assertEquals(changes.size(), 5);
 
@@ -424,7 +424,7 @@ public class CompareGraphPluginNGTest {
         Graph finalGraph = null;
         GraphRecordStore changes = new GraphRecordStore();
         try {
-            changes = instance.compareGraphs("", compareAll, originalAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+            changes = instance.compareGraphs("", compareAll, originalAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
             System.out.println("changes ==>\n" + changes.toStringVerbose());
 //            assertEquals(changes.size(), 3);
 
@@ -526,7 +526,7 @@ public class CompareGraphPluginNGTest {
 
         GraphRecordStore changes = new GraphRecordStore();
         try {
-            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
             System.out.println("changes ==>\n" + changes.toStringVerbose());
             assertEquals(changes.size(), 5);
         } catch (PluginException ex) {
@@ -595,7 +595,7 @@ public class CompareGraphPluginNGTest {
         final CompareGraphPlugin instance = new CompareGraphPlugin();
         GraphRecordStore changes = new GraphRecordStore();
         try {
-            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+            changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
             System.out.println("changes ==>\n" + changes.toStringVerbose());
             assertEquals(changes.size(), 7);
         } catch (PluginException ex) {
@@ -654,14 +654,14 @@ public class CompareGraphPluginNGTest {
         ignoreTransactionAttributes.add("[id]");
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        final GraphRecordStore changes = instance.compareGraphs("", original, original, new HashSet<>(), new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+        final GraphRecordStore changes = instance.compareGraphs("", original, original, new HashSet<>(), new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
         assertEquals(changes.size(), 1);
 
         final GraphRecordStore expResult = new GraphRecordStore();
         expResult.add();
         expResult.set(GraphRecordStoreUtilities.SOURCE + CompareGraphPlugin.COMPARE_ATTRIBUTE, CompareGraphPlugin.UNCHANGED);
-        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, UNCHANGED_COLOUR);
+        expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.OVERLAY_COLOR, UNCHANGED_COLOR);
         expResult.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL, "vx0");
 
         System.out.println(expResult.toStringVerbose());
@@ -703,7 +703,7 @@ public class CompareGraphPluginNGTest {
         ignoreTransactionAttributes.add("[id]");
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
         System.out.println(changes.toStringVerbose());
         assertEquals(changes.size(), 4);
@@ -748,7 +748,7 @@ public class CompareGraphPluginNGTest {
         ignoreTransactionAttributes.add("[id]");
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
         System.out.println("original=>" + original.toStringVerbose());
         System.out.println("compare=>" + compare.toStringVerbose());
@@ -795,7 +795,7 @@ public class CompareGraphPluginNGTest {
         ignoreTransactionAttributes.add("[id]");
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
         System.out.println("changes=>" + changes.toStringVerbose());
         assertEquals(changes.size(), 3);
@@ -845,7 +845,7 @@ public class CompareGraphPluginNGTest {
         ignoreTransactionAttributes.add("[id]");
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
         System.out.println("original ==>\n" + original.toStringVerbose());
         System.out.println("compare ==>\n" + compare.toStringVerbose());
@@ -882,7 +882,7 @@ public class CompareGraphPluginNGTest {
         ignoreTransactionAttributes.add("[id]");
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, new HashSet<>(), ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
         System.out.println("original ==>\n" + original.toStringVerbose());
         System.out.println("compare ==>\n" + compare.toStringVerbose());
@@ -932,7 +932,7 @@ public class CompareGraphPluginNGTest {
         ignoreTransactionAttributes.add("[id]");
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
         System.out.println("original ==>\n" + original.toStringVerbose());
         System.out.println("compare ==>\n" + compare.toStringVerbose());
@@ -996,7 +996,7 @@ public class CompareGraphPluginNGTest {
         ignoreTransactionAttributes.add("[id]");
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+        final GraphRecordStore changes = instance.compareGraphs("", original, compare, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
         System.out.println("original ==>\n" + original.toStringVerbose());
         System.out.println("compare ==>\n" + compare.toStringVerbose());
@@ -1074,7 +1074,7 @@ public class CompareGraphPluginNGTest {
         ignoreTransactionAttributes.add("[id]");
 
         final CompareGraphPlugin instance = new CompareGraphPlugin();
-        final GraphRecordStore changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOUR, REMOVED_COLOUR, CHANGED_COLOUR, UNCHANGED_COLOUR);
+        final GraphRecordStore changes = instance.compareGraphs("", originalAll, compareAll, vertexPrimaryKeys, transactionPrimaryKeys, ignoreVertexAttributes, ignoreTransactionAttributes, ADDED_COLOR, REMOVED_COLOR, CHANGED_COLOR, UNCHANGED_COLOR);
 
         final boolean initializeWithSchema = true;
         final boolean completeWithSchema = false;

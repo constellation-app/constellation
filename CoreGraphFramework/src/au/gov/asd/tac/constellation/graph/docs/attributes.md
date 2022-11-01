@@ -38,7 +38,7 @@ value. The set of attribute types that are commonly used include:
 </tr>
 <tr class="odd">
 <td>color</td>
-<td>A colour. Some colours have names, other are represented by red/green/blue/alpha values between 0 and 1</td>
+<td>A color. Some colors have names, other are represented by red/green/blue/alpha values between 0 and 1</td>
 </tr>
 <tr class="even">
 <td>date</td>

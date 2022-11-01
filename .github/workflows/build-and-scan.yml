@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      RUNNER_IMAGE: constellationapplication/netbeans-runner:12.0.4
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
       DESTINATION_BRANCH: "${{ github.base_ref }}"
@@ -32,7 +33,7 @@ jobs:
         repository: constellation-app/constellation
         path: constellation
         fetch-depth: 0
-      
+
     # Set the verbose flag as a variable
     - name: Set Verbosity
       id: verbosity
@@ -60,7 +61,7 @@ jobs:
     - name: Run Tests
       uses: addnab/docker-run-action@v3
       with:
-        image: constellationapplication/netbeans-runner:12.0.4
+        image: "${RUNNER_IMAGE}"
         options: |
           --mount type=bind,source=${{ github.workspace }},target=/code
           --mount type=bind,source=/home/runner/.ivy2,target=/root/.ivy2
@@ -71,9 +72,14 @@ jobs:
     - name: Run Sonar
       uses: addnab/docker-run-action@v3
       with:
-        image: constellationapplication/netbeans-runner:12.0.4
+        image: "${RUNNER_IMAGE}"
         options: |
           --mount type=bind,source=${{ github.workspace }},target=/code
           --workdir /code/constellation
         run: |
-          .githubutilities/sonar.sh "${GITHUB_REPOSITORY}" "${PULL_REQUEST_NUMBER}" "${DESTINATION_BRANCH}" "${SOURCE_BRANCH}" "${SONAR_TOKEN}"
+          .githubutilities/sonar.sh
+          "${GITHUB_REPOSITORY}"
+          "${PULL_REQUEST_NUMBER}"
+          "${DESTINATION_BRANCH}"
+          "${SOURCE_BRANCH}"
+          "${SONAR_TOKEN}"

@@ -16,7 +16,7 @@ properties:
 
 -   *Name* - the name assigned to this type
 -   *Description* - a description of what the type is
--   *Colour* - the colour which should be set for nodes of this type
+-   *Color* - the color which should be set for nodes of this type
 -   *Foreground Icon* - the foreground icon which should be set for
     nodes of this type
 -   *Background Icon* - the background icon which should be set for
@@ -40,7 +40,7 @@ transaction type holds the following properties:
 
 -   *Name* - the name assigned to this type
 -   *Description* - a description of what the type is
--   *Colour* - the colour which should be set for transactions of this
+-   *Color* - the color which should be set for transactions of this
     type
 -   *Style* - the line style which should be set for transactions of
     this type
