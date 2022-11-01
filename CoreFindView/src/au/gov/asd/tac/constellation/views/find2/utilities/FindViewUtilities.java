@@ -49,6 +49,7 @@ public class FindViewUtilities {
                             ((VisualGraphTopComponent) component).requestActive();
                         }
                     });
+                    break;
                 }
             }
         }
