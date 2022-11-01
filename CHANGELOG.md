@@ -1,5 +1,15 @@
 # Constellation Changes	
 
+## Changes in October 2022
+
+-   Moved `ApplicationFontOptionsPanel`, `ApplicationFontOptionsPanelController` and
+    `ApplicationFontPreferenceKeys` into `ApplicationOptionsPanel`, `ApplicationOptionsPanelController`
+    and `ApplicationPrefrenceKeys` respectively. 
+
+-   Moved `AnaglyphicDisplayPanel`, `AnaglyphicDisplayOptionsPanelController` and
+    `AnaglyphicDisplayPreferenceKeys` into `GraphOptionsPanel`, `GraphOptionsPanelController`
+    and `GraphPreferenceKeys` respectively. 
+
 ## Changes in August 2022
 
 -   Moved `ClusteringConcept`, `HierarchicalStateAttributeDescription` and
@@ -78,7 +88,10 @@
 
 -   Added `PluginTags` class to hold all tags as constants for `PluginInfo`.
 
--   Added `isRequired` in `PluginParameter` with a getter and a setter, which
+-   Changed the parameter for takeScreenshot in RecentGraphScreenshotUtilities 
+    from filename to filepath.
+
+-   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
     can be used to configure the required plugin parameters to mark as `*required`
     in the swagger.
 

@@ -36,7 +36,7 @@ import org.openide.util.NbPreferences;
         displayName = "#AdvancedOption_DisplayName_DataAccessView",
         keywords = "#AdvancedOption_Keywords_DataAccessView",
         keywordsCategory = "constellation/DataAccessView",
-        position = 1200
+        position = 200
 )
 @org.openide.util.NbBundle.Messages({
     "AdvancedOption_DisplayName_DataAccessView=Data Access View",
@@ -102,7 +102,7 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
     @Override
     public HelpCtx getHelpCtx() {
-        return null; // new HelpCtx("...ID") if you have a help set
+        return new HelpCtx(getClass().getName());
     }
 
     @Override

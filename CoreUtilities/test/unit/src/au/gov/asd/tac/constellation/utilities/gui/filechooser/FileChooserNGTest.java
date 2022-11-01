@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui.filechooser;
 
-import java.awt.EventQueue;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -56,8 +55,8 @@ public class FileChooserNGTest {
 
     private static MockedStatic<SwingUtilities> swingUtilsMockedStatic;
     private static MockedStatic<Platform> platformMockedStatic;
-    private static MockedStatic<EventQueue> eventQueueMockedStatic;
     private static MockedStatic<CompletableFuture> completableFutureMockedStatic;
+    private ShowFileChooserDialog showFileChooserDialog = mock(ShowFileChooserDialog.class);
 
     private File file;
 
@@ -69,7 +68,6 @@ public class FileChooserNGTest {
 
         swingUtilsMockedStatic = Mockito.mockStatic(SwingUtilities.class);
         platformMockedStatic = Mockito.mockStatic(Platform.class);
-        eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class);
         completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class);
     }
 
@@ -77,7 +75,6 @@ public class FileChooserNGTest {
     public static void tearDownClass() throws Exception {
         swingUtilsMockedStatic.close();
         platformMockedStatic.close();
-        eventQueueMockedStatic.close();
         completableFutureMockedStatic.close();
 
         try {
@@ -101,7 +98,7 @@ public class FileChooserNGTest {
                     return completableFuture;
                 });
 
-        completableFutureMockedStatic.when(() -> CompletableFuture.supplyAsync(any(Supplier.class)))
+        completableFutureMockedStatic.when(() -> CompletableFuture.completedFuture(any(Supplier.class)))
                 .thenAnswer(iom -> {
                     final Supplier<Optional<File>> supplier = iom.getArgument(0);
 
@@ -111,52 +108,30 @@ public class FileChooserNGTest {
                     return completableFuture;
                 });
 
-        completableFutureMockedStatic.when(() -> CompletableFuture.completedFuture(
-                ArgumentMatchers.<Optional<List<File>>>any())
-        )
-                .then(iom -> {
-                    final Optional<List<File>> suppliedFiles = iom.getArgument(0);
-
-                    final CompletableFuture<Optional<List<File>>> completableFuture
-                            = mock(CompletableFuture.class);
-                    doReturn(suppliedFiles).when(completableFuture).get();
-
-                    return completableFuture;
-                });
-
-        completableFutureMockedStatic.when(() -> CompletableFuture.supplyAsync(any(Supplier.class)))
-                .thenAnswer(iom -> {
-                    final Supplier<Optional<List<File>>> supplier = iom.getArgument(0);
-
-                    final CompletableFuture<Optional<List<File>>> completableFuture = mock(CompletableFuture.class);
-                    doReturn(supplier.get()).when(completableFuture).get();
-
-                    return completableFuture;
-                });
-
         file = mock(File.class);
 
-        eventQueueMockedStatic.when(() -> EventQueue.invokeAndWait(any(ShowFileChooserDialog.class)))
-                .thenAnswer(iom -> {
-                    final ShowFileChooserDialog showFileChooserDialog = iom.getArgument(0);
-
-                    when(showFileChooserDialog.getSelectedFiles()).thenReturn(Optional.of(List.of(file)));
-
-                    return null;
-                });
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
         swingUtilsMockedStatic.reset();
         platformMockedStatic.reset();
-        eventQueueMockedStatic.reset();
         completableFutureMockedStatic.reset();
     }
 
     @Test
     public void openFileDialog() throws ExecutionException, InterruptedException {
         final FileChooserBuilder fileChooserBuilder = mock(FileChooserBuilder.class);
+
+        CompletableFuture<Optional<File>> completableOptional = mock(CompletableFuture.class);
+        doReturn(List.of(file)).when(completableOptional).get();
+
+        CompletableFuture<Optional<List<File>>> optionalFiles = mock(CompletableFuture.class);
+        doReturn(file).when(optionalFiles).get();
+
+        when(FileChooser.openSaveDialog(fileChooserBuilder)).thenReturn(completableOptional);
+        when(FileChooser.openOpenDialog(fileChooserBuilder)).thenReturn(completableOptional);
+        when(FileChooser.openMultiDialog(fileChooserBuilder)).thenReturn(optionalFiles);
 
         reset(fileChooserBuilder);
         openSingleFileDialog(
@@ -273,11 +248,9 @@ public class FileChooserNGTest {
             swingUtilsMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(isSwingThread);
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(isFxThread);
 
-            assertSame(runner.get().get().get(), file);
+            assertSame(runner.get().get(), file);
             assertEquals(showFileMockedConstruction.constructed().size(), 1);
-            eventQueueMockedStatic.verify(()
-                    -> EventQueue.invokeAndWait(showFileMockedConstruction.constructed().get(0))
-            );
+
         }
     }
 
@@ -314,12 +287,8 @@ public class FileChooserNGTest {
             swingUtilsMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(isSwingThread);
             platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(isFxThread);
 
-            assertEquals(runner.get().get().get(), List.of(file));
+            assertEquals(runner.get().get(), file);
             assertEquals(showFileMockedConstruction.constructed().size(), 1);
-            eventQueueMockedStatic.verify(()
-                    -> EventQueue.invokeAndWait(showFileMockedConstruction.constructed().get(0))
-            );
         }
     }
-
 }

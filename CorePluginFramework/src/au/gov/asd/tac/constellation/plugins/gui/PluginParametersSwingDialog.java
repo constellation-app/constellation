@@ -139,6 +139,10 @@ public class PluginParametersSwingDialog {
         }
     }
 
+    public void setSize(final Dimension dimension) {
+        xp.setPreferredSize(dimension);
+    }
+
     public void showAndWait() {
         final DialogDescriptor dd = new DialogDescriptor(xp, title);
         final Object r = DialogDisplayer.getDefault().notify(dd);

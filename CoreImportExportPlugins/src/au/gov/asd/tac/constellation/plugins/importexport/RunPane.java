@@ -489,10 +489,7 @@ public final class RunPane extends BorderPane implements KeyListener {
         if (column != null && !column.validate(currentRows)) {
             if (draggingAttributeNode != null) {
                 NotifyDisplayer.displayAlert("Delimited Importer", "Attribute mismatch", "Column " + column.getLabel()
-                        + " cannot be converted to " + draggingAttributeNode.getAttribute().getName()
                         + " attribute format. Try changing the format by right clicking the attribute.", Alert.AlertType.ERROR);
-
-                draggingAttributeNode.getAttributeList().addAttributeNode(draggingAttributeNode);
             }
             column.validate(currentRows);
         }
