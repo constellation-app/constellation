@@ -260,15 +260,17 @@ public class MapView extends ScrollPane {
 
                 double x = event.getX();
                 double y = event.getY();
+                
+                LOGGER.log(Level.SEVERE, "X circle: " + x + " Y circle: " + y);
 
                 if (event.isShiftDown()) {
                     drawingCircleMarker = true;
-                    circleMarker = new CircleMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0, 0, 0);
+                    circleMarker = new CircleMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0, 100, 100);
                     polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
-
+                    polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
 
                 } else if (!drawingCircleMarker) {
-                    UserPointMarker marker = new UserPointMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0.05, 95, -91);
+                    UserPointMarker marker = new UserPointMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0.05, 95, -95);
                     marker.setMarkerPosition(0, 0);
                     drawnMarkerGroup.getChildren().addAll(marker.getMarker());
                     userMarkers.add(marker);
@@ -293,6 +295,7 @@ public class MapView extends ScrollPane {
                     double distance = Math.sqrt(Math.pow(x - circleMarker.getCenterX(), 2) + Math.pow(y - circleMarker.getCenterY(), 2));
 
                     circleMarker.setRadius(distance);
+                    circleMarker.setLineEnd(x, y);
                 }
 
                 event.consume();

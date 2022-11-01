@@ -16,7 +16,9 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 
 /**
  *
@@ -29,13 +31,25 @@ public class CircleMarker extends AbstractMarker {
     private double radius = 0;
 
     private final Circle circle = new Circle();
+    private final Line line = new Line();
 
     public CircleMarker(MapViewTopComponent parentComponent, int markerID, double centerX, double centerY, double radius, int xOffset, int yOffset) {
         super(parentComponent, markerID, -99, xOffset, yOffset);
 
-        this.centerX = centerX;
-        this.centerY = centerY;
+        this.centerX = centerX; //+ xOffset;
+        this.centerY = centerY; //+ yOffset;
         this.radius = radius;
+
+        circle.setCenterX(this.centerX);
+        circle.setCenterY(this.centerY);
+
+        line.setStartX(this.centerX);
+        line.setStartY(this.centerY);
+
+        line.setEndX(this.centerX);
+        line.setEndY(this.centerY);
+
+        line.setStroke(Color.YELLOW);
 
         circle.setRadius(radius);
         circle.setOpacity(0.5);
@@ -54,6 +68,10 @@ public class CircleMarker extends AbstractMarker {
         return circle;
     }
 
+    public Line getUILine() {
+        return line;
+    }
+
     public double getRadius() {
         return radius;
     }
@@ -63,4 +81,8 @@ public class CircleMarker extends AbstractMarker {
         circle.setRadius(radius);
     }
 
+    public void setLineEnd(double x, double y) {
+        line.setEndX(x);
+        line.setEndY(y);
+    }
 }
