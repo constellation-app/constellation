@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescription;
-import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -44,7 +43,7 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.Ad
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
-import java.awt.EventQueue;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindViewUtilities;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -54,8 +53,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  * This class handles the logic for selecting the correct elements on the graphs
@@ -330,19 +327,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         // Swap to view the graph where the element is selected 
         if (searchAllGraphs) {
-            final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
-            if (topComponents != null) {
-                for (final TopComponent component : topComponents) {
-                    if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
-                        EventQueue.invokeLater(new Runnable() {
-                            @Override
-                            public void run() {
-                                ((VisualGraphTopComponent) component).requestActive();
-                            }
-                        });
-                    }
-                }
-            }
+            FindViewUtilities.searchAllGraphs(graph);
         }
 
         //If no results are found, set the meta attribute to null
