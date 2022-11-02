@@ -269,15 +269,17 @@ public class MapView extends ScrollPane {
                     polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
                     polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
 
-                } else if (!drawingCircleMarker) {
+                } else if (drawingCircleMarker) {
+                    circleMarker.generateCircle();
+                    drawnMarkerGroup.getChildren().add(circleMarker.getMarker());
+                    circleMarker = null;
+                    polygonMarkerGroup.getChildren().clear();
+                    drawingCircleMarker = false;
+                } else {
                     UserPointMarker marker = new UserPointMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0.05, 95, -95);
                     marker.setMarkerPosition(0, 0);
                     drawnMarkerGroup.getChildren().addAll(marker.getMarker());
                     userMarkers.add(marker);
-                } else if (drawingCircleMarker) {
-                    circleMarker = null;
-                    polygonMarkerGroup.getChildren().clear();
-                    drawingCircleMarker = false;
                 }
                 event.consume();
             }

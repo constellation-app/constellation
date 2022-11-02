@@ -15,10 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.SVGPath;
 
 /**
  *
@@ -32,6 +36,7 @@ public class CircleMarker extends AbstractMarker {
 
     private final Circle circle = new Circle();
     private final Line line = new Line();
+    private final SVGPath projectedCircle = new SVGPath();
 
     public CircleMarker(MapViewTopComponent parentComponent, int markerID, double centerX, double centerY, double radius, int xOffset, int yOffset) {
         super(parentComponent, markerID, -99, xOffset, yOffset);
@@ -53,7 +58,40 @@ public class CircleMarker extends AbstractMarker {
 
         circle.setRadius(radius);
         circle.setOpacity(0.5);
-        circle.setStrokeWidth(5);
+        //circle.setStrokeWidth(5);
+        circle.setFill(Color.BLACK);
+        circle.setStroke(Color.BLACK);
+
+        projectedCircle.setStroke(Color.BLACK);
+        projectedCircle.setFill(Color.ORANGE);
+        projectedCircle.setOpacity(0.5);
+
+        projectedCircle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+
+                projectedCircle.setFill(Color.YELLOW);
+
+                e.consume();
+            }
+        });
+
+        projectedCircle.setOnMouseExited(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+
+                projectedCircle.setFill(Color.ORANGE);
+
+                e.consume();
+            }
+        });
+
+        projectedCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent e) {
+
+                parentComponent.removeUserMarker(markerID);
+                e.consume();
+            }
+        });
+
     }
 
     public double getCenterX() {
@@ -76,6 +114,43 @@ public class CircleMarker extends AbstractMarker {
         return radius;
     }
 
+    public void generateCircle() {
+
+        double temp = centerX;
+        centerY += 149;
+        centerY = super.YToLat(centerY, 1010.33, 1224);
+        centerX = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+
+        String path = "";
+        boolean first = true;
+        final int points = 60;
+        final double spacing = (2 * Math.PI) / points;
+        for (int i = 0; i < points + 1; i++) {
+            final double angle = spacing * i;
+
+            double vertexX = centerX + radius * Math.cos(angle);
+            double vertexY = centerY + radius * Math.sin(angle);
+
+            vertexX = super.longToX(vertexX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+            vertexY = super.latToY(vertexY, 1010.33, 1224) - 149;
+
+            if (Double.isNaN(vertexX) || Double.isNaN(vertexY)) {
+                continue;
+            }
+
+            if (first) {
+                path = "M" + vertexX + "," + vertexY;
+
+                first = false;
+            } else {
+                path += "L" + vertexX + "," + vertexY;
+            }
+
+        }
+
+        projectedCircle.setContent(path);
+    }
+
     public void setRadius(double radius) {
         this.radius = radius;
         circle.setRadius(radius);
@@ -84,5 +159,10 @@ public class CircleMarker extends AbstractMarker {
     public void setLineEnd(double x, double y) {
         line.setEndX(x);
         line.setEndY(y);
+    }
+
+    @Override
+    public SVGPath getMarker() {
+        return projectedCircle;
     }
 }
