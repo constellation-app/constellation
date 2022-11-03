@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,6 @@ import au.gov.asd.tac.constellation.views.tableview.tasks.UpdateDataTask;
 import au.gov.asd.tac.constellation.views.tableview.utilities.ColumnIndexSort;
 import au.gov.asd.tac.constellation.views.tableview.utilities.TableViewUtilities;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -627,24 +626,7 @@ public class Table {
      */
     protected TableColumn<ObservableList<String>, String> createColumn(final String attributeName) {
         TableColumn<ObservableList<String>, String> newColumn = new TableColumn<>(attributeName);
-        newColumn.setComparator(new Comparator<String>(){
-            @Override
-            public int compare(final String str0, final String str1) {
-                if (str0 == null) return -1;
-                if (str1 == null) return 1;
-                try {
-                    final Double dbl0 = Double.parseDouble(str0);
-                    final Double dbl1 = Double.parseDouble(str1);
-                    return dbl0.compareTo(dbl1);
-                } catch (NumberFormatException nfe) {
-                    // revert to usual string comparison
-                }
-                if (str0.length() > 1 && str1.length() > 1 && str0.startsWith(str1.substring(0, 1))) {
-                    return compare(str0.substring(1), str1.substring(1));
-                }
-                return str0.compareTo(str1);
-            }
-        });
+        newColumn.setComparator(new TableDataComparator());
         return newColumn;
     }
 
