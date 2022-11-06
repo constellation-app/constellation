@@ -46,6 +46,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A plugin template which separates the seed set into batches, and runs each
@@ -54,7 +56,7 @@ import java.util.concurrent.Future;
  * @author twilight_sparkle
  */
 public abstract class WorkflowQueryPlugin extends SimplePlugin {
-
+    
     private static final String WORKFLOW_GROUP = "workflow_group";
     public static final String BATCH_SIZE_PARAMETER_ID = PluginParameter.buildId(WorkflowQueryPlugin.class, "batch_size");
     private static final String BATCH_SIZE_PARAM_NAME = "Batch Size";
@@ -65,9 +67,10 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
     private static final String MAX_CONCURRENT_THREADS_PARAM_DESCRIPTION = "The maximum number of plugins to run concurrently, with each plugin handling one batch.";
     private static final int MAX_CONCURRENT_THREADS_PARAM_DEFAULT = 25;
     private static final String THREAD_POOL_NAME = "Workflow Query Plugin";
-
+    private static final Logger LOGGER = Logger.getLogger(WorkflowQueryPlugin.class.getName());
+    
     private List<GraphRecordStore> queryBatches;
-
+    
     @Override
     protected void execute(final PluginGraphs pluginGraphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final Graph graph = pluginGraphs.getGraph();
@@ -108,7 +111,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
                 }
             }));
         });
-
+        
         final int[] workerFailCount = {0};
         for (Future<?> worker : workerPlugins) {
             try {
@@ -130,7 +133,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
             throw new PluginException(PluginNotificationLevel.ERROR, entireException.toString());
         }
     }
-
+    
     @Override
     public PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
@@ -161,22 +164,22 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
 
         // add parameters specific to a batched workflow plugin
         parameters.addGroup(WORKFLOW_GROUP, new PluginParametersPane.TitledSeparatedParameterLayout("Workflow Parameters", 12, false));
-
+        
         final PluginParameter<IntegerParameterValue> batchSizeParameter = IntegerParameterType.build(BATCH_SIZE_PARAMETER_ID);
         batchSizeParameter.setName(BATCH_SIZE_PARAM_NAME);
         batchSizeParameter.setDescription(BATCH_SIZE_PARAM_DESCRIPTION);
         batchSizeParameter.setIntegerValue(getDefaultBatchSize());
         parameters.addParameter(batchSizeParameter, WORKFLOW_GROUP);
-
+        
         final PluginParameter<IntegerParameterValue> maxConcurrentPluginsParam = IntegerParameterType.build(MAX_CONCURRENT_PLUGINS_PARAMETER_ID);
         maxConcurrentPluginsParam.setName(MAX_CONCURRENT_THREADS_PARAM_NAME);
         maxConcurrentPluginsParam.setDescription(MAX_CONCURRENT_THREADS_PARAM_DESCRIPTION);
         maxConcurrentPluginsParam.setIntegerValue(getDefaultConcurrentThreads());
         parameters.addParameter(maxConcurrentPluginsParam, WORKFLOW_GROUP);
-
+        
         return parameters;
     }
-
+    
     @Override
     public void updateParameters(final Graph graph, final PluginParameters parameters) {
         getWorkflow().forEach(pluginName -> PluginRegistry.get(pluginName).updateParameters(graph, parameters));
@@ -185,21 +188,21 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
     protected int getDefaultBatchSize() {
         return BATCH_SIZE_PARAM_DEFAULT;
     }
-
+    
     protected int getDefaultConcurrentThreads() {
         return MAX_CONCURRENT_THREADS_PARAM_DEFAULT;
     }
-
+    
     public abstract List<String> getWorkflow();
-
+    
     public abstract String getErrorHandlingPlugin();
-
+    
     public boolean addPartialResults() {
         return false;
     }
-
+    
     private static class WorkerQueryPlugin extends SimplePlugin {
-
+        
         final List<Plugin> plugins = new ArrayList<>();
         final StoreGraph batchGraph;
         final StoreGraph originalGraph;
@@ -208,7 +211,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
         final boolean addPartialResults;
         static int pluginNum = 0;
         final int pluginNumber;
-
+        
         private WorkerQueryPlugin(final List<String> pluginNames, final StoreGraph batchGraph, final List<PluginException> wholeOfWorkflowExceptions, final String errorHandlingPlugin, final boolean addPartialResults) {
             pluginNames.forEach(pluginName -> plugins.add(PluginRegistry.get(pluginName)));
             this.errorHandlingPlugin = errorHandlingPlugin == null ? null : PluginRegistry.get(errorHandlingPlugin);
@@ -218,12 +221,12 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
             this.wholeOfWorkflowExceptions = wholeOfWorkflowExceptions;
             this.addPartialResults = addPartialResults;
         }
-
+        
         @Override
         public String getName() {
             return "Worker Query Plugin";
         }
-
+        
         @Override
         protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             boolean error = false;
@@ -240,6 +243,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
 
                 // run the plugin
                 try {
+                    LOGGER.log(Level.INFO, "Running {0}", plugin.getName());
                     PluginExecution.withPlugin(plugin)
                             .withParameters(pluginSpecificParameters)
                             .executeNow(batchGraph);
@@ -254,24 +258,24 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
             if (error && errorHandlingPlugin != null) {
                 PluginExecution.withPlugin(errorHandlingPlugin).executeNow(addPartialResults ? batchGraph : originalGraph);
             }
-
+            
             PluginExecution.withPlugin(new AddToGraphPlugin(error && !addPartialResults ? originalGraph : batchGraph)).executeLater(graphs.getGraph());
         }
     }
-
+    
     private static class AddToGraphPlugin extends SimpleEditPlugin {
-
+        
         private final StoreGraph copyGraph;
-
+        
         public AddToGraphPlugin(final StoreGraph batchGraph) {
             this.copyGraph = batchGraph;
         }
-
+        
         @Override
         public String getName() {
             return "Add to Graph Plugin";
         }
-
+        
         @Override
         protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             CopyGraphUtilities.copyGraphToGraph(copyGraph, graph, true);
