@@ -15,8 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -37,6 +40,8 @@ public class CircleMarker extends AbstractMarker {
     private final Circle circle = new Circle();
     private final Line line = new Line();
     private final SVGPath projectedCircle = new SVGPath();
+
+    private static final Logger LOGGER = Logger.getLogger("CircleMarkerLogger");
 
     public CircleMarker(MapViewTopComponent parentComponent, int markerID, double centerX, double centerY, double radius, int xOffset, int yOffset) {
         super(parentComponent, markerID, -99, xOffset, yOffset);
@@ -64,7 +69,7 @@ public class CircleMarker extends AbstractMarker {
 
         projectedCircle.setStroke(Color.BLACK);
         projectedCircle.setFill(Color.ORANGE);
-        projectedCircle.setOpacity(0.5);
+        projectedCircle.setOpacity(0.4);
 
         projectedCircle.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
@@ -123,7 +128,7 @@ public class CircleMarker extends AbstractMarker {
 
         String path = "";
         boolean first = true;
-        final int points = 60;
+        final int points = 100;
         final double spacing = (2 * Math.PI) / points;
         for (int i = 0; i < points + 1; i++) {
             final double angle = spacing * i;
@@ -147,13 +152,41 @@ public class CircleMarker extends AbstractMarker {
             }
 
         }
-
+        LOGGER.log(Level.SEVERE, "Circle path: " + path);
         projectedCircle.setContent(path);
     }
 
     public void setRadius(double radius) {
         this.radius = radius;
         circle.setRadius(radius);
+    }
+
+    public void setRadius(double edgeX, double edgeY) {
+
+        circle.setRadius(Math.sqrt(Math.pow(edgeX - centerX, 2) + Math.pow(edgeY - centerY, 2)));
+
+        edgeX = super.XToLong(edgeX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+        edgeY = super.YToLat(edgeY, 1010.33, 1224);
+
+        double X = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+        double Y = super.YToLat(centerY + 149, 1010.33, 1224);
+
+        edgeX = edgeX / (180 / Math.PI);
+        edgeY = edgeY / (180 / Math.PI);
+        X = X / (180 / Math.PI);
+        Y = Y / (180 / Math.PI);
+
+        double dlon = edgeX - X;
+        double dlat = edgeY - Y;
+
+        double a = Math.pow(Math.sin(dlat / 2), 2) + Math.cos(Y) * Math.cos(edgeY) * Math.pow(Math.sin(dlon / 2), 2);
+
+        double c = 2 * Math.asin(Math.sqrt(a));
+
+        double distance = 6371 * c;
+
+        this.radius = distance;
+        //circle.setRadius(distance);
     }
 
     public void setLineEnd(double x, double y) {

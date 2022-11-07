@@ -73,9 +73,8 @@ public abstract class AbstractMarker {
 
     protected double YToLat(double y, double mapWidth, double mapHeight) {
 
-        y = ((-2 + (mapHeight / 2)) * (2 * Math.PI)) / mapWidth;
-        // log(tan((PI/4) + (lat/2)))
-        y = (Math.atan(Math.log(y)) - (Math.PI / 4)) * 2;
+        y = ((-y + (mapHeight / 2)) * (2 * Math.PI)) / mapWidth;
+        y = (Math.atan(Math.exp(y)) - (Math.PI / 4)) * 2;
         double lattitude = y / (Math.PI / 180);
         return lattitude;
     }
