@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,9 @@ import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -78,7 +80,9 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
 
         // buildId batches
         try {
-            queryBatches = GraphRecordStoreUtilities.getSelectedVerticesBatches(readableGraph, parameters.getIntegerValue(BATCH_SIZE_PARAMETER_ID));
+            queryBatches = GraphRecordStoreUtilities.SOURCE.equals(getRecordStoreType())
+                    ? GraphRecordStoreUtilities.getSelectedVerticesBatches(readableGraph, parameters.getIntegerValue(BATCH_SIZE_PARAMETER_ID))
+                    : GraphRecordStoreUtilities.getSelectedTransactionBatches(readableGraph, parameters.getIntegerValue(BATCH_SIZE_PARAMETER_ID));
         } finally {
             readableGraph.release();
         }
@@ -100,7 +104,27 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
             final StoreGraph batchGraph = new StoreGraph(graph.getSchema() != null ? graph.getSchema().getFactory().createSchema() : null);
             batchGraph.getSchema().newGraph(batchGraph);
             CopyGraphUtilities.copyGraphTypeElements(readableGraph, batchGraph);
-            GraphRecordStoreUtilities.addRecordStoreToGraph(batchGraph, batch, true, true, null);
+            
+            final Map<String, Integer> vertexMap = new HashMap<>();
+            final Map<String, Integer> transactionMap = new HashMap<>();
+            
+            batch.reset();
+            while (batch.next()) {
+                if (GraphRecordStoreUtilities.SOURCE.equals(getRecordStoreType())) {
+                    final String id = batch.get(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID);
+                    vertexMap.put(id, Integer.valueOf(id));
+                } else {
+                    final String sid = batch.get(GraphRecordStoreUtilities.SOURCE + GraphRecordStoreUtilities.ID);
+                    final String did = batch.get(GraphRecordStoreUtilities.DESTINATION + GraphRecordStoreUtilities.ID);
+                    final String tid = batch.get(GraphRecordStoreUtilities.TRANSACTION + GraphRecordStoreUtilities.ID);
+                    
+                    vertexMap.put(sid, Integer.valueOf(sid));
+                    vertexMap.put(did, Integer.valueOf(did));
+                    transactionMap.put(tid, Integer.valueOf(tid));
+                }
+            }
+            
+            GraphRecordStoreUtilities.addRecordStoreToGraph(batchGraph, batch, true, true, null, vertexMap, transactionMap);
             final WorkerQueryPlugin worker = new WorkerQueryPlugin(getWorkflow(), batchGraph, exceptions, getErrorHandlingPlugin(), addPartialResults());
             workerPlugins.add(workflowExecutor.submit(() -> {
                 Thread.currentThread().setName(THREAD_POOL_NAME);
@@ -199,6 +223,24 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
     
     public boolean addPartialResults() {
         return false;
+    }
+    
+    /**
+     * Returns the type of 'query' RecordStore that is generated from the graph
+     * in this plugin's read stage. The options are RecordStoreUtilities.SOURCE, 
+     * which creates a RecordStore representing the graph's nodes only, 
+     * RecordStoreUtilities.TRANSACTION, which creates a RecordStore
+     * representing the graph's transactions only, and RecordStoreUtilities.ALL, 
+     * which creates a RecordStore representing the whole graph.
+     * 
+     * Implementation should be sure to override this if their query needs to 
+     * work on something other than the graph's nodes only (the default)
+     * 
+     * @return A String representing the type of 'query' RecordStore to be 
+     * generated from the graph
+     */
+    public String getRecordStoreType() {
+        return GraphRecordStoreUtilities.SOURCE;
     }
     
     private static class WorkerQueryPlugin extends SimplePlugin {
