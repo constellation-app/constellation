@@ -317,7 +317,7 @@ public class MapView extends ScrollPane {
 
                     double distance = Math.sqrt(Math.pow(x - circleMarker.getCenterX(), 2) + Math.pow(y - circleMarker.getCenterY(), 2));
 
-                    circleMarker.setRadius(distance);
+                    circleMarker.setRadius(x, y);
                     circleMarker.setLineEnd(x, y);
                 } else if (drawingPolygonMarker && polygonMarker != null && !drawingCircleMarker) {
                     polygonMarker.setEnd(x, y);

@@ -120,24 +120,45 @@ public class CircleMarker extends AbstractMarker {
     }
 
     public void generateCircle() {
-
+        final int EARTH_RADIUS_M = 6_371_008;
         double temp = centerX;
         centerY += 149;
-        centerY = super.YToLat(centerY, 1010.33, 1224);
-        centerX = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+        double centerYLat = super.YToLat(centerY, 1010.33, 1224);
+        double centerXLon = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+
+        double vertexY = centerYLat;
+        double vertexX = centerXLon + (radius / EARTH_RADIUS_M) * (180 / Math.PI) / Math.cos(centerYLat * (Math.PI / 180));
+
+        double newX = super.longToX(vertexX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+        LOGGER.log(Level.SEVERE, "Circle radius: " + radius);
+
+        //radius = Math.sqrt((Math.pow((newX - centerX), 2) + Math.pow(0, 2)));
+        //double edgeLat = centerY + (radius / EARTH_RADIUS_M) * (180 / Math.PI);
+        //double edgeLon = centerX + (radius / EARTH_RADIUS_M) * (180 / Math.PI) / Math.cos(centerY * Math.PI / 180);
+
+        //LOGGER.log(Level.SEVERE, "Edge long: " + edgeLon + ", Edge lat: " + edgeLat);
 
         String path = "";
         boolean first = true;
-        final int points = 100;
+        final int points = 60;
         final double spacing = (2 * Math.PI) / points;
         for (int i = 0; i < points + 1; i++) {
             final double angle = spacing * i;
 
-            double vertexX = centerX + radius * Math.cos(angle);
-            double vertexY = centerY + radius * Math.sin(angle);
+            //radius = radius - ((EARTH_RADIUS_M * 2 * Math.PI) / 360) * angle;
+            vertexX = centerXLon + radius * Math.cos(angle);
+            vertexY = centerYLat + radius * Math.sin(angle);
+
+            //vertexY = centerYLat + ((vertexY - centerYLat) / EARTH_RADIUS_M) * (180 / Math.PI);
+            //vertexX = centerXLon + ((vertexX - centerXLon) / EARTH_RADIUS_M) * (180 / Math.PI) / Math.cos(centerYLat * (Math.PI / 180));
+
+            /*double coef = radius / 111.32;
+            double vertexY = centerY + coef;
+            double vertexX = centerX + coef / Math.cos(centerY * (Math.PI / 180));*/
 
             vertexX = super.longToX(vertexX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
             vertexY = super.latToY(vertexY, 1010.33, 1224) - 149;
+
 
             if (Double.isNaN(vertexX) || Double.isNaN(vertexY)) {
                 continue;
@@ -164,14 +185,17 @@ public class CircleMarker extends AbstractMarker {
     public void setRadius(double edgeX, double edgeY) {
 
         circle.setRadius(Math.sqrt(Math.pow(edgeX - centerX, 2) + Math.pow(edgeY - centerY, 2)));
-
+        edgeY += 149;
         edgeX = super.XToLong(edgeX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-        edgeY = super.YToLat(edgeY, 1010.33, 1224);
+        edgeY = super.YToLat(edgeY, 1010.33, 1224) - 149;
 
+        double newCenterY = centerY + 149;
+
+        //centerY += 149;
         double X = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-        double Y = super.YToLat(centerY + 149, 1010.33, 1224);
+        double Y = super.YToLat(newCenterY, 1010.33, 1224) - 149;
 
-        edgeX = edgeX / (180 / Math.PI);
+        /*edgeX = edgeX / (180 / Math.PI);
         edgeY = edgeY / (180 / Math.PI);
         X = X / (180 / Math.PI);
         Y = Y / (180 / Math.PI);
@@ -183,7 +207,10 @@ public class CircleMarker extends AbstractMarker {
 
         double c = 2 * Math.asin(Math.sqrt(a));
 
-        double distance = 6371 * c;
+        double distance = 6371 * c;*/
+        double distance = Math.sqrt(
+                Math.pow((edgeX - X), 2)
+                + Math.pow((edgeY - Y), 2));
 
         this.radius = distance;
         //circle.setRadius(distance);
