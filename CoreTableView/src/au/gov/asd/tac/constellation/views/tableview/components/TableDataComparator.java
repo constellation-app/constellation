@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.tableview.components;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 /**
@@ -25,7 +26,8 @@ import java.util.Comparator;
  *
  * @author OrionsGuardian
  */
-public class TableDataComparator implements Comparator<String>{
+public class TableDataComparator implements Comparator<String>, Serializable{
+    private static final long serialVersionUID = 1001;
 
     @Override
     public int compare(final String str0, final String str1) {
