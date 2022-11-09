@@ -190,24 +190,9 @@ public class CircleMarker extends AbstractMarker {
         edgeY = super.YToLat(edgeY, 1010.33, 1224) - 149;
 
         double newCenterY = centerY + 149;
-
-        //centerY += 149;
         double X = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
         double Y = super.YToLat(newCenterY, 1010.33, 1224) - 149;
 
-        /*edgeX = edgeX / (180 / Math.PI);
-        edgeY = edgeY / (180 / Math.PI);
-        X = X / (180 / Math.PI);
-        Y = Y / (180 / Math.PI);
-
-        double dlon = edgeX - X;
-        double dlat = edgeY - Y;
-
-        double a = Math.pow(Math.sin(dlat / 2), 2) + Math.cos(Y) * Math.cos(edgeY) * Math.pow(Math.sin(dlon / 2), 2);
-
-        double c = 2 * Math.asin(Math.sqrt(a));
-
-        double distance = 6371 * c;*/
         double distance = Math.sqrt(
                 Math.pow((edgeX - X), 2)
                 + Math.pow((edgeY - Y), 2));

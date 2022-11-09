@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.CircleMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PolygonMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
+import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -314,9 +315,6 @@ public class MapView extends ScrollPane {
 
                 if (drawingCircleMarker && circleMarker != null && !drawingPolygonMarker) {
 
-
-                    double distance = Math.sqrt(Math.pow(x - circleMarker.getCenterX(), 2) + Math.pow(y - circleMarker.getCenterY(), 2));
-
                     circleMarker.setRadius(x, y);
                     circleMarker.setLineEnd(x, y);
                 } else if (drawingPolygonMarker && polygonMarker != null && !drawingCircleMarker) {
@@ -331,7 +329,8 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().addAll(drawnMarkerGroup);
         mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
 
-
+        ToolsOverlay toolsOverlay = new ToolsOverlay();
+        mapStackPane.getChildren().addAll(toolsOverlay.getOverlayPane());
     }
 
     public void removeUserMarker(int id) {
