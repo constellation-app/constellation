@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -138,7 +138,6 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.TRANSACTION));
         elementTypes.add(new ElementTypeParameterValue(GraphElementType.VERTEX));
         SingleChoiceParameterType.setOptionsData(elementTypeParameter, elementTypes);
-        SingleChoiceParameterType.setChoiceData(elementTypeParameter, new ElementTypeParameterValue(GraphElementType.VERTEX));
         parameters.addParameter(elementTypeParameter);
 
         final PluginParameter<MultiChoiceParameterValue> attributesParameter = MultiChoiceParameterType.build(ATTRIBUTES_PARAMETER_ID, GraphAttributeParameterValue.class);
@@ -206,6 +205,8 @@ public abstract class AbstractGeoExportPlugin extends SimpleReadPlugin {
                 }
             }
         });
+        // setting the element type parameter here rather than earlier so that the controller gets triggered
+        SingleChoiceParameterType.setChoiceData(elementTypeParameter, new ElementTypeParameterValue(GraphElementType.VERTEX));
 
         return parameters;
     }
