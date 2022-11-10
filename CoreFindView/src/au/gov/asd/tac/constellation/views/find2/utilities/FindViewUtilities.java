@@ -43,12 +43,7 @@ public class FindViewUtilities {
         if (topComponents != null) {
             for (final TopComponent component : topComponents) {
                 if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
-                    EventQueue.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            ((VisualGraphTopComponent) component).requestActive();
-                        }
-                    });
+                    EventQueue.invokeLater(() -> ((VisualGraphTopComponent) component).requestActive());
                     break;
                 }
             }

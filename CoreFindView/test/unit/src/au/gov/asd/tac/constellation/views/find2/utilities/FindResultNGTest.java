@@ -58,7 +58,7 @@ public class FindResultNGTest {
     @Test
     public void testGetID() {
         System.out.println("getID");
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         assertEquals(findResult.getID(), 1);
     }
@@ -69,7 +69,7 @@ public class FindResultNGTest {
     @Test
     public void testSetID() {
         System.out.println("setID");
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         findResult.setID(2);
         assertEquals(findResult.getID(), 2);
@@ -81,7 +81,7 @@ public class FindResultNGTest {
     @Test
     public void testGetUID() {
         System.out.println("getUID");
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         assertEquals(findResult.getUID(), 2);
     }
@@ -92,7 +92,7 @@ public class FindResultNGTest {
     @Test
     public void testSetUID() {
         System.out.println("setUID");
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         findResult.setUID(3);
         assertEquals(findResult.getUID(), 3);
@@ -104,7 +104,7 @@ public class FindResultNGTest {
     @Test
     public void testGetType() {
         System.out.println("getType");
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         assertEquals(findResult.getType(), GraphElementType.VERTEX);
     }
@@ -115,7 +115,7 @@ public class FindResultNGTest {
     @Test
     public void testSetType() {
         System.out.println("setType");
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "ID");
 
         findResult.setType(GraphElementType.TRANSACTION);
         assertEquals(findResult.getType(), GraphElementType.TRANSACTION);
@@ -129,7 +129,7 @@ public class FindResultNGTest {
         System.out.println("getAttributeName");
 
         String objectValue = "value";
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
 
         assertEquals(findResult.getAttributeName(), "attribute");
     }
@@ -142,7 +142,7 @@ public class FindResultNGTest {
         System.out.println("setAttributeName");
 
         String objectValue = "value";
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
         findResult.setAttributeName("test");
 
         assertEquals(findResult.getAttributeName(), "test");
@@ -156,7 +156,7 @@ public class FindResultNGTest {
         System.out.println("getAttributeValue");
         String objectValue = "value";
         String objectValueExpected = "value";
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
 
         assertEquals(findResult.getAttributeValue(), objectValueExpected);
     }
@@ -170,7 +170,7 @@ public class FindResultNGTest {
 
         String objectValue = "value";
         String objectValueExpected = "valueExpected";
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
         findResult.setAttributeValue(objectValueExpected);
 
         assertEquals(findResult.getAttributeValue(), objectValueExpected);
@@ -183,7 +183,7 @@ public class FindResultNGTest {
     public void testToString() {
         System.out.println("toString");
         String objectValue = "value";
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
 
         String toStringExpected = objectValue.toString() + SEPARATOR + "attribute";
 
@@ -198,13 +198,13 @@ public class FindResultNGTest {
         System.out.println("equals");
 
         String objectValue = "value";
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue);
-        FindResult findResultExpected = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
+        FindResult findResultExpected = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
 
         assertEquals(findResult, findResultExpected);
         assertEquals(findResult, findResult);
 
-        findResultExpected = new FindResult(5, 2, GraphElementType.VERTEX, "attribute", objectValue);
+        findResultExpected = new FindResult(5, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
         assertNotEquals(findResult, findResultExpected);
         assertNotEquals(findResult, objectValue);
     }
@@ -216,8 +216,8 @@ public class FindResultNGTest {
     public void testHashCode() {
         System.out.println("hashCode");
         String objectValue = "value";
-        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue);
-        FindResult findResult2 = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue);
+        findResult = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
+        FindResult findResult2 = new FindResult(1, 2, GraphElementType.VERTEX, "attribute", objectValue, "ID");
 
         assertEquals(findResult.hashCode(), findResult2.hashCode());
     }

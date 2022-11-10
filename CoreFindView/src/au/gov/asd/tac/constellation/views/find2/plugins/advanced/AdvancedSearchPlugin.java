@@ -41,9 +41,9 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalu
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.StringCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
+import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
-import au.gov.asd.tac.constellation.views.find2.utilities.FindViewUtilities;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -134,7 +134,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
          * list with the correct index and the current find parameters
          */
         if (foundResult == null) {
-            foundResult = new FindResultsList(STARTING_INDEX, this.parameters, graph.getId());
+            foundResult = new FindResultsList(STARTING_INDEX, this.parameters);
         } else {
             /**
              * This is delicate, so don't change. This process, captures the
@@ -144,21 +144,26 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
              * parameters are instantiated as new variables as there were
              * manipulation issues elsewhere causing this process to fail.
              */
-            final FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getAdvancedSearchParameters(), foundResult.getGraphId());
+            final FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getAdvancedSearchParameters());
             final AdvancedSearchParameters oldparameters = oldList.getAdvancedSearchParameters();
             final AdvancedSearchParameters newParamters = new AdvancedSearchParameters(this.parameters);
             final int newIndex = getIndex(newParamters, oldparameters, foundResult.getCurrentIndex());
-            foundResult = new FindResultsList(newIndex, newParamters, oldList.getGraphId());
+            foundResult = new FindResultsList(newIndex, newParamters);
         }
 
+        if (ActiveFindResultsList.getAdvancedResultsList() == null && !ActiveFindResultsList.getAdvancedResultsList().getAdvancedSearchParameters().equals(this.parameters)) {
+            ActiveFindResultsList.setAdvancedResultsList(foundResult);
+        } else {
+            ActiveFindResultsList.addToAdvancedFindResultsList(foundResult);
+        }
 
         foundResult.clear();
         graph.setObjectValue(stateId, 0, foundResult);
 
         final int elementCount = elementType.getElementCount(graph);
 
-        findInCurrentSelectionList = new FindResultsList(graph.getId());
-        final FindResultsList findAllMatchingResultsList = new FindResultsList(graph.getId());
+        findInCurrentSelectionList = new FindResultsList();
+        final FindResultsList findAllMatchingResultsList = new FindResultsList();
 
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
 
@@ -234,12 +239,12 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                                 // add a new find result to the found results list
                                 // of the element
-                                foundResult.add(new FindResult(currElement, uid, elementType));
+                                foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
 
                                 // if the current selection = find in and the graph element is already selected
                             } else if (FIND_IN.equals(currentSelection) && graph.getBooleanValue(selectedAttribute, currElement)) {
                                 // add a new FindResult of the graph element to the findInCurrentSelection list
-                                findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                                findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
 
                                 // if the current selection = remove from and the graph element is already selected
                             } else if (REMOVE_FROM.equals(currentSelection) && graph.getBooleanValue(selectedAttribute, currElement)) {
@@ -247,14 +252,14 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                                 graph.setBooleanValue(selectedAttribute, currElement, false);
                                 // add a new find result to the found results list
                                 // of the element
-                                foundResult.add(new FindResult(currElement, uid, elementType));
+                                foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
                             }
                         }
                         // if not select all and the match criteria = any
-                        if (!selectAll && ANY.equals(allOrAny)) {
+                        else if (ANY.equals(allOrAny)) {
                             // add a new find result to the found results list
                             // of the element
-                            foundResult.add(new FindResult(currElement, uid, elementType));
+                            foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
                         }
                     }
                 }
@@ -267,12 +272,12 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
                     // add a new find result to the found results list
                     // of the element
-                    foundResult.add(new FindResult(currElement, uid, elementType));
-                    findResultSet.add(new FindResult(currElement, uid, elementType));
+                    foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
+                    findResultSet.add(new FindResult(currElement, uid, elementType, graph.getId()));
                     // if the attribute is already selected
                     if (graph.getBooleanValue(selectedAttribute, currElement)) {
                         // add it to the find in current selection list
-                        findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                        findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
                     }
                 }
             }
@@ -326,9 +331,9 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         }
 
         // Swap to view the graph where the element is selected 
-        if (searchAllGraphs) {
-            FindViewUtilities.searchAllGraphs(graph);
-        }
+//        if (searchAllGraphs && !foundResult.isEmpty()) {
+//            FindViewUtilities.searchAllGraphs(graph);
+//        }
 
         //If no results are found, set the meta attribute to null
         graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult);

@@ -41,6 +41,7 @@ public class FindResult {
     private Object value;
     private static final String SELECTED = "selected";
     private static final String DEFAULT_VALUE = "found";
+    private final String graphId;
 
     /**
      * Constructs a new <code>FindResult</code> with minimum applicable content.
@@ -49,12 +50,13 @@ public class FindResult {
      * represents.
      * @param type The type of result. May be VERTEX, LINK, EDGE or TRANSACTION.
      */
-    public FindResult(final int id, final long uid, final GraphElementType type) {
+    public FindResult(final int id, final long uid, final GraphElementType type, final String graphId) {
         this.id = id;
         this.uid = uid;
         this.type = type;
         this.attributeName = SELECTED;
         this.value = DEFAULT_VALUE;
+        this.graphId = graphId;
     }
 
     /**
@@ -66,12 +68,13 @@ public class FindResult {
      * @param value The content of the given VERTEX, LINK, EDGE or TRANSACTION.
      */
     public FindResult(final int id, final long uid, final GraphElementType type,
-            final String attributeName, final Object value) {
+            final String attributeName, final Object value, final String graphId) {
         this.id = id;
         this.uid = uid;
         this.type = type;
         this.attributeName = attributeName;
         this.value = value;
+        this.graphId = graphId;
     }
 
     /**
@@ -165,6 +168,15 @@ public class FindResult {
     }
 
     /**
+     * Gets the id of the graph this result is found in
+     * 
+     * @return graphId
+     */
+    public String getGraphId() {
+        return graphId;
+    }
+
+    /**
      * Returns the string representation of this FindResult.
      *
      * @return The current item's value and GraphElementType.
@@ -184,7 +196,7 @@ public class FindResult {
         }
         final FindResult other = (FindResult) obj;
 
-        return this.id == other.id;
+        return this.id == other.id && this.graphId.equals(other.graphId);
     }
 
     @Override
@@ -195,6 +207,7 @@ public class FindResult {
         hash = 97 * hash + Objects.hashCode(this.type);
         hash = 97 * hash + Objects.hashCode(this.attributeName);
         hash = 97 * hash + Objects.hashCode(this.value);
+        hash = 97 * hash + Objects.hashCode(this.graphId);
         return hash;
     }
 }

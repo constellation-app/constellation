@@ -150,13 +150,11 @@ public class AdvancedFindTab extends Tab {
         currentSelectionPane.setPadding(new Insets(1, 0, 0, 25));
         currentSelectionPane.setVgap(4.25);
 
-
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 0, 1);
         settingsGrid.add(matchCriteriaLabel, 1, 0);
         settingsGrid.add(matchCriteriaChoiceBox, 1, 1);
         settingsGrid.add(currentSelectionPane, 2, 0, 1, 2);
-
 
         settingsGrid.setPadding(new Insets(5));
         settingsGrid.setHgap(5);
@@ -191,7 +189,6 @@ public class AdvancedFindTab extends Tab {
         buttonsHBox.setSpacing(5);
 
         matchesFoundPane.setPadding(new Insets(10, 12, 5, 10));
-
 
         updateGridColors(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
     }

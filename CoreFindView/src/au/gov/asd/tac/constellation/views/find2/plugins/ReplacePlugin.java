@@ -108,6 +108,10 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                 // set the string of the element types attribute
                                 // to the new value
                                 graph.setStringValue(a.getId(), currElement, newValue);
+                                // Swap to view the graph where the element is found
+                                if (searchAllGraphs) {
+                                    FindViewUtilities.searchAllGraphs(graph);
+                                }
                                 if (replaceNext) {
                                     return;
                                 }
@@ -117,6 +121,10 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                     // set the string of the element types attribute
                                     // to the new value
                                     graph.setStringValue(a.getId(), currElement, newValue);
+                                    // Swap to view the graph where the element is found
+                                    if (searchAllGraphs) {
+                                        FindViewUtilities.searchAllGraphs(graph);
+                                    }
                                     if (replaceNext) {
                                         return;
                                     }
@@ -126,12 +134,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
                     }
                 }
             }
-        }
-
-        // Swap to view the graph where the element is selected 
-        if (searchAllGraphs) {
-            FindViewUtilities.searchAllGraphs(graph);
-        }
+        }  
     }
 
     @Override

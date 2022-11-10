@@ -113,7 +113,7 @@ public class ResetStatePluginNGTest {
 
             ArrayList<Attribute> attributeList = new ArrayList<>();
             BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
-            FindResultsList foundResult = new FindResultsList(2, parameters, graph.getId());
+            FindResultsList foundResult = new FindResultsList(2, parameters);
 
             wg.setObjectValue(stateId, 0, foundResult);
 

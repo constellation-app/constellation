@@ -26,10 +26,10 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
+import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
-import au.gov.asd.tac.constellation.views.find2.utilities.FindViewUtilities;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -107,6 +107,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         //Retrieve the existing FindResultList Meta attribute
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         FindResultsList foundResult = graph.getObjectValue(stateId, 0);
+      //  ActiveFindResultsList activeFindResultsList = ActiveFindResultsList.getInstance();
 
         /**
          * If it doesn't exist or is null, create a new list with the starting
@@ -114,7 +115,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
          * list with the correct index and the current find parameters
          */
         if (foundResult == null) {
-            foundResult = new FindResultsList(STARTING_INDEX, this.parameters, graph.getId());
+            foundResult = new FindResultsList(STARTING_INDEX, this.parameters);
         } else {
             /**
              * This is delicate, so don't change. This process, captures the
@@ -124,11 +125,17 @@ public class BasicFindPlugin extends SimpleEditPlugin {
              * parameters are instantiated as new variables as they were
              * manipulation issues elsewhere causing this process to fail.
              */
-            final FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getSearchParameters(), foundResult.getGraphId());
+            final FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getSearchParameters());
             final BasicFindReplaceParameters oldparameters = oldList.getSearchParameters();
             final BasicFindReplaceParameters newParamters = new BasicFindReplaceParameters(this.parameters);
             int newIndex = getIndex(newParamters, oldparameters, foundResult.getCurrentIndex());
-            foundResult = new FindResultsList(newIndex, newParamters, oldList.getGraphId());
+            foundResult = new FindResultsList(newIndex, newParamters);
+        }
+
+        if (ActiveFindResultsList.getBasicResultsList() == null || !ActiveFindResultsList.getBasicResultsList().getSearchParameters().equals(this.parameters)) {
+            ActiveFindResultsList.setBasicResultsList(foundResult);
+        } else {
+            ActiveFindResultsList.addToBasicFindResultsList(foundResult);
         }
 
         foundResult.clear();
@@ -143,13 +150,13 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
         final int elementCount = elementType.getElementCount(graph);
 
-        // do this if add to selection
+        // do this if not add to selection
         if (!addToSelection && !removeFromCurrentSelection && !findInCurrentSelection) {
             clearSelection(graph);
         }
 
-        final FindResultsList findInCurrentSelectionList = new FindResultsList(graph.getId());
-        final FindResultsList removeFromCurrentSelectionList = new FindResultsList(graph.getId());
+        final FindResultsList findInCurrentSelectionList = new FindResultsList();
+        final FindResultsList removeFromCurrentSelectionList = new FindResultsList();
 
         final String searchString = regex ? findString : Pattern.quote(findString);
         final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
@@ -192,8 +199,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                                 if (graph.getBooleanValue(selectedAttribute, currElement)) {
                                     // Add the element to the find in and
                                     // remove from list
-                                    findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
-                                    removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                                    findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
+                                    removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
                                 }
                             }
                             // if the user wants to select all, select the
@@ -202,7 +209,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                             }
                             // add the graph element to the foundResult list
-                            foundResult.add(new FindResult(currElement, uid, elementType));
+                            foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
+                            ActiveFindResultsList.addToBasicFindResultsList(foundResult);
                         }
                     }
                 }
@@ -230,31 +238,12 @@ public class BasicFindPlugin extends SimpleEditPlugin {
             foundResult.clear();
             foundResult.addAll(distinctValues);
 
-            /**
-             * If the list isn't empty, and the user clicked find next,
-             * increment the found lists index by 1, otherwise decrement it by
-             * 1. Set the element at the specified index to selected.
-             */
-            if (!foundResult.isEmpty()) {
-                if (getNext) {
-                    foundResult.incrementCurrentIndex();
-                } else {
-                    foundResult.decrementCurrentIndex();
-                }
-
-                final int elementId = foundResult.get(foundResult.getCurrentIndex()).getID();
-                graph.setBooleanValue(selectedAttribute, elementId, !removeFromCurrentSelection);           
-            }
-            graph.setObjectValue(stateId, 0, foundResult);
+            if (searchAllGraphs && ActiveFindResultsList.getBasicResultsList() == null) {
+                ActiveFindResultsList.setBasicResultsList(foundResult);
+            } else if (searchAllGraphs) {
+                ActiveFindResultsList.addToBasicFindResultsList(foundResult);
+            }          
         }
-
-        // Swap to view the graph where the element is selected
-        if (searchAllGraphs) {
-            FindViewUtilities.searchAllGraphs(graph);
-        }
-
-        //If no results are found, set the meta attribute to null
-        graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult); 
     }
 
     /**
