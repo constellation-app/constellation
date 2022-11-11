@@ -170,16 +170,17 @@ public class MapViewPane extends BorderPane {
                 }*/
                 layersDropDown.getItems().forEach(item -> {
 
-                    if (item.endsWith(DAY_NIGHT)) {
-                        addLayer(new DayNightLayer(mapView, layerId++), DAY_NIGHT, layerId - 1);
+                    /*if (item.endsWith(DAY_NIGHT)) {
+                        addLayer(DAY_NIGHT, layerId);
 
                     } else if (item.endsWith(HEATMAP_STANDARD)) {
-                        addLayer(new StandardHeatmapLayer(mapView, layerId++), HEATMAP_STANDARD, layerId - 1);
+                        addLayer(HEATMAP_STANDARD, layerId);
                     } else if (item.endsWith(HEATMAP_POPULARITY)) {
-                        addLayer(new PopularityHeatmapLayer(mapView, layerId++), HEATMAP_POPULARITY, layerId - 1);
+                        addLayer(HEATMAP_POPULARITY, layerId);
                     } else if (item.endsWith(HEATMAP_ACTIVITY)) {
-                        addLayer(new ActivityHeatmapLayer(mapView, layerId++), HEATMAP_ACTIVITY, layerId - 1);
-                    }
+                        addLayer(HEATMAP_ACTIVITY, layerId);
+                    }*/
+                    addLayer(item, layerId);
                 });
 
             }
@@ -254,14 +255,33 @@ public class MapViewPane extends BorderPane {
         setTop(toolBar);
     }
 
-    private void addLayer(AbstractMapLayer layer, String key, int id) {
+    private void addLayer(String key, int id) {
         if (layersDropDown.getCheckModel().getCheckedItems().contains(key) && !layerMap.containsKey(key)) {
-            mapView.addLayer(layer);
+            LOGGER.log(Level.SEVERE, "Adding layer: " + key);
+            mapView.addLayer(getLayerFromKey(key));
             layerMap.put(key, id);
         } else if (!layersDropDown.getCheckModel().getCheckedItems().contains(key) && layerMap.containsKey(key)) {
+            LOGGER.log(Level.SEVERE, "Removing layer: " + key);
             mapView.removeLayer(layerMap.get(key));
             layerMap.remove(key);
         }
+    }
+
+    private AbstractMapLayer getLayerFromKey(String key) {
+        switch (key) {
+            case DAY_NIGHT:
+                return new DayNightLayer(mapView, layerId++);
+            case HEATMAP_STANDARD:
+                return new StandardHeatmapLayer(mapView, layerId++);
+            case HEATMAP_POPULARITY:
+                return new PopularityHeatmapLayer(mapView, layerId++);
+            case HEATMAP_ACTIVITY:
+                return new ActivityHeatmapLayer(mapView, layerId++);
+            default:
+                break;
+        }
+
+        return null;
     }
 
     public MapViewTopComponent getParentComponent()    {

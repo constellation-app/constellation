@@ -103,7 +103,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
             }
         }
 
-        LOGGER.log(Level.SEVERE, "min: " + min + " max: " + max);
+        //LOGGER.log(Level.SEVERE, "min: " + min + " max: " + max);
 
         Vec3[][] heatMapColours = new Vec3[heatMapHeight][heatMapWidth];
         for (int row = 0; row < heatMapColours.length; ++row) {
@@ -293,15 +293,12 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
                 }
 
                 blurredColours[row][col] = new Vec3();
-                LOGGER.log(Level.SEVERE, "Original colour, x : " + heatmapColours[row][col].x + ", y: " + heatmapColours[row][col].y + ", z: " + heatmapColours[row][col].z);
+                //LOGGER.log(Level.SEVERE, "Original colour, x : " + heatmapColours[row][col].x + ", y: " + heatmapColours[row][col].y + ", z: " + heatmapColours[row][col].z);
                 for (int i = 0; i < blurKernel.length; ++i) {
                     samples[i].multiplyDouble(blurKernel[i]);
 
                     blurredColours[row][col].addVector(samples[i]);
 
-                    if (heatmapColours[row][col].z != 1.0) {
-                        LOGGER.log(Level.SEVERE, "Blurring colour, x : " + blurredColours[row][col].x + ", y: " + blurredColours[row][col].y + ", z: " + blurredColours[row][col].z);
-                    }
                 }
             }
         }
@@ -318,7 +315,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
     private Vec3 getHeatmapColour(double value) {
         //float[][] colours = new float[4][3];
 
-        LOGGER.log(Level.SEVERE, "Value passed in: " + value);
+        //LOGGER.log(Level.SEVERE, "Value passed in: " + value);
 
         //float[][] colours = {{0, 52 / 255, 248 / 255}, {0, 1, 0}, {1, 1, 0}, {1, 42 / 255, 0}};
         double[][] colours = {{0, 0, 1}, {0, 1, 0}, {1, 1, 0}, {1, 0, 0}};
@@ -339,8 +336,8 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
         }
         Vec3 heatMapColour = new Vec3();
 
-        LOGGER.log(Level.SEVERE, "id1: " + id1);
-        LOGGER.log(Level.SEVERE, "id2: " + id2);
+        //LOGGER.log(Level.SEVERE, "id1: " + id1);
+        //LOGGER.log(Level.SEVERE, "id2: " + id2);
 
         Color col1 = Color.web(RAINBOW[id1]);
         Color col2 = Color.web(RAINBOW[id2]);

@@ -116,13 +116,14 @@ public class MapView extends ScrollPane {
     private double transalateY;
 
     private final Pane mapGroupHolder = new Pane();
-    private final Group layerGroup = new Group();
+
 
     private final List<AbstractMapLayer> layers = new ArrayList<>();
 
     private ToolsOverlay toolsOverlay = null;
 
-    private Group overlayGroup = new Group();
+    private final Group overlayGroup = new Group();
+    private final Group layerGroup = new Group();
 
     public MapView(MapViewPane parent) {
         this.parent = parent;
@@ -371,10 +372,11 @@ public class MapView extends ScrollPane {
     }
 
     public void removeLayer(int id) {
+        layerGroup.getChildren().clear();
         for (int i = 0; i < layers.size(); ++i) {
             if (layers.get(i).getId() == id) {
                 layers.remove(i);
-                break;
+
             }
         }
         renderLayers();
@@ -383,7 +385,7 @@ public class MapView extends ScrollPane {
     private void renderLayers() {
         layerGroup.getChildren().clear();
         layers.forEach(layer -> {
-            layer.setUp();
+            //layer.setUp();
             layerGroup.getChildren().add(layer.getLayer());
         });
     }
