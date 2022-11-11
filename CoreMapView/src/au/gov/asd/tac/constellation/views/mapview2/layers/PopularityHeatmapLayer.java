@@ -29,8 +29,8 @@ import java.util.Set;
  */
 public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
 
-    public PopularityHeatmapLayer(MapView parent) {
-        super(parent);
+    public PopularityHeatmapLayer(MapView parent, int id) {
+        super(parent, id);
     }
 
     @Override

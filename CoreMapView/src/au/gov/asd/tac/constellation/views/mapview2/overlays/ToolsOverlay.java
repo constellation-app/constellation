@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.overlays;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -34,11 +36,13 @@ public class ToolsOverlay extends AbstractOverlay {
 
     final private GridPane gridPane;
 
-    private boolean drawingEnabled = false;
-    private boolean measureEnabled = false;
+    private BooleanProperty drawingEnabled = new SimpleBooleanProperty(false);
+    private BooleanProperty measureEnabled = new SimpleBooleanProperty(false);
 
     private int height = 75;
     private int width = 150;
+
+    private boolean isShowing = false;
 
     private final String[] units = {"km", "nmi", "mi"};
     private int unitSelected = 0;
@@ -60,9 +64,9 @@ public class ToolsOverlay extends AbstractOverlay {
         measureToggleText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                measureEnabled = !measureEnabled;
+                measureEnabled.set(!measureEnabled.get());
 
-                if (measureEnabled) {
+                if (measureEnabled.get()) {
                     measureToggleText.setText("Enabled");
                 } else {
                     measureToggleText.setText("Disabled");
@@ -99,9 +103,9 @@ public class ToolsOverlay extends AbstractOverlay {
         drawToggleText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                drawingEnabled = !drawingEnabled;
+                drawingEnabled.set(!drawingEnabled.get());
 
-                if (drawingEnabled) {
+                if (drawingEnabled.get()) {
                     drawToggleText.setText("Enabled");
                 } else {
                     drawToggleText.setText("Disabled");
@@ -137,12 +141,28 @@ public class ToolsOverlay extends AbstractOverlay {
 
         overlayPane.setBackground(Background.fill(new Color(0.224, 0.239, 0.278, 1.0)));
 
-        overlayPane.setTranslateX(415);
-        overlayPane.setTranslateY(-550);
+        overlayPane.setTranslateX(815);
+        overlayPane.setTranslateY(20);
 
+    }
+
+    public boolean getIsShowing() {
+        return isShowing;
+    }
+
+    public void setIsShowing(boolean showing) {
+        isShowing = showing;
     }
 
     public BorderPane getOverlayPane() {
         return overlayPane;
+    }
+
+    public BooleanProperty getDrawingEnabled() {
+        return drawingEnabled;
+    }
+
+    public BooleanProperty getMeasureEnabled() {
+        return measureEnabled;
     }
 }

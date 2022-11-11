@@ -26,10 +26,16 @@ import au.gov.asd.tac.constellation.views.mapview.layers.MapLayer;
 import au.gov.asd.tac.constellation.views.mapview.overlays.MapOverlay;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
+import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.ActivityHeatmapLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.PopularityHeatmapLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -41,6 +47,7 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.embed.swing.SwingNode;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
@@ -48,6 +55,7 @@ import javafx.event.EventHandler;
 import javafx.event.EventType;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -84,6 +92,20 @@ public class MapViewPane extends BorderPane {
     private static final String ZOOM_SELECTION = "Zoom to Selection";
     private static final String ZOOM_LOCATION = "Zoom to Location";
 
+    private static final String DAY_NIGHT = "Day / Night";
+    private static final String HEATMAP_STANDARD = "Heatmap(Standard)";
+    private static final String HEATMAP_POPULARITY = "Heatmap(Popularity)";
+    private static final String HEATMAP_ACTIVITY = "Heatmap(Activity)";
+    private static final String ENTITY_PATHS = "Entity Paths";
+    private static final String LOCATION_PATHS = "Location Paths";
+    private static final String THIESSEAN_POLYGONS = "Thiessean Polygons";
+    private static final String POINT_MARKER_ERROR = "Point Marker Error Region (Experimental)";
+
+    private static final String INFO_OVERLAY = "Info Overlay";
+    private static final String TOOLS_OVERLAY = "Tools Overlay";
+    private static final String OVERVIEW_OVERLAY = "Overview Overlay";
+
+
     private final MapProvider defaultProvider;
     private final List<? extends MapProvider> providers;
     private final List<? extends MapExporter> exporters;
@@ -92,14 +114,17 @@ public class MapViewPane extends BorderPane {
     private final ChoiceBox<MapProvider> mapProviderDropDown;
     private final MenuButton zoomDropDown;
     private final CheckComboBox markerDropDown;
-    private final CheckComboBox<MapLayer> layersDropDown;
-    private final CheckComboBox<MapOverlay> overlaysDropDown;
+    private final CheckComboBox<String> layersDropDown;
+    private final CheckComboBox<String> overlaysDropDown;
     private final ChoiceBox colourDropDown;
     private final ChoiceBox markerLabelDropDown;
     private final ComboBox exportDropDown;
     private final Button helpButton;
 
     private MapView mapView;
+
+    private int layerId = 0;
+    private Map<String, Integer> layerMap = new HashMap<>();
 
     private static final Logger LOGGER = Logger.getLogger("MapViewPane");
 
@@ -129,9 +154,36 @@ public class MapViewPane extends BorderPane {
         final List<? extends MapLayer> layers = new ArrayList<>(Lookup.getDefault().lookupAll(MapLayer.class));
         setDropDownOptions(layers);
 
-        layersDropDown = new CheckComboBox(FXCollections.observableList(layers));
+        layersDropDown = new CheckComboBox(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS, POINT_MARKER_ERROR));
         layersDropDown.setTitle("Layers");
         layersDropDown.setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
+
+        layersDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+            public void onChanged(ListChangeListener.Change<? extends String> c) {
+                /*while (c.next()) {
+
+                    if (c.equals(TOOLS_OVERLAY)) {
+                        LOGGER.log(Level.SEVERE, "c equals tools overlay");
+                            mapView.toggleToolsOverlay();
+                        }
+
+                }*/
+                layersDropDown.getItems().forEach(item -> {
+
+                    if (item.endsWith(DAY_NIGHT)) {
+                        addLayer(new DayNightLayer(mapView, layerId++), DAY_NIGHT, layerId - 1);
+
+                    } else if (item.endsWith(HEATMAP_STANDARD)) {
+                        addLayer(new StandardHeatmapLayer(mapView, layerId++), HEATMAP_STANDARD, layerId - 1);
+                    } else if (item.endsWith(HEATMAP_POPULARITY)) {
+                        addLayer(new PopularityHeatmapLayer(mapView, layerId++), HEATMAP_POPULARITY, layerId - 1);
+                    } else if (item.endsWith(HEATMAP_ACTIVITY)) {
+                        addLayer(new ActivityHeatmapLayer(mapView, layerId++), HEATMAP_ACTIVITY, layerId - 1);
+                    }
+                });
+
+            }
+        });
 
         /*layersDropDown.addEventHandler(EventType.ROOT, new EventHandler<>() {
             @Override
@@ -142,12 +194,39 @@ public class MapViewPane extends BorderPane {
 
         });*/
 
-        final List<? extends MapOverlay> overlays = new ArrayList<>(Lookup.getDefault().lookupAll(MapOverlay.class));
-        setDropDownOptions(overlays);
+        //final List<? extends MapOverlay> overlays = new ArrayList<>(Lookup.getDefault().lookupAll(MapOverlay.class));
+        //setDropDownOptions(overlays);
 
-        overlaysDropDown = new CheckComboBox(FXCollections.observableList(overlays));
+        overlaysDropDown = new CheckComboBox(FXCollections.observableArrayList(INFO_OVERLAY, OVERVIEW_OVERLAY, TOOLS_OVERLAY));
         overlaysDropDown.setTitle("Overlays");
         overlaysDropDown.setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
+
+        overlaysDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+            public void onChanged(ListChangeListener.Change<? extends String> c) {
+                /*while (c.next()) {
+
+                    if (c.equals(TOOLS_OVERLAY)) {
+                        LOGGER.log(Level.SEVERE, "c equals tools overlay");
+                            mapView.toggleToolsOverlay();
+                        }
+
+                }*/
+                overlaysDropDown.getItems().forEach(item -> {
+
+                    if (item.endsWith(TOOLS_OVERLAY)) {
+                        if (overlaysDropDown.getCheckModel().getCheckedItems().contains(item)) {
+                            mapView.toggleToolsOverlay();
+                        } else {
+                            mapView.hideToolsOverlay();
+                        }
+
+                    } else {
+                        LOGGER.log(Level.SEVERE, item + "not showing");
+                    }
+                });
+
+            }
+        });
 
         zoomDropDown = new MenuButton("Zoom");
         zoomDropDown.getItems().addAll(new MenuItem(ZOOM_ALL), new MenuItem(ZOOM_SELECTION), new MenuItem(ZOOM_LOCATION));
@@ -173,6 +252,16 @@ public class MapViewPane extends BorderPane {
 
         toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton);
         setTop(toolBar);
+    }
+
+    private void addLayer(AbstractMapLayer layer, String key, int id) {
+        if (layersDropDown.getCheckModel().getCheckedItems().contains(key) && !layerMap.containsKey(key)) {
+            mapView.addLayer(layer);
+            layerMap.put(key, id);
+        } else if (!layersDropDown.getCheckModel().getCheckedItems().contains(key) && layerMap.containsKey(key)) {
+            mapView.removeLayer(layerMap.get(key));
+            layerMap.remove(key);
+        }
     }
 
     public MapViewTopComponent getParentComponent()    {

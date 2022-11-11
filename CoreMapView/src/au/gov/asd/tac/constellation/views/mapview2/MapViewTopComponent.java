@@ -367,7 +367,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             }
 
                             if (elementType == GraphElementType.TRANSACTION) {
-                                LOGGER.log(Level.SEVERE, "Transaction id is: " + elementID);
 
                                 int dateTimeID = TemporalConcept.TransactionAttribute.DATETIME.get(graph);
 

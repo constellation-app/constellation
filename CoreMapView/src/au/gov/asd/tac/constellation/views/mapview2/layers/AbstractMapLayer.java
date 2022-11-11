@@ -26,9 +26,14 @@ import javafx.scene.Group;
 public abstract class AbstractMapLayer {
     protected MapView parent;
     protected Graph currentGraph = null;
-    public AbstractMapLayer(MapView parent) {
+    protected boolean isShowing = false;
+
+    protected int id;
+
+    public AbstractMapLayer(MapView parent, int id) {
         this.parent = parent;
         currentGraph = parent.getCurrentGraph();
+        this.id = id;
     }
 
     protected class Location {
@@ -50,6 +55,18 @@ public abstract class AbstractMapLayer {
     }
 
     public void setUp() {
+    }
+
+    public boolean getIsShowing() {
+        return isShowing;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setIsShowing(boolean showing) {
+        isShowing = showing;
     }
 
     public Group getLayer() {

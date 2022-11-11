@@ -79,9 +79,6 @@ public class MapView extends ScrollPane {
     private MapViewPane parent;
 
     private final StackPane mapStackPane;
-    private final Image mapImage;
-    private final ImageView mapDisplay;
-    private final List<String> countryDrawings = new ArrayList<String>();
     private final List<AbstractMarker> userMarkers = new ArrayList<AbstractMarker>();
 
     private int drawnMarkerId = 0;
@@ -99,9 +96,7 @@ public class MapView extends ScrollPane {
     private Group countryGroup;
     private Group drawnMarkerGroup;
     private Group polygonMarkerGroup;
-    private GraphicsContext gc;
-    //private WebEngine webEngine;
-    //private WebView webView;
+
     private static final Logger LOGGER = Logger.getLogger("Test");
 
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0);
@@ -121,21 +116,24 @@ public class MapView extends ScrollPane {
     private double transalateY;
 
     private final Pane mapGroupHolder = new Pane();
+    private final Group layerGroup = new Group();
 
-    private double canvasTransalateX;
-    private double canvasTransalateY;
+    private final List<AbstractMapLayer> layers = new ArrayList<>();
+
+    private ToolsOverlay toolsOverlay = null;
+
+    private Group overlayGroup = new Group();
 
     public MapView(MapViewPane parent) {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
 
-        mapImage = new Image("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapview\\resources\\world-map.jpg");
         countryGroup = new Group();
         drawnMarkerGroup = new Group();
         polygonMarkerGroup = new Group();
 
         mapCanvas = new Canvas();
-        gc = mapCanvas.getGraphicsContext2D();
+        //gc = mapCanvas.getGraphicsContext2D();
 
         mapGroupHolder.setBackground(Background.fill(new Color(0.722, 0.871, 0.902, 1)));
 
@@ -198,8 +196,6 @@ public class MapView extends ScrollPane {
             transalateX = node.getTranslateX();
             transalateY = node.getTranslateY();
 
-            canvasTransalateX = mapCanvas.getTranslateX();
-            canvasTransalateY = mapCanvas.getTranslateY();
         });
 
         mapStackPane.setOnMouseDragged(event -> {
@@ -226,30 +222,25 @@ public class MapView extends ScrollPane {
         });
 
 
-        mapDisplay = new ImageView(mapImage);
-        //mapStackPane.getChildren().add(mapCanvas);
         countryGroup.getChildren().clear();
         for (int i = 0; i < countrySVGPaths.size(); ++i) {
             countryGroup.getChildren().add(countrySVGPaths.get(i));
         }
 
         this.setPannable(true);
-        //this.setPrefSize(1009.6727, 665.96301);
+
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        //countryGroup.getChildren().add(p);
+
 
         setContent(mapStackPane);
 
-        //mapCanvas.scaleXProperty().bind(zoomProperty);
-        //mapCanvas.scaleYProperty().bind(zoomProperty);
 
         this.setHvalue(this.getHmin() + (this.getHmax() - this.getHmin()) / 2);
         this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
-        //drawMarker();
-        //draw();
+
         mapGroupHolder.setPrefWidth(1010.33);
-        //mapGroupHolder.setPrefHeight(967.25);
+
         mapGroupHolder.setPrefHeight(1224);
 
         mapGroupHolder.getChildren().add(countryGroup);
@@ -258,15 +249,17 @@ public class MapView extends ScrollPane {
         dayNightLayer.setUp();
 
         mapGroupHolder.getChildren().addAll(dayNightLayer.getLayer());*/
+        toolsOverlay = new ToolsOverlay();
+        toggleToolsOverlay();
+
         mapGroupHolder.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
                 double x = event.getX();
                 double y = event.getY();
-                
-                LOGGER.log(Level.SEVERE, "X circle: " + x + " Y circle: " + y);
 
+                if (toolsOverlay.getDrawingEnabled().get()) {
                 if (event.isShiftDown()) {
                     drawingCircleMarker = true;
                     circleMarker = new CircleMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0, 100, 100);
@@ -301,6 +294,7 @@ public class MapView extends ScrollPane {
                     marker.setMarkerPosition(0, 0);
                     drawnMarkerGroup.getChildren().addAll(marker.getMarker());
                     userMarkers.add(marker);
+                    }
                 }
                 event.consume();
             }
@@ -313,12 +307,14 @@ public class MapView extends ScrollPane {
                 double x = event.getX();
                 double y = event.getY();
 
-                if (drawingCircleMarker && circleMarker != null && !drawingPolygonMarker) {
+                if (toolsOverlay.getDrawingEnabled().get()) {
+                    if (drawingCircleMarker && circleMarker != null && !drawingPolygonMarker) {
 
-                    circleMarker.setRadius(x, y);
-                    circleMarker.setLineEnd(x, y);
-                } else if (drawingPolygonMarker && polygonMarker != null && !drawingCircleMarker) {
-                    polygonMarker.setEnd(x, y);
+                        circleMarker.setRadius(x, y);
+                        circleMarker.setLineEnd(x, y);
+                    } else if (drawingPolygonMarker && polygonMarker != null && !drawingCircleMarker) {
+                        polygonMarker.setEnd(x, y);
+                    }
                 }
 
                 event.consume();
@@ -328,9 +324,18 @@ public class MapView extends ScrollPane {
 
         mapGroupHolder.getChildren().addAll(drawnMarkerGroup);
         mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
+        mapGroupHolder.getChildren().add(overlayGroup);
+        mapGroupHolder.getChildren().add(layerGroup);
 
-        ToolsOverlay toolsOverlay = new ToolsOverlay();
-        mapStackPane.getChildren().addAll(toolsOverlay.getOverlayPane());
+        overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
+
+    }
+
+    public void toggleToolsOverlay() {
+        LOGGER.log(Level.SEVERE, "toggling tools overlay");
+        toolsOverlay.getOverlayPane().setVisible(!toolsOverlay.getOverlayPane().isVisible());
+        toolsOverlay.setIsShowing(toolsOverlay.getOverlayPane().isVisible());
+
     }
 
     public void removeUserMarker(int id) {
@@ -358,10 +363,34 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().addAll(heatmapLayer.getLayer());*/
     }
 
-    public void toggleLayer(AbstractMapLayer layer, boolean toggle) {
-        if (toggle) {
+    public void addLayer(AbstractMapLayer layer) {
+        layer.setUp();
+        layers.add(layer);
+        layerGroup.getChildren().add(layer.getLayer());
+        layer.setIsShowing(true);
+    }
+
+    public void removeLayer(int id) {
+        for (int i = 0; i < layers.size(); ++i) {
+            if (layers.get(i).getId() == id) {
+                layers.remove(i);
+                break;
+            }
+        }
+        renderLayers();
+    }
+
+    private void renderLayers() {
+        layerGroup.getChildren().clear();
+        layers.forEach(layer -> {
             layer.setUp();
-            mapGroupHolder.getChildren().add(layer.getLayer());
+            layerGroup.getChildren().add(layer.getLayer());
+        });
+    }
+
+    public void hideToolsOverlay() {
+        if (toolsOverlay.getIsShowing()) {
+            toggleToolsOverlay();
         }
     }
 
@@ -411,7 +440,7 @@ public class MapView extends ScrollPane {
 
         SVGPath marker = new SVGPath();
         marker.setContent(markerPath);
-        gc.appendSVGPath(markerPath);
+        //gc.appendSVGPath(markerPath);
         //marker.translateXProperty().add(4000);
         //marker.translateYProperty().add(5000);
         marker.setStroke(Color.BLACK);
@@ -434,7 +463,7 @@ public class MapView extends ScrollPane {
             }
         }));
 
-        gc.rect(x, y, 50, 50);
+        //gc.rect(x, y, 50, 50);
 
         countryGroup.getChildren().add(marker);
         //drawMarker();
@@ -492,12 +521,9 @@ public class MapView extends ScrollPane {
                 String path = "";
                 String line = "";
 
-                int l = 0;
-                //LOGGER.log(Level.SEVERE, "Line: " + ++l);
                 while ((line = bFileReader.readLine()) != null) {
                     line = line.strip();
-                    //LOGGER.log(Level.SEVERE, "Line:" + line);
-                    //for (int i = 0; i < line.length(); ++i) {
+
 
                     if (line.startsWith("<path")) {
                         int startIndex = line.indexOf("d=");
@@ -511,14 +537,11 @@ public class MapView extends ScrollPane {
                         svgPath.setStrokeWidth(5);
                         svgPath.setContent(path);
 
-                        //LOGGER.log(Level.SEVERE, "Path: " + path);
-
                         countrySVGPaths.add(svgPath);
 
                         path = "";
                     }
 
-                    //}
                 }
             }
 

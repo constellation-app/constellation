@@ -24,8 +24,8 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
  */
 public class StandardHeatmapLayer extends AbstractHeatmapLayer {
 
-    public StandardHeatmapLayer(MapView parent) {
-        super(parent);
+    public StandardHeatmapLayer(MapView parent, int id) {
+        super(parent, id);
     }
 
     @Override

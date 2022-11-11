@@ -46,8 +46,8 @@ public class DayNightLayer extends AbstractMapLayer {
     private final Color twighlightAstronomicalColour = new Color(0, 0, 0, 0.373);
     private final Color nightColour = new Color(0, 0, 0, 0.5);
 
-    public DayNightLayer(MapView parent) {
-        super(parent);
+    public DayNightLayer(MapView parent, int id) {
+        super(parent, id);
 
         dayNightGroup = new Group();
 

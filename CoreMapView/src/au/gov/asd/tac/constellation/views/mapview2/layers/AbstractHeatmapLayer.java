@@ -81,8 +81,8 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
     //protected static final String[] RAINBOW = {"0x0034f8", "0x42a41a", "0xf6cc24", "0xff8b06", "0xff2a00"};
     protected static final String[] RAINBOW = {"0x0000ff", "0x00ff00", "0xffff00", "0xff0000"};
 
-    public AbstractHeatmapLayer(MapView parent) {
-        super(parent);
+    public AbstractHeatmapLayer(MapView parent, int id) {
+        super(parent, id);
         layerGroup = new Group();
     }
 

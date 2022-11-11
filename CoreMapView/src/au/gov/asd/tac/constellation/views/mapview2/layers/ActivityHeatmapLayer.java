@@ -28,8 +28,8 @@ import java.util.Set;
  */
 public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
 
-    public ActivityHeatmapLayer(MapView parent) {
-        super(parent);
+    public ActivityHeatmapLayer(MapView parent, int id) {
+        super(parent, id);
     }
 
     @Override
