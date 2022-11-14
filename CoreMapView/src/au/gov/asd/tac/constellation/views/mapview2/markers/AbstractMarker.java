@@ -32,18 +32,32 @@ public abstract class AbstractMarker {
     protected int xOffset;
     protected int yOffset;
 
+
     protected MapViewTopComponent parentComponent;
 
-    public AbstractMarker(MapViewTopComponent parentComponent, int markerID, int nodeId, int xOffset, int yOffset) {
+    public static enum MarkerType {
+        POINT_MARKER,
+        LINE_MARKER,
+        POLYGON_MARKER
+    }
+
+    protected MarkerType type;
+
+    public AbstractMarker(MapViewTopComponent parentComponent, int markerID, int nodeId, int xOffset, int yOffset, MarkerType type) {
         this.markerID = markerID;
         this.parentComponent = parentComponent;
         idList.add(nodeId);
         this.xOffset = xOffset;
         this.yOffset = yOffset;
+        this.type = type;
     }
 
     public int getWeight() {
         return idList.size();
+    }
+
+    public MarkerType getType() {
+        return type;
     }
 
     public void addNodeID(int id) {

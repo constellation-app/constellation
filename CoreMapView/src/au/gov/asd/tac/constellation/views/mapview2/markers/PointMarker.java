@@ -38,7 +38,7 @@ public class PointMarker extends AbstractMarker {
 
 
     public PointMarker(MapViewTopComponent topComponent, int markerID, int nodeId, double lattitude, double longitude, double scale, int xOffset, int yOffset) {
-        super(topComponent, markerID, nodeId, xOffset, yOffset);
+        super(topComponent, markerID, nodeId, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
         markerPath = new SVGPath();
         //markerPath.setContent(path);
 

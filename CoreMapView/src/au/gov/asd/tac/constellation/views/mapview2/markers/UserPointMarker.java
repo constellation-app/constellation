@@ -34,7 +34,7 @@ public class UserPointMarker extends AbstractMarker {
     private double scale;
 
     public UserPointMarker(MapViewTopComponent parentComponent, int markerID, double x, double y, double scale, int xOffset, int yOffset) {
-        super(parentComponent, markerID, -99, xOffset, yOffset);
+        super(parentComponent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
 
         markerPath = new SVGPath();
 

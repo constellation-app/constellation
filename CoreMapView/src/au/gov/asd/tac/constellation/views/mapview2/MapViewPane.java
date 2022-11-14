@@ -113,7 +113,7 @@ public class MapViewPane extends BorderPane {
 
     private final ChoiceBox<MapProvider> mapProviderDropDown;
     private final MenuButton zoomDropDown;
-    private final CheckComboBox markerDropDown;
+    private final CheckComboBox<String> markerDropDown;
     private final CheckComboBox<String> layersDropDown;
     private final CheckComboBox<String> overlaysDropDown;
     private final ChoiceBox colourDropDown;
@@ -160,43 +160,15 @@ public class MapViewPane extends BorderPane {
 
         layersDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
             public void onChanged(ListChangeListener.Change<? extends String> c) {
-                /*while (c.next()) {
 
-                    if (c.equals(TOOLS_OVERLAY)) {
-                        LOGGER.log(Level.SEVERE, "c equals tools overlay");
-                            mapView.toggleToolsOverlay();
-                        }
-
-                }*/
                 layersDropDown.getItems().forEach(item -> {
 
-                    /*if (item.endsWith(DAY_NIGHT)) {
-                        addLayer(DAY_NIGHT, layerId);
-
-                    } else if (item.endsWith(HEATMAP_STANDARD)) {
-                        addLayer(HEATMAP_STANDARD, layerId);
-                    } else if (item.endsWith(HEATMAP_POPULARITY)) {
-                        addLayer(HEATMAP_POPULARITY, layerId);
-                    } else if (item.endsWith(HEATMAP_ACTIVITY)) {
-                        addLayer(HEATMAP_ACTIVITY, layerId);
-                    }*/
                     addLayer(item, layerId);
                 });
 
             }
         });
 
-        /*layersDropDown.addEventHandler(EventType.ROOT, new EventHandler<>() {
-            @Override
-            public void handle(Event event) {
-                testEventHandler();
-
-            }
-
-        });*/
-
-        //final List<? extends MapOverlay> overlays = new ArrayList<>(Lookup.getDefault().lookupAll(MapOverlay.class));
-        //setDropDownOptions(overlays);
 
         overlaysDropDown = new CheckComboBox(FXCollections.observableArrayList(INFO_OVERLAY, OVERVIEW_OVERLAY, TOOLS_OVERLAY));
         overlaysDropDown.setTitle("Overlays");
@@ -204,18 +176,11 @@ public class MapViewPane extends BorderPane {
 
         overlaysDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
             public void onChanged(ListChangeListener.Change<? extends String> c) {
-                /*while (c.next()) {
 
-                    if (c.equals(TOOLS_OVERLAY)) {
-                        LOGGER.log(Level.SEVERE, "c equals tools overlay");
-                            mapView.toggleToolsOverlay();
-                        }
-
-                }*/
                 overlaysDropDown.getItems().forEach(item -> {
 
                     if (item.endsWith(TOOLS_OVERLAY)) {
-                        if (overlaysDropDown.getCheckModel().getCheckedItems().contains(item)) {
+                        if (overlaysDropDown.getCheckModel().isChecked(item)) {
                             mapView.toggleToolsOverlay();
                         } else {
                             mapView.hideToolsOverlay();
@@ -236,6 +201,36 @@ public class MapViewPane extends BorderPane {
         markerDropDown = new CheckComboBox(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
         markerDropDown.setTitle("Markers");
         markerDropDown.setTooltip(new Tooltip("Choose which markers are displayed in the Map View"));
+        markerDropDown.getCheckModel().check(MARKER_TYPE_POINT);
+        markerDropDown.getCheckModel().check(MARKER_TYPE_LINE);
+        markerDropDown.getCheckModel().check(MARKER_TYPE_POLYGON);
+        //markerDropDown.getCheckModel().check(MARKER_TYPE_MULTI);
+        markerDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+            public void onChanged(ListChangeListener.Change<? extends String> c) {
+                markerDropDown.getItems().forEach(item -> {
+
+                    if (markerDropDown.getCheckModel().isChecked(item)) {
+                        if (item.equals(MARKER_TYPE_POINT)) {
+                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, true);
+                        } else if (item.equals(MARKER_TYPE_LINE)) {
+                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, true);
+                        } else if (item.equals(MARKER_TYPE_POLYGON)) {
+                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, true);
+                        }
+                        } else {
+                        if (item.equals(MARKER_TYPE_POINT)) {
+                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, false);
+                        } else if (item.equals(MARKER_TYPE_LINE)) {
+                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, false);
+                        } else if (item.equals(MARKER_TYPE_POLYGON)) {
+                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, false);
+                        }
+                        }
+
+                });
+
+            }
+        });
 
         colourDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(MarkerState.MarkerColorScheme.values())));
         colourDropDown.getSelectionModel().selectFirst();
@@ -301,8 +296,12 @@ public class MapViewPane extends BorderPane {
 
     }
 
+    public void redrawQueriedMarkers() {
+        parent.drawMarkerOnMap();
+    }
+
     public void toggleHeatmapLayer() {
-        mapView.toggleHeatmapLayer();
+        //mapView.toggleHeatmapLayer();
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
@@ -319,7 +318,7 @@ public class MapViewPane extends BorderPane {
 
     public void drawMarker(double lat, double lon, double scale) {
         if (mapView != null) {
-            mapView.drawMarker(lat, lon, scale);
+            //mapView.drawMarker(lat, lon, scale);
         }
     }
 

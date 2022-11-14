@@ -40,13 +40,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SetProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleSetProperty;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
@@ -91,9 +96,11 @@ public class MapView extends ScrollPane {
     public static final double minLat = -58.488473;
     public static final double maxLat = 83.63001;
 
+    private Set<AbstractMarker.MarkerType> markersShowing = new HashSet<>();
 
     private Canvas mapCanvas;
     private Group countryGroup;
+    private Group graphMarkerGroup;
     private Group drawnMarkerGroup;
     private Group polygonMarkerGroup;
 
@@ -129,9 +136,17 @@ public class MapView extends ScrollPane {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
 
+        //markersShowing.setValue(new SetChangeListener<AbstractMarker.MarkerType>());
+
         countryGroup = new Group();
+        graphMarkerGroup = new Group();
         drawnMarkerGroup = new Group();
         polygonMarkerGroup = new Group();
+
+        markersShowing.add(AbstractMarker.MarkerType.LINE_MARKER);
+        markersShowing.add(AbstractMarker.MarkerType.POINT_MARKER);
+        markersShowing.add(AbstractMarker.MarkerType.POLYGON_MARKER);
+
 
         mapCanvas = new Canvas();
         //gc = mapCanvas.getGraphicsContext2D();
@@ -286,14 +301,16 @@ public class MapView extends ScrollPane {
                 } else if (drawingPolygonMarker) {
                     drawingPolygonMarker = false;
                     polygonMarker.generatePath();
-                    drawnMarkerGroup.getChildren().add(polygonMarker.getMarker());
+                    //drawnMarkerGroup.getChildren().add(polygonMarker.getMarker());
+                    addUserDrawnMarker(polygonMarker);
                     userMarkers.add(polygonMarker);
                     polygonMarker.endDrawing();
                     polygonMarkerGroup.getChildren().clear();
                 } else if (!drawingPolygonMarker && !drawingCircleMarker) {
                     UserPointMarker marker = new UserPointMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0.05, 95, -95);
                     marker.setMarkerPosition(0, 0);
-                    drawnMarkerGroup.getChildren().addAll(marker.getMarker());
+                    //drawnMarkerGroup.getChildren().addAll(marker.getMarker());
+                    addUserDrawnMarker(marker);
                     userMarkers.add(marker);
                     }
                 }
@@ -323,6 +340,7 @@ public class MapView extends ScrollPane {
 
         });
 
+        mapGroupHolder.getChildren().add(graphMarkerGroup);
         mapGroupHolder.getChildren().addAll(drawnMarkerGroup);
         mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
         mapGroupHolder.getChildren().add(overlayGroup);
@@ -330,6 +348,12 @@ public class MapView extends ScrollPane {
 
         overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
 
+    }
+
+    private void addUserDrawnMarker(AbstractMarker marker) {
+        if (markersShowing.contains(marker.getType())) {
+            drawnMarkerGroup.getChildren().addAll(marker.getMarker());
+        }
     }
 
     public void toggleToolsOverlay() {
@@ -354,15 +378,13 @@ public class MapView extends ScrollPane {
         drawnMarkerGroup.getChildren().clear();
 
         userMarkers.forEach((marker) -> {
-            drawnMarkerGroup.getChildren().add(marker.getMarker());
+
+            if (markersShowing.contains(marker.getType())) {
+                drawnMarkerGroup.getChildren().add(marker.getMarker());
+            }
         });
     }
 
-    public void toggleHeatmapLayer() {
-        /*PopularityHeatmapLayer heatmapLayer = new PopularityHeatmapLayer(this);
-        heatmapLayer.setUp();
-        mapGroupHolder.getChildren().addAll(heatmapLayer.getLayer());*/
-    }
 
     public void addLayer(AbstractMapLayer layer) {
         layer.setUp();
@@ -380,6 +402,22 @@ public class MapView extends ScrollPane {
             }
         }
         renderLayers();
+    }
+
+    public void updateShowingMarkers(AbstractMarker.MarkerType type, boolean adding) {
+        if (markersShowing.contains(type) && !adding) {
+            markersShowing.remove(type);
+        } else if (!markersShowing.contains(type) && adding) {
+            markersShowing.add(type);
+        }
+
+        redrawUserMarkers();
+        redrawQueriedMarkers();
+    }
+
+    public void redrawQueriedMarkers() {
+        graphMarkerGroup.getChildren().clear();
+        parent.redrawQueriedMarkers();
     }
 
     private void renderLayers() {
@@ -404,7 +442,7 @@ public class MapView extends ScrollPane {
         return parent.getCurrentGraph();
     }
 
-    public void drawMarker(double lattitude, double longitude, double xyScale) {
+    /*public void drawMarker(double lattitude, double longitude, double xyScale) {
 
 
         double lonDelta = maxLong - minLong;
@@ -470,7 +508,7 @@ public class MapView extends ScrollPane {
         countryGroup.getChildren().add(marker);
         //drawMarker();
         //draw();
-    }
+    }*/
 
     private double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
         return (longitude - minLong) * (mapWidth / lonDelta);
@@ -484,7 +522,7 @@ public class MapView extends ScrollPane {
         return y;
     }
 
-    public void drawLine(double lon1, double lat1, double lon2, double lat2) {
+    /*public void drawLine(double lon1, double lat1, double lon2, double lat2) {
 
         double perthX = longToX(115.857048, minLong, mapGroupHolder.getPrefWidth(), maxLong - minLong);
         double perthY = latToY(-31.953512, mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
@@ -505,12 +543,15 @@ public class MapView extends ScrollPane {
         linePath.setStrokeWidth(1);
         linePath.setContent(line);
         countryGroup.getChildren().add(linePath);
-    }
+    }*/
 
     public void drawMarker(AbstractMarker marker) {
-        marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
 
-        countryGroup.getChildren().add(marker.getMarker());
+        if (markersShowing.contains(marker.getType())) {
+            marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+
+            graphMarkerGroup.getChildren().add(marker.getMarker());
+        }
 
     }
 

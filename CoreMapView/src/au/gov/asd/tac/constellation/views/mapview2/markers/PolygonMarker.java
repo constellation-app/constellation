@@ -35,7 +35,7 @@ public class PolygonMarker extends AbstractMarker {
     private SVGPath polygonMarker = new SVGPath();
 
     public PolygonMarker(MapViewTopComponent parentComponent, int markerID, int xOffset, int yOffset) {
-        super(parentComponent, markerID, -99, xOffset, yOffset);
+        super(parentComponent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
 
         polygonMarker.setStroke(Color.BLACK);
         polygonMarker.setFill(Color.ORANGE);
@@ -115,6 +115,10 @@ public class PolygonMarker extends AbstractMarker {
             }
 
             path += "L" + polygonLineUI.get(0).getStartX() + "," + polygonLineUI.get(0).getStartY();
+            if (polygonLineUI.size() == 1) {
+                polygonMarker.setStroke(Color.RED);
+                this.type = AbstractMarker.MarkerType.LINE_MARKER;
+            }
         }
 
         polygonMarker.setContent(path);

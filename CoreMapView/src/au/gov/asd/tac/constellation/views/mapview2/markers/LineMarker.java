@@ -43,7 +43,7 @@ public class LineMarker extends AbstractMarker {
 
 
     public LineMarker(MapViewTopComponent parentComponent, int markerID, int id, double lattitude1, double longitude1, double lattitude2, double longitude2, int xOffset, int yOffset) {
-        super(parentComponent, markerID, id, xOffset, yOffset);
+        super(parentComponent, markerID, id, xOffset, yOffset, AbstractMarker.MarkerType.LINE_MARKER);
 
         lat1 = lattitude1;
         lon1 = longitude1;

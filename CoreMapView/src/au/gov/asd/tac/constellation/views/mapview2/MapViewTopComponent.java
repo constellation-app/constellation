@@ -234,6 +234,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     }
 
 
+
     /**
      * Get the findViewPane
      *
