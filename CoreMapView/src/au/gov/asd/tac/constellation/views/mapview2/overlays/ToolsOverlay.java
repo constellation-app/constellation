@@ -178,15 +178,17 @@ public class ToolsOverlay extends AbstractOverlay {
         double distance = 0;
 
         if (measureUnitText.getText().equals("km")) {
-            distance = Math.round(Distance.Haversine.estimateDistanceInKilometers(startLat, startLon, endLat, endLon));
+            distance = Distance.Haversine.estimateDistanceInKilometers(startLat, startLon, endLat, endLon);
         } else if (measureUnitText.getText().equals("mi")) {
-            distance = Math.round(Distance.Haversine.estimateDistanceInMiles(startLat, startLon, endLat, endLon));
+            distance = Distance.Haversine.estimateDistanceInMiles(startLat, startLon, endLat, endLon);
         } else if (measureUnitText.getText().equals("nmi")) {
-            distance = Math.round(Distance.Haversine.estimateDistanceInNauticalMiles(startLat, startLon, endLat, endLon));
+            distance = Distance.Haversine.estimateDistanceInNauticalMiles(startLat, startLon, endLat, endLon);
         }
         
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);
+
+        //distance *= 1000;
 
         measureToggleText.setText(df.format(distance));
     }
