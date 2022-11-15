@@ -162,10 +162,6 @@ public class ToolsOverlay extends AbstractOverlay {
     }
 
     public void setDistanceText(double startX, double startY, double endX, double endY) {
-
-        /*centerY += 149;
-        double centerYLat = super.YToLat(centerY, 1010.33, 1224);
-        double centerXLon = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);*/
         startY += 149;
         endY += 149;
 
@@ -188,13 +184,15 @@ public class ToolsOverlay extends AbstractOverlay {
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);
 
-        //distance *= 1000;
-
         measureToggleText.setText(df.format(distance));
     }
 
     public void resetMeasureText() {
-        measureToggleText.setText("Enabled");
+        if (measureEnabled.get()) {
+            measureToggleText.setText("Enabled");
+        } else {
+            measureToggleText.setText("Disabled");
+        }
     }
 
     public boolean getIsShowing() {

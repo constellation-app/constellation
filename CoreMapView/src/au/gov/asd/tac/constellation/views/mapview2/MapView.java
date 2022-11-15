@@ -293,6 +293,7 @@ public class MapView extends ScrollPane {
                         circleMarker = null;
                         polygonMarkerGroup.getChildren().clear();
                         drawingCircleMarker = false;
+                        toolsOverlay.resetMeasureText();
                     } else if (event.isControlDown()) {
                         if (!drawingPolygonMarker && !drawingCircleMarker) {
                             polygonMarker = new PolygonMarker(parent.getParentComponent(), drawnMarkerId++, 0, 0);
@@ -302,11 +303,12 @@ public class MapView extends ScrollPane {
                         } else {
                             polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
                         }
+                        toolsOverlay.resetMeasureText();
                     } else if (drawingPolygonMarker) {
                         drawingPolygonMarker = false;
                         polygonMarker.generatePath();
-                        //drawnMarkerGroup.getChildren().add(polygonMarker.getMarker());
                         addUserDrawnMarker(polygonMarker);
+                        toolsOverlay.resetMeasureText();
                         userMarkers.add(polygonMarker);
                         polygonMarker.endDrawing();
                         polygonMarkerGroup.getChildren().clear();
@@ -357,8 +359,10 @@ public class MapView extends ScrollPane {
 
                         circleMarker.setRadius(x, y);
                         circleMarker.setLineEnd(x, y);
+                        toolsOverlay.setDistanceText(circleMarker.getCenterX(), circleMarker.getCenterY(), x, y);
                     } else if (drawingPolygonMarker && polygonMarker != null && !drawingCircleMarker) {
                         polygonMarker.setEnd(x, y);
+                        toolsOverlay.setDistanceText(polygonMarker.getCurrentLine().getStartX(), polygonMarker.getCurrentLine().getStartY(), polygonMarker.getCurrentLine().getEndX(), polygonMarker.getCurrentLine().getEndY());
                     }
                 } else if (toolsOverlay.getMeasureEnabled().get() && !toolsOverlay.getDrawingEnabled().get()) {
                     if (measureLine != null) {
