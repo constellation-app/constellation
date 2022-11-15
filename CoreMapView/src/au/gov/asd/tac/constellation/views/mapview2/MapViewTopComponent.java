@@ -99,6 +99,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     private final Logger LOGGER = Logger.getLogger("test");
 
+    public static final Object LOCK = new Object();
+
+
     public final MapViewPane mapViewPane;
     private final Map<String, AbstractMarker> markers = new HashMap<>();
     private final List<Integer> selectedNodeList = new ArrayList<>();
@@ -150,8 +153,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         //WindowManager.getDefault().setTopComponentFloating(this, true);
         //mapViewPane.resetContent();
         mapViewPane.setUpMap();
-        PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(getCurrentGraph());
-
+        GraphManager.getDefault().getActiveGraph();
+        if (GraphManager.getDefault().getActiveGraph() != null) {
+            PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(GraphManager.getDefault().getActiveGraph());
+        }
     }
 
     @Override
@@ -194,7 +199,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         super.handleGraphOpened(graph);
         LOGGER.log(Level.SEVERE, "Graph Has been opened");
         mapViewPane.setUpMap();
-        PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(getCurrentGraph());
+        if (graph != null) {
+            PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(graph);
+        }
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
@@ -211,7 +218,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     protected void handleNewGraph(final Graph graph) {
         super.handleNewGraph(graph);
         //UpdateUI();
-        PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(getCurrentGraph());
+        if (graph != null) {
+            PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(graph);
+        }
     }
 
     public void drawMarkerOnMap(double lat, double lon, double scale) {
@@ -220,7 +229,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     public void addNodeId(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
         selectedNodeList.add(markerID);
-        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(getCurrentGraph());
+        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
     public void drawMarkerOnMap() {
@@ -283,7 +292,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
     public static class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
-        private final Logger LOGGER = Logger.getLogger("test");
+        //private final Logger LOGGER = Logger.getLogger("ExtractCoords");
+        private static final Logger LOGGER = Logger.getLogger(ExtractCoordsFromGraphPlugin.class.getName());
 
 
         private MapViewTopComponent mapViewTopComponent;
@@ -308,6 +318,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                     for (GraphElementType elementType : elementTypes) {
                         int lonID = GraphConstants.NOT_FOUND;
                         int latID = GraphConstants.NOT_FOUND;
+
 
                         int elementCount;
 
@@ -373,7 +384,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
                                 String dateTime = graph.getStringValue(dateTimeID, elementID);
 
-                                if (!dateTime.isBlank()) {
+                                if (dateTime != null && !dateTime.isBlank()) {
                                     int sourceID = graph.getTransactionSourceVertex(elementID);
                                     int destinationID = graph.getTransactionDestinationVertex(elementID);
 
@@ -411,9 +422,11 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
                 //mapViewTopComponent.drawMarkerOnMap();
 
-            }
+                }
+
 
         }
+
 
     }
 
@@ -430,21 +443,23 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
         @Override
         protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-            if (isSelectingVertex) {
-                final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                final int vertexCount = graph.getVertexCount();
+            if (graph != null) {
+                if (isSelectingVertex) {
+                    final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+                    final int vertexCount = graph.getVertexCount();
 
-                for (int i = 0; i < vertexCount; ++i) {
-                    final int vertexID = graph.getVertex(i);
-                    graph.setBooleanValue(vertexSelectedAttribute, vertexID, selectedNodeList.contains(vertexID));
-                }
-            } else {
-                final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-                final int transactionCount = graph.getTransactionCount();
+                    for (int i = 0; i < vertexCount; ++i) {
+                        final int vertexID = graph.getVertex(i);
+                        graph.setBooleanValue(vertexSelectedAttribute, vertexID, selectedNodeList.contains(vertexID));
+                    }
+                } else {
+                    final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+                    final int transactionCount = graph.getTransactionCount();
 
-                for (int i = 0; i < transactionCount; ++i) {
-                    final int transactionID = graph.getTransaction(i);
-                    graph.setBooleanValue(transactionSelectedAttribute, transactionID, selectedNodeList.contains(transactionID));
+                    for (int i = 0; i < transactionCount; ++i) {
+                        final int transactionID = graph.getTransaction(i);
+                        graph.setBooleanValue(transactionSelectedAttribute, transactionID, selectedNodeList.contains(transactionID));
+                    }
                 }
             }
         }

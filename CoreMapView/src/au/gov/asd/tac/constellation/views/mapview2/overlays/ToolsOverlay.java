@@ -64,12 +64,14 @@ public class ToolsOverlay extends AbstractOverlay {
         measureToggleText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                measureEnabled.set(!measureEnabled.get());
+                if (!drawingEnabled.get()) {
+                    measureEnabled.set(!measureEnabled.get());
 
-                if (measureEnabled.get()) {
-                    measureToggleText.setText("Enabled");
-                } else {
-                    measureToggleText.setText("Disabled");
+                    if (measureEnabled.get()) {
+                        measureToggleText.setText("Enabled");
+                    } else {
+                        measureToggleText.setText("Disabled");
+                    }
                 }
 
                 event.consume();
@@ -83,12 +85,14 @@ public class ToolsOverlay extends AbstractOverlay {
         measureUnitText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                ++unitSelected;
+                if (!drawingEnabled.get()) {
+                    ++unitSelected;
 
-                if (unitSelected > units.length - 1) {
-                    unitSelected = 0;
+                    if (unitSelected > units.length - 1) {
+                        unitSelected = 0;
+                    }
+                    measureUnitText.setText(units[unitSelected]);
                 }
-                measureUnitText.setText(units[unitSelected]);
                 event.consume();
             }
         });
@@ -103,12 +107,14 @@ public class ToolsOverlay extends AbstractOverlay {
         drawToggleText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                drawingEnabled.set(!drawingEnabled.get());
+                if (!measureEnabled.get()) {
+                    drawingEnabled.set(!drawingEnabled.get());
 
-                if (drawingEnabled.get()) {
-                    drawToggleText.setText("Enabled");
-                } else {
-                    drawToggleText.setText("Disabled");
+                    if (drawingEnabled.get()) {
+                        drawToggleText.setText("Enabled");
+                    } else {
+                        drawToggleText.setText("Disabled");
+                    }
                 }
 
                 event.consume();

@@ -215,25 +215,25 @@ public class MapView extends ScrollPane {
         });
 
         mapStackPane.setOnMouseDragged(event -> {
-            if (event.isPrimaryButtonDown()) {
-                return;
+            if (event.isSecondaryButtonDown()) {
+
+
+                double scaleX = mapStackPane.getScaleX();
+                double scaleY = mapStackPane.getScaleY();
+
+                double canvasScaleX = mapCanvas.getScaleX();
+                double canvasScaleY = mapCanvas.getScaleY();
+
+                Node node = (Node) event.getSource();
+
+                node.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX)));
+                node.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY)));
+
+                //mapCanvas.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX) / canvasScaleX));
+                //mapCanvas.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY) / canvasScaleY));
+
+                event.consume();
             }
-
-            double scaleX = mapStackPane.getScaleX();
-            double scaleY = mapStackPane.getScaleY();
-
-            double canvasScaleX = mapCanvas.getScaleX();
-            double canvasScaleY = mapCanvas.getScaleY();
-
-            Node node = (Node) event.getSource();
-
-            node.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX)));
-            node.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY)));
-
-            //mapCanvas.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX) / canvasScaleX));
-            //mapCanvas.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY) / canvasScaleY));
-
-            event.consume();
 
         });
 
@@ -275,43 +275,47 @@ public class MapView extends ScrollPane {
                 double x = event.getX();
                 double y = event.getY();
 
-                if (toolsOverlay.getDrawingEnabled().get()) {
-                if (event.isShiftDown()) {
-                    drawingCircleMarker = true;
-                    circleMarker = new CircleMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0, 100, 100);
-                    polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
-                    polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
+                if (toolsOverlay.getDrawingEnabled().get() && !toolsOverlay.getMeasureEnabled().get()) {
+                    if (event.isShiftDown()) {
+                        drawingCircleMarker = true;
+                        circleMarker = new CircleMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0, 100, 100);
+                        polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
+                        polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
 
-                } else if (drawingCircleMarker) {
-                    circleMarker.generateCircle();
-                    drawnMarkerGroup.getChildren().add(circleMarker.getMarker());
-                    userMarkers.add(circleMarker);
-                    circleMarker = null;
-                    polygonMarkerGroup.getChildren().clear();
-                    drawingCircleMarker = false;
-                } else if (event.isControlDown()) {
-                    if (!drawingPolygonMarker && !drawingCircleMarker) {
-                        polygonMarker = new PolygonMarker(parent.getParentComponent(), drawnMarkerId++, 0, 0);
+                    } else if (drawingCircleMarker) {
+                        circleMarker.generateCircle();
+                        drawnMarkerGroup.getChildren().add(circleMarker.getMarker());
+                        userMarkers.add(circleMarker);
+                        circleMarker = null;
+                        polygonMarkerGroup.getChildren().clear();
+                        drawingCircleMarker = false;
+                    } else if (event.isControlDown()) {
+                        if (!drawingPolygonMarker && !drawingCircleMarker) {
+                            polygonMarker = new PolygonMarker(parent.getParentComponent(), drawnMarkerId++, 0, 0);
 
-                        polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
-                        drawingPolygonMarker = true;
-                    } else {
-                        polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
+                            polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
+                            drawingPolygonMarker = true;
+                        } else {
+                            polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
+                        }
+                    } else if (drawingPolygonMarker) {
+                        drawingPolygonMarker = false;
+                        polygonMarker.generatePath();
+                        //drawnMarkerGroup.getChildren().add(polygonMarker.getMarker());
+                        addUserDrawnMarker(polygonMarker);
+                        userMarkers.add(polygonMarker);
+                        polygonMarker.endDrawing();
+                        polygonMarkerGroup.getChildren().clear();
+                    } else if (!drawingPolygonMarker && !drawingCircleMarker) {
+                        UserPointMarker marker = new UserPointMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0.05, 95, -95);
+                        marker.setMarkerPosition(0, 0);
+                        //drawnMarkerGroup.getChildren().addAll(marker.getMarker());
+                        addUserDrawnMarker(marker);
+                        userMarkers.add(marker);
                     }
-                } else if (drawingPolygonMarker) {
-                    drawingPolygonMarker = false;
-                    polygonMarker.generatePath();
-                    //drawnMarkerGroup.getChildren().add(polygonMarker.getMarker());
-                    addUserDrawnMarker(polygonMarker);
-                    userMarkers.add(polygonMarker);
-                    polygonMarker.endDrawing();
-                    polygonMarkerGroup.getChildren().clear();
-                } else if (!drawingPolygonMarker && !drawingCircleMarker) {
-                    UserPointMarker marker = new UserPointMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0.05, 95, -95);
-                    marker.setMarkerPosition(0, 0);
-                    //drawnMarkerGroup.getChildren().addAll(marker.getMarker());
-                    addUserDrawnMarker(marker);
-                    userMarkers.add(marker);
+                } else if (!toolsOverlay.getDrawingEnabled().get() && toolsOverlay.getMeasureEnabled().get()) {
+                    if (event.isPrimaryButtonDown()) {
+
                     }
                 }
                 event.consume();
