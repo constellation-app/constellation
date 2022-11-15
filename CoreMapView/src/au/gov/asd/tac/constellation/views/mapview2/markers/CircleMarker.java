@@ -121,7 +121,6 @@ public class CircleMarker extends AbstractMarker {
 
     public void generateCircle() {
         final int EARTH_RADIUS_M = 6_371_008;
-        double temp = centerX;
         centerY += 149;
         double centerYLat = super.YToLat(centerY, 1010.33, 1224);
         double centerXLon = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
@@ -129,14 +128,6 @@ public class CircleMarker extends AbstractMarker {
         double vertexY = centerYLat;
         double vertexX = centerXLon + (radius / EARTH_RADIUS_M) * (180 / Math.PI) / Math.cos(centerYLat * (Math.PI / 180));
 
-        double newX = super.longToX(vertexX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-        LOGGER.log(Level.SEVERE, "Circle radius: " + radius);
-
-        //radius = Math.sqrt((Math.pow((newX - centerX), 2) + Math.pow(0, 2)));
-        //double edgeLat = centerY + (radius / EARTH_RADIUS_M) * (180 / Math.PI);
-        //double edgeLon = centerX + (radius / EARTH_RADIUS_M) * (180 / Math.PI) / Math.cos(centerY * Math.PI / 180);
-
-        //LOGGER.log(Level.SEVERE, "Edge long: " + edgeLon + ", Edge lat: " + edgeLat);
 
         String path = "";
         boolean first = true;
@@ -145,16 +136,9 @@ public class CircleMarker extends AbstractMarker {
         for (int i = 0; i < points + 1; i++) {
             final double angle = spacing * i;
 
-            //radius = radius - ((EARTH_RADIUS_M * 2 * Math.PI) / 360) * angle;
             vertexX = centerXLon + radius * Math.cos(angle);
             vertexY = centerYLat + radius * Math.sin(angle);
 
-            //vertexY = centerYLat + ((vertexY - centerYLat) / EARTH_RADIUS_M) * (180 / Math.PI);
-            //vertexX = centerXLon + ((vertexX - centerXLon) / EARTH_RADIUS_M) * (180 / Math.PI) / Math.cos(centerYLat * (Math.PI / 180));
-
-            /*double coef = radius / 111.32;
-            double vertexY = centerY + coef;
-            double vertexX = centerX + coef / Math.cos(centerY * (Math.PI / 180));*/
 
             vertexX = super.longToX(vertexX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
             vertexY = super.latToY(vertexY, 1010.33, 1224) - 149;

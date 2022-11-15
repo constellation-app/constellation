@@ -15,6 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.overlays;
 
+import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
+import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
@@ -39,6 +45,8 @@ public class ToolsOverlay extends AbstractOverlay {
     private BooleanProperty drawingEnabled = new SimpleBooleanProperty(false);
     private BooleanProperty measureEnabled = new SimpleBooleanProperty(false);
 
+    private Label measureToggleText = new Label("Disabled");
+
     private int height = 75;
     private int width = 150;
 
@@ -46,6 +54,9 @@ public class ToolsOverlay extends AbstractOverlay {
 
     private final String[] units = {"km", "nmi", "mi"};
     private int unitSelected = 0;
+
+    private Label measureUnitText = new Label(units[unitSelected]);
+
     public ToolsOverlay() {
         super();
 
@@ -57,7 +68,6 @@ public class ToolsOverlay extends AbstractOverlay {
         Label measureText = new Label("Measure");
         measureText.setTextFill(Color.WHITE);
 
-        Label measureToggleText = new Label("Disabled");
         measureToggleText.setTextFill(Color.WHITE);
         measureToggleText.setBackground(Background.fill(Color.BLACK));
 
@@ -78,7 +88,6 @@ public class ToolsOverlay extends AbstractOverlay {
             }
         });
 
-        Label measureUnitText = new Label(units[unitSelected]);
         measureUnitText.setTextFill(Color.WHITE);
         measureUnitText.setBackground(Background.fill(Color.BLACK));
 
@@ -150,6 +159,40 @@ public class ToolsOverlay extends AbstractOverlay {
         overlayPane.setTranslateX(815);
         overlayPane.setTranslateY(20);
 
+    }
+
+    public void setDistanceText(double startX, double startY, double endX, double endY) {
+
+        /*centerY += 149;
+        double centerYLat = super.YToLat(centerY, 1010.33, 1224);
+        double centerXLon = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);*/
+        startY += 149;
+        endY += 149;
+
+        double startLon = MarkerUtilities.XToLong(startX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+        double endLon = MarkerUtilities.XToLong(endX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+
+        double startLat = MarkerUtilities.YToLat(startY, 1010.33, 1224);
+        double endLat = MarkerUtilities.YToLat(endY, 1010.33, 1224);
+
+        double distance = 0;
+
+        if (measureUnitText.getText().equals("km")) {
+            distance = Math.round(Distance.Haversine.estimateDistanceInKilometers(startLat, startLon, endLat, endLon));
+        } else if (measureUnitText.getText().equals("mi")) {
+            distance = Math.round(Distance.Haversine.estimateDistanceInMiles(startLat, startLon, endLat, endLon));
+        } else if (measureUnitText.getText().equals("nmi")) {
+            distance = Math.round(Distance.Haversine.estimateDistanceInNauticalMiles(startLat, startLon, endLat, endLon));
+        }
+        
+        DecimalFormat df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.CEILING);
+
+        measureToggleText.setText(df.format(distance));
+    }
+
+    public void resetMeasureText() {
+        measureToggleText.setText("Enabled");
     }
 
     public boolean getIsShowing() {

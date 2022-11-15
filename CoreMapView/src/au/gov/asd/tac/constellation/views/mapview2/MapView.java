@@ -70,6 +70,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
@@ -116,6 +117,9 @@ public class MapView extends ScrollPane {
 
     private CircleMarker circleMarker = null;
     private PolygonMarker polygonMarker = null;
+
+    private boolean drawingMeasureLine = false;
+    private Line measureLine = null;
 
     private double mouseAnchorX;
     private double mouseAnchorY;
@@ -314,9 +318,28 @@ public class MapView extends ScrollPane {
                         userMarkers.add(marker);
                     }
                 } else if (!toolsOverlay.getDrawingEnabled().get() && toolsOverlay.getMeasureEnabled().get()) {
-                    if (event.isPrimaryButtonDown()) {
 
-                    }
+                    //if (event.isPrimaryButtonDown()) {
+                        if (!drawingMeasureLine) {
+                            LOGGER.log(Level.SEVERE, "Drawing measure line");
+                            measureLine = new Line();
+                            measureLine.setStroke(Color.RED);
+                            //measureLine.setFill(Color.RED);
+                            measureLine.setStartX(event.getX());
+                            measureLine.setStartY(event.getY());
+                            measureLine.setEndX(event.getX());
+                            measureLine.setEndY(event.getY());
+                            measureLine.setStrokeWidth(1);
+                            polygonMarkerGroup.getChildren().add(measureLine);
+                            drawingMeasureLine = true;
+                        } else {
+                            LOGGER.log(Level.SEVERE, "Erasing measure line");
+                            polygonMarkerGroup.getChildren().clear();
+                            toolsOverlay.resetMeasureText();
+                            drawingMeasureLine = false;
+                            measureLine = null;
+                        }
+                    //}
                 }
                 event.consume();
             }
@@ -329,7 +352,7 @@ public class MapView extends ScrollPane {
                 double x = event.getX();
                 double y = event.getY();
 
-                if (toolsOverlay.getDrawingEnabled().get()) {
+                if (toolsOverlay.getDrawingEnabled().get() && !toolsOverlay.getMeasureEnabled().get()) {
                     if (drawingCircleMarker && circleMarker != null && !drawingPolygonMarker) {
 
                         circleMarker.setRadius(x, y);
@@ -337,7 +360,15 @@ public class MapView extends ScrollPane {
                     } else if (drawingPolygonMarker && polygonMarker != null && !drawingCircleMarker) {
                         polygonMarker.setEnd(x, y);
                     }
+                } else if (toolsOverlay.getMeasureEnabled().get() && !toolsOverlay.getDrawingEnabled().get()) {
+                    if (measureLine != null) {
+                        measureLine.setEndX(event.getX());
+                        measureLine.setEndY(event.getY());
+
+                        toolsOverlay.setDistanceText(measureLine.getStartX(), measureLine.getStartY(), measureLine.getEndX(), measureLine.getEndY());
+                    }
                 }
+
 
                 event.consume();
             }
