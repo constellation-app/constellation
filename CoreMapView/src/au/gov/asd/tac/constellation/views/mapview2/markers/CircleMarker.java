@@ -39,7 +39,6 @@ public class CircleMarker extends AbstractMarker {
 
     private final Circle circle = new Circle();
     private final Line line = new Line();
-    private final SVGPath projectedCircle = new SVGPath();
 
     private static final Logger LOGGER = Logger.getLogger("CircleMarkerLogger");
 
@@ -67,29 +66,29 @@ public class CircleMarker extends AbstractMarker {
         circle.setFill(Color.BLACK);
         circle.setStroke(Color.BLACK);
 
-        projectedCircle.setStroke(Color.BLACK);
-        projectedCircle.setFill(Color.ORANGE);
-        projectedCircle.setOpacity(0.4);
+        markerPath.setStroke(Color.BLACK);
+        markerPath.setFill(Color.ORANGE);
+        markerPath.setOpacity(0.4);
 
-        projectedCircle.setOnMouseEntered(new EventHandler<MouseEvent>() {
+        markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                projectedCircle.setFill(Color.YELLOW);
+                markerPath.setFill(Color.YELLOW);
 
                 e.consume();
             }
         });
 
-        projectedCircle.setOnMouseExited(new EventHandler<MouseEvent>() {
+        markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                projectedCircle.setFill(Color.ORANGE);
+                markerPath.setFill(Color.ORANGE);
 
                 e.consume();
             }
         });
 
-        projectedCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
                 parentComponent.removeUserMarker(markerID);
@@ -158,7 +157,7 @@ public class CircleMarker extends AbstractMarker {
 
         }
         LOGGER.log(Level.SEVERE, "Circle path: " + path);
-        projectedCircle.setContent(path);
+        markerPath.setContent(path);
     }
 
     public void setRadius(double radius) {
@@ -190,8 +189,4 @@ public class CircleMarker extends AbstractMarker {
         line.setEndY(y);
     }
 
-    @Override
-    public SVGPath getMarker() {
-        return projectedCircle;
-    }
 }

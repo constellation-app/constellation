@@ -27,9 +27,6 @@ import javafx.scene.shape.SVGPath;
  * @author altair1673
  */
 public class LineMarker extends AbstractMarker {
-
-    private final SVGPath markerPath = new SVGPath();
-
     private final double lat1;
     private final double lon1;
     private final double lat2;
@@ -102,11 +99,6 @@ public class LineMarker extends AbstractMarker {
         String path = "M " + x1 + ", " + y1 + " Z L " + x2 + "," + y2 + " z";
 
         markerPath.setContent(path);
-    }
-
-    @Override
-    public SVGPath getMarker() {
-        return markerPath;
     }
 
 }

@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
+import java.util.EventListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
@@ -31,6 +32,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 /**
  *
@@ -48,6 +50,7 @@ public class ToolsOverlay extends AbstractOverlay {
     private int unitSelected = 0;
 
     private Label measureUnitText = new Label(units[unitSelected]);
+
 
     public ToolsOverlay(int positionX, int positionY) {
         super(positionX, positionY);
@@ -116,6 +119,29 @@ public class ToolsOverlay extends AbstractOverlay {
 
                 event.consume();
             }
+        });
+
+        final String drawDescription = " > Click on the map to draw a point marker.\n"
+                + " > Click on the map while holding\n shift to begin drawing a circle"
+                + "  marker, click again with or without shift to complete it.\n"
+                + " > Click on the map while holding\n control to begin drawing a polygon"
+                + "  marker, continue clicking while holding control to draw edges,"
+                + "  then release control and click\n once more to complete it.\n"
+                + " > Click on a drawn marker to remove it.";
+
+        Label descriptionLabel = new Label(drawDescription);
+        descriptionLabel.setScaleX(0.5);
+        descriptionLabel.setScaleY(0.5);
+
+        drawingEnabled.addListener((o, oldVal, newVal) -> {
+            if (drawingEnabled.get()) {
+                gridPane.add(descriptionLabel, 0, 2, 3, 3);
+                //overlayPane.prefHeight(300);
+                //overlayPane.minHeight(300);
+                //overlayPane.maxHeight(300);
+                //overlayPane.setScaleY(3);
+            } else
+                gridPane.getChildren().removeIf(node -> GridPane.getColumnIndex(node) == 0 && GridPane.getRowIndex(node) == 2);
         });
 
         Label drawSymbol = new Label("+");

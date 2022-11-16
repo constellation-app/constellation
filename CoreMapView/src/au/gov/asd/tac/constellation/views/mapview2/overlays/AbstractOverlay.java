@@ -31,7 +31,7 @@ public class AbstractOverlay {
     protected GridPane gridPane = null;
 
     protected int height = 75;
-    protected int width = 150;
+    protected int width = 175;
 
     protected boolean isShowing = false;
 

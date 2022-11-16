@@ -27,8 +27,6 @@ import javafx.scene.shape.SVGPath;
  * @author altair1673
  */
 public class PointMarker extends AbstractMarker {
-
-    private final SVGPath markerPath;
     private String path = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
     private double lattitude;
     private double longitude;
@@ -39,7 +37,7 @@ public class PointMarker extends AbstractMarker {
 
     public PointMarker(MapViewTopComponent topComponent, int markerID, int nodeId, double lattitude, double longitude, double scale, int xOffset, int yOffset) {
         super(topComponent, markerID, nodeId, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
-        markerPath = new SVGPath();
+
         //markerPath.setContent(path);
 
 
@@ -118,9 +116,5 @@ public class PointMarker extends AbstractMarker {
         return y;
     }
 
-    @Override
-    public SVGPath getMarker() {
-        return markerPath;
-    }
 
 }

@@ -110,6 +110,8 @@ public class MapView extends ScrollPane {
 
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0);
 
+    private final PointMarker testMarker;
+
     private final double mapScaleFactor = 1.1;
 
     private double scale = 1.0;
@@ -141,7 +143,8 @@ public class MapView extends ScrollPane {
     public MapView(MapViewPane parent) {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
-
+        testMarker = new PointMarker(parent.getParentComponent(), -99, -99, -4.322447, 15.307045, 0.05, 95, 244);
+        testMarker.setMarkerPosition(mapWidth, mapHeight);
         //markersShowing.setValue(new SetChangeListener<AbstractMarker.MarkerType>());
 
         countryGroup = new Group();
@@ -206,6 +209,10 @@ public class MapView extends ScrollPane {
                 mapCanvas.setScaleY(newYScale);
                 mapStackPane.setScaleX(newXScale);
                 mapStackPane.setScaleY(newYScale);
+
+                testMarker.getMarker().prefHeight(5);
+
+                //testMarker.getMarker().setScaleY(scaleFactor);
             }
         });
 
@@ -393,6 +400,7 @@ public class MapView extends ScrollPane {
         overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
         overlayGroup.getChildren().addAll(infoOverlay.getOverlayPane());
 
+        graphMarkerGroup.getChildren().add(testMarker.getMarker());
     }
 
 

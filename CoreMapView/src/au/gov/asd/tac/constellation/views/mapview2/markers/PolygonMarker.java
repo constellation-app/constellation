@@ -32,34 +32,33 @@ public class PolygonMarker extends AbstractMarker {
 
     private List<Line> polygonLineUI = new ArrayList<Line>();
     private Line currentLine = null;
-    private SVGPath polygonMarker = new SVGPath();
 
     public PolygonMarker(MapViewTopComponent parentComponent, int markerID, int xOffset, int yOffset) {
         super(parentComponent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
 
-        polygonMarker.setStroke(Color.BLACK);
-        polygonMarker.setFill(Color.ORANGE);
-        polygonMarker.setOpacity(0.4);
+        markerPath.setStroke(Color.BLACK);
+        markerPath.setFill(Color.ORANGE);
+        markerPath.setOpacity(0.4);
 
-        polygonMarker.setOnMouseEntered(new EventHandler<MouseEvent>() {
+        markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                polygonMarker.setFill(Color.YELLOW);
+                markerPath.setFill(Color.YELLOW);
 
                 e.consume();
             }
         });
 
-        polygonMarker.setOnMouseExited(new EventHandler<MouseEvent>() {
+        markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                polygonMarker.setFill(Color.ORANGE);
+                markerPath.setFill(Color.ORANGE);
 
                 e.consume();
             }
         });
 
-        polygonMarker.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
                 parentComponent.removeUserMarker(markerID);
@@ -116,12 +115,12 @@ public class PolygonMarker extends AbstractMarker {
 
             path += "L" + polygonLineUI.get(0).getStartX() + "," + polygonLineUI.get(0).getStartY();
             if (polygonLineUI.size() == 1) {
-                polygonMarker.setStroke(Color.RED);
+                markerPath.setStroke(Color.RED);
                 this.type = AbstractMarker.MarkerType.LINE_MARKER;
             }
         }
 
-        polygonMarker.setContent(path);
+        markerPath.setContent(path);
 
     }
 
@@ -129,9 +128,5 @@ public class PolygonMarker extends AbstractMarker {
         return currentLine;
     }
 
-    @Override
-    public SVGPath getMarker() {
-        return polygonMarker;
-    }
 
 }

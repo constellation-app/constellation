@@ -25,6 +25,8 @@ import javafx.scene.shape.SVGPath;
  * @author altair1673
  */
 public abstract class AbstractMarker {
+
+    protected final SVGPath markerPath;
     protected int markerID = 0;
     protected List<Integer> idList = new ArrayList();
     protected boolean isSelected = false;
@@ -50,6 +52,8 @@ public abstract class AbstractMarker {
         this.xOffset = xOffset;
         this.yOffset = yOffset;
         this.type = type;
+
+        markerPath = new SVGPath();
     }
 
     public int getWeight() {
@@ -98,7 +102,7 @@ public abstract class AbstractMarker {
     }
 
     public SVGPath getMarker() {
-        return null;
+        return markerPath;
     }
 
     public int getMarkerId() {
