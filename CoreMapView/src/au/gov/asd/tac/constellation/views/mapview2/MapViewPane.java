@@ -101,9 +101,9 @@ public class MapViewPane extends BorderPane {
     private static final String THIESSEAN_POLYGONS = "Thiessean Polygons";
     private static final String POINT_MARKER_ERROR = "Point Marker Error Region (Experimental)";
 
-    private static final String INFO_OVERLAY = "Info Overlay";
-    private static final String TOOLS_OVERLAY = "Tools Overlay";
-    private static final String OVERVIEW_OVERLAY = "Overview Overlay";
+    public static final String INFO_OVERLAY = "Info Overlay";
+    public static final String TOOLS_OVERLAY = "Tools Overlay";
+    public static final String OVERVIEW_OVERLAY = "Overview Overlay";
 
 
     private final MapProvider defaultProvider;
@@ -179,16 +179,12 @@ public class MapViewPane extends BorderPane {
 
                 overlaysDropDown.getItems().forEach(item -> {
 
-                    if (item.endsWith(TOOLS_OVERLAY)) {
-                        if (overlaysDropDown.getCheckModel().isChecked(item)) {
-                            mapView.toggleToolsOverlay();
-                        } else {
-                            mapView.hideToolsOverlay();
-                        }
-
+                    if (overlaysDropDown.getCheckModel().isChecked(item)) {
+                        mapView.toggleOverlay(item, true);
                     } else {
-                        LOGGER.log(Level.SEVERE, item + "not showing");
+                        mapView.toggleOverlay(item, false);
                     }
+
                 });
 
             }

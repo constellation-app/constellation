@@ -38,32 +38,20 @@ import javafx.scene.paint.Color;
  */
 public class ToolsOverlay extends AbstractOverlay {
 
-    final private BorderPane overlayPane;
-
-    final private GridPane gridPane;
-
     private BooleanProperty drawingEnabled = new SimpleBooleanProperty(false);
     private BooleanProperty measureEnabled = new SimpleBooleanProperty(false);
 
     private Label measureToggleText = new Label("Disabled");
 
-    private int height = 75;
-    private int width = 150;
-
-    private boolean isShowing = false;
 
     private final String[] units = {"km", "nmi", "mi"};
     private int unitSelected = 0;
 
     private Label measureUnitText = new Label(units[unitSelected]);
 
-    public ToolsOverlay() {
-        super();
+    public ToolsOverlay(int positionX, int positionY) {
+        super(positionX, positionY);
 
-        overlayPane = new BorderPane();
-        gridPane = new GridPane();
-
-        overlayPane.setCenter(gridPane);
 
         Label measureText = new Label("Measure");
         measureText.setTextFill(Color.WHITE);
@@ -142,22 +130,11 @@ public class ToolsOverlay extends AbstractOverlay {
         gridPane.add(drawToggleText, 1, 1);
         gridPane.add(drawSymbol, 2, 1);
 
-        gridPane.setPadding(new Insets(0, 0, 0, 10));
 
-        gridPane.setVgap(10);
-        gridPane.setHgap(10);
 
-        overlayPane.setPrefHeight(height);
-        overlayPane.setPrefWidth(width);
-        overlayPane.setMinWidth(width);
-        overlayPane.setMaxWidth(width);
-        overlayPane.setMinHeight(height);
-        overlayPane.setMaxHeight(height);
 
-        overlayPane.setBackground(Background.fill(new Color(0.224, 0.239, 0.278, 1.0)));
-
-        overlayPane.setTranslateX(815);
-        overlayPane.setTranslateY(20);
+        //overlayPane.setTranslateX(815);
+        //overlayPane.setTranslateY(20);
 
     }
 
@@ -193,18 +170,6 @@ public class ToolsOverlay extends AbstractOverlay {
         } else {
             measureToggleText.setText("Disabled");
         }
-    }
-
-    public boolean getIsShowing() {
-        return isShowing;
-    }
-
-    public void setIsShowing(boolean showing) {
-        isShowing = showing;
-    }
-
-    public BorderPane getOverlayPane() {
-        return overlayPane;
     }
 
     public BooleanProperty getDrawingEnabled() {

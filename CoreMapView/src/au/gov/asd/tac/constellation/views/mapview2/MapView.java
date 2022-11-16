@@ -16,13 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.PopularityHeatmapLayer;
@@ -32,11 +26,14 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.CircleMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PolygonMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
+import au.gov.asd.tac.constellation.views.mapview2.overlays.AbstractOverlay;
+import au.gov.asd.tac.constellation.views.mapview2.overlays.InfoOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +94,11 @@ public class MapView extends ScrollPane {
     public static final double minLat = -58.488473;
     public static final double maxLat = 83.63001;
 
+    public static final double mapWidth = 1010.33;
+    public static final double mapHeight = 1224;
+
     private Set<AbstractMarker.MarkerType> markersShowing = new HashSet<>();
+    private Map<String, AbstractOverlay> overlayMap = new HashMap<>();
 
     private Canvas mapCanvas;
     private Group countryGroup;
@@ -132,9 +133,10 @@ public class MapView extends ScrollPane {
     private final List<AbstractMapLayer> layers = new ArrayList<>();
 
     private ToolsOverlay toolsOverlay = null;
+    private InfoOverlay infoOverlay = null;
 
-    private final Group overlayGroup = new Group();
-    private final Group layerGroup = new Group();
+    private final Group overlayGroup;
+    private final Group layerGroup;
 
     public MapView(MapViewPane parent) {
         this.parent = parent;
@@ -146,6 +148,8 @@ public class MapView extends ScrollPane {
         graphMarkerGroup = new Group();
         drawnMarkerGroup = new Group();
         polygonMarkerGroup = new Group();
+        overlayGroup = new Group();
+        layerGroup = new Group();
 
         markersShowing.add(AbstractMarker.MarkerType.LINE_MARKER);
         markersShowing.add(AbstractMarker.MarkerType.POINT_MARKER);
@@ -153,12 +157,10 @@ public class MapView extends ScrollPane {
 
 
         mapCanvas = new Canvas();
-        //gc = mapCanvas.getGraphicsContext2D();
 
         mapGroupHolder.setBackground(Background.fill(new Color(0.722, 0.871, 0.902, 1)));
 
         countrySVGPaths.clear();
-        //setUp();
         parseMapSVG();
         LOGGER.log(Level.SEVERE, "Size of country array: " + countrySVGPaths.size());
 
@@ -265,12 +267,11 @@ public class MapView extends ScrollPane {
 
         mapGroupHolder.getChildren().add(countryGroup);
 
-        /*DayNightLayer dayNightLayer = new DayNightLayer();
-        dayNightLayer.setUp();
+        toolsOverlay = new ToolsOverlay(815, 20);
+        infoOverlay = new InfoOverlay(20, 20);
 
-        mapGroupHolder.getChildren().addAll(dayNightLayer.getLayer());*/
-        toolsOverlay = new ToolsOverlay();
-        toggleToolsOverlay();
+        overlayMap.put(MapViewPane.TOOLS_OVERLAY, toolsOverlay);
+        overlayMap.put(MapViewPane.INFO_OVERLAY, infoOverlay);
 
         mapGroupHolder.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -354,6 +355,10 @@ public class MapView extends ScrollPane {
                 double x = event.getX();
                 double y = event.getY();
 
+                if (infoOverlay != null && infoOverlay.getIsShowing()) {
+                    infoOverlay.updateLocation(x, y);
+                }
+
                 if (toolsOverlay.getDrawingEnabled().get() && !toolsOverlay.getMeasureEnabled().get()) {
                     if (drawingCircleMarker && circleMarker != null && !drawingPolygonMarker) {
 
@@ -386,8 +391,10 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(layerGroup);
 
         overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
+        overlayGroup.getChildren().addAll(infoOverlay.getOverlayPane());
 
     }
+
 
     private void addUserDrawnMarker(AbstractMarker marker) {
         if (markersShowing.contains(marker.getType())) {
@@ -400,6 +407,12 @@ public class MapView extends ScrollPane {
         toolsOverlay.getOverlayPane().setVisible(!toolsOverlay.getOverlayPane().isVisible());
         toolsOverlay.setIsShowing(toolsOverlay.getOverlayPane().isVisible());
 
+    }
+
+    public void toggleOverlay(String overlay, boolean show) {
+        if (overlayMap.containsKey(overlay) && overlayMap.get(overlay).getIsShowing() != show) {
+            overlayMap.get(overlay).toggleOverlay();
+        }
     }
 
     public void removeUserMarker(int id) {
@@ -560,29 +573,6 @@ public class MapView extends ScrollPane {
 
         return y;
     }
-
-    /*public void drawLine(double lon1, double lat1, double lon2, double lat2) {
-
-        double perthX = longToX(115.857048, minLong, mapGroupHolder.getPrefWidth(), maxLong - minLong);
-        double perthY = latToY(-31.953512, mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
-
-        double sydX = longToX(151.208755, minLong, mapGroupHolder.getPrefWidth(), maxLong - minLong);
-        double sydY = latToY(-33.870453, mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
-
-        perthX += 0;
-        perthY -= 149;
-
-        sydY -= 149;
-
-        LOGGER.log(Level.SEVERE, "Y coord is: " + perthY);
-
-        String line = "M " + perthX + ", " + perthY + " Z L " + sydX + "," + sydY + " z";
-        SVGPath linePath = new SVGPath();
-        linePath.setStroke(Color.BLACK);
-        linePath.setStrokeWidth(1);
-        linePath.setContent(line);
-        countryGroup.getChildren().add(linePath);
-    }*/
 
     public void drawMarker(AbstractMarker marker) {
 
