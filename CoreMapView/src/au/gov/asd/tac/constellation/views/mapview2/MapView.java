@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.AbstractOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.InfoOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
+import au.gov.tac.constellation.views.mapview2.utillities.Vec3;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -67,8 +68,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
@@ -105,12 +109,15 @@ public class MapView extends ScrollPane {
     private Group graphMarkerGroup;
     private Group drawnMarkerGroup;
     private Group polygonMarkerGroup;
+    private Group clusterMarkerGroup;
+    private Group pointMarkerGroup;
 
     private static final Logger LOGGER = Logger.getLogger("Test");
 
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0);
 
     private final PointMarker testMarker;
+    private final PointMarker testMarker2;
 
     private final double mapScaleFactor = 1.1;
 
@@ -120,6 +127,9 @@ public class MapView extends ScrollPane {
 
     private CircleMarker circleMarker = null;
     private PolygonMarker polygonMarker = null;
+
+    private ArrayList<ArrayList<Node>> pointMarkerClusters = new ArrayList<ArrayList<Node>>();
+    private Set<Node> clusteredPointMarkers = new HashSet<>();
 
     private boolean drawingMeasureLine = false;
     private Line measureLine = null;
@@ -140,12 +150,21 @@ public class MapView extends ScrollPane {
     private final Group overlayGroup;
     private final Group layerGroup;
 
+    //private final Region testRegion = new Region();
+
     public MapView(MapViewPane parent) {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
-        testMarker = new PointMarker(parent.getParentComponent(), -99, -99, -4.322447, 15.307045, 0.05, 95, 244);
+        testMarker = new PointMarker(parent.getParentComponent(), -99, -99, 32.764233, 129.872696, 0.05, 95, 244);
         testMarker.setMarkerPosition(mapWidth, mapHeight);
+
+        testMarker2 = new PointMarker(parent.getParentComponent(), -100, -100, 35.011665, 135.768326, 0.05, 95, 244);
+        testMarker2.setMarkerPosition(mapWidth, mapHeight);
+        //testRegion.setShape(testMarker.getMarker());
         //markersShowing.setValue(new SetChangeListener<AbstractMarker.MarkerType>());
+
+        //testRegion.setTranslateX(200);
+        //testRegion.setTranslateY(200);
 
         countryGroup = new Group();
         graphMarkerGroup = new Group();
@@ -153,6 +172,11 @@ public class MapView extends ScrollPane {
         polygonMarkerGroup = new Group();
         overlayGroup = new Group();
         layerGroup = new Group();
+        clusterMarkerGroup = new Group();
+        pointMarkerGroup = new Group();
+
+        pointMarkerGroup.getChildren().addAll(testMarker.getMarker(), testMarker2.getMarker());
+
 
         markersShowing.add(AbstractMarker.MarkerType.LINE_MARKER);
         markersShowing.add(AbstractMarker.MarkerType.POINT_MARKER);
@@ -210,8 +234,15 @@ public class MapView extends ScrollPane {
                 mapStackPane.setScaleX(newXScale);
                 mapStackPane.setScaleY(newYScale);
 
-                testMarker.getMarker().prefHeight(5);
+                //testRegion.setScaleX(scaleFactor);
+                //testRegion.setScaleY(scaleFactor);
 
+                //graphMarkerGroup.setScaleX(scaleFactor);
+                //graphMarkerGroup.setScaleY(scaleFactor);
+                calculateClusters();
+                clusterMarkerGroup.getChildren().clear();
+
+                pointMarkerClusters.forEach(cluster -> drawClusterMarkers(cluster));
                 //testMarker.getMarker().setScaleY(scaleFactor);
             }
         });
@@ -392,6 +423,8 @@ public class MapView extends ScrollPane {
         });
 
         mapGroupHolder.getChildren().add(graphMarkerGroup);
+        mapGroupHolder.getChildren().add(clusterMarkerGroup);
+        mapGroupHolder.getChildren().add(pointMarkerGroup);
         mapGroupHolder.getChildren().addAll(drawnMarkerGroup);
         mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
         mapGroupHolder.getChildren().add(overlayGroup);
@@ -400,9 +433,127 @@ public class MapView extends ScrollPane {
         overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
         overlayGroup.getChildren().addAll(infoOverlay.getOverlayPane());
 
-        graphMarkerGroup.getChildren().add(testMarker.getMarker());
+        //graphMarkerGroup.getChildren().add(testRegion);
     }
 
+    private void calculateClusters() {
+        clusteredPointMarkers.clear();
+        pointMarkerClusters.clear();
+        for (int i = 0; i < pointMarkerGroup.getChildren().size(); ++i) {
+
+            if (!clusteredPointMarkers.contains(pointMarkerGroup.getChildren().get(i))) {
+                clusteredPointMarkers.add(pointMarkerGroup.getChildren().get(i));
+                ArrayList<Node> clusterArray = new ArrayList<>();
+                clusterArray.add(pointMarkerGroup.getChildren().get(i));
+                for (int j = 0; j < pointMarkerGroup.getChildren().size(); ++j) {
+                    if (i != j && !clusteredPointMarkers.contains(pointMarkerGroup.getChildren().get(j))) {
+                        double distance = getNodeDistance(pointMarkerGroup.getChildren().get(i), pointMarkerGroup.getChildren().get(j));
+
+                        if (distance < 150) {
+                            clusteredPointMarkers.add(pointMarkerGroup.getChildren().get(j));
+                            clusterArray.add(pointMarkerGroup.getChildren().get(j));
+                        }
+                    }
+                }
+                pointMarkerClusters.add(clusterArray);
+            }
+        }
+    }
+
+    private double getNodeDistance(Node n1, Node n2) {
+        double x1 = n1.localToScreen(n1.getBoundsInLocal().getCenterX(), n1.getBoundsInLocal().getCenterY()).getX();
+        double y1 = n1.localToScreen(n1.getBoundsInLocal().getCenterX(), n1.getBoundsInLocal().getCenterY()).getY();
+
+        double x2 = n2.localToScreen(n2.getBoundsInLocal().getCenterX(), n2.getBoundsInLocal().getCenterY()).getX();
+        double y2 = n2.localToScreen(n2.getBoundsInLocal().getCenterX(), n2.getBoundsInLocal().getCenterY()).getY();
+
+        double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
+        //LOGGER.log(Level.SEVERE, "Test X1: " + x1);
+        LOGGER.log(Level.SEVERE, "Test Distance: " + distance);
+        return distance;
+    }
+
+    private void drawClusterMarkers(ArrayList<Node> nodes) {
+        if (nodes.isEmpty()) {
+            return;
+        }
+
+        double MIN_RADIUS = 15;
+        Vec3 clusterCenter = new Vec3();
+        nodes.forEach(node -> {
+
+            double nodeX = node.getBoundsInParent().getCenterX();
+            double nodeY = node.getBoundsInParent().getCenterY();
+
+            clusterCenter.addVector(new Vec3(nodeX, nodeY));
+        });
+        clusterCenter.divVector(nodes.size());
+
+        double diameter = 0;
+        double maxDistance = Double.MIN_VALUE;
+        double farthestNode1X = 0;
+        double farthestNode1Y = 0;
+
+        double farthestNode2X = 0;
+        double farthestNode2Y = 0;
+        if (nodes.size() > 0) {
+            final Vec3 minPosition = new Vec3(
+                    Float.MAX_VALUE, Float.MAX_VALUE);
+            final Vec3 maxPosition = new Vec3(
+                    Float.MIN_VALUE, Float.MIN_VALUE);
+            for (int i = 0; i < nodes.size(); ++i) {
+                Node node = nodes.get(i);
+                double nodeX = node.getBoundsInParent().getCenterX();
+                double nodeY = node.getBoundsInParent().getCenterY();
+                for (int j = 0; j < nodes.size(); ++j) {
+                    Node node2 = nodes.get(j);
+                    if (node != node2) {
+                        double node2X = node2.getBoundsInParent().getCenterX();
+                        double node2Y = node2.getBoundsInParent().getCenterY();
+
+                        double distance = Math.sqrt(Math.pow(node2X - nodeX, 2) + Math.pow(node2Y - nodeY, 2));
+
+                        if (maxDistance < distance) {
+                            maxDistance = distance;
+                            farthestNode1X = nodeX;
+                            farthestNode1Y = nodeY;
+                            farthestNode2X = node2X;
+                            farthestNode2Y = node2Y;
+                            clusterCenter.x = (nodeX + node2X) / 2;
+                            clusterCenter.y = (nodeY + node2Y) / 2;
+                        }
+                    }
+                }
+
+                minPosition.x = Math.min(nodeX, minPosition.x);
+                minPosition.y = Math.min(nodeY, minPosition.y);
+                maxPosition.x = Math.max(nodeX, maxPosition.x);
+                maxPosition.y = Math.max(nodeY, maxPosition.y);
+            }
+            //diameter = Math.sqrt(Math.pow((maxPosition.x - minPosition.x), 2)
+            //+ Math.pow((maxPosition.y - minPosition.y), 2));
+
+            diameter = Math.sqrt(Math.pow((farthestNode2X - farthestNode1X), 2)
+                    + Math.pow((farthestNode2Y - farthestNode1Y), 2));
+        }
+        double clusterRadius = Math.max((float) diameter / 2, MIN_RADIUS);
+
+        Circle c = new Circle();
+        c.setCenterX(clusterCenter.x);
+        c.setCenterY(clusterCenter.y);
+        c.setRadius(clusterRadius);
+        c.setFill(Color.DARKBLUE);
+        c.setOpacity(0.6);
+
+        Text numNodes = new Text(clusterCenter.x - 5, clusterCenter.y + 5, "" + nodes.size());
+        numNodes.setFill(Color.YELLOW);
+        numNodes.setFont(new Font(20));
+        //numNodes.setText();
+        clusterMarkerGroup.getChildren().add(numNodes);
+        clusterMarkerGroup.getChildren().add(c);
+
+    }
 
     private void addUserDrawnMarker(AbstractMarker marker) {
         if (markersShowing.contains(marker.getType())) {
@@ -587,6 +738,10 @@ public class MapView extends ScrollPane {
         if (markersShowing.contains(marker.getType())) {
             marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
 
+            if (marker instanceof PointMarker) {
+                pointMarkerGroup.getChildren().add(marker.getMarker());
+                return;
+            }
             graphMarkerGroup.getChildren().add(marker.getMarker());
         }
 

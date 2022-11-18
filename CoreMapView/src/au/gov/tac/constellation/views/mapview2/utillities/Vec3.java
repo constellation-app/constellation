@@ -30,6 +30,12 @@ public class Vec3 {
         z = vec3.z;
     }
 
+    public Vec3(double x, double y) {
+        z = 0;
+        this.x = x;
+        this.y = y;
+    }
+
     public Vec3(double x, double y, double z) {
         this.x = x;
         this.y = y;
@@ -52,6 +58,14 @@ public class Vec3 {
         x += value.x;
         y += value.y;
         z += value.z;
+    }
+
+    public void divVector(double d) {
+        if (d != 0) {
+            x /= d;
+            y /= d;
+            z /= d;
+        }
     }
 
     public Vec3() {
