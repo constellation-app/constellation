@@ -66,12 +66,15 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
     private static final Map<String, String> DATETIME_FORMATS = new LinkedHashMap<>();
 
     static {
-        DATETIME_FORMATS.put("MM/dd/yyyy HH:mm:ss", "MM/dd/yyyy HH:mm:ss");
-        DATETIME_FORMATS.put("dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss");
-        DATETIME_FORMATS.put("yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss");
-        DATETIME_FORMATS.put("yyyy-MM-dd'T'HH:mm:ss'Z'", "yyyy-MM-dd'T'HH:mm:ss'Z'");
-        DATETIME_FORMATS.put("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        DATETIME_FORMATS.put("yyyyMMdd HHmmss'Z'", "yyyyMMdd HHmmss'Z'");
+        DATETIME_FORMATS.put("MM/d/yyyy H:mm", "MM/d/yyyy H:mm");
+        DATETIME_FORMATS.put("MM/d/yyyy H:mm:ss", "MM/d/yyyy H:mm:ss");
+        DATETIME_FORMATS.put("d/MM/yyyy H:mm", "d/MM/yyyy H:mm");
+        DATETIME_FORMATS.put("d/MM/yyyy H:mm:ss", "d/MM/yyyy H:mm:ss");
+        DATETIME_FORMATS.put("yyyy-MM-d H:mm", "yyyy-MM-d H:mm");
+        DATETIME_FORMATS.put("yyyy-MM-d H:mm:ss", "yyyy-MM-d H:mm:ss");
+        DATETIME_FORMATS.put("yyyy-MM-d'T'H:mm:ss'Z'", "yyyy-MM-d'T'H:mm:ss'Z'");
+        DATETIME_FORMATS.put("yyyy-MM-d'T'H:mm:ss.SSS'Z'", "yyyy-MM-d'T'H:mm:ss.SSS'Z'");
+        DATETIME_FORMATS.put("yyyyMMdd Hmmss'Z'", "yyyyMMdd Hmmss'Z'");
         DATETIME_FORMATS.put("yyyyMMddHHmmss", "yyyyMMddHHmmss");
         DATETIME_FORMATS.put(EPOCH, null);
         DATETIME_FORMATS.put(EXCEL, null);

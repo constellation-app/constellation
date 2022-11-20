@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-11-21 Datetime Formatters
+<p>Datetime formatters have been updated in the File and Database importers to allow single digit days and hours to be passed through most default formats.</p>
+<p>A few new formatters, which don't contain seconds, have been added to the default list.</p>
+
 == 2022-11-01 File & Database Importers
 <p>Fixed a bug with the new attributes fading behind Constellation. They are now modal dialogs.</p>
 
