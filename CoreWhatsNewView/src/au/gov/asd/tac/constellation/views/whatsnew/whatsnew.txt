@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2022-11-01 File & Database Importers
+<p>Fixed a bug with the new attributes fading behind Constellation. They are now modal dialogs.</p>
+
 == 2022-10-21 Constellation Options Menu
 <p>The Constellation Options menu has now been grouped together and is ordered alphabetically.</p>
 <p>To reduce the overall number of options tabs the Application Font options can now be found under the Application tab, and the Anaglyphic Displays options can be found under the Graph tab.</p>

@@ -34,7 +34,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -147,11 +146,21 @@ public final class RunPane extends BorderPane implements KeyListener {
             labelPane.setLeft(heading);
 
             final Button button = new Button("", new ImageView(ADD_IMAGE));
-            button.setOnAction((ActionEvent event) -> {
-                Attribute attribute = importController.showNewAttributeDialog(attributeList.getAttributeType().getElementType());
-                if (attribute != null) {
+            button.setOnAction(event -> {
+                final NewAttributeDialog dialog = new NewAttributeDialog();
+                dialog.setOkButtonAction(event2 -> {
+                    dialog.hideDialog();
+                    Attribute attribute = new NewAttribute(
+                            attributeList.getAttributeType().getElementType(),
+                            dialog.getType(),
+                            dialog.getLabel(),
+                            dialog.getDescription()
+                    );
+
                     importController.createManualAttribute(attribute);
-                }
+                });
+
+                dialog.showDialog("New Attribute");
             });
             button.setTooltip(new Tooltip("Add a new " + attributeList.getAttributeType().getElementType() + " attribute"));
             labelPane.setRight(button);
