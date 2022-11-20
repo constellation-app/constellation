@@ -124,7 +124,7 @@ public class ConfigurationPane extends AnchorPane {
 
         // Create the run pane - store the name of the associated configuration pane tab
         final RunPane runPane = new RunPane(importController, helpText, label.getText());
-        
+
         tab.setContent(runPane);
 
         return tab;
@@ -142,7 +142,7 @@ public class ConfigurationPane extends AnchorPane {
                 if (!newValue) {
                     label.setText(field.getText());
                     tab.setGraphic(label);
-                    
+
                     // Ensure runPane is updated to store the updated name (corresponding to the configuration pane tab
                     // name) which is used when generating summary details to user.
                     final RunPane runPane = (RunPane) tab.getContent();
@@ -209,11 +209,13 @@ public class ConfigurationPane extends AnchorPane {
      * A List&lt;ImportDefinition&gt; where each list element corresponds to a
      * RunPane tab.
      *
+     * @param isFilesIncludeHeadersEnabled When true will skip the first row and
+     * when false will include the first row
      * @return A List&lt;ImportDefinition&gt; where each list element
      * corresponds to a RunPane tab.
      */
     public List<ImportDefinition> createDefinitions(final boolean isFilesIncludeHeadersEnabled) {
-        List<ImportDefinition> definitions = new ArrayList<>(tabPane.getTabs().size());
+        final List<ImportDefinition> definitions = new ArrayList<>(tabPane.getTabs().size());
 
         for (Tab tab : tabPane.getTabs()) {
             RunPane runPane = (RunPane) tab.getContent();
@@ -261,7 +263,7 @@ public class ConfigurationPane extends AnchorPane {
         // (This tends to involve Platform.runLater() so let them be queued.)
         tabPane.getTabs().clear();
 
-        definitions.forEach(_item -> importController.createNewRun());
+        definitions.forEach(item -> importController.createNewRun());
 
         // ...then configure each RunPane.
         // (This will queue waiting for the RunPane creations.)
@@ -277,7 +279,9 @@ public class ConfigurationPane extends AnchorPane {
     }
 
     public void clearFilters() {
-        tabPane.getTabs().stream().map(tab -> (RunPane) tab.getContent()).forEachOrdered(runPane -> runPane.clearFilters());
+        tabPane.getTabs().stream()
+                .map(tab -> (RunPane) tab.getContent())
+                .forEachOrdered(runPane -> runPane.clearFilters());
     }
 
     /**
