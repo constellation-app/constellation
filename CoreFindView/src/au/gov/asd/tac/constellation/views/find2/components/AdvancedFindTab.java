@@ -95,7 +95,7 @@ public class AdvancedFindTab extends Tab {
     private final GridPane bottomGrid = new GridPane();
 
     private boolean firstSearch = true;
-    private final String foundLabelText = "Find: Advanced Search: Number of results found: ";
+    private final String foundLabelText = "Results Found: ";
     private final Label matchesFoundLabel = new Label("");
     private final Label matchesFoundCountLabel = new Label("");
 

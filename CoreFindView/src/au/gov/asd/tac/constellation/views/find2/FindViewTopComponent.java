@@ -162,7 +162,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
          */
         for (final Window window : Window.getWindows()) {
             if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
-                window.setMinimumSize(new Dimension(485, 285));
+                window.setMinimumSize(new Dimension(500, 300));
             }
         }
     }

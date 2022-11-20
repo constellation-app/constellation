@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.find2.utilities;
 
+import java.util.logging.Logger;
+
 /**
  * The current list of all find view results
  *
@@ -25,7 +27,9 @@ public class ActiveFindResultsList {
     private static FindResultsList basicResultsList;
     private static FindResultsList replaceResultsList;
     private static FindResultsList advancedResultsList;
+    private static FindResultsList advancedFindAllResultsList;
 
+    private static final Logger LOGGER = Logger.getLogger(ActiveFindResultsList.class.getName());
 
     private ActiveFindResultsList() {
     }
@@ -58,14 +62,20 @@ public class ActiveFindResultsList {
     }
 
     /**
+     * Get the advanced find all results list
+     *
+     * @return advancedFindAllResultsList
+     */
+    public static FindResultsList getAdvancedFindAllResultsList() {
+        return advancedFindAllResultsList;
+    }
+
+    /**
      * Set the basic find results list
      *
      * @param basicResultsList
      */
-    public static synchronized void setBasicResultsList(FindResultsList basicResultsList) {
-        if (ActiveFindResultsList.basicResultsList != null) {
-            ActiveFindResultsList.basicResultsList.clear();
-        }
+    public static synchronized void setBasicResultsList(final FindResultsList basicResultsList) {
         ActiveFindResultsList.basicResultsList = basicResultsList;
     }
 
@@ -74,7 +84,7 @@ public class ActiveFindResultsList {
      *
      * @param replaceResultsList
      */
-    public static void setReplaceResultsList(FindResultsList replaceResultsList) {
+    public static void setReplaceResultsList(final FindResultsList replaceResultsList) {
         ActiveFindResultsList.replaceResultsList = replaceResultsList;
     }
 
@@ -83,8 +93,17 @@ public class ActiveFindResultsList {
      *
      * @param advancedResultsList
      */
-    public static void setAdvancedResultsList(FindResultsList advancedResultsList) {
+    public static void setAdvancedResultsList(final FindResultsList advancedResultsList) {
         ActiveFindResultsList.advancedResultsList = advancedResultsList;
+    }
+
+    /**
+     * Set the advanced find all results list
+     *
+     * @param advancedFindAllResultsList
+     */
+    public static void setAdvancedFindAllResultsList(final FindResultsList advancedFindAllResultsList) {
+        ActiveFindResultsList.advancedFindAllResultsList = advancedFindAllResultsList;
     }
 
     /**
@@ -93,8 +112,8 @@ public class ActiveFindResultsList {
      * @param additions
      */
     public static synchronized void addToBasicFindResultsList(final FindResultsList additions) {
-        boolean exists = false;
-        for (final FindResult result : additions) {
+        additions.forEach(result -> {
+            boolean exists = false;
             for (final FindResult current : ActiveFindResultsList.basicResultsList) {
                 if (current.equals(result)) {
                     exists = true;
@@ -103,7 +122,7 @@ public class ActiveFindResultsList {
             if (!exists) {
                 ActiveFindResultsList.basicResultsList.add(result);
             }
-        }
+        });
     }
 
     /**
@@ -112,8 +131,8 @@ public class ActiveFindResultsList {
      * @param additions 
      */
     public static void addToReplaceFindResultsList(final FindResultsList additions) {
-        boolean exists = false;
-        for (final FindResult result : additions) {
+        additions.forEach(result -> {
+            boolean exists = false;
             for (final FindResult current : ActiveFindResultsList.replaceResultsList) {
                 if (current.equals(result)) {
                     exists = true;
@@ -122,7 +141,7 @@ public class ActiveFindResultsList {
             if (!exists) {
                 ActiveFindResultsList.replaceResultsList.add(result);
             }
-        }
+        });
     }
 
     /**
@@ -131,8 +150,8 @@ public class ActiveFindResultsList {
      * @param additions
      */
     public static void addToAdvancedFindResultsList(final FindResultsList additions) {
-        boolean exists = false;
-        for (final FindResult result : additions) {
+        additions.forEach(result -> {
+            boolean exists = false;
             for (final FindResult current : ActiveFindResultsList.advancedResultsList) {
                 if (current.equals(result)) {
                     exists = true;
@@ -141,6 +160,25 @@ public class ActiveFindResultsList {
             if (!exists) {
                 ActiveFindResultsList.advancedResultsList.add(result);
             }
-        }
+        });
+    }
+
+    /**
+     * Add more results to the advanced find all results list if not already in the list
+     *
+     * @param additions
+     */
+    public static void addToAdvancedFindAllResultsList(final FindResultsList additions) {
+        additions.forEach(result -> {
+            boolean exists = false;
+            for (final FindResult current : ActiveFindResultsList.advancedFindAllResultsList) {
+                if (current.equals(result)) {
+                    exists = true;
+                }
+            }
+            if (!exists) {
+                ActiveFindResultsList.advancedFindAllResultsList.add(result);
+            }
+        });
     }
 }

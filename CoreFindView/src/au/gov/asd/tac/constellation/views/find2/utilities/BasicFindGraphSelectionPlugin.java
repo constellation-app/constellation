@@ -22,9 +22,9 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
-import javafx.application.Platform;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Updates the graph selection based on the results of the basic find plugin
@@ -39,6 +39,8 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
     private final boolean getNext;
     private final boolean searchAllGraphs;
 
+    private static final Logger LOGGER = Logger.getLogger(BasicFindGraphSelectionPlugin.class.getName());
+
     public BasicFindGraphSelectionPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll, final boolean getNext) {
         this.elementType = parameters.getGraphElement();
         this.selectAll = selectAll;
@@ -52,35 +54,34 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
 
         if (!selectAll) {
-
             /**
              * If the list isn't empty, and the user clicked find next, increment the found lists index by 1, otherwise decrement it by 1. Set the
              * element at the specified index to selected.
              */
             if (!ActiveFindResultsList.getBasicResultsList().isEmpty()) {
-                if (getNext) {
-                    ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
-                } else {
-                    ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
-                }
+//                if (getNext) {
+//                    ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
+//                } else {
+//                    ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
+//                }
 
-                final int elementId = ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getID();
+                final int elementId = ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getID();                
+                LOGGER.log(Level.WARNING, "Graph Selection Basic: " + Integer.toString(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()));
+                LOGGER.log(Level.WARNING, "Graph Selection List Size: " + Integer.toString(ActiveFindResultsList.getBasicResultsList().size()));
+                
                 final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
                 graph.setBooleanValue(selectedAttribute, elementId, !removeFromCurrentSelection);
             }
-
             graph.setObjectValue(stateId, 0, ActiveFindResultsList.getBasicResultsList());
         }
-        
+         
         // Swap to view the graph where the element is selected
         if (searchAllGraphs && !ActiveFindResultsList.getBasicResultsList().isEmpty()) {
             FindViewUtilities.searchAllGraphs(graph);
         }
 
         //If no results are found, set the meta attribute to null
-        graph.setObjectValue(stateId, 0, ActiveFindResultsList.getBasicResultsList().isEmpty() ? null : ActiveFindResultsList.getBasicResultsList());
-        final int foundResultsLength = ActiveFindResultsList.getBasicResultsList().size();
-        Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(foundResultsLength));
+     //   graph.setObjectValue(stateId, 0, ActiveFindResultsList.getBasicResultsList().isEmpty() ? null : ActiveFindResultsList.getBasicResultsList());
     }
 
     @Override

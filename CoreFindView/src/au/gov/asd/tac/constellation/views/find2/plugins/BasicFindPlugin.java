@@ -54,7 +54,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean findInCurrentSelection;
     private final boolean selectAll;
     private final boolean getNext;
-    private final boolean searchAllGraphs;
     private final BasicFindReplaceParameters parameters;
 
     private static final int STARTING_INDEX = -1;
@@ -72,7 +71,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.addToSelection = parameters.isAddTo();
         this.removeFromCurrentSelection = parameters.isRemoveFrom();
         this.findInCurrentSelection = parameters.isFindIn();
-        this.searchAllGraphs = parameters.isSearchAllGraphs();
     }
 
     /**
@@ -107,7 +105,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         //Retrieve the existing FindResultList Meta attribute
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         FindResultsList foundResult = graph.getObjectValue(stateId, 0);
-      //  ActiveFindResultsList activeFindResultsList = ActiveFindResultsList.getInstance();
 
         /**
          * If it doesn't exist or is null, create a new list with the starting
@@ -130,12 +127,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
             final BasicFindReplaceParameters newParamters = new BasicFindReplaceParameters(this.parameters);
             int newIndex = getIndex(newParamters, oldparameters, foundResult.getCurrentIndex());
             foundResult = new FindResultsList(newIndex, newParamters);
-        }
-
-        if (ActiveFindResultsList.getBasicResultsList() == null || !ActiveFindResultsList.getBasicResultsList().getSearchParameters().equals(this.parameters)) {
-            ActiveFindResultsList.setBasicResultsList(foundResult);
-        } else {
-            ActiveFindResultsList.addToBasicFindResultsList(foundResult);
         }
 
         foundResult.clear();
@@ -210,7 +201,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                             }
                             // add the graph element to the foundResult list
                             foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
-                            ActiveFindResultsList.addToBasicFindResultsList(foundResult);
                         }
                     }
                 }
@@ -228,21 +218,15 @@ public class BasicFindPlugin extends SimpleEditPlugin {
          */
         selectRemoveFromResults(removeFromCurrentSelection, removeFromCurrentSelectionList, foundResult, graph, selectedAttribute);
 
-        /**
-         * If the user clicked find next or find previous
-         */
-        if (!selectAll) {
+        // Clean the find results list to only contain unique graph elements
+        final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
+        foundResult.clear();
+        foundResult.addAll(distinctValues);
 
-            // Clean the find results list to only contain unique graph elements
-            final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
-            foundResult.clear();
-            foundResult.addAll(distinctValues);
-
-            if (searchAllGraphs && ActiveFindResultsList.getBasicResultsList() == null) {
-                ActiveFindResultsList.setBasicResultsList(foundResult);
-            } else if (searchAllGraphs) {
-                ActiveFindResultsList.addToBasicFindResultsList(foundResult);
-            }          
+        if (ActiveFindResultsList.getBasicResultsList() == null || !ActiveFindResultsList.getBasicResultsList().getSearchParameters().equals(this.parameters)) {
+            ActiveFindResultsList.setBasicResultsList(foundResult);
+        } else {
+            ActiveFindResultsList.addToBasicFindResultsList(foundResult);
         }
     }
 
@@ -305,7 +289,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
      * @return the correct current index
      */
     private int getIndex(final BasicFindReplaceParameters currentParameters, final BasicFindReplaceParameters oldParameters, int currentIndex) {
-
         if (!selectAll && currentParameters.equals(oldParameters)) {
             // If the query hasnt changed and there must be elements in the list
             // get the current index

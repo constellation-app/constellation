@@ -31,7 +31,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
-import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
@@ -51,8 +50,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import javafx.application.Platform;
 
 /**
  * This class handles the logic for selecting the correct elements on the graphs
@@ -69,7 +66,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     private final GraphElementType elementType;
     private final String allOrAny;
     private final String currentSelection;
-    private final boolean searchAllGraphs;
 
     private FindResultsList findInCurrentSelectionList;
 
@@ -92,7 +88,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         allOrAny = parameters.getAllOrAny();
         currentSelection = parameters.getCurrentSelection();
         criteriaList = parameters.getCriteriaValuesList();
-        this.searchAllGraphs = parameters.isSearchAllGraphs();
     }
 
     /**
@@ -151,11 +146,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             foundResult = new FindResultsList(newIndex, newParamters);
         }
 
-        if (ActiveFindResultsList.getAdvancedResultsList() == null && !ActiveFindResultsList.getAdvancedResultsList().getAdvancedSearchParameters().equals(this.parameters)) {
-            ActiveFindResultsList.setAdvancedResultsList(foundResult);
-        } else {
-            ActiveFindResultsList.addToAdvancedFindResultsList(foundResult);
-        }
 
         foundResult.clear();
         graph.setObjectValue(stateId, 0, foundResult);
@@ -260,6 +250,9 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                             // add a new find result to the found results list
                             // of the element
                             foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
+                        } else if (selectAll) {
+                            graph.setBooleanValue(selectedAttribute, currElement, true);
+                            foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
                         }
                     }
                 }
@@ -282,6 +275,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                 }
             }
         }
+
         findAllMatchingResultsList.addAll(findResultSet);
 
         final int resultsFoundSize = findAllMatchingResultsList.size();
@@ -300,44 +294,38 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         }
 
 
-        // if the user clicked find next or prev
-        if (!selectAll) {
-            
-            // do this if ignore selection
-            if (IGNORE.equals(currentSelection)) {
-                clearSelection(graph);
-            }
-            
-            // Clean the find results list to only contain unique graph elements
-            final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
-            foundResult.clear();
-            foundResult.addAll(distinctValues);
-
-            /**
-             * If the list isn't empty, and the user clicked find next,
-             * increment the found lists index by 1, otherwise decrement it by
-             * 1. Set the element at the specified index to selected.
-             */
-            if (!foundResult.isEmpty()) {
-                if (selectNext) {
-                    foundResult.incrementCurrentIndex();
-                } else {
-                    foundResult.decrementCurrentIndex();
-                }
-                final int elementId = foundResult.get(foundResult.getCurrentIndex()).getID();
-                graph.setBooleanValue(selectedAttribute, elementId, true);
-            }
-            graph.setObjectValue(stateId, 0, foundResult);
-        }
-
-        // Swap to view the graph where the element is selected 
-//        if (searchAllGraphs && !foundResult.isEmpty()) {
-//            FindViewUtilities.searchAllGraphs(graph);
+//        // if the user clicked find next or prev
+//        if (!selectAll) {
+//
+//            // do this if ignore selection
+//            if (IGNORE.equals(currentSelection)) {
+//                clearSelection(graph);
+//            }
+//
+//            // Clean the find results list to only contain unique graph elements
+//            final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
+//            foundResult.clear();
+//            foundResult.addAll(distinctValues);
+//
+//            /**
+//             * If the list isn't empty, and the user clicked find next,
+//             * increment the found lists index by 1, otherwise decrement it by
+//             * 1. Set the element at the specified index to selected.
+//             */
+//            if (!foundResult.isEmpty()) {
+//                if (selectNext) {
+//                    foundResult.incrementCurrentIndex();
+//        } else {
+//                    foundResult.decrementCurrentIndex();
 //        }
 
-        //If no results are found, set the meta attribute to null
-        graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult);
-        Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(resultsFoundSize));
+
+        if (ActiveFindResultsList.getAdvancedResultsList() == null || !ActiveFindResultsList.getAdvancedResultsList().getAdvancedSearchParameters().equals(this.parameters)) {
+            ActiveFindResultsList.setAdvancedResultsList(foundResult);
+        } else {
+            ActiveFindResultsList.addToAdvancedFindResultsList(foundResult);
+        }
+
     }
 
     /**

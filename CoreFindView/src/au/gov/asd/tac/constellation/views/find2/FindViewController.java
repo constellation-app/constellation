@@ -20,13 +20,13 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find2.plugins.BasicFindPlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.GraphAttributePlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.ReplacePlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.advanced.AdvancedSearchPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
-import au.gov.asd.tac.constellation.views.find2.utilities.AdvancedFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
@@ -38,9 +38,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import org.openide.util.Exceptions;
 
 /**
  * This controller class handles the interaction between the findView2 UI
@@ -263,24 +263,21 @@ public class FindViewController {
                 }
             }
         } catch (final InterruptedException | ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         } 
-       
-        // do the updating of the graph here instead
-        LOGGER.log(Level.WARNING, ActiveFindResultsList.getBasicResultsList().toString());
-        LOGGER.log(Level.WARNING, Integer.toString(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()));
-        
-        if (ActiveFindResultsList.getBasicResultsList() != null) {
-            if (ActiveFindResultsList.getBasicResultsList().getCurrentIndex() == -1 && getNext) {
-                ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
-            } else if (ActiveFindResultsList.getBasicResultsList().getCurrentIndex() == -1 && !getNext) {
-                ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
-            }
-            
-            int currentIndex = ActiveFindResultsList.getBasicResultsList().getCurrentIndex();
-            Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(currentIndex).getGraphId());
 
+        // do the updating of the graph here instead
+        if (!ActiveFindResultsList.getBasicResultsList().isEmpty()) {
+            if (getNext) {
+                    ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
+                } else {
+                    ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
+                }
+
+            Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getGraphId());
             PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph);
+            final int foundResultsLength = ActiveFindResultsList.getBasicResultsList().size();
+            Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(foundResultsLength));
         }
     }
 
@@ -316,7 +313,6 @@ public class FindViewController {
     }
 
     public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext) {
-
         final AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
         final AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(currentAdvancedSearchParameters, findAll, findNext);
 
@@ -324,32 +320,40 @@ public class FindViewController {
          * If search all graphs is true, execute the advanced find plugin on all
          * open graphs. If not only call it on the active graph.
          */
-        if (currentAdvancedSearchParameters.isSearchAllGraphs()) {
-            for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+        try {
+            if (currentAdvancedSearchParameters.isSearchAllGraphs()) {
+                for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
+                    // check to see the graph is not null
+                    if (graph != null && currentAdvancedSearchParameters.isSearchAllGraphs()) {
+                        PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph).get();
+                    }
+                }
+            } else {
+                final Graph graph = GraphManager.getDefault().getActiveGraph();
                 // check to see the graph is not null
-                if (graph != null && currentAdvancedSearchParameters.isSearchAllGraphs()) {
-                    PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
+                if (graph != null) {
+                    PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph).get();
                 }
             }
-        } else {
-            final Graph graph = GraphManager.getDefault().getActiveGraph();
-            // check to see the graph is not null
-            if (graph != null) {
-                PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph);
-            }
+        } catch (final InterruptedException | ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
 
-        if (ActiveFindResultsList.getAdvancedResultsList() != null) {
+        if (!ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
             if (ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex() == -1 && findNext) {
                 ActiveFindResultsList.getAdvancedResultsList().incrementCurrentIndex();
             } else if (ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex() == -1 && !findNext) {
                 ActiveFindResultsList.getAdvancedResultsList().decrementCurrentIndex();
             }
+            
 
             int currentIndex = ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex();
+            LOGGER.log(Level.WARNING, "Controller Advanced: " + Integer.toString(currentIndex));
             Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getAdvancedResultsList().get(currentIndex).getGraphId());
 
             PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph);
+            final int foundResultsLength = ActiveFindResultsList.getAdvancedResultsList().size();
+            Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(foundResultsLength));
         }
     }
 
