@@ -165,9 +165,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 // At least 1 object was successfully imported. List all successful file imports, as well as any files
                 // that there were issues for. If there were any files with issues use a warning dialog.
                 final String fileFiles = (validFilenames.size() == 1) ? "file" : "files";
-                sbHeader.append(String.format("Extracted data from %d rows in %d %s. Skipped rows %d due to import error.",
+                sbMessage.append(String.format("Extracted data from %d rows in %d %s. Skipped rows %d due to import error.",
                         importedRows, validFilenames.size(), fileFiles, skippedRows));
-                sbMessage.append("Files with data: ");
+                sbMessage.append(" Files with data: ");
                 for (int i = 0; i < validFilenames.size(); i++) {
                     if (i > 0) {
                         sbMessage.append(", ");
@@ -177,7 +177,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 sbMessage.append(".");
             } else {
                 // No rows were imported list all files that resulted in failures.
-                sbHeader.append("No data found.");
+                sbMessage.append("No data found.\n");
             }
 
             if (!emptyFilenames.isEmpty()) {
@@ -213,7 +213,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 }
                 sbMessage.append(".");
             }
-            NotificationDisplayer.getDefault().notify(sbHeader.toString(), UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
+            NotificationDisplayer.getDefault().notify("File Import", UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
         });
     }
 
