@@ -39,6 +39,7 @@ public class PolygonMarker extends AbstractMarker {
         markerPath.setStroke(Color.BLACK);
         markerPath.setFill(Color.ORANGE);
         markerPath.setOpacity(0.4);
+        //markerPath.setMouseTransparent(true);
 
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
@@ -62,6 +63,7 @@ public class PolygonMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
 
                 parentComponent.removeUserMarker(markerID);
+                //parentComponent.drawPointMarkerOnMap();
                 e.consume();
             }
         });

@@ -233,8 +233,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     }
 
     public void drawMarkerOnMap() {
-        LOGGER.log(Level.SEVERE, "Length of marker: " + markers.size());
-
         for (Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
             mapViewPane.drawMarker(m);
@@ -242,6 +240,14 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     }
 
+    public void drawPointMarkerOnMap() {
+        for (Object value : markers.values()) {
+            AbstractMarker m = (AbstractMarker) value;
+            if (m instanceof PointMarker) {
+                mapViewPane.drawMarker(m);
+            }
+        }
+    }
 
 
     /**

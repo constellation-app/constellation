@@ -356,6 +356,7 @@ public class MapView extends ScrollPane {
                         marker.setMarkerPosition(0, 0);
                         //drawnMarkerGroup.getChildren().addAll(marker.getMarker());
                         addUserDrawnMarker(marker);
+                        //pointMarkerGroup.getChildren().addAll(marker.getMarker());
                         userMarkers.add(marker);
                     }
                 } else if (!toolsOverlay.getDrawingEnabled().get() && toolsOverlay.getMeasureEnabled().get()) {
@@ -423,8 +424,8 @@ public class MapView extends ScrollPane {
         });
 
         mapGroupHolder.getChildren().add(graphMarkerGroup);
-        mapGroupHolder.getChildren().add(clusterMarkerGroup);
         mapGroupHolder.getChildren().add(pointMarkerGroup);
+        mapGroupHolder.getChildren().add(clusterMarkerGroup);
         mapGroupHolder.getChildren().addAll(drawnMarkerGroup);
         mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
         mapGroupHolder.getChildren().add(overlayGroup);
@@ -526,10 +527,10 @@ public class MapView extends ScrollPane {
                     }
                 }
 
-                minPosition.x = Math.min(nodeX, minPosition.x);
+                /*minPosition.x = Math.min(nodeX, minPosition.x);
                 minPosition.y = Math.min(nodeY, minPosition.y);
                 maxPosition.x = Math.max(nodeX, maxPosition.x);
-                maxPosition.y = Math.max(nodeY, maxPosition.y);
+                maxPosition.y = Math.max(nodeY, maxPosition.y);*/
             }
             //diameter = Math.sqrt(Math.pow((maxPosition.x - minPosition.x), 2)
             //+ Math.pow((maxPosition.y - minPosition.y), 2));
@@ -545,18 +546,27 @@ public class MapView extends ScrollPane {
         c.setRadius(clusterRadius);
         c.setFill(Color.DARKBLUE);
         c.setOpacity(0.6);
+        c.setMouseTransparent(true);
 
         Text numNodes = new Text(clusterCenter.x - 5, clusterCenter.y + 5, "" + nodes.size());
         numNodes.setFill(Color.YELLOW);
         numNodes.setFont(new Font(20));
+        numNodes.setMouseTransparent(true);
         //numNodes.setText();
-        clusterMarkerGroup.getChildren().add(numNodes);
+
         clusterMarkerGroup.getChildren().add(c);
+        clusterMarkerGroup.getChildren().add(numNodes);
 
     }
 
     private void addUserDrawnMarker(AbstractMarker marker) {
         if (markersShowing.contains(marker.getType())) {
+
+            if (marker instanceof UserPointMarker) {
+                pointMarkerGroup.getChildren().add(marker.getMarker());
+                return;
+            }
+
             drawnMarkerGroup.getChildren().addAll(marker.getMarker());
         }
     }
@@ -577,21 +587,35 @@ public class MapView extends ScrollPane {
     public void removeUserMarker(int id) {
         for (int i = 0; i < userMarkers.size(); ++i) {
             if (userMarkers.get(i).getMarkerId() == id) {
+                AbstractMarker removed = userMarkers.get(i);
                 userMarkers.remove(i);
+                if (removed instanceof UserPointMarker) {
+                    pointMarkerGroup.getChildren().clear();
+                    redrawUserMarkers(true);
+                } else
+                    redrawUserMarkers(false);
+
                 break;
             }
         }
 
-        redrawUserMarkers();
+        //redrawUserMarkers();
+
     }
 
-    private void redrawUserMarkers() {
+    private void redrawUserMarkers(boolean pointMarkersOnly) {
         drawnMarkerGroup.getChildren().clear();
 
         userMarkers.forEach((marker) -> {
 
             if (markersShowing.contains(marker.getType())) {
-                drawnMarkerGroup.getChildren().add(marker.getMarker());
+
+                if (marker instanceof UserPointMarker && pointMarkersOnly) {
+                    pointMarkerGroup.getChildren().add(marker.getMarker());
+
+                }
+                else if (!pointMarkersOnly);
+                    drawnMarkerGroup.getChildren().add(marker.getMarker());
             }
         });
     }
@@ -622,12 +646,13 @@ public class MapView extends ScrollPane {
             markersShowing.add(type);
         }
 
-        redrawUserMarkers();
+        redrawUserMarkers(false);
         redrawQueriedMarkers();
     }
 
     public void redrawQueriedMarkers() {
         graphMarkerGroup.getChildren().clear();
+        pointMarkerGroup.getChildren().clear();
         parent.redrawQueriedMarkers();
     }
 
@@ -639,11 +664,6 @@ public class MapView extends ScrollPane {
         });
     }
 
-    public void hideToolsOverlay() {
-        if (toolsOverlay.getIsShowing()) {
-            toggleToolsOverlay();
-        }
-    }
 
     public Map<String, AbstractMarker> getAllMarkers() {
         return parent.getAllMarkers();
@@ -653,75 +673,8 @@ public class MapView extends ScrollPane {
         return parent.getCurrentGraph();
     }
 
-    /*public void drawMarker(double lattitude, double longitude, double xyScale) {
 
-
-        double lonDelta = maxLong - minLong;
-
-        //double xScale = mapGroupHolder.getPrefWidth() / (maxLong - minLong);
-        //double yScale = mapGroupHolder.getPrefHeight() / (maxLat - minLat);
-
-        //double x = (longitude - minLong) * xScale;
-
-        //double minLatRad = minLat * (Math.PI / 180);
-
-        //double worldMapWidth = ((mapGroupHolder.getPrefWidth() / lonDelta) * 360) / (2 * Math.PI);
-        //double yOffset = (worldMapWidth / 2 * Math.log((1 + Math.sin(minLatRad)) / (1 - Math.sin(minLatRad))));
-        //double y = mapGroupHolder.getPrefHeight() - ((worldMapWidth * Math.log((1 + Math.sin(lattitudeRad)) / (1 - Math.sin(lattitudeRad)))) - yOffset);
-        double x = (longitude - minLong) * (mapGroupHolder.getPrefWidth() / lonDelta);
-        double lattitudeRad = lattitude * (Math.PI / 180);
-
-        double y = Math.log(Math.tan((Math.PI / 4) + (lattitudeRad / 2)));
-        y = (mapGroupHolder.getPrefHeight() / 2) - (mapGroupHolder.getPrefWidth() * y / (2 * Math.PI));
-
-
-        x += 95;
-        y -= 244;
-
-        LOGGER.log(Level.SEVERE, "x: " + x + " y: " + y);
-
-        //x = 600;
-        //y = 600;
-
-        String markerPath = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
-        markerPath = "M " + x + "," + y + " Z " + markerPath;
-
-
-        //LOGGER.log(Level.SEVERE, markerPath);
-
-        SVGPath marker = new SVGPath();
-        marker.setContent(markerPath);
-        //gc.appendSVGPath(markerPath);
-        //marker.translateXProperty().add(4000);
-        //marker.translateYProperty().add(5000);
-        marker.setStroke(Color.BLACK);
-        marker.setFill(Color.RED);
-        marker.setScaleX(xyScale);
-        marker.setScaleY(xyScale);
-        //marker.rotateProperty().set(90.0);
-
-        marker.setOnMouseEntered((new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
-                marker.setFill(Color.ORANGE);
-                e.consume();
-            }
-        }));
-
-        marker.setOnMouseExited((new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
-                marker.setFill(Color.RED);
-                e.consume();
-            }
-        }));
-
-        //gc.rect(x, y, 50, 50);
-
-        countryGroup.getChildren().add(marker);
-        //drawMarker();
-        //draw();
-    }*/
-
-    private double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
+    /*private double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
         return (longitude - minLong) * (mapWidth / lonDelta);
     }
 
@@ -731,7 +684,7 @@ public class MapView extends ScrollPane {
         y = (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
 
         return y;
-    }
+    }*/
 
     public void drawMarker(AbstractMarker marker) {
 

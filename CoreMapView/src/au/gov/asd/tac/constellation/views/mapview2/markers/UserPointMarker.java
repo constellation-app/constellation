@@ -70,6 +70,8 @@ public class UserPointMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
 
                 parentComponent.removeUserMarker(markerID);
+                parentComponent.drawPointMarkerOnMap();
+                //parentComponent.drawMarkerOnMap();
                 e.consume();
             }
         });

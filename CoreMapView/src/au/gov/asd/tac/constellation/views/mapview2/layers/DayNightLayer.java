@@ -99,7 +99,7 @@ public class DayNightLayer extends AbstractMapLayer {
         //shadowMarker.setStroke(Color.BLACK);
         //shadowMarker.setOpacity(0.5);
         shadowMarker.setStrokeWidth(0);
-
+        shadowMarker.setMouseTransparent(true);
         dayNightGroup.getChildren().add(shadowMarker);
     }
 
@@ -150,7 +150,7 @@ public class DayNightLayer extends AbstractMapLayer {
 
         sun.setFill(Color.YELLOW);
         sun.setOpacity(0.75);
-
+        sun.setMouseTransparent(true);
 
         return sun;
     }
