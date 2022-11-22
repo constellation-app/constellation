@@ -61,9 +61,7 @@ public class ColorCriteriaValues extends FindCriteriaValues {
             return false;
         }
         final ColorCriteriaValues other = (ColorCriteriaValues) obj;
-        if (!Objects.equals(this.color, other.color)) {
-            return false;
-        }
-        return true;
+        
+        return Objects.equals(this.color, other.color);
     }
 }
