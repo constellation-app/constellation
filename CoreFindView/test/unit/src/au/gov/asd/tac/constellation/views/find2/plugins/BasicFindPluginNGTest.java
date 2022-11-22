@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.FindViewTopComponent;
+import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
@@ -138,6 +139,7 @@ public class BasicFindPluginNGTest {
         basicFindPlugin = new BasicFindPlugin(parameters, false, true);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
         BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, true);
+        ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
@@ -153,6 +155,7 @@ public class BasicFindPluginNGTest {
          */
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
         findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, true);
+        ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
@@ -169,6 +172,7 @@ public class BasicFindPluginNGTest {
         basicFindPlugin = new BasicFindPlugin(parameters, false, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
         findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, false);
+        ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
