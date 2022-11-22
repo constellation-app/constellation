@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues;
 
+import java.util.Objects;
+
 /**
  * This Class is the parent class for all the criteriaValueObjects
  *
@@ -59,4 +61,36 @@ public class FindCriteriaValues {
         return filter;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.attributeType);
+        hash = 71 * hash + Objects.hashCode(this.attribute);
+        hash = 71 * hash + Objects.hashCode(this.filter);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final FindCriteriaValues other = (FindCriteriaValues) obj;
+        if (!Objects.equals(this.attributeType, other.attributeType)) {
+            return false; 
+        }
+        if (!Objects.equals(this.attribute, other.attribute)) {
+            return false;
+        }
+        if (!Objects.equals(this.filter, other.filter)) {
+            return false;
+        }
+        return true;
+    }
 }

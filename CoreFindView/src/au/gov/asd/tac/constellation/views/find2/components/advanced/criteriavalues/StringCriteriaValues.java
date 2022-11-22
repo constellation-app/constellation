@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriaval
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This Class is for the StringCriteriaValues which are created from a
@@ -84,6 +85,43 @@ public class StringCriteriaValues extends FindCriteriaValues {
      */
     public boolean isUseList() {
         return useList;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.text);
+        hash = 97 * hash + Objects.hashCode(this.textList);
+        hash = 97 * hash + (this.ignoreCase ? 1 : 0);
+        hash = 97 * hash + (this.useList ? 1 : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final StringCriteriaValues other = (StringCriteriaValues) obj;
+        if (this.ignoreCase != other.ignoreCase) {
+            return false;
+        }
+        if (this.useList != other.useList) {
+            return false;
+        }
+        if (!Objects.equals(this.text, other.text)) {
+            return false;
+        }
+        if (!Objects.equals(this.textList, other.textList)) {
+            return false;
+        }
+        return true;
     }
 
 }

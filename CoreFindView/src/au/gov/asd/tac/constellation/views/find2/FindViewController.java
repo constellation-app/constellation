@@ -204,7 +204,7 @@ public class FindViewController {
      * @param parameters
      */
     public void updateBasicFindParameters(final BasicFindReplaceParameters parameters) {
-        if (ActiveFindResultsList.getBasicResultsList() != null && !ActiveFindResultsList.getBasicResultsList().getSearchParameters().equals(parameters)) {
+        if (ActiveFindResultsList.getBasicResultsList() != null && !currentBasicFindParameters.equals(parameters)) {
             ActiveFindResultsList.getBasicResultsList().clear();
             ActiveFindResultsList.getBasicResultsList().setCurrentIndex(-1);
         }
@@ -229,6 +229,10 @@ public class FindViewController {
      * @param parameters
      */
     public void updateAdvancedSearchParameters(final AdvancedSearchParameters parameters) {
+        if (ActiveFindResultsList.getAdvancedResultsList() != null && !currentAdvancedSearchParameters.equals(parameters)) {
+            ActiveFindResultsList.getAdvancedResultsList().clear();
+            ActiveFindResultsList.getAdvancedResultsList().setCurrentIndex(-1);
+        }
         currentAdvancedSearchParameters.copyParameters(parameters);
     }
 
@@ -266,18 +270,21 @@ public class FindViewController {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         } 
 
+        int currentIndex;
         // do the updating of the graph here instead
         if (!ActiveFindResultsList.getBasicResultsList().isEmpty()) {
-            if (getNext) {
-                    ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
-                } else {
-                    ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
-                }
+            if (ActiveFindResultsList.getBasicResultsList().getCurrentIndex() == -1) {
+                currentIndex = 0;
+            } else {
+                currentIndex = ActiveFindResultsList.getBasicResultsList().getCurrentIndex();
+            }
 
-            Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getGraphId());
+            Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(currentIndex).getGraphId());
             PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph);
             final int foundResultsLength = ActiveFindResultsList.getBasicResultsList().size();
             Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(foundResultsLength));
+        } else {
+            Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(0));
         }
     }
 
@@ -344,16 +351,16 @@ public class FindViewController {
                 ActiveFindResultsList.getAdvancedResultsList().incrementCurrentIndex();
             } else if (ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex() == -1 && !findNext) {
                 ActiveFindResultsList.getAdvancedResultsList().decrementCurrentIndex();
-            }
-            
+            }          
 
             int currentIndex = ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex();
-            LOGGER.log(Level.WARNING, "Controller Advanced: " + Integer.toString(currentIndex));
             Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getAdvancedResultsList().get(currentIndex).getGraphId());
 
             PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph);
             final int foundResultsLength = ActiveFindResultsList.getAdvancedResultsList().size();
             Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(foundResultsLength));
+        } else {
+            Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(0));
         }
     }
 

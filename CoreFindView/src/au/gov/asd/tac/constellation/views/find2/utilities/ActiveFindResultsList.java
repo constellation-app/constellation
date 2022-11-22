@@ -27,7 +27,6 @@ public class ActiveFindResultsList {
     private static FindResultsList basicResultsList;
     private static FindResultsList replaceResultsList;
     private static FindResultsList advancedResultsList;
-    private static FindResultsList advancedFindAllResultsList;
 
     private static final Logger LOGGER = Logger.getLogger(ActiveFindResultsList.class.getName());
 
@@ -62,15 +61,6 @@ public class ActiveFindResultsList {
     }
 
     /**
-     * Get the advanced find all results list
-     *
-     * @return advancedFindAllResultsList
-     */
-    public static FindResultsList getAdvancedFindAllResultsList() {
-        return advancedFindAllResultsList;
-    }
-
-    /**
      * Set the basic find results list
      *
      * @param basicResultsList
@@ -94,16 +84,12 @@ public class ActiveFindResultsList {
      * @param advancedResultsList
      */
     public static void setAdvancedResultsList(final FindResultsList advancedResultsList) {
-        ActiveFindResultsList.advancedResultsList = advancedResultsList;
-    }
-
-    /**
-     * Set the advanced find all results list
-     *
-     * @param advancedFindAllResultsList
-     */
-    public static void setAdvancedFindAllResultsList(final FindResultsList advancedFindAllResultsList) {
-        ActiveFindResultsList.advancedFindAllResultsList = advancedFindAllResultsList;
+        if (ActiveFindResultsList.advancedResultsList != null) {
+            ActiveFindResultsList.advancedResultsList.clear();
+            ActiveFindResultsList.addToAdvancedFindResultsList(advancedResultsList);
+        } else {
+            ActiveFindResultsList.advancedResultsList = advancedResultsList;
+        }
     }
 
     /**
@@ -159,25 +145,6 @@ public class ActiveFindResultsList {
             }
             if (!exists) {
                 ActiveFindResultsList.advancedResultsList.add(result);
-            }
-        });
-    }
-
-    /**
-     * Add more results to the advanced find all results list if not already in the list
-     *
-     * @param additions
-     */
-    public static void addToAdvancedFindAllResultsList(final FindResultsList additions) {
-        additions.forEach(result -> {
-            boolean exists = false;
-            for (final FindResult current : ActiveFindResultsList.advancedFindAllResultsList) {
-                if (current.equals(result)) {
-                    exists = true;
-                }
-            }
-            if (!exists) {
-                ActiveFindResultsList.advancedFindAllResultsList.add(result);
             }
         });
     }

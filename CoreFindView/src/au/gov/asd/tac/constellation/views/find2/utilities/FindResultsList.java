@@ -138,7 +138,7 @@ public class FindResultsList extends ArrayList<FindResult> {
 
         final FindResultsList other = (FindResultsList) obj;
 
-        return this.searchParameters.equals(other.searchParameters);
+        return this.searchParameters.equals(other.searchParameters) && this.advancedSearchParameters.equals(other.advancedSearchParameters);
     }
 
     @Override

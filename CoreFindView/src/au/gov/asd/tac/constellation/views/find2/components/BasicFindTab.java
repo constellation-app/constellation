@@ -352,7 +352,7 @@ public class BasicFindTab extends Tab {
             }
         }
         // update the current parameters to be current
-        updateBasicFindParamters();
+        //updateBasicFindParamters();
     }
 
     /**

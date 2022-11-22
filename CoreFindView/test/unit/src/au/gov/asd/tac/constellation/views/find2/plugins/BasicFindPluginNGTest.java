@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.FindViewTopComponent;
+import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,6 +137,8 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parameters, false, true);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, true);
+        PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
@@ -149,6 +152,8 @@ public class BasicFindPluginNGTest {
          * and deselect vxId1
          */
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, true);
+        PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
@@ -163,6 +168,8 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parameters, false, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
+        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, false);
+        PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);

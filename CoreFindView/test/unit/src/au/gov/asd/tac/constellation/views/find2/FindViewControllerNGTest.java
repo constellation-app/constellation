@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.views.find2.plugins.BasicFindPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -245,7 +246,8 @@ public class FindViewControllerNGTest {
                 when(pluginExecution.executeLater(Mockito.eq(graph))).thenReturn(null);
                 mockedStaticPlugin.when(() -> PluginExecution.withPlugin(Mockito.any(Plugin.class))).thenReturn(pluginExecution);
 
-                instance.retriveMatchingElements(true, false);
+                BasicFindPlugin basicFindPlugin = new BasicFindPlugin(instance.getCurrentBasicFindParameters(), true, false);
+                PluginExecution.withPlugin(basicFindPlugin).executeLater(graph);
                 verify(pluginExecution).executeLater(Mockito.eq(graph));
 
                 /**
@@ -258,50 +260,13 @@ public class FindViewControllerNGTest {
                 when(pluginExecution.executeLater(Mockito.any(Graph.class))).thenReturn(null);
                 mockedStaticPlugin.when(() -> PluginExecution.withPlugin(Mockito.any(Plugin.class))).thenReturn(pluginExecution);
 
-                instance.retriveMatchingElements(true, false);
+                basicFindPlugin = new BasicFindPlugin(instance.getCurrentBasicFindParameters(), true, false);
+                PluginExecution.withPlugin(basicFindPlugin).executeLater(graph);
                 verify(pluginExecution, times(2)).executeLater(Mockito.eq(graph));
-                verify(pluginExecution).executeLater(Mockito.eq(graph2));
-
             }
         }
     }
 
-//            // Populate the attribute list with the attributes of the given type
-//            for (Graph graph : gm.getAllGraphs().values()) {
-//                try {
-//                    System.out.println("in for graph try");
-//
-//                    WritableGraph wg = graph.getWritableGraph("", true);
-//                    for (int i = 0; i < stringAttributeList.size(); i++) {
-//                        int attributeInt = wg.getAttribute(type, stringAttributeList.get(i));
-//                        attributes.add(new GraphAttribute(wg, attributeInt));
-//                        System.out.println(attributes.get(i).getName() + " = attribute name");
-//
-//                    }
-//
-//                    instance.updateBasicFindParameters(parameters);
-//
-//                    System.out.println("before method call");
-//
-//                    instance.retriveMatchingElements(true, false);
-//
-//                    System.out.println("before assert");
-//                    System.out.println(wg.getStringValue(labelV, vxId1));
-//
-//                    System.out.println(wg.getBooleanValue(selectedV, vxId1));
-//                    assertEquals(wg.getBooleanValue(selectedV, vxId1), true);
-//                    System.out.println("after equals");
-//
-//                    wg.commit();
-//
-//                } catch (final InterruptedException ex) {
-//                    Exceptions.printStackTrace(ex);
-//                    Thread.currentThread().interrupt();
-//                }
-//
-//            }
-//
-//        }
     /**
      * Test of replaceMatchingElements method, of class FindViewController.
      */

@@ -59,11 +59,11 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
              * element at the specified index to selected.
              */
             if (!ActiveFindResultsList.getBasicResultsList().isEmpty()) {
-//                if (getNext) {
-//                    ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
-//                } else {
-//                    ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
-//                }
+                if (getNext) {
+                    ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
+                } else {
+                    ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
+                }
 
                 final int elementId = ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getID();                
                 LOGGER.log(Level.WARNING, "Graph Selection Basic: " + Integer.toString(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()));
@@ -79,9 +79,6 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
         if (searchAllGraphs && !ActiveFindResultsList.getBasicResultsList().isEmpty()) {
             FindViewUtilities.searchAllGraphs(graph);
         }
-
-        //If no results are found, set the meta attribute to null
-     //   graph.setObjectValue(stateId, 0, ActiveFindResultsList.getBasicResultsList().isEmpty() ? null : ActiveFindResultsList.getBasicResultsList());
     }
 
     @Override

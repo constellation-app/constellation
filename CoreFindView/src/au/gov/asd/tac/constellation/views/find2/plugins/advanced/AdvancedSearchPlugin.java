@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * This class handles the logic for selecting the correct elements on the graphs
@@ -146,6 +147,10 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             foundResult = new FindResultsList(newIndex, newParamters);
         }
 
+        // do this if ignore selection
+        if (IGNORE.equals(currentSelection)) {
+            clearSelection(graph);
+        }
 
         foundResult.clear();
         graph.setObjectValue(stateId, 0, foundResult);
@@ -278,47 +283,23 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         findAllMatchingResultsList.addAll(findResultSet);
 
-        final int resultsFoundSize = findAllMatchingResultsList.size();
-
         // if Find in select all the find in results
         if (FIND_IN.equals(currentSelection)) {
             selectFindInResults(FIND_IN.equals(currentSelection), findInCurrentSelectionList, foundResult, graph, selectedAttribute);
 
-            // if remove from, deselect all the remove from results
+        // if remove from, deselect all the remove from results
         } else if (REMOVE_FROM.equals(currentSelection)) {
             removeFindInResults(REMOVE_FROM.equals(currentSelection), findInCurrentSelectionList, foundResult, graph, selectedAttribute);
 
-            // if select all, select all the results that match all criteria
+        // if select all, select all the results that match all criteria
         } else if (selectAll) {
             selectMatchingAllResults(ALL.equals(allOrAny), findAllMatchingResultsList, foundResult, graph, selectedAttribute);
         }
 
-
-//        // if the user clicked find next or prev
-//        if (!selectAll) {
-//
-//            // do this if ignore selection
-//            if (IGNORE.equals(currentSelection)) {
-//                clearSelection(graph);
-//            }
-//
-//            // Clean the find results list to only contain unique graph elements
-//            final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
-//            foundResult.clear();
-//            foundResult.addAll(distinctValues);
-//
-//            /**
-//             * If the list isn't empty, and the user clicked find next,
-//             * increment the found lists index by 1, otherwise decrement it by
-//             * 1. Set the element at the specified index to selected.
-//             */
-//            if (!foundResult.isEmpty()) {
-//                if (selectNext) {
-//                    foundResult.incrementCurrentIndex();
-//        } else {
-//                    foundResult.decrementCurrentIndex();
-//        }
-
+        // Clean the find results list to only contain unique graph elements
+        final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
+        foundResult.clear();
+        foundResult.addAll(distinctValues);
 
         if (ActiveFindResultsList.getAdvancedResultsList() == null || !ActiveFindResultsList.getAdvancedResultsList().getAdvancedSearchParameters().equals(this.parameters)) {
             ActiveFindResultsList.setAdvancedResultsList(foundResult);
