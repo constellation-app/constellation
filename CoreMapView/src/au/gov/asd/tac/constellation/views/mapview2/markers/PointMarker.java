@@ -35,8 +35,8 @@ public class PointMarker extends AbstractMarker {
     private double scale;
 
 
-    public PointMarker(MapViewTopComponent topComponent, int markerID, int nodeId, double lattitude, double longitude, double scale, int xOffset, int yOffset) {
-        super(topComponent, markerID, nodeId, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
+    public PointMarker(MapView parent, int markerID, int nodeId, double lattitude, double longitude, double scale, int xOffset, int yOffset) {
+        super(parent, markerID, nodeId, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
 
         //markerPath.setContent(path);
 
@@ -76,7 +76,7 @@ public class PointMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
                 isSelected = true;
                 markerPath.setFill(Color.BLUE);
-                parentComponent.addNodeId(markerID, idList, true);
+                parent.addMarkerId(markerID, idList, true);
                 e.consume();
             }
         });

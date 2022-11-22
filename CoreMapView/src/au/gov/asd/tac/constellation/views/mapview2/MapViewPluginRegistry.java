@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.mapview2.markers;
+package au.gov.asd.tac.constellation.views.mapview2;
 
-import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import au.gov.asd.tac.constellation.views.mapview2.plugins.ExtractCoordsFromGraphPlugin;
+import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
+
 
 /**
  *
  * @author altair1673
  */
-public class ClusterMarker extends AbstractMarker {
-
-    public ClusterMarker(MapView parent, int markerID, int nodeId, int xOffset, int yOffset, MarkerType type) {
-        super(parent, markerID, nodeId, xOffset, yOffset, type);
-
-    }
-
+public class MapViewPluginRegistry {
+    public static final String EXTRACT_COORDS_FROM_GRAPH = ExtractCoordsFromGraphPlugin.class.getName();
+    public static final String SELECT_ON_GRAPH = SelectOnGraphPlugin.class.getName();
 }

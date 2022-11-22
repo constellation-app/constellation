@@ -279,8 +279,9 @@ public class MapViewPane extends BorderPane {
         return parent;
     }
 
-    public void removeUserMarker(int id) {
-        mapView.removeUserMarker(id);
+
+    public MapView getMap() {
+        return mapView;
     }
 
     public void setUpMap() {
@@ -293,7 +294,7 @@ public class MapViewPane extends BorderPane {
     }
 
     public void redrawQueriedMarkers() {
-        parent.drawMarkerOnMap();
+        mapView.redrawQueriedMarkers();
     }
 
     public void toggleHeatmapLayer() {
@@ -301,7 +302,7 @@ public class MapViewPane extends BorderPane {
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
-        return parent.getAllMarkers();
+        return mapView.getAllMarkers();
     }
 
     private void testEventHandler() {
@@ -321,7 +322,7 @@ public class MapViewPane extends BorderPane {
     public void drawMarker(AbstractMarker marker) {
         if (marker != null) {
             mapView.drawMarker(marker);
-            toggleHeatmapLayer();
+
         }
     }
 

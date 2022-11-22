@@ -39,6 +39,8 @@ import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.LineMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
+import au.gov.asd.tac.constellation.views.mapview2.plugins.ExtractCoordsFromGraphPlugin;
+import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Window;
@@ -103,8 +105,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
 
     public final MapViewPane mapViewPane;
-    private final Map<String, AbstractMarker> markers = new HashMap<>();
-    private final List<Integer> selectedNodeList = new ArrayList<>();
+    /*private final Map<String, AbstractMarker> markers = new HashMap<>();
+    private final List<Integer> selectedNodeList = new ArrayList<>();*/
 
     private int markerID = 0;
 
@@ -162,8 +164,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        markers.clear();
-        selectedNodeList.clear();
+        mapViewPane.getMap().clearQueriedMarkers();
+        mapViewPane.getMap().clearQueriedMarkers();
     }
 
     public int getNewMarkerID() {
@@ -205,7 +207,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
-        return markers;
+        return mapViewPane.getAllMarkers();
     }
 
 
@@ -227,27 +229,27 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         mapViewPane.drawMarker(lat, lon, scale);
     }
 
-    public void addNodeId(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
+    /*public void addNodeId(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
         selectedNodeList.add(markerID);
         PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
-    }
+    }*/
 
-    public void drawMarkerOnMap() {
+    /*public void drawMarkerOnMap() {
         for (Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
             mapViewPane.drawMarker(m);
         }
 
-    }
+    }*/
 
-    public void drawPointMarkerOnMap() {
+ /*public void drawPointMarkerOnMap() {
         for (Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
             if (m instanceof PointMarker) {
                 mapViewPane.drawMarker(m);
             }
         }
-    }
+    }*/
 
 
     /**
@@ -276,7 +278,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     }
 
     public void addMarker(String key, AbstractMarker e) {
-        markers.put(key, e);
+        mapViewPane.getMap().addMarkerToHashMap(key, e);
     }
 
     public int getContentHeight() {
@@ -291,191 +293,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(getCurrentGraph());
     }
 
-    public void removeUserMarker(int id) {
-        mapViewPane.removeUserMarker(id);
-    }
 
-    @PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
-    public static class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
-
-        //private final Logger LOGGER = Logger.getLogger("ExtractCoords");
-        private static final Logger LOGGER = Logger.getLogger(ExtractCoordsFromGraphPlugin.class.getName());
-
-
-        private MapViewTopComponent mapViewTopComponent;
-
-        public ExtractCoordsFromGraphPlugin(final MapViewTopComponent topComponent) {
-            mapViewTopComponent = topComponent;
-        }
-
-        @Override
-        public String getName() {
-            return "ExtractCoordsFromGraphPlugin";
-        }
-
-        @Override
-        protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-
-            if (graph != null) {
-
-                final GraphElementType[] elementTypes = new GraphElementType[]{GraphElementType.VERTEX, GraphElementType.TRANSACTION};
-
-                try {
-                    for (GraphElementType elementType : elementTypes) {
-                        int lonID = GraphConstants.NOT_FOUND;
-                        int latID = GraphConstants.NOT_FOUND;
-
-
-                        int elementCount;
-
-                        switch (elementType) {
-                            case VERTEX:
-                                lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
-                                latID = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
-                                elementCount = graph.getVertexCount();
-                                //LOGGER.log(Level.SEVERE, "Lattitude: " + latID + ", Longitude: " + lonID);
-
-                                //double lon = graph.getDoubleValue(latID, latID)
-                                break;
-                            case TRANSACTION:
-                                lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
-                                latID = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
-                                elementCount = graph.getTransactionCount();
-                                break;
-                            default:
-                                continue;
-                        }
-
-                        for (int elementPos = 0; elementPos < elementCount; ++elementPos) {
-                            int elementID = -99;
-
-                            switch (elementType) {
-                                case VERTEX:
-                                    elementID = graph.getVertex(elementPos);
-
-                                    break;
-                                case TRANSACTION:
-                                    elementID = graph.getTransaction(elementPos);
-                                    break;
-                                default:
-                                    break;
-                            }
-
-                            if (lonID != GraphConstants.NOT_FOUND && latID != GraphConstants.NOT_FOUND && elementID != -99 && elementType == GraphElementType.VERTEX) {
-                                final float elementLat = graph.getObjectValue(latID, elementID);
-                                final float elementLon = graph.getObjectValue(lonID, elementID);
-                                PointMarker p = new PointMarker(mapViewTopComponent, mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, 95, 244);
-                                String coordinateKey = (double) elementLat + "," + (double) elementLon;
-                                if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
-                                    mapViewTopComponent.addMarker(coordinateKey, p);
-
-                                    Platform.runLater(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            mapViewTopComponent.mapViewPane.drawMarker(p);
-                                        }
-                                    });
-
-                                } else {
-                                    mapViewTopComponent.getAllMarkers().get(coordinateKey).addNodeID(elementID);
-                                }
-
-                                //mapViewTopComponent.drawMarkerOnMap(elementLat, elementLon, 0.05);
-
-                            }
-
-                            if (elementType == GraphElementType.TRANSACTION) {
-
-                                int dateTimeID = TemporalConcept.TransactionAttribute.DATETIME.get(graph);
-
-                                String dateTime = graph.getStringValue(dateTimeID, elementID);
-
-                                if (dateTime != null && !dateTime.isBlank()) {
-                                    int sourceID = graph.getTransactionSourceVertex(elementID);
-                                    int destinationID = graph.getTransactionDestinationVertex(elementID);
-
-                                    final float sourceLat = graph.getObjectValue(latID, sourceID);
-                                    final float sourceLon = graph.getObjectValue(lonID, sourceID);
-
-                                    final float destLat = graph.getObjectValue(latID, destinationID);
-                                    final float destLon = graph.getObjectValue(lonID, destinationID);
-
-                                    String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
-
-                                    LineMarker l = new LineMarker(mapViewTopComponent, mapViewTopComponent.getNewMarkerID(), elementID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, 0, 149);
-                                    if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
-                                        mapViewTopComponent.addMarker(coordinateKey, l);
-                                        Platform.runLater(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                mapViewTopComponent.mapViewPane.drawMarker(l);
-                                            }
-                                        });
-                                    } else {
-                                        mapViewTopComponent.getAllMarkers().get(coordinateKey).addNodeID(elementID);
-                                    }
-                                }
-
-
-                            }
-                        }
-
-                    }
-                } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "EXCEPTION CAUGHT!!", e);
-                    LOGGER.log(Level.SEVERE, e.getMessage());
-                }
-
-                //mapViewTopComponent.drawMarkerOnMap();
-
-                }
-
-
-        }
-
-
-    }
-
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
-    public static class SelectOnGraphPlugin extends SimpleEditPlugin {
-
-        private List<Integer> selectedNodeList = new ArrayList<Integer>();
-        private boolean isSelectingVertex = true;
-
-        public SelectOnGraphPlugin(List<Integer> selectedNodeList, boolean isSelectingVertex) {
-            this.selectedNodeList = selectedNodeList;
-            this.isSelectingVertex = isSelectingVertex;
-        }
-
-        @Override
-        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-            if (graph != null) {
-                if (isSelectingVertex) {
-                    final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                    final int vertexCount = graph.getVertexCount();
-
-                    for (int i = 0; i < vertexCount; ++i) {
-                        final int vertexID = graph.getVertex(i);
-                        graph.setBooleanValue(vertexSelectedAttribute, vertexID, selectedNodeList.contains(vertexID));
-                    }
-                } else {
-                    final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-                    final int transactionCount = graph.getTransactionCount();
-
-                    for (int i = 0; i < transactionCount; ++i) {
-                        final int transactionID = graph.getTransaction(i);
-                        graph.setBooleanValue(transactionSelectedAttribute, transactionID, selectedNodeList.contains(transactionID));
-                    }
-                }
-            }
-        }
-
-        @Override
-        public String getName() {
-            return "SelectOnGraphPlugin2";
-        }
-
-    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

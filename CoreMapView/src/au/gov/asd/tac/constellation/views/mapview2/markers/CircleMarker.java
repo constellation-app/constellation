@@ -42,8 +42,8 @@ public class CircleMarker extends AbstractMarker {
 
     private static final Logger LOGGER = Logger.getLogger("CircleMarkerLogger");
 
-    public CircleMarker(MapViewTopComponent parentComponent, int markerID, double centerX, double centerY, double radius, int xOffset, int yOffset) {
-        super(parentComponent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
+    public CircleMarker(MapView parent, int markerID, double centerX, double centerY, double radius, int xOffset, int yOffset) {
+        super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
 
         this.centerX = centerX; //+ xOffset;
         this.centerY = centerY; //+ yOffset;
@@ -91,8 +91,8 @@ public class CircleMarker extends AbstractMarker {
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                parentComponent.removeUserMarker(markerID);
-                //parentComponent.drawPointMarkerOnMap();
+                parent.removeUserMarker(markerID);
+                parent.drawPointMarkerOnMap();
                 e.consume();
             }
         });

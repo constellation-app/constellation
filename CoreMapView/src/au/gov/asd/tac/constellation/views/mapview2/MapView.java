@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
@@ -29,6 +31,7 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.AbstractOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.InfoOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
+import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
 import au.gov.tac.constellation.views.mapview2.utillities.Vec3;
 import java.io.BufferedReader;
 import java.io.File;
@@ -104,6 +107,9 @@ public class MapView extends ScrollPane {
     private Set<AbstractMarker.MarkerType> markersShowing = new HashSet<>();
     private Map<String, AbstractOverlay> overlayMap = new HashMap<>();
 
+    private final Map<String, AbstractMarker> markers = new HashMap<>();
+    private final List<Integer> selectedNodeList = new ArrayList<>();
+
     private Canvas mapCanvas;
     private Group countryGroup;
     private Group graphMarkerGroup;
@@ -139,6 +145,8 @@ public class MapView extends ScrollPane {
     private double transalateX;
     private double transalateY;
 
+    private int markerID = 0;
+
     private final Pane mapGroupHolder = new Pane();
 
 
@@ -150,15 +158,17 @@ public class MapView extends ScrollPane {
     private final Group overlayGroup;
     private final Group layerGroup;
 
+    private MapView self = this;
+
     //private final Region testRegion = new Region();
 
     public MapView(MapViewPane parent) {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
-        testMarker = new PointMarker(parent.getParentComponent(), -99, -99, 32.764233, 129.872696, 0.05, 95, 244);
+        testMarker = new PointMarker(this, -99, -99, 32.764233, 129.872696, 0.05, 95, 244);
         testMarker.setMarkerPosition(mapWidth, mapHeight);
 
-        testMarker2 = new PointMarker(parent.getParentComponent(), -100, -100, 35.011665, 135.768326, 0.05, 95, 244);
+        testMarker2 = new PointMarker(this, -100, -100, 35.011665, 135.768326, 0.05, 95, 244);
         testMarker2.setMarkerPosition(mapWidth, mapHeight);
         //testRegion.setShape(testMarker.getMarker());
         //markersShowing.setValue(new SetChangeListener<AbstractMarker.MarkerType>());
@@ -176,6 +186,7 @@ public class MapView extends ScrollPane {
         pointMarkerGroup = new Group();
 
         pointMarkerGroup.getChildren().addAll(testMarker.getMarker(), testMarker2.getMarker());
+
 
 
         markersShowing.add(AbstractMarker.MarkerType.LINE_MARKER);
@@ -321,7 +332,7 @@ public class MapView extends ScrollPane {
                 if (toolsOverlay.getDrawingEnabled().get() && !toolsOverlay.getMeasureEnabled().get()) {
                     if (event.isShiftDown()) {
                         drawingCircleMarker = true;
-                        circleMarker = new CircleMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0, 100, 100);
+                        circleMarker = new CircleMarker(self, drawnMarkerId++, x, y, 0, 100, 100);
                         polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
                         polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
 
@@ -335,7 +346,7 @@ public class MapView extends ScrollPane {
                         toolsOverlay.resetMeasureText();
                     } else if (event.isControlDown()) {
                         if (!drawingPolygonMarker && !drawingCircleMarker) {
-                            polygonMarker = new PolygonMarker(parent.getParentComponent(), drawnMarkerId++, 0, 0);
+                            polygonMarker = new PolygonMarker(self, drawnMarkerId++, 0, 0);
 
                             polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
                             drawingPolygonMarker = true;
@@ -352,7 +363,7 @@ public class MapView extends ScrollPane {
                         polygonMarker.endDrawing();
                         polygonMarkerGroup.getChildren().clear();
                     } else if (!drawingPolygonMarker && !drawingCircleMarker) {
-                        UserPointMarker marker = new UserPointMarker(parent.getParentComponent(), drawnMarkerId++, x, y, 0.05, 95, -95);
+                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
                         marker.setMarkerPosition(0, 0);
                         //drawnMarkerGroup.getChildren().addAll(marker.getMarker());
                         addUserDrawnMarker(marker);
@@ -425,8 +436,8 @@ public class MapView extends ScrollPane {
 
         mapGroupHolder.getChildren().add(graphMarkerGroup);
         mapGroupHolder.getChildren().add(pointMarkerGroup);
-        mapGroupHolder.getChildren().add(clusterMarkerGroup);
         mapGroupHolder.getChildren().addAll(drawnMarkerGroup);
+        mapGroupHolder.getChildren().add(clusterMarkerGroup);
         mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
         mapGroupHolder.getChildren().add(overlayGroup);
         mapGroupHolder.getChildren().add(layerGroup);
@@ -526,11 +537,6 @@ public class MapView extends ScrollPane {
                         }
                     }
                 }
-
-                /*minPosition.x = Math.min(nodeX, minPosition.x);
-                minPosition.y = Math.min(nodeY, minPosition.y);
-                maxPosition.x = Math.max(nodeX, maxPosition.x);
-                maxPosition.y = Math.max(nodeY, maxPosition.y);*/
             }
             //diameter = Math.sqrt(Math.pow((maxPosition.x - minPosition.x), 2)
             //+ Math.pow((maxPosition.y - minPosition.y), 2));
@@ -571,11 +577,23 @@ public class MapView extends ScrollPane {
         }
     }
 
-    public void toggleToolsOverlay() {
-        LOGGER.log(Level.SEVERE, "toggling tools overlay");
-        toolsOverlay.getOverlayPane().setVisible(!toolsOverlay.getOverlayPane().isVisible());
-        toolsOverlay.setIsShowing(toolsOverlay.getOverlayPane().isVisible());
+    public void removeUserMarker(int id) {
+        for (int i = 0; i < userMarkers.size(); ++i) {
+            if (userMarkers.get(i).getMarkerId() == id) {
+                AbstractMarker removed = userMarkers.get(i);
+                userMarkers.remove(i);
+                if (removed instanceof UserPointMarker) {
+                    pointMarkerGroup.getChildren().clear();
+                    drawPointMarkerOnMap();
+                } else {
+                    redrawUserMarkers(false);
+                }
 
+                break;
+            }
+        }
+
+        //redrawUserMarkers();
     }
 
     public void toggleOverlay(String overlay, boolean show) {
@@ -584,24 +602,6 @@ public class MapView extends ScrollPane {
         }
     }
 
-    public void removeUserMarker(int id) {
-        for (int i = 0; i < userMarkers.size(); ++i) {
-            if (userMarkers.get(i).getMarkerId() == id) {
-                AbstractMarker removed = userMarkers.get(i);
-                userMarkers.remove(i);
-                if (removed instanceof UserPointMarker) {
-                    pointMarkerGroup.getChildren().clear();
-                    redrawUserMarkers(true);
-                } else
-                    redrawUserMarkers(false);
-
-                break;
-            }
-        }
-
-        //redrawUserMarkers();
-
-    }
 
     private void redrawUserMarkers(boolean pointMarkersOnly) {
         drawnMarkerGroup.getChildren().clear();
@@ -611,7 +611,8 @@ public class MapView extends ScrollPane {
             if (markersShowing.contains(marker.getType())) {
 
                 if (marker instanceof UserPointMarker && pointMarkersOnly) {
-                    pointMarkerGroup.getChildren().add(marker.getMarker());
+                    //pointMarkerGroup.getChildren().add(marker.getMarker());
+                    addUserDrawnMarker(marker);
 
                 }
                 else if (!pointMarkersOnly);
@@ -653,7 +654,12 @@ public class MapView extends ScrollPane {
     public void redrawQueriedMarkers() {
         graphMarkerGroup.getChildren().clear();
         pointMarkerGroup.getChildren().clear();
-        parent.redrawQueriedMarkers();
+        //parent.redrawQueriedMarkers();
+
+        for (Object value : markers.values()) {
+            AbstractMarker m = (AbstractMarker) value;
+            drawMarker(m);
+        }
     }
 
     private void renderLayers() {
@@ -664,14 +670,24 @@ public class MapView extends ScrollPane {
         });
     }
 
-
     public Map<String, AbstractMarker> getAllMarkers() {
-        return parent.getAllMarkers();
+        return markers;
+    }
+
+    public void clearQueriedMarkers() {
+        markers.clear();
+        selectedNodeList.clear();
     }
 
     public Graph getCurrentGraph() {
         return parent.getCurrentGraph();
     }
+
+    public void addMarkerId(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
+        selectedNodeList.add(markerID);
+        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
+    }
+
 
 
     /*private double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
@@ -691,13 +707,33 @@ public class MapView extends ScrollPane {
         if (markersShowing.contains(marker.getType())) {
             marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
 
-            if (marker instanceof PointMarker) {
+            if (marker instanceof PointMarker || marker instanceof UserPointMarker) {
                 pointMarkerGroup.getChildren().add(marker.getMarker());
                 return;
             }
             graphMarkerGroup.getChildren().add(marker.getMarker());
         }
 
+    }
+
+    public void drawPointMarkerOnMap() {
+        pointMarkerGroup.getChildren().clear();
+        for (Object value : markers.values()) {
+            AbstractMarker m = (AbstractMarker) value;
+            if (m instanceof PointMarker) {
+                drawMarker(m);
+            }
+        }
+
+        for (int i = 0; i < userMarkers.size(); ++i) {
+            if (userMarkers.get(i) instanceof UserPointMarker) {
+                drawMarker(userMarkers.get(i));
+            }
+        }
+    }
+
+    public void addMarkerToHashMap(String key, AbstractMarker e) {
+        markers.put(key, e);
     }
 
     private void parseMapSVG() {

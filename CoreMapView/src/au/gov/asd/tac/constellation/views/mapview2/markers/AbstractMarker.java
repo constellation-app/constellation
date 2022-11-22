@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +35,7 @@ public abstract class AbstractMarker {
     protected int xOffset;
     protected int yOffset;
 
-
-    protected MapViewTopComponent parentComponent;
+    protected MapView parent;
 
     public static enum MarkerType {
         POINT_MARKER,
@@ -45,9 +45,9 @@ public abstract class AbstractMarker {
 
     protected MarkerType type;
 
-    public AbstractMarker(MapViewTopComponent parentComponent, int markerID, int nodeId, int xOffset, int yOffset, MarkerType type) {
+    public AbstractMarker(MapView parent, int markerID, int nodeId, int xOffset, int yOffset, MarkerType type) {
         this.markerID = markerID;
-        this.parentComponent = parentComponent;
+        this.parent = parent;
         idList.add(nodeId);
         this.xOffset = xOffset;
         this.yOffset = yOffset;

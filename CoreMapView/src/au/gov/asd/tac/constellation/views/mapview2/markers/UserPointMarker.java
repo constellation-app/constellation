@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
@@ -31,8 +32,8 @@ public class UserPointMarker extends AbstractMarker {
     private double y;
     private double scale;
 
-    public UserPointMarker(MapViewTopComponent parentComponent, int markerID, double x, double y, double scale, int xOffset, int yOffset) {
-        super(parentComponent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
+    public UserPointMarker(MapView parent, int markerID, double x, double y, double scale, int xOffset, int yOffset) {
+        super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
 
 
         this.x = x;
@@ -69,8 +70,8 @@ public class UserPointMarker extends AbstractMarker {
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                parentComponent.removeUserMarker(markerID);
-                parentComponent.drawPointMarkerOnMap();
+                parent.removeUserMarker(markerID);
+                parent.drawPointMarkerOnMap();
                 //parentComponent.drawMarkerOnMap();
                 e.consume();
             }

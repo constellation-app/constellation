@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +34,8 @@ public class PolygonMarker extends AbstractMarker {
     private List<Line> polygonLineUI = new ArrayList<Line>();
     private Line currentLine = null;
 
-    public PolygonMarker(MapViewTopComponent parentComponent, int markerID, int xOffset, int yOffset) {
-        super(parentComponent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
+    public PolygonMarker(MapView parent, int markerID, int xOffset, int yOffset) {
+        super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
 
         markerPath.setStroke(Color.BLACK);
         markerPath.setFill(Color.ORANGE);
@@ -62,7 +63,7 @@ public class PolygonMarker extends AbstractMarker {
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                parentComponent.removeUserMarker(markerID);
+                parent.removeUserMarker(markerID);
                 //parentComponent.drawPointMarkerOnMap();
                 e.consume();
             }
