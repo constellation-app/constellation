@@ -138,7 +138,7 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parameters, false, true);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, true);
+        BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false);
         ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
@@ -154,7 +154,7 @@ public class BasicFindPluginNGTest {
          * and deselect vxId1
          */
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, true);
+        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false);
         ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
@@ -171,7 +171,7 @@ public class BasicFindPluginNGTest {
          */
         basicFindPlugin = new BasicFindPlugin(parameters, false, false);
         PluginExecution.withPlugin(basicFindPlugin).executeNow(graph);
-        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false, false);
+        findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(parameters, false);
         ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
         PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();

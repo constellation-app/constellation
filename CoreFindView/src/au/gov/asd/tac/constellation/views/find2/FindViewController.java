@@ -246,7 +246,7 @@ public class FindViewController {
      */
     public void retriveMatchingElements(final boolean selectAll, final boolean getNext) {
         final BasicFindPlugin basicFindPlugin = new BasicFindPlugin(currentBasicFindParameters, selectAll, getNext);
-        final BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(currentBasicFindParameters, selectAll, getNext);
+        final BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(currentBasicFindParameters, selectAll);
 
         /**
          * If search all graphs is true, execute the find plugin on all open graphs. If not only call it on the active graph.

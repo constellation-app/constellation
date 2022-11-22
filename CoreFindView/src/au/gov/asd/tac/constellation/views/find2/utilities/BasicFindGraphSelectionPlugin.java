@@ -34,13 +34,11 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
     private final GraphElementType elementType;
     private final boolean removeFromCurrentSelection;
     private final boolean selectAll;
-    private final boolean getNext;
     private final boolean searchAllGraphs;
 
-    public BasicFindGraphSelectionPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll, final boolean getNext) {
+    public BasicFindGraphSelectionPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll) {
         this.elementType = parameters.getGraphElement();
         this.selectAll = selectAll;
-        this.getNext = getNext;
         this.removeFromCurrentSelection = parameters.isRemoveFrom();
         this.searchAllGraphs = parameters.isSearchAllGraphs();
     }
