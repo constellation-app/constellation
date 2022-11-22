@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.gui;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
@@ -148,6 +149,7 @@ public class NotifyDisplayer {
             final String message,
             final Alert.AlertType alertType) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);
@@ -176,6 +178,7 @@ public class NotifyDisplayer {
             final String message,
             final Alert.AlertType alertType) {
         final Alert dialog = new Alert(alertType, "", ButtonType.OK);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle(title);
         dialog.setHeaderText(header);
 
@@ -209,6 +212,7 @@ public class NotifyDisplayer {
             final String header,
             final String message) {
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.setTitle(title);
         dialog.setHeaderText(header);
         dialog.setContentText(message);

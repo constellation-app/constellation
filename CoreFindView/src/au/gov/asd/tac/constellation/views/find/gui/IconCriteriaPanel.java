@@ -106,7 +106,7 @@ public class IconCriteriaPanel extends javax.swing.JPanel implements ActionListe
 
         setOpaque(false);
 
-        panelIconChoice.setBackground(new java.awt.Color(255, 255, 255));
+        panelIconChoice.setBackground(null);
         panelIconChoice.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.controlShadow));
 
         btnChooseIcon.setText("...");
@@ -140,7 +140,7 @@ public class IconCriteriaPanel extends javax.swing.JPanel implements ActionListe
                 .addComponent(lblIconText))
         );
 
-        lblIcon.setBackground(new java.awt.Color(255, 255, 255));
+        lblIcon.setBackground(null);
         lblIcon.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.controlShadow));
         lblIcon.setMaximumSize(new java.awt.Dimension(18, 18));
         lblIcon.setMinimumSize(new java.awt.Dimension(18, 18));

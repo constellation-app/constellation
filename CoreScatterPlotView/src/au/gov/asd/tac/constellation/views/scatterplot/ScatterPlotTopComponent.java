@@ -205,7 +205,7 @@ public final class ScatterPlotTopComponent extends JavaFxTopComponent<ScatterPlo
 
     @Override
     protected String createStyle() {
-        return "resources/scatter-plot.css";
+        return null;
     }
 
     @Override

@@ -267,7 +267,7 @@ public class JDBCSourcePane extends SourcePane {
 
             final Scene scene3 = new Scene(root);
             scene3.setFill(Color.WHITESMOKE);
-            scene3.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+            scene3.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
             dialog.setScene(scene3);
             dialog.setTitle("Manage Connections");
             dialog.centerOnScreen();
@@ -424,7 +424,7 @@ public class JDBCSourcePane extends SourcePane {
 
         final Scene scene2 = new Scene(r);
         scene2.setFill(Color.WHITESMOKE);
-        scene2.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+        scene2.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         d.setScene(scene2);
         d.setTitle(ADD_DRIVER);
         d.centerOnScreen();
@@ -641,7 +641,7 @@ public class JDBCSourcePane extends SourcePane {
 
         final Scene scene1 = new Scene(r);
         scene1.setFill(Color.WHITESMOKE);
-        scene1.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+        scene1.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         stage.setScene(scene1);
         stage.setTitle(add ? ADD_CONNECTION : MODIFY_CONNECTION);
         stage.centerOnScreen();

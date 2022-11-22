@@ -106,7 +106,7 @@ public class ColorCriteriaPanel extends javax.swing.JPanel implements ActionList
 
         setOpaque(false);
 
-        panelColorChoice.setBackground(new java.awt.Color(255, 255, 255));
+        panelColorChoice.setBackground(null);
         panelColorChoice.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.controlShadow));
 
         btnChooseColor.setText("...");
@@ -141,7 +141,7 @@ public class ColorCriteriaPanel extends javax.swing.JPanel implements ActionList
                 .addComponent(lblColorText))
         );
 
-        lblColor.setBackground(new java.awt.Color(255, 255, 255));
+        lblColor.setBackground(null);
         lblColor.setBorder(javax.swing.BorderFactory.createLineBorder(java.awt.SystemColor.controlShadow));
         lblColor.setMaximumSize(new java.awt.Dimension(18, 18));
         lblColor.setMinimumSize(new java.awt.Dimension(18, 18));

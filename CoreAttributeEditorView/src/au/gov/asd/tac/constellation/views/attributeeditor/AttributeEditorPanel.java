@@ -41,7 +41,6 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
@@ -504,7 +503,7 @@ public class AttributeEditorPanel extends BorderPane {
             } else {
                 color = prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOR, PRIMARY_KEY_ATTRIBUTE_COLOR);
             }
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + color + SeparatorConstants.SEMICOLON);
+            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + color + SeparatorConstants.SEMICOLON);
         } else if (!attribute.isSchema()) {
             final String color;
             if (hidden) {
@@ -514,13 +513,13 @@ public class AttributeEditorPanel extends BorderPane {
             } else {
                 color = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOR, CUSTOM_ATTRIBUTE_COLOR);
             }
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + color + SeparatorConstants.SEMICOLON);
+            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + color + SeparatorConstants.SEMICOLON);
         } else if (hidden) {
             final String hiddenColor = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR);
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + hiddenColor + SeparatorConstants.SEMICOLON);
+            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + hiddenColor + SeparatorConstants.SEMICOLON);
         } else {
             final String schemaColor = prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOR, SCHEMA_ATTRIBUTE_COLOR);
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + schemaColor + SeparatorConstants.SEMICOLON);
+            attributePane.setStyle(CSS_BASE_STYLE_PREFIX + schemaColor + SeparatorConstants.SEMICOLON);
         }
 
         if (!multiValue) {
@@ -598,6 +597,7 @@ public class AttributeEditorPanel extends BorderPane {
 
         return attributePane;
     }
+    private static final String CSS_BASE_STYLE_PREFIX = "-fx-base:";
 
     public void updateEditorPanel(final AttributeState state) {
         if (state != null) {

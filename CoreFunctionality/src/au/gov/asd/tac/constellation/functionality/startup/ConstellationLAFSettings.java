@@ -54,15 +54,19 @@ public class ConstellationLAFSettings {
         if (currentLafName.startsWith("WINDOWS")) {
             initWindowsTabColors();
         } else if (currentLafName.contains("NIMBUS")) {
-            initNimbusTabColors(currentLafName.contains("DARK"));
+            initNimbusTabColors(isDarkTheme());
         } else if (currentLafName.contains("FLAT")) {
-            initFlatLafTabColors(currentLafName.contains("DARK"));
+            initFlatLafTabColors(isDarkTheme());
         } else if (currentLafName.contains("METAL")) {
-            initMetalTabColors(currentLafName.contains("DARK"));
+            initMetalTabColors(isDarkTheme());
         }
         if (mainframe != null) {
             SwingUtilities.updateComponentTreeUI(mainframe);
         }
+    }
+    
+    private static boolean isDarkTheme(){
+        return UIManager.getLookAndFeel().getName().toUpperCase().contains("DARK");
     }
 
     /**

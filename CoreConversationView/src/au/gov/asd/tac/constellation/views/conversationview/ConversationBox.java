@@ -115,6 +115,7 @@ public final class ConversationBox extends StackPane {
     private volatile boolean isAdjustingContributionProviders = false;
     private volatile boolean isAdjustingSenderLabels;
 
+    private static final String CSS_BACKGROUND_COLOR_TRANSPARENT = "-fx-background-color: transparent;";
     private int foundCount;
     private int searchCount;
 
@@ -140,10 +141,10 @@ public final class ConversationBox extends StackPane {
         setPrefSize(500, 500);
         setCache(true);
         setCacheHint(CacheHint.SPEED);
-        setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
+        setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
 
         final VBox content = new VBox();
-        content.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
+        content.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
 
         showToolTip.setSelected(true);
         showToolTip.setOnAction((ActionEvent t) -> tipsPane.setEnabled(showToolTip.isSelected()));
@@ -221,7 +222,7 @@ public final class ConversationBox extends StackPane {
 
         // Create the bubbles pane.
         bubbles = new ListView<>();
-        bubbles.setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
+        bubbles.setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
         bubbles.setCellFactory(callback -> new BubbleCell());
         VBox.setVgrow(bubbles, Priority.ALWAYS);
 
@@ -439,7 +440,7 @@ public final class ConversationBox extends StackPane {
 
             // Handle the case where the cell is empty.
             if (empty || message == null) {
-                setStyle(JavafxStyleManager.CSS_BACKGROUND_COLOR_TRANSPARENT);
+                setStyle(CSS_BACKGROUND_COLOR_TRANSPARENT);
                 setGraphic(null);
             } else {
                 // Look for the bubble in the cache.

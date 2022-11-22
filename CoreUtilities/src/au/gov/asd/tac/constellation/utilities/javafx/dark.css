@@ -1,0 +1,162 @@
+/*******************************************************************************
+ *                                                                             *
+ * Common                                                                      *
+ *                                                                             *
+ ******************************************************************************/
+.root {
+    /***************************************************************************
+     *                                                                         *
+     * The main color palette from which the rest of the colors are derived.   *
+     *                                                                         *
+     **************************************************************************/
+
+    /* The base color for objects. Instead of using -fx-base directly, 
+     * the sections in this file will typically use -fx-color.
+     */
+    -fx-base: #111111;
+
+    /* The background of windows. See also -fx-text-background-color, which 
+     * should be used as the -fx-text-fill value for text painted on top of 
+     * backgrounds colored with -fx-background.
+     */
+    -fx-background: #222222;
+
+    /* Used for the inside of text boxes, password boxes, lists, trees, and
+     * tables. See also -fx-text-inner-color, which should be used as the
+     * -fx-text-fill value for text painted on top of backgrounds colored
+     * with -fx-control-inner-background.
+     */
+    -fx-control-inner-background: #111111;
+
+    /* One of these colors will be chosen based upon a ladder calculation
+     * that uses the brightness of a background color.  Instead of using these
+     * colors directly as -fx-text-fill values, the sections in this file should
+     * use a derived color to match the background in use.  See also:
+     *
+     * -fx-text-base-color for text on top of -fx-base, -fx-color, and -fx-body-color
+     * -fx-text-background-color for text on top of -fx-background
+     * -fx-text-inner-color for text on top of -fx-control-inner-color
+     * -fx-selection-bar-text for text on top of -fx-selection-bar
+     */
+    -fx-light-text-color: #e0e0e0;
+    -fx-mid-text-color: derive(-fx-light-text-color,-40%);
+    -fx-dark-text-color: derive(-fx-light-text-color,-80%);
+
+    /* For highlighting/accenting objects.  For example: selected text; 
+     * selected items in menus, lists, trees, and tables; progress bars;
+     * default buttons.
+     */
+    -fx-accent: #0093ff;
+
+    /* For the focus indicator of objects. Typically used as the first color 
+     * in -fx-background-color for the "focused" pseudo-class. Also
+     * typically used with insets of -1.4 to provide a glowing effect.
+     */
+    -fx-focus-color: -fx-accent;
+
+    /* The color that is used in styling controls. The default value is based
+     * on -fx-base, but is changed by pseudoclasses to change the base color.
+     * For example, the "hover" pseudoclass will typically set -fx-color to
+     * -fx-hover-base (see below) and the "armed" pseudoclass will typically
+     * set -fx-color to -fx-pressed-base.
+     */
+    -fx-color: -fx-base;
+
+    /***************************************************************************
+     *                                                                         *
+     * Colors that are derived from the main color palette.                    *
+     *                                                                         *
+     **************************************************************************/
+
+    /* Used as the -fx-color for the "hovered" pseudoclass state.
+     */
+    -fx-cell-hover-color: -fx-shadow-highlight-color;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Label                                                                       *
+ *                                                                             *
+ ******************************************************************************/
+.label {
+    -fx-text-fill: #e0e0e0
+}
+.text {
+    -fx-text-fill: #e0e0e0
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Tooltip                                                                     *
+ *                                                                             *
+ ******************************************************************************/
+.tooltip .text{
+    -fx-fill: #e0e0e0;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Scrollbar                                                                   *
+ *                                                                             *
+ ******************************************************************************/
+.scroll-bar:vertical .track {
+    -fx-background-color:#333333;
+}
+
+.scroll-bar .increment-button {
+    -fx-background-color: #333333;
+}
+
+.scroll-bar .decrement-button {
+    -fx-background-color: #333333;
+}
+
+.scroll-bar:vertical .increment-arrow {
+    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
+}
+
+.scroll-bar:vertical .track-background {
+    -fx-background-color: #333333;
+}
+
+.scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
+}
+
+.scroll-bar:horizontal .increment-arrow {
+    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
+}
+
+.scroll-bar:horizontal .track-background {
+    -fx-background-color: #333333;
+}
+
+.scroll-bar:horizontal .decrement-arrow {
+    -fx-background-color: -fx-mark-highlight-color, #D3D3D3;
+}
+
+.scroll-bar:horizontal .thumb {
+    -fx-background-color:#bbbbbb;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color:#bbbbbb;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * TitledPane                                                                  *
+ *                                                                             *
+ ******************************************************************************/
+.titled-pane{
+    -fx-base: #333333;
+}
+
+.menu-button {
+    -fx-background-color: #181818;
+    -fx-border-color: #444444;
+}
+
+.menu:hover{
+    -fx-background-color: #0093FF;
+}

@@ -47,7 +47,7 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
     public static final String QUALITY_CONTROL_WIDGET_TEXT = "Quality Category: %s";
 
     public DefaultQualityControlAutoButton() {
-        getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+        getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         setStyle(QUERY_RISK_DEFAULT_STYLE + BUTTON_STYLE + String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
         setOnAction(value -> SwingUtilities.invokeLater(() -> {

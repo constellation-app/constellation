@@ -34,10 +34,6 @@
     -fx-vbar-policy: never;
 }
 
-.scroll-pane {
-    -fx-background-color: transparent;
-}
-
 .scroll-pane .content {
     -fx-background-color: transparent;
 }

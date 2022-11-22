@@ -89,7 +89,7 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
             this.scrollPane = new ScrollPane(content);
 
             this.scene = new Scene(scrollPane);
-            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+            scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
             if (createStyle() != null) {
                 scene.getStylesheets().add(getClass().getResource(createStyle()).toExternalForm());
             }
