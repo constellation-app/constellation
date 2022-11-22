@@ -80,6 +80,7 @@ public class ReplaceTab extends BasicFindTab {
      * Updates the buttons at the bottom of the pane to be specific to the
      * replace tab.
      */
+    @Override
     public void updateButtons() {
         buttonsHBox.getChildren().clear();
         buttonsHBox.getChildren().addAll(searchAllGraphs, replaceAllButton, replaceNextButton);

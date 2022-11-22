@@ -351,12 +351,10 @@ public class BasicFindTab extends Tab {
                 Thread.currentThread().interrupt();
             }
         }
-        // update the current parameters to be current
-        //updateBasicFindParamters();
     }
 
     /**
-     * updates the check box menu with the items present within the selected
+     * Updates the check box menu with the items present within the selected
      * attributes list
      *
      * @param selectedAttributes

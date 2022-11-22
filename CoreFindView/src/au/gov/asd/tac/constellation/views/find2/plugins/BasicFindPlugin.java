@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.find2.plugins;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -30,6 +29,7 @@ import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindViewUtilities;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -71,33 +71,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.addToSelection = parameters.isAddTo();
         this.removeFromCurrentSelection = parameters.isRemoveFrom();
         this.findInCurrentSelection = parameters.isFindIn();
-    }
-
-    /**
-     * This clears all the graph elements that are currently selected
-     *
-     * @param graph
-     */
-    private void clearSelection(final GraphWriteMethods graph) {
-        final int nodesCount = GraphElementType.VERTEX.getElementCount(graph);
-        final int nodeSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        final int transactionsCount = GraphElementType.TRANSACTION.getElementCount(graph);
-        final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-
-        // loop through all nodes that are selected and deselect them
-        if (nodeSelectedAttribute != Graph.NOT_FOUND) {
-            for (int i = 0; i < nodesCount; i++) {
-                final int currElement = GraphElementType.VERTEX.getElement(graph, i);
-                graph.setBooleanValue(nodeSelectedAttribute, currElement, false);
-            }
-        }
-        // loop through all transactions that are selected and deselect them
-        if (transactionSelectedAttribute != Graph.NOT_FOUND) {
-            for (int i = 0; i < transactionsCount; i++) {
-                final int currElement = GraphElementType.TRANSACTION.getElement(graph, i);
-                graph.setBooleanValue(transactionSelectedAttribute, currElement, false);
-            }
-        }
     }
 
     @Override
@@ -143,7 +116,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
 
         // do this if not add to selection
         if (!addToSelection && !removeFromCurrentSelection && !findInCurrentSelection) {
-            clearSelection(graph);
+            FindViewUtilities.clearSelection(graph);
         }
 
         final FindResultsList findInCurrentSelectionList = new FindResultsList();
@@ -244,7 +217,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private void selectFindInResults(final boolean findInCurrentSelection, final FindResultsList findInCurrentSelectionList,
             final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
         if (findInCurrentSelection && !findInCurrentSelectionList.isEmpty()) {
-            clearSelection(graph);
+            FindViewUtilities.clearSelection(graph);
             for (final FindResult fr : findInCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
             }

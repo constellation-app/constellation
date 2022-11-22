@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find2.components.advanced.utilities;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -57,7 +56,7 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
         if (!selectAll) {
             // do this if ignore selection
             if (IGNORE.equals(currentSelection)) {
-                clearSelection(graph);
+                FindViewUtilities.clearSelection(graph);
             }
             
             /**
@@ -88,30 +87,4 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
         return "Find: Graph Selection";
     }
     
-    /**
-     * This function clears all the currently selected elements on the graph.
-     *
-     * @param graph
-     */
-    private void clearSelection(final GraphWriteMethods graph) {
-        final int nodesCount = GraphElementType.VERTEX.getElementCount(graph);
-        final int nodeSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        final int transactionsCount = GraphElementType.TRANSACTION.getElementCount(graph);
-        final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-
-        // loop through all nodes that are selected and deselect them
-        if (nodeSelectedAttribute != Graph.NOT_FOUND) {
-            for (int i = 0; i < nodesCount; i++) {
-                final int currElement = GraphElementType.VERTEX.getElement(graph, i);
-                graph.setBooleanValue(nodeSelectedAttribute, currElement, false);
-            }
-        }
-        // loop through all transactions that are selected and deselect them
-        if (transactionSelectedAttribute != Graph.NOT_FOUND) {
-            for (int i = 0; i < transactionsCount; i++) {
-                final int currElement = GraphElementType.TRANSACTION.getElement(graph, i);
-                graph.setBooleanValue(transactionSelectedAttribute, currElement, false);
-            }
-        }
-    }    
 }

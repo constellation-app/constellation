@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find2.utilities;
 
-import java.util.logging.Logger;
-
 /**
  * The current list of all find view results
  *
@@ -25,10 +23,7 @@ import java.util.logging.Logger;
 public class ActiveFindResultsList {
 
     private static FindResultsList basicResultsList;
-    private static FindResultsList replaceResultsList;
     private static FindResultsList advancedResultsList;
-
-    private static final Logger LOGGER = Logger.getLogger(ActiveFindResultsList.class.getName());
 
     private ActiveFindResultsList() {
     }
@@ -42,14 +37,6 @@ public class ActiveFindResultsList {
         return basicResultsList;
     }
 
-    /**
-     * Get the replace find results list
-     *
-     * @return replaceResultsList
-     */
-    public static FindResultsList getReplaceResultsList() {
-        return replaceResultsList;
-    }
 
     /**
      * Get the advanced find results list
@@ -67,15 +54,6 @@ public class ActiveFindResultsList {
      */
     public static synchronized void setBasicResultsList(final FindResultsList basicResultsList) {
         ActiveFindResultsList.basicResultsList = basicResultsList;
-    }
-
-    /**
-     * Set the replace find results list
-     *
-     * @param replaceResultsList
-     */
-    public static void setReplaceResultsList(final FindResultsList replaceResultsList) {
-        ActiveFindResultsList.replaceResultsList = replaceResultsList;
     }
 
     /**
@@ -107,25 +85,6 @@ public class ActiveFindResultsList {
             }
             if (!exists) {
                 ActiveFindResultsList.basicResultsList.add(result);
-            }
-        });
-    }
-
-    /**
-     * Add more results to the replace find results list if not already in the list
-     *
-     * @param additions 
-     */
-    public static void addToReplaceFindResultsList(final FindResultsList additions) {
-        additions.forEach(result -> {
-            boolean exists = false;
-            for (final FindResult current : ActiveFindResultsList.replaceResultsList) {
-                if (current.equals(result)) {
-                    exists = true;
-                }
-            }
-            if (!exists) {
-                ActiveFindResultsList.replaceResultsList.add(result);
             }
         });
     }

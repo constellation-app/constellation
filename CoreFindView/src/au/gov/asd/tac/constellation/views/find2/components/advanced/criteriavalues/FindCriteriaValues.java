@@ -88,9 +88,6 @@ public class FindCriteriaValues {
         if (!Objects.equals(this.attribute, other.attribute)) {
             return false;
         }
-        if (!Objects.equals(this.filter, other.filter)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.filter, other.filter);
     }
 }

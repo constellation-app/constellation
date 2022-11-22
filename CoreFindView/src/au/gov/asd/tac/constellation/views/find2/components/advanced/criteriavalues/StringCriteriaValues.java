@@ -118,10 +118,7 @@ public class StringCriteriaValues extends FindCriteriaValues {
         if (!Objects.equals(this.text, other.text)) {
             return false;
         }
-        if (!Objects.equals(this.textList, other.textList)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.textList, other.textList);
     }
 
 }

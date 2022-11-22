@@ -268,6 +268,7 @@ public class FindViewController {
             }
         } catch (final InterruptedException | ExecutionException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            Thread.currentThread().interrupt();
         } 
 
         int currentIndex;
@@ -344,6 +345,7 @@ public class FindViewController {
             }
         } catch (final InterruptedException | ExecutionException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            Thread.currentThread().interrupt();
         }
 
         if (!ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {

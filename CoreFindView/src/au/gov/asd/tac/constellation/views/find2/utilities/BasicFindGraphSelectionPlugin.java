@@ -23,8 +23,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Updates the graph selection based on the results of the basic find plugin
@@ -38,8 +36,6 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
     private final boolean selectAll;
     private final boolean getNext;
     private final boolean searchAllGraphs;
-
-    private static final Logger LOGGER = Logger.getLogger(BasicFindGraphSelectionPlugin.class.getName());
 
     public BasicFindGraphSelectionPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll, final boolean getNext) {
         this.elementType = parameters.getGraphElement();
@@ -66,9 +62,6 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
                 }
 
                 final int elementId = ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getID();                
-                LOGGER.log(Level.WARNING, "Graph Selection Basic: " + Integer.toString(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()));
-                LOGGER.log(Level.WARNING, "Graph Selection List Size: " + Integer.toString(ActiveFindResultsList.getBasicResultsList().size()));
-                
                 final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
                 graph.setBooleanValue(selectedAttribute, elementId, !removeFromCurrentSelection);
             }

@@ -15,8 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.find2.utilities;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.awt.EventQueue;
 import java.util.Set;
 import org.openide.windows.TopComponent;
@@ -43,9 +46,36 @@ public class FindViewUtilities {
         if (topComponents != null) {
             for (final TopComponent component : topComponents) {
                 if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
-                    EventQueue.invokeLater(() -> ((VisualGraphTopComponent) component).requestActive());
+                    EventQueue.invokeLater(((VisualGraphTopComponent) component)::requestActive);
                     break;
                 }
+            }
+        }
+    }
+
+    /**
+     * This function clears all the currently selected elements on the graph.
+     *
+     * @param graph
+     */
+    public static void clearSelection(final GraphWriteMethods graph) {
+        final int nodesCount = GraphElementType.VERTEX.getElementCount(graph);
+        final int nodeSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+        final int transactionsCount = GraphElementType.TRANSACTION.getElementCount(graph);
+        final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+
+        // loop through all nodes that are selected and deselect them
+        if (nodeSelectedAttribute != Graph.NOT_FOUND) {
+            for (int i = 0; i < nodesCount; i++) {
+                final int currElement = GraphElementType.VERTEX.getElement(graph, i);
+                graph.setBooleanValue(nodeSelectedAttribute, currElement, false);
+            }
+        }
+        // loop through all transactions that are selected and deselect them
+        if (transactionSelectedAttribute != Graph.NOT_FOUND) {
+            for (int i = 0; i < transactionsCount; i++) {
+                final int currElement = GraphElementType.TRANSACTION.getElement(graph, i);
+                graph.setBooleanValue(transactionSelectedAttribute, currElement, false);
             }
         }
     }

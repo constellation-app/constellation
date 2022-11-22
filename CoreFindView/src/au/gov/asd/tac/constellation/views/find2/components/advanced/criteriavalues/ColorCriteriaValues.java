@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import java.util.Objects;
 
 /**
  * This Class is for the ColorCriteriaValues which are created from a
@@ -41,4 +42,28 @@ public class ColorCriteriaValues extends FindCriteriaValues {
         return color;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.color);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ColorCriteriaValues other = (ColorCriteriaValues) obj;
+        if (!Objects.equals(this.color, other.color)) {
+            return false;
+        }
+        return true;
+    }
 }

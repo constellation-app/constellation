@@ -61,7 +61,6 @@ import java.util.stream.Collectors;
 public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
     private final boolean selectAll;
-    private final boolean selectNext;
     private final AdvancedSearchParameters parameters;
     private final List<FindCriteriaValues> criteriaList;
     private final GraphElementType elementType;
@@ -84,7 +83,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     public AdvancedSearchPlugin(final AdvancedSearchParameters parameters, final boolean selectAll, final boolean selectNext) {
         this.parameters = parameters;
         this.selectAll = selectAll;
-        this.selectNext = selectNext;
         elementType = parameters.getGraphElementType();
         allOrAny = parameters.getAllOrAny();
         currentSelection = parameters.getCurrentSelection();
@@ -249,9 +247,8 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                                 // of the element
                                 foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
                             }
-                        }
-                        // if not select all and the match criteria = any
-                        else if (ANY.equals(allOrAny)) {
+                        } else if (ANY.equals(allOrAny)) {
+                            // if not select all and the match criteria = any
                             // add a new find result to the found results list
                             // of the element
                             foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
