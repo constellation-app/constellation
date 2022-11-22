@@ -55,12 +55,6 @@ public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
              * element at the specified index to selected.
              */
             if (!ActiveFindResultsList.getBasicResultsList().isEmpty()) {
-                if (getNext) {
-                    ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
-                } else {
-                    ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
-                }
-
                 final int elementId = ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getID();                
                 final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
                 graph.setBooleanValue(selectedAttribute, elementId, !removeFromCurrentSelection);

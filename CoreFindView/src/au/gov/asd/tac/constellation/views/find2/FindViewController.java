@@ -271,16 +271,15 @@ public class FindViewController {
             Thread.currentThread().interrupt();
         } 
 
-        int currentIndex;
         // do the updating of the graph here instead
         if (!ActiveFindResultsList.getBasicResultsList().isEmpty()) {
-            if (ActiveFindResultsList.getBasicResultsList().getCurrentIndex() == -1) {
-                currentIndex = 0;
+            if (getNext) {
+                ActiveFindResultsList.getBasicResultsList().incrementCurrentIndex();
             } else {
-                currentIndex = ActiveFindResultsList.getBasicResultsList().getCurrentIndex();
+                ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
             }
 
-            Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(currentIndex).getGraphId());
+            Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getGraphId());
             PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph);
             final int foundResultsLength = ActiveFindResultsList.getBasicResultsList().size();
             Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(foundResultsLength));
