@@ -75,19 +75,15 @@ public class FindCriteriaValues {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+
         final FindCriteriaValues other = (FindCriteriaValues) obj;
-        if (!Objects.equals(this.attributeType, other.attributeType)) {
+        if (!Objects.equals(this.attributeType, other.attributeType) || !Objects.equals(this.attribute, other.attribute)) {
             return false; 
         }
-        if (!Objects.equals(this.attribute, other.attribute)) {
-            return false;
-        }
+        
         return Objects.equals(this.filter, other.filter);
     }
 }

@@ -34,7 +34,6 @@ import au.gov.asd.tac.constellation.views.find2.utilities.FindViewUtilities;
 public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
 
     private final boolean selectAll;
-    private final boolean getNext;
     private final boolean searchAllGraphs;
     private final GraphElementType elementType;
     private final String currentSelection;
@@ -42,14 +41,13 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
 
     public AdvancedFindGraphSelectionPlugin(final AdvancedSearchParameters parameters, final boolean selectAll, final boolean getNext) {
         this.selectAll = selectAll;
-        this.getNext = getNext;
         this.searchAllGraphs = parameters.isSearchAllGraphs();
         this.elementType = parameters.getGraphElementType();
         this.currentSelection = parameters.getCurrentSelection();
     }
 
     @Override
-    protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
 

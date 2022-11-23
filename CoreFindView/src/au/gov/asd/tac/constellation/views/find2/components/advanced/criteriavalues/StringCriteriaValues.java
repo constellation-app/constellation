@@ -102,22 +102,15 @@ public class StringCriteriaValues extends FindCriteriaValues {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+
         final StringCriteriaValues other = (StringCriteriaValues) obj;
-        if (this.ignoreCase != other.ignoreCase) {
+        if (this.ignoreCase != other.ignoreCase || this.useList != other.useList || !Objects.equals(this.text, other.text)) {
             return false;
         }
-        if (this.useList != other.useList) {
-            return false;
-        }
-        if (!Objects.equals(this.text, other.text)) {
-            return false;
-        }
+
         return Objects.equals(this.textList, other.textList);
     }
 

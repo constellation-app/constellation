@@ -54,14 +54,10 @@ public class ColorCriteriaValues extends FindCriteriaValues {
         if (this == obj) {
             return true;
         }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
         final ColorCriteriaValues other = (ColorCriteriaValues) obj;
-        
         return Objects.equals(this.color, other.color);
     }
 }

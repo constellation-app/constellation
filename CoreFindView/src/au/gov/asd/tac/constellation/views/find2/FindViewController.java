@@ -266,10 +266,12 @@ public class FindViewController {
                     PluginExecution.withPlugin(basicFindPlugin).executeLater(graph).get();
                 }
             }
-        } catch (final InterruptedException | ExecutionException ex) {
+        } catch (final InterruptedException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             Thread.currentThread().interrupt();
-        } 
+        } catch (final ExecutionException  ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+        }
 
         // do the updating of the graph here instead
         if (!ActiveFindResultsList.getBasicResultsList().isEmpty()) {
@@ -279,7 +281,7 @@ public class FindViewController {
                 ActiveFindResultsList.getBasicResultsList().decrementCurrentIndex();
             }
 
-            Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getGraphId());
+            final Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getGraphId());
             PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph);
             final int foundResultsLength = ActiveFindResultsList.getBasicResultsList().size();
             Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(foundResultsLength));
@@ -342,9 +344,11 @@ public class FindViewController {
                     PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph).get();
                 }
             }
-        } catch (final InterruptedException | ExecutionException ex) {
+        } catch (final InterruptedException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             Thread.currentThread().interrupt();
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
 
         if (!ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
@@ -354,8 +358,8 @@ public class FindViewController {
                 ActiveFindResultsList.getAdvancedResultsList().decrementCurrentIndex();
             }
 
-            int currentIndex = ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex();
-            Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getAdvancedResultsList().get(currentIndex).getGraphId());
+            final int currentIndex = ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex();
+            final Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getAdvancedResultsList().get(currentIndex).getGraphId());
 
             PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph);
             final int foundResultsLength = ActiveFindResultsList.getAdvancedResultsList().size();
