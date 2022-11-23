@@ -348,11 +348,11 @@ public class FindViewController {
         }
 
         if (!ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
-            if (ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex() == -1 && findNext) {
+            if (findNext) {
                 ActiveFindResultsList.getAdvancedResultsList().incrementCurrentIndex();
-            } else if (ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex() == -1 && !findNext) {
+            } else {
                 ActiveFindResultsList.getAdvancedResultsList().decrementCurrentIndex();
-            }          
+            }
 
             int currentIndex = ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex();
             Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getAdvancedResultsList().get(currentIndex).getGraphId());

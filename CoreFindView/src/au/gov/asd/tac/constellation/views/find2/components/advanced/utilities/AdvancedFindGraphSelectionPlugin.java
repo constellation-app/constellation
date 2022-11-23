@@ -65,11 +65,6 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
              * 1. Set the element at the specified index to selected.
              */
             if (!ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
-                if (getNext) {
-                    ActiveFindResultsList.getAdvancedResultsList().incrementCurrentIndex();
-                } else {
-                    ActiveFindResultsList.getAdvancedResultsList().decrementCurrentIndex();
-                }
                 final int elementId = ActiveFindResultsList.getAdvancedResultsList().get(ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex()).getID();                
                 graph.setBooleanValue(selectedAttribute, elementId, true);
             }
