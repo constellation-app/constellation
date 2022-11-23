@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.Shape;
 
 /**
  *
@@ -40,7 +41,8 @@ public abstract class AbstractMarker {
     public static enum MarkerType {
         POINT_MARKER,
         LINE_MARKER,
-        POLYGON_MARKER
+        POLYGON_MARKER,
+        CLUSTER_MARKER
     }
 
     protected MarkerType type;
@@ -101,7 +103,7 @@ public abstract class AbstractMarker {
 
     }
 
-    public SVGPath getMarker() {
+    public Shape getMarker() {
         return markerPath;
     }
 

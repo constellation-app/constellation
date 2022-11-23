@@ -212,7 +212,10 @@ public class MapViewPane extends BorderPane {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, true);
                         } else if (item.equals(MARKER_TYPE_POLYGON)) {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, true);
+                        } else if (item.equals(MARKER_TYPE_CLUSTER)) {
+                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, true);
                         }
+
                         } else {
                         if (item.equals(MARKER_TYPE_POINT)) {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, false);
@@ -220,6 +223,8 @@ public class MapViewPane extends BorderPane {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, false);
                         } else if (item.equals(MARKER_TYPE_POLYGON)) {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, false);
+                        } else if (item.equals(MARKER_TYPE_CLUSTER)) {
+                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, false);
                         }
                         }
 
@@ -302,7 +307,11 @@ public class MapViewPane extends BorderPane {
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
-        return mapView.getAllMarkers();
+        if (mapView != null) {
+            return mapView.getAllMarkers();
+        }
+
+        return new HashMap<String, AbstractMarker>();
     }
 
     private void testEventHandler() {
@@ -320,7 +329,7 @@ public class MapViewPane extends BorderPane {
     }
 
     public void drawMarker(AbstractMarker marker) {
-        if (marker != null) {
+        if (marker != null && mapView != null) {
             mapView.drawMarker(marker);
 
         }

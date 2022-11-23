@@ -278,7 +278,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     }
 
     public void addMarker(String key, AbstractMarker e) {
-        mapViewPane.getMap().addMarkerToHashMap(key, e);
+        if (mapViewPane.getMap() != null) {
+            mapViewPane.getMap().addMarkerToHashMap(key, e);
+        }
     }
 
     public int getContentHeight() {
