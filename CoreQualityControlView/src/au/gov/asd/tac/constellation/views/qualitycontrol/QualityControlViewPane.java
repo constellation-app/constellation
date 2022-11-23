@@ -117,6 +117,9 @@ public final class QualityControlViewPane extends BorderPane {
     private final TableColumn<QualityControlEvent, QualityControlEvent> reasonColumn;
     private final TableView<QualityControlEvent> qualityTable;
     private final FlowPane optionsPane;
+    
+    private static final String DISABLE = "Disable";
+    private static final String ENABLE = "Enable";
 
     public QualityControlViewPane() {
         readSerializedRulePriorities();
@@ -479,10 +482,10 @@ public final class QualityControlViewPane extends BorderPane {
                 resetButton.setText("Reset");
             });
             
-            final Button enableDisableButton = new Button(getEnablementStatuses().get(rule) ? "Disable" : "Enable");
+            final Button enableDisableButton = new Button(Boolean.TRUE.equals(getEnablementStatuses().get(rule)) ? DISABLE : ENABLE);
             enableDisableButton.setOnAction(event -> {
-                if ("Disable".equals(enableDisableButton.getText())) {
-                    enableDisableButton.setText("Enable");
+                if (DISABLE.equals(enableDisableButton.getText())) {
+                    enableDisableButton.setText(ENABLE);
                     ruleName.setTextFill(Color.GREY);
                     minorButton.setDisable(true);
                     mediumButton.setDisable(true);
@@ -491,7 +494,7 @@ public final class QualityControlViewPane extends BorderPane {
                     criticalButton.setDisable(true);
                     resetButton.setDisable(true);
                 } else {
-                    enableDisableButton.setText("Disable");
+                    enableDisableButton.setText(DISABLE);
                     ruleName.setTextFill(Color.color(0.196, 0.196, 0.196));
                     minorButton.setDisable(false);
                     mediumButton.setDisable(false);
@@ -524,7 +527,7 @@ public final class QualityControlViewPane extends BorderPane {
                     break;
             }
             
-            if (!getEnablementStatuses().get(rule)) {
+            if (Boolean.FALSE.equals(getEnablementStatuses().get(rule))) {
                 ruleName.setTextFill(Color.GREY);
                 minorButton.setDisable(true);
                 mediumButton.setDisable(true);
@@ -594,7 +597,7 @@ public final class QualityControlViewPane extends BorderPane {
                 getPriorities().put((QualityControlRule) tg.getUserData(), (QualityCategory) tg.getSelectedToggle().getUserData());
             }
             for (final Entry<QualityControlRule, Button> entry : ruleEnableButtons.entrySet()) {
-                final boolean enabled = "Disable".equals(entry.getValue().getText());
+                final boolean enabled = DISABLE.equals(entry.getValue().getText());
                 getEnablementStatuses().put(entry.getKey(), enabled);
                 entry.getKey().setEnabled(enabled);
             }
@@ -744,7 +747,7 @@ public final class QualityControlViewPane extends BorderPane {
         final Map<String, String> enableStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_ENABLED_STATUSES, ""));
         for (final Entry<String, String> entry : enableStringMap.entrySet()) {
             final QualityControlRule rule = QualityControlEvent.getRuleByString(entry.getKey());
-            final boolean enabled = Boolean.valueOf(entry.getValue());
+            final boolean enabled = Boolean.parseBoolean(entry.getValue());
             getEnablementStatuses().put(rule, enabled);
             rule.setEnabled(enabled);
         }
