@@ -226,10 +226,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                             // add a new find result to the found results list
                             // of the element
                             foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
-                        } else if (selectAll) {
-                            graph.setBooleanValue(selectedAttribute, currElement, true);
-                            foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
-                        }
+                        } 
                     }
                 }
 
@@ -277,7 +274,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         } else {
             ActiveFindResultsList.addToAdvancedFindResultsList(foundResult);
         }
-
     }
 
     /**

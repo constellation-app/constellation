@@ -62,12 +62,7 @@ public class ActiveFindResultsList {
      * @param advancedResultsList
      */
     public static void setAdvancedResultsList(final FindResultsList advancedResultsList) {
-        if (ActiveFindResultsList.advancedResultsList != null) {
-            ActiveFindResultsList.advancedResultsList.clear();
-            ActiveFindResultsList.addToAdvancedFindResultsList(advancedResultsList);
-        } else {
-            ActiveFindResultsList.advancedResultsList = advancedResultsList;
-        }
+        ActiveFindResultsList.advancedResultsList = advancedResultsList;
     }
 
     /**
