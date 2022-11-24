@@ -71,8 +71,12 @@ public class UserPointMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
 
                 parent.removeUserMarker(markerID);
-                parent.drawPointMarkerOnMap();
-                //parentComponent.drawMarkerOnMap();
+                //Sparent.drawPointMarkerOnMap();
+
+                // NOT CORRECT WAY LOL
+                //parent.clusterMarkerBuilder.update(parent.pointMarkerGroup);
+                //parent.addClusterMarkers(parent.clusterMarkerBuilder.getClusterMarkers(), parent.clusterMarkerBuilder.getClusterValues());
+
                 e.consume();
             }
         });
@@ -87,6 +91,10 @@ public class UserPointMarker extends AbstractMarker {
         path = "M " + x + ", " + y + " Z " + path;
 
         markerPath.setContent(path);
+    }
+
+    public String getPath() {
+        return path;
     }
 
     public double getX() {

@@ -92,7 +92,7 @@ public class CircleMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
 
                 parent.removeUserMarker(markerID);
-                parent.drawPointMarkerOnMap();
+                //parent.drawPointMarkerOnMap();
                 e.consume();
             }
         });

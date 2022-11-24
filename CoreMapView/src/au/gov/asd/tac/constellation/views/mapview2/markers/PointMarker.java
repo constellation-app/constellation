@@ -55,9 +55,9 @@ public class PointMarker extends AbstractMarker {
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                if (!isSelected) {
+                //if (!isSelected) {
                     markerPath.setFill(Color.ORANGE);
-                }
+                //}
                 e.consume();
             }
         });
@@ -65,9 +65,9 @@ public class PointMarker extends AbstractMarker {
         markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                if (!isSelected) {
+                //if (!isSelected) {
                     markerPath.setFill(Color.RED);
-                }
+                //}
                 e.consume();
             }
         });
@@ -75,7 +75,7 @@ public class PointMarker extends AbstractMarker {
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
                 isSelected = true;
-                markerPath.setFill(Color.BLUE);
+                //markerPath.setFill(Color.BLUE);
                 parent.addMarkerId(markerID, idList, true);
                 e.consume();
             }
@@ -93,6 +93,10 @@ public class PointMarker extends AbstractMarker {
 
     public double getScale() {
         return scale;
+    }
+
+    public String getPath() {
+        return path;
     }
 
     @Override

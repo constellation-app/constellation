@@ -76,6 +76,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
@@ -86,6 +87,7 @@ import javafx.scene.web.WebView;
  *
  * @author altair1673
  */
+// LAYER
 public class MapView extends ScrollPane {
 
     private MapViewPane parent;
@@ -118,7 +120,8 @@ public class MapView extends ScrollPane {
     private Group drawnMarkerGroup;
     private Group polygonMarkerGroup;
     private Group clusterMarkerGroup;
-    private Group pointMarkerGroup;
+    //public Group pointMarkerGroup;
+    public Group hiddenPointMarkerGroup;
 
     private static final Logger LOGGER = Logger.getLogger("Test");
 
@@ -162,7 +165,7 @@ public class MapView extends ScrollPane {
 
     private MapView self = this;
 
-    private ClusterMarkerBuilder clusterMarkerBuilder = null;
+    public ClusterMarkerBuilder clusterMarkerBuilder = null;
 
     //private final Region testRegion = new Region();
 
@@ -188,9 +191,10 @@ public class MapView extends ScrollPane {
         overlayGroup = new Group();
         layerGroup = new Group();
         clusterMarkerGroup = new Group();
-        pointMarkerGroup = new Group();
-
-        pointMarkerGroup.getChildren().addAll(testMarker.getMarker(), testMarker2.getMarker());
+        //pointMarkerGroup = new Group();
+        //pointMarkerGroup.getChildren().addAll(testMarker.getMarker(), testMarker2.getMarker());
+        hiddenPointMarkerGroup = new Group();
+        hiddenPointMarkerGroup.setVisible(false);
 
 
 
@@ -258,8 +262,7 @@ public class MapView extends ScrollPane {
                 //calculateClusters();
                 //clusterMarkerGroup.getChildren().clear();
                 if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
-                clusterMarkerBuilder.update(pointMarkerGroup);
-                    addClusterMarkers(clusterMarkerBuilder.getClusterMarkers(), clusterMarkerBuilder.getClusterValues());
+                    updateClusterMarkers();
                 }
                 //pointMarkerClusters.forEach(cluster -> drawClusterMarkers(cluster));
                 //testMarker.getMarker().setScaleY(scaleFactor);
@@ -352,6 +355,7 @@ public class MapView extends ScrollPane {
                         polygonMarkerGroup.getChildren().clear();
                         drawingCircleMarker = false;
                         toolsOverlay.resetMeasureText();
+                        //updateClusterMarkers();
                     } else if (event.isControlDown()) {
                         if (!drawingPolygonMarker && !drawingCircleMarker) {
                             polygonMarker = new PolygonMarker(self, drawnMarkerId++, 0, 0);
@@ -370,6 +374,7 @@ public class MapView extends ScrollPane {
                         userMarkers.add(polygonMarker);
                         polygonMarker.endDrawing();
                         polygonMarkerGroup.getChildren().clear();
+                        //updateClusterMarkers();
                     } else if (!drawingPolygonMarker && !drawingCircleMarker) {
                         UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
                         marker.setMarkerPosition(0, 0);
@@ -377,6 +382,7 @@ public class MapView extends ScrollPane {
                         addUserDrawnMarker(marker);
                         //pointMarkerGroup.getChildren().addAll(marker.getMarker());
                         userMarkers.add(marker);
+                        updateClusterMarkers();
                     }
                 } else if (!toolsOverlay.getDrawingEnabled().get() && toolsOverlay.getMeasureEnabled().get()) {
 
@@ -385,7 +391,6 @@ public class MapView extends ScrollPane {
                             LOGGER.log(Level.SEVERE, "Drawing measure line");
                             measureLine = new Line();
                             measureLine.setStroke(Color.RED);
-                            //measureLine.setFill(Color.RED);
                             measureLine.setStartX(event.getX());
                             measureLine.setStartY(event.getY());
                             measureLine.setEndX(event.getX());
@@ -442,13 +447,15 @@ public class MapView extends ScrollPane {
 
         });
 
+        mapGroupHolder.getChildren().add(hiddenPointMarkerGroup);
         mapGroupHolder.getChildren().add(graphMarkerGroup);
-        mapGroupHolder.getChildren().add(pointMarkerGroup);
+        //mapGroupHolder.getChildren().add(pointMarkerGroup);
         mapGroupHolder.getChildren().addAll(drawnMarkerGroup);
         mapGroupHolder.getChildren().add(clusterMarkerGroup);
         mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
         mapGroupHolder.getChildren().add(overlayGroup);
         mapGroupHolder.getChildren().add(layerGroup);
+
 
         overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
         overlayGroup.getChildren().addAll(infoOverlay.getOverlayPane());
@@ -459,10 +466,7 @@ public class MapView extends ScrollPane {
     private void addUserDrawnMarker(AbstractMarker marker) {
         if (markersShowing.contains(marker.getType())) {
 
-            if (marker instanceof UserPointMarker) {
-                pointMarkerGroup.getChildren().add(marker.getMarker());
-                return;
-            } else if (marker instanceof ClusterMarker) {
+            if (marker instanceof ClusterMarker) {
                 clusterMarkerGroup.getChildren().add(marker.getMarker());
                 return;
             }
@@ -474,20 +478,15 @@ public class MapView extends ScrollPane {
     public void removeUserMarker(int id) {
         for (int i = 0; i < userMarkers.size(); ++i) {
             if (userMarkers.get(i).getMarkerId() == id) {
-                AbstractMarker removed = userMarkers.get(i);
+
                 userMarkers.remove(i);
-                if (removed instanceof UserPointMarker) {
-                    pointMarkerGroup.getChildren().clear();
-                    drawPointMarkerOnMap();
-                } else {
-                    redrawUserMarkers(false);
-                }
 
                 break;
             }
         }
 
-        //redrawUserMarkers();
+        redrawUserMarkers();
+        updateClusterMarkers();
     }
 
     public void toggleOverlay(String overlay, boolean show) {
@@ -496,7 +495,9 @@ public class MapView extends ScrollPane {
         }
     }
 
-    private void addClusterMarkers(List<ClusterMarker> clusters, List<Text> clusterValues) {
+    public void addClusterMarkers(List<ClusterMarker> clusters, List<Text> clusterValues) {
+        // REMOVE THIS IF STATEMENT
+        if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
         clusterMarkerGroup.getChildren().clear();
 
         clusters.forEach(cluster -> {
@@ -505,36 +506,54 @@ public class MapView extends ScrollPane {
 
         clusterValues.forEach(numNodes -> {
             clusterMarkerGroup.getChildren().add(numNodes);
-        });
+            });
+        }
     }
 
     //private List<ClusterMarker> clusterMarkers = new ArrayList<>();
 
-    private void redrawUserMarkers(boolean pointMarkersOnly) {
+    private void redrawUserMarkers() {
         drawnMarkerGroup.getChildren().clear();
+        //hiddenPointMarkerGroup.getChildren().clear();
 
         userMarkers.forEach((marker) -> {
 
             if (markersShowing.contains(marker.getType())) {
-
-                if (marker instanceof UserPointMarker && pointMarkersOnly) {
-                    //pointMarkerGroup.getChildren().add(marker.getMarker());
-
-                    addUserDrawnMarker(marker);
-
-                }
-                else if (!pointMarkersOnly) {
-                    drawnMarkerGroup.getChildren().add(marker.getMarker());
-                }
+                
+                drawnMarkerGroup.getChildren().add(marker.getMarker());
 
             }
         });
 
-        if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
-            clusterMarkerBuilder.update(pointMarkerGroup);
-            addClusterMarkers(clusterMarkerBuilder.getClusterMarkers(), clusterMarkerBuilder.getClusterValues());
+        if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER) && markersShowing.contains(AbstractMarker.MarkerType.POINT_MARKER)) {
+            updateClusterMarkers();
         } else
             clusterMarkerGroup.getChildren().clear();
+    }
+
+    private void updateClusterMarkers() {
+        hiddenPointMarkerGroup.getChildren().clear();
+
+        for (Object value : markers.values()) {
+            AbstractMarker m = (AbstractMarker) value;
+            if (m instanceof PointMarker) {
+                //m.setMarkerPosition(mapWidth, mapHeight);
+                SVGPath p = new SVGPath();
+                p.setContent(((PointMarker) m).getPath());
+                hiddenPointMarkerGroup.getChildren().add(p);
+            }
+        }
+
+        userMarkers.forEach(m -> {
+            if (m instanceof UserPointMarker) {
+                SVGPath p = new SVGPath();
+                p.setContent(((UserPointMarker) m).getPath());
+                hiddenPointMarkerGroup.getChildren().add(p);
+            }
+        });
+
+        clusterMarkerBuilder.update(hiddenPointMarkerGroup);
+        addClusterMarkers(clusterMarkerBuilder.getClusterMarkers(), clusterMarkerBuilder.getClusterValues());
     }
 
 
@@ -564,14 +583,14 @@ public class MapView extends ScrollPane {
             markersShowing.add(type);
         }
 
-        redrawUserMarkers(false);
+        redrawUserMarkers();
         redrawQueriedMarkers();
     }
 
     public void redrawQueriedMarkers() {
         graphMarkerGroup.getChildren().clear();
-        pointMarkerGroup.getChildren().clear();
         //parent.redrawQueriedMarkers();
+        //hiddenPointMarkerGroup.getChildren().clear();
 
         for (Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
@@ -610,29 +629,10 @@ public class MapView extends ScrollPane {
         if (markersShowing.contains(marker.getType())) {
             marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
 
-            if (marker instanceof PointMarker || marker instanceof UserPointMarker) {
-                pointMarkerGroup.getChildren().add(marker.getMarker());
-                return;
-            }
+            
             graphMarkerGroup.getChildren().add(marker.getMarker());
         }
 
-    }
-
-    public void drawPointMarkerOnMap() {
-        pointMarkerGroup.getChildren().clear();
-        for (Object value : markers.values()) {
-            AbstractMarker m = (AbstractMarker) value;
-            if (m instanceof PointMarker) {
-                drawMarker(m);
-            }
-        }
-
-        for (int i = 0; i < userMarkers.size(); ++i) {
-            if (userMarkers.get(i) instanceof UserPointMarker) {
-                drawMarker(userMarkers.get(i));
-            }
-        }
     }
 
     public void addMarkerToHashMap(String key, AbstractMarker e) {

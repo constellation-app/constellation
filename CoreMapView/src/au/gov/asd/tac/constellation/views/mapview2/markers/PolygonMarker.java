@@ -64,7 +64,7 @@ public class PolygonMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
 
                 parent.removeUserMarker(markerID);
-                //parentComponent.drawPointMarkerOnMap();
+                //parent.drawPointMarkerOnMap();
                 e.consume();
             }
         });
