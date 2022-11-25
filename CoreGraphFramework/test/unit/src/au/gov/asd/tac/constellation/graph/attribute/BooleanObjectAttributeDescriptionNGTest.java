@@ -15,7 +15,12 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import static org.testng.Assert.*;
+import au.gov.asd.tac.constellation.graph.GraphIndexType;
+import java.time.LocalDate;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -57,10 +62,22 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testConvertFromObject() {
-        Object object = null;
-        Boolean expResult = null;
-        Boolean result = instance.convertFromObject(object);
-        assertEquals(result, expResult);
+        System.out.println("convertFromObject");
+        
+        assertNull(instance.convertFromObject(null));
+        assertTrue(instance.convertFromObject(1));
+        assertFalse(instance.convertFromObject((char) 0));
+    }
+    
+    /**
+     * Test of convertFromObject method, of class 
+     * BooleanObjectAttributeDescription. Trying to convert an incompatible type to boolean object
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testconvertFromObjectCantConvert() {
+        System.out.println("convertFromObjectObjectCantConvert");
+        
+        instance.convertFromObject(LocalDate.of(1999, 12, 31));
     }
 
     /**
@@ -69,10 +86,10 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testConvertFromString() {
-        String string = "";
-        Boolean expResult = null;
-        Boolean result = instance.convertFromString(string);
-        assertEquals(result, expResult);
+        System.out.println("convertFromString");
+        
+        assertNull(instance.convertFromString(""));
+        assertTrue(instance.convertFromString("true"));
     }
 
     /**
@@ -80,6 +97,8 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetByte() {
+        System.out.println("getByte");
+        
         int id = 0;
         byte expResult = 0;
         byte result = instance.getByte(id);
@@ -91,10 +110,13 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetByte() {
+        System.out.println("setByte");
+        
         int id = 0;
-        byte value = 0;
-        instance.setByte(id, value);
-        assertEquals(instance.getByte(id), value);
+        instance.setByte(id, (byte) 0);
+        assertEquals(instance.getByte(id), (byte) 0);
+        instance.setByte(id, (byte) 1);
+        assertEquals(instance.getByte(id), (byte) 1);
     }
 
     /**
@@ -102,6 +124,8 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetShort() {
+        System.out.println("getShort");
+        
         int id = 0;
         short expResult = 0;
         short result = instance.getShort(id);
@@ -113,10 +137,13 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetShort() {
+        System.out.println("setShort");
+        
         int id = 0;
-        short value = 0;
-        instance.setShort(id, value);
-        assertEquals(instance.getShort(id), value);
+        instance.setShort(id, (short) 0);
+        assertEquals(instance.getShort(id), (short) 0);
+        instance.setShort(id, (short) 1);
+        assertEquals(instance.getShort(id), (short) 1);
     }
 
     /**
@@ -124,6 +151,8 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetInt() {
+        System.out.println("getInt");
+        
         int id = 0;
         int expResult = 0;
         int result = instance.getInt(id);
@@ -135,10 +164,13 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetInt() {
+        System.out.println("setInt");
+        
         int id = 0;
-        int value = 0;
-        instance.setInt(id, value);
-        assertEquals(instance.getInt(id), value);
+        instance.setInt(id, 0);
+        assertEquals(instance.getInt(id), 0);
+        instance.setInt(id, 1);
+        assertEquals(instance.getInt(id), 1);
     }
 
     /**
@@ -146,6 +178,8 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetLong() {
+        System.out.println("getLong");
+        
         int id = 0;
         long expResult = 0L;
         long result = instance.getLong(id);
@@ -157,10 +191,13 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetLong() {
+        System.out.println("setLong");
+        
         int id = 0;
-        long value = 0L;
-        instance.setLong(id, value);
-        assertEquals(instance.getLong(id), value);
+        instance.setLong(id, 0L);
+        assertEquals(instance.getLong(id), 0L);
+        instance.setLong(id, 1L);
+        assertEquals(instance.getLong(id), 1L);
     }
 
     /**
@@ -168,6 +205,8 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetFloat() {
+        System.out.println("getFloat");
+        
         int id = 0;
         float expResult = 0.0F;
         float result = instance.getFloat(id);
@@ -179,10 +218,13 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetFloat() {
+        System.out.println("setFloat");
+        
         int id = 0;
-        float value = 0.0F;
-        instance.setFloat(id, value);
-        assertEquals(instance.getFloat(id), value);
+        instance.setFloat(id, 0.0F);
+        assertEquals(instance.getFloat(id), 0.0F);
+        instance.setFloat(id, 1.0F);
+        assertEquals(instance.getFloat(id), 1.0F);
     }
 
     /**
@@ -190,6 +232,8 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetDouble() {
+        System.out.println("getDouble");
+        
         int id = 0;
         double expResult = 0.0;
         double result = instance.getDouble(id);
@@ -201,10 +245,13 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetDouble() {
+        System.out.println("setDouble");
+        
         int id = 0;
-        double value = 0.0;
-        instance.setDouble(id, value);
-        assertEquals(instance.getDouble(id), value);
+        instance.setDouble(id, 0.0);
+        assertEquals(instance.getDouble(id), 0.0);
+        instance.setDouble(id, 1.0);
+        assertEquals(instance.getDouble(id), 1.0);
     }
 
     /**
@@ -212,6 +259,8 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetBoolean() {
+        System.out.println("getBoolean");
+        
         int id = 0;
         boolean expResult = false;
         boolean result = instance.getBoolean(id);
@@ -223,10 +272,13 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetBoolean() {
+        System.out.println("setBoolean");
+        
         int id = 0;
-        boolean value = false;
-        instance.setBoolean(id, value);
-        assertEquals(instance.getBoolean(id), value);
+        instance.setBoolean(id, true);
+        assertTrue(instance.getBoolean(id));
+        instance.setBoolean(id, false);
+        assertFalse(instance.getBoolean(id));
     }
 
     /**
@@ -234,6 +286,8 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetChar() {
+        System.out.println("getChar");
+        
         int id = 0;
         char expResult = 0;
         char result = instance.getChar(id);
@@ -245,41 +299,23 @@ public class BooleanObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetChar() {
+        System.out.println("setChar");
+        
         int id = 0;
-        char value = (char) 0;
-        instance.setChar(id, value);
-        assertEquals(instance.getChar(id), value);
+        instance.setChar(id, (char) 0);
+        assertEquals(instance.getChar(id), (char) 0);
+        instance.setChar(id, (char) 1);
+        assertEquals(instance.getChar(id), (char) 1);
     }
 
-//    /**
-//     * Test of hashCode method, of class BooleanObjectAttributeDescription.
-//     */
-//    @Test
-//    public void testHashCode() {
-//        int id = 0;
-//        int expResult = 0;
-//        int result = instance.hashCode(id);
-//        assertEquals(result, expResult);
-//    }
-//    /**
-//     * Test of supportsIndexType method, of class BooleanObjectAttributeDescription.
-//     */
-//    @Test
-//    public void testSupportsIndexType() {
-//        GraphIndexType indexType = null;
-//        boolean expResult = false;
-//        boolean result = instance.supportsIndexType(indexType);
-//        assertEquals(result, expResult);
-//    }
-//
-//    /**
-//     * Test of createIndex method, of class BooleanObjectAttributeDescription.
-//     */
-//    @Test
-//    public void testCreateIndex() {
-//        GraphIndexType indexType = null;
-//        GraphIndex expResult = null;
-//        GraphIndex result = instance.createIndex(indexType);
-//        assertEquals(result, expResult);
-//    }
+    /**
+     * Test of supportsIndexType method, of class BooleanObjectAttributeDescription.
+     */
+    @Test
+    public void testSupportsIndexType() {
+        System.out.println("supportsIndexType");
+        
+        assertTrue(instance.supportsIndexType(GraphIndexType.UNORDERED));
+        assertFalse(instance.supportsIndexType(GraphIndexType.ORDERED));
+    }
 }

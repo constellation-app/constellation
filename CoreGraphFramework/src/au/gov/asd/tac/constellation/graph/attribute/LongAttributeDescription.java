@@ -82,7 +82,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
                 return Long.parseLong(string);
             } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
+                        "Error converting String '%s' to long", string), ex);
             }
         }
     }
@@ -123,20 +123,6 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
         data = Arrays.copyOf(data, capacity);
         if (capacity > len) {
             Arrays.fill(data, len, capacity, defaultValue);
-        }
-    }
-
-    private static long setObject(final Object value) {
-        if (value instanceof Number) {
-            return ((Number) value).longValue();
-        } else if (value instanceof String) {
-            return Long.parseLong((String) value);
-        } else if (value instanceof Boolean) {
-            return ((Boolean) value) ? 1L : 0L;
-        } else if (value instanceof Character) {
-            return (char) value;
-        } else {
-            return DEFAULT_VALUE;
         }
     }
 
@@ -301,12 +287,12 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (LongReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new LongVariable() {
             @Override
             public long readLong() {
@@ -314,7 +300,7 @@ public final class LongAttributeDescription extends AbstractAttributeDescription
             }
 
             @Override
-            public void writeLong(long value) {
+            public void writeLong(final long value) {
                 graph.setLongValue(attribute, indexReadable.readInt(), value);
             }
         };

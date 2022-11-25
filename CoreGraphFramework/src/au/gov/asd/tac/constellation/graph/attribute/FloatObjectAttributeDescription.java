@@ -45,7 +45,7 @@ public final class FloatObjectAttributeDescription extends AbstractObjectAttribu
             } else if (object instanceof Boolean) {
                 return ((Boolean) object) ? 1.0F : 0.0F;
             } else if (object instanceof Character) {
-                return (float) object;
+                return (float) ((Character) object);
             } else {
                 throw ex;
             }

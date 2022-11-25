@@ -45,7 +45,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
             } else if (object instanceof Boolean) {
                 return ((Boolean) object) ? 1.0 : 0.0;
             } else if (object instanceof Character) {
-                return (double) object;
+                return (double) ((Character) object);
             } else {
                 throw ex;
             }

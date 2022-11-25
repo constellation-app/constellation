@@ -63,18 +63,10 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
         } else if (object instanceof Character) {
             return ((Character) object).toString();
         } else if (object instanceof String) {
-            return convertFromString((String) object);
+            return (String) object;
         } else {
             throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to String", object.getClass()));
-        }
-    }
-
-    private String convertFromString(final String string) {
-        if (string == null) {
-            return (String) getDefault();
-        } else {
-            return string;
         }
     }
 
@@ -263,12 +255,12 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (StringReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new StringVariable() {
             @Override
             public String readString() {
@@ -276,7 +268,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
             }
 
             @Override
-            public void writeString(String value) {
+            public void writeString(final String value) {
                 graph.setStringValue(attribute, indexReadable.readInt(), value);
             }
         };
