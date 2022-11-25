@@ -495,6 +495,10 @@ public class MapView extends ScrollPane {
         }
     }
 
+    public int getNewMarkerID() {
+        return parent.getNewMarkerID();
+    }
+
     public void addClusterMarkers(List<ClusterMarker> clusters, List<Text> clusterValues) {
         // REMOVE THIS IF STATEMENT
         if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
@@ -616,7 +620,7 @@ public class MapView extends ScrollPane {
     }
 
     public Graph getCurrentGraph() {
-        return parent.getCurrentGraph();
+        return GraphManager.getDefault().getActiveGraph();
     }
 
     public void addMarkerId(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {

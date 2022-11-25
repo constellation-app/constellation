@@ -44,15 +44,20 @@ public class EntityPathsLayer extends AbstractPathsLayer {
 
     @Override
     public List<Tuple<GraphElement, GraphElement>> getPathsForElement(final ReadableGraph graph, final GraphElement element) {
+
         final List<Tuple<GraphElement, GraphElement>> paths = new ArrayList<>();
 
         if (element.getType() == GraphElementType.VERTEX) {
             final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.get(graph);
+
             final int transactionDateTimeAttributeId = TemporalConcept.TransactionAttribute.DATETIME.get(graph);
 
             final SchemaVertexType vertexType = graph.getObjectValue(vertexTypeAttributeId, element.getId());
+
             if (vertexType != null && vertexType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
+
                 final int neighbourCount = graph.getVertexNeighbourCount(element.getId());
+
                 for (int neighbourPosition = 0; neighbourPosition < neighbourCount; neighbourPosition++) {
                     final int neighbourId = graph.getVertexNeighbour(element.getId(), neighbourPosition);
                     final SchemaVertexType neighbourType = graph.getObjectValue(vertexTypeAttributeId, neighbourId);

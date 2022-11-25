@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ActivityHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.EntityPathsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.PopularityHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
@@ -273,6 +274,8 @@ public class MapViewPane extends BorderPane {
                 return new PopularityHeatmapLayer(mapView, layerId++);
             case HEATMAP_ACTIVITY:
                 return new ActivityHeatmapLayer(mapView, layerId++);
+            case ENTITY_PATHS:
+                return new EntityPathsLayer(mapView, layerId++, mapView.getAllMarkers());
             default:
                 break;
         }
@@ -282,6 +285,10 @@ public class MapViewPane extends BorderPane {
 
     public MapViewTopComponent getParentComponent()    {
         return parent;
+    }
+
+    public int getNewMarkerID() {
+        return parent.getNewMarkerID();
     }
 
 
