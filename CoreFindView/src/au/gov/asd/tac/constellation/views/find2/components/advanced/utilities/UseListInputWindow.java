@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.find2.components.advanced.utilities;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.StringCriteriaPanel;
 import javafx.beans.value.ObservableValue;
@@ -64,9 +65,6 @@ public class UseListInputWindow extends Stage {
     private static final String TAB = "Tab";
     private static final String SEMI_COLON = "Semi-colon";
     private static final String STRING_STRING = "String";
-
-    //"Comma", "Tab", "Semi-colon", "String"
-    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/find2/resources/editor-dark.css";
 
     public UseListInputWindow(StringCriteriaPanel parentComponent, String text) {
         this.parentComponent = parentComponent;
@@ -118,8 +116,7 @@ public class UseListInputWindow extends Stage {
 
         bp.setCenter(vbox);
         final Scene scene = new Scene(bp);
-        scene.getStylesheets().add(IconSelector.class.getResource(DARK_THEME).toExternalForm());
-
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         setScene(scene);
     }
 

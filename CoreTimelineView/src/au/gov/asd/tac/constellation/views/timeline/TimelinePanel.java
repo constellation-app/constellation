@@ -86,8 +86,6 @@ public class TimelinePanel extends Region {
 
     private static final char ARROW_CHAR = 0x2192;
     
-    private static final String LIGHT_THEME = "resources/Style-Timeline-Light.css";
-    private static final String DARK_THEME = "resources/Style-Timeline-Dark.css";
     private static final int MIN_CLUSTER_WIDTH = 14; // Min width of 14 pixels which matches the min label width.
     long lowest = Long.MAX_VALUE;
     long highest = Long.MIN_VALUE;
@@ -145,9 +143,6 @@ public class TimelinePanel extends Region {
         upperTime.setId("extentLabel");
         // Create and layout the panels that will hold the components for the timeline:
         doLayout();
-
-        // Style the timeline panel:
-        this.getStylesheets().add(TimelinePanel.class.getResource(DARK_THEME).toExternalForm());
     }
 
     // <editor-fold defaultstate="collapsed" desc="Layout Layers">

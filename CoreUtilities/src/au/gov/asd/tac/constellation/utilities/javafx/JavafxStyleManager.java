@@ -47,7 +47,7 @@ public class JavafxStyleManager {
         );
     }
     
-    private static boolean isDarkTheme(){
+    public static boolean isDarkTheme(){
         return UIManager.getLookAndFeel().getName().toUpperCase().contains("DARK");
     }
 

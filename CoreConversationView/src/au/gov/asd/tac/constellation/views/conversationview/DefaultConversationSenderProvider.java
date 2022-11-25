@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,12 +122,24 @@ public class DefaultConversationSenderProvider implements ConversationSenderProv
             Region region = null;
             try {
                 if (senderLabels.size() == 1) {
-                    region = new SelectableLabel(senderLabels.get(0), false, "-fx-text-fill: #cccccc;", null, null);
+                    region = new SelectableLabel(
+                            senderLabels.get(0),
+                            false,
+                            JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: #cccccc;" : null,
+                            null,
+                            null
+                    );
                 } else {
                     final VBox content = new VBox(-5.0);
                     content.setAlignment(Pos.CENTER_LEFT);
                     for (final String senderLabel : senderLabels) {
-                        content.getChildren().add(new SelectableLabel(senderLabel, false, "-fx-text-fill: #cccccc;", null, null));
+                        content.getChildren().add(new SelectableLabel(
+                                senderLabel, 
+                                false, 
+                                JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: #cccccc;" : null,
+                                null, 
+                                null
+                        ));
                     }
                     region = content;
                 }

@@ -255,7 +255,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     protected String createStyle() {
-        return "resources/Style-AttributeEditor-Dark.css";
+        return "resources/attribute-editor.css";
     }
 
     @Override

@@ -241,7 +241,7 @@ public final class ConversationBox extends StackPane {
 
         // Create controls to allow the user to search and highlight text within contributions.
         searchTextField.setPromptText("Type to search...");
-        searchTextField.setStyle("-fx-prompt-text-fill: #868686;");
+        searchTextField.setStyle("-fx-prompt-text-fill: #868686; -fx-padding: 5 5 5 5;");
         searchTextField.setOnKeyTyped(e -> {
             foundLabel.setText("searching...");
             foundLabel.setStyle(FOUND_PASS_COLOR);

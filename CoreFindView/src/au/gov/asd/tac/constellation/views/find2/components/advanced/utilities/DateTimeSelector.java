@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.find2.components.advanced.utilities;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.DateTimeCriteriaPanel;
 import java.time.LocalDate;
@@ -67,7 +68,6 @@ public class DateTimeSelector extends Stage {
 
     private static final int NUMBER_SPINNER_WIDTH = 55;
     private static final int MILLIS_SPINNER_WIDTH = 60;
-    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/find2/resources/editor-dark.css";
 
     private final DateTimeCriteriaPanel parentComponent;
 
@@ -208,7 +208,7 @@ public class DateTimeSelector extends Stage {
         bp.setCenter(vbox);
 
         final Scene scene = new Scene(bp);
-        scene.getStylesheets().add(IconSelector.class.getResource(DARK_THEME).toExternalForm());
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
         setScene(scene);
     }

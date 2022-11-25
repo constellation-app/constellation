@@ -68,9 +68,6 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
 
     private static final Label DUMMY_LABEL = new Label("Waiting...");
     private static final String DAV_CREATOR_THREAD_NAME = "DAV Pane Creator";
-
-    // Insets with 0 top and bottom so the title doesn't change size vertically.
-    private static final Insets HELP_INSETS = new Insets(0, 8, 0, 8);
     
     private volatile PluginParameters dataSourceParameters;
     private final DataAccessPlugin plugin;
@@ -114,7 +111,7 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
 
         isLoaded = false;
         enabled = new CheckBox();
-        label = new Label(plugin.getName(), dataSourceIcon);
+        label = new Label(String.format("  %s", plugin.getName()), dataSourceIcon);
 
         setGraphic(createTitleBar());
         enabled.setDisable(true);
@@ -368,12 +365,11 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
         final HelpCtx helpCtx = plugin.getHelpCtx();
         if (helpCtx != null) {
             final Button helpButton = new Button("", new ImageView(HELP_ICON));
-            helpButton.paddingProperty().set(HELP_INSETS);
             helpButton.setTooltip(new Tooltip(String.format("Display help for %s", plugin.getName())));
             helpButton.setOnAction(event -> plugin.getHelpCtx().display());
 
             // Get rid of the ugly button look so the icon stands alone.
-            helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+            helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;-fx-padding: 0 0 0 10;");
 
             // Align the help buttons on the right hand side if the width allows it.
             box.getChildren().add(helpButton);

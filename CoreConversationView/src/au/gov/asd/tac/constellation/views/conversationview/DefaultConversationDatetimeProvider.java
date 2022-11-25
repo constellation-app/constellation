@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.conversationview;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -75,7 +76,13 @@ public class DefaultConversationDatetimeProvider implements ConversationDatetime
         @Override
         public Region createContent() {
             final String timestampString = date != null ? date.format(formatter) : "<unknown>";
-            return new SelectableLabel(timestampString, false, "-fx-text-fill: #ffffff;", null, null);
+            return new SelectableLabel(
+                    timestampString, 
+                    false, 
+                    JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white;" : null,
+                    null, 
+                    null
+            );
         }
 
         @Override

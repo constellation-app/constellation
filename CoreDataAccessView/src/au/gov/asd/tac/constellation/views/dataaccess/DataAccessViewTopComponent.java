@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.dataaccess;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
@@ -121,7 +122,9 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     public String createStyle() {
-        return "resources/data-access-view.css";
+        return JavafxStyleManager.isDarkTheme() 
+                ? "resources/data-access-view-dark.css" 
+                : "resources/data-access-view-light.css";
     }
 
     @Override

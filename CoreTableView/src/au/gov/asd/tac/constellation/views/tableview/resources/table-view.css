@@ -1,9 +1,3 @@
-/**
- * Table View specific style.
- *
- * @author cygnus_x-1
- */
-
 .null-value {
     -fx-font-style:italic;
     -fx-text-fill: #666666;

@@ -385,9 +385,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
                     .filter(monitor -> removedColumnAttributes.stream()
                     .anyMatch(columnAttributeTuple
                             -> columnAttributeTuple.getSecond().getElementType() == monitor.getElementType()
-                    && columnAttributeTuple.getSecond().getName().equals(monitor.getName())
-                    )
-                    )
+                    && columnAttributeTuple.getSecond().getName().equals(monitor.getName())))
                     .collect(Collectors.toSet());
 
             removeMonitors.forEach(monitor -> {
@@ -407,8 +405,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
             addedColumnAttributes.forEach(attributeTuple
                     -> columnAttributeMonitors.add(addAttributeValueChangeHandler(attributeTuple.getSecond().getElementType(),
                             attributeTuple.getSecond().getName(),
-                            g -> executorService.submit(new TriggerDataUpdateTask(pane, g, getCurrentState()))
-                    )
+                            g -> executorService.submit(new TriggerDataUpdateTask(pane, g, getCurrentState())))
                     )
             );
         }

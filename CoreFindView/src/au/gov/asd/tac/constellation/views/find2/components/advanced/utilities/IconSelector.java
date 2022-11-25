@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced.utilities;
 
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.IconCriteriaPanel;
 import java.util.ArrayList;
 import static java.util.Collections.sort;
@@ -56,8 +57,6 @@ public class IconSelector extends Stage {
     private final HBox buttonsHbox = new HBox();
     private final Button selectButton = new Button("Select");
     private final Button cancelButton = new Button("Cancel");
-
-    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/find2/resources/editor-dark.css";
 
     public IconSelector(final IconCriteriaPanel parentComponent, final ConstellationIcon icon) {
         this.parentComponent = parentComponent;
@@ -105,7 +104,7 @@ public class IconSelector extends Stage {
 
         bp.setCenter(vbox);
         final Scene scene = new Scene(bp);
-        scene.getStylesheets().add(IconSelector.class.getResource(DARK_THEME).toExternalForm());
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
         setScene(scene);
 

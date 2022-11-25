@@ -160,6 +160,7 @@ public final class QualityControlViewPane extends BorderPane {
         optionsPane = new FlowPane();
         optionsPane.setId("qualitycontrolview-flow-pane");
         optionsPane.setAlignment(Pos.CENTER);
+        optionsPane.setHgap(6);
         final Button deleteButton = new Button("Delete From Graph");
         deleteButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();

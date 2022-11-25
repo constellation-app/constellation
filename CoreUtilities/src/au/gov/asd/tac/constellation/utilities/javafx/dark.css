@@ -26,7 +26,7 @@
      * -fx-text-fill value for text painted on top of backgrounds colored
      * with -fx-control-inner-background.
      */
-    -fx-control-inner-background: #111111;
+    -fx-control-inner-background: -fx-base;
 
     /* One of these colors will be chosen based upon a ladder calculation
      * that uses the brightness of a background color.  Instead of using these
@@ -79,10 +79,15 @@
  *                                                                             *
  ******************************************************************************/
 .label {
-    -fx-text-fill: #e0e0e0
+    -fx-text-fill: #e0e0e0;
 }
+
 .text {
-    -fx-text-fill: #e0e0e0
+    -fx-text-fill: #e0e0e0;
+}
+
+.text-field {    
+    -fx-prompt-text-fill: grey;
 }
 
 /*******************************************************************************
@@ -152,6 +157,11 @@
     -fx-base: #333333;
 }
 
+/*******************************************************************************
+ *                                                                             *
+ * Menu                                                                  *
+ *                                                                             *
+ ******************************************************************************/
 .menu-button {
     -fx-background-color: #181818;
     -fx-border-color: #444444;
@@ -159,4 +169,81 @@
 
 .menu:hover{
     -fx-background-color: #0093FF;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Button                                                                      *
+ *                                                                             *
+ ******************************************************************************/
+.button{
+    -fx-base: #1f6fba;
+    -fx-text-fill: #ffffff;
+}
+
+.button:hover {
+    -fx-color: -fx-hover-base;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #0093ff;
+}
+
+.button:focused {
+    -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+}
+
+.button:armed {
+    -fx-color: -fx-pressed-base;
+    -fx-background-color: #1c5c94;
+}
+
+.toggle-button {
+    -fx-background-color: #666666;
+}
+
+.toggle-button:focused {
+    -fx-background-color: #666666;
+}
+
+
+.toggle-button:selected {
+    -fx-background-color: #1f6fba;
+}
+
+.toggle-button:selected:focused {
+    -fx-background-color: #1f6fba;
+}
+
+
+/* Uncategorised */
+.scroll-pane {
+    -fx-background-color: #444444;
+}
+
+.titled-pane{
+    -fx-base: #333333;
+}
+
+.list-view {
+    -fx-control-inner-background: #444444;
+}
+
+.list-cell {
+    -fx-cell-hover-color: #1f6fba;
+    -fx-control-inner-background: #444444;
+}
+
+.separator .line{
+    -fx-border-color: #e0e0e0;
+}
+
+#error{
+    -fx-text-fill: #DE2446;
+}
+
+#invalid{
+    -fx-background-color: #c10000, -fx-text-box-border, -fx-control-inner-background;
+}
+
+#valid{
+    -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
 }

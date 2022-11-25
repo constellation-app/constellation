@@ -119,7 +119,6 @@ public class WelcomeViewPane extends BorderPane {
             //Create right VBox for graph controls
             final VBox rightVBox = new VBox();
             rightVBox.setPadding(new Insets(50, 50, 50, 50));
-            rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#14161a"), CornerRadii.EMPTY, Insets.EMPTY)));
             splitPane.getItems().add(rightVBox);
 
             //Create HBoxes for the right_vbox
@@ -246,7 +245,6 @@ public class WelcomeViewPane extends BorderPane {
     public void setButtonProps(final Button button) {
         button.setPrefSize(135, 135);
         button.setMaxSize(150, 150);
-        button.setStyle("-fx-background-color: #2e4973;");
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
     }

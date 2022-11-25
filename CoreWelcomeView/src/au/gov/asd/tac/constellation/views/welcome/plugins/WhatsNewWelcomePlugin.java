@@ -22,12 +22,11 @@ import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
@@ -95,11 +94,9 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     public Button getButton() {
         newView.setFitHeight(25);
         newView.setFitWidth(25);
-        final Text title = new Text("What's New?");
-        title.setFill(Color.WHITE);
-        final Text subtitle = new Text("Features in the latest version");
+        final Label title = new Label("What's New?");
+        final Label subtitle = new Label("Features in the latest version");
         subtitle.setId("smallInfoText");
-        subtitle.setFill(Color.WHITE);
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(newView, layoutVBox);

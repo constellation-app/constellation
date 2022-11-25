@@ -80,6 +80,46 @@
     -fx-font-scale: 0.75;
 }
 
+/*******************************************************************************
+ *                                                                             *
+ * Button                                                                      *
+ *                                                                             *
+ ******************************************************************************/
+.button{
+    -fx-background-radius: 5 5 5 5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 3, 0.0, 0, 1);
+    -fx-padding: 5 5 5 5;
+}
+
+.button:cancel {
+}
+
+.button:disabled {
+    -fx-opacity: -fx-disabled-opacity;
+}
+
+.button:default {
+    -fx-base: -fx-accent;
+}
+
+.button:focused {
+    -fx-background-insets: -1.4, 0, 1, 2;
+    -fx-background-radius:  6.4, 5, 4, 3;
+}
+
+.button:armed {
+    -fx-color: -fx-pressed-base;
+}
+
+.button:show-mnemonics .mnemonic-underline {
+    -fx-stroke: -fx-text-fill;
+}
+
+/* Uncategorised */
+.scroll-pane {
+    -fx-background-insets: -1.4 0 1;
+}
+
 /* size guide */
 /*
 0.666665em;  8pt

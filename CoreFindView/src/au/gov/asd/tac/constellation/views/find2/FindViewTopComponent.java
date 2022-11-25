@@ -124,7 +124,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
      */
     @Override
     protected String createStyle() {
-        return "resources/find-view.css";
+        return null;
     }
 
     /**

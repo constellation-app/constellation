@@ -63,8 +63,6 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
 
     private final WelcomeViewPane pane;
 
-    private static final String WELCOME_THEME = "resources/welcome_theme.css";
-
     public WelcomeTopComponent() {
         initComponents();
 
@@ -146,7 +144,7 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
 
     @Override
     protected String createStyle() {
-        return WELCOME_THEME;
+        return null;
     }
 
     @Override

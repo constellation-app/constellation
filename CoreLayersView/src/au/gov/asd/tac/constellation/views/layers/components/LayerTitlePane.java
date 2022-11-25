@@ -64,7 +64,7 @@ public class LayerTitlePane extends TitledPane {
     
     private BitMaskQuery query;
     
-    private ChangeListener<? super Boolean> enabledChanged;
+    private final ChangeListener<? super Boolean> enabledChanged;
     
     private final int layerId;
     private boolean isValid;

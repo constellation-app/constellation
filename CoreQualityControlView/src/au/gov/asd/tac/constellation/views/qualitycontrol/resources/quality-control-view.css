@@ -1,12 +1,12 @@
 /* Quality Control View */
 
-#qualitycontrolview-border-pane {
+/*#qualitycontrolview-border-pane {
     -fx-background-color: rgba(68, 68, 68, 1.0);
 }
 
 #qualitycontrolview-flow-pane {
     -fx-background-color: rgba(68, 68, 68, 1.0);
-}
+}*/
 
 /*******************************************************************************
  *                                                                             *
@@ -200,11 +200,6 @@
     -fx-opacity: -fx-disabled-opacity;
 }
 
-/*.table-cell:focused {
-    -fx-background-color: -fx-focus-color, -fx-control-inner-background;
-    -fx-background-insets: 0, 1.4;
-}*/
-
 .table-view:cell-selection  .table-row-cell:filled .table-cell:hover {
     -fx-background-color: -fx-cell-hover-color;
     -fx-text-fill: -fx-text-inner-color;
@@ -223,13 +218,6 @@
     -fx-background-color: -fx-selection-bar;
     -fx-padding: 0.0em 0.0416667em 0.0em 0.0416667em; /* 0 0.571429 0 0.571429 */
 }
-
-/* This is the area behind the column headers. An ideal place to specify background
-   and border colors for the whole area (not individual column-header's). */
-/*.table-view .column-header-background {
-    -fx-background-color: -fx-body-color;
-    -fx-padding: 0;
-}*/
 
 /* The column header row is made up of a number of column-header, one for each
    TableColumn, and a 'filler' area that extends from the right-most column
@@ -281,10 +269,6 @@
     -fx-padding: 0.25em; /* 3px */
     -fx-shape: "M398.902,298.045c0.667,0,1.333,0,2,0c0,0.667,0,1.333,0,2c0.667,0,1.333,0,2,0c0,0.667,0,1.333,0,2c-0.667,0-1.333,0-2,0c0,0.666,0,1.332,0,1.999c-0.667,0-1.333,0-2,0c0-0.667,0-1.333,0-1.999c-0.666,0-1.333,0-1.999,0c0-0.667,0-1.334,0-2c0.666,0,1.333,0,1.999,0C398.902,299.378,398.902,298.711,398.902,298.045z";
 }
-
-/*.nested-column-header .column-header {
-    -fx-background-color: transparent;
-}*/
 
 /* When a column is being 'dragged' to be placed in a different position, there
    is a region that follows along the column header area to indicate where the
@@ -344,55 +328,4 @@
 }
 .table-row-cell:empty .table-cell {
     -fx-border-width: 0px
-}
-
-/*******************************************************************************
- *                                                                             *
- * Button                                                                      *
- *                                                                             *
- ******************************************************************************/
-
-.button {
-    -fx-skin: "javafx.scene.control.skin.ButtonSkin";
-    /*-fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;*/
-    -fx-background-color: -fx-shadow-highlight-color, rgba(255,255,255,0.3), -fx-inner-border, rgba(255,255,255,0.3);
-    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
-    -fx-background-radius: 5, 5, 4, 3;
-    -fx-padding: 0.166667em 0.833333em 0.25em 0.833333em; /* 2 10 3 10 */
-    -fx-text-fill: -fx-text-base-color;
-    -fx-alignment: CENTER;
-    -fx-content-display: LEFT;
-}
-
-.button:focused {
-    /*-fx-color: -fx-focused-base;*/
-    -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
-    -fx-background-insets: -1.4, 0, 1, 2;
-    -fx-background-radius:  6.4, 5, 4, 3;
-}
-
-.button:hover {
-    -fx-color: -fx-hover-base;
-    -fx-text-fill: #ffffff;
-    -fx-background-color: #0093ff;
-}
-
-.button:armed {
-    -fx-color: -fx-pressed-base;
-    -fx-background-color: #1c5c94;
-}
-
-.button:default {
-    -fx-base: -fx-accent;
-}
-
-.button:cancel {
-}
-
-.button:disabled {
-    -fx-opacity: -fx-disabled-opacity;
-}
-
-.button:show-mnemonics .mnemonic-underline {
-    -fx-stroke: -fx-text-fill;
 }

@@ -5,14 +5,6 @@
     -fx-border-radius: 3;
 }
 
-/*#plugin-message {
-    -fx-font-size: 0.833333em;  10pt
-}
-
-#plugin-name {
-    -fx-font-size: 0.833333em;  10pt
-}*/
-
 .running {
     -fx-background-color: green;
 }
@@ -53,4 +45,3 @@
     -fx-padding: 5 5 5 5;
     -fx-background-insets: 3 4 4 4;
 }
-

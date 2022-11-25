@@ -38,22 +38,6 @@
     -fx-background-color: transparent;
 }
 
-#time-label {
-    -fx-text-fill: #cccccc;
-}
-
-#translation-label {
-    -fx-font-style: italic;
-}
-
-#transparent-background {
-    -fx-background-color: transparent;
-}
-
-#text-fill-white {
-    -fx-text-fill: white;
-}
-
 #show-tool-tip {
     -fx-text-fill: white;
     -fx-padding: 2;

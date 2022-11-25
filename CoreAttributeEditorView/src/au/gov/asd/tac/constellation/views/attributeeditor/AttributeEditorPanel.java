@@ -90,6 +90,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Menu;
@@ -224,7 +225,6 @@ public class AttributeEditorPanel extends BorderPane {
 
             final BorderPane borderPane = new BorderPane();
 
-            completeWithSchemaItem.setStyle("-fx-fill: white;");
             completeWithSchemaItem.setSelected(false);
             optionsMenu.getItems().addAll(createColorsMenu(), completeWithSchemaItem);
             optionsBar.getMenus().add(optionsMenu);
@@ -248,11 +248,9 @@ public class AttributeEditorPanel extends BorderPane {
         final HBox schemaMenuNode = new HBox(CELL_ITEM_SPACING);
         final MenuItem schemaMenuItem = new MenuItem(null, schemaMenuNode);
         final Rectangle schemaMenuRect = new Rectangle(20, 20);
-        final Text schemaMenuText = new Text(itemName);
-        schemaMenuText.setStyle("-fx-fill: white; -fx-font-smoothing-type:lcd;");
+        final Label schemaMenuText = new Label(itemName);
         schemaMenuNode.getChildren().addAll(schemaMenuRect, schemaMenuText);
         schemaMenuRect.setFill(color);
-        schemaMenuRect.setStroke(Color.LIGHTGREY);
         schemaMenuItem.setOnAction(e -> {
             final EditOperation editOperation = value -> prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
             @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
@@ -280,8 +278,7 @@ public class AttributeEditorPanel extends BorderPane {
 
         final HBox restoreMenuNode = new HBox(5);
         final MenuItem restoreMenuItem = new MenuItem(null, restoreMenuNode);
-        final Text restoreMenuText = new Text("Restore Default Colors");
-        restoreMenuText.setStyle("-fx-fill: white; -fx-font-smoothing-type:lcd;");
+        final Label restoreMenuText = new Label("Restore Default Colors");
         restoreMenuNode.getChildren().add(restoreMenuText);
         restoreMenuItem.setOnAction(e -> {
             prefs.put(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOR, SCHEMA_ATTRIBUTE_COLOR);
@@ -299,10 +296,9 @@ public class AttributeEditorPanel extends BorderPane {
         final BorderPane headerGraphic = new BorderPane();
         final HBox optionsButtons = new HBox(5);
         optionsButtons.setPadding(new Insets(2));
-        final Text heading = new Text();
+        final Label heading = new Label();
         heading.textProperty().bind(title);
         heading.setStyle("-fx-font-weight:bold;");
-        heading.setFill(Color.web("#e0e0e0"));
         final ToggleButton showAllToggle = new ToggleButton("Show all");
         showAllToggle.setAlignment(Pos.CENTER);
         showAllToggle.setTextAlignment(TextAlignment.CENTER);
@@ -378,7 +374,6 @@ public class AttributeEditorPanel extends BorderPane {
 
                     for (final Entry<String, Set<SchemaAttribute>> entry : categoryAttributes.entrySet()) {
                         final Menu submenu = new Menu(entry.getKey());
-                        submenu.setStyle("-fx-text-fill: white;");
                         for (final SchemaAttribute attribute : entry.getValue()) {
                             final MenuItem item = new MenuItem(attribute.getName());
                             item.setOnAction((ActionEvent event1)
@@ -400,7 +395,6 @@ public class AttributeEditorPanel extends BorderPane {
                     }
 
                     final MenuItem customAttribute = new MenuItem("Custom");
-                    customAttribute.setStyle("-fx-text-fill: white;");
                     customAttribute.setOnAction(ev -> createAttributeAction(elementType));
                     addContextMenu.getItems().add(customAttribute);
                 }
@@ -528,8 +522,7 @@ public class AttributeEditorPanel extends BorderPane {
             createMultiValuePane(attribute, attributePane, values);
         }
 
-        final Text attributeTitleText = createAttributeTitleLabel(attributeTitle);
-        attributeTitleText.getStyleClass().add("attributeName");
+        final Label attributeTitleText = createAttributeTitleLabel(attributeTitle);
         attributeTitleText.setTextAlignment(TextAlignment.RIGHT);
 
         // Value TextField
@@ -1009,8 +1002,8 @@ public class AttributeEditorPanel extends BorderPane {
         }
     }
 
-    private Text createAttributeTitleLabel(final String attributeTitle) {
-        return new Text(attributeTitle + SeparatorConstants.COLON);
+    private Label createAttributeTitleLabel(final String attributeTitle) {
+        return new Label(attributeTitle + SeparatorConstants.COLON);
     }
 
     /**
