@@ -116,7 +116,6 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
     private GraphElementType type = GraphElementType.VERTEX;
     private final BasicFindPanel basicFindPanel;
     private final ReplacePanel replacePanel;
-    private static final Color PALE_BLUE = new Color(245, 251, 254); // Very pale blue.
 
     /**
      * Constructs a FindTopComponent.
