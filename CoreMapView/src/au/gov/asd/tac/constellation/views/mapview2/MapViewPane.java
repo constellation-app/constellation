@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ActivityHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.EntityPathsLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.LocationPathsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.PopularityHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
@@ -276,6 +277,8 @@ public class MapViewPane extends BorderPane {
                 return new ActivityHeatmapLayer(mapView, layerId++);
             case ENTITY_PATHS:
                 return new EntityPathsLayer(mapView, layerId++, mapView.getAllMarkers());
+            case LOCATION_PATHS:
+                return new LocationPathsLayer(mapView, layerId++, mapView.getAllMarkers());
             default:
                 break;
         }
