@@ -37,13 +37,32 @@ import org.openide.filesystems.FileChooserBuilder;
 public class FileChooser {
 
     private static final Logger LOGGER = Logger.getLogger(FileChooser.class.getName());
-
+    
     /**
      * Private constructor to prevent external initialization.
      */
     private FileChooser() {
     }
     
+    /**
+     * Immediately construct a file chooser using the passed builder and opens it as a save
+     * dialog.
+     * <p/>
+     * This is intended to be called when we already know we are in the EDT / UI Thread
+     * This ensures correct program flow, with dialogs shown in the correct order,
+     * specifically for a special case where dialogs are cascaded into more dialogs 
+     * and need an immediate result from the new dialogs
+     * 
+     * @param fileChooserBuilder the file chooser builder to build and display
+     * @return a {@link CompletableFuture} that will return the selected file or
+     *     an empty optional if the user selects cancel
+     */
+    public static CompletableFuture<Optional<File>> openImmediateSaveDialog(final FileChooserBuilder fileChooserBuilder) {
+        return CompletableFuture.completedFuture(
+                openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.SAVE)
+        );
+    }
+
     /**
      * Construct a file chooser using the passed builder and opens it as a save
      * dialog.
@@ -58,8 +77,17 @@ public class FileChooser {
      *     an empty optional if the user selects cancel
      */
     public static CompletableFuture<Optional<File>> openSaveDialog(final FileChooserBuilder fileChooserBuilder) {
-        return CompletableFuture.completedFuture(
-                openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.SAVE));
+        if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
+            // Wrap the open call in a completable future so this happens on another
+            // thread and return immediately
+            return CompletableFuture.supplyAsync(() ->
+                    openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.SAVE));
+        } else {
+            // This is not the UI thread so just call the open dialog method
+            return CompletableFuture.completedFuture(
+                    openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.SAVE)
+            );
+        }
     }
     
     /**
@@ -76,7 +104,17 @@ public class FileChooser {
      *     an empty optional if the user selects cancel
      */
     public static CompletableFuture<Optional<File>> openOpenDialog(final FileChooserBuilder fileChooserBuilder) {
-        return CompletableFuture.completedFuture(openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.OPEN));
+        if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
+            // Wrap the open call in a completable future so this happens on another
+            // thread and return immediately
+            return CompletableFuture.supplyAsync(() ->
+                    openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.OPEN));
+        } else {
+            // This is not the UI thread so just call the open dialog method
+            return CompletableFuture.completedFuture(
+                    openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.OPEN)
+            );
+        }
     }
     
     /**
@@ -93,7 +131,17 @@ public class FileChooser {
      *     an empty optional if the user selects cancel
      */
     public static CompletableFuture<Optional<List<File>>> openMultiDialog(final FileChooserBuilder fileChooserBuilder) {
-        return CompletableFuture.completedFuture(openFileDialog(fileChooserBuilder, FileChooserMode.MULTI));
+        if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
+            // Wrap the open call in a completable future so this happens on another
+            // thread and return immediately
+            return CompletableFuture.supplyAsync(() ->
+                    openFileDialog(fileChooserBuilder, FileChooserMode.MULTI));
+        } else {
+            // This is not the UI thread so just call the open dialog method
+            return CompletableFuture.completedFuture(
+                    openFileDialog(fileChooserBuilder, FileChooserMode.MULTI)
+            );
+        }
     }
     
     /**
@@ -107,7 +155,7 @@ public class FileChooser {
      */
     private static Optional<List<File>> openFileDialog(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
         final ShowFileChooserDialog showDialog = new ShowFileChooserDialog(fileChooserBuilder, fileDialogMode);
-
+        
         // Check if the calling thread is able to run this
         if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
             showDialog.run();
