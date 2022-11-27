@@ -270,6 +270,7 @@ public final class ConversationBox extends StackPane {
         searchTextField.setPrefWidth(300);
 
         foundLabel.setPadding(new Insets(4, 8, 4, 8));
+        searchHBox.setSpacing(6);
         searchHBox.getChildren().addAll(searchTextField, prevButton, nextButton, foundLabel);
 
         content.getChildren().addAll(optionsPane, searchHBox, contributionsPane, bubbles);

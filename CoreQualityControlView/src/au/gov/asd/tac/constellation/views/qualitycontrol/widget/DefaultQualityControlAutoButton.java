@@ -42,13 +42,12 @@ import org.openide.windows.WindowManager;
 public final class DefaultQualityControlAutoButton extends QualityControlAutoButton implements QualityControlListener {
 
     protected static final String DEFAULT_TEXT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-background-color: rgb(0,200,0);";
-    protected static final String BUTTON_STYLE = "-fx-padding: 2 5 2 5;";
-    public static final String QUERY_RISK_DEFAULT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-padding: 2 5 2 5;";
+    public static final String QUERY_RISK_DEFAULT_STYLE = "-fx-text-fill: rgb(0,0,0);";
     public static final String QUALITY_CONTROL_WIDGET_TEXT = "Quality Category: %s";
 
     public DefaultQualityControlAutoButton() {
         getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-        setStyle(QUERY_RISK_DEFAULT_STYLE + BUTTON_STYLE + String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        setStyle(QUERY_RISK_DEFAULT_STYLE + String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
         setOnAction(value -> SwingUtilities.invokeLater(() -> {
             final TopComponent qualityControlView = WindowManager.getDefault().findTopComponent(QualityControlViewTopComponent.class.getSimpleName());
@@ -92,7 +91,7 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
 
         Platform.runLater(() -> {
             setText(riskText);
-            setStyle(styleText + BUTTON_STYLE);
+            setStyle(styleText);
             setTooltip(tooltipText != null ? new Tooltip(tooltipText) : null);
         });
     }

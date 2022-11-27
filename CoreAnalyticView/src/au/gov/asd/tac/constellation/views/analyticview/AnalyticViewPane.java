@@ -38,13 +38,13 @@ import org.openide.util.HelpCtx;
  * @author cygnus_x-1
  */
 public class AnalyticViewPane extends BorderPane {
-    
+
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewPane.class.getName());
 
     private static final String RUN_START_TEXT = "Run";
-    private static final String RUN_START_STYLE = "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;";
+    private static final String RUN_START_STYLE = "-fx-background-color: rgb(64,180,64);";
     private static final String RUN_STOP_TEXT = "Stop";
-    private static final String RUN_STOP_STYLE = "-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;";
+    private static final String RUN_STOP_STYLE = "-fx-background-color: rgb(180,64,64);";
 
     private final VBox analyticViewPane;
     private final AnchorPane analyticOptionsPane;
@@ -78,6 +78,7 @@ public class AnalyticViewPane extends BorderPane {
 
         // the pane holding the analytic option buttons
         this.analyticOptionButtons = new HBox();
+        this.analyticOptionButtons.setSpacing(6);
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
         this.runButton = new Button(RUN_START_TEXT);

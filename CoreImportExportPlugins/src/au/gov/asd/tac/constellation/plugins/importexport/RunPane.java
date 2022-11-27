@@ -82,7 +82,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final Insets ATTIRUBTEPANE_PADDING = new Insets(5);
     private static final int ATTRIBUTE_GAP = 5;
     private static final int TABLECOLUMN_PREFWIDTH = 50;
-    private static final String FILTER_STYLE = "-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;";
+    private static final String FILTER_STYLE = "-fx-prompt-text-fill:grey;";
     private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;";
 
     private final ImportController importController;
