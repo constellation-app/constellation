@@ -80,7 +80,7 @@ public class ProjectUpdater extends Task {
 
             final File projectFile = new File(projectDirectory, "nbproject/project.xml");
             final File oldProjectFile = new File(projectDirectory, "nbproject/project_old.xml");
-            final File jarDirectory = new File(projectDirectory, "release/modules/ext");
+            final File jarDirectory = new File(projectDirectory, "release/modules/ext/lib");
             final File publicPackagesFile = new File(projectDirectory, "/src/public.xml");
 
             // Create a document to work on
@@ -215,12 +215,12 @@ public class ProjectUpdater extends Task {
         classPathExtensionElement.appendChild(document.createTextNode(PADDING_LEVEL3));
 
         final Element runtimeRelativePathElement = document.createElement("runtime-relative-path");
-        runtimeRelativePathElement.setTextContent("ext/" + jarFile.getName());
+        runtimeRelativePathElement.setTextContent("ext/lib/" + jarFile.getName());
         classPathExtensionElement.appendChild(runtimeRelativePathElement);
         classPathExtensionElement.appendChild(document.createTextNode(PADDING_LEVEL3));
 
         final Element binaryOriginElement = document.createElement("binary-origin");
-        binaryOriginElement.setTextContent("release/modules/ext/" + jarFile.getName());
+        binaryOriginElement.setTextContent("release/modules/ext/lib/" + jarFile.getName());
         classPathExtensionElement.appendChild(binaryOriginElement);
         classPathExtensionElement.appendChild(document.createTextNode(PADDING_LEVEL2));
 
