@@ -46,6 +46,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -107,6 +108,11 @@ public class MapViewPane extends BorderPane {
     public static final String TOOLS_OVERLAY = "Tools Overlay";
     public static final String OVERVIEW_OVERLAY = "Overview Overlay";
 
+    public static final String DEFAULT_COLOURS = "Default Colors";
+    public static final String USE_COLOUR_ATTR = "Use Color Attribute";
+    public static final String USE_OVERLAY_COL = "Use Ovelay Color";
+    public static final String USE_BLAZE_COL = "Use Blaze Color";
+
 
     private final MapProvider defaultProvider;
     private final List<? extends MapProvider> providers;
@@ -118,7 +124,7 @@ public class MapViewPane extends BorderPane {
     private final CheckComboBox<String> markerDropDown;
     private final CheckComboBox<String> layersDropDown;
     private final CheckComboBox<String> overlaysDropDown;
-    private final ChoiceBox colourDropDown;
+    private final ChoiceBox<String> colourDropDown;
     private final ChoiceBox markerLabelDropDown;
     private final ComboBox exportDropDown;
     private final Button helpButton;
@@ -235,9 +241,20 @@ public class MapViewPane extends BorderPane {
             }
         });
 
-        colourDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(MarkerState.MarkerColorScheme.values())));
+        colourDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(DEFAULT_COLOURS, USE_COLOUR_ATTR, USE_OVERLAY_COL, USE_BLAZE_COL)));
         colourDropDown.getSelectionModel().selectFirst();
         colourDropDown.setTooltip(new Tooltip("Chose the color scheme for markers displayed in the Map View"));
+
+        /*colourDropDown.selectionModelProperty().addListener((InvalidationListener) new ListChangeListener<String>() {
+            @Override
+            public void onChanged(ListChangeListener.Change<? extends String> c) {
+                LOGGER.log(Level.SEVERE, colourDropDown.getSelectionModel().getSelectedItem());
+            }
+        });*/
+        colourDropDown.setOnAction((event) -> {
+            mapView.getMarkerColourProperty().set(colourDropDown.getValue());
+        });
+
 
         markerLabelDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(MarkerState.MarkerLabel.values())));
         markerLabelDropDown.getSelectionModel().selectFirst();

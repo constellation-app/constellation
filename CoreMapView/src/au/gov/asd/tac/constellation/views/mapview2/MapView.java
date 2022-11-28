@@ -53,6 +53,8 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SetProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleSetProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.event.Event;
@@ -167,15 +169,17 @@ public class MapView extends ScrollPane {
 
     public ClusterMarkerBuilder clusterMarkerBuilder = null;
 
+    private StringProperty markerColourProperty = new SimpleStringProperty();
+
     //private final Region testRegion = new Region();
 
     public MapView(MapViewPane parent) {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
-        testMarker = new PointMarker(this, -99, -99, 32.764233, 129.872696, 0.05, 95, 244);
+        testMarker = new PointMarker(this, -99, -99, 32.764233, 129.872696, 0.05, 95, 244, "");
         testMarker.setMarkerPosition(mapWidth, mapHeight);
 
-        testMarker2 = new PointMarker(this, -100, -100, 35.011665, 135.768326, 0.05, 95, 244);
+        testMarker2 = new PointMarker(this, -100, -100, 35.011665, 135.768326, 0.05, 95, 244, "");
         testMarker2.setMarkerPosition(mapWidth, mapHeight);
         //testRegion.setShape(testMarker.getMarker());
         //markersShowing.setValue(new SetChangeListener<AbstractMarker.MarkerType>());
@@ -463,6 +467,10 @@ public class MapView extends ScrollPane {
         //graphMarkerGroup.getChildren().add(testRegion);
     }
 
+    public StringProperty getMarkerColourProperty() {
+        return markerColourProperty;
+    }
+
     private void addUserDrawnMarker(AbstractMarker marker) {
         if (markersShowing.contains(marker.getType())) {
 
@@ -625,7 +633,9 @@ public class MapView extends ScrollPane {
 
     public void addMarkerId(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
         selectedNodeList.add(markerID);
-        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
+        if (PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph()).isDone()) {
+            selectedNodeList.clear();
+        }
     }
 
     public void drawMarker(AbstractMarker marker) {

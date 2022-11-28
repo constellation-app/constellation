@@ -110,4 +110,13 @@ public abstract class AbstractMarker {
     public int getMarkerId() {
         return markerID;
     }
+
+    public void setBlazeColour(String blazeCol) {
+
+    }
+
+    public String getBlazeColour() {
+        return null;
+    }
+
 }

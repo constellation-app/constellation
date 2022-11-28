@@ -229,27 +229,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         mapViewPane.drawMarker(lat, lon, scale);
     }
 
-    /*public void addNodeId(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
-        selectedNodeList.add(markerID);
-        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
-    }*/
-
-    /*public void drawMarkerOnMap() {
-        for (Object value : markers.values()) {
-            AbstractMarker m = (AbstractMarker) value;
-            mapViewPane.drawMarker(m);
-        }
-
-    }*/
-
- /*public void drawPointMarkerOnMap() {
-        for (Object value : markers.values()) {
-            AbstractMarker m = (AbstractMarker) value;
-            if (m instanceof PointMarker) {
-                mapViewPane.drawMarker(m);
-            }
-        }
-    }*/
 
 
     /**

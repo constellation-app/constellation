@@ -15,12 +15,20 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import java.util.logging.Level;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -34,23 +42,31 @@ public class PointMarker extends AbstractMarker {
     private double y;
     private double scale;
 
+    private String defaultColour = "#FF0000";
+    private String attributeColour = defaultColour;
+    private String blazeColour = null;
+    private String overlayColour = defaultColour;
+    private String currentColour = defaultColour;
 
-    public PointMarker(MapView parent, int markerID, int nodeId, double lattitude, double longitude, double scale, int xOffset, int yOffset) {
+    private Logger LOGGER = Logger.getLogger("POINT MARKER LOGGER");
+
+    public PointMarker(MapView parent, int markerID, int nodeId, double lattitude, double longitude, double scale, int xOffset, int yOffset, String attrColour) {
         super(parent, markerID, nodeId, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
 
         //markerPath.setContent(path);
 
-
         this.lattitude = lattitude;
         this.longitude = longitude;
         this.scale = scale;
+        this.attributeColour = (attrColour.isEmpty() || attrColour.isBlank()) ? defaultColour : attrColour;
 
         markerPath.setScaleX(scale);
         markerPath.setScaleY(scale);
 
-        markerPath.setFill(Color.RED);
+        markerPath.setFill(Color.web(currentColour));
         markerPath.setStroke(Color.BLACK);
-        //markerPath.setOpacity(0.5);
+        markerPath.setOpacity(0.6);
+        markerPath.setStrokeWidth(5);
 
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
@@ -66,7 +82,7 @@ public class PointMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
 
                 //if (!isSelected) {
-                    markerPath.setFill(Color.RED);
+                    markerPath.setFill(Color.web(currentColour));
                 //}
                 e.consume();
             }
@@ -78,6 +94,39 @@ public class PointMarker extends AbstractMarker {
                 //markerPath.setFill(Color.BLUE);
                 parent.addMarkerId(markerID, idList, true);
                 e.consume();
+            }
+        });
+
+        ConstellationColor constyColor = ConstellationColor.getColorValue(attrColour);
+        parent.getMarkerColourProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+
+                if (newValue.equals(MapViewPane.DEFAULT_COLOURS)) {
+                    currentColour = defaultColour;
+                    markerPath.setFill(Color.web(currentColour));
+                } else if (newValue.equals(MapViewPane.USE_COLOUR_ATTR)) {
+                    if (idList.size() > 1) {
+                        currentColour = "#D3D3D3";
+                        //LOGGER.log(Level.SEVERE, "ID GREY: " + idList.get(0));
+                        markerPath.setFill(Color.web(currentColour));
+                    } else {
+                        //LOGGER.log(Level.SEVERE, "Attribute colour: " + attrColour);
+                        markerPath.setFill(Color.web(attributeColour));
+                        currentColour = attributeColour;
+                        //LOGGER.log(Level.SEVERE, "ID COLOUR: " + idList.get(0));
+                    }
+                } else if (newValue.equals(MapViewPane.USE_BLAZE_COL)) {
+                    if (blazeColour != null) {
+                        ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
+                        //LOGGER.log(Level.SEVERE, colour.getHtmlColor());
+                        currentColour = colour.getHtmlColor();
+                        markerPath.setFill(Color.web(currentColour));
+
+                    } else
+                        markerPath.setFill(Color.web(defaultColour));
+                }
+                //LOGGER.log(Level.SEVERE, "Size of ID list: " + idList.size());
             }
         });
     }
@@ -110,6 +159,17 @@ public class PointMarker extends AbstractMarker {
 
         markerPath.setContent(path);
 
+    }
+
+    @Override
+    public void setBlazeColour(String blazeCol) {
+        blazeCol = blazeCol.split(";")[1];
+        blazeColour = blazeCol;
+    }
+
+    @Override
+    public String getBlazeColour() {
+        return blazeColour;
     }
 
     public double getX() {
