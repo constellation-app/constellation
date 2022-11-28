@@ -15,8 +15,13 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
+import java.net.MalformedURLException;
 import java.net.URI;
-import static org.testng.Assert.*;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.time.LocalDate;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -54,24 +59,65 @@ public class HyperlinkAttributeDescriptionNGTest {
 
     /**
      * Test of convertFromObject method, of class HyperlinkAttributeDescription.
+     * @throws java.net.MalformedURLException
+     * @throws java.net.URISyntaxException
      */
     @Test
-    public void testConvertFromObject() {
-        Object object = null;
-        URI expResult = null;
-        URI result = instance.convertFromObject(object);
-        assertEquals(result, expResult);
+    public void testConvertFromObject() throws MalformedURLException, URISyntaxException {
+        System.out.println("convertFromObject");
+        
+        assertNull(instance.convertFromObject(null));
+        final URL goodUrl = new URL("https://my.good.url");
+        assertEquals(instance.convertFromObject(goodUrl), goodUrl.toURI());
+    }
+    
+    /**
+     * Test of convertFromObject method, of class HyperlinkAttributeDescription. Bad URL
+     * @throws java.net.MalformedURLException
+     * @throws java.net.URISyntaxException
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class, 
+            expectedExceptionsMessageRegExp = "Error converting Object \'class java.net.URL\' to hyperlink")
+    public void testConvertFromObjectBadURL() throws MalformedURLException, URISyntaxException {
+        System.out.println("convertFromObjectBadURL");
+        
+        final URL badUrl = new URL("https://mybadurl^");
+        instance.convertFromObject(badUrl);
+    }
+    
+    /**
+     * Test of convertFromObject method, of class HyperlinkAttributeDescription. Not a URL
+     * @throws java.net.MalformedURLException
+     * @throws java.net.URISyntaxException
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class, 
+            expectedExceptionsMessageRegExp = "Error converting Object \'class java.time.LocalDate\' to class java.net.URI")
+    public void testConvertFromObjectNotAURL() throws MalformedURLException, URISyntaxException {
+        System.out.println("convertFromObjectNotAURL");
+        
+        instance.convertFromObject(LocalDate.of(1999, 12, 31));
     }
 
     /**
      * Test of convertFromString method, of class HyperlinkAttributeDescription.
+     * @throws java.net.URISyntaxException
      */
     @Test
-    public void testConvertFromString() {
-        String string = "";
-        URI expResult = null;
-        URI result = instance.convertFromString(string);
-        assertEquals(result, expResult);
+    public void testConvertFromString() throws URISyntaxException {
+        System.out.println("convertFromString");
+        
+        assertNull(instance.convertFromString(""));
+        assertEquals(instance.convertFromString("https://my.good.url"), new URI("https://my.good.url"));
     }
-
+    
+    /**
+     * Test of convertFromString method, of class HyperlinkAttributeDescription. Bad URI
+     * @throws java.net.URISyntaxException
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testConvertFromStringBadURI() throws URISyntaxException {
+        System.out.println("convertFromStringBadURI");
+        
+        instance.convertFromString("https://mybadurl^");
+    }
 }

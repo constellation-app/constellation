@@ -45,7 +45,7 @@ public class LongObjectAttributeDescription extends AbstractObjectAttributeDescr
             } else if (object instanceof Boolean) {
                 return ((Boolean) object) ? 1L : 0L;
             } else if (object instanceof Character) {
-                return (long) object;
+                return (long) ((Character) object);
             } else {
                 throw ex;
             }
