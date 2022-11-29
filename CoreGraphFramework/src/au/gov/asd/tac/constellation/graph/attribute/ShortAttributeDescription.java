@@ -274,12 +274,12 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (ShortReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new ShortVariable() {
             @Override
             public short readShort() {
@@ -287,7 +287,7 @@ public class ShortAttributeDescription extends AbstractAttributeDescription {
             }
 
             @Override
-            public void writeShort(short value) {
+            public void writeShort(final short value) {
                 graph.setShortValue(attribute, indexReadable.readInt(), value);
             }
         };
