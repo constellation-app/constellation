@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -35,11 +34,9 @@ import java.util.zip.ZipInputStream;
  */
 public class GraphByteReader {
 
-    private ZipFile zf;
     private final Map<String, ExtendedBuffer> contents = new HashMap<>();
 
-    public GraphByteReader(final ZipFile zf) {
-        this.zf = zf;
+    public GraphByteReader() {
     }
 
     public GraphByteReader(final InputStream in) throws IOException {

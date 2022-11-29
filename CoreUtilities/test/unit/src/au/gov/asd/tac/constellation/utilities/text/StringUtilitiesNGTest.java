@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,11 @@
  */
 package au.gov.asd.tac.constellation.utilities.text;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -161,5 +164,58 @@ public class StringUtilitiesNGTest {
         final String s = "@bcd3fgh! JklmnøP";
         final String expected = "bcd3fghJklmnP";
         assertEquals(StringUtilities.removeSpecialCharacters(s), expected);
+    }
+
+    @Test
+    public void searchRangeFindsSingleMatch() {
+        final String text = "The quick brown fox";
+        final String searchStr = "Quick";
+        final List<Tuple<Integer, Integer>> expected = new ArrayList<>();
+        final Tuple<Integer, Integer> tuple = Tuple.create(4, 9);
+        expected.add(tuple);
+        assertEquals(StringUtilities.searchRange(text, searchStr), expected);
+    }
+
+    @Test
+    public void splitLabelsWithEscapeCharacters() {
+        final String text = "Label1|Label2,Label3\tLabel4\\,Label5\\\\,Label6";
+        final Set<Character> splitChars = Set.of(',', '|', '\t');
+        assertEquals(StringUtilities.splitLabelsWithEscapeCharacters(text, splitChars),
+                List.of("Label1",
+                        "Label2",
+                        "Label3",
+                        "Label4\\,Label5\\\\", // This seems wrong!
+                        "Label6"));
+    }
+
+    @Test
+    public void quoteAndDelimitString() {
+        final List<String> items = List.of("Label1", "Label2", "Lab\\el3");
+        final char delimiter = ',';
+
+        assertEquals(StringUtilities.quoteAndDelimitString(items, delimiter),
+                "\"Label1\",\"Label2\",\"Lab\\\\el3\",");
+    }
+
+    @Test
+    public void unescapeString() {
+        final String escapedString = "This is a test \\\\t \\t \t";
+        final char[] metaCharacters = new char[]{'t'};
+        assertEquals(StringUtilities.unescapeString(escapedString, metaCharacters),
+                "This is a test t t \t");
+        assertEquals(StringUtilities.unescapeString(null, metaCharacters), null);
+    }
+
+    @Test
+    public void removeSquareBracketsFromString() {
+        assertEquals(StringUtilities.removeSquareBracketsFromString("[ abc ]"), " abc ");
+        assertEquals(StringUtilities.removeSquareBracketsFromString("[ abc"), " abc");
+        assertEquals(StringUtilities.removeSquareBracketsFromString("abc ]"), "abc ");
+        assertEquals(StringUtilities.removeSquareBracketsFromString("a[b]c"), "a[b]c");
+    }
+
+    @Test
+    public void removeSpecialCharacters() {
+        assertEquals(StringUtilities.removeSpecialCharacters("[ abc *()4 N ]"), "abc4N");
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,8 @@ public interface StringOperation {
 
     default void register(OperatorRegistry registry) {
 
-        registry.register(StringReadable.class, StringReadable.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> execute(p1.readString(), p2.readString());
-        });
+        registry.register(StringReadable.class, StringReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> execute(p1.readString(), p2.readString()));
 
         registry.register(StringConstant.class, StringConstant.class, BooleanReadable.class, (p1, p2) -> {
             final String p1String = p1.readString();

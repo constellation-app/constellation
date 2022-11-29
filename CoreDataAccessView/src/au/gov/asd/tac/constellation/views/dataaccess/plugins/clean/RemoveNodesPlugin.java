@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,19 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.util.ArrayList;
 import java.util.List;
 import org.openide.util.NbBundle.Messages;
@@ -45,6 +48,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @Messages("RemoveNodesPlugin=Remove Nodes")
+@PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
 public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     private static final String REMOVE_TYPE_LENGTH = "Identifier Length";
@@ -77,6 +81,7 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
         final PluginParameter<SingleChoiceParameterValue> removeType = SingleChoiceParameterType.build(REMOVE_TYPE_PARAMETER_ID);
         removeType.setName("Remove By");
         removeType.setDescription("Nodes will be removed based on this");
+        removeType.setRequired(true);
         SingleChoiceParameterType.setOptions(removeType, removeTypes);
         SingleChoiceParameterType.setChoice(removeType, REMOVE_TYPE_LENGTH);
         params.addParameter(removeType);
@@ -113,7 +118,7 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
                             verticesToRemove.add(vxId);
                         }
                     }
-                    for (final Integer vertex : verticesToRemove) {
+                    for (final int vertex : verticesToRemove) {
                         if (removeNodesByLength(wg, vertex, identifierAttribute, threshold)) {
                             removedCount++;
                         }

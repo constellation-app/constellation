@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public final class Orb3D {
         return x;
     }
 
-    public void setX(float x) {
+    public void setX(final float x) {
         this.x = x;
     }
 
@@ -45,7 +45,7 @@ public final class Orb3D {
         return y;
     }
 
-    public void setY(float y) {
+    public void setY(final float y) {
         this.y = y;
     }
 
@@ -53,17 +53,10 @@ public final class Orb3D {
         return z;
     }
 
-    public void setZ(float z) {
+    public void setZ(final float z) {
         this.z = z;
     }
 
-//    public boolean contains(final float x2, final float y2, final float z2)
-//    {
-//        final double dx = x - x2;
-//        final double dy = y - y2;
-//        final double dz = y - z2;
-//        return Math.sqrt(dx*dx + dy*dy + dz*dz) <= r;
-//    }
     @Override
     public String toString() {
         return String.format("[Orb3D {%d} %f,%f,%f %f]", hashCode(), x, y, z, r);

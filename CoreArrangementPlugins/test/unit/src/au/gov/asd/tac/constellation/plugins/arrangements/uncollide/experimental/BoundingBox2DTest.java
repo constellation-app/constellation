@@ -1,12 +1,12 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
- * 
+ * Copyright 2010-2021 Australian Signals Directorate
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,12 +27,13 @@ import org.testng.annotations.Test;
  * @author Nova
  */
 public class BoundingBox2DTest {
+
     private static StoreGraph baseGraph;
 
     @BeforeClass
     public static void generateGraph() {
         baseGraph = new StoreGraph();
-        
+
         int attrX = VisualConcept.VertexAttribute.X.ensure(baseGraph);
         if (attrX == Graph.NOT_FOUND) {
             fail();
@@ -60,14 +61,14 @@ public class BoundingBox2DTest {
         baseGraph.setFloatValue(attrX, vxId4, -1.0f);
         baseGraph.setFloatValue(attrY, vxId4, -1.0f);
     }
-    
+
     /**
      * Test the constructor works when given a graph with verticies
      */
     @Test
     public void testConstructor() {
         BoundingBox2D actual = new BoundingBox2D(baseGraph);
-        
+
         assertEquals(actual.minX, -1.0f);
         assertEquals(actual.midX, 0.0f);
         assertEquals(actual.maxX, 1.0f);
@@ -75,7 +76,7 @@ public class BoundingBox2DTest {
         assertEquals(actual.midY, 0.0f);
         assertEquals(actual.maxY, 1.0f);
     }
-    
+
     /**
      * Test the constructor throws an exception when given an empty graph.
      */
@@ -152,5 +153,4 @@ public class BoundingBox2DTest {
         assertEquals(actualResult.maxY, 0.0f);
     }
 
-    
 }

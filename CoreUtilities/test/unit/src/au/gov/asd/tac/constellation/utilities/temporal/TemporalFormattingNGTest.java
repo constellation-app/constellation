@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
@@ -61,38 +62,165 @@ public class TemporalFormattingNGTest {
     }
 
     /**
+     * Test of completeZonedDateTimeString method, of class TemporalFormatting. Invalid Input 
+     */
+    @Test
+    public void testCompleteZonedDateTimeStringInvalidInput() {
+        System.out.println("testCompleteZonedDateTimeStringInvalidInput");
+        
+        final String nullResult = TemporalFormatting.completeZonedDateTimeString(null);
+        final String tooBigResult = TemporalFormatting.completeZonedDateTimeString("2017-06-09 18:53:4500000000000");
+        assertEquals(nullResult, null);
+        assertEquals(tooBigResult, "2017-06-09 18:53:4500000000000");
+    }
+    
+    /**
      * Test of completeZonedDateTimeString method, of class TemporalFormatting.
      */
     @Test
     public void testCompleteZonedDateTimeString() {
+        System.out.println("testCompleteZonedDateTimeString");
+        
         final String dateTimeString = "2017-06-09T18:53:45Z";
         final String expResult = "2017-06-09T18:53:45.000 +00:00 [UTC]";
         final String result = TemporalFormatting.completeZonedDateTimeString(dateTimeString);
         assertNotEquals(result, expResult); // the complete zoned date time string currently does not accept the 'Z' and instead requires the offset and region.
     }
 
+    /**
+     * Test of completeZonedDateTimeString method, of class TemporalFormatting. Date input.
+     */
     @Test
     public void testCompleteZonedDateTimeStringWithDate() {
+        System.out.println("testCompleteZonedDateTimeStringWithDate");
+        
         final String dateTimeString = "2017-06-09";
         final String expResult = "2017-06-09 00:00:00.000 +00:00 [UTC]";
         final String result = TemporalFormatting.completeZonedDateTimeString(dateTimeString);
         assertEquals(result, expResult);
     }
 
+    /**
+     * Test of completeZonedDateTimeString method, of class TemporalFormatting. DateTime input
+     */
     @Test
     public void testCompleteZonedDateTimeStringWithDateAndTime() {
+        System.out.println("testCompleteZonedDateTimeStringWithDateAndTime");
+        
         final String dateTimeString = "2017-06-09 18:53";
         final String expResult = "2017-06-09 18:53:00.000 +00:00 [UTC]";
         final String result = TemporalFormatting.completeZonedDateTimeString(dateTimeString);
         assertEquals(result, expResult);
     }
 
+    /**
+     * Test of completeZonedDateTimeString method, of class TemporalFormatting. DateTime input with seconds
+     */
     @Test
     public void testCompleteZonedDateTimeStringWithDateTimeAndSeconds() {
+        System.out.println("testCompleteZonedDateTimeStringWithDateTimeAndSeconds");
+        
         final String dateTimeString = "2017-06-09 18:53:45";
         final String expResult = "2017-06-09 18:53:45.000 +00:00 [UTC]";
         final String result = TemporalFormatting.completeZonedDateTimeString(dateTimeString);
         assertEquals(result, expResult);
+    }
+    
+    /**
+     * Test of completeLocalDateTimeString method, of class TemporalFormatting. Invalid Input 
+     */
+    @Test
+    public void testCompleteLocalDateTimeStringInvalidInput() {
+        System.out.println("testCompleteLocalDateTimeStringInvalidInput");
+        
+        final String nullResult = TemporalFormatting.completeLocalDateTimeString(null);
+        final String tooBigResult = TemporalFormatting.completeLocalDateTimeString("2017-06-09 18:53:450000");
+        assertEquals(nullResult, null);
+        assertEquals(tooBigResult, "2017-06-09 18:53:450000");
+    }
+    
+    /**
+     * Test of completeLocalDateTimeString method, of class TemporalFormatting.
+     */
+    @Test
+    public void testCompleteLocalDateTimeString() {
+        System.out.println("testCompleteLocalDateTimeString");
+        
+        final String dateTimeString = "2017-06-09";
+        final String expResult = "2017-06-09 00:00:00.000";
+        final String result = TemporalFormatting.completeLocalDateTimeString(dateTimeString);
+        assertEquals(result, expResult); 
+    }
+    
+    /**
+     * Test of completeLocalDateTimeString method, of class TemporalFormatting. DateTime input with seconds
+     */
+    @Test
+    public void testCompleteLocalDateTimeStringWithDateTimeAndSeconds() {
+        System.out.println("testCompleteLocalDateTimeStringWithDateTimeAndSeconds");
+        
+        final String dateTimeString = "2017-06-09 18:53:45";
+        final String expResult = "2017-06-09 18:53:45.000";
+        final String result = TemporalFormatting.completeLocalDateTimeString(dateTimeString);
+        assertEquals(result, expResult); 
+    }
+    
+    /**
+     * Test of completeDateString method, of class TemporalFormatting. Invalid Input 
+     */
+    @Test
+    public void testCompleteDateStringInvalidInput() {
+        System.out.println("testCompleteDateStringInvalidInput");
+        
+        final String nullResult = TemporalFormatting.completeDateString(null);
+        final String tooBigResult = TemporalFormatting.completeDateString("2017-06-09");
+        assertEquals(nullResult, null);
+        assertEquals(tooBigResult, "2017-06-09");
+    }
+    
+    /**
+     * Test of completeDateString method, of class TemporalFormatting.
+     */
+    @Test
+    public void testCompleteDateString() {
+        System.out.println("testCompleteDateString");
+        
+        final String result1 = TemporalFormatting.completeDateString("");
+        final String result2 = TemporalFormatting.completeDateString("2017");
+        final String result3 = TemporalFormatting.completeDateString("2017-07");
+        assertEquals(result1, "1970-01-01"); 
+        assertEquals(result2, "2017-01-01"); 
+        assertEquals(result3, "2017-07-01"); 
+    }
+    
+    /**
+     * Test of completeTimeString method, of class TemporalFormatting. Invalid Input 
+     */
+    @Test
+    public void testCompleteTimeStringInvalidInput() {
+        System.out.println("testCompleteTimeStringInvalidInput");
+        
+        final String nullResult = TemporalFormatting.completeTimeString(null);
+        final String tooBigResult = TemporalFormatting.completeTimeString("18:53:45.000");
+        assertEquals(nullResult, null);
+        assertEquals(tooBigResult, "18:53:45.000");
+    }
+    
+    /**
+     * Test of completeTimeString method, of class TemporalFormatting.
+     */
+    @Test
+    public void testCompleteTimeString() {
+        System.out.println("testCompleteTimeString");
+        
+        final String result1 = TemporalFormatting.completeTimeString("");
+        final String result2 = TemporalFormatting.completeTimeString("01");
+        final String result3 = TemporalFormatting.completeTimeString("01:23");
+        final String result4 = TemporalFormatting.completeTimeString("01:23:45");
+        assertEquals(result1, "00:00:00.000"); 
+        assertEquals(result2, "01:00:00.000"); 
+        assertEquals(result3, "01:23:00.000"); 
+        assertEquals(result4, "01:23:45.000"); 
     }
 
     /**
@@ -100,20 +228,129 @@ public class TemporalFormattingNGTest {
      */
     @Test
     public void testFormatAsZonedDateTime() {
-        final TemporalAccessor accessor = TemporalFormatting.UTC_DATE_TIME_FORMATTER
-                .parse("2016-06-11T22:48:48Z");
-        final String expResult = "2016-06-11 22:48:48.000 +00:00";
-        final String result = TemporalFormatting.formatAsZonedDateTime(accessor);
-        assertEquals(result, expResult);
+        System.out.println("testFormatAsZonedDateTime");
+        
+        final String result1 = TemporalFormatting.formatAsZonedDateTime(null);
+        final TemporalAccessor accessor = TemporalFormatting.UTC_DATE_TIME_FORMATTER.parse("2016-06-11T22:48:48Z");
+        final String result2 = TemporalFormatting.formatAsZonedDateTime(accessor);
+        assertEquals(result1, null);
+        assertEquals(result2, "2016-06-11 22:48:48.000 +00:00");
     }
 
+    /**
+     * Test of formatAsZonedDateTime method, of class TemporalFormatting. DateTime input with milliseconds
+     */
     @Test
     public void testFormatAsZonedDateTimeWithMilliseconds() {
+        System.out.println("testFormatAsZonedDateTimeWithMilliseconds");
+        
         final TemporalAccessor accessor = TemporalFormatting.UTC_DATE_TIME_WITH_MILLISECONDS_FORMATTER
                 .parse("2016-06-11T22:48:48.000Z");
         final String expResult = "2016-06-11 22:48:48.000 +00:00";
         final String result = TemporalFormatting.formatAsZonedDateTime(accessor);
         assertEquals(result, expResult);
+    }
+    
+    /**
+     * Test of formatAsLocalDateTime method, of class TemporalFormatting.
+     */
+    @Test
+    public void testFormatAsLocalDateTime() {
+        System.out.println("testFormatAsLocalDateTime");
+        
+        final String result1 = TemporalFormatting.formatAsLocalDateTime(null);
+        final TemporalAccessor accessor = TemporalFormatting.UTC_DATE_TIME_FORMATTER.parse("2016-06-11T22:48:48Z");
+        final String result2 = TemporalFormatting.formatAsLocalDateTime(accessor);
+        assertEquals(result1, null);
+        assertEquals(result2, "2016-06-11 22:48:48.000");
+    }
+
+    /**
+     * Test of formatAsLocalDateTime method, of class TemporalFormatting. DateTime input with milliseconds
+     */
+    @Test
+    public void testFormatAsLocalDateTimeWithMilliseconds() {
+        System.out.println("testFormatAsLocalDateTimeWithMilliseconds");
+        
+        final TemporalAccessor accessor = TemporalFormatting.UTC_DATE_TIME_WITH_MILLISECONDS_FORMATTER
+                .parse("2016-06-11T22:48:48.000Z");
+        final String expResult = "2016-06-11 22:48:48.000";
+        final String result = TemporalFormatting.formatAsLocalDateTime(accessor);
+        assertEquals(result, expResult);
+    }
+    
+    /**
+     * Test of formatAsDate method, of class TemporalFormatting.
+     */
+    @Test
+    public void testFormatAsDate() {
+        System.out.println("testFormatAsDate");
+        
+        final String result1 = TemporalFormatting.formatAsDate(null);
+        final TemporalAccessor accessor = TemporalFormatting.UTC_DATE_TIME_FORMATTER.parse("2016-06-11T22:48:48Z");
+        final String result2 = TemporalFormatting.formatAsDate(accessor);
+        assertEquals(result1, null);
+        assertEquals(result2, "2016-06-11");
+    }
+    
+    /**
+     * Test of formatAsTime method, of class TemporalFormatting.
+     */
+    @Test
+    public void testFormatAsTime() {
+        System.out.println("testFormatAsTime");
+        
+        final String result1 = TemporalFormatting.formatAsTime(null);
+        final TemporalAccessor accessor = TemporalFormatting.UTC_DATE_TIME_FORMATTER.parse("2016-06-11T22:48:48Z");
+        final String result2 = TemporalFormatting.formatAsTime(accessor);
+        assertEquals(result1, null);
+        assertEquals(result2, "22:48:48.000");
+    }
+    
+    /**
+     * Test of zonedDateTimeFromLong method, of class TemporalFormatting.
+     */
+    @Test
+    public void testZonedDateTimeFromLong() {
+        System.out.println("testZonedDateTimeFromLong");
+        
+        final ZonedDateTime result1 = TemporalFormatting.zonedDateTimeFromLong(0);
+        final ZonedDateTime expectedResult1 = ZonedDateTime.parse("1970-01-01T00:00:00+00:00")
+                .withZoneSameInstant(TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
+        assertEquals(result1, expectedResult1);
+        
+        final ZonedDateTime result2 = TemporalFormatting.zonedDateTimeFromLong(1000000000L);
+        final ZonedDateTime expectedResult2 = ZonedDateTime.parse("2001-09-09T01:46:40+00:00")
+                .withZoneSameInstant(TimeZone.getTimeZone(ZoneOffset.UTC).toZoneId());
+        assertEquals(result2, expectedResult2);
+    }
+    
+    /**
+     * Test of zonedDateTimeStringFromLong method, of class TemporalFormatting.
+     */
+    @Test
+    public void testZonedDateTimeStringFromLong() {
+        System.out.println("testZonedDateTimeStringFromLong");
+        
+        final String result1 = TemporalFormatting.zonedDateTimeStringFromLong(0);
+        assertEquals(result1, "1970-01-01 00:00:00.000 +00:00");
+        
+        final String result2 = TemporalFormatting.zonedDateTimeStringFromLong(1000000000L);
+        assertEquals(result2, "2001-09-09 01:46:40.000 +00:00");
+    }
+    
+    /**
+     * Test of formatWithCustomFormatter method, of class TemporalFormatting.
+     */
+    @Test
+    public void testFormatWithCustomFormatter() {
+        System.out.println("testFormatWithCustomFormatter");
+        
+        final String result1 = TemporalFormatting.formatWithCustomFormatter(MY_DATETIME_FORMATTER3, null);
+        final TemporalAccessor accessor = TemporalFormatting.UTC_DATE_TIME_FORMATTER.parse("2016-06-11T22:48:48Z");
+        final String result2 = TemporalFormatting.formatWithCustomFormatter(MY_DATETIME_FORMATTER3, accessor);
+        assertEquals(result1, null);
+        assertEquals(result2, "20160611");
     }
 
     @Test

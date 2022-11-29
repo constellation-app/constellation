@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util.Resizer;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -33,7 +34,7 @@ public class PartitionQueue {
     private double leafCodelength; // Consolidated
     private double moduleCodelength; // Left to improve on next level
 
-    private ArrayList<NodeBase> queue;
+    private List<NodeBase> queue;
 
     public PartitionQueue() {
         level = 1;
@@ -112,11 +113,11 @@ public class PartitionQueue {
         this.moduleCodelength = moduleCodelength;
     }
 
-    public ArrayList<NodeBase> getQueue() {
+    public List<NodeBase> getQueue() {
         return queue;
     }
 
-    public void setQueue(final ArrayList<NodeBase> queue) {
+    public void setQueue(final List<NodeBase> queue) {
         this.queue = queue;
     }
 
@@ -157,7 +158,7 @@ public class PartitionQueue {
         moduleCodelength = other.moduleCodelength;
         other.moduleCodelength = td;
 
-        final ArrayList<NodeBase> tmp = queue;
+        final List<NodeBase> tmp = queue;
         queue = other.queue;
         other.queue = tmp;
     }
@@ -167,7 +168,7 @@ public class PartitionQueue {
     }
 
     public void resize(final int size) {
-        Resizer.resizeNodeBase(queue, size);
+        Resizer.resize(queue, size, null);
     }
 
     public void set(final int ix, final NodeBase node) {

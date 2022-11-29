@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -32,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
@@ -45,8 +47,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 @Messages("ResetViewPlugin=Reset View")
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
 public final class ResetViewPlugin extends SimpleEditPlugin {
 
     public static final String AXIS_PARAMETER_ID = PluginParameter.buildId(ResetViewPlugin.class, "axis");
@@ -106,7 +108,14 @@ public final class ResetViewPlugin extends SimpleEditPlugin {
             }
 
             // add an animation to the refocused camera so that it pans from the old position.
-            Animation.startAnimation(new PanAnimation("Reset View", oldCamera, camera, parameters.getBooleanValue(SIGNIFICANT_PARAMETER_ID)));
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
+                // Only do the camera animation if the edited graph is currently active
+                Animation.startAnimation(new PanAnimation("Reset View", oldCamera, camera, parameters.getBooleanValue(SIGNIFICANT_PARAMETER_ID)));
+            } else {
+                // Skip the animation, just set the new camera position
+                graph.setObjectValue(cameraAttribute, 0, camera);
+            }
         }
     }
 }

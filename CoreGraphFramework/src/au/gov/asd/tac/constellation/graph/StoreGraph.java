@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import au.gov.asd.tac.constellation.graph.operations.GraphOperation;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.undo.GraphEdit;
-import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
 import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 import au.gov.asd.tac.constellation.utilities.datastructure.IntHashSet;
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
@@ -63,13 +62,6 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private static final int LOW_BITS = 0x7FFFFFFF;
     private static final int[] CATEGORY_TO_STATE = new int[]{6, 4, 5, 1, 3, 7, 2};
     private static final int[] STATE_TO_CATEGORY = new int[]{-1, 3, 6, 4, 1, 2, 0, 5};
-    private static final int INCOMING_UNDIRECTED_6 = 0;
-    private static final int UNDIRECTED_4 = 1;
-    private static final int OUTGOING_UNDIRECTED_5 = 2;
-    private static final int OUTGOING_1 = 3;
-    private static final int OUTGOING_INCOMING_3 = 4;
-    private static final int ALL_7 = 5;
-    private static final int INCOMING_2 = 6;
 
     private final ElementStore vStore;
     private final ElementStore lStore;
@@ -106,11 +98,9 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     private final ElementKeySet[] primaryKeyIndices;
     private final String id;
     private final Schema schema;
-    private final MultiValueStore valueStore = new MultiValueStore();
     private ElementList[] removedFromKeys = new ElementList[GraphElementType.values().length];
     private final GraphElementMerger graphElementMerger;
     private NativeValue oldValue = new NativeValue();
-    private NativeValue newValue = new NativeValue();
     private GraphEdit graphEdit;
 
     /**
@@ -211,8 +201,12 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public void finalize() {
-        MemoryManager.finalizeObject(StoreGraph.class);
+    protected void finalize() throws Throwable {
+        try {
+            MemoryManager.finalizeObject(StoreGraph.class);
+        } finally {
+            super.finalize();
+        }
     }
 
     private static int powerOf2(final int capacity) {
@@ -662,8 +656,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public boolean linkExists(final int vertex) {
-        return lStore.elementExists(vertex);
+    public boolean linkExists(final int link) {
+        return lStore.elementExists(link);
     }
 
     @Override
@@ -672,8 +666,8 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
     }
 
     @Override
-    public boolean transactionExists(final int vertex) {
-        return tStore.elementExists(vertex);
+    public boolean transactionExists(final int transaction) {
+        return tStore.elementExists(transaction);
     }
 
     @Override
@@ -681,6 +675,7 @@ public class StoreGraph extends LockingTarget implements GraphWriteMethods, Seri
         return addVertex(-1);
     }
 
+    @Override
     public int addVertex(int vertex) {
 
         if (vertex < 0) {

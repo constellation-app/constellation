@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,14 +45,14 @@ import org.openide.util.ImageUtilities;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Add, remove and colour blazes.
+ * Add, remove and color blazes.
  * <p>
  * Modify blazes on one or more vertices. If no vertices are selected, modify
  * the right-clicked vertex. If some vertices are selected, modify them as well
  * as the right-clicked vertex.
  * <p>
- * The blaze popup menu provides default colour options (Blue, Red and Yellow),
- * as well as options to add a custom colour or remove the blaze(s) entirely.
+ * The blaze popup menu provides default color options (Blue, Red and Yellow),
+ * as well as options to add a custom color or remove the blaze(s) entirely.
  * The remaining list will be populated with colors saved from the users
  * presets.
  *

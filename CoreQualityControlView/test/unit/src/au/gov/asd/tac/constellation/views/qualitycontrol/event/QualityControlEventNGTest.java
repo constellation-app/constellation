@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,11 +32,12 @@ import org.testng.annotations.Test;
  */
 public class QualityControlEventNGTest {
 
-    private final static QualityControlEvent.QualityCategory DEFAULT = QualityControlEvent.QualityCategory.DEFAULT;
-    private final static QualityControlEvent.QualityCategory INFO = QualityControlEvent.QualityCategory.INFO;
-    private final static QualityControlEvent.QualityCategory WARNING = QualityControlEvent.QualityCategory.WARNING;
+    private final static QualityControlEvent.QualityCategory OK = QualityControlEvent.QualityCategory.OK;
+    private final static QualityControlEvent.QualityCategory MINOR = QualityControlEvent.QualityCategory.MINOR;
+    private final static QualityControlEvent.QualityCategory MEDIUM = QualityControlEvent.QualityCategory.MEDIUM;
+    private final static QualityControlEvent.QualityCategory MAJOR = QualityControlEvent.QualityCategory.MAJOR;
     private final static QualityControlEvent.QualityCategory SEVERE = QualityControlEvent.QualityCategory.SEVERE;
-    private final static QualityControlEvent.QualityCategory FATAL = QualityControlEvent.QualityCategory.FATAL;
+    private final static QualityControlEvent.QualityCategory CRITICAL = QualityControlEvent.QualityCategory.CRITICAL;
 
     public QualityControlEventNGTest() {
     }
@@ -62,36 +63,46 @@ public class QualityControlEventNGTest {
      */
     @Test
     public void testGetCategoryFromString() {
-        String categoryString = "default";
+        String categoryString = "ok";
 
-        // DEFAULT test
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
-        categoryString = "DEFAULT";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
-        categoryString = "DEFAULTA";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
-        categoryString = "ADEFAULT";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
+        // OK test
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
+        categoryString = "OK";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
+        categoryString = "OKA";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
+        categoryString = "AOK";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
 
-        // INFO test
-        categoryString = "info";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), INFO);
-        categoryString = "INFO";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), INFO);
-        categoryString = "INFOA";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
-        categoryString = "AINFO";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
+        // MINOR test
+        categoryString = "minor";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), MINOR);
+        categoryString = "MINOR";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), MINOR);
+        categoryString = "MINORA";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
+        categoryString = "AMINOR";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
 
-        // WARNING test
-        categoryString = "warning";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), WARNING);
-        categoryString = "WARNING";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), WARNING);
-        categoryString = "WARNINGA";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
-        categoryString = "AWARNING";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
+        // MEDIUM test
+        categoryString = "medium";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), MEDIUM);
+        categoryString = "MEDIUM";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), MEDIUM);
+        categoryString = "MEDIUMA";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
+        categoryString = "AMEDIUM";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
+
+        // MAJOR test
+        categoryString = "major";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), MAJOR);
+        categoryString = "MAJOR";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), MAJOR);
+        categoryString = "MAJORA";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
+        categoryString = "AMAJOR";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
 
         // SEVERE test
         categoryString = "severe";
@@ -99,19 +110,19 @@ public class QualityControlEventNGTest {
         categoryString = "SEVERE";
         assertEquals(QualityControlEvent.getCategoryFromString(categoryString), SEVERE);
         categoryString = "SEVEREA";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
         categoryString = "ASEVERE";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
 
-        // FATAL test
-        categoryString = "fatal";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), FATAL);
-        categoryString = "FATAL";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), FATAL);
-        categoryString = "FATALA";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
-        categoryString = "AFATAL";
-        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), DEFAULT);
+        // CRITICAL test
+        categoryString = "critical";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), CRITICAL);
+        categoryString = "CRITICAL";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), CRITICAL);
+        categoryString = "CRITICALA";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
+        categoryString = "ACRITICAL";
+        assertEquals(QualityControlEvent.getCategoryFromString(categoryString), OK);
     }
 
     /**

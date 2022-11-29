@@ -1,0 +1,37 @@
+[
+    {
+        "global": {
+            "param1": "tab1_param1_value",
+            "param3": null,
+            "param5": "tab1_param5_value"
+        },
+        "plugins": {
+            "OTHER_PLUGIN1": {
+                "OTHER_PLUGIN1.param1": "other1_param1_value",
+                "OTHER_PLUGIN1.__is_enabled__": true
+            },
+            "${INSERT_PLUGIN1_NAME}": {
+                "${INSERT_PLUGIN1_NAME}.param1": "plugin1_param1_value",
+                "${INSERT_PLUGIN1_NAME}.__is_enabled__": true
+            },
+            "${INSERT_PLUGIN2_NAME}": {
+                "${INSERT_PLUGIN2_NAME}.param1": "plugin2_param1_value",
+                "${INSERT_PLUGIN2_NAME}.__is_enabled__": false
+            }
+        }
+    },
+    {
+        "global": {
+            "param2": "tab2_param2_value",
+            "param4": "tab2_param4_value"
+        },
+        "plugins": {
+            "OTHER_PLUGIN2": {
+                "OTHER_PLUGIN2.__is_enabled__": true,
+                "OTHER_PLUGIN2.param1": "other2_param1_value"
+            }
+            
+        }
+    }
+    
+]

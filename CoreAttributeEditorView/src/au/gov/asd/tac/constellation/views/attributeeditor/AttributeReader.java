@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,13 +34,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
  * The AttributeReader is responsible for populating the data model for
- * CONSTELLATION's attribute editor. It keeps a reference to the current graph,
+ * Constellation's attribute editor. It keeps a reference to the current graph,
  * and contains a number of methods that perform different types of updates in
  * response to various graph changes.
  * <br>
@@ -56,6 +57,8 @@ import org.openide.util.NbPreferences;
  */
 public class AttributeReader {
 
+    private static final Logger LOGGER = Logger.getLogger(AttributeReader.class.getName());
+
     private final Graph graph;
     private long lastAttributeModificationCount = -1;
     private long lastNodeSelectedModificationCount = -1;
@@ -63,16 +66,17 @@ public class AttributeReader {
     private final Preferences prefs = NbPreferences.forModule(AttributePreferenceKey.class);
     private final IntArray selectedTransactions = new IntArray();
     private final IntArray selectedNodes = new IntArray();
-    private final HashMap<GraphElementType, ArrayList<AttributeData>> elementAttributeData = new HashMap<>();
+    private final Map<GraphElementType, List<AttributeData>> elementAttributeData = new HashMap<>();
     private final Map<GraphElementType, Integer> elementAttributeCounts = new HashMap<>();
-    //type appended with attribute name as key.
+
+    // type appended with attribute name as key.
     private final HashMap<String, Object[]> elementAttributeValues = new HashMap<>();
 
     private static final List<GraphElementType> ACCEPTED_ELEMENT_TYPES = Arrays.asList(GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION);
 
     private static final String UPDATE_SELECTED_NODE_THREAD_NAME = "Update Selected Node";
 
-    public AttributeReader(Graph graph) {
+    public AttributeReader(final Graph graph) {
         this.graph = graph;
     }
 
@@ -95,34 +99,34 @@ public class AttributeReader {
      * changed.
      * @return The state of all the selected attributes.
      */
-    public AttributeState refreshAttributes(boolean preferenceChanged) {
+    public AttributeState refreshAttributes(final boolean preferenceChanged) {
         AttributeState result = null;
-        ArrayList<GraphElementType> activeElementTypes = new ArrayList<>();
+        final ArrayList<GraphElementType> activeElementTypes = new ArrayList<>();
         boolean selectionModified = false;
         boolean attributeModified = false;
         boolean valueModified = false;
 
-        //show all preferences
-        Map<GraphElementType, Boolean> showAllPrefs = new HashMap<>();
+        // show all preferences
+        final Map<GraphElementType, Boolean> showAllPrefs = new HashMap<>();
         showAllPrefs.put(GraphElementType.GRAPH, prefs.getBoolean(AttributePreferenceKey.GRAPH_SHOW_ALL, false));
         showAllPrefs.put(GraphElementType.VERTEX, prefs.getBoolean(AttributePreferenceKey.NODE_SHOW_ALL, false));
         showAllPrefs.put(GraphElementType.TRANSACTION, prefs.getBoolean(AttributePreferenceKey.TRANSACTION_SHOW_ALL, false));
-        List<String> hiddenAttrs = StringUtilities.splitLabelsWithEscapeCharacters(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, ""), AttributePreferenceKey.SPLIT_CHAR_SET);
-        Set<String> hiddenAttrsSet = new HashSet<>(hiddenAttrs);
+
+        final List<String> hiddenAttrs = StringUtilities.splitLabelsWithEscapeCharacters(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, ""), AttributePreferenceKey.SPLIT_CHAR_SET);
+        final Set<String> hiddenAttrsSet = new HashSet<>(hiddenAttrs);
 
         final ReadableGraph rg = graph.getReadableGraph();
         try {
-
             selectionModified = updateSelectedElements(rg);
             updateElementTypes(activeElementTypes);
 
-            long currAttributeModificationCount = rg.getAttributeModificationCounter();
+            final long currAttributeModificationCount = rg.getAttributeModificationCounter();
             attributeModified = currAttributeModificationCount != lastAttributeModificationCount;
             lastAttributeModificationCount = currAttributeModificationCount;
-            if (attributeModified || selectionModified || preferenceChanged) {
+            if (attributeModified || preferenceChanged) {
                 updateElementAttributeNames(rg, ACCEPTED_ELEMENT_TYPES, hiddenAttrsSet, showAllPrefs);
             }
-            List<GraphElementType> toPopulate = new ArrayList<>(activeElementTypes);
+            final List<GraphElementType> toPopulate = new ArrayList<>(activeElementTypes);
             toPopulate.add(GraphElementType.GRAPH);
             valueModified = populateValues(toPopulate, selectionModified, attributeModified, preferenceChanged, rg
             );
@@ -131,7 +135,6 @@ public class AttributeReader {
             rg.release();
         }
         if (selectionModified || attributeModified || valueModified || preferenceChanged) {
-
             result = new AttributeState(ACCEPTED_ELEMENT_TYPES, selectionModified ? activeElementTypes : Collections.emptyList(), elementAttributeData, elementAttributeValues, elementAttributeCounts);
         }
 
@@ -152,7 +155,7 @@ public class AttributeReader {
 
         if (nodeSelectionChanged) {
             selectedNodes.clear();
-            //find selected nodes
+            // find selected nodes
             selectedNodethread = new Thread() {
                 @Override
                 public void run() {
@@ -177,20 +180,20 @@ public class AttributeReader {
             selectedNodethread.setName(UPDATE_SELECTED_NODE_THREAD_NAME);
             selectedNodethread.start();
         }
-        //find selected transactions
+        // find selected transactions
         if (transactionSelectionChanged) {
             selectedTransactions.clear();
-            GraphIndexType selectedIndexType = selectedTransactionAttribute != Graph.NOT_FOUND ? rg.getAttributeIndexType(selectedTransactionAttribute) : GraphIndexType.NONE;
+            final GraphIndexType selectedIndexType = selectedTransactionAttribute != Graph.NOT_FOUND ? rg.getAttributeIndexType(selectedTransactionAttribute) : GraphIndexType.NONE;
             if (selectedIndexType == GraphIndexType.NONE) {
                 for (int i = 0; i < rg.getTransactionCount(); i++) {
-                    boolean selected = selectedTransactionAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(selectedTransactionAttribute, rg.getTransaction(i)) : VisualGraphDefaults.DEFAULT_TRANSACTION_SELECTED;
+                    final boolean selected = selectedTransactionAttribute != Graph.NOT_FOUND ? rg.getBooleanValue(selectedTransactionAttribute, rg.getTransaction(i)) : VisualGraphDefaults.DEFAULT_TRANSACTION_SELECTED;
                     if (selected) {
                         selectedTransactions.add(rg.getTransaction(i));
                     }
                 }
             } else {
-                GraphIndexResult result = rg.getElementsWithAttributeValue(selectedTransactionAttribute, Boolean.TRUE);
-                int resultCount = result.getCount();
+                final GraphIndexResult result = rg.getElementsWithAttributeValue(selectedTransactionAttribute, Boolean.TRUE);
+                final int resultCount = result.getCount();
                 for (int i = 0; i < resultCount; i++) {
                     selectedTransactions.add(result.getNextElement());
                 }
@@ -200,15 +203,15 @@ public class AttributeReader {
         if (selectedNodethread != null) {
             try {
                 selectedNodethread.join();
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
                 Thread.currentThread().interrupt();
             }
         }
         return (nodeSelectionChanged || transactionSelectionChanged);
     }
 
-    private void updateElementTypes(ArrayList<GraphElementType> activeElementTypes) {
+    private void updateElementTypes(final ArrayList<GraphElementType> activeElementTypes) {
         activeElementTypes.clear();
         if (selectedNodes.isEmpty() && selectedTransactions.isEmpty()) {
             activeElementTypes.add(GraphElementType.GRAPH);
@@ -221,18 +224,18 @@ public class AttributeReader {
         }
     }
 
-    private void updateElementAttributeNames(final ReadableGraph rg, final List<GraphElementType> elementTypes, Set<String> hiddenAttrsSet, Map<GraphElementType, Boolean> showAllPrefs) {
+    private void updateElementAttributeNames(final ReadableGraph rg, final List<GraphElementType> elementTypes, final Set<String> hiddenAttrsSet, final Map<GraphElementType, Boolean> showAllPrefs) {
 
         elementAttributeData.clear();
-        for (GraphElementType elementType : elementTypes) {
+        for (final GraphElementType elementType : elementTypes) {
 
-            int attributeCount = rg.getAttributeCount(elementType);
-            ArrayList<AttributeData> attributeNames = new ArrayList<>();
-            boolean showAll = showAllPrefs.get(elementType);
+            final int attributeCount = rg.getAttributeCount(elementType);
+            final ArrayList<AttributeData> attributeNames = new ArrayList<>();
+            final boolean showAll = showAllPrefs.get(elementType);
             for (int i = 0; i < attributeCount; i++) {
 
-                Attribute attr = new GraphAttribute(rg, rg.getAttribute(elementType, i));
-                //do check only if not showing all
+                final Attribute attr = new GraphAttribute(rg, rg.getAttribute(elementType, i));
+                // do check only if not showing all
 
                 if (!showAll && hiddenAttrsSet.contains(attr.getElementType().toString() + attr.getName())) {
                     continue;
@@ -241,30 +244,31 @@ public class AttributeReader {
                 final boolean isSchemaAttr = rg.getSchema() != null
                         && rg.getSchema().getFactory().getRegisteredAttributes(attr.getElementType()).containsKey(attr.getName());
 
-                AttributeData attrData = new AttributeData(attr.getName(), attr.getDescription(), attr.getId(), rg.getValueModificationCounter(attr.getId()), elementType, attr.getAttributeType(), attr.getDefaultValue(), rg.isPrimaryKey(attr.getId()), isSchemaAttr);
+                final AttributeData attrData = new AttributeData(attr.getName(), attr.getDescription(), attr.getId(), rg.getValueModificationCounter(attr.getId()), elementType, attr.getAttributeType(), attr.getDefaultValue(), rg.isPrimaryKey(attr.getId()), isSchemaAttr);
                 attributeNames.add(attrData);
             }
             Collections.sort(attributeNames, (o1, o2) -> o1.getAttributeName().compareTo(o2.getAttributeName()));
             elementAttributeCounts.put(elementType, attributeCount);
             elementAttributeData.put(elementType, attributeNames);
         }
-
     }
 
-    private boolean populateValues(List<GraphElementType> elementTypes, boolean selectionChanged, boolean attributeModified, boolean preferenceChanged, final ReadableGraph rg) {
+    private boolean populateValues(final List<GraphElementType> elementTypes, final boolean selectionChanged, final boolean attributeModified, final boolean preferenceChanged, final ReadableGraph rg) {
         boolean valueChanged = false;
         if (selectionChanged) {
             elementAttributeValues.clear();
         }
-        for (GraphElementType type : ACCEPTED_ELEMENT_TYPES) { // for graphElement Type (graph,vertex,transaction)
-            ArrayList<AttributeData> attributes = elementAttributeData.get(type);
-            IntArray selectedElement = null;
+        for (final GraphElementType type : ACCEPTED_ELEMENT_TYPES) { // for graphElement Type (graph,vertex,transaction)
+            final List<AttributeData> attributes = elementAttributeData.get(type);
+            final IntArray selectedElement;
             if (type.equals(GraphElementType.VERTEX)) {
                 selectedElement = selectedNodes;
             } else if (type.equals(GraphElementType.TRANSACTION)) {
                 selectedElement = selectedTransactions;
+            } else {
+                selectedElement = null;
             }
-            for (AttributeData data : attributes) { // for attribute(name, type etc)
+            for (final AttributeData data : attributes) { // for attribute(name, type etc)
 
                 if (!elementTypes.contains(type)) {
                     final String attributeValuesKey = type.getLabel() + data.getAttributeName();
@@ -273,46 +277,44 @@ public class AttributeReader {
                 }
 
                 if (preferenceChanged || selectionChanged || attributeModified || data.attibuteValueHasChanged(rg.getValueModificationCounter(data.getAttributeId()))) {
-                    HashSet<Object> values = new HashSet<>();
-                    int valueCountLimit = 11;//only load 10 values first... if the user wants more then another request is made. we load 11 to know that there are more than 10
-                    if (data.getDataType().equals("boolean")) {
-                        valueCountLimit = 2; // boolean only has two possibilities.
+                    final Set<Object> values = new HashSet<>();
+                    int valueCountLimit = 11;
+                    // only load 10 values first... if the user wants more then another request is made. we load 11 to know that there are more than 10
+                    if ("boolean".equals(data.getDataType())) {
+                        valueCountLimit = 2;
+                        // boolean only has two possibilities.
                     }
                     if (selectedElement != null) {
                         for (int i = 0; i < selectedElement.size() && values.size() < valueCountLimit; i++) {
-                            Object value = rg.getObjectValue(data.getAttributeId(), selectedElement.get(i));
-                            values.add(value);
+                            values.add(rg.getObjectValue(data.getAttributeId(), selectedElement.get(i)));
                         }
-                    } else { // assumed to be graphelementtype of graph.
-                        Object value = rg.getObjectValue(data.getAttributeId(), 0);
-                        values.add(value);
+                    } else { 
+                        // assumed to be graphelementtype of graph.
+                        values.add(rg.getObjectValue(data.getAttributeId(), 0));
                     }
                     if (!values.isEmpty()) {
                         valueChanged = true;
                     }
                     final String attributeValuesKey = type.getLabel() + data.getAttributeName();
-                    if (elementAttributeValues.containsKey(attributeValuesKey)) {
-                        elementAttributeValues.remove(attributeValuesKey);
-                    }
-                    Object[] valuesArray = sortHashMap(values);
-
-                    elementAttributeValues.put(attributeValuesKey, valuesArray);
+                    elementAttributeValues.remove(attributeValuesKey);
+                    elementAttributeValues.put(attributeValuesKey, sortHashMap(values));
                 }
-
             }
         }
 
         return valueChanged;
     }
 
-    public Object[] loadMoreDataFor(AttributeData attribute) {
+    public Object[] loadMoreDataFor(final AttributeData attribute) {
         final int AttributeID = attribute.getAttributeId();
-        HashSet<Object> values = new HashSet<>();
-        IntArray selectedElement = null;
+        final Set<Object> values = new HashSet<>();
+        final IntArray selectedElement;
         if (attribute.getElementType().equals(GraphElementType.VERTEX)) {
             selectedElement = selectedNodes;
         } else if (attribute.getElementType().equals(GraphElementType.TRANSACTION)) {
             selectedElement = selectedTransactions;
+        } else {
+            selectedElement = null;
         }
         final ReadableGraph rg = graph.getReadableGraph();
         try {
@@ -326,10 +328,9 @@ public class AttributeReader {
             rg.release();
         }
         return sortHashMap(values);
-
     }
 
-    private Object[] sortHashMap(HashSet<Object> values) {
+    private Object[] sortHashMap(final Set<Object> values) {
         // If the values are Comparable, compare them.
         // This allows numbers to be sorted correctly, for example.
         if (!values.isEmpty()) {
@@ -337,15 +338,27 @@ public class AttributeReader {
             if (o instanceof Comparable) {
                 final Comparable<Object>[] valuesArray = new Comparable[values.size()];
                 values.toArray(valuesArray);
-                Arrays.sort(valuesArray, (a, b) -> a == null ? (b == null ? 0 : -1) : (b == null ? 1 : a.compareTo(b)));
+                Arrays.sort(valuesArray, (a, b) -> {
+                    if (a == null) {
+                        if (b == null) {
+                            return 0;
+                        }
+                        return -1;
+                    } else {
+                        if (b == null) {
+                            return 1;
+                        }
+                        return a.compareTo(b);
+                    }
+                });
 
                 return valuesArray;
             }
         }
 
-        Object[] valuesArray = values.toArray();
+        final Object[] valuesArray = values.toArray();
 
-        Arrays.sort(valuesArray, (Object o1, Object o2) -> {
+        Arrays.sort(valuesArray, (final Object o1, final Object o2) -> {
             if ((o1 == null) || (o1.toString() == null)) {
                 return 1;
             }

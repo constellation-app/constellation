@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -106,7 +106,7 @@ public class BlazeV0 implements Serializable, Comparable<BlazeV0> {
                 final int angle = Integer.valueOf(m.group(1));
                 final ConstellationColor color = ConstellationColor.getColorValue(m.group(2));
                 if (color == null) {
-                    throw new IllegalBlazeFormatException("Undefined colour for blaze.");
+                    throw new IllegalBlazeFormatException("Undefined color for blaze.");
                 }
                 final String iconLabel = m.group(3);
                 final boolean iconEnabled = Boolean.valueOf(m.group(4));
@@ -121,7 +121,6 @@ public class BlazeV0 implements Serializable, Comparable<BlazeV0> {
     @Override
     public String toString() {
         return String.format("%d;%s;%s;%s", angle, color, iconLabel, iconEnabled);
-        //return String.valueOf(color);
     }
 
     @Override

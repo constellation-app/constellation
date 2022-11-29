@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,19 +43,15 @@ public final class AttributeRegistry implements Serializable {
         Lookup.Result<AttributeDescription> attrDescrs = Lookup.getDefault().lookupResult(AttributeDescription.class);
         attrDescrs.allClasses().forEach(ad -> {
             DEFAULT_ATTRIBUTE_REGISTRY.registerAttributeIfNewer(ad);
-            LOGGER.info(String.format("Registered Attribute %s", ad.getName()));
+            LOGGER.fine(String.format("Registered Attribute %s", ad.getName()));
         });
     }
 
     public static AttributeRegistry copyWithRegsitrations(final AttributeRegistry other,
             final Collection<Class<? extends AttributeDescription>> registrations) {
         final AttributeRegistry copy = new AttributeRegistry();
-        other.attributes.values().forEach(ad -> {
-            copy.registerAttribute(ad);
-        });
-        registrations.forEach(ad -> {
-            copy.registerAttribute(ad);
-        });
+        other.attributes.values().forEach(ad -> copy.registerAttribute(ad));
+        registrations.forEach(ad -> copy.registerAttribute(ad));
         return copy;
     }
 

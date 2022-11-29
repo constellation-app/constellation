@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class DefaultMarkerCache extends MarkerCache {
 
     @Override
     public void clearSelectedMarkers() {
-        synchronized (MarkerCache.getDefault().LOCK) {
+        synchronized (MarkerCache.getDefault().lock) {
             getSelectedMarkers().forEach(marker -> remove(marker));
         }
     }
@@ -57,7 +57,7 @@ public class DefaultMarkerCache extends MarkerCache {
 
     @Override
     public void clearCustomMarkers() {
-        synchronized (MarkerCache.getDefault().LOCK) {
+        synchronized (MarkerCache.getDefault().lock) {
             getCustomMarkers().forEach(marker -> remove(marker));
         }
     }

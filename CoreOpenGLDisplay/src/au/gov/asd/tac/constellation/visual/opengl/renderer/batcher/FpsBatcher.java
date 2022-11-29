@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -67,7 +69,7 @@ public class FpsBatcher implements SceneBatcher {
     public FpsBatcher() {
 
         // Create the batch
-        this.batch = new Batch(GL3.GL_POINTS);
+        this.batch = new Batch(GL.GL_POINTS);
         this.colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         this.iconTarget = batch.newIntBuffer(ICON_BUFFER_WIDTH, false);
         this.pixelDensity = 0;
@@ -100,7 +102,7 @@ public class FpsBatcher implements SceneBatcher {
 
     private int updateIconTexture(final GL3 gl) {
         final int[] v = new int[1];
-        gl.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
+        gl.glGetIntegerv(GL2ES3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
         final int maxTextureLayers = v[0];
         GLTools.LOADED_ICON_HELPER.setMaximumTextureLayers(maxTextureLayers);
         return GLTools.loadSharedIconTextures(gl, GLTools.MAX_ICON_WIDTH, GLTools.MAX_ICON_HEIGHT);
@@ -131,9 +133,7 @@ public class FpsBatcher implements SceneBatcher {
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-        return gl -> {
-            batch.dispose(gl);
-        };
+        return gl -> batch.dispose(gl);
     }
 
     @Override
@@ -142,7 +142,7 @@ public class FpsBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
         if (batch.isDrawable()) {
             gl.glUseProgram(shader);
 

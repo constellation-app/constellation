@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class AttributeTitledPane extends TitledPane {
     private AttributeData attributeData;
 
     private final CheckMenuItem hideAttributeMenuItem = new CheckMenuItem("Hide Attribute");
-    private final MenuItem CopyValueMenuItem = new MenuItem("Copy");
+    private final MenuItem copyValueMenuItem = new MenuItem("Copy");
     private final MenuItem modifyAttributeMenuItem = new MenuItem("Modify Attribute");
     private final MenuItem removeAttributeMenuItem = new MenuItem("Delete Attribute");
     private final SeparatorMenuItem separatorMenuItem = new SeparatorMenuItem();
@@ -60,23 +60,23 @@ public class AttributeTitledPane extends TitledPane {
         this(null, null);
     }
 
-    public AttributeTitledPane(EventHandler<ActionEvent> removeEventHandler, EventHandler<ActionEvent> modifyEventHandler) {
+    public AttributeTitledPane(final EventHandler<ActionEvent> removeEventHandler, final EventHandler<ActionEvent> modifyEventHandler) {
 
         if (removeEventHandler == null) {
-            ctxMenu = new ContextMenu(CopyValueMenuItem, separatorMenuItem, hideAttributeMenuItem);
+            ctxMenu = new ContextMenu(copyValueMenuItem, separatorMenuItem, hideAttributeMenuItem);
         } else {
-            ctxMenu = new ContextMenu(CopyValueMenuItem, separatorMenuItem, hideAttributeMenuItem, modifyAttributeMenuItem, removeAttributeMenuItem);
+            ctxMenu = new ContextMenu(copyValueMenuItem, separatorMenuItem, hideAttributeMenuItem, modifyAttributeMenuItem, removeAttributeMenuItem);
             removeAttributeMenuItem.setOnAction(removeEventHandler);
             modifyAttributeMenuItem.setOnAction(modifyEventHandler);
         }
 
-        CopyValueMenuItem.setOnAction((ActionEvent event) -> {
+        copyValueMenuItem.setOnAction((final ActionEvent event) -> {
             final StringSelection ss = new StringSelection(attributeValue);
             final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(ss, ConstellationClipboardOwner.getOwner());
         });
 
-        hideAttributeMenuItem.setOnAction((ActionEvent event) -> {
+        hideAttributeMenuItem.setOnAction((final ActionEvent event) -> {
             if (hideAttributeMenuItem.isSelected()) {
                 hide();
                 addToPreference();
@@ -89,21 +89,21 @@ public class AttributeTitledPane extends TitledPane {
 
     }
 
-    public void setAttributeValue(String value) {
+    public void setAttributeValue(final String value) {
         attributeValue = value;
     }
 
-    public void setAttribute(AttributeData data) {
+    public void setAttribute(final AttributeData data) {
         attributeData = data;
     }
 
     public void addMenuItem(final String name, final EventHandler<ActionEvent> handler) {
-        MenuItem menuItem = new MenuItem(name);
+        final MenuItem menuItem = new MenuItem(name);
         menuItem.setOnAction(handler);
         ctxMenu.getItems().add(menuItem);
     }
 
-    public void setHidden(boolean hide) {
+    public void setHidden(final boolean hide) {
         if (hide) {
             hide();
         } else {
@@ -126,18 +126,18 @@ public class AttributeTitledPane extends TitledPane {
 
     private void addToPreference() {
         String hiddenAttributes = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, "");
-        String elementTypeAndAttributeName = attributeData.getElementType().toString() + attributeData.getAttributeName();
+        final String elementTypeAndAttributeName = attributeData.getElementType().toString() + attributeData.getAttributeName();
         hiddenAttributes = hiddenAttributes + StringUtilities.escapeString(elementTypeAndAttributeName, AttributePreferenceKey.META_CHARS) + AttributePreferenceKey.SPLIT_CHAR;
         prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTES, hiddenAttributes);
     }
 
     private void removeFromPreference() {
-        String hiddenAttributes = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, "");
-        StringBuilder newLabel = new StringBuilder();
+        final String hiddenAttributes = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, "");
+        final StringBuilder newLabel = new StringBuilder();
         if (!hiddenAttributes.isEmpty()) {
-            String elementTypeAndAttributeName = attributeData.getElementType().toString() + attributeData.getAttributeName();
-            List<String> hiddenAttrList = StringUtilities.splitLabelsWithEscapeCharacters(hiddenAttributes, AttributePreferenceKey.SPLIT_CHAR_SET);
-            for (String attrName : hiddenAttrList) {
+            final String elementTypeAndAttributeName = attributeData.getElementType().toString() + attributeData.getAttributeName();
+            final List<String> hiddenAttrList = StringUtilities.splitLabelsWithEscapeCharacters(hiddenAttributes, AttributePreferenceKey.SPLIT_CHAR_SET);
+            for (final String attrName : hiddenAttrList) {
                 if (attrName.isEmpty()) {
                     continue;
                 }
@@ -148,7 +148,5 @@ public class AttributeTitledPane extends TitledPane {
             }
             prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTES, newLabel.toString());
         }
-
     }
-
 }

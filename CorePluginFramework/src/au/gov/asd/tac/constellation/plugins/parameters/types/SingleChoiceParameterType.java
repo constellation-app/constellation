@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -128,9 +129,28 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * parameter.
      */
     public static void setOptions(final PluginParameter<SingleChoiceParameterValue> parameter, final List<String> options) {
+        //Change only if the options are changed.
+        if (optionsChanged(parameter, options)) {
+            final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
+
+            //Clear the existing selection
+            parameter.setObjectValue(null);
+
+            parameterValue.setOptions(options);
+            parameter.setProperty(CHOICES, new Object());
+        }
+    }
+
+    /**
+     * Check whether the available options list is changed
+     *
+     * @param parameter A {@link PluginParameter} of this type.
+     * @param options A list of Strings to set as the options for the given
+     * parameter.
+     */
+    private static boolean optionsChanged(final PluginParameter<SingleChoiceParameterValue> parameter, final List<String> options) {
         final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
-        parameterValue.setOptions(options);
-        parameter.setProperty(CHOICES, new Object());
+        return !options.equals(parameterValue.getOptions());
     }
 
     /**
@@ -143,6 +163,10 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      */
     public static void setOptionsData(final PluginParameter<SingleChoiceParameterValue> parameter, final List<? extends ParameterValue> options) {
         final SingleChoiceParameterValue parameterValue = parameter.getParameterValue();
+
+        //Clear the existing selection
+        parameter.setObjectValue(null);
+
         parameterValue.setOptionsData(options);
         parameter.setProperty(CHOICES, new Object());
     }
@@ -238,8 +262,12 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * It holds a collection of options and a current choice.
      */
     public static class SingleChoiceParameterValue extends ParameterValue {
+        
+        private static final Logger LOGGER = Logger.getLogger(SingleChoiceParameterValue.class.getName());
 
         // innerClass is the type of choice and the type of the elements of options.
+        // If it's a nested class, make sure it's a static nested class rather than an inner class,
+        // to avoid possible NoSuchMethodExceptions
         private final List<ParameterValue> options;
         private ParameterValue choice;
         private final Class<? extends ParameterValue> innerClass;
@@ -300,9 +328,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          */
         public List<String> getOptions() {
             final List<String> optionStrings = new ArrayList<>();
-            options.stream().forEach(option -> {
-                optionStrings.add(option.toString());
-            });
+            options.stream().forEach(option -> optionStrings.add(option.toString()));
 
             return Collections.unmodifiableList(optionStrings);
         }
@@ -319,6 +345,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
                 final StringParameterValue doOption = new StringParameterValue(option);
                 this.options.add(doOption);
             }
+            choice = null;
         }
 
         /**
@@ -365,8 +392,11 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             if (options.contains(doCheck)) {
                 this.choice = doCheck;
                 return true;
+            } else {
+                //clear the choice
+                this.choice = null;
+                return false;
             }
-            return false;
         }
 
         /**
@@ -392,8 +422,11 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             if (options.contains(choice)) {
                 this.choice = choice;
                 return true;
+            } else {
+                //clear the choice
+                this.choice = null;
+                return false;
             }
-            return false;
         }
 
         @Override
@@ -405,7 +438,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             } catch (final IllegalAccessException | IllegalArgumentException
                     | InstantiationException | NoSuchMethodException
                     | SecurityException | InvocationTargetException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 return ex.getMessage();
             }
         }
@@ -431,7 +464,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             } catch (final IllegalAccessException | IllegalArgumentException
                     | InstantiationException | NoSuchMethodException
                     | SecurityException | InvocationTargetException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             return false;
@@ -451,7 +484,10 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
         @Override
         public boolean setObjectValue(final Object o) {
             boolean valueChanged = false;
-            if (o instanceof SingleChoiceParameterValue) {
+            if (o == null) {
+                options.clear();
+                valueChanged = true;
+            } else if (o instanceof SingleChoiceParameterValue) {
                 final SingleChoiceParameterValue sc = (SingleChoiceParameterValue) o;
                 if (!Objects.equals(options, sc.options)) {
                     options.clear();
@@ -462,12 +498,10 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
                     choice = sc.choice;
                     valueChanged = true;
                 }
-            } 
-            else if (o instanceof ParameterValue) {
-                setChoiceData(this.innerClass.cast(o)); 
+            } else if (o instanceof ParameterValue) {
+                setChoiceData(this.innerClass.cast(o));
                 valueChanged = true;
-            }
-            else {
+            } else {
                 throw new IllegalArgumentException("Invalid argument");
             }
 

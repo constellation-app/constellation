@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import org.ejml.simple.SimpleMatrix;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -82,10 +83,22 @@ public class MatrixUtilitiesNGTest {
     }
 
     /**
-     * Test of getAdjacencyMatrix method, of class MatrixUtilities.
+     * Test of adjacency method, of class MatrixUtilities when graph is empty.
      */
     @Test
-    public void testGetAdjacencyMatrix() {
+    public void testAdjacencyEmptyGraph() {
+        final SimpleMatrix expResult = new SimpleMatrix(0, 0);
+        final SimpleMatrix result = MatrixUtilities.adjacency(new StoreGraph(), false);
+        assertEquals(result.numRows(), expResult.numRows());
+        assertEquals(result.numCols(), expResult.numCols());
+        assertEquals(result.getNumElements(), 0);
+    }
+    
+    /**
+     * Test of adjacency method, of class MatrixUtilities.
+     */
+    @Test
+    public void testAdjacency() {
         final boolean weighted = false;
         final double[][] expData = new double[5][5];
         expData[0][1] = 1.0;
@@ -168,10 +181,22 @@ public class MatrixUtilitiesNGTest {
     }
 
     /**
-     * Test of getInverseLaplacianMatrix method, of class MatrixUtilities.
+     * Test of inverseLaplacian method, of class MatrixUtilities.
      */
     @Test
-    public void testGetInverseLaplacianMatrix() {
+    public void testInverseLaplacianEmptyGraph() {
+        final SimpleMatrix expResult = new SimpleMatrix(0, 0);
+        final SimpleMatrix result = MatrixUtilities.inverseLaplacian(new StoreGraph());
+        assertEquals(result.numRows(), expResult.numRows());
+        assertEquals(result.numCols(), expResult.numCols());
+        assertEquals(result.getNumElements(), 0);
+    }
+    
+    /**
+     * Test of inverseLaplacian method, of class MatrixUtilities.
+     */
+    @Test
+    public void testInverseLaplacian() {
         final double[][] expData = new double[5][5];
         expData[0][0] = 0.867;
         expData[0][1] = 0.067;
@@ -196,8 +221,6 @@ public class MatrixUtilitiesNGTest {
         expData[4][4] = 0.867;
         final SimpleMatrix expResult = new SimpleMatrix(expData);
         final SimpleMatrix result = MatrixUtilities.inverseLaplacian(graph);
-        expResult.print();
-        result.print();
         assertTrue(isEqual(result, expResult, 1E-3));
     }
 

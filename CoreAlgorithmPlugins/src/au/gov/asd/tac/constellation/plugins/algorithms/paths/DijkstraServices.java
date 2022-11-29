@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CyclicBarrier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.Exceptions;
 
 /**
  * This class contains all of the logic for performing shortest paths
@@ -88,6 +87,8 @@ public class DijkstraServices {
     private final boolean followDirection;
 
     private static final Logger LOGGER = Logger.getLogger(DijkstraServices.class.getName());
+    
+    private static final String THREAD_INTERRUPTED = "Thread was interrupted";
 
     /**
      * Constructor.
@@ -131,11 +132,11 @@ public class DijkstraServices {
             } finally {
                 try {
                     distanceBarrier.await();
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                     Thread.currentThread().interrupt();
-                } catch (BrokenBarrierException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final BrokenBarrierException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
         }
@@ -165,11 +166,11 @@ public class DijkstraServices {
             } finally {
                 try {
                     pathBarrier.await();
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                     Thread.currentThread().interrupt();
-                } catch (BrokenBarrierException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final BrokenBarrierException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
         }
@@ -192,9 +193,9 @@ public class DijkstraServices {
         //Loop over the map and for each vertex get the paths that it is connected to
         final int vxSelectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
 
-        for (Map.Entry<Integer, List<ArrayList<Integer>>> vertex : paths.entrySet()) {
+        for (final Map.Entry<Integer, List<ArrayList<Integer>>> vertex : paths.entrySet()) {
             //For each path, get the first vertex and establish which link it corresponds to
-            for (ArrayList<Integer> path : vertex.getValue()) {
+            for (final ArrayList<Integer> path : vertex.getValue()) {
                 for (int i = 0; i < path.size(); i++) {
                     final int currNode = path.get(i);
                     final int nextNode;
@@ -335,16 +336,18 @@ public class DijkstraServices {
                     default:
                         break;
                 }
-            } catch (InterruptedException e) {
-                Exceptions.printStackTrace(e);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                 Thread.currentThread().interrupt();
             } finally {
                 // This thread is now done, so wait for all others to finish:
                 try {
                     barrier.await();
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED);
                     Thread.currentThread().interrupt();
-                } catch (BrokenBarrierException ex) {
+                } catch (final BrokenBarrierException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
             }
         }
@@ -413,6 +416,8 @@ public class DijkstraServices {
                                             continue;
                                         } else if (n == vertex) {
                                             break;
+                                        } else {
+                                            // Do nothing
                                         }
                                         final double pathCost = curr.getPriority() + getWeight(curr.getValue(), n, weights);
                                         final FibonacciHeap.Entry<Integer> neigh = entries.get(n);
@@ -429,6 +434,8 @@ public class DijkstraServices {
                                             }
                                         } else if (pathCost == neigh.getPriority()) {
                                             incMapSet(parent.lookupMap, n, curr.getValue());
+                                        } else {
+                                            // Do nothing
                                         }
                                     }
                                 }

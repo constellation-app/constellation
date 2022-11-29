@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public class LayerNameAttributeDescription extends AbstractObjectAttributeDescri
     protected LayerName convertFromString(final String string) {
         if (StringUtils.isBlank(string)) {
             return getDefault();
-        } else if (string.equals("DEFAULT")) {
+        } else if ("DEFAULT".equals(string)) {
             // handle default value from file import
             return DEFAULT_VALUE;
         } else {

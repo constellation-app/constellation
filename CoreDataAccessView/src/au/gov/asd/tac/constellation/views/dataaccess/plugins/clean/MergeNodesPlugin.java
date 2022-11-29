@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,10 @@ import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegist
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -37,9 +39,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodeType.MergeException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,6 +65,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @Messages("MergeNodesPlugin=Merge Nodes")
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     public static final String MERGE_TYPE_PARAMETER_ID = PluginParameter.buildId(MergeNodesPlugin.class, "merge_type");
@@ -90,7 +94,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         return "Merge nodes in your graph together";
     }
 
-    private static final Comparator<String> LONGEST_VERTEX_CHOOSER = (String o1, String o2) -> {
+    protected static final Comparator<String> LONGEST_VERTEX_CHOOSER = (o1, o2) -> {
         if (o1.length() > o2.length()) {
             return -1;
         } else if (o1.length() < o2.length()) {
@@ -100,7 +104,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         }
     };
 
-    private static final Comparator<String> SHORTEST_VERTEX_CHOOSER = (String o1, String o2) -> {
+    protected static final Comparator<String> SHORTEST_VERTEX_CHOOSER = (o1, o2) -> {
         if (o1.length() > o2.length()) {
             return 1;
         } else if (o1.length() < o2.length()) {
@@ -120,8 +124,8 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         VERTEX_CHOOSER.put("Shortest Value", SHORTEST_VERTEX_CHOOSER);
         VERTEX_CHOOSER.put("Ask Me", null);
 
-        Collection<? extends MergeNodeType> mergeNodeTypes = Lookup.getDefault().lookupAll(MergeNodeType.class);
-        for (MergeNodeType mergeNodeType : mergeNodeTypes) {
+        final Collection<? extends MergeNodeType> mergeNodeTypes = Lookup.getDefault().lookupAll(MergeNodeType.class);
+        for (final MergeNodeType mergeNodeType : mergeNodeTypes) {
             MERGE_TYPES.put(mergeNodeType.getName(), mergeNodeType);
         }
     }
@@ -133,7 +137,8 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final PluginParameter<SingleChoiceParameterValue> mergeType = SingleChoiceParameterType.build(MERGE_TYPE_PARAMETER_ID);
         mergeType.setName("Merge By");
         mergeType.setDescription("Nodes will be merged based on this");
-        List<String> mergeTypes = new ArrayList<>(MERGE_TYPES.keySet());
+        mergeType.setRequired(true);
+        final List<String> mergeTypes = new ArrayList<>(MERGE_TYPES.keySet());
         SingleChoiceParameterType.setOptions(mergeType, mergeTypes);
         params.addParameter(mergeType);
 
@@ -146,7 +151,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final PluginParameter<SingleChoiceParameterValue> mergingRule = SingleChoiceParameterType.build(MERGER_PARAMETER_ID);
         mergingRule.setName("Merging Rule");
         mergingRule.setDescription("The rule deciding how attributes are merged");
-        List<String> mergerNames = new ArrayList<>(MERGERS.keySet());
+        final List<String> mergerNames = new ArrayList<>(MERGERS.keySet());
         SingleChoiceParameterType.setOptions(mergingRule, mergerNames);
         SingleChoiceParameterType.setChoice(mergingRule, mergerNames.get(0));
         mergingRule.setEnabled(false);
@@ -168,14 +173,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         selectedOnly.setEnabled(false);
         params.addParameter(selectedOnly);
 
-//        final PluginParameter<BooleanParameterValue> ask = BooleanParameterType.buildId(ASK_PARAMETER_ID);
-//        ask.setName("Ask Before Merging");
-//        ask.setDescription("Should you be asked before merging occurs?");
-//        ask.setBooleanValue(false);
-//        ask.setEnabled(false);
-//        params.addParameter(ask);
-//
-        params.addController(MERGE_TYPE_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> parameters, final ParameterChange change) -> {
+        params.addController(MERGE_TYPE_PARAMETER_ID, (master, parameters, change) -> {
             if (change == ParameterChange.VALUE) {
                 final String selectedMergeType = parameters.get(MERGE_TYPE_PARAMETER_ID).getStringValue();
                 if (MERGE_TYPES.containsKey(selectedMergeType)) {
@@ -184,6 +182,8 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 }
             }
         });
+        // value is set after the controller definition so that the controller gets triggered
+        SingleChoiceParameterType.setChoice(mergeType, mergeTypes.get(0));
 
         return params;
     }
@@ -212,7 +212,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final Map<Integer, Set<Integer>> nodesToMerge;
         try {
             nodesToMerge = mergeNodeType.getNodesToMerge(graph, leadNodeChooser, threshold, selectedOnly);
-        } catch (MergeException ex) {
+        } catch (final MergeException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
 
@@ -226,7 +226,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }
 
-    private int mergeVertices(GraphWriteMethods graph, Set<Integer> verticesToMerge, int leadVertex, GraphElementMerger merger) {
+    private int mergeVertices(final GraphWriteMethods graph, final Set<Integer> verticesToMerge, final int leadVertex, final GraphElementMerger merger) {
         int mergedCount = 0;
 
         for (final int vertex : verticesToMerge) {

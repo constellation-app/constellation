@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,27 +133,27 @@ public final class Matrix44f {
         final float xs = x * s;
         final float ys = y * s;
         final float zs = z * s;
-        final float one_c = 1.0f - c;
+        final float one_c = 1.0F - c;
 
         a[index44(0, 0)] = (one_c * xx) + c;
         a[index44(0, 1)] = (one_c * xy) - zs;
         a[index44(0, 2)] = (one_c * zx) + ys;
-        a[index44(0, 3)] = 0.0f;
+        a[index44(0, 3)] = 0.0F;
 
         a[index44(1, 0)] = (one_c * xy) + zs;
         a[index44(1, 1)] = (one_c * yy) + c;
         a[index44(1, 2)] = (one_c * yz) - xs;
-        a[index44(1, 3)] = 0.0f;
+        a[index44(1, 3)] = 0.0F;
 
         a[index44(2, 0)] = (one_c * zx) - ys;
         a[index44(2, 1)] = (one_c * yz) + xs;
         a[index44(2, 2)] = (one_c * zz) + c;
-        a[index44(2, 3)] = 0.0f;
+        a[index44(2, 3)] = 0.0F;
 
-        a[index44(3, 0)] = 0.0f;
-        a[index44(3, 1)] = 0.0f;
-        a[index44(3, 2)] = 0.0f;
-        a[index44(3, 3)] = 1.0f;
+        a[index44(3, 0)] = 0.0F;
+        a[index44(3, 1)] = 0.0F;
+        a[index44(3, 2)] = 0.0F;
+        a[index44(3, 3)] = 1.0F;
     }
 
     public void makeScalingMatrix(final Vector3f vScale) {
@@ -190,18 +190,18 @@ public final class Matrix44f {
     public void makePerspectiveMatrix(final float fFov, final float fAspect, final float zMin, final float zMax) {
         makeIdentity(); // Fastest way to get most valid values already in place
 
-        float yMax = (float) (zMin * Math.tan(fFov * 0.5f));
+        float yMax = (float) (zMin * Math.tan(fFov * 0.5F));
         float yMin = -yMax;
         float xMin = yMin * fAspect;
         float xMax = -xMin;
 
-        a[0] = (2.0f * zMin) / (xMax - xMin);
-        a[5] = (2.0f * zMin) / (yMax - yMin);
+        a[0] = (2.0F * zMin) / (xMax - xMin);
+        a[5] = (2.0F * zMin) / (yMax - yMin);
         a[8] = (xMax + xMin) / (xMax - xMin);
         a[9] = (yMax + yMin) / (yMax - yMin);
         a[10] = -((zMax + zMin) / (zMax - zMin));
         a[11] = -1;
-        a[14] = -((2.0f * (zMax * zMin)) / (zMax - zMin));
+        a[14] = -((2.0F * (zMax * zMin)) / (zMax - zMin));
         a[15] = 0;
     }
 
@@ -218,9 +218,9 @@ public final class Matrix44f {
     public void makeOrthographicMatrix(final float xMin, final float xMax, final float yMin, final float yMax, final float zMin, final float zMax) {
         makeIdentity();
 
-        a[0] = 2.0f / (xMax - xMin);
-        a[5] = 2.0f / (yMax - yMin);
-        a[10] = -2.0f / (zMax - zMin);
+        a[0] = 2.0F / (xMax - xMin);
+        a[5] = 2.0F / (yMax - yMin);
+        a[10] = -2.0F / (zMax - zMin);
         a[12] = -((xMax + xMin) / (xMax - xMin));
         a[13] = -((yMax + yMin) / (yMax - yMin));
         a[14] = -((zMax + zMin) / (zMax - zMin));
@@ -332,11 +332,11 @@ public final class Matrix44f {
      */
     public void invert(final Matrix44f m) {
         // Calculate 4x4 determinant.
-        float det = 0.0f;
+        float det = 0.0F;
         for (int i = 0; i < 4; i++) {
             det += (i & 0x1) == 1 ? (-m.a[i] * detIJ(m, 0, i)) : (m.a[i] * detIJ(m, 0, i));
         }
-        det = (det != 0.0f ? (1.0f / det) : Float.POSITIVE_INFINITY);
+        det = (det != 0.0F ? (1.0F / det) : Float.POSITIVE_INFINITY);
 
         // Calculate inverse.
         for (int i = 0; i < 4; i++) {

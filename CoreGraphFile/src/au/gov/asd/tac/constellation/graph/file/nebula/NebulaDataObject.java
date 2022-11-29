@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileReader;
@@ -28,6 +29,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -38,7 +41,6 @@ import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectExistsException;
 import org.openide.loaders.MultiDataObject;
 import org.openide.loaders.MultiFileLoader;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 /**
@@ -120,18 +122,19 @@ import org.openide.util.NbBundle.Messages;
     )
 })
 public class NebulaDataObject extends MultiDataObject implements OpenCookie {
+    
+    private static final Logger LOGGER = Logger.getLogger(NebulaDataObject.class.getName());
 
     /**
      * Filename extension for nebula files.
      */
-    public static final String FILE_EXTENSION = ".nebula";
+    public static final String FILE_EXTENSION = FileExtensionConstants.NEBULA;
 
     // Remember nebula colors.
     private static final Map<String, Color> NEBULA_COLOR = new HashMap<>();
 
     public NebulaDataObject(final FileObject pf, final MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(pf, loader);
-//        registerEditor("application/x-nebula", false);
     }
 
     @Override
@@ -145,13 +148,13 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
         try (final FileReader reader = new FileReader(getPrimaryFile().getPath())) {
             props.load(reader);
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         // Generate a color for the nebula marker.
         // First, see if the user has specified a color in the nebula file.
         Color c = null;
-        final String cname = props.getProperty("colour") != null ? props.getProperty("colour") : props.getProperty("color");
+        final String cname = props.getProperty("color");
         if (cname != null) {
             ConstellationColor cv = ConstellationColor.fromHtmlColor(cname);
             if (cv == null) {
@@ -172,7 +175,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
         // Otherwise, create a random color for this nebula.
         if (c == null) {
             final float h = new SecureRandom().nextFloat();
-            c = Color.getHSBColor(h, 0.5f, 0.95f);
+            c = Color.getHSBColor(h, 0.5F, 0.95F);
             NEBULA_COLOR.put(getPrimaryFile().getPath(), c);
         }
 
@@ -190,8 +193,7 @@ public class NebulaDataObject extends MultiDataObject implements OpenCookie {
         // However, the recent files stuff works by watching for opening TopComponents (which is bad).
         // So, do it manually.
         // FileObject.getPath() returns a path containing "/"; we need to convert it to local separators for RecentFiles.
-        String path = getPrimaryFile().getPath();
-        path = new File(path).getAbsolutePath();
+        final String path = new File(getPrimaryFile().getPath()).getAbsolutePath();
         RecentFiles.addFile(path);
     }
 

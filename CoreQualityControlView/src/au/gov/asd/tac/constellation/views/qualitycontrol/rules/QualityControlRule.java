@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.Qua
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.openide.util.Lookup;
 
@@ -55,46 +56,55 @@ public abstract class QualityControlRule {
             return CATEGORIES_EQUAL;
         }
         // rule1 is never going to be higher than rule 2
-        if (category1 == QualityCategory.DEFAULT) {
+        if (category1 == QualityCategory.OK) {
             return CATEGORY_2_HIGHER;
         }
         // rule2 is never going to be higher than rule 1
-        if (category2 == QualityCategory.DEFAULT) {
+        if (category2 == QualityCategory.OK) {
+            return CATEGORY_1_HIGHER;
+        }
+
+        // rule1 is never going to be higher than rule 2
+        if (category1 == QualityCategory.MINOR) {
+            return CATEGORY_2_HIGHER;
+        }
+        // rule2 is never going to be higher than rule 1
+        if (category2 == QualityCategory.MINOR) {
             return CATEGORY_1_HIGHER;
         }
 
         // rule1 is always going to be higher than rule 2
-        if (category1 == QualityCategory.FATAL) {
+        if (category1 == QualityCategory.CRITICAL) {
             return CATEGORY_1_HIGHER;
         }
         // rule2 is always going to be higher than rule 1
-        if (category2 == QualityCategory.FATAL) {
+        if (category2 == QualityCategory.CRITICAL) {
             return CATEGORY_2_HIGHER;
         }
 
-        // rule1 is info, so rule 2 cannot be default, and is not info because
+        // rule1 is medium, so rule 2 cannot be minor, and is not medium because
         // it is not equal to rule 1.
-        if (category1 == QualityCategory.INFO) {
+        if (category1 == QualityCategory.MEDIUM) {
             return CATEGORY_2_HIGHER;
         }
-        // rule 1 is warning, so rule 2 could be info, severe or fatal
-        if (category1 == QualityCategory.WARNING) {
-            if (category2 == QualityCategory.INFO) {
+        // rule 1 is major, so rule 2 could be medium, severe or critical
+        if (category1 == QualityCategory.MAJOR) {
+            if (category2 == QualityCategory.MEDIUM) {
                 return CATEGORY_1_HIGHER;
             }
-            // if not info, then it is higher than warning
+            // if not info, then it is higher than major
             return CATEGORY_2_HIGHER;
         }
-        // if severe, rule2 could be info, warning, fatal
+        // if severe, rule2 could be medium, major, critical
         if (category1 == QualityCategory.SEVERE) {
-            // if rule2 is fatal, it is higher priority
-            if (category2 == QualityCategory.FATAL) {
+            // if rule2 is critical, it is higher priority
+            if (category2 == QualityCategory.CRITICAL) {
                 return CATEGORY_2_HIGHER;
             }
-            // if not fatal, must be lower.
+            // if not critical, must be lower.
             return CATEGORY_1_HIGHER;
         }
-        // default return false
+        // minor return false
         return CATEGORY_2_HIGHER;
     }
 
@@ -103,7 +113,7 @@ public abstract class QualityControlRule {
     /**
      * Construct a Rule.
      */
-    public QualityControlRule() {
+    protected QualityControlRule() {
         results = new HashSet<>();
     }
 
@@ -178,6 +188,23 @@ public abstract class QualityControlRule {
         return getName();
     }
 
+    @Override
+    public int hashCode() {
+        return 71 * 5 + Objects.hashCode(this.getClass());
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final QualityControlRule other = (QualityControlRule) obj;
+        return Objects.equals(this.results, other.results);
+    }
+
     /**
      * Get the QualityCategory which maps to the current score
      *
@@ -195,16 +222,18 @@ public abstract class QualityControlRule {
      * @return QualityCategory relating to the qualityScore given.
      */
     public static QualityCategory getCategoryByScore(final int qualityScore) {
-        if (qualityScore >= QualityControlEvent.FATAL_VALUE) {
-            return QualityCategory.FATAL;
+        if (qualityScore >= QualityControlEvent.CRITICAL_VALUE) {
+            return QualityCategory.CRITICAL;
         } else if (qualityScore >= QualityControlEvent.SEVERE_VALUE) {
             return QualityCategory.SEVERE;
-        } else if (qualityScore >= QualityControlEvent.WARNING_VALUE) {
-            return QualityCategory.WARNING;
-        } else if (qualityScore >= QualityControlEvent.INFO_VALUE) {
-            return QualityCategory.INFO;
+        } else if (qualityScore >= QualityControlEvent.MAJOR_VALUE) {
+            return QualityCategory.MAJOR;
+        } else if (qualityScore >= QualityControlEvent.MEDIUM_VALUE) {
+            return QualityCategory.MEDIUM;
+        } else if (qualityScore >= QualityControlEvent.MINOR_VALUE) {
+            return QualityCategory.MINOR;
         } else {
-            return QualityCategory.DEFAULT;
+            return QualityCategory.OK;
         }
     }
 

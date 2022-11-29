@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,6 @@ public class MapViewTileRenderer extends PApplet {
     public static final Object LOCK = new Object();
     private static final int DEFAULT_ZOOM = 4;
     private static final Location DEFAULT_LOCATION = new Location(3.0, 126.0);
-    private static final String MULTIPLE_VALUES = "<Multiple Values>";
 
     private final MapViewTopComponent parent;
     private final MarkerCache markerCache;
@@ -164,10 +163,10 @@ public class MapViewTileRenderer extends PApplet {
 
         final Set<ConstellationAbstractMarker> markers = map.getMarkers().stream()
                 .filter(marker -> !markerState.isShowSelectedOnly() || marker.isSelected())
-                .map(marker -> (ConstellationAbstractMarker) marker)
+                .map(ConstellationAbstractMarker.class::cast)
                 .collect(Collectors.toSet());
 
-        handleMouseZoom(null, markers);
+        handleMouseZoom(markers);
     }
 
     public void selectCustomMarkers(final Set<ConstellationAbstractMarker> markers) {
@@ -222,7 +221,7 @@ public class MapViewTileRenderer extends PApplet {
         }
 
         synchronized (LOCK) {
-            map.getMarkers().removeIf(marker -> marker instanceof ConstellationClusterMarker);
+            map.getMarkers().removeIf(ConstellationClusterMarker.class::isInstance);
         }
 
         final Set<ConstellationClusterMarker> clusterMarkers = markerCache.buildClusters(map, markerFactory, markerState);
@@ -360,7 +359,7 @@ public class MapViewTileRenderer extends PApplet {
         overlays = Lookup.getDefault().lookupAll(MapOverlay.class);
         overlays.forEach(overlay -> overlay.initialise(this, map, dispatcher));
 
-        barScale = new BarScaleUI(this, map, 10f, this.getComponent().getHeight() - 10);
+        barScale = new BarScaleUI(this, map, 10F, this.getComponent().getHeight() - 10F);
 
         updateMarkers(parent.getCurrentGraph(), new MarkerState());
         zoomToLocation(null);
@@ -391,9 +390,7 @@ public class MapViewTileRenderer extends PApplet {
             if (boxSelectionEnabled || boxZoomEnabled) {
                 final int boxColor = MarkerUtilities.DEFAULT_BOX_COLOR;
                 fill(boxColor);
-                rect(boxOriginX, boxOriginY,
-                        boxDeltaX - boxOriginX,
-                        boxDeltaY - boxOriginY);
+                rect(boxOriginX, boxOriginY, (float) boxDeltaX - boxOriginX, (float) boxDeltaY - boxOriginY);
             }
 
             updateClusters(parent.getMarkerState());
@@ -405,15 +402,9 @@ public class MapViewTileRenderer extends PApplet {
         assert !SwingUtilities.isEventDispatchThread();
 
         synchronized (LOCK) {
-            map.getMarkers().forEach(marker -> {
-                ((ConstellationAbstractMarker) marker).setHighlighted(false);
-            });
-
-            map.getHitMarkers(mouseX, mouseY).forEach(hitMarker -> {
-                ((ConstellationAbstractMarker) hitMarker).setHighlighted(true);
-            });
+            map.getMarkers().forEach(marker -> ((ConstellationAbstractMarker) marker).setHighlighted(false));
+            map.getHitMarkers(mouseX, mouseY).forEach(hitMarker -> ((ConstellationAbstractMarker) hitMarker).setHighlighted(true));
         }
-
         overlays.forEach(overlay -> overlay.mouseMoved(event));
     }
 
@@ -424,7 +415,7 @@ public class MapViewTileRenderer extends PApplet {
         final List<ConstellationAbstractMarker> hitMarkers;
         synchronized (LOCK) {
             hitMarkers = map.getHitMarkers(mouseX, mouseY)
-                    .stream().map(marker -> (ConstellationAbstractMarker) marker).collect(Collectors.toList());
+                    .stream().map(ConstellationAbstractMarker.class::cast).collect(Collectors.toList());
         }
 
         if (event.getButton() == PConstants.LEFT) {
@@ -433,6 +424,8 @@ public class MapViewTileRenderer extends PApplet {
                 handleMouseSelection(event, new HashSet<>());
             } else if (!hitMarkers.isEmpty()) {
                 handleMouseSelection(event, new HashSet<>(hitMarkers));
+            } else {
+                // Do nothing
             }
         }
 
@@ -458,6 +451,8 @@ public class MapViewTileRenderer extends PApplet {
             zoomMapEvent.setTransformationCenterLocation(location);
             dispatcher.fireMapEvent(zoomMapEvent);
             dispatcher.unregister(map, ZoomMapEvent.TYPE_ZOOM, map.getId());
+        } else {
+            // Do nothing
         }
 
         overlays.forEach(overlay -> overlay.mousePressed(event));
@@ -544,7 +539,7 @@ public class MapViewTileRenderer extends PApplet {
                 } catch (Exception ex) {
                     LOGGER.log(Level.SEVERE, ex.getMessage(), ex);
                 }
-                handleMouseZoom(event, markers);
+                handleMouseZoom(markers);
 
                 boxOriginX = -1;
                 boxOriginY = -1;
@@ -565,6 +560,8 @@ public class MapViewTileRenderer extends PApplet {
             boxDeltaX = -1;
             boxDeltaY = -1;
             boxSelectionEnabled = false;
+        } else {
+            // Do nothing
         }
 
         layers.forEach(layer -> layer.mouseReleased(event));
@@ -596,6 +593,8 @@ public class MapViewTileRenderer extends PApplet {
                 zoomMapEvent.setZoomLevelDelta(1);
             } else if (delta > 0) {
                 zoomMapEvent.setZoomLevelDelta(-1);
+            } else {
+                // Do nothing
             }
             dispatcher.fireMapEvent(zoomMapEvent);
         }
@@ -619,7 +618,7 @@ public class MapViewTileRenderer extends PApplet {
             key = 0;
         } else {
             // switch map providers
-            final int numberKey = (int) key - 48;
+            final int numberKey = key - 48;
             if (numberKey <= parent.getProviders().size()
                     && numberKey > 0 && numberKey < 10) {
                 final MapProvider mapProvider = parent.getProviders().get(numberKey - 1);
@@ -645,7 +644,7 @@ public class MapViewTileRenderer extends PApplet {
         if (!locatedFile.isAbsolute()) {
             final String codeNameBase = "au.gov.asd.tac.constellation.views.mapview";
             final String relativePath = resourcePath + where;
-            locatedFile = ConstellationInstalledFileLocator.locate(relativePath, codeNameBase, false, MapViewTileRenderer.class.getProtectionDomain());
+            locatedFile = ConstellationInstalledFileLocator.locate(relativePath, codeNameBase, MapViewTileRenderer.class.getProtectionDomain());
             if (locatedFile == null) {
                 final URL url = getClass().getProtectionDomain().getCodeSource().getLocation();
                 locatedFile = new File(url.toString());
@@ -669,7 +668,7 @@ public class MapViewTileRenderer extends PApplet {
      * @param event the mouse event which caused the zoom
      * @param markers the markers to zoom to
      */
-    private void handleMouseZoom(final MouseEvent event, final Set<ConstellationAbstractMarker> markers) {
+    private void handleMouseZoom(final Set<ConstellationAbstractMarker> markers) {
         assert !SwingUtilities.isEventDispatchThread();
 
         if (markers == null) {
@@ -757,6 +756,8 @@ public class MapViewTileRenderer extends PApplet {
                         if (marker.isCustom()) {
                             custom.remove(marker);
                         }
+                    } else {
+                        // Do nothing
                     }
                 }
             });
@@ -824,9 +825,7 @@ public class MapViewTileRenderer extends PApplet {
         // get the selected markers
         return markerCache.keys().stream().filter(marker -> {
             // clear all counters
-            edgeCounters.forEach((edge, counter) -> {
-                counter.reset();
-            });
+            edgeCounters.forEach((edge, counter) -> counter.reset());
 
             // get the marker locations
             final List<Location> locations = marker.getLocations();
@@ -855,15 +854,6 @@ public class MapViewTileRenderer extends PApplet {
                 });
             }
 
-            // check if any counter value is odd, indicating a corner point lies
-            // within the marker, or if any paired counters differ, indicating a
-            // box edge intersects with the marker
-            if (edgeCounters.values().stream().anyMatch(
-                    counter -> counter.get() % 2 == 1)) {
-            }
-            if (pairedCounters.entrySet().stream().anyMatch(
-                    entry -> entry.getKey().get() != entry.getValue().get())) {
-            }
             return edgeCounters.values().stream().anyMatch(
                     counter -> counter.get() % 2 == 1)
                     || pairedCounters.entrySet().stream().anyMatch(
@@ -886,25 +876,25 @@ public class MapViewTileRenderer extends PApplet {
 
         double x;
         double y;
-        double T;
-        double U;
+        double t;
+        double u;
 
         if (selectionEdge.pointOneX == selectionEdge.pointTwoX) {
             final double markerDeltaX = markerEdge.pointTwoX - markerEdge.pointOneX;
             final double markerDeltaY = markerEdge.pointTwoY - markerEdge.pointOneY;
             x = selectionEdge.pointOneX;
-            T = (x - markerEdge.pointOneX) / markerDeltaX;
-            y = markerEdge.pointOneY + (markerDeltaY * T);
-            return T >= 0 && T <= 1
+            t = (x - markerEdge.pointOneX) / markerDeltaX;
+            y = markerEdge.pointOneY + (markerDeltaY * t);
+            return t >= 0 && t <= 1
                     && y >= Math.min(selectionEdge.pointOneY, selectionEdge.pointTwoY)
                     && y <= Math.max(selectionEdge.pointOneY, selectionEdge.pointTwoY);
         } else if (selectionEdge.pointOneY == selectionEdge.pointTwoY) {
             final double markerDeltaX = markerEdge.pointTwoX - markerEdge.pointOneX;
             final double markerDeltaY = markerEdge.pointTwoY - markerEdge.pointOneY;
             y = selectionEdge.pointOneY;
-            T = (y - markerEdge.pointOneY) / markerDeltaY;
-            x = markerEdge.pointOneX + (markerDeltaX * T);
-            return T >= 0 && T <= 1
+            t = (y - markerEdge.pointOneY) / markerDeltaY;
+            x = markerEdge.pointOneX + (markerDeltaX * t);
+            return t >= 0 && t <= 1
                     && x >= Math.min(selectionEdge.pointOneX, selectionEdge.pointTwoX)
                     && x <= Math.max(selectionEdge.pointOneX, selectionEdge.pointTwoX);
         } else {
@@ -916,9 +906,9 @@ public class MapViewTileRenderer extends PApplet {
             final double edgeOffsetY = (markerEdge.pointOneY - selectionEdge.pointOneY) / selectionDeltaY;
             final double differenceDeltaX = markerDeltaX / selectionDeltaX;
             final double differenceDeltaY = markerDeltaY / selectionDeltaY;
-            U = (edgeOffsetX - edgeOffsetY) / (differenceDeltaY - differenceDeltaX);
-            T = edgeOffsetX + (differenceDeltaX * U);
-            return T >= 0 && T <= 1 && U >= 0 && U <= 1;
+            u = (edgeOffsetX - edgeOffsetY) / (differenceDeltaY - differenceDeltaX);
+            t = edgeOffsetX + (differenceDeltaX * u);
+            return t >= 0 && t <= 1 && u >= 0 && u <= 1;
 
         }
     }
@@ -926,7 +916,7 @@ public class MapViewTileRenderer extends PApplet {
     /**
      * Class representing the named edge between two points.
      */
-    private final class Edge {
+    private static final class Edge {
 
         private final String name;
         private final double pointOneX;
@@ -959,7 +949,7 @@ public class MapViewTileRenderer extends PApplet {
     /**
      * Class representing a named counter.
      */
-    private final class Counter {
+    private static final class Counter {
 
         private String name;
         private int count;

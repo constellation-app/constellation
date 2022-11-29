@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,21 @@ import au.gov.asd.tac.constellation.graph.utilities.perspectives.PerspectiveMode
 import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JList;
 import javax.swing.SwingUtilities;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
@@ -80,6 +88,8 @@ import org.openide.windows.TopComponent;
     "MSG_RemovePerspective=Remove perspective"
 })
 public final class PerspectiveBookmarkTopComponent extends TopComponent implements GraphManagerListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(PerspectiveBookmarkTopComponent.class.getName());
 
     private PerspectiveModel perspectiveModel;
 
@@ -100,33 +110,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     private void moveToPerspective() {
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph != null) {
-            final Perspective p = perspectivesList.getSelectedValue();
-            PluginExecution.withPlugin(new SimpleEditPlugin("Change Perspective") {
-                @Override
-                public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                    final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(graph);
-                    final Camera oldCamera = graph.getObjectValue(cameraAttribute, 0);
-                    final Camera camera = new Camera(oldCamera);
-                    camera.lookAtPreviousCentre.set(camera.lookAtCentre);
-                    camera.lookAtPreviousEye.set(camera.lookAtEye);
-                    camera.lookAtPreviousUp.set(camera.lookAtUp);
-                    camera.lookAtPreviousRotation.set(camera.lookAtRotation);
-                    camera.lookAtCentre.set(p.centre);
-                    camera.lookAtEye.set(p.eye);
-                    camera.lookAtUp.set(p.up);
-                    camera.lookAtRotation.set(p.rotate);
-
-                    // Modify the lookAt relative to the bounding box,
-                    // so if the graph moves, we move with it.
-                    final float[] c = BBoxf.getGraphBoundingBox(graph).getCentre();
-                    final Vector3f centre = new Vector3f(c[BBoxf.X], c[BBoxf.Y], c[BBoxf.Z]);
-                    camera.lookAtCentre.add(centre);
-                    camera.lookAtEye.add(centre);
-
-//                    camera.animation = new PanAnimation(oldCamera, camera);
-                    graph.setObjectValue(cameraAttribute, 0, camera);
-                }
-            }).executeLater(graph);
+            PluginExecution.withPlugin(new ChangePerspectivePlugin(perspectivesList.getSelectedValue())).executeLater(graph);
         }
     }
 
@@ -136,17 +120,16 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
      * A new instance of the model is created, so graph undo/redo works
      * correctly.
      *
-     * @param wg The graph to be updated.
      */
-    private void updateOnGraph(final GraphWriteMethods wg) {
-        int perspectiveId = wg.getAttribute(GraphElementType.META, PerspectiveAttributeDescription.ATTRIBUTE_NAME);
-        if (perspectiveId == Graph.NOT_FOUND) {
-            perspectiveId = wg.addAttribute(GraphElementType.META, PerspectiveAttributeDescription.ATTRIBUTE_NAME, PerspectiveAttributeDescription.ATTRIBUTE_NAME, PerspectiveAttributeDescription.ATTRIBUTE_NAME, null, null);
+    private void updateOnGraph(final String actionType) {
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        if (graph != null) {
+            perspectiveModel = new PerspectiveModel(perspectiveModel);
+            final UpdatePerspectivePlugin perspectivePlugin = new UpdatePerspectivePlugin(perspectiveModel);
+            perspectivePlugin.setName(actionType);
+            PluginExecution.withPlugin(perspectivePlugin).executeLater(graph);
+            perspectivesList.setModel(perspectiveModel);
         }
-
-        perspectiveModel = new PerspectiveModel(perspectiveModel);
-        wg.setObjectValue(perspectiveId, 0, perspectiveModel);
-        perspectivesList.setModel(perspectiveModel);
     }
 
     private void renamePerspective() {
@@ -161,18 +144,11 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
                 if (!newLabel.equals(p.label)) {
                     perspectiveModel.removeElementAt(pix);
                     final int ix = perspectiveModel.addElement(new Perspective(newLabel, p));
-                    SwingUtilities.invokeLater(() -> {
-                        perspectivesList.setSelectedIndex(ix);
-                    });
+                    SwingUtilities.invokeLater(() -> perspectivesList.setSelectedIndex(ix));
 
                     final Graph graph = GraphManager.getDefault().getActiveGraph();
                     if (graph != null) {
-                        PluginExecution.withPlugin(new SimpleEditPlugin("Rename Perspective") {
-                            @Override
-                            public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                updateOnGraph(wg);
-                            }
-                        }).executeLater(graph);
+                        PluginExecution.withPlugin(new UpdatePerspectivePlugin(perspectiveModel)).executeLater(graph);
                     }
                 }
             }
@@ -269,28 +245,16 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     {//GEN-HEADEREND:event_addButtonActionPerformed
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (graph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Add Perspective") {
-                @Override
-                public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                    final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(graph);
-                    final Camera camera = new Camera(graph.getObjectValue(cameraAttribute, 0));
-
-                    // Modify the lookAt relative to the bounding box,
-                    // so if the graph moves, we move with it.
-                    final float[] c = BBoxf.getGraphBoundingBox(graph).getCentre();
-                    final Vector3f centre = new Vector3f(c[BBoxf.X], c[BBoxf.Y], c[BBoxf.Z]);
-                    camera.lookAtCentre.subtract(centre);
-                    camera.lookAtEye.subtract(centre);
-
-                    final Perspective p = new Perspective(perspectiveModel.getNewLabel(), Graph.NOT_FOUND, camera.lookAtCentre, camera.lookAtEye, camera.lookAtUp, camera.lookAtRotation);
-                    final int ix = perspectiveModel.addElement(p);
-                    SwingUtilities.invokeLater(() -> {
-                        perspectivesList.setSelectedIndex(ix);
-                    });
-
-                    updateOnGraph(graph);
-                }
-            }).executeLater(graph);
+            Future<?> f = PluginExecution.withPlugin(new AddPerspectivePlugin(perspectiveModel, perspectivesList)).executeLater(graph);
+            try {
+                f.get();
+            } catch (final InterruptedException ex) {
+                Thread.currentThread().interrupt();
+                LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
+            } catch (final ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+            updateOnGraph("Add Perspective Model");
         }
     }//GEN-LAST:event_addButtonActionPerformed
 
@@ -300,15 +264,7 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
         for (int i = selection.length - 1; i >= 0; i--) {
             perspectiveModel.removeElementAt(selection[i]);
         }
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-        if (graph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Remove Perspective") {
-                @Override
-                public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                    updateOnGraph(wg);
-                }
-            }).executeLater(graph);
-        }
+        updateOnGraph("Remove Perspective Model");
     }//GEN-LAST:event_removeButtonActionPerformed
 
     private void perspectivesListMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_perspectivesListMouseClicked
@@ -326,6 +282,8 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
         } else if (evt.getKeyCode() == KeyEvent.VK_F2) {
             renamePerspective();
             evt.consume();
+        } else {
+            // Do nothing
         }
     }//GEN-LAST:event_perspectivesListKeyPressed
 
@@ -397,5 +355,115 @@ public final class PerspectiveBookmarkTopComponent extends TopComponent implemen
     @Override
     public HelpCtx getHelpCtx() {
         return new HelpCtx("au.gov.asd.tac.constellation.functionality.perspectives.Perspective");
+    }
+
+    /**
+     * Plugin to change the camera perspective
+     */
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
+    private static class ChangePerspectivePlugin extends SimpleEditPlugin {
+
+        private final Perspective p;
+
+        public ChangePerspectivePlugin(final Perspective p) {
+            this.p = p;
+        }
+
+        @Override
+        public String getName() {
+            return "Change Camera Perspective";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(graph);
+            final Camera oldCamera = graph.getObjectValue(cameraAttribute, 0);
+            final Camera camera = new Camera(oldCamera);
+            camera.lookAtPreviousCentre.set(camera.lookAtCentre);
+            camera.lookAtPreviousEye.set(camera.lookAtEye);
+            camera.lookAtPreviousUp.set(camera.lookAtUp);
+            camera.lookAtPreviousRotation.set(camera.lookAtRotation);
+            camera.lookAtCentre.set(p.centre);
+            camera.lookAtEye.set(p.eye);
+            camera.lookAtUp.set(p.up);
+            camera.lookAtRotation.set(p.rotate);
+
+            // Modify the lookAt relative to the bounding box,
+            // so if the graph moves, we move with it.
+            final float[] c = BBoxf.getGraphBoundingBox(graph).getCentre();
+            final Vector3f centre = new Vector3f(c[BBoxf.X], c[BBoxf.Y], c[BBoxf.Z]);
+            camera.lookAtCentre.add(centre);
+            camera.lookAtEye.add(centre);
+            graph.setObjectValue(cameraAttribute, 0, camera);
+        }
+    }
+
+    /**
+     * Plugin to update the perspective model for the graph
+     */
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
+    private static class UpdatePerspectivePlugin extends SimpleEditPlugin {
+
+        private final PerspectiveModel perspectiveModel;
+        private String pluginName = "Update Perspective";
+
+        public UpdatePerspectivePlugin(final PerspectiveModel perspectiveModel) {
+            this.perspectiveModel = perspectiveModel;
+        }
+
+        public void setName(final String newName) {
+            this.pluginName = newName;
+        }
+
+        @Override
+        public String getName() {
+            return pluginName;
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            int perspectiveId = wg.getAttribute(GraphElementType.META, PerspectiveAttributeDescription.ATTRIBUTE_NAME);
+            if (perspectiveId == Graph.NOT_FOUND) {
+                perspectiveId = wg.addAttribute(GraphElementType.META, PerspectiveAttributeDescription.ATTRIBUTE_NAME, PerspectiveAttributeDescription.ATTRIBUTE_NAME, PerspectiveAttributeDescription.ATTRIBUTE_NAME, null, null);
+            }
+            wg.setObjectValue(perspectiveId, 0, perspectiveModel);
+        }
+    }
+
+    /**
+     * Plugin to update the perspective model for the graph
+     */
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
+    private static class AddPerspectivePlugin extends SimpleEditPlugin {
+
+        private final PerspectiveModel perspectiveModel;
+        private final JList<Perspective> perspectivesList;
+
+        public AddPerspectivePlugin(final PerspectiveModel perspectiveModel, final JList<Perspective> perspectivesList) {
+            this.perspectiveModel = perspectiveModel;
+            this.perspectivesList = perspectivesList;
+        }
+
+        @Override
+        public String getName() {
+            return "Add Perspective";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(graph);
+            final Camera camera = new Camera(graph.getObjectValue(cameraAttribute, 0));
+
+            // Modify the lookAt relative to the bounding box,
+            // so if the graph moves, we move with it.
+            final float[] c = BBoxf.getGraphBoundingBox(graph).getCentre();
+            final Vector3f centre = new Vector3f(c[BBoxf.X], c[BBoxf.Y], c[BBoxf.Z]);
+            camera.lookAtCentre.subtract(centre);
+            camera.lookAtEye.subtract(centre);
+
+            final Perspective p = new Perspective(perspectiveModel.getNewLabel(), Graph.NOT_FOUND, camera.lookAtCentre, camera.lookAtEye, camera.lookAtUp, camera.lookAtRotation);
+            final int ix = perspectiveModel.addElement(p);
+            SwingUtilities.invokeLater(() -> perspectivesList.setSelectedIndex(ix));
+        }
     }
 }

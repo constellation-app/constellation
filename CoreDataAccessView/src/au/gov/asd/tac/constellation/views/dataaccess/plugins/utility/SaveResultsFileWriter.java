@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
-import au.gov.asd.tac.constellation.views.dataaccess.state.DataAccessPreferenceKeys;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -47,7 +47,7 @@ public class SaveResultsFileWriter {
      * execution.
      */
     public static void writeRecordStore(final Plugin plugin, final RecordStore recordstore) throws PluginException {
-        final File outputDir = DataAccessPreferenceKeys.getDataAccessResultsDir();
+        final File outputDir = DataAccessPreferenceUtilities.getDataAccessResultsDir();
         if (outputDir != null) {
             final String fnam = generateFilename(plugin, "csv");
             final File file = new File(outputDir, fnam);

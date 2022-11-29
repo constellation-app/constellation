@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.ToggleDrawDir
 import au.gov.asd.tac.constellation.graph.interaction.plugins.draw.ToggleSelectionModeAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.CloseAction;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.SaveAsAction;
+import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
 import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
@@ -62,13 +63,16 @@ import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.plugins.update.GraphUpdateController;
@@ -77,6 +81,7 @@ import au.gov.asd.tac.constellation.plugins.update.UpdateComponent;
 import au.gov.asd.tac.constellation.plugins.update.UpdateController;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.DeveloperPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -111,6 +116,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -123,6 +130,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.actions.Savable;
 import org.netbeans.spi.actions.AbstractSavable;
 import org.openide.DialogDisplayer;
@@ -137,7 +145,6 @@ import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.SaveAsCapable;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -176,6 +183,8 @@ import org.openide.windows.TopComponent;
     "HINT_VisualGraphTopComponent=Visual Graph"
 })
 public final class VisualGraphTopComponent extends CloneableTopComponent implements GraphChangeListener, UndoRedo.Provider {
+    
+    private static final Logger LOGGER = Logger.getLogger(VisualGraphTopComponent.class.getName());
 
     public static final String NEW_GRAPH_NAME_PARAMETER_ID = PluginParameter.buildId(VisualGraphTopComponent.class, "graph_name");
 
@@ -264,18 +273,13 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                         @SuppressWarnings("unchecked") //files will be list of file which extends from object type
                         final List<File> files = (List<File>) transferable.getTransferData(DataFlavor.javaFileListFlavor);
                         for (final File file : files) {
-                            try (final InputStream in = file.getName().endsWith(".gz") ? new GZIPInputStream(new FileInputStream(file)) : new FileInputStream(file)) {
+                            try (final InputStream in = StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.GZIP) ? new GZIPInputStream(new FileInputStream(file)) : new FileInputStream(file)) {
                                 final RecordStore recordStore = RecordStoreUtilities.fromTsv(in);
-                                PluginExecution.withPlugin(new SimpleEditPlugin("Import record file") {
-                                    @Override
-                                    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                                        GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, false, true, null);
-                                    }
-                                }).executeLater(graph);
+                                PluginExecution.withPlugin(new ImportRecordFile(recordStore)).executeLater(graph);
                             }
                         }
-                    } catch (UnsupportedFlavorException | IOException ex) {
-                        Exceptions.printStackTrace(ex);
+                    } catch (final UnsupportedFlavorException | IOException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                         dtde.rejectDrop();
                     }
                 } else {
@@ -581,7 +585,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
     }
 
     @Override
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         try {
             MemoryManager.finalizeObject(VisualGraphTopComponent.class);
         } finally {
@@ -669,11 +673,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             } else if (o.equals(SAVE)) {
                 try {
                     savable.handleSave();
-                    if (!savable.isSaved()) {
-                        return false;
-                    }
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                    return savable.isSaved();
+                    
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             } else {
                 return false;
@@ -728,7 +731,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                                 s.save();
                             }
                         } catch (final IOException ex) {
-                            Exceptions.printStackTrace(ex);
+                            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                         }
                     }
                 };
@@ -780,7 +783,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                             setName(newGraphName);
                             setDisplayName(newGraphName);
                             setHtmlDisplayName(newGraphName); // this changes the text on the tab
-                        } catch (IOException ex) {
+                        } catch (final IOException ex) {
                             throw new RuntimeException(String.format("The name %s already exists.", newGraphName), ex);
                         }
                         savable.setModified(true);
@@ -973,7 +976,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 // graph will get saved each time.
                 requestActive();
 
-                SaveAsAction action = new SaveAsAction();
+                SaveAsAction action = new SaveAsAction();               
                 action.actionPerformed(null);
                 isSaved = action.isSaved();
                 return;
@@ -986,6 +989,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             final GraphDataObject freshGdo = (GraphDataObject) gdo.createFromTemplate(gdo.getFolder(), tmpnam);
             final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, true);
             writer.execute();
+            isSaved = true;
         }
 
         /**
@@ -999,7 +1003,10 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj instanceof MySavable) {
+            if (obj == null) {
+                return false;
+            }
+            if (this.getClass() == obj.getClass()) {
                 final MySavable m = (MySavable) obj;
                 return tc() == m.tc();
             }
@@ -1047,7 +1054,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 existing.delete();
             }
 
-            final String ext = GraphDataObject.FILE_EXTENSION;
+            final String ext = FileExtensionConstants.STAR;
             if (name.endsWith(ext)) {
                 name = name.substring(0, name.length() - ext.length());
             }
@@ -1055,8 +1062,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
             final File newFile = new File(folder.getPath(), name + ext);
             final FileObject fo = FileUtil.createData(newFile);
             final GraphDataObject freshGdo = (GraphDataObject) DataObject.find(fo);
-//            final GraphDataObject freshGdo = (GraphDataObject)DataObject.find(newFile);
-//            final GraphDataObject freshGdo = (GraphDataObject)gdo.createFromTemplate(DataFolder.findFolder(folder), name);
             final BackgroundWriter writer = new BackgroundWriter(name, freshGdo, false);
             writer.execute();
         }
@@ -1067,7 +1072,6 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
      */
     private class BackgroundWriter extends SwingWorker<Void, Object> {
 
-        private static final String BACKUP_EXTENSION = ".bak";
         private final String name;
         private final GraphDataObject freshGdo;
         private final boolean deleteOldGdo;
@@ -1101,7 +1105,7 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 rg.release();
             }
             try {
-                
+
                 // Create a 'backup' copy of the file being saved before its saved. This is done to ensure that there are
                 // two distinct saves/write operations that occur meaning that if the application was to terminate on one
                 // of them, then 'one' of the files should be valid still.
@@ -1117,20 +1121,22 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                 //        - if backup was not found throw load error
                 final FileObject fileobj = freshGdo.getPrimaryFile();
                 final File srcFile = new File(fileobj.getPath());
-                final String srcfilePath = srcFile.getParent().concat(File.pathSeparator).concat(this.name).concat(".").concat(fileobj.getExt());
-                
-                // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
-                // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
-                // already have been written.
-                FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(BACKUP_EXTENSION)));
-                
+                final String srcfilePath = srcFile.getParent().concat(File.separator).concat(this.name).concat(".").concat(fileobj.getExt());
+
+                if (srcFile.exists() && !srcFile.isDirectory() && FileUtils.sizeOf(srcFile) > 0) {
+                    // Create a backup copy of the file before overwriting it. If the backup copy fails, then code will never
+                    // get to execute the save, so the actual file should remain intact. If the save fails, the backup file will
+                    // already have been written.
+                    FileUtils.copyFile(new File(srcfilePath), new File(srcfilePath.concat(FileExtensionConstants.BACKUP)));
+                }
+
                 try (OutputStream out = new BufferedOutputStream(freshGdo.getPrimaryFile().getOutputStream())) {
                     // Write the graph.
                     cancelled = new GraphJsonWriter().writeGraphToZip(copy, out, new HandleIoProgress("Writing..."));
                 }
                 SaveNotification.saved(freshGdo.getPrimaryFile().getPath());
             } catch (final Exception ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             return null;
@@ -1148,15 +1154,11 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
 
                     // Delete the old DataObject and remove the old GDO from the lookup.
                     if (deleteOldGdo) {
-//                        System.out.printf("@VTC Delete %s\n", FileUtil.getFileDisplayName(gdo.getPrimaryFile()));
-//                        gdo.getPrimaryFile().delete();
                         gdo.delete();
-//                        System.out.printf("@VTX Exists %s\n", FileUtil.toFile(gdo.getPrimaryFile()).exists());
                     }
                     content.remove(gdo);
 
                     // Rename the new file and add the new GDO to the lookup.
-//                    System.out.printf("@VTC Rename %s -> %s\n", FileUtil.getFileDisplayName(freshGdo.getPrimaryFile()), name);
                     freshGdo.rename(name);
                     gdo = freshGdo;
                     content.add(gdo);
@@ -1171,23 +1173,70 @@ public final class VisualGraphTopComponent extends CloneableTopComponent impleme
                     graphModificationCount = graphModificationCountBase;
                     savable.setModified(false);
                 }
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
-            PluginExecution.withPlugin(new SimplePlugin("Write Graph File") {
-                @Override
-                protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-                    ConstellationLoggerHelper.exportPropertyBuilder(
-                            this,
-                            GraphRecordStoreUtilities.getVertices(copy, false, false, false).getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                            new File(freshGdo.getPrimaryFile().getPath()),
-                            ConstellationLoggerHelper.SUCCESS
-                    );
-                }
-            }).executeLater(null);
+            PluginExecution.withPlugin(new WriteGraphFile(copy, freshGdo)).executeLater(null);
 
-            GraphNode.getGraphNode(graph).makeBusy(false);
+            if (GraphNode.getGraphNode(graph) != null) {
+                GraphNode.getGraphNode(graph).makeBusy(false);
+            }
+        }
+    }
+
+    /**
+     * Plugin to import the record file.
+     */
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
+    private class ImportRecordFile extends SimpleEditPlugin {
+
+        private final RecordStore recordStore;
+
+        public ImportRecordFile(final RecordStore recordStore) {
+            this.recordStore = recordStore;
+        }
+
+        @Override
+        public String getName() {
+            return "Visual Graph: Import Record File";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, false, true, null);
+        }
+    }
+
+    /**
+     * Plugin to write the graph file.
+     */
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
+    private class WriteGraphFile extends SimplePlugin {
+
+        private final GraphReadMethods copy;
+        private final GraphDataObject freshGdo;
+
+        public WriteGraphFile(final GraphReadMethods copy, final GraphDataObject freshGdo) {
+            this.copy = copy;
+            this.freshGdo = freshGdo;
+        }
+
+        @Override
+        public String getName() {
+            return "Visual Graph: Write Graph File";
+        }
+
+        @Override
+        protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            final File file = new File(freshGdo.getPrimaryFile().getPath());
+            ConstellationLoggerHelper.exportPropertyBuilder(
+                    this,
+                    GraphRecordStoreUtilities.getVertices(copy, false, false, false).getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                    file,
+                    ConstellationLoggerHelper.SUCCESS
+            );
+            RecentGraphScreenshotUtilities.takeScreenshot(file.getAbsolutePath());
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,12 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.utilities.ElementSet;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.histogram.formats.BinFormatter;
@@ -87,6 +90,8 @@ import org.openide.windows.TopComponent;
 })
 public final class HistogramTopComponent extends TopComponent implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider {
 
+    private static final int MIN_WIDTH = 425;
+    private static final int MIN_HEIGHT = 400;
     Graph currentGraph = null;
     private final HistogramControls controls;
     private final HistogramDisplay display;
@@ -95,7 +100,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     private long currentStructureModificationCount = Long.MIN_VALUE;
     private long currentSelectedModificationCount = Long.MIN_VALUE;
     private long currentBinnedModificationCount = Long.MIN_VALUE;
-    private final int currentTimeZoneAttribute = Graph.NOT_FOUND;
+    private static final int CURRENT_TIME_ZONE_ATTRIBUTE = Graph.NOT_FOUND;
     private long currentTimeZoneModificationCount = Long.MIN_VALUE;
     private final Map<String, BinCreator> binCreators = new LinkedHashMap<>();
     private int histogramStateAttribute = Graph.NOT_FOUND;
@@ -110,6 +115,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         initComponents();
         setName(Bundle.CTL_HistogramTopComponent());
         setToolTipText(Bundle.HINT_HistogramTopComponent());
+        this.setMinimumSize(new java.awt.Dimension(MIN_WIDTH, MIN_HEIGHT));
 
         controls = new HistogramControls(this);
         add(controls, BorderLayout.SOUTH);
@@ -153,11 +159,11 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
     }
 
     void writeProperties(java.util.Properties p) {
-        // Method required for @ConvertAsProperties, intentionally left blank
+        // Method required for @ConvertAsProperties, intentionally left blank.
     }
 
     void readProperties(java.util.Properties p) {
-        // Method required for @ConvertAsProperties, intentionally left blank
+        // Method required for @ConvertAsProperties, intentionally left blank.
     }
 
     @Override
@@ -214,8 +220,8 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                             return;
                         }
 
-                        if (currentTimeZoneAttribute != Graph.NOT_FOUND && currentTimeZoneModificationCount != rg.getValueModificationCounter(currentTimeZoneAttribute)) {
-                            currentTimeZoneModificationCount = rg.getValueModificationCounter(currentTimeZoneAttribute);
+                        if (CURRENT_TIME_ZONE_ATTRIBUTE != Graph.NOT_FOUND && currentTimeZoneModificationCount != rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE)) {
+                            currentTimeZoneModificationCount = rg.getValueModificationCounter(CURRENT_TIME_ZONE_ATTRIBUTE);
                             reset(rg);
                             return;
                         }
@@ -239,7 +245,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                             currentHistogramState = new HistogramState();
                         }
 
-                        // Ensure that the HistogramState is compatible with the current graph
+                        // Ensure that the HistogramState is compatible with the current graph.
                         currentHistogramState.validate(rg);
 
                         if (currentHistogramState != oldHistogramState) {
@@ -301,6 +307,14 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
+    public void modifyBinHeight(final int change) {
+        if (change < 0) {
+            display.decreaseBarHeight();
+        } else if (change > 0) {
+            display.increaseBarHeight();
+        }
+    }
+
     private void reset() {
         if (currentGraph != null) {
             ReadableGraph rg = currentGraph.getReadableGraph();
@@ -316,7 +330,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    private void reset(GraphReadMethods graph) {
+    private void reset(final GraphReadMethods graph) {
 
         if (graph == null) {
             currentHistogramState = null;
@@ -332,13 +346,13 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         } else {
             currentHistogramState = graph.getObjectValue(histogramStateAttribute, 0);
 
-            // The histogram state attribute may have been created but not populated yet
+            // The histogram state attribute may have been created but not populated yet.
             if (currentHistogramState == null) {
                 currentHistogramState = new HistogramState();
             }
         }
 
-        // Ensure that the HistogramState is compatible with the current graph
+        // Ensure that the HistogramState is compatible with the current graph.
         currentHistogramState.validate(graph);
 
         AttributeType binType = currentHistogramState.getAttributeType();
@@ -373,6 +387,8 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
                         binIconMode = BinIconMode.ICON;
                     } else if ("color".equals(binnedAttributeRecord.getAttributeType())) {
                         binIconMode = BinIconMode.COLOR;
+                    } else {
+                        // Do nothing.
                     }
 
                     currentBinnedModificationCount = graph.getValueModificationCounter(binnedAttribute);
@@ -387,7 +403,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         display.setBinCollection(currentBinCollection, binIconMode);
     }
 
-    public void setHistogramViewOptions(GraphElementType elementType, AttributeType attributeType, String attribute) {
+    public void setHistogramViewOptions(final GraphElementType elementType, final AttributeType attributeType, final String attribute) {
         if (currentGraph != null) {
             if (elementType == null) {
                 throw new NullPointerException("Null element type");
@@ -403,23 +419,23 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    public void setGraphElementType(GraphElementType elementType) {
+    public void setGraphElementType(final GraphElementType elementType) {
         if (currentGraph != null) {
             if (elementType == null) {
                 throw new NullPointerException("Null element type");
             }
+
+            // If the current state is null or the elementType selected is not the one already selected.
             if (currentHistogramState == null || elementType != currentHistogramState.getElementType()) {
                 HistogramState newHistogramState = new HistogramState(currentHistogramState);
                 newHistogramState.setElementType(elementType);
-                newHistogramState.setAttributeType(AttributeType.ATTRIBUTE);
-                newHistogramState.setAttribute("");
-                newHistogramState.setBinFormatter(BinFormatter.DEFAULT_BIN_FORMATTER);
+                newHistogramState.setElementState();
                 PluginExecution.withPlugin(new HistogramStateUpdaterPlugin(newHistogramState)).executeLater(currentGraph);
             }
         }
     }
 
-    public void setAttributeType(AttributeType attributeType) {
+    public void setAttributeType(final AttributeType attributeType) {
         if (currentGraph != null && (currentHistogramState == null || attributeType != currentHistogramState.getAttributeType())) {
             HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setAttributeType(attributeType);
@@ -429,7 +445,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    public void setAttribute(String attribute) {
+    public void setAttribute(final String attribute) {
         if (currentGraph != null && (currentHistogramState == null || (attribute == null ? currentHistogramState.getAttribute() != null : !attribute.equals(currentHistogramState.getAttribute())))) {
             HistogramState newHistogramState = new HistogramState(currentHistogramState);
             newHistogramState.setAttribute(attribute);
@@ -438,7 +454,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    void setBinComparator(BinComparator binComparator) {
+    void setBinComparator(final BinComparator binComparator) {
         if (currentGraph != null) {
             if (binComparator == null) {
                 throw new NullPointerException("Null bin comparator");
@@ -451,7 +467,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    void setBinFormatter(BinFormatter binFormatter, PluginParameters parameters) {
+    void setBinFormatter(final BinFormatter binFormatter, final PluginParameters parameters) {
         if (currentGraph != null) {
             if (binFormatter == null) {
                 throw new NullPointerException("Null bin formatter");
@@ -465,7 +481,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
         }
     }
 
-    void setBinSelectionMode(BinSelectionMode binSelectionMode) {
+    void setBinSelectionMode(final BinSelectionMode binSelectionMode) {
         if (currentGraph != null) {
             if (binSelectionMode == null) {
                 throw new NullPointerException("Null bin selection mode");
@@ -480,15 +496,7 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
     void selectOnlyBins(final int firstBin, final int lastBin) {
         if (currentGraph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Histogram: Select Only Bins") {
-                @Override
-                protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    currentBinCollection.selectOnlyBins(graph, firstBin, lastBin);
-                    if (selectedAttribute != Graph.NOT_FOUND) {
-                        currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
-                    }
-                }
-            }).executeLater(currentGraph);
+            PluginExecution.withPlugin(new HistogramSelectOnlyBins(firstBin, lastBin)).executeLater(currentGraph);
         }
     }
 
@@ -512,117 +520,71 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
 
     void selectBins(final int firstBin, final int lastBin, final boolean select) {
         if (currentGraph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Histogram: Select Bins") {
-                @Override
-                protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    currentBinCollection.selectBins(graph, firstBin, lastBin, select);
-                    if (selectedAttribute != Graph.NOT_FOUND) {
-                        currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
-                    }
-                }
-            }).executeLater(currentGraph);
+            PluginExecution.withPlugin(new SelectBins(firstBin, lastBin, select)).executeLater(currentGraph);
         }
     }
 
     void invertBins(final int firstBin, final int lastBin) {
         if (currentGraph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Histogram: Invert Bins") {
-                @Override
-                protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    currentBinCollection.invertBins(graph, firstBin, lastBin);
-                    if (selectedAttribute != Graph.NOT_FOUND) {
-                        currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
-                    }
-                }
-            }).executeLater(currentGraph);
+            PluginExecution.withPlugin(new InvertBins(firstBin, lastBin)).executeLater(currentGraph);
         }
     }
 
     void completeBins(final int firstBin, final int lastBin) {
         if (currentGraph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Histogram: Complete Bins") {
-                @Override
-                protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    currentBinCollection.completeBins(graph, firstBin, lastBin);
-                    if (selectedAttribute != Graph.NOT_FOUND) {
-                        currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
-                    }
-                }
-            }).executeLater(currentGraph);
+            PluginExecution.withPlugin(new CompleteBins(firstBin, lastBin)).executeLater(currentGraph);
         }
     }
 
     void filterSelection() {
         if (currentGraph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Histogram: Filter Selection") {
-                @Override
-                protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    currentBinCollection.filterSelection(graph);
-                    if (selectedAttribute != Graph.NOT_FOUND) {
-                        currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
-                    }
-
-                    SwingUtilities.invokeLater(display::repaint);
-                }
-            }).executeLater(currentGraph);
+            PluginExecution.withPlugin(new FilterSelection()).executeLater(currentGraph);
         }
     }
 
     void saveBinsToGraph() {
         if (currentGraph != null && currentBinCollection != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Histogram: Save Bins To Graph") {
-                @Override
-                protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    final int attributeId = graph.getSchema().getFactory().ensureAttribute(graph, currentHistogramState.getElementType(), HistogramConcept.HISTOGRAM_BIN_LABEL);
-                    currentBinCollection.saveBinsToGraph(graph, attributeId);
-                }
-            }).executeLater(currentGraph);
+            PluginExecution.withPlugin(new SaveBinsToGraph()).executeLater(currentGraph);
         }
     }
 
     void saveBinsToClipboard() {
         if (currentGraph != null && currentBinCollection != null) {
-            PluginExecution.withPlugin(new SimpleReadPlugin("Histogram: Save Bins To Clipboard") {
-                @Override
-                protected void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    currentBinCollection.saveBinsToClipboard(rg);
-                }
-            }).executeLater(currentGraph);
+            PluginExecution.withPlugin(new SaveBinsToClipboard()).executeLater(currentGraph);
         }
     }
 
     void expandSelection() {
         if (currentGraph != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Histogram: Expand Selection") {
-                @Override
-                protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                    currentBinCollection.expandSelection(graph);
-                    if (selectedAttribute != Graph.NOT_FOUND) {
-                        currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
-                    }
-
-                    SwingUtilities.invokeLater(display::repaint);
-                }
-            }).executeLater(currentGraph);
+            PluginExecution.withPlugin(new ExpandSelection()).executeLater(currentGraph);
         }
     }
 
     @Override
     public void graphOpened(Graph graph) {
-        // Required for GraphManagerListener, intentionally left blank
+        // Required for GraphManagerListener, intentionally left blank.
     }
 
     @Override
     public void graphClosed(Graph graph) {
-        // Required for GraphManagerListener, intentionally left blank
+        // Required for GraphManagerListener, intentionally left blank.
     }
 
+    /**
+     * Plugin to update histogram state.
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
     private class HistogramStateUpdaterPlugin extends SimpleEditPlugin {
 
         private final HistogramState state;
 
-        public HistogramStateUpdaterPlugin(HistogramState state) {
+        public HistogramStateUpdaterPlugin(final HistogramState state) {
             this.state = state;
+        }
+
+        @Override
+        public String getName() {
+            return "Histogram View: Update State";
         }
 
         @Override
@@ -630,10 +592,198 @@ public final class HistogramTopComponent extends TopComponent implements GraphMa
             histogramStateAttribute = HistogramConcept.MetaAttribute.HISTOGRAM_STATE.ensure(graph);
             graph.setObjectValue(histogramStateAttribute, 0, state);
         }
+    }
+
+    /**
+     * Plugin to only select bins.
+     */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
+    private class HistogramSelectOnlyBins extends SimpleEditPlugin {
+
+        private final int firstBin;
+        private final int lastBin;
+
+        public HistogramSelectOnlyBins(final int firstBin, final int lastBin) {
+            this.firstBin = firstBin;
+            this.lastBin = lastBin;
+        }
 
         @Override
         public String getName() {
-            return "Histogram: Update State";
+            return "Histogram View: Select Only Bins";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            currentBinCollection.selectOnlyBins(graph, firstBin, lastBin);
+            if (selectedAttribute != Graph.NOT_FOUND) {
+                currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
+            }
+        }
+    }
+
+    /**
+     * Plugin to select bins.
+     */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
+    private class SelectBins extends SimpleEditPlugin {
+
+        private final int firstBin;
+        private final int lastBin;
+        private final boolean select;
+
+        public SelectBins(final int firstBin, final int lastBin, final boolean select) {
+            this.firstBin = firstBin;
+            this.lastBin = lastBin;
+            this.select = select;
+        }
+
+        @Override
+        public String getName() {
+            return "Histogram View: Select Bins";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            currentBinCollection.selectBins(graph, firstBin, lastBin, select);
+            if (selectedAttribute != Graph.NOT_FOUND) {
+                currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
+            }
+        }
+    }
+
+    /**
+     * Plugin to invert bins.
+     */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
+    private class InvertBins extends SimpleEditPlugin {
+
+        private final int firstBin;
+        private final int lastBin;
+
+        public InvertBins(final int firstBin, final int lastBin) {
+            this.firstBin = firstBin;
+            this.lastBin = lastBin;
+        }
+
+        @Override
+        public String getName() {
+            return "Histogram View: Invert Bins";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            currentBinCollection.invertBins(graph, firstBin, lastBin);
+            if (selectedAttribute != Graph.NOT_FOUND) {
+                currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
+            }
+        }
+    }
+
+    /**
+     * Plugin to complete bins.
+     */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
+    private class CompleteBins extends SimpleEditPlugin {
+
+        private final int firstBin;
+        private final int lastBin;
+
+        public CompleteBins(final int firstBin, final int lastBin) {
+            this.firstBin = firstBin;
+            this.lastBin = lastBin;
+        }
+
+        @Override
+        public String getName() {
+            return "Histogram View: Complete Bins";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            currentBinCollection.completeBins(graph, firstBin, lastBin);
+            if (selectedAttribute != Graph.NOT_FOUND) {
+                currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
+            }
+        }
+    }
+
+    /**
+     * Plugin to filter selection.
+     */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
+    private class FilterSelection extends SimpleEditPlugin {
+
+        @Override
+        public String getName() {
+            return "Histogram View: Filter Selection";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            currentBinCollection.filterSelection(graph);
+            if (selectedAttribute != Graph.NOT_FOUND) {
+                currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
+            }
+
+            SwingUtilities.invokeLater(display::repaint);
+        }
+    }
+
+    /**
+     * Plugin to save bins to graph.
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
+    private class SaveBinsToGraph extends SimpleEditPlugin {
+
+        @Override
+        public String getName() {
+            return "Histogram View: Save Bins To Graph";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            final int attributeId = graph.getSchema().getFactory().ensureAttribute(graph, currentHistogramState.getElementType(), HistogramConcept.HISTOGRAM_BIN_LABEL);
+            currentBinCollection.saveBinsToGraph(graph, attributeId);
+        }
+    }
+
+    /**
+     * Plugin to save bins to clipboard.
+     */
+    @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
+    private class SaveBinsToClipboard extends SimpleReadPlugin {
+
+        @Override
+        public String getName() {
+            return "Histogram View: Save Bins To Clipboard";
+        }
+
+        @Override
+        protected void read(final GraphReadMethods rg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            currentBinCollection.saveBinsToClipboard(rg);
+        }
+    }
+
+    /**
+     * Plugin to expand selection.
+     */
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
+    private class ExpandSelection extends SimpleEditPlugin {
+
+        @Override
+        public String getName() {
+            return "Histogram View: Expand Selection";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            currentBinCollection.expandSelection(graph);
+            if (selectedAttribute != Graph.NOT_FOUND) {
+                currentSelectedModificationCount = graph.getValueModificationCounter(selectedAttribute);
+            }
+
+            SwingUtilities.invokeLater(display::repaint);
         }
     }
 }

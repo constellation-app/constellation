@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.Arrays;
 import org.openide.util.NbBundle;
@@ -43,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("HitsCentralityPlugin=HITS Centrality")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class HitsCentralityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute HITS_AUTHORITY_ATTRIBUTE = SnaConcept.VertexAttribute.HITS_CENTRALITY_AUTHORITY;
@@ -66,7 +67,7 @@ public class HitsCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> epsilonParameter = FloatParameterType.build(EPSILON_PARAMETER_ID);
         epsilonParameter.setName("Epsilon");
         epsilonParameter.setDescription("The change threshold at which equilibrium can be considered reached");
-        epsilonParameter.setFloatValue(1E-8f);
+        epsilonParameter.setFloatValue(1E-8F);
         parameters.addParameter(epsilonParameter);
 
         final PluginParameter<BooleanParameterValue> normaliseByAvailableParameter = BooleanParameterType.build(NORMALISE_AVAILABLE_PARAMETER_ID);

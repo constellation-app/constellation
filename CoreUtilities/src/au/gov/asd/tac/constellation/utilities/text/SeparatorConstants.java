@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,10 +26,14 @@ public class SeparatorConstants {
     public static final String COMMA = ",";
     public static final String HYPHEN = "-";
     public static final String NEWLINE = "\n";
+    public static final String LINEFEED = "\r";
     public static final String PERIOD = ".";
     public static final String PIPE = "|";
     public static final String SEMICOLON = ";";
     public static final String TAB = "\t";
     public static final String UNDERSCORE = "_";
     public static final String WHITESPACE = "\\s";
+    public static final String ASTERISK = "*";
+    public static final String BLANKSPACE = " ";
+    public static final String QUOTE = "\"";
 }

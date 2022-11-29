@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ package au.gov.asd.tac.constellation.utilities.visual;
 public enum VisualProperty {
 
     BACKGROUND_COLOR(PropertyType.OBJECT, ElementType.GRAPH),
-    HIGHLIGHT_COLOUR(PropertyType.OBJECT, ElementType.GRAPH),
+    HIGHLIGHT_COLOR(PropertyType.OBJECT, ElementType.GRAPH),
     DRAW_FLAGS(PropertyType.OBJECT, ElementType.GRAPH),
     CAMERA(PropertyType.OBJECT, ElementType.GRAPH),
     BLAZE_SIZE(PropertyType.FLOAT, ElementType.GRAPH),

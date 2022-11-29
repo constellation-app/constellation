@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,11 +56,14 @@ public final class AddCustomBlazeAction extends AbstractAction {
         ConstellationColor blazeColor = selectionResult.getValue();
         if (!selectedVertices.isEmpty()) {
             final Pair<Boolean, ConstellationColor> colorResult = BlazeUtilities.colorDialog(blazeColor);
-            blazeColor = colorResult.getValue();
-            PluginExecution.withPlugin(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE)
-                    .withParameter(BlazeUtilities.VERTEX_IDS_PARAMETER_ID, selectedVertices)
-                    .withParameter(BlazeUtilities.COLOR_PARAMETER_ID, blazeColor)
-                    .executeLater(context.getGraph());
+            if (colorResult.getKey()) {
+                blazeColor = colorResult.getValue();
+                PluginExecution.withPlugin(VisualGraphPluginRegistry.ADD_CUSTOM_BLAZE)
+                        .withParameter(BlazeUtilities.VERTEX_IDS_PARAMETER_ID, selectedVertices)
+                        .withParameter(BlazeUtilities.COLOR_PARAMETER_ID, blazeColor)
+                        .executeLater(context.getGraph());
+            }
+
         }
     }
 }

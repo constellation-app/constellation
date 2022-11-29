@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,25 +26,32 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- *
+ * Collection of all query bit masks in layers view
+ * Contains lists of all queries, which queries are active and which require updates
+ * 
  * @author sirius
  */
 public class BitMaskQueryCollection {
 
     public static final int MAX_QUERY_AMT = 64;
     private static final String INVALID_INDEX_ERROR = " is not a valid index for a layer";
-
-    public static final BitMaskQuery[] DEFAULT_VX_QUERIES = new BitMaskQuery[]{
-        new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
-        new BitMaskQuery(new Query(GraphElementType.VERTEX, null), 1, StringUtils.EMPTY)};
-
-    public static final BitMaskQuery[] DEFAULT_TX_QUERIES = new BitMaskQuery[]{
-        new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
-        new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), 1, StringUtils.EMPTY)};
-
     private final BitMaskQuery[] queries = new BitMaskQuery[MAX_QUERY_AMT];
     private final GraphElementType elementType;
     private final IntValue index = new IntValue();
+
+    public static BitMaskQuery[] getDefaultVxQueries() {
+        return new BitMaskQuery[]{
+            new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
+            new BitMaskQuery(new Query(GraphElementType.VERTEX, null), 1, StringUtils.EMPTY)
+        };
+    }
+
+    public static BitMaskQuery[] getDefaultTxQueries() {
+        return new BitMaskQuery[]{
+            new BitMaskQuery(new Query(null, BitMaskQuery.DEFAULT_QUERY_STRING), 0, BitMaskQuery.DEFAULT_QUERY_DESCRIPTION),
+            new BitMaskQuery(new Query(GraphElementType.TRANSACTION, null), 1, StringUtils.EMPTY)
+        };
+    }
 
     // queries currently active
     private final List<BitMaskQuery> activeQueries = new ArrayList<>();
@@ -59,6 +66,16 @@ public class BitMaskQueryCollection {
         this.elementType = elementType;
     }
 
+    protected List<BitMaskQuery> getActiveQueries() {
+        return activeQueries;
+    }
+
+    /**
+     * Set a query at a specific bit mask index
+     * 
+     * @param query
+     * @param bitMaskIndex
+     */
     public void setQuery(final String query, final int bitMaskIndex) {
         if (bitMaskIndex > MAX_QUERY_AMT) {
             throw new IndexOutOfBoundsException(bitMaskIndex + INVALID_INDEX_ERROR);
@@ -66,16 +83,35 @@ public class BitMaskQueryCollection {
         queries[bitMaskIndex] = new BitMaskQuery(new Query(elementType, query), bitMaskIndex, StringUtils.EMPTY);
     }
 
+    /**
+     * Determine which queries are currently active on the graph
+     * 
+     * @param activeQueriesBitMask
+     */
     public void setActiveQueries(final long activeQueriesBitMask) {
         this.activeQueriesBitMask = activeQueriesBitMask;
         activeQueries.clear();
+        boolean anySelected = false;
         for (final BitMaskQuery query : queries) {
-            if (query != null && query.getVisibility()) {
+            if (query != null && query.isVisible()) {
                 activeQueries.add(query);
+                anySelected = true;
+            }
+        }
+        if (!anySelected) {
+            for (final BitMaskQuery query : queries) {
+                if (query != null && query.getIndex() == 0) {
+                    activeQueries.add(query);
+                }
             }
         }
     }
 
+    /**
+     * Get the highest bit mask index
+     *
+     * @return highest index
+     */
     public int getHighestQueryIndex() {
         int highestIndex = 0;
         for (final BitMaskQuery bitMaskQuery : queries) {
@@ -97,19 +133,28 @@ public class BitMaskQueryCollection {
         return queries[index];
     }
 
+    /**
+     * Determine whether the active queries on the graph require updating
+     *
+     * @param graph
+     * @return whether any queries need to be updated
+     */
     public boolean update(final GraphReadMethods graph) {
         updateQueries.clear();
         for (final BitMaskQuery activeQuery : activeQueries) {
             if (activeQuery != null && activeQuery.update(graph, index)) {
-                if (activeQuery.getIndex() != 0 && updateQueries.size() > 0) {
-                    updateQueries.remove(0);
-                }
                 updateQueries.add(activeQuery);
             }
         }
         return !updateQueries.isEmpty();
     }
 
+    /**
+     * Update the bit mask depending on the current queries
+     *
+     * @param bitMask
+     * @return bitMask
+     */
     public long updateBitMask(long bitMask) {
         for (final BitMaskQuery updateQuery : updateQueries) {
             bitMask = updateQuery.updateBitMask(bitMask);
@@ -117,6 +162,13 @@ public class BitMaskQueryCollection {
         return bitMask;
     }
 
+    /**
+     * Update the overall bit mask attribute and the attribute for which queries are currently active
+     * 
+     * @param graph
+     * @param bitMaskAttributeId
+     * @param visibleAttributeId
+     */
     public void updateBitMasks(final GraphWriteMethods graph, final int bitMaskAttributeId, final int visibleAttributeId) {
         if (this.update(graph)) {
             final int elementCount = elementType.getElementCount(graph);
@@ -125,7 +177,7 @@ public class BitMaskQueryCollection {
                 index.writeInt(elementId);
                 final long bitMask = graph.getLongValue(bitMaskAttributeId, elementId);
                 final long updatedBitMask = updateBitMask(bitMask);
-                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0f : 1.0f);
+                graph.setFloatValue(visibleAttributeId, elementId, (updatedBitMask & activeQueriesBitMask) == 0 ? 0.0F : 1.0F);
             }
         }
     }
@@ -136,16 +188,23 @@ public class BitMaskQueryCollection {
     public void setDefaultQueries() {
         this.clear();
         if (elementType == GraphElementType.VERTEX) {
-            for (final BitMaskQuery query : DEFAULT_VX_QUERIES) {
+            for (final BitMaskQuery query : getDefaultVxQueries()) {
                 this.add(query);
             }
         } else if (elementType == GraphElementType.TRANSACTION) {
-            for (final BitMaskQuery query : DEFAULT_TX_QUERIES) {
+            for (final BitMaskQuery query : getDefaultTxQueries()) {
                 this.add(query);
             }
+        } else {
+            // Do nothing
         }
     }
 
+    /**
+     * Add a new query to the collection if the index is not above the max
+     * 
+     * @param query
+     */
     public void add(final BitMaskQuery query) {
         if (query != null) {
             if (query.getIndex() >= MAX_QUERY_AMT) {
@@ -155,6 +214,13 @@ public class BitMaskQueryCollection {
         }
     }
 
+    /**
+     * Add a new query to the collection if the index is not above the max
+     * 
+     * @param query
+     * @param bitIndex
+     * @param description
+     */
     public void add(final Query query, final int bitIndex, final String description) {
         if (bitIndex >= MAX_QUERY_AMT || bitIndex < 0) {
             throw new IndexOutOfBoundsException(bitIndex + INVALID_INDEX_ERROR);
@@ -162,6 +228,11 @@ public class BitMaskQueryCollection {
         queries[bitIndex] = new BitMaskQuery(query, bitIndex, description);
     }
 
+    /**
+     * Update the bit mask collection with the queries
+     * 
+     * @param queries
+     */
     public void setQueries(final BitMaskQuery[] queries) {
         this.clear();
         for (final BitMaskQuery query : queries) {
@@ -171,11 +242,18 @@ public class BitMaskQueryCollection {
         }
     }
 
+    /**
+     * Add attributes to the schema
+     *
+     * @param wg
+     * @param currentBitMask
+     * @return
+     */
     public List<SchemaAttribute> getListenedAttributes(final GraphWriteMethods wg, final long currentBitMask) {
         activeQueriesBitMask = currentBitMask;
         final List<SchemaAttribute> attributes = new ArrayList<>();
         for (final BitMaskQuery query : queries) {
-            if (query == null || !query.getVisibility() || query.getIndex() == 0 || StringUtils.isEmpty(query.getQueryString())) {
+            if (query == null || !query.isVisible() || query.getIndex() == 0 || StringUtils.isEmpty(query.getQueryString())) {
                 continue;
             }
             if (query.getQuery() != null && query.getQuery().getAttributeIds() != null) {
@@ -185,10 +263,26 @@ public class BitMaskQueryCollection {
             }
         }
         attributes.removeIf(item -> item == null);
-
+        
         return attributes;
     }
 
+    public boolean isVisibilityOnAll() {
+        boolean visibility = false;
+        for (int position = 1; position < queries.length; position++) {
+            final BitMaskQuery query = queries[position];
+            if (query != null) {
+                visibility = query.isVisible();
+            }
+        }
+        return visibility;
+    }
+
+    /**
+     * Set the visibility of all queries
+     *
+     * @param visibility
+     */
     public void setVisibilityOnAll(final boolean visibility) {
         for (int position = 1; position < queries.length; position++) {
             final BitMaskQuery query = queries[position];
@@ -198,16 +292,40 @@ public class BitMaskQueryCollection {
         }
     }
 
+    /**
+     * Clears the queries collection
+     */
     public void clear() {
         for (int position = 0; position < queries.length; position++) {
             queries[position] = null;
         }
     }
 
+    /**
+     * Remove a query at the index given
+     * 
+     * @param index
+     */
     public void removeQuery(final int index) {
         if (index >= MAX_QUERY_AMT || index < 0) {
             throw new IndexOutOfBoundsException(index + INVALID_INDEX_ERROR);
         }
         queries[index] = null;
+    }
+
+    /**
+     * Remove a query, reset its index and shift the position in the array.
+     *
+     * @param index the query to remove.
+     */
+    public void removeQueryAndSort(final int index) {
+        System.arraycopy(queries, index + 1, queries, index, queries.length - index - 1);
+        int queryIndex = 0;
+        for (final BitMaskQuery query : queries) {
+            if (query != null) {
+                query.setIndex(queryIndex);
+                queryIndex++;
+            }
+        }
     }
 }

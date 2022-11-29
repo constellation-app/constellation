@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public abstract class ConstellationDialog {
     protected double mouseOrigX = 0;
     protected double mouseOrigY = 0;
 
-    public ConstellationDialog() {
+    protected ConstellationDialog() {
         fxPanel = new JFXPanel();
         final BoxLayout layout = new BoxLayout(fxPanel, BoxLayout.Y_AXIS);
         fxPanel.setLayout(layout);

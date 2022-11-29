@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -320,6 +320,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
             }
         } else if (!name.equals(other.getName())) {
             return false;
+        } else {
+            // Do nothing
         }
         if (description == null) {
             if (other.getDescription() != null) {
@@ -327,6 +329,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
             }
         } else if (!description.equals(other.getDescription())) {
             return false;
+        } else {
+            // Do nothing
         }
         if (defaultValue == null) {
             if (other.getDefaultValue() != null) {
@@ -334,6 +338,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
             }
         } else if (!defaultValue.equals(other.getDefaultValue())) {
             return false;
+        } else {
+            // Do nothing
         }
 
         return true;
@@ -360,7 +366,7 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
         if (o == null) {
             return false;
         }
-        if (!(o instanceof SchemaAttribute)) {
+        if (this.getClass() != o.getClass()) {
             return false;
         }
         final SchemaAttribute other = (SchemaAttribute) o;
@@ -376,6 +382,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
             }
         } else if (!name.equals(other.name)) {
             return false;
+        } else {
+            // Do nothing
         }
         if (description == null) {
             if (other.description != null) {
@@ -383,6 +391,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
             }
         } else if (!description.equals(other.description)) {
             return false;
+        } else {
+            // Do nothing
         }
         if (defaultValue == null) {
             if (other.defaultValue != null) {
@@ -390,6 +400,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
             }
         } else if (!defaultValue.equals(other.defaultValue)) {
             return false;
+        } else {
+            // Do nothing
         }
         if (regex == null) {
             if (other.regex != null) {
@@ -397,6 +409,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
             }
         } else if (!regex.equals(other.regex)) {
             return false;
+        } else {
+            // Do nothing
         }
         if (format == null) {
             if (other.format != null) {
@@ -404,6 +418,8 @@ public class SchemaAttribute implements Comparable<SchemaAttribute> {
             }
         } else if (!format.equals(other.format)) {
             return false;
+        } else {
+            // Do nothing
         }
 
         return true;

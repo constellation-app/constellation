@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.BitSet;
 import org.openide.awt.StatusDisplayer;
@@ -31,13 +32,13 @@ import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * cut plugin
+ * Cut to clipboard plugin.
  *
  * @author sirius
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.COPY, tags = {"EDIT"})
 @Messages("CutToClipboardPlugin=Cut to Clipboard")
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 public final class CutToClipboardPlugin extends SimpleEditPlugin {
 
     @Override

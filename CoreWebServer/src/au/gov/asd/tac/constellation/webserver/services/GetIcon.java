@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,8 +60,9 @@ public class GetIcon extends RestService {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(ICON_PARAMETER_ID);
-        nameParam.setName("Get the named icon.");
-        nameParam.setDescription("Return the named icon as a PNG file.");
+        nameParam.setName("Icon Name");
+        nameParam.setDescription("The name of the icon to return as a PNG file.");
+        nameParam.setRequired(true);
         parameters.addParameter(nameParam);
 
         return parameters;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,25 +25,26 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
  * @author algol
  * @author Nova
  */
-class OctTree extends AbstractTree{
+public class OctTree extends AbstractTree {
+
     // Top/bottom, left/right, front/back; top-left-back is (0, 0, 0).
-    static final int TOP_R_F = 0;
-    static final int TOP_L_F = 1;
-    static final int BOT_L_F = 2;
-    static final int BOT_R_F = 3;
-    static final int TOP_R_B = 4;
-    static final int TOP_L_B = 5;
-    static final int BOT_L_B = 6;
-    static final int BOT_R_B = 7;
-    
+    protected static final int TOP_R_F = 0;
+    protected static final int TOP_L_F = 1;
+    protected static final int BOT_L_F = 2;
+    protected static final int BOT_R_F = 3;
+    protected static final int TOP_R_B = 4;
+    protected static final int TOP_L_B = 5;
+    protected static final int BOT_L_B = 6;
+    protected static final int BOT_R_B = 7;
+
     private final int zId;
 
     /**
      * Constructor creates QuadTree and inserts all nodes
-     * 
-     * @param graph  The graph the QuadTree should be based on
+     *
+     * @param graph The graph the QuadTree should be based on
      */
-    OctTree(final GraphReadMethods graph) {
+    protected OctTree(final GraphReadMethods graph) {
         super(graph, Dimensions.THREE);
         zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
         insertAll();
@@ -51,11 +52,11 @@ class OctTree extends AbstractTree{
 
     /**
      * Create a subtree of the current tree
-     * 
+     *
      * @param parent
-     * @param box 
+     * @param box
      */
-    OctTree(OctTree parent, final BoundingBox3D box) {
+    protected OctTree(OctTree parent, final BoundingBox3D box) {
         super(parent, box);
         // Inherit parent values for graph based variables.
         zId = parent.zId;
@@ -67,8 +68,8 @@ class OctTree extends AbstractTree{
      * Divide the node into four equal parts and initialise the four subnodes with the new bounds.
      */
     @Override
-    void split() {
-        BoundingBox3D box3D = (BoundingBox3D) this.box;
+    protected void split() {
+        final BoundingBox3D box3D = (BoundingBox3D) this.box;
         nodes = new OctTree[8];
         nodes[TOP_R_F] = new OctTree(this, box3D.topRightFrontOctant());
         nodes[TOP_L_F] = new OctTree(this, box3D.topLeftFrontOctant());
@@ -88,39 +89,43 @@ class OctTree extends AbstractTree{
      * Determine where an object belongs in the quadtree by determining which node the object can fit into.
      */
     @Override
-    int getIndex(final int vxId) {
-        BoundingBox3D box3D = (BoundingBox3D) this.box;
+    protected int getIndex(final int vxId) {
+        final BoundingBox3D box3D = (BoundingBox3D) this.box;
         int index = -1;
-        
+
         // Object can completely fit within the top/bottom halves.
         final boolean bottomHalf = wg.getFloatValue(yId, vxId) + wg.getFloatValue(rId, vxId) < box3D.midY;
         final boolean topHalf = wg.getFloatValue(yId, vxId) - wg.getFloatValue(rId, vxId) > box3D.midY;
-        
+
         // Object can completely fit witin the left/right halves.
         final boolean leftHalf = wg.getFloatValue(xId, vxId) + wg.getFloatValue(rId, vxId) < box3D.midX;
         final boolean rightHalf = wg.getFloatValue(xId, vxId) - wg.getFloatValue(rId, vxId) > box3D.midX;
-        
+
         // Object can completely fit in front/back halves.
         final boolean backHalf = wg.getFloatValue(zId, vxId) + wg.getFloatValue(rId, vxId) < box3D.midZ;
         final boolean frontHalf = wg.getFloatValue(zId, vxId) - wg.getFloatValue(rId, vxId) > box3D.midZ;
 
-
-        if (topHalf) { 
-            if (leftHalf) { 
+        if (topHalf) {
+            if (leftHalf) {
                 if (frontHalf) {
                     index = TOP_L_F;
                 } else if (backHalf) {
                     index = TOP_L_B;
+                } else {
+                    // Do nothing
                 }
             } else if (rightHalf) {
                 if (frontHalf) {
                     index = TOP_R_F;
                 } else if (backHalf) {
                     index = TOP_R_B;
+                } else {
+                    // Do nothing
                 }
+            } else {
+                // Do nothing
             }
-        } 
-        else if (bottomHalf) {
+        } else if (bottomHalf) {
             if (leftHalf) {
                 if (frontHalf) {
                     index = BOT_L_F;
@@ -134,23 +139,23 @@ class OctTree extends AbstractTree{
                     index = BOT_R_B;
                 }
             }
+        } else {
+            // Do nothing
         }
 
         return index;
     }
-    
-    
+
     @Override
-    double getDelta(final int vertex1, final int vertex2){
+    protected double getDelta(final int vertex1, final int vertex2) {
         float deltaX = wg.getFloatValue(xId, vertex1) - wg.getFloatValue(xId, vertex2);
         float deltaY = wg.getFloatValue(yId, vertex1) - wg.getFloatValue(yId, vertex2);
         float deltaZ = wg.getFloatValue(zId, vertex1) - wg.getFloatValue(zId, vertex2);
         return Math.cbrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ);
     }
-    
-    @Override
-    double getCollisionDistance(final int vertex1, final int vertex2){
-        return Math.cbrt(3*wg.getFloatValue(rId, vertex1)) + Math.cbrt(3*wg.getFloatValue(rId, vertex2));
-    }
 
+    @Override
+    protected double getCollisionDistance(final int vertex1, final int vertex2) {
+        return Math.cbrt(3 * wg.getFloatValue(rId, vertex1)) + Math.cbrt(3 * wg.getFloatValue(rId, vertex2));
+    }
 }

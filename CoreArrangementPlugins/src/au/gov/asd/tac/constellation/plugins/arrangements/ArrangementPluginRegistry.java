@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +23,6 @@ import au.gov.asd.tac.constellation.plugins.arrangements.gather.GatherNodesInGra
 import au.gov.asd.tac.constellation.plugins.arrangements.gather.GatherNodesPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridComponentsPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.grid.ArrangeInGridGeneralPlugin;
-import au.gov.asd.tac.constellation.plugins.arrangements.group.ArrangeByGroupPlugin;
-import au.gov.asd.tac.constellation.plugins.arrangements.group.ArrangeByLayerPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.group.ArrangeByNodeAttributePlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.hde.HighDimensionEmbeddingPlugin;
 import au.gov.asd.tac.constellation.plugins.arrangements.hierarchical.ArrangeInHierarchyPlugin;
@@ -50,6 +48,8 @@ import au.gov.asd.tac.constellation.plugins.arrangements.utilities.FlattenZField
  */
 public class ArrangementPluginRegistry {
 
+    public static final String PIN = PinVertexPositionsPlugin.class.getName();
+    public static final String UNPIN = UnpinVertexPositionsPlugin.class.getName();
     public static final String ATTRIBUTE = ArrangeByNodeAttributePlugin.class.getName();
     public static final String BROCCOLI = ArrangeLikeBroccoliPlugin.class.getName();
     public static final String BUBBLE_TREE = ArrangeInBubbleTreePlugin.class.getName();
@@ -64,10 +64,8 @@ public class ArrangementPluginRegistry {
     public static final String GATHER_NODES_IN_GRAPH = GatherNodesInGraphPlugin.class.getName();
     public static final String GRID_GENERAL = ArrangeInGridGeneralPlugin.class.getName();
     public static final String GRID_COMPOSITE = ArrangeInGridComponentsPlugin.class.getName();
-    public static final String GROUP = ArrangeByGroupPlugin.class.getName();
     public static final String HIERARCHICAL = ArrangeInHierarchyPlugin.class.getName();
     public static final String HIGH_DIMENSION_EMBEDDING = HighDimensionEmbeddingPlugin.class.getName();
-    public static final String LAYER = ArrangeByLayerPlugin.class.getName();
     public static final String MDS = ArrangeInMDSPlugin.class.getName();
     public static final String PENDANTS = PendantsArranger.class.getName();
     public static final String RANDOM = RandomArrangementPlugin.class.getName();

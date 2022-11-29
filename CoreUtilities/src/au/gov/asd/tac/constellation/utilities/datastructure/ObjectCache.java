@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,54 +35,51 @@ import java.util.stream.Collectors;
  */
 public class ObjectCache<K extends Object, V extends Object> {
 
-    protected final Map<K, Set<V>> CACHE;
+    protected final Map<K, Set<V>> cache;
 
     public ObjectCache() {
-        CACHE = new ConcurrentHashMap<>();
+        cache = new ConcurrentHashMap<>();
     }
 
     public int size() {
-        return CACHE.size();
+        return cache.size();
     }
 
     public boolean contains(final K key) {
-        return CACHE.containsKey(key);
+        return cache.containsKey(key);
     }
 
     public Set<K> keys() {
-        return CACHE.keySet();
+        return cache.keySet();
     }
 
     public Set<V> values() {
-        return CACHE.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
+        return cache.values().stream().flatMap(Set::stream).collect(Collectors.toSet());
     }
 
     public Set<V> get(final K key) {
-        return CACHE.get(key);
+        return cache.get(key);
     }
 
     public V getRandom(final K key) {
-        return CACHE.get(key).iterator().next();
+        return cache.get(key).iterator().next();
     }
 
     public void add(final K key, final V value) {
-        if (!CACHE.containsKey(key)) {
-            CACHE.put(key, new HashSet<>());
-        }
-        CACHE.get(key).add(value);
+        cache.computeIfAbsent(key, k -> new HashSet<>()).add(value);
     }
 
     public Set<V> remove(final K key) {
-        return CACHE.remove(key);
+        return cache.remove(key);
     }
 
     public void clear() {
-        CACHE.clear();
+        cache.clear();
     }
 
     public void forEach(final BiConsumer<? super K, ? super Set<V>> action) {
         Objects.requireNonNull(action);
-        CACHE.entrySet().forEach(entry -> {
+        cache.entrySet().forEach(entry -> {
             final K key;
             final Set<V> value;
             try {
@@ -97,6 +94,6 @@ public class ObjectCache<K extends Object, V extends Object> {
 
     @Override
     public String toString() {
-        return CACHE.toString();
+        return cache.toString();
     }
 }

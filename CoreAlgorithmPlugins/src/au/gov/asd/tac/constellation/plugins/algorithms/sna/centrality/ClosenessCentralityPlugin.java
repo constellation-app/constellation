@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,12 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
@@ -42,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("ClosenessCentralityPlugin=Closeness Centrality")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class ClosenessCentralityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute CLOSENESS_ATTRIBUTE = SnaConcept.VertexAttribute.CLOSENESS_CENTRALITY;
@@ -68,7 +70,6 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> harmonicParameter = BooleanParameterType.build(HARMONIC_PARAMETER_ID);
         harmonicParameter.setName("Harmonic");
         harmonicParameter.setDescription("Calculate scores using the harmonic mean");
-        harmonicParameter.setBooleanValue(false);
         parameters.addParameter(harmonicParameter);
 
         final PluginParameter<BooleanParameterValue> includeConnectionsInParameter = BooleanParameterType.build(INCLUDE_CONNECTIONS_IN_PARAMETER_ID);
@@ -98,20 +99,31 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> normaliseByAvailableParameter = BooleanParameterType.build(NORMALISE_AVAILABLE_PARAMETER_ID);
         normaliseByAvailableParameter.setName("Normalise By Max Available Score");
         normaliseByAvailableParameter.setDescription("Normalise calculated scores by the maximum calculated score");
-        normaliseByAvailableParameter.setBooleanValue(false);
         parameters.addParameter(normaliseByAvailableParameter);
 
         final PluginParameter<BooleanParameterValue> normaliseConnectedComponentsParameter = BooleanParameterType.build(NORMALISE_CONNECTED_COMPONENTS_PARAMETER_ID);
         normaliseConnectedComponentsParameter.setName("Normalise Connected Components");
-        normaliseConnectedComponentsParameter.setDescription("Apply normalisation seperately for each connected component");
-        normaliseConnectedComponentsParameter.setBooleanValue(false);
+        normaliseConnectedComponentsParameter.setDescription("Apply normalisation separately for each connected component");
         parameters.addParameter(normaliseConnectedComponentsParameter);
 
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
         selectedOnlyParameter.setName("Selected Only");
         selectedOnlyParameter.setDescription("Calculate using only selected elements");
-        selectedOnlyParameter.setBooleanValue(false);
         parameters.addParameter(selectedOnlyParameter);
+        
+        parameters.addController(NORMALISE_POSSIBLE_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE && master.getBooleanValue()) {
+                // only one of normalise by max possible or max available can be enabled
+                params.get(NORMALISE_AVAILABLE_PARAMETER_ID).setBooleanValue(false);
+            }
+        });
+        
+        parameters.addController(NORMALISE_AVAILABLE_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE && master.getBooleanValue()) {
+                // only one of normalise by max possible or max available can be enabled
+                params.get(NORMALISE_POSSIBLE_PARAMETER_ID).setBooleanValue(false);
+            }
+        });
 
         return parameters;
     }
@@ -145,7 +157,7 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
         }
 
         // calculate the maximum closeness
-        float maxCloseness = 0f;
+        float maxCloseness = 0F;
         final Map<BitSet, Float> maxClosenessConnectedComponents = new HashMap<>();
         final Map<BitSet, Integer> connectedComponentSize = new HashMap<>();
         final int vertexCount = graph.getVertexCount();
@@ -163,26 +175,15 @@ public class ClosenessCentralityPlugin extends SimpleEditPlugin {
 
         // choose the correct closeness attribute
         final int closenessAttribute;
-        if (includeConnectionsIn && includeConnectionsOut) {
-            if (harmonic) {
-                closenessAttribute = HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph);
-            } else {
-                closenessAttribute = CLOSENESS_ATTRIBUTE.ensure(graph);
-            }
-        } else if (includeConnectionsIn && !includeConnectionsOut) {
-            if (harmonic) {
-                closenessAttribute = IN_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph);
-            } else {
-                closenessAttribute = IN_CLOSENESS_ATTRIBUTE.ensure(graph);
-            }
+        if (includeConnectionsIn && !includeConnectionsOut) {
+            closenessAttribute = harmonic ? IN_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+                    : IN_CLOSENESS_ATTRIBUTE.ensure(graph);
         } else if (!includeConnectionsIn && includeConnectionsOut) {
-            if (harmonic) {
-                closenessAttribute = OUT_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph);
-            } else {
-                closenessAttribute = OUT_CLOSENESS_ATTRIBUTE.ensure(graph);
-            }
+            closenessAttribute = harmonic ? OUT_HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+                    : OUT_CLOSENESS_ATTRIBUTE.ensure(graph);
         } else {
-            return;
+            closenessAttribute = harmonic ? HARMONIC_CLOSENESS_ATTRIBUTE.ensure(graph) 
+                    : CLOSENESS_ATTRIBUTE.ensure(graph);
         }
 
         // update the graph with closeness values

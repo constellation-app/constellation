@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,16 +40,18 @@ import java.io.Serializable;
  */
 public final class BoundingBox implements Serializable {
 
-    private static final float MINIMUM_SIZE = 5;
+    public static final float MINIMUM_SIZE = 5F;
+    public static final float MINIMUM_CAMERA_DISTANCE = 6F;
+    public static final float EMPTYBOX_CAMERA_DISTANCE = -1000F;
 
     // The minimum and maximum (x, y, z) and (x2, y2, z2) values.
-    protected Vector3f min;
-    protected Vector3f max;
-    protected Vector3f min2;
-    protected Vector3f max2;
+    private Vector3f min;
+    private Vector3f max;
+    private Vector3f min2;
+    private Vector3f max2;
 
     // Is the bounding box empty?
-    protected boolean isEmpty;
+    private boolean isEmpty;
 
     public BoundingBox copy() {
         return new BoundingBox(this);
@@ -195,9 +197,9 @@ public final class BoundingBox implements Serializable {
         }
 
         // Find the centre of the bounding box.
-        final float cx = (min.getX() + max.getX()) / 2.0f;
-        final float cy = (min.getY() + max.getY()) / 2.0f;
-        final float cz = (min.getZ() + max.getZ()) / 2.0f;
+        final float cx = (min.getX() + max.getX()) / 2.0F;
+        final float cy = (min.getY() + max.getY()) / 2.0F;
+        final float cz = (min.getZ() + max.getZ()) / 2.0F;
 
         // The radius of the bounding cube is the distance from the centre to the furthest side of the cube.
         final float dx = max.getX() - cx;
@@ -223,13 +225,13 @@ public final class BoundingBox implements Serializable {
         }
 
         // Find the centre of the bounding box.
-        final float cx = (min.getX() + max.getX()) / 2.0f;
-        final float cy = (min.getY() + max.getY()) / 2.0f;
-        final float cz = (min.getZ() + max.getZ()) / 2.0f;
+        final float cx = (min.getX() + max.getX()) / 2.0F;
+        final float cy = (min.getY() + max.getY()) / 2.0F;
+        final float cz = (min.getZ() + max.getZ()) / 2.0F;
 
-        final float cx2 = (min2.getX() + max2.getX()) / 2.0f;
-        final float cy2 = (min2.getY() + max2.getY()) / 2.0f;
-        final float cz2 = (min2.getZ() + max2.getZ()) / 2.0f;
+        final float cx2 = (min2.getX() + max2.getX()) / 2.0F;
+        final float cy2 = (min2.getY() + max2.getY()) / 2.0F;
+        final float cz2 = (min2.getZ() + max2.getZ()) / 2.0F;
 
         // The radius of the bounding sphere is the distance from the centre to a corner of the box.
         // This isn't quite true; the radius of the bounding sphere is the distance to the further vertex.
@@ -239,9 +241,8 @@ public final class BoundingBox implements Serializable {
         final float dz = Graphics3DUtilities.mix(max.getZ(), max2.getZ(), mix) - Graphics3DUtilities.mix(cz, cz2, mix);
 
         final float radius = (float) Math.sqrt(dx * dx + dy * dy + dz * dz);
-//        System.out.printf("@BB %f <- %f %s %s %s %s\n", radius, mix, min, max, min2, max2);
 
-        return radius != 0 ? radius : 1;
+        return radius != 0F ? radius : 1F;
     }
 
     /**
@@ -254,16 +255,16 @@ public final class BoundingBox implements Serializable {
      */
     public Vector3f getCentre(final float mix) {
         if (isEmpty) {
-            return new Vector3f(0, 0, 0);
+            return new Vector3f(0F, 0F, 0F);
         }
 
-        final float cx = (min.getX() + max.getX()) / 2.0f;
-        final float cy = (min.getY() + max.getY()) / 2.0f;
-        final float cz = (min.getZ() + max.getZ()) / 2.0f;
+        final float cx = (min.getX() + max.getX()) / 2.0F;
+        final float cy = (min.getY() + max.getY()) / 2.0F;
+        final float cz = (min.getZ() + max.getZ()) / 2.0F;
 
-        final float cx2 = (min2.getX() + max2.getX()) / 2.0f;
-        final float cy2 = (min2.getY() + max2.getY()) / 2.0f;
-        final float cz2 = (min2.getZ() + max2.getZ()) / 2.0f;
+        final float cx2 = (min2.getX() + max2.getX()) / 2.0F;
+        final float cy2 = (min2.getY() + max2.getY()) / 2.0F;
+        final float cz2 = (min2.getZ() + max2.getZ()) / 2.0F;
 
         return Graphics3DUtilities.mix(new Vector3f(cx, cy, cz), new Vector3f(cx2, cy2, cz2), mix);
     }
@@ -281,11 +282,11 @@ public final class BoundingBox implements Serializable {
      */
     public float getCameraDistance(final float fov, final float mix) {
         if (isEmpty) {
-            return -1000f;
+            return EMPTYBOX_CAMERA_DISTANCE;
         }
 
         // Find out how far the camera should be from the centre of the bounding sphere.
-        float cameraDistance = getSphereRadius(mix) * (float) (1.0 / Math.tan(Math.toRadians(fov / 2.0)));
+        float cameraDistance = getSphereRadius(mix) * (float) (1.0F / Math.tan(Math.toRadians(fov / 2.0F)));
 
         // Don't place the camera nearer than the near edge of the frustum.
         cameraDistance = Math.max(cameraDistance, Camera.PERSPECTIVE_NEAR);
@@ -294,7 +295,7 @@ public final class BoundingBox implements Serializable {
         // This zooms the node to fill the screen, which is a bit in-your-face, and we can't see the labels
         // or get a feel for the surrounding area.
         // Instead, we'll pull back a bit. The distance chosen is one that feels right, rather than anything mathematical.
-        cameraDistance = Math.max(cameraDistance, 6);
+        cameraDistance = Math.max(cameraDistance, MINIMUM_CAMERA_DISTANCE);
 
         return cameraDistance;
     }
@@ -338,6 +339,16 @@ public final class BoundingBox implements Serializable {
         this.max2 = max2;
 
         isEmpty = false;
+    }
+    
+    /**
+     * Method used for testing to check if BoundingBox values are equal
+     * 
+     * @param bbox the BoundingBox to compare to this instance
+     * @return true if the BoundingBox are the same, false otherwise
+     */
+    public boolean areSame(final BoundingBox bbox) {
+        return min.areSame(bbox.getMin()) && min2.areSame(bbox.getMin2()) && max.areSame(bbox.getMax()) && max2.areSame(bbox.getMax2()) && Boolean.compare(isEmpty, bbox.isEmpty()) == 0;
     }
 
     @Override

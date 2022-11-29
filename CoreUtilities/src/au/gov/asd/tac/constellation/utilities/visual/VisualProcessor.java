@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -292,9 +292,7 @@ public abstract class VisualProcessor {
     private void processChangeSet(final Collection<VisualChange> changes, final VisualAccess access) {
         calculatePertinentChanges(changes).forEach((property, propertyChanges) -> {
             final VisualChangeProcessor processor = getChangeProcessor(property);
-            propertyChanges.forEach(change -> {
-                processor.processChange(change, access);
-            });
+            propertyChanges.forEach(change -> processor.processChange(change, access));
         });
     }
 
@@ -307,7 +305,7 @@ public abstract class VisualProcessor {
             final List<VisualChange> currentChanges = masterChangeMap.get(getMasterProperty(change.property));
             boolean equivilantChangePresent = false;
             for (final VisualChange currentChange : currentChanges) {
-                if (currentChange.hasSameChangeList(change)){
+                if (currentChange.hasSameChangeList(change)) {
                     equivilantChangePresent = true;
                     break;
                 }
@@ -318,11 +316,7 @@ public abstract class VisualProcessor {
         });
 
         final Set<VisualProperty> propertySet = new HashSet<>(masterChangeMap.keySet());
-        propertySet.forEach(property -> {
-            getTrumpedProperties(property).forEach(trumpedProperty -> {
-                masterChangeMap.remove(trumpedProperty);
-            });
-        });
+        propertySet.forEach(property -> getTrumpedProperties(property).forEach(trumpedProperty -> masterChangeMap.remove(trumpedProperty)));
         return masterChangeMap;
     }
 

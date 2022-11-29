@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A PluginParameter is the object that holds the current state of a single
@@ -73,6 +74,8 @@ public class PluginParameter<V extends ParameterValue> {
     private boolean enabled = true;
     private String helpID;
     private boolean isSuppressed = false;
+    private String requestBodyExample;
+    private boolean isRequired = false;
 
     private final List<ParameterChange> suppressedEvents = new ArrayList<>();
 
@@ -129,7 +132,7 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public final void setName(final String name) {
         if (!Objects.equals(name, this.name)) {
-            this.name = name == null ? "" : name;
+            this.name = StringUtils.defaultString(name);
             fireChangeEvent(ParameterChange.NAME);
         }
     }
@@ -451,6 +454,7 @@ public class PluginParameter<V extends ParameterValue> {
         copy.setEnabled(enabled);
         copy.setVisible(visible);
         copy.setError(error);
+        copy.setRequired(isRequired);
         copy.enclosingParameter = enclosingParameter;
         copy.properties = new HashMap<>(properties);
         return copy;
@@ -464,16 +468,6 @@ public class PluginParameter<V extends ParameterValue> {
      * @param objectValue The object value to set.
      */
     public final void setObjectValue(final Object objectValue) {
-//        if(value!=null && value.getObjectValue()!=null && objectValue!=null)
-//        {
-//            System.out.printf("@@PP sov1 [%s] [%s]\n", value.getObjectValue().getClass(), objectValue.getClass());
-//            System.out.printf("@@PP sov2 [%s] [%s] %s\n", value.getObjectValue(), objectValue, equals(value.getObjectValue(), objectValue));
-//        }
-//        if (!equals(value.getObjectValue(), objectValue)) {
-////            value = objectValue;
-//            value.setObjectValue(objectValue);
-//            fireChangeEvent(ParameterChange.VALUE);
-//        }
         if (value.setObjectValue(objectValue)) {
             fireChangeEvent(ParameterChange.VALUE);
         }
@@ -494,8 +488,6 @@ public class PluginParameter<V extends ParameterValue> {
      * @return An object representing the current value of this parameter.
      */
     public Object getObjectValue() {
-//        return ((ObjectParameterValue)value).getObjectValue();
-//        return (V)value.getObjectValue();
         return value.getObjectValue();
     }
 
@@ -516,11 +508,8 @@ public class PluginParameter<V extends ParameterValue> {
      * @param stringValue The String value to set.
      */
     public final void setStringValue(final String stringValue) {
-
-//        setError(validateString(stringValue));
         setError(value.validateString(stringValue));
         if (getError() != null) {
-//            throw new IllegalArgumentException(getError());
             return;
         }
 
@@ -536,13 +525,9 @@ public class PluginParameter<V extends ParameterValue> {
      * @return A String representing the current value of this parameter.
      */
     public final String getStringValue() {
-//        return convertToString(value);
         return value.toString();
     }
 
-//    public final String convertToString(V objectValue) {
-//        return type.convertToString(objectValue);
-//    }
     /**
      * Validate the specified string value as a value for this parameter.
      *
@@ -552,18 +537,8 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public final String validateString(final String stringValue) {
         return value.validateString(stringValue);
-//        return type.validateString(this, stringValue);
     }
 
-//    public final V convertToObject(String stringValue) {
-//        return type.convertToObject(stringValue);
-//    }
-//    public final String validateObject(V objectValue) {
-//        return type.validateObject(this, objectValue);
-//    }
-//    public final V copyValue(V value) {
-//        return type.copyValue(value);
-//    }
     /**
      * Set an enclosing parameter for which this is a subparameter. This is only
      * used in special cases such as
@@ -820,4 +795,40 @@ public class PluginParameter<V extends ParameterValue> {
         return pluginClass.getSimpleName() + SeparatorConstants.PERIOD + parameter;
     }
 
+    /**
+     * Get the swagger Request Body Example value.
+     *    
+     */
+    public final String getRequestBodyExampleJson() {
+        return requestBodyExample;
+    }
+
+    /**
+     * Set the swagger Request Body Example value.
+     *
+     * @param requestBodyExample The Request Body Example in Json format.
+     */
+    public final void setRequestBodyExampleJson(final String requestBodyExample) {
+        if (!Objects.equals(requestBodyExample, this.requestBodyExample)) {
+            this.requestBodyExample = requestBodyExample;
+        }
+    }
+
+    /**
+     * Is the parameter required?
+     *
+     * @return True if the parameter is required, false otherwise.
+     */
+    public boolean isRequired() {
+        return isRequired;
+    }
+
+    /**
+     * Set whether the parameter is required.
+     *
+     * @param isRequired A boolean indicating whether the parameter is required.
+     */
+    public void setRequired(final boolean isRequired) {
+        this.isRequired = isRequired;
+    }
 }

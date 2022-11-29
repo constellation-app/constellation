@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,9 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -32,6 +34,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
@@ -40,6 +43,7 @@ import au.gov.asd.tac.constellation.utilities.geospatial.Mgrs;
 import au.gov.asd.tac.constellation.utilities.gui.JDropDownMenu;
 import au.gov.asd.tac.constellation.utilities.gui.JMultiChoiceComboBoxMenu;
 import au.gov.asd.tac.constellation.utilities.gui.JSingleChoiceComboBoxMenu;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
@@ -77,6 +81,7 @@ import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -162,9 +167,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         this.cachedWidth = getWidth();
         this.cachedHeight = getHeight();
 
-        updateMarkers = (graph) -> {
-            renderer.updateMarkers(graph, markerState);
-        };
+        updateMarkers = graph -> renderer.updateMarkers(graph, markerState);
 
         // lookup map providers
         this.defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
@@ -207,86 +210,34 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         final List<String> zoomActions = Arrays.asList(ZOOM_ALL, ZOOM_SELECTION, ZOOM_LOCATION);
         this.zoomMenu = new JDropDownMenu<>(UserInterfaceIconProvider.ZOOM_IN.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), zoomActions);
         zoomMenu.addActionListener(event -> {
-            final String zoomAction = (String) event.getSource();
-            switch (zoomAction) {
-                case ZOOM_ALL:
-                    renderer.zoomToMarkers(markerState);
-                    break;
-                case ZOOM_SELECTION:
-                    final MarkerState selectedOnlyState = new MarkerState();
-                    selectedOnlyState.setShowSelectedOnly(true);
-                    renderer.zoomToMarkers(selectedOnlyState);
-                    break;
-                case ZOOM_LOCATION:
-                    final PluginParameters zoomParameters = createParameters();
-                    final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(ZOOM_LOCATION, zoomParameters);
-                    dialog.showAndWait();
-                    if (PluginParametersDialog.OK.equals(dialog.getResult())) {
-                        @SuppressWarnings("unchecked") //the plugin that comes from PARAMETER_TYPE is of type SingleChoiceParameter
-                        final PluginParameter<SingleChoiceParameterValue> parameterType = (PluginParameter<SingleChoiceParameterValue>) zoomParameters.getParameters().get(PARAMETER_TYPE);
-                        final String geoType = SingleChoiceParameterType.getChoice(parameterType);
-                        final String location = zoomParameters.getStringValue(PARAMETER_LOCATION);
-                        final ConstellationAbstractMarker marker;
-                        switch (geoType) {
-                            case GEO_TYPE_COORDINATE:
-                                final String[] coordinate = location.split("[,\\s]+");
-                                assert coordinate.length == 2 || coordinate.length == 3 : "Invalid coordinate syntax provided, should be comma or space separated";
-
-                                final float latitude;
-                                final float longitude;
-                                final float radius;
-                                try {
-                                    latitude = Float.parseFloat(coordinate[0]);
-                                    longitude = Float.parseFloat(coordinate[1]);
-                                    if (coordinate.length == 3) {
-                                        radius = Float.parseFloat(coordinate[2]);
-                                    } else {
-                                        radius = 0;
-                                    }
-                                } catch (NumberFormatException ex) {
-                                    throw new AssertionError("Invalid coordinate data provided, latitude and longitude should be numbers");
-                                }
-                                assert latitude > -90f && latitude < 90f : "Invalid coordinate data provided, latitude should be in the range [-90. 90]";
-                                assert longitude > -180f && longitude < 180f : "Invalid coordinate data provided, longitude should be in the range [-180, 180]";
-                                assert radius >= 0f : "Invalid coordinate data provided, radius should be greater than or equal to 0";
-                                final Location coordinateLocation = new Location(latitude, longitude);
-                                if (radius > 0) {
-                                    final float radiusDD = (float) Distance.Haversine.kilometersToDecimalDegrees(radius);
-                                    final Location coordinateDelta = new Location(coordinateLocation.x + radiusDD, coordinateLocation.y + radiusDD);
-                                    final List<Location> circleVertices = MarkerUtilities.generateCircle(coordinateLocation, coordinateDelta);
-                                    final ConstellationShapeFeature coordinateFeature = new ConstellationShapeFeature(ConstellationFeatureType.POLYGON);
-                                    circleVertices.forEach(vertex -> coordinateFeature.addLocation(vertex));
-                                    marker = renderer.addCustomMarker(coordinateFeature);
-                                } else {
-                                    final ConstellationPointFeature coordinateFeature = new ConstellationPointFeature(coordinateLocation);
-                                    marker = renderer.addCustomMarker(coordinateFeature);
-                                }
-                                break;
-                            case GEO_TYPE_GEOHASH:
-                                final double[] geohashCoordinates = Geohash.decode(location, Geohash.Base.B16);
-                                final ConstellationShapeFeature geohashFeature = new ConstellationShapeFeature(ConstellationFeatureType.POLYGON);
-                                geohashFeature.addLocation(new Location(geohashCoordinates[0] - geohashCoordinates[2], geohashCoordinates[1] - geohashCoordinates[3]));
-                                geohashFeature.addLocation(new Location(geohashCoordinates[0] + geohashCoordinates[2], geohashCoordinates[1] - geohashCoordinates[3]));
-                                geohashFeature.addLocation(new Location(geohashCoordinates[0] + geohashCoordinates[2], geohashCoordinates[1] + geohashCoordinates[3]));
-                                geohashFeature.addLocation(new Location(geohashCoordinates[0] - geohashCoordinates[2], geohashCoordinates[1] + geohashCoordinates[3]));
-                                geohashFeature.addLocation(new Location(geohashCoordinates[0] - geohashCoordinates[2], geohashCoordinates[1] - geohashCoordinates[3]));
-                                marker = renderer.addCustomMarker(geohashFeature);
-                                break;
-                            case GEO_TYPE_MGRS:
-                                final double[] mgrsCoordinates = Mgrs.decode(location);
-                                final Location mgrsLocation = new Location(mgrsCoordinates[0], mgrsCoordinates[1]);
-                                final ConstellationPointFeature mgrsFeature = new ConstellationPointFeature(mgrsLocation);
-                                marker = renderer.addCustomMarker(mgrsFeature);
-                                break;
-                            default:
-                                marker = null;
-                                break;
+            if (currentGraph != null) {
+                final String zoomAction = (String) event.getSource();
+                switch (zoomAction) {
+                    case ZOOM_ALL:
+                        renderer.zoomToMarkers(markerState);
+                        break;
+                    case ZOOM_SELECTION:
+                        final MarkerState selectedOnlyState = new MarkerState();
+                        selectedOnlyState.setShowSelectedOnly(true);
+                        renderer.zoomToMarkers(selectedOnlyState);
+                        break;
+                    case ZOOM_LOCATION:
+                        final PluginParameters zoomParameters = createParameters();
+                        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(ZOOM_LOCATION, zoomParameters);
+                        dialog.showAndWait();
+                        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
+                            @SuppressWarnings("unchecked") //the plugin that comes from PARAMETER_TYPE is of type SingleChoiceParameter
+                            final PluginParameter<SingleChoiceParameterValue> parameterType = (PluginParameter<SingleChoiceParameterValue>) zoomParameters.getParameters().get(PARAMETER_TYPE);
+                            final String geoType = SingleChoiceParameterType.getChoice(parameterType);
+                            final String location = zoomParameters.getStringValue(PARAMETER_LOCATION);
+                            zoomLocationBasedOnGeoType(geoType, location);
                         }
-                        renderer.zoomToLocation(marker == null ? null : marker.getLocation());
-                    }
-                    break;
-                default:
-                    break;
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                NotifyDisplayer.display("Zoom options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
         zoomMenu.setToolTipText("Zoom based on markers or locations in the Map View");
@@ -315,14 +266,10 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             markerState.setColorScheme(colorScheme);
 
             if (colorScheme.getVertexAttribute() != null) {
-                addAttributeValueChangeHandler(colorScheme.getVertexAttribute(), graph -> {
-                    renderer.updateMarkers(graph, markerState);
-                });
+                addAttributeValueChangeHandler(colorScheme.getVertexAttribute(), graph -> renderer.updateMarkers(graph, markerState));
             }
             if (colorScheme.getTransactionAttribute() != null) {
-                addAttributeValueChangeHandler(colorScheme.getTransactionAttribute(), graph -> {
-                    renderer.updateMarkers(graph, markerState);
-                });
+                addAttributeValueChangeHandler(colorScheme.getTransactionAttribute(), graph -> renderer.updateMarkers(graph, markerState));
             }
 
             renderer.updateMarkers(currentGraph, markerState);
@@ -337,14 +284,10 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
             markerState.setLabel(label);
 
             if (label.getVertexAttribute() != null) {
-                addAttributeValueChangeHandler(label.getVertexAttribute(), graph -> {
-                    renderer.updateMarkers(graph, markerState);
-                });
+                addAttributeValueChangeHandler(label.getVertexAttribute(), graph -> renderer.updateMarkers(graph, markerState));
             }
             if (label.getTransactionAttribute() != null) {
-                addAttributeValueChangeHandler(label.getTransactionAttribute(), graph -> {
-                    renderer.updateMarkers(graph, markerState);
-                });
+                addAttributeValueChangeHandler(label.getTransactionAttribute(), graph -> renderer.updateMarkers(graph, markerState));
             }
 
             renderer.updateMarkers(currentGraph, markerState);
@@ -355,19 +298,21 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(MapExporterWrapper::new).collect(Collectors.toList());
         this.exportMenu = new JDropDownMenu<>(UserInterfaceIconProvider.DOWNLOAD.buildIcon(16, ConstellationColor.AZURE.getJavaColor()), exporterWrappers);
         exportMenu.addActionListener(event -> {
-            final MapExporterWrapper exporterWrapper = (MapExporterWrapper) event.getSource();
-            PluginExecution
-                    .withPlugin(exporterWrapper.getExporter().getPluginReference())
-                    .interactively(true)
-                    .executeLater(currentGraph);
+            if (currentGraph != null) {
+                final MapExporterWrapper exporterWrapper = (MapExporterWrapper) event.getSource();
+                PluginExecution
+                        .withPlugin(exporterWrapper.getExporter().getPluginReference())
+                        .interactively(true)
+                        .executeLater(currentGraph);
+            } else {
+                NotifyDisplayer.display("Export options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
         exportMenu.setToolTipText("Export from the Map View");
         toolBar.add(exportMenu);
 
         this.helpButton = new JButton("", UserInterfaceIconProvider.HELP.buildIcon(16, ConstellationColor.AZURE.getJavaColor()));
-        helpButton.addActionListener(event -> {
-            new HelpCtx(this.getClass().getName()).display();
-        });
+        helpButton.addActionListener(event -> new HelpCtx(this.getClass().getName()).display());
         helpButton.setToolTipText("Help on using the Map View");
         toolBar.add(helpButton);
 
@@ -377,7 +322,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         addComponentListener(new ComponentAdapter() {
             ScheduledExecutorService scheduledExecutorService
                     = Executors.newScheduledThreadPool(1);
-            ScheduledFuture scheduledFuture;
+            ScheduledFuture<?> scheduledFuture;
 
             @Override
             //Cancels the previous resize (future) and then performs the latest one every half second
@@ -429,6 +374,79 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
         if (markerState.getColorScheme().getTransactionAttribute() != null) {
             addAttributeValueChangeHandler(markerState.getColorScheme().getTransactionAttribute(), updateMarkers);
         }
+    }
+
+    private void zoomLocationBasedOnGeoType(final String geoType, final String location) throws AssertionError {
+        final ConstellationAbstractMarker marker;
+        switch (geoType) {
+            case GEO_TYPE_COORDINATE:
+                final String[] coordinate = location.split("[,\\s]+");
+                if (coordinate.length != 2 && coordinate.length != 3) {
+                    NotifyDisplayer.display("Invalid coordinate syntax provided, should be comma or space separated", NotifyDescriptor.ERROR_MESSAGE);
+                    return;
+                }
+                final float latitude;
+                final float longitude;
+                final float radius;
+                try {
+                    latitude = Float.parseFloat(coordinate[0]);
+                    longitude = Float.parseFloat(coordinate[1]);
+                    if (coordinate.length == 3) {
+                        radius = Float.parseFloat(coordinate[2]);
+                    } else {
+                        radius = 0;
+                    }
+                } catch (final NumberFormatException ex) {
+                    NotifyDisplayer.display("Invalid coordinate data provided, latitude and longitude should be numbers", NotifyDescriptor.ERROR_MESSAGE);
+                    return;
+                }
+                if (latitude <= -90F || latitude >= 90F) {
+                    NotifyDisplayer.display("Invalid coordinate data provided, latitude should be in the range [-90. 90]", NotifyDescriptor.ERROR_MESSAGE);
+                    return;
+                }
+                if (longitude <= -180F || longitude >= 180F) {
+                    NotifyDisplayer.display("Invalid coordinate data provided, longitude should be in the range [-180, 180]", NotifyDescriptor.ERROR_MESSAGE);
+                    return;
+                }
+                if (radius < 0F) {
+                    NotifyDisplayer.display("Invalid coordinate data provided, radius should be greater than or equal to 0", NotifyDescriptor.ERROR_MESSAGE);
+                    return;
+                }
+                
+                final Location coordinateLocation = new Location(latitude, longitude);
+                if (radius > 0) {
+                    final float radiusDD = (float) Distance.Haversine.kilometersToDecimalDegrees(radius);
+                    final Location coordinateDelta = new Location(coordinateLocation.x + radiusDD, coordinateLocation.y + radiusDD);
+                    final List<Location> circleVertices = MarkerUtilities.generateCircle(coordinateLocation, coordinateDelta);
+                    final ConstellationShapeFeature coordinateFeature = new ConstellationShapeFeature(ConstellationFeatureType.POLYGON);
+                    circleVertices.forEach(vertex -> coordinateFeature.addLocation(vertex));
+                    marker = renderer.addCustomMarker(coordinateFeature);
+                } else {
+                    final ConstellationPointFeature coordinateFeature = new ConstellationPointFeature(coordinateLocation);
+                    marker = renderer.addCustomMarker(coordinateFeature);
+                }
+                break;
+            case GEO_TYPE_GEOHASH:
+                final double[] geohashCoordinates = Geohash.decode(location, Geohash.Base.B16);
+                final ConstellationShapeFeature geohashFeature = new ConstellationShapeFeature(ConstellationFeatureType.POLYGON);
+                geohashFeature.addLocation(new Location(geohashCoordinates[0] - geohashCoordinates[2], geohashCoordinates[1] - geohashCoordinates[3]));
+                geohashFeature.addLocation(new Location(geohashCoordinates[0] + geohashCoordinates[2], geohashCoordinates[1] - geohashCoordinates[3]));
+                geohashFeature.addLocation(new Location(geohashCoordinates[0] + geohashCoordinates[2], geohashCoordinates[1] + geohashCoordinates[3]));
+                geohashFeature.addLocation(new Location(geohashCoordinates[0] - geohashCoordinates[2], geohashCoordinates[1] + geohashCoordinates[3]));
+                geohashFeature.addLocation(new Location(geohashCoordinates[0] - geohashCoordinates[2], geohashCoordinates[1] - geohashCoordinates[3]));
+                marker = renderer.addCustomMarker(geohashFeature);
+                break;
+            case GEO_TYPE_MGRS:
+                final double[] mgrsCoordinates = Mgrs.decode(location);
+                final Location mgrsLocation = new Location(mgrsCoordinates[0], mgrsCoordinates[1]);
+                final ConstellationPointFeature mgrsFeature = new ConstellationPointFeature(mgrsLocation);
+                marker = renderer.addCustomMarker(mgrsFeature);
+                break;
+            default:
+                marker = null;
+                break;
+        }
+        renderer.zoomToLocation(marker == null ? null : marker.getLocation());
     }
 
     private PluginParameters createParameters() {
@@ -517,35 +535,12 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
     }
 
     public void selectOnGraph(final GraphElementType graphElementType, final Set<Integer> elementIds) {
-        PluginExecution.withPlugin(new SimpleEditPlugin(UPDATE_SELECTION_PLUGIN) {
-            @Override
-            protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                switch (graphElementType) {
-                    case VERTEX:
-                        final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                        final int vertexCount = graph.getVertexCount();
-                        for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                            final int vertexId = graph.getVertex(vertexPosition);
-                            graph.setBooleanValue(vertexSelectedAttribute, vertexId, elementIds.contains(vertexId));
-                        }
-                        break;
-                    case TRANSACTION:
-                        final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-                        final int transactionCount = graph.getTransactionCount();
-                        for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                            final int transactionId = graph.getTransaction(transactionPosition);
-                            graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }).executeLater(getCurrentGraph());
+        PluginExecution.withPlugin(new SelectOnGraphPlugin(graphElementType, elementIds)).executeLater(getCurrentGraph());
     }
 
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         resetContent();
     }
 
@@ -605,4 +600,46 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
+    public static class SelectOnGraphPlugin extends SimpleEditPlugin {
+
+        private final GraphElementType graphElementType;
+        private final Set<Integer> elementIds;
+
+        public SelectOnGraphPlugin(final GraphElementType graphElementType, final Set<Integer> elementIds) {
+            this.graphElementType = graphElementType;
+            this.elementIds = elementIds;
+        }
+
+        @Override
+        public String getName() {
+            return MapViewTopComponent.UPDATE_SELECTION_PLUGIN;
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            switch (graphElementType) {
+                case VERTEX:
+                    final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
+                    final int vertexCount = graph.getVertexCount();
+                    for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                        final int vertexId = graph.getVertex(vertexPosition);
+                        graph.setBooleanValue(vertexSelectedAttribute, vertexId, elementIds.contains(vertexId));
+                    }
+                    break;
+                case TRANSACTION:
+                    final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+                    final int transactionCount = graph.getTransactionCount();
+                    for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                        final int transactionId = graph.getTransaction(transactionPosition);
+                        graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+
+    }
+
 }

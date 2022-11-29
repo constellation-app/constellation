@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class QuadTree {
         return boxes;
     }
 
-    private void getSubs(List<Box2D> boxes) {
+    private void getSubs(final List<Box2D> boxes) {
         boxes.add(box);
         if (nodes != null) {
             for (final QuadTree qt : nodes) {
@@ -116,8 +116,8 @@ public class QuadTree {
      */
     private int getIndex(final Orb2D orb) {
         int index = -1;
-        final double midx = box.minx + ((box.maxx - box.minx) / 2f);
-        final double midy = box.miny + ((box.maxy - box.miny) / 2f);
+        final double midx = box.minx + ((box.maxx - box.minx) / 2F);
+        final double midy = box.miny + ((box.maxy - box.miny) / 2F);
 
         // Object can completely fit within the top/bottom quadrants.
         final boolean topQuadrant = orb.getY() + orb.r < midy;
@@ -129,6 +129,8 @@ public class QuadTree {
                 index = TOP_L;
             } else if (bottomQuadrant) {
                 index = BOT_L;
+            } else {
+                // Do nothing
             }
         } // Object can completely fit within the right quadrants.
         else if (orb.getX() - orb.r > midx) {
@@ -136,7 +138,12 @@ public class QuadTree {
                 index = TOP_R;
             } else if (bottomQuadrant) {
                 index = BOT_R;
+            } else {
+                // Do nothing
             }
+        } else {
+            // Do nothing
+            return index;
         }
 
         return index;
@@ -207,7 +214,7 @@ public class QuadTree {
         // We need to deal with pathological cases such as everything at the same x,y point,
         // or everything co-linear.
         // We add a perturbation so points go different ways at different stages.
-        float perturbation = 1e-4f;
+        float perturbation = 1e-4F;
         int collided = 0;
         for (final Orb2D possible : possibles) {
             if (orb != possible) {
@@ -218,13 +225,12 @@ public class QuadTree {
                 if (ll <= r * r) {
                     final double l = Math.sqrt(ll);
                     collided++;
-                    final float nudge = l != 0 ? (float) Math.min((l - r) / l * 0.5, -0.1) : -0.1f;
+                    final float nudge = l != 0 ? (float) Math.min((l - r) / l * 0.5, -0.1) : -0.1F;
                     x *= nudge;
                     x += perturbation;
                     y *= nudge;
                     y += perturbation;
                     perturbation = -perturbation;
-//                    System.out.printf("-Collided %f %f %f x=%f y=%f\n  %s <> %s\n", l, r, nudge, x, y, circle, possible);
                     orb.setX(orb.getX() - x);
                     orb.setY(orb.getY() - y);
                     possible.setX(possible.getX() + x);

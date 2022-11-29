@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,12 @@ public interface Arranger {
      *
      * @throws InterruptedException If the user cancels the task.
      */
-    void arrange(GraphWriteMethods wg) throws InterruptedException;
+    public void arrange(final GraphWriteMethods wg) throws InterruptedException;
 
     /**
      * Specify whether the mean position of the nodes should be maintained.
      *
      * @param b If true, the mean position of the nodes will be maintained.
      */
-    void setMaintainMean(boolean b);
+    public void setMaintainMean(final boolean b);
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.BitSet;
 import org.openide.util.NbBundle.Messages;
@@ -39,7 +40,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("AverageDegreePlugin=Average Degree")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class AverageDegreePlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute AVERAGE_DEGREE_ATTRIBUTE = SnaConcept.GraphAttribute.AVERAGE_DEGREE;
@@ -124,14 +125,12 @@ public class AverageDegreePlugin extends SimpleEditPlugin {
 
         // choose the correct degree attribute
         final int averageDegreeAttributeId;
-        if (includeConnectionsIn && includeConnectionsOut) {
-            averageDegreeAttributeId = AVERAGE_DEGREE_ATTRIBUTE.ensure(graph);
-        } else if (includeConnectionsIn && !includeConnectionsOut) {
+        if (includeConnectionsIn && !includeConnectionsOut) {
             averageDegreeAttributeId = AVERAGE_IN_DEGREE_ATTRIBUTE.ensure(graph);
         } else if (!includeConnectionsIn && includeConnectionsOut) {
             averageDegreeAttributeId = AVERAGE_OUT_DEGREE_ATTRIBUTE.ensure(graph);
         } else {
-            return;
+            averageDegreeAttributeId = AVERAGE_DEGREE_ATTRIBUTE.ensure(graph);
         }
 
         // update the graph with degree values

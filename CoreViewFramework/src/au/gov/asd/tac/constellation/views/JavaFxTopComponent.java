@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views;
 
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -92,23 +93,22 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
             if (createStyle() != null) {
                 scene.getStylesheets().add(getClass().getResource(createStyle()).toExternalForm());
             }
+            scene.getStylesheets().add(JavafxStyleManager.getDynamicStyleSheet());
 
             scrollPane.setHbarPolicy(getHorizontalScrollPolicy());
             if (getHorizontalScrollPolicy() == ScrollBarPolicy.NEVER) {
                 scrollPane.setFitToWidth(true);
             } else {
-                scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue) -> {
-                    // TODO: fix a bug where the width of the scroll can grow infinitely
-                    scrollPane.setFitToWidth(content.prefWidth(-1) <= newValue.getWidth());
-                });
+                scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue)
+                        ->                    // TODO: fix a bug where the width of the scroll can grow infinitely
+                    scrollPane.setFitToWidth(content.prefWidth(-1) <= newValue.getWidth()));
             }
             scrollPane.setVbarPolicy(getVerticalScrollPolicy());
             if (getVerticalScrollPolicy() == ScrollBarPolicy.NEVER) {
                 scrollPane.setFitToHeight(true);
             } else {
-                scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue) -> {
-                    scrollPane.setFitToHeight(content.prefHeight(-1) <= newValue.getHeight());
-                });
+                scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue)
+                        -> scrollPane.setFitToHeight(content.prefHeight(-1) <= newValue.getHeight()));
             }
 
             // set the font on initialise
@@ -125,11 +125,22 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
 
     @Override
     protected void updateFont() {
-        if (content != null) {
+        if (scene != null) {
             Platform.runLater(() -> {
-                content.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
-                content.setStyle(String.format("-fx-font-family:\"%s\";", FontUtilities.getOutputFontFamily()));
+                scene.getStylesheets().remove(JavafxStyleManager.getDynamicStyleSheet());
+                scene.getStylesheets().add(JavafxStyleManager.getDynamicStyleSheet());
             });
         }
     }
+
+    @Override
+    protected void handleComponentClosed() {
+        PreferenceUtilities.removePreferenceChangeListener(ApplicationPreferenceKeys.FONT_PREFERENCES, this);
+    }
+
+    @Override
+    protected void handleComponentOpened() {
+        PreferenceUtilities.addPreferenceChangeListener(ApplicationPreferenceKeys.FONT_PREFERENCES, this);
+    }
+
 }

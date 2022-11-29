@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,9 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -35,6 +37,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
@@ -48,7 +51,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Iterator;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -97,7 +101,7 @@ public class AddRecordStore extends RestService {
 
         final PluginParameter<StringParameterValue> graphidParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphidParam.setName("Graph id");
-        graphidParam.setDescription("The id of the graph to add the recordstore to.");
+        graphidParam.setDescription("The id of the graph to add the recordstore to. (Default is the active graph)");
         parameters.addParameter(graphidParam);
 
         final PluginParameter<BooleanParameterValue> completeParam = BooleanParameterType.build(COMPLETE_PARAMETER_ID);
@@ -120,6 +124,8 @@ public class AddRecordStore extends RestService {
         final PluginParameter<StringParameterValue> dataParam = StringParameterType.build(DATA_PARAMETER_ID);
         dataParam.setName("Data (body)");
         dataParam.setDescription("A JSON representation of the RecordStore data, in the form {\"columns\": [\"COL1\",\"COL2\",\"COL3\"], \"data\": [[r1c1, r1c2, r1c3],[r2c1,r2c2,r2c3]]. This is the same as the output of pandas.DataFrame.to_json(orient='split', date_format='iso').");
+        dataParam.setRequestBodyExampleJson("#/components/examples/addRecordStoreExample");
+        dataParam.setRequired(true);
         parameters.addParameter(dataParam);
 
         return parameters;
@@ -189,35 +195,7 @@ public class AddRecordStore extends RestService {
     }
 
     private static void addToGraph(final Graph graph, final RecordStore recordStore, final boolean completeWithSchema, final String arrange, final boolean resetView) {
-        final Plugin p = new SimpleEditPlugin("Import from REST API") {
-            @Override
-            protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, false, completeWithSchema, null);
-
-                // Do the optional arrangement inside this anonymous "addRecordStoreToGraph" plugin.
-                // This way, any extra nodes are added and arranged in one go.
-                // If the arrangement is done separately, not only does the "add + arrange" become two steps,
-                // but if enough extra vertices are drawn at (0, 0, 0), some graphics drivers will crash.
-                // It is still possible to do this (by manually setting x,y,z to 0,0,0 and specifying no arrangement),
-                // but then it becomes the malicious user's fault.
-                //
-                try {
-                    if (arrange == null) {
-                        PluginExecutor
-                                .startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
-                                .followedBy(ArrangementPluginRegistry.PENDANTS)
-                                .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
-                                .executeNow(graph);
-                    } else if (arrange.isEmpty() || arrange.equalsIgnoreCase("None")) {
-                        // Don't do anything.
-                    } else {
-                        PluginExecution.withPlugin(arrange).executeNow(graph);
-                    }
-                } catch (final PluginException ex) {
-                    Exceptions.printStackTrace(ex);
-                }
-            }
-        };
+        final Plugin p = new ImportFromRestApiPlugin(recordStore, completeWithSchema, arrange);
 
         PluginExecutor pe = PluginExecutor.startWith(p);
 
@@ -233,5 +211,55 @@ public class AddRecordStore extends RestService {
         } catch (final PluginException ex) {
             throw new RestServiceException(ex);
         }
+    }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
+    private static class ImportFromRestApiPlugin extends SimpleEditPlugin {
+        
+        private static final Logger LOGGER = Logger.getLogger(ImportFromRestApiPlugin.class.getName());
+
+        private final RecordStore recordStore;
+        private final boolean completeWithSchema;
+        private final String arrange;
+
+        public ImportFromRestApiPlugin(final RecordStore recordStore, final boolean completeWithSchema, final String arrange) {
+            this.recordStore = recordStore;
+            this.completeWithSchema = completeWithSchema;
+            this.arrange = arrange;
+        }
+
+        @Override
+        public String getName() {
+            return "Import from REST API";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            GraphRecordStoreUtilities.addRecordStoreToGraph(graph, recordStore, false, completeWithSchema, null);
+
+            // Do the optional arrangement inside this anonymous "addRecordStoreToGraph" plugin.
+            // This way, any extra nodes are added and arranged in one go.
+            // If the arrangement is done separately, not only does the "add + arrange" become two steps,
+            // but if enough extra vertices are drawn at (0, 0, 0), some graphics drivers will crash.
+            // It is still possible to do this (by manually setting x,y,z to 0,0,0 and specifying no arrangement),
+            // but then it becomes the malicious user's fault.
+            //
+            try {
+                if (arrange == null) {
+                    PluginExecutor
+                            .startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                            .followedBy(ArrangementPluginRegistry.PENDANTS)
+                            .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
+                            .executeNow(graph);
+                } else if (arrange.isEmpty() || "None".equalsIgnoreCase(arrange)) {
+                    // Don't do anything.
+                } else {
+                    PluginExecution.withPlugin(arrange).executeNow(graph);
+                }
+            } catch (final PluginException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+        }
+
     }
 }

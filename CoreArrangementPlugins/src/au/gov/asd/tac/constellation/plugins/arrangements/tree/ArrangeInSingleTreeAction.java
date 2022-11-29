@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,11 +75,11 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
 
         private final SecureRandom r = new SecureRandom();
 
-        Worker(GraphWriteMethods graph) {
+        private Worker(final GraphWriteMethods graph) {
             this.graph = graph;
         }
 
-        void run() throws InterruptedException {
+        private void run() throws InterruptedException {
             final TreeTaxonArranger treeArranger = new TreeTaxonArranger(null, null);
 
             final GraphTaxonomy tax = treeArranger.getTaxonomy(graph);
@@ -94,12 +94,12 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
             }
             final int colorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
 
-            // Colour the taxonomies so we can see what's going on.
+            // Color the taxonomies so we can see what's going on.
             if (tax != null) {
-                for (Integer subvxId : tax.getTaxa().keySet()) {
-                    final ConstellationColor color = ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1f);
+                for (final Integer subvxId : tax.getTaxa().keySet()) {
+                    final ConstellationColor color = ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1F);
                     final Set<Integer> subgraph = tax.getTaxa().get(subvxId);
-                    for (int vxId : subgraph) {
+                    for (final int vxId : subgraph) {
                         graph.setStringValue(bgiconAttr, vxId, "Background.Round Circle");
                         graph.setObjectValue(colorAttr, vxId, color);
                     }

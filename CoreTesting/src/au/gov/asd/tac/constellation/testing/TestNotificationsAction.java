@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,12 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -32,7 +36,23 @@ import org.openide.util.NbBundle.Messages;
 @ActionRegistration(displayName = "#CTL_TestNotificationsAction", surviveFocusChange = true)
 @ActionReference(path = "Menu/Experimental/Developer", position = 0)
 @Messages("CTL_TestNotificationsAction=Test Notifications")
+
+/**
+ * A demo of the different notifications the applications supports
+ */
 public final class TestNotificationsAction implements ActionListener {
+
+    private static final String ERROR = "Error";
+    private static final String WARNING = "Warning";
+    private static final String INFORMATION = "Information";
+    private static final String PLAIN = "Plain";
+    private static final String DISPLAY_LARGE_ALERT = "Display Large Alert";
+    private static final String DISPLAY_ALERT = "Display Alert";
+    private static final String ERROR_MESSAGE = "Error Message";
+    private static final String WARNING_MESSAGE = "Warning Message";
+    private static final String INFORMATION_MESSAGE = "Information Message";
+    private static final String QUESTION_MESSAGE = "Question Message";
+    private static final String PLAIN_MESSAGE = "Plain Message";
 
     private final GraphNode context;
 
@@ -42,6 +62,7 @@ public final class TestNotificationsAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
+        // plugin notifications
         final Plugin plugin = new TestNotificationsPlugin();
         final PluginParameters pp = plugin.createParameters();
 
@@ -50,5 +71,25 @@ public final class TestNotificationsAction implements ActionListener {
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
             PluginExecution.withPlugin(plugin).withParameters(pp).executeLater(context.getGraph());
         }
+
+        // NetBeans NotifyDisplayer options
+        NotifyDisplayer.display(PLAIN_MESSAGE, NotifyDescriptor.PLAIN_MESSAGE);
+        NotifyDisplayer.display(QUESTION_MESSAGE, NotifyDescriptor.QUESTION_MESSAGE);
+        NotifyDisplayer.display(INFORMATION_MESSAGE, NotifyDescriptor.INFORMATION_MESSAGE);
+        NotifyDisplayer.display(WARNING_MESSAGE, NotifyDescriptor.WARNING_MESSAGE);
+        NotifyDisplayer.display(ERROR_MESSAGE, NotifyDescriptor.ERROR_MESSAGE);
+
+        // Constellation Utility options
+        Platform.runLater(() -> {
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING);
+            NotifyDisplayer.displayAlert(DISPLAY_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR);
+
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, PLAIN, PLAIN_MESSAGE, Alert.AlertType.NONE);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, INFORMATION, INFORMATION_MESSAGE, Alert.AlertType.INFORMATION);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, WARNING, WARNING_MESSAGE, Alert.AlertType.WARNING);
+            NotifyDisplayer.displayLargeAlert(DISPLAY_LARGE_ALERT, ERROR, ERROR_MESSAGE, Alert.AlertType.ERROR);
+        });
     }
 }

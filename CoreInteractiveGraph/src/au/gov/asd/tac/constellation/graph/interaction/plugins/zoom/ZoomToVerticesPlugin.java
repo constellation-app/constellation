@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -31,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
@@ -45,8 +47,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 @Messages("ZoomToVerticesPlugin=Zoom to Vertices")
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
 public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
 
     public static final String VERTICES_PARAMETER_ID = PluginParameter.buildId(ZoomToVerticesPlugin.class, "vertices");
@@ -97,7 +99,14 @@ public final class ZoomToVerticesPlugin extends SimpleEditPlugin {
         final BoundingBox box = new BoundingBox();
         final Camera camera = new Camera(oldCamera);
         BoundingBoxUtilities.encompassSpecifiedElements(box, graph, vertices);
-        CameraUtilities.zoomToBoundingBox(camera, box);
-        Animation.startAnimation(new PanAnimation("Zoom to Vertices", oldCamera, camera, true));
+        CameraUtilities.zoomToBoundingBox(camera, box);        
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
+            // Only do the camera animation if the edited graph is currently active
+            Animation.startAnimation(new PanAnimation("Zoom to Vertices", oldCamera, camera, true));
+        } else {
+            // Skip the animation, just set the new camera position
+            VisualGraphUtilities.setCamera(graph, camera);
+        }                
     }
 }

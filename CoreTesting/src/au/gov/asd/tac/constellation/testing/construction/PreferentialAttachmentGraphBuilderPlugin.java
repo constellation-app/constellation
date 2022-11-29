@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,24 @@ package au.gov.asd.tac.constellation.testing.construction;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.attribute.BooleanAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -43,18 +45,20 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -69,7 +73,10 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("PreferentialAttachmentGraphBuilderPlugin=Preferential Attachment Graph Builder")
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(PreferentialAttachmentGraphBuilderPlugin.class.getName());
 
     public static final String N_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "n");
     public static final String M_PARAMETER_ID = PluginParameter.buildId(PreferentialAttachmentGraphBuilderPlugin.class, "m");
@@ -128,25 +135,20 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         final List<String> nChoices = new ArrayList<>();
         final List<String> tChoices = new ArrayList<>();
         if (graph != null) {
-            final ReadableGraph readableGraph = graph.getReadableGraph();
-            try {
-                final List<SchemaVertexType> nodeTypes = GraphManager.getDefault().getActiveGraph().getSchema().getFactory().getRegisteredVertexTypes();
-
-                for (int i = 0; i < nodeTypes.size(); i++) {
-                    SchemaVertexType type = nodeTypes.get(i);
-                    nAttributes.add(type.getName());
-                }
-                nAttributes.sort(String::compareTo);
-
-                final List<SchemaTransactionType> transactionTypes = GraphManager.getDefault().getActiveGraph().getSchema().getFactory().getRegisteredTransactionTypes();
-                for (int i = 0; i < transactionTypes.size(); i++) {
-                    SchemaTransactionType type = transactionTypes.get(i);
-                    tAttributes.add(type.getName());
-                }
-                tAttributes.sort(String::compareTo);
-            } finally {
-                readableGraph.release();
+            final Set<Class<? extends SchemaConcept>> concepts = graph.getSchema().getFactory().getRegisteredConcepts();
+            
+            final Collection<SchemaVertexType> nodeTypes = SchemaVertexTypeUtilities.getTypes(concepts);
+            for (final SchemaVertexType type : nodeTypes) {
+                nAttributes.add(type.getName());
             }
+            nAttributes.sort(String::compareTo);
+
+            final Collection<SchemaTransactionType> transactionTypes = SchemaTransactionTypeUtilities.getTypes(concepts);
+            for (final SchemaTransactionType type : transactionTypes) {
+                tAttributes.add(type.getName());
+            }
+            tAttributes.sort(String::compareTo);
+            
             nChoices.add(nAttributes.get(0));
             tChoices.add(tAttributes.get(0));
         }
@@ -195,6 +197,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
 
         final int vxIsGoodAttr = graph.addAttribute(GraphElementType.VERTEX, BooleanAttributeDescription.ATTRIBUTE_NAME, "isGood", null, false, null);
         final int vxCountryAttr = SpatialConcept.VertexAttribute.COUNTRY.ensure(graph);
+        final int vxPinnedAttr = VisualConcept.VertexAttribute.PINNED.ensure(graph);
 
         final int txIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
         final int txTypeAttr = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
@@ -203,7 +206,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         final int[] startVxIds = new int[m];
 
         final VertexDecorators decorators;
-        decorators = new VertexDecorators(null, graph.getAttributeName(vxCountryAttr), null, graph.getAttributeName(vxIsGoodAttr));
+        decorators = new VertexDecorators(graph.getAttributeName(vxCountryAttr), graph.getAttributeName(vxPinnedAttr), null, graph.getAttributeName(vxIsGoodAttr));
         final int decoratorsAttr = VisualConcept.GraphAttribute.DECORATORS.ensure(graph);
         graph.setObjectValue(decoratorsAttr, 0, decorators);
 
@@ -233,7 +236,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
         final int fourDays = 4 * 24 * 60 * 60 * 1000;
 
         Set<Integer> destinations = Arrays.stream(startVxIds).boxed().collect(Collectors.toSet());
-        ArrayList<Integer> repeats = new ArrayList<>();
+        final List<Integer> repeats = new ArrayList<>();
         while (vx < n) {
             final int vxId = graph.addVertex();
             final String label = "Node_" + vxId;
@@ -246,7 +249,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                 graph.getSchema().completeVertex(graph, vxId);
             }
             final int reciprocity = r.nextInt(3);
-            for (int destination : destinations) {
+            for (final int destination : destinations) {
                 int numTimes = 1;
                 if (randomWeights) {
                     numTimes = r.nextInt(1 + r.nextInt(100));
@@ -257,21 +260,21 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
                     if (randomWeights) {
                         switch (reciprocity) {
                             case 0:
-                                boolean random0 = r.nextBoolean();
+                                final boolean random0 = r.nextBoolean();
                                 if (random0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
                             case 1:
-                                int random1 = r.nextInt(5);
+                                final int random1 = r.nextInt(5);
                                 if (random1 == 0) {
                                     sxId = destination;
                                     dxId = vxId;
                                 }
                                 break;
                             default:
-                                int randomDefault = r.nextInt(5);
+                                final int randomDefault = r.nextInt(5);
                                 if (randomDefault != 0) {
                                     sxId = destination;
                                     dxId = vxId;
@@ -301,22 +304,18 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
             }
         }
 
-        if (!PreferenceUtilites.isGraphViewFrozen()) {
-            try {
-                if (n < 10000) {
-                    // Do a trees layout.
-                    PluginExecutor.startWith(ArrangementPluginRegistry.TREES)
-                            .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                } else {
-                    // Do a grid layout.
-                    PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
-                            .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
-                }
-            } catch (PluginException ex) {
-                Exceptions.printStackTrace(ex);
+        try {
+            if (n < 10000) {
+                // Do a trees layout.
+                PluginExecutor.startWith(ArrangementPluginRegistry.TREES)
+                        .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
+            } else {
+                // Do a grid layout.
+                PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
+                        .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
             }
-        } else {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
+        } catch (final PluginException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         interaction.setProgress(1, 0, "Completed successfully", true);
@@ -331,7 +330,7 @@ public class PreferentialAttachmentGraphBuilderPlugin extends SimpleEditPlugin {
      *
      * @return A random set of destinations
      */
-    private static Set<Integer> generateDestinations(ArrayList<Integer> repeats, int nVxStart, SecureRandom r) {
+    private static Set<Integer> generateDestinations(final List<Integer> repeats, final int nVxStart, final SecureRandom r) {
         final Set<Integer> destinations = new HashSet<>();
         while (destinations.size() < nVxStart) {
             destinations.add(repeats.get(r.nextInt(repeats.size())));

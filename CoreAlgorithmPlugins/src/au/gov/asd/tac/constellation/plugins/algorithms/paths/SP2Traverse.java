@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public class SP2Traverse {
      * @param graph
      * @return
      */
-    static void traverse(final GraphWriteMethods graph) {
+    protected static void traverse(final GraphWriteMethods graph) {
 
         /*
          Initialising variables
@@ -77,7 +77,9 @@ public class SP2Traverse {
                 check.set(graph.getVertexPosition(graph.getVertexNeighbour(position, 0)), true);
             } else if (graph.getBooleanValue(selectedNodeAttrId, position) && graph.getVertexNeighbourCount(position) > 1) {
                 seeds.set(vxId, true);
-            } // ignore nodes with no neighbour
+            } else {
+                // Ignore nodes with no neighbour
+            }
         }
         // now to determine how many pairs of nodes we need to get the shortest path between
         int pairsize = 0;

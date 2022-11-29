@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,13 +29,13 @@ import org.apache.commons.lang3.StringUtils;
 public class BitMaskQuery {
 
     public static final String DEFAULT_QUERY_STRING = "Default";
-    public static final String DEFAULT_QUERY_DESCRIPTION = "Show All";
+    public static final String DEFAULT_QUERY_DESCRIPTION = "Show Complete Graph";
 
     private Query query;
     private String description;
-    private final int bitIndex;
+    private int bitIndex;
     private boolean visible;
-    private final long mask;
+    private long mask;
     private BooleanReadable result;
 
     public BitMaskQuery(final Query query, final int bitIndex, final String description) {
@@ -53,7 +53,7 @@ public class BitMaskQuery {
         return bitIndex;
     }
 
-    public boolean getVisibility() {
+    public boolean isVisible() {
         return visible;
     }
 
@@ -72,6 +72,10 @@ public class BitMaskQuery {
     public String getQueryString() {
         return query.getQueryString();
     }
+    
+    public void setQueryString(final String queryString) {
+        query = new Query(query.getElementType(),queryString);
+    }
 
     public GraphElementType getQueryElementType() {
         return query.getElementType();
@@ -86,15 +90,15 @@ public class BitMaskQuery {
     }
 
     public boolean update(final GraphReadMethods graph, final IntReadable index) {
-        if (query.requiresUpdate(graph)) {
-            if (StringUtils.isNotBlank(query.getQueryString()) && bitIndex != 0) {
-                final Object compiledExpression = query.compile(graph, index);
+        if (StringUtils.isNotBlank(query.getQueryString()) && bitIndex != 0) {
+            final Object compiledExpression = query.compile(graph, index);
+            if (compiledExpression != null) {
                 this.result = Access.getDefault().getRegistry(BooleanReadable.class).convert(compiledExpression);
             }
-            return true;
         } else {
-            return false;
+            this.result = null;
         }
+        return true;
     }
 
     public long updateBitMask(final long original) {
@@ -103,5 +107,10 @@ public class BitMaskQuery {
         } else {
             return original & mask;
         }
+    }
+
+    protected void setIndex(final int i) {
+        this.bitIndex = i;
+        this.mask = 0xFFFFFFFFFFFFFFFFL ^ (1L << i + 1);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ public interface PluginInteraction {
      *
      * @param promptName the name of the dialog box.
      * @param parameters the parameters to be displayed and edited.
-     * @return true if the user selected "Ok" or false if the user selected
+     * @return true if the user selected "OK" or false if the user selected
      * "Cancel".
      */
     boolean prompt(final String promptName, final PluginParameters parameters);

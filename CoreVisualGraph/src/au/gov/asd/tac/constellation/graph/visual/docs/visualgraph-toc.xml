@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
-    <tocitem text="Graph" mergetype="javax.help.SortMerge">
-        <tocitem text="Selection" mergetype="javax.help.SortMerge">
-            <tocitem text="Select Backbone" target="au.gov.asd.tac.constellation.graph.visual.selectBackbone"/>
-            <tocitem text="Select Blazes" target="au.gov.asd.tac.constellation.graph.visual.selectBlazes"/>
-            <tocitem text="Select Singleton" target="au.gov.asd.tac.constellation.graph.visual.selectSingleton"/>
-            <tocitem text="Select One Neighbour" target="au.gov.asd.tac.constellation.graph.visual.selectOneNeighbour"/>
-            <tocitem text="Hop Out Full" target="au.gov.asd.tac.constellation.graph.visual.hopOutFull" />
-            <tocitem text="Hop Out One" target="au.gov.asd.tac.constellation.graph.visual.hopOutOne" />
-            <tocitem text="Hop Out Half" target="au.gov.asd.tac.constellation.graph.visual.hopOutHalf" />
-            <tocitem text="Induced Subgraph" target="au.gov.asd.tac.constellation.graph.visual.inducedSubgraph" />
-        </tocitem>
+    <tocitem text="Selection" mergetype="javax.help.SortMerge">
+        <tocitem text="General Selection" target="au.gov.asd.tac.constellation.graph.visual.generalSelection"/>
+        <tocitem text="Blaze Selection" target="au.gov.asd.tac.constellation.graph.visual.blazeSelection"/>
+        <tocitem text="Dimmed Selection" target="au.gov.asd.tac.constellation.graph.visual.dimmedSelection"/>
+        <tocitem text="Structure Selection" target="au.gov.asd.tac.constellation.graph.visual.structureSelection"/>
+        <tocitem text="Induced Subgraph" target="au.gov.asd.tac.constellation.graph.visual.inducedSubgraph" />
+        <tocitem text="Hop Out" target="au.gov.asd.tac.constellation.graph.visual.hopOut" />
     </tocitem>
     <tocitem text="Tools" mergetype="javax.help.SortMerge">
+        <tocitem text="Compare Graph" target="au.gov.asd.tac.constellation.graph.visual.compare"/>
         <tocitem text="Merge Nodes" target="au.gov.asd.tac.constellation.graph.visual.mergeNodes"/>
     </tocitem>
 </toc>

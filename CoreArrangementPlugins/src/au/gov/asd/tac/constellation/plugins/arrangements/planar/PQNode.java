@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ class PQNode {
     public PQNode(final NodeType type) {
         this.type = type;
         numLeafDescendants = type == NodeType.LEAF_NODE ? 1 : 0;
-        for (NodeLabel l : NodeLabel.values()) {
+        for (final NodeLabel l : NodeLabel.values()) {
             labeledChildren.put(l, new HashSet<>());
         }
     }
@@ -62,7 +62,7 @@ class PQNode {
         return parent;
     }
 
-    public void setParent(PQNode parent) {
+    public void setParent(final PQNode parent) {
         this.parent = parent;
     }
 
@@ -70,7 +70,7 @@ class PQNode {
         return directionIndicator;
     }
 
-    public void setDirectionIndicator(DirectionIndicator directionIndicator) {
+    public void setDirectionIndicator(final DirectionIndicator directionIndicator) {
         this.directionIndicator = directionIndicator;
     }
 
@@ -78,7 +78,7 @@ class PQNode {
         return label;
     }
 
-    public void setLabel(NodeLabel label) {
+    public void setLabel(final NodeLabel label) {
         this.label = label;
     }
 
@@ -86,7 +86,7 @@ class PQNode {
         return pertinentChildCount;
     }
 
-    public void setPertinentChildCount(int pertinentChildCount) {
+    public void setPertinentChildCount(final int pertinentChildCount) {
         this.pertinentChildCount = pertinentChildCount;
     }
 
@@ -94,7 +94,7 @@ class PQNode {
         return pertinentLeafCount;
     }
 
-    public void setPertinentLeafCount(int pertinentLeafCount) {
+    public void setPertinentLeafCount(final int pertinentLeafCount) {
         this.pertinentLeafCount = pertinentLeafCount;
     }
 
@@ -102,7 +102,7 @@ class PQNode {
         return virtualNum;
     }
 
-    public void setVirtualNum(int virtualNum) {
+    public void setVirtualNum(final int virtualNum) {
         this.virtualNum = virtualNum;
     }
 
@@ -110,7 +110,7 @@ class PQNode {
         return realNum;
     }
 
-    public void setRealNum(int realNum) {
+    public void setRealNum(final int realNum) {
         this.realNum = realNum;
     }
 
@@ -119,13 +119,13 @@ class PQNode {
     }
 
     // Returns a copy of the set, used to iterate over when some of the items need to be modified or removed.
-    public Set<PQNode> getLabelView(NodeLabel label) {
-        Set<PQNode> result = new HashSet<>();
+    public Set<PQNode> getLabelView(final NodeLabel label) {
+        final Set<PQNode> result = new HashSet<>();
         result.addAll(labeledChildren.get(label));
         return result;
     }
 
-    public void relabel(NodeLabel newLabel) {
+    public void relabel(final NodeLabel newLabel) {
         if (parent != null) {
             parent.labeledChildren.get(label).remove(this);
             parent.labeledChildren.get(newLabel).add(this);
@@ -133,22 +133,22 @@ class PQNode {
         label = newLabel;
     }
 
-    private void propogateDescsendantChange(int delta) {
+    private void propogateDescsendantChange(final int delta) {
         numLeafDescendants += delta;
         if (parent != null) {
             parent.propogateDescsendantChange(delta);
         }
     }
 
-    public void addChild(PQNode child) {
+    public void addChild(final PQNode child) {
         addChild(child, true);
     }
 
-    public void addFirstChild(PQNode child) {
+    public void addFirstChild(final PQNode child) {
         addChild(child, false);
     }
 
-    private void addChild(PQNode child, boolean toEnd) {
+    private void addChild(final PQNode child, final boolean toEnd) {
         child.parent = this;
 
         if (toEnd) {
@@ -160,14 +160,14 @@ class PQNode {
         propogateDescsendantChange(child.numLeafDescendants);
     }
 
-    public void removeChild(PQNode child) {
+    public void removeChild(final PQNode child) {
         child.parent = null;
         children.remove(child);
         labeledChildren.get(child.label).remove(child);
         propogateDescsendantChange(-child.numLeafDescendants);
     }
 
-    public void replaceChild(PQNode child, PQNode newChild) {
+    public void replaceChild(final PQNode child, final PQNode newChild) {
         child.parent = null;
         newChild.parent = this;
         children.replace(child, newChild);
@@ -187,8 +187,8 @@ class PQNode {
     // Appends the specified sibling node's children to the end of this node's list of children.
     // and removes the concatenated sibling from the shared parent.
     // Note as a result numDescendants of this node needs to be changed, but the change shouldn't be propogated upwards.
-    public void concatenateSibling(PQNode toConcatenate) {
-        for (PQNode child : toConcatenate.children) {
+    public void concatenateSibling(final PQNode toConcatenate) {
+        for (final PQNode child : toConcatenate.children) {
             child.parent = this;
             labeledChildren.get(child.label).add(child);
             numLeafDescendants += child.numLeafDescendants;
@@ -200,9 +200,9 @@ class PQNode {
 
     // Flattens the specified child node's children into this node's list of children
     // Note as a result no numLeafDescendants fields need to be changed.
-    public void flatten(PQNode toFlatten) {
+    public void flatten(final PQNode toFlatten) {
         labeledChildren.get(toFlatten.label).remove(toFlatten);
-        for (PQNode child : toFlatten.children) {
+        for (final PQNode child : toFlatten.children) {
             child.parent = this;
             labeledChildren.get(child.label).add(child);
         }
@@ -213,11 +213,11 @@ class PQNode {
     // and all full children from the other side. Empty children are removed from the right side
     // if reverse is false, or the left side if reverse is true.
     // Should only be called on QNodes with at most one partial child.
-    public List<PQNode> trimAndFlattenQNodeChildren(PQNode dividingNode, boolean reverse) {
-        List<PQNode> removed = new LinkedList<>();
+    public List<PQNode> trimAndFlattenQNodeChildren(final PQNode dividingNode, final boolean reverse) {
+        final List<PQNode> removed = new LinkedList<>();
         NodeLabel toRemove = reverse ^ (dividingNode == null) ? NodeLabel.EMPTY : NodeLabel.FULL;
         PQNode toFlatten = null;
-        for (PQNode child : children) {
+        for (final PQNode child : children) {
             if (toFlatten != null) {
                 flatten(toFlatten);
                 toFlatten = null;
@@ -231,6 +231,8 @@ class PQNode {
                     removed.add(grandchild);
                 }
                 toFlatten = child;
+            } else {
+                // Do nothing
             }
             if (child == dividingNode) {
                 if (child.label.equals(NodeLabel.PARTIAL)) {
@@ -255,11 +257,11 @@ class PQNode {
     // Trims all empty children between the two specified dividing nodes
     // and all full children outside of the two dividing nodes.
     // Should only be called on QNodes with two partial children.
-    public List<PQNode> trimAndFlattenQNodeChildren(PQNode divideStart, PQNode divideEnd) {
-        List<PQNode> removed = new LinkedList<>();
+    public List<PQNode> trimAndFlattenQNodeChildren(final PQNode divideStart, final PQNode divideEnd) {
+        final List<PQNode> removed = new LinkedList<>();
         NodeLabel toRemove = NodeLabel.FULL;
         PQNode toFlatten = null;
-        for (PQNode child : children) {
+        for (final PQNode child : children) {
             if (toFlatten != null) {
                 flatten(toFlatten);
                 toFlatten = null;
@@ -275,16 +277,20 @@ class PQNode {
                     toFlatten = child;
                 }
                 toRemove = NodeLabel.FULL;
+            } else {
+                // Do nothing
             }
             if (child.label.equals(toRemove)) {
                 removeChild(child);
                 removed.add(child);
             } else if (child.label.equals(NodeLabel.PARTIAL) && child != divideStart && child != divideEnd) {
-                for (PQNode grandchild : child.getLabelView(toRemove)) {
+                for (final PQNode grandchild : child.getLabelView(toRemove)) {
                     child.removeChild(grandchild);
                     removed.add(grandchild);
                 }
                 toFlatten = child;
+            } else {
+                // Do nothing
             }
         }
         if (toFlatten != null) {
@@ -307,7 +313,7 @@ class PQNode {
         PQNode maxPos = null;
         PQNode maxReversePos = null;
         PQNode lastChild = null;
-        for (PQNode child : children) {
+        for (final PQNode child : children) {
             if (carry != 0) {
                 count -= carry;
                 carry = 0;
@@ -367,7 +373,7 @@ class PQNode {
         PQNode maxNodeSinceAnchor = null;
         PQNode maxAnchorPos = null;
         PQNode maxNodeSinceMaxAnchor = null;
-        for (PQNode child : children) {
+        for (final PQNode child : children) {
             count += carry;
             carry = 0;
             switch (child.label) {
@@ -409,6 +415,8 @@ class PQNode {
             } else if (count > maxCountSinceAnchor) {
                 maxCountSinceAnchor = count;
                 maxNodeSinceAnchor = child;
+            } else {
+                // Do nothing
             }
         }
         count += carry;
@@ -435,14 +443,14 @@ class PQNode {
         }
 
         private PQNode makeQNodeWithChildren(final PQNode[] children) {
-            PQNode node = makeNode(NodeType.QNODE);
-            for (PQNode child : children) {
+            final PQNode node = makeNode(NodeType.QNODE);
+            for (final PQNode child : children) {
                 node.addChild(child);
             }
             return node;
         }
 
-        private PQNode makeNode(NodeType type) {
+        private PQNode makeNode(final NodeType type) {
             return new PQNode(type);
         }
 
@@ -832,7 +840,6 @@ class PQNode {
             // Check parent metrics
             assert node.children.getSize() == 2;
             assert node.parent == null;
-//            System.out.println(node.numLeafDescendants);
             assert node.numLeafDescendants == 6;
 
             // Check lists of children
@@ -1335,8 +1342,6 @@ class PQNode {
             iter = node.children.iterator();
             assert iter.next() == emptyChild;
             PQNode next = iter.next();
-//            System.out.println(next.label);
-//            System.out.println(next == gChild4);
             assert next == gChild3;
             assert iter.next() == gChild4;
             assert iter.next() == fullChild;

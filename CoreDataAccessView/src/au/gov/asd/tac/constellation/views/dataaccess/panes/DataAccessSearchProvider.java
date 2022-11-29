@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,23 +15,22 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessUtilities;
-import java.util.ArrayList;
-import java.util.Collections;
+import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.tasks.ShowDataAccessPluginTask;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import javafx.application.Platform;
-import javafx.scene.control.Tab;
+import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.quicksearch.SearchProvider;
 import org.netbeans.spi.quicksearch.SearchRequest;
 import org.netbeans.spi.quicksearch.SearchResponse;
-import org.openide.awt.NotificationDisplayer;
 
 /**
- * Data Access Search Provider
+ * Netbeans {@link SearchProvider} that backs the querying of data access plugins
+ * in the quick search box.
  *
  * @author algol
  */
@@ -39,60 +38,41 @@ public class DataAccessSearchProvider implements SearchProvider {
 
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
-        final String text = request.getText().toLowerCase();
-        final Map<String, List<DataAccessPlugin>> plugins = DataAccessPane.lookupPlugins();
+        final String text;
+        if (request != null && StringUtils.isNotBlank(request.getText())) {
+            text = request.getText().toLowerCase();
+        } else {
+            return;
+        }
 
-        final List<String> pluginNames = new ArrayList<>();
-        plugins.values().stream().forEach(dapl -> {
-            for (final DataAccessPlugin dap : dapl) {
-                if (dap.getName().toLowerCase().contains(text)) {
-                    pluginNames.add(dap.getName());
-                }
-            }
-        });
+        // Get all the available data access plugins
+        final Map<String, List<DataAccessPlugin>> plugins;
+        try {
+            plugins = DataAccessPaneState.getPlugins();
+        } catch (ExecutionException ex) {
+            throw new IllegalStateException("Failed to load data access plugins. "
+                    + "Data Access View cannot be created.");
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
 
-        Collections.sort(pluginNames, (a, b) -> a.compareToIgnoreCase(b));
+            throw new IllegalStateException("Failed to load data access plugins. "
+                    + "Data Access View cannot be created.");
+        }
+
+        // Find all matching plugin names
+        final List<String> pluginNames = plugins.values().stream()
+                // Flatten everything to a single stream of plugins
+                .flatMap(Collection::stream)
+                // Filter out plugins whose name do NOT contain the filter text
+                .filter(plugin -> StringUtils.containsIgnoreCase(plugin.getName(), text))
+                .map(DataAccessPlugin::getName)
+                .sorted((a, b) -> a.compareToIgnoreCase(b))
+                .collect(Collectors.toList());
 
         for (final String name : pluginNames) {
-            if (!response.addResult(new PluginDisplayer(name), name)) {
+            if (!response.addResult(new ShowDataAccessPluginTask(name), name)) {
                 return;
             }
-        }
-    }
-
-    private static class PluginDisplayer implements Runnable {
-
-        private final String pluginName;
-
-        private PluginDisplayer(final String pluginName) {
-            this.pluginName = pluginName;
-        }
-
-        @Override
-        public void run() {
-            final String message;
-            final DataAccessPane dapane = DataAccessUtilities.getDataAccessPane();
-            if (dapane != null) {
-                final Tab tab = dapane.getCurrentTab();
-                if (tab != null) {
-                    final QueryPhasePane queryPhasePane = DataAccessPane.getQueryPhasePane(tab);
-                    Platform.runLater(() -> {
-                        queryPhasePane.expandPlugin(pluginName);
-                    });
-
-                    return;
-                } else {
-                    message = "Please create a step in the Data Access view.";
-                }
-            } else {
-                message = "Please open the Data Access view and create a step.";
-            }
-
-            NotificationDisplayer.getDefault().notify("Data Access view",
-                    UserInterfaceIconProvider.WARNING.buildIcon(16, ConstellationColor.DARK_ORANGE.getJavaColor()),
-                    message,
-                    null
-            );
         }
     }
 }

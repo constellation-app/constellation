@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A collection of {@link AnalyticPlugin} which answer a particular question
@@ -38,6 +40,8 @@ import java.util.concurrent.Future;
  * @author cygnus_x-1
  */
 public class AnalyticQuestion<R extends AnalyticResult<?>> {
+    
+    private static final Logger LOGGER = Logger.getLogger(AnalyticQuestion.class.getName());
 
     public static final String CUSTOM_QUESTION_NAME = "Custom";
     public static final String CUSTOM_QUESTION_DESCRIPTION = "An analytic built by the user.";
@@ -107,13 +111,11 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
         // run plugins
         final List<R> analyticResults = new ArrayList<>();
         final Map<Future<?>, AnalyticPlugin<R>> pluginFutures = new HashMap<>();
-        pluginsWithParameters.forEach((plugin, parameters) -> {
-            pluginFutures.put(
-                    PluginExecution.withPlugin(plugin)
-                            .withParameters(parameters)
-                            .executeLater(graph),
-                    plugin);
-        });
+        pluginsWithParameters.forEach((plugin, parameters) -> pluginFutures.put(
+                PluginExecution.withPlugin(plugin)
+                        .withParameters(parameters)
+                        .executeLater(graph),
+                plugin));
         pluginFutures.forEach((future, plugin) -> {
             try {
                 future.get();
@@ -121,11 +123,11 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
                 if (analyticResult != null) {
                     analyticResults.add(analyticResult);
                 }
-            } catch (InterruptedException ex) {
-                pluginFutures.keySet().forEach(redundantFuture -> {
-                    redundantFuture.cancel(true);
-                });
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Analytic answering was interrupted");
+                pluginFutures.keySet().forEach(redundantFuture -> redundantFuture.cancel(true));
             } catch (final CancellationException | ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 exceptions.add(ex);
             }
         });
@@ -135,6 +137,7 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
             result = aggregator.aggregate(analyticResults);
             result.sort();
         } catch (final AnalyticException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             exceptions.add(ex);
         }
 

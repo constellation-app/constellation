@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -439,7 +439,7 @@ public abstract class Point3D implements Cloneable {
     public Object clone() {
         try {
             return super.clone();
-        } catch (CloneNotSupportedException e) {
+        } catch (final CloneNotSupportedException e) {
             // this shouldn't happen, since we are Cloneable
             throw new InternalError();
         }
@@ -471,8 +471,11 @@ public abstract class Point3D implements Cloneable {
      */
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof Point3D) {
-            Point3D p3d = (Point3D) obj;
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() == obj.getClass()) {
+            final Point3D p3d = (Point3D) obj;
             return (getX() == p3d.getX()) && (getY() == p3d.getY() && (getZ() == p3d.getZ()));
         }
         return super.equals(obj);

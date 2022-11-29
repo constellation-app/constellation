@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview.overlays;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -76,9 +77,6 @@ public class ToolsOverlay extends MapOverlay {
         }
     }
 
-    private boolean leftMousePressed = false;
-    private boolean rightMousePressed = false;
-
     private MeasurementSystem measureSystem = MeasurementSystem.METRIC;
     private boolean mouseLeftMeasureSystemRegion = true;
     private boolean mouseLeftMeasureToolRegion = true;
@@ -110,12 +108,12 @@ public class ToolsOverlay extends MapOverlay {
 
     @Override
     public float getX() {
-        return renderer.getComponent().getX() + renderer.getComponent().getWidth() - 10f - width;
+        return renderer.getComponent().getX() + renderer.getComponent().getWidth() - 10F - width;
     }
 
     @Override
     public float getY() {
-        return renderer.getComponent().getY() + 10f;
+        return renderer.getComponent().getY() + 10F;
     }
 
     private Location getMeasureToolStart() {
@@ -148,23 +146,22 @@ public class ToolsOverlay extends MapOverlay {
 
     @Override
     public void overlay() {
-        leftMousePressed = renderer.mouseButton == PConstants.LEFT;
-        rightMousePressed = renderer.mouseButton == PConstants.RIGHT;
+        boolean leftMousePressed = renderer.mouseButton == PConstants.LEFT;
 
         // draw tool overlay
         renderer.noStroke();
-        renderer.fill(backgroundColor);
+        renderer.fill(BACKGROUND_COLOR);
         renderer.rect(x, y, width, height);
 
-        float yOffset = y + margin;
+        float yOffset = y + MARGIN;
 
         // update measure tool state
         final float measureToolX = x + 60;
-        final float measureToolWidth = valueBoxMediumWidth + valueBoxShortWidth;
-        final float measureSystemX = x + 60 + valueBoxMediumWidth + valueBoxShortWidth + (padding * 2);
-        final float measureSystemWidth = valueBoxShortWidth;
+        final float measureToolWidth = VALUE_BOX_MEDIUM_WIDTH + VALUE_BOX_SHORT_WIDTH;
+        final float measureSystemX = x + 60 + VALUE_BOX_MEDIUM_WIDTH + VALUE_BOX_SHORT_WIDTH + (PADDING * 2);
+        final float measureSystemWidth = VALUE_BOX_SHORT_WIDTH;
         if (renderer.mouseX > measureToolX && renderer.mouseX < measureToolX + measureToolWidth
-                && renderer.mouseY > yOffset && renderer.mouseY < yOffset + valueBoxHeight) {
+                && renderer.mouseY > yOffset && renderer.mouseY < yOffset + VALUE_BOX_HEIGHT) {
             if (leftMousePressed && mouseLeftMeasureToolRegion && !drawActive) {
                 measureActive = !measureActive;
                 mouseLeftMeasureToolRegion = false;
@@ -173,7 +170,7 @@ public class ToolsOverlay extends MapOverlay {
             mouseLeftMeasureToolRegion = true;
         }
         if (!measureActive && renderer.mouseX > measureSystemX && renderer.mouseX < measureSystemX + measureSystemWidth
-                && renderer.mouseY > yOffset && renderer.mouseY < yOffset + valueBoxHeight) {
+                && renderer.mouseY > yOffset && renderer.mouseY < yOffset + VALUE_BOX_HEIGHT) {
             if (leftMousePressed && mouseLeftMeasureSystemRegion) {
                 final MeasurementSystem[] measurementSystems = MeasurementSystem.values();
                 measureSystem = measurementSystems[(measureSystem.ordinal() + 1) % measurementSystems.length];
@@ -190,7 +187,7 @@ public class ToolsOverlay extends MapOverlay {
             final Location start = getDrawToolStart();
             final Location end = getDrawToolEnd();
             if (start != null && end != null) {
-                float distance = measureSystem.getMeasureFunction().apply(start, end).floatValue();
+                final float distance = measureSystem.getMeasureFunction().apply(start, end).floatValue();
                 drawValue(String.format("%s", PApplet.nf(distance, 1, 3)), measureToolX, yOffset, measureToolWidth, false, false);
             } else {
                 drawValue(DISABLED, measureToolX, yOffset, measureToolWidth, false, false);
@@ -252,17 +249,17 @@ public class ToolsOverlay extends MapOverlay {
         }
 
         // draw separator
-        yOffset += valueBoxHeight + padding * 2;
+        yOffset += VALUE_BOX_HEIGHT + PADDING * 2;
         drawSeparator(yOffset);
-        yOffset += padding * 2;
+        yOffset += PADDING * 2;
 
         // update draw tool state
         final float drawToolX = x + 60;
-        final float drawToolWidth = valueBoxMediumWidth + valueBoxShortWidth;
-        final float addToGraphX = x + 60 + valueBoxMediumWidth + valueBoxShortWidth + (padding * 2);
-        final float addToGraphWidth = valueBoxShortWidth;
+        final float drawToolWidth = VALUE_BOX_MEDIUM_WIDTH + VALUE_BOX_SHORT_WIDTH;
+        final float addToGraphX = x + 60 + VALUE_BOX_MEDIUM_WIDTH + VALUE_BOX_SHORT_WIDTH + (PADDING * 2);
+        final float addToGraphWidth = VALUE_BOX_SHORT_WIDTH;
         if (renderer.mouseX > drawToolX && renderer.mouseX < drawToolX + drawToolWidth
-                && renderer.mouseY > yOffset && renderer.mouseY < yOffset + valueBoxHeight) {
+                && renderer.mouseY > yOffset && renderer.mouseY < yOffset + VALUE_BOX_HEIGHT) {
             if (leftMousePressed && mouseLeftDrawToolRegion && !measureActive) {
                 drawActive = !drawActive;
                 mouseLeftDrawToolRegion = false;
@@ -271,11 +268,12 @@ public class ToolsOverlay extends MapOverlay {
             mouseLeftDrawToolRegion = true;
         }
         if (!drawActive && renderer.mouseX > addToGraphX && renderer.mouseX < addToGraphX + addToGraphWidth
-                && renderer.mouseY > yOffset && renderer.mouseY < yOffset + valueBoxHeight) {
+                && renderer.mouseY > yOffset && renderer.mouseY < yOffset + VALUE_BOX_HEIGHT) {
             if (leftMousePressed && mouseLeftAddToGraphRegion) {
                 try {
+                    final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
                     PluginExecution.withPlugin(MapViewPluginRegistry.COPY_CUSTOM_MARKERS_TO_GRAPH)
-                            .executeNow(GraphManager.getDefault().getActiveGraph());
+                            .executeNow(currentGraph);
 
                     final MarkerCache markerCache = renderer.getMarkerCache();
                     markerCache.getCustomMarkers().forEach(marker -> {
@@ -283,10 +281,10 @@ public class ToolsOverlay extends MapOverlay {
                         marker.setCustom(false);
                     });
 
-                    renderer.updateMarkers(GraphManager.getDefault().getActiveGraph(), renderer.getMarkerState());
-                } catch (PluginException ex) {
+                    renderer.updateMarkers(currentGraph, renderer.getMarkerState());
+                } catch (final PluginException ex) {
                     LOGGER.log(Level.SEVERE, "Error copying custom markers to graph", ex);
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
                     LOGGER.log(Level.SEVERE, "Error copying custom markers to graph", ex);
                     Thread.currentThread().interrupt();
                 }
@@ -302,11 +300,11 @@ public class ToolsOverlay extends MapOverlay {
         if (drawActive) {
             drawValue("Enabled", drawToolX, yOffset, drawToolWidth, false, true);
 
-            yOffset += valueBoxHeight + (padding * 4);
+            yOffset += VALUE_BOX_HEIGHT + (PADDING * 4);
 
-            final float drawDescriptionHeight = (valueBoxHeight * 16) + (padding * 2) + 1;
+            final float drawDescriptionHeight = (VALUE_BOX_HEIGHT * 16) + (PADDING * 2) + 1;
             renderer.noStroke();
-            renderer.fill(backgroundColor);
+            renderer.fill(BACKGROUND_COLOR);
             renderer.rect(x, yOffset - 1, width, drawDescriptionHeight);
 
             final String drawDescription = " > Click on the map to draw a point marker.\n"
@@ -316,7 +314,7 @@ public class ToolsOverlay extends MapOverlay {
                     + "  marker, continue clicking while holding control to draw edges,"
                     + "  then release control and click once more to complete it.\n"
                     + " > Click on a drawn marker to remove it.";
-            drawInfo(drawDescription, yOffset - (padding * 2), width - (margin * 2) - (padding * 2), true);
+            drawInfo(drawDescription, yOffset - (PADDING * 2), width - (MARGIN * 2) - (PADDING * 2), true);
         } else {
             drawValue(DISABLED, drawToolX, yOffset, drawToolWidth, false, false);
         }
@@ -390,6 +388,8 @@ public class ToolsOverlay extends MapOverlay {
                         measureVertices.add(map.getLocation(event.getX(), event.getY()));
                     } else if (event.isShiftDown()) {
                         measureCircle = true;
+                    } else {
+                        // Do nothing
                     }
                     measureFinished = false;
                     measureOriginX = event.getX();
@@ -416,7 +416,7 @@ public class ToolsOverlay extends MapOverlay {
             final List<ConstellationAbstractMarker> hitMarkers;
             synchronized (LOCK) {
                 hitMarkers = map.getHitMarkers(event.getX(), event.getY()).stream()
-                        .map(marker -> (ConstellationAbstractMarker) marker)
+                        .map(ConstellationAbstractMarker.class::cast)
                         .collect(Collectors.toList());
             }
             if (mouseLeftDrawToolRegion && drawActive) {
@@ -442,7 +442,7 @@ public class ToolsOverlay extends MapOverlay {
                             } else {
                                 return;
                             }
-                            drawVertices.forEach(vertexLocation -> clickFeature.addLocation(vertexLocation));
+                            drawVertices.forEach(clickFeature::addLocation);
                             renderer.addCustomMarker(clickFeature);
                             drawPolygon = false;
                             drawVertices.clear();
@@ -455,7 +455,7 @@ public class ToolsOverlay extends MapOverlay {
                                     map.getLocation(drawOriginX, drawOriginY),
                                     map.getLocation(drawDeltaX, drawDeltaY)));
                             final ConstellationShapeFeature clickFeature = new ConstellationShapeFeature(ConstellationFeatureType.POLYGON);
-                            drawVertices.forEach(vertexLocation -> clickFeature.addLocation(vertexLocation));
+                            drawVertices.forEach(clickFeature::addLocation);
                             renderer.addCustomMarker(clickFeature);
                             drawCircle = false;
                             drawVertices.clear();

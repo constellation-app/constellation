@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +73,8 @@ public class LayersRemoveContextMenu implements ContextMenuProvider {
                             final String description = StringUtils.isBlank(txQuery.getDescription())
                                     ? NO_LAYER_TEXT : txQuery.getDescription();
                             currentLayers.add(String.valueOf(txQuery.getIndex()) + " - " + description);
+                        } else {
+                            // Do nothing
                         }
                     }
                 } else {
@@ -91,7 +93,7 @@ public class LayersRemoveContextMenu implements ContextMenuProvider {
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
         PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(
-                Integer.parseInt(item.substring(0, 2).trim()), LayersAddContextMenu.LayerAction.REMOVE))
+                Integer.parseInt(item.substring(0, 2).trim()), LayerAction.REMOVE, true))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,18 +63,10 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
         } else if (object instanceof Character) {
             return ((Character) object).toString();
         } else if (object instanceof String) {
-            return convertFromString((String) object);
+            return (String) object;
         } else {
             throw new IllegalArgumentException(String.format(
                     "Error converting Object '%s' to String", object.getClass()));
-        }
-    }
-
-    private String convertFromString(final String string) {
-        if (string == null) {
-            return (String) getDefault();
-        } else {
-            return string;
         }
     }
 
@@ -154,7 +146,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
 
     @Override
     public float getFloat(final int id) {
-        return data[id] != null && !data[id].isEmpty() ? Float.parseFloat(data[id]) : 0.0f;
+        return data[id] != null && !data[id].isEmpty() ? Float.parseFloat(data[id]) : 0.0F;
     }
 
     @Override
@@ -263,12 +255,12 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (StringReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new StringVariable() {
             @Override
             public String readString() {
@@ -276,7 +268,7 @@ public final class StringAttributeDescription extends AbstractAttributeDescripti
             }
 
             @Override
-            public void writeString(String value) {
+            public void writeString(final String value) {
                 graph.setStringValue(attribute, indexReadable.readInt(), value);
             }
         };

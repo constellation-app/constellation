@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,12 +35,12 @@ public class RawData implements Comparable<RawData> {
     private final String rawIdentifier;
     private final String rawType;
 
-    public RawData(String rawIdentifier, String rawType) {
+    public RawData(final String rawIdentifier, final String rawType) {
         this.rawIdentifier = rawIdentifier;
         this.rawType = rawType;
     }
 
-    public RawData(String rawData) {
+    public RawData(final String rawData) {
         if (rawData == null) {
             this.rawIdentifier = null;
             this.rawType = null;
@@ -144,7 +144,7 @@ public class RawData implements Comparable<RawData> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -164,20 +164,19 @@ public class RawData implements Comparable<RawData> {
     @Override
     public String toString() {
         final StringBuilder repr = new StringBuilder();
-
-        if (StringUtils.isNotBlank(rawIdentifier)) {
-            repr.append(rawIdentifier);
-        }
+        repr.append(StringUtils.defaultString(rawIdentifier));
 
         if (StringUtils.isNotBlank(rawType)) {
-            repr.append("<").append(rawType).append(">");
+            repr.append("<")
+                .append(rawType)
+                .append(">");
         }
 
         return repr.toString();
     }
 
     @Override
-    public int compareTo(RawData rawValue) {
+    public int compareTo(final RawData rawValue) {
         return this.toString().toLowerCase().compareTo(rawValue.toString().toLowerCase());
     }
 }

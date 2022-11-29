@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.delimited;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.plugins.importexport.ConfigurationPane;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportTopComponent;
 import javafx.application.Platform;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -47,25 +47,39 @@ import org.openide.windows.TopComponent;
         displayName = "#CTL_ImportDelimitedFileAction",
         preferredID = "DelimitedImportTopComponent")
 @Messages({
-    "CTL_ImportDelimitedFileAction=From Delimited File...",
-    "HINT_ImportDelimitedFile=Import from Delimited File"})
-public final class DelimitedImportTopComponent extends JavaFxTopComponent<DelimitedImportPane> {
+    "CTL_ImportDelimitedFileAction=From File...",
+    "HINT_ImportDelimitedFile=Import from File"})
+public final class DelimitedImportTopComponent extends ImportTopComponent {
 
     private final DelimitedImportPane delimitedImportPane;
+    private static final String HELP_TEXT = "1. Click on the green plus icon to add files.\n"
+            + "2. Select your destination graph.\n"
+            + "3. Drag and drop attributes onto columns.\n"
+            + "4. Right click an attribute for more options.\n"
+            + "5. Click the 'Import' button to add data to your graph.\n"
+            + "6. Save your configuration using 'Options > Save'.\n\n"
+            + "HINTS:\n* See all supported attributes with 'Options > Show all schema attributes'.\n"
+            + "* Filter in the Configuration Pane by adding searches of the form <column_name>==\"<search text>\"."
+            + "* E.g. first_name==\"Nick\"\n"
+            + "* To filter Attributes, start typing in the Attributes Filter.";
+
+    final DelimitedImportController controller = new DelimitedImportController();
+    final ConfigurationPane configurationPane = new ConfigurationPane(controller, HELP_TEXT);
+    final DelimitedSourcePane sourcePane = new DelimitedSourcePane(controller);
 
     public DelimitedImportTopComponent() {
+        super();
         setName(Bundle.CTL_ImportDelimitedFileAction());
         setToolTipText(Bundle.HINT_ImportDelimitedFile());
         initComponents();
-
-        delimitedImportPane = new DelimitedImportPane(this);
+        delimitedImportPane = new DelimitedImportPane(this, controller, configurationPane, sourcePane);
+        controller.setImportPane(delimitedImportPane);
         initContent();
     }
 
     @Override
     protected String createStyle() {
         return "resources/delimited-import.css";
-//        return null;
     }
 
     @Override
@@ -74,21 +88,7 @@ public final class DelimitedImportTopComponent extends JavaFxTopComponent<Delimi
     }
 
     @Override
-    protected void handleNewGraph(final Graph graph) {
-        preparePane();
-    }
-
-    @Override
-    protected void handleGraphOpened(final Graph graph) {
-        preparePane();
-    }
-
-    @Override
-    protected void handleGraphClosed(final Graph graph) {
-        preparePane();
-    }
-
-    private void preparePane() {
+    protected void preparePane() {
         Platform.runLater(() -> {
             delimitedImportPane.getSourcePane().updateDestinationGraphCombo();
             delimitedImportPane.updateSourcePane();

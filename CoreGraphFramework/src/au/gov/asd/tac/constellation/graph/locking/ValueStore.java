@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,31 +39,31 @@ public final class ValueStore implements ParameterWriteAccess, Serializable {
     @Override
     public void setInt(final int value) {
         i = value;
-        converter = INT_CONVERTER;
+        converter = intConverter;
     }
 
     @Override
     public void setLong(final long value) {
         l = value;
-        converter = LONG_CONVERTER;
+        converter = longConverter;
     }
 
     @Override
     public void setFloat(final float value) {
         f = value;
-        converter = FLOAT_CONVERTER;
+        converter = floatConverter;
     }
 
     @Override
     public void setDouble(final double value) {
         d = value;
-        converter = DOUBLE_CONVERTER;
+        converter = doubleConverter;
     }
 
     @Override
     public void setObject(final Object value) {
         o = value;
-        converter = OBJECT_CONVERTER;
+        converter = objectConverter;
     }
 
     public final void save() {
@@ -75,31 +75,31 @@ public final class ValueStore implements ParameterWriteAccess, Serializable {
         public void save(final ParameterWriteAccess pwa);
     }
 
-    private final Saver INT_CONVERTER = new Saver() {
+    private final Saver intConverter = new Saver() {
         @Override
         public void save(final ParameterWriteAccess access) {
             access.setInt(i);
         }
     };
-    private final Saver LONG_CONVERTER = new Saver() {
+    private final Saver longConverter = new Saver() {
         @Override
         public void save(final ParameterWriteAccess access) {
             access.setLong(l);
         }
     };
-    private final Saver FLOAT_CONVERTER = new Saver() {
+    private final Saver floatConverter = new Saver() {
         @Override
         public void save(final ParameterWriteAccess access) {
             access.setFloat(f);
         }
     };
-    private final Saver DOUBLE_CONVERTER = new Saver() {
+    private final Saver doubleConverter = new Saver() {
         @Override
         public void save(final ParameterWriteAccess access) {
             access.setDouble(d);
         }
     };
-    private final Saver OBJECT_CONVERTER = new Saver() {
+    private final Saver objectConverter = new Saver() {
         @Override
         public void save(final ParameterWriteAccess access) {
             access.setObject(o);

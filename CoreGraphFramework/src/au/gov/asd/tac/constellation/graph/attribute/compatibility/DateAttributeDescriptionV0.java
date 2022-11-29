@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,6 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
      */
     public static final Pattern RE_DATE = Pattern.compile("^(\\d{4})-(\\d{2})-(\\d{2})$");
     private static final TimeZone UTC = TimeZone.getTimeZone("UTC");
-//    private static final SimpleDateFormat SDF_DT = new SimpleDateFormat("yyyy-MM-dd");
 
     @Override
     public String getName() {
@@ -296,7 +295,10 @@ public final class DateAttributeDescriptionV0 extends AbstractAttributeDescripti
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof Representation) {
+            if (obj == null) {
+                return false;
+            }
+            if (this.getClass() == obj.getClass()) {
                 return toString().equals(obj.toString());
             } else {
                 return super.equals(obj);

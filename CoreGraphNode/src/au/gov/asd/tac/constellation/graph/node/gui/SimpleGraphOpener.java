@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,10 +105,12 @@ public final class SimpleGraphOpener extends GraphOpener {
                 final NotifyDescriptor d = new NotifyDescriptor.Message(String.format("%s error opening graph:%n%s", exName, gex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
                 DialogDisplayer.getDefault().notify(d);
             } else if (graph != null) {
-                StatusDisplayer.getDefault().setStatusText(String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000f));
+                StatusDisplayer.getDefault().setStatusText(String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000F));
                 final SimpleGraphTopComponent vtc = new SimpleGraphTopComponent(gdo, graph);
                 vtc.open();
                 vtc.requestActive();
+            } else {
+                // Do nothing
             }
 
             if (doAfter != null) {

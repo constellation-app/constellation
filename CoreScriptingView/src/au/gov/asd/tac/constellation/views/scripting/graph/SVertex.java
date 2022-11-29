@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SAttributeIt
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SVertexEdgeIterator;
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SVertexLinkIterator;
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SVertexTransactionIterator;
-import java.util.logging.Logger;
 
 /**
  * A representation of a vertex for use with scripting.
@@ -33,8 +32,6 @@ import java.util.logging.Logger;
  * @author cygnus_x-1
  */
 public class SVertex {
-
-    private static final Logger LOGGER = Logger.getLogger(SVertex.class.getName());
 
     private final GraphReadMethods readableGraph;
     private final int id;

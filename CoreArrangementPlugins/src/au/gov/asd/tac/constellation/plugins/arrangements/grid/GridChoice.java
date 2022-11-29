@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.grid;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * list of available grid arrangement options
@@ -105,8 +106,8 @@ public enum GridChoice {
         }
     }
 
-    public static ArrayList<String> getChoices() {
-        ArrayList<String> list = new ArrayList<>();
+    public static List<String> getChoices() {
+        final List<String> list = new ArrayList<>();
         list.add(SQUARE.toString());
         list.add(HORIZONTAL_LINE.toString());
         list.add(VERTICAL_LINE.toString());

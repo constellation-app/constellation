@@ -153,12 +153,6 @@
             <folder name="Build Graph">
                 <attr name="position" intvalue="100"/>
             </folder>
-            <folder name="Import">
-                <attr name="position" intvalue="200"/>
-            </folder>
-            <folder name="Export">
-                <attr name="position" intvalue="300"/>
-            </folder>
             <folder name="Arrangements">
                 <attr name="position" intvalue="400"/>
             </folder>

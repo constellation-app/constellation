@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,31 +33,15 @@ import org.openide.util.lookup.ServiceProvider;
  * @author twinkle2_little
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
-public class TimeZoneIOProvider extends AbstractGraphIOProvider {
+public class TimeZoneIOProvider extends AbstractUncachedStringIOProvider {
 
+    /**
+     * Get a string representing the type of data that this provider handles.
+     * 
+     * @return A unique name indicating the type of data handled by this provider.
+     */
     @Override
     public String getName() {
         return TimeZoneAttributeDescription.ATTRIBUTE_NAME;
-    }
-
-    @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode,
-            final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap,
-            final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
-        final String attributeValue = jnode.isNull() ? null : jnode.textValue();
-        graph.setStringValue(attributeId, elementId, attributeValue);
-    }
-
-    @Override
-    public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator,
-            final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
-        if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
-            final String attributeValue = graph.getStringValue(attr.getId(), elementId);
-            if (attributeValue == null) {
-                jsonGenerator.writeNullField(attr.getName());
-            } else {
-                jsonGenerator.writeStringField(attr.getName(), attributeValue);
-            }
-        }
     }
 }

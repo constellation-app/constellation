@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,10 @@ import java.util.BitSet;
  */
 public class GraphCopyUtilities {
 
+    private GraphCopyUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Copies the selected graph nodes and transactions, placing them on the
      * CONSTELLATION specific clipboard.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,17 @@ package au.gov.asd.tac.constellation.graph.utilities.hashmod;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.collections4.CollectionUtils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A text hashmod based on a supplied CSV file. Will modify attributes specified
@@ -35,6 +39,7 @@ public class Hashmod {
 
     private static final Logger LOGGER = Logger.getLogger(Hashmod.class.getName());
 
+    private static final String HEADER_MATCH_STRING = ".*\\.\\.\\..*";
     public static final String ATTRIBUTE_NAME = "hashmod";
     private HashmodCSVImportFileParser parser;
     private String csvFileStr;
@@ -42,7 +47,7 @@ public class Hashmod {
 
     public Hashmod() {
         parser = null;
-        csvFileStr = "";
+        csvFileStr = StringUtils.EMPTY;
     }
 
     /**
@@ -51,25 +56,19 @@ public class Hashmod {
      * @param csvFile Name of the CSV file the user has chosen
      */
     public Hashmod(final String csvFileStr) {
-        if (csvFileStr == null) {
-            this.csvFileStr = "";
-        } else {
-            this.csvFileStr = csvFileStr;
-        }
-
-        parser = new HashmodCSVImportFileParser();
-        try {
-            data = parser.parse(new HashmodInputSource(new File(csvFileStr)), null);
-        } catch (IOException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        }
+        setCSVFileStr(csvFileStr);
     }
 
+    /**
+     * 
+     * Set the CSVFileStr and update data attribute.
+     * @param csvFileStr 
+     */
     public void setCSVFileStr(final String csvFileStr) {
-        this.csvFileStr = csvFileStr;
+        this.csvFileStr = StringUtils.defaultString(csvFileStr);
         parser = new HashmodCSVImportFileParser();
         try {
-            data = parser.parse(new HashmodInputSource(new File(csvFileStr)), null);
+            data = parser.parse(new HashmodInputSource(new File(this.csvFileStr)), null);
         } catch (IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
@@ -79,33 +78,38 @@ public class Hashmod {
         if (CollectionUtils.isNotEmpty(data)) {
             return data.get(0);
         }
-        return null;
+        return new String[0];
     }
 
+    /**
+     * Gets the @link{ String[] } object at position row. 
+     * Returns an empty @link{ String[] } when nothing exists at that index.
+     * 
+     * @param row the row index to get
+     * @return the String[] for that row index.
+     */
     public String[] getCSVRow(final int row) {
-        if (data != null && data.size() > row) {
+        if (CollectionUtils.isNotEmpty(data) && data.size() > row) {
             return data.get(row);
         }
-        return null;
+        return new String[0];
     }
 
     public String getCSVKey() {
         final String[] headers = getCSVFileHeaders();
-        if (headers != null && headers.length > 0) {
-            if (headers.length > 0) {
-                return headers[0];
-            }
+        if (ArrayUtils.isNotEmpty(headers)) {
+            return headers[0];
         }
-        return null;
+        return StringUtils.EMPTY;
     }
 
-    public HashMap<String, Integer> getCSVKeys() {
-        final HashMap<String, Integer> keys = new HashMap<>();
+    public Map<String, Integer> getCSVKeys() {
+        final Map<String, Integer> keys = new HashMap<>();
         if (CollectionUtils.isNotEmpty(data)) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
                 if (row[0] != null) {
-                    keys.put(row[0].toUpperCase(), 0);
+                    keys.put(row[0].toUpperCase(), i);
                 }
             }
         }
@@ -114,60 +118,58 @@ public class Hashmod {
 
     public int getNumberCSVDataColumns() {
         final String[] headers = getCSVFileHeaders();
-        if (headers != null) {
-            
-            for (int i = 0; i < headers.length; i++) {
-                if (headers[i].matches(".*\\.\\.\\..*")) {
-                    return i;
-                }
+        for (int i = 0; i < headers.length; i++) {
+            if (headers[i].matches(HEADER_MATCH_STRING)) {
+                return i;
             }
-            return headers.length;
         }
-        return 0;
+        return headers.length;
     }
 
     public int getNumberCSVTransactionColumns() {
         final String[] headers = getCSVFileHeaders();
-        if (headers != null) {
-            int numTransactions = 0;
-            for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
-                if (!headers[i].matches(".*\\.\\.\\..*")) {
-                    return numTransactions;
-                }
-                numTransactions++;
+        int numTransactions = 0;
+        for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
+            if (!headers[i].matches(HEADER_MATCH_STRING)) {
+                return numTransactions;
             }
-            return numTransactions;
+            numTransactions++;
         }
-        return 0;
+        return numTransactions;
     }
 
-    private String getColumnOfTransaction(int transactionCol, String regex) {
-        final Pattern cardNamePattern = Pattern.compile(regex);
+    private String getColumnOfTransaction(final int transactionCol, final String regex) {
+        final Pattern transactionPattern = Pattern.compile(regex);
 
         final String[] headers = getCSVFileHeaders();
-        if (headers != null) {
-            int numTransactions = 0;
-            for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
-                if (headers[i].matches(".*\\.\\.\\..*")) {
-                    if (numTransactions == transactionCol) {
-                        Matcher matchPattern = cardNamePattern.matcher(headers[i]);
-                        if (matchPattern.find()) {
-                            return matchPattern.group(1);
-                        }
-                    }
+        int numTransactions = 0;
+        for (int i = getNumberCSVDataColumns(); i < headers.length; i++) {
+            if (headers[i].matches(HEADER_MATCH_STRING) && numTransactions == transactionCol) {
+                final Matcher matchPattern = transactionPattern.matcher(headers[i]);
+                if (matchPattern.find()) {
+                    return matchPattern.group(1);
                 }
-                numTransactions++;
             }
+            numTransactions++;
         }
-        return "";
+        return StringUtils.EMPTY;
     }
 
-    public String getFirstColumnOfTransaction(int transactionCol) {
+    public String getFirstColumnOfTransaction(final int transactionCol) {
         return getColumnOfTransaction(transactionCol, "([^\"]+)\\.\\.\\.");
     }
 
-    public String getSecondColumnOfTransaction(int transactionCol) {
-        return getColumnOfTransaction(transactionCol, ".*?\\.\\.\\.([^\"]+)");
+    public String getSecondColumnOfTransaction(final int transactionCol) {
+        return getColumnOfTransaction(transactionCol, ".*?\\.\\.\\.([^\"]+?)(;;;.*|$)");
+    }
+
+    public String getTransactionAttribute(final String attributeFromCSV) {
+        final Pattern transactionPattern = Pattern.compile("^.*;;;([^\"]+)");
+        final Matcher matchPattern = transactionPattern.matcher(attributeFromCSV);
+        if (matchPattern.find()) {
+            return matchPattern.group(1);
+        }
+        return StringUtils.EMPTY;
     }
 
     public String getCSVHeader(final int col) {
@@ -175,39 +177,57 @@ public class Hashmod {
         if (headers != null && headers.length > col) {
             return headers[col];
         }
-        return null;
+        return StringUtils.EMPTY;
     }
 
     public List<String[]> getCSVFileData() {
         if (CollectionUtils.isNotEmpty(data)) {
             return data;
         }
-        return null;
+        return Collections.emptyList();
     }
 
     public String getValueFromKey(final String key, final int value) {
-        if (CollectionUtils.isNotEmpty(data)) {
+        if (key != null && CollectionUtils.isNotEmpty(data)) {
             for (int i = 1; i < data.size(); i++) {
                 final String[] row = getCSVRow(i);
-                if (row[0].equalsIgnoreCase(key)) {
-
-                    if (row.length > value) {
-                        return row[value];
-                    }
+                if (key.equalsIgnoreCase(row[0]) && row.length > value) {
+                    return row[value];
                 }
             }
         }
-        return null;
+        return StringUtils.EMPTY;
     }
 
-    public Boolean doesKeyExist(final String key) {
-        if (key == null) {
-            return false;
+    /**
+     * Get a value based from a key and index.
+     * Will look through the rest of the data for that key if one does not exist.
+     * 
+     * @param key
+     * @param value
+     * @param index
+     * @return the String of the data, or "" when non-existent.
+     */
+    public String getValueFromKeyAndIndex(final String key, final int value, final int index) {
+        if (key != null && CollectionUtils.isNotEmpty(data)) {
+            final String[] row = getCSVRow(index);
+            if (row[0].equalsIgnoreCase(key) && row.length > value) {
+                return row[value];
+            }
         }
-        if (CollectionUtils.isNotEmpty(data)) {
+        return getValueFromKey(key, value);
+    }
+
+    /**
+     * Checks the data of the file if it contains the @link{String} key.
+     * @param key The @link{String} to check for
+     * 
+     * @return True if found
+     */
+    public boolean hasKey(final String key) {
+        if (key != null && CollectionUtils.isNotEmpty(data)) {
             for (int i = 1; i < data.size(); i++) {
-                final String[] row = getCSVRow(i);
-                if (row[0].equalsIgnoreCase(key)) {
+                if (key.equalsIgnoreCase(getCSVRow(i)[0])) {
                     return true;
                 }
             }
@@ -215,7 +235,12 @@ public class Hashmod {
         return false;
     }
 
+    /**
+     * Get the csv file name or empty string if one does not exist.
+     * 
+     * @return "" empty string or the file name
+     */
     public String getCSVFileName() {
-        return this.csvFileStr == null ? "" : this.csvFileStr;
+        return StringUtils.defaultString(this.csvFileStr);
     }
 }

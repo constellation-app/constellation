@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.views.analyticview.export.AnalyticExportResultsMenu;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticData;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult.ResultListener;
@@ -41,6 +42,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
 
@@ -60,19 +63,25 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
     public TableVisualisation(final AbstractTableTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
-
+        this.table = new TableView<>();
         this.tableVisualisation = new VBox();
 
         this.tableFilter = new TextField();
-        tableFilter.setPromptText("Type here to filter results");
+        tableFilter.setPromptText("Type here to filter results: ");
+        tableFilter.setStyle("-fx-prompt-text-fill: gray;");
 
-        this.table = new TableView<>();
+        final AnalyticExportResultsMenu menu = new AnalyticExportResultsMenu(table);
+        menu.init();
+        final HBox optionsPanel = new HBox();
+        optionsPanel.getChildren().addAll(tableFilter, menu.getExportButton());
+        HBox.setHgrow(tableFilter, Priority.ALWAYS);
+
         table.setPlaceholder(new Label("No results"));
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setId("table-visualisation");
         table.setPadding(new Insets(5));
 
-        tableVisualisation.getChildren().addAll(tableFilter, table);
+        tableVisualisation.getChildren().addAll(optionsPanel, table);
     }
 
     public void addColumn(final String columnName, final int percentWidth) {
@@ -83,22 +92,19 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
         column.setCellValueFactory(cellData -> new SimpleObjectProperty<>(translator.getCellData(cellData.getValue(), columnName)));
 
-        column.setCellFactory(columnData -> {
-            return new TableCell<C, Object>() {
-                @Override
-                public void updateItem(final Object item, final boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item != null) {
-                        this.setText(translator.getCellText(this.getTableRow().getItem(), item, columnName));
-                        final ConstellationColor color = translator.getCellColor(this.getTableRow().getItem(), item, columnName);
-                        this.setBackground(new Background(new BackgroundFill(color.getJavaFXColor(), CornerRadii.EMPTY, Insets.EMPTY)));
-                    }
+        column.setCellFactory(columnData -> new TableCell<C, Object>() {
+            @Override
+            public void updateItem(final Object item, final boolean empty) {
+                super.updateItem(item, empty);
+                if (item != null) {
+                    this.setText(translator.getCellText(this.getTableRow().getItem(), item, columnName));
+                    final ConstellationColor color = translator.getCellColor(this.getTableRow().getItem(), item, columnName);
+                    this.setBackground(new Background(new BackgroundFill(color.getJavaFXColor(), CornerRadii.EMPTY, Insets.EMPTY)));
                 }
-            };
+            }
         });
 
         column.setSortable(true);
-
         table.getColumns().add(column);
     }
 
@@ -107,16 +113,14 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
         final FilteredList<C> filteredData = new FilteredList<>(tableData, predicate -> true);
         filteredData.addListener((Change<? extends C> change) -> table.refresh());
-        tableFilter.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(item -> {
-                if (StringUtils.isBlank(newValue)) {
-                    return true;
-                }
+        tableFilter.textProperty().addListener((observable, oldValue, newValue) -> filteredData.setPredicate(item -> {
+            if (StringUtils.isBlank(newValue)) {
+                return true;
+            }
 
-                final String lowerCaseFilter = newValue.toLowerCase();
-                return item.getIdentifier().toLowerCase().contains(lowerCaseFilter);
-            });
-        });
+            final String lowerCaseFilter = newValue.toLowerCase();
+            return item.getIdentifier().toLowerCase().contains(lowerCaseFilter);
+        }));
 
         final SortedList<C> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(table.comparatorProperty());
@@ -167,9 +171,7 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
         // add all items from the selected list
         if (!selectedItems.isEmpty()) {
-            selectedItems.forEach(item -> {
-                selectionIndices[selectedItems.indexOf(item)] = table.getItems().indexOf(item);
-            });
+            selectedItems.forEach(item -> selectionIndices[selectedItems.indexOf(item)] = table.getItems().indexOf(item));
         }
 
         // clear the table selection and then make the new selection

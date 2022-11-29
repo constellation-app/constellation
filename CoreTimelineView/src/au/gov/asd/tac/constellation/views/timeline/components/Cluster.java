@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,6 +94,8 @@ public class Cluster extends Group {
                     isDragging = false;
                 } else if (me.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                     isDragging = true;
+                } else {
+                    // Do nothing
                 }
             }
         }

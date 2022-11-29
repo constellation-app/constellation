@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Gets the active graph's attributes or attribute names based on the specified
@@ -31,6 +32,10 @@ import java.util.List;
  * @author formalhaut69
  */
 public class AttributeUtilities {
+    
+    private AttributeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Returns the names of the attributes that match the specified
@@ -44,7 +49,7 @@ public class AttributeUtilities {
     public static List<String> getAttributeNames(final GraphElementType graphElementType, String attributeDescription) {
         final List<String> attributeNames = new ArrayList<>();
         for (Attribute attribute : getAttributes(graphElementType)) {
-            if (attribute.getAttributeType().equals(attributeDescription) || attributeDescription.equals("")) {
+            if (attribute.getAttributeType().equals(attributeDescription) || StringUtils.isEmpty(attributeDescription)) {
                 attributeNames.add(attribute.getName());
             }
         }

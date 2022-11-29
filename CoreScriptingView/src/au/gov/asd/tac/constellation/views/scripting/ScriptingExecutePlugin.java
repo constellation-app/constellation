@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,12 +31,15 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.views.scripting.graph.SGraph;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
@@ -44,7 +47,6 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import javax.swing.Action;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
@@ -67,9 +69,11 @@ import org.python.jsr223.PyScriptEngine;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 @Messages("ScriptingExecutePlugin=Execute Script")
 public class ScriptingExecutePlugin extends SimplePlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(ScriptingExecutePlugin.class.getName());
 
     public static final String SCRIPT_PARAMETER_ID = PluginParameter.buildId(ScriptingExecutePlugin.class, "script_text");
     public static final String NEW_OUTPUT_PARAMETER_ID = PluginParameter.buildId(ScriptingExecutePlugin.class, "new_output");
@@ -92,8 +96,8 @@ public class ScriptingExecutePlugin extends SimplePlugin {
         if (!newOutput) {
             try {
                 io.getOut().reset();
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
         io.select();
@@ -120,9 +124,8 @@ public class ScriptingExecutePlugin extends SimplePlugin {
 
             // add custom objects to scripting engine
             engine.getContext().setAttribute("graph", sGraph, ScriptContext.ENGINE_SCOPE);
-            Lookup.getDefault().lookupAll(ScriptingModule.class).iterator().forEachRemaining(module -> {
-                engine.getContext().setAttribute(module.getName(), module, ScriptContext.ENGINE_SCOPE);
-            });
+            Lookup.getDefault().lookupAll(ScriptingModule.class).iterator().forEachRemaining(module
+                    -> engine.getContext().setAttribute(module.getName(), module, ScriptContext.ENGINE_SCOPE));
 
             try {
                 // Jython caches modules - force it to reload all modules in case the user has changed something in their local PythonLib.
@@ -130,7 +133,7 @@ public class ScriptingExecutePlugin extends SimplePlugin {
                     engine.eval("import sys\nsys.modules.clear()", engine.getContext());
                 }
                 engine.eval(script, engine.getContext());
-            } catch (ScriptException ex) {
+            } catch (final ScriptException ex) {
                 parameters.getParameters().get(OUTPUT_EXCEPTION_PARAMETER_ID).setObjectValue(ex);
                 ex.printStackTrace(io.getErr());
 
@@ -196,7 +199,7 @@ public class ScriptingExecutePlugin extends SimplePlugin {
             }
             try {
                 Thread.sleep(1);
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 throw new IOException("Script interrupted by user");
             }

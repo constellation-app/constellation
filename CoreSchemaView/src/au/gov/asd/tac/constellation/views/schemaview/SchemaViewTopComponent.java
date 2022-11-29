@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.openide.windows.TopComponent;
         category = "explorer",
         id = "au.gov.asd.tac.constellation.views.schemaview.SchemaViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1200),
+    @ActionReference(path = "Menu/Views", position = 1300),
     @ActionReference(path = "Shortcuts", name = "CS-S")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_SchemaViewAction",
@@ -73,11 +73,13 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
 
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         schemaViewPane.populate();
     }
 
     @Override
     protected void handleComponentClosed() {
+        super.handleComponentClosed();
         schemaViewPane.clear();
     }
 

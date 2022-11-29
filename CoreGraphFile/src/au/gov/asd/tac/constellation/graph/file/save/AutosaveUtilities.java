@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.file.save;
 
-import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -44,9 +44,12 @@ public final class AutosaveUtilities {
     public static final String PATH = "path";
     public static final String UNSAVED = "unsaved";
     public static final String DT = "dt";
-    public static final String AUTO_EXT = ".star_auto";
     private static final Logger LOGGER = Logger.getLogger(AutosaveUtilities.class.getName());
     private static final String AUTOSAVE_DIR = "Autosave";
+
+    private AutosaveUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static File getAutosaveDir() {
         final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
@@ -59,6 +62,8 @@ public final class AutosaveUtilities {
             LOGGER.warning(msg);
 
             return null;
+        } else {
+            return saveDir;
         }
 
         return saveDir;
@@ -81,7 +86,8 @@ public final class AutosaveUtilities {
     }
 
     /**
-     * Delete the autosave files belonging to the specified graph id.
+     * Delete the 
+     * files belonging to the specified graph id.
      * <p>
      * This is typically for when the VisualTopComponent is closing and the
      * graph has not been modified.
@@ -90,7 +96,7 @@ public final class AutosaveUtilities {
      */
     public static void deleteAutosave(final String id) {
         final File dir = getAutosaveDir();
-        final File f = new File(dir, id + AUTO_EXT);
+        final File f = new File(dir, id + FileExtensionConstants.STAR_AUTOSAVE);
         deleteAutosave(f);
     }
 
@@ -110,10 +116,12 @@ public final class AutosaveUtilities {
         }
 
         File f2 = null;
-        if (path.endsWith(GraphDataObject.FILE_EXTENSION)) {
+        if (path.endsWith(FileExtensionConstants.STAR)) {
             f2 = new File(path + "_auto");
-        } else if (path.endsWith(AUTO_EXT)) {
+        } else if (path.endsWith(FileExtensionConstants.STAR_AUTOSAVE)) {
             f2 = new File(path.substring(0, path.length() - 5));
+        } else {
+            // Do nothing
         }
 
         if (f2 != null) {
@@ -134,7 +142,7 @@ public final class AutosaveUtilities {
      * otherwise null.
      */
     public static Properties getAutosave(final File f) {
-        for (final File autosave : getAutosaves(AUTO_EXT)) {
+        for (final File autosave : getAutosaves(FileExtensionConstants.STAR_AUTOSAVE)) {
             try {
                 final Properties p = new Properties();
                 try (InputStream in = new FileInputStream(autosave)) {
@@ -148,7 +156,7 @@ public final class AutosaveUtilities {
                         return p;
                     }
                 }
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 final String msg = Bundle.MSG_FileError(autosave);
                 LOGGER.log(Level.WARNING, msg, ex);
             }
@@ -163,28 +171,30 @@ public final class AutosaveUtilities {
      * The destination file is renamed to file.bak, the source file is copied,
      * the .bak file is deleted.
      *
-     * @param from The source file.
+     * @param autosave The autosave source file.
      * @param to The destination file.
      *
      * @throws IOException When an error happens.
      */
-    public static void copyFile(final File from, final File to) throws IOException {
-        final File toBak = new File(to.getPath() + ".bak");
+    public static void copyFile(final File autosave, final File to) throws IOException {
+        final File toBak = new File(to.getPath() + FileExtensionConstants.BACKUP);
+        LOGGER.log(Level.INFO, "Processing request to open autosave file: {0}", autosave);
         if (toBak.exists()) {
             final boolean toBakIsDeleted = toBak.delete();
             if (!toBakIsDeleted) {
-                //TODO: Handle case where file not successfully deleted
+                LOGGER.log(Level.WARNING, "Unable to remove old backup file: {0}", toBak);
             }
         }
 
         if (to.exists()) {
             final boolean toRenamed = to.renameTo(toBak);
+            LOGGER.log(Level.INFO, "Backing up {0} to {1}", new Object[]{to, toBak});
             if (!toRenamed) {
-                //TODO: Handle case where file not successfully renamed
+                LOGGER.log(Level.WARNING, "Unable to backup file: {0}", to);
             }
         }
 
-        try (InputStream in = new FileInputStream(from)) {
+        try (final InputStream in = new FileInputStream(autosave)) {
             try (final OutputStream out = new FileOutputStream(to)) {
                 final int bufsiz = 1024 * 1024;
                 final byte[] buf = new byte[bufsiz];
@@ -193,11 +203,11 @@ public final class AutosaveUtilities {
                     if (len == -1) {
                         break;
                     }
-
                     out.write(buf, 0, len);
                 }
             }
         }
+        LOGGER.log(Level.INFO, "Replacing {0} with autosave file prior to opening", to);
     }
 
     /**
@@ -209,7 +219,7 @@ public final class AutosaveUtilities {
      */
     public static void cleanup() {
         // Find .star files aithout a .star_auto.
-        for (final File star : getAutosaves(GraphDataObject.FILE_EXTENSION)) {
+        for (final File star : getAutosaves(FileExtensionConstants.STAR)) {
             final File auto = new File(star.getPath() + "_auto");
             if (!auto.exists()) {
                 final boolean starIsDeleted = star.delete();
@@ -220,7 +230,7 @@ public final class AutosaveUtilities {
         }
 
         // Find .star_auto files without a .star.
-        for (final File auto : getAutosaves(AUTO_EXT)) {
+        for (final File auto : getAutosaves(FileExtensionConstants.STAR_AUTOSAVE)) {
             final String autos = auto.getPath();
             final File star = new File(autos.substring(0, autos.length() - 5));
             if (!star.exists()) {

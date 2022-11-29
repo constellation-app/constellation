@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.SelectAllAction")
-@ActionRegistration(displayName = "#CTL_SelectAllAction", iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/select_all.png", surviveFocusChange = true)
+@ActionRegistration(displayName = "#CTL_SelectAllAction", iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/select_all.png", surviveFocusChange = false)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 0),
     @ActionReference(path = "Shortcuts", name = "C-A")

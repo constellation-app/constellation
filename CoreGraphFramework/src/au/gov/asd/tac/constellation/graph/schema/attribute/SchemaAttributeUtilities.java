@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,11 +37,14 @@ public class SchemaAttributeUtilities {
 
     private static final Collection<SchemaAttribute> SCHEMA_VERTEX_ATTRIBUTES = new ArrayList<>();
     private static final Collection<SchemaAttribute> SCHEMA_TRANSACTION_ATTRIBUTES = new ArrayList<>();
+    
+    private SchemaAttributeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     private static synchronized void buildAttributes() {
         if (SCHEMA_VERTEX_ATTRIBUTES.isEmpty() || SCHEMA_TRANSACTION_ATTRIBUTES.isEmpty()) {
-            SchemaConceptUtilities.getAttributes().forEach((conceptClass, schemaAttributes) -> {
-                schemaAttributes.forEach(schemaAttribute -> {
+            SchemaConceptUtilities.getAttributes().forEach((conceptClass, schemaAttributes) -> schemaAttributes.forEach(schemaAttribute -> {
                     switch (schemaAttribute.getElementType()) {
                         case VERTEX:
                             SCHEMA_VERTEX_ATTRIBUTES.add(schemaAttribute);
@@ -52,8 +55,7 @@ public class SchemaAttributeUtilities {
                         default:
                             break;
                     }
-                });
-            });
+                }));
         }
     }
 

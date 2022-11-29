@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,7 @@ public class PointMarkerErrorLayer extends MapLayer {
 
     private static final int STROKE_COLOR = MarkerUtilities.color(255, 255, 0, 0);
     private static final int ERROR_REGION_COLOR = MarkerUtilities.color(127, 255, 0, 0);
-    private static final float DEFAULT_PRECISION = 0f;
+    private static final float DEFAULT_PRECISION = 0F;
 
     private int markerCount = 0;
 
@@ -139,9 +139,7 @@ public class PointMarkerErrorLayer extends MapLayer {
                             .map(location -> new MapPosition(map.mapDisplay.getObjectFromLocation(location)))
                             .collect(Collectors.toList());
                     errorRegionImage.beginShape();
-                    errorRegionPositions.forEach(position -> {
-                        errorRegionImage.vertex(position.x, position.y);
-                    });
+                    errorRegionPositions.forEach(position -> errorRegionImage.vertex(position.x, position.y));
                     errorRegionImage.endShape(PConstants.CLOSE);
                 }
             } finally {

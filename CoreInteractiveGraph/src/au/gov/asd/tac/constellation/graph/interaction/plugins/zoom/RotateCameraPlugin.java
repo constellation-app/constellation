@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -31,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -43,8 +45,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
 @Messages("RotateCameraPlugin=Rotate Camera")
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
 public final class RotateCameraPlugin extends SimpleEditPlugin {
 
     public static final String X_PARAMETER_ID = PluginParameter.buildId(RotateCameraPlugin.class, "x");
@@ -64,19 +66,19 @@ public final class RotateCameraPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> xaxisParam = FloatParameterType.build(X_PARAMETER_ID);
         xaxisParam.setName("xAxis");
         xaxisParam.setDescription("Rotation in degrees around the x axis");
-        xaxisParam.setFloatValue(0f);
+        xaxisParam.setFloatValue(0F);
         parameters.addParameter(xaxisParam);
 
         final PluginParameter<FloatParameterValue> yaxisParam = FloatParameterType.build(Y_PARAMETER_ID);
         yaxisParam.setName("yAxis");
         yaxisParam.setDescription("Rotation in degrees around the y axis");
-        yaxisParam.setFloatValue(0f);
+        yaxisParam.setFloatValue(0F);
         parameters.addParameter(yaxisParam);
 
         final PluginParameter<FloatParameterValue> zaxisParam = FloatParameterType.build(Z_PARAMETER_ID);
         zaxisParam.setName("zAxis");
         zaxisParam.setDescription("Rotation in degrees around the z axis");
-        zaxisParam.setFloatValue(0f);
+        zaxisParam.setFloatValue(0F);
         parameters.addParameter(zaxisParam);
 
         final PluginParameter<BooleanParameterValue> animateParam = BooleanParameterType.build(ANIMATE_PARAMETER_ID);
@@ -104,7 +106,9 @@ public final class RotateCameraPlugin extends SimpleEditPlugin {
 
             CameraUtilities.rotate(camera, xrot, yrot, zrot);
 
-            if (animate) {
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (animate && activeGraph != null && activeGraph.getId().equals(graph.getId())) {
+                // Only do the camera animation if the edited graph is currently active
                 Animation.startAnimation(new PanAnimation("Rotate camera", oldCamera, camera, true));
             } else {
                 // Don't do an animation; we don't want to be asynchronous.

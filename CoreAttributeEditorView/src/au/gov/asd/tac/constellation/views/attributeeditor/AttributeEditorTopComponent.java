@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,12 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
-import au.gov.asd.tac.constellation.views.*;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -102,9 +103,10 @@ import org.openide.windows.TopComponent;
     "HINT_AttributeEditorTopComponent=Attribute Editor"
 })
 public final class AttributeEditorTopComponent extends JavaFxTopComponent<AttributeEditorPanel> implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider, PreferenceChangeListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(AttributeEditorTopComponent.class.getName());
 
     private static final String ATTRIBUTE_EDITOR_GRAPH_CHANGED_THREAD_NAME = "Attribute Editor Graph Changed Updater";
-    private static final String ATTRIBUTE_EDITOR_PREFERENCE_CHANGED_THREAD_NAME = "Attribute Editor Preference Changed Updater";
     private final AttributeEditorPanel attributePanel;
     private final Runnable refreshRunnable;
     private Graph activeGraph;
@@ -122,7 +124,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
         refreshRunnable = () -> {
             try {
-                ArrayList<Object> devNull = new ArrayList<>();
+                final ArrayList<Object> devNull = new ArrayList<>();
                 while (queue.drainTo(devNull) > 0) {
                     Thread.sleep(50);
                 }
@@ -130,7 +132,8 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
                 if (reader != null) {
                     attributePanel.updateEditorPanel(reader.refreshAttributes());
                 }
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Thread was interrupted");
                 Thread.currentThread().interrupt();
             }
         };
@@ -141,11 +144,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     }
 
     public Object[] getMoreData(final AttributeData attribute) {
-        Object[] result = new Object[0];
-        if (reader != null) {
-            result = reader.loadMoreDataFor(attribute);
-        }
-        return result;
+        return reader != null ? reader.loadMoreDataFor(attribute) : new Object[0];
     }
 
     /**
@@ -172,27 +171,27 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     // End of variables declaration//GEN-END:variables
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         GraphManager.getDefault().addGraphManagerListener(this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
 
-        PreferenceUtilites.addPreferenceChangeListener(prefs.absolutePath(), this);
-        PreferenceUtilites.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
+        PreferenceUtilities.addPreferenceChangeListener(prefs.absolutePath(), this);
     }
 
     @Override
     protected void handleComponentClosed() {
+        super.handleComponentClosed();
         GraphManager.getDefault().removeGraphManagerListener(this);
         newActiveGraph(null);
 
-        PreferenceUtilites.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, this);
-        PreferenceUtilites.removePreferenceChangeListener(prefs.absolutePath(), this);
+        PreferenceUtilities.removePreferenceChangeListener(prefs.absolutePath(), this);
     }
 
-    void writeProperties(java.util.Properties p) {
+    void writeProperties(final java.util.Properties p) {
         // Required for @ConvertAsProperties
     }
 
-    void readProperties(java.util.Properties p) {
+    void readProperties(final java.util.Properties p) {
         // Required for @ConvertAsProperties
     }
 

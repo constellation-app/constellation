@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,9 @@ import java.util.Map;
  * @author sirius
  */
 public class ImportDefinition {
+    
+    // Allows a name to be assigned to importDefiniton, which is used by ImportDelimitedPlugin summary dialog.
+    private final String definitionName;
 
     private final int firstRow;
 
@@ -35,10 +38,10 @@ public class ImportDefinition {
 
     private final Map<AttributeType, List<ImportAttributeDefinition>> definitions = new EnumMap<>(AttributeType.class);
 
-    public ImportDefinition(final int firstRow, final RowFilter filter) {
+    public ImportDefinition(final String definitionName, final int firstRow, final RowFilter filter) {
 
+        this.definitionName = definitionName;
         this.firstRow = firstRow;
-
         this.filter = filter;
 
         definitions.put(AttributeType.SOURCE_VERTEX, new ArrayList<>());
@@ -50,6 +53,14 @@ public class ImportDefinition {
         definitions.get(attributeType).add(definition);
     }
 
+    /**
+     * Get the stored definitionName.
+     * @return Stored definitionName string.
+     */
+    public String getDefinitionName() {
+        return definitionName;
+    } 
+    
     /**
      * The first row that will be imported.
      *
@@ -73,9 +84,7 @@ public class ImportDefinition {
         b.append(String.format("[\nFirst row:%d\nFilter:%s\n", firstRow, filter != null ? filter.getScript() : ""));
         for (final AttributeType at : AttributeType.values()) {
             final List<ImportAttributeDefinition> defs = getDefinitions(at);
-            defs.stream().forEach(iad -> {
-                b.append(String.format("%s %s (column %d)\n", at, iad.toString(), iad.getColumnIndex()));
-            });
+            defs.stream().forEach(iad -> b.append(String.format("%s %s (column %d)\n", at, iad.toString(), iad.getColumnIndex())));
         }
 
         b.append("]");

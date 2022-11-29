@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.graph.value.expression;
 
+import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
 import au.gov.asd.tac.constellation.graph.value.constants.StringConstant;
 import au.gov.asd.tac.constellation.graph.value.expression.ExpressionParser.Expression;
@@ -45,9 +46,14 @@ import au.gov.asd.tac.constellation.graph.value.operations.Quotient;
 import au.gov.asd.tac.constellation.graph.value.operations.StartsWith;
 import au.gov.asd.tac.constellation.graph.value.operations.Sum;
 import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 /**
  *
@@ -55,8 +61,31 @@ import java.util.Map;
  */
 public class ExpressionCompiler {
 
+    private static final Logger LOGGER = Logger.getLogger(ExpressionCompiler.class.getName());
     private static final Map<Operator, String> OPERATOR_CLASSES = new EnumMap<>(Operator.class);
     private static final Map<Operator, String> CONVERTER_CLASSES = new EnumMap<>(Operator.class);
+    private static final String QUERY_ERROR = "Query Error";
+    private static final String MALFORMED_QUERY = "Malformed Query";
+    private static final String RECHECK_QUERY = "Ensure capitalisation, spelling and quotation is correct.";
+    private static final String PARSE_STRING = "There was an issue parsing %s which resulted in %s being returned.\n";
+    private static final String UNEXPECTED_QUERY_ERROR = "This error is unexpected and should be reported.";
+
+    // Parse error messages
+    private static final String TERM_PARSE_ERROR = "Error Parsing Terms";
+    private static final String SINGLE_PARSE_ERROR_MSG = "The term below could not correctly be parsed.\n%s" + RECHECK_QUERY;
+    private static final String DOUBLE_PARSE_ERROR_MSG = "The terms below could not correctly be parsed.\n%s%s" + RECHECK_QUERY;
+
+    // Operator application error messages
+    private static final String OPERATOR_NOT_APPLIED = "Operator could not be applied";
+    private static final String OPERATOR_NOT_APPLIED_MSG = "There was a query error: Operator %s could not be applied to the argument type.\n"
+            + PARSE_STRING + RECHECK_QUERY;
+    private static final String OPERATORS_NOT_APPLIED_MSG = "There was a query error: Operator %s could not be applied to any argument types.\n"
+            + PARSE_STRING + PARSE_STRING + RECHECK_QUERY;
+
+    // Operator does not exist error
+    private static final String OPERATOR_NOT_FOUND = "Operator Not Found";
+    private static final String OPERATOR_ERROR_MSG = "The operator %s cannot be found.\n"
+            + "Refer to The Constellation Expressions Framework Help if you need assistance with the query language.";
 
     static {
         OPERATOR_CLASSES.put(Operator.ADD, Sum.NAME);
@@ -90,6 +119,9 @@ public class ExpressionCompiler {
     }
 
     public static Object compileSequenceExpression(SequenceExpression expression, VariableProvider variableProvider, IntReadable indexReadable, Operators operators) {
+        if (expression == null) {
+            return null;
+        }
         final List<Expression> children = expression.getUnmodifiableChildren();
         switch (children.size()) {
             case 1:
@@ -98,9 +130,31 @@ public class ExpressionCompiler {
                 final OperatorExpression operator = (OperatorExpression) children.get(0);
                 final Object right = compileExpression(children.get(1), variableProvider, indexReadable, operators);
                 final String operatorName = CONVERTER_CLASSES.get(operator.getOperator());
-                final Object result = operators.getRegistry(operatorName).apply(right);
-                if (result == null) {
-                    throw new ExpressionException("Unable to find implementation of operator: " + operatorName + " (" + right.getClass().getCanonicalName() + ")");
+                final OperatorRegistry registry = operators.getRegistry(operatorName);
+                Object result = null;
+                final String errorMessage;
+                final String errorName;
+                if (registry == null) {
+                    errorMessage = String.format(OPERATOR_ERROR_MSG, operatorName);
+                    errorName = OPERATOR_NOT_FOUND;
+                } else {
+                    if (right == null) {
+                        errorMessage = String.format(SINGLE_PARSE_ERROR_MSG, children.get(0).toString());
+                        errorName = TERM_PARSE_ERROR;
+                    } else {
+                        result = registry.apply(right);
+                        if (result == null) {
+                            errorMessage = String.format(OPERATOR_NOT_APPLIED_MSG, operatorName, children.get(1).toString(), right);
+                            errorName = OPERATOR_NOT_APPLIED;
+                        } else {
+                            errorMessage = null;
+                            errorName = null;
+                        }
+                    }
+                }
+                if (errorMessage != null) {
+                    Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, errorName, errorMessage, Alert.AlertType.ERROR));
+                    LOGGER.log(Level.WARNING, errorMessage);
                 }
                 return result;
             case 3:
@@ -108,13 +162,45 @@ public class ExpressionCompiler {
                 final OperatorExpression secondOperator = (OperatorExpression) children.get(1);
                 final Object right2 = compileExpression(children.get(2), variableProvider, indexReadable, operators);
                 final String operatorName2 = OPERATOR_CLASSES.get(secondOperator.getOperator());
-                final Object result2 = operators.getRegistry(operatorName2).apply(left, right2);
-                if (result2 == null) {
-                    throw new ExpressionException("Unable to find implementation of operator: " + operatorName2 + " (" + left.getClass().getCanonicalName() + ", " + right2.getClass().getCanonicalName() + ")");
+                final OperatorRegistry registry2 = operators.getRegistry(operatorName2);
+                Object result2 = null;
+                final String errorMessage2;
+                final String errorName2;
+                if (registry2 == null) {
+                    errorMessage2 = String.format(OPERATOR_ERROR_MSG, operatorName2);
+                    errorName2 = OPERATOR_NOT_FOUND;
+                } else {
+                    if (left == null && right2 != null) {
+                        errorMessage2 = String.format(SINGLE_PARSE_ERROR_MSG, children.get(0).toString());
+                        errorName2 = TERM_PARSE_ERROR;
+                    } else if (right2 == null && left != null) {
+                        errorMessage2 = String.format(SINGLE_PARSE_ERROR_MSG, children.get(2).toString());
+                        errorName2 = TERM_PARSE_ERROR;
+                    } else if (right2 == null) {
+                        // left always evaluates to null here
+                        errorMessage2 = String.format(DOUBLE_PARSE_ERROR_MSG, children.get(0).toString(), children.get(2).toString());
+                        errorName2 = TERM_PARSE_ERROR;
+                    } else {
+                        result2 = registry2.apply(left, right2);
+                        if (result2 == null) {
+                            errorMessage2 = String.format(OPERATORS_NOT_APPLIED_MSG, operatorName2, children.get(0).toString(), left, children.get(2).toString(), right2);
+                            errorName2 = OPERATOR_NOT_APPLIED;
+                        } else {
+                            errorMessage2 = null;
+                            errorName2 = null;
+                        }
+                    }
+                }
+                if (errorMessage2 != null) {
+                    Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, errorName2, errorMessage2, Alert.AlertType.ERROR));
+                    LOGGER.log(Level.WARNING, errorMessage2);
                 }
                 return result2;
             default:
-                throw new IllegalArgumentException("Invalid expression size: " + children.size());
+                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, MALFORMED_QUERY,
+                        String.format("Invalid expression size: ", children.size()), Alert.AlertType.ERROR));
+                LOGGER.log(Level.WARNING, "There was a query error: Invalid expression size: {0}", children.size());
+                return null;
         }
     }
 
@@ -125,14 +211,16 @@ public class ExpressionCompiler {
             final String variableName = ((VariableExpression) expression).getContent();
             final Object variable = variableProvider.getVariable(variableName, indexReadable);
             if (variable == null) {
-                throw new ExpressionException("Unknown variable: " + variableName);
+                return null;
             }
             return variable;
         } else if (expression instanceof StringExpression) {
             final String content = ((StringExpression) expression).getContent();
             return (StringConstant) () -> content;
         } else {
-            throw new IllegalArgumentException("Should never get here");
+            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR, MALFORMED_QUERY, UNEXPECTED_QUERY_ERROR, Alert.AlertType.ERROR));
+            LOGGER.log(Level.SEVERE, QUERY_ERROR + UNEXPECTED_QUERY_ERROR);
+            return null;
         }
     }
 }

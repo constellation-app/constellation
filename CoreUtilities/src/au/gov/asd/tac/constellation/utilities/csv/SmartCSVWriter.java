@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,12 @@
  */
 package au.gov.asd.tac.constellation.utilities.csv;
 
+import static au.gov.asd.tac.constellation.utilities.text.SeparatorConstants.LINEFEED;
+import static au.gov.asd.tac.constellation.utilities.text.SeparatorConstants.NEWLINE;
+import static au.gov.asd.tac.constellation.utilities.text.SeparatorConstants.QUOTE;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.regex.Pattern;
 
 /**
  * A CSVWRiter that is designed to take the place of the OpenCSV CSVWriter
@@ -27,6 +31,10 @@ import java.io.Writer;
  * @author sirius
  */
 public class SmartCSVWriter implements AutoCloseable {
+
+    private static final Pattern FIND_QUOTES = Pattern.compile("\"");
+
+    private static final String DOUBLE_QUOTES = "\"\"";
 
     private final Writer out;
     private final char separator;
@@ -96,17 +104,17 @@ public class SmartCSVWriter implements AutoCloseable {
             }
 
             if (field != null) {
-                if (escapeAlways || field.indexOf('"') >= 0 || field.indexOf(separator) >= 0 || field.indexOf('\n') >= 0 || field.indexOf('\r') >= 0) {
-                    out.write('"');
-                    out.write(field.replaceAll("\"", "\"\""));
-                    out.write('"');
+                if (escapeAlways || field.contains(QUOTE) || field.indexOf(separator) >= 0 || field.contains(NEWLINE) || field.contains(LINEFEED)) {
+                    out.write(QUOTE);
+                    out.write(FIND_QUOTES.matcher(field).replaceAll(DOUBLE_QUOTES));
+                    out.write(QUOTE);
                 } else {
                     out.write(field);
                 }
             }
         }
 
-        out.write('\n');
+        out.write(NEWLINE);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,13 +38,13 @@ public final class Frame implements Serializable {
      */
     public Frame() {
         // At origin.
-        origin = new Vector3f(0.0f, 0.0f, 0.0f);
+        origin = new Vector3f(0.0F, 0.0F, 0.0F);
 
         // Forward is -Z (default OpenGL).
-        forward = new Vector3f(0.0f, 0.0f, -1.0f);
+        forward = new Vector3f(0.0F, 0.0F, -1.0F);
 
         // Up is up (+Y).
-        up = new Vector3f(0.0f, 1.0f, 0.0f);
+        up = new Vector3f(0.0F, 1.0F, 0.0F);
 
         absm = -1;
     }
@@ -241,9 +241,9 @@ public final class Frame implements Serializable {
 
         // Translation (already done)
         if (rotationOnly) {
-            matrix.a[12] = 0.0f;
-            matrix.a[13] = 0.0f;
-            matrix.a[14] = 0.0f;
+            matrix.a[12] = 0.0F;
+            matrix.a[13] = 0.0F;
+            matrix.a[14] = 0.0F;
         } else {
             matrix.setRow(origin, 3);
         }
@@ -512,9 +512,9 @@ public final class Frame implements Serializable {
     public void transformPoint(final Vector3f pointSrc, final Vector3f pointDst) {
         final Matrix44f m = new Matrix44f();
         getMatrix(m, false);    // Rotate and translate
-        pointDst.a[0] = m.a[0] * pointSrc.a[0] + m.a[4] * pointSrc.a[1] + m.a[8] * pointSrc.a[2] + m.a[12];// * v[3];
-        pointDst.a[1] = m.a[1] * pointSrc.a[0] + m.a[5] * pointSrc.a[1] + m.a[9] * pointSrc.a[2] + m.a[13];// * v[3];
-        pointDst.a[2] = m.a[2] * pointSrc.a[0] + m.a[6] * pointSrc.a[1] + m.a[10] * pointSrc.a[2] + m.a[14];// * v[3];
+        pointDst.a[0] = m.a[0] * pointSrc.a[0] + m.a[4] * pointSrc.a[1] + m.a[8] * pointSrc.a[2] + m.a[12];
+        pointDst.a[1] = m.a[1] * pointSrc.a[0] + m.a[5] * pointSrc.a[1] + m.a[9] * pointSrc.a[2] + m.a[13];
+        pointDst.a[2] = m.a[2] * pointSrc.a[0] + m.a[6] * pointSrc.a[1] + m.a[10] * pointSrc.a[2] + m.a[14];
     }
 
     /**
@@ -540,97 +540,15 @@ public final class Frame implements Serializable {
 
         return array;
     }
+    
+    
+    public boolean areSame(final Frame frame) {
+        return origin.areSame(frame.origin)
+                && forward.areSame(frame.forward)
+                && up.areSame(frame.up)
+                && absm == frame.absm;
+    }
 
-//    /**
-//     * Aim the camera.
-//     *
-//     * @param radius distance from (0,0,0)
-//     * @param azimuth angle in degrees in x,y plane; 0==x-axis
-//     * @param altitude angle in degrees from z-axis; 0==z-axis
-//     * @return
-//     */
-//    public void aimCamera(float radius, float azimuth, float elevation)
-//    {
-//        // Calculate new eye vector.
-//        //        float[] tmp = polarToCartesian(1.0f, azimuth, elevation);
-//        // Calculate new up vector.
-//        //        float[] camTmp = polarToCartesian(1.0f, azimuth, elevation-90);
-////        cameraUpx = camUp[0];
-////        cameraUpy = camUp[1];
-////        cameraUpz = camUp[2];
-//////        glu.gluLookAt(cameraCoordsPosx, cameraCoordsPosy, cameraCoordsPosz,
-////                cameraCoordsPosx+tmp[0], cameraCoordsPosy+tmp[1],
-////                cameraCoordsPosz+tmp[2], cameraUpx, cameraUpy, cameraUpz);
-////        forward.load(-(origin.a[0]+tmp[0]), -(origin.a[1]+tmp[1]), -(origin.a[2]+tmp[2]));
-//        forward.set(-tmp[0], -tmp[1], -tmp[2]);
-//        up.set(camTmp[0], camTmp[1], camTmp[2]);
-////        up.load(0,1,0);
-//        origin.set(radius*tmp[0], radius*tmp[1], radius*tmp[2]);
-////        up.load(camUp[0], camUp[1], camUp[2]);
-//    }
-//    /**
-//     *
-//     * @param radius distance from (0,0,0)
-//     * @param azimuth angle in degrees in x,y plane; 0==x-axis
-//     * @param e angle in degrees from z-axis; 0==z-axis
-//     * @return
-//     */
-//    public static float[] polarToCartesian(float radius, float azimuth, float elevation)
-//    {
-//        float[] result = new float[3];
-//        float x, y, z;
-////        // Do x-z calculation
-////        float theta = (float)Math.toRadians(90-azimuth);
-////        float tantheta = (float)Math.tan(theta);
-////        float psi = (float)Math.toRadians(altitude);
-////        float cospsi = (float)Math.cos(psi);
-//////        x = (float)Math.sqrt((length*length)/(tantheta*tantheta+1));
-////        z = tantheta*x;
-//////        x = -x;
-//////        if((azimuth>=180.0&&azimuth<=360.0)||azimuth==0.0f)
-////        {
-////            x = -x;
-////            z = -z;
-////        }
-//////        // Calculate y, and adjust x and z
-////        y = (float)(Math.sqrt(z*z+x*x)*Math.sin(psi));
-//////        if(length<0)
-////        {
-////            x = -x;
-////            z = -z;
-////            y = -y;
-////        }
-//////        x = x*cospsi;
-////        z = z*cospsi;
-////         In contrast we could use the simplest form for computing Cartesian from Spherical as follows:
-////        if(elevation==0)
-////        {
-////            System.out.println("el==0");
-////            x = 0.0f;
-////            y = (float)Math.toRadians(azimuth);
-////            z = radius;
-////        }
-////        else if(elevation==0)
-////        {
-////            System.out.println("el==0");
-////            x = (float)(radius*Math.cos(Math.toRadians(azimuth)));
-////            y = (float)(radius*Math.sin(Math.toRadians(azimuth)));
-////            z = 0.0f;
-////        }
-////        else
-////        {
-//            final float el_r = (float)Math.toRadians(elevation);
-//            final float az_r = (float)Math.toRadians(azimuth);
-//            final float sin_el = (float)Math.sin(el_r);
-//            x = (float)(radius*sin_el*Math.cos(az_r));
-//            y = (float)(radius*sin_el*Math.sin(az_r));
-//            z = (float)(radius*Math.cos(el_r));
-////        }
-//        result[0] = x;
-//        result[1] = y;
-//        result[2] = z;
-//        return result;
-//    }
     @Override
     public String toString() {
         return String.format("o=(%s) f=(%s) u=(%s)", origin, forward, up);

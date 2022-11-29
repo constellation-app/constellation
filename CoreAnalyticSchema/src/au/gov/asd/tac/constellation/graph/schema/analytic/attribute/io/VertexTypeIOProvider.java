@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,6 +56,12 @@ public class VertexTypeIOProvider extends AbstractGraphIOProvider {
     private static final String OVERRIDDEN_TYPE_FIELD = "Overridden Type";
     private static final String PROPERTIES_FIELD = "Properties";
     private static final String INCOMPLETE_FIELD = "Incomplete";
+    
+    private static final String NAME = "name";
+    private static final String RED = "red";
+    private static final String GREEN = "green";
+    private static final String BLUE = "blue";
+    private static final String ALPHA = "alpha";
 
     @Override
     public String getName() {
@@ -65,12 +71,10 @@ public class VertexTypeIOProvider extends AbstractGraphIOProvider {
     @Override
     public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         if (!jnode.isNull() && jnode.isObject()) {
-            final SchemaVertexType attributeValue = readTypeObject(jnode);
-            graph.setObjectValue(attributeId, elementId, cache.deduplicate(attributeValue));
+            graph.setObjectValue(attributeId, elementId, cache.deduplicate(readTypeObject(jnode)));
         } else {
             //  legacy
-            final String attributeValue = jnode.isNull() ? null : jnode.textValue();
-            graph.setStringValue(attributeId, elementId, cache.deduplicate(attributeValue));
+            graph.setStringValue(attributeId, elementId, cache.deduplicate(jnode.isNull() ? null : jnode.textValue()));
         }
     }
 
@@ -163,19 +167,13 @@ public class VertexTypeIOProvider extends AbstractGraphIOProvider {
         }
         if (type.getProperties() != null) {
             jsonGenerator.writeObjectFieldStart(PROPERTIES_FIELD);
-            for (Map.Entry<String, String> entry : type.getProperties().entrySet()) {
+            for (final Map.Entry<String, String> entry : type.getProperties().entrySet()) {
                 jsonGenerator.writeStringField(entry.getKey(), entry.getValue() != null ? entry.getValue() : null);
             }
             jsonGenerator.writeEndObject();
         }
         jsonGenerator.writeBooleanField(INCOMPLETE_FIELD, type.isIncomplete());
     }
-
-    private static final String NAME = "name";
-    private static final String RED = "red";
-    private static final String GREEN = "green";
-    private static final String BLUE = "blue";
-    private static final String ALPHA = "alpha";
 
     /**
      * Read a json object representing a color and return a ColorValue object

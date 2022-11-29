@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,6 +84,9 @@ public class OperatorRegistry {
     }
 
     public Object apply(Object parameter1, Object parameter2) {
+        if (parameter1 == null || parameter2 == null) {
+            return null;
+        }
         final Class<?> parameter1Class = parameter1.getClass();
         final Class<?> parameter2Class = parameter2.getClass();
         final List<BiFunctionRecord<?, ?, ?>> applicableRecords = new ArrayList<>();
@@ -137,6 +140,8 @@ public class OperatorRegistry {
             return parameterClass.isAssignableFrom(parameter);
         }
 
+        // Suppressing warning as the parameter within the registry will always be convertable to type P
+        @SuppressWarnings("unchecked")
         public R apply(Object parameter) {
             return function.apply((P) parameter);
         }
@@ -171,6 +176,8 @@ public class OperatorRegistry {
             return parameter1Class.isAssignableFrom(parameter1) && parameter2Class.isAssignableFrom(parameter2);
         }
 
+        // Suppressing warning as the parameters will always be of types P1 and P2
+        @SuppressWarnings("unchecked")
         public R apply(Object parameter1, Object parameter2) {
             return biFunction.apply((P1) parameter1, (P2) parameter2);
         }

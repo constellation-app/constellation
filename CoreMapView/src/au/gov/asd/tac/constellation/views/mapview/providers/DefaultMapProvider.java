@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ public class DefaultMapProvider extends MapProvider {
         final File defaultMap = ConstellationInstalledFileLocator.locate(
                 "modules/ext/defaultMap.mbtiles",
                 "au.gov.asd.tac.constellation.views.mapview",
-                false, DefaultMapProvider.class.getProtectionDomain());
+                DefaultMapProvider.class.getProtectionDomain());
         final String connection = String.format("jdbc:sqlite:%s", defaultMap.getAbsolutePath());
         final int zoom = (int) coordinate.zoom;
         final float gridSize = PApplet.pow(2, coordinate.zoom);
@@ -65,6 +65,6 @@ public class DefaultMapProvider extends MapProvider {
 
     @Override
     public String[] getTileUrls(final Coordinate coordinate) {
-        return null;
+        return new String[0];
     }
 }

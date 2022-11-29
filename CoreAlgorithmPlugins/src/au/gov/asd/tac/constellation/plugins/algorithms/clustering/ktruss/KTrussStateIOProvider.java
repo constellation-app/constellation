@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss;
 
+import au.gov.asd.tac.constellation.graph.schema.analytic.attribute.KTrussStateAttributeDescription;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -67,7 +68,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
     private static final String INTERACTIVE = "interactive";
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
         if (!jnode.isNull()) {
 
             final int version = jnode.has(VERSION) ? jnode.get(VERSION).asInt() : 0;
@@ -165,7 +166,7 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeNumberField(STRUCMODCOUNT, state.strucModificationCount);
                 jsonGenerator.writeNumberField(CURRENTK, state.getCurrentK());
                 jsonGenerator.writeNumberField(HIGHESTK, state.getHighestK());
-                jsonGenerator.writeBooleanField(DIMMED, state.getExcludedElementsDimmed());
+                jsonGenerator.writeBooleanField(DIMMED, state.isExcludedElementsDimmed());
                 jsonGenerator.writeNumberField(TOGGLES, state.getDisplayOptionToggles());
 
                 final boolean[] extantKTrusses = state.getExtantKTrusses();
@@ -235,16 +236,15 @@ public class KTrussStateIOProvider extends AbstractGraphIOProvider {
                 }
                 jsonGenerator.writeEndArray();
 
-                jsonGenerator.writeBooleanField(NESTEDVIS, state.getNestedTrussesVisible());
+                jsonGenerator.writeBooleanField(NESTEDVIS, state.isNestedTrussesVisible());
                 jsonGenerator.writeNumberField(HIGHCOMP, state.getHighestComponentNum());
                 jsonGenerator.writeNumberField(TOTALVERTS, state.getTotalVerts());
                 jsonGenerator.writeNumberField(TOTALTRUSSVERTS, state.getTotalVertsInTrusses());
-                jsonGenerator.writeBooleanField(DRAWALL, state.getDrawAllComponents());
-                jsonGenerator.writeBooleanField(NESTEDCOLORED, state.getNestedTrussesColored());
-                jsonGenerator.writeBooleanField(INTERACTIVE, state.getInteractive());
+                jsonGenerator.writeBooleanField(DRAWALL, state.isDrawAllComponents());
+                jsonGenerator.writeBooleanField(NESTEDCOLORED, state.isNestedTrussesColored());
+                jsonGenerator.writeBooleanField(INTERACTIVE, state.isInteractive());
                 jsonGenerator.writeEndObject();
             }
         }
-
     }
 }

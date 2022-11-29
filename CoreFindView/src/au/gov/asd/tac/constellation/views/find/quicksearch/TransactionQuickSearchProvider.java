@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,10 +25,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.netbeans.spi.quicksearch.SearchProvider;
 import org.netbeans.spi.quicksearch.SearchRequest;
 import org.netbeans.spi.quicksearch.SearchResponse;
-import org.openide.util.Exceptions;
 
 /**
  * Class responsible for managing searching for content from the QuickSearch
@@ -39,6 +40,8 @@ import org.openide.util.Exceptions;
  * @author betelgeuse
  */
 public class TransactionQuickSearchProvider implements SearchProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(TransactionQuickSearchProvider.class.getName());
 
     private final GraphRetriever graphRetriever = new GraphRetriever();
 
@@ -61,11 +64,11 @@ public class TransactionQuickSearchProvider implements SearchProvider {
             // Wait for results:
             try {
                 future.get();
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Quick Find was interrupted", ex);
                 Thread.currentThread().interrupt();
-            } catch (ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             final List<FindResult> results = plugin.getResults();

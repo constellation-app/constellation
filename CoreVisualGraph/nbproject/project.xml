@@ -31,7 +31,23 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.graph.schema.analytic</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.graph.schema.visual</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.help</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -69,15 +85,6 @@
                     <run-dependency>
                         <release-version>1</release-version>
                         <specification-version>1.27.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.netbeans.modules.javahelp</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>2.41.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

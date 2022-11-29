@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,15 +26,15 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcep
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.io.SaveGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import static org.testng.internal.junit.ArrayAsserts.assertArrayEquals;
@@ -49,20 +49,10 @@ public class MergeTransactionsNGTest {
 
     private int vertexIdentifierAttribute, vertexTypeAttribute, transactionDateTimeAttribute, transactionTypeAttribute, transactionIdentifierAttribute, transactionSelectedAttribute;
     private int vxId1, vxId2;
-    private int txId1, txId2, txId3;
+    private int txId1, txId2, txId3, txId4, txId5;
     private StoreGraph graph;
+
     private final boolean SAVE_GRAPH_FILES = false; // change this to true if you want to see the graph files
-
-    public MergeTransactionsNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() {
-    }
-
-    @AfterClass
-    public static void tearDownClass() {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -90,26 +80,37 @@ public class MergeTransactionsNGTest {
         txId1 = graph.addTransaction(vxId1, vxId2, false);
         txId2 = graph.addTransaction(vxId1, vxId2, false);
         txId3 = graph.addTransaction(vxId1, vxId2, false);
+        txId4 = graph.addTransaction(vxId1, vxId2, false);
+        txId5 = graph.addTransaction(vxId1, vxId2, false);
 
         // set the same activity
         graph.setStringValue(transactionIdentifierAttribute, txId1, "");
         graph.setStringValue(transactionIdentifierAttribute, txId2, "");
         graph.setStringValue(transactionIdentifierAttribute, txId3, "");
+        graph.setStringValue(transactionIdentifierAttribute, txId4, null);
+        graph.setStringValue(transactionIdentifierAttribute, txId5, null);
 
         // set the same type
         graph.setStringValue(transactionTypeAttribute, txId1, "");
         graph.setStringValue(transactionTypeAttribute, txId2, "");
         graph.setStringValue(transactionTypeAttribute, txId3, "");
+        graph.setStringValue(transactionTypeAttribute, txId4, AnalyticConcept.VertexType.EMAIL_ADDRESS.getName());
+        graph.setStringValue(transactionTypeAttribute, txId5, AnalyticConcept.VertexType.COUNTRY.getName());
 
         // set the time of each transaction 1 second apart
         graph.setStringValue(transactionDateTimeAttribute, txId1, "2015-01-28 00:00:01.000 +00:00 [UTC]");
         graph.setStringValue(transactionDateTimeAttribute, txId2, "2015-01-28 00:00:02.000 +00:00 [UTC]");
         graph.setStringValue(transactionDateTimeAttribute, txId3, "2015-01-28 00:00:03.000 +00:00 [UTC]");
+        graph.setStringValue(transactionDateTimeAttribute, txId4, "2015-01-28 00:00:02.000 +00:00 [UTC]");
+        graph.setStringValue(transactionDateTimeAttribute, txId5, "2015-01-28 00:00:03.000 +00:00 [UTC]");
 
         // select all
         graph.setBooleanValue(transactionSelectedAttribute, txId1, true);
         graph.setBooleanValue(transactionSelectedAttribute, txId2, true);
         graph.setBooleanValue(transactionSelectedAttribute, txId3, true);
+        graph.setBooleanValue(transactionSelectedAttribute, txId4, true);
+        graph.setBooleanValue(transactionSelectedAttribute, txId5, true);
+
     }
 
     @AfterMethod
@@ -173,23 +174,7 @@ public class MergeTransactionsNGTest {
 
     @Test
     public void testSortTransactions1() throws Exception {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-
+        MergeTransactionType instance = new TestMergeTransactionType();
         Integer[] transactions = new Integer[3];
         transactions[0] = txId1;
         transactions[1] = txId2;
@@ -204,22 +189,7 @@ public class MergeTransactionsNGTest {
 
     @Test
     public void testSortTransactions2() throws Exception {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
+        MergeTransactionType instance = new TestMergeTransactionType();
 
         Integer[] transactions = new Integer[3];
         transactions[0] = txId3;
@@ -238,23 +208,7 @@ public class MergeTransactionsNGTest {
 
     @Test
     public void testSortTransactionsWithEarliest() throws Exception {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-
+        MergeTransactionType instance = new TestMergeTransactionType();
         Integer[] transactions = new Integer[3];
         transactions[0] = txId3;
         transactions[1] = txId2;
@@ -272,23 +226,7 @@ public class MergeTransactionsNGTest {
 
     @Test
     public void testSortTransactionsWithEarliest2() throws Exception {
-        MergeTransactionType instance = new MergeTransactionType() {
-            @Override
-            public String getName() {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void updateParameters(Map<String, PluginParameter<?>> parameters) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-            }
-        };
-
+        MergeTransactionType instance = new TestMergeTransactionType();
         Integer[] transactions = new Integer[3];
         transactions[0] = txId1;
         transactions[1] = txId2;
@@ -583,5 +521,79 @@ public class MergeTransactionsNGTest {
         saveGraphToFile("testMergeTransactionSomeSelected-after");
 
         assertEquals(1, mergedCount);
+    }
+
+    @Test
+    public void testSortTransactionsWithNullType1() {
+        MergeTransactionType instance = new TestMergeTransactionType();
+        Integer[] transactions = new Integer[2];
+        transactions[0] = txId4;
+        transactions[1] = txId2;
+
+        Integer[] expecting = new Integer[2];
+        expecting[0] = txId4;
+        expecting[1] = txId2;
+
+        instance.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
+        assertArrayEquals(expecting, transactions);
+    }
+
+    @Test
+    public void testSortTransactionsWithNullType2() {
+        MergeTransactionType instance = new TestMergeTransactionType();
+        Integer[] transactions = new Integer[2];
+        transactions[0] = txId3;
+        transactions[1] = txId4;
+
+        Integer[] expecting = new Integer[2];
+        expecting[0] = txId4;
+        expecting[1] = txId3;
+
+        instance.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
+        assertArrayEquals(expecting, transactions);
+    }
+
+    @Test
+    public void testSortTransactionsWithNotNullTypes() {
+        MergeTransactionType instance = new TestMergeTransactionType();
+        Integer[] transactions = new Integer[2];
+        transactions[0] = txId4;
+        transactions[1] = txId5;
+
+        Integer[] expecting = new Integer[2];
+        expecting[0] = txId5;
+        expecting[1] = txId4;
+
+        instance.sortTransactions(transactions, graph, transactionTypeAttribute, transactionDateTimeAttribute, MergeTransactionsPlugin.LATEST_TRANSACTION_CHOOSER);
+        assertArrayEquals(expecting, transactions);
+    }
+
+    @Test
+    public void testCompareTypeHierarchy() {
+        MergeTransactionType instance = new TestMergeTransactionType();
+        Boolean result = instance.compareTypeHierarchy(graph.getObjectValue(transactionTypeAttribute, txId4),
+                graph.getObjectValue(transactionTypeAttribute, txId5));
+        assertFalse(result);
+
+        result = instance.compareTypeHierarchy(graph.getObjectValue(transactionTypeAttribute, txId4),
+                graph.getObjectValue(transactionTypeAttribute, txId4));
+        assertTrue(result);
+
+        result = instance.compareTypeHierarchy(null, null);
+        assertTrue(result);
+    }
+
+    private class TestMergeTransactionType implements MergeTransactionType {
+
+        public String getName() {
+            return "";
+        }
+
+        public void updateParameters(Map<String, PluginParameter<?>> parameters) {
+        }
+
+        public Map<Integer, Set<Integer>> getTransactionsToMerge(GraphWriteMethods graph, Comparator<Long> leadTransactionChooser, int threshold, boolean selectedOnly) throws MergeTransactionType.MergeException {
+            return null;
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,19 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.utilities.SubgraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
@@ -46,9 +44,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +58,7 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
 /**
- * Split nodes based on
+ * Split Nodes Based on Identifier Plugin
  *
  * @author canis_majoris
  * @author antares
@@ -68,13 +67,13 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
 @NbBundle.Messages("SplitNodesPlugin=Split Nodes Based on Identifier")
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlugin {
 
     public static final String SPLIT_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split");
     public static final String DUPLICATE_TRANSACTIONS_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "split_level");
     public static final String TRANSACTION_TYPE_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "transaction_type");
     public static final String ALL_OCCURRENCES_PARAMETER_ID = PluginParameter.buildId(SplitNodesPlugin.class, "all_occurances");
-    
     public static final String COMPLETE_WITH_SCHEMA_OPTION_ID = PluginParameter.buildId(SplitNodesPlugin.class, "complete_schema");
 
     @Override
@@ -99,13 +98,11 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         final PluginParameter<StringParameterValue> split = StringParameterType.build(SPLIT_PARAMETER_ID);
         split.setName("Split Character(s)");
         split.setDescription("A new term will be extracted from the first instance of this character(s) in the Identifier");
-        split.setStringValue(null);
         params.addParameter(split);
 
         final PluginParameter<BooleanParameterValue> duplicateTransactionsParameter = BooleanParameterType.build(DUPLICATE_TRANSACTIONS_PARAMETER_ID);
-        duplicateTransactionsParameter.setName("Duplicate transactions");
+        duplicateTransactionsParameter.setName("Duplicate Transactions");
         duplicateTransactionsParameter.setDescription("Duplicate transactions for split nodes");
-        duplicateTransactionsParameter.setBooleanValue(false);
         params.addParameter(duplicateTransactionsParameter);
 
         final PluginParameter<SingleChoiceParameterValue> transactionType = SingleChoiceParameterType.build(TRANSACTION_TYPE_PARAMETER_ID);
@@ -116,9 +113,8 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         final PluginParameter<BooleanParameterValue> allOccurrences = BooleanParameterType.build(ALL_OCCURRENCES_PARAMETER_ID);
         allOccurrences.setName("Split on All Occurrences");
         allOccurrences.setDescription("Choose to split on all instances of the character(s) rather than just the first instance");
-        allOccurrences.setBooleanValue(false);
         params.addParameter(allOccurrences);
-        
+
         final PluginParameter<BooleanParameterValue> completeSchema = BooleanParameterType.build(COMPLETE_WITH_SCHEMA_OPTION_ID);
         completeSchema.setName("Complete with Schema");
         completeSchema.setDescription("Choose to apply the type schema to the graph");
@@ -153,8 +149,10 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
 
             SingleChoiceParameterType.setOptions(transactionType, types);
             transactionType.suppressEvent(true, new ArrayList<>());
-            if (transactionType.getSingleChoice() == null && types.contains(AnalyticConcept.TransactionType.CORRELATION.getName())) {
-                SingleChoiceParameterType.setChoice(transactionType, AnalyticConcept.TransactionType.CORRELATION.getName());
+            if (!types.isEmpty() && transactionType.getSingleChoice() == null) {
+                final String correlationTypeName = AnalyticConcept.TransactionType.CORRELATION.getName();
+                // set the transaction type to Correlation if it exists and the first option otherwise
+                SingleChoiceParameterType.setChoice(transactionType, types.contains(correlationTypeName) ? correlationTypeName : types.get(0));
             }
             transactionType.suppressEvent(false, new ArrayList<>());
 
@@ -163,7 +161,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         }
     }
 
-    private int createNewNode(final GraphWriteMethods graph, final int selectedNode, final String newNodeIdentifier, final String linkType, final boolean splitIntoSameLevel) {        
+    private int createNewNode(final GraphWriteMethods graph, final int selectedNode, final String newNodeIdentifier, final String linkType, final boolean splitIntoSameLevel) {
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(graph);
         final int transactionDirectedAttribute = VisualConcept.TransactionAttribute.DIRECTED.ensure(graph);
@@ -204,6 +202,8 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                     newTransactionId = graph.addTransaction(newVertexId, destinationVertex, directed);
                 } else if (destinationVertex == selectedNode) {
                     newTransactionId = graph.addTransaction(sourceVertex, newVertexId, directed);
+                } else {
+                    // Do nothing
                 }
 
                 //Loops through all the transaction attributes and copy them to the new transaction
@@ -222,7 +222,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     }
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {              
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
         final String character = splitParameters.get(SPLIT_PARAMETER_ID) != null && splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() != null ? splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() : "";
         final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
@@ -288,10 +288,10 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
                 vlGraph.retrieveCoords();
             }
 
-            if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()){
+            if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()) {
                 PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
-            }  
-            
+            }
+
             PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         }
     }

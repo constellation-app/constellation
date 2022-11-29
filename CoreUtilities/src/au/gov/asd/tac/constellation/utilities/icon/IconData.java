@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,10 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import org.openide.util.Exceptions;
 
 /**
  * An IconData stores byte data for use as a {@link ConstellationIcon}, provided
@@ -106,14 +107,14 @@ public abstract class IconData {
 
                 is.close();
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return os.toByteArray();
     }
 
-    private static BufferedImage colorImage(final BufferedImage image, final Color color) {
+    protected static BufferedImage colorImage(final BufferedImage image, final Color color) {
         if (image == null || color == null) {
             return image;
         } else {
@@ -143,7 +144,7 @@ public abstract class IconData {
      * @return A {@link BufferedImage} which is identical to the provided image,
      * only resized.
      */
-    private static BufferedImage scaleImage(final BufferedImage image, final int size) {
+    protected static BufferedImage scaleImage(final BufferedImage image, final int size) {
         if (image == null || image.getType() == BufferedImage.TYPE_4BYTE_ABGR
                 && (image.getWidth() == size || image.getHeight() == size)) {
             return image;
@@ -169,6 +170,24 @@ public abstract class IconData {
 
             return scaledImage;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return 79 * 7 + Arrays.hashCode(this.data);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+
+        if (this.getClass() != obj.getClass()) {
+            return false;
+        }
+
+        return Arrays.equals(this.data, ((IconData) obj).data);
     }
 
     @Override

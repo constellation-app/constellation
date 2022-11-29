@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactory;
@@ -73,21 +74,15 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
             if (typeList.getItems().contains(type)) {
                 typeList.getSelectionModel().select(type);
             } else {
-                if (type != null) {
-                    nameText.setText(type.getName());
-                } else {
-                    nameText.setText("");
-                }
+                nameText.setText(type != null ? type.getName() : "");
             }
         }
 
         @Override
         protected SchemaVertexType getValueFromControls() {
-            if (typeList.getSelectionModel().getSelectedItem() != null) {
-                return typeList.getSelectionModel().getSelectedItem();
-            } else {
-                return SchemaVertexTypeUtilities.getTypeOrBuildNew(nameText.getText());
-            }
+            return typeList.getSelectionModel().getSelectedItem() != null 
+                    ? typeList.getSelectionModel().getSelectedItem()
+                    : SchemaVertexTypeUtilities.getTypeOrBuildNew(nameText.getText());
         }
 
         @Override
@@ -99,7 +94,7 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
             typeList = new ListView<>();
             typeList.setCellFactory(p -> new ListCell<SchemaVertexType>() {
                 @Override
-                protected void updateItem(final SchemaVertexType item, boolean empty) {
+                protected void updateItem(final SchemaVertexType item, final boolean empty) {
                     super.updateItem(item, empty);
                     if (!empty && item != null) {
                         setText(item.getName());
@@ -109,8 +104,9 @@ public class VertexTypeEditorFactory extends AttributeValueEditorFactory<SchemaV
 
             // get all types supported by the current schema
             final List<SchemaVertexType> types = new ArrayList<>();
-            if (GraphManager.getDefault().getActiveGraph() != null && GraphManager.getDefault().getActiveGraph().getSchema() != null) {
-                final SchemaFactory schemaFactory = GraphManager.getDefault().getActiveGraph().getSchema().getFactory();
+            final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
+            if (currentGraph != null && currentGraph.getSchema() != null) {
+                final SchemaFactory schemaFactory = currentGraph.getSchema().getFactory();
                 final Set<Class<? extends SchemaConcept>> concepts = new HashSet<>();
                 concepts.addAll(schemaFactory.getRegisteredConcepts());
                 SchemaConceptUtilities.getChildConcepts(schemaFactory.getRegisteredConcepts())

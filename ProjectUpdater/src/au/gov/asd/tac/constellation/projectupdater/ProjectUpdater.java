@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,7 +155,11 @@ public class ProjectUpdater extends Task {
                 final File[] jarFiles = jarDirectory.listFiles();
 
                 // Sort them so that the project.xml is generated consistently and avoids merge conflicts
-                Arrays.sort(jarFiles);
+                Arrays.sort(jarFiles, (final File o1, final File o2) -> {
+                    final String p1 = o1.getAbsolutePath();
+                    final String p2 = o2.getAbsolutePath();
+                    return p1.compareTo(p2);
+                });
 
                 // Add the class path to project.xml
                 for (final File jarFile : jarFiles) {
@@ -253,7 +257,7 @@ public class ProjectUpdater extends Task {
         final TransformerFactory transformerFactory = TransformerFactory.newInstance();
         transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
         // Ant's build.xml can not use this
-//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, ""); 
+//        transformerFactory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         final Transformer transformer = transformerFactory.newTransformer();
 
         try (FileOutputStream out = new FileOutputStream(xmlFile)) {

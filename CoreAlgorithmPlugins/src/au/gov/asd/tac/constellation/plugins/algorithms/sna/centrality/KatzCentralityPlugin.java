@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -29,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.Arrays;
 import org.openide.util.NbBundle;
@@ -42,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("KatzCentralityPlugin=Katz Centrality")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class KatzCentralityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute KATZ_ATTRIBUTE = SnaConcept.VertexAttribute.KATZ_CENTRALITY;
@@ -61,13 +63,13 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> alphaParameter = FloatParameterType.build(ALPHA_PARAMETER_ID);
         alphaParameter.setName("Alpha");
         alphaParameter.setDescription("The attenuation factor");
-        alphaParameter.setFloatValue(0.1f);
+        alphaParameter.setFloatValue(0.1F);
         parameters.addParameter(alphaParameter);
 
         final PluginParameter<FloatParameterValue> betaParameter = FloatParameterType.build(BETA_PARAMETER_ID);
         betaParameter.setName("Beta");
         betaParameter.setDescription("The weight attributed to the immediate neighbourhood");
-        betaParameter.setFloatValue(1.0f);
+        betaParameter.setFloatValue(1.0F);
         parameters.addParameter(betaParameter);
 
         final PluginParameter<IntegerParameterValue> iterationsParameter = IntegerParameterType.build(ITERATIONS_PARAMETER_ID);
@@ -79,7 +81,7 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> epsilonParameter = FloatParameterType.build(EPSILON_PARAMETER_ID);
         epsilonParameter.setName("Epsilon");
         epsilonParameter.setDescription("The change threshold at which equilibrium can be considered reached");
-        epsilonParameter.setFloatValue(1E-8f);
+        epsilonParameter.setFloatValue(1E-8F);
         parameters.addParameter(epsilonParameter);
 
         final PluginParameter<BooleanParameterValue> normaliseByPossibleParameter = BooleanParameterType.build(NORMALISE_POSSIBLE_PARAMETER_ID);
@@ -91,8 +93,21 @@ public class KatzCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> normaliseByAvailableParameter = BooleanParameterType.build(NORMALISE_AVAILABLE_PARAMETER_ID);
         normaliseByAvailableParameter.setName("Normalise By Max Available Score");
         normaliseByAvailableParameter.setDescription("Normalise calculated scores by the maximum calculated score");
-        normaliseByAvailableParameter.setBooleanValue(false);
         parameters.addParameter(normaliseByAvailableParameter);
+        
+        parameters.addController(NORMALISE_POSSIBLE_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE && master.getBooleanValue()) {
+                // only one of normalise by max possible or max available can be enabled
+                params.get(NORMALISE_AVAILABLE_PARAMETER_ID).setBooleanValue(false);
+            }
+        });
+        
+        parameters.addController(NORMALISE_AVAILABLE_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE && master.getBooleanValue()) {
+                // only one of normalise by max possible or max available can be enabled
+                params.get(NORMALISE_POSSIBLE_PARAMETER_ID).setBooleanValue(false);
+            }
+        });
 
         return parameters;
     }

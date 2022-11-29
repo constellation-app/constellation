@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ public class JaccardIndexPluginNGTest {
         transactionJaccardAttribute = SnaConcept.TransactionAttribute.JACCARD_INDEX.ensure(graph);
         vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         transactionIdentifier = VisualConcept.TransactionAttribute.IDENTIFIER.ensure(graph);
-        
+
         // add vertices
         vxId0 = graph.addVertex();
         vxId1 = graph.addVertex();
@@ -93,7 +93,7 @@ public class JaccardIndexPluginNGTest {
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         int transactionCount = graph.getTransactionCount();
-        
+
         for (int transactionId = 0; transactionId < transactionCount; transactionId++) {
             int transaction = graph.getTransaction(transactionId);
             String identifier = graph.getStringValue(transactionIdentifier, transactionId);
@@ -131,10 +131,9 @@ public class JaccardIndexPluginNGTest {
         parameters.setIntegerValue(JaccardIndexPlugin.MINIMUM_COMMON_FEATURES_PARAMETER_ID, 1);
         parameters.setBooleanValue(JaccardIndexPlugin.SELECTED_ONLY_PARAMETER_ID, false);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-        
-        
+
         int transactionCount = graph.getTransactionCount();
-        
+
         for (int transactionId = 0; transactionId < transactionCount; transactionId++) {
             int transaction = graph.getTransaction(transactionId);
             String identifier = graph.getStringValue(transactionIdentifier, transactionId);

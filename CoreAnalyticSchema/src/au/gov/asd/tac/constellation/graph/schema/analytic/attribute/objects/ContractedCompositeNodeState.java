@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -130,7 +130,7 @@ public class ContractedCompositeNodeState {
 
         // Add the now complete expanded composite node store to the graph (do not initialise or complete with schema)
         final Map<String, Integer> vertexMap = new HashMap<>();
-        List<Integer> expandedVerts = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, addToGraphStore, false, false, null, vertexMap, null);
+        final List<Integer> expandedVerts = GraphRecordStoreUtilities.addRecordStoreToGraph(wg, addToGraphStore, false, false, null, vertexMap, null);
 
         // Create the expanded composite state for each expanded node and add it to those nodes.
         vertexMap.entrySet().forEach(entry -> {

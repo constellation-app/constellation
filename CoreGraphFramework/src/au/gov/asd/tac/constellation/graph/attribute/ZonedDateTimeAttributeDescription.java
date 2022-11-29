@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,11 +111,12 @@ public final class ZonedDateTimeAttributeDescription extends AbstractObjectAttri
                 final String regionId = string.length() > TemporalFormatting.ZONE_OFFSET_DATE_TIME_FORMAT_LENGTH
                         ? string.substring(TemporalFormatting.ZONE_NAME_FORMAT_START_POSITION, string.length() - 1)
                         : null;
-                final ZoneId zoneId = regionId == null
-                        ? offsetId == null
-                                ? TimeZoneUtilities.UTC
-                                : ZoneOffset.of(offsetId)
-                        : ZoneId.of(regionId);
+                final ZoneId zoneId;
+                if (regionId == null) {
+                    zoneId = offsetId == null ? TimeZoneUtilities.UTC : ZoneOffset.of(offsetId);
+                } else {
+                    zoneId = ZoneId.of(regionId);
+                }
                 return ZonedDateTime.of(year, month, day, hour, minute, second, millisecond * TemporalConstants.NANOSECONDS_IN_MILLISECOND, zoneId);
             } catch (final StringIndexOutOfBoundsException | NumberFormatException | DateTimeException ex) {
                 throw new IllegalArgumentException(String.format(

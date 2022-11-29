@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,26 +49,22 @@ public final class GraphLabels {
      */
     public GraphLabels(final GraphLabels graphLabels) {
         labels = new ArrayList<>();
-        graphLabels.labels.forEach(label -> {
-            labels.add(new GraphLabel(label));
-        });
+        graphLabels.labels.forEach(label -> labels.add(new GraphLabel(label)));
     }
 
     public GraphLabels(final GraphLabels graphLabels, final List<GraphLabel> additionalLabels) {
         final List<GraphLabel> allLabels = new ArrayList<>();
-        graphLabels.labels.forEach(label -> {
-            allLabels.add(new GraphLabel(label));
-        });
-        additionalLabels.forEach(label -> {
-            allLabels.add(label);
-        });
+        graphLabels.labels.forEach(label -> allLabels.add(new GraphLabel(label)));
+        additionalLabels.forEach(label -> allLabels.add(label));
         labels = allLabels.size() > MAX_LABELS ? allLabels.subList(0, MAX_LABELS) : allLabels;
     }
 
     public GraphLabels(final List<GraphLabel> labels) {
-        this.labels = labels == null ? Collections.emptyList()
-                : labels.size() > MAX_LABELS ? labels.subList(0, MAX_LABELS)
-                : labels;
+        if (labels == null) {
+            this.labels = Collections.emptyList();
+        } else {
+            this.labels = labels.size() > MAX_LABELS ? labels.subList(0, MAX_LABELS) : labels;
+        }
     }
 
     public List<GraphLabel> getLabels() {
@@ -81,9 +77,7 @@ public final class GraphLabels {
 
     @Override
     public String toString() {
-        return StringUtilities.escape(labels.stream().map(label -> {
-            return label.toString();
-        }).collect(Collectors.toList()), DELIMITER);
+        return StringUtilities.escape(labels.stream().map(label -> label.toString()).collect(Collectors.toList()), DELIMITER);
     }
 
     public static GraphLabels valueOf(final String graphLabelsString) {
@@ -95,10 +89,8 @@ public final class GraphLabels {
         final List<String> labelStrings;
         try {
             labelStrings = StringUtilities.splitEscaped(graphLabelsString, DELIMITER);
-            labelStrings.forEach(label -> {
-                labels.add(GraphLabel.valueOf(label));
-            });
-        } catch (IllegalArgumentException ex) {
+            labelStrings.forEach(label -> labels.add(GraphLabel.valueOf(label)));
+            } catch (IllegalArgumentException ex) {
             throw new IllegalArgumentException("String does not represent a graph label: " + graphLabelsString + "\nCaused by: " + ex.getMessage());
         }
         return new GraphLabels(labels);

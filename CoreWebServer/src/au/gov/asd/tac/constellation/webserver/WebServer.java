@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.awt.StatusDisplayer;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
@@ -181,10 +180,6 @@ public class WebServer {
                 //
                 Lookup.getDefault().lookupAll(ConstellationHttpServlet.class).forEach(servlet -> {
                     if (servlet.getClass().isAnnotationPresent(WebServlet.class)) {
-//                        for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).value()) {
-//                            Logger.getGlobal().info(String.format("value %s %s", servlet, urlPattern));
-//                            context.addServlet(new ServletHolder(servlet), urlPattern);
-//                        }
                         for (String urlPattern : servlet.getClass().getAnnotation(WebServlet.class).urlPatterns()) {
                             Logger.getGlobal().info(String.format("urlpattern %s %s", servlet, urlPattern));
                             context.addServlet(new ServletHolder(servlet), urlPattern);
@@ -258,9 +253,7 @@ public class WebServer {
 
         if (doDownload) {
             boolean complete = false;
-            try (
-                    final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT);
-                    final FileOutputStream out = new FileOutputStream(download)) {
+            try (final InputStream in = WebServer.class.getResourceAsStream(RESOURCES + CONSTELLATION_CLIENT); final FileOutputStream out = new FileOutputStream(download)) {
                 final byte[] buf = new byte[64 * 1024];
                 while (true) {
                     final int len = in.read(buf);
@@ -273,7 +266,7 @@ public class WebServer {
 
                 complete = true;
             } catch (final IOException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
             if (complete) {

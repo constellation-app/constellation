@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,9 +94,7 @@ public class ConnectionModeEditorFactory extends AttributeValueEditorFactory<Con
             connectionModeComboBox.setCellFactory(cellFactory);
             connectionModeComboBox.setButtonCell(cellFactory.call(null));
             connectionModeLabel.setLabelFor(connectionModeComboBox);
-            connectionModeComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                update();
-            });
+            connectionModeComboBox.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
             controls.addRow(0, connectionModeLabel, connectionModeComboBox);
             return controls;

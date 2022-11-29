@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,12 @@ import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.gui.InfoTextPanel;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL2ES3;
+import com.jogamp.opengl.GL2GL3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 
@@ -32,6 +36,8 @@ import org.openide.NotifyDescriptor;
  * @author algol
  */
 public class GLInfo {
+
+    private static final Logger LOGGER = Logger.getLogger(GLInfo.class.getName());
 
     public static final String MINIMUM_OPEN_GL_VERSION = "3.3";
     private final String basicInfo;
@@ -63,16 +69,16 @@ public class GLInfo {
 
     public static void printGLCapabilities(final GL3 gl) {
         final int[] v = new int[10];
-        gl.glGetIntegerv(GL3.GL_MAX_RENDERBUFFER_SIZE, v, 0);
-        gl.glGetIntegerv(GL3.GL_MAX_VERTEX_ATTRIBS, v, 1);
-        gl.glGetIntegerv(GL3.GL_MAX_TEXTURE_SIZE, v, 2);
-        gl.glGetIntegerv(GL3.GL_MAX_RECTANGLE_TEXTURE_SIZE, v, 3);
-        gl.glGetIntegerv(GL3.GL_MAX_TEXTURE_BUFFER_SIZE, v, 4);
-        gl.glGetIntegerv(GL3.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, v, 5);
-        gl.glGetIntegerv(GL3.GL_MAX_3D_TEXTURE_SIZE, v, 6);
-        gl.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 7);
-        gl.glGetIntegerv(GL3.GL_MAX_DRAW_BUFFERS, v, 8);
-        gl.glGetIntegerv(GL3.GL_MAX_COLOR_ATTACHMENTS, v, 9);
+        gl.glGetIntegerv(GL.GL_MAX_RENDERBUFFER_SIZE, v, 0);
+        gl.glGetIntegerv(GL2ES2.GL_MAX_VERTEX_ATTRIBS, v, 1);
+        gl.glGetIntegerv(GL.GL_MAX_TEXTURE_SIZE, v, 2);
+        gl.glGetIntegerv(GL2GL3.GL_MAX_RECTANGLE_TEXTURE_SIZE, v, 3);
+        gl.glGetIntegerv(GL2ES3.GL_MAX_TEXTURE_BUFFER_SIZE, v, 4);
+        gl.glGetIntegerv(GL2ES2.GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, v, 5);
+        gl.glGetIntegerv(GL2ES2.GL_MAX_3D_TEXTURE_SIZE, v, 6);
+        gl.glGetIntegerv(GL2ES3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 7);
+        gl.glGetIntegerv(GL2ES2.GL_MAX_DRAW_BUFFERS, v, 8);
+        gl.glGetIntegerv(GL2ES2.GL_MAX_COLOR_ATTACHMENTS, v, 9);
         final StringBuilder b = new StringBuilder();
         b.append(String.format("GL: MAX_RENDERBUFFER_SIZE %d%n", v[0]));
         b.append(String.format("GL: MAX_VERTEX_ATTRIBS %d%n", v[1]));
@@ -84,7 +90,8 @@ public class GLInfo {
         b.append(String.format("GL: MAX_ARRAY_TEXTURE_LAYERS %d%n", v[7]));
         b.append(String.format("GL: MAX_DRAW_BUFFERS %d%n", v[8]));
         b.append(String.format("GL: MAX_COLOR_ATTACHMENTS %d%n", v[9]));
-        System.out.printf(b.toString());
+        final String log = b.toString();
+        LOGGER.log(Level.INFO, log);
     }
 
     public GLInfo(final GL gl) {

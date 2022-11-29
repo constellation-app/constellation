@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,11 +33,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -77,6 +78,8 @@ import org.openide.windows.WindowManager;
     "AllAllocated=All Named Selection Slots Have Been Used"
 })
 public class NamedSelectionManager implements LookupListener, GraphChangeListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(NamedSelectionManager.class.getName());
 
     private static final int NO_AVAILABLE = -1;
     private static final int CURRENT_SELECTION = NO_AVAILABLE;
@@ -87,7 +90,6 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
     private GraphNode graphNode = null;
     private final Lookup.Result<GraphNode> result;
 
-//    private static final NamedSelectionManager singleton = new NamedSelectionManager();
     /**
      * Gets the global <code>NamedSelectionManager</code>.
      * <p>
@@ -170,7 +172,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
                         // Save the selection to the graph elements:
                         performSave(graph, newSelection.getID());
 
-                        // Write this to the state;
+                        // Write this to the state
                         saveStateToGraph();
                     } else {
                         notifyAllAlloc();
@@ -199,7 +201,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
                 // Save the selection to the graph elements:
                 performSave(graphNode.getGraph(), newSelection.getID());
 
-                // Write this to the state;
+                // Write this to the state
                 saveStateToGraph();
 
                 updateState();
@@ -242,13 +244,15 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
                 // Save the selection to the graph elements:
                 performCustomSave(graphNode.getGraph(), nodesToSave, transactionsToSave, newSelection.getID());
 
-                // Write this to the state;
+                // Write this to the state
                 saveStateToGraph();
 
                 updateState();
                 return true;
             } else if (notifyIfFail) {
                 notifyAllAlloc();
+            } else {
+                // Do nothing
             }
         }
         return false;
@@ -300,7 +304,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
                 // Recall the newly saved selection with the dim / select states being honoured:
                 performRecall(graph, state.isSelectResults(), state.isDimOthers(), clonedSelection.getID());
 
-                // Write this to the state;
+                // Write this to the state
                 saveStateToGraph();
 
                 updateState();
@@ -354,7 +358,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      * elements.
      * <p>
      * Member elements do not have their 'selected' attribute set, so the
-     * elements retain their original non-selected colours.
+     * elements retain their original non-selected colors.
      *
      * @param notDim The named selection to be recalled.
      *
@@ -371,7 +375,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      * Resets a graph, and automatically un-dims all member graph elements.
      * <p>
      * Member elements do not have their 'selected' attribute set, so all
-     * elements retain their original non-selected colours.
+     * elements retain their original non-selected colors.
      *
      * @param reset The named selection to be reset.
      *
@@ -450,7 +454,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
 
             state.getNamedSelections().get(index).setName(newName);
 
-            // Write this to the state;
+            // Write this to the state
             saveStateToGraph();
 
             updateState();
@@ -472,7 +476,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
 
             state.getNamedSelections().get(index).setDescription(newDescription);
 
-            // Write this to the state;
+            // Write this to the state
             saveStateToGraph();
 
             updateState();
@@ -673,11 +677,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Named Selection Intersection was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -708,11 +712,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Named Selection Union was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
     }
@@ -740,11 +744,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Named Selections recall was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
     }
@@ -765,11 +769,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Named Selection save was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -778,11 +782,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final Future<?> f = PluginExecution.withPlugin(namedSelectionEdit).executeLater(graph);
         try {
             f.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Named Selection custom save was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -808,11 +812,11 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
             final Future<?> f = PluginExecution.withPlugin(nssp).interactively(true).executeLater(graph);
             try {
                 f.get();
-            } catch (InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Saving Named Selection state was interrupted", ex);
                 Thread.currentThread().interrupt();
-            } catch (ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 
@@ -899,7 +903,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final NamedSelectionAllAllocPanel panel = new NamedSelectionAllAllocPanel();
         final DialogDescriptor dd = new DialogDescriptor(panel, Bundle.AllAllocated());
 
-        dd.setOptions(new Object[]{"Ok"});
+        dd.setOptions(new Object[]{"OK"});
         DialogDisplayer.getDefault().notify(dd);
     }
 
@@ -914,7 +918,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
         final NamedSelectionProtectedPanel panel = new NamedSelectionProtectedPanel(name);
         final DialogDescriptor dd = new DialogDescriptor(panel, Bundle.ProtectedSelection());
 
-        dd.setOptions(new Object[]{"Ok"});
+        dd.setOptions(new Object[]{"OK"});
         DialogDisplayer.getDefault().notify(dd);
     }
 

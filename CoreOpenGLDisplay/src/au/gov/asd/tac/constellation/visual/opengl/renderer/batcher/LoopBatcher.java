@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -56,6 +57,7 @@ public class LoopBatcher implements SceneBatcher {
     private int shaderMorphMix;
     private int shaderXyzTexture;
     private int shaderImagesTexture;
+    private int shaderGreyscale; // anaglyphic drawing
 
     private final int colorTarget;
     private final int loopInfoTarget;
@@ -66,7 +68,7 @@ public class LoopBatcher implements SceneBatcher {
     public LoopBatcher() {
 
         // create the batch
-        batch = new Batch(GL3.GL_POINTS);
+        batch = new Batch(GL.GL_POINTS);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         loopInfoTarget = batch.newIntBuffer(LOOP_INFO_BUFFER_WIDTH, false);
     }
@@ -91,14 +93,13 @@ public class LoopBatcher implements SceneBatcher {
         shaderMorphMix = gl.glGetUniformLocation(shader, "morphMix");
         shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
         shaderImagesTexture = gl.glGetUniformLocation(shader, "images");
+        shaderGreyscale = gl.glGetUniformLocation(shader, "greyscale");
     }
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
         loopPosToBufferPos.clear();
-        return gl -> {
-            batch.dispose(gl);
-        };
+        return gl -> batch.dispose(gl);
     }
 
     private final SortedMap<Integer, Integer> loopPosToBufferPos = new TreeMap<>();
@@ -137,8 +138,8 @@ public class LoopBatcher implements SceneBatcher {
     private int bufferLoopInfo(final int pos, final IntBuffer dataBuffer, final VisualAccess access) {
         if (loopPosToBufferPos.containsKey(pos)) {
             final int representativeTransactionId = access.getConnectionId(pos);
-            final int loopIconIndex = access.getConnectionDirected(pos) ? GLTools.LOOP_DIRECTED_ICON_INDEX : GLTools.LOOP_UNDIRECTED_ICON_INDEX;
-            final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);
+            final int loopIconIndex = access.isConnectionDirected(pos) ? GLTools.LOOP_DIRECTED_ICON_INDEX : GLTools.LOOP_UNDIRECTED_ICON_INDEX;
+            final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int xyzTexturePosition = access.getConnectionLowVertex(pos);
 
             dataBuffer.put(representativeTransactionId);
@@ -164,19 +165,15 @@ public class LoopBatcher implements SceneBatcher {
     }
 
     public GLRenderableUpdateTask updateInfo(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateIntBufferTask(change, access, this::bufferLoopInfo, gl -> {
-            return batch.connectIntBuffer(gl, loopInfoTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, loopInfoTarget);
-        }, LOOP_INFO_BUFFER_WIDTH);
+        return SceneBatcher.updateIntBufferTask(change, access, this::bufferLoopInfo, gl -> batch.connectIntBuffer(gl, loopInfoTarget),
+                 gl -> batch.disconnectBuffer(gl, loopInfoTarget),
+                 LOOP_INFO_BUFFER_WIDTH);
     }
 
     public GLRenderableUpdateTask updateColors(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
-            return batch.connectFloatBuffer(gl, colorTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, colorTarget);
-        }, COLOR_BUFFER_WIDTH);
+        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> batch.connectFloatBuffer(gl, colorTarget),
+                 gl -> batch.disconnectBuffer(gl, colorTarget),
+                 COLOR_BUFFER_WIDTH);
     }
 
     public void setNextDrawIsHitTest() {
@@ -184,17 +181,17 @@ public class LoopBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
 
         if (batch.isDrawable()) {
             gl.glUseProgram(shader);
 
             // Uniform variables
             if (drawForHitTest) {
-                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_TRUE);
+                gl.glUniform1i(shaderLocDrawHitTest, GL.GL_TRUE);
                 drawForHitTest = false;
             } else {
-                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_FALSE);
+                gl.glUniform1i(shaderLocDrawHitTest, GL.GL_FALSE);
             }
             gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
             gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
@@ -203,6 +200,7 @@ public class LoopBatcher implements SceneBatcher {
             gl.glUniform1f(shaderMorphMix, camera.getMix());
             gl.glUniform1i(shaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
+            gl.glUniform1i(shaderGreyscale, greyscale ? 1 : 0);
             batch.draw(gl);
         }
     }

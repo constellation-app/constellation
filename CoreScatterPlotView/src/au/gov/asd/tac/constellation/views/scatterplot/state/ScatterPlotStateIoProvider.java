@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,9 +51,9 @@ public class ScatterPlotStateIoProvider extends AbstractGraphIOProvider {
         if (!jnode.isNull()) {
             final ScatterPlotState state = new ScatterPlotState();
             GraphElementType elementType = GraphElementType.valueOf(jnode.get("elementType").asText());
-            final Attribute xAttribute = jnode.get(X_ATTRIBUTE).asText().equalsIgnoreCase("null") ? null
+            final Attribute xAttribute = "null".equalsIgnoreCase(jnode.get(X_ATTRIBUTE).asText()) ? null
                     : new GraphAttribute(graph, graph.getAttribute(elementType, jnode.get(X_ATTRIBUTE).asText()));
-            final Attribute yAttribute = jnode.get(Y_ATTRIBUTE).asText().equalsIgnoreCase("null") ? null
+            final Attribute yAttribute = "null".equalsIgnoreCase(jnode.get(Y_ATTRIBUTE).asText()) ? null
                     : new GraphAttribute(graph, graph.getAttribute(elementType, jnode.get(Y_ATTRIBUTE).asText()));
             state.setElementType(elementType);
             state.setXAttribute(xAttribute);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -30,12 +29,15 @@ import au.gov.asd.tac.constellation.graph.utilities.planes.DragDropList.MyListMo
 import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
@@ -44,11 +46,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.ListSelectionModel;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.api.settings.ConvertAsProperties;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -58,7 +63,6 @@ import org.openide.awt.ActionReferences;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.filesystems.FileChooserBuilder;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -101,11 +105,11 @@ import org.openide.windows.TopComponent;
 })
 public final class PlaneManagerTopComponent extends TopComponent implements LookupListener, GraphChangeListener {
 
+    private static final String TITLE = "Import plane";
+
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
     private Graph graph;
-//    private final NodeActivationListener activationListener;
-//    private final NodeChangeListener changeListener;
     private int planesAttr;
     private long planesModificationCounter;
     private boolean isAdjustingList;
@@ -122,9 +126,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
 
         isAdjustingList = false;
 
-//        activationListener = new NodeActivationListener();
-//        changeListener = new NodeChangeListener();
-//        setActivatedNodes(null);
         planeList.addListSelectionListener(e -> {
             if (!isAdjustingList) {
                 final DragDropList.MyListModel listModel = ((DragDropList) planeList).getModel();
@@ -135,26 +136,7 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                     visibleLayers.set(index);
                 }
 
-                PluginExecution.withPlugin(new SimplePlugin("Update plane visibility") {
-                    @Override
-                    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                        WritableGraph wg = graph.getWritableGraph("Update plane visibility", true);
-                        try {
-                            final int planesAttr = wg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
-                            if (planesAttr != Graph.NOT_FOUND) {
-                                // We can't just change the object on the graph, the graph won't recognise it as a change.
-                                final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
-                                final PlaneState state = new PlaneState(oldState);
-                                state.setVisiblePlanes(visibleLayers);
-                                wg.setObjectValue(planesAttr, 0, state);
-                            }
-                        } finally {
-                            wg.commit();
-                        }
-                    }
-                }).executeLater(graph);
-
-//                    graphNode.getVisualisationManager().setVisiblePlanes(visibleLayers);
+                PluginExecution.withPlugin(new UpdatePlaneVisibilityPlugin(visibleLayers)).executeLater(graph);
             }
         });
 
@@ -176,157 +158,41 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         scaleMI.addActionListener(this::scaleSelectedPlanesAction);
         actionsMenu.add(scaleMI);
 
-//        // Are there any graphs with planes already open?
-//        //        activationListener.activate();
+        // Are there any graphs with planes already open?
         result = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
         result.addLookupListener(this);
     }
 
-    private void importPlaneActionPerformed(final ActionEvent e) {
-        final FileNameExtensionFilter filter = new FileNameExtensionFilter("Image file", "png", "jpg");
-        final File f = new FileChooserBuilder("Import plane").addFileFilter(filter).showOpenDialog();
-        if (f != null) {
-            PluginExecution.withPlugin(new SimpleEditPlugin("Import plane") {
-                @Override
-                public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                    try {
-                        // Read the image and convert it to the required type if necessary.
-                        BufferedImage bi = ImageIO.read(f);
-                        if (bi.getType() != BufferedImage.TYPE_4BYTE_ABGR) {
-                            final BufferedImage bi2 = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-                            bi2.createGraphics().drawImage(bi, 0, 0, null);
-                            bi = bi2;
-                        }
-
-                        final String label = f.getName();
-
-                        // Icons have a default radius of 1, but images tend to be 100s or 1000s of pixels in size.
-                        // This means that images are just too big by default.
-                        // Change the displayed size to match the graph.
-                        final BBoxf box = BBoxf.getGraphBoundingBox(wg);
-                        final float graphScale = Math.min(box.getMax()[BBoxf.X] - box.getMin()[BBoxf.X], box.getMax()[BBoxf.Y] - box.getMin()[BBoxf.Y]);
-                        final float imgScale = Math.max(bi.getWidth(), bi.getHeight());
-                        final float sizeFactor = graphScale / imgScale;
-                        final float width = bi.getWidth() * sizeFactor;
-                        final float height = bi.getHeight() * sizeFactor;
-                        final float[] centre = box.getCentre();
-                        final Plane plane = new Plane(label, centre[0] - width / 2f, centre[1] - height / 2f, 0, width, height, bi, bi.getWidth(), bi.getHeight());
-
-                        if (planesAttr == Graph.NOT_FOUND) {
-                            planesAttr = wg.addAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, null, null);
-                        }
-
-                        // We can't just change the object on the graph, the graph won't recognise it as a change.
-                        PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
-                        final PlaneState state = oldState != null ? new PlaneState(oldState) : new PlaneState();
-                        state.addPlane(plane);
-                        wg.setObjectValue(planesAttr, 0, state);
-                    } catch (IOException ex) {
-                        Exceptions.printStackTrace(ex);
-                        NotificationDisplayer.getDefault().notify("Problem importing image",
-                                UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
-                                ex.getMessage(),
-                                null
-                        );
-                    }
-                }
-            }).executeLater(graph);
-        }
+    protected void importPlaneActionPerformed(final ActionEvent e) {
+        FileChooser.openOpenDialog(getPlaneFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> PluginExecution.withPlugin(new ImportPlanePlugin(file)).executeLater(graph)));
     }
 
     private void removeSelectedPlanesActionPerformed(final ActionEvent e) {
-        final ArrayList<Integer> toRemove = getSelectedPlanes();
+        final List<Integer> toRemove = getSelectedPlanes();
         if (!toRemove.isEmpty()) {
             final MyListModel model = ((DragDropList) planeList).getModel();
             for (int i = toRemove.size() - 1; i >= 0; i--) {
                 model.removeMyElement(toRemove.get(i));
             }
 
-            PluginExecution.withPlugin(new SimpleEditPlugin("Remove plane") {
-                @Override
-                public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                    if (planesAttr == Graph.NOT_FOUND) {
-                        planesAttr = wg.addAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, null, null);
-                    }
-
-                    PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
-                    final PlaneState state = oldState != null ? new PlaneState(oldState) : new PlaneState();
-                    for (int i = toRemove.size() - 1; i >= 0; i--) {
-                        state.removePlane(toRemove.get(i));
-                    }
-                    wg.setObjectValue(planesAttr, 0, state);
-                }
-            }).executeLater(graph);
+            PluginExecution.withPlugin(new RemovePlanePlugin(toRemove)).executeLater(graph);
         }
     }
 
     private void moveToSelectedVerticesActionPerformed(final ActionEvent e) {
-        final ArrayList<Integer> selectedPlanes = getSelectedPlanes();
+        final List<Integer> selectedPlanes = getSelectedPlanes();
         if (!selectedPlanes.isEmpty()) {
             final PlanePositionPanel ppp = new PlanePositionPanel();
             final DialogDescriptor dd = new DialogDescriptor(ppp, "Plane position");
             final Object option = DialogDisplayer.getDefault().notify(dd);
             if (option == DialogDescriptor.OK_OPTION) {
-                PluginExecution.withPlugin(new SimpleEditPlugin("Set plane position") {
-                    @Override
-                    protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                        final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
-                        final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
-                        final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-                        final int nradiusId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
-                        final int selectedId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-                        final int vxCount = wg.getVertexCount();
-                        final BBoxf box = new BBoxf();
-                        int found = 0;
-                        float nradius = 0;
-                        for (int position = 0; position < vxCount; position++) {
-                            final int vxId = wg.getVertex(position);
-
-                            final boolean selected = wg.getBooleanValue(selectedId, vxId);
-                            if (selected) {
-                                final float x = wg.getFloatValue(xId, vxId);
-                                final float y = wg.getFloatValue(yId, vxId);
-                                final float z = wg.getFloatValue(zId, vxId);
-                                box.add(x, y, z);
-
-                                found++;
-                                nradius = wg.getFloatValue(nradiusId, vxId);
-                            }
-                        }
-
-                        if (found != 1) {
-                            nradius = 0;
-                        }
-
-                        if (!box.isEmpty()) {
-                            final float[] centre = box.getCentre();
-
-                            final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
-                            final PlaneState state = new PlaneState(oldState);
-                            for (int ix : selectedPlanes) {
-                                final Plane plane = state.getPlane(ix);
-                                final float[] xyz = ppp.getPosition(wg, centre[BBoxf.X], centre[BBoxf.Y], centre[BBoxf.Z], nradius, plane.getWidth(), plane.getHeight());
-                                plane.setX(xyz[0]);
-                                plane.setY(xyz[1]);
-                                plane.setZ(xyz[2]);
-                            }
-
-                            wg.setObjectValue(planesAttr, 0, state);
-                        } else {
-                            NotificationDisplayer.getDefault().notify("No nodes selected",
-                                    UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
-                                    "Please select one or more nodes",
-                                    null
-                            );
-                        }
-                    }
-                }).executeLater(graph);
+                PluginExecution.withPlugin(new SetPlanePositionPlugin(ppp, selectedPlanes)).executeLater(graph);
             }
         }
     }
 
     private void scaleSelectedPlanesAction(final ActionEvent e) {
-        final ArrayList<Integer> selectedPlanes = getSelectedPlanes();
+        final List<Integer> selectedPlanes = getSelectedPlanes();
         if (!selectedPlanes.isEmpty()) {
             final Plane plane;
             final ReadableGraph rg = graph.getReadableGraph();
@@ -341,33 +207,13 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
             final DialogDescriptor dd = new DialogDescriptor(psp, "Plane scaling");
             final Object option = DialogDisplayer.getDefault().notify(dd);
             if (option == DialogDescriptor.OK_OPTION) {
-                final float newScale = psp.getScale();
-                PluginExecution.withPlugin(new SimpleEditPlugin("Scale selected planes") {
-                    @Override
-                    protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                        final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
-                        final PlaneState state = new PlaneState(oldState);
-                        for (int ix : selectedPlanes) {
-                            final Plane plane = state.getPlane(ix);
-                            final float centrex = plane.getX() + plane.getWidth() / 2f;
-                            final float centrey = plane.getY() + plane.getHeight() / 2f;
-                            final float w = plane.getImageWidth() * newScale;
-                            final float h = plane.getImageHeight() * newScale;
-                            plane.setX(centrex - w / 2f);
-                            plane.setY(centrey - h / 2f);
-                            plane.setWidth(w);
-                            plane.setHeight(h);
-                        }
-
-                        wg.setObjectValue(planesAttr, 0, state);
-                    }
-                }).executeLater(graph);
+                PluginExecution.withPlugin(new ScalePlanesPlugin(selectedPlanes, psp.getScale())).executeLater(graph);
             }
         }
     }
 
-    private ArrayList<Integer> getSelectedPlanes() {
-        final ArrayList<Integer> selected = new ArrayList<>();
+    private List<Integer> getSelectedPlanes() {
+        final List<Integer> selected = new ArrayList<>();
         final ListSelectionModel lsm = planeList.getSelectionModel();
         if (lsm.getMinSelectionIndex() != -1) {
             for (int ix = lsm.getMinSelectionIndex(); ix <= lsm.getMaxSelectionIndex(); ix++) {
@@ -479,30 +325,15 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
     }
 
     void writeProperties(final java.util.Properties p) {
+        // Method intentionally left blank
     }
 
     void readProperties(final java.util.Properties p) {
+        // Method intentionally left blank
     }
 
-//    /**
-//     * Listen to the TopComponent registry for node activations.
-//     *
-//     * @param listen
-//     */
-//    private void updateListener(boolean listen)
-//    {
-//        if(listen)
-//        {
-//            TopComponent.getRegistry().addPropertyChangeListener(activationListener);
-//        }
-//        else
-//        {
-//            TopComponent.getRegistry().removePropertyChangeListener(activationListener);
-//        }
-//    }
     @Override
     public void graphChanged(final GraphChangeEvent evt) {
-//        System.out.printf("@PMTC gC %s\n", evt);
         boolean update = false;
         final ReadableGraph rg = graph.getReadableGraph();
         try {
@@ -512,7 +343,6 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                     planesAttr = pa;
                     planesModificationCounter = rg.getValueModificationCounter(planesAttr);
                     update = true;
-//                    System.out.printf("@PMTC %d %d\n", planesAttr, planesModificationCounter);
                 }
             } else {
                 final long pmc = rg.getValueModificationCounter(planesAttr);
@@ -543,14 +373,11 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
         if (graphNode != null) {
             ((DragDropList) planeList).setPlanes(null, null);
             graph.removeGraphChangeListener(this);
-//            graphNode.removeNodeListener(changeListener);
-//            graphNode.getVisualisationManager().removePropertyChangeListener(this);
         }
 
         if (node != null) {
             graphNode = node;
             graph = graphNode.getGraph();
-//            final Visual visual = graphNode.getVisualisationManager();
 
             final ReadableGraph rg = graph.getReadableGraph();
             try {
@@ -567,64 +394,291 @@ public final class PlaneManagerTopComponent extends TopComponent implements Look
                 rg.release();
             }
 
-//            final List<Plane> planes = visual.getPlanes();
-//            final BitSet visiblePlanes = visual.getVisiblePlanes();
-//            ((DragDropList)planeList).setPlanes(planes, visiblePlanes);
             graph.addGraphChangeListener(this);
 
-//            graphNode.getVisualisationManager().addPropertyChangeListener(this);
         } else {
             graphNode = null;
             graph = null;
-            // state = null;
         }
         isAdjustingList = false;
     }
-//    /**
-//     * Listener for node activations.
-//     */
-//    private class NodeActivationListener implements Runnable, PropertyChangeListener
-//    {
-//        @Override
-//        public void propertyChange(PropertyChangeEvent ev)
-//        {
-//            if(TopComponent.Registry.PROP_ACTIVATED_NODES.equals(ev.getPropertyName()))
-//            {
-//                activate();
-//            }
-//        }
-//        @Override
-//        public void run()
-//        {
-//            activate();
-//        }
-//        public void activate()
-//        {
-//            final Node[] nodes = TopComponent.getRegistry().getActivatedNodes();
-//            if(nodes!=null && nodes.length==1 && nodes[0] instanceof GraphNode)
-//            {
-//                final GraphNode gnode = ((GraphNode)nodes[0]);
-//                if(gnode!=graphNode)
-//                {
-//                    setNode(gnode);
-//                }
-//            }
-//        }
-//    }
-//    /**
-//     * Listener for node changes, particularly nodes being destroyed.
-//     */
-//    private class NodeChangeListener extends NodeAdapter
-//    {
-//        @Override
-//        public void propertyChange(PropertyChangeEvent ev)
-//        {
-//            debug("property change %s %s\n", new Date(), ev);
-//        }
-//        @Override
-//        public void nodeDestroyed(NodeEvent ev)
-//        {
-//            setNode(null);
-//        }
-//    }
+
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getPlaneFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && (StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG)
+                                || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JPG)))
+                                || file.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Image Files ("
+                                + FileExtensionConstants.PNG + ", "
+                                + FileExtensionConstants.JPG + ")";
+                    }
+                });
+    }
+
+    /**
+     * Plugin to update the plane visibility on the graph.
+     */
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
+    private static class UpdatePlaneVisibilityPlugin extends SimpleEditPlugin {
+
+        private final BitSet visibleLayers;
+
+        public UpdatePlaneVisibilityPlugin(final BitSet visibleLayers) {
+            this.visibleLayers = visibleLayers;
+        }
+
+        @Override
+        public String getName() {
+            return "Update Plane Visibility";
+        }
+
+        @Override
+        protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            final int planesAttr = graph.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
+            if (planesAttr != Graph.NOT_FOUND) {
+                // We can't just change the object on the graph, the graph won't recognise it as a change.
+                final PlaneState oldState = (PlaneState) graph.getObjectValue(planesAttr, 0);
+                final PlaneState state = new PlaneState(oldState);
+                state.setVisiblePlanes(visibleLayers);
+                graph.setObjectValue(planesAttr, 0, state);
+            }
+        }
+
+    }
+
+    /**
+     * Plugin to import the plane on the graph.
+     */
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.IMPORT})
+    protected static class ImportPlanePlugin extends SimpleEditPlugin {
+
+        private static final Logger LOGGER = Logger.getLogger(ImportPlanePlugin.class.getName());
+
+        private final File f;
+
+        public ImportPlanePlugin(final File f) {
+            this.f = f;
+        }
+
+        @Override
+        public String getName() {
+            return "Import Plane";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            try {
+                // Read the image and convert it to the required type if necessary.
+                BufferedImage bi = ImageIO.read(f);
+                if (bi.getType() != BufferedImage.TYPE_4BYTE_ABGR) {
+                    final BufferedImage bi2 = new BufferedImage(bi.getWidth(), bi.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+                    bi2.createGraphics().drawImage(bi, 0, 0, null);
+                    bi = bi2;
+                }
+
+                final String label = f.getName();
+
+                // Icons have a default radius of 1, but images tend to be 100s or 1000s of pixels in size.
+                // This means that images are just too big by default.
+                // Change the displayed size to match the graph.
+                final BBoxf box = BBoxf.getGraphBoundingBox(wg);
+                final float graphScale = Math.min(box.getMax()[BBoxf.X] - box.getMin()[BBoxf.X], box.getMax()[BBoxf.Y] - box.getMin()[BBoxf.Y]);
+                final float imgScale = Math.max(bi.getWidth(), bi.getHeight());
+                final float sizeFactor = graphScale / imgScale;
+                final float width = bi.getWidth() * sizeFactor;
+                final float height = bi.getHeight() * sizeFactor;
+                final float[] centre = box.getCentre();
+                final Plane plane = new Plane(label, centre[0] - width / 2F, centre[1] - height / 2F, 0, width, height, bi, bi.getWidth(), bi.getHeight());
+                int planesAttr = wg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
+                if (planesAttr == Graph.NOT_FOUND) {
+                    planesAttr = wg.addAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, null, null);
+                }
+
+                // We can't just change the object on the graph, the graph won't recognise it as a change.
+                PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
+                final PlaneState state = oldState != null ? new PlaneState(oldState) : new PlaneState();
+                state.addPlane(plane);
+                wg.setObjectValue(planesAttr, 0, state);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                NotificationDisplayer.getDefault().notify("Problem importing image",
+                        UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
+                        ex.getMessage(),
+                        null
+                );
+            }
+        }
+    }
+
+    /**
+     * Plugin to remove the plane from the graph.
+     */
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.DELETE})
+    private static class RemovePlanePlugin extends SimpleEditPlugin {
+
+        final List<Integer> toRemove;
+
+        public RemovePlanePlugin(final List<Integer> toRemove) {
+            this.toRemove = toRemove;
+        }
+
+        @Override
+        public String getName() {
+            return "Remove Plane";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            int planesAttr = wg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
+            if (planesAttr == Graph.NOT_FOUND) {
+                planesAttr = wg.addAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, null, null);
+            }
+
+            PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
+            final PlaneState state = oldState != null ? new PlaneState(oldState) : new PlaneState();
+            for (int i = toRemove.size() - 1; i >= 0; i--) {
+                state.removePlane(toRemove.get(i));
+            }
+            wg.setObjectValue(planesAttr, 0, state);
+        }
+
+    }
+
+    /**
+     * Plugin to set the plane position on the graph.
+     */
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
+    private static class SetPlanePositionPlugin extends SimpleEditPlugin {
+
+        final PlanePositionPanel ppp;
+        final List<Integer> selectedPlanes;
+
+        public SetPlanePositionPlugin(final PlanePositionPanel ppp, final List<Integer> selectedPlanes) {
+            this.ppp = ppp;
+            this.selectedPlanes = selectedPlanes;
+
+        }
+
+        @Override
+        public String getName() {
+            return "Set plane position";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            final int xId = VisualConcept.VertexAttribute.X.get(wg);
+            final int yId = VisualConcept.VertexAttribute.Y.get(wg);
+            final int zId = VisualConcept.VertexAttribute.Z.get(wg);
+            final int nradiusId = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
+            final int selectedId = VisualConcept.VertexAttribute.SELECTED.get(wg);
+            int planesAttr = wg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
+            if (planesAttr == Graph.NOT_FOUND) {
+                planesAttr = wg.addAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, null, null);
+            }
+            final int vxCount = wg.getVertexCount();
+            final BBoxf box = new BBoxf();
+            int found = 0;
+            float nradius = 0;
+            for (int position = 0; position < vxCount; position++) {
+                final int vxId = wg.getVertex(position);
+
+                final boolean selected = wg.getBooleanValue(selectedId, vxId);
+                if (selected) {
+                    final float x = wg.getFloatValue(xId, vxId);
+                    final float y = wg.getFloatValue(yId, vxId);
+                    final float z = wg.getFloatValue(zId, vxId);
+                    box.add(x, y, z);
+
+                    found++;
+                    nradius = wg.getFloatValue(nradiusId, vxId);
+                }
+            }
+
+            if (found != 1) {
+                nradius = 0;
+            }
+
+            if (!box.isEmpty()) {
+                final float[] centre = box.getCentre();
+
+                final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
+                final PlaneState state = new PlaneState(oldState);
+                for (int ix : selectedPlanes) {
+                    final Plane plane = state.getPlane(ix);
+                    final float[] xyz = ppp.getPosition(wg, centre[BBoxf.X], centre[BBoxf.Y], centre[BBoxf.Z], nradius, plane.getWidth(), plane.getHeight());
+                    plane.setX(xyz[0]);
+                    plane.setY(xyz[1]);
+                    plane.setZ(xyz[2]);
+                }
+
+                wg.setObjectValue(planesAttr, 0, state);
+            } else {
+                NotificationDisplayer.getDefault().notify("No nodes selected",
+                        UserInterfaceIconProvider.ERROR.buildIcon(16, ConstellationColor.CHERRY.getJavaColor()),
+                        "Please select one or more nodes",
+                        null
+                );
+            }
+        }
+
+    }
+
+    /**
+     * Plugin to scale the plane on the graph.
+     */
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.MODIFY})
+    private static class ScalePlanesPlugin extends SimpleEditPlugin {
+
+        final List<Integer> selectedPlanes;
+        final float newScale;
+
+        public ScalePlanesPlugin(final List<Integer> selectedPlanes, final float newScale) {
+            this.selectedPlanes = selectedPlanes;
+            this.newScale = newScale;
+
+        }
+
+        @Override
+        public String getName() {
+            return "Scale selected planes";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            int planesAttr = wg.getAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME);
+            if (planesAttr == Graph.NOT_FOUND) {
+                planesAttr = wg.addAttribute(GraphElementType.META, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, PlaneState.ATTRIBUTE_NAME, null, null);
+            }
+            final PlaneState oldState = (PlaneState) wg.getObjectValue(planesAttr, 0);
+            final PlaneState state = new PlaneState(oldState);
+            for (int ix : selectedPlanes) {
+                final Plane plane = state.getPlane(ix);
+                final float centrex = plane.getX() + plane.getWidth() / 2F;
+                final float centrey = plane.getY() + plane.getHeight() / 2F;
+                final float w = plane.getImageWidth() * newScale;
+                final float h = plane.getImageHeight() * newScale;
+                plane.setX(centrex - w / 2F);
+                plane.setY(centrey - h / 2F);
+                plane.setWidth(w);
+                plane.setHeight(h);
+            }
+            wg.setObjectValue(planesAttr, 0, state);
+        }
+    }
 }

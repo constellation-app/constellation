@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.openide.util.Exceptions;
 
 /**
  * JSON Utilities
@@ -40,11 +41,17 @@ import org.openide.util.Exceptions;
  */
 public class JsonUtilities {
 
-    public static String getTextField(JsonNode node, String... keys) {
+    private JsonUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    private static final Logger LOGGER = Logger.getLogger(JsonUtilities.class.getName());
+
+    public static String getTextField(final JsonNode node, final String... keys) {
         return getTextField(null, node, keys);
     }
 
-    public static String getTextField(String defaultVal, JsonNode node, String... keys) {
+    public static String getTextField(final String defaultVal, final JsonNode node, final String... keys) {
         JsonNode current = node;
         for (final String key : keys) {
             if (!current.hasNonNull(key)) {
@@ -55,7 +62,7 @@ public class JsonUtilities {
         return current.textValue();
     }
 
-    public static Iterator<JsonNode> getFieldIterator(JsonNode node, String... keys) {
+    public static Iterator<JsonNode> getFieldIterator(final JsonNode node, final String... keys) {
         JsonNode current = node;
         for (final String key : keys) {
             if (!current.hasNonNull(key)) {
@@ -76,7 +83,7 @@ public class JsonUtilities {
         return current.iterator();
     }
 
-    public static Iterator<String> getTextFieldIterator(JsonNode node, String... keys) {
+    public static Iterator<String> getTextFieldIterator(final JsonNode node, final String... keys) {
         JsonNode current = node;
         for (final String key : keys) {
             if (!current.hasNonNull(key)) {
@@ -111,11 +118,11 @@ public class JsonUtilities {
         };
     }
 
-    public static int getIntegerField(JsonNode node, String... keys) {
+    public static int getIntegerField(final JsonNode node, final String... keys) {
         return getIntegerField(0, node, keys);
     }
 
-    public static int getIntegerField(int defaultVal, JsonNode node, String... keys) {
+    public static int getIntegerField(final int defaultVal, final JsonNode node, final String... keys) {
         JsonNode current = node;
         for (final String key : keys) {
             if (!current.hasNonNull(key)) {
@@ -126,11 +133,11 @@ public class JsonUtilities {
         return current.intValue();
     }
 
-    public static long getLongField(JsonNode node, String... keys) {
+    public static long getLongField(final JsonNode node, final String... keys) {
         return getLongField(0, node, keys);
     }
 
-    public static long getLongField(long defaultVal, JsonNode node, String... keys) {
+    public static long getLongField(final long defaultVal, final JsonNode node, final String... keys) {
         JsonNode current = node;
         for (final String key : keys) {
             if (!current.hasNonNull(key)) {
@@ -141,11 +148,11 @@ public class JsonUtilities {
         return current.longValue();
     }
 
-    public static double getDoubleField(JsonNode node, String... keys) {
-        return getLongField(0, node, keys);
+    public static double getDoubleField(final JsonNode node, final String... keys) {
+        return getDoubleField(0, node, keys);
     }
 
-    public static double getDoubleField(double defaultVal, JsonNode node, String... keys) {
+    public static double getDoubleField(final double defaultVal, final JsonNode node, final String... keys) {
         JsonNode current = node;
         for (final String key : keys) {
             if (!current.hasNonNull(key)) {
@@ -156,7 +163,7 @@ public class JsonUtilities {
         return current.doubleValue();
     }
 
-    public static Iterator<Integer> getIntegerFieldIterator(JsonNode node, String... keys) {
+    public static Iterator<Integer> getIntegerFieldIterator(final JsonNode node, final String... keys) {
         JsonNode current = node;
         for (final String key : keys) {
             if (!current.hasNonNull(key)) {
@@ -191,11 +198,11 @@ public class JsonUtilities {
         };
     }
 
-    public static boolean getBooleanField(JsonNode node, String... keys) {
+    public static boolean getBooleanField(final JsonNode node, final String... keys) {
         return getBooleanField(false, node, keys);
     }
 
-    public static boolean getBooleanField(boolean defaultVal, JsonNode node, String... keys) {
+    public static boolean getBooleanField(final boolean defaultVal, final JsonNode node, final String... keys) {
         JsonNode current = node;
         for (final String key : keys) {
             if (!current.hasNonNull(key)) {
@@ -206,7 +213,7 @@ public class JsonUtilities {
         return current.booleanValue();
     }
 
-    public static Iterator<Boolean> getBooleanFieldIterator(JsonNode node, String... keys) {
+    public static Iterator<Boolean> getBooleanFieldIterator(final JsonNode node, final String... keys) {
         JsonNode current = node;
         for (final String key : keys) {
             if (!current.hasNonNull(key)) {
@@ -242,6 +249,44 @@ public class JsonUtilities {
     }
 
     /**
+     * Return the {@code JsonNode} found after traversing through nodes with
+     * supplied keys from starting {@code JsonNode} - or null if path doesn't
+     * return a valid node.
+     *
+     * @param node Node to start iteration from.
+     * @param keys Text names of nodes to traverse through.
+     * @return {@code JsonNode} at end of traversal.
+     */
+    public static JsonNode getChildNode(final JsonNode node, final String... keys) {
+        JsonNode current = node;
+        for (final String key : keys) {
+            if (!current.hasNonNull(key)) {
+                return null;
+            }
+            current = current.get(key);
+        }
+        return current;
+    }
+
+    /**
+     * Private helper method returning string value of node. No validation of
+     * node is performed, it is the responsibility of calling method to ensure
+     * node is not null.
+     *
+     * @param node Node to extract string value from.
+     * @return String representation of node except returns null if the node is
+     * null.
+     */
+    public static String getNodeText(final JsonNode node) {
+        if (node.isNull()) {
+            return null;
+        } else if (node.isTextual()) {
+            return node.textValue();
+        }
+        return node.toString();
+    }
+
+    /**
      * Return the {@code textValue()} of a {@code JsonNode} if it exists
      * <p>
      * Example: root.get("thing").textValue()
@@ -250,12 +295,11 @@ public class JsonUtilities {
      * @param node the node that holds the attribute.
      * @return a {@code String} or null if not found
      */
-    public static String getTextValue(String attribute, JsonNode node) {
+    public static String getTextValue(final String attribute, final JsonNode node) {
         if (node.has(attribute)) {
-            return node.get(attribute).textValue();
-        } else {
-            return null;
+            return getNodeText(node.get(attribute));
         }
+        return null;
     }
 
     /**
@@ -267,18 +311,16 @@ public class JsonUtilities {
      * @param delimiter the delimiter to separate multiple values.
      * @return a {@code String} or null if not found
      */
-    public static String getTextValues(String attribute, JsonNode node, String delimiter) {
-        StringBuilder sb = new StringBuilder();
+    public static String getTextValues(final String attribute, final JsonNode node, final String delimiter) {
+        final StringBuilder sb = new StringBuilder();
 
         if (node.has(attribute)) {
             for (JsonNode entry : node.get(attribute)) {
                 if (sb.length() > 0) {
                     sb.append(delimiter);
                 }
-
-                sb.append(entry.textValue());
+                sb.append(getNodeText(entry));
             }
-
             return sb.toString();
         } else {
             return null;
@@ -297,10 +339,11 @@ public class JsonUtilities {
      * @param node the outer node.
      * @return a {@code String} or null if not found
      */
-    public static String getTextValueOfFirstSubElement(String attribute, String innerAttribute, JsonNode node) {
+    public static String getTextValueOfFirstSubElement(final String attribute, final String innerAttribute, final JsonNode node) {
+
         if (node.has(attribute)) {
             if (node.get(attribute).has(0) && node.get(attribute).get(0).has(innerAttribute)) {
-                return node.get(attribute).get(0).get(innerAttribute).textValue();
+                return getNodeText(node.get(attribute).get(0).get(innerAttribute));
             } else {
                 return null;
             }
@@ -315,14 +358,12 @@ public class JsonUtilities {
      * @param rawString The text to format
      * @return The formatted JSON, or plain old text if it isn't JSON.
      */
-    public static String prettyPrint(String rawString) {
-        // Jackson object mapper for formatting JSON fields returned from GRAVITRON
-        ObjectMapper mapper = new ObjectMapper();
+    public static String prettyPrint(final String rawString) {
+        final ObjectMapper mapper = new ObjectMapper();
 
         try {
-            JsonNode node = mapper.readTree(rawString);
-            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(node);
-        } catch (IOException ex) {
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(mapper.readTree(rawString));
+        } catch (final IOException ex) {
             // If there is a formatting issue, just return the raw JSON as it was passed in
             return rawString;
         }
@@ -354,8 +395,8 @@ public class JsonUtilities {
                 jg.flush();
                 return json.toString(StandardCharsets.UTF_8.name());
 
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 
@@ -371,8 +412,8 @@ public class JsonUtilities {
      * @return A String, String map based on the JSON String
      */
     public static Map<String, String> getStringAsMap(final JsonFactory factory, final String mapAsString) {
+        final Map<String, String> map = new HashMap<>();
         if (StringUtils.isNotEmpty(mapAsString)) {
-            Map<String, String> map = new HashMap<>();
             try (final JsonParser jp = factory.createParser(mapAsString)) {
                 if (jp.nextToken() == JsonToken.START_OBJECT) {
                     while (jp.nextToken() != JsonToken.END_OBJECT) {
@@ -384,11 +425,10 @@ public class JsonUtilities {
                         }
                     }
                 }
-                return map;
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
-        return MapUtils.EMPTY_SORTED_MAP;
+        return map;
     }
 }

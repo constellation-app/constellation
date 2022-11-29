@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,7 +80,7 @@ public class DateAttributeTranslator extends AttributeTranslator {
         parameters.addController(FORMAT_PARAMETER_ID, (final PluginParameter<?> master, final Map<String, PluginParameter<?>> params, final ParameterChange change) -> {
             if (change == ParameterChange.VALUE) {
                 final PluginParameter<?> slave = params.get(CUSTOM_PARAMETER_ID);
-                slave.setEnabled(master.getStringValue().equals("CUSTOM"));
+                slave.setEnabled("CUSTOM".equals(master.getStringValue()));
             }
         });
 
@@ -128,6 +128,8 @@ public class DateAttributeTranslator extends AttributeTranslator {
                 parameters.getParameters().get(FORMAT_PARAMETER_ID).setStringValue(val.substring(2));
             } else if (val.startsWith("c:")) {
                 parameters.getParameters().get(CUSTOM_PARAMETER_ID).setStringValue(val.substring(2));
+            } else {
+                // Do nothing
             }
         }
     }

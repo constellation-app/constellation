@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,18 +15,29 @@
  */
 package au.gov.asd.tac.constellation.views.layers.utilities;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQueryCollection;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewState;
+import javafx.geometry.Insets;
+import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
+import org.openide.util.HelpCtx;
 
 /**
+ * Utilities class for layers view 
  *
  * @author aldebaran30701
  */
 public class LayersUtilities {
 
+    private static final Insets HELP_PADDING = new Insets(2, 0, 0, 0);
+
     private LayersUtilities() {
-        // added private constructor to hide implicit public constructor - S1118.
+        throw new IllegalStateException("Utility class");
     }
 
     public static int calculateCurrentLayerSelectionBitMask(final BitMaskQueryCollection vxQueriesCollection, final BitMaskQueryCollection txQueriesCollection) {
@@ -37,9 +48,9 @@ public class LayersUtilities {
             final BitMaskQuery txQuery = txQueriesCollection.getQuery(position);
 
             if (vxQuery != null) {// can use vx
-                newBitmask |= vxQuery.getVisibility() ? (1 << vxQuery.getIndex()) : 0;
+                newBitmask |= vxQuery.isVisible() ? (1 << vxQuery.getIndex()) : 0;
             } else if (txQuery != null) {// have to use tx
-                newBitmask |= txQuery.getVisibility() ? (1 << txQuery.getIndex()) : 0;
+                newBitmask |= txQuery.isVisible() ? (1 << txQuery.getIndex()) : 0;
             } else {
                 // cannot use any.
             }
@@ -49,6 +60,8 @@ public class LayersUtilities {
             newBitmask = 0b1;
         } else if (newBitmask > 1) {
             newBitmask = newBitmask & ~0b1;
+        } else {
+            // Do nothing
         }
 
         return newBitmask;
@@ -85,5 +98,17 @@ public class LayersUtilities {
      */
     public static void addLayerAt(final LayersViewState state, final String description, final int layerNumber) {
         state.addLayerAt(layerNumber, description);
+    }
+
+    public static Button createHelpButton() {
+        final Button helpDocumentationButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpDocumentationButton.paddingProperty().set(HELP_PADDING);
+        helpDocumentationButton.setTooltip(new Tooltip("Display help for Layers View"));
+        helpDocumentationButton.setOnAction(event -> new HelpCtx(LayersViewTopComponent.class.getName()).display());
+
+        // Get rid of the ugly button look so the icon stands alone.
+        helpDocumentationButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+
+        return helpDocumentationButton;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,9 +42,9 @@ public abstract class VertexDominanceCalculator<T> {
     }
 
     public Comparator<T> getComparator() {
-        return (T type1, T type2) -> {
-            SchemaVertexType convertedType1 = this.convertType(type1);
-            SchemaVertexType convertedType2 = this.convertType(type2);
+        return (final T type1, final T type2) -> {
+            final SchemaVertexType convertedType1 = this.convertType(type1);
+            final SchemaVertexType convertedType2 = this.convertType(type2);
             return Integer.compare(this.getDominance(convertedType1), this.getDominance(convertedType2));
         };
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.GlyphManager;
@@ -116,7 +117,7 @@ public final class SharedDrawable {
 
             glyphTextureController = new GlyphManagerOpenGLController(glyphManager);
 
-            labelBackgroundGlyphPosition = glyphManager != null ? glyphManager.createBackgroundGlyph(0.5f) : 0;
+            labelBackgroundGlyphPosition = glyphManager != null ? glyphManager.createBackgroundGlyph(0.5F) : 0;
             glyphTextureController.init(gl);
         } finally {
             sharedDrawable.getContext().release();
@@ -142,7 +143,7 @@ public final class SharedDrawable {
                 String baseFileName = baseFile.getAbsolutePath();
                 baseFileName = FilenameUtils.removeExtension(baseFileName);
                 for (int page = 0; page < glyphManager.getGlyphPageCount(); page++) {
-                    final File outputFile = new File(baseFileName + SeparatorConstants.UNDERSCORE + page + ".png");
+                    final File outputFile = new File(baseFileName + SeparatorConstants.UNDERSCORE + page + FileExtensionConstants.PNG);
                     try (final OutputStream out = new FileOutputStream(outputFile)) {
                         glyphManager.writeGlyphBuffer(page, out);
                     } catch (IOException ex) {

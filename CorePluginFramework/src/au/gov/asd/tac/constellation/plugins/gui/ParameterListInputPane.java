@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,6 @@ public class ParameterListInputPane extends BorderPane {
     private final TitledPane parameterTitledPane = new TitledPane();
     private final ScrollPane parameterScrollPane = new ScrollPane();
     private final VBox parameterItemPanes = new VBox();
-//    private final List<ParameterItem> parameterItemPaneList = new ArrayList<>();
     private final PluginParameter<ParameterListParameterValue> parameter;
     private Button addItemButton;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,7 +77,7 @@ import java.util.NoSuchElementException;
  * time in the future.
  *
  */
-public final class FloatArray implements Iterable<Float> {
+public final class FloatArray implements Iterable<Float>, Cloneable {
 
     private static final long serialVersionUID = 8683452581122442189L;
     /**
@@ -130,11 +130,11 @@ public final class FloatArray implements Iterable<Float> {
      */
     public FloatArray(final int initialCapacity) {
         super();
-        
+
         if (initialCapacity < 0) {
             throw new IllegalArgumentException("Illegal Capacity: " + initialCapacity);
         }
-        
+
         this.elementData = new float[initialCapacity];
         size = 0;
     }
@@ -170,7 +170,6 @@ public final class FloatArray implements Iterable<Float> {
         modCount++;
         int oldCapacity = elementData.length;
         if (minCapacity > oldCapacity) {
-//            float[] oldData = elementData;
             int newCapacity = (oldCapacity * 3) / 2 + 1;
             if (newCapacity < minCapacity) {
                 newCapacity = minCapacity;
@@ -426,7 +425,6 @@ public final class FloatArray implements Iterable<Float> {
         if (numMoved > 0) {
             System.arraycopy(elementData, index + 1, elementData, index, numMoved);
         }
-//        elementData[--size] = null; // Let gc do its work
         --size;
 
         return oldValue;
@@ -467,7 +465,6 @@ public final class FloatArray implements Iterable<Float> {
             System.arraycopy(elementData, index + 1, elementData, index,
                     numMoved);
         }
-//        elementData[--size] = null; // Let gc do its work
         --size;
     }
 
@@ -477,12 +474,6 @@ public final class FloatArray implements Iterable<Float> {
      */
     public void clear() {
         modCount++;
-
-//        // Let gc do its work
-//        for(int i = 0; i<size; i++)
-//        {
-//            elementData[i] = null;
-//        }
         size = 0;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,7 +79,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
                 return Byte.parseByte(string);
             } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
+                        "Error converting String '%s' to byte", string), ex);
             }
         }
     }
@@ -284,12 +284,12 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (ByteReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new ByteVariable() {
             @Override
             public byte readByte() {
@@ -297,7 +297,7 @@ public class ByteAttributeDescription extends AbstractAttributeDescription {
             }
 
             @Override
-            public void writeByte(byte value) {
+            public void writeByte(final byte value) {
                 graph.setByteValue(attribute, indexReadable.readInt(), value);
             }
         };

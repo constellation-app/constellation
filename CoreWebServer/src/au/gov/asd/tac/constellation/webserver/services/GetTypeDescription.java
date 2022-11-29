@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public class GetTypeDescription extends RestService {
 
     @Override
     public String getDescription() {
-        return "Get the named type as a JSON document.";
+        return "Get the description of the named type as a JSON document.";
     }
 
     @Override
@@ -62,8 +62,9 @@ public class GetTypeDescription extends RestService {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(TYPE_PARAMETER_ID);
-        nameParam.setName("Get the named type.");
-        nameParam.setDescription("Return the named type.");
+        nameParam.setName("The name of the type.");
+        nameParam.setDescription("The name of the Node or Transaction type.");
+        nameParam.setRequired(true);
         parameters.addParameter(nameParam);
 
         return parameters;

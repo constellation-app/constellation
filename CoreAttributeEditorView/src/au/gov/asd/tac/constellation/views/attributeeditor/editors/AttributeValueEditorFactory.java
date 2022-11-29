@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ public abstract class AttributeValueEditorFactory<V> extends AbstractEditorFacto
 
     @SuppressWarnings("rawtypes")
     public static void createTypeHandlers() {
-        Collection<? extends AttributeValueEditorFactory> handlers = Lookup.getDefault().lookupAll(AttributeValueEditorFactory.class);
+        final Collection<? extends AttributeValueEditorFactory> handlers = Lookup.getDefault().lookupAll(AttributeValueEditorFactory.class);
         typeHandlers = new HashMap<>();
         handlers.forEach(handler -> {
             final String type = handler.getAttributeType();
@@ -65,7 +65,7 @@ public abstract class AttributeValueEditorFactory<V> extends AbstractEditorFacto
         editTypes.addAll(interaction.getPreferredEditTypes());
 
         String chosenEditType = null;
-        for (String editType : editTypes) {
+        for (final String editType : editTypes) {
             if (typeHandlers.containsKey(editType)) {
                 chosenEditType = editType;
                 break;

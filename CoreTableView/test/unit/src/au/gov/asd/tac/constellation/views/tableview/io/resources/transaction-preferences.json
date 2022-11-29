@@ -1,0 +1,13 @@
+[
+    {
+        "ColumnOrder": [
+            "ABC",
+            "DEF",
+            "JKL"
+        ],
+        "SortByColumn": {
+            "DEF": "ASCENDING"
+        },
+        "PageSize": 5
+    }
+]

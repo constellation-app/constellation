@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ public class AnalyticViewState {
      * @param currentCategory the currently selected plugin category to remove
      * from
      */
-    public void removePluginsMatchingCategory(String currentCategory) {
+    public void removePluginsMatchingCategory(final String currentCategory) {
         if (!activeSelectablePlugins.isEmpty()) {
             activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin
                     -> (plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,35 +43,12 @@ public final class NBFilesystemTestAction implements ActionListener {
 
         final FileObject toolbars = root.getFileObject("Toolbars");
         descend(toolbars, 0);
-
-//        final FileObject misc = root.getFileObject("OptionsDialog/Advanced");
-//        for(final FileObject fo : misc.getChildren())
-//        {
-//            System.out.printf("@@file object Advanced: %s\n", fo.getPath());
-//        }
-//        final String unwanted1 = "OptionsDialog/General.instance";
-//        final String unwanted2 = "OptionsDialog/Advanced/org-netbeans-core-ui-options-filetypes-FileAssociationsOptionsPanelController.instance";
-//        for(final String unwanted : new String[]{unwanted1, unwanted2})
-//        {
-//            final FileObject general = root.getFileObject(unwanted);
-//            if(general!=null)
-//            {
-//                System.out.printf("@@file object delete %s\n", unwanted);
-//                try
-//                {
-//                    general.delete();
-//                }
-//                catch(IOException ex)
-//                {
-//                    Exceptions.printStackTrace(ex);
-//                }
-//            }
-//        }
     }
 
     private static void descend(final FileObject fo, final int level) {
         final String fmt = String.format("%%%ds", (level + 1) * 2);
-        System.out.printf(fmt + " %s %s\n", " ", fo.getNameExt(), fo.getAttribute("position"));
+        final String log = String.format(fmt + " %s %s\n", " ", fo.getNameExt(), fo.getAttribute("position"));
+        LOGGER.log(Level.INFO, log);
         for (final FileObject child : fo.getChildren()) {
             descend(child, level + 1);
         }

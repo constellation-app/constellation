@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,11 @@ import au.gov.asd.tac.constellation.graph.visual.contextmenu.ContextMenuProvider
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.Arrays;
@@ -42,6 +45,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -57,6 +61,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @Messages("CreateCompositeFromSelectionPlugin=Composite Selected Nodes")
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
 public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin implements ContextMenuProvider {
 
     @Override
@@ -99,7 +104,7 @@ public class CreateCompositeFromSelectionPlugin extends SimpleEditPlugin impleme
                 String copyId = "";
                 for (int primarykeyAttr : graph.getPrimaryKey(GraphElementType.VERTEX)) {
                     final String val = graph.getStringValue(primarykeyAttr, selectedVerts.iterator().next());
-                    copyId += graph.getAttributeName(primarykeyAttr) + "<" + (val == null ? "" : val) + ">";
+                    copyId += graph.getAttributeName(primarykeyAttr) + "<" + StringUtils.defaultString(val) + ">";
                 }
                 final String compositeId = copyId;
 

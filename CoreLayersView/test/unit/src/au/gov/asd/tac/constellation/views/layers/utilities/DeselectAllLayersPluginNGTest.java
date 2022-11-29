@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,7 +87,7 @@ public class DeselectAllLayersPluginNGTest {
         PluginExecution.withPlugin(new DeselectAllLayersPlugin()).executeNow(graph);
 
         for (final BitMaskQuery query : vxLayers) {
-            assertTrue(query != null ? query.getVisibility() == false : true);
+            assertTrue(query != null ? query.isVisible() == false : true);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -46,6 +48,8 @@ import javax.crypto.spec.SecretKeySpec;
  * @author arcturus
  */
 public class PasswordDeobfuscator {
+
+    private static final Logger LOGGER = Logger.getLogger(PasswordDeobfuscator.class.getName());
 
     /**
      * Return the de-obfuscated password.
@@ -88,14 +92,11 @@ public class PasswordDeobfuscator {
     @SuppressWarnings("unused")
     public static void main(final String[] args) throws IOException {
         final BufferedReader input = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8.name()));
-        System.out.print("Enter the obfuscated password to decrypt: ");
-        System.out.flush();
+        LOGGER.log(Level.INFO, "Enter the obfuscated password to decrypt: ");
         final String password = input.readLine();
         if (password != null) {
             final String deobfuscatedPassword = deobfuscate(new ObfuscatedPassword(password));
-            System.out.print("The password is: ");
-            System.out.println(deobfuscatedPassword);
-            System.out.flush();
+            LOGGER.log(Level.INFO, "The password is: {0}", deobfuscatedPassword);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map.Entry;
 import java.util.Properties;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A helper class to set properties that can be used to enrich logs and
@@ -103,7 +104,7 @@ public class ConstellationLoggerHelper {
         properties.setProperty(TERMS, terms.toString());
         properties.setProperty(COUNT, Long.toString(resultCount));
         properties.setProperty(DATASOURCE, datasource);
-        properties.setProperty(DESCRIPTION, description == null ? "" : description);
+        properties.setProperty(DESCRIPTION, StringUtils.defaultString(description));
 
         ConstellationLogger.getDefault().pluginProperties(plugin, properties);
         return properties;
@@ -130,7 +131,7 @@ public class ConstellationLoggerHelper {
         properties.setProperty(TERMS, terms.toString());
         properties.setProperty(COUNT, Long.toString(resultCount));
         properties.setProperty(DATASOURCE, datasource);
-        properties.setProperty(DESCRIPTION, description == null ? "" : description);
+        properties.setProperty(DESCRIPTION, StringUtils.defaultString(description));
         if (customProperties != null) {
             for (Entry<Object, Object> entry : customProperties.entrySet()) {
                 properties.putIfAbsent(entry.getKey(), entry.getValue());

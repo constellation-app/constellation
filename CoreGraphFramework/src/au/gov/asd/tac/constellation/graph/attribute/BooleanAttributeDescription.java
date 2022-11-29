@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,16 +80,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
     }
 
     private boolean convertFromString(final String string) throws IllegalArgumentException {
-        if (StringUtils.isBlank(string)) {
-            return (boolean) getDefault();
-        } else {
-            try {
-                return Boolean.parseBoolean(string);
-            } catch (final NumberFormatException ex) {
-                throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
-            }
-        }
+        return StringUtils.isBlank(string) ? (boolean) getDefault() : Boolean.parseBoolean(string);
     }
 
     @Override
@@ -173,12 +164,12 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
 
     @Override
     public float getFloat(final int id) {
-        return data[id] ? 1.0f : 0.0f;
+        return data[id] ? 1.0F : 0.0F;
     }
 
     @Override
     public void setFloat(final int id, final float value) {
-        data[id] = value != 0.0f;
+        data[id] = value != 0.0F;
     }
 
     @Override
@@ -330,6 +321,8 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
                 int firstFalse = position2id[nextFalse++];
                 position2id[position] = firstFalse;
                 id2position[firstFalse] = position;
+            } else {
+                // Do nothing
             }
         }
 

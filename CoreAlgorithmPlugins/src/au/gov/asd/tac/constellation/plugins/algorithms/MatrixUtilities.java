@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,19 @@ import org.ejml.simple.SimpleMatrix;
  */
 public class MatrixUtilities {
 
-    // TODO: distance matrix, where D[i,j] = distance between i and j
+    private MatrixUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     public static SimpleMatrix identity(final GraphReadMethods graph) {
         return SimpleMatrix.identity(graph.getVertexCount());
     }
 
     public static SimpleMatrix adjacency(final GraphReadMethods graph, final boolean weighted) {
         final int vertexCount = graph.getVertexCount();
+        if (vertexCount == 0) {
+            return new SimpleMatrix(0, 0);
+        }
         final double[][] data = new double[vertexCount][vertexCount];
         for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
             final int vertexId = graph.getVertex(vertexPosition);
@@ -84,6 +90,9 @@ public class MatrixUtilities {
     }
 
     public static SimpleMatrix inverseLaplacian(final GraphReadMethods graph) {
+        if (graph.getVertexCount() == 0) {
+            return new SimpleMatrix(0, 0);
+        }
         final SimpleMatrix laplacian = laplacian(graph);
         return laplacian.pseudoInverse();
     }

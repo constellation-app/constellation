@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.TreeSet;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 
@@ -66,11 +69,14 @@ public final class VisualManager {
     private final VisualAccess access;
     private final VisualProcessor processor;
     private final PriorityBlockingQueue<VisualOperation> operationQueue = new PriorityBlockingQueue<>();
-    private Thread processingThread;
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private CompletableFuture<Void> processingFuture;
     private boolean isProcessing = false;
     private boolean rendererIdle = true;
     private boolean indigenousChanges = false;
     private boolean refreshProcessor = false;
+
+    protected final Runnable processTask = () -> process();
 
     /**
      * Construct a VisualManager to delegate between the supplied
@@ -108,7 +114,7 @@ public final class VisualManager {
     }
 
     @Override
-    public void finalize() throws Throwable {
+    protected void finalize() throws Throwable {
         try {
             MemoryManager.finalizeObject(VisualManager.class);
         } finally {
@@ -122,47 +128,50 @@ public final class VisualManager {
      * {@link VisualProcessor}.
      */
     public final void startProcessing() {
-        if (!isProcessing) {
-            processingThread = new Thread(() -> {
-                while (isProcessing) {
-                    final NavigableSet<VisualChange> changes = new TreeSet<>();
-                    while (true) {
-                        try {
-                            final VisualOperation operation = operationQueue.take();
-                            if (operation == SIGNIFY_PROCESSOR_IDLE_OPERATION) {
-                                rendererIdle = true;
-                            } else if (operation == INDIGENOUS_CHANGES_UPDATE_OPERATION) {
-                                indigenousChanges = true;
-                            } else if (operation == REFRESH_PROCESSOR_OPERATION) {
-                                refreshProcessor = true;
-                            } else {
-                                operation.apply();
-                            }
-                            changes.addAll(operation.getVisualChanges());
-                            if (rendererIdle && !changes.isEmpty()) {
-                                rendererIdle = false;
-                                break;
-                            }
-                        } catch (InterruptedException ex) {
-                            Thread.currentThread().interrupt();
-                            if (!isProcessing) {
-                                break;
-                            }
-                        }
-                    }
-                    if (isProcessing) {
-                        // this call blocks until the updating is done
-                        processor.update(changes, access, indigenousChanges, refreshProcessor);
-                        indigenousChanges = false;
-                        refreshProcessor = false;
-                        changes.clear();
-                    }
-                }
-            });
+        if (!isProcessing()) {
+            processingFuture = CompletableFuture.runAsync(processTask, executorService);
             isProcessing = true;
             rendererIdle = true;
-            processingThread.setName("Visual Manager");
-            processingThread.start();
+        }
+    }
+
+    public final void process() {
+        while (isProcessing()) {
+            final NavigableSet<VisualChange> changes = new TreeSet<>();
+            // Loops after each operation is available, and waits on .take()
+            // Depending on the operation, will perform a different type of update.
+            // Breaks the while loop to notify the processor to update.
+            while (true) {
+                try {
+                    final VisualOperation operation = getOperations().take();
+                    if (operation == signifyProcessorIdleOperation) {
+                        rendererIdle = true;
+                    } else if (operation == indigenousChangesUpdateOperation) {
+                        indigenousChanges = true;
+                    } else if (operation == refreshProcessorOperation) {
+                        refreshProcessor = true;
+                    } else {
+                        operation.apply();
+                    }
+                    changes.addAll(operation.getVisualChanges());
+                    if (isRendererIdle() && !changes.isEmpty()) {
+                        rendererIdle = false;
+                        break;
+                    }
+                } catch (final InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                    if (!isProcessing()) {
+                        break;
+                    }
+                }
+            }
+            if (isProcessing()) {
+                // this call blocks until the updating is done
+                getProcessor().update(changes, getAccess(), isIndigenousChanges(), isRefreshProcessor());
+                indigenousChanges = false;
+                refreshProcessor = false;
+                changes.clear();
+            }
         }
     }
 
@@ -172,7 +181,45 @@ public final class VisualManager {
      */
     public final void stopProcessing() {
         isProcessing = false;
-        processingThread.interrupt();
+        cancelProcessing(true);
+    }
+
+    protected final void cancelProcessing(final boolean cancel) {
+        if (processingFuture != null) {
+            processingFuture.cancel(cancel);
+        }
+    }
+
+    protected final boolean isProcessing() {
+        return isProcessing;
+    }
+
+    protected final boolean isRefreshProcessor() {
+        return refreshProcessor;
+    }
+
+    protected final boolean isIndigenousChanges() {
+        return indigenousChanges;
+    }
+
+    protected final boolean isRendererIdle() {
+        return rendererIdle;
+    }
+
+    protected PriorityBlockingQueue<VisualOperation> getOperations() {
+        return operationQueue;
+    }
+
+    protected VisualProcessor getProcessor() {
+        return processor;
+    }
+
+    protected CompletableFuture<Void> getProcessingFuture() {
+        return processingFuture;
+    }
+
+    protected VisualAccess getAccess() {
+        return access;
     }
 
     /**
@@ -204,7 +251,7 @@ public final class VisualManager {
      * @param imageFile The image file to export to.
      */
     public void exportToImage(final File imageFile) {
-        operationQueue.add(processor.exportToImage(imageFile));
+        addOperation(processor.exportToImage(imageFile));
     }
 
     /**
@@ -224,7 +271,7 @@ public final class VisualManager {
      * when the BufferedImage has been assigned.
      */
     public void exportToBufferedImage(final BufferedImage[] img1, final Semaphore waiter) {
-        operationQueue.add(processor.exportToBufferedImage(img1, waiter));
+        addOperation(processor.exportToBufferedImage(img1, waiter));
     }
 
     /**
@@ -237,7 +284,7 @@ public final class VisualManager {
      * implementation specific.
      */
     public void refreshVisualProcessor() {
-        addOperation(REFRESH_PROCESSOR_OPERATION);
+        addOperation(refreshProcessorOperation);
     }
 
     /**
@@ -250,7 +297,11 @@ public final class VisualManager {
      * the data underlying the {@link VisualAccess}.
      */
     public void updateFromIndigenousChanges() {
-        addOperation(INDIGENOUS_CHANGES_UPDATE_OPERATION);
+        addOperation(indigenousChangesUpdateOperation);
+    }
+
+    protected void signifyProcessorIdle() {
+        addOperation(signifyProcessorIdleOperation);
     }
 
     /**
@@ -297,11 +348,7 @@ public final class VisualManager {
         addOperation(constructMultiChangeOperation(changes));
     }
 
-    void signifyProcessorIdle() {
-        addOperation(SIGNIFY_PROCESSOR_IDLE_OPERATION);
-    }
-
-    private final VisualOperation SIGNIFY_PROCESSOR_IDLE_OPERATION = new VisualOperation() {
+    protected final VisualOperation signifyProcessorIdleOperation = new VisualOperation() {
 
         @Override
         public int getPriority() {
@@ -314,7 +361,7 @@ public final class VisualManager {
         }
     };
 
-    private final VisualOperation REFRESH_PROCESSOR_OPERATION = new VisualOperation() {
+    protected final VisualOperation refreshProcessorOperation = new VisualOperation() {
 
         @Override
         public int getPriority() {
@@ -327,6 +374,6 @@ public final class VisualManager {
         }
     };
 
-    private final VisualOperation INDIGENOUS_CHANGES_UPDATE_OPERATION
+    protected final VisualOperation indigenousChangesUpdateOperation
             = () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE).build());
 }

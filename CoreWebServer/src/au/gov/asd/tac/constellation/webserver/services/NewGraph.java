@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ public class NewGraph extends RestService {
         schema.newGraph(sg);
         final Graph dualGraph = new DualGraph(sg, false);
 
-        final String graphName = SchemaFactoryUtilities.getSchemaFactory(schemaName).getLabel().replace(" ", "").toLowerCase();
+        final String graphName = SchemaFactoryUtilities.getSchemaFactory(schemaName).getLabel().trim().toLowerCase();
         GraphOpener.getDefault().openGraph(dualGraph, graphName);
 
         final String newId = RestServiceUtilities.waitForGraphChange(existingId);

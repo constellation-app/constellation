@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.attribute.AbstractObjectAttributeDescr
 import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.ObjectReadable;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -67,5 +69,11 @@ public class VertexTypeAttributeDescription extends AbstractObjectAttributeDescr
         if (defaultValue instanceof SchemaVertexType && defaultValue.isIncomplete()) {
             defaultValue = DEFAULT_VALUE;
         }
+    }
+
+    @Override
+    public Object createReadObject(final IntReadable indexReadable) {
+        return (ObjectReadable) () -> data[indexReadable.readInt()] != null
+                ? ((SchemaVertexType) data[indexReadable.readInt()]).getName() : data[indexReadable.readInt()];
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,10 @@ public class DrawFlagsModeAttributeInteraction extends AbstractAttributeInteract
     }
 
     @Override
-    public String getDisplayText(Object value) {
+    public String getDisplayText(final Object value) {
+        if (value == null) {
+            return null;
+        }
         final DrawFlags drawFlags = (DrawFlags) value;
         return String.format("nodes: %s; connections: %s; node_labels: %s; connection_labels: %s; blazes: %s",
                 drawFlags.drawNodes(), drawFlags.drawConnections(), drawFlags.drawNodeLabels(), drawFlags.drawConnectionLabels(), drawFlags.drawBlazes());

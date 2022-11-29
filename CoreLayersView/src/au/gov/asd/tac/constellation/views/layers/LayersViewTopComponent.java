@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.views.layers.components.LayersViewPane;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Views", position = 600),
+    @ActionReference(path = "Menu/Views", position = 600),
     @ActionReference(path = "Shortcuts", name = "CS-L")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_LayersViewAction",
@@ -80,27 +81,16 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         });
     }
 
-    public void update() {
-        layersViewController.readState();
-        layersViewController.updateQueries(GraphManager.getDefault().getActiveGraph());
-    }
-
     public void removeValueHandlers(final List<AttributeValueMonitor> valueMonitors) {
         // remove all monitors before re-adding updated ones
-        valueMonitors.forEach(monitor -> {
-            removeAttributeValueChangeHandler(monitor);
-        });
+        valueMonitors.forEach(monitor -> removeAttributeValueChangeHandler(monitor));
     }
 
     public synchronized List<AttributeValueMonitor> setChangeListeners(final List<SchemaAttribute> changeListeners) {
         final List<AttributeValueMonitor> valueMonitors = new ArrayList<>();
-        changeListeners.forEach(attribute -> {
-            valueMonitors.add(
-                    addAttributeValueChangeHandler(attribute, changedGraph -> {
-                        layersViewController.updateQueries(changedGraph);
-                    })
-            );
-        });
+        changeListeners.forEach(attribute -> valueMonitors.add(
+                addAttributeValueChangeHandler(attribute, changedGraph -> layersViewController.updateQueries(changedGraph))
+        ));
         return List.copyOf(valueMonitors);
     }
 
@@ -119,6 +109,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         if (needsUpdate() && graph != null) {
             preparePane();
         }
+        setPaneStatus();
     }
 
     @Override
@@ -126,6 +117,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         if (needsUpdate() && graph != null) {
             preparePane();
         }
+        setPaneStatus();
     }
 
     @Override
@@ -133,23 +125,38 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
         if (needsUpdate() && graph != null) {
             preparePane();
         }
+        setPaneStatus();
     }
 
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         preparePane();
+        setPaneStatus();
     }
 
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        preparePane();
-    }
-
-    private void preparePane() {
-        layersViewPane.setDefaultLayers();
+        createContent().setEnabled(true);
         layersViewController.readState();
         layersViewController.addAttributes();
+        setPaneStatus();
+    }
+
+    protected void preparePane() {
+        createContent().setEnabled(true);
+        createContent().setDefaultLayers();
+        layersViewController.readState();
+        layersViewController.addAttributes();
+    }
+    
+    /**
+     * Sets the status of the pane dependent on if a graph is currently active.
+     * The status is used to enable or disable the view when a graph exists.
+     */
+    protected void setPaneStatus(){
+        createContent().setEnabled(GraphManager.getDefault().getActiveGraph() != null);
     }
 
     /**

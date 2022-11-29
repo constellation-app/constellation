@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public abstract class MenuBaseAction extends AbstractAction implements Presenter
      * constructor This method must be called by each child class to ensure that
      * the lookups are properly initialised
      */
-    public MenuBaseAction() {
+    protected MenuBaseAction() {
         lookup = Utilities.actionsGlobalContext();
         graphNodeSet = Utilities.actionsGlobalContext().lookupResult(GraphNode.class);
         graphNodeSet.addLookupListener(

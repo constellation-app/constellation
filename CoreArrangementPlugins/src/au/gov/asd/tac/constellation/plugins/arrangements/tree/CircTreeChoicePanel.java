@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class CircTreeChoicePanel extends JPanel {
     }
 
     public void setGraph(final Graph graph) {
-        Collection<GraphElementType> elementTypes = Collections.singleton(GraphElementType.VERTEX);
+        final Collection<GraphElementType> elementTypes = Collections.singleton(GraphElementType.VERTEX);
         attributeSelectionPanel.setGraph(graph, elementTypes, null, null);
     }
 

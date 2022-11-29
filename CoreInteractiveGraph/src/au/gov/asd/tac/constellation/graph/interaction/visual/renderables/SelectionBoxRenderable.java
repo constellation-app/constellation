@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.Point;
@@ -41,10 +42,12 @@ import org.apache.commons.collections4.CollectionUtils;
  * @author algol
  */
 public class SelectionBoxRenderable implements GLRenderable {
+    
+    private static final Logger LOGGER = Logger.getLogger(SelectionBoxRenderable.class.getName());
 
     // How many vertices do we need to draw a rectangle?
     // What color is the selection rectangle?
-    private static final Vector4f SELECTION_COLOR = new Vector4f(0, 0.5f, 1, 0.375f);
+    private static final Vector4f SELECTION_COLOR = new Vector4f(0, 0.5F, 1, 0.375F);
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private int shader;
     private int shaderMvp;
@@ -60,7 +63,7 @@ public class SelectionBoxRenderable implements GLRenderable {
     private final int vertexTarget;
 
     public SelectionBoxRenderable() {
-        batch = new Batch(GL3.GL_TRIANGLE_FAN);
+        batch = new Batch(GL.GL_TRIANGLE_FAN);
         vertexTarget = batch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
     }
@@ -81,8 +84,8 @@ public class SelectionBoxRenderable implements GLRenderable {
             vs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
             gs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruTriangle.gs");
             fs = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(SelectionBoxRenderable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru selection", vs, gs, fs,
@@ -132,33 +135,33 @@ public class SelectionBoxRenderable implements GLRenderable {
             final GL3 gl = drawable.getGL().getGL3();
 
             // Map the vertex buffer.
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, batch.getBufferName(vertexTarget));
-            final ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_WRITE_ONLY);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, batch.getBufferName(vertexTarget));
+            final ByteBuffer bbuf = gl.glMapBuffer(GL.GL_ARRAY_BUFFER, GL.GL_WRITE_ONLY);
             final FloatBuffer fbuf = bbuf.asFloatBuffer();
 
             // We should have the same buffer size we started with.
             assert fbuf.limit() == NUMBER_OF_VERTICES * 3;
 
             // Find the location of the box in projected coordinates
-            float left = ((float) begin.x / width) * 2 - 1f;
-            float right = ((float) end.x / width) * 2 - 1f;
-            float top = ((float) (height - begin.y) / height) * 2 - 1f;
-            float bottom = ((float) (height - end.y) / height) * 2 - 1f;
+            float left = ((float) begin.x / width) * 2 - 1F;
+            float right = ((float) end.x / width) * 2 - 1F;
+            float top = ((float) (height - begin.y) / height) * 2 - 1F;
+            float bottom = ((float) (height - end.y) / height) * 2 - 1F;
 
             // Update the four TRIANGLE_FAN coordinates in the vertex buffer.
             float[] v = new float[]{
-                right, bottom, 0f,
-                left, bottom, 0f,
-                left, top, 0f,
-                right, top, 0f
+                right, bottom, 0F,
+                left, bottom, 0F,
+                left, top, 0F,
+                right, top, 0F
             };
 
             fbuf.put(v);
 
-            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
+            gl.glUnmapBuffer(GL.GL_ARRAY_BUFFER);
 
             // Disable depth so the rectangle is drawn over everything else.
-            gl.glDisable(GL3.GL_DEPTH_TEST);
+            gl.glDisable(GL.GL_DEPTH_TEST);
             gl.glDepthMask(false);
 
             Matrix44f mvpMatrix = new Matrix44f();
@@ -170,7 +173,7 @@ public class SelectionBoxRenderable implements GLRenderable {
             batch.draw(gl);
 
             // Reenable depth.
-            gl.glEnable(GL3.GL_DEPTH_TEST);
+            gl.glEnable(GL.GL_DEPTH_TEST);
             gl.glDepthMask(true);
         }
     }

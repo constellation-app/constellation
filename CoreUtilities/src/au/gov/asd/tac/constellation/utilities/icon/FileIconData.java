@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class FileIconData extends IconData {
     private final File file;
 
     public FileIconData(final String relativePath, final String codeNameBase) {
-        final File locatedFile = ConstellationInstalledFileLocator.locate(relativePath, codeNameBase, false, FileIconData.class.getProtectionDomain());
+        final File locatedFile = ConstellationInstalledFileLocator.locate(relativePath, codeNameBase, FileIconData.class.getProtectionDomain());
         this.file = locatedFile;
     }
 
@@ -42,5 +42,9 @@ public class FileIconData extends IconData {
     @Override
     protected InputStream createInputStream() throws IOException {
         return new FileInputStream(file);
+    }
+
+    public String getFilePath() {
+        return file.getAbsolutePath();
     }
 }

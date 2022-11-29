@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import java.util.Set;
  */
 public final class InducedSubgraph extends ComponentSubgraph {
 
-    public InducedSubgraph(final GraphWriteMethods proxy, Set<Integer> includedVertexIDs) {
+    public InducedSubgraph(final GraphWriteMethods proxy, final Set<Integer> includedVertexIDs) {
         super(proxy, includedVertexIDs);
 
         final int vertexCapacity = getVertexCapacity();
@@ -41,11 +41,11 @@ public final class InducedSubgraph extends ComponentSubgraph {
     private final int[][] vertexTransactions;
 
     public static SubgraphFactory getSubgraphFactory() {
-        return (GraphWriteMethods wg, Set<Integer> vertexIDs) -> new InducedSubgraph(wg, vertexIDs);
+        return (final GraphWriteMethods wg, final Set<Integer> vertexIDs) -> new InducedSubgraph(wg, vertexIDs);
     }
 
     private void calculateNeighbours(final int vertex) {
-        int[] neighbours = new int[proxy.getVertexNeighbourCount(vertex)];
+        final int[] neighbours = new int[proxy.getVertexNeighbourCount(vertex)];
         int pos = 0;
         for (int i = 0; i < proxy.getVertexNeighbourCount(vertex); i++) {
             final int neighbourID = proxy.getVertexNeighbour(vertex, i);
@@ -57,7 +57,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
     }
 
     private void calculateLinks(final int vertex) {
-        int[] links = new int[proxy.getVertexLinkCount(vertex)];
+        final int[] links = new int[proxy.getVertexLinkCount(vertex)];
         int pos = 0;
         for (int i = 0; i < proxy.getVertexLinkCount(vertex); i++) {
             final int lxID = proxy.getVertexLink(vertex, i);
@@ -70,7 +70,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
     }
 
     private void calculateEdges(final int vertex) {
-        int[] edges = new int[proxy.getVertexEdgeCount(vertex)];
+        final int[] edges = new int[proxy.getVertexEdgeCount(vertex)];
         int pos = 0;
         for (int i = 0; i < proxy.getVertexEdgeCount(vertex); i++) {
             final int exID = proxy.getVertexEdge(vertex, i);
@@ -83,7 +83,7 @@ public final class InducedSubgraph extends ComponentSubgraph {
     }
 
     private void calculateTransactions(final int vertex) {
-        int[] transactions = new int[proxy.getVertexTransactionCount(vertex)];
+        final int[] transactions = new int[proxy.getVertexTransactionCount(vertex)];
         int pos = 0;
         for (int i = 0; i < proxy.getVertexTransactionCount(vertex); i++) {
             final int txID = proxy.getVertexTransaction(vertex, i);
@@ -158,5 +158,4 @@ public final class InducedSubgraph extends ComponentSubgraph {
         }
         return vertexTransactions[vertex][position];
     }
-
 }

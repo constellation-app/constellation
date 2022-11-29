@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,9 +29,10 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.layout.Pane;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -256,9 +257,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
         }
 
         public Pane append(final PluginParameters newParams) {
-            newParams.getParameters().values().forEach((PluginParameter<?> param) -> {
-                linkToEnclosing(param);
-            });
+            newParams.getParameters().values().forEach((PluginParameter<?> param) -> linkToEnclosing(param));
             parametersList.add(newParams);
             final Pane newPane = paneFactory.getNewPane(newParams);
             parameterPanes.add(newPane);
@@ -269,9 +268,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
         public Pane remove(final Pane parameterPane) {
             final int index = parameterPanes.indexOf(parameterPane);
             PluginParameters oldParams = parametersList.get(index);
-            oldParams.getParameters().values().forEach((PluginParameter<?> param) -> {
-                unlinkFromEnclosing(param);
-            });
+            oldParams.getParameters().values().forEach((PluginParameter<?> param) -> unlinkFromEnclosing(param));
             parametersList.remove(index);
             enclosingParameter.fireChangeEvent(ParameterChange.VALUE);
             return parameterPanes.remove(index);
@@ -298,6 +295,8 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
     }
 
     public static class ParameterListParameterValue extends ParameterValue {
+        
+        private static final Logger LOGGER = Logger.getLogger(ParameterListParameterValue.class.getName());
 
         private ParameterList value;
         private boolean locked = false;
@@ -407,11 +406,11 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
             for (PluginParameters pps : value.parametersList) {
                 strValBuilder.append("::");
                 for (Entry<String, PluginParameter<?>> pp : pps.getParameters().entrySet()) {
-                    strValBuilder.append(pp.getKey().replaceAll(SeparatorConstants.SEMICOLON, "\\;").replaceAll(SeparatorConstants.COLON, "\\:"));
+                    strValBuilder.append(pp.getKey().replace(SeparatorConstants.SEMICOLON, "\\;").replaceAll(SeparatorConstants.COLON, "\\:"));
                     strValBuilder.append(";;");
                     final String val = pp.getValue().getStringValue();
                     if (val != null) {
-                        strValBuilder.append(val.replaceAll(SeparatorConstants.SEMICOLON, "\\;").replaceAll(SeparatorConstants.COLON, "\\:"));
+                        strValBuilder.append(val.replace(SeparatorConstants.SEMICOLON, "\\;").replaceAll(SeparatorConstants.COLON, "\\:"));
                     }
                     strValBuilder.append(";;");
                 }
@@ -447,8 +446,8 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
                 PluginParameters newParams = value.getNewItem();
                 String[] keyVals = args[i].split(";;");
                 for (int j = 0; j < keyVals.length; j += 2) {
-                    final String key = keyVals[j].replaceAll("\\;", SeparatorConstants.SEMICOLON).replaceAll("\\:", SeparatorConstants.COLON);
-                    final String val = keyVals[j + 1].replaceAll("\\;", SeparatorConstants.SEMICOLON).replaceAll("\\:", SeparatorConstants.COLON);
+                    final String key = keyVals[j].replace("\\;", SeparatorConstants.SEMICOLON).replace("\\:", SeparatorConstants.COLON);
+                    final String val = keyVals[j + 1].replace("\\;", SeparatorConstants.SEMICOLON).replace("\\:", SeparatorConstants.COLON);
                     newParams.getParameters().get(key).setStringValue(val);
                 }
                 final CountDownLatch panelCreated = new CountDownLatch(1);
@@ -463,8 +462,8 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
                 }
                 try {
                     panelCreated.await();
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     Thread.currentThread().interrupt();
                 }
             }

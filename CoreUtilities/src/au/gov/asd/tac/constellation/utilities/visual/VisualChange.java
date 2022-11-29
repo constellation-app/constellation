@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package au.gov.asd.tac.constellation.utilities.visual;
+
+import java.util.Arrays;
 
 /**
  * Visual Change objects describe the change in a single visual property across
@@ -73,7 +75,7 @@ public final class VisualChange implements Comparable<VisualChange> {
      * changeList is non-null this argument is ignored.
      * @param id An ID relating this change to the process that generated it.
      */
-    VisualChange(final VisualProperty property, final int[] changeList, final int numChangedItems, final long id) {
+    protected VisualChange(final VisualProperty property, final int[] changeList, final int numChangedItems, final long id) {
         this.property = property;
         this.changeList = changeList;
         this.changeListSize = changeList == null ? numChangedItems : changeList.length;
@@ -90,35 +92,56 @@ public final class VisualChange implements Comparable<VisualChange> {
         return changeListSize;
     }
     
+    protected int getOrder() {
+        return order;
+    }
+    
+    /**
+     * Get the change list
+     * 
+     * @return The list of changes
+     */
+    protected int[] getChangeList() {
+        return changeList != null ? changeList.clone() : null;
+    }
+
     /**
      * Compares the changeList of two VisualChanges to see if they are the same.
-     * If both changeLists are null then returns true.
-     * Otherwise both changeLists must have the same elements in the same order to be considered equal.
-     * 
+     * If both changeLists are null then returns true. Otherwise both
+     * changeLists must have the same elements in the same order to be
+     * considered equal.
+     *
      * @param other
-     * @return boolean indicating whether changeLists of VisualChanges are equal.
+     * @return boolean indicating whether changeLists of VisualChanges are
+     * equal.
      */
     public boolean hasSameChangeList(final VisualChange other) {
+        if(other == null){
+            return false;
+        }
         if (changeList == null) {
             return other.changeList == null;
         }
-        return changeList.equals(other.changeList);
+        return Arrays.equals(changeList, other.changeList);
     }
 
     /**
      * Get the index of the element that has been changed at the specified
-     * position in this change list
+     * position in this change list.
+     * 
+     * Position will be returned as default when the position does not fall within
+     * the array bounds. 
      *
      * @param position A position in this change list between <code>0</code> and
      * <code>getSize()-1</code>
      * @return The index of the changed element.
      */
     public int getElement(final int position) {
-        return changeList == null ? position : changeList[position];
+        return changeList == null || position < 0 || position > changeListSize -1 ? position : changeList[position];
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof VisualChange) {
             return id == ((VisualChange) obj).id;
         }
@@ -131,7 +154,10 @@ public final class VisualChange implements Comparable<VisualChange> {
     }
 
     @Override
-    public int compareTo(VisualChange o) {
-        return o == null ? -1 : id == o.id ? 0 : Integer.compare(order, o.order);
+    public int compareTo(final VisualChange o) {
+        if (o == null) {
+            return -1;
+        }
+        return id == o.id ? 0 : Integer.compare(order, o.order);
     }
 }

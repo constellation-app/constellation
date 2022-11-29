@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,11 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util;
 
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeFactoryBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.traits.FlowBase;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  *
@@ -27,47 +27,16 @@ import java.util.Arrays;
  */
 public class Resizer {
 
-    public static void resizeDouble(final ArrayList<Double> al, final int size, final double value) {
-        while (al.size() > size) {
-            al.remove(size);
-        }
+    public static <T> void resize(final List<T> al, final int size, final T value) {
+        if (al instanceof ArrayList) {
+            while (al.size() > size) {
+                al.remove(size);
+            }
 
-        al.ensureCapacity(size);
-        while (al.size() < size) {
-            al.add(value);
-        }
-    }
-
-    public static void resizeInteger(final ArrayList<Integer> al, final int size, final int value) {
-        while (al.size() > size) {
-            al.remove(size);
-        }
-
-        al.ensureCapacity(size);
-        while (al.size() < size) {
-            al.add(value);
-        }
-    }
-
-    public static void resizeNodeBase(final ArrayList<NodeBase> al, final int size) {
-        while (al.size() > size) {
-            al.remove(size);
-        }
-
-        al.ensureCapacity(size);
-        while (al.size() < size) {
-            al.add(null);
-        }
-    }
-
-    public static void resizeFlowBase(final ArrayList<FlowBase> al, final int size) {
-        while (al.size() > size) {
-            al.remove(size);
-        }
-
-        al.ensureCapacity(size);
-        while (al.size() < size) {
-            al.add(null);
+            ((ArrayList)al).ensureCapacity(size);
+            while (al.size() < size) {
+                al.add(value);
+            }
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,120 +15,66 @@
  */
 package au.gov.asd.tac.constellation.graph.file.open;
 
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
-import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
-import org.openide.util.HelpCtx;
+import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.NbBundle.Messages;
-import org.openide.util.UserCancelException;
 import org.openide.util.lookup.ServiceProvider;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
- * Open a file
+ * Open a file.
  *
- * @author canis_majoris
+ * @author sol695510
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("OpenFilePlugin=Open File")
-public class OpenFilePlugin extends SimpleEditPlugin {
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.LOW_LEVEL})
+public class OpenFilePlugin extends SimpleReadPlugin {
 
-    private static boolean running;
-    private static File currentDirectory = null;
-    
+    private static final String TITLE = "Open";
+
     @Override
-    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        SwingUtilities.invokeLater(() -> {
-            if (running) {
-                return;
-            }
-            try {
-                running = true;
-                final JFileChooser chooser = prepareFileChooser();
-                final File[] files;
-                try {
-                    files = chooseFilesToOpen(chooser);
-                    currentDirectory = chooser.getCurrentDirectory();
-                } catch (final UserCancelException ex) {
-                    return;
-                }
-                for (int i = 0; i < files.length; i++) {
-                    OpenFile.openFile(files[i], -1);
-                }
-            } finally {
-                running = false;
-            }
-        });
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        FileChooser.openMultiDialog(getOpenFileChooser()).thenAccept(optionalFiles -> optionalFiles.ifPresent(files -> files.forEach(file -> OpenFile.openFile(file, -1))));
     }
 
     /**
-     * Creates and initializes a file chooser.
+     * Creates a new file chooser.
      *
-     * @return the initialized file chooser
+     * @return the created file chooser.
      */
-    protected JFileChooser prepareFileChooser() {
-        final JFileChooser chooser = new FileChooser();
-        chooser.setCurrentDirectory(getCurrentDirectory());
-        HelpCtx.setHelpIDString(chooser, getHelpCtx().getHelpID());
-
-        return chooser;
-    }
-    
-    @Override
-    public HelpCtx getHelpCtx() {
-        return new HelpCtx(this.getClass().getName());
-    }
-
-    /**
-     * Displays the specified file chooser and returns a list of selected files.
-     *
-     * @param chooser file chooser to display
-     * @return array of selected files,
-     * @exception org.openide.util.UserCancelException if the user cancelled the
-     * operation
-     */
-    public static File[] chooseFilesToOpen(final JFileChooser chooser)
-            throws UserCancelException {
-        File[] files;
-        do {
-            final int selectedOption = chooser.showOpenDialog(
-                    WindowManager.getDefault().getMainWindow());
-
-            if (selectedOption != JFileChooser.APPROVE_OPTION) {
-                throw new UserCancelException();
-            }
-            files = chooser.getSelectedFiles();
-        } while (files.length == 0);
-        return files;
-    }
-    
-    private static File getCurrentDirectory() {
-        if (Boolean.getBoolean("netbeans.openfile.197063")) {
-            // Prefer to open from parent of active editor, if any.
-            final TopComponent activated = TopComponent.getRegistry().getActivated();
-            if (activated != null && WindowManager.getDefault().isOpenedEditorTopComponent(activated)) {
-                final DataObject d = activated.getLookup().lookup(DataObject.class);
-                if (d != null) {
-                    final File f = FileUtil.toFile(d.getPrimaryFile());
-                    if (f != null) {
-                        return f.getParentFile();
+    public FileChooserBuilder getOpenFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && (StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.STAR)
+                                || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.NEBULA)))
+                                || file.isDirectory();
                     }
-                }
-            }
-        }
-        // Fall back to default location ($HOME or similar).
-        if (currentDirectory == null || !currentDirectory.exists()) {
-            currentDirectory = new File(System.getProperty("user.home"));
-        }
-        return currentDirectory;
+
+                    @Override
+                    public String getDescription() {
+                        return "Constellation Files ("
+                                + FileExtensionConstants.STAR + ", "
+                                + FileExtensionConstants.NEBULA + ")";
+                    }
+                });
     }
 }

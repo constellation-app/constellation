@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,12 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionP
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
@@ -154,6 +157,8 @@ public class ScatterChartPane extends BorderPane {
                     // Update variables based on current mouse pointer position
                     selectionXOrigin = mouseX;
                     selectionYOrigin = mouseY;
+                } else {
+                    // Do nothing
                 }
 
                 // Selection was made
@@ -184,6 +189,8 @@ public class ScatterChartPane extends BorderPane {
                         } // double click clear selection
                         else if (me.getClickCount() == 2) {
                             selectedData = null;
+                        } else {
+                            // Do nothing
                         }
                     }
 
@@ -224,7 +231,7 @@ public class ScatterChartPane extends BorderPane {
         selection.setOpacity(0.4);
         selection.setMouseTransparent(true);
         selection.setStroke(Color.SILVER);
-        selection.setStrokeWidth(2d);
+        selection.setStrokeWidth(2D);
         selection.setFill(gradient);
         selection.setSmooth(true);
         selection.setArcWidth(5.0);
@@ -443,6 +450,7 @@ public class ScatterChartPane extends BorderPane {
      * Refresh the state of the ScatterChartPane based on the given
      * ScatterPlotState.
      */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL})
     private class ScatterPlotRefresher extends SimpleReadPlugin {
 
         private final ScatterPlotState scatterPlotState;

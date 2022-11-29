@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
@@ -23,12 +24,13 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.AfterClass;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -45,17 +47,6 @@ public class SplitNodesPluginNGTest {
     private int vxId1, vxId2, vxId3, vxId4, txId1, txId2, txId3;
     private int transactionTypeAttributeId;
     private StoreGraph graph;
-
-    public SplitNodesPluginNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
@@ -137,18 +128,44 @@ public class SplitNodesPluginNGTest {
         graph = null;
     }
 
+    /**
+     * Test of createParameters method, of class SplitNodesPlugin.
+     */
     @Test
-    public void testGetType() {
-        MergeNodesPlugin instance = new MergeNodesPlugin();
-        String expResult = DataAccessPluginCoreType.CLEAN;
-        String result = instance.getType();
-        assertEquals(result, expResult);
+    public void testCreateParameters() {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters params = instance.createParameters();
+
+        assertEquals(params.getParameters().size(), 5);
+        assertTrue(params.getParameters().containsKey(SplitNodesPlugin.SPLIT_PARAMETER_ID));
+        assertTrue(params.getParameters().containsKey(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID));
+        assertTrue(params.getParameters().containsKey(SplitNodesPlugin.TRANSACTION_TYPE_PARAMETER_ID));
+        assertTrue(params.getParameters().containsKey(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID));
+        assertTrue(params.getParameters().containsKey(SplitNodesPlugin.COMPLETE_WITH_SCHEMA_OPTION_ID));
+    }
+
+    /**
+     * Test of createParameters method, of class SplitNodesPlugin.
+     */
+    @Test
+    public void testUpdateParameters() {
+        final SplitNodesPlugin instance = new SplitNodesPlugin();
+        final PluginParameters params = instance.createParameters();
+
+        final PluginParameter<SingleChoiceParameterValue> transactionTypeParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(SplitNodesPlugin.TRANSACTION_TYPE_PARAMETER_ID);
+        assertTrue(SingleChoiceParameterType.getOptions(transactionTypeParam).isEmpty());
+
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        instance.updateParameters(new DualGraph(schema, graph), params);
+
+        // 9 is the number of transaction types in the analytic schema
+        assertEquals(SingleChoiceParameterType.getOptions(transactionTypeParam).size(), 9);
     }
 
     /**
      * Test of query method, of class SplitNodesPlugin.
      *
-     * @throws java.lang.Exception
+     * @throws Exception
      */
     @Test
     public void testQueryWithNoTypes_WithoutDuplicateTransactions() throws Exception {
@@ -156,7 +173,6 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         assertEquals(graph.getVertexCount(), 5);
@@ -174,8 +190,7 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
-        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
+        parameters.setBooleanValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         assertEquals(graph.getVertexCount(), 5);
@@ -194,7 +209,6 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
         parameters.setStringValue(SplitNodesPlugin.TRANSACTION_TYPE_PARAMETER_ID, "Similarity");
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
@@ -214,8 +228,7 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
-        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
+        parameters.setBooleanValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, true);
         parameters.setStringValue(SplitNodesPlugin.TRANSACTION_TYPE_PARAMETER_ID, "Similarity");
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
@@ -235,7 +248,7 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         assertEquals(graph.getVertexCount(), 6);
@@ -255,8 +268,8 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "@");
-        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, true);
+        parameters.setBooleanValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         assertEquals(graph.getVertexCount(), 6);
@@ -278,7 +291,7 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         assertEquals(graph.getVertexCount(), 6);
@@ -299,8 +312,8 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, ",");
-        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, true);
+        parameters.setBooleanValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         assertEquals(graph.getVertexCount(), 6);
@@ -322,7 +335,6 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         // Assert the node is renamed to "YY"
@@ -337,7 +349,7 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         // Assert no new nodes are created
@@ -352,8 +364,7 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "false");
-        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         // Assert the node is renamed to "YY"
@@ -368,8 +379,8 @@ public class SplitNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
 
         parameters.setStringValue(SplitNodesPlugin.SPLIT_PARAMETER_ID, "Y");
-        parameters.setStringValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, "true");
-        parameters.setStringValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, "true");
+        parameters.setBooleanValue(SplitNodesPlugin.ALL_OCCURRENCES_PARAMETER_ID, true);
+        parameters.setBooleanValue(SplitNodesPlugin.DUPLICATE_TRANSACTIONS_PARAMETER_ID, true);
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         // Assert no new nodes are created

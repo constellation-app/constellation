@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,11 +18,14 @@ package au.gov.asd.tac.constellation.functionality.email;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.awt.Desktop;
@@ -32,6 +35,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -42,8 +47,11 @@ import org.openide.util.lookup.ServiceProvider;
  * @author arcturus
  */
 @ServiceProvider(service = Plugin.class)
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.UTILITY})
 @NbBundle.Messages("SendToEmailClientPlugin=Send To Email Client")
 public class SendToEmailClientPlugin extends SimplePlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(SendToEmailClientPlugin.class.getName());
 
     public static final String TO_EMAIL_PARAMETER_ID = PluginParameter.buildId(SendToEmailClientPlugin.class, "to_email");
     public static final String CC_EMAIL_PARAMETER_ID = PluginParameter.buildId(SendToEmailClientPlugin.class, "cc_email");
@@ -78,7 +86,7 @@ public class SendToEmailClientPlugin extends SimplePlugin {
     }
 
     @Override
-    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final String toEmail = parameters.getStringValue(TO_EMAIL_PARAMETER_ID);
         final String ccEmail = parameters.getStringValue(CC_EMAIL_PARAMETER_ID);
         final String subject = parameters.getStringValue(SUBJECT_PARAMETER_ID);
@@ -86,14 +94,19 @@ public class SendToEmailClientPlugin extends SimplePlugin {
 
         try {
             final StringBuilder sb = new StringBuilder();
-            sb.append("mailto:").append(toEmail)
-                    .append("?subject=").append(encodeString(subject))
-                    .append("&cc=").append(encodeString(ccEmail))
-                    .append("&body=").append(encodeString(body));
+            sb.append("mailto:")
+                .append(toEmail)
+                .append("?subject=")
+                .append(encodeString(subject))
+                .append("&cc=")
+                .append(encodeString(ccEmail))
+                .append("&body=")
+                .append(encodeString(body));
 
             final URI uri = new URI(sb.toString());
             Desktop.getDesktop().mail(uri);
-        } catch (IOException | URISyntaxException ex) {
+        } catch (final IOException | URISyntaxException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             NotifyDisplayer.display("Could not send email\n" + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
         }
     }

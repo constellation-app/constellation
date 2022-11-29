@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.BitSet;
 import org.openide.util.NbBundle;
@@ -44,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("AdamicAdarIndexPlugin=Adamic-Adar Index")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class AdamicAdarIndexPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute ADAMIC_ADAR_INDEX_ATTRIBUTE = SnaConcept.TransactionAttribute.ADAMIC_ADAR_INDEX;
@@ -171,9 +172,9 @@ public class AdamicAdarIndexPlugin extends SimpleEditPlugin {
 
                     final int vertexOneId = graph.getVertex(vertexOnePosition);
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
-                    float sum = 0f;
+                    float sum = 0F;
                     for (int commonNeighbour = intersection.nextSetBit(0); commonNeighbour >= 0; commonNeighbour = intersection.nextSetBit(commonNeighbour + 1)) {
-                        sum += (1f / Math.log(graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour))));
+                        sum += (1F / Math.log(graph.getVertexNeighbourCount(graph.getVertex(commonNeighbour))));
                     }
 
                     SimilarityUtilities.addScoreToGraph(vertexOneId, vertexTwoId, sum);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -160,6 +160,8 @@ public class DateAxis extends Axis<Date> {
         } else if (list.size() > 1) {
             minDate = list.get(0);
             maxDate = list.get(list.size() - 1);
+        } else {
+            // Do nothing
         }
     }
 
@@ -341,9 +343,9 @@ public class DateAxis extends Axis<Date> {
         dateList.add(upperBound);
 
         List<Date> evenDateList = makeDatesEven(dateList, calendar);
-        // if there are at least three dates, check if the gap between the lower date and the second date 
+        // if there are at least three dates, check if the gap between the lower date and the second date
         // is at least half the gap of the second and third date, then repeat for the upper bound.
-        // if gaps between dates are to small, remove one of them (this can occur, e.g. if the lower bound is 25.12.2013 and years are shown; 
+        // if gaps between dates are to small, remove one of them (this can occur, e.g. if the lower bound is 25.12.2013 and years are shown,
         // then the next year shown would be 2014 (01.01.2014) which would be too narrow to 25.12.2013).
         if (evenDateList.size() > 2) {
 

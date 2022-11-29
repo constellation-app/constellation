@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ public final class ToggleGraphVisibilityAction extends AbstractAction implements
     public ToggleGraphVisibilityAction(final GraphNode context) {
         this.context = context;
 
-        final boolean visibleAboveThreshold = getCurrentVisibility(context.getGraph());
+        final boolean visibleAboveThreshold = isCurrentVisibility(context.getGraph());
         putValue(Action.SMALL_ICON, visibleAboveThreshold ? VISIBLE_ICON : HIDDEN_ICON);
         putValue(Action.SHORT_DESCRIPTION, NbBundle.getMessage(ToggleGraphVisibilityAction.class, "CTL_ToggleGraphVisibilityAction"));
         putValue(Action.SELECTED_KEY, true);
@@ -64,7 +64,7 @@ public final class ToggleGraphVisibilityAction extends AbstractAction implements
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        final boolean visibleAboveThreshold = getCurrentVisibility(context.getGraph());
+        final boolean visibleAboveThreshold = isCurrentVisibility(context.getGraph());
         PluginExecution.withPlugin(InteractiveGraphPluginRegistry.SET_VISIBLE_ABOVE_THRESHOLD)
                 .withParameter(SetVisibleAboveThresholdPlugin.FLAG_PARAMETER_ID, !visibleAboveThreshold)
                 .executeLater(this.context.getGraph());
@@ -75,7 +75,7 @@ public final class ToggleGraphVisibilityAction extends AbstractAction implements
         return new JToggleButton(this);
     }
 
-    private boolean getCurrentVisibility(final Graph graph) {
+    private boolean isCurrentVisibility(final Graph graph) {
         boolean visibleAboveThreshold = VisualGraphDefaults.DEFAULT_GRAPH_VISIBILITY;
         final ReadableGraph rg = graph.getReadableGraph();
         try {

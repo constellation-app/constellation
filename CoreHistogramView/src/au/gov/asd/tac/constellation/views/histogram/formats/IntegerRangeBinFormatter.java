@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,8 +47,9 @@ public class IntegerRangeBinFormatter extends BinFormatter {
 
     @Override
     public Bin createBin(final GraphReadMethods graph, final int attribute, final PluginParameters parameters, final Bin bin) {
-        int zero = parameters.getParameters().get(ZERO_PARAMETER_ID).getIntegerValue();
-        int bucketSize = parameters.getParameters().get(BUCKET_PARAMETER_ID).getIntegerValue();
+        final int zero = parameters != null ? parameters.getParameters().get(ZERO_PARAMETER_ID).getIntegerValue() : createParameters().getParameters().get(ZERO_PARAMETER_ID).getIntegerValue();
+        final int bucketSize = parameters != null ? parameters.getParameters().get(BUCKET_PARAMETER_ID).getIntegerValue() : createParameters().getParameters().get(BUCKET_PARAMETER_ID).getIntegerValue();
+
         return new IntRangeBin((IntBin) bin, zero, bucketSize);
     }
 

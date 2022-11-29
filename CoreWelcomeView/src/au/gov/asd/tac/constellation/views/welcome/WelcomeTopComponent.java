@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
-import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -29,7 +28,7 @@ import org.openide.windows.TopComponent;
  *
  * WelcomeTopComponent is designed to inform users of news about Constellation.
  *
- * @author canis_majoris 
+ * @author canis_majoris
  */
 @ConvertAsProperties(
         dtd = "-//au.gov.asd.tac.constellation.visual.welcome//Welcome//EN",
@@ -63,20 +62,19 @@ import org.openide.windows.TopComponent;
 public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPane> {
 
     private final WelcomeViewPane pane;
-   
+
     private static final String WELCOME_THEME = "resources/welcome_theme.css";
-   
+
     public WelcomeTopComponent() {
-       initComponents();
-       
-       setName(Bundle.CTL_WelcomeTopComponentTopComponent());
-       setToolTipText(Bundle.HINT_WelcomeTopComponentTopComponent());
-       setLayout(new BorderLayout());
-       
-       ProxyUtilities.setProxySelector(null);
-       pane = new WelcomeViewPane();
-       initContent();
-   }
+        initComponents();
+
+        setName(Bundle.CTL_WelcomeTopComponentTopComponent());
+        setToolTipText(Bundle.HINT_WelcomeTopComponentTopComponent());
+        setLayout(new BorderLayout());
+
+        pane = new WelcomeViewPane();
+        initContent();
+    }
 
     void writeProperties(final java.util.Properties p) {
         //Required for @ConvertAsProperties
@@ -146,12 +144,11 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
     private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
 
-
     @Override
-    protected String createStyle(){
+    protected String createStyle() {
         return WELCOME_THEME;
     }
-    
+
     @Override
     protected WelcomeViewPane createContent() {
         return pane;

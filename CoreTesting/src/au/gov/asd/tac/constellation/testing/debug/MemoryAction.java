@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,23 +31,19 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_MemoryAction=Memory")
 public final class MemoryAction implements ActionListener {
 
+    private static final float DIVIDE_BY = 1024;
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        final long freemem = Runtime.getRuntime().freeMemory();
-        final long totalmem = Runtime.getRuntime().totalMemory();
-        final long maxmem = Runtime.getRuntime().maxMemory();
+        final float freemem = (Runtime.getRuntime().freeMemory() / DIVIDE_BY) / DIVIDE_BY;
+        final float totalmem = (Runtime.getRuntime().totalMemory() / DIVIDE_BY) / DIVIDE_BY;
+        final float maxmem = (Runtime.getRuntime().maxMemory() / DIVIDE_BY) / DIVIDE_BY;
 
         final StringBuilder b = new StringBuilder();
-        b.append(String.format("Free memory: %,d%n", freemem));
-        b.append(String.format("Total memory: %,d%n", totalmem));
-        b.append(String.format("Maximum memory: %,d%n", maxmem));
+        b.append(String.format("Free memory: %,6.2f %s %n", freemem, "MB"));
+        b.append(String.format("Total memory: %,6.2f %s %n", totalmem, "MB"));
+        b.append(String.format("Maximum memory: %,6.2f %s %n", maxmem, "MB"));
 
-//        // test
-//        for (MemoryPoolMXBean memoryPoolMXBeans : ManagementFactory.getMemoryPoolMXBeans()) {
-//            b.append(memoryPoolMXBeans.getName());
-//            b.append(memoryPoolMXBeans.getUsage());
-//            b.append(SeparatorConstants.NEWLINE);
-//        }
         final NotifyDescriptor nd = new NotifyDescriptor.Message(b.toString(), NotifyDescriptor.INFORMATION_MESSAGE);
         DialogDisplayer.getDefault().notify(nd);
     }

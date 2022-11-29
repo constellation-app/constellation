@@ -23,9 +23,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.openide.util.Exceptions;
 
 /**
  * A WhatsNewProvider handles parsing text files into the "What's New" section
@@ -36,6 +37,8 @@ import org.openide.util.Exceptions;
  * @author algol
  */
 public abstract class WhatsNewProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(WhatsNewProvider.class.getName());
 
     /**
      * Get the path of a text file (relative to the implementing class) that
@@ -84,7 +87,7 @@ public abstract class WhatsNewProvider {
                 return parse(r, section);
             }
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return Collections.emptyList();

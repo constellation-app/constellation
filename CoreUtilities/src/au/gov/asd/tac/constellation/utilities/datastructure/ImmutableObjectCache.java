@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,15 +30,23 @@ import java.util.Map.Entry;
  */
 public class ImmutableObjectCache {
 
-    private static final boolean VERBOSE = false;
+    private boolean verbose = false;
 
-    private final Map<Class<?>, int[]> results;
+    private Map<Class<?>, int[]> results = null;
     private long savedStringBytes = 0;
 
     private final Map<Object, Object> cache = new HashMap<>();
-
-    public ImmutableObjectCache() {
-        if (VERBOSE) {
+    
+    /**
+     * True to enable slower interactions with this class but more comprehensive
+     * information from {@link #toString() toString}, false for faster but less
+     * information.
+     * 
+     * @param verbose true to enable verbose mode, false otherwise.
+     */
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+        if (verbose) {
             results = new HashMap<>();
         } else {
             results = null;
@@ -46,7 +54,7 @@ public class ImmutableObjectCache {
     }
 
     /**
-     * Returns the caches instance of the specified immutable object.
+     * Returns the cached instance of the specified immutable object.
      *
      * If the object is not currently in the cache then it is added and the
      * original object is returned. If the object is in the cache then the
@@ -54,10 +62,10 @@ public class ImmutableObjectCache {
      *
      * If null is passed then null is returned.
      *
-     * @param <T> the type of object to deduplicate.
-     * @param immutableObject the object to deduplicate.
+     * @param <T> the type of object to de-duplicate.
+     * @param immutableObject the object to de-duplicate.
      *
-     * @return the deduplicated object.
+     * @return the de-duplicated object.
      */
     @SuppressWarnings("unchecked") // Cache always has object of same type
     public <T> T deduplicate(final T immutableObject) {
@@ -65,7 +73,7 @@ public class ImmutableObjectCache {
             return null;
         }
 
-        if (VERBOSE) {
+        if (verbose) {
             int[] classResult = results.get(immutableObject.getClass());
             if (classResult == null) {
                 classResult = new int[3];
@@ -102,7 +110,7 @@ public class ImmutableObjectCache {
 
     @Override
     public String toString() {
-        if (VERBOSE) {
+        if (verbose) {
             final StringBuilder out = new StringBuilder();
             out.append("ImmutableObjectCache[entries = ").append(cache.size()).append("]\n");
             for (Entry<Class<?>, int[]> e : results.entrySet()) {

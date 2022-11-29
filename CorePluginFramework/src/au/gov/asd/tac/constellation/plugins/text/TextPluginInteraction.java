@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,12 +18,17 @@ package au.gov.asd.tac.constellation.plugins.text;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  * A text implementation of {@link PluginInteraction}
  * <p>
- * This would be useful in unit tests
+ * TODO: This class was created primarily to assist with unit testing but usaged
+ * of this should be replaced with a mock of the DefaultPluginInteraction class
+ * instead. Most of this class however can be useful for a headless version of
+ * Constellation.
+ * </p>
  *
  * @author arcturus
  */
@@ -53,13 +58,13 @@ public class TextPluginInteraction implements PluginInteraction {
     @Override
     public void setProgress(int currentStep, int totalSteps, String message, boolean cancellable) throws InterruptedException {
         currentMessage = message;
-        LOGGER.info(String.format("currentStep=%d totalSteps=%d message=%s", currentStep, totalSteps, message));
+        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
     }
 
     @Override
     public void notify(PluginNotificationLevel level, String message) {
         currentMessage = message;
-        LOGGER.info(String.format("level=%s message=%s", level, message));
+        LOGGER.log(Level.INFO, "level={0} message={1}", new Object[]{level, message});
     }
 
     @Override

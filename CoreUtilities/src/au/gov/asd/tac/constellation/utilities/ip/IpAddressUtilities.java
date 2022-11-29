@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,10 @@ import java.net.InetAddress;
 public class IpAddressUtilities {
 
     private static final int IPV6_ADDRESS_LENGTH = 8 * 4 + 7;
+
+    private IpAddressUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Return an IPv6 address with 0 padding

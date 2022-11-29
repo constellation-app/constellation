@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,10 @@ package au.gov.asd.tac.constellation.graph.value.operations;
 import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
 import au.gov.asd.tac.constellation.graph.value.StringOperation;
+import au.gov.asd.tac.constellation.graph.value.constants.StringConstant;
+import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.FloatReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.IntReadable;
 
 /**
  *
@@ -43,6 +47,33 @@ public class EndsWith {
     public static void register(Operators operators) {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         STRING_OPERATION.register(registry);
+
+        // e.g. Used when query is as follows: x endswith '1'
+        registry.register(FloatReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2)
+                -> () -> Float.toString(p1.readFloat()).endsWith(p2.readString())
+        );
+
+        // e.g. Used when query is as follows: x endswith 6.1
+        registry.register(FloatReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> Float.toString(p1.readFloat()).endsWith(Float.toString(p2.readFloat()))
+        );
+
+        // e.g. Used when query is as follows: x endswith 6
+        registry.register(FloatReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> Float.toString(p1.readFloat()).endsWith(Integer.toString(p2.readInt()))
+        );
+
+        registry.register(IntReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2)
+                -> () -> Integer.toString(p1.readInt()).endsWith(p2.readString())
+        );
+
+        registry.register(IntReadable.class, IntReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> Integer.toString(p1.readInt()).endsWith(Integer.toString(p2.readInt()))
+        );
+
+        registry.register(IntReadable.class, FloatReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> Integer.toString(p1.readInt()).endsWith(Float.toString(p2.readFloat()))
+        );
     }
 
     static {

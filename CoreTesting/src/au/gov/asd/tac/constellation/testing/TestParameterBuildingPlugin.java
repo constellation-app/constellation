@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 package au.gov.asd.tac.constellation.testing;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
@@ -31,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import java.util.Arrays;
 import java.util.Map;
@@ -44,6 +47,7 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @Messages("TestParameterBuildingPlugin=Test Parameter Building")
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.DEVELOPER, PluginTags.CREATE})
 public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
 
     public static final String LOCALDATE_PARAMETER_ID = PluginParameter.buildId(TestParameterBuildingPlugin.class, "localdate");
@@ -59,16 +63,15 @@ public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
     public static final String FLOAT_NAME = "Some Float";
     public static final String FLOAT_DESCRIPTION = "Enter some float between 0 and 1.";
     public static final String SOME_BOOLEAN_NAME = "Some Boolean";
-    public static final String SOME_BOOLEAN_DESCRIPTION = "If ture, it is so!";
+    public static final String SOME_BOOLEAN_DESCRIPTION = "If true, it is so!";
 
     private static final Logger LOGGER = Logger.getLogger(TestParameterBuildingPlugin.class.getName());
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) { //    protected void query(final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException
         final Map<String, PluginParameter<?>> pmap = parameters.getParameters();
-        pmap.entrySet().stream().forEach(entry -> {
-            LOGGER.log(Level.INFO, "{0}: {1}", new Object[]{entry.getKey(), entry.getValue().getStringValue()});
-        });
+        pmap.entrySet().stream().forEach(entry
+                -> LOGGER.log(Level.INFO, "{0}: {1}", new Object[]{entry.getKey(), entry.getValue().getStringValue()}));
     }
 
     @Override
@@ -96,16 +99,15 @@ public class TestParameterBuildingPlugin extends SimpleQueryPlugin {
         final PluginParameter<FloatParameterValue> thresholdParam = FloatParameterType.build(FLOAT_PARAMETER_ID);
         thresholdParam.setName(FLOAT_NAME);
         thresholdParam.setDescription(FLOAT_DESCRIPTION);
-        thresholdParam.setFloatValue(0f);
+        thresholdParam.setFloatValue(0F);
         FloatParameterType.setMinimum(thresholdParam, 0);
         FloatParameterType.setMaximum(thresholdParam, 1);
-        FloatParameterType.setStep(thresholdParam, 0.1f);
+        FloatParameterType.setStep(thresholdParam, 0.1F);
         params.addParameter(thresholdParam);
 
         final PluginParameter<BooleanParameterValue> caseParam = BooleanParameterType.build(BOOLEAN_PARAMETER_ID);
         caseParam.setName(SOME_BOOLEAN_NAME);
         caseParam.setDescription(SOME_BOOLEAN_DESCRIPTION);
-//        caseParam.setObjectValue(true);
         params.addParameter(caseParam);
 
         for (int i = 0; i < 2; i++) {

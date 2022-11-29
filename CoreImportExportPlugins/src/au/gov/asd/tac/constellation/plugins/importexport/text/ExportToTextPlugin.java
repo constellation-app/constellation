@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,13 +26,15 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -45,9 +47,11 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 @Messages("ExportToTextPlugin=Export to Text")
 public class ExportToTextPlugin extends SimplePlugin {
+    
+    private static final Logger LOGGER = Logger.getLogger(ExportToTextPlugin.class.getName());
 
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToTextPlugin.class, "filename");
     public static final String TEXT_PARAMETER_ID = PluginParameter.buildId(ExportToTextPlugin.class, "text");
@@ -62,10 +66,9 @@ public class ExportToTextPlugin extends SimplePlugin {
             try (PrintWriter os = new PrintWriter(file, StandardCharsets.UTF_8.name())) {
                 os.append(text);
             } catch (final UnsupportedEncodingException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         } catch (final FileNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
     }

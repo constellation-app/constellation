@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,10 @@ import java.util.BitSet;
  * @author CrucisGamma
  */
 public class HashmodUtilities {
+    
+    private HashmodUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Gather a Graph's vxIds into a BitSet for faster checking.

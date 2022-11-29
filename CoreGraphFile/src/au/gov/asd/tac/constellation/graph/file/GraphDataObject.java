@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import java.awt.Color;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -34,7 +36,6 @@ import org.openide.loaders.MultiDataObject;
 import org.openide.loaders.MultiFileLoader;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 
@@ -107,13 +108,15 @@ import org.openide.util.NbBundle.Messages;
     )
 })
 public final class GraphDataObject extends MultiDataObject implements OpenCookie {
+    
+    private static final Logger LOGGER = Logger.getLogger(GraphDataObject.class.getName());
 
     /**
      * Filename extension for graph files.
      */
     public static final String FILE_EXTENSION = ".star";
 
-    private NebulaDataObject graphDataObject;
+    private NebulaDataObject gdo;
 
     /**
      * If this graph is part of a graph, assign a color to it.
@@ -131,7 +134,7 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
      */
     public GraphDataObject(final FileObject primaryFile, final MultiFileLoader loader) throws DataObjectExistsException, IOException {
         super(primaryFile, loader);
-        graphDataObject = null;
+        gdo = null;
         graphColor = null;
     }
 
@@ -161,9 +164,9 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
      */
     public boolean isInMemory() {
         try {
-            return getPrimaryFile().getFileSystem().getDisplayName().equals("MemoryFileSystem");
-        } catch (FileStateInvalidException ex) {
-            Exceptions.printStackTrace(ex);
+            return "MemoryFileSystem".equals(getPrimaryFile().getFileSystem().getDisplayName());
+        } catch (final FileStateInvalidException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return false;
@@ -180,19 +183,19 @@ public final class GraphDataObject extends MultiDataObject implements OpenCookie
         }
 
         String s = FileUtil.getFileDisplayName(getPrimaryFile());
-        if (graphDataObject != null) {
-            s = String.format("%s - %s", graphDataObject.getName(), s);
+        if (gdo != null) {
+            s = String.format("%s - %s", gdo.getName(), s);
         }
 
         return s;
     }
 
     public NebulaDataObject getNebulaDataObject() {
-        return graphDataObject;
+        return gdo;
     }
 
     public void setNebulaDataObject(final NebulaDataObject graphDataObject) {
-        this.graphDataObject = graphDataObject;
+        this.gdo = graphDataObject;
     }
 
     public Color getNebulaColor() {

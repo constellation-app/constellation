@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,8 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GlobalParameters.class)
 public class CoreGlobalParameters extends GlobalParameters {
 
-    private static List<PositionalPluginParameter> CORE_GLOBAL_PARAMETER_IDS = null;
-    private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
+    private static List<PositionalPluginParameter> coreGlobalParametersIDS = null;
+    protected static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter
             .ofPattern("yyyy-MM-dd HH:mm:ss z").withZone(ZoneId.systemDefault());
 
     /**
@@ -56,16 +56,16 @@ public class CoreGlobalParameters extends GlobalParameters {
 
     @Override
     public List<PositionalPluginParameter> getParameterList(final PluginParameters previous) {
-        if (CORE_GLOBAL_PARAMETER_IDS == null) {
-            CORE_GLOBAL_PARAMETER_IDS = buildParameterList(previous);
+        if (coreGlobalParametersIDS == null) {
+            coreGlobalParametersIDS = buildParameterList(previous);
         }
 
         updateParameterList(previous);
 
-        return CORE_GLOBAL_PARAMETER_IDS;
+        return coreGlobalParametersIDS;
     }
 
-    private List<PositionalPluginParameter> buildParameterList(final PluginParameters previous) {
+    protected List<PositionalPluginParameter> buildParameterList(final PluginParameters previous) {
         final PluginParameter<StringParameterValue> queryNameParameter = QUERY_NAME_PARAMETER;
         queryNameParameter.setName("Query Name");
         queryNameParameter.setDescription("A reference name for the query");
@@ -82,14 +82,14 @@ public class CoreGlobalParameters extends GlobalParameters {
         return positionalPluginParametersList;
     }
 
-    private void updateParameterList(final PluginParameters previous) {
+    protected void updateParameterList(final PluginParameters previous) {
         @SuppressWarnings("unchecked") //QUERY_NAME_PARAMETER will always be of type StringParameter
-        final PluginParameter<StringParameterValue> queryNameParameter = (PluginParameter<StringParameterValue>) CORE_GLOBAL_PARAMETER_IDS.get(QUERY_NAME_PARAMETER_ID_INDEX).getParameter();
+        final PluginParameter<StringParameterValue> queryNameParameter = (PluginParameter<StringParameterValue>) coreGlobalParametersIDS.get(QUERY_NAME_PARAMETER_ID_INDEX).getParameter();
         queryNameParameter.setStringValue(String.format("%s at %s", System.getProperty("user.name"), TIMESTAMP_FORMAT.format(Instant.now())));
 
         if (previous != null) {
             @SuppressWarnings("unchecked") //DATETIME_RANGE_PARAMETER will always be of type DateTimeRangeParameter
-            final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParameter = (PluginParameter<DateTimeRangeParameterValue>) CORE_GLOBAL_PARAMETER_IDS.get(DATETIME_RANGE_PARAMETER_ID_INDEX).getParameter();
+            final PluginParameter<DateTimeRangeParameterValue> datetimeRangeParameter = (PluginParameter<DateTimeRangeParameterValue>) coreGlobalParametersIDS.get(DATETIME_RANGE_PARAMETER_ID_INDEX).getParameter();
             datetimeRangeParameter.setDateTimeRangeValue(previous.getParameters().get(DATETIME_RANGE_PARAMETER_ID).getDateTimeRangeValue());
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,16 +56,14 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
                     .filter(clusterData -> clusterData.getElementType() != GraphElementType.TRANSACTION)
                     .collect(Collectors.toList());
         }
-        if (result.getIgnoreNullResults()) {
+        if (result.isIgnoreNullResults()) {
             displayResult = displayResult.stream()
                     .filter(clusterData -> !clusterData.isNull())
                     .collect(Collectors.toList());
         }
         tableVisualisation.populateTable(displayResult);
         result.addResultListener(tableVisualisation);
-        tableVisualisation.setSelectionModelListener(change -> {
-            result.setSelectionOnGraph(tableVisualisation.getSelectedItems());
-        });
+        tableVisualisation.setSelectionModelListener(change -> result.setSelectionOnGraph(tableVisualisation.getSelectedItems()));
         return tableVisualisation;
     }
 
@@ -100,6 +98,6 @@ public class ClusterToTableTranslator extends AbstractTableTranslator<ClusterRes
 
     @Override
     public ConstellationColor getCellColor(final ClusterData cellValue, final Object cellItem, final String columnName) {
-        return ConstellationColor.getColorValue(0f, 0f, 0f, 0.3f);
+        return ConstellationColor.getColorValue(0F, 0F, 0F, 0.3F);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,7 +62,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
         if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
-            return Boolean.parseBoolean(string);
+            return Boolean.parseBoolean(string);            
         }
     }
 
@@ -108,12 +108,12 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
     @Override
     public float getFloat(final int id) {
-        return (data[id] != null && (Boolean) data[id]) ? 1.0f : 0.0f;
+        return (data[id] != null && (Boolean) data[id]) ? 1.0F : 0.0F;
     }
 
     @Override
     public void setFloat(final int id, final float value) {
-        data[id] = value != 0.0f;
+        data[id] = value != 0.0F;
     }
 
     @Override
@@ -148,8 +148,10 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
 
     @Override
     public int hashCode(final int id) {
-        return data[id] == null ? nullHash
-                : (Boolean) data[id] ? trueHash : falseHash;
+        if (data[id] == null) {
+            return nullHash;
+        }
+        return (boolean) data[id] ? trueHash : falseHash;
     }
 
     @Override

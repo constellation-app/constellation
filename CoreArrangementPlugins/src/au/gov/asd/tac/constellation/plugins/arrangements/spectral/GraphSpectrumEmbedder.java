@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,16 +29,16 @@ import org.apache.commons.math3.linear.MatrixUtils;
  */
 public class GraphSpectrumEmbedder {
 
-    public static Map<Integer, double[]> spectralEmbedding(GraphReadMethods rg, final Set<Integer> includedVertices) {
+    public static Map<Integer, double[]> spectralEmbedding(final GraphReadMethods rg, final Set<Integer> includedVertices) {
 
-        Map<Integer, double[]> vertexPositions = new HashMap<>();
+        final Map<Integer, double[]> vertexPositions = new HashMap<>();
 
         // Don't position anything if there are fewer than 3 vertices to embedd - this embedding shouldn't be used in these cases.
         if (includedVertices.size() <= 2) {
             return vertexPositions;
         }
 
-        GraphMatrix l = GraphMatrix.adjacencyFromGraph(rg, includedVertices, new HashSet<>());
+        final GraphMatrix l = GraphMatrix.adjacencyFromGraph(rg, includedVertices, new HashSet<>());
 
         final EigenDecomposition e = new EigenDecomposition(MatrixUtils.createRealMatrix(l.laplacianMatrix));
         final int numVectors = e.getRealEigenvalues().length;
@@ -68,35 +68,33 @@ public class GraphSpectrumEmbedder {
 
     private static class GraphMatrix {
 
-        private final Map<Integer, Integer> idToMatrixPosition;
         private final Map<Integer, Integer> matrixPositionToID;
         private final double[][] laplacianMatrix;
         private final int dimension;
 
-        private GraphMatrix(double[][] laplacianMatrix, Map<Integer, Integer> idToMatrixPosition, Map<Integer, Integer> matrixPositionToID) {
+        private GraphMatrix(final double[][] laplacianMatrix, final Map<Integer, Integer> matrixPositionToID) {
             this.laplacianMatrix = laplacianMatrix;
-            this.idToMatrixPosition = idToMatrixPosition;
             this.matrixPositionToID = matrixPositionToID;
             this.dimension = laplacianMatrix.length;
         }
 
-        public static GraphMatrix adjacencyFromGraph(GraphReadMethods rg, Set<Integer> includedVertices, Set<Integer> excludedLinks) {
+        public static GraphMatrix adjacencyFromGraph(final GraphReadMethods rg, final Set<Integer> includedVertices, final Set<Integer> excludedLinks) {
             return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.ADJACENCY_MATRIX);
         }
 
-        public static GraphMatrix laplacianFromGraph(GraphReadMethods rg, Set<Integer> includedVertices, Set<Integer> excludedLinks) {
+        public static GraphMatrix laplacianFromGraph(final GraphReadMethods rg, final Set<Integer> includedVertices, final Set<Integer> excludedLinks) {
             return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.LAPLACIAN_MATRIX);
         }
 
-        public static GraphMatrix matrixFromGraph(GraphReadMethods rg, Set<Integer> includedVertices, Set<Integer> excludedLinks, MatrixType type) {
+        public static GraphMatrix matrixFromGraph(final GraphReadMethods rg, final Set<Integer> includedVertices, final Set<Integer> excludedLinks, final MatrixType type) {
 
             final int numVertices = includedVertices.size();
             final double[][] matrixEntries = new double[numVertices][];
             for (int i = 0; i < numVertices; i++) {
                 matrixEntries[i] = new double[numVertices];
             }
-            Map<Integer, Integer> idToMatrixPosition = new HashMap<>();
-            Map<Integer, Integer> matrixPositionToID = new HashMap<>();
+            final Map<Integer, Integer> idToMatrixPosition = new HashMap<>();
+            final Map<Integer, Integer> matrixPositionToID = new HashMap<>();
 
             int skips = 0;
             for (int i = 0; i < rg.getVertexCount(); i++) {
@@ -121,23 +119,37 @@ public class GraphSpectrumEmbedder {
                         continue;
                     } else if (idToMatrixPosition.get(neighbourID) == i) {
                         continue;
+                    } else {
+                        // Do nothing
                     }
                     neighbourCount++;
-                    if (type == MatrixType.LAPLACIAN_MATRIX) {
-                        matrixEntries[i][idToMatrixPosition.get(neighbourID)] = -1;
-                    } else if (type == MatrixType.ADJACENCY_MATRIX) {
-                        matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
+                    if (type != null) {
+                        switch (type) {
+                            case LAPLACIAN_MATRIX:
+                                matrixEntries[i][idToMatrixPosition.get(neighbourID)] = -1;
+                                break;
+                            case ADJACENCY_MATRIX:
+                                matrixEntries[i][idToMatrixPosition.get(neighbourID)] = 1;
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
-                if (type == MatrixType.LAPLACIAN_MATRIX) {
-                    matrixEntries[i][i] = neighbourCount;
-                } else if (type == MatrixType.ADJACENCY_MATRIX) {
-                    matrixEntries[i][i] = 0;
+                if (type != null) {
+                    switch (type) {
+                        case LAPLACIAN_MATRIX:
+                            matrixEntries[i][i] = neighbourCount;
+                            break;
+                        case ADJACENCY_MATRIX:
+                            matrixEntries[i][i] = 0;
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
-
-            return new GraphMatrix(matrixEntries, idToMatrixPosition, matrixPositionToID);
+            return new GraphMatrix(matrixEntries, matrixPositionToID);
         }
     }
-
 }

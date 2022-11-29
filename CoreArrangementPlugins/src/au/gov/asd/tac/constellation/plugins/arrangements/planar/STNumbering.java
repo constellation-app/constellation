@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,14 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 /**
  *
@@ -97,7 +98,7 @@ public class STNumbering {
 
     public void constructAndPreorderBiconnectedComponents() {
 
-        BitSet unvisitedNodes = new BitSet(graph.getVertexCount());
+        final BitSet unvisitedNodes = new BitSet(graph.getVertexCount());
         unvisitedNodes.set(0, graph.getVertexCount());
         int componentRootPos = 0;
 
@@ -115,21 +116,21 @@ public class STNumbering {
     }
 
     public void stNumberBiconnectedComponents() {
-        for (TreeNode t : biconnectedComponentRoots) {
+        for (final TreeNode t : biconnectedComponentRoots) {
 
             // The ST Numbering for this component
-            List<TreeNode> stNumberedComponent = new ArrayList<>();
+            final List<TreeNode> stNumberedComponent = new ArrayList<>();
 
             // Set up the old vertices and edges, and the stack for building an st numbering
-            Set<Integer> oldVxIDs = new HashSet<>();
-            Set<Integer> oldLxIDs = new HashSet<>();
-            Stack<TreeNode> pathfinderStack = new Stack<>();
+            final Set<Integer> oldVxIDs = new HashSet<>();
+            final Set<Integer> oldLxIDs = new HashSet<>();
+            final Deque<TreeNode> pathfinderStack = new LinkedList<>();
             oldVxIDs.add(t.vxID);
             pathfinderStack.push(t);
 
             // Note there will only be one child of the root of a biconnected component,
             // but singleton sets still require iteration.
-            for (TreeNode s : t.children) {
+            for (final TreeNode s : t.children) {
                 oldVxIDs.add(s.vxID);
                 oldLxIDs.add(graph.getLink(t.vxID, s.vxID));
                 pathfinderStack.push(s);
@@ -139,7 +140,7 @@ public class STNumbering {
             while (!pathfinderStack.isEmpty()) {
 
                 // Find a path using new edges from the top vertex on the stack
-                TreeNode v = pathfinderStack.pop();
+                final TreeNode v = pathfinderStack.pop();
                 final List<TreeNode> path = pathfinder(v, t, oldVxIDs, oldLxIDs);
 
                 if (path.isEmpty()) {
@@ -156,7 +157,7 @@ public class STNumbering {
         }
     }
 
-    private void setComponentNeighbours(TreeNode v, TreeNode root) {
+    private void setComponentNeighbours(final TreeNode v, final TreeNode root) {
         v.componentNeighours = new HashSet<>();
         for (int i = 0; i < graph.getVertexNeighbourCount(v.vxID); i++) {
             final TreeNode x = vxIDsToTreeNodes.get(root).get(graph.getVertexNeighbour(v.vxID, i));
@@ -167,11 +168,11 @@ public class STNumbering {
     }
 
     private List<TreeNode> pathfinder(final TreeNode v, final TreeNode t, final Set<Integer> oldVxIDs, final Set<Integer> oldLxIDs) {
-        List<TreeNode> path = new ArrayList<>();
+        final List<TreeNode> path = new ArrayList<>();
 
         // Check for 'new' cycle edges between v and its ancestors.
-        for (Iterator<TreeNode> iter = v.ancestors.iterator(); iter.hasNext();) {
-            TreeNode w = iter.next();
+        for (final Iterator<TreeNode> iter = v.ancestors.iterator(); iter.hasNext();) {
+            final TreeNode w = iter.next();
             final int v_w = graph.getLink(v.vxID, w.vxID);
             if (v_w == Graph.NOT_FOUND || oldLxIDs.contains(v_w)) {
                 iter.remove();
@@ -185,7 +186,7 @@ public class STNumbering {
         }
 
         // Check for 'new' tree edges between v and its children
-        for (Iterator<TreeNode> iter = v.children.iterator(); iter.hasNext();) {
+        for (final Iterator<TreeNode> iter = v.children.iterator(); iter.hasNext();) {
             TreeNode w = iter.next();
             final int v_w = graph.getLink(v.vxID, w.vxID);
             if (oldLxIDs.contains(v_w)) {
@@ -199,8 +200,8 @@ public class STNumbering {
                     if (w.componentNeighours == null) {
                         setComponentNeighbours(w, t);
                     }
-                    for (Iterator<TreeNode> neighbIter = w.componentNeighours.iterator(); neighbIter.hasNext();) {
-                        TreeNode x = neighbIter.next();
+                    for (final Iterator<TreeNode> neighbIter = w.componentNeighours.iterator(); neighbIter.hasNext();) {
+                        final TreeNode x = neighbIter.next();
                         final int w_x = graph.getLink(w.vxID, x.vxID);
                         if (oldLxIDs.contains(w_x)) {
                             neighbIter.remove();
@@ -211,6 +212,8 @@ public class STNumbering {
                             path.add(x);
                             w = x;
                             break;
+                        } else {
+                            // Do nothing
                         }
                     }
                 }
@@ -219,7 +222,7 @@ public class STNumbering {
         }
 
         // Check for 'new' cycle edges between v and its descendants (excluding children).
-        for (Iterator<TreeNode> iter = v.descendants.iterator(); iter.hasNext();) {
+        for (final Iterator<TreeNode> iter = v.descendants.iterator(); iter.hasNext();) {
             TreeNode w = iter.next();
             final int v_w = graph.getLink(v.vxID, w.vxID);
             if (v_w != Graph.NOT_FOUND && !oldLxIDs.contains(v_w)) {
@@ -228,7 +231,7 @@ public class STNumbering {
                 path.add(v);
                 path.add(w);
                 while (!oldVxIDs.contains(w.vxID)) {
-                    TreeNode x = w.parent;
+                    final TreeNode x = w.parent;
                     final int w_x = graph.getLink(w.vxID, x.vxID);
                     oldVxIDs.add(w.vxID);
                     oldLxIDs.add(w_x);
@@ -250,13 +253,12 @@ public class STNumbering {
 
         // Construct the tree node for this vertex
         final TreeNode t = new TreeNode(vxID, parent);
-//        vxIDsToTreeNodes.put(vxID, t);
 
         // Set the tree node as a root if it has no parent
         if (parent == null) {
             biconnectedComponentRoots.add(t);
             currentRoot = t;
-            Map<Integer, TreeNode> componentIDToTreeNodeMap = new HashMap<>();
+            final Map<Integer, TreeNode> componentIDToTreeNodeMap = new HashMap<>();
             componentIDToTreeNodeMap.put(vxID, t);
             vxIDsToTreeNodes.put(t, componentIDToTreeNodeMap);
         } else {
@@ -306,7 +308,7 @@ public class STNumbering {
 
                     // Make a new TreeRoot and add it to the relevant maps
                     final TreeNode newRoot = new TreeNode(vxID, null);
-                    Map<Integer, TreeNode> componentIDToTreeNodeMap = new HashMap<>();
+                    final Map<Integer, TreeNode> componentIDToTreeNodeMap = new HashMap<>();
                     componentIDToTreeNodeMap.put(vxID, newRoot);
                     vxIDsToTreeNodes.put(newRoot, componentIDToTreeNodeMap);
                     biconnectedComponentRoots.add(newRoot);
@@ -371,7 +373,7 @@ public class STNumbering {
         vxIDsToTreeNodes.get(newRoot).put(toAmend.vxID, toAmend);
         toAmend.preorder -= (currentPreorder - 1);
         toAmend.vLow = toAmend.vLow == articulationPreorder ? 1 : toAmend.vLow - (currentPreorder - 1);
-        for (TreeNode child : toAmend.children) {
+        for (final TreeNode child : toAmend.children) {
             updatePreorderForNewComponent(child, articulationPreorder, currentPreorder, newRoot, currentRoot);
         }
     }

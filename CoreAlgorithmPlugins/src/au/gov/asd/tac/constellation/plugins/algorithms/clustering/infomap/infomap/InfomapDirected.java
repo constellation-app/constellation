@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,7 +97,7 @@ public class InfomapDirected extends InfomapGreedy {
         final double deltaEnterExitOldModule = oldModuleDelta.getDeltaEnter() + oldModuleDelta.getDeltaExit();
         final double deltaEnterExitNewModule = newModuleDelta.getDeltaEnter() + newModuleDelta.getDeltaExit();
 
-        final double delta_exit = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlow_log_enterFlow;
+        final double delta_exit = plogp(enterFlow + deltaEnterExitOldModule - deltaEnterExitNewModule) - enterFlowLogEnterFlow;
 
         final double delta_exit_log_exit
                 = -plogp(moduleFlowData[oldModule].getExitFlow())
@@ -126,10 +126,10 @@ public class InfomapDirected extends InfomapGreedy {
         enterFlow
                 -= moduleFlowData[oldModule].getEnterFlow()
                 + moduleFlowData[newModule].getEnterFlow();
-        exit_log_exit
+        exitLogExit
                 -= plogp(moduleFlowData[oldModule].getExitFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow());
-        flow_log_flow
+        flowLogFlow
                 -= plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow());
 
@@ -142,17 +142,17 @@ public class InfomapDirected extends InfomapGreedy {
         enterFlow
                 += moduleFlowData[oldModule].getEnterFlow()
                 + moduleFlowData[newModule].getEnterFlow();
-        exit_log_exit
+        exitLogExit
                 += plogp(moduleFlowData[oldModule].getExitFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow());
-        flow_log_flow
+        flowLogFlow
                 += plogp(moduleFlowData[oldModule].getExitFlow() + moduleFlowData[oldModule].getFlow())
                 + plogp(moduleFlowData[newModule].getExitFlow() + moduleFlowData[newModule].getFlow());
 
-        enterFlow_log_enterFlow = plogp(enterFlow);
+        enterFlowLogEnterFlow = plogp(enterFlow);
 
-        indexCodelength = enterFlow_log_enterFlow - exit_log_exit - exitNetworkFlow_log_exitNetworkFlow;
-        moduleCodelength = -exit_log_exit + flow_log_flow - nodeFlow_log_nodeFlow;
+        indexCodelength = enterFlowLogEnterFlow - exitLogExit - exitNetworkFlowLogExitNetworkFlow;
+        moduleCodelength = -exitLogExit + flowLogFlow - nodeFlowLogNodeFlow;
         codelength = indexCodelength + moduleCodelength;
     }
 

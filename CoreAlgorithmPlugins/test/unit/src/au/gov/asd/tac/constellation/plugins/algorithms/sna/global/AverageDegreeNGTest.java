@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,5 +84,17 @@ public class AverageDegreeNGTest {
         PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
 
         assertEquals(graph.getFloatValue(graphAttribute, 0), 1.3333334f);
+    }
+    
+    @Test
+    public void testNoDirectionAverageDegree() throws Exception {
+        final AverageDegreePlugin instance = new AverageDegreePlugin();
+        final PluginParameters parameters = instance.createParameters();
+        parameters.setBooleanValue(AverageDegreePlugin.INCLUDE_CONNECTIONS_IN_PARAMETER_ID, false);
+        parameters.setBooleanValue(AverageDegreePlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID, false);
+        parameters.setBooleanValue(AverageDegreePlugin.TREAT_UNDIRECTED_BIDIRECTIONAL, false);
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getFloatValue(graphAttribute, 0), 0 / 0F);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
 import java.awt.image.DataBufferByte;
-import java.awt.image.RescaleOp;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,10 +58,6 @@ final class GlyphRectangleBuffer {
      * artifacts. Therefore we add some space between rectangles.
      */
     private static final int PADDING = 2;
-
-    // An identity operation (unchanged copy) for copying image buffers.
-    //
-    private static final BufferedImageOp IDENTITY_OP = new RescaleOp(1f, 0f, null);
 
     // The next position to draw a rectangle at.
     //
@@ -276,7 +270,6 @@ final class GlyphRectangleBuffer {
         // (The obvious drawImage() variation is technically asynchronous, so don't use it.)
         //
         g2d.drawImage(img, x, y, null);
-//            g2d.drawImage(img, IDENTITY_OP, x, y);
 
         putImageInRectTextureCoordinates(rectIndex, extra, w, h);
 
@@ -298,7 +291,7 @@ final class GlyphRectangleBuffer {
             rectTextureCoordinates = Arrays.copyOf(rectTextureCoordinates, rectTextureCoordinates.length * 2);
         }
 
-        // Texture coordinates are in units of texture buffer size;
+        // Texture coordinates are in units of texture buffer size,
         // each coordinate ranges from 0 to 1. The x coordinate also encodes
         // the texture page.
         //

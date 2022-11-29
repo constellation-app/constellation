@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,15 @@ import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.event.ActionListener;
@@ -66,13 +70,12 @@ import org.openide.windows.TopComponent;
     "# {0} - fnam",
     "# {1} - save datetime",
     "# {2} - autosave datetime",
-    "MSG_Autosave=File {0}\nsaved on {1}\nautosaved on {2}\nDo you want the more recent autosaved version?"
+    "MSG_Autosave={0}\nFile saved on {1}\nAutosaved on {2}\nDo you want the more recent autosaved version to be loaded?"
 })
 @ServiceProvider(service = GraphOpener.class, position = 100)
 public final class VisualGraphOpener extends GraphOpener {
 
     private static final Logger LOGGER = Logger.getLogger(VisualGraphOpener.class.getName());
-    private static final String BACKUP_EXTENSION = ".bak";
 
     /**
      * Open a graph file into a VisualTopComponent.
@@ -107,14 +110,16 @@ public final class VisualGraphOpener extends GraphOpener {
                 final ZonedDateTimeAttributeDescription datetimeAttributeDescription = new ZonedDateTimeAttributeDescription();
                 final ZonedDateTime zdtAutosave = datetimeAttributeDescription.convertFromString(dtprop);
                 final long dtFile = f.lastModified();
-                if (zdtAutosave.toEpochSecond() * 1000 > dtFile) {
+                final long zdtAutosaveSeconds = zdtAutosave.toEpochSecond() * 1000;
+                if (zdtAutosaveSeconds > dtFile) {
+                    final String dateTime = new Date(zdtAutosaveSeconds).toString();
                     final String dtf = new Date(dtFile).toString();
-                    final String msg = Bundle.MSG_Autosave(f.getPath(), dtf, dtprop);
+                    final String msg = Bundle.MSG_Autosave(f.getPath(), dtf, dateTime);
                     final NotifyDescriptor nd = new NotifyDescriptor(msg, "Open autosaved file?", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE, null, null);
                     if (DialogDisplayer.getDefault().notify(nd) == NotifyDescriptor.YES_OPTION) {
                         // The user wants the more recent autosaved version.
                         // Backup the current actual file and replace it with the autosave file.
-                        final File autosaved = new File(AutosaveUtilities.getAutosaveDir(), props.getProperty(AutosaveUtilities.ID) + GraphDataObject.FILE_EXTENSION);
+                        final File autosaved = new File(AutosaveUtilities.getAutosaveDir(), props.getProperty(AutosaveUtilities.ID) + FileExtensionConstants.STAR);
                         try {
                             AutosaveUtilities.copyFile(autosaved, f);
                         } catch (final IOException ex) {
@@ -176,12 +181,13 @@ public final class VisualGraphOpener extends GraphOpener {
         protected Void doInBackground() throws Exception {
             final File graphFile = FileUtil.toFile(gdo.getPrimaryFile());
             if (graph == null) {
+                HandleIoProgress ioProgressHandler = new HandleIoProgress(String.format("Reading %s...", graphFile.getName()));
                 try {
                     final long t0 = System.currentTimeMillis();
-                    LOGGER.log(Level.INFO, String.format("Attempting to open %s", graphFile.toString()));
-                    graph = new GraphJsonReader().readGraphZip(graphFile, new HandleIoProgress(String.format("Reading %s...", graphFile.getName())));
+                    LOGGER.log(Level.INFO, "Attempting to open {0}", graphFile);
+                    graph = new GraphJsonReader().readGraphZip(graphFile, ioProgressHandler);
                     time = System.currentTimeMillis() - t0;
-                } catch (final GraphParseException | IOException | RuntimeException ex) {  
+                } catch (final GraphParseException | IOException | RuntimeException ex) {
                     gex = ex;
                 }
 
@@ -190,38 +196,36 @@ public final class VisualGraphOpener extends GraphOpener {
                         // An exception was thrown trying to read specified star file. The most likely reason for this is
                         // a corrupt star file. Check to see if there was a 'backup' star file generated before the star file
                         // was writtien - if so, attmept to load this.
-                        final File backupFile = new File(graphFile.toString().concat(BACKUP_EXTENSION));
-                        
+                        final File backupFile = new File(graphFile.toString().concat(FileExtensionConstants.BACKUP));
+
+                        // Clear previous progress message and reset to indicate we are trying to use backup.
+                        ioProgressHandler.finish();
                         if (backupFile.exists()) {
-                            
-                            // Try to load backup file that was located, if it loads then clear previous exception, if not the 
+                            // Set new progress message to highlight attempt to load backup
+                            ioProgressHandler = new HandleIoProgress(String.format("Unable to read %s, reading backup %s...", graphFile.getName(), backupFile.getName()));
+                            // Try to load backup file that was located, if it loads then clear previous exception, if not the
                             // original exception is kept to be handled in the done method
                             final long t0 = System.currentTimeMillis();
-                            LOGGER.log(Level.WARNING, String.format("Unable to open requested file, attempting to open backup %s", backupFile.toString()));
-                            graph = new GraphJsonReader().readGraphZip(backupFile, new HandleIoProgress(String.format("%s could not be opened, attempting to open backup file", 
-                                    graphFile.getName(), backupFile.getName())));
+                            LOGGER.log(Level.WARNING, "Unable to open requested file, attempting to open backup {0}", backupFile);
+                            graph = new GraphJsonReader().readGraphZip(backupFile, ioProgressHandler);
                             time = System.currentTimeMillis() - t0;
                             gex = null;
-                            
+
                             // Backup file successfully loaded, copy it over top of corrupt actual file - theres no reason to keep the corrupted file.
                             // Don't do a move, rather perform the move in two stages, a copy, then a delete to ensure there
                             // is always going to be a valid file somewhere as only the copy or the delete can fail in a given run.
+                            LOGGER.log(Level.INFO, "Successfully opened backup file: {0}, replacing star file", backupFile);
                             FileUtils.copyFile(new File(backupFile.toString()), new File(graphFile.toString()));
-                            FileUtils.deleteQuietly(backupFile);
                         }
                     }
-                }
-                catch (final GraphParseException | IOException | RuntimeException ex) {  
-                    LOGGER.log(Level.WARNING, String.format("Unable to open requested file or any associated backup", graphFile.toString()));
+                } catch (final GraphParseException | IOException | RuntimeException ex) {
+                    LOGGER.log(Level.WARNING, "Unable to open requested file ({0}) or any associated backup", graphFile);
                     gex = ex;
+                    // Clear previous progress message and reset to indicate we are trying to use backup.
+                    ioProgressHandler.finish();
                 }
- 
-                PluginExecution.withPlugin(new SimplePlugin("Open Graph File") {
-                    @Override
-                    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-                        ConstellationLoggerHelper.viewPropertyBuilder(this, graphFile, ConstellationLoggerHelper.SUCCESS);
-                    }
-                }).executeLater(null);
+
+                PluginExecution.withPlugin(new OpenGraphFile(graphFile)).executeLater(null);
             }
 
             return null;
@@ -249,7 +253,7 @@ public final class VisualGraphOpener extends GraphOpener {
                         NotificationDisplayer.Priority.HIGH
                 );
             } else if (graph != null) {
-                final String msg = String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000f);
+                final String msg = String.format("%s read complete (%.1fs)", gdo.getPrimaryFile().getName(), time / 1000F);
                 StatusDisplayer.getDefault().setStatusText(msg);
                 LOGGER.info(msg);
 
@@ -260,7 +264,32 @@ public final class VisualGraphOpener extends GraphOpener {
                 if (doAfter != null) {
                     doAfter.run();
                 }
+            } else {
+                // Do nothing
             }
+        }
+    }
+
+    /**
+     * Plugin to open graph file.
+     */
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
+    private static class OpenGraphFile extends SimplePlugin {
+
+        private final File graphFile;
+
+        public OpenGraphFile(final File graphFile) {
+            this.graphFile = graphFile;
+        }
+
+        @Override
+        public String getName() {
+            return "Visual Graph: Open Graph File";
+        }
+
+        @Override
+        protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            ConstellationLoggerHelper.viewPropertyBuilder(this, graphFile, ConstellationLoggerHelper.SUCCESS);
         }
     }
 }

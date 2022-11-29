@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.views.notes.state;
 
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Holds the information for a note in the Notes View.
@@ -29,12 +31,23 @@ public class NotesViewEntry implements PluginReportListener {
     private String noteTitle;
     private String noteContent;
     private final Boolean userCreated;
+    private Boolean graphAttribute;
+    private List<Integer> nodesSelected;
+    private List<Integer> transactionsSelected;
+    private List<String> tags = new ArrayList<>();
+    private boolean editMode;
 
-    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final Boolean userCreated) {
+    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
         this.userCreated = userCreated;
+        this.graphAttribute = graphAttribute;
+        this.editMode = false;
+        if (userCreated) {
+            this.nodesSelected = new ArrayList<>();
+            this.transactionsSelected = new ArrayList<>();
+        }
     }
 
     public String getDateTime() {
@@ -53,12 +66,52 @@ public class NotesViewEntry implements PluginReportListener {
         return userCreated;
     }
 
+    public Boolean isGraphAttribute() {
+        return graphAttribute;
+    }
+
+    public void setGraphAttribute(final Boolean graphAttribute) {
+        this.graphAttribute = graphAttribute;
+    }
+
+    public List<Integer> getNodesSelected() {
+        return nodesSelected;
+    }
+
+    public List<Integer> getTransactionsSelected() {
+        return transactionsSelected;
+    }
+
+    public void setNodesSelected(final List<Integer> nodesSelected) {
+        this.nodesSelected = nodesSelected;
+    }
+
+    public void setTransactionsSelected(final List<Integer> transactionsSelected) {
+        this.transactionsSelected = transactionsSelected;
+    }
+
     public void setNoteTitle(final String noteTitle) {
         this.noteTitle = noteTitle;
     }
 
     public void setNoteContent(final String noteContent) {
         this.noteContent = noteContent;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(final List<String> tags) {
+        this.tags = tags;
+    }
+
+    public boolean getEditMode() {
+        return editMode;
+    }
+
+    public void setEditMode(boolean editMode) {
+        this.editMode = editMode;
     }
 
     @Override

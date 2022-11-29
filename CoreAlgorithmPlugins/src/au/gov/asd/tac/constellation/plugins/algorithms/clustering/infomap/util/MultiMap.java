@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,14 +71,11 @@ public class MultiMap<K, V> {
 
     private static final class MultiMapIterator<K, V> implements Iterator<Map.Entry<K, V>> {
 
-        private final Map<K, List<V>> map;
         private final Iterator<Map.Entry<K, List<V>>> iterator;
-
         private Map.Entry<K, List<V>> currentEntry;
         private int currentIndex;
 
         private MultiMapIterator(final Map<K, List<V>> map) {
-            this.map = map;
             iterator = map.entrySet().iterator();
             if (iterator.hasNext()) {
                 currentEntry = iterator.next();

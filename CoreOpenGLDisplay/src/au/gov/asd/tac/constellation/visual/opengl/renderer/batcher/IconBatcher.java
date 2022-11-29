@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.visual.opengl.renderer.batcher;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess;
 import au.gov.asd.tac.constellation.utilities.visual.VisualChange;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable.GLRenderableUpdateTask;
@@ -25,6 +26,8 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -63,6 +66,7 @@ public class IconBatcher implements SceneBatcher {
     private int shaderFlagsTexture;
     private int shaderHighlightColor;
     private int shaderPixelDensity;
+    private int shaderGreyscale; // anaglyphic drawing
 
     private final int colorTarget;
     private final int iconTarget;
@@ -72,7 +76,7 @@ public class IconBatcher implements SceneBatcher {
     public IconBatcher() {
 
         // Create the batch
-        batch = new Batch(GL3.GL_POINTS);
+        batch = new Batch(GL.GL_POINTS);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         iconTarget = batch.newIntBuffer(ICON_BUFFER_WIDTH, false);
     }
@@ -100,29 +104,26 @@ public class IconBatcher implements SceneBatcher {
         shaderFlagsTexture = gl.glGetUniformLocation(shader, "flags");
         shaderHighlightColor = gl.glGetUniformLocation(shader, "highlightColor");
         shaderPixelDensity = gl.glGetUniformLocation(shader, "pixelDensity");
+        shaderGreyscale = gl.glGetUniformLocation(shader, "greyscale");
     }
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
-        return gl -> {
-            batch.dispose(gl);
-        };
+        return gl -> batch.dispose(gl);
     }
 
     public int updateIconTexture(final GL3 gl) {
         final int[] v = new int[1];
-        gl.glGetIntegerv(GL3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
+        gl.glGetIntegerv(GL2ES3.GL_MAX_ARRAY_TEXTURE_LAYERS, v, 0);
         final int maxTextureLayers = v[0];
         GLTools.LOADED_ICON_HELPER.setMaximumTextureLayers(maxTextureLayers);
         return GLTools.loadSharedIconTextures(gl, GLTools.MAX_ICON_WIDTH, GLTools.MAX_ICON_HEIGHT);
     }
 
     public GLRenderableUpdateTask updateIcons(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateIntBufferTask(change, access, this::bufferIconInfo, gl -> {
-            return batch.connectIntBuffer(gl, iconTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, iconTarget);
-        }, ICON_BUFFER_WIDTH);
+        return SceneBatcher.updateIntBufferTask(change, access, this::bufferIconInfo, gl -> batch.connectIntBuffer(gl, iconTarget),
+                gl -> batch.disconnectBuffer(gl, iconTarget),
+                ICON_BUFFER_WIDTH);
     }
 
     @Override
@@ -156,10 +157,17 @@ public class IconBatcher implements SceneBatcher {
         final String sWDecoratorName = access.getSWDecorator(pos);
         final String sEDecoratorName = access.getSEDecorator(pos);
         final String nEDecoratorName = access.getNEDecorator(pos);
-        final int nWDecoratorIndex = nWDecoratorName != null ? GLTools.LOADED_ICON_HELPER.addIcon(nWDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
-        final int sWDecoratorIndex = sWDecoratorName != null ? GLTools.LOADED_ICON_HELPER.addIcon(sWDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
-        final int sEDecoratorIndex = sEDecoratorName != null ? GLTools.LOADED_ICON_HELPER.addIcon(sEDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
-        final int nEDecoratorIndex = nEDecoratorName != null ? GLTools.LOADED_ICON_HELPER.addIcon(nEDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
+
+        // Set the icons for any corners for which a decorator name is set. The name will  be checked in the loaded icon set
+        // and loaded if found. If not found the decorator will be blank.
+        final int nWDecoratorIndex = (nWDecoratorName != null && IconManager.iconExists(nWDecoratorName))
+                ? GLTools.LOADED_ICON_HELPER.addIcon(nWDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
+        final int sWDecoratorIndex = (sWDecoratorName != null && IconManager.iconExists(sWDecoratorName))
+                ? GLTools.LOADED_ICON_HELPER.addIcon(sWDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
+        final int sEDecoratorIndex = (sEDecoratorName != null && IconManager.iconExists(sEDecoratorName))
+                ? GLTools.LOADED_ICON_HELPER.addIcon(sEDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
+        final int nEDecoratorIndex = (nEDecoratorName != null && IconManager.iconExists(nEDecoratorName))
+                ? GLTools.LOADED_ICON_HELPER.addIcon(nEDecoratorName) : GLTools.TRANSPARENT_ICON_INDEX;
 
         if (nWDecoratorIndex > MAX_ICON_INDEX || sWDecoratorIndex > MAX_ICON_INDEX || sEDecoratorIndex > MAX_ICON_INDEX || nEDecoratorIndex > MAX_ICON_INDEX) {
             final String msg = "Decorator icon index is too large";
@@ -186,11 +194,9 @@ public class IconBatcher implements SceneBatcher {
     }
 
     public GLRenderableUpdateTask updateColors(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
-            return batch.connectFloatBuffer(gl, colorTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, colorTarget);
-        }, COLOR_BUFFER_WIDTH);
+        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> batch.connectFloatBuffer(gl, colorTarget),
+                gl -> batch.disconnectBuffer(gl, colorTarget),
+                COLOR_BUFFER_WIDTH);
     }
 
     private int bufferColorInfo(final int pos, final FloatBuffer colorBuffer, final VisualAccess access) {
@@ -204,12 +210,9 @@ public class IconBatcher implements SceneBatcher {
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor highlightColor = access.getHighlightColor();
-        return gl -> {
-            highlightColorMatrix = new float[]{highlightColor.getRed(), 0, 0, 0,
-                0, highlightColor.getGreen(), 0, 0,
-                0, 0, highlightColor.getBlue(), 0,
-                0, 0, 0, 1
-            };
+        return gl -> highlightColorMatrix = new float[]{highlightColor.getRed(), 0, 0, 0, 0,
+            highlightColor.getGreen(), 0, 0, 0, 0,
+            highlightColor.getBlue(), 0, 0, 0, 0, 1
         };
     }
 
@@ -222,15 +225,15 @@ public class IconBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
         if (batch.isDrawable()) {
             gl.glUseProgram(shader);
 
             // Uniform variables
             if (drawForHitTest) {
-                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_TRUE);
+                gl.glUniform1i(shaderLocDrawHitTest, GL.GL_TRUE);
             } else {
-                gl.glUniform1i(shaderLocDrawHitTest, GL3.GL_FALSE);
+                gl.glUniform1i(shaderLocDrawHitTest, GL.GL_FALSE);
             }
             gl.glUniformMatrix4fv(shaderMVMatrix, 1, false, mvMatrix.a, 0);
             gl.glUniformMatrix4fv(shaderPMatrix, 1, false, pMatrix.a, 0);
@@ -242,6 +245,7 @@ public class IconBatcher implements SceneBatcher {
             gl.glUniform1i(shaderImagesTexture, TextureUnits.ICONS);
             gl.glUniform1i(shaderFlagsTexture, TextureUnits.VERTEX_FLAGS);
             gl.glUniformMatrix4fv(shaderHighlightColor, 1, false, highlightColorMatrix, 0);
+            gl.glUniform1i(shaderGreyscale, greyscale ? 1 : 0);
             batch.draw(gl);
         }
         drawForHitTest = false;

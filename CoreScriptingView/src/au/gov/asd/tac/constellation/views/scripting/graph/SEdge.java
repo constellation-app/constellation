@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.views.scripting.graph.exceptions.NoSuchAttributeException;
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SAttributeIterator;
 import au.gov.asd.tac.constellation.views.scripting.graph.iterators.SEdgeTransactionIterator;
-import java.util.logging.Logger;
 
 /**
  * A representation of an edge for use with scripting.
@@ -30,8 +29,6 @@ import java.util.logging.Logger;
  * @author cygnus_x-1
  */
 public class SEdge {
-
-    private static final Logger LOGGER = Logger.getLogger(SEdge.class.getName());
 
     private final GraphReadMethods readableGraph;
     private final int id;

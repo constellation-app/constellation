@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.file.io;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+
 /**
  * Constants used for the Graph file format.
  *
@@ -26,11 +28,12 @@ public final class GraphFileConstants {
      * No constructor.
      */
     private GraphFileConstants() {
+        throw new IllegalStateException("Constants Class");
     }
     /**
      * The file extensions for ZipEntry files.
      */
-    public static final String FILE_EXTENSION = ".txt";
+    public static final String FILE_EXTENSION = FileExtensionConstants.TEXT;
     /**
      * The field separator in CSV files.
      */

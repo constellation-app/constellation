@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginGraphs;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
+import au.gov.asd.tac.constellation.graph.node.plugins.SimplePluginAction;
 import org.openide.util.NbBundle.Messages;
 
 /**
@@ -41,26 +33,10 @@ import org.openide.util.NbBundle.Messages;
     "# {1} - transactions copied",
     "MSG_Copied=Nodes copied: {0}; Transactions copied {1}."
 })
-public final class CopyToClipboardAction extends AbstractAction {
-
-    private final GraphNode context;
+public final class CopyToClipboardAction extends SimplePluginAction {
 
     public CopyToClipboardAction(final GraphNode context) {
-        this.context = context;
+        super(context, InteractiveGraphPluginRegistry.COPY);
     }
 
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-        final Graph graph = context.getGraph();
-
-        // TODO: make this a SimpleReadPlugin.
-        PluginExecution.withPlugin(new SimplePlugin("Copy To Clipboard") {
-            @Override
-            protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                final Graph graph = graphs.getGraph();
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.COPY).executeNow(graph);
-
-            }
-        }).executeLater(graph);
-    }
 }

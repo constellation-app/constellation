@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,27 @@ public class MissingTypeRuleNGTest {
     public void testExecuteRule() throws InterruptedException {
         final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
         final int vx0 = graph.addVertex();
+
+        final MissingTypeRule instance = new MissingTypeRule();
+        final boolean expResult = true;
+        final boolean result = instance.executeRule(graph, vx0);
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of executeRule method, of class MissingTypeRule.
+     *
+     * Test when null is returned from type attribute
+     *
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testExecuteRuleNull() throws InterruptedException {
+        final StoreGraph graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
+        final int vx0 = graph.addVertex();
+
+        final int typeAttr = AnalyticConcept.VertexAttribute.TYPE.ensure(graph);
+        assertEquals(graph.getObjectValue(typeAttr, vx0), (Object) null);
 
         final MissingTypeRule instance = new MissingTypeRule();
         final boolean expResult = true;

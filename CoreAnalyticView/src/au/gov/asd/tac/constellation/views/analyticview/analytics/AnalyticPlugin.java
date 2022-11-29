@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@ package au.gov.asd.tac.constellation.views.analyticview.analytics;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
+import java.io.File;
 import java.util.Collections;
 import java.util.Set;
 
@@ -84,6 +86,13 @@ public abstract class AnalyticPlugin<R extends AnalyticResult<?>> extends Simple
 
     public void updateParameters(final PluginParameters parameters) {
         return;
+    }
+
+    public String getHelpPath() {
+        final String codebaseName = "constellation";
+        final String sep = File.separator;
+        return Generator.getBaseDirectory() + codebaseName + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + codebaseName + sep + "views" + sep + "analyticview" + sep + "docs" + sep;
     }
 
     /**

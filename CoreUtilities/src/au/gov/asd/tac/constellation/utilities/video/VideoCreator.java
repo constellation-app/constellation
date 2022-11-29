@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public final class VideoCreator implements Runnable {
     private static final Logger LOGGER = Logger.getLogger(VideoCreator.class.getName());
 
     private static final String WATERMARK = BrandingUtilities.APPLICATION_NAME;
-    private static final AlphaComposite WM_ALPHA = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f);
+    private static final AlphaComposite WM_ALPHA = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2F);
     private static final Font WM_FONT = new Font("Arial", Font.BOLD, 18);
 
     // Don't leave pauses longer than this in the video stream.

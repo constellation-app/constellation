@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,9 +133,12 @@ public class DateTimeRange {
 
     @Override
     public boolean equals(final Object other) {
+        if (other == null) {
+            return false;
+        }
         if (this == other) {
             return true;
-        } else if (!(other instanceof DateTimeRange)) {
+        } else if (this.getClass() != other.getClass()) {
             return false;
         } else {
             final DateTimeRange otherRange = (DateTimeRange) other;

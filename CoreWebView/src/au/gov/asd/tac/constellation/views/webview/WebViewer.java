@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,19 +68,14 @@ public class WebViewer extends JFXPanel {
             WebView webView = new WebView();
             webView.setMaxWidth(Double.MAX_VALUE);
             webView.setMaxHeight(Double.MAX_VALUE);
-            //                System.out.println("WEB VIEWER: " + System.identityHashCode(webView.getClass()));
             root.setCenter(webView);
             webView.setContextMenuEnabled(false);
             final WebEngine webEngine = webView.getEngine();
             webEngine.load(url);
-            webEngine.locationProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
-                webEngine.load(newValue);
-            });
-            EventHandler<ActionEvent> goAction = (final ActionEvent event) -> {
-                webEngine.load(url.startsWith("http://")
-                        ? url
-                        : "http://" + url);
-            };
+            webEngine.locationProperty().addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue)
+                    -> webEngine.load(newValue));
+            EventHandler<ActionEvent> goAction = (final ActionEvent event) -> webEngine.load(url.startsWith("http://")                        ? url
+                    : "http://" + url);
         });
     }
 }

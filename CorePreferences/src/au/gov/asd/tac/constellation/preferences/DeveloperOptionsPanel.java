@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,9 @@ package au.gov.asd.tac.constellation.preferences;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JPanel;
 import org.netbeans.api.autoupdate.OperationContainer;
 import org.netbeans.api.autoupdate.OperationException;
 import org.netbeans.api.autoupdate.OperationSupport;
@@ -28,7 +31,9 @@ import org.netbeans.api.autoupdate.UpdateUnit;
  *
  * @author sirius
  */
-public class DeveloperOptionsPanel extends javax.swing.JPanel {
+public class DeveloperOptionsPanel extends JPanel {
+    
+    private static final Logger LOGGER = Logger.getLogger(DeveloperOptionsPanel.class.getName());
 
     private final DeveloperOptionsPanelController controller;
 
@@ -37,7 +42,7 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    public boolean getGcOnOpen() {
+    public boolean isGcOnOpenSelected() {
         return gcOnOpenCheckbox.isSelected();
     }
 
@@ -45,7 +50,7 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
         gcOnOpenCheckbox.setSelected(gcOnOpen);
     }
 
-    public boolean getGcOnClose() {
+    public boolean isGcOnCloseSelected() {
         return gcOnCloseCheckbox.isSelected();
     }
 
@@ -53,7 +58,7 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
         gcOnCloseCheckbox.setSelected(gcOnClose);
     }
 
-    public boolean getDebugGl() {
+    public boolean isDebugGlSelected() {
         return debugGlCheckbox.isSelected();
     }
 
@@ -61,7 +66,7 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
         debugGlCheckbox.setSelected(debugGl);
     }
 
-    public boolean getPrintGl() {
+    public boolean isPrintGlSelected() {
         return printGlCheckbox.isSelected();
     }
 
@@ -69,7 +74,7 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
         printGlCheckbox.setSelected(printGl);
     }
 
-    public boolean getDisplayFps() {
+    public boolean isDisplayFpsSelected() {
         return displayFpsCheckbox.isSelected();
     }
 
@@ -125,7 +130,7 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
             .addGroup(memoryPanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(gcOnOpenCheckbox)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gcOnCloseCheckbox)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -181,9 +186,9 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
                 .addComponent(memoryPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(glPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(masterResetButton)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         glPanel.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(DeveloperOptionsPanel.class, "DeveloperOptionsPanel.glPanel.AccessibleContext.accessibleName")); // NOI18N
@@ -195,7 +200,7 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
 
         for (UpdateUnit unit : UpdateManager.getDefault().getUpdateUnits()) {
             String codeName = unit.getCodeName();
-            if (!codeName.equals("au.gov.asd.tac.constellation.autoupdate")
+            if (!"au.gov.asd.tac.constellation.autoupdate".equals(codeName)
                     && !codeName.startsWith("org.netbeans.")
                     && !codeName.startsWith("org.openide.")
                     && !codeName.startsWith("org.jdesktop.")) {
@@ -212,8 +217,8 @@ public class DeveloperOptionsPanel extends javax.swing.JPanel {
         OperationSupport operationSupport = operationContainer.getSupport();
         try {
             operationSupport.doOperation(null);
-        } catch (OperationException ex) {
-            ex.printStackTrace();
+        } catch (final OperationException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }//GEN-LAST:event_masterResetButtonActionPerformed
 

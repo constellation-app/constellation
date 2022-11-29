@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,6 @@ public class DraggableCell<T> extends ListCell<T> {
                 Dragboard dragboard = event.getDragboard();
 
                 if (dragboard.hasString()) {
-//                    System.out.println("dragging");
                     ObservableList<T> items = getListView().getItems();
                     final int draggedIndex = Integer.parseInt(dragboard.getString());
                     final int thisIndex = items.indexOf(getItem());

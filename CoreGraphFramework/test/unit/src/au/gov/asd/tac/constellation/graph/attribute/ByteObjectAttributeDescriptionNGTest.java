@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,11 @@
  */
 package au.gov.asd.tac.constellation.graph.attribute;
 
-import static org.testng.Assert.*;
+import java.time.LocalDate;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -57,10 +61,23 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testConvertFromObject() {
-        Object object = null;
-        Byte expResult = null;
-        Byte result = instance.convertFromObject(object);
-        assertEquals(result, expResult);
+        System.out.println("convertFromObject");
+        
+        assertNull(instance.convertFromObject(null));
+        assertEquals((byte) instance.convertFromObject(1), (byte) 1);
+        assertEquals((byte) instance.convertFromObject(Boolean.TRUE), (byte) 1);
+        assertEquals((byte) instance.convertFromObject(Boolean.FALSE), (byte) 0);
+    }
+    
+    /**
+     * Test of convertFromObject method, of class 
+     * ByteObjectAttributeDescription. Trying to convert an incompatible type to byte object
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void testconvertFromObjectCantConvert() {
+        System.out.println("convertFromObjectCantConvert");
+        
+        instance.convertFromObject(LocalDate.of(1999, 12, 31));
     }
 
     /**
@@ -69,10 +86,10 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testConvertFromString() {
-        String string = "";
-        Byte expResult = null;
-        Byte result = instance.convertFromString(string);
-        assertEquals(result, expResult);
+        System.out.println("convertFromString");
+        
+        assertNull(instance.convertFromString(""));
+        assertEquals((byte) instance.convertFromString("42"), (byte) 42);
     }
 
     /**
@@ -80,6 +97,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetByte() {
+        System.out.println("getByte");
+        
         int id = 0;
         byte expResult = 0;
         byte result = instance.getByte(id);
@@ -91,6 +110,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetByte() {
+        System.out.println("setByte");
+        
         int id = 0;
         byte value = 0;
         instance.setByte(id, value);
@@ -102,6 +123,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetShort() {
+        System.out.println("getShort");
+        
         int id = 0;
         short expResult = 0;
         short result = instance.getShort(id);
@@ -113,6 +136,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetShort() {
+        System.out.println("setShort");
+        
         int id = 0;
         short value = 0;
         instance.setShort(id, value);
@@ -124,6 +149,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetInt() {
+        System.out.println("getInt");
+        
         int id = 0;
         int expResult = 0;
         int result = instance.getInt(id);
@@ -135,6 +162,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetInt() {
+        System.out.println("setInt");
+        
         int id = 0;
         int value = 0;
         instance.setInt(id, value);
@@ -146,6 +175,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetLong() {
+        System.out.println("getLong");
+        
         int id = 0;
         long expResult = 0L;
         long result = instance.getLong(id);
@@ -157,6 +188,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetLong() {
+        System.out.println("setLong");
+        
         int id = 0;
         long value = 0L;
         instance.setLong(id, value);
@@ -168,6 +201,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetFloat() {
+        System.out.println("getFloat");
+        
         int id = 0;
         float expResult = 0.0F;
         float result = instance.getFloat(id);
@@ -179,6 +214,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetFloat() {
+        System.out.println("setFloat");
+        
         int id = 0;
         float value = 0.0F;
         instance.setFloat(id, value);
@@ -190,6 +227,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetDouble() {
+        System.out.println("getDouble");
+        
         int id = 0;
         double expResult = 0.0;
         double result = instance.getDouble(id);
@@ -201,6 +240,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetDouble() {
+        System.out.println("setDouble");
+        
         int id = 0;
         double value = 0.0;
         instance.setDouble(id, value);
@@ -212,6 +253,8 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testGetBoolean() {
+        System.out.println("getBoolean");
+        
         int id = 0;
         boolean expResult = false;
         boolean result = instance.getBoolean(id);
@@ -223,20 +266,24 @@ public class ByteObjectAttributeDescriptionNGTest {
      */
     @Test
     public void testSetBoolean() {
+        System.out.println("setBoolean");
+        
         int id = 0;
-        boolean value = false;
-        instance.setBoolean(id, value);
-        assertEquals(instance.getBoolean(id), value);
+        instance.setBoolean(id, true);
+        assertTrue(instance.getBoolean(id));
+        instance.setBoolean(id, false);
+        assertFalse(instance.getBoolean(id));
     }
 
-//    /**
-//     * Test of hashCode method, of class ByteObjectAttributeDescription.
-//     */
-//    @Test
-//    public void testHashCode() {
-//        int id = 0;
-//        int expResult = 0;
-//        int result = instance.hashCode(id);
-//        assertEquals(result, expResult);
-//    }
+    /**
+     * Test of hashCode method, of class ByteObjectAttributeDescription.
+     */
+    @Test
+    public void testHashCode() {
+        System.out.println("hashCode");
+        
+        int id = 0;
+        instance.setByte(id, (byte) 42);
+        assertEquals(instance.hashCode(id), 42);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,9 +66,8 @@ public class NotEquals {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         COMPARISON_OPERATION.register(registry);
 
-        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> p1.readBoolean() != p2.readBoolean();
-        });
+        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> p1.readBoolean() != p2.readBoolean());
     }
 
     static {

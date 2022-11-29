@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,16 +20,15 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.openide.util.HelpCtx;
 
@@ -39,6 +38,8 @@ import org.openide.util.HelpCtx;
  * @author cygnus_x-1
  */
 public class AnalyticViewPane extends BorderPane {
+    
+    private static final Logger LOGGER = Logger.getLogger(AnalyticViewPane.class.getName());
 
     private static final String RUN_START_TEXT = "Run";
     private static final String RUN_START_STYLE = "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;";
@@ -47,7 +48,6 @@ public class AnalyticViewPane extends BorderPane {
 
     private final VBox analyticViewPane;
     private final AnchorPane analyticOptionsPane;
-    private final HBox analyticOptionControls;
     private final HBox analyticOptionButtons;
     private final Button runButton;
 
@@ -76,28 +76,10 @@ public class AnalyticViewPane extends BorderPane {
         this.analyticConfigurationPane = new AnalyticConfigurationPane();
         analyticConfigurationPane.prefWidthProperty().bind(analyticViewPane.widthProperty());
 
-        // the pane holding the analytic option items
-        this.analyticOptionControls = new HBox();
-        final MenuBar analyticMenu = new MenuBar();
-        final MenuItem saveMenuItem = new MenuItem("Save Question");
-        saveMenuItem.setOnAction(event -> {
-            // TODO: handle saving analytic questions, then add this to the menu
-        });
-//        optionsMenu.getItems().add(saveMenuItem);
-//        analyticMenu.getMenus().add(optionsMenu);
-
-        final Button addButton = new Button("", new ImageView(UserInterfaceIconProvider.ADD.buildImage(16)));
-        addButton.setOnAction(event -> {
-            // TODO: handle adding new analytic view tabs, then add this to the controls
-        });
-        analyticOptionControls.getChildren().add(analyticMenu); //, addButton);
-
         // the pane holding the analytic option buttons
         this.analyticOptionButtons = new HBox();
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
-        helpButton.setOnAction(event -> {
-            new HelpCtx(this.getClass().getName()).display();
-        });
+        helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
         this.runButton = new Button(RUN_START_TEXT);
         runButton.setStyle(RUN_START_STYLE);
         runButton.setOnAction(event -> {
@@ -126,7 +108,7 @@ public class AnalyticViewPane extends BorderPane {
                 progressTab.setContent(analyticResultsPane.getProgressIndicatorPane());
                 analyticResultsPane.getInternalVisualisationPane().getTabs().add(progressTab);
                 // answer the current analytic question and display the results
-                Thread answerQuestionThread = new Thread(() -> {
+                final Thread answerQuestionThread = new Thread(() -> {
                     Platform.runLater(() -> {
                         runButton.setText(RUN_STOP_TEXT);
                         runButton.setStyle(RUN_STOP_STYLE);
@@ -136,7 +118,8 @@ public class AnalyticViewPane extends BorderPane {
                     try {
                         AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
                         analyticResultsPane.displayResults(question);
-                    } catch (AnalyticException ex) {
+                    } catch (final AnalyticException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                         final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
                         question.addException(ex);
                         analyticResultsPane.displayResults(question);
@@ -156,10 +139,8 @@ public class AnalyticViewPane extends BorderPane {
         analyticOptionButtons.getChildren().addAll(helpButton, runButton);
 
         // populate the analytic options pane
-        analyticOptionsPane.getChildren().addAll(analyticOptionControls, analyticOptionButtons);
-        AnchorPane.setLeftAnchor(analyticOptionControls, 5.0);
+        analyticOptionsPane.getChildren().add(analyticOptionButtons);
         AnchorPane.setRightAnchor(analyticOptionButtons, 5.0);
-        VBox.setVgrow(analyticMenu, Priority.ALWAYS);
 
         // populate the analytic view pane
         analyticViewPane.getChildren().addAll(analyticOptionsPane, analyticConfigurationPane);
@@ -188,8 +169,6 @@ public class AnalyticViewPane extends BorderPane {
     }
 
     protected final void setIsRunnable(final boolean isRunnable) {
-        Platform.runLater(() -> {
-            runButton.setDisable(!isRunnable);
-        });
+        Platform.runLater(() -> runButton.setDisable(!isRunnable));
     }
 }

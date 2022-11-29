@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,29 +36,29 @@ public class PlanePositionPanel extends javax.swing.JPanel {
             xx = x + rr;
             yy = y - height - rr;
         } else if (topRb.isSelected()) {
-            xx = x - width / 2f;
+            xx = x - width / 2F;
             yy = y - height - rr;
         } else if (topRightRb.isSelected()) {
             xx = x - width - rr;
             yy = y - height - rr;
         } else if (rightRb.isSelected()) {
             xx = x - width - rr;
-            yy = y - height / 2f;
+            yy = y - height / 2F;
         } else if (bottomRightRb.isSelected()) {
             xx = x - width - rr;
             yy = y + rr;
         } else if (bottomRb.isSelected()) {
-            xx = x - width / 2f;
+            xx = x - width / 2F;
             yy = y + rr;
         } else if (bottomLeftRb.isSelected()) {
             xx = x + rr;
             yy = y + rr;
         } else if (leftRb.isSelected()) {
             xx = x + rr;
-            yy = y - height / 2f;
+            yy = y - height / 2F;
         } else if (centreRb.isSelected()) {
-            xx = x - width / 2f;
-            yy = y - height / 2f;
+            xx = x - width / 2F;
+            yy = y - height / 2F;
         } else {
             throw new IllegalStateException();
         }

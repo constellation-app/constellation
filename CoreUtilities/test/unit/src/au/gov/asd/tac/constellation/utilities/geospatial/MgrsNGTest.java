@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.geospatial;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import java.util.Arrays;
 import static org.testng.AssertJUnit.assertEquals;
 import org.testng.annotations.Test;
 
@@ -39,7 +38,6 @@ public class MgrsNGTest {
         final String mgrs = "55HFA 92736 90517";
         final double[] expectedResult = new double[]{-35.30999726878406, 149.1200021825661};
         final double[] actualResult = Mgrs.decode(mgrs);
-        System.out.println(Arrays.toString(actualResult));
         assertEquals(expectedResult.length, actualResult.length);
         assertEquals(expectedResult[0], actualResult[0]);
         assertEquals(expectedResult[1], actualResult[1]);

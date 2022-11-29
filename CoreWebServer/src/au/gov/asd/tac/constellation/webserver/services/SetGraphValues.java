@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,14 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.webserver.api.RestUtilities;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
@@ -50,6 +53,7 @@ public class SetGraphValues extends RestService {
 
     private static final String NAME = "set_graph_values";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
+    private static final String ATTRIBUTES_PARAMETER_ID = "attributes";
 
     private static final String COLUMNS = "columns";
 
@@ -79,8 +83,15 @@ public class SetGraphValues extends RestService {
 
         final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
-        graphIdParam.setDescription("The id of the graph to get the values of.");
+        graphIdParam.setDescription("The id of the graph to set the graph attributes. (Default is the active graph)");
         parameters.addParameter(graphIdParam);
+
+        final PluginParameter<StringParameterValue> dataParam = StringParameterType.build(ATTRIBUTES_PARAMETER_ID);
+        dataParam.setName("Graph attributes (body)");
+        dataParam.setDescription("A JSON representation of the graph attributes, in the form {\"columns\": [\"attribute1\",\"attribute2\",\"attribute3\"], \"data\": [[val1, val2, val3]]. This is the same as the output of pandas.DataFrame.to_json(orient='split', date_format='iso').");
+        dataParam.setRequestBodyExampleJson("#/components/examples/setGraphAttributesExample");
+        dataParam.setRequired(true);
+        parameters.addParameter(dataParam);
 
         return parameters;
     }
@@ -128,22 +139,9 @@ public class SetGraphValues extends RestService {
     }
 
     private static void setGraphAttributes(final Graph graph, final ArrayNode columns, final ArrayNode row) {
-        final Plugin p = new SimpleEditPlugin("Set graph attributes from REST API") {
-            @Override
-            protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                for (int i = 0; i < columns.size(); i++) {
-                    final String attributeName = columns.get(i).asText();
-                    int attributeId = graph.getAttribute(GraphElementType.GRAPH, attributeName);
-                    if (attributeId == Graph.NOT_FOUND) {
-                        attributeId = graph.addAttribute(GraphElementType.GRAPH, StringAttributeDescription.ATTRIBUTE_NAME, attributeName, null, null, null);
-                    }
-                    final String attributeValue = row.get(i).asText();
-                    graph.setStringValue(attributeId, 0, attributeValue);
-                }
-            }
-        };
+        final Plugin p = new SetGraphAttributesFromRestApiPlugin(columns, row);
 
-        PluginExecution pe = PluginExecution.withPlugin(p);
+        final PluginExecution pe = PluginExecution.withPlugin(p);
 
         try {
             pe.executeNow(graph);
@@ -152,6 +150,36 @@ public class SetGraphValues extends RestService {
             throw new RestServiceException(ex);
         } catch (final PluginException ex) {
             throw new RestServiceException(ex);
+        }
+    }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
+    private static class SetGraphAttributesFromRestApiPlugin extends SimpleEditPlugin {
+
+        private final ArrayNode columns;
+        private final ArrayNode row;
+
+        public SetGraphAttributesFromRestApiPlugin(final ArrayNode columns, final ArrayNode row) {
+            this.columns = columns;
+            this.row = row;
+        }
+
+        @Override
+        public String getName() {
+            return "Set graph attributes from REST API";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            for (int i = 0; i < columns.size(); i++) {
+                final String attributeName = columns.get(i).asText();
+                int attributeId = graph.getAttribute(GraphElementType.GRAPH, attributeName);
+                if (attributeId == Graph.NOT_FOUND) {
+                    attributeId = graph.addAttribute(GraphElementType.GRAPH, StringAttributeDescription.ATTRIBUTE_NAME, attributeName, null, null, null);
+                }
+                final String attributeValue = row.get(i).asText();
+                graph.setStringValue(attributeId, 0, attributeValue);
+            }
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
     public static final String ATTRIBUTE_NAME = "float";
     public static final Class<Float> NATIVE_CLASS = float.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.FLOAT;
-    public static final float DEFAULT_VALUE = 0.0f;
+    public static final float DEFAULT_VALUE = 0.0F;
 
     private float[] data = new float[0];
     private float defaultValue = DEFAULT_VALUE;
@@ -62,7 +62,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
         } else if (object instanceof Number) {
             return ((Number) object).floatValue();
         } else if (object instanceof Boolean) {
-            return ((Boolean) object) ? 1.0f : 0.0f;
+            return ((Boolean) object) ? 1.0F : 0.0F;
         } else if (object instanceof Character) {
             return (float) ((Character) object);
         } else if (object instanceof String) {
@@ -81,7 +81,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
                 return Float.parseFloat(string);
             } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
+                        "Error converting String '%s' to float", string), ex);
             }
         }
     }
@@ -187,12 +187,12 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
 
     @Override
     public boolean getBoolean(final int id) {
-        return data[id] != 0.0f;
+        return data[id] != 0.0F;
     }
 
     @Override
     public void setBoolean(final int id, final boolean value) {
-        data[id] = value ? 1.0f : 0.0f;
+        data[id] = value ? 1.0F : 0.0F;
     }
 
     @Override
@@ -286,12 +286,12 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (FloatReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new FloatVariable() {
             @Override
             public float readFloat() {
@@ -299,7 +299,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
             }
 
             @Override
-            public void writeFloat(float value) {
+            public void writeFloat(final float value) {
                 graph.setFloatValue(attribute, indexReadable.readInt(), value);
             }
         };

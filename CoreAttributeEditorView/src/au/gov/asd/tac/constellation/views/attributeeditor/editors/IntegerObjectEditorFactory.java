@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,9 +79,7 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
             controls.setVgap(CONTROLS_DEFAULT_VERTICAL_SPACING);
 
             numberField = new TextField();
-            numberField.textProperty().addListener((o, n, v) -> {
-                update();
-            });
+            numberField.textProperty().addListener((o, n, v) -> update());
 
             noValueCheckBox = new CheckBox(NO_VALUE_LABEL);
             noValueCheckBox.setAlignment(Pos.CENTER);

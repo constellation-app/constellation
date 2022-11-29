@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,6 @@ public final class PermanentMergeAction extends AbstractAction {
      */
     public void execute(final int vxId) throws InterruptedException {
         assert !SwingUtilities.isEventDispatchThread();
-//        final Plugin plugin = PluginRegistry.get(CoreRegistry.PERMANENT_NODE_MERGE);
         final Graph graph = context.getGraph();
 
         // make sure that selected node is part of selection set

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,18 +24,19 @@ import org.python.modules.math;
  * @author algol
  * @author Nova
  */
-class QuadTree extends AbstractTree{
-    static final int TOP_R = 0;
-    static final int TOP_L = 1;
-    static final int BOT_L = 2;
-    static final int BOT_R = 3;
-    
+public class QuadTree extends AbstractTree {
+
+    protected static final int TOP_R = 0;
+    protected static final int TOP_L = 1;
+    protected static final int BOT_L = 2;
+    protected static final int BOT_R = 3;
+
     /**
      * Constructor creates QuadTree and inserts all nodes
-     * 
-     * @param graph  The graph the QuadTree should be based on
+     *
+     * @param graph The graph the QuadTree should be based on
      */
-    QuadTree(final GraphReadMethods graph) {
+    protected QuadTree(final GraphReadMethods graph) {
         super(graph, Dimensions.TWO);
         this.box = new BoundingBox2D(graph);
         insertAll();
@@ -43,11 +44,11 @@ class QuadTree extends AbstractTree{
 
     /**
      * Create a subtree of the current tree
-     * 
+     *
      * @param parent
-     * @param box 
+     * @param box
      */
-    QuadTree(QuadTree parent, final BoundingBox2D box) {
+    protected QuadTree(final QuadTree parent, final BoundingBox2D box) {
         super(parent, box);
     }
 
@@ -57,7 +58,7 @@ class QuadTree extends AbstractTree{
      * Divide the node into four equal parts and initialise the four subnodes with the new bounds.
      */
     @Override
-    void split() {
+    protected void split() {
         final BoundingBox2D box2D = (BoundingBox2D) this.box;
         nodes = new QuadTree[4];
         nodes[TOP_R] = new QuadTree(this, box2D.topRightQuadrant());
@@ -74,13 +75,13 @@ class QuadTree extends AbstractTree{
      * Determine where an object belongs in the quadtree by determining which node the object can fit into.
      */
     @Override
-    int getIndex(final int vxId) {
+    protected int getIndex(final int vxId) {
         int index = -1;
-        
+
         // Object can completely fit within the top/bottom halves.
         final boolean bottomHalf = wg.getFloatValue(yId, vxId) + wg.getFloatValue(rId, vxId) < box.midY;
         final boolean topHalf = wg.getFloatValue(yId, vxId) - wg.getFloatValue(rId, vxId) > box.midY;
-        
+
         // Object can completely fit witin the left/right halves.
         final boolean leftHalf = wg.getFloatValue(xId, vxId) + wg.getFloatValue(rId, vxId) < box.midX;
         final boolean rightHalf = wg.getFloatValue(xId, vxId) - wg.getFloatValue(rId, vxId) > box.midX;
@@ -91,6 +92,8 @@ class QuadTree extends AbstractTree{
                 index = TOP_L; // fits in top left quadrant
             } else if (bottomHalf) {
                 index = BOT_L; // fits in bottom left quadrant
+            } else {
+                // Do nothing
             }
         } // Object can completely fit within the right half.
         else if (rightHalf) {
@@ -98,21 +101,25 @@ class QuadTree extends AbstractTree{
                 index = TOP_R; // fits in top right quadrant
             } else if (bottomHalf) {
                 index = BOT_R; // fits in bottom right quadrant
+            } else {
+                // Do nothing
             }
+        } else {
+            // Do nothing
+            return index;
         }
         return index;
     }
 
     @Override
-    double getDelta(final int vertex1, final int vertex2){
+    protected double getDelta(final int vertex1, final int vertex2) {
         float deltaX = wg.getFloatValue(xId, vertex1) - wg.getFloatValue(xId, vertex2);
         float deltaY = wg.getFloatValue(yId, vertex1) - wg.getFloatValue(yId, vertex2);
         return math.sqrt(deltaX * deltaX + deltaY * deltaY);
     }
-    
-    @Override
-    double getCollisionDistance(final int vertex1, final int vertex2){
-        return math.sqrt(2*wg.getFloatValue(rId, vertex1)) + math.sqrt(2*wg.getFloatValue(rId, vertex2));
-    }
 
+    @Override
+    protected double getCollisionDistance(final int vertex1, final int vertex2) {
+        return math.sqrt(2 * wg.getFloatValue(rId, vertex1)) + math.sqrt(2 * wg.getFloatValue(rId, vertex2));
+    }
 }

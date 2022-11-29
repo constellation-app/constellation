@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,13 @@ package au.gov.asd.tac.constellation.plugins.importexport.json;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
@@ -36,9 +39,9 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_ExportToJsonAction=To JSON...")
 public final class ExportToJsonAction implements ActionListener {
 
-    private static final String EXT = ".json";
+    private static final String TITLE = "Export To JSON";
 
-    final GraphNode context;
+    private final GraphNode context;
 
     public ExportToJsonAction(final GraphNode context) {
         this.context = context;
@@ -46,35 +49,40 @@ public final class ExportToJsonAction implements ActionListener {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-        final FileChooserBuilder fChooser = new FileChooserBuilder("ExportJson")
-                .setTitle("Export to JSON")
-                .setFileFilter(new FileFilter() {
-                    @Override
-                    public boolean accept(final File pathName) {
-                        final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && name.toLowerCase().endsWith(EXT)) {
-                            return true;
-                        }
-
-                        return pathName.isDirectory();
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "JSON file";
-                    }
-                });
-
-        final File file = fChooser.showSaveDialog();
-        if (file != null) {
+        FileChooser.openSaveDialog(getExportToJSONFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
             String fnam = file.getAbsolutePath();
-            if (!fnam.toLowerCase().endsWith(EXT)) {
-                fnam += EXT;
+
+            if (!StringUtils.endsWithIgnoreCase(fnam, FileExtensionConstants.JSON)) {
+                fnam += FileExtensionConstants.JSON;
             }
 
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_JSON)
                     .withParameter(ExportToJsonPlugin.FILE_NAME_PARAMETER_ID, fnam)
                     .executeLater(context.getGraph());
-        }
+        }));
+    }
+
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getExportToJSONFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JSON)) || file.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "JSON Files (" + FileExtensionConstants.JSON + ")";
+                    }
+                });
     }
 }

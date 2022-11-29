@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public class BoundingCircle {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(final double x) {
         this.x = x;
     }
 
@@ -50,7 +50,7 @@ public class BoundingCircle {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(final double y) {
         this.y = y;
     }
 
@@ -58,15 +58,15 @@ public class BoundingCircle {
         return radius;
     }
 
-    public void setRadius(double radius) {
+    public void setRadius(final double radius) {
         this.radius = radius;
     }
 
     public static BoundingCircle enclosingCircle(final List<BoundingCircle> circles) {
         final BBoxf box = new BBoxf();
         for (final BoundingCircle c : circles) {
-            box.add((float) (c.x + c.radius), (float) (c.y + c.radius), 0f);
-            box.add((float) (c.x - c.radius), (float) (c.y - c.radius), 0f);
+            box.add((float) (c.x + c.radius), (float) (c.y + c.radius), 0F);
+            box.add((float) (c.x - c.radius), (float) (c.y - c.radius), 0F);
         }
 
         final float[] centre = box.getCentre();

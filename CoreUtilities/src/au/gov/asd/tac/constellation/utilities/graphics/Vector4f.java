@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -136,12 +136,10 @@ public final class Vector4f {
     }
 
     public void getMatrixColumn(final Vector4f dst, final int column) {
-//        memcpy(dst, src+(4*column), sizeof(float)*4);
         System.arraycopy(a, 4 * column, dst.a, 0, 4);
     }
 
     public void setMatrixColumn(final Vector4f dst, final int column) {
-//        memcpy(dst+(4*column), src, sizeof(float)*4);
         System.arraycopy(a, 0, dst.a, 4 * column, 4);
     }
 

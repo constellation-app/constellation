@@ -15,21 +15,22 @@
  */
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.file.GraphFilePluginRegistry;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
+import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -37,17 +38,18 @@ import org.openide.util.NbBundle;
  *
  * @author canis_majoris
  */
-
-@PluginInfo(tags = {"WELCOME"})
+@PluginInfo(tags = {PluginTags.WELCOME})
 @NbBundle.Messages("OpenGraphWelcomePlugin=Open Graph Welcome Plugin")
-public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
+public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
     
+    private static final Logger LOGGER = Logger.getLogger(OpenGraphWelcomePlugin.class.getName());
+
     public static final String OPEN = "resources/welcome_open_folder.png";
     final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
     final Button openFile = new Button();
-    
+
     /**
-     * Get a unique reference that is used to identify the plugin 
+     * Get a unique reference that is used to identify the plugin
      *
      * @return a unique reference
      */
@@ -55,10 +57,10 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
     public String getName() {
         return "Open Graph Welcome";
     }
-    
+
     /**
-     * This method describes what action should be taken when the 
-     * link is clicked on the Welcome Page
+     * This method describes what action should be taken when the link is
+     * clicked on the Welcome Page
      *
      */
     @Override
@@ -66,17 +68,17 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
         final StoreGraph sg = new StoreGraph();
         try {
             PluginExecution.withPlugin(GraphFilePluginRegistry.OPEN_FILE).executeNow(sg);
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             Thread.currentThread().interrupt();
-        } catch (PluginException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final PluginException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
     }
 
     /**
-     * Determines whether this analytic appear on the Welcome Page 
+     * Determines whether this analytic appear on the Welcome Page
      *
      * @return true is this analytic should be visible, false otherwise.
      */
@@ -84,21 +86,19 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface{
     public boolean isVisible() {
         return true;
     }
-    
-    
-     /**
+
+    /**
      * Creates the button object to represent this plugin
-     * 
+     *
      * @return the button object
      */
     @Override
-    public Button getButton(){
+    public Button getButton() {
         openImage.setFitHeight(75);
         openImage.setFitWidth(75);
         final Label title = new Label("Open");
-        title.setFont(new Font("Arial", 16));
         final Label subtitle = new Label("File Explorer");
-        subtitle.setFont(new Font("Arial", 10));
+        subtitle.setId("smallInfoText");
         final VBox layoutVBox = new VBox(openImage, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         openFile.setGraphic(layoutVBox);

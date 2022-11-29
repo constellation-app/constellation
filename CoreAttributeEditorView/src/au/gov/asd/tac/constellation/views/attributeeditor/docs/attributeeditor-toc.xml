@@ -3,7 +3,7 @@
 <toc version="2.0">
     <tocitem text="Views">
         <tocitem text="Attribute Editor">
-            <tocitem text="Editing Attributes" target="au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorPanel"/>
+            <tocitem text="Attribute Editor" target="au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorPanel"/>
         </tocitem>
     </tocitem>
 </toc>

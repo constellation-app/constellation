@@ -3,11 +3,12 @@
 <toc version="2.0">
     <tocitem text="Views" mergetype="javax.help.SortMerge">
         <tocitem text="Data Access View" mergetype="javax.help.SortMerge">
-            <tocitem text="Data Access View" target="au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewTopComponent"/>
+            <tocitem text="Data Access View" target="au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent"/>
             <tocitem text="Data Access View: Options" target="au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIO"/>
             <tocitem text="Import" mergetype="javax.help.SortMerge">
-                <tocitem text="Extract from Text" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractFromTextPlugin"/>
-                <tocitem text="Extract Words from Content" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractFromContentPlugin"/>
+                <tocitem text="Extract Types from Text" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin"/>
+                <tocitem text="Extract Words from Text" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin"/>
+                <tocitem text="Import Graph File" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin"/>
             </tocitem>
             <tocitem text="Clean" mergetype="javax.help.SortMerge">
                 <tocitem text="Merge Nodes" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin"/>
@@ -16,13 +17,19 @@
                 <tocitem text="Remove Unused Attributes" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveUnusedAttributesPlugin"/>
                 <tocitem text="Split Nodes Based on Identifier" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.SplitNodesPlugin"/>
             </tocitem>
-            <tocitem text="Parameters" mergetype="javax.help.SortMerge">
-                <tocitem text="Global Parameters" target="au.gov.asd.tac.constellation.views.dataaccess.GlobalCoreParameters"/>
+            <tocitem text="Developer" mergetype="javax.help.SortMerge">
+                <tocitem text="Test Parameters" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.experimental.TestParametersPlugin"/>
+            </tocitem>
+            <tocitem text="Global Parameters" mergetype="javax.help.SortMerge">
+                <tocitem text="Datetime Range" target="au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters"/>
             </tocitem>
             <tocitem text="Utility" mergetype="javax.help.SortMerge">
                 <tocitem text="Select All" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectAllPlugin"/>
-                <tocitem text="Top N Selection" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopNPlugin"/>
+                <tocitem text="Select Top N" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopNPlugin"/>
             </tocitem>
         </tocitem>
-    </tocitem>
+    </tocitem>  
+    <tocitem text="Preferences">
+        <tocitem text="Data Access Category" target="au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewCategoryPanelController"/>
+    </tocitem> 
 </toc>

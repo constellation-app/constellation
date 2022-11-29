@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,10 @@ package au.gov.asd.tac.constellation.utilities;
  * @author twilight_sparkle
  */
 public class NetbeansUtilities {
+    
+    private NetbeansUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static boolean isNetbeansApplicationRunning() {
         return System.getProperty("netbeans.productversion") != null;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class Access {
                 .register(DoubleReadable.class, s -> () -> (byte) s.readDouble());
     }
 
-    private final Map<Class<?>, AccessRegistry> registries = new HashMap<>();
+    private final Map<Class<?>, AccessRegistry<?>> registries = new HashMap<>();
 
     public final <D> AccessRegistry<D> getRegistry(Class<D> destinationClass) {
         synchronized (registries) {

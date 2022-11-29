@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,7 +82,7 @@ public class BBoxd {
     public double[] getCentre() {
         final double[] c = new double[3];
         for (int i = 0; i < 3; i++) {
-            c[i] = min[i] + (max[i] - min[i]) / 2f;
+            c[i] = min[i] + (max[i] - min[i]) / 2F;
         }
 
         return c;

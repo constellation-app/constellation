@@ -15,16 +15,20 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
-import au.gov.asd.tac.constellation.graph.file.open.RecentFilesWelcomePage;
+import au.gov.asd.tac.constellation.graph.file.open.OpenFile;
+import au.gov.asd.tac.constellation.graph.file.open.RecentFiles;
+import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities;
+import static au.gov.asd.tac.constellation.graph.interaction.plugins.io.screenshot.RecentGraphScreenshotUtilities.IMAGE_SIZE;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
-import javafx.geometry.Insets; 
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
@@ -35,6 +39,7 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -46,45 +51,47 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
 /**
  * WelcomeViewPane contains the content for WelcomeTopComponent
- * 
+ *
  * @author Delphinus8821
  */
 public class WelcomeViewPane extends BorderPane {
-    
-    private final BorderPane welcomeViewPane;
-    
+
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+
+    private final BorderPane pane;
+
     public static final String ERROR_BUTTON_MESSAGE = String.format("%s Information", BrandingUtilities.APPLICATION_NAME);
-    public static final String WELCOME_TEXT = "Welcome to Constellation";
+    public static final String WELCOME_TEXT = String.format("Welcome to %s", BrandingUtilities.APPLICATION_NAME);
     public static final double SPLIT_POS = 0.2;
 
-    //Place holder images
-    public static final String LOGO = "resources/constellation-logo.png";
-    
+    // place holder image
+    public static final String LOGO = "resources/constellation_logo.png";
+    private static final Image PLACEHOLDER_IMAGE = new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"));
+
     private static final Button[] recentGraphButtons = new Button[10];
 
     public WelcomeViewPane() {
-       welcomeViewPane = new BorderPane();
+        pane = new BorderPane();
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
-            
+
             final SplitPane splitPane = new SplitPane();
             splitPane.setOrientation(Orientation.HORIZONTAL);
             splitPane.setStyle("-fx-background-color: transparent;");
             final ScrollPane scrollPane = new ScrollPane(splitPane);
             final Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
-            
+
             splitPane.setPrefHeight(visualBounds.getHeight());
             splitPane.setPrefWidth(visualBounds.getWidth());
-            welcomeViewPane.setCenter(scrollPane);
-            welcomeViewPane.autosize();
-            
+            pane.setCenter(scrollPane);
+            pane.autosize();
+
             //Create VBox to handle Browser and controls,
             //or error messages
             final VBox leftVBox = new VBox();
@@ -105,7 +112,7 @@ public class WelcomeViewPane extends BorderPane {
 
             //Create the labels for the left pane
             final Label welcome = new Label(WELCOME_TEXT);
-            welcome.setFont(new Font("Arial Unicode MS", 26));
+            welcome.setId("title");
             welcome.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(welcome);
 
@@ -126,14 +133,12 @@ public class WelcomeViewPane extends BorderPane {
             bottomHBox.setSpacing(10);
 
             final WelcomePageLayoutProvider layout = Lookup.getDefault().lookup(WelcomePageLayoutProvider.class);
-            
+
             //creating the button events along the top of the page
             final List<WelcomePluginInterface> topPlugins = layout.getTopPlugins();
-            for (final WelcomePluginInterface plugin : topPlugins){
+            for (final WelcomePluginInterface plugin : topPlugins) {
                 final Button currentButton = plugin.getButton();
-                currentButton.setOnAction(e -> {
-                    plugin.run();
-                });
+                currentButton.setOnAction(e -> plugin.run());
                 setButtonProps(currentButton);
                 topHBox.getChildren().add(currentButton);
             }
@@ -142,40 +147,35 @@ public class WelcomeViewPane extends BorderPane {
             final List<WelcomePluginInterface> sidePlugins = layout.getSidePlugins();
             for (final WelcomePluginInterface plugin : sidePlugins) {
                 final Button currentButton = plugin.getButton();
-                currentButton.setOnAction(e -> {
-                    plugin.run();
-                });
+                currentButton.setOnAction(e -> plugin.run());
                 setInfoButtons(currentButton);
                 leftVBox.getChildren().add(currentButton);
             }
-                
+
             leftVBox.setAlignment(Pos.TOP_CENTER);
-            
+
             final HBox lowerLeftHBox = new HBox();
             lowerLeftHBox.setPadding(new Insets(30, 10, 10, 20));
-            
-            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup 
-            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+
+            // Create a checkbox to change users preference regarding showing the Tutorial Page on startup
             final CheckBox showOnStartUpCheckBox = new CheckBox("Show on Startup");
-            showOnStartUpCheckBox.setFont(new Font("Arial", 16));
             lowerLeftHBox.getChildren().add(showOnStartUpCheckBox);
-           
-            showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal) -> {
-                prefs.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal);
-            });        
-            showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
-            
+
+            showOnStartUpCheckBox.selectedProperty().addListener((ov, oldVal, newVal)
+                    -> PREFERENCES.putBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, newVal));
+            showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, ApplicationPreferenceKeys.WELCOME_ON_STARTUP_DEFAULT));
+
             // Create a preferenceListener in order to identify when user preference is changed
             // Keeps tutorial page and options tutorial selections in-sync when both are open
-            prefs.addPreferenceChangeListener(evt -> {
-                showOnStartUpCheckBox.setSelected(prefs.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()));
-            });
-            
+            PREFERENCES.addPreferenceChangeListener(evt
+                    -> showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()))
+            );
+
             leftVBox.getChildren().add(lowerLeftHBox);
-            
+
             //formatting for bottom hbox
             final Label recent = new Label("Recent");
-            recent.setFont(new Font("Arial Unicode MS", 24));
+            recent.setId("title");
             rightVBox.getChildren().add(topHBox);
             rightVBox.getChildren().add(recent);
             rightVBox.getChildren().add(bottomHBox);
@@ -186,40 +186,61 @@ public class WelcomeViewPane extends BorderPane {
             flow.setVgap(20);
 
             //Create the buttons for the recent page
-            final List<String> fileNames = RecentFilesWelcomePage.getFileNames();
+            final String screenshotFilenameFormat = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + "%s.png";
+            final List<HistoryItem> fileDetails = RecentFiles.getUniqueRecentFiles();
             for (int i = 0; i < recentGraphButtons.length; i++) {
                 recentGraphButtons[i] = new Button();
                 //if the user has recent files get the names
                 //and make them the text of the buttons
                 createRecentButtons(recentGraphButtons[i]);
-                if (i < fileNames.size()) {
-                    recentGraphButtons[i].setText(fileNames.get(i));
-                }
-                final String text = recentGraphButtons[i].getText();
-                
-                final Rectangle2D value = new Rectangle2D(700, 150, 500, 500);
-                final String screenshotFilename = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + text + ".png";
-                if (new File(screenshotFilename).exists()) {
-                    final ImageView imageView = new ImageView(new Image("File:/" + screenshotFilename));
-                    imageView.setViewport(value);
-                    imageView.setFitHeight(145);
-                    imageView.setFitWidth(145);
-                    recentGraphButtons[i].setGraphic(imageView);
-                }
+                if (i < fileDetails.size()) {
+                    recentGraphButtons[i].setText(fileDetails.get(i).getFileName());
+                    final Tooltip toolTip = new Tooltip(fileDetails.get(i).getPath());
+                    recentGraphButtons[i].setTooltip(toolTip);
+                    final String text = recentGraphButtons[i].getText();
 
-                //Calls the method for the recent graphs to open
-                // on the button action
-                recentGraphButtons[i].setOnAction(e -> {
-                    RecentFilesWelcomePage.openGraph(text);
-                });
+                    final Optional<File> screenshotFile = RecentGraphScreenshotUtilities.findScreenshot(fileDetails.get(i).getPath(), fileDetails.get(i).getFileName());
+                    if (screenshotFile.isPresent()) {
+                        recentGraphButtons[i].setGraphic(buildGraphic(
+                                new Image("file:///" + screenshotFile.get().getAbsolutePath())
+                        ));
+                    } else if (i < fileDetails.size()) {
+                        recentGraphButtons[i].setGraphic(buildGraphic(PLACEHOLDER_IMAGE));
+                    }
+
+                    //Calls the method for the recent graphs to open
+                    //on the button action
+                    final String path = fileDetails.get(i).getPath();
+                    recentGraphButtons[i].setOnAction(e -> {
+                        OpenFile.open(RecentFiles.convertPath2File(path), -1);
+                        saveCurrentDirectory(path);
+                    });
+                }
                 flow.getChildren().add(recentGraphButtons[i]);
             }
             bottomHBox.getChildren().add(flow);
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             VBox.setVgrow(rightVBox, Priority.ALWAYS);
-            this.setCenter(welcomeViewPane);
+            this.setCenter(pane);
             scrollPane.setVvalue(-1);
         });
+    }
+
+    /**
+     * Build an {@code ImageView} from the {@code Image} provided. The
+     * dimensions of the image are determined by {@code IMAGE_SIZE}
+     *
+     * @param image The image to present
+     * @return An {@code ImageView} containing the {@code Image} provided
+     */
+    private static ImageView buildGraphic(final Image image) {
+        final ImageView defaultImage = new ImageView(image);
+        final Rectangle2D valueDefault = new Rectangle2D(0, 0, IMAGE_SIZE, IMAGE_SIZE);
+
+        defaultImage.setViewport(valueDefault);
+        defaultImage.setFitHeight(IMAGE_SIZE);
+        defaultImage.setFitWidth(IMAGE_SIZE);
+        return defaultImage;
     }
 
     public void setButtonProps(final Button button) {
@@ -244,5 +265,20 @@ public class WelcomeViewPane extends BorderPane {
         button.setStyle("-fx-background-color: transparent;");
         button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
+    }
+
+    /**
+     * If the remember open and save location preference is enabled, this saves
+     * the current directory as that location
+     *
+     * @param path the new location to open from when opening or saving a graph
+     */
+    private static void saveCurrentDirectory(final String path) {
+        final String lastFileOpenAndSaveLocation = PREFERENCES.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
+        final boolean rememberOpenAndSaveLocation = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
+
+        if (!lastFileOpenAndSaveLocation.equals(path) && rememberOpenAndSaveLocation) {
+            PREFERENCES.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, path);
+        }
     }
 }

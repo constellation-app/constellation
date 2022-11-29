@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,9 +36,9 @@ import processing.core.PVector;
 public abstract class ConstellationAbstractMarker implements Marker {
 
     // constants
-    protected int FONT_COLOR = 0;
-    protected int FONT_SIZE = 11;
-    protected int CHAR_WIDTH = Math.round(FONT_SIZE * 0.5f);
+    protected static final int FONT_COLOR = 0;
+    protected static final int FONT_SIZE = 11;
+    protected static final int CHAR_WIDTH = Math.round(FONT_SIZE * 0.5F);
 
     protected String id;
     protected List<Location> locations;
@@ -56,15 +56,15 @@ public abstract class ConstellationAbstractMarker implements Marker {
     protected int strokeColor;
     protected int strokeWeight;
 
-    public ConstellationAbstractMarker() {
+    protected ConstellationAbstractMarker() {
         this(new Location(0, 0));
     }
 
-    public ConstellationAbstractMarker(final Location location) {
+    protected ConstellationAbstractMarker(final Location location) {
         this(new ArrayList<>(Arrays.asList(location)));
     }
 
-    public ConstellationAbstractMarker(final List<Location> locations) {
+    protected ConstellationAbstractMarker(final List<Location> locations) {
         this.id = null;
         this.locations = locations;
         this.properties = new HashMap<>();
@@ -95,10 +95,8 @@ public abstract class ConstellationAbstractMarker implements Marker {
     @Override
     public Location getLocation() {
         final Location center = new Location(0, 0);
-        locations.forEach(location -> {
-            center.add(location);
-        });
-        center.div((float) locations.size());
+        locations.forEach(center::add);
+        center.div(locations.size());
         return center;
     }
 
@@ -231,13 +229,11 @@ public abstract class ConstellationAbstractMarker implements Marker {
         // draw label
         if (validMarker && getId() != null) {
             final MapPosition center = new MapPosition();
-            positions.forEach(position -> {
-                center.add(position);
-            });
+            positions.forEach(center::add);
             center.div(positions.size());
             graphics.fill(FONT_COLOR);
             graphics.textSize(FONT_SIZE);
-            graphics.text(id, center.x - (CHAR_WIDTH * id.length() * 0.6f), center.y + (FONT_SIZE * 0.35f));
+            graphics.text(id, center.x - (CHAR_WIDTH * id.length() * 0.6F), center.y + (FONT_SIZE * 0.35F));
         }
     }
 
@@ -254,9 +250,6 @@ public abstract class ConstellationAbstractMarker implements Marker {
     }
 
     protected abstract boolean draw(final PGraphics graphics, final List<MapPosition> positions, final UnfoldingMap map);
-
-    @Override
-    public abstract boolean isInside(UnfoldingMap map, float checkX, float checkY);
 
     protected boolean isInside(final float checkX, final float checkY, final List<? extends PVector> vectors) {
         boolean inside = false;

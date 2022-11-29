@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
-import au.gov.asd.tac.constellation.graph.*;
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ZoomToVerticesPlugin;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
@@ -23,10 +24,15 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
@@ -42,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
@@ -64,6 +72,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -73,7 +83,7 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.openide.util.Exceptions;
+import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.NbPreferences;
@@ -90,12 +100,13 @@ import org.openide.util.NbPreferences;
     "MSG_NoEntries=There are no rules for this identifier."
 })
 public final class QualityControlViewPane extends BorderPane {
+    
+    private static final Logger LOGGER = Logger.getLogger(QualityControlViewPane.class.getName());
 
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private static Map<QualityControlRule, QualityCategory> rulePriorities = null;
     private static final List<ToggleGroup> toggleGroups = new ArrayList<>();
     private static final JsonFactory FACTORY = new MappingJsonFactory();
-    public static Lookup lookup = null;
 
     private final TableColumn<QualityControlEvent, QualityControlEvent> identifierColumn;
     private final TableColumn<QualityControlEvent, QualityControlEvent> typeColumn;
@@ -126,9 +137,7 @@ public final class QualityControlViewPane extends BorderPane {
 
         qualityColumn = new TableColumn<>("Category");
         qualityColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.15));
-        qualityColumn.setComparator((qce1, qce2) -> {
-            return QualityControlRule.testPriority(qce1.getCategory(), qce2.getCategory());
-        });
+        qualityColumn.setComparator((qce1, qce2) -> QualityControlRule.testPriority(qce1.getCategory(), qce2.getCategory()));
         qualityColumn.setSortType(TableColumn.SortType.DESCENDING);
 
         reasonColumn = new TableColumn<>("Reasons");
@@ -150,47 +159,58 @@ public final class QualityControlViewPane extends BorderPane {
         optionsPane = new FlowPane();
         optionsPane.setId("qualitycontrolview-flow-pane");
         optionsPane.setAlignment(Pos.CENTER);
-        final Button deleteButton = new Button("Delete from Graph");
+        final Button deleteButton = new Button("Delete From Graph");
         deleteButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
-            PluginExecution.withPlugin(new DeleteQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
+            PluginExecution.withPlugin(new DeleteQualityControlEvents(qualitycontrolEvents))
+                    .executeLater(GraphManager.getDefault().getActiveGraph());
             qualityTable.getSelectionModel().clearSelection();
         });
-        optionsPane.getChildren().add(deleteButton);
 
-        final Button selectButton = new Button("Select on graph");
+        final Button selectButton = new Button("Select On Graph");
         selectButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
-            PluginExecution.withPlugin(new SelectQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
+            PluginExecution.withPlugin(new SelectQualityControlEvents(qualitycontrolEvents))
+                    .executeLater(GraphManager.getDefault().getActiveGraph());
             qualityTable.getSelectionModel().clearSelection();
         });
-        optionsPane.getChildren().add(selectButton);
 
-        final Button removeButton = new Button("Deselect on graph");
+        final Button removeButton = new Button("Deselect On Graph");
         removeButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
-            PluginExecution.withPlugin(new DeselectQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
+            PluginExecution.withPlugin(new DeselectQualityControlEvents(qualitycontrolEvents))
+                    .executeLater(GraphManager.getDefault().getActiveGraph());
             qualityTable.getSelectionModel().clearSelection();
         });
-        optionsPane.getChildren().add(removeButton);
 
-        final Button zoomButton = new Button("Zoom on graph");
+        final Button zoomButton = new Button("Zoom On Graph");
         zoomButton.setOnAction(event -> {
             final List<QualityControlEvent> qualitycontrolEvents = qualityTable.getSelectionModel().getSelectedItems();
-            PluginExecution.withPlugin(new ZoomToQualityControlEvents(qualitycontrolEvents)).executeLater(GraphManager.getDefault().getActiveGraph());
+            PluginExecution.withPlugin(new ZoomToQualityControlEvents(qualitycontrolEvents))
+                    .executeLater(GraphManager.getDefault().getActiveGraph());
         });
-        optionsPane.getChildren().add(zoomButton);
 
         final Button priorityButton = new Button("Category Priority");
-        priorityButton.setOnAction(event -> {
-            showPriorityDialog();
-        });
-        optionsPane.getChildren().add(priorityButton);
+        priorityButton.setOnAction(event -> showPriorityDialog());
+
+        // create help button
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
+        helpButton.setTooltip(new Tooltip("Display help for Quality Control View"));
+        helpButton.setOnAction(event -> new HelpCtx(QualityControlViewTopComponent.class.getName()).display());
+        // Get rid of the ugly button look so the icon stands alone.
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+
+        optionsPane.getChildren().addAll(deleteButton, selectButton, removeButton, zoomButton, priorityButton, helpButton);
 
         setBottom(optionsPane);
 
         this.setId("qualitycontrolview-border-pane");
         this.setPadding(new Insets(5));
+    }
+
+    public TableView<QualityControlEvent> getQualityTable() {
+        return qualityTable;
     }
 
     /**
@@ -217,16 +237,16 @@ public final class QualityControlViewPane extends BorderPane {
             // but that can be a future feature request.
             qualityTable.getSelectionModel().clearSelection();
 
-            for (TableColumn column : qualityTable.getColumns()) {
+            for (final TableColumn column : qualityTable.getColumns()) {
                 column.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<QualityControlEvent, QualityControlEvent>, ObservableValue<QualityControlEvent>>() {
                     @Override
-                    public ObservableValue<QualityControlEvent> call(TableColumn.CellDataFeatures<QualityControlEvent, QualityControlEvent> p) {
+                    public ObservableValue<QualityControlEvent> call(final TableColumn.CellDataFeatures<QualityControlEvent, QualityControlEvent> p) {
                         return new SimpleObjectProperty<>(p.getValue());
                     }
                 });
             }
 
-            identifierColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+            identifierColumn.setCellFactory(p -> {
                 final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
                     @Override
                     public void updateItem(final QualityControlEvent item, final boolean empty) {
@@ -249,7 +269,7 @@ public final class QualityControlViewPane extends BorderPane {
                 return cell;
             });
 
-            typeColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+            typeColumn.setCellFactory(p -> {
                 final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
                     @Override
                     public void updateItem(final QualityControlEvent item, final boolean empty) {
@@ -272,13 +292,13 @@ public final class QualityControlViewPane extends BorderPane {
                 return cell;
             });
 
-            qualityColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+            qualityColumn.setCellFactory(p -> {
                 final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
                     @Override
                     public void updateItem(final QualityControlEvent item, final boolean empty) {
                         super.updateItem(item, empty);
                         if (item != null) {
-                            setText(item.getCategory() == QualityCategory.DEFAULT ? Bundle.MSG_NotApplicable() : String.valueOf(item.getCategory().name()));
+                            setText(String.valueOf(item.getCategory().name()));
                             setAlignment(Pos.CENTER);
                             setStyle(qualityStyle(item.getCategory()));
                         }
@@ -296,7 +316,7 @@ public final class QualityControlViewPane extends BorderPane {
                 return cell;
             });
 
-            reasonColumn.setCellFactory((TableColumn<QualityControlEvent, QualityControlEvent> p) -> {
+            reasonColumn.setCellFactory(p -> {
                 final TableCell<QualityControlEvent, QualityControlEvent> cell = new TableCell<QualityControlEvent, QualityControlEvent>() {
                     @Override
                     public void updateItem(final QualityControlEvent item, final boolean empty) {
@@ -333,50 +353,49 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Create a javafx style based on the given quality value.
+     * Create a javafx style based on the given quality category.
      *
-     * @param quality the quality.
+     * @param category the quality category.
      * @return a javafx style based on the given quality value.
      */
     public static String qualityStyle(final QualityCategory category) {
-        return qualityStyle(category, 0.75f);
+        return qualityStyle(category, 0.75F);
     }
 
     /**
      * Create a javafx style based on the given quality and alpha values.
      *
-     * @param quality the quality.
+     * @param category the quality.
      * @param alpha the alpha value.
      * @return a javafx style based on the given quality and alpha values.
      */
     public static String qualityStyle(final QualityCategory category, final float alpha) {
-        final String whiteText = "-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(%d,%d,255,%f);";
         final int intensity;
         final String style;
         switch (category) {
-            case INFO:
-                intensity = 255 - (255 * QualityControlEvent.INFO_VALUE) / 100;
-                style = String.format(whiteText, intensity, intensity, alpha);
+            case MINOR:
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(90,150,255,%f);", alpha);
                 break;
-            case WARNING:
-                intensity = 255 - (255 * QualityControlEvent.WARNING_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(%d,%d,255,%f);", intensity, intensity, alpha);
+            case MEDIUM:
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,215,0,%f);", alpha);
+                break;
+            case MAJOR:
+                intensity = 255 - (255 * QualityControlEvent.MAJOR_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(255,%d,0,%f);", intensity, alpha);
                 break;
             case SEVERE:
                 intensity = 255 - (255 * QualityControlEvent.SEVERE_VALUE) / 100;
                 style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", intensity, intensity, alpha);
                 break;
-            case FATAL:
-                intensity = 255 - (255 * QualityControlEvent.FATAL_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(0,%d,%d,%f);", intensity, intensity, alpha);
+            case CRITICAL:
+                intensity = 255 - (255 * QualityControlEvent.CRITICAL_VALUE) / 100;
+                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(150,%d,%d,%f);", intensity, intensity, alpha);
                 break;
             default:
                 // DEFAULT case
-                intensity = 255 - (255 * QualityControlEvent.DEFAULT_VALUE) / 100;
-                style = String.format(whiteText, intensity, intensity, alpha);
+                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(0,200,0,%f);", alpha);
                 break;
         }
-
         return style;
     }
 
@@ -400,76 +419,79 @@ public final class QualityControlViewPane extends BorderPane {
         ruleLabel.setPadding(new Insets(0, 100, 10, 5));
         buttonGrid.add(ruleLabel, 0, rowCount);
 
-        final Label defaultLabel = new Label("DEFAULT");
-        defaultLabel.setPadding(new Insets(0, 10, 10, 10));
-        buttonGrid.add(defaultLabel, 1, rowCount);
+        final Label minorLabel = new Label("MINOR");
+        minorLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(minorLabel, 1, rowCount);
 
-        final Label infoLabel = new Label("INFO");
-        infoLabel.setPadding(new Insets(0, 10, 10, 10));
-        buttonGrid.add(infoLabel, 2, rowCount);
+        final Label mediumLabel = new Label("MEDIUM");
+        mediumLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(mediumLabel, 2, rowCount);
 
-        final Label warningLabel = new Label("WARNING");
-        warningLabel.setPadding(new Insets(0, 10, 10, 10));
-        buttonGrid.add(warningLabel, 3, rowCount);
+        final Label majorLabel = new Label("MAJOR");
+        majorLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(majorLabel, 3, rowCount);
 
         final Label severeLabel = new Label("SEVERE");
         severeLabel.setPadding(new Insets(0, 10, 10, 10));
         buttonGrid.add(severeLabel, 4, rowCount);
 
-        final Label fatalLabel = new Label("FATAL");
-        fatalLabel.setPadding(new Insets(0, 10, 10, 10));
-        buttonGrid.add(fatalLabel, 5, rowCount);
+        final Label criticalLabel = new Label("CRITICAL");
+        criticalLabel.setPadding(new Insets(0, 10, 10, 10));
+        buttonGrid.add(criticalLabel, 5, rowCount);
         rowCount++;
 
         // Setting rule names and buttons
-        for (final QualityControlRule rule : getLookup().lookupAll(QualityControlRule.class)) {
+        for (final QualityControlRule rule : Lookup.getDefault().lookupAll(QualityControlRule.class)) {
             final ToggleGroup ruleGroup = new ToggleGroup();
             final Label ruleName = new Label(rule.getName());
-            final RadioButton defaultButton = new RadioButton();
-            final RadioButton infoButton = new RadioButton();
-            final RadioButton warningButton = new RadioButton();
+            final RadioButton minorButton = new RadioButton();
+            final RadioButton mediumButton = new RadioButton();
+            final RadioButton majorButton = new RadioButton();
             final RadioButton severeButton = new RadioButton();
-            final RadioButton fatalButton = new RadioButton();
-            final Button resetButton = new Button("Reset");
+            final RadioButton criticalButton = new RadioButton();
+            final String resetText = rule.getCategory(0) == getPriorities().get(rule) ? "Reset" : "Reset to " + rule.getCategory(0).name();
+            
+            final Button resetButton = new Button(resetText);
             resetButton.setOnAction(event -> {
                 switch (rule.getCategory(0)) {
-                    case DEFAULT:
-                        defaultButton.setSelected(true);
+                    case MINOR:
+                        minorButton.setSelected(true);
                         break;
-                    case INFO:
-                        infoButton.setSelected(true);
+                    case MEDIUM:
+                        mediumButton.setSelected(true);
                         break;
-                    case WARNING:
-                        warningButton.setSelected(true);
+                    case MAJOR:
+                        majorButton.setSelected(true);
                         break;
                     case SEVERE:
                         severeButton.setSelected(true);
                         break;
-                    case FATAL:
-                        fatalButton.setSelected(true);
+                    case CRITICAL:
+                        criticalButton.setSelected(true);
                         break;
                     default:
                         break;
                 }
+                resetButton.setText("Reset");
             });
 
             getPriorities().putIfAbsent(rule, rule.getCategory(0));
             // setting the selection based on the current priority
             switch (getPriorities().get(rule)) {
-                case DEFAULT:
-                    defaultButton.setSelected(true);
+                case MINOR:
+                    minorButton.setSelected(true);
                     break;
-                case INFO:
-                    infoButton.setSelected(true);
+                case MEDIUM:
+                    mediumButton.setSelected(true);
                     break;
-                case WARNING:
-                    warningButton.setSelected(true);
+                case MAJOR:
+                    majorButton.setSelected(true);
                     break;
                 case SEVERE:
                     severeButton.setSelected(true);
                     break;
-                case FATAL:
-                    fatalButton.setSelected(true);
+                case CRITICAL:
+                    criticalButton.setSelected(true);
                     break;
                 default:
                     break;
@@ -478,41 +500,41 @@ public final class QualityControlViewPane extends BorderPane {
             toggleGroups.add(ruleGroup);
 
             GridPane.setHalignment(ruleName, HPos.LEFT);
-            GridPane.setHalignment(defaultButton, HPos.CENTER);
-            GridPane.setHalignment(infoButton, HPos.CENTER);
-            GridPane.setHalignment(warningButton, HPos.CENTER);
+            GridPane.setHalignment(minorButton, HPos.CENTER);
+            GridPane.setHalignment(mediumButton, HPos.CENTER);
+            GridPane.setHalignment(majorButton, HPos.CENTER);
             GridPane.setHalignment(severeButton, HPos.CENTER);
-            GridPane.setHalignment(fatalButton, HPos.CENTER);
+            GridPane.setHalignment(criticalButton, HPos.CENTER);
             GridPane.setHalignment(resetButton, HPos.CENTER);
 
             ruleName.setPadding(new Insets(0, 0, 5, 5));
-            defaultButton.setPadding(new Insets(0, 10, 5, 10));
-            infoButton.setPadding(new Insets(0, 10, 5, 10));
-            warningButton.setPadding(new Insets(0, 10, 5, 10));
+            minorButton.setPadding(new Insets(0, 10, 5, 10));
+            mediumButton.setPadding(new Insets(0, 10, 5, 10));
+            majorButton.setPadding(new Insets(0, 10, 5, 10));
             severeButton.setPadding(new Insets(0, 10, 5, 10));
-            fatalButton.setPadding(new Insets(0, 10, 5, 10));
+            criticalButton.setPadding(new Insets(0, 10, 5, 10));
             resetButton.setPadding(new Insets(5, 10, 5, 10));
 
-            defaultButton.setUserData(QualityCategory.DEFAULT);
-            infoButton.setUserData(QualityCategory.INFO);
-            warningButton.setUserData(QualityCategory.WARNING);
+            minorButton.setUserData(QualityCategory.MINOR);
+            mediumButton.setUserData(QualityCategory.MEDIUM);
+            majorButton.setUserData(QualityCategory.MAJOR);
             severeButton.setUserData(QualityCategory.SEVERE);
-            fatalButton.setUserData(QualityCategory.FATAL);
+            criticalButton.setUserData(QualityCategory.CRITICAL);
 
-            defaultButton.setToggleGroup(ruleGroup);
-            infoButton.setToggleGroup(ruleGroup);
-            warningButton.setToggleGroup(ruleGroup);
+            minorButton.setToggleGroup(ruleGroup);
+            mediumButton.setToggleGroup(ruleGroup);
+            majorButton.setToggleGroup(ruleGroup);
             severeButton.setToggleGroup(ruleGroup);
-            fatalButton.setToggleGroup(ruleGroup);
+            criticalButton.setToggleGroup(ruleGroup);
 
             ruleGroup.setUserData(rule);
 
             buttonGrid.add(ruleName, 0, rowCount);
-            buttonGrid.add(defaultButton, 1, rowCount);
-            buttonGrid.add(infoButton, 2, rowCount);
-            buttonGrid.add(warningButton, 3, rowCount);
+            buttonGrid.add(minorButton, 1, rowCount);
+            buttonGrid.add(mediumButton, 2, rowCount);
+            buttonGrid.add(majorButton, 3, rowCount);
             buttonGrid.add(severeButton, 4, rowCount);
-            buttonGrid.add(fatalButton, 5, rowCount);
+            buttonGrid.add(criticalButton, 5, rowCount);
             buttonGrid.add(resetButton, 6, rowCount);
 
             rowCount++;
@@ -520,9 +542,7 @@ public final class QualityControlViewPane extends BorderPane {
 
         rulesScrollPane.setContent(buttonGrid);
 
-        final Alert alert = new Alert(Alert.AlertType.INFORMATION,
-                "Select Rule Priorities",
-                ButtonType.OK, ButtonType.CANCEL);
+        final Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select Rule Priorities", ButtonType.OK, ButtonType.CANCEL);
         alert.setTitle("Select Rule Priorities");
         alert.setHeaderText("Customise the priority of rules");
         alert.getDialogPane().setContent(rulesScrollPane);
@@ -530,8 +550,7 @@ public final class QualityControlViewPane extends BorderPane {
 
         if (alert.showAndWait().get() == ButtonType.OK) {
             for (final ToggleGroup tg : toggleGroups) {
-                getPriorities().put((QualityControlRule) tg.getUserData(),
-                        (QualityCategory) tg.getSelectedToggle().getUserData());
+                getPriorities().put((QualityControlRule) tg.getUserData(), (QualityCategory) tg.getSelectedToggle().getUserData());
             }
             QualityControlAutoVetter.getInstance().updateQualityEvents();
             writeSerializedRulePriorities();
@@ -549,7 +568,7 @@ public final class QualityControlViewPane extends BorderPane {
         if (qcevent.getItem() != null) {
             final int vxId = qcevent.getItem().getVertex();
             final String identifier = qcevent.getItem().getIdentifier();
-            final ArrayList<Pair<QualityCategory, String>> rules = new ArrayList<>();
+            final List<Pair<QualityCategory, String>> rules = new ArrayList<>();
             for (final QualityControlRule rule : qcevent.getItem().getRules()) {
                 // Hack the name and explanation together to obviate the need for another data structure.
                 final String ruleName = rule.getName() + "§" + rule.getDescription();
@@ -559,13 +578,9 @@ public final class QualityControlViewPane extends BorderPane {
                 }
             }
 
-            Collections.sort(rules, (final Pair<QualityCategory, String> p1, final Pair<QualityCategory, String> p2) -> {
-                int compare = QualityControlRule.testPriority(p1.getKey(), p2.getKey());
-                if (compare == 0) {
-                    compare = p1.getValue().compareTo(p2.getValue());
-                }
-
-                return compare;
+            Collections.sort(rules, (p1, p2) -> {
+                final int compare = QualityControlRule.testPriority(p1.getKey(), p2.getKey());
+                return compare == 0 ? p1.getValue().compareTo(p2.getValue()) : compare;
             });
 
             showRuleDialog(identifier, rules);
@@ -594,7 +609,7 @@ public final class QualityControlViewPane extends BorderPane {
         for (final Pair<QualityCategory, String> rule : rules) {
             final String[] t = rule.getValue().split("§");
 
-            final String quality = rule.getKey() == QualityCategory.DEFAULT ? Bundle.MSG_NotApplicable() : "" + rule.getKey().name();
+            final String quality = rule.getKey().name();
             final String title = String.format("%s - %s", quality, t[0]);
 
             final Text content = new Text(t[1]);
@@ -642,8 +657,8 @@ public final class QualityControlViewPane extends BorderPane {
             PREFERENCES.put(ApplicationPreferenceKeys.RULE_PRIORITIES, mapAsString);
             try {
                 PREFERENCES.flush();
-            } catch (BackingStoreException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final BackingStoreException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }
@@ -651,10 +666,10 @@ public final class QualityControlViewPane extends BorderPane {
     /**
      * Reads the preferences object to load the rulePriorities.
      */
-    private static void readSerializedRulePriorities() {
+    public static void readSerializedRulePriorities() {
         getPriorities().clear();
         final Map<String, String> priorityStringMap = JsonUtilities.getStringAsMap(FACTORY, PREFERENCES.get(ApplicationPreferenceKeys.RULE_PRIORITIES, ""));
-        for (Entry<String, String> entry : priorityStringMap.entrySet()) {
+        for (final Entry<String, String> entry : priorityStringMap.entrySet()) {
             getPriorities().put(QualityControlEvent.getRuleByString(entry.getKey()), QualityControlEvent.getCategoryFromString(entry.getValue()));
         }
     }
@@ -668,7 +683,7 @@ public final class QualityControlViewPane extends BorderPane {
     public static Map<QualityControlRule, QualityCategory> getPriorities() {
         if (MapUtils.isEmpty(rulePriorities)) {
             rulePriorities = new HashMap<>();
-            for (final QualityControlRule rule : getLookup().lookupAll(QualityControlRule.class)) {
+            for (final QualityControlRule rule : Lookup.getDefault().lookupAll(QualityControlRule.class)) {
                 rulePriorities.put(rule, rule.getCategory(0));
             }
         }
@@ -676,38 +691,27 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Lazily instantiates the lookup object
-     *
-     * @return the cached lookup object
-     */
-    public static Lookup getLookup() {
-        if (lookup == null) {
-            lookup = Lookup.getDefault();
-        }
-        return lookup;
-    }
-
-    /**
      * Delete nodes in a graph matching rows selected in QualityControlView.
      */
-    private class DeleteQualityControlEvents extends SimpleEditPlugin {
+    @PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
+    protected static class DeleteQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
 
-        public DeleteQualityControlEvents(List<QualityControlEvent> qualitycontrolEvents) {
+        public DeleteQualityControlEvents(final List<QualityControlEvent> qualitycontrolEvents) {
             this.qualitycontrolEvents = new ArrayList<>(qualitycontrolEvents);
         }
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             final Set<Integer> vertexIds = new HashSet<>();
-            for (QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
+            for (final QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
                 if (qualitycontrolEvent != null) {
                     vertexIds.add(qualitycontrolEvent.getVertex());
                 }
             }
 
-            for (int vertexId : vertexIds) {
+            for (final int vertexId : vertexIds) {
                 graph.removeVertex(vertexId);
             }
         }
@@ -722,18 +726,19 @@ public final class QualityControlViewPane extends BorderPane {
      * Selects on the graph only nodes which have a corresponding selected
      * QualityControlEvent.
      */
-    private class SelectQualityControlEvents extends SimpleEditPlugin {
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
+    protected static class SelectQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
 
-        public SelectQualityControlEvents(List<QualityControlEvent> qualitycontrolEvents) {
+        public SelectQualityControlEvents(final List<QualityControlEvent> qualitycontrolEvents) {
             this.qualitycontrolEvents = new ArrayList<>(qualitycontrolEvents);
         }
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             final Set<Integer> vertexIds = new HashSet<>();
-            for (QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
+            for (final QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
                 if (qualitycontrolEvent != null) {
                     vertexIds.add(qualitycontrolEvent.getVertex());
                 }
@@ -768,18 +773,19 @@ public final class QualityControlViewPane extends BorderPane {
      * Selects on the graph only nodes which do not have a corresponding
      * selected QualityControlEvent.
      */
-    private class DeselectQualityControlEvents extends SimpleEditPlugin {
+    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
+    protected static class DeselectQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
 
-        public DeselectQualityControlEvents(List<QualityControlEvent> qualitycontrolEvents) {
+        public DeselectQualityControlEvents(final List<QualityControlEvent> qualitycontrolEvents) {
             this.qualitycontrolEvents = new ArrayList<>(qualitycontrolEvents);
         }
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
             final Set<Integer> vertexIds = new HashSet<>();
-            for (QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
+            for (final QualityControlEvent qualitycontrolEvent : qualitycontrolEvents) {
                 if (qualitycontrolEvent != null) {
                     vertexIds.add(qualitycontrolEvent.getVertex());
                 }
@@ -807,11 +813,12 @@ public final class QualityControlViewPane extends BorderPane {
      * Zoom the camera of the Graph to the extents of nodes corresponding to any
      * selected QualityControlEvent.
      */
-    private class ZoomToQualityControlEvents extends SimpleEditPlugin {
+    @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
+    private static class ZoomToQualityControlEvents extends SimpleEditPlugin {
 
         private final List<QualityControlEvent> qualitycontrolEvents;
 
-        public ZoomToQualityControlEvents(List<QualityControlEvent> qualitycontrolEvents) {
+        public ZoomToQualityControlEvents(final List<QualityControlEvent> qualitycontrolEvents) {
             this.qualitycontrolEvents = qualitycontrolEvents;
         }
 

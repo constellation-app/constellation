@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,18 +36,19 @@ public class TimeZoneUtilities {
         final int offsetCompare = Integer.compare(TimeZone.getTimeZone(t1).getRawOffset(), TimeZone.getTimeZone(t2).getRawOffset());
         return offsetCompare != 0 ? offsetCompare : t1.getId().compareTo(t2.getId());
     };
+    
+    private TimeZoneUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static String getTimeZoneAsString(final ZoneId timeZone) {
         return getTimeZoneAsString(null, timeZone);
     }
 
-    public static String getTimeZoneAsString(LocalDateTime ldt, final ZoneId timeZone) {
+    public static String getTimeZoneAsString(final LocalDateTime ldt, final ZoneId timeZone) {
         if (timeZone == null) {
             return null;
         }
-        if (ldt == null) {
-            ldt = LocalDateTime.now();
-        }
-        return ZonedDateTime.of(ldt, timeZone).format(TemporalFormatting.TIME_ZONE_FORMATTER);
+        return ZonedDateTime.of(ldt != null ? ldt : LocalDateTime.now(), timeZone).format(TemporalFormatting.TIME_ZONE_FORMATTER);
     }
 }

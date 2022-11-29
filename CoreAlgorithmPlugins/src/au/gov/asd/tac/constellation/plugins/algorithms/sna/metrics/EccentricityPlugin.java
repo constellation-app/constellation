@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.BitSet;
@@ -41,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("EccentricityPlugin=Eccentricity")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class EccentricityPlugin extends SimpleEditPlugin {
 
     public static final String INCLUDE_CONNECTIONS_IN_PARAMETER_ID = PluginParameter.buildId(EccentricityPlugin.class, "include_connections_in");
@@ -81,7 +82,7 @@ public class EccentricityPlugin extends SimpleEditPlugin {
 
         final PluginParameter<BooleanParameterValue> normaliseConnectedComponentsParameter = BooleanParameterType.build(NORMALISE_CONNECTED_COMPONENTS_PARAMETER_ID);
         normaliseConnectedComponentsParameter.setName("Normalise Connected Components");
-        normaliseConnectedComponentsParameter.setDescription("Apply normalisation seperately for each connected component");
+        normaliseConnectedComponentsParameter.setDescription("Apply normalisation separately for each connected component");
         normaliseConnectedComponentsParameter.setBooleanValue(false);
         parameters.addParameter(normaliseConnectedComponentsParameter);
 

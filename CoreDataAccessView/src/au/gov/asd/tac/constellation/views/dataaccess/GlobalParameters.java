@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,15 @@ package au.gov.asd.tac.constellation.views.dataaccess;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Lookup;
 
 /**
@@ -44,27 +43,29 @@ import org.openide.util.Lookup;
  */
 public abstract class GlobalParameters {
 
+    private static final Logger LOGGER = Logger.getLogger(GlobalParameters.class.getName());
+    
     private static PluginParameters globalParameters = null;
 
     /**
      * The global parameters defined by this class.
-     * <p>
+     * <p/>
      * The initial values of the parameters should also be set. The previous
      * values can be used if they are present.
      *
-     * @param previous Previous parameters containing values: may be null if
-     * there are no previous parameters.
+     * @param previous previous parameters containing values: may be null if
+     *     there are no previous parameters
      *
-     * @return The global parameters defined by this class.
+     * @return the global parameters defined by this class
      */
     public abstract List<PositionalPluginParameter> getParameterList(final PluginParameters previous);
 
     /**
      * Perform post-processing on the complete PluginParameters instance.
-     * <p>
+     * <p/>
      * This will typically be something like parameters.addMasterController().
      *
-     * @param parameters The complete global PluginParameters instance.
+     * @param parameters the complete global PluginParameters instance
      */
     public void postProcess(final PluginParameters parameters) {
     }
@@ -72,68 +73,71 @@ public abstract class GlobalParameters {
     /**
      * Gather the global parameters and return them in the correct order.
      *
-     * @param previous Parameters from a previous global parameter pane; may be
-     * null if this is the first pane.
+     * @param previous parameters from a previous global parameter pane; may be
+     *     null if this is the first pane.
      *
-     * @return A PluginParameters ordered by ascending position.
+     * @return a {@link PluginParameters} ordered by ascending position.
      */
     public static PluginParameters getParameters(final PluginParameters previous) {
         if (globalParameters == null) {
-            final List<PositionalPluginParameter> globalParametersList = new ArrayList<>();
-            final Collection<? extends GlobalParameters> globalParametersObjects = Lookup.getDefault().lookupAll(GlobalParameters.class);
-            globalParametersObjects.stream().forEach(globalParametersObject -> {
-                globalParametersList.addAll(globalParametersObject.getParameterList(previous));
-            });
-            Collections.sort(globalParametersList);
-
+            final Collection<? extends GlobalParameters> globalParametersObjects =
+                    Lookup.getDefault().lookupAll(GlobalParameters.class);
+            
             globalParameters = new PluginParameters();
-            globalParametersList.stream().forEach(globalParameter -> {
-                globalParameters.addParameter(globalParameter.getParameter());
-            });
+            globalParametersObjects.stream()
+                    .map(globalParametersObject -> globalParametersObject.getParameterList(previous))
+                    .flatMap(Collection::stream)
+                    .sorted()
+                    .map(PositionalPluginParameter::getParameter)
+                    .forEach(parameter -> globalParameters.addParameter(parameter));
 
-            globalParametersObjects.stream().forEach(globalParametersObject -> {
-                globalParametersObject.postProcess(globalParameters);
-            });
+            globalParametersObjects.stream().forEach(globalParametersObject -> 
+                globalParametersObject.postProcess(globalParameters)
+            );
         }
 
         return globalParameters;
     }
 
     /**
-     * Read a key / value data file from the specified file resource and return
-     * an ordered Map.
+     * Read a key/value data file from the specified file resource and populate
+     * the passed map. The key/value data is separated by commas. Blank lines
+     * and lines beginning with a hash are ignored.
      *
-     * @param cls Class associated with the resource.
-     * @param name Resource name.
-     * @param container The container to store the data
+     * @param cls class associated with the resource
+     * @param name name of the resource
+     * @param container the map to store the loaded data in
      *
      */
-    protected static void readDataToMap(final Class<?> cls, final String name, final Map<String, String> container) {
+    protected static void readDataToMap(final Class<?> cls,
+                                        final String name,
+                                        final Map<String, String> container) {
         try {
-            final InputStreamReader in = new InputStreamReader(cls.getResourceAsStream(name), StandardCharsets.UTF_8.name());
-            try (final BufferedReader reader = new BufferedReader(in)) {
-                while (true) {
-                    final String line = reader.readLine();
-                    if (line == null) {
-                        break;
-                    }
-
-                    if (!line.isEmpty() && !line.startsWith("#")) {
+            IOUtils.readLines(cls.getResourceAsStream(name), StandardCharsets.UTF_8).stream()
+                    .filter(StringUtils::isNotBlank)
+                    .filter(line -> !line.startsWith("#"))
+                    .forEach(line -> {
                         final int ix = line.indexOf(',');
                         container.put(line.substring(0, ix), line.substring(ix + 1));
-                    }
-                }
-            }
+                    });
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, "Failed to read data properly", ex);
         }
     }
 
     /**
-     * A PluginParameter with a position.
+     * Clears the global parameters by setting the variable to null. This is primarily
+     * for unit testing purposes and should not be used by actual code.
+     */
+    protected static void clearGlobalParameters() {
+        globalParameters = null;
+    }
+    
+    /**
+     * A PluginParameter with a position. When being sorted, the position variable
+     * is used to determine the plugins position.
      */
     protected static class PositionalPluginParameter implements Comparable<PositionalPluginParameter> {
-
         private final PluginParameter<?> parameter;
         private final int position;
 

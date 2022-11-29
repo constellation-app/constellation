@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,9 +57,7 @@ class PerspectiveModel extends AbstractListModel<Perspective> {
     public int addElement(final Perspective perspective) {
         final String label = perspective.label;
         perspectives.add(perspective);
-        perspectives.sort((final Perspective p1, final Perspective p2) -> {
-            return p1.label.compareTo(p2.label);
-        });
+        perspectives.sort((final Perspective p1, final Perspective p2) -> p1.label.compareTo(p2.label));
 
         fireContentsChanged(this, 0, perspectives.size() - 1);
 

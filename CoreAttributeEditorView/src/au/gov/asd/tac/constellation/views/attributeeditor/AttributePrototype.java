@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,9 +35,9 @@ public class AttributePrototype {
     private final String dataType;
     private final Object defaultValue;
 
-    public AttributePrototype(String name, String description, GraphElementType elementType, String dataType, Object defaultValue) {
-        attributeName = name;
-        attributeDescription = description;
+    public AttributePrototype(final String name, final String description, final GraphElementType elementType, final String dataType, final Object defaultValue) {
+        this.attributeName = name;
+        this.attributeDescription = description;
         this.elementType = elementType;
         this.dataType = dataType;
         this.defaultValue = defaultValue;
@@ -77,5 +77,4 @@ public class AttributePrototype {
     public Object getDefaultValue() {
         return defaultValue;
     }
-
 }

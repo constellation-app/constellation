@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -98,9 +98,6 @@ public class NormalisingGraphEdit implements GraphEdit {
         }
 
         Transaction newTransaction = new Transaction(transaction);
-//        newTransaction.source = currentSource;
-//        newTransaction.destination = currentDestination;
-        newTransaction.directed = directed;
 
         Transaction currentTransaction = transactions.put(transaction, newTransaction);
         if (currentTransaction != null) {
@@ -128,9 +125,6 @@ public class NormalisingGraphEdit implements GraphEdit {
             }
 
             currentTransaction = new Transaction(transaction);
-//            currentTransaction.source = currentSource;
-//            currentTransaction.destination = currentDestination;
-            currentTransaction.directed = directed;
 
             transactions.put(transaction, currentTransaction);
         }
@@ -153,8 +147,6 @@ public class NormalisingGraphEdit implements GraphEdit {
             currentTransaction = new Transaction(transaction);
             transactions.put(transaction, currentTransaction);
         }
-
-//        currentTransaction.source = newSource;
     }
 
     @Override
@@ -291,13 +283,6 @@ public class NormalisingGraphEdit implements GraphEdit {
     private final Map<Integer, Vertex> vertices = new HashMap<>();
 
     private class Transaction extends Element<Transaction> {
-
-        // TODO: Determine whether unused fields are needed
-        private Vertex newSource;
-        private Vertex oldSource;
-        private Vertex newDestination;
-        private Vertex oldDestination;
-        private boolean directed;
 
         public Transaction(int id) {
             super(id);

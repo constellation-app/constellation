@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,7 +97,10 @@ public class IntValue implements Copyable, IntReadable, IntWritable, LongReadabl
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof IntValue) {
+        if (other == null) {
+            return false;
+        }
+        if (this.getClass() == other.getClass()) {
             return value == ((IntValue) other).value;
         }
         return false;

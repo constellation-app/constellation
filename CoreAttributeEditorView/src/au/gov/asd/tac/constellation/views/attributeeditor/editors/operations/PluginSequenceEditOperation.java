@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public abstract class PluginSequenceEditOperation implements EditOperation {
     }
 
     @Override
-    public void performEdit(Object value) {
+    public void performEdit(final Object value) {
         PluginExecutor executor = preEdit == null ? PluginExecutor.startWith(mainEdit(value)) : PluginExecutor.startWith(preEdit).followedBy(mainEdit(value));
         if (postEdit != null) {
             executor = executor.followedBy(postEdit);
@@ -45,6 +45,6 @@ public abstract class PluginSequenceEditOperation implements EditOperation {
         executor.executeWriteLater(GraphManager.getDefault().getActiveGraph());
     }
 
-    public abstract Plugin mainEdit(Object value);
+    public abstract Plugin mainEdit(final Object value);
 
 }

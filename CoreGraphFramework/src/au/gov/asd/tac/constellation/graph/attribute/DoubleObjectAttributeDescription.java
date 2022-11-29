@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
             } else if (object instanceof Boolean) {
                 return ((Boolean) object) ? 1.0 : 0.0;
             } else if (object instanceof Character) {
-                return (double) object;
+                return (double) ((Character) object);
             } else {
                 throw ex;
             }
@@ -103,7 +103,7 @@ public class DoubleObjectAttributeDescription extends AbstractObjectAttributeDes
 
     @Override
     public float getFloat(final int id) {
-        return data[id] != null ? ((Double) data[id]).floatValue() : 0.0f;
+        return data[id] != null ? ((Double) data[id]).floatValue() : 0.0F;
     }
 
     @Override

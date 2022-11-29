@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 900),
+    @ActionReference(path = "Menu/Views", position = 1000),
     @ActionReference(path = "Shortcuts", name = "CS-P")
 })
 @TopComponent.OpenActionRegistration(
@@ -72,7 +72,7 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
         initComponents();
         setName(Bundle.CTL_PluginReporterTopComponent());
         setToolTipText(Bundle.HINT_PluginReporterTopComponent());
-        reporterPane = new PluginReporterPane(this);
+        reporterPane = new PluginReporterPane();
         initContent();
     }
 
@@ -100,6 +100,7 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
     // End of variables declaration//GEN-END:variables
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         GraphManager.getDefault().addGraphManagerListener(this);
         GraphReportManager.addGraphReportListener(this);
         handleNewGraph(GraphManager.getDefault().getActiveGraph());
@@ -107,6 +108,7 @@ public final class PluginReporterTopComponent extends JavaFxTopComponent<PluginR
 
     @Override
     protected void handleComponentClosed() {
+        super.handleComponentClosed();
         handleNewGraph(null);
         GraphReportManager.removeGraphReportListener(this);
         GraphManager.getDefault().removeGraphManagerListener(this);

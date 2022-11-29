@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ public abstract class AnalyticData {
     protected final IdentificationData id;
     protected final boolean isNull;
 
-    public AnalyticData(final GraphElementType elementType, final int elementId, final String identifier, final boolean isNull) {
+    protected AnalyticData(final GraphElementType elementType, final int elementId, final String identifier, final boolean isNull) {
         this.id = new IdentificationData(elementType, elementId, identifier);
         this.isNull = isNull;
     }
-    
+
     public IdentificationData getIdentificationData() {
         return id;
     }
@@ -72,5 +72,5 @@ public abstract class AnalyticData {
     public boolean isNull() {
         return isNull;
     }
-    
+
 }

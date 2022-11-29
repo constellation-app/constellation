@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,6 +43,7 @@ public class AttributeData extends AttributePrototype {
     private long modificationCount;
     private final boolean isKey;
     private final boolean isSchema;
+    private boolean isKeepExpanded;
 
     /**
      * Create a new AttributeData object corresponding to an attribute as it
@@ -65,10 +66,10 @@ public class AttributeData extends AttributePrototype {
      * @param isSchema whether or not the attribute belongs to the graph's
      * schema.
      */
-    public AttributeData(String name, String description, int id, long modCount, GraphElementType elementType, String dataType, Object defaultValue, boolean isKey, boolean isSchema) {
+    public AttributeData(final String name, final String description, final int id, final long modCount, final GraphElementType elementType, final String dataType, final Object defaultValue, final boolean isKey, final boolean isSchema) {
         super(name, description, elementType, dataType, defaultValue);
-        attributeId = id;
-        modificationCount = modCount;
+        this.attributeId = id;
+        this.modificationCount = modCount;
         this.isKey = isKey;
         this.isSchema = isSchema;
     }
@@ -91,8 +92,8 @@ public class AttributeData extends AttributePrototype {
      * @return True if newModCount was different to the current mod count, false
      * otherwise.
      */
-    public boolean attibuteValueHasChanged(long newModCount) {
-        boolean changed = newModCount != getModificationCount();
+    public boolean attibuteValueHasChanged(final long newModCount) {
+        final boolean changed = newModCount != getModificationCount();
         modificationCount = newModCount;
         return changed;
     }
@@ -127,5 +128,19 @@ public class AttributeData extends AttributePrototype {
      */
     public boolean isSchema() {
         return isSchema;
+    }
+
+    /**
+     * Should multiple values of this attribute be always expanded .
+     *
+     * @return True if the attribute values should always be expanded, false
+     * otherwise.
+     */
+    public boolean isKeepExpanded() {
+        return isKeepExpanded;
+    }
+
+    public void setKeepExpanded(final boolean isKeepExpanded) {
+        this.isKeepExpanded = isKeepExpanded;
     }
 }

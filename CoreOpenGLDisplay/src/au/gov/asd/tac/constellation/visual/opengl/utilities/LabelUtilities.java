@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,10 @@ public final class LabelUtilities {
     public static final int NRADIUS_TO_LABEL_UNITS = 16;
     public static final int NRADIUS_TO_LINE_WIDTH_UNITS = 16;
     public static final String ELLIPSIS = "…"; // \u2026
+    
+    private LabelUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Split the attribute values into lines of text that are no more than
@@ -68,7 +72,12 @@ public final class LabelUtilities {
 
                 final int space = remaining.indexOf(' ', prevSpace);
                 final int newLine = remaining.indexOf('\n');
-                final int pos = space == -1 ? newLine : (newLine == -1 ? space : Math.min(space, newLine));
+                final int pos;
+                if (space == -1) {
+                    pos = newLine;
+                } else {
+                    pos = newLine == -1 ? space : Math.min(space, newLine);
+                }
                 final boolean isNewLine = pos == newLine;
 
                 if (pos > MAX_LINE_LENGTH_PER_ATTRIBUTE || pos == -1) {

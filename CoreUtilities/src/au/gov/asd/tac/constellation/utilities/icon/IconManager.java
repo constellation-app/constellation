@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,9 +37,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 public class IconManager {
 
-    private static List<? extends ConstellationIconProvider> PROVIDERS = null;
-    private static CustomIconProvider CUSTOM_PROVIDER = null;
-    private static Map<String, ConstellationIcon> CACHE = null;
+    private static List<? extends ConstellationIconProvider> iconProviders = null;
+    private static CustomIconProvider customProvider = null;
+    private static Map<String, ConstellationIcon> cache = null;
 
     /**
      * Find all {@link ConstellationIconProvider} instances using
@@ -49,11 +49,11 @@ public class IconManager {
      * @return A {@link Collection} of {@link ConstellationIconProvider}.
      */
     public static synchronized List<? extends ConstellationIconProvider> getIconProviders() {
-        if (PROVIDERS == null) {
-            List<? extends ConstellationIconProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationIconProvider.class));
-            PROVIDERS = Collections.unmodifiableList(providers);
+        if (iconProviders == null) {
+            final List<? extends ConstellationIconProvider> providers = new ArrayList<>(Lookup.getDefault().lookupAll(ConstellationIconProvider.class));
+            iconProviders = Collections.unmodifiableList(providers);
         }
-        return PROVIDERS;
+        return iconProviders;
     }
 
     /**
@@ -63,10 +63,10 @@ public class IconManager {
      * @return A {@link CustomIconProvider}.
      */
     public static synchronized CustomIconProvider getCustomProvider() {
-        if (CUSTOM_PROVIDER == null) {
-            CUSTOM_PROVIDER = Lookup.getDefault().lookup(CustomIconProvider.class);
+        if (customProvider == null) {
+            customProvider = Lookup.getDefault().lookup(CustomIconProvider.class);
         }
-        return CUSTOM_PROVIDER;
+        return customProvider;
     }
 
     /**
@@ -79,11 +79,8 @@ public class IconManager {
      * @return A {@link Set} of {@link String} objects representing icon names.
      */
     public static Set<String> getIconNames(final Boolean editable) {
-        return getCache().values().stream().filter(icon -> {
-            return editable == null || editable == icon.isEditable();
-        }).map(icon -> {
-            return icon.getExtendedName();
-        }).collect(Collectors.toSet());
+        return getCache().values().stream().filter(icon -> editable == null || editable == icon.isEditable()).map(icon -> icon.getExtendedName()
+        ).collect(Collectors.toSet());
     }
 
     /**
@@ -132,7 +129,7 @@ public class IconManager {
      * @param icon A {@link ConstellationIcon} representing a user-defined icon.
      * @return True if the icon was successfully added, false otherwise.
      */
-    public static boolean addIcon(ConstellationIcon icon) {
+    public static boolean addIcon(final ConstellationIcon icon) {
         final boolean iconAdded = IconManager.getCustomProvider().addIcon(icon);
         rebuildCache();
         return iconAdded;
@@ -148,7 +145,7 @@ public class IconManager {
      * added user-defined icon.
      * @return True if the icon was successfully removed, false otherwise.
      */
-    public static boolean removeIcon(String iconName) {
+    public static boolean removeIcon(final String iconName) {
         final boolean iconRemoved = IconManager.getCustomProvider().removeIcon(iconName);
         rebuildCache();
         return iconRemoved;
@@ -160,8 +157,8 @@ public class IconManager {
      * @return a {@link Map} of icon name to icon representing all icons from
      * all loaded icon providers.
      */
-    private static synchronized Map<String, ConstellationIcon> getCache() {
-        if (CACHE == null) {
+    protected static synchronized Map<String, ConstellationIcon> getCache() {
+        if (cache == null) {
             final Map<String, ConstellationIcon> iconNames = new HashMap<>();
             final Map<String, ConstellationIcon> iconExtendedNames = new HashMap<>();
             final Map<String, ConstellationIcon> iconAliases = new HashMap<>();
@@ -176,20 +173,20 @@ public class IconManager {
                 }
             }
 
-            CACHE = new HashMap<>();
-            CACHE.putAll(iconAliases);
-            CACHE.putAll(iconNames);
-            CACHE.putAll(iconExtendedNames);
+            cache = new HashMap<>();
+            cache.putAll(iconAliases);
+            cache.putAll(iconNames);
+            cache.putAll(iconExtendedNames);
         }
 
-        return CACHE;
+        return cache;
     }
 
     /**
      * Flag that the icon cache needs to be rebuilt.
      */
     private static synchronized void rebuildCache() {
-        CACHE = null;
+        cache = null;
     }
 
     /**
@@ -200,7 +197,7 @@ public class IconManager {
      */
     private static ConstellationIcon createMissingIcon(final String name) {
         final ConstellationIcon missingIcon = new ConstellationIcon.Builder(name, DefaultIconProvider.UNKNOWN.getIconData()).build();
-        CACHE.put(name, missingIcon);
+        cache.put(name, missingIcon);
         return missingIcon;
     }
 }

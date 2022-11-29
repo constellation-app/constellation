@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -52,7 +54,6 @@ import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.LookupEvent;
 import org.openide.util.LookupListener;
@@ -103,6 +104,8 @@ import org.openide.windows.TopComponent;
 })
 
 public final class FindTopComponent extends TopComponent implements GraphChangeListener, LookupListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(FindTopComponent.class.getName());
 
     private final JLabel lblNoGraph = new JLabel(Bundle.No_Active_Graph());
     private final JPanel panelNoGraph = new JPanel();
@@ -613,28 +616,29 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
                     Attribute attr = new GraphAttribute(rg, keys[i]);
                     FindRule rule = new FindRule();
                     rule.setAttribute(attr);
-                    if (attr.getAttributeType().equalsIgnoreCase("boolean")) {
+                    if ("boolean".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addBooleanBasedRule(true);
                         rule.setOperator(FindTypeOperators.Operator.IS);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("color")) {
+                    } else if ("color".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addColorBasedRule(Color.BLACK);
                         rule.setOperator(FindTypeOperators.Operator.IS);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("date")) {
+                    } else if ("date".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addDateBasedRule(new Date(), new Date());
                         rule.setOperator(FindTypeOperators.Operator.OCCURRED_ON);
                     } else if (attr.getAttributeType().equalsIgnoreCase(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME)) {
                         rule.addDateTimeBasedRule(new GregorianCalendar(), new GregorianCalendar());
                         rule.setOperator(FindTypeOperators.Operator.OCCURRED_ON);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("time")) {
+                    } else if ("time".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addTimeBasedRule(new GregorianCalendar(), new GregorianCalendar());
                         rule.setOperator(FindTypeOperators.Operator.OCCURRED_ON);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("float")) {
-                        rule.addFloatBasedRule(0.0f, 0.0f);
+                    } else if ("float".equalsIgnoreCase(attr.getAttributeType())) {
+                        rule.addFloatBasedRule(0.0F, 0.0F);
+
                         rule.setOperator(FindTypeOperators.Operator.IS);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("integer")) {
+                    } else if ("integer".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addIntegerBasedRule(0, 0);
                         rule.setOperator(FindTypeOperators.Operator.IS);
-                    } else if (attr.getAttributeType().equalsIgnoreCase("icon")) {
+                    } else if ("icon".equalsIgnoreCase(attr.getAttributeType())) {
                         rule.addIconBasedRule("");
                         rule.setOperator(FindTypeOperators.Operator.IS);
                     } else { // string
@@ -745,11 +749,11 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         // Wait for the search to find its results:
         try {
             future.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         final List<FindResult> results = queryPlugin.getResults();
@@ -773,9 +777,9 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
     public void performBasicSearch() {
         final ArrayList<Attribute> selectedAttributes = basicFindPanel.getSelectedAttributes();
         final String findString = basicFindPanel.getFindString();
-        final boolean regex = basicFindPanel.getRegex();
-        final boolean ignoreCase = basicFindPanel.getIgnorecase();
-        final boolean matchWholeWord = basicFindPanel.getExactMatch();
+        final boolean regex = basicFindPanel.hasRegex();
+        final boolean ignoreCase = basicFindPanel.isIgnorecase();
+        final boolean matchWholeWord = basicFindPanel.isExactMatch();
         final BasicFindPlugin basicfindPlugin = new BasicFindPlugin(type, selectedAttributes, findString, regex, ignoreCase, matchWholeWord, chkAddToSelection.isSelected());
         PluginExecution.withPlugin(basicfindPlugin).executeLater(graphNode.getGraph());
     }
@@ -863,11 +867,11 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
         // Wait for the search to find its results:
         try {
             future.get();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         if (attributeModificationCounter != attrPlugin.getAttributeModificationCounter()) {
@@ -898,8 +902,6 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
      * @param node The GraphNode containing the graph to be displayed.
      */
     private void setNode(final GraphNode node) {
-//        propertyChange(null);
-
         if (graphNode != null) {
             final Graph graph = graphNode.getGraph();
 
@@ -915,7 +917,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
             final Graph graph = graphNode.getGraph();
 
             // Force a refresh as we are moving graphs!
-            attributeModificationCounter = -1;  //graph.getAttributeModificationCounter();
+            attributeModificationCounter = -1;
             determineAttributes();
 
             graph.addGraphChangeListener(this);
@@ -949,7 +951,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
                 lblMatchPB.setEnabled(false);
                 chkAddToSelection.setVisible(true);
                 chkAddToSelection.setEnabled(true);
-                btnFind.setEnabled(basicFindPanel.getValidity());
+                btnFind.setEnabled(basicFindPanel.isValidity());
                 lblSelect.setText("Find");
                 btnFind.setText("Find");
                 break;
@@ -963,7 +965,7 @@ public final class FindTopComponent extends TopComponent implements GraphChangeL
                 lblMatchPB.setEnabled(false);
                 chkAddToSelection.setVisible(false);
                 chkAddToSelection.setEnabled(false);
-                btnFind.setEnabled(replacePanel.getValidity());
+                btnFind.setEnabled(replacePanel.isValidity());
                 lblSelect.setText("Replace");
                 btnFind.setText("Replace");
                 break;

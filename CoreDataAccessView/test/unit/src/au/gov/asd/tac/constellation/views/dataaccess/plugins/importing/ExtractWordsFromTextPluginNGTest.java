@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,26 +15,37 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.importing;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginRegistry;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginRegistry;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.USE_REGEX_PARAMETER_ID;
+import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID;
 import java.util.HashSet;
 import java.util.Set;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Extract From Content Plugin Test.
+ * Extract Words From Text Plugin Test.
  *
  * @author canis_majorus
  */
@@ -42,24 +53,42 @@ public class ExtractWordsFromTextPluginNGTest {
 
     private StoreGraph graph;
 
-    public ExtractWordsFromTextPluginNGTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-    }
-
     @BeforeMethod
     public void setUpMethod() {
         graph = new StoreGraph(SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema());
     }
 
-    @AfterMethod
-    public void tearDownMethod() throws Exception {
+    /**
+     * Test of getType method, of class ExtractWordFromTextPlugin.
+     */
+    @Test
+    public void testGetType() {
+        ExtractWordsFromTextPlugin instance = new ExtractWordsFromTextPlugin();
+        String expResult = "Import";
+        String result = instance.getType();
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getPosition method, of class ExtractWordsFromTextPlugin.
+     */
+    @Test
+    public void testGetPosition() {
+        ExtractWordsFromTextPlugin instance = new ExtractWordsFromTextPlugin();
+        int expResult = 1001;
+        int result = instance.getPosition();
+        assertEquals(result, expResult);
+    }
+
+    /**
+     * Test of getDescription method, of class ExtractWordFromTextPlugin.
+     */
+    @Test
+    public void testGetDescription() {
+        ExtractWordsFromTextPlugin instance = new ExtractWordsFromTextPlugin();
+        String expResult = "Extract words from text and add them to the graph";
+        String result = instance.getDescription();
+        assertEquals(result, expResult);
     }
 
     /**
@@ -548,5 +577,41 @@ public class ExtractWordsFromTextPluginNGTest {
         newNodes.add(graph.getStringValue(vertexIdentifierAttributeId, graph.getVertex(3)));
         assertTrue(newNodes.contains("do"));
         assertTrue(newNodes.contains("DO"));
+    }
+
+    /**
+     * Test updateParameters
+     *
+     */
+    @Test
+    public void testUpdateParameters() {
+        ExtractWordsFromTextPlugin instance = new ExtractWordsFromTextPlugin();
+        PluginParameters parameters = new PluginParameters();
+
+        final PluginParameter<SingleChoiceParameterValue> attributeType = SingleChoiceParameterType.build(ATTRIBUTE_PARAMETER_ID);
+        parameters.addParameter(attributeType);
+
+        final PluginParameter<StringParameterValue> textParameter = StringParameterType.build(WORDS_PARAMETER_ID);
+        textParameter.setStringValue("text");
+        parameters.addParameter(textParameter);
+
+        final PluginParameter<BooleanParameterValue> useRegexParameter = BooleanParameterType.build(USE_REGEX_PARAMETER_ID);
+        useRegexParameter.setBooleanValue(true);
+        parameters.addParameter(useRegexParameter);
+
+        Graph graph1 = new DualGraph(graph.getSchema(), graph);
+        instance.updateParameters(graph1, parameters);
+
+        assertEquals(parameters.getParameters().size(), 3);
+        assertTrue(parameters.hasParameter(ExtractWordsFromTextPlugin.ATTRIBUTE_PARAMETER_ID));
+        assertEquals(parameters.getParameters().get(ExtractWordsFromTextPlugin.WORDS_PARAMETER_ID).getStringValue(), "text");
+        assertEquals(parameters.getParameters().get(ExtractWordsFromTextPlugin.USE_REGEX_PARAMETER_ID).getBooleanValue(), true);
+        assertFalse(parameters.hasParameter(ExtractWordsFromTextPlugin.SELECTED_ONLY_PARAMETER_ID));
+
+        parameters = instance.createParameters();
+        instance.updateParameters(graph1, parameters);
+
+        assertEquals(parameters.getParameters().size(), 11);
+        assertTrue(parameters.hasParameter(ExtractWordsFromTextPlugin.SELECTED_ONLY_PARAMETER_ID));
     }
 }

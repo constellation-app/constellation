@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.conversationview;
 
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.List;
 import javafx.geometry.Insets;
@@ -72,7 +71,6 @@ public class ConversationBubble extends VBox {
         setMinHeight(USE_PREF_SIZE);
         setMaxHeight(USE_PREF_SIZE);
         setSpacing(-5);
-        setStyle(String.format("-fx-font-size: %spx", FontUtilities.getOutputFontSize()));
 
         final VBox bubbleContent = new VBox();
         bubbleContent.setAlignment(Pos.CENTER_LEFT);
@@ -80,7 +78,7 @@ public class ConversationBubble extends VBox {
         bubbleContent.setMaxWidth(USE_PREF_SIZE);
         bubbleContent.setMinWidth(200);
 
-        // The bubble graphic
+        // The bubble graphic.
         bubbleGraphic = new Rectangle(0, 0);
         bubbleGraphic.setArcHeight(CORNER_RADIUS);
         bubbleGraphic.setArcWidth(CORNER_RADIUS);
@@ -175,6 +173,6 @@ public class ConversationBubble extends VBox {
 
         tail.setFill(bottomColor);
         tail.setStroke(color);
-        tailTop.setStroke(bottomColor); // Erase the border of the buble where the tail joins
+        tailTop.setStroke(bottomColor); // Erase the border of the buble where the tail joins.
     }
 }

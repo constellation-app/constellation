@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import au.gov.asd.tac.constellation.plugins.arrangements.subgraph.SubgraphFactor
 import au.gov.asd.tac.constellation.plugins.arrangements.utilities.ArrangementUtilities;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The GraphTaxonomy arranger.
@@ -41,6 +43,8 @@ import java.util.Set;
  * @author algol
  */
 public abstract class GraphTaxonomyArranger implements Arranger {
+
+    private static final Logger LOGGER = Logger.getLogger(GraphTaxonomyArranger.class.getName());
 
     private final Arranger inner;
     private final Arranger outer;
@@ -63,7 +67,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
      * @param connectionType the connection type.
      * @param subgraphFactory the subgraphFactory.
      */
-    public GraphTaxonomyArranger(final Arranger inner, final Arranger outer, SelectedInclusionGraph.Connections connectionType, final SubgraphFactory subgraphFactory) {
+    protected GraphTaxonomyArranger(final Arranger inner, final Arranger outer, final SelectedInclusionGraph.Connections connectionType, final SubgraphFactory subgraphFactory) {
         this.inner = inner;
         this.outer = outer;
         this.connectionType = connectionType;
@@ -127,7 +131,6 @@ public abstract class GraphTaxonomyArranger implements Arranger {
         }
 
         final GraphTaxonomy taxonomy = getTaxonomy(wg);
-//        System.out.printf("@GTA tax size %d\n", taxonomy.size());
 
         if (taxonomy.size() == 1) {
             final int k = taxonomy.getTaxa().keySet().iterator().next();
@@ -152,7 +155,7 @@ public abstract class GraphTaxonomyArranger implements Arranger {
             final int steps = taxa.size() + 1;
             int step = 0;
             for (final Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
-                if (taxonomy.getArrangeRectangularly(entry.getKey())) {
+                if (taxonomy.isArrangeRectangularly(entry.getKey())) {
                     if (interaction != null) {
                         interaction.setProgress(step, steps, "Arrange grid...", true);
                     }
@@ -177,7 +180,6 @@ public abstract class GraphTaxonomyArranger implements Arranger {
                 step++;
             }
 
-//            System.out.printf("@GTA taxon count: %d\n", taxonomy.size());
             if (interaction != null) {
                 final String msg = String.format("Arrange outer (%s)...", outer.getClass().getSimpleName());
                 interaction.setProgress(step, steps, msg, true);
@@ -225,7 +227,8 @@ public abstract class GraphTaxonomyArranger implements Arranger {
 
     public static void dump(final Map<Integer, Set<Integer>> taxa) {
         for (final Map.Entry<Integer, Set<Integer>> entry : taxa.entrySet()) {
-            System.out.printf("tax %d: size %d%n", entry.getKey(), entry.getValue().size());
+            final String log = String.format("tax %d: size %d%n", entry.getKey(), entry.getValue().size());
+            LOGGER.log(Level.INFO, log);
         }
     }
 }

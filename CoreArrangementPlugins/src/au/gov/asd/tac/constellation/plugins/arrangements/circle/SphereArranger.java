@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,16 +50,16 @@ public class SphereArranger implements Arranger {
         final int y2Id = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y2.getName());
         final int z2Id = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z2.getName());
 
-        final float rnd = 1f; // Use new Random().nextFloat() * vxCount to add some randomess.
-        final float offset = 2f / vxCount;
+        final float rnd = 1F; // Use new Random().nextFloat() * vxCount to add some randomess.
+        final float offset = 2F / vxCount;
         final float increment = (float) (Math.PI * (3.0 - Math.sqrt(5)));
 
         // Make the radius dependent on the number of vertices, with a lower limit.
         //
-        final float radius = 8f + (float) (1.0 * Math.sqrt(vxCount));
+        final float radius = 8F + (float) (1.0 * Math.sqrt(vxCount));
 
         for (int position = 0; position < vxCount; position++) {
-            final float y = ((position * offset) - 1) + (offset / 2f);
+            final float y = ((position * offset) - 1) + (offset / 2F);
             final float r = (float) Math.sqrt(1.0 - Math.pow(y, 2.0));
             final float phi = ((position + rnd) % vxCount) * increment;
             final float x = (float) Math.cos(phi) * r;

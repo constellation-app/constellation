@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,7 +44,6 @@ import org.apache.commons.collections4.CollectionUtils;
 public final class CircTreeArranger implements Arranger {
     // Vertex radii are measured in square sides, visible radii are measured in circle radii.
 
-    private static final float CIRC_RADIUS = (float) Math.sqrt(2);
     private static final int MAX_IN_ONE_CIRCLE = 16;
     private static final float TWO_PI = (float) (2 * Math.PI);
     private GraphWriteMethods graph;
@@ -111,7 +110,6 @@ public final class CircTreeArranger implements Arranger {
 
             final float[] oldCentre = maintainMean ? ArrangementUtilities.getXyzMean(graph) : null;
 
-//            System.out.printf("@AICT Tree arranging %d vertices, root=%d\n", verticesToArrange.cardinality(), rootVxId);
             // Gather the vxIds into a BitSet for faster checking.
             BitSet vxsToGo = (BitSet) verticesToArrange.clone();
             vxsToGo.clear(rootVxId);
@@ -157,7 +155,7 @@ public final class CircTreeArranger implements Arranger {
      * @param children
      */
     private static void removeChildren(final BitSet vxs, final ArrayList<VxInfo> children) {
-        for (VxInfo vxInfo : children) {
+        for (final VxInfo vxInfo : children) {
             vxs.clear(vxInfo.vxId);
         }
     }
@@ -169,11 +167,7 @@ public final class CircTreeArranger implements Arranger {
      * Record result an AtomicQueue stored by parent in hash table. Returns
      * number of children for vertex.
      */
-    private int orderChildren(
-            final int vxId,
-            final BitSet vxsToGo,
-            final HashMap<Integer, ArrayList<VxInfo>> orderedChildren,
-            final BitSet onlyChildren) {
+    private int orderChildren(final int vxId, final BitSet vxsToGo, final HashMap<Integer, ArrayList<VxInfo>> orderedChildren, final BitSet onlyChildren) {
         final ArrayList<VxInfo> children = new ArrayList<>();
 
         // For the specified vertex, get its children and record how many children they have.
@@ -189,6 +183,8 @@ public final class CircTreeArranger implements Arranger {
             return 1;
         } else if (children.size() == 1) {
             onlyChildren.set(children.iterator().next().vxId);
+        } else {
+            // Do nothing
         }
 
         // Remove these children from consideration.
@@ -196,7 +192,7 @@ public final class CircTreeArranger implements Arranger {
 
         int result = 1;
         final ArrayList<VxInfo> numChildren = new ArrayList<>();
-        for (VxInfo vxInfo : children) {
+        for (final VxInfo vxInfo : children) {
             final int nChildren = orderChildren(vxInfo.vxId, vxsToGo, orderedChildren, onlyChildren);
             numChildren.add(new VxInfo(vxInfo.vxId, nChildren));
             result += nChildren;
@@ -221,8 +217,7 @@ public final class CircTreeArranger implements Arranger {
         // Get the radius of the starting vertex.
         // We don't want a radius of zero; this will break things higher up and result in NaN values for x,y,z.
         // Instead, we'll use a minimum radius (pulled out of a hat).
-        final float minRadius = 0.1f;
-//        final float selfRadius = scale * (radiusAttr!=Graph.NOT_FOUND ? graph.getFloatValue(radiusAttr, vxId) : 1);
+        final float minRadius = 0.1F;
         final float selfRadius = scale * (radiusAttr != Graph.NOT_FOUND ? Math.max(graph.getFloatValue(radiusAttr, vxId), minRadius) : 1);
 
         // Find adjacent vertices to work on.
@@ -249,14 +244,16 @@ public final class CircTreeArranger implements Arranger {
             fullRadii[vxId] = fullRadius;
 
             return fullRadius;
+        } else {
+            // Do nothing
         }
 
         // Force inner circle of childless children, if it makes sense to do so.
         int maxThisCircle = MAX_IN_ONE_CIRCLE;
         int nChildless = 0;
         int nWithChildren = 0;
-//        boolean separatingChildless = false;
-        for (VxInfo child : children) {
+        
+        for (final VxInfo child : children) {
             if (orderedChildren.containsKey(child.vxId)) {
                 nWithChildren++;
             } else {
@@ -265,7 +262,6 @@ public final class CircTreeArranger implements Arranger {
         }
 
         if (nChildless > 2 && nChildless < MAX_IN_ONE_CIRCLE && nWithChildren > 0) {
-//            separatingChildless = true;
             maxThisCircle = nChildless;
         }
 
@@ -276,7 +272,7 @@ public final class CircTreeArranger implements Arranger {
             // Iterate through each, adding contributions to radius.
             float childrenCircum = 0;
             float maxChildRadius = 0;
-            for (VxInfo child : children) {
+            for (final VxInfo child : children) {
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
@@ -310,7 +306,7 @@ public final class CircTreeArranger implements Arranger {
             float maxChildRadiusThisAnnulus = 0;
             final ArrayDeque<VxInfo> needRadii = new ArrayDeque<>();
             float lastChildRadius = 0;
-            for (VxInfo child : children) {
+            for (final VxInfo child : children) {
                 if (Thread.interrupted()) {
                     throw new InterruptedException();
                 }
@@ -423,8 +419,7 @@ public final class CircTreeArranger implements Arranger {
         } else {
             // More than one child.
 
-            if (strictCircularLayout || annulusInfo[children.get(children.size() - 1).vxId] == null) // annulusInfo[children.get(0).vxId]==null
-            {
+            if (strictCircularLayout || annulusInfo[children.get(children.size() - 1).vxId] == null) { // annulusInfo[children.get(0).vxId]==null
                 // Remove these children from consideration.
                 removeChildren(vxsToGo, children);
 
@@ -435,18 +430,18 @@ public final class CircTreeArranger implements Arranger {
 
                 // Figure out available and needed circumferences.
                 float neededCircumference = 0;
-                for (VxInfo child : children) {
+                for (final VxInfo child : children) {
                     neededCircumference += 2 * fullRadii[child.vxId];
                 }
 
                 // Starting orientation is perpendicular to parent's.
-                float accumCircle = neededCircumference * (0.25f + parentAngle / TWO_PI);
+                float accumCircle = neededCircumference * (0.25F + parentAngle / TWO_PI);
 
                 // Loop through each child, positioning it and its satellites.
                 float oldRadiusIncrement = 0;
                 boolean doneOne = false;
-                float accumToRadians = neededCircumference != 0 ? TWO_PI / neededCircumference : 0;
-                for (VxInfo child : children) {
+                final float accumToRadians = neededCircumference != 0 ? TWO_PI / neededCircumference : 0;
+                for (final VxInfo child : children) {
                     if (Thread.interrupted()) {
                         throw new InterruptedException();
                     }
@@ -476,7 +471,7 @@ public final class CircTreeArranger implements Arranger {
                 float cumAngle = 0;
                 float lastAnnulus = 0;
                 final float outermostAnnulus = annulusInfo[children.get(children.size() - 1).vxId].radius;
-                for (VxInfo child : children) {
+                for (final VxInfo child : children) {
                     if (Thread.interrupted()) {
                         throw new InterruptedException();
                     }
@@ -492,7 +487,7 @@ public final class CircTreeArranger implements Arranger {
 
                     // The outermost annulus starts perpendicular to its parent's angle.
                     if (lastAnnulus != 0 && lastAnnulus != childAnnulusRadius && outermostAnnulus == childAnnulusRadius) {
-                        cumAngle += TWO_PI * (parentAngle / TWO_PI + 0.25f);
+                        cumAngle += TWO_PI * (parentAngle / TWO_PI + 0.25F);
                     }
 
                     lastAnnulus = childAnnulusRadius;

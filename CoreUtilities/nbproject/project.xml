@@ -15,6 +15,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.help</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.preferences</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -49,15 +57,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.netbeans.modules.javahelp</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>2.41.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.openide.awt</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -71,6 +70,14 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.42.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.filesystems.nb</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.9.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -113,14 +120,6 @@
                         <specification-version>9.6.1</specification-version>
                     </run-dependency>
                 </dependency>
-                <dependency>
-                    <code-name-base>org.openide.windows</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>6.75.1</specification-version>
-                    </run-dependency>
-                </dependency>
             </module-dependencies>
             <test-dependencies>
                 <test-type>
@@ -144,6 +143,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.geospatial</package>
                 <package>au.gov.asd.tac.constellation.utilities.graphics</package>
                 <package>au.gov.asd.tac.constellation.utilities.gui</package>
+                <package>au.gov.asd.tac.constellation.utilities.gui.filechooser</package>
                 <package>au.gov.asd.tac.constellation.utilities.html</package>
                 <package>au.gov.asd.tac.constellation.utilities.https</package>
                 <package>au.gov.asd.tac.constellation.utilities.icon</package>
@@ -165,6 +165,7 @@
                 <package>au.gov.asd.tac.constellation.utilities.text</package>
                 <package>au.gov.asd.tac.constellation.utilities.timer</package>
                 <package>au.gov.asd.tac.constellation.utilities.tooltip</package>
+                <package>au.gov.asd.tac.constellation.utilities.tooltip.handlers</package>
                 <package>au.gov.asd.tac.constellation.utilities.video</package>
                 <package>au.gov.asd.tac.constellation.utilities.visual</package>
                 <package>au.gov.asd.tac.constellation.utilities.xml</package>

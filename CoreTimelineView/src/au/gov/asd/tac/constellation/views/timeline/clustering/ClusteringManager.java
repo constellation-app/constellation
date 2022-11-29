@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,8 +24,8 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalConstants;
 import au.gov.asd.tac.constellation.views.timeline.TimeExtents;
@@ -102,6 +102,8 @@ public class ClusteringManager {
             } else if (leaves.size() == 1) {
                 tree = leaves.get(0);
                 return new TimeExtents(tree.getLowerTimeExtent(), tree.getUpperTimeExtent());
+            } else {
+                // Do nothing
             }
 
             Collections.sort(leaves);
@@ -201,6 +203,8 @@ public class ClusteringManager {
                         elementsToUndim.add(te);
                     } else if (exclusionState == 2) {
                         elementsToUnhide.add(te);
+                    } else {
+                        // Do nothing
                     }
                 } else {
                     final TreeNode node = (TreeNode) te;
@@ -234,7 +238,7 @@ public class ClusteringManager {
         public void exclusionStateNotify(final long vxModCount, final long txModCount);
     }
 
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
+    @PluginInfo(tags = {PluginTags.MODIFY})
     public final class InitDimOrHidePlugin extends SimplePlugin {
 
         final String dateTimeAttr;
@@ -283,7 +287,6 @@ public class ClusteringManager {
                     for (TreeElement te : elementsToUndim) {
                         if (te instanceof TreeLeaf) {
                             TreeLeaf leaf = (TreeLeaf) te;
-                            //wg.setBooleanValue(transDimAttr, leaf.getId(), false);
 
                             transactionsToUndim.add(leaf.getId());
                             Integer countA = undimmedVerticesOnGraph.get(leaf.vertexIdA);
@@ -333,7 +336,6 @@ public class ClusteringManager {
                     for (TreeElement te : elementsToUnhide) {
                         if (te instanceof TreeLeaf) {
                             TreeLeaf leaf = (TreeLeaf) te;
-                            //wg.setBooleanValue(transDimAttr, leaf.getId(), false);
 
                             transactionsToUnhide.add(leaf.getId());
                             Integer countA = unhiddenVerticesOnGraph.get(leaf.vertexIdA);
@@ -378,6 +380,8 @@ public class ClusteringManager {
                             }
                         }
                     }
+                } else {
+                    // Do nothing
                 }
 
                 for (int pos = 0; pos < wg.getTransactionCount(); pos++) {
@@ -397,7 +401,13 @@ public class ClusteringManager {
         }
     }
 
-    @PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
+    // TODO: Adding "LOW LEVEL" to omit this plugin flooding the Notes View with
+    // this call every time a selection is made and the timeline view is open.
+    // Review why this plugin is called so oftern and see if there is a need for
+    // this to even be a plugin if there is no direct user interaction required
+    // manually or programatically. If not then perhaps this should not be a
+    // plugin but rather a function call.
+    @PluginInfo(tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
     public final class UpdateDimOrHidePlugin extends SimplePlugin {
 
         final long lowerTimeExtent;
@@ -668,6 +678,8 @@ public class ClusteringManager {
                             }
                         }
                     }
+                } else {
+                    // Do nothing
                 }
 
                 for (Integer vertexId : verticesToBeUndimmed) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,10 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
  * @author arcturus
  */
 public class CopyGraphUtilities {
+    
+    private CopyGraphUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Copy the primary keys from a source graph and copy it to a new graph.

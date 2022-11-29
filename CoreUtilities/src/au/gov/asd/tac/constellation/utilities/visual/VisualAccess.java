@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -74,14 +74,14 @@ public interface VisualAccess {
     public void endUpdate();
 
     /**
-     * Get the colour to be used for the background of the graph display.
+     * Get the color to be used for the background of the graph display.
      *
      * @return
      */
     public ConstellationColor getBackgroundColor();
 
     /**
-     * Get the highlight colour for the graph (can be used for indicating
+     * Get the highlight color for the graph (can be used for indicating
      * selection etc).
      *
      * @return
@@ -183,10 +183,10 @@ public interface VisualAccess {
      * connections to display.
      * @return
      */
-    public boolean getIsLabelSummary(final int connection);
+    public boolean isLabelSummary(final int connection);
 
     /**
-     * Get the colour of the given label on top of nodes.
+     * Get the color of the given label on top of nodes.
      *
      * @param labelNum The position of the label in the list of top labels to
      * display.
@@ -195,7 +195,7 @@ public interface VisualAccess {
     public ConstellationColor getTopLabelColor(final int labelNum);
 
     /**
-     * Get the colour of the given label below nodes.
+     * Get the color of the given label below nodes.
      *
      * @param labelNum The position of the label in the list of bottom labels to
      * display.
@@ -204,7 +204,7 @@ public interface VisualAccess {
     public ConstellationColor getBottomLabelColor(final int labelNum);
 
     /**
-     * Get the colour of the given label on connections.
+     * Get the color of the given label on connections.
      *
      * @param labelNum The position of the label in the list of connection
      * labels to display.
@@ -319,7 +319,7 @@ public interface VisualAccess {
     public float getZ2(final int vertex);
 
     /**
-     * Get the colour of the given vertex.
+     * Get the color of the given vertex.
      *
      * @param vertex The position of the vertex in the list of vertices to
      * display.
@@ -354,7 +354,7 @@ public interface VisualAccess {
      * display.
      * @return
      */
-    public boolean getVertexSelected(final int vertex);
+    public boolean isVertexSelected(final int vertex);
 
     /**
      * Get the visibility value for the given vertex, informing whether or not
@@ -376,7 +376,7 @@ public interface VisualAccess {
      * display.
      * @return
      */
-    public boolean getVertexDimmed(final int vertex);
+    public boolean isVertexDimmed(final int vertex);
 
     /**
      * Get the radius of the given vertex
@@ -394,7 +394,7 @@ public interface VisualAccess {
      * display.
      * @return
      */
-    public boolean getBlazed(final int vertex);
+    public boolean isBlazed(final int vertex);
 
     /**
      * Get the angle at which the blaze should be displayed for the given
@@ -408,7 +408,7 @@ public interface VisualAccess {
     public int getBlazeAngle(final int vertex);
 
     /**
-     * Get the colour to use for the blaze for the given vertex.
+     * Get the color to use for the blaze for the given vertex.
      *
      * @param vertex The position of the vertex in the list of vertices to
      * display. This should be a vertex v for which
@@ -458,7 +458,7 @@ public interface VisualAccess {
     public String getSWDecorator(final int vertex);
 
     /**
-     * Get the colour of the given connection.
+     * Get the color of the given connection.
      *
      * @param connection The position of the connection in the list of
      * connections to display.
@@ -473,7 +473,7 @@ public interface VisualAccess {
      * connections to display.
      * @return
      */
-    public boolean getConnectionSelected(final int connection);
+    public boolean isConnectionSelected(final int connection);
 
     /**
      * Get the visibility value for the given connection, informing whether or
@@ -495,7 +495,7 @@ public interface VisualAccess {
      * connections to display.
      * @return
      */
-    public boolean getConnectionDimmed(final int connection);
+    public boolean isConnectionDimmed(final int connection);
 
     /**
      * Get the linestyle to use to display the given connection.
@@ -548,7 +548,7 @@ public interface VisualAccess {
      * connections to display
      * @return A boolean value representing whether the connection is directed
      */
-    public boolean getConnectionDirected(final int connection);
+    public boolean isConnectionDirected(final int connection);
 
     /**
      * Get the endpoint vertex for the given connection with the lower ID in the

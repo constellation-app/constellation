@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,9 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.xml.XmlUtilities;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -25,8 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import javafx.stage.FileChooser;
+import javax.swing.filechooser.FileFilter;
 import javax.xml.transform.TransformerException;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -62,7 +65,7 @@ public class XMLImportFileParser extends ImportFileParser {
     @Override
     public List<String[]> parse(final InputSource input, final PluginParameters parameters) throws IOException {
 
-        try (InputStream in = input.getInputStream()) {
+        try ( InputStream in = input.getInputStream()) {
             final XmlUtilities xml = new XmlUtilities();
             final Document document = xml.read(in, true);
             final Element documentElement = document.getDocumentElement();
@@ -88,9 +91,25 @@ public class XMLImportFileParser extends ImportFileParser {
         return parse(input, parameters);
     }
 
+    /**
+     * Returns the file filter to use when browsing for files of this type.
+     *
+     * @return the file filter to use when browsing for files of this type.
+     */
     @Override
-    public FileChooser.ExtensionFilter getExtensionFilter() {
-        return new FileChooser.ExtensionFilter("XML Files", "*.xml");
+    public FileFilter getFileFilter() {
+        return new FileFilter() {
+            @Override
+            public boolean accept(final File file) {
+                final String name = file.getName();
+                return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.XML)) || file.isDirectory();
+            }
+
+            @Override
+            public String getDescription() {
+                return "XML Files (" + FileExtensionConstants.XML + ")";
+            }
+        };
     }
 
     private void exploreElement(final Element element, final List<String> path, final Map<List<String>, Counter> counts) {
@@ -175,6 +194,8 @@ public class XMLImportFileParser extends ImportFileParser {
             } else if (childNode instanceof Text) {
                 final Text textNode = (Text) childNode;
                 text.append(textNode.getNodeValue());
+            } else {
+                // Do nothing
             }
         }
 

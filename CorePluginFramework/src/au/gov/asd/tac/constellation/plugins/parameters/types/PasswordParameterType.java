@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ public class PasswordParameterType extends PluginParameterType<PasswordParameter
 
     @Override
     public String validateString(PluginParameter<PasswordParameterValue> param, String stringValue) {
-        if (StringUtils.isNotBlank(stringValue) && stringValue.trim().isEmpty()) {
+        if (StringUtils.isBlank(stringValue)) {
             return "Parameter is Empty!";
         }
         return null;

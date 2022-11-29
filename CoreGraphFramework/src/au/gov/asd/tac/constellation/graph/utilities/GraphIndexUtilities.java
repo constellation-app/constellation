@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import au.gov.asd.tac.constellation.graph.GraphIndexType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType;
 import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,7 +33,13 @@ import au.gov.asd.tac.constellation.graph.NativeAttributeType.NativeValue;
  */
 public class GraphIndexUtilities {
 
+    private static final Logger LOGGER = Logger.getLogger(GraphIndexUtilities.class.getName());
+
     private static final boolean VERBOSE = false;
+    
+    private GraphIndexUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static GraphIndexResult filterElements(final GraphReadMethods graph, final int attribute, Object value) {
 
@@ -44,7 +52,7 @@ public class GraphIndexUtilities {
             GraphElementType elementType = attributeObject.getElementType();
 
             if (VERBOSE) {
-                System.out.println("NOT USING INDEX: " + attributeObject.getName() + ": " + attribute);
+                LOGGER.log(Level.INFO, "NOT USING INDEX: " + attributeObject.getName() + ": " + attribute);
             }
 
             return new GraphIndexResult() {
@@ -86,7 +94,7 @@ public class GraphIndexUtilities {
 
             if (VERBOSE) {
                 Attribute attributeObject = new GraphAttribute(graph, attribute);
-                System.out.println("USING INDEX: " + attributeObject.getName() + ": " + attribute);
+                LOGGER.log(Level.INFO, "USING INDEX: " + attributeObject.getName() + ": " + attribute);
             }
 
             return graph.getElementsWithAttributeValue(attribute, value);

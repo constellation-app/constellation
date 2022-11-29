@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.openide.util.Lookup;
  */
 public abstract class TooltipProvider {
 
-    private static List<TooltipProvider> TOOLTIP_PROVIDERS = null;
+    private static List<TooltipProvider> tooltipProviders = null;
 
     /**
      * Requests a TooltipDefinition from all registered TooltipProviders and
@@ -37,11 +37,11 @@ public abstract class TooltipProvider {
      * currently over.
      * @return a list of any TooltipDefinitions discovered.
      */
-    public static List<TooltipDefinition> getTooltips(String content, int activePosition) {
+    public static List<TooltipDefinition> getTooltips(final String content, final int activePosition) {
         init();
-        List<TooltipDefinition> definitions = new ArrayList<>();
-        for (TooltipProvider provider : TOOLTIP_PROVIDERS) {
-            TooltipDefinition definition = provider.createTooltip(content, activePosition);
+        final List<TooltipDefinition> definitions = new ArrayList<>();
+        for (final TooltipProvider provider : getTooltipProviders()) {
+            final TooltipDefinition definition = provider.createTooltip(content, activePosition);
             if (definition != null) {
                 definitions.add(definition);
             }
@@ -49,11 +49,11 @@ public abstract class TooltipProvider {
         return definitions;
     }
 
-    public static List<TooltipDefinition> getAllTooltips(String content) {
+    public static List<TooltipDefinition> getAllTooltips(final String content) {
         init();
-        List<TooltipDefinition> definitions = new ArrayList<>();
-        for (TooltipProvider provider : TOOLTIP_PROVIDERS) {
-            TooltipDefinition definition = provider.createTooltips(content);
+        final List<TooltipDefinition> definitions = new ArrayList<>();
+        for (final TooltipProvider provider : getTooltipProviders()) {
+            final TooltipDefinition definition = provider.createTooltips(content);
             if (definition != null) {
                 definitions.add(definition);
             }
@@ -61,11 +61,19 @@ public abstract class TooltipProvider {
         return definitions;
     }
 
-    private static synchronized void init() {
-        if (TOOLTIP_PROVIDERS == null) {
-            TOOLTIP_PROVIDERS = new ArrayList<>(Lookup.getDefault().lookupAll(TooltipProvider.class));
+    protected static synchronized void init() {
+        if (tooltipProviders == null) {
+            tooltipProviders = new ArrayList<>(Lookup.getDefault().lookupAll(TooltipProvider.class));
         }
     }
+    
+    protected static List<TooltipProvider> getTooltipProviders(){
+        return tooltipProviders;
+    }
+    
+    public abstract TooltipDefinition createTooltips(final String content);
+
+    public abstract TooltipDefinition createTooltip(final String content, final int activePosition);
 
     public static class TooltipDefinition {
 
@@ -73,7 +81,7 @@ public abstract class TooltipProvider {
         private int start = -1;
         private int finish = -1;
 
-        public TooltipDefinition(Pane pane) {
+        public TooltipDefinition(final Pane pane) {
             this.pane = pane;
         }
 
@@ -85,7 +93,7 @@ public abstract class TooltipProvider {
             return start;
         }
 
-        public void setStart(int start) {
+        public void setStart(final int start) {
             this.start = start;
         }
 
@@ -93,16 +101,8 @@ public abstract class TooltipProvider {
             return finish;
         }
 
-        public void setFinish(int finish) {
+        public void setFinish(final int finish) {
             this.finish = finish;
         }
-    }
-
-    public TooltipDefinition createTooltips(String content) {
-        return null;
-    }
-
-    public TooltipDefinition createTooltip(String content, int activePosition) {
-        return null;
     }
 }

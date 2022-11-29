@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class ItemsRow<I> {
     private final StringProperty label;
     private final StringProperty description;
 
-    public ItemsRow(I item, String label, String description) {
+    public ItemsRow(final I item, final String label, final String description) {
         this.item = item;
         this.label = new SimpleStringProperty(label);
         this.description = new SimpleStringProperty(description);

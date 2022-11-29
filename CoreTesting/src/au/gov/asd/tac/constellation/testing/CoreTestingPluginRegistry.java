@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,9 @@ import au.gov.asd.tac.constellation.testing.construction.SudokuGraphBuilderPlugi
 public class CoreTestingPluginRegistry {
 
     public static final String FIVE_SECOND_READ_LOCK = FiveSecondReadLockPlugin.class.getName();
+    public static final String FIVE_SECOND_WRITE_LOCK = FiveSecondWriteLockPlugin.class.getName();
     public static final String PLUGIN_EXCEPTION = PluginExceptionPlugin.class.getName();
+    public static final String PLUGIN_RUNTIME_EXCEPTION = RuntimeExceptionPlugin.class.getName();
 
     public static final String COMPLETE_GRAPH_BUILDER = CompleteGraphBuilderPlugin.class.getName();
     public static final String DNA_GRAPH_BUILDER = DnaGraphBuilderPlugin.class.getName();

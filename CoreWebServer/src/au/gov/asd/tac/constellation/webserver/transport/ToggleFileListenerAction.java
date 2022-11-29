@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,14 @@ package au.gov.asd.tac.constellation.webserver.transport;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
 
@@ -43,6 +44,8 @@ import org.openide.util.NbBundle.Messages;
     "CTL_StopFileListenerAction=Stop File Listener"
 })
 public final class ToggleFileListenerAction extends AbstractAction {
+    
+    private static final Logger LOGGER = Logger.getLogger(ToggleFileListenerAction.class.getName());
 
     private static final String ICON_ON_RESOURCE = "resources/startFileListener.png";
     private static final String ICON_OFF_RESOURCE = "resources/stopFileListener.png";
@@ -68,7 +71,7 @@ public final class ToggleFileListenerAction extends AbstractAction {
                 putValue(Action.NAME, NbBundle.getMessage(ToggleFileListenerAction.class, "CTL_StopFileListenerAction"));
                 putValue(Action.SMALL_ICON, ICON_ON);
             } catch (final IOException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
         } else {
@@ -78,7 +81,7 @@ public final class ToggleFileListenerAction extends AbstractAction {
                 putValue(Action.NAME, NbBundle.getMessage(ToggleFileListenerAction.class, "CTL_StartFileListenerAction"));
                 putValue(Action.SMALL_ICON, ICON_OFF);
             } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 Thread.currentThread().interrupt();
             }
         }

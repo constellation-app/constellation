@@ -1,0 +1,6 @@
+<parent>\n"
+  <child>child_value1</child>
+  <child>child_value2</child>
+  <child>child_value3</child>
+  <nest_child><child_nest>child_nest_value</child_nest></nest_child>
+</parent>

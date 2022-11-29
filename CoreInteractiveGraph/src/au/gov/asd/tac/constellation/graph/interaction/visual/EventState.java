@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,6 +49,7 @@ final class EventState extends HitState {
         PANNING("Pan"),
         DRAG_NODES("Drag"),
         SELECTING("Selection"),
+        FREEFORM_SELECTING("Freeform Selection"),
         CREATING("Add Nodes"),
         NONE(""),;
 

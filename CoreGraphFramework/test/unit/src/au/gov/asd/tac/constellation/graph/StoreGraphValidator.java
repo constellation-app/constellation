@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -493,7 +493,8 @@ public final class StoreGraphValidator implements GraphWriteMethods {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void addVertex(final int vertex) {
+    @Override
+    public int addVertex(final int vertex) {
 
         Vertex v = vertexMap.get(vertex);
 
@@ -505,6 +506,8 @@ public final class StoreGraphValidator implements GraphWriteMethods {
         v.id = vertex;
         vertexList.add(v);
         vertexMap.put(vertex, v);
+        
+        return vertex;
     }
 
     @Override

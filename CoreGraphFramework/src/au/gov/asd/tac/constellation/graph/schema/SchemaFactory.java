@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,10 +58,10 @@ public abstract class SchemaFactory {
     private static final ConstellationIcon ICON_BACKGROUND_MODIFIED = DefaultIconProvider.EDGE_SQUARE;
     private static final ConstellationIcon ICON_SYMBOL = AnalyticIconProvider.STAR;
 
-    private final Map<Class<? extends SchemaConcept>, Set<SchemaConcept>> REGISTERED_CONCEPTS;
-    private final EnumMap<GraphElementType, Map<String, SchemaAttribute>> REGISTERED_ATTRIBUTES;
-    private final List<SchemaVertexType> REGISTERED_VERTEX_TYPES;
-    private final List<SchemaTransactionType> REGISTERED_TRANSACTION_TYPES;
+    private final Map<Class<? extends SchemaConcept>, Set<SchemaConcept>> allRegisteredConcepts;
+    private final EnumMap<GraphElementType, Map<String, SchemaAttribute>> allRegisteredAttributes;
+    private final List<SchemaVertexType> allRegisteredVertexTypes;
+    private final List<SchemaTransactionType> allRegisteredTransactionTypes;
 
     /**
      * Constructor for SchemaFactory. This is where registered SchemaConcepts
@@ -70,26 +70,26 @@ public abstract class SchemaFactory {
      * {@link SchemaTransactionType} objects to register to {@link Schema}
      * objects it creates.
      */
-    public SchemaFactory() {
-        REGISTERED_CONCEPTS = new HashMap<>();
+    protected SchemaFactory() {
+        allRegisteredConcepts = new HashMap<>();
 
         // collect registered concepts in local cache
         this.getRegisteredConcepts().forEach(conceptClass -> {
             // add concept to local cache
-            if (!REGISTERED_CONCEPTS.containsKey(conceptClass)) {
-                REGISTERED_CONCEPTS.put(conceptClass, new HashSet<>());
+            if (!allRegisteredConcepts.containsKey(conceptClass)) {
+                allRegisteredConcepts.put(conceptClass, new HashSet<>());
             }
         });
 
         // lookup child concepts, and add results to local cache
-        SchemaConceptUtilities.getChildConcepts(REGISTERED_CONCEPTS.keySet()).forEach(childConcept -> {
-            if (!REGISTERED_CONCEPTS.containsKey(childConcept.getClass())) {
-                REGISTERED_CONCEPTS.put(childConcept.getClass(), new HashSet<>());
+        SchemaConceptUtilities.getChildConcepts(allRegisteredConcepts.keySet()).forEach(childConcept -> {
+            if (!allRegisteredConcepts.containsKey(childConcept.getClass())) {
+                allRegisteredConcepts.put(childConcept.getClass(), new HashSet<>());
             }
 
             childConcept.getParents().forEach(parentConceptClass -> {
-                if (REGISTERED_CONCEPTS.containsKey(parentConceptClass)) {
-                    REGISTERED_CONCEPTS.get(parentConceptClass).add(childConcept);
+                if (allRegisteredConcepts.containsKey(parentConceptClass)) {
+                    allRegisteredConcepts.get(parentConceptClass).add(childConcept);
                 }
             });
         });
@@ -98,7 +98,7 @@ public abstract class SchemaFactory {
         final EnumMap<GraphElementType, Map<String, SchemaAttribute>> registeredAttributes = new EnumMap<>(GraphElementType.class);
         final List<SchemaVertexType> registeredVertexTypes = new ArrayList<>();
         final List<SchemaTransactionType> registeredTransactionTypes = new ArrayList<>();
-        REGISTERED_CONCEPTS.forEach((parentConceptClass, childConcepts) -> {
+        allRegisteredConcepts.forEach((parentConceptClass, childConcepts) -> {
             // instantiate concept
             SchemaConcept concept;
             try {
@@ -123,25 +123,20 @@ public abstract class SchemaFactory {
             if (concept.getSchemaVertexTypes() != null) {
                 registeredVertexTypes.addAll(concept.getSchemaVertexTypes());
             }
-            registeredVertexTypes.forEach(vertexType -> {
-                vertexType.buildHierarchy();
-            });
+            registeredVertexTypes.forEach(vertexType -> vertexType.buildHierarchy());
 
             // register concept transaction types to this schema factory
             if (concept.getSchemaTransactionTypes() != null) {
                 registeredTransactionTypes.addAll(concept.getSchemaTransactionTypes());
             }
-            registeredTransactionTypes.forEach(transactonType -> {
-                transactonType.buildHierarchy();
-            });
+            registeredTransactionTypes.forEach(transactonType -> transactonType.buildHierarchy());
         });
 
-        REGISTERED_ATTRIBUTES = new EnumMap<>(GraphElementType.class);
-        registeredAttributes.keySet().forEach(elementType -> {
-            REGISTERED_ATTRIBUTES.put(elementType, Collections.unmodifiableMap(registeredAttributes.get(elementType)));
-        });
-        REGISTERED_VERTEX_TYPES = Collections.unmodifiableList(registeredVertexTypes);
-        REGISTERED_TRANSACTION_TYPES = Collections.unmodifiableList(registeredTransactionTypes);
+        allRegisteredAttributes = new EnumMap<>(GraphElementType.class);
+        registeredAttributes.keySet().forEach(elementType -> 
+            allRegisteredAttributes.put(elementType, Collections.unmodifiableMap(registeredAttributes.get(elementType))));
+        allRegisteredVertexTypes = Collections.unmodifiableList(registeredVertexTypes);
+        allRegisteredTransactionTypes = Collections.unmodifiableList(registeredTransactionTypes);
     }
 
     /**
@@ -256,7 +251,7 @@ public abstract class SchemaFactory {
      * {@link Schema} objects created by this SchemaFactory.
      */
     public final EnumMap<GraphElementType, Map<String, SchemaAttribute>> getRegisteredAttributes() {
-        return REGISTERED_ATTRIBUTES;
+        return allRegisteredAttributes;
     }
 
     /**
@@ -271,7 +266,7 @@ public abstract class SchemaFactory {
      * their names.
      */
     public final Map<String, SchemaAttribute> getRegisteredAttributes(final GraphElementType elementType) {
-        return REGISTERED_ATTRIBUTES.get(elementType) != null ? REGISTERED_ATTRIBUTES.get(elementType) : Collections.emptyMap();
+        return allRegisteredAttributes.get(elementType) != null ? allRegisteredAttributes.get(elementType) : Collections.emptyMap();
     }
 
     /**
@@ -375,7 +370,7 @@ public abstract class SchemaFactory {
      * registered to {@link Schema} objects created by this SchemaFactory.
      */
     public final List<SchemaVertexType> getRegisteredVertexTypes() {
-        return REGISTERED_VERTEX_TYPES;
+        return allRegisteredVertexTypes;
     }
 
     /**
@@ -387,7 +382,7 @@ public abstract class SchemaFactory {
      * SchemaFactory.
      */
     public final List<SchemaTransactionType> getRegisteredTransactionTypes() {
-        return REGISTERED_TRANSACTION_TYPES;
+        return allRegisteredTransactionTypes;
     }
 
     /**
@@ -397,7 +392,7 @@ public abstract class SchemaFactory {
      * @return The default vertex label color.
      */
     public ConstellationColor getVertexLabelColor() {
-        return ConstellationColor.LIGHT_BLUE;
+        return ConstellationColor.WHITE;
     }
 
     /**

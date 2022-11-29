@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,7 +101,7 @@ public class ByteObjectAttributeDescription extends AbstractObjectAttributeDescr
 
     @Override
     public float getFloat(final int id) {
-        return data[id] != null ? ((Byte) data[id]).floatValue() : 0.0f;
+        return data[id] != null ? ((Byte) data[id]).floatValue() : 0.0F;
     }
 
     @Override

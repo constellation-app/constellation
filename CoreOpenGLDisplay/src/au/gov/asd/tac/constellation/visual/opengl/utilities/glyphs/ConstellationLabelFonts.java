@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public interface ConstellationLabelFonts {
      *
      * @return True is you want to use a list of fonts, false otherwise.
      */
-    public default boolean getUseMultiFonts() {
+    public default boolean isUseMultiFontsChosen() {
         return true;
     }
 
@@ -49,9 +49,7 @@ public interface ConstellationLabelFonts {
      */
     public default String getFontListString() {
         final StringBuilder fontList = new StringBuilder();
-        getFontList().forEach(font -> {
-            fontList.append(font).append(SeparatorConstants.NEWLINE);
-        });
+        getFontList().forEach(font -> fontList.append(font).append(SeparatorConstants.NEWLINE));
         return fontList.toString();
     }
 

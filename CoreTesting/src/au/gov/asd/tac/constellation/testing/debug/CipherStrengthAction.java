@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,14 @@ package au.gov.asd.tac.constellation.testing.debug;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.Cipher;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "Help", id = "au.gov.asd.tac.constellation.testing.debug.CipherStrengthAction")
@@ -33,6 +34,8 @@ import org.openide.util.NbBundle.Messages;
 @ActionReference(path = "Menu/Help", position = 1450)
 @Messages("CTL_CipherStrengthAction=Cipher Strength")
 public final class CipherStrengthAction implements ActionListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(CipherStrengthAction.class.getName());
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -43,8 +46,8 @@ public final class CipherStrengthAction implements ActionListener {
             final NotifyDescriptor nd = new NotifyDescriptor.Message(msg, NotifyDescriptor.INFORMATION_MESSAGE);
             DialogDisplayer.getDefault().notify(nd);
 
-        } catch (NoSuchAlgorithmException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final NoSuchAlgorithmException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.global.AverageDegreePlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,14 +38,14 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = AnalyticPlugin.class),
     @ServiceProvider(service = Plugin.class)
 })
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 @AnalyticInfo(analyticCategory = "Global")
 @NbBundle.Messages("AverageDegreeAnalytic=Average Degree Analytic")
 public class AverageDegreeAnalytic extends GraphAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analyticview-analytic-average-degree.html";
+        return getHelpPath() + "analytic-average-degree.md";
     }
 
     @Override

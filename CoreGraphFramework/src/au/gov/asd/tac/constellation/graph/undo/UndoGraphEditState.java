@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,16 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author sirius
  */
 public class UndoGraphEditState {
+
+    private static final Logger LOGGER = Logger.getLogger(UndoGraphEditState.class.getName());
 
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
@@ -401,15 +405,16 @@ public class UndoGraphEditState {
         }
 
         final int total = (operationCount * 2) + byteCount + (shortCount * 2) + (intCount * 4) + (longCount * 8) + (objectCount * 4) + graphOperationCount;
-        System.out.println("STATS: OPERATIONS = " + operationCount + " BYTES = " + byteCount + " SHORTS = " + shortCount + " INTS = " + intCount + " LONGS = " + longCount + " OBJECTS = " + objectCount + " GRAPH_OPERATIONS = " + graphOperationCount + " TOTAL = " + total);
+        final String log = String.format("STATS: OPERATIONS = " + operationCount + " BYTES = " + byteCount + " SHORTS = " + shortCount + " INTS = " + intCount + " LONGS = " + longCount + " OBJECTS = " + objectCount + " GRAPH_OPERATIONS = " + graphOperationCount + " TOTAL = " + total);
+        LOGGER.log(Level.INFO, log);
         for (final UndoGraphEditOperation operation : UndoGraphEditOperation.values()) {
-            System.out.print("    " + operation.ordinal() + " " + operation.getName());
+            LOGGER.log(Level.INFO, "    " + operation.ordinal() + " " + operation.getName());
             final int[] counts = stats[operation.ordinal()];
             for (int i = 0; i < 6; i++) {
-                System.out.print(" " + counts[i]);
+                LOGGER.log(Level.INFO, "{0}", counts[i]);
             }
             final int size = (counts[0] * 2) + counts[2] + (counts[3] * 2) + (counts[4] * 4) + (counts[5] * 8);
-            System.out.println(" " + size);
+            LOGGER.log(Level.INFO, "{0}", size);
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,9 +56,7 @@ public class ListNamedColors extends RestService {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         ConstellationColor.NAMED_COLOR_LIST
-                .forEach(cocol -> {
-                    root.put(cocol.getName(), cocol.getHtmlColor());
-                });
+                .forEach(cocol -> root.put(cocol.getName(), cocol.getHtmlColor()));
 
         mapper.writeValue(out, root);
     }

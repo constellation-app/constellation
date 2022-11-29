@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,14 @@ import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -84,6 +87,30 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
             this.button = new JButton(text, arrow);
         }
         button.setHorizontalTextPosition(SwingConstants.LEFT);
+        addButtonActionListener(button, menu);
+        add(button);
+
+        listeners = new HashSet<>();
+
+        items.forEach(item -> {
+            final JMenuItem menuItem = new JMenuItem(item.toString());
+            menuItem.addActionListener(new OpenAction(menu, button));
+            addMenuItemActionListener(menuItem);
+            menuItems.put(menuItem, item);
+            menu.add(menuItem);
+        });
+    }
+
+    protected final void addMenuItemActionListener(final JMenuItem menuItem) {
+        menuItem.addActionListener(event -> {
+            final JMenuItem changedMenuItem = (JMenuItem) event.getSource();
+            final E changedItem = menuItems.get(changedMenuItem);
+            final ActionEvent actionEvent = new ActionEvent(changedItem, ActionEvent.ACTION_PERFORMED, null);
+            actionPerformed(actionEvent);
+        });
+    }
+
+    protected final void addButtonActionListener(final JButton button, final JPopupMenu menu) {
         button.addActionListener(event -> {
             if (!menu.isVisible()) {
                 final Point p = button.getLocationOnScreen();
@@ -94,30 +121,10 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
                 menu.setVisible(false);
             }
         });
-        add(button);
+    }
 
-        listeners = new HashSet<>();
-
-        items.forEach(item -> {
-            final JMenuItem menuItem = new JMenuItem(item.toString());
-            menuItem.addActionListener(new OpenAction(menu, button));
-            menuItem.addActionListener(event -> {
-                final JMenuItem changedMenuItem = (JMenuItem) event.getSource();
-                final E changedItem = menuItems.get(changedMenuItem);
-                listeners.forEach(listener -> {
-                    final Thread thread = new Thread("JDropDownMenu Worker") {
-                        @Override
-                        public void run() {
-                            final ActionEvent actionEvent = new ActionEvent(changedItem, ActionEvent.ACTION_PERFORMED, null);
-                            listener.actionPerformed(actionEvent);
-                        }
-                    };
-                    thread.start();
-                });
-            });
-            menuItems.put(menuItem, item);
-            menu.add(menuItem);
-        });
+    protected Map<JMenuItem, E> getMenuItems() {
+        return menuItems;
     }
 
     public final String getText() {
@@ -155,22 +162,37 @@ public class JDropDownMenu<E> extends JComponent implements ActionListener {
         listeners.add(listener);
     }
 
+    protected Set<ActionListener> getListeners() {
+        return Collections.unmodifiableSet(listeners);
+    }
+
+    protected JButton getButton() {
+        return button;
+    }
+
+    protected JPopupMenu getMenu() {
+        return menu;
+    }
+
     @Override
     public void actionPerformed(final ActionEvent event) {
-        listeners.forEach(listener -> {
-            final Thread thread = new Thread("JDropDownMenu Worker") {
-                @Override
-                public void run() {
-                    listener.actionPerformed(event);
-                }
-            };
-            thread.start();
-        });
+        performActionsOnListeners(event);
+    }
+
+    protected List<CompletableFuture<Void>> performActionsOnListeners(final ActionEvent event) {
+        final List<CompletableFuture<Void>> completableFutures = new ArrayList<>();
+        listeners.forEach(listener -> completableFutures.add(CompletableFuture.runAsync(() -> listener.actionPerformed(event))));
+        return completableFutures;
     }
 
     @Override
     public void setToolTipText(final String text) {
         button.setToolTipText(text);
+    }
+
+    @Override
+    public final String getToolTipText() {
+        return button.getToolTipText();
     }
 
     public static class OpenAction implements ActionListener {

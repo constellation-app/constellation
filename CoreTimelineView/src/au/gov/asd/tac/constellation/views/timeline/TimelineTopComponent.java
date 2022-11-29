@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import java.awt.BorderLayout;
@@ -81,7 +80,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.timeline.TimelineTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 1500),
+    @ActionReference(path = "Menu/Views", position = 1600),
     @ActionReference(path = "Shortcuts", name = "CS-T"),
     @ActionReference(path = "Toolbars/Views", position = 100)
 })
@@ -122,10 +121,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
     private long currentStructureModificationCount = Long.MIN_VALUE;
     private long currentTransSelectedModificationCount = Long.MIN_VALUE;
     private long currentVertSelectedModificationCount = Long.MIN_VALUE;
-    //private long currentTransDimModificationCount = Long.MIN_VALUE;
-    //private long currentVertDimModificationCount = Long.MIN_VALUE;
-    //private long currentTransHideModificationCount = Long.MIN_VALUE;
-    //private long currentVertHideModificationCount = Long.MIN_VALUE;
     private long currentTemporalAttributeModificationCount = Long.MIN_VALUE;
     private volatile double splitPanePosition = DEFAULT_DIVIDER_LOCATION;
     private List<String> datetimeAttributes;
@@ -176,14 +171,13 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
             // Create the scene:
             final Scene scene = new Scene(root);
             scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            scene.rootProperty().get().setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
 
             splitPane.prefHeightProperty().bind(scene.heightProperty());
             splitPane.prefWidthProperty().bind(scene.widthProperty());
 
             // Now that the heights are known, set the position of the splitPane divider:
             splitPane.setDividerPositions(splitPanePosition);
-            
+
             // Set the split pane as the javafx scene:
             container.setScene(scene);
         });
@@ -321,9 +315,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                 splitPanePosition = Double.parseDouble(pos);
 
                 // Ensure that this happens after the initial setup.
-                Platform.runLater(() -> {
-                    splitPane.getDividers().get(0).setPosition(splitPanePosition);
-                });
+                Platform.runLater(() -> splitPane.getDividers().get(0).setPosition(splitPanePosition));
             } catch (final NumberFormatException ex) {
             }
         }
@@ -347,7 +339,6 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
 
             Platform.runLater(() -> {
                 timelinePanel.setExclusionState(0);
-                //timelinePanel.setIsShowingNodeLabelAttributes(false);
                 timelinePanel.setNodeLabelAttributes(null);
                 timelinePanel.setNodeLabelAttribute(null);
                 timelinePanel.setTimeZone(TimeZoneUtilities.UTC);
@@ -472,10 +463,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                 timelinePanel.setDisable(false);
                                 //if visibility is set to false at the constructor, the javafx thread gets stuck in an endless loop under
                                 //certain conditions (with timeline open, create graph, close graph) so we set opacity to 0 in the constructor so that it is 'invisible'
-//                                    splitPane.setOpacity(1);
                                 splitPane.setVisible(true);
                                 splitPane.setDisable(false);
-//                                    splitPane.getDividers().get(0).setPosition(splitPanePosition);
                                 // Add the datetime attributes:
                                 timelinePanel.setDateTimeAttributes(datetimeAttributes, currentDatetimeAttribute);
                                 timelinePanel.setTimeZone(state == null ? TimeZoneUtilities.UTC : state.getTimeZone());
@@ -495,8 +484,7 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                                 rg1.release();
                             }
                             // Restore the dimming state if we have it:
-                            if (state != null) //if(state != null && !isFullRefresh)
-                            {
+                            if (state != null) {
                                 if (state.getLowerTimeExtent() == 0) {
                                     setExtents(getTimelineLowerTimeExtent(), getTimelineUpperTimeExtent());
                                 }
@@ -751,6 +739,8 @@ public final class TimelineTopComponent extends TopComponent implements LookupLi
                         || currentVertSelectedModificationCount != oldVertSelectedModificationCount) {
                     // Do only a partial update, ie the timeline and selection area for histogram:
                     populateFromGraphNode(false);
+                } else {
+                    // Do nothing
                 } // Detect changes of dim to transactions and vertices:
                 /*else if (!timelinePanel.isDimOrHideExpected(currentVertDimModificationCount, currentTransDimModificationCount)) {
                     Platform.runLater(() -> {

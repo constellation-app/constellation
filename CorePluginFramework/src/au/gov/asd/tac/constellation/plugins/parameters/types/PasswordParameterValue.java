@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,10 @@ public class PasswordParameterValue extends ParameterValue {
 
     @Override
     public boolean equals(final Object o) {
-        return o instanceof PasswordParameterValue && Objects.equals(s, ((PasswordParameterValue) o).s);
+        if (o == null) {
+            return false;
+        }
+        return this.getClass() == o.getClass() && Objects.equals(s, ((PasswordParameterValue) o).s);
     }
 
     @Override

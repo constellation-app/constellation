@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -55,7 +57,9 @@ import org.openide.util.NbBundle.Messages;
  * @author algol
  */
 @Messages("CTL_DragAction=Drag (and drop)")
-public class DragAction extends AbstractAction {//implements Presenter.Toolbar {
+public class DragAction extends AbstractAction {
+
+    private static final Logger LOGGER = Logger.getLogger(DragAction.class.getName());
 
     private static final Icon DRAG_WORD_ICON = UserInterfaceIconProvider.DRAG_WORD.buildIcon(16);
     private static final Image DRAG_DROP_ICON = UserInterfaceIconProvider.DRAG_DROP.buildBufferedImage(16);
@@ -75,13 +79,9 @@ public class DragAction extends AbstractAction {//implements Presenter.Toolbar {
 
     @Override
     public void actionPerformed(final ActionEvent ev) {
-        System.out.printf("action performed%n");
+        LOGGER.log(Level.INFO, "action performed");
     }
 
-//    @Override
-//    public Component getToolbarPresenter() {
-//        return new DraggableButton(this);
-//    }
     private class DraggableButton extends JButton implements Transferable, DragGestureListener {
 
         private final TransferHandler t;

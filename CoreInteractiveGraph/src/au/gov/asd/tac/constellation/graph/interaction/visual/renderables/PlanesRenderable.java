@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,8 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.awt.image.BufferedImage;
@@ -46,6 +48,8 @@ import java.util.logging.Logger;
  * @author algol
  */
 public final class PlanesRenderable implements GLRenderable {
+    
+    private static final Logger LOGGER = Logger.getLogger(PlanesRenderable.class.getName());
 
     public static final int BUFFER_UNUSED = -2;
     private int shader;
@@ -64,7 +68,7 @@ public final class PlanesRenderable implements GLRenderable {
     private int textureName;
 
     public PlanesRenderable() {
-        planeBatch = new Batch(GL3.GL_TRIANGLES);
+        planeBatch = new Batch(GL.GL_TRIANGLES);
         planeInfoTarget = planeBatch.newFloatBuffer(DATA_BUFFER_WIDTH, true);
         vertexTarget = planeBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
     }
@@ -86,8 +90,8 @@ public final class PlanesRenderable implements GLRenderable {
             vs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.vs");
             gs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.gs");
             fs = GLTools.loadFile(GLVisualProcessor.class, "shaders/Plane.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(PlanesRenderable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         shader = GLTools.loadShaderSourceWithAttributes(gl, "Plane", vs, gs, fs,
@@ -129,7 +133,7 @@ public final class PlanesRenderable implements GLRenderable {
                             maxh = Math.max(maxh, plane.getImageHeight());
                         }
 
-                        GLTools.loadTextures(gl, textureName, planeBytes, maxw, maxh, GL3.GL_LINEAR, GL3.GL_LINEAR, GL3.GL_CLAMP_TO_EDGE);
+                        GLTools.loadTextures(gl, textureName, planeBytes, maxw, maxh, GL.GL_LINEAR, GL.GL_LINEAR, GL.GL_CLAMP_TO_EDGE);
 
                         // We want to draw a sequence of disjoint rectangles, so we have to use GL_TRIANGLES, because
                         // the other triangle options require the triangles to be contiguous.
@@ -195,8 +199,8 @@ public final class PlanesRenderable implements GLRenderable {
         if (planeBatch.isDrawable()) {
             final GL3 gl = drawable.getGL().getGL3();
 
-            gl.glActiveTexture(GL3.GL_TEXTURE0 + TextureUnits.PLANES);
-            gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, textureName);
+            gl.glActiveTexture(GL.GL_TEXTURE0 + TextureUnits.PLANES);
+            gl.glBindTexture(GL2ES3.GL_TEXTURE_2D_ARRAY, textureName);
 
             gl.glUseProgram(shader);
             gl.glUniformMatrix4fv(shaderMVPMatrix, 1, false, mvpMatrix.a, 0);
@@ -222,26 +226,26 @@ public final class PlanesRenderable implements GLRenderable {
         if (planeBatch.isDrawable()) {
             final GL3 gl = drawable.getGL().getGL3();
             // Map the buffer range.
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, planeBatch.getBufferName(planeInfoTarget));
-            final ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_READ_WRITE);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, planeBatch.getBufferName(planeInfoTarget));
+            final ByteBuffer bbuf = gl.glMapBuffer(GL.GL_ARRAY_BUFFER, GL2ES3.GL_READ_WRITE);
             final FloatBuffer fbuf = bbuf.order(ByteOrder.nativeOrder()).asFloatBuffer();
 
             // Update the visibility flag for the layers.
             // See createScene().
-            // Each plane has six data entries; each data entry is four floats;
+            // Each plane has six data entries, each data entry is four floats
             // visibility is in the first entry.
             final int verticesPerPlane = 24;
             final int nVertices = fbuf.limit() / verticesPerPlane;
             for (int i = 0; i < nVertices; i++) {
                 final int base = i * verticesPerPlane;
 
-                fbuf.put(base + 2, visibleLayers.get(i) ? 1f : 0f);
-                fbuf.put(base + verticesPerPlane / 2 + 2, visibleLayers.get(i) ? 1f : 0f);
+                fbuf.put(base + 2, visibleLayers.get(i) ? 1F : 0F);
+                fbuf.put(base + verticesPerPlane / 2 + 2, visibleLayers.get(i) ? 1F : 0F);
             }
 
             // Unmap the buffer range.
-            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
+            gl.glUnmapBuffer(GL.GL_ARRAY_BUFFER);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
         }
     }
 
@@ -252,8 +256,8 @@ public final class PlanesRenderable implements GLRenderable {
         if (planeBatch.isDrawable()) {
             final GL3 gl = drawable.getGL().getGL3();
             // Map the buffer range.
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, planeBatch.getBufferName(planeInfoTarget));
-            final ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_READ_ONLY);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, planeBatch.getBufferName(planeInfoTarget));
+            final ByteBuffer bbuf = gl.glMapBuffer(GL.GL_ARRAY_BUFFER, GL2ES3.GL_READ_ONLY);
             final FloatBuffer fbuf = bbuf.order(ByteOrder.nativeOrder()).asFloatBuffer();
 
             // Get the visibility flag for the planes.
@@ -270,8 +274,8 @@ public final class PlanesRenderable implements GLRenderable {
             }
 
             // Unmap the buffer range.
-            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
+            gl.glUnmapBuffer(GL.GL_ARRAY_BUFFER);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
         }
 
         return visiblePlanes;

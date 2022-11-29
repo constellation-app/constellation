@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,8 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class contains all of the logic for performing searches on a given
@@ -55,6 +56,8 @@ import org.openide.util.Exceptions;
  * @author betelgeuse
  */
 public class QueryServices {
+    
+    private static final Logger LOGGER = Logger.getLogger(QueryServices.class.getName());
 
     private static final int AVAILABLE_THREADS = Math.max(1, (Runtime.getRuntime().availableProcessors() - 1));
     private static final int MAX_THRESHOLD = 10000; // The maximum number of items to assign each thread (until we don't have enough threads anyway).
@@ -62,6 +65,8 @@ public class QueryServices {
     private Graph graph;
     private boolean[] results;
     private List<FindResult> findResults = new ArrayList<>();
+    
+    private static final String THREAD_INTERRUPTED = "Thread was interrupted";
 
     /**
      * Constructs a new <code>QueryServices</code>.
@@ -118,11 +123,11 @@ public class QueryServices {
                 } finally {
                     try {
                         barrier.await();
-                    } catch (InterruptedException ex) {
-                        Exceptions.printStackTrace(ex);
+                    } catch (final InterruptedException ex) {
+                        LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                         Thread.currentThread().interrupt();
-                    } catch (BrokenBarrierException ex) {
-                        Exceptions.printStackTrace(ex);
+                    } catch (final BrokenBarrierException ex) {
+                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
                 }
 
@@ -188,11 +193,11 @@ public class QueryServices {
                 // Await the conclusion of all threads:
                 try {
                     barrier.await();
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED, ex);
                     Thread.currentThread().interrupt();
-                } catch (BrokenBarrierException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final BrokenBarrierException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
 
@@ -456,14 +461,14 @@ public class QueryServices {
                 }
 
             } finally {
-                //System.out.println(Thread.currentThread().getName() + ": lbound: "
-                //        + workloadLBound + " - ubound: " + workloadUBound);
                 // This thread is now done, so wait for all others to finish:
                 try {
                     barrier.await();
-                } catch (InterruptedException ex) {
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, THREAD_INTERRUPTED);
                     Thread.currentThread().interrupt();
-                } catch (BrokenBarrierException ex) {
+                } catch (final BrokenBarrierException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
             }
         }
@@ -587,6 +592,7 @@ public class QueryServices {
          * @see FindRule
          */
         private boolean advancedFindBoolean(final FindRule rule, final int index) {
+
             // Retrieve content from the graph:
             final boolean item = rg.getBooleanValue(rule.getAttribute().getId(), index);
             boolean queryResult = false;
@@ -621,6 +627,8 @@ public class QueryServices {
                 queryResult = FindComparisons.ColorComparisons.evaluateIs(item.getJavaColor(), rule.getColorContent());
             } else if (rule.getOperator().equals(FindTypeOperators.Operator.IS_NOT)) {
                 queryResult = FindComparisons.ColorComparisons.evaluateIsNot(item.getJavaColor(), rule.getColorContent());
+            } else {
+                // Do nothing
             }
 
             return queryResult;
@@ -831,6 +839,8 @@ public class QueryServices {
                 queryResult = FindComparisons.IconComparisons.evaluateIs(item, rule.getIconContent());
             } else if (rule.getOperator().equals(FindTypeOperators.Operator.IS_NOT)) {
                 queryResult = FindComparisons.IconComparisons.evaluateIsNot(item, rule.getIconContent());
+            } else {
+                // Do nothing
             }
 
             return queryResult;
@@ -853,7 +863,7 @@ public class QueryServices {
             boolean queryResult = false;
 
             String[] terms;
-            if (rule.getStringUsingList()
+            if (rule.isStringUsingList()
                     && !rule.getOperator().equals(FindTypeOperators.Operator.REGEX)) {
                 terms = rule.getStringContent().split(",");
             } else {
@@ -868,27 +878,27 @@ public class QueryServices {
                 switch (rule.getOperator()) {
                     case IS:
                         queryResult = FindComparisons.StringComparisons.evaluateIs(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case IS_NOT:
                         queryResult = FindComparisons.StringComparisons.evaluateIsNot(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case CONTAINS:
                         queryResult = FindComparisons.StringComparisons.evaluateContains(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case NOT_CONTAINS:
                         queryResult = FindComparisons.StringComparisons.evaluateNotContains(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case BEGINS_WITH:
                         queryResult = FindComparisons.StringComparisons.evaluateBeginsWith(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case ENDS_WITH:
                         queryResult = FindComparisons.StringComparisons.evaluateEndsWith(item,
-                                terms[i], rule.getStringCaseSensitivity());
+                                terms[i], rule.isStringCaseSensitivity());
                         break;
                     case REGEX:
                         queryResult = FindComparisons.StringComparisons.evaluateRegex(item,

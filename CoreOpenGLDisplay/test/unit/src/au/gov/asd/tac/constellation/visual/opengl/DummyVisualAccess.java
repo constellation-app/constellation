@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,7 @@ public class DummyVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getIsLabelSummary(int connection) {
+    public boolean isLabelSummary(int connection) {
         return false;
     }
 
@@ -213,7 +213,7 @@ public class DummyVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getVertexSelected(int vertex) {
+    public boolean isVertexSelected(int vertex) {
         return vertex == 1;
     }
 
@@ -223,7 +223,7 @@ public class DummyVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getVertexDimmed(int vertex) {
+    public boolean isVertexDimmed(int vertex) {
         return vertex == 0;
     }
 
@@ -233,7 +233,7 @@ public class DummyVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getBlazed(int vertex) {
+    public boolean isBlazed(int vertex) {
         return vertex == 0;
     }
 
@@ -273,7 +273,7 @@ public class DummyVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionSelected(int connection) {
+    public boolean isConnectionSelected(int connection) {
         return connection == 2;
     }
 
@@ -283,7 +283,7 @@ public class DummyVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionDimmed(int connection) {
+    public boolean isConnectionDimmed(int connection) {
         return connection == 3;
     }
 
@@ -363,7 +363,7 @@ public class DummyVisualAccess implements VisualAccess {
     }
 
     @Override
-    public boolean getConnectionDirected(int connection) {
+    public boolean isConnectionDirected(int connection) {
         return connection != 2;
     }
 }

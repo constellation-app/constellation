@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 public abstract class AttributeTranslator implements Comparable<AttributeTranslator> {
 
-    private static List<AttributeTranslator> TRANSLATORS = null;
+    private static List<AttributeTranslator> translators = null;
 
     private final String label;
     private final int priority;
@@ -54,12 +54,12 @@ public abstract class AttributeTranslator implements Comparable<AttributeTransla
      * @return all the currently registered AttributeTranslators.
      */
     public static List<AttributeTranslator> getTranslators() {
-        if (TRANSLATORS == null) {
-            TRANSLATORS = new ArrayList<>(Lookup.getDefault().lookupAll(AttributeTranslator.class));
-            Collections.sort(TRANSLATORS);
+        if (translators == null) {
+            translators = new ArrayList<>(Lookup.getDefault().lookupAll(AttributeTranslator.class));
+            Collections.sort(translators);
         }
 
-        return new ArrayList<>(TRANSLATORS);
+        return new ArrayList<>(translators);
     }
 
     /**
@@ -90,7 +90,7 @@ public abstract class AttributeTranslator implements Comparable<AttributeTransla
      * @param attributeTypes the types of attribute that this
      * AttributeTranslator supports.
      */
-    public AttributeTranslator(final String label, final int priority, final String... attributeTypes) {
+    protected AttributeTranslator(final String label, final int priority, final String... attributeTypes) {
         this.label = label;
         this.priority = priority;
 
@@ -105,7 +105,7 @@ public abstract class AttributeTranslator implements Comparable<AttributeTransla
      * @param label the label of the new AttributeTranslator.
      * @param priority the priority of the new AttributeTranslator.
      */
-    public AttributeTranslator(final String label, final int priority) {
+    protected AttributeTranslator(final String label, final int priority) {
         this.label = label;
         this.priority = priority;
         attributeTypes = null;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -253,7 +253,6 @@ public class OverviewPanel extends Pane {
                 if (isFullRefresh) {
                     histogram.getData().clear();
                     histogram.getData().addAll(totalSeries, selectedSeries);
-                    //histogram.setData(FXCollections.observableArrayList(totalSeries, selectedSeries));
                 } else {
                     //causes flickers on remove
                     if (selectedOnly) {
@@ -261,6 +260,8 @@ public class OverviewPanel extends Pane {
                         histogram.getData().add(new XYChart.Series<>());
                     } else if (histogram.getData().size() > 1) {
                         histogram.getData().remove(1);
+                    } else {
+                        // Do nothing
                     }
                     histogram.getData().add(selectedSeries);
                 }
@@ -295,7 +296,7 @@ public class OverviewPanel extends Pane {
         chart.setVerticalGridLinesVisible(false);
 
         // Set the min height so that elements can be sized to whatever level necessary:
-        chart.setMinHeight(0d);
+        chart.setMinHeight(0D);
 
         // Return the newly created histogram:
         return chart;
@@ -322,7 +323,7 @@ public class OverviewPanel extends Pane {
 
         // Style the rectangle:
         rect.setStroke(Color.DODGERBLUE);
-        rect.setStrokeWidth(2d);
+        rect.setStrokeWidth(2D);
         final LinearGradient gradient
                 = new LinearGradient(0.0, 0.0, 0.0, 0.5, true, CycleMethod.NO_CYCLE, new Stop[]{
             new Stop(0, Color.LIGHTBLUE.darker()),
@@ -412,6 +413,8 @@ public class OverviewPanel extends Pane {
                 handleRelease(t);
             } else if (t.getEventType() == MouseEvent.MOUSE_DRAGGED) {
                 handleDragging(t);
+            } else {
+                // Do nothing
             }
         }
 
@@ -535,6 +538,8 @@ public class OverviewPanel extends Pane {
                     // Update the origin as we have had some movement:
                     origin = t.getX();
                 }
+            } else {
+                // Do nothing
             }
         }
 

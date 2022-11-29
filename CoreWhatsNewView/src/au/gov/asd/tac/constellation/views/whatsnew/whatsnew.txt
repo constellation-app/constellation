@@ -1,15 +1,230 @@
 == 3030-12-31 Getting Started
-<p>If you're new to CONSTELLATION, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.introduction">introduction</a>.</p>
+<p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
+
+== 2022-11-21 Datetime Formatters
+<p>Datetime formatters have been updated in the File and Database importers to allow single digit days and hours to be passed through most default formats.</p>
+<p>A few new formatters, which don't contain seconds, have been added to the default list.</p>
+
+== 2022-11-01 File & Database Importers
+<p>Fixed a bug with the new attributes fading behind Constellation. They are now modal dialogs.</p>
+
+== 2022-10-21 Constellation Options Menu
+<p>The Constellation Options menu has now been grouped together and is ordered alphabetically.</p>
+<p>To reduce the overall number of options tabs the Application Font options can now be found under the Application tab, and the Anaglyphic Displays options can be found under the Graph tab.</p>
+<p>These options can be found through Setup -&gt; Options -&gt; CONSTELLATION -&gt; Application or Graph.</p>
+
+== 2022-10-19 Export from Analytic View
+<p>The ability to export the results from running an analytic in the Analytic View has been added.</p>
+<p>After running an analytic, an Export button appears at the top of the results table, allowing for the results to be exported to either a CSV or Excel file.</p>
+
+== 2022-08-03 Layers View
+<p>Layers View has had a complete UI rework and is now available under the Views menu.</p>
+<p>Layers View allows you to add vertices and transactions to up to 32 layers by either using the right click context menu or defining a query.</p>
+<p>The view allows for toggling of layers via a checkbox which links to subsets of graph elements.
+This will either hide or show the subsets based on element visibility changes to reduce clutter when analysing large data sets.</p>
+
+== 2022-07-28 Clear Button in Database Importer
+<p>The "Import from Database" pane now has a clear button next to the query button. Clicking Clear will clear the results in the current run and will clear the query text</p>
+
+== 2022-07-19 Import Graph File
+<p>A new plugin "Import Graph File" has been added to the Import section of Data Access View. This allows you to import data from graph file types such as GML, GraphML, and Pajek.</p>
+
+== 2022-06-17 Datetime Formatter
+<p>The Datetime formatter for attributes in the File Importer and Database Importer has been updated to include a new field 'Display Time Zone'. This field allows you to easily convert your datetime data to the desired timezone before importing.</p>
+
+== 2022-05-27 Option to specify time zone in Importers
+<p>A new field 'Time Zone' is added in the Datetime formatter of attributes in the File Importer and Database Importer. You can find it by right-clicking an attribute, navigating to Formatter -&gt; Datetime. Choosing 'EPOCH' as the Datetime format or entering a format that already contains a time zone will disable this field.</p>
+
+== 2022-04-13 Plugins
+<p>Some plugin parameters have been updated to have '*' at the end of the name to indicate that the plugin will require a value in order for the plugin to work.</p>
+
+== 2022-03-30 Data Access View
+<p>A new tab has been added in SetUp -&gt; Options -&gt; Data Access View to be able to hide data access categories that you don't want to see.</p>
+
+== 2022-03-22 New Datetime formatter in the File Importer
+<p>A new Datetime formatter has been added to the File Importer for parsing native Excel datetimes into Constellation. You can use it by right-clicking an attribute, navigating to Formatter -&gt; Datetime and choosing 'EXCEL' from the format dropdown list.</p>
+
+== 2022-02-22 Find View (Experimental)
+<p>A new version of the Find View can be accessed via Experimental -&gt; Views or Ctrl + B. This version is intended to replace the current Find View at some stage.</p>
+
+== 2022-02-21 Compare Graph Parameters
+<p>The dialog for comparing graphs in the Tools -&gt; Compare graph menu will now update to prevent the user from comparing against the original graph.</p>
+
+== 2022-02-17 Add description to Step Tab names in Data Access View
+<p> The Step Tab names in the Data Access View can now be double clicked to add a brief description. E.g. If "Initial run" is entered, "Step 1 - Initial run" will be displayed in the Tab name. This is also saved and loaded as part of the templates.</p>
+
+== 2022-01-24 Histogram Bins Selected Count
+<p>The Histogram now shows the amount of bins selected out of the total bins present.</p>
+
+== 2022-01-21 File Importer
+<p>File Importer enforces all files that are being added have the same column structure.
+When the 'Files Include Headers' option is enabled, the column headings of all the files should be the same. When it is disabled,
+the number of columns should be the same. Otherwise a warning message is displayed and the files with a different structure to the
+first file added are removed.</p>
+
+== 2021-12-16 Quality Control Categories
+<p>The dialog to change the Quality Control category levels will now show when the level is different from the default.</p>
+
+== 2021-11-23 Context Menu
+<p>The right-click context menu in the graph window has been updated to include Selection and Reset View options.</p>
+
+== 2021-11-02 Data Access View Templates
+<p>A bug relating to the Data Access View template structure has been resolved. Unfortunately this change means that existing DAV templates will no longer work and therefore they will need to be re-created.</p>
+
+== 2021-10-29 New Online &amp; Offline Help
+<p>The help documentation is now able to be viewed both online through the constellation-app.com website and offline through a local server.</p>
+<p>A preference has been added where you choose to view help documentation either online or offline. This can be found via
+Setup -&gt; Options -&gt; CONSTELLATION -&gt; Help -&gt; Online Help. The help documentation is accessible through the blue question mark icons found in each view. </p>
+
+== 2021-10-27 Layers View Graph Context
+<p> Layers View now requires a graph to be present before presenting the full feature set of the view.</p>
+
+== 2021-10-20 Conversation Search scroll
+<p> When searching in the conversation viewer you will be taken to the messages that contain the search term.</p>
+<p> You can also iterate through the search terms using the new buttons</p>
+
+== 2021-10-18 Data Access View
+<p>There is a known issue with the Data Access View that it will open in the graph tab section during the latest update.
+You should be able to manually reposition it to the left pane section and it will open as expected from then on wards.
+This is a side affect of some back end changes we had to make.</p>
+
+== 2021-10-15 User Settable Bin Size in Histogram
+<p>The user can now manually increase or decrease the height of the bins in the histogram (Added to the popup displayed when you click the Actions button in the bottom right of the histogram panel).</p>
+
+== 2021-10-08 Layer by Time
+<p>Layer by Time has been updated so that the graph that is created has the same schema as the original graph. Previously it created a Visual Graph.</p>
+
+== 2021-10-06 Plugin Parameters
+<p>If you enter a value into a number parameter field that is either less than the minimum allowed or more than maximum allowed, the field turns red.</p>
+
+== 2021-09-28 Error Handling
+<p>Fatal errors and exceptions will now be presented as a dialog box in the executable version.</p>
+<p>Previously only a small red icon on the bottom right of the application was shown when an exception occurred.</p>
+
+== 2021-09-28 Hashmod Improvements
+<p>Significant speed up in ingesting CSV files with a header line in as separate vertices and you can now specify
+(via a header field with format 'COLUMN1...COLUMN2;;;COLUMN3') that any transactions that hashmod creates via
+matching COLUMN1 and COLUMN2 values will also gain the COLUMN3 attribute from one of the vertices it connects.</p>
+
+== 2021-09-17 Anaglyphic Display
+<p>The anaglyphic 3D display now allows different colors to be selected for left and right eyes.</p>
+
+== 2021-09-17 Data Access View
+<p>The Quality Control widget and Go button have also been added to the bottom
+of the view to improve the UX workflow as you select plugins from the top going
+downwards.</p>
+
+== 2021-09-17 Histogram sort by Labels (Numbers)
+<p>Histogram view now has an option to sort labels by numeric value on top of the existing string value</p>
+
+== 2021-09-17 Attribute Editor Improvement
+<p>Clicking on the attribute field now brings up the interface to edit the value. The Edit button is now redundant and will be removed later.</p>
+<p>Value can be selected by dragging the mouse over the required part of the string.</p>
+
+== 2021-09-17 Anaglyphic Display
+<p>The graph can be displayed in anaglyphic 3D. This requires glasses with colored lenses, currently hard-coded to be left eye green, right eye magenta.</p>
+
+== 2021-09-15 Quick Start Guide
+<p>The Quick Start Guide on the Whats New Page has been removed. You can now discover that information via the Getting Started link on the Welcome Page which now links
+to the Getting Started help page.</p>
+
+== 2021-09-13 node_labels_bottom/top and transaction_labels changed
+<p>The above three graph attributes have been changed to node_bottom/top_labels_colors and transaction_labels_colors.</p>
+<p>The attributes now also show the colors for example: Label: (White), Identifier: (#9980e6)</p>
+
+== 2021-09-10 Histogram View
+<p>Options selected for the Category and Property are now associated with the chosen Graph Element; Node, Transaction, Edge, or Link, and will not reset to defaults when switching between Graph Element options.</p>
+
+== 2021-09-06 Import From File
+<p>Updated the UI to clear the Attribute Filter and the table filters in the Configuration Run tabs, when all the source files are removed.</p>
+
+== 2021-09-06 Import From File
+<p>Updated the UI to only enable and expand sections once a file is added</p>
+
+== 2021-09-08 Notes View UI Improvements
+<p>New features:</p>
+<ul>
+<li>Replaced edit pop up with direct note editable text fields</li>
+<li>Right click note to add and remove selected graph elements</li>
+<li>Delete note confirmation pop up</li>
+</ul>
+
+== 2021-09-06 Freeform Selection
+<p>You can now draw a freeform selection shape by holding down Alt whilst selecting.</p>
+
+== 2021-09-06 Reset graph view after importing
+<p>When data is imported with the Import from File or the Import from Database, the graph view is now reset to the full view to display everything that has been imported.</p>
+
+== 2021-08-23 Moved Notes View to Views menu
+<p>The Notes View can now be found in the Views menu instead of in the Experimental > Views menu.</p>
+
+== 2021-08-18 Layers View Delete Layer
+<p>Added functionality to delete a layer in the layers view.</p>
+
+== 2021-08-18 Removed Old Table View
+<p>Removed the old table view implementation as the new one has now fully replaced it.</p>
+
+== 2021-08-05 Auto Notes Filters
+<p>Additional filters have been added to the Notes View to filter on which Auto Notes are shown. When the Auto Notes filter is selected, an additional drop down list of filters for the Auto Notes is displayed.</p>
+
+== 2021-07-30 Remember File Open/Save Location
+<p>By default, the "Remember Open/Save Location" preference is enabled, which will default the previously opened or saved location when opening or saving a file. </p>
+<p>When this option is unticked, the open or save location defaults to the user's home directory</p>
+
+== 2021-07-27 Keep multiple values expanded in the Attribute Editor
+<p>When the graph selection is changed, any expanded node or transaction attributes in the Attribute Editor will now remain expanded and populate values of the new selection.</p>
+<p>When the graph is zoomed in or out, any expanded attribute will remain expanded with the same values.</p>
+
+== 2021-07-27 Default Graph Label Color Change
+<p>The default graph label color has been changed to white to improve visibility of the label on the graph background. The label color is able to be changed in the Attribute Editor as a Graph Attribute.</p>
+
+== 2021-07-26 Quality Control Category Changes
+<p>Quality Control category names and colors have been updated to match commonly seen category names and colors. The category names are now Minor, Medium, Major, Severe and Critical.</p>
+<p>A new category OK has been added for when a Quality Control rule has not been flagged.</p>
+
+== 2021-07-21 Conversation View
+<p>The Conversation View now has a search bar where a letter or passage can be searched for within the currently visible conversation.</p>
+
+== 2021-07-15 Notes View Selection
+<p>User Notes now have the option to include nodes and transactions on the graph that are selected when the note is created. If no elements are selected, the note will be applied to the whole graph.</p>
+<p>To view what graph elements are applied to the note, a right click context menu has been added to user notes with the option to select on graph which will highlight the relevant nodes and transactions, or the whole graph.</p>
+
+== 2021-06-04 Select All Plugin
+<p>The Select All Plugin in the Data Access View now selects everything on the graph including transactions.</p>
+<p>Previously it only selected the vertices on the graph.</p>
+
+== 2021-05-28 Freeze Graph View Removed
+<p>The freeze graph view option has been removed as the functionality has been replaced by pin/unpin nodes</p>
+
+== 2021-05-21 Application Font Setting
+<p>In the Constellation settings a tab has been added to set the default font family and font size for all of the views in Constellation.</p>
+<p>The setting requires a restart of Constellation for it to be applied. </p>
+<p>The setting can be found via Setup -&gt; Options -&gt; Constellation -&gt; Application Font. </p>
+
+== 2021-05-19 Ability to Pin/Unpin Nodes
+<p>Nodes can now be pinned, either through the pin/unpin toolbar icons in the arrangements panel, or via the corresponding Arrange menu options. Once pinned, nodes do not move when arrangement plugins are run, but can be manually moved. The 'pinned' node attribute stores this information.</p>
+
+== 2021-04-22 JDBC Database Import Connector View
+<p>The JDBC Connector window has been converted to use the standard view framework and now matches closely with the style of the delimited file importer.</p>
+
+== 2021-04-01 Ability to Search in Single Choice Drop-Down Lists
+<p>Single Choice Drop-Downs are now searchable, which allows you to filter the options in the drop down list based on what is typed.</p>
+
+== 2021-04-01 Histogram Bin Counter
+<p>A count for the total number of bins currently shown in the Histogram has been added to the top right of the view.</p>
+
+== 2021-03-22 Scatter Plot
+<p>Ctrl-Shift-O has been added as a keyboard shortcut to open up the Scatter Plot View.</p>
 
 == 2021-02-25 Blaze Colors - Presets
 <p>The blaze menus have been updated to show preset blaze colors. An option to save a custom color as a preset is represented by a checkbox in the color dialog.</p>
-<p>The blaze toolbar menu now displays up to 10 preset colors. Now with the ability to change the color stored by clicking the tile to load a color picker.</p>
-<p>The preferences found via Setup -> Options -> CONSTELLATION -> Graph now stores preset blaze colors. These can be edited via the color picker upon clicking the colored tile.</p>
+<p>The blaze toolbar menu now displays up to 10 preset colors. It now has the ability to change the color stored by clicking the tile to load a color picker.</p>
+<p>The preferences found via Setup -&gt; Options -&gt; Constellation -&gt; Graph now stores preset blaze colors. These can be edited via the color picker upon clicking the colored tile.</p>
 
 == 2021-02-24 Plugin Reporter Drop-Down Lists
 <p>To avoid confusion with the Plugin Reporter, the two drop-down lists for filtering and ignoring plugins to be displayed have been combined.</p>
 
-== 2021-01-28 Histogram View 
+== 2021-01-28 Histogram View
 <p>Fixed an issue with the histogram where a bar selection wasn't applied to the graph.</p>
 
 == 2021-01-27 What's New Page
@@ -20,13 +235,13 @@
 
 == 2021-01-12 Notes View
 <p>The Notes View can be used to record notes about a graph.</p>
-<p>It can found in "Experimental > Views > Notes View", or alternatively via the shortcut "Ctrl+Shift+A".</p>
+<p>It can be found in "Experimental > Views > Notes View", or alternatively via the shortcut "Ctrl+Shift+A".</p>
 <p>There are two types of notes that are recorded in the Notes View:</p>
 <ul>
-<li><p>User Notes: These are RED and are created by a user by typing in the fields and clicking the "Add Note" button at the bottom of the view. They may also be edited or deleted later via the buttons on the note itself.</p></li>
-<li><p>Auto Notes: These are BLUE and are generated and added to the graph automatically by plugin execution, similar to Plugin Reporter.</p></li>
+<li><p>User Notes: These are PURPLE and are created by a user by typing in the tile and description and clicking the "Add Note" button at the bottom of the view. They may also be edited or deleted later via the buttons on the note itself.</p></li>
+<li><p>Auto Notes: These are BLUE and are generated and added to the graph automatically by plugin execution, similar to the Plugin Reporter.</p></li>
 </ul>
-<p>Visibilty of either User Notes or Auto Notes can be toggled on or off via the "Select a filter..." drop-down menu at the top of the view.</p>
+<p>Visibility of either User Notes or Auto Notes can be toggled on or off via the "Select a filter..." drop-down menu at the top of the view.</p>
 
 == 2021-01-11 JDBC Database Import Connector
 <p>A JDBC Connector has been added to easily allow importing via a JDBC Connection to a database.</p>
@@ -234,7 +449,7 @@ For more information click on the help button located at the bottom right corner
 <p>We've upgraded to newer versions of open source libraries we use which should improve performance and stability.</p>
 
 == 2019-12-20 Quality Control View
-<p>The colours used to represent a warning when the score is 80 have been improved to be readable.</p>
+<p>The colors used to represent a warning when the score is 80 have been improved to be readable.</p>
 
 == 2019-12-16 Delimited File Importer
 <p>In the delimited file importer you can assign an attribute to the row column which is the first column.</p>
@@ -265,7 +480,7 @@ Access View has been modified based on UX feedback.</p>
 <p>The Constellation new graph icons have been redone.</p>
 
 == 2019-05-06 Analytic Schema Update
-<p>Added support for HASH types like MD5, SHA1 and SHA256. The HASH icon background colour is now cyan.</p>
+<p>Added support for HASH types like MD5, SHA1 and SHA256. The HASH icon background color is now cyan.</p>
 
 == 2019-05-01 Gather Nodes Bug Fix
 <p>Gathered nodes will now maintain their depth instead of being moved forward</p>
@@ -378,13 +593,13 @@ Clean section of the Data Access View, 'Removed Unused Attributes', which remove
 <p>The Table View now has a column visibility option for only Key Attributes, and this is now the default setting.</p>
 
 == 2018-04-05 Proxy Settings
-<p>The interface for customising proxy settings (Setup &gt; Options &gt; CONSTELLATION &gt; Proxies) has been
+<p>The interface for customising proxy settings (Setup &gt; Options &gt; Constellation &gt; Proxies) has been
 overhauled to provide a more intuitive experience. In particular, descriptions have been added to each option
 detailing how to use it, default settings are visible when you select the 'Use Default Settings' option, and
 changes are applied immediately on clicking the 'Apply' or 'OK' buttons.</p>
 
 == 2018-03-29 Default Decorators
-<p>The <i>Geo.Country</i> attribute is now set as a default decorator, meaning a country flag will decorate each vertex with country information.</p>
+<p>The <i>Geo.Country</i> attribute is now set as a default decorator, meaning a country flag will decorate each node with country information.</p>
 
 == 2018-03-07 Zoom to Selection
 <p>Added the animation back in when zooming to a selection (Ctrl+Up) so that you have context to where on the graph you are zooming to.</p>
@@ -478,7 +693,7 @@ triangles and triplets on the graph.</li>
 == 2017-10-12 Map View Update
 <p>A few new features have been added to the Map View:</p>
 <ul>
-<li>You can add custom labels and colours to markers in the Map View using the new label and color menus.</li>
+<li>You can add custom labels and colors to markers in the Map View using the new label and color menus.</li>
 <li>Markers on the map now respond to the 'dim' and 'visibility' attributes. This allows you to, for example, use the
 'Dim Other Events' option in the Timeline to visualise locations within a sliding time window.</li>
 <li>The draw and measure tools now have support for circles by holding <i>shift</i> as you click. Note that the measure
@@ -496,8 +711,8 @@ zoom menu.</li>
 <li>Plugin parameters now follow the naming convention of ExamplePlugin.parameter_name</li>
 </ul>
 
-== 2017-09-28 CONSTELLATION Upgrade
-<p>CONSTELLATION has been upgraded to work on NetBeans 8.2 and Java 8u144 allowing CONSTELLATION to benefit from the latest security and bug fixes.
+== 2017-09-28 Constellation Upgrade
+<p>Constellation has been upgraded to work on NetBeans 8.2 and Java 8u144 allowing Constellation to benefit from the latest security and bug fixes.
 We have also re-organised modules and done some house keeping to make it easier to develop and maintain.</p>
 
 == 2017-09-21 Jupyter notebooks may require manual authentication
@@ -514,7 +729,7 @@ supported by ArcGIS (and most other GIS tools) and is significantly more flexibl
 File &gt; Export as well as in the toolbar of the Map View</p>
 
 == 2017-08-23 Blaze Menu Changes
-<p>There are now more options available for modifying blazes in the right-click menu and toolbar drop-down menu, including three default colour options.</p>
+<p>There are now more options available for modifying blazes in the right-click menu and toolbar drop-down menu, including three default color options.</p>
 
 == 2017-08-15 Scripting View
 <p>Removed support for Groovy and Javascript in the Scripting View. We are mandating that all scripts be written in Python.</p>
@@ -541,7 +756,7 @@ File &gt; Export as well as in the toolbar of the Map View</p>
 <p>The following bugs with the attribute editor have been fixed:</p>
 <ul>
 <li>Fixed a bug preventing setting an icon when multiple nodes are selected.</li>
-<li>Fixed a bug with changing colours in Options &gt; Attribute Editor Colours.</li>
+<li>Fixed a bug with changing colors in Options &gt; Attribute Editor Colors.</li>
 </ul>
 
 == 2017-07-25 Extract Words from Content
@@ -549,7 +764,7 @@ File &gt; Export as well as in the toolbar of the Map View</p>
 words will be extracted and represented as nodes. It also works with regular expressions and can extract known schema types.</p>
 
 == 2017-07-25 REST server Python client is downloaded automatically
-<p>If script downloading is enabled, a new Python REST client script will be downloaded if it doesn't exist, or if the on-disk version does not match CONSTELLATION's version. This means that the on-disk version will be automatically updated, with no user action required.</p>
+<p>If script downloading is enabled, a new Python REST client script will be downloaded if it doesn't exist, or if the on-disk version does not match Constellation's version. This means that the on-disk version will be automatically updated, with no user action required.</p>
 
 == 2017-07-18 Geospatial Export
 <p>You can now export geospatial data in your graph to GeoJSON or Shapefile using the File &gt; Export menu or the toolbar options in the Map View.</p>
@@ -600,7 +815,7 @@ Old graphs will be automatically updated with these new attributes.</p>
 Click <a href="" helpId="au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopN">here</a> for the help page.</p>
 
 == 2017-05-04 Improved Stability
-<p>A bug causing CONSTELLATION to crash due to running out of memory has been fixed.</p>
+<p>A bug causing Constellation to crash due to running out of memory has been fixed.</p>
 
 == 2017-05-04 Data Access View Favorites Update
 <p>Plugins in the Favourites category are sorted in the order respective to their category.</p>
@@ -639,7 +854,7 @@ within the Data Access View, and selecting the 'Geospatial Distance' option.</p>
 </ul>
 
 == 2017-03-08 Improved Table View
-<p>Fixed a major performance bug with the table view causing CONSTELLATION to lock up.</p>
+<p>Fixed a major performance bug with the table view causing Constellation to lock up.</p>
 
 == 2017-03-03 Import Excel Spreadsheets
 <p>You can now import Excel spreadsheets using the Delimited File Importer. It will work for both xls and xlsx files. Note that it will only import the first sheet in a file.</p>
@@ -674,9 +889,9 @@ within the Data Access View, and selecting the 'Geospatial Distance' option.</p>
 The existing 'Select Induced Subgraph' item has been renamed <strong>'Select Half-hop Induced Subgraph'</strong>, but is unchanged functionally.</p>
 
 == 2017-01-12 Improved Rendering and Event Handling
-<p> CONSTELLATION's visualistion and event handling framework has been reimplemented from the ground up.
+<p> Constellation's visualistion and event handling framework has been reimplemented from the ground up.
 To the user things will mostly look the same, but performance and stability should be slightly improved. The main benefit of this upgrade
-is that it should now be possible to write other visualisations for CONSTELLATION, for example a lightweight 2D renderer. </p>
+is that it should now be possible to write other visualisations for Constellation, for example a lightweight 2D renderer. </p>
 
 == 2017-01-11 Improved Plugin Reporter
 <p>Fixed a bug with the plugin reporter where the filters were misbehaving.</p>
@@ -698,9 +913,9 @@ the right mouse button handles selection instead of panning and drawing, however
 so that the map controls and graph controls are consistent.</p>
 
 == 2016-11-10 Icons Refresh
-<p>Icons used for visualisation of nodes on a CONSTELLATION graph have undergone a refresh. We have made foreground icons more symbolic, where possible, meaning that they tend to
+<p>Icons used for visualisation of nodes on a Constellation graph have undergone a refresh. We have made foreground icons more symbolic, where possible, meaning that they tend to
 be smaller icons with transparency filling the rest of the image space. In addition to this, the default background icon for all nodes is now the 'Flat Square' icon as it has a
-larger surface area, making it stand out more, and it more accurately represents the colour assigned to it. These changes will allow us to make better use of icons in an analytic
+larger surface area, making it stand out more, and it more accurately represents the color assigned to it. These changes will allow us to make better use of icons in an analytic
 context by allowing us to visually differentiate nodes using background icons.</p>
 
 == 2016-11-04 Freeze Graph View Shortcut
@@ -710,7 +925,7 @@ context by allowing us to visually differentiate nodes using background icons.</
 <p>The default arrangement after any plugin is executed is to arrange by grid because it is the fastest arrangement.</p>
 
 == 2016-08-29 Framework Upgraded
-<p>A minor framework upgrade has been completed so that CONSTELLATION now uses Netbeans 8.0.2 and Java 8u92.</p>
+<p>A minor framework upgrade has been completed so that Constellation now uses Netbeans 8.0.2 and Java 8u92.</p>
 
 == 2016-08-04 Analytic View 2.0
 <p>The new and improved Analytic View 2.0 is now available! It has been completely redesigned around a more flexible and robust framework which allows
@@ -733,13 +948,13 @@ help page.</p>
 
 == 2016-06-06 Visual Attributes and Templates
 <p>A number of visual properties, such as labels and decorators, have been exposed as graph attributes so that they can be edited in the attribute editor like everything else (rather than through obscure menu items).</p>
-<p>Default values of visual attributes have been removed from preferences too - if you had a custom default background colour or labels set up you may notice that this is now missing. Don't worry! You can get this back by using templates:</p>
-<p>To make a template, simply open a new graph (with the schema you want), set the graph attributes to their desired values (like background_colour, bottom_labels, and top_labels), then choose "File &gt; Save Template" and enter a name.</p>
+<p>Default values of visual attributes have been removed from preferences too - if you had a custom default background color or labels set up you may notice that this is now missing. Don't worry! You can get this back by using templates:</p>
+<p>To make a template, simply open a new graph (with the schema you want), set the graph attributes to their desired values (like background_color, bottom_labels, and top_labels), then choose "File &gt; Save Template" and enter a name.</p>
 <p>You can then make your template the default new graph (that is opened with Control+N) by choosing "File &gt; Manage Templates", selecting your template name, and then pressing the "Set Default" button.</p>
 <p>You can have as many templates as you like - the options will be listed in the "File &gt; New Graph" menu beneath the schema graphs.</p>
 
 == 2016-06-06 Performance Improvement
-<p>There is a significant performance improvement overall to CONSTELLATION after adding caching to the new Icon provider implementation.</p>
+<p>There is a significant performance improvement overall to Constellation after adding caching to the new Icon provider implementation.</p>
 
 == 2016-06-01 Directed Shortest Paths
 <p>The directed shortest paths search algorithm has been added to the selection menu. You need to set a source node and this dictates the direction.</p>
@@ -765,12 +980,12 @@ copy composite nodes between graphs. The existing version will remain an experim
 
 == 2016-03-17 Graph Visibility Threshold
 <p>You can configure a threshold to automatically hide all nodes on the graph. The idea is that you would instead use table view or the histogram to
-clean up the graph before you visualise it in the graph view. The threshold can be set in Tools &gt; Options &gt; CONSTELLATION &gt; Graph Drawing.
+clean up the graph before you visualise it in the graph view. The threshold can be set in Tools &gt; Options &gt; Constellation &gt; Graph Drawing.
 A new button is available in the graph toolbar than will enable/disable the threshold. For more information refer to
 <a href="" helpId="au.gov.asd.tac.constellation.visual.about">this</a> help page.</p>
 
 == 2016-03-17 Freeze Graph View
-<p>When enabled, animations do not run during plugin executions so you graph structure does not change. The button is available in the graph toolbar.
+<p>When enabled, animations do not run during plugin executions so your graph structure does not change. The button is available in the graph toolbar.
 When enabled, the snow flake icon will change from grey to blue. This feature is smart enough to allow you to execute arrangements manually so you can
  keep it on all the time if you like.</p>
 
@@ -779,14 +994,14 @@ When enabled, the snow flake icon will change from grey to blue. This feature is
 Unsupported types will be rendered as a white ! icon in front of a yellow sphere.</p>
 
 == 2015-09-18 A New Way to Merge Nodes
-<p>Nodes can now be merged based on types known to CONSTELLATION, meaning that preference will be given to types known by the graph over custom types.
+<p>Nodes can now be merged based on types known to Constellation, meaning that preference will be given to types known by the graph over custom types.
 For more information click <a href="" helpId="au.gov.asd.tac.constellation.views.dataaccess.plugins.merge.MergeNodes">here</a>.</p>
 
 == 2015-09-30 Memory Usage Improvement
-<p>CONSTELLATION will try to clear up unused memory when you open a graph. The idea behind doing it on graph open would be in the scenario when
-you have multiple graphs open with edits made but you have not closed any of them. So, when you open a new graph, CONSTELLATION might try and cleanup
+<p>Constellation will try to clear up unused memory when you open a graph. The idea behind doing it on graph open would be in the scenario when
+you have multiple graphs open with edits made but you have not closed any of them. So, when you open a new graph, Constellation might try and cleanup
 unused memory. This is still an experimental feature. Similar to clearing memory on graph close, the option is under
-Setup &gt; Options &gt; CONSTELLATION &gt; Application and is enabled by default.</p>
+Setup &gt; Options &gt; Constellation &gt; Application and is enabled by default.</p>
 
 == 2015-09-01 Label Rendering Improvements
 <p>The rendering of labels has been improved to display text more accurately (including right-to-left text) and improve compatibility with more graphics cards.</p>

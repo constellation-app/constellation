@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,15 +48,17 @@ public class RawIOProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
+        final Object newValue;
         if (jnode.isNull()) {
-            graph.setObjectValue(attributeId, elementId, null);
+            newValue = null;
         } else {
             final JsonNode identifier = jnode.get(RAW_IDENTIFIER_TAG);
             final JsonNode type = jnode.get(RAW_TYPE_TAG);
             final RawData attributeValue = new RawData(identifier.isNull() ? null : identifier.textValue(), type.isNull() ? null : jnode.get(RAW_TYPE_TAG).textValue());
-            graph.setObjectValue(attributeId, elementId, cache.deduplicate(attributeValue));
+            newValue = cache.deduplicate(attributeValue);
         }
+        graph.setObjectValue(attributeId, elementId, newValue);
     }
 
     @Override

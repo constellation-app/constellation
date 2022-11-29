@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,12 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.TextIoProgress;
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +37,10 @@ import java.util.Arrays;
  * @author arcturus
  */
 public class SaveGraphUtilities {
+    
+    private SaveGraphUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Save the graph to the temporary directory for debugging.
@@ -53,7 +57,7 @@ public class SaveGraphUtilities {
      * @throws InterruptedException
      */
     public static void saveGraphToTemporaryDirectory(final Graph graph, final String filename, boolean makeInteractable) throws IOException, InterruptedException {
-        final File saveCreatedGraph = File.createTempFile(filename, GraphDataObject.FILE_EXTENSION);
+        final File saveCreatedGraph = File.createTempFile(filename, FileExtensionConstants.STAR);
         final WritableGraph wg = graph.getWritableGraph("make graph interactable", true);
         try {
             if (makeInteractable) {
@@ -117,7 +121,7 @@ public class SaveGraphUtilities {
      * @throws IOException
      */
     public static void saveGraphToTemporaryDirectory(final StoreGraph graph, final String filename) throws IOException {
-        final File saveCreatedGraph = File.createTempFile(filename, GraphDataObject.FILE_EXTENSION);
+        final File saveCreatedGraph = File.createTempFile(filename, FileExtensionConstants.STAR);
 
         makeGraphInteractable(graph);
 

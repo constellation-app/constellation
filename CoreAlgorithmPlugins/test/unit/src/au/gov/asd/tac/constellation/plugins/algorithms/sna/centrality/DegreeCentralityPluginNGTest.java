@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -195,5 +195,24 @@ public class DegreeCentralityPluginNGTest {
         assertEquals(graph.getFloatValue(vertexOutDegreeAttribute, vxId2), 1f / 2f);
         assertEquals(graph.getFloatValue(vertexOutDegreeAttribute, vxId3), 1f / 2f);
         assertEquals(graph.getFloatValue(vertexOutDegreeAttribute, vxId4), 0f / 2f);
+    }
+    
+    @Test
+    public void testNoDirectionDegree() throws Exception {
+        final DegreeCentralityPlugin instance = new DegreeCentralityPlugin();
+        final PluginParameters parameters = instance.createParameters();
+        parameters.setBooleanValue(DegreeCentralityPlugin.INCLUDE_CONNECTIONS_IN_PARAMETER_ID, false);
+        parameters.setBooleanValue(DegreeCentralityPlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID, false);
+        parameters.setBooleanValue(DegreeCentralityPlugin.TREAT_UNDIRECTED_BIDIRECTIONAL, false);
+        parameters.setBooleanValue(DegreeCentralityPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, false);
+        parameters.setBooleanValue(DegreeCentralityPlugin.NORMALISE_POSSIBLE_PARAMETER_ID, false);
+        parameters.setBooleanValue(DegreeCentralityPlugin.SELECTED_ONLY_PARAMETER_ID, false);
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getFloatValue(vertexDegreeAttribute, vxId0), 0F);
+        assertEquals(graph.getFloatValue(vertexDegreeAttribute, vxId1), 0F);
+        assertEquals(graph.getFloatValue(vertexDegreeAttribute, vxId2), 0F);
+        assertEquals(graph.getFloatValue(vertexDegreeAttribute, vxId3), 0F);
+        assertEquals(graph.getFloatValue(vertexDegreeAttribute, vxId4), 0F);
     }
 }

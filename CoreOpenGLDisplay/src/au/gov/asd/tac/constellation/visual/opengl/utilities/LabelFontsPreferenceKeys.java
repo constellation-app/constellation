@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public class LabelFontsPreferenceKeys {
     public static final String FONT_LIST = "render.font.list";
 
     public static final boolean USE_DEFAULTS_DEFAULT = true;
-    public static final boolean USE_MULTI_FONTS_DEFAULT = ConstellationLabelFonts.getDefault().getUseMultiFonts();
+    public static final boolean USE_MULTI_FONTS_DEFAULT = ConstellationLabelFonts.getDefault().isUseMultiFontsChosen();
     public static final String FONT_LIST_DEFAULT = ConstellationLabelFonts.getDefault().getFontListString();
 
     public static boolean useMultiFontLabels() {

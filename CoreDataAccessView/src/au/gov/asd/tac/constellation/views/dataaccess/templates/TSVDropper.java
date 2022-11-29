@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,8 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -43,8 +45,10 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
-import org.openide.util.Exceptions;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -56,9 +60,11 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author sirius
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class, position = 1)
 public class TSVDropper implements GraphDropper {
+
+    private static final Logger LOGGER = Logger.getLogger(TSVDropper.class.getName());
 
     @Override
     public BiConsumer<Graph, DropInfo> drop(final DropTargetDropEvent dtde) {
@@ -66,9 +72,7 @@ public class TSVDropper implements GraphDropper {
         // Only work on files
         final Transferable transferable = dtde.getTransferable();
         if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-
             try {
-
                 // Get the data as a list of files
                 final Object data = dtde.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                 @SuppressWarnings("unchecked") //data will be list of files which extends Object type
@@ -78,18 +82,17 @@ public class TSVDropper implements GraphDropper {
                 final RecordStore recordStore = new GraphRecordStore();
 
                 boolean badData = false;
-                // Process each file...
-                for (File file : files) {
 
+                // Process each file...
+                for (final File file : files) {
                     // Only process files
                     if (file.isFile()) {
-
                         // Only process files that have a .tsv or .tsv.gz extension
                         // If any file does not have this extension then reject all the files.
                         final InputStream in;
-                        if (file.getName().endsWith(".tsv.gz")) {
+                        if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TAB_SEPARATED_VALUE + FileExtensionConstants.GZIP)) {
                             in = new GZIPInputStream(new FileInputStream(file));
-                        } else if (file.getName().endsWith(".tsv")) {
+                        } else if (StringUtils.endsWithIgnoreCase(file.getName(), FileExtensionConstants.TAB_SEPARATED_VALUE)) {
                             in = new FileInputStream(file);
                         } else {
                             badData = true;
@@ -97,20 +100,18 @@ public class TSVDropper implements GraphDropper {
                         }
 
                         // Open a reader so that we can read the file line by line
-                        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
-
+                        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8.name()))) {
                             String[] columnHeaders = null;
 
                             String line = reader.readLine();
                             while (line != null) {
-
-                                String[] fields = line.split(SeparatorConstants.TAB);
+                                final String[] fields = line.split(SeparatorConstants.TAB);
 
                                 if (columnHeaders == null) {
                                     columnHeaders = fields;
                                 } else {
                                     recordStore.add();
-                                    int fieldsCount = Math.min(columnHeaders.length, fields.length);
+                                    final int fieldsCount = Math.min(columnHeaders.length, fields.length);
                                     for (int i = 0; i < fieldsCount; i++) {
                                         recordStore.set(columnHeaders[i], fields[i]);
                                     }
@@ -119,7 +120,6 @@ public class TSVDropper implements GraphDropper {
                                 line = reader.readLine();
                             }
                         }
-
                         // If any directories are encountered then don't allow the drop
                     } else {
                         badData = true;
@@ -128,27 +128,44 @@ public class TSVDropper implements GraphDropper {
                 }
 
                 if (!badData && recordStore.size() > 0) {
-                    return (graph, dropInfo) -> {
-
-                        PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: TSV File to Graph") {
-                            @Override
-                            protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                ConstellationLoggerHelper.importPropertyBuilder(
-                                        this,
-                                        recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                        files,
-                                        ConstellationLoggerHelper.SUCCESS
-                                );
-                                return recordStore;
-                            }
-                        }).executeLater(graph);
-                    };
+                    return (graph, dropInfo) -> PluginExecution.withPlugin(new TSVDropperToGraphPlugin(recordStore, files)).executeLater(graph);
                 }
-            } catch (final UnsupportedFlavorException | IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final UnsupportedFlavorException ex) {
+                LOGGER.log(Level.SEVERE, "The requested data flavour isn''t supported", ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 
         return null;
+    }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
+    public static class TSVDropperToGraphPlugin extends RecordStoreQueryPlugin {
+
+        private final RecordStore recordStore;
+        private final List<File> files;
+
+        public TSVDropperToGraphPlugin(final RecordStore recordStore, final List<File> files) {
+            this.recordStore = recordStore;
+            this.files = files;
+        }
+
+        @Override
+        protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            ConstellationLoggerHelper.importPropertyBuilder(
+                    this,
+                    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                    files,
+                    ConstellationLoggerHelper.SUCCESS
+            );
+            return recordStore;
+        }
+
+        @Override
+        public String getName() {
+            return "Drag and Drop: TSV File to Graph";
+        }
+
     }
 }

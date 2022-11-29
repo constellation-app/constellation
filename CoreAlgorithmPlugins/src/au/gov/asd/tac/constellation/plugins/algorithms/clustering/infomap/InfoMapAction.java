@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,15 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.algorithms.AlgorithmPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusterUtilities;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,17 +54,28 @@ public final class InfoMapAction implements ActionListener {
         final Graph graph = context.getGraph();
 
         PluginExecutor.startWith(AlgorithmPluginRegistry.CLUSTER_INFO_MAP)
-                // When the clustering is done, make the graph look nice.
-                .followedBy(new SimpleEditPlugin("Info Map: Cleanup") {
-                    @Override
-                    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                        final int clusterId = ClusteringConcept.VertexAttribute.INFOMAP_CLUSTER.ensure(graph);
-                        final int vxColorId = ClusteringConcept.VertexAttribute.INFOMAP_COLOR.ensure(graph);
-                        final int txColorId = ClusteringConcept.TransactionAttribute.INFOMAP_COLOR.ensure(graph);
-                        ClusterUtilities.colorClusters(graph, clusterId, vxColorId, txColorId);
-                        ClusterUtilities.explodeGraph(graph, clusterId);
-                    }
-                })
+                .followedBy(new InfoMapCleanupPlugin())
                 .executeWriteLater(graph);
+    }
+
+    /**
+     * Color the clusters and arrange graph after clustering has been performed.
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
+    public static class InfoMapCleanupPlugin extends SimpleEditPlugin {
+
+        @Override
+        public String getName() {
+            return "Info Map: Cleanup";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            final int clusterId = ClusteringConcept.VertexAttribute.INFOMAP_CLUSTER.ensure(graph);
+            final int vxColorId = ClusteringConcept.VertexAttribute.INFOMAP_COLOR.ensure(graph);
+            final int txColorId = ClusteringConcept.TransactionAttribute.INFOMAP_COLOR.ensure(graph);
+            ClusterUtilities.colorClusters(graph, clusterId, vxColorId, txColorId);
+            ClusterUtilities.explodeGraph(graph, clusterId);
+        }
     }
 }

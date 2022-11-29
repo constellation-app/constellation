@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -89,7 +89,7 @@ public class PathScoringUtilities {
         }
     }
 
-    public static BitSet[] calculateSubgraphPaths(final GraphReadMethods graph, BitSet subgraph,
+    public static BitSet[] calculateSubgraphPaths(final GraphReadMethods graph, final BitSet subgraph,
             final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional) {
         if (includeConnectionsIn && includeConnectionsOut) {
             return computeSubgraphPathsUndirected(graph, subgraph);
@@ -154,7 +154,7 @@ public class PathScoringUtilities {
     }
 
     private static BitSet[] computeSubgraphPathsDirected(final GraphReadMethods graph, final BitSet subgraph,
-            boolean includeConnectionsIn, boolean includeConnectionsOut, boolean treatUndirectedBidirectional) {
+            final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional) {
         final int vertexCount = graph.getVertexCount();
         final BitSet[] traversal = new BitSet[vertexCount];
 
@@ -309,7 +309,7 @@ public class PathScoringUtilities {
     }
 
     private static Tuple<BitSet[], float[]> computeAllPathsDirected(final GraphReadMethods graph, final ScoreType scoreType,
-            boolean includeConnectionsIn, boolean includeConnectionsOut, boolean treatUndirectedBidirectional) {
+            final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional) {
         final int vertexCount = graph.getVertexCount();
         final BitSet[] traversal = new BitSet[vertexCount];
         final float[] scores = new float[vertexCount];
@@ -512,7 +512,7 @@ public class PathScoringUtilities {
     }
 
     private static Tuple<BitSet[], float[]> computeShortestPathsDirected(final GraphReadMethods graph, final ScoreType scoreType,
-            boolean includeConnectionsIn, boolean includeConnectionsOut, boolean treatUndirectedBidirectional, boolean selectedOnly) {
+            final boolean includeConnectionsIn, final boolean includeConnectionsOut, final boolean treatUndirectedBidirectional, final boolean selectedOnly) {
 
         final int vertexCount = graph.getVertexCount();
         final BitSet[] traversalF = new BitSet[vertexCount];

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,8 @@ import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.GraphResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.GraphResult.GraphScore;
 import java.lang.reflect.InvocationTargetException;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A basic analytic plugin reads whole-of-graph scores from the graph based on
@@ -37,6 +38,8 @@ import org.openide.util.Exceptions;
  * @author cygnus_x-1
  */
 public abstract class GraphAnalyticPlugin extends AnalyticPlugin<GraphResult> {
+    
+    private static final Logger LOGGER = Logger.getLogger(GraphAnalyticPlugin.class.getName());
 
     protected GraphResult result;
 
@@ -88,7 +91,7 @@ public abstract class GraphAnalyticPlugin extends AnalyticPlugin<GraphResult> {
         } catch (final IllegalAccessException | IllegalArgumentException
                 | InstantiationException | NoSuchMethodException
                 | SecurityException | InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,8 +72,8 @@ public class VertexFlagsTexturiser {
     }
 
     private int bufferFlagsInfo(final int pos, final ByteBuffer flagsBuffer, final VisualAccess access) {
-        final boolean isSelected = access.getVertexSelected(pos);
-        final boolean isDimmed = access.getVertexDimmed(pos);
+        final boolean isSelected = access.isVertexSelected(pos);
+        final boolean isDimmed = access.isVertexDimmed(pos);
         flagsBuffer.put((byte) ((isDimmed ? DIMMED_BIT : 0) | (isSelected ? SELECTED_BIT : 0)));
         return pos;
     }

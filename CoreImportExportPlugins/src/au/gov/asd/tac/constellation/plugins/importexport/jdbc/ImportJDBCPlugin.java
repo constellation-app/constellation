@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -44,7 +45,10 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterTy
 import au.gov.asd.tac.constellation.plugins.parameters.types.PasswordParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.sql.Connection;
@@ -53,12 +57,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.application.Platform;
+import org.openide.awt.NotificationDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
-@NbBundle.Messages("ImportJDBCPlugin=Import from JDBC Sources")
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
+@NbBundle.Messages("ImportJDBCPlugin=Import from Database")
 public class ImportJDBCPlugin extends SimpleEditPlugin {
 
     public static final String QUERY_PARAMETER_ID = PluginParameter.buildId(ImportJDBCPlugin.class, "query");
@@ -113,8 +119,8 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
         final String query = parameters.getParameters().get(QUERY_PARAMETER_ID).getStringValue();
         final List<ImportDefinition> definitions = (List<ImportDefinition>) parameters.getParameters().get(DEFINITIONS_PARAMETER_ID).getObjectValue();
         final Boolean initialiseWithSchema = parameters.getParameters().get(SCHEMA_PARAMETER_ID).getBooleanValue();
-        final List<Integer> newVertices = new ArrayList<>();
         boolean positionalAtrributesExist = false;
+        int totalImportedRows = 0;
 
         final String username = parameters.getParameters().get(USERNAME_PARAMETER_ID).getStringValue();
         final String password = parameters.getParameters().get(PASSWORD_PARAMETER_ID).getStringValue();
@@ -142,18 +148,19 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
             for (final ImportDefinition definition : definitions) {
                 if (definition.getDefinitions(AttributeType.SOURCE_VERTEX).isEmpty()) {
                     if (!definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
-                        processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, interaction, newVertices);
+                        totalImportedRows += processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, interaction);
                     }
                 } else if (definition.getDefinitions(AttributeType.DESTINATION_VERTEX).isEmpty()) {
-                    processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, interaction, newVertices);
+                    totalImportedRows += processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, interaction);
                 } else {
-                    processTransactions(definition, graph, data, initialiseWithSchema, interaction);
+                    totalImportedRows += processTransactions(definition, graph, data, initialiseWithSchema, interaction);
                 }
 
                 // Determine if a positional attribute has been defined, if so update the overall flag
                 final boolean isPositional = attributeDefintionIsPositional(definition.getDefinitions(AttributeType.SOURCE_VERTEX), definition.getDefinitions(AttributeType.DESTINATION_VERTEX));
                 positionalAtrributesExist = (positionalAtrributesExist || isPositional);
             }
+            displaySummaryAlert(totalImportedRows, data.size(), connection.getConnectionName());
 
             // If at least one positional attribute has been received for either the src or destination vertex we will assume that the user is trying to import positions and won't auto arrange
             // the graph. This does mean some nodes could sit on top of each other if multiple nodes have the same coordinates.
@@ -164,10 +171,11 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 graph.validateKey(GraphElementType.TRANSACTION, true);
 
                 // unfortunately need to arrange with pendants and uncollide because grid arranger works based on selection
-                final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, newVertices);
+                final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, new ArrayList<>());
                 PluginExecutor.startWith(ArrangementPluginRegistry.GRID_COMPOSITE)
                         .followedBy(ArrangementPluginRegistry.PENDANTS)
                         .followedBy(ArrangementPluginRegistry.UNCOLLIDE)
+                        .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                         .executeNow(vlGraph.getInclusionGraph());
                 vlGraph.retrieveCoords();
             }
@@ -182,12 +190,13 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 || destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
-    private static void processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType, final boolean initialiseWithSchema, final PluginInteraction interaction, final List<Integer> newVertices) throws InterruptedException {
+    private static int processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType, final boolean initialiseWithSchema, final PluginInteraction interaction) throws InterruptedException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
 
         addAttributes(graph, GraphElementType.VERTEX, attributeDefinitions);
 
         int currentRow = 0;
+        int importedRows = 0;
         final int totalRows = data.size() - definition.getFirstRow();
 
         final RowFilter filter = definition.getRowFilter();
@@ -197,8 +206,9 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
 
             final String[] row = data.get(i);
             if (filter == null || filter.passesFilter(i, row)) {
+                // Count the number of processed rows to notify in the status message
+                ++importedRows;
                 final int vertexId = graph.addVertex();
-                newVertices.add(vertexId);
 
                 for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
                     attributeDefinition.setValue(graph, vertexId, row, (i - 1));
@@ -209,16 +219,17 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 }
             }
         }
+        return importedRows;
     }
 
-    private static void processTransactions(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, final PluginInteraction interaction) throws InterruptedException {
+    private static int processTransactions(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, final PluginInteraction interaction) throws InterruptedException {
         final List<ImportAttributeDefinition> sourceVertexDefinitions = definition.getDefinitions(AttributeType.SOURCE_VERTEX);
         final List<ImportAttributeDefinition> destinationVertexDefinitions = definition.getDefinitions(AttributeType.DESTINATION_VERTEX);
         final List<ImportAttributeDefinition> transactionDefinitions = definition.getDefinitions(AttributeType.TRANSACTION);
 
         int directedIx = ImportConstants.ATTRIBUTE_NOT_ASSIGNED_TO_COLUMN;
         for (int i = 0; i < transactionDefinitions.size(); i++) {
-            if (transactionDefinitions.get(i).getAttribute().getName().equals(ImportController.DIRECTED)) {
+            if (transactionDefinitions.get(i).getAttribute().getName().equals(JDBCImportController.DIRECTED)) {
                 directedIx = transactionDefinitions.get(i).getColumnIndex();
                 break;
             }
@@ -229,6 +240,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
         addAttributes(graph, GraphElementType.TRANSACTION, transactionDefinitions);
 
         int currentRow = 0;
+        int importedRows = 0;
         final int totalRows = data.size() - definition.getFirstRow();
 
         final RowFilter filter = definition.getRowFilter();
@@ -239,6 +251,8 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
             final String[] row = data.get(i);
 
             if (filter == null || filter.passesFilter(i, row)) {
+                // Count the number of processed rows to notify in the status message
+                ++importedRows;
                 final int sourceVertexId = graph.addVertex();
                 for (final ImportAttributeDefinition attributeDefinition : sourceVertexDefinitions) {
                     attributeDefinition.setValue(graph, sourceVertexId, row, (i - 1));
@@ -267,6 +281,7 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
                 }
             }
         }
+        return importedRows;
     }
 
     /**
@@ -295,4 +310,31 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
             }
         });
     }
+
+    /**
+     * Build up an import summary dialog detailing successful and unsuccessful
+     * DB connection imports.
+     *
+     * @param importedRows is the number of rows of data imported
+     * @param connectionName the name of the connection
+     */
+    private void displaySummaryAlert(final int importedRows, final int totalRows, final String connectionName) {
+        Platform.runLater(() -> {
+            final StringBuilder sbHeader = new StringBuilder();
+            final StringBuilder sbMessage = new StringBuilder();
+
+            if (importedRows > 0) {
+                // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
+                // issues for. If there were any files with issues use a warning dialog.
+                sbHeader.append(String.format("Imported %d out of %d rows of data from connection: %s", importedRows, totalRows, connectionName));
+
+            } else {
+                // No rows were imported list all files that resulted in failures.
+                sbHeader.append("No data found to import");                
+                sbMessage.append(String.format("Please check the connection %s or specified mappings. No data was extracted.", connectionName));
+            }
+            NotificationDisplayer.getDefault().notify(sbHeader.toString(), UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
+        });
+    }
+
 }

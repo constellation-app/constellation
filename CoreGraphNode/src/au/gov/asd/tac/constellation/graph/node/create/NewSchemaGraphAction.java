@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,14 +63,14 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
 
     private static final String GRAPH_ACTION_THREAD_NAME = "New Schema Graph Action";
     private static final String TEMPLATE_DIR_NAME = "Graph Templates";
-    private static File TEMPLATE_DIRECTORY = null;
+    private static File templateDirectory = null;
     private static final List<JMenuItem> TEMPLATES_MENU = new ArrayList<>();
     private static Map<String, String> templates;
     private static JMenu menu;
     private static final Map<String, Icon> ICON_CACHE = new HashMap<>();
 
     public static File getTemplateDirectory() {
-        return TEMPLATE_DIRECTORY;
+        return templateDirectory;
     }
 
     @Override
@@ -94,24 +94,22 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
                 final JMenuItem item = new JMenuItem(schemaFactory.getLabel(), ICON_CACHE.get(schemaFactory.getName()));
                 item.setToolTipText(schemaFactory.getDescription());
                 item.setActionCommand(schemaFactory.getName());
-                item.addActionListener((final ActionEvent e) -> {
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            setName(GRAPH_ACTION_THREAD_NAME);
-                            final Graph graph = new DualGraph(schemaFactory.createSchema());
-                            final WritableGraph wg = graph.getWritableGraphNow("New " + schemaFactory.getName(), false);
-                            try {
-                                graph.getSchema().newGraph(wg);
-                            } finally {
-                                wg.commit();
-                            }
-
-                            final String graphName = schemaFactory.getLabel().replace(" ", "").toLowerCase();
-                            GraphOpener.getDefault().openGraph(graph, graphName);
+                item.addActionListener((final ActionEvent e) -> new Thread() {
+                    @Override
+                    public void run() {
+                        setName(GRAPH_ACTION_THREAD_NAME);
+                        final Graph graph = new DualGraph(schemaFactory.createSchema());
+                        final WritableGraph wg = graph.getWritableGraphNow("New " + schemaFactory.getName(), false);
+                        try {
+                            graph.getSchema().newGraph(wg);
+                        } finally {
+                            wg.commit();
                         }
-                    }.start();
-                });
+
+                        final String graphName = schemaFactory.getLabel().trim().toLowerCase();
+                        GraphOpener.getDefault().openGraph(graph, graphName);
+                    }
+                }.start());
 
                 menu.add(item);
             }
@@ -123,19 +121,19 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
     }
 
     private static boolean loadTemplateDirectory() {
-        if (TEMPLATE_DIRECTORY == null) {
+        if (templateDirectory == null) {
             final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
             final String userDir = ApplicationPreferenceKeys.getUserDir(prefs);
-            TEMPLATE_DIRECTORY = new File(userDir, TEMPLATE_DIR_NAME);
+            templateDirectory = new File(userDir, TEMPLATE_DIR_NAME);
         }
-        return TEMPLATE_DIRECTORY.isDirectory();
+        return templateDirectory.isDirectory();
     }
 
     public static Map<String, String> getTemplateNames() {
         templates = new HashMap<>();
-        List<String> schemaSubdirs = loadTemplateDirectory() ? Arrays.asList(TEMPLATE_DIRECTORY.list()) : Collections.emptyList();
+        List<String> schemaSubdirs = loadTemplateDirectory() ? Arrays.asList(templateDirectory.list()) : Collections.emptyList();
         schemaSubdirs.forEach(schema -> {
-            final File subdir = new File(TEMPLATE_DIRECTORY, schema);
+            final File subdir = new File(templateDirectory, schema);
             if (subdir.isDirectory()) {
                 for (String template : subdir.list()) {
                     templates.put(template, schema);
@@ -148,9 +146,7 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
     public static void recreateTemplateMenuItems() {
         SwingUtilities.invokeLater(() -> {
             final Map<String, String> templates = getTemplateNames();
-            TEMPLATES_MENU.forEach(item -> {
-                menu.remove(item);
-            });
+            TEMPLATES_MENU.forEach(item -> menu.remove(item));
             TEMPLATES_MENU.clear();
             templates.forEach((template, schema) -> {
                 SchemaFactory factory = SchemaFactoryUtilities.getSchemaFactory(schema);
@@ -159,22 +155,18 @@ public class NewSchemaGraphAction extends AbstractAction implements DynamicMenuC
                         ICON_CACHE.put(factory.getName(), SchemaFactoryUtilities.getSchemaFactory(schema).getIcon().buildIcon(16));
                     }
                     JMenuItem item = new JMenuItem(template + " Graph", ICON_CACHE.get(factory.getName()));
-                    item.addActionListener((final ActionEvent e) -> {
-                        createTemplate(template);
-                    });
+                    item.addActionListener((final ActionEvent e) -> createTemplate(template));
                     TEMPLATES_MENU.add(item);
                 }
             });
-            TEMPLATES_MENU.forEach(item -> {
-                menu.add(item);
-            });
+            TEMPLATES_MENU.forEach(item -> menu.add(item));
         });
     }
 
     static void createTemplate(final String templateName) {
         final Plugin plugin = PluginRegistry.get(GraphNodePluginRegistry.LOAD_TEMPLATE);
         PluginParameters params = plugin.createParameters();
-        params.setObjectValue(LoadTemplatePlugin.TEMPLATE_FILE_PARAMETER_ID, new File(TEMPLATE_DIRECTORY, templates.get(templateName) + "/" + templateName));
+        params.setObjectValue(LoadTemplatePlugin.TEMPLATE_FILE_PARAMETER_ID, new File(templateDirectory, templates.get(templateName) + "/" + templateName));
         params.setStringValue(LoadTemplatePlugin.TEMPLATE_NAME_PARAMETER_ID, templateName);
         PluginExecution.withPlugin(plugin).withParameters(params).executeLater(null);
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -321,14 +321,11 @@ public class SqlQuery {
     // Note that the table and column name are assumed not to be user input and hence are not
     // sanitized. The values are sanitized.
     public void appendUnionComparisonClause(final String columnName, final List<? extends Object> values, final MatchType matchType) {
-        String currentQuery = query.toString();
+        final String currentQuery = query.toString();
         for (Object value : values) {
             query.append(columnName);
-            if (matchType.equals(MatchType.MATCH_EXACT)) {
-                query.append(" = ");
-            } else {
-                query.append(" LIKE ");
-            }
+            query.append(matchType == MatchType.MATCH_EXACT ? " = " : " LIKE ");
+            
             switch (matchType) {
                 case MATCH_BEGINS_WITH:
                     value = value + "%";
@@ -348,6 +345,8 @@ public class SqlQuery {
                 addArgument((Integer) value);
             } else if (value instanceof Double) {
                 addArgument((Double) value);
+            } else {
+                // Do nothing
             }
             query.append(" UNION ");
             query.append(currentQuery);
@@ -363,11 +362,8 @@ public class SqlQuery {
     public void appendDisjunctiveComparisonClause(final String columnName, final List<? extends Object> values, final MatchType matchType, final boolean lastClause) {
         for (Object value : values) {
             query.append(columnName);
-            if (matchType.equals(MatchType.MATCH_EXACT)) {
-                query.append(" = ");
-            } else {
-                query.append(" LIKE ");
-            }
+            query.append(matchType == MatchType.MATCH_EXACT ? " = " : " LIKE ");
+            
             switch (matchType) {
                 case MATCH_BEGINS_WITH:
                     value = value + "%";
@@ -387,6 +383,8 @@ public class SqlQuery {
                 addArgument((Integer) value);
             } else if (value instanceof Double) {
                 addArgument((Double) value);
+            } else {
+                // Do nothing
             }
             query.append(" OR ");
         }

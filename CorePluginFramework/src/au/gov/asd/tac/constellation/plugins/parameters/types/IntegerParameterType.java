@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.util.converter.NumberStringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -30,6 +32,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = PluginParameterType.class)
 public class IntegerParameterType extends PluginParameterType<IntegerParameterValue> {
+    
+    private static final Logger LOGGER = Logger.getLogger(IntegerParameterType.class.getName());
 
     /**
      * A String ID with which to distinguish parameters that have this type.
@@ -55,7 +59,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of IntegterParameterType.
      */
-    public static PluginParameter<IntegerParameterValue> build(String id) {
+    public static PluginParameter<IntegerParameterValue> build(final String id) {
         return new PluginParameter<>(new IntegerParameterValue(), INSTANCE, id);
     }
 
@@ -68,7 +72,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
      * the parameter being constructed.
      * @return A {@link PluginParameter} of IntegerParameterType.
      */
-    public static PluginParameter<IntegerParameterValue> build(String id, final IntegerParameterValue pv) {
+    public static PluginParameter<IntegerParameterValue> build(final String id, final IntegerParameterValue pv) {
         return new PluginParameter<>(pv, INSTANCE, id);
     }
 
@@ -93,7 +97,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
      * @param shrinkInputWidth Whether the width of a GUI input should be
      * scaled.
      */
-    public static void setShrinkInputWidth(PluginParameter<IntegerParameterValue> parameter, boolean shrinkInputWidth) {
+    public static void setShrinkInputWidth(final PluginParameter<IntegerParameterValue> parameter, final boolean shrinkInputWidth) {
         parameter.setProperty(SHRINK_VAL, shrinkInputWidth);
     }
 
@@ -105,7 +109,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
      * @param parameter A {@link PluginParameter}.
      * @param min The minimum value to set.
      */
-    public static void setMinimum(PluginParameter<IntegerParameterValue> parameter, int min) {
+    public static void setMinimum(final PluginParameter<IntegerParameterValue> parameter, final int min) {
         parameter.getParameterValue().setMinimumValue(min);
     }
 
@@ -117,7 +121,7 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
      * @param parameter A {@link PluginParameter}.
      * @param max The maximum value to set.
      */
-    public static void setMaximum(PluginParameter<IntegerParameterValue> parameter, int max) {
+    public static void setMaximum(final PluginParameter<IntegerParameterValue> parameter, final int max) {
         parameter.getParameterValue().setMaximumValue(max);
     }
 
@@ -187,10 +191,14 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
         public boolean set(final int newi) {
             if (newi != i) {
                 if (min != null && newi < min) {
+                    LOGGER.log(Level.WARNING, "{0} is lower than the minimum ({1}) allowed. Changing to "
+                            + "the minimum value", new Object[]{newi, min});
                     return false;
                 }
 
                 if (max != null && newi > max) {
+                    LOGGER.log(Level.WARNING, "{0} is higher than the maximum ({1}) allowed. Changing to "
+                            + "the maximum value", new Object[]{newi, max});
                     return false;
                 }
 
@@ -253,14 +261,12 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
         }
 
         @Override
-        public boolean setStringValue(String s) {
+        public boolean setStringValue(final String s) {
             final Number n = CONVERTER.fromString(s);
             if (n != null) {
                 final int newi = n.intValue();
-                if (newi != i) {
-                    i = newi;
-                    return true;
-                }
+                
+                return set(newi);
             }
 
             return false;
@@ -297,7 +303,10 @@ public class IntegerParameterType extends PluginParameterType<IntegerParameterVa
 
         @Override
         public boolean equals(final Object o) {
-            return o instanceof IntegerParameterValue && i == ((IntegerParameterValue) o).i;
+            if (o == null) {
+                return false;
+            }
+            return this.getClass() == o.getClass() && i == ((IntegerParameterValue) o).i;
         }
 
         @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,11 +15,17 @@
  */
 package au.gov.asd.tac.constellation.graph.value.expression;
 
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 /**
  *
@@ -27,11 +33,18 @@ import java.util.Map;
  */
 public class ExpressionParser {
 
+    private static final Logger LOGGER = Logger.getLogger(ExpressionParser.class.getName());
     public static final char NO_TOKEN = 0;
+    private static boolean isHeadless = false;
+    private static final String QUERY_ERROR = "Query Error";
+    private static final String MALFORMED_QUERY = "Malformed Query";
+    private static final String QUERY_ERROR_MSG = "There was a query error: {0}";
+    private static final String NULL_INPUT_ERROR = "Input String was null";
     private static final String NESTED_PARENTHESIS_ERROR = "Invalid nesting of parenthesis";
     private static final String ENDS_WITH_OPERATOR_ERROR = "An expression cannot end with an operator";
-    private static final String END_OF_QUOTED_STRING_ERROR = "Unexpected end of expression while in quoted string";
+    private static final String END_OF_QUOTED_STRING_ERROR = "Unexpected end of expression while in quoted string.\nCould not find the pair to: %s";
     private static final String UNEXPECTED_CHARACTER_ERROR = "Unexpected character: ";
+    private static final String TWO_NON_OPERATORS_SEQUENCE = "2 non-operator tokens in sequence";
 
     private enum ParseState {
         READING_WHITESPACE,
@@ -43,26 +56,26 @@ public class ExpressionParser {
     }
 
     public enum Operator {
-        AND_AND(NO_TOKEN, 11),
-        AND('&', 11, null, AND_AND),
-        OR_OR(NO_TOKEN, 12),
-        OR('|', 12, null, OR_OR),
-        EXCLUSIVE_OR('^', 3),
         NOT('!', 2),
-        ADD('+', 4),
-        SUBTRACT('-', 4),
         MULTIPLY('*', 3),
         DIVIDE('/', 3),
         MODULO('%', 3),
+        ADD('+', 4),
+        SUBTRACT('-', 4),
+        CONTAINS(NO_TOKEN, 4),
+        STARTS_WITH(NO_TOKEN, 4),
+        ENDS_WITH(NO_TOKEN, 4),
         GREATER_THAN('>', 6),
         LESS_THAN('<', 6),
         GREATER_THAN_OR_EQUALS(NO_TOKEN, 6),
         LESS_THAN_OR_EQUALS(NO_TOKEN, 6),
-        NOT_EQUALS(NO_TOKEN, 7),
-        CONTAINS(NO_TOKEN, 4),
-        STARTS_WITH(NO_TOKEN, 4),
-        ENDS_WITH(NO_TOKEN, 4),
         EQUALS(NO_TOKEN, 7),
+        NOT_EQUALS(NO_TOKEN, 7),
+        AND_AND(NO_TOKEN, 11),
+        AND('&', 8, null, AND_AND),
+        OR_OR(NO_TOKEN, 12),
+        EXCLUSIVE_OR('^', 9),
+        OR('|', 10, null, OR_OR),
         ASSIGN('=', 14, null, EQUALS, GREATER_THAN, GREATER_THAN_OR_EQUALS, LESS_THAN, LESS_THAN_OR_EQUALS, NOT, NOT_EQUALS);
 
         private final char token;
@@ -107,17 +120,54 @@ public class ExpressionParser {
         WORD_OPERATORS.put("contains", Operator.CONTAINS);
         WORD_OPERATORS.put("startswith", Operator.STARTS_WITH);
         WORD_OPERATORS.put("endswith", Operator.ENDS_WITH);
-        WORD_OPERATORS.put("or", Operator.OR);
-        WORD_OPERATORS.put("and", Operator.AND);
+        WORD_OPERATORS.put("xor", Operator.EXCLUSIVE_OR);
+        WORD_OPERATORS.put("or", Operator.OR_OR);
+        WORD_OPERATORS.put("and", Operator.AND_AND);
         WORD_OPERATORS.put("equals", Operator.EQUALS);
         WORD_OPERATORS.put("notequals", Operator.NOT_EQUALS);
+        WORD_OPERATORS.put("not", Operator.NOT);
+        WORD_OPERATORS.put("add", Operator.ADD);
+        WORD_OPERATORS.put("subtract", Operator.SUBTRACT);
+        WORD_OPERATORS.put("gt", Operator.GREATER_THAN);
+        WORD_OPERATORS.put("gteq", Operator.GREATER_THAN_OR_EQUALS);
+        WORD_OPERATORS.put("lt", Operator.LESS_THAN);
+        WORD_OPERATORS.put("lteq", Operator.LESS_THAN_OR_EQUALS);
+        WORD_OPERATORS.put("assign", Operator.ASSIGN);
+        WORD_OPERATORS.put("mod", Operator.MODULO);
+        WORD_OPERATORS.put("multiply", Operator.MULTIPLY);
+        WORD_OPERATORS.put("divide", Operator.DIVIDE);
     }
 
     private ExpressionParser() {
         // added private constructor to hide implicit public constructor - S1118.
     }
 
+    public static void hideErrorPrompts(final boolean hide) {
+        isHeadless = hide;
+    }
+
     public abstract static class Expression {
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 37 * hash + Objects.hashCode(this.parent);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            return Objects.equals(this.parent, ((Expression) obj).parent);
+        }
 
         private SequenceExpression parent;
 
@@ -141,9 +191,30 @@ public class ExpressionParser {
 
     public static class VariableExpression extends Expression {
 
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 89 * hash + Objects.hashCode(this.content);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            return Objects.equals(this.content, ((VariableExpression) obj).content);
+        }
+
         private final String content;
 
-        private VariableExpression(SequenceExpression parent, char[] content, int contentLength) {
+        protected VariableExpression(SequenceExpression parent, char[] content, int contentLength) {
             super(parent);
             this.content = new String(content, 0, contentLength);
         }
@@ -160,9 +231,30 @@ public class ExpressionParser {
 
     public static class StringExpression extends Expression {
 
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 67 * hash + Objects.hashCode(this.content);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            return Objects.equals(this.content, ((StringExpression) obj).content);
+        }
+
         private final String content;
 
-        private StringExpression(SequenceExpression parent, char[] content, int contentLength) {
+        protected StringExpression(SequenceExpression parent, char[] content, int contentLength) {
             super(parent);
             this.content = new String(content, 0, contentLength);
         }
@@ -179,9 +271,30 @@ public class ExpressionParser {
 
     public static class OperatorExpression extends Expression {
 
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 59 * hash + Objects.hashCode(this.operator);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            return this.operator == ((OperatorExpression) obj).operator;
+        }
+
         private Operator operator;
 
-        private OperatorExpression(SequenceExpression parent, Operator operator) {
+        OperatorExpression(SequenceExpression parent, Operator operator) {
             super(parent);
             this.operator = operator;
         }
@@ -198,10 +311,31 @@ public class ExpressionParser {
 
     public static class SequenceExpression extends Expression {
 
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 73 * hash + Objects.hashCode(this.children);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(final Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            return Objects.equals(this.children, ((SequenceExpression) obj).children);
+        }
+
         private final List<Expression> children = new ArrayList<>();
         private final List<Expression> unmodifiableChildren = Collections.unmodifiableList(children);
 
-        private SequenceExpression(SequenceExpression parent) {
+        protected SequenceExpression(SequenceExpression parent) {
             super(parent);
         }
 
@@ -209,7 +343,7 @@ public class ExpressionParser {
             return unmodifiableChildren;
         }
 
-        private void addChild(Expression expression) {
+        protected void addChild(Expression expression) {
 
             if (expression instanceof SequenceExpression) {
                 final SequenceExpression tokenSequence = (SequenceExpression) expression;
@@ -221,7 +355,9 @@ public class ExpressionParser {
                         break;
                     default:
                         if (tokenSequence.children.get(tokenSequence.children.size() - 1) instanceof OperatorExpression) {
-                            throw new IllegalArgumentException(ENDS_WITH_OPERATOR_ERROR);
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, ENDS_WITH_OPERATOR_ERROR, Alert.AlertType.ERROR));
+                            LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, ENDS_WITH_OPERATOR_ERROR);
                         }
                 }
             }
@@ -261,7 +397,12 @@ public class ExpressionParser {
                             return;
                         }
                     }
-                    throw new IllegalStateException("2 non-operator tokens in sequence");
+                    if (!isHeadless) {
+                        Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                MALFORMED_QUERY, TWO_NON_OPERATORS_SEQUENCE, Alert.AlertType.ERROR));
+                    }
+                    LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, TWO_NON_OPERATORS_SEQUENCE);
+                    return;
                 }
             }
 
@@ -312,14 +453,16 @@ public class ExpressionParser {
         @Override
         protected void print(String prefix, StringBuilder out) {
             out.append(prefix).append("(\n");
-            children.forEach(child -> {
-                child.print(prefix + "  ", out);
-            });
+            children.forEach(child -> child.print(prefix + "  ", out));
             out.append(prefix).append(")\n");
         }
     }
 
     public static SequenceExpression parse(String expression) {
+        if (expression == null) {
+            LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, NULL_INPUT_ERROR);
+            return null;
+        }
 
         ParseState state = ParseState.READING_WHITESPACE;
         final char[] content = new char[expression.length()];
@@ -334,7 +477,7 @@ public class ExpressionParser {
             switch (state) {
                 case READING_WHITESPACE:
                     if (c != ' ' && c != 0) {
-                        if (isLetter(c)) {
+                        if (isLetter(c) || isDigit(c) || isAllowable(c)) {
                             content[contentLength++] = c;
                             state = ParseState.READING_VARIABLE;
                         } else if (c == '\'') {
@@ -345,7 +488,14 @@ public class ExpressionParser {
                             currentExpression = new SequenceExpression(currentExpression);
                         } else if (c == ')') {
                             if (currentExpression == rootExpression) {
-                                throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
+                                final String errorMessage = "Found closing parenthesis ) within variable.\n"
+                                        + "parentheses must be used in pairs to enclose variables.";
+                                if (!isHeadless) {
+                                    Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                            MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                                }
+                                LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
+                                return null;
                             }
                             final SequenceExpression parentExpression = currentExpression.getParent();
                             parentExpression.addChild(currentExpression);
@@ -353,7 +503,13 @@ public class ExpressionParser {
                         } else if (Operator.OPERATOR_TOKENS.containsKey(c)) {
                             currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         } else {
-                            throw new IllegalArgumentException(UNEXPECTED_CHARACTER_ERROR + c);
+                            final String errorMessage = String.format(UNEXPECTED_CHARACTER_ERROR + "\nEnsure values are surrounded with Single or Double quotes.", c);
+                            if (!isHeadless) {
+                                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                        MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                            }
+                            LOGGER.log(Level.WARNING, errorMessage);
+                            return null;
                         }
                     }
                     break;
@@ -363,7 +519,7 @@ public class ExpressionParser {
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
                         state = ParseState.READING_WHITESPACE;
-                    } else if (isLetter(c) || isDigit(c)) {
+                    } else if (isLetter(c) || isDigit(c) || isAllowable(c)) {
                         content[contentLength++] = c;
                     } else if (c == '(') {
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
@@ -371,7 +527,14 @@ public class ExpressionParser {
                         currentExpression = new SequenceExpression(currentExpression);
                     } else if (c == ')') {
                         if (currentExpression == rootExpression) {
-                            throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
+                            final String errorMessage = "Found closing parenthesis ) within variable.\n"
+                                    + "parentheses must be used in pairs to enclose variables.";
+                            if (!isHeadless) {
+                                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                        MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                            }
+                            LOGGER.log(Level.WARNING, errorMessage);
+                            return null;
                         }
                         currentExpression.addChild(new VariableExpression(currentExpression, content, contentLength));
                         contentLength = 0;
@@ -385,7 +548,13 @@ public class ExpressionParser {
                         currentExpression.addChild(new OperatorExpression(currentExpression, Operator.OPERATOR_TOKENS.get(c)));
                         state = ParseState.READING_WHITESPACE;
                     } else {
-                        throw new IllegalArgumentException(UNEXPECTED_CHARACTER_ERROR + c);
+                        final String errorMessage = String.format(UNEXPECTED_CHARACTER_ERROR + "\nEnsure values are surrounded with Single or Double quotes.", c);
+                        if (!isHeadless) {
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                        }
+                        LOGGER.log(Level.WARNING, errorMessage);
+                        return null;
                     }
                     break;
 
@@ -397,7 +566,13 @@ public class ExpressionParser {
                     } else if (c == '\\') {
                         state = ParseState.READING_SINGLE_ESCAPED;
                     } else if (c == 0) {
-                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
+                        final String errorMessage = String.format(END_OF_QUOTED_STRING_ERROR, "'");
+                        if (!isHeadless) {
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                        }
+                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
+                        return null;
                     } else {
                         content[contentLength++] = c;
                     }
@@ -411,7 +586,13 @@ public class ExpressionParser {
                     } else if (c == '\\') {
                         state = ParseState.READING_DOUBLE_ESCAPED;
                     } else if (c == 0) {
-                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
+                        final String errorMessage = String.format(END_OF_QUOTED_STRING_ERROR, '"');
+                        if (!isHeadless) {
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                        }
+                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
+                        return null;
                     } else {
                         content[contentLength++] = c;
                     }
@@ -419,7 +600,13 @@ public class ExpressionParser {
 
                 case READING_SINGLE_ESCAPED:
                     if (c == 0) {
-                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
+                        final String errorMessage = "Found escaped character ' at end of expression.";
+                        if (!isHeadless) {
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                        }
+                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
+                        return null;
                     } else {
                         content[contentLength++] = c;
                         state = ParseState.READING_SINGLE_STRING;
@@ -428,7 +615,13 @@ public class ExpressionParser {
 
                 case READING_DOUBLE_ESCAPED:
                     if (c == 0) {
-                        throw new IllegalArgumentException(END_OF_QUOTED_STRING_ERROR);
+                        final String errorMessage = "Found escaped character \" at end of expression.";
+                        if (!isHeadless) {
+                            Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                                    MALFORMED_QUERY, errorMessage, Alert.AlertType.ERROR));
+                        }
+                        LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, errorMessage);
+                        return null;
                     } else {
                         content[contentLength++] = c;
                         state = ParseState.READING_DOUBLE_STRING;
@@ -438,7 +631,12 @@ public class ExpressionParser {
         }
 
         if (currentExpression != rootExpression) {
-            throw new IllegalArgumentException(NESTED_PARENTHESIS_ERROR);
+            if (!isHeadless) {
+                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                        MALFORMED_QUERY, NESTED_PARENTHESIS_ERROR, Alert.AlertType.ERROR));
+            }
+            LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, NESTED_PARENTHESIS_ERROR);
+            return null;
         }
         if (rootExpression.children.size() == 1) {
             final Expression onlyChild = rootExpression.children.get(0);
@@ -447,7 +645,12 @@ public class ExpressionParser {
             }
         }
         if (!currentExpression.children.isEmpty() && currentExpression.children.get(currentExpression.children.size() - 1) instanceof OperatorExpression) {
-            throw new IllegalArgumentException(ENDS_WITH_OPERATOR_ERROR);
+            if (!isHeadless) {
+                Platform.runLater(() -> NotifyDisplayer.displayAlert(QUERY_ERROR,
+                        MALFORMED_QUERY, ENDS_WITH_OPERATOR_ERROR, Alert.AlertType.ERROR));
+            }
+            LOGGER.log(Level.WARNING, QUERY_ERROR_MSG, ENDS_WITH_OPERATOR_ERROR);
+            return null;
         }
 
         rootExpression.normalize();
@@ -456,6 +659,10 @@ public class ExpressionParser {
 
     private static boolean isLetter(char c) {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+    private static boolean isAllowable(char c) {
+        return (c == '_' || c == '{' || c == '}');
     }
 
     private static boolean isDigit(char c) {

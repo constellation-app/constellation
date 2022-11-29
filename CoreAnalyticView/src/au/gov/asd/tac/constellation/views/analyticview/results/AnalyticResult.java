@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,11 @@ import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 /**
@@ -33,8 +36,7 @@ import java.util.stream.Collectors;
  */
 public abstract class AnalyticResult<D extends AnalyticData> {
 
-    protected final Map<IdentificationData, D> result = new HashMap<>();
-//    protected final List<D> result = new LinkedList<>();
+    protected final Map<IdentificationData, D> result = new LinkedHashMap<>();
     protected final Map<String, String> metadata = new HashMap<>();
     protected boolean ignoreNullResults = false;
     protected AnalyticController analyticController = null;
@@ -48,6 +50,8 @@ public abstract class AnalyticResult<D extends AnalyticData> {
                 verticesToSelect.add(result.getElementId());
             } else if (result.getElementType() == GraphElementType.TRANSACTION) {
                 transactionsToSelect.add(result.getElementId());
+            } else {
+                // Do nothing
             }
         });
         analyticController.selectOnGraph(GraphElementType.VERTEX, verticesToSelect);
@@ -62,11 +66,11 @@ public abstract class AnalyticResult<D extends AnalyticData> {
                 ignoredElementScores.add(elementScore);
             } else if (elementIds.contains(elementScore.getElementId())) {
                 selectedElementScores.add(elementScore);
+            } else {
+                // Do nothing
             }
         });
-        resultListeners.forEach(listener -> {
-            listener.resultChanged(selectedElementScores, ignoredElementScores);
-        });
+        resultListeners.forEach(listener -> listener.resultChanged(selectedElementScores, ignoredElementScores));
     }
 
     public final int size() {
@@ -74,16 +78,38 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     }
 
     public final void sort() {
+
+        final List<Entry<IdentificationData, D>> mapPairs = new ArrayList<>(result.entrySet());
+        final List<D> mapValues = new ArrayList<>(result.values());
+        mapValues.sort(null);
+
+        result.clear();
+
+        final Iterator<D> valueIt = mapValues.iterator();
+        while (valueIt.hasNext()) {
+            final D val = valueIt.next();
+
+            final Iterator<Entry<IdentificationData, D>> pairIt = mapPairs.iterator();
+            while (pairIt.hasNext()) {
+                final Entry<IdentificationData, D> pair = pairIt.next();
+
+                if (pair.getValue().equals(val)) {
+                    mapPairs.remove(pair);
+                    result.put(pair.getKey(), pair.getValue());
+                    break;
+                }
+            }
+        }
     }
 
     public final List<D> get() {
         return Collections.unmodifiableList(result.values().stream().collect(Collectors.toList()));
     }
-    
+
     public final Map<IdentificationData, D> getResult() {
         return result;
     }
-    
+
     public void add(final D resultData) {
         this.result.put(resultData.getIdentificationData(), resultData);
     }
@@ -104,7 +130,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
         this.metadata.put(key, value);
     }
 
-    public final boolean getIgnoreNullResults() {
+    public final boolean isIgnoreNullResults() {
         return ignoreNullResults;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,11 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.RenderException;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLException;
-import com.jogamp.opengl.util.GLBuffers;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -293,7 +295,7 @@ public final class Batch {
             throw new RenderException(NOT_FLOATBUFFER);
         }
         final int size = bufferSizePerVertex[target] * numVertices;
-        bufferData(gl, target, size, GLBuffers.SIZEOF_FLOAT, buffer);
+        bufferData(gl, target, size, Buffers.SIZEOF_FLOAT, buffer);
     }
 
     /**
@@ -314,7 +316,7 @@ public final class Batch {
         }
         final int sizeLimit = bufferSizePerVertex[target] * numVertices;
 
-        bufferSubData(gl, target, offset, sizeLimit, GLBuffers.SIZEOF_FLOAT, buffer);
+        bufferSubData(gl, target, offset, sizeLimit, Buffers.SIZEOF_FLOAT, buffer);
     }
 
     /**
@@ -333,7 +335,7 @@ public final class Batch {
             throw new RenderException("Specified target is not an IntBuffer");
         }
         final int size = bufferSizePerVertex[target] * numVertices;
-        bufferData(gl, target, size, GLBuffers.SIZEOF_INT, buffer);
+        bufferData(gl, target, size, Buffers.SIZEOF_INT, buffer);
     }
 
     /**
@@ -354,7 +356,7 @@ public final class Batch {
         }
         final int sizeLimit = bufferSizePerVertex[target] * numVertices;
 
-        bufferSubData(gl, target, offset, sizeLimit, GLBuffers.SIZEOF_INT, buffer);
+        bufferSubData(gl, target, offset, sizeLimit, Buffers.SIZEOF_INT, buffer);
     }
 
     private void bufferData(final GL3 gl, final int target, final int size, final int itemSize, final Buffer buffer) {
@@ -366,8 +368,8 @@ public final class Batch {
             throw new RenderException("Incorrect amount of data for the specified target "
                     + "[size=" + size + ", limit=" + buffer.limit() + ", position=" + buffer.position() + "]");
         }
-        gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferName);
-        gl.glBufferData(GL3.GL_ARRAY_BUFFER, size * itemSize, buffer, GL3.GL_DYNAMIC_DRAW);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferName);
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, (long) size * itemSize, buffer, GL.GL_DYNAMIC_DRAW);
     }
 
     private void bufferSubData(final GL3 gl, final int target, final int offset, final int sizeLimit, final int itemSize, final Buffer buffer) {
@@ -379,8 +381,8 @@ public final class Batch {
             throw new RenderException("Data size exceeds size of the specified target");
         }
         final int bufferName = getOrCreateBufferName(gl, target);
-        gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferName);
-        gl.glBufferSubData(GL3.GL_ARRAY_BUFFER, offset * itemSize, size * itemSize, buffer);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferName);
+        gl.glBufferSubData(GL.GL_ARRAY_BUFFER, (long) offset * itemSize, (long) size * itemSize, buffer);
     }
 
     /**
@@ -399,7 +401,7 @@ public final class Batch {
         for (int target = 0; target < numBuffers; target++) {
             if (buffers[target] != null) {
                 final int size = bufferSizePerVertex[target] * numVertices;
-                bufferData(gl, target, size, bufferIsFloat[target] ? GLBuffers.SIZEOF_FLOAT : GLBuffers.SIZEOF_INT, buffers[target].flip());
+                bufferData(gl, target, size, bufferIsFloat[target] ? Buffers.SIZEOF_FLOAT : Buffers.SIZEOF_INT, buffers[target].flip());
             }
         }
 
@@ -408,11 +410,11 @@ public final class Batch {
         gl.glBindVertexArray(vertexArrayObjectName[0]);
         for (int target = 0; target < numBuffers; target++) {
             // Set up the vertex array object.
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, getBufferName(target));
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, getBufferName(target));
             if (bufferIsFloat[target]) {
-                gl.glVertexAttribPointer(target, bufferSizePerVertex[target], GL3.GL_FLOAT, false, 0, 0);
+                gl.glVertexAttribPointer(target, bufferSizePerVertex[target], GL.GL_FLOAT, false, 0, 0);
             } else {
-                gl.glVertexAttribIPointer(target, bufferSizePerVertex[target], GL3.GL_INT, 0, 0L);
+                gl.glVertexAttribIPointer(target, bufferSizePerVertex[target], GL2ES2.GL_INT, 0, 0L);
             }
         }
 
@@ -454,8 +456,8 @@ public final class Batch {
         if (!bufferIsFloat[target]) {
             throw new RenderException(NOT_FLOATBUFFER);
         }
-        gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferName);
-        final ByteBuffer connectionBbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_READ_WRITE);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferName);
+        final ByteBuffer connectionBbuf = gl.glMapBuffer(GL.GL_ARRAY_BUFFER, GL2ES3.GL_READ_WRITE);
         return connectionBbuf.order(ByteOrder.nativeOrder()).asFloatBuffer();
     }
 
@@ -472,8 +474,8 @@ public final class Batch {
         if (bufferIsFloat[target]) {
             throw new RenderException("Specified target is not an IntBuffer");
         }
-        gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, bufferName);
-        final ByteBuffer connectionBbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_READ_WRITE);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, bufferName);
+        final ByteBuffer connectionBbuf = gl.glMapBuffer(GL.GL_ARRAY_BUFFER, GL2ES3.GL_READ_WRITE);
         return connectionBbuf.order(ByteOrder.nativeOrder()).asIntBuffer();
     }
 
@@ -487,8 +489,8 @@ public final class Batch {
      * @param target The buffer to disconnect.
      */
     public void disconnectBuffer(final GL3 gl, final int target) {
-        gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, getBufferName(target));
-        gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, getBufferName(target));
+        gl.glUnmapBuffer(GL.GL_ARRAY_BUFFER);
     }
 
     /**

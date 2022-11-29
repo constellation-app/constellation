@@ -52,6 +52,7 @@ import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -77,6 +78,8 @@ import org.openide.windows.TopComponent;
  */
 @org.openide.util.lookup.ServiceProvider(service = org.openide.windows.ExternalDropHandler.class)
 public class DefaultExternalDropHandler extends ExternalDropHandler {
+    
+    private static final Logger LOGGER = Logger.getLogger(DefaultExternalDropHandler.class.getName());
 
     @Override
     public boolean canDrop(final DropTargetDragEvent e) {
@@ -101,11 +104,11 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
 
     @Override
     public boolean handleDrop(final DropTargetDropEvent e) {
-        Transferable t = e.getTransferable();
+        final Transferable t = e.getTransferable();
         if (t == null) {
             return false;
         }
-        List<File> fileList = getFileList(t);
+        final List<File> fileList = getFileList(t);
         if ((fileList == null) || fileList.isEmpty()) {
             return false;
         }
@@ -129,7 +132,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
         } else {
             boolean hasSomeSuccess = false;
             List<String> fileErrs = null;
-            for (File file : fileList) {
+            for (final File file : fileList) {
                 String fileErr = openFile(file);
                 if (fileErr == null) {
                     hasSomeSuccess = true;
@@ -141,7 +144,7 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
                 }
             }
             if (fileErrs != null) {         //some file could not be opened
-                String mainMsgKey;
+                final String mainMsgKey;
                 if (hasSomeSuccess) {
                     mainMsgKey = "MSG_could_not_open_some_files";       //NOI18N
                 } else {
@@ -168,23 +171,25 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
         return true;
     }
 
-    List<File> getFileList(final Transferable t) {
+    protected List<File> getFileList(final Transferable t) {
         try {
             if (t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                 //windows & mac
                 @SuppressWarnings("unchecked") //transferData will be a list of files which extends from Object type
-                List<File> transferData = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
+                final List<File> transferData = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
                 return transferData;
             } else if (t.isDataFlavorSupported(getUriListDataFlavor())) {
                 //linux
-                String uriList = (String) t.getTransferData(getUriListDataFlavor());
+                final String uriList = (String) t.getTransferData(getUriListDataFlavor());
                 return textURIListToFileList(uriList);
+            } else {
+                // Do nothing
             }
-        } catch (UnsupportedFlavorException ex) {
+        } catch (final UnsupportedFlavorException ex) {
             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, ex);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             // Ignore. Can be just "Owner timed out" from sun.awt.X11.XSelection.getData.
-            Logger.getLogger(DefaultExternalDropHandler.class.getName()).log(Level.FINE, null, ex);
+            LOGGER.log(Level.FINE, null, ex);
         }
         return null;
     }
@@ -196,20 +201,21 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
      * @return {@code null} if the file was successfully opened; or a localized
      * error message in case of failure
      */
-    String openFile(final File file) {
-        FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(file));
+    protected String openFile(final File file) {
+        final FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(file));
         if (fo == null) {
             return NbBundle.getMessage(OpenFile.class, "MSG_FilePathTypeNotSupported", file.toString()); //NOI18N
         }
         return OpenFile.open(fo, -1);
     }
+    
     private static DataFlavor uriListDataFlavor;
 
-    DataFlavor getUriListDataFlavor() {
+    protected static DataFlavor getUriListDataFlavor() {
         if (uriListDataFlavor == null) {
             try {
                 uriListDataFlavor = new DataFlavor("text/uri-list;class=java.lang.String");
-            } catch (ClassNotFoundException cnfE) {
+            } catch (final ClassNotFoundException cnfE) {
                 //cannot happen
                 throw new AssertionError(cnfE);
             }
@@ -217,20 +223,19 @@ public class DefaultExternalDropHandler extends ExternalDropHandler {
         return uriListDataFlavor;
     }
 
-    List<File> textURIListToFileList(final String data) {
-        List<File> list = new ArrayList<>(1);
-        for (StringTokenizer st = new StringTokenizer(data, "\r\n");
-                st.hasMoreTokens();) {
-            String s = st.nextToken();
+    protected List<File> textURIListToFileList(final String data) {
+        final List<File> list = new ArrayList<>(1);
+        for (final StringTokenizer st = new StringTokenizer(data, "\r\n"); st.hasMoreTokens();) {
+            final String s = st.nextToken();
             if (s.startsWith("#")) {
                 // the line is a comment (as per the RFC 2483)
                 continue;
             }
             try {
-                URI uri = new URI(s);
-                File file = new File(uri);
+                final URI uri = new URI(s);
+                final File file = new File(uri);
                 list.add(file);
-            } catch (java.net.URISyntaxException | IllegalArgumentException e) {
+            } catch (final URISyntaxException | IllegalArgumentException e) {
                 // malformed URI
             }
             // the URI is not a valid 'file:' URI

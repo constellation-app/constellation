@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,12 +53,21 @@ public class UnknownTypeRule extends QualityControlRule {
         return RISK;
     }
 
+    /**
+     * ExecuteRule will return true when the vertex type exists and the type is
+     * 'Unknown'. False will be returned when the type is null or when the type
+     * is not 'Unknown'
+     *
+     * @param graph the readable graph
+     * @param vertexId the vertex to check against the rule
+     * @return boolean true if it matches the rule, false otherwise.
+     */
     @Override
     protected boolean executeRule(final GraphReadMethods graph, final int vertexId) {
         final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
         if (typeAttribute != Graph.NOT_FOUND) {
             final SchemaVertexType type = graph.getObjectValue(typeAttribute, vertexId);
-            return type == null || SchemaVertexTypeUtilities.getDefaultType().equals(type);
+            return type != null && SchemaVertexTypeUtilities.getDefaultType().equals(type);
         }
         return false;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class AnalyticDominanceCalculator extends VertexDominanceCalculator<Schem
 
     @Override
     public List<SchemaVertexType> getTypePriority() {
-        List<SchemaVertexType> priority = new ArrayList<>();
+        final List<SchemaVertexType> priority = new ArrayList<>();
         priority.add(AnalyticConcept.VertexType.TELEPHONE_IDENTIFIER);
         priority.add(AnalyticConcept.VertexType.EMAIL_ADDRESS);
         priority.add(AnalyticConcept.VertexType.USER_NAME);

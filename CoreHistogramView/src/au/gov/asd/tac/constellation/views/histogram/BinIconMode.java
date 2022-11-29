@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public enum BinIconMode {
     /**
      * No icon is added to the bin when it is rendered.
      */
-    NONE(0.0f) {
+    NONE(0.0F) {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
         }
@@ -44,7 +44,7 @@ public enum BinIconMode {
      * An standard icon is added to the bin when it is rendered. This typically
      * comes from an attribute on the element.
      */
-    ICON(1.5f) {
+    ICON(1.5F) {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
             if (bin instanceof ObjectBin) {
@@ -52,11 +52,11 @@ public enum BinIconMode {
 
                 if (key != null) {
                     String iconLabel = ((ConstellationIcon) key).getName();
-                    BufferedImage icon = ICON_CACHE.get(iconLabel);
+                    BufferedImage icon = iconCache.get(iconLabel);
                     if (icon == null) {
                         try {
                             icon = IconManager.getIcon(iconLabel).buildBufferedImage();
-                            ICON_CACHE.put(iconLabel, icon);
+                            iconCache.put(iconLabel, icon);
                         } catch (Exception e) {
                         }
                     }
@@ -72,7 +72,7 @@ public enum BinIconMode {
      * with that color. The color typically comes from a color attribute on the
      * element.
      */
-    COLOR(1.5f) {
+    COLOR(1.5F) {
         @Override
         public void draw(Graphics2D graphics, Bin bin, int left, int top, int height) {
             if (bin instanceof ObjectBin) {
@@ -98,6 +98,6 @@ public enum BinIconMode {
 
     public abstract void draw(Graphics2D graphics, Bin bin, int left, int top, int height);
 
-    private static Map<String, BufferedImage> ICON_CACHE = new HashMap<>();
+    private static Map<String, BufferedImage> iconCache = new HashMap<>();
 
 }

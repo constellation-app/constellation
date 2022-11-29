@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,6 +121,8 @@ public class GraphRecordStore extends TabularRecordStore {
         } else if (values.length <= record >>> BATCH_BITS) {
             values = Arrays.copyOf(values, capacity >>> BATCH_BITS);
             createColumn(key, values);
+        } else {
+            // Do nothing
         }
 
         Object[] batch = values[record >>> BATCH_BITS];
@@ -191,9 +193,6 @@ public class GraphRecordStore extends TabularRecordStore {
         }
         final GraphRecordStore other = (GraphRecordStore) obj;
 
-//        if (!Objects.equals(this.typedRecords, other.typedRecords)) {
-//            return false;
-//        }
         if (this.typedRecords.size() != other.typedRecords.size()) {
             return false;
         }
@@ -214,6 +213,8 @@ public class GraphRecordStore extends TabularRecordStore {
                         return false;
                     } else if (!TabularRecordStore.getValue(e.getValue(), record).equals(TabularRecordStore.getValue(other.typedRecords.get(e.getKey()), record))) {
                         return false;
+                    } else {
+                        // Do nothing
                     }
                 }
             }

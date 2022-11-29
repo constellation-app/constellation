@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,8 +51,9 @@ public class Scatter3dArranger implements Arranger {
     }
 
     @Override
-    // Not relevant for Scatter3D
+
     public void setMaintainMean(final boolean b) {
+        // Method intentionally left blank Not relevant for Scatter3D
     }
 
     @Override
@@ -74,10 +75,10 @@ public class Scatter3dArranger implements Arranger {
             xDimension = params.getXDimension();
             yDimension = params.getYDimension();
             zDimension = params.getZDimension();
-            xLogarithmic = params.getLogarithmicX();
-            yLogarithmic = params.getLogarithmicY();
-            zLogarithmic = params.getLogarithmicZ();
-            doNotScale = params.getDoNotScale();
+            xLogarithmic = params.isLogarithmicX();
+            yLogarithmic = params.isLogarithmicY();
+            zLogarithmic = params.isLogarithmicZ();
+            doNotScale = params.isDoNotScale();
         } else {
             return;
         }
@@ -181,14 +182,14 @@ public class Scatter3dArranger implements Arranger {
             if (value != 0.0) {
                 return (float) Math.log10(Math.abs(value)) * Math.signum(value);
             }
-            return 0.0f;
+            return 0.0F;
         }
         return value;
     }
 
-    private float getFloatValueFromObject(Object attributeValue, boolean logarithmic) {
+    private float getFloatValueFromObject(final Object attributeValue, final boolean logarithmic) {
         if (attributeValue == null) {
-            return 0.0f;
+            return 0.0F;
         }
 
         if (attributeValue instanceof Float) {
@@ -201,7 +202,7 @@ public class Scatter3dArranger implements Arranger {
 
         if (attributeValue instanceof String) {
             String val = (String) attributeValue;
-            float finalVal = 0.0f;
+            float finalVal = 0.0F;
             float multiplier = 1;
             for (int i = 0; i < val.length(); i++) {
                 char ch = val.charAt(i);
@@ -240,6 +241,6 @@ public class Scatter3dArranger implements Arranger {
             return getFloatValueFromObject(s, logarithmic);
         }
 
-        return 0.0f;
+        return 0.0F;
     }
 }

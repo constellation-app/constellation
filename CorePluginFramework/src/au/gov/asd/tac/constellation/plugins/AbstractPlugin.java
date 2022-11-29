@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,16 +17,17 @@ package au.gov.asd.tac.constellation.plugins;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.MissingResourceException;
-import org.netbeans.api.javahelp.Help;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -39,13 +40,15 @@ import org.openide.util.NbBundle;
  */
 public abstract class AbstractPlugin implements Plugin {
 
+    private static final Logger LOGGER = Logger.getLogger(AbstractPlugin.class.getName());
+
     private final String pluginName;
 
-    public AbstractPlugin() {
+    protected AbstractPlugin() {
         this.pluginName = null;
     }
 
-    public AbstractPlugin(String pluginName) {
+    protected AbstractPlugin(String pluginName) {
         this.pluginName = pluginName;
     }
 
@@ -82,7 +85,7 @@ public abstract class AbstractPlugin implements Plugin {
             // This attempts to make it obvious (and also helps when the @Message() annotation has been forgotten).
             final String msg = String.format("Have you added @Messages() or overridden getName() for class '%s'?", this.getClass().getName());
             final Exception iae = new IllegalArgumentException(msg, ex);
-            Exceptions.printStackTrace(iae);
+            LOGGER.log(Level.SEVERE, iae.getLocalizedMessage(), iae);
 
             // Throw the original exception as if we hadn't intercepted it.
             throw ex;
@@ -91,7 +94,7 @@ public abstract class AbstractPlugin implements Plugin {
 
     @Override
     public String getDescription() {
-        final String helpFileResource = getClass().getSimpleName() + ".html";
+        final String helpFileResource = getClass().getSimpleName() + FileExtensionConstants.HTML;
         final URL helpURL = getClass().getResource(helpFileResource);
         if (helpURL != null) {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(helpURL.openStream(), StandardCharsets.UTF_8.name()))) {
@@ -110,7 +113,7 @@ public abstract class AbstractPlugin implements Plugin {
         return null;
     }
 
-    private static final String[] DEFAULT_TAGS = new String[]{"GENERAL"};
+    private static final String[] DEFAULT_TAGS = new String[]{PluginTags.GENERAL};
 
     @Override
     public String[] getTags() {
@@ -139,15 +142,7 @@ public abstract class AbstractPlugin implements Plugin {
      */
     @Override
     public HelpCtx getHelpCtx() {
-        final Help help = Lookup.getDefault().lookup(Help.class);
-        if (help != null) {
-            final String helpId = getClass().getName();
-            if (help.isValidID(helpId, true)) {
-                return new HelpCtx(helpId);
-            }
-        }
-
-        return null;
+        return new HelpCtx(getClass().getName());
     }
 
     @Override

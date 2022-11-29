@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.testing.construction;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
 import au.gov.asd.tac.constellation.graph.attribute.IntegerAttributeDescription;
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
@@ -25,15 +26,19 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
@@ -46,6 +51,8 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -54,7 +61,7 @@ import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
-import org.openide.util.Exceptions;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
@@ -68,7 +75,10 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = Plugin.class)
 })
 @NbBundle.Messages("ImageGraphBuilderPlugin=Image Graph Builder")
+@PluginInfo(pluginType = PluginType.NONE, tags = {PluginTags.EXPERIMENTAL, PluginTags.CREATE})
 public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
+
+    private static final Logger LOGGER = Logger.getLogger(ImageGraphBuilderPlugin.class.getName());
 
     public static final String IMAGE_FILE_PARAMETER_ID = PluginParameter.buildId(ImageGraphBuilderPlugin.class, "image_file");
 
@@ -79,7 +89,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final PluginParameter<FileParameterValue> imageFileParameter = FileParameterType.build(IMAGE_FILE_PARAMETER_ID);
         imageFileParameter.setName("Image File");
         imageFileParameter.setDescription("The image file from which to build a graph");
-        FileParameterType.setFileFilters(imageFileParameter, new ExtensionFilter("Images", "png", "jpg", "gif"));
+        FileParameterType.setFileFilters(imageFileParameter, new ExtensionFilter("Image Files", "*.png", "*.jpg", "*.gif"));
         parameters.addParameter(imageFileParameter);
 
         return parameters;
@@ -94,11 +104,11 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
         for (final File imageFile : imageFiles) {
             final ArrayList<BufferedImage> images = new ArrayList<>();
-            if (imageFile.getName().endsWith(".gif")) {
+            if (StringUtils.endsWithIgnoreCase(imageFile.getName(), FileExtensionConstants.GIF)) {
                 final ThreeTuple<List<BufferedImage>, List<Integer>, List<Integer>> loadedImageData;
                 try {
                     loadedImageData = loadImagesFromStream(imageFile);
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     throw new PluginException(PluginNotificationLevel.ERROR, ex);
                 }
 
@@ -111,10 +121,6 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     final BufferedImage currentImage = loadedImageData.getFirst().get(i);
                     final BufferedImage image = new BufferedImage(firstImage.getWidth(), firstImage.getHeight(), firstImage.getType());
                     final Graphics2D g2d = image.createGraphics();
-//                    g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-//                    g2d.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_ENABLE);
-//                    g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
-//                    g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
                     g2d.drawImage(images.get(i - 1), identity, null);
                     g2d.drawImage(currentImage, new AffineTransform(1, 0, 0, 1, loadedImageData.getSecond().get(i), loadedImageData.getThird().get(i)), null);
                     g2d.dispose();
@@ -125,8 +131,8 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 try {
                     loadedImageData = loadImage(imageFile);
                     images.add(loadedImageData);
-                } catch (IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
 
@@ -150,7 +156,29 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
             final int vertexY2AttributeId = VisualConcept.VertexAttribute.Y2.get(graph);
             final int vertexZ2AttributeId = VisualConcept.VertexAttribute.Z2.get(graph);
 
+            final int pixelXAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "pixelX", "pixelX", "", null);
+            final int pixelYAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "pixelY", "pixelY", "", null);
+            final int redAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "red", "red", "", null);
+            final int greenAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "green", "green", "", null);
+            final int blueAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "blue", "blue", "", null);
+            final int alphaAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "alpha", "alpha", "", null);
+            final int diffSouthAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "diffSouth", "diffSouth", "", null);
+            final int diffNorthAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "diffNorth", "diffNorth", "", null);
+            final int diffEastAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "diffEast", "diffEast", "", null);
+            final int diffWestAttributeId = graph.addAttribute(GraphElementType.VERTEX, FloatAttributeDescription.ATTRIBUTE_NAME, "diffWest", "diffWest", "", null);
             final int transactionWeightAttributeId = AnalyticConcept.TransactionAttribute.WEIGHT.get(graph);
+
+            final boolean useVertexAttributes = pixelXAttributeId != Graph.NOT_FOUND
+                    && pixelYAttributeId != Graph.NOT_FOUND
+                    && greenAttributeId != Graph.NOT_FOUND
+                    && redAttributeId != Graph.NOT_FOUND
+                    && blueAttributeId != Graph.NOT_FOUND
+                    && alphaAttributeId != Graph.NOT_FOUND
+                    && diffSouthAttributeId != Graph.NOT_FOUND
+                    && diffNorthAttributeId != Graph.NOT_FOUND
+                    && diffEastAttributeId != Graph.NOT_FOUND
+                    && diffWestAttributeId != Graph.NOT_FOUND;
+            final boolean useTransAttributes = transactionWeightAttributeId != Graph.NOT_FOUND;
 
             int frame = 0;
             for (BufferedImage image : images) {
@@ -159,7 +187,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
 
                 int[][] vertexIds = new int[w][h];
 
-                final float zlen = multipleFrames ? 0 : Math.min(w, h) / 4f;
+                final float zlen = multipleFrames ? 0 : Math.min(w, h) / 4F;
                 final float vis = frame / (float) (images.size() - 1);
 
                 for (int x = 0; x < w; x++) {
@@ -171,31 +199,55 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                         final int b = rgb & 0xff;
 
                         // Generate Z using grayscale.
-                        final float gray = 0;//0.21f * r + 0.71f * g + 0.08f * b;
+                        final float gray = 0;
 
                         final int vxId = vertexIds[x][y] = graph.addVertex();
                         graph.setStringValue(vertexIdentifierAttributeId, vxId, String.format("%d,%d", x, y));
 
                         final int yinv = h - y;
-                        ConstructionUtilities.setxyz(graph, vxId, vertexXAttributeId, vertexYAttributeId, vertexZAttributeId, x * 2, yinv * 2, -gray * zlen / 255f);
+                        ConstructionUtilities.setxyz(graph, vxId, vertexXAttributeId, vertexYAttributeId, vertexZAttributeId, x * 2, yinv * 2, -gray * zlen / 255F);
                         ConstructionUtilities.setxyz(graph, vxId, vertexX2AttributeId, vertexY2AttributeId, vertexZ2AttributeId, x * 2, yinv * 2, 0);
                         graph.setStringValue(vertexBackgroundIconAttributeId, vxId, "Background.Flat Square");
-                        ConstellationColor color = ConstellationColor.getColorValue(r / 255f, g / 255f, b / 255f, a / 255f);
+                        ConstellationColor color = ConstellationColor.getColorValue(r / 255F, g / 255F, b / 255F, a / 255F);
                         graph.setObjectValue(vertexColorAttributeId, vxId, color);
+
                         if (multipleFrames) {
                             graph.setFloatValue(vertexVisibilityAttributeId, vxId, vis);
                         }
 
-                        if (x > 0) {
-                            final int transactionId = graph.addTransaction(vxId, vertexIds[x - 1][y], false);
-                            ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x - 1][y]);
-                            graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
+                        if (useVertexAttributes) {
+                            graph.setFloatValue(pixelXAttributeId, vxId, x);
+                            graph.setFloatValue(pixelYAttributeId, vxId, y);
+                            graph.setFloatValue(redAttributeId, vxId, r);
+                            graph.setFloatValue(greenAttributeId, vxId, g);
+                            graph.setFloatValue(blueAttributeId, vxId, b);
+                            graph.setFloatValue(alphaAttributeId, vxId, a);
+
+                            if (x > 0 && x < w - 1 && y > 0 && y < h - 1) {
+                                final int southRGB = image.getRGB(x, y + 1);
+                                final int northRGB = image.getRGB(x, y - 1);
+                                final int eastRGB = image.getRGB(x + 1, y);
+                                final int westRGB = image.getRGB(x - 1, y);
+
+                                graph.setFloatValue(diffSouthAttributeId, vxId, calculateDifference(r, g, b, southRGB));
+                                graph.setFloatValue(diffNorthAttributeId, vxId, calculateDifference(r, g, b, northRGB));
+                                graph.setFloatValue(diffEastAttributeId, vxId, calculateDifference(r, g, b, eastRGB));
+                                graph.setFloatValue(diffWestAttributeId, vxId, calculateDifference(r, g, b, westRGB));
+                            }
                         }
 
-                        if (y > 0) {
-                            final int transactionId = graph.addTransaction(vxId, vertexIds[x][y - 1], false);
-                            ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x][y - 1]);
-                            graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
+                        if (useTransAttributes) {
+                            if (x > 0) {
+                                final int transactionId = graph.addTransaction(vxId, vertexIds[x - 1][y], false);
+                                ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x - 1][y]);
+                                graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
+                            }
+
+                            if (y > 0) {
+                                final int transactionId = graph.addTransaction(vxId, vertexIds[x][y - 1], false);
+                                ConstellationColor otherColor = (ConstellationColor) graph.getObjectValue(vertexColorAttributeId, vertexIds[x][y - 1]);
+                                graph.setFloatValue(transactionWeightAttributeId, transactionId, calculateWeight(color, otherColor));
+                            }
                         }
                     }
                 }
@@ -209,12 +261,20 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
     }
 
     private static float calculateWeight(final ConstellationColor a, final ConstellationColor b) {
-        float aGray = a.getRed() * 0.21f + a.getGreen() * 0.71f + a.getBlue() * 0.08f;
-        float bGray = b.getRed() * 0.21f + b.getGreen() * 0.71f + b.getBlue() * 0.08f;
+        float aGray = a.getRed() * 0.21F + a.getGreen() * 0.71F + a.getBlue() * 0.08F;
+        float bGray = b.getRed() * 0.21F + b.getGreen() * 0.71F + b.getBlue() * 0.08F;
         float weight = Math.abs(aGray - bGray);
         weight = (float) Math.exp(-weight);
 
         return weight;
+    }
+
+    private static float calculateDifference(final float r1, final float g1, final float b1, final int color2) {
+        final int r2 = (color2 >> 16) & 0xff;
+        final int g2 = (color2 >> 8) & 0xff;
+        final int b2 = color2 & 0xff;
+
+        return Math.abs((r1 + g1 + b1) - (r2 + g2 + b2));
     }
 
     /**
@@ -228,7 +288,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
      */
     private static BufferedImage loadImage(final File file) throws IOException {
         final ByteArrayOutputStream out;
-        try (InputStream in = new FileInputStream(file)) {
+        try ( InputStream in = new FileInputStream(file)) {
             out = new ByteArrayOutputStream();
             final byte[] buf = new byte[1024];
             while (true) {
@@ -260,7 +320,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
         final ArrayList<Integer> loffsets = new ArrayList<>();
         final ArrayList<Integer> toffsets = new ArrayList<>();
 
-        try (ImageInputStream imageStream = new FileImageInputStream(file)) {
+        try ( ImageInputStream imageStream = new FileImageInputStream(file)) {
             final Iterator<ImageReader> readers = ImageIO.getImageReaders(imageStream);
             ImageReader reader = null;
             while (readers.hasNext()) {
@@ -278,7 +338,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                 throw new IOException("Can't read image format!");
             }
 
-            final boolean isGif = reader.getFormatName().equalsIgnoreCase("gif");
+            final boolean isGif = "gif".equalsIgnoreCase(reader.getFormatName());
             reader.setInput(imageStream, false, !isGif);
 
             boolean unknownMetaformat = false;
@@ -299,7 +359,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     IIOMetadataNode imgRootNode = null;
                     try {
                         imgRootNode = (IIOMetadataNode) meta.getAsTree("javax_imageio_gif_image_1.0");
-                    } catch (IllegalArgumentException ex) {
+                    } catch (final IllegalArgumentException ex) {
                         unknownMetaformat = true;
                         continue;
                     }
@@ -309,7 +369,7 @@ public class ImageGraphBuilderPlugin extends SimpleEditPlugin {
                     final IIOMetadataNode imgDescr = (IIOMetadataNode) imgRootNode.getElementsByTagName("ImageDescriptor").item(0);
                     loffsets.add(Integer.parseInt(imgDescr.getAttribute("imageLeftPosition")));
                     toffsets.add(Integer.parseInt(imgDescr.getAttribute("imageTopPosition")));
-                } catch (IndexOutOfBoundsException ex) {
+                } catch (final IndexOutOfBoundsException ex) {
                     break;
                 }
             }

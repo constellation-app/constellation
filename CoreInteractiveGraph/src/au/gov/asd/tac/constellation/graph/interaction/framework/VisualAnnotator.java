@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.graph.interaction.framework;
 
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
+import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformModel;
 import au.gov.asd.tac.constellation.utilities.visual.VisualOperation;
 import au.gov.asd.tac.constellation.utilities.visual.VisualProcessor;
 import java.util.Queue;
@@ -46,6 +47,21 @@ public interface VisualAnnotator {
      * reflect the updated selection box model.
      */
     public VisualOperation setSelectionBoxModel(final SelectionBoxModel model);
+
+    /**
+     * Sets the {@link SelectionFreeformModel} that should be displayed and
+     * returns a {@link VisualOperation} that can be scheduled to push the
+     * changes to the {@link VisualProcessor} with which this annotator is
+     * associated.
+     * <p>
+     * The selection freeform model is typically used to indicate a currently in
+     * progress freeform selection.
+     *
+     * @param model The {@link SelectionFreeformModel} that should be displayed.
+     * @return A {@link VisualOperation} that can be scheduled to visually
+     * reflect the updated selection freeform model.
+     */
+    public VisualOperation setSelectionFreeformModel(final SelectionFreeformModel model);
 
     /**
      * Sets the {@link NewLineModel} that should be displayed and returns a

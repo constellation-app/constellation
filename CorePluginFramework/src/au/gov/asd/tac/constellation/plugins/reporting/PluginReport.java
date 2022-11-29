@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.plugins.reporting;
 
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * A PluginReport is created each time a plugin is executed. It stores
@@ -57,7 +57,6 @@ public class PluginReport {
     private final List<PluginReport> uChildReports = Collections.unmodifiableList(childReports);
 
     private final String[] tags;
-    private static final String LOW_LEVEL_TAG = "LOW LEVEL";
 
     private final int position;
 
@@ -260,7 +259,7 @@ public class PluginReport {
      */
     public boolean hasLowLevelTag() {
         for (final String tag : tags) {
-            if (LOW_LEVEL_TAG.equals(tag)) {
+            if (PluginTags.LOW_LEVEL.equals(tag)) {
                 return true;
             }
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,21 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol.daemon;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.Lookup;
 
 /**
@@ -51,8 +42,10 @@ import org.openide.util.Lookup;
  * @author algol
  */
 public final class QualityControlAutoVetter implements GraphManagerListener, GraphChangeListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(QualityControlAutoVetter.class.getName());
 
-    private static QualityControlAutoVetter INSTANCE = null;
+    private static QualityControlAutoVetter instance = null;
     private static final List<QualityControlAutoVetterListener> buttonListeners = new ArrayList<>();
 
     private QualityControlState state;
@@ -60,11 +53,12 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     private Graph currentGraph;
     private long lastGlobalModificationCounter;
     private long lastCameraModificationCounter;
+    private long lastAttributeModificationCounter;
 
     private final List<QualityControlListener> listeners;
 
-    private static List<QualityControlRule> RULES = null;
-    private static List<QualityControlRule> U_RULES = null;
+    private static List<QualityControlRule> rules = null;
+    private static List<QualityControlRule> uRules = null;
 
     /**
      * Constructor for QualityControlAutoVetter.
@@ -100,6 +94,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
     @Override
     public void graphOpened(final Graph graph) {
+        // Method intentionally left blank
     }
 
     @Override
@@ -157,18 +152,32 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
                 final long thisGlobalModificationCounter = readableGraph.getGlobalModificationCounter();
                 final long thisCameraModificationCounter = readableGraph.getValueModificationCounter(cameraAttribute);
+                final long thisAttributeModificationCounter = readableGraph.getAttributeModificationCounter();
 
                 if (thisGlobalModificationCounter != lastGlobalModificationCounter) {
-                    if (lastCameraModificationCounter == thisCameraModificationCounter) {
+                    if (lastGlobalModificationCounter == -1 || lastCameraModificationCounter == thisCameraModificationCounter || lastAttributeModificationCounter != thisAttributeModificationCounter) {
                         updateQualityControlState(graph);
                     }
                     lastGlobalModificationCounter = thisGlobalModificationCounter;
                     lastCameraModificationCounter = thisCameraModificationCounter;
+                    lastAttributeModificationCounter = thisAttributeModificationCounter;
                 }
             } finally {
                 readableGraph.release();
             }
         }
+    }
+
+    protected Graph getCurrentGraph() {
+        return currentGraph;
+    }
+
+    protected long getlastGlobalModCount() {
+        return lastGlobalModificationCounter;
+    }
+
+    protected long getlastCameraModCount() {
+        return lastCameraModificationCounter;
     }
 
     /**
@@ -200,31 +209,31 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
         buttonListeners.stream().forEach(listener -> listener.qualityControlRuleChanged(false));
 
         final Future<?> stateFuture = PluginExecution.withPlugin(
-                new QualityControlViewStateUpdater()
+                new QualityControlStateUpdater()
         ).executeLater(graph);
 
         try {
             if (stateFuture != null) {
                 stateFuture.get();
             }
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Quality Control State updater was interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (ExecutionException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         // notify listeners that rules have finished
         buttonListeners.stream().forEach(listener -> listener.qualityControlRuleChanged(true));
     }
 
-    private static List<QualityControlRule> getRules() {
-        if (RULES == null) {
-            RULES = new ArrayList<>(Lookup.getDefault().lookupAll(QualityControlRule.class));
-            U_RULES = Collections.unmodifiableList(RULES);
+    protected static List<QualityControlRule> getRules() {
+        if (rules == null) {
+            rules = new ArrayList<>(Lookup.getDefault().lookupAll(QualityControlRule.class));
+            uRules = Collections.unmodifiableList(rules);
         }
 
-        return U_RULES;
+        return uRules;
     }
 
     /**
@@ -290,79 +299,14 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      * @return singleton instance of QualityControlAutoVetter
      */
     public static synchronized QualityControlAutoVetter getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new QualityControlAutoVetter();
+        if (instance == null) {
+            instance = new QualityControlAutoVetter();
         }
-        return INSTANCE;
+        return instance;
     }
 
-    @PluginInfo(pluginType = PluginType.UPDATE, tags = {"LOW LEVEL"})
-    private static class QualityControlViewStateUpdater extends SimpleReadPlugin {
-
-        @Override
-        public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final List<QualityControlRule> registeredRules = new ArrayList<>();
-            final List<Integer> vertexList = new ArrayList<>();
-            final List<String> identifierList = new ArrayList<>();
-            final List<SchemaVertexType> typeList = new ArrayList<>();
-
-            if (graph != null) {
-                final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                final int identifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
-                final int typeAttribute = AnalyticConcept.VertexAttribute.TYPE.get(graph);
-
-                if (selectedAttribute != Graph.NOT_FOUND
-                        && identifierAttribute != Graph.NOT_FOUND
-                        && typeAttribute != Graph.NOT_FOUND) {
-                    final int vxCount = graph.getVertexCount();
-                    for (int position = 0; position < vxCount; position++) {
-                        final int vertex = graph.getVertex(position);
-                        final String identifier = graph.getStringValue(identifierAttribute, vertex);
-                        final SchemaVertexType type = graph.getObjectValue(typeAttribute, vertex);
-                        final boolean selected = graph.getBooleanValue(selectedAttribute, vertex);
-
-                        if (selected) {
-                            vertexList.add(vertex);
-                            identifierList.add(identifier);
-                            typeList.add(type);
-                        }
-                    }
-                }
-
-                // Set up and run each rule.
-                if (!vertexList.isEmpty()) {
-                    for (final QualityControlRule rule : QualityControlAutoVetter.getRules()) {
-                        rule.clearResults();
-                        rule.executeRule(graph, vertexList);
-                        registeredRules.add(rule);
-                    }
-                }
-
-                final List<QualityControlRule> uRegisteredRules = Collections.unmodifiableList(registeredRules);
-
-                // Build quality control events based on results of rules.
-                // Sort by descending risk.
-                final List<QualityControlEvent> qualityControlEvents = new ArrayList<>();
-                for (int i = 0; i < vertexList.size(); i++) {
-                    final QualityControlEvent qualityControlEvent = new QualityControlEvent(
-                            vertexList.get(i),
-                            identifierList.get(i), typeList.get(i),
-                            uRegisteredRules
-                    );
-                    qualityControlEvents.add(qualityControlEvent);
-                }
-                Collections.sort(qualityControlEvents, Collections.reverseOrder());
-
-                QualityControlAutoVetter.getInstance().setQualityControlState(
-                        new QualityControlState(graph.getId(), qualityControlEvents, registeredRules)
-                );
-            }
-        }
-
-        @Override
-        public String getName() {
-            return "Quality Control View: Update State";
-        }
+    protected static synchronized void destroyInstance() {
+        GraphManager.getDefault().removeGraphManagerListener(instance);
+        instance = null;
     }
-
 }

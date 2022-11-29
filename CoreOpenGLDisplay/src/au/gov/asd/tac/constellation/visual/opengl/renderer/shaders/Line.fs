@@ -15,6 +15,10 @@ uniform float alpha;
 
 uniform int drawHitTest;
 
+// Anaglyphic drawing.
+//
+uniform int greyscale;
+
 in vec4 pointColor;
 flat in ivec4 fData;
 in vec2 pointCoord;
@@ -55,6 +59,24 @@ void main(void) {
             fragColor = (1.2 - abs(pointCoord.x)) * pointColor;
         } else {
             fragColor = pointColor;
+        }
+
+        if (greyscale==1) {
+            // Anaglyphic drawing.
+            // Choose whichever "convert to greyscale" algorithm works best.
+            //
+
+            // Luminosity
+            //
+            fragColor.rgb = vec3(0.21*fragColor.r + 0.71*fragColor.g + 0.08*fragColor.b);
+
+            // Average
+            //
+            //fragColor.rgb = vec3((fragColor.r + fragColor.g + fragColor.b)/3);
+
+            // Lightness
+            //
+            //fragColor.rgb = vec3((max(fragColor.r, max(fragColor.g, fragColor.b))+min(fragColor.r, min(fragColor.g, fragColor.b)))/2);
         }
     } else {
         // The line index is in pointColor[3].

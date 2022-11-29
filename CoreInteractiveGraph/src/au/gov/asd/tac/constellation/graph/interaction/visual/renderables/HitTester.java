@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLRenderable;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.nio.FloatBuffer;
@@ -64,7 +66,7 @@ public final class HitTester implements GLRenderable {
     // The buffer to read from. This is hardcoded as their seems to be no real reason to change it,
     // but perhaps it should be looked up from the corersponding GraphRenderable. At the moment it simply
     // matches the buffer name used inside the if(doHitTesting) {} block of GraphRenderable's display method.
-    private final int hitTestBufferName = GL3.GL_COLOR_ATTACHMENT0;
+    private static final int HIT_TEST_BUFFER_NAME = GL.GL_COLOR_ATTACHMENT0;
     private final GLVisualProcessor parent;
 
     private HitTestRequest hitTestRequest;
@@ -93,25 +95,25 @@ public final class HitTester implements GLRenderable {
         // Hit testing.
         // Create an FBO name and bind a new FBO.
         gl.glGenFramebuffers(1, hitTestFboName, 0);
-        gl.glBindFramebuffer(GL3.GL_DRAW_FRAMEBUFFER, hitTestFboName[0]);
+        gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, hitTestFboName[0]);
 
         // Create a depth buffer object and attach it.
         gl.glGenRenderbuffers(1, hitTestDepthBufferName, 0);
-        gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
-        gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_DEPTH_COMPONENT32F, width, height);
+        gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
+        gl.glRenderbufferStorage(GL.GL_RENDERBUFFER, GL2ES3.GL_DEPTH_COMPONENT32F, width, height);
 
         // Create an RBO and bind it.
         gl.glGenRenderbuffers(1, hitTestRboName, 0);
-        gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestRboName[0]);
+        gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, hitTestRboName[0]);
 
         // Allocate memory to back the RBO.
         // Using R32F gives us plenty of unique values (2**22 in the mantissa without
         // worrying about floating point stuff).
-        gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_R32F, width, height);
+        gl.glRenderbufferStorage(GL.GL_RENDERBUFFER, GL.GL_R32F, width, height);
 
         // Attach the render buffers.
-        gl.glFramebufferRenderbuffer(GL3.GL_DRAW_FRAMEBUFFER, GL3.GL_DEPTH_ATTACHMENT, GL3.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
-        gl.glFramebufferRenderbuffer(GL3.GL_DRAW_FRAMEBUFFER, GL3.GL_COLOR_ATTACHMENT0, GL3.GL_RENDERBUFFER, hitTestRboName[0]);
+        gl.glFramebufferRenderbuffer(GL.GL_DRAW_FRAMEBUFFER, GL.GL_DEPTH_ATTACHMENT, GL.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
+        gl.glFramebufferRenderbuffer(GL.GL_DRAW_FRAMEBUFFER, GL.GL_COLOR_ATTACHMENT0, GL.GL_RENDERBUFFER, hitTestRboName[0]);
 
         GLTools.checkFramebufferStatus(gl, "ht-check");
         parent.setHitTestFboName(hitTestFboName[0]);
@@ -149,13 +151,13 @@ public final class HitTester implements GLRenderable {
     public void display(final GLAutoDrawable drawable, final Matrix44f modelViewProjectionMatrix) {
         final GL3 gl = drawable.getGL().getGL3();
         if (needsResize) {
-            gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
-            gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_DEPTH_COMPONENT32, width, height);
+            gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, hitTestDepthBufferName[0]);
+            gl.glRenderbufferStorage(GL.GL_RENDERBUFFER, GL.GL_DEPTH_COMPONENT32, width, height);
 
-            gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, hitTestRboName[0]);
-            gl.glRenderbufferStorage(GL3.GL_RENDERBUFFER, GL3.GL_R32F, width, height);
+            gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, hitTestRboName[0]);
+            gl.glRenderbufferStorage(GL.GL_RENDERBUFFER, GL.GL_R32F, width, height);
 
-            gl.glBindRenderbuffer(GL3.GL_RENDERBUFFER, 0);
+            gl.glBindRenderbuffer(GL.GL_RENDERBUFFER, 0);
             needsResize = false;
         }
         if (!notificationQueues.isEmpty()) {
@@ -167,7 +169,7 @@ public final class HitTester implements GLRenderable {
             // If JOGL is ever fixed or another solution is found, either change
             // needsManualDPIScaling to return false (so there is effectively no
             // DPI scaling here) or to remove dpiScaleY below.
-            float dpiScaleY = 1.0f;
+            float dpiScaleY = 1.0F;
             if (GLTools.needsManualDPIScaling()) {
                 dpiScaleY = parent.getDPIScaleY();
             }
@@ -176,9 +178,9 @@ public final class HitTester implements GLRenderable {
             // Allocate 3 floats for RGB values.
             FloatBuffer fbuf = Buffers.newDirectFloatBuffer(3);
 
-            gl.glBindFramebuffer(GL3.GL_READ_FRAMEBUFFER, hitTestFboName[0]);
-            gl.glReadBuffer(hitTestBufferName);
-            gl.glReadPixels(x, surfaceHeight - y, 1, 1, GL3.GL_RGB, GL3.GL_FLOAT, fbuf);
+            gl.glBindFramebuffer(GL.GL_READ_FRAMEBUFFER, hitTestFboName[0]);
+            gl.glReadBuffer(HIT_TEST_BUFFER_NAME);
+            gl.glReadPixels(x, surfaceHeight - y, 1, 1, GL.GL_RGB, GL.GL_FLOAT, fbuf);
 
             // There are enough colors in the buffer that we only need worry about
             // r component for now. That gives us 2**22 distinct values.

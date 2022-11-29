@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -80,8 +80,6 @@ public final class Mathd {
         return (col * 4) + row;
     }
 
-// Ditto above, but for doubles
-//    void m3dMatrixMultiply44(M3DMatrix44d product, final M3DMatrix44d a, final M3DMatrix44d b);
     public static void matrixMultiply(final Matrix44d product, final Matrix44d a, final Matrix44d b) {
         final double[] pa = product.getA();
         final double[] aa = a.getA();
@@ -99,8 +97,6 @@ public final class Mathd {
         }
     }
 
-// Ditto above, but for doubles
-//    void m3dMatrixMultiply33(M3DMatrix33d product, final M3DMatrix33d a, final M3DMatrix33d b);
     public static void matrixMultiply(final Matrix33d product, final Matrix33d a, final Matrix33d b) {
         final double[] pa = product.getA();
         final double[] aa = a.getA();
@@ -116,15 +112,12 @@ public final class Mathd {
         }
     }
 
-// Ditto above, but for doubles
     public static void transformVector(final Vector3d vOut, final Vector3d v, final Matrix44d m) {
-        vOut.a[0] = m.getA()[0] * v.a[0] + m.getA()[4] * v.a[1] + m.getA()[8] * v.a[2] + m.getA()[12];// * v[3];       // Assuming 1
-        vOut.a[1] = m.getA()[1] * v.a[0] + m.getA()[5] * v.a[1] + m.getA()[9] * v.a[2] + m.getA()[13];// * v[3];
-        vOut.a[2] = m.getA()[2] * v.a[0] + m.getA()[6] * v.a[1] + m.getA()[10] * v.a[2] + m.getA()[14];// * v[3];
-        //vOut[3] = m[3] * v[0] + m[7] * v[1] + m[11] * v[2] + m[15] * v[3];
+        vOut.a[0] = m.getA()[0] * v.a[0] + m.getA()[4] * v.a[1] + m.getA()[8] * v.a[2] + m.getA()[12];
+        vOut.a[1] = m.getA()[1] * v.a[0] + m.getA()[5] * v.a[1] + m.getA()[9] * v.a[2] + m.getA()[13];
+        vOut.a[2] = m.getA()[2] * v.a[0] + m.getA()[6] * v.a[1] + m.getA()[10] * v.a[2] + m.getA()[14];
     }
 
-// Ditto above, but for doubles
     public static void transformVector(final Vector4d vOut, final Vector4d v, final Matrix44d m) {
         vOut.getA()[0] = m.getA()[0] * v.getA()[0] + m.getA()[4] * v.getA()[1] + m.getA()[8] * v.getA()[2] + m.getA()[12] * v.getA()[3];
         vOut.getA()[1] = m.getA()[1] * v.getA()[0] + m.getA()[5] * v.getA()[1] + m.getA()[9] * v.getA()[2] + m.getA()[13] * v.getA()[3];
@@ -132,7 +125,6 @@ public final class Mathd {
         vOut.getA()[3] = m.getA()[3] * v.getA()[0] + m.getA()[7] * v.getA()[1] + m.getA()[11] * v.getA()[2] + m.getA()[15] * v.getA()[3];
     }
 
-// Ditto above, but for doubles
     public static void rotateVector(final Vector3d vOut, final Vector3d p, final Matrix33d m) {
         vOut.a[0] = m.getA()[0] * p.a[0] + m.getA()[3] * p.a[1] + m.getA()[6] * p.a[2];
         vOut.a[1] = m.getA()[1] * p.a[0] + m.getA()[4] * p.a[1] + m.getA()[7] * p.a[2];
@@ -167,7 +159,6 @@ public final class Mathd {
         m.getA()[10] = vScale.a[2];
     }
 
-//    void m3dRotationMatrix33(M3DMatrix33d m, double angle, double x, double y, double z);
     public static void makeRotationMatrix(final Matrix33d m, final double angle, double x, double y, double z) {
 
         double mag;
@@ -190,7 +181,7 @@ public final class Mathd {
         mag = Math.sqrt(x * x + y * y + z * z);
 
         // Identity matrix
-        if (mag == 0.0f) {
+        if (mag == 0.0F) {
             m.identity();
             return;
         }
@@ -209,7 +200,7 @@ public final class Mathd {
         xs = x * s;
         ys = y * s;
         zs = z * s;
-        one_c = 1.0f - c;
+        one_c = 1.0F - c;
 
         m.getA()[index33(0, 0)] = (one_c * xx) + c;
         m.getA()[index33(0, 1)] = (one_c * xy) - zs;
@@ -273,27 +264,27 @@ public final class Mathd {
         xs = x * s;
         ys = y * s;
         zs = z * s;
-        one_c = 1.0f - c;
+        one_c = 1.0F - c;
 
         m.getA()[index44(0, 0)] = (one_c * xx) + c;
         m.getA()[index44(0, 1)] = (one_c * xy) - zs;
         m.getA()[index44(0, 2)] = (one_c * zx) + ys;
-        m.getA()[index44(0, 3)] = 0.0f;
+        m.getA()[index44(0, 3)] = 0.0F;
 
         m.getA()[index44(1, 0)] = (one_c * xy) + zs;
         m.getA()[index44(1, 1)] = (one_c * yy) + c;
         m.getA()[index44(1, 2)] = (one_c * yz) - xs;
-        m.getA()[index44(1, 3)] = 0.0f;
+        m.getA()[index44(1, 3)] = 0.0F;
 
         m.getA()[index44(2, 0)] = (one_c * zx) - ys;
         m.getA()[index44(2, 1)] = (one_c * yz) + xs;
         m.getA()[index44(2, 2)] = (one_c * zz) + c;
-        m.getA()[index44(2, 3)] = 0.0f;
+        m.getA()[index44(2, 3)] = 0.0F;
 
-        m.getA()[index44(3, 0)] = 0.0f;
-        m.getA()[index44(3, 1)] = 0.0f;
-        m.getA()[index44(3, 2)] = 0.0f;
-        m.getA()[index44(3, 3)] = 1.0f;
+        m.getA()[index44(3, 0)] = 0.0F;
+        m.getA()[index44(3, 1)] = 0.0F;
+        m.getA()[index44(3, 2)] = 0.0F;
+        m.getA()[index44(3, 3)] = 1.0F;
     }
 
     public static void makeTranslationMatrix(Matrix44d m, final double x, final double y, final double z) {
@@ -334,7 +325,6 @@ public final class Mathd {
         return ret;
     }
 
-//    void m3dInvertMatrix44(M3DMatrix44d mInverse, final M3DMatrix44d m);
     public static void invertMatrix(final Matrix44d mInverse, final Matrix44d m) {
         double det;
         double detij;
@@ -355,11 +345,10 @@ public final class Mathd {
         }
     }
 
-    public static double getDistanceToPlane(final Vector3d point, final Vector3d plane) {
-        return point.a[0] * plane.a[0] + point.a[1] * plane.a[1] + point.a[2] * plane.a[2] + plane.a[3];
+    public static double getDistanceToPlane(final Vector3d point, final Vector4d plane) {
+        return point.a[0] * plane.getA()[0] + point.a[1] * plane.getA()[1] + point.a[2] * plane.getA()[2] + plane.getA()[3];
     }
 
-//    void m3dGetPlaneEquation(M3DVector4d planeEq, final double[] p1, final double[] p2, final double[] p3);
     public static void getPlaneEquation(final Vector4d planeEq, final Vector3d p1, final Vector3d p2, final Vector3d p3) {
         // Get two vectors; do the cross product.
         Vector3d v1 = new Vector3d();
@@ -481,7 +470,7 @@ public final class Mathd {
         }
 
         if (t < 0.0) {
-            t = 0.0f;
+            t = 0.0F;
         }
 
         return t * t * (3.0 - 2.0 * t);

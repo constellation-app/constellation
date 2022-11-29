@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Dimension;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -57,19 +59,21 @@ import javafx.stage.Window;
  * @author sirius
  */
 public class ItemsDialog<T> extends ConstellationDialog {
+    
+    private static final Logger LOGGER = Logger.getLogger(ItemsDialog.class.getName());
 
     private TableView<ItemsRow<T>> table;
     private final Button okButton;
     private final Button cancelButton;
 
-    public ItemsDialog(final Window owner, final String title, final String helpText, final String labelColumnHeading, final String descriptionColumnHeading, ObservableList<ItemsRow<T>> rows) {
+    public ItemsDialog(final Window owner, final String title, final String helpText, final String labelColumnHeading, final String descriptionColumnHeading, final ObservableList<ItemsRow<T>> rows) {
         final BorderPane root = new BorderPane();
         root.setStyle("-fx-background-color: #DDDDDD;-fx-border-color: #3a3e43;-fx-border-width: 4px;");
 
         // add a title
         final Label titleLabel = new Label();
         titleLabel.setText(title);
-        titleLabel.setStyle("-fx-font-size: 11pt;-fx-font-weight: bold;");
+        titleLabel.setStyle("-fx-font-weight: bold;");
         titleLabel.setAlignment(Pos.CENTER);
         titleLabel.setPadding(new Insets(5));
         root.setTop(titleLabel);
@@ -100,9 +104,10 @@ public class ItemsDialog<T> extends ConstellationDialog {
         table.getSelectionModel().clearSelection();
         table.getSelectionModel().getSelectedIndices().addListener((ListChangeListener.Change<? extends Integer> c) -> {
             try {
-                List<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
+                final List<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
                 selectRows(selectedRows);
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Thread was interrupted");
                 Thread.currentThread().interrupt();
             }
         });
@@ -121,31 +126,27 @@ public class ItemsDialog<T> extends ConstellationDialog {
         root.setBottom(buttonPane);
 
         final Button copyToClipboardButton = new Button("Copy Selection to Clipboard");
-        copyToClipboardButton.setOnAction((ActionEvent event) -> {
+        copyToClipboardButton.setOnAction((final ActionEvent event) -> {
             final StringBuilder sb = new StringBuilder();
-            
+
             final ObservableList<ItemsRow<T>> selectedRows = table.getSelectionModel().getSelectedItems();
-            for (ItemsRow<?> r : selectedRows) {
+            for (final ItemsRow<?> r : selectedRows) {
                 sb.append(String.format("%s,%s\n", r.labelProperty().getValue(), r.descriptionProperty().getValue()));
             }
-            
+
             ClipboardUtilities.copyToClipboard(sb.toString());
         });
         buttonPane.getChildren().add(copyToClipboardButton);
 
         final Button selectAllButton = new Button("Select All");
-        selectAllButton.setOnAction((ActionEvent event) -> {
-            table.getSelectionModel().selectAll();
-        });
+        selectAllButton.setOnAction((final ActionEvent event) -> table.getSelectionModel().selectAll());
         buttonPane.getChildren().add(selectAllButton);
 
         okButton = new Button("Continue");
         buttonPane.getChildren().add(okButton);
 
         cancelButton = new Button("Cancel");
-        cancelButton.setOnAction((ActionEvent event) -> {
-            hideDialog();
-        });
+        cancelButton.setOnAction((final ActionEvent event) -> hideDialog());
         buttonPane.getChildren().add(cancelButton);
 
         final Scene scene = new Scene(root);
@@ -153,15 +154,15 @@ public class ItemsDialog<T> extends ConstellationDialog {
         fxPanel.setPreferredSize(new Dimension(500, 500));
     }
 
-    protected void selectRows(List<ItemsRow<T>> rows) throws InterruptedException {
+    protected void selectRows(final List<ItemsRow<T>> rows) throws InterruptedException {
         // Method overriden LeadNodeSelectionDialog
     }
 
-    public void setOkButtonAction(EventHandler<ActionEvent> event) {
+    public void setOkButtonAction(final EventHandler<ActionEvent> event) {
         okButton.setOnAction(event);
     }
 
-    public void setCancelButtonAction(EventHandler<ActionEvent> event) {
+    public void setCancelButtonAction(final EventHandler<ActionEvent> event) {
         cancelButton.setOnAction(event);
     }
 }

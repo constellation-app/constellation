@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.tree;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeBase;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.NodeFactoryBase;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -27,7 +28,7 @@ public class TreeData {
 
     private final NodeFactoryBase nodeFactory;
     private final NodeBase root;
-    private final ArrayList<NodeBase> leafNodes;
+    private final List<NodeBase> leafNodes;
     private int nLeafEdges;
 
     public TreeData(final NodeFactoryBase nodeFactory) {
@@ -40,7 +41,7 @@ public class TreeData {
 
     public int addNewNode(final int position, final String name, final double flow, final double teleportWeight) {
         final NodeBase node = nodeFactory.createNode(name, flow, teleportWeight);
-        node.setOriginalIndex(position); //leafNodes.size();
+        node.setOriginalIndex(position);
         root.addChild(node);
         leafNodes.add(node);
 
@@ -85,7 +86,7 @@ public class TreeData {
         return leafNodes.get(0);
     }
 
-    public ArrayList<NodeBase> getLeaves() {
+    public List<NodeBase> getLeaves() {
         return leafNodes;
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,36 +30,17 @@ import java.util.Map;
  */
 public class MemoryManager {
 
-    public static class ClassStats {
-
-        private int currentCount = 0;
-        private int maxCount = 0;
-        private int totalCount = 0;
-
-        public int getCurrentCount() {
-            return currentCount;
-        }
-
-        public int getMaxCount() {
-            return maxCount;
-        }
-
-        public int getTotalCount() {
-            return totalCount;
-        }
-    }
-
     private static final Map<Class<?>, ClassStats> OBJECT_COUNTS = new HashMap<>();
 
     // The listeners currently registered
     private static final List<MemoryManagerListener> LISTENERS = new ArrayList<>();
-
+    
     /**
      * Registers that a new instance of the specified class has been created.
      *
      * @param c an instance of this class has been created.
      */
-    public static void newObject(Class<?> c) {
+    public static void newObject(final Class<?> c) {
         synchronized (OBJECT_COUNTS) {
             ClassStats stats = OBJECT_COUNTS.get(c);
             if (stats == null) {
@@ -82,7 +63,7 @@ public class MemoryManager {
      *
      * @param c an instance of this class has been finalized.
      */
-    public static void finalizeObject(Class<?> c) {
+    public static void finalizeObject(final Class<?> c) {
         synchronized (OBJECT_COUNTS) {
             ClassStats stats = OBJECT_COUNTS.get(c);
             if (stats == null) {
@@ -90,7 +71,9 @@ public class MemoryManager {
                 OBJECT_COUNTS.put(c, stats);
             }
 
-            stats.currentCount--;
+            if (stats.currentCount > 0) {
+                stats.currentCount--;
+            }
         }
 
         synchronized (LISTENERS) {
@@ -110,7 +93,18 @@ public class MemoryManager {
             return new HashMap<>(OBJECT_COUNTS);
         }
     }
-
+    
+    /**
+     * Returns a copy of all the currently registered listeners.
+     * 
+     * @return all the registered listeners
+     */
+    protected static List<MemoryManagerListener> getListeners() {
+        synchronized (LISTENERS) {
+            return new ArrayList<>(LISTENERS);
+        }
+    }
+    
     /**
      * Adds a new listener to this MemoryManager.
      *
@@ -132,6 +126,39 @@ public class MemoryManager {
     public static void removeMemoryManagerListener(final MemoryManagerListener listener) {
         synchronized (LISTENERS) {
             LISTENERS.remove(listener);
+        }
+    }
+    
+    /**
+     * Clears the object counts and listeners. 
+     * NOTE: This function is only added to enable proper unit testing of this class and probably shouldn't be used otherwise
+     */
+    protected static void reset() {
+        synchronized (OBJECT_COUNTS) {
+            OBJECT_COUNTS.clear();
+        }
+        
+        synchronized (LISTENERS) {
+            LISTENERS.clear();
+        }
+    }  
+    
+    public static class ClassStats {
+
+        private int currentCount = 0;
+        private int maxCount = 0;
+        private int totalCount = 0;
+
+        public int getCurrentCount() {
+            return currentCount;
+        }
+
+        public int getMaxCount() {
+            return maxCount;
+        }
+
+        public int getTotalCount() {
+            return totalCount;
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.BitSet;
-import java.util.logging.Logger;
 
 /**
  * provide hop out capability for the hop actions.
@@ -32,12 +31,8 @@ final class HopUtilities {
     public static final int HOP_OUT_ONE = 1;
     public static final int HOP_OUT_FULL = 2;
 
-    private static final Logger LOGGER = Logger.getLogger(HopUtilities.class.getName());
-
-    /**
-     * No constructor.
-     */
     private HopUtilities() {
+        throw new IllegalStateException("Utility class");
     }
 
     /**
@@ -89,6 +84,8 @@ final class HopUtilities {
                     if (!dstsel) {
                         vxToSelect.set(txDestId);
                     }
+                } else {
+                    // Do nothing
                 }
             } else {
                 final boolean txSourceIsSelected = graph.getBooleanValue(vxSelectedAttr, txSourceId);

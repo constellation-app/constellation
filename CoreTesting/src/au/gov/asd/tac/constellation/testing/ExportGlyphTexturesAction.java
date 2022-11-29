@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,18 @@
  */
 package au.gov.asd.tac.constellation.testing;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(
@@ -37,15 +40,34 @@ import org.openide.util.NbBundle.Messages;
 @Messages("CTL_ExportGlyphTexturesAction=Export Glyph Textures")
 public final class ExportGlyphTexturesAction implements ActionListener {
 
+    private static final String TITLE = "Export Glyph Textures";
+
     @Override
     public void actionPerformed(ActionEvent e) {
+        FileChooser.openSaveDialog(getExportGlyphTexturesFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> SharedDrawable.exportGlyphTextures(file)));
+    }
 
-        final JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setMultiSelectionEnabled(false);
-        fileChooser.setFileFilter(new FileNameExtensionFilter("PNG Images", "png"));
-        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-            final File file = fileChooser.getSelectedFile();
-            SharedDrawable.exportGlyphTextures(file);
-        }
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getExportGlyphTexturesFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG)) || file.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Image Files (" + FileExtensionConstants.PNG + ")";
+                    }
+                });
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
 
 /**
  * A plugin template for a plugin that naturally works within a read-query-write
@@ -65,14 +64,7 @@ import java.util.logging.Logger;
  *
  * @author sirius
  */
-//@Messages({
-//    "# {0} - graph",
-//    "# {1} - name",
-//    "MSG_Query_Failed=Action failed: {0}; {1}"
-//})
 public abstract class CascadingQueryPlugin extends AbstractPlugin {
-
-    private static final Logger LOGGER = Logger.getLogger(CascadingQueryPlugin.class.getName());
 
     /**
      * Returns whether this plugin performs a 'significant edit' of the graph
@@ -98,8 +90,6 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
     @Override
     public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
-        boolean inControlOfProgress = true;
-
         final Graph graph = graphs.getGraph();
 
         // If the graph no longer exists
@@ -115,9 +105,9 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
             try {
                 interaction.setProgress(0, 0, "Executing child plugins", true);
 
-                Map<Plugin, PluginParameters> childPlugins = getChildPlugins(parameters);
+                final Map<Plugin, PluginParameters> childPlugins = getChildPlugins(parameters);
 
-                PluginSynchronizer pluginSynchronizer = new PluginSynchronizer(childPlugins.size() + 1);
+                final PluginSynchronizer pluginSynchronizer = new PluginSynchronizer(childPlugins.size() + 1);
 
                 for (final Entry<Plugin, PluginParameters> entry : childPlugins.entrySet()) {
                     PluginExecution.withPlugin(entry.getKey()).withParameters(entry.getValue()).synchronizingOn(pluginSynchronizer).executeLater(graph);
@@ -187,26 +177,12 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
 
             // Make the progress bar appear nondeterminent
             try {
-                interaction.setProgress(0, 0, "Reading...", true);
-                read(graph, interaction, parameters);
-                if (!"Reading".equals(interaction.getCurrentMessage())) {
-                    inControlOfProgress = false;
-                }
+                interaction.setProgress(0, 0, "Executing child plugins", true);
 
-                if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, "Querying...", true);
-                }
-                query(interaction, parameters);
-                if (inControlOfProgress && !"Querying...".equals(interaction.getCurrentMessage())) {
-                    inControlOfProgress = false;
-                }
+                final Map<Plugin, PluginParameters> childPlugins = getChildPlugins(parameters);
 
-                if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, "Editing...", true);
-                }
-                edit(graph, interaction, parameters);
-                if (inControlOfProgress && !"Editing...".equals(interaction.getCurrentMessage())) {
-                    inControlOfProgress = false;
+                for (final Entry<Plugin, PluginParameters> entry : childPlugins.entrySet()) {
+                    PluginExecution.withPlugin(entry.getKey()).withParameters(entry.getValue()).executeNow(graph);
                 }
             } finally {
                 interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
@@ -216,61 +192,5 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
             interaction.setBusy(graph.getId(), false);
         }
     }
-
-    protected Object describedEdit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        edit(graph, interaction, parameters);
-        return null;
-    }
-
-    /**
-     * Developers should override this method to implement the read stage of the
-     * life cycle. This typically includes saving state from the graph that will
-     * be needed during the query stage when the plugin no longer has access to
-     * the graph.
-     *
-     * @param graph a GraphReadMethods representing a valid read lock on the
-     * graph.
-     * @param interaction A PluginInteraction object allowing interaction with
-     * the Constellation UI.
-     * @param parameters the parameters used to configure the plugin execution.
-     * @throws InterruptedException if the plugin execution is canceled.
-     * @throws PluginException if an anticipated error occurs during plugin
-     * execution.
-     */
-    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-    }
-
-    /**
-     * Developers should override this method to implement the query stage of
-     * the life cycle. This typically includes performing a long-running
-     * calculation or long-running query on an external data source. As the
-     * plugin does not have access to the graph during this stage, it relies on
-     * information saved from the graph during the read stage.
-     *
-     * @param interaction A PluginInteraction object allowing interaction with
-     * the Constellation UI.
-     * @param parameters the parameters used to configure the plugin execution.
-     * @throws InterruptedException if the plugin execution is canceled.
-     * @throws PluginException if an anticipated error occurs during plugin
-     * execution.
-     */
-    protected void query(final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-    }
-
-    /**
-     * Developers should override this method to implement the write stage of
-     * the life cycle. This typically includes writing the results of the query
-     * stage back to the graph using the write lock provided to this stage.
-     *
-     * @param graph a GraphWriteMethods representing a valid write lock on the
-     * graph.
-     * @param interaction A PluginInteraction object allowing interaction with
-     * the Constellation UI.
-     * @param parameters the parameters used to configure the plugin execution.
-     * @throws InterruptedException if the plugin execution is canceled.
-     * @throws PluginException if an anticipated error occurs during plugin
-     * execution.
-     */
-    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-    }
+   
 }

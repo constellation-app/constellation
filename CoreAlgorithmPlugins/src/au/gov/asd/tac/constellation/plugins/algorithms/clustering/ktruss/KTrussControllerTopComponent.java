@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,12 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
+import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.awt.Component;
@@ -85,8 +88,8 @@ import org.openide.windows.TopComponent;
 })
 public final class KTrussControllerTopComponent extends TopComponent implements LookupListener, GraphChangeListener, ComponentListener {
 
-    private static final String INTERACTIVE_DISABLED = "Interactive - Disabled";
-    private static final String INTERACTIVE_ENABLED = "Interactive - Enabled";
+    private static final String TOGGLE_DISABLED = "Toggle Interactive: Disabled";
+    private static final String TOGGLE_ENABLED = "Toggle Interactive: Enabled";
 
     private final Lookup.Result<GraphNode> result;
     private GraphNode graphNode;
@@ -112,8 +115,8 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         isAdjusting = false;
         nestedTrussesHeight = 500;
         nestedPanelIsVisible = false;
+        updateInteractiveButton(interactiveButton.getText().equals(TOGGLE_DISABLED));
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -203,6 +206,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             }
         });
 
+        reclusterButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(reclusterButton, org.openide.util.NbBundle.getMessage(KTrussControllerTopComponent.class, "KTrussControllerTopComponent.reclusterButton.text")); // NOI18N
         reclusterButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -210,8 +214,10 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             }
         });
 
-        interactiveButton.setSelected(true);
+        interactiveButton.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(interactiveButton, org.openide.util.NbBundle.getMessage(KTrussControllerTopComponent.class, "KTrussControllerTopComponent.interactiveButton.text")); // NOI18N
+        interactiveButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        interactiveButton.setFocusable(false);
         interactiveButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 interactiveButtonActionPerformed(evt);
@@ -276,7 +282,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(nestedTrussButton)
                     .addComponent(nestedTrussPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(reclusterButton)
                     .addComponent(interactiveButton)
@@ -292,6 +298,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
         hiddenRadioButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(KTrussControllerTopComponent.class, "KTrussControllerTopComponent.hiddenRadioButton.AccessibleContext.accessibleName")); // NOI18N
         dimmedRadioButton.getAccessibleContext().setAccessibleName(org.openide.util.NbBundle.getMessage(KTrussControllerTopComponent.class, "KTrussControllerTopComponent.dimmedRadioButton.AccessibleContext.accessibleName")); // NOI18N
+        interactiveButton.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(KTrussControllerTopComponent.class, "KTrussControllerTopComponent.interactiveButton.AccessibleContext.accessibleDescription")); // NOI18N
     }// </editor-fold>//GEN-END:initComponents
 
     private void stepSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_stepSliderStateChanged
@@ -338,7 +345,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     private void nestedTrussButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nestedTrussButtonActionPerformed
         // If the nested trusses display panel is already visible, hide it,
         // otherwise, show the nested trusses display panel
-        if (state.getNestedTrussesVisible()) {
+        if (state.isNestedTrussesVisible()) {
             hideNestedTrussesPanel();
         } else {
             showNestedTrussesPanel();
@@ -349,12 +356,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }//GEN-LAST:event_nestedTrussButtonActionPerformed
 
     private void reclusterButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reclusterButtonActionPerformed
-        PluginExecution.withPlugin(new SimpleEditPlugin("K-Truss: Calculate") {
-            @Override
-            public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                KTruss.run(graph, new KTruss.KTrussPluginResultHandler(graph, interactiveButton.isSelected()));
-            }
-        }).executeLater(graph);
+        PluginExecution.withPlugin(new KTrussCalculatePlugin(interactiveButton.isSelected())).executeLater(graph);
     }//GEN-LAST:event_reclusterButtonActionPerformed
 
     private void interactiveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_interactiveButtonActionPerformed
@@ -368,22 +370,22 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }//GEN-LAST:event_colorNestedTrussesCheckBoxActionPerformed
 
     private void updateInteractivity() {
-        state.setInteractive(!state.getInteractive());
-        if (!state.getInteractive()) {
-            interactiveButton.setText(INTERACTIVE_DISABLED);
-            if (state.getNestedTrussesVisible()) {
+        state.setInteractive(!state.isInteractive());
+        if (!state.isInteractive()) {
+            updateInteractiveButton(true);
+            if (state.isNestedTrussesVisible()) {
                 hideNestedTrussesPanel();
             }
-            if (state.getNestedTrussesColored()) {
+            if (state.isNestedTrussesColored()) {
                 final RemoveOverlayColors uncolor = new RemoveOverlayColors();
                 PluginExecution.withPlugin(uncolor).interactively(true).executeLater(graph);
             }
         } else {
-            interactiveButton.setText(INTERACTIVE_ENABLED);
-            if (state.getNestedTrussesVisible()) {
+            updateInteractiveButton(false);
+            if (state.isNestedTrussesVisible()) {
                 showNestedTrussesPanel();
             }
-            if (state.getNestedTrussesColored()) {
+            if (state.isNestedTrussesColored()) {
                 final ColorTrusses color = new ColorTrusses(state);
                 PluginExecution.withPlugin(color).interactively(true).executeLater(graph);
             }
@@ -543,7 +545,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         if (node != null) {
 
             // If the nested trusses panel was visible in the previous state, hide it
-            if (state != null && state.getNestedTrussesVisible()) {
+            if (state != null && state.isNestedTrussesVisible()) {
                 hideNestedTrussesPanel();
             }
 
@@ -555,16 +557,16 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                 state = stateAttr != Graph.NOT_FOUND ? (KTrussState) rg.getObjectValue(stateAttr, 0) : null;
                 // If the nested trusses panel is visible in the new state, show it
                 // Note that it won't be correctly repainted until setGroups is called.
-                if (state != null && state.getNestedTrussesVisible() && state.getInteractive()) {
+                if (state != null && state.isNestedTrussesVisible() && state.isInteractive()) {
                     showNestedTrussesPanel();
                 }
                 if (state != null) {
-                    colorNestedTrussesCheckBox.setSelected(state.getNestedTrussesColored());
-                    interactiveButton.setSelected(state.getInteractive());
-                    interactiveButton.setText(state.getInteractive() ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
+                    colorNestedTrussesCheckBox.setSelected(state.isNestedTrussesColored());
+                    interactiveButton.setSelected(state.isInteractive());
+                    updateInteractiveButton(!state.isInteractive());
                 } else {
                     interactiveButton.setSelected(false);
-                    interactiveButton.setText(INTERACTIVE_DISABLED);
+                    updateInteractiveButton(true);
                     colorNestedTrussesCheckBox.setSelected(false);
                 }
             } finally {
@@ -598,11 +600,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             // Retrieve the k-truss state attribute, attribute mod counter, and structural mod counter from the graph
             final int stateAttr = ClusteringConcept.MetaAttribute.K_TRUSS_CLUSTERING_STATE.get(rg);
             smc = rg.getStructureModificationCounter();
-            if (stateAttr != Graph.NOT_FOUND) {
-                mc = rg.getValueModificationCounter(stateAttr);
-            } else {
-                mc = Graph.NOT_FOUND;
-            }
+            mc = stateAttr != Graph.NOT_FOUND ? rg.getValueModificationCounter(stateAttr) : Graph.NOT_FOUND;
 
             // If the k-truss state on the controller is null, or has a different modcount to the state on the graph, update this controller's state.
             if (state == null || mc != state.modificationCounter) {
@@ -625,7 +623,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     private void setGroups(final boolean doUpdate) {
-        if (state != null && state.getInteractive()) {
+        if (state != null && state.isInteractive()) {
             final Component[] children = getComponents();
             for (final Component c : children) {
                 if (!c.equals(reclusterButton)) {
@@ -635,7 +633,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
             final int highestK = Math.max(state.getHighestK(), 2);
             final int currentK = highestK == 2 ? 2 : state.getCurrentK();
-            final boolean excludedElementsDimmed = state.getExcludedElementsDimmed();
+            final boolean excludedElementsDimmed = state.isExcludedElementsDimmed();
 
             isAdjusting = true;
             stepSlider.setMinimum(2);
@@ -678,23 +676,23 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
             nestedTrussPane.addComponentListener(new ComponentListener() {
                 @Override
-                public void componentResized(ComponentEvent e) {
+                public void componentResized(final ComponentEvent e) {
                     dp.setSize(stepSlider.getWidth(), dp.getHeight());
                     revalidateParents(dp.getParent());
                 }
 
                 @Override
-                public void componentMoved(ComponentEvent e) {
+                public void componentMoved(final ComponentEvent e) {
                     // Override required for ComponentListener, intentionally left blank
                 }
 
                 @Override
-                public void componentShown(ComponentEvent e) {
+                public void componentShown(final ComponentEvent e) {
                     // Override required for ComponentListener, intentionally left blank
                 }
 
                 @Override
-                public void componentHidden(ComponentEvent e) {
+                public void componentHidden(final ComponentEvent e) {
                     // Override required for ComponentListener, intentionally left blank
                 }
             });
@@ -711,11 +709,11 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             if (state != null) {
                 // Interactive button should only be available if state is available
                 interactiveButton.setEnabled(true);
-                interactiveButton.setText(INTERACTIVE_ENABLED);
+                updateInteractiveButton(false);
             } else {
                 reclusterButton.setEnabled(true);
                 interactiveButton.setEnabled(false);
-                interactiveButton.setText(INTERACTIVE_DISABLED);
+                updateInteractiveButton(true);
             }
         }
 
@@ -729,11 +727,12 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             return;
         }
 
-        // Determine if interactive is enabled, if it isn't, then overlay colours need to be removed.
+        // Determine if interactive is enabled, if it isn't, then overlay colors need to be removed.
         // This is used to revert the graph display when the component is closed and was previously
         // set to interactive.
-        final boolean interactive = state.getInteractive();
-        interactiveButton.setText(interactive ? INTERACTIVE_ENABLED : INTERACTIVE_DISABLED);
+        final boolean interactive = state.isInteractive();
+        updateInteractiveButton(!interactive);
+
         if (!interactive) {
             final RemoveOverlayColors removeColors = new RemoveOverlayColors();
             PluginExecution.withPlugin(removeColors).interactively(true).executeLater(graph);
@@ -741,7 +740,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
         final Update update = new Update(state);
         PluginExecution.withPlugin(update).interactively(true).executeLater(graph);
-        if (state.getNestedTrussesColored() && interactive) {
+        if (state.isNestedTrussesColored() && interactive) {
             final ColorTrusses color = new ColorTrusses(state);
             PluginExecution.withPlugin(color).interactively(true).executeLater(graph);
         }
@@ -752,16 +751,16 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             return;
         }
 
-        final boolean wasColored = state.getNestedTrussesColored();
+        final boolean wasColored = state.isNestedTrussesColored();
         state.toggleNestedTrussesColored();
 
-        final SimpleEditPlugin colourPlugin;
+        final SimpleEditPlugin colorPlugin;
         if (wasColored) {
-            colourPlugin = new RemoveOverlayColors();
+            colorPlugin = new RemoveOverlayColors();
         } else {
-            colourPlugin = new ColorTrusses(state);
+            colorPlugin = new ColorTrusses(state);
         }
-        PluginExecution.withPlugin(colourPlugin).interactively(true).executeLater(graph);
+        PluginExecution.withPlugin(colorPlugin).interactively(true).executeLater(graph);
     }
 
     private void selectOnGraph() {
@@ -777,6 +776,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         PluginExecution.withPlugin(select).interactively(true).executeLater(graph);
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class RemoveOverlayColors extends SimpleEditPlugin {
 
         @Override
@@ -797,6 +797,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class ColorTrusses extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -816,14 +817,14 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             // Retrieve (or if not extant, create) the node and transaction attributes pertaining to k-trusses and selection.
             final int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
             final int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
-            final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.K_TRUSS_COLOUR.ensure(graph);
-            final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_COLOUR.ensure(graph);
+            final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.ensure(graph);
+            final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.ensure(graph);
             final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
             final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
-            graph.setStringValue(vxColorRef, 0, ClusteringConcept.VertexAttribute.K_TRUSS_COLOUR.getName());
-            graph.setStringValue(txColorRef, 0, ClusteringConcept.TransactionAttribute.K_TRUSS_COLOUR.getName());
+            graph.setStringValue(vxColorRef, 0, ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.getName());
+            graph.setStringValue(txColorRef, 0, ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.getName());
 
-            final ConstellationColor[] colors = ConstellationColor.createPalettePhi(state.getNumUniqueValuesOfK() + 2, 0, 0.5f, 0.95f);
+            final ConstellationColor[] colors = ConstellationColor.createPalettePhi(state.getNumUniqueValuesOfK() + 2, 0, 0.5F, 0.95F);
             colors[0] = colors[colors.length - 1];
 
             // Determine and set the overlay color for each vertex
@@ -846,6 +847,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.SELECT})
     public static final class Select extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -895,6 +897,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         }
     }
 
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
     public static final class Update extends SimpleEditPlugin {
 
         private final KTrussState state;
@@ -922,10 +925,10 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             final int txVisibilityAttr = VisualConcept.TransactionAttribute.VISIBILITY.ensure(graph);
 
             // Retrieve the display options from the KTrussState
-            final int currentK = state.getInteractive() ? state.getCurrentK() : 0;
-            final boolean dim = state.getExcludedElementsDimmed();
+            final int currentK = state.isInteractive() ? state.getCurrentK() : 0;
+            final boolean dim = state.isExcludedElementsDimmed();
             final boolean displayOptionHasToggled = state.hasDisplayOptionToggled();
-            final boolean interactive = state.getInteractive();
+            final boolean interactive = state.isInteractive();
 
             // Update the display of the graph's nodes
             for (int i = 0; i < graph.getVertexCount(); i++) {
@@ -939,10 +942,10 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                 if (dim) {
                     graph.setBooleanValue(vxDimmedAttr, vxID, !displayCurrentVertex);
                     if (displayOptionHasToggled) {
-                        graph.setFloatValue(vxVisibilityAttr, vxID, 1.0f);
+                        graph.setFloatValue(vxVisibilityAttr, vxID, 1.0F);
                     }
                 } else {
-                    graph.setFloatValue(vxVisibilityAttr, vxID, (displayCurrentVertex ? 1.0f : -1.0f));
+                    graph.setFloatValue(vxVisibilityAttr, vxID, (displayCurrentVertex ? 1.0F : -1.0F));
                     if (displayOptionHasToggled) {
                         graph.setBooleanValue(vxDimmedAttr, vxID, false);
                     }
@@ -961,10 +964,10 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
                 if (dim) {
                     graph.setBooleanValue(txDimmedAttr, txID, !displayCurrentTransaction);
                     if (displayOptionHasToggled) {
-                        graph.setFloatValue(txVisibilityAttr, txID, 1.0f);
+                        graph.setFloatValue(txVisibilityAttr, txID, 1.0F);
                     }
                 } else {
-                    graph.setFloatValue(txVisibilityAttr, txID, (displayCurrentTransaction ? 1.0f : -1.0f));
+                    graph.setFloatValue(txVisibilityAttr, txID, (displayCurrentTransaction ? 1.0F : -1.0F));
                     if (displayOptionHasToggled) {
                         graph.setBooleanValue(txDimmedAttr, txID, false);
                     }
@@ -979,26 +982,26 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
     }
 
     @Override
-    public void componentResized(ComponentEvent e) {
+    public void componentResized(final ComponentEvent e) {
         nestedTrussPane.setSize(stepSlider.getWidth(), nestedTrussPane.getHeight());
         dp.setSize(stepSlider.getWidth(), dp.getHeight());
         dp.repaint();
     }
 
     @Override
-    public void componentMoved(ComponentEvent e) {
+    public void componentMoved(final ComponentEvent e) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public void componentShown(ComponentEvent e) {
+    public void componentShown(final ComponentEvent e) {
         nestedTrussPane.setSize(stepSlider.getWidth(), nestedTrussPane.getHeight());
         dp.setSize(stepSlider.getWidth(), dp.getHeight());
         dp.repaint();
     }
 
     @Override
-    public void componentHidden(ComponentEvent e) {
+    public void componentHidden(final ComponentEvent e) {
         throw new UnsupportedOperationException();
     }
 
@@ -1008,5 +1011,36 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
 
     void readProperties(final java.util.Properties p) {
         // Required for @ConvertAsProperties, intentionally left blank
+    }
+
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
+    public static class KTrussCalculatePlugin extends SimpleEditPlugin {
+
+        final boolean isInteractiveButtonSelected;
+
+        public KTrussCalculatePlugin(final boolean isInteractiveButtonSelected) {
+            this.isInteractiveButtonSelected = isInteractiveButtonSelected;
+        }
+
+        @Override
+        public String getName() {
+            return "K-Truss: Calculate";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            KTruss.run(graph, new KTruss.KTrussPluginResultHandler(graph, isInteractiveButtonSelected));
+        }
+
+    }
+
+    public void updateInteractiveButton(final boolean disableButton) {
+        if (disableButton) {
+            interactiveButton.setText(TOGGLE_DISABLED);
+            interactiveButton.setSelected(false);
+        } else {
+            interactiveButton.setText(TOGGLE_ENABLED);
+            interactiveButton.setSelected(false);
+        }
     }
 }

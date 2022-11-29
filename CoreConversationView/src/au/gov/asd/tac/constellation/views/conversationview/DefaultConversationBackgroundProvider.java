@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,6 @@ public class DefaultConversationBackgroundProvider implements ConversationBackgr
     @Override
     public void updateMessageBackgrounds(GraphReadMethods graph, List<ConversationMessage> messages) {
 
-        //Background bg = new Background(new BackgroundFill(Color.RED, null, null));
         String[] colors = new String[]{"transparent", "rgb(60, 60, 60)"};
         int currentColor = 1;
         int currentDay = -1;

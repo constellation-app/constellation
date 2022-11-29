@@ -1873,7 +1873,7 @@ is being used to size a border should also be in pixels.
 .titled-pane > .title:hover {
     -fx-color: -fx-hover-base;
 }
-/* alternative content using a border and a grad to transparent background - why should TitledPane content have a colour? */
+/* alternative content using a border and a grad to transparent background - why should TitledPane content have a color? */
 .titled-pane > *.content {
     -fx-border-color: -fx-box-border;
     -fx-border-insets: -1 0 0 0;

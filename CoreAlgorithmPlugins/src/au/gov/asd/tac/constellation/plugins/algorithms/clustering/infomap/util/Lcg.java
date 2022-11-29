@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * This is a quick and dirty LCG RNG to enable reproducibility between this code
  * and the original C++.
@@ -24,6 +27,8 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.infomap.util;
  * @author algol
  */
 public class Lcg {
+
+    private static final Logger LOGGER = Logger.getLogger(Lcg.class.getName());
 
     private static final long M = 4294967296L;
     private static final long A = 69069;
@@ -37,7 +42,7 @@ public class Lcg {
 
     public void seed(final long newSeed) {
         s = newSeed;
-        Logf.printf("{{seed %d}}\n", newSeed);
+        LOGGER.log(Level.INFO, "Seed: {0}", newSeed);
     }
 
     public int nextInt() {
@@ -64,7 +69,8 @@ public class Lcg {
         rand.seed(1984);
 
         for (int i = 0; i < 100; i++) {
-            System.out.printf("%d %d %d%n", i, rand.nextInt(10), rand.s);
+            final String log = String.format("%d %d %d%n", i, rand.nextInt(10), rand.s);
+            LOGGER.log(Level.INFO, log);
         }
     }
 }

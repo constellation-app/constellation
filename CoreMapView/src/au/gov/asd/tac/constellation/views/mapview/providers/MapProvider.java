@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,16 +29,11 @@ import processing.core.PApplet;
  */
 public abstract class MapProvider extends AbstractMapProvider {
 
-//    private double latitude = 0.0;
-//    private double longitude = 0.0;
-//    private double x = (128 / Math.PI) * Math.pow(2, 0) * (GeospatialUtilities.degreesToRadians(longitude) + Math.PI);
-//    private double y = (128 / Math.PI) * Math.pow(2, 0) * (Math.PI - Math.log(Math.tan((Math.PI / 4) + (GeospatialUtilities.degreesToRadians(latitude) / 2))));
-//
-    public MapProvider(AbstractProjection projection) {
+    protected MapProvider(AbstractProjection projection) {
         super(projection);
     }
 
-    public MapProvider() {
+    protected MapProvider() {
         this(new MercatorProjection(26,
                 new Transformation(
                         1.068070779e7, 0.0, 3.355443185e7,

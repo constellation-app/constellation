@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,26 +47,22 @@ public final class ElementGraphLabelsV0 {
      */
     public ElementGraphLabelsV0(final ElementGraphLabelsV0 graphLabels) {
         labels = new ArrayList<>();
-        graphLabels.labels.forEach(label -> {
-            labels.add(new ElementGraphLabelV0(label));
-        });
+        graphLabels.labels.forEach(label -> labels.add(new ElementGraphLabelV0(label)));
     }
 
     public ElementGraphLabelsV0(final ElementGraphLabelsV0 graphLabels, final List<ElementGraphLabelV0> additionalLabels) {
         final List<ElementGraphLabelV0> allLabels = new ArrayList<>();
-        graphLabels.labels.forEach(label -> {
-            allLabels.add(new ElementGraphLabelV0(label));
-        });
-        additionalLabels.forEach(label -> {
-            allLabels.add(label);
-        });
+        graphLabels.labels.forEach(label -> allLabels.add(new ElementGraphLabelV0(label)));
+        additionalLabels.forEach(label -> allLabels.add(label));
         labels = allLabels.size() > MAX_LABELS ? allLabels.subList(0, MAX_LABELS) : allLabels;
     }
 
     public ElementGraphLabelsV0(final List<ElementGraphLabelV0> labels) {
-        this.labels = labels == null ? Collections.emptyList()
-                : labels.size() > MAX_LABELS ? labels.subList(0, MAX_LABELS)
-                : labels;
+        if (labels == null) {
+            this.labels = Collections.emptyList();
+        } else {
+            this.labels = labels.size() > MAX_LABELS ? labels.subList(0, MAX_LABELS) : labels;
+        }
     }
 
     public List<ElementGraphLabelV0> getLabels() {
@@ -79,9 +75,7 @@ public final class ElementGraphLabelsV0 {
 
     @Override
     public String toString() {
-        return StringUtilities.quoteAndDelimitString(labels.stream().map(label -> {
-            return label.toString();
-        }).collect(Collectors.toList()), LABEL_DELIMITER);
+        return StringUtilities.quoteAndDelimitString(labels.stream().map(label -> label.toString()).collect(Collectors.toList()), LABEL_DELIMITER);
     }
 
     public static ElementGraphLabelsV0 valueOf(final String graphLabelsString) {
@@ -92,9 +86,7 @@ public final class ElementGraphLabelsV0 {
         final List<String> labelStrings;
         try {
             labelStrings = StringUtilities.unquoteAndSplitString(graphLabelsString, LABEL_DELIMITER);
-            labelStrings.forEach(label -> {
-                labels.add(ElementGraphLabelV0.valueOf(label));
-            });
+            labelStrings.forEach(label -> labels.add(ElementGraphLabelV0.valueOf(label)));
         } catch (IllegalArgumentException ex) {
             throw new IllegalArgumentException("String does not represent a graph label: " + graphLabelsString + "\nCaused by: " + ex.getMessage());
         }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,7 +113,6 @@ public final class GraphLabel implements Serializable, Comparable<GraphLabel> {
         buf.add(String.valueOf(size));
 
         return buf.toString();
-//        return StringUtilities.quoteAndDelimitString(Arrays.asList(attributeName, color.toString(), String.valueOf(size)), LABEL_PROPERTY_DELIMITER);
     }
 
     public static GraphLabel valueOf(final String graphLabelString) {
@@ -130,7 +129,7 @@ public final class GraphLabel implements Serializable, Comparable<GraphLabel> {
             final String attributeName = labelProperties.get(0);
             final ConstellationColor color = ConstellationColor.getColorValue(labelProperties.get(1));
             if (color == null) {
-                throw new IllegalArgumentException("Undefined colour for label.");
+                throw new IllegalArgumentException("Undefined color for label.");
             }
             final float size;
             try {

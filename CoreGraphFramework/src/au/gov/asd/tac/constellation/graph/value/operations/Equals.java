@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,9 @@ package au.gov.asd.tac.constellation.graph.value.operations;
 import au.gov.asd.tac.constellation.graph.value.ComparisonOperation;
 import au.gov.asd.tac.constellation.graph.value.OperatorRegistry;
 import au.gov.asd.tac.constellation.graph.value.Operators;
+import au.gov.asd.tac.constellation.graph.value.constants.StringConstant;
 import au.gov.asd.tac.constellation.graph.value.readables.BooleanReadable;
+import au.gov.asd.tac.constellation.graph.value.readables.ObjectReadable;
 import java.util.Objects;
 
 /**
@@ -66,10 +68,19 @@ public class Equals {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         COMPARISON_OPERATION.register(registry);
 
-        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2) -> {
-            return () -> p1.readBoolean() == p2.readBoolean();
-        });
+        registry.register(BooleanReadable.class, BooleanReadable.class, BooleanReadable.class, (p1, p2)
+                -> () -> p1.readBoolean() == p2.readBoolean()
+        );
 
+        // e.g. Used when query is as follows: dim == 'true'
+        registry.register(BooleanReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2)
+                -> () -> String.valueOf(p1.readBoolean()).equals(p2.readString())
+        );
+
+        // e.g. Used when query is as follows: Type == 'Manually Created'
+        registry.register(ObjectReadable.class, StringConstant.class, BooleanReadable.class, (p1, p2)
+                -> () -> p1.readObject().toString().equals(p2.readString())
+        );
     }
 
     static {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,11 @@ package au.gov.asd.tac.constellation.views.layers.shortcut;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.layers.query.BitMaskQuery;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
@@ -31,6 +34,7 @@ import au.gov.asd.tac.constellation.views.layers.utilities.LayersUtilities;
  *
  * @author formalhaut69
  */
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class EnableLayerPlugin extends SimpleEditPlugin {
 
     final int layerIndex;
@@ -62,10 +66,10 @@ public class EnableLayerPlugin extends SimpleEditPlugin {
             final BitMaskQuery txQuery = currentState.getTxQueriesCollection().getQuery(layerIndex);
 
             if (vxQuery != null) {
-                vxQuery.setVisibility(!vxQuery.getVisibility());
+                vxQuery.setVisibility(!vxQuery.isVisible());
             }
             if (txQuery != null) {
-                txQuery.setVisibility(!txQuery.getVisibility());
+                txQuery.setVisibility(!txQuery.isVisible());
             }
 
             currentState.getVxQueriesCollection().add(vxQuery);
@@ -83,7 +87,7 @@ public class EnableLayerPlugin extends SimpleEditPlugin {
 
     @Override
     protected boolean isSignificant() {
-        return false;
+        return true;
     }
 
     @Override

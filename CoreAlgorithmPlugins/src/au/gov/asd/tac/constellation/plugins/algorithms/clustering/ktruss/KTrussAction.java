@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,16 @@
 package au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.SwingUtilities;
@@ -53,22 +57,29 @@ public final class KTrussAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         final Graph graph = context.getGraph();
+        PluginExecution.withPlugin(new KTrussPlugin()).executeLater(graph);
+    }
 
-        PluginExecution.withPlugin(new SimpleEditPlugin("K-Truss") {
-            @Override
-            public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.GENERAL})
+    public static class KTrussPlugin extends SimpleReadPlugin {
 
-                SwingUtilities.invokeLater(() -> {
-                    final TopComponent tc = WindowManager.getDefault().findTopComponent(KTrussControllerTopComponent.class.getSimpleName());
-                    if (tc != null) {
-                        if (!tc.isOpened()) {
-                            tc.open();
-                        }
-                        tc.setEnabled(true);
-                        tc.requestActive();
+        @Override
+        public String getName() {
+            return "K-Truss";
+        }
+
+        @Override
+        protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+            SwingUtilities.invokeLater(() -> {
+                final TopComponent tc = WindowManager.getDefault().findTopComponent(KTrussControllerTopComponent.class.getSimpleName());
+                if (tc != null) {
+                    if (!tc.isOpened()) {
+                        tc.open();
                     }
-                });
-            }
-        }).executeLater(graph);
+                    tc.setEnabled(true);
+                    tc.requestActive();
+                }
+            });
+        }
     }
 }

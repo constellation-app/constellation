@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A basic analytic plugin which reads facts from the graph based on the
@@ -61,6 +62,8 @@ import org.openide.util.Exceptions;
  * @author cygnus_x-1
  */
 public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
+    
+    private static final Logger LOGGER = Logger.getLogger(FactAnalyticPlugin.class.getName());
 
     public static final String TRANSACTION_TYPES_PARAMETER_ID = PluginParameter.buildId(ScoreAnalyticPlugin.class, "transaction_types");
 
@@ -109,9 +112,12 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
             }
 
             for (int graphElementPosition = 0; graphElementPosition < graphElementCount; graphElementPosition++) {
-                final int graphElementId = graphElementType == GraphElementType.VERTEX
-                        ? graph.getVertex(graphElementPosition) : graphElementType == GraphElementType.TRANSACTION
-                        ? graph.getTransaction(graphElementPosition) : Graph.NOT_FOUND;
+                final int graphElementId;
+                if (graphElementType == GraphElementType.VERTEX) {
+                    graphElementId = graph.getVertex(graphElementPosition);
+                } else {
+                    graphElementId = graphElementType == GraphElementType.TRANSACTION ? graph.getTransaction(graphElementPosition) : Graph.NOT_FOUND;
+                }
                 final String identifier = graph.getStringValue(identifierAttributeId, graphElementId);
                 final boolean fact = graph.getBooleanValue(factAttributeId, graphElementId);
                 final boolean defaultFact = (boolean) graph.getAttributeDefaultValue(factAttributeId);
@@ -157,7 +163,7 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
     public final PluginParameters createParameters() {
         final PluginParameters parameters = new PluginParameters();
 
-        final PluginParameter<MultiChoiceParameterType.MultiChoiceParameterValue> transactionTypeParameter = MultiChoiceParameterType.build(TRANSACTION_TYPES_PARAMETER_ID, TransactionTypeParameterValue.class);
+        final PluginParameter<MultiChoiceParameterValue> transactionTypeParameter = MultiChoiceParameterType.build(TRANSACTION_TYPES_PARAMETER_ID, TransactionTypeParameterValue.class);
         transactionTypeParameter.setName("Transaction Types");
         transactionTypeParameter.setDescription("Calculate analytic only on the subgraph of transactions of these types");
         MultiChoiceParameterType.setOptionsData(transactionTypeParameter, new ArrayList<>());
@@ -196,9 +202,8 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
             } else {
                 // create subgraph
                 final Set<SchemaTransactionType> transactionTypes = new HashSet<>();
-                chosenTransactionTypes.forEach(parameterValue -> {
-                    transactionTypes.add((SchemaTransactionType) ((TransactionTypeParameterValue) parameterValue).getObjectValue());
-                });
+                chosenTransactionTypes.forEach(parameterValue
+                        -> transactionTypes.add((SchemaTransactionType) ((TransactionTypeParameterValue) parameterValue).getObjectValue()));
                 assert transactionTypes.size() > 0 : "You must select at least one transaction type";
                 final StoreGraph subgraph = getSubgraph(graph, SchemaFactoryUtilities.getDefaultSchemaFactory(), transactionTypes);
 
@@ -212,7 +217,7 @@ public abstract class FactAnalyticPlugin extends AnalyticPlugin<FactResult> {
         } catch (final IllegalAccessException | IllegalArgumentException
                 | InstantiationException | NoSuchMethodException
                 | SecurityException | InvocationTargetException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

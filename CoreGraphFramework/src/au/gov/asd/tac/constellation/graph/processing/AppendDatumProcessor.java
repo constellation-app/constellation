@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ public abstract class AppendDatumProcessor<T, U> implements DatumProcessor<T, U>
      * a single output record which will be appended to each record produced by
      * the lead processor.
      */
-    public AppendDatumProcessor(final DatumProcessor<T, U> leadProcessor, final DatumProcessor<T, U> appendProcessor) {
+    protected AppendDatumProcessor(final DatumProcessor<T, U> leadProcessor, final DatumProcessor<T, U> appendProcessor) {
         this.leadProcessor = leadProcessor;
         this.appendProcessor = appendProcessor;
     }

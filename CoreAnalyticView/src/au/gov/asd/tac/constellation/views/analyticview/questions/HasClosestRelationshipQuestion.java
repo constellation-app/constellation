@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,6 +73,8 @@ public class HasClosestRelationshipQuestion implements AnalyticQuestionDescripti
             parameters.setBooleanValue(MultiplexityPlugin.GROUP_BY_TOP_LEVEL_TYPE, false);
         } else if (plugin instanceof WeightAnalytic) {
             parameters.setBooleanValue(WeightPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, true);
+        } else {
+            // Do nothing
         }
     }
 }

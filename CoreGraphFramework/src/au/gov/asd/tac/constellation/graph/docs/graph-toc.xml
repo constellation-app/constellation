@@ -2,13 +2,16 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
     <tocitem text="Graph">
-        <tocitem text="Graph Model" target="au.gov.asd.tac.constellation.graph.about"/>
-        <tocitem text="Attributes" target="au.gov.asd.tac.constellation.graph.attributes"/>
-        <tocitem text="Types" target="au.gov.asd.tac.constellation.graph.types"/>
+        <tocitem text="Graph Overview">
+            <tocitem text="The Constellation Graph Model" target="au.gov.asd.tac.constellation.graph.about"/>
+            <tocitem text="Attributes" target="au.gov.asd.tac.constellation.graph.attributes"/>
+            <tocitem text="Types" target="au.gov.asd.tac.constellation.graph.types"/>
+            <tocitem text="Expressions Framework" target="au.gov.asd.tac.constellation.graph.expressions"/>
+        </tocitem>
         <tocitem text="I/O">
-            <tocitem text="The CONSTELLATION File Format" target="au.gov.asd.tac.constellation.graph.io.fileformat"/>
-            <tocitem text="A CONSTELLATION File Reader" target="au.gov.asd.tac.constellation.graph.io.pythonreader"/>
-            <tocitem text="A CONSTELLATION File Writer" target="au.gov.asd.tac.constellation.graph.io.pythonwriter"/>
+            <tocitem text="The Constellation File Format" target="au.gov.asd.tac.constellation.graph.io.fileformat"/>
+            <tocitem text="Example Constellation File Reader" target="au.gov.asd.tac.constellation.graph.io.pythonreader"/>
+            <tocitem text="Example Constellation File Writer" target="au.gov.asd.tac.constellation.graph.io.pythonwriter"/>
         </tocitem>
     </tocitem>
 </toc>

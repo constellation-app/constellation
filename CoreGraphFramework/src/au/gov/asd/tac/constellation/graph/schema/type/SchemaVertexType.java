@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,10 +47,10 @@ public final class SchemaVertexType extends SchemaElementType<SchemaVertexType> 
         return UNKNOWN;
     }
 
-    protected final ConstellationIcon foregroundIcon;
-    protected final ConstellationIcon backgroundIcon;
-    protected final Pattern detectionRegex;
-    protected final Pattern validationRegex;
+    private final ConstellationIcon foregroundIcon;
+    private final ConstellationIcon backgroundIcon;
+    private final Pattern detectionRegex;
+    private final Pattern validationRegex;
 
     /**
      * Constructor for SchemaVertexType. All properties of a SchemaVertexType
@@ -316,15 +316,28 @@ public final class SchemaVertexType extends SchemaElementType<SchemaVertexType> 
          * @return
          */
         public SchemaVertexType build() {
+            ConstellationColor newColor = color;
+            ConstellationIcon newForegroundIcon = foregroundIcon;
+            ConstellationIcon newBackgroundIcon = backgroundIcon;
+
+            if (color == null) {
+                newColor = superType != null ? superType.color : UNKNOWN.color;
+            }
+
+            if (foregroundIcon == null) {
+                newForegroundIcon = superType != null ? superType.foregroundIcon : UNKNOWN.getForegroundIcon();
+            }
+
+            if (backgroundIcon == null) {
+                newBackgroundIcon = superType != null ? superType.backgroundIcon : UNKNOWN.getBackgroundIcon();
+            }
+
             return new SchemaVertexType(
                     name,
                     description,
-                    color != null ? color : superType != null
-                                    ? superType.color : UNKNOWN.color,
-                    foregroundIcon != null ? foregroundIcon : superType != null
-                                    ? superType.foregroundIcon : UNKNOWN.getForegroundIcon(),
-                    backgroundIcon != null ? backgroundIcon : superType != null
-                                    ? superType.backgroundIcon : UNKNOWN.getBackgroundIcon(),
+                    newColor,
+                    newForegroundIcon,
+                    newBackgroundIcon,
                     detectionRegex,
                     validationRegex,
                     superType,

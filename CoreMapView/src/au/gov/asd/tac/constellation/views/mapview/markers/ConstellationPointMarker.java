@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import org.openide.util.Exceptions;
 import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
@@ -38,15 +39,17 @@ import processing.core.PImage;
  */
 public class ConstellationPointMarker extends ConstellationAbstractMarker {
 
+    private static final Logger LOGGER = Logger.getLogger(ConstellationPointMarker.class.getName());
+
     // image file path
     private static final String TEMPLATE_IMAGE_PATH = "marker-template-icon.png";
 
     // image data
-    private PImage TEMPLATE_IMAGE;
+    private PImage templateImage;
 
     // point relative to image
-    private float POINT_X_OFFSET;
-    private float POINT_Y_OFFSET;
+    private float pointXOffset;
+    private float pointYOffset;
 
     private static final String POINT_MARKER_ONE_LOCATION_ONLY = "A point marker can only have one location.";
     private static final String POINT_MARKER_ONE_LOCATION_MUST = "A point marker must have exactly one location.";
@@ -72,17 +75,17 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
             final File templateImageFile = ConstellationInstalledFileLocator.locate(
                     "modules/ext/data/" + TEMPLATE_IMAGE_PATH,
                     "au.gov.asd.tac.constellation.views.mapview",
-                    false, ConstellationPointMarker.class.getProtectionDomain());
-            final BufferedImage templateImage = ImageIO.read(templateImageFile);
-            TEMPLATE_IMAGE = new PImage(templateImage.getWidth(), templateImage.getHeight(), PConstants.ARGB);
-            TEMPLATE_IMAGE.loadPixels();
-            templateImage.getRGB(0, 0, TEMPLATE_IMAGE.width, TEMPLATE_IMAGE.height, TEMPLATE_IMAGE.pixels, 0, TEMPLATE_IMAGE.width);
-            TEMPLATE_IMAGE.updatePixels();
+                    ConstellationPointMarker.class.getProtectionDomain());
+            final BufferedImage templateBufferedImage = ImageIO.read(templateImageFile);
+            this.templateImage = new PImage(templateBufferedImage.getWidth(), templateBufferedImage.getHeight(), PConstants.ARGB);
+            this.templateImage.loadPixels();
+            templateBufferedImage.getRGB(0, 0, this.templateImage.width, this.templateImage.height, this.templateImage.pixels, 0, this.templateImage.width);
+            this.templateImage.updatePixels();
 
-            POINT_X_OFFSET = TEMPLATE_IMAGE.width / 2;
-            POINT_Y_OFFSET = TEMPLATE_IMAGE.height;
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+            pointXOffset = this.templateImage.width / 2F;
+            pointYOffset = this.templateImage.height;
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -144,17 +147,17 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
             graphics.ellipseMode(PConstants.RADIUS);
             graphics.ellipse(x, y, size, size);
         } else {
-            TEMPLATE_IMAGE.loadPixels();
-            for (int i = 0; i < TEMPLATE_IMAGE.width * TEMPLATE_IMAGE.height; i++) {
-                final int[] pixelArgb = MarkerUtilities.argb(TEMPLATE_IMAGE.pixels[i]);
+            templateImage.loadPixels();
+            for (int i = 0; i < templateImage.width * templateImage.height; i++) {
+                final int[] pixelArgb = MarkerUtilities.argb(templateImage.pixels[i]);
                 if (!(pixelArgb[0] == 0 || (pixelArgb[1] == 0 && pixelArgb[2] == 0 && pixelArgb[3] == 0))) {
-                    TEMPLATE_IMAGE.pixels[i] = getFillColor();
+                    templateImage.pixels[i] = getFillColor();
                 }
             }
-            TEMPLATE_IMAGE.updatePixels();
+            templateImage.updatePixels();
 
             graphics.imageMode(PConstants.CORNER);
-            graphics.image(TEMPLATE_IMAGE, x - POINT_X_OFFSET, y - POINT_Y_OFFSET);
+            graphics.image(templateImage, x - pointXOffset, y - pointYOffset);
         }
 
         graphics.popStyle();
@@ -166,8 +169,8 @@ public class ConstellationPointMarker extends ConstellationAbstractMarker {
     public boolean isInside(final UnfoldingMap map, final float checkX, final float checkY) {
         final float x = map.mapDisplay.getScreenPosition(getLocation()).x;
         final float y = map.mapDisplay.getScreenPosition(getLocation()).y;
-        return checkX > x - POINT_X_OFFSET && checkX < x - POINT_X_OFFSET + TEMPLATE_IMAGE.width
-                && checkY > y - POINT_Y_OFFSET && checkY < y - POINT_Y_OFFSET + TEMPLATE_IMAGE.height;
+        return checkX > x - pointXOffset && checkX < x - pointXOffset + templateImage.width
+                && checkY > y - pointYOffset && checkY < y - pointYOffset + templateImage.height;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,16 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -42,7 +45,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("DegreeCentralityPlugin=Degree Centrality")
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 public class DegreeCentralityPlugin extends SimpleEditPlugin {
 
     private static final SchemaAttribute DEGREE_ATTRIBUTE = SnaConcept.VertexAttribute.DEGREE_CENTRALITY;
@@ -81,20 +84,31 @@ public class DegreeCentralityPlugin extends SimpleEditPlugin {
         final PluginParameter<BooleanParameterValue> normaliseByPossibleParameter = BooleanParameterType.build(NORMALISE_POSSIBLE_PARAMETER_ID);
         normaliseByPossibleParameter.setName("Normalise By Max Possible Score");
         normaliseByPossibleParameter.setDescription("Normalise calculated scores by the maximum possible score");
-        normaliseByPossibleParameter.setBooleanValue(false);
         parameters.addParameter(normaliseByPossibleParameter);
 
         final PluginParameter<BooleanParameterValue> normaliseByAvailableParameter = BooleanParameterType.build(NORMALISE_AVAILABLE_PARAMETER_ID);
         normaliseByAvailableParameter.setName("Normalise By Max Available Score");
         normaliseByAvailableParameter.setDescription("Normalise calculated scores by the maximum calculated score");
-        normaliseByAvailableParameter.setBooleanValue(false);
         parameters.addParameter(normaliseByAvailableParameter);
 
         final PluginParameter<BooleanParameterValue> selectedOnlyParameter = BooleanParameterType.build(SELECTED_ONLY_PARAMETER_ID);
         selectedOnlyParameter.setName("Selected Only");
         selectedOnlyParameter.setDescription("Calculate using only selected elements");
-        selectedOnlyParameter.setBooleanValue(false);
         parameters.addParameter(selectedOnlyParameter);
+        
+        parameters.addController(NORMALISE_POSSIBLE_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE && master.getBooleanValue()) {
+                // only one of normalise by max possible or max available can be enabled
+                params.get(NORMALISE_AVAILABLE_PARAMETER_ID).setBooleanValue(false);
+            }
+        });
+        
+        parameters.addController(NORMALISE_AVAILABLE_PARAMETER_ID, (master, params, change) -> {
+            if (change == ParameterChange.VALUE && master.getBooleanValue()) {
+                // only one of normalise by max possible or max available can be enabled
+                params.get(NORMALISE_POSSIBLE_PARAMETER_ID).setBooleanValue(false);
+            }
+        });
 
         return parameters;
     }
@@ -152,18 +166,16 @@ public class DegreeCentralityPlugin extends SimpleEditPlugin {
 
         // choose the correct degree attribute
         final int degreeAttribute;
-        if (includeConnectionsIn && includeConnectionsOut) {
-            degreeAttribute = DEGREE_ATTRIBUTE.ensure(graph);
-        } else if (includeConnectionsIn && !includeConnectionsOut) {
+        if (includeConnectionsIn && !includeConnectionsOut) {
             degreeAttribute = IN_DEGREE_ATTRIBUTE.ensure(graph);
         } else if (!includeConnectionsIn && includeConnectionsOut) {
             degreeAttribute = OUT_DEGREE_ATTRIBUTE.ensure(graph);
         } else {
-            return;
+            degreeAttribute = DEGREE_ATTRIBUTE.ensure(graph);
         }
 
         // update the graph with degree values
-        for (final Map.Entry<Integer, Float> entry : degrees.entrySet()) {
+        for (final Entry<Integer, Float> entry : degrees.entrySet()) {
             if (normaliseByPossible) {
                 graph.setFloatValue(degreeAttribute, entry.getKey(), entry.getValue() / (vertexCount - 1));
             } else if (normaliseByAvailable && maxDegree > 0) {

@@ -2,7 +2,8 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
     <tocitem text="Views">
-        <tocitem text="Table View" target="au.gov.asd.tac.constellation.views.tableview.about"/>
-        <tocitem text="Table View 2" target="au.gov.asd.tac.constellation.views.tableview2"/>
+        <tocitem text="Table View">
+            <tocitem text="Table View" target="au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent"/>
+        </tocitem>
     </tocitem>
 </toc>

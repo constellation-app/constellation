@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,18 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginRegistry;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.importexport.text.ExportToTextPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.DefaultPluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -66,13 +70,13 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.BadLocationException;
+import org.apache.commons.lang3.StringUtils;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.ImageUtilities;
 import org.openide.util.Lookup;
@@ -86,11 +90,13 @@ import org.python.core.PyTraceback;
 public class ScriptingViewPane extends JPanel {
 
     private static final Logger LOGGER = Logger.getLogger(ScriptingViewPane.class.getName());
-    private static final File GET_STARTED_FILE = ConstellationInstalledFileLocator.locate("modules/ext/scripting_getting_started.txt", "au.gov.asd.tac.constellation.views.scripting", false, ScriptingViewPane.class.getProtectionDomain());
+    private static final File GET_STARTED_FILE = ConstellationInstalledFileLocator.locate(
+            "modules/ext/scripting_getting_started.txt",
+            "au.gov.asd.tac.constellation.views.scripting",
+            ScriptingViewPane.class.getProtectionDomain());
     private static final String SCRIPTING_VIEW_THREAD_NAME = "Scripting View";
 
     private static final String LANGUAGE = "Python";
-    private static final String EXTENSION = ".py";
 
     private final ScriptingViewTopComponent topComponent;
     private final ScriptingParser scriptParser;
@@ -112,7 +118,6 @@ public class ScriptingViewPane extends JPanel {
 
         this.scriptEditor = new RSyntaxTextArea(5, 80);
         scriptEditor.addParser(scriptParser);
-//        scriptEditor.setAnimateBracketMatching(false);
         scriptEditor.setAnimateBracketMatching(true);
         scriptEditor.setAntiAliasingEnabled(true);
         scriptEditor.setAutoIndentEnabled(true);
@@ -147,14 +152,12 @@ public class ScriptingViewPane extends JPanel {
             }
             try (final BufferedReader reader = new BufferedReader(new FileReader(new File(GET_STARTED_FILE.getPath())))) {
                 StringBuilder getStartedText = new StringBuilder();
-                reader.lines().forEach(line -> {
-                    getStartedText.append(line).append(SeparatorConstants.NEWLINE);
-                });
+                reader.lines().forEach(line -> getStartedText.append(line).append(SeparatorConstants.NEWLINE));
                 scriptEditor.setText(getStartedText.toString());
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             scriptEditor.setText("# SORRY, THERE WAS A PROBLEM LOADING THE 'GET STARTED' FILE\n");
         }
 
@@ -179,23 +182,17 @@ public class ScriptingViewPane extends JPanel {
 
         final JMenuItem newOutputItem = new JCheckBoxMenuItem("New Output Window", newOutput);
         newOutputItem.setSelected(newOutput);
-        newOutputItem.addActionListener(e -> {
-            newOutput = newOutputItem.isSelected();
-        });
+        newOutputItem.addActionListener(e -> newOutput = newOutputItem.isSelected());
         optionsMenu.add(newOutputItem);
 
         final JMenuItem apiItem = new JMenuItem("API Documentation");
-        apiItem.addActionListener(e -> {
-            new HelpCtx(topComponent.getClass().getName()).display();
-        });
+        apiItem.addActionListener(e -> new HelpCtx(this.getClass().getPackage().getName()).display());
         optionsMenu.add(apiItem);
 
         final Collection<? extends ScriptingAbstractAction> scriptingActions = Lookup.getDefault().lookupAll(ScriptingAbstractAction.class);
         scriptingActions.forEach(action -> {
             final JMenuItem item = new JMenuItem(action.getLabel());
-            item.addActionListener(e -> {
-                action.performAction(this);
-            });
+            item.addActionListener(e -> action.performAction(this));
             optionsMenu.add(item);
         });
 
@@ -258,14 +255,14 @@ public class ScriptingViewPane extends JPanel {
     private void openScript() {
         final JFileChooser fileChooser = new FileChooserBuilder(ScriptingViewTopComponent.class)
                 .setTitle(String.format("Save %s script", LANGUAGE))
+                .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && name.toLowerCase().endsWith(EXTENSION)) {
+                        if (pathName.isFile() &&StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON)) {
                             return true;
                         }
-
                         return pathName.isDirectory();
                     }
 
@@ -278,46 +275,21 @@ public class ScriptingViewPane extends JPanel {
 
         final int state = fileChooser.showOpenDialog(this);
         if (state == JFileChooser.APPROVE_OPTION) {
-            PluginExecution.withPlugin(new SimplePlugin("Scripting View: Load Script") {
-                @Override
-                protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
-                    try {
-                        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(
-                                new FileInputStream(fileChooser.getSelectedFile()), StandardCharsets.UTF_8.name()))) {
-                            final StringBuilder b = new StringBuilder();
-                            while (true) {
-                                final String s = reader.readLine();
-                                if (s == null) {
-                                    break;
-                                }
-                                b.append(s).append(SeparatorConstants.NEWLINE);
-                            }
-
-                            SwingUtilities.invokeLater(() -> {
-                                setScriptFile(fileChooser.getSelectedFile());
-                                scriptEditor.setText(b.toString());
-                            });
-                        }
-                    } catch (final IOException ex) {
-                        Exceptions.printStackTrace(ex);
-                    }
-                }
-            }).executeLater(null);
-
+            PluginExecution.withPlugin(new LoadScriptPlugin(fileChooser, scriptEditor, this)).executeLater(null);
         }
     }
 
     private void saveScript() {
         final JFileChooser fileChooser = new FileChooserBuilder(ScriptingViewTopComponent.class)
                 .setTitle(String.format("Save %s script", LANGUAGE))
+                .setFilesOnly(true)
                 .setFileFilter(new FileFilter() {
                     @Override
                     public boolean accept(final File pathName) {
                         final String name = pathName.getName().toLowerCase();
-                        if (pathName.isFile() && name.toLowerCase().endsWith(EXTENSION)) {
+                        if (pathName.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PYTHON)) {
                             return true;
                         }
-
                         return pathName.isDirectory();
                     }
 
@@ -335,8 +307,8 @@ public class ScriptingViewPane extends JPanel {
         final int state = fileChooser.showSaveDialog(this);
         if (state == JFileChooser.APPROVE_OPTION) {
             String fileName = fileChooser.getSelectedFile().getPath();
-            if (!fileName.toLowerCase().endsWith(EXTENSION)) {
-                fileName += EXTENSION;
+            if (!StringUtils.endsWithIgnoreCase(fileName, FileExtensionConstants.PYTHON)) {
+                fileName += FileExtensionConstants.PYTHON;
             }
             final String text = scriptEditor.getText();
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_TEXT)
@@ -368,10 +340,10 @@ public class ScriptingViewPane extends JPanel {
                     setName(SCRIPTING_VIEW_THREAD_NAME);
                     f.get();
                 } catch (final InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                    LOGGER.log(Level.SEVERE, "Script Execution was interrupted", ex);
                     Thread.currentThread().interrupt();
-                } catch (ExecutionException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final ExecutionException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
 
                 final Exception ex = (Exception) parameters.getParameters()
@@ -416,7 +388,7 @@ public class ScriptingViewPane extends JPanel {
                                     final int leo = scriptEditor.getLineEndOffset(line);
                                     final int length = (leo - lso) - column;
                                     scriptParser.setError(msg, line, lso + column, length);
-                                } catch (BadLocationException ex1) {
+                                } catch (final BadLocationException ex1) {
                                     scriptParser.setError(msg, line);
                                 }
                             } else {
@@ -439,4 +411,49 @@ public class ScriptingViewPane extends JPanel {
             DialogDisplayer.getDefault().notify(notifyDescriptor);
         }
     }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
+    public static class LoadScriptPlugin extends SimplePlugin {
+
+        final JFileChooser fileChooser;
+        final RSyntaxTextArea scriptEditor;
+        final ScriptingViewPane pane;
+
+        public LoadScriptPlugin(final JFileChooser fileChooser, final RSyntaxTextArea scriptEditor, final ScriptingViewPane pane) {
+            this.fileChooser = fileChooser;
+            this.scriptEditor = scriptEditor;
+            this.pane = pane;
+        }
+
+        @Override
+        public String getName() {
+            return "Scripting View: Load Script";
+        }
+
+        @Override
+        protected void execute(final PluginGraphs _graphs, final PluginInteraction _interaction, final PluginParameters _parameters) throws InterruptedException, PluginException {
+            try {
+                try (final BufferedReader reader = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(fileChooser.getSelectedFile()), StandardCharsets.UTF_8.name()))) {
+                    final StringBuilder b = new StringBuilder();
+                    while (true) {
+                        final String s = reader.readLine();
+                        if (s == null) {
+                            break;
+                        }
+                        b.append(s).append(SeparatorConstants.NEWLINE);
+                    }
+
+                    SwingUtilities.invokeLater(() -> {
+                        pane.setScriptFile(fileChooser.getSelectedFile());
+                        scriptEditor.setText(b.toString());
+                    });
+                }
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+            }
+        }
+
+    }
+
 }

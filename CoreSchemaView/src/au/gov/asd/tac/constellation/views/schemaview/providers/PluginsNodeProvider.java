@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -107,6 +107,8 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
                     LOGGER.log(Level.WARNING, "null name for plugin %s{0}", pluginClassName);
                 } else if (pluginNames.containsKey(pluginName)) {
                     LOGGER.log(Level.WARNING, "duplicate name {0} for plugins {1}, {2}", new Object[]{pluginName, pluginClassName, pluginNames.get(pluginName)});
+                } else {
+                    // Do nothing
                 }
 
                 pluginNames.put(pluginName != null ? pluginName : pluginClassName, pluginClassName);
@@ -201,9 +203,7 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
         final Button exportPluginsButton = new Button();
         exportPluginsButton.setTooltip(new Tooltip("Export Plugin Details to CSV"));
         exportPluginsButton.setGraphic(new ImageView(UserInterfaceIconProvider.DOWNLOAD.buildImage(16, ConstellationColor.CLOUDS.getJavaColor())));
-        exportPluginsButton.setOnAction(action -> {
-            exportPluginsToCsv(tab.getContent().getScene().getWindow());
-        });
+        exportPluginsButton.setOnAction(action -> exportPluginsToCsv(tab.getContent().getScene().getWindow()));
 
         Platform.runLater(() -> {
             pane.setAlignment(Pos.TOP_RIGHT);
@@ -277,16 +277,13 @@ public class PluginsNodeProvider implements SchemaViewNodeProvider {
 
                         Collections.sort(paramList, (a, b) -> a.getId().compareToIgnoreCase(b.getId()));
 
-                        paramList.stream().forEach(p -> {
-                            sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)
-                                    .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)
+                        paramList.stream().forEach(p -> sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)                                    .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)
                                     .append(p.getId()).append(SeparatorConstants.COMMA)
                                     .append(p.getType().getId()).append(SeparatorConstants.COMMA)
                                     .append(p.getName()).append(SeparatorConstants.COMMA)
                                     .append("\"").append(p.getDescription()).append("\"").append(SeparatorConstants.COMMA)
                                     .append("\"").append(p.getStringValue()).append("\"")
-                                    .append(SeparatorConstants.NEWLINE);
-                        });
+                                .append(SeparatorConstants.NEWLINE));
                     } else {
                         sb.append(plugin.getClass().getName()).append(SeparatorConstants.COMMA)
                                 .append(PluginRegistry.getAlias(pname)).append(SeparatorConstants.COMMA)

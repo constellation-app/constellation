@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,8 @@ import java.io.IOException;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.Map;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -40,6 +41,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public final class NamedSelectionStateIOProvider extends AbstractGraphIOProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(NamedSelectionStateIOProvider.class.getName());
 
     private static final String QUANTITY = "quantity";
     private static final String ALLOCATED = "allocated";
@@ -70,8 +73,8 @@ public final class NamedSelectionStateIOProvider extends AbstractGraphIOProvider
             jg.writeStringField(SELECTION_DESCRIPTION, selection.getDescription());
             jg.writeBooleanField(SELECTION_LOCKED, selection.isLocked());
             jg.writeEndObject();
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

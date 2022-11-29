@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,9 +44,9 @@ public class AnyToReportTranslator extends InternalVisualisationTranslator<Analy
     public ReportVisualisation buildVisualisation() {
         final ReportVisualisation report = new ReportVisualisation();
         @SuppressWarnings("unchecked") // return type of getPlugins will be List<AnalyticPlugin<?>>
-        List<AnalyticPlugin<?>> questionPlugins = (List<AnalyticPlugin<?>>) question.getPlugins();
+        final List<AnalyticPlugin<?>> questionPlugins = (List<AnalyticPlugin<?>>) question.getPlugins();
         @SuppressWarnings("unchecked") // return type of getExceptions will always be List<Exception>
-        List<Exception> questionExceptions = question.getExceptions();
+        final List<Exception> questionExceptions = question.getExceptions();
         report.populateReport(
                 questionPlugins,
                 result.size(),

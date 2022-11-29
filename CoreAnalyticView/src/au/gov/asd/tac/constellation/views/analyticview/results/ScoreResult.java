@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,21 +41,19 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
         final StringBuilder sb = new StringBuilder();
         result.values().forEach(score -> {
             sb.append(score.getElementId()).append(": {\n");
-            score.namedScores.forEach((name, value) -> {
-                sb.append("\tname: ").append(name).append(", value: ").append(value);
-            });
+            score.namedScores.forEach((name, value) -> sb.append("\tname: ").append(name).append(", value: ").append(value));
             sb.append(" }\n");
         });
         return sb.toString();
     }
-    
-    public ScoreResult combine(ScoreResult otherResult) {
-        otherResult.result.forEach((key, value) -> 
-        result.merge(key, value, ElementScore::combineReplace)
+
+    public ScoreResult combine(final ScoreResult otherResult) {
+        otherResult.result.forEach((key, value)
+                -> result.merge(key, value, ElementScore::combineReplace)
         );
         return this;
     }
-    
+
     public static class ElementScore extends AnalyticData implements Comparable<ElementScore> {
 
         private final Map<String, Float> namedScores;
@@ -65,11 +63,11 @@ public class ScoreResult extends AnalyticResult<ElementScore> {
             super(elementType, elementId, identifier, isNull);
             this.namedScores = namedScores;
         }
-        
+
         public static ElementScore combineReplace(final ElementScore es1, final ElementScore es2) {
             final Map<String, Float> combinedNamedScores = new HashMap<>(es1.getNamedScores());
             combinedNamedScores.putAll(es2.getNamedScores());
-            
+
             return new ElementScore(es1.getElementType(), es1.getElementId(), es1.getIdentifier(), es1.isNull() && es2.isNull(), combinedNamedScores);
         }
 

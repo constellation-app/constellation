@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.util.Pair;
 import javax.net.ssl.HttpsURLConnection;
-import org.openide.util.Exceptions;
 
 /**
  * Emulate an HTML form post.
@@ -33,6 +34,8 @@ import org.openide.util.Exceptions;
  * @author algol
  */
 public class MultiPart {
+    
+    private static final Logger LOGGER = Logger.getLogger(MultiPart.class.getName());
 
     private static final String DASH_DASH = "--";
     private static final String EOL = "\r\n";
@@ -71,7 +74,7 @@ public class MultiPart {
             final byte[] bytes = sb.toString().getBytes(StandardCharsets.UTF_8.name());
             buf.write(bytes);
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -99,7 +102,7 @@ public class MultiPart {
             buf.write(content);
             buf.write(EOL.getBytes(StandardCharsets.UTF_8.name()));
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -117,7 +120,7 @@ public class MultiPart {
             }
             isEnded = true;
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -172,11 +175,6 @@ public class MultiPart {
             location = null;
         }
 
-//        conn.getHeaderFields().entrySet().stream().forEach(entry ->
-//        {
-//            System.out.printf("@@MultiPart header %s: %s\n", entry.getKey(), entry.getValue());
-//        });
-//        System.out.printf("@@MultiPart response [%s]\n", new String(getBody(conn, code)));
         return new Pair<>(conn.getResponseMessage(), location);
     }
 

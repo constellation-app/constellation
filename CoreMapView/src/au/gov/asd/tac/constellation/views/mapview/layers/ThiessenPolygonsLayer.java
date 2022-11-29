@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerUtilities;
 import de.fhpotsdam.unfolding.marker.Marker;
 import de.fhpotsdam.unfolding.utils.ScreenPosition;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +34,6 @@ import processing.core.PImage;
 @ServiceProvider(service = MapLayer.class, position = 600)
 public class ThiessenPolygonsLayer extends MapLayer {
 
-    private List<Marker> onScreenMarkers = new ArrayList<>();
     private int onScreenMarkerCount = 0;
 
     @Override
@@ -66,7 +64,8 @@ public class ThiessenPolygonsLayer extends MapLayer {
         // update on screen markers
         final ScreenPosition topLeft = map.getScreenPosition(map.getTopLeftBorder());
         final ScreenPosition bottomRight = map.getScreenPosition(map.getBottomRightBorder());
-        onScreenMarkers = map.getMarkers().stream()
+
+        final List<Marker> onScreenMarkers = map.getMarkers().stream()
                 .filter(marker -> {
                     final ScreenPosition markerPosition = map.getScreenPosition(marker.getLocation());
                     return !marker.isHidden()
@@ -138,14 +137,5 @@ public class ThiessenPolygonsLayer extends MapLayer {
 
     private double euclidianDistance(final int x1, final int y1, final int x2, final int y2) {
         return Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
-    }
-
-    private double manhattanDistance(final int x1, final int y1, final int x2, final int y2) {
-        return Math.abs((double) x1 - x2) + Math.abs((double) y1 - y2);
-    }
-
-    private double minkovskiDistance(final int x1, final int y1, final int x2, final int y2) {
-        final int p = 3;
-        return Math.pow(Math.pow(Math.abs(x2 - x1), p) + Math.pow(Math.abs(y2 - y1), p), (1 / p));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,8 @@ import org.openide.util.NbBundle.Messages;
 @ActionReference(path = "Menu/Help", position = 940)
 @Messages("CTL_LogAction=Show Logs")
 public final class LogAction implements ActionListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(LogAction.class.getName());
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -49,8 +51,8 @@ public final class LogAction implements ActionListener {
         final LogViewerSupport p = new LogViewerSupport(f, "Logs");
         try {
             p.showLogViewer();
-        } catch (IOException ex) {
-            Logger.getLogger(LogAction.class.getName()).log(Level.SEVERE, "Unable to show the log file", ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, "Unable to show the log file", ex);
         }
     }
 }

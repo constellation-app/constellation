@@ -5,6 +5,131 @@
         "description": "<p>A REST API for CONSTELLATION.</p><p>The <span style=\"font-family:monospace\">X-CONSTELLATION-SECRET</span> value is required for all REST API endpoints. It can be found in <span style=\"font-family:monospace\">$HOME/.CONSTELLATION/rest.json</span> after the REST server has been started.",
         "version": "2.0.0"
     },
-    "paths": {
+    "paths": {      
+    },
+    "components":{        
+        "examples":{
+            "runPluginExample":{
+                "type": "object",
+                "properties":{
+                    "SelectTopNPlugin.mode": {
+                        "type": "string"
+                    },
+                    "SelectTopNPlugin.type_category": {
+                        "type": "string"
+                    },
+                    "SelectTopNPlugin.type": {
+                        "type": "string"
+                    },
+                    "SelectTopNPlugin.limit": {
+                        "type": "integer"
+                    }
+                },
+                "example":{
+                    "SelectTopNPlugin.mode": "Node",
+                    "SelectTopNPlugin.type_category": "Online Location",
+                    "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
+                    "SelectTopNPlugin.limit": 2
+                }
+            },
+            "runPluginsExampleObject":
+            {
+                "type": "object",                    
+                "properties":{
+                    "plugin_name": {
+                        "type": "string"
+                    },                  
+                   "plugin_args":{
+                        "type": "object",
+                        "nullable": "true"
+                  }
+                }
+            },
+            "runPluginsExample":
+            {
+                "type": "array", 
+                "items": {
+                    "$ref":"#/components/examples/runPluginsExampleObject"
+                },  
+                "example":[
+                    {                      
+                        "plugin_name": "SELECTALL"                  
+                    },
+                    {                      
+                        "plugin_name": "DESELECTBLAZES"                  
+                    },
+                    {
+                        "plugin_name": "SELECTTOPN",
+                        "plugin_args":{                               
+                            "SelectTopNPlugin.mode": "Node",
+                            "SelectTopNPlugin.type_category": "Online Location",
+                            "SelectTopNPlugin.type": "\n\u2713 Online Location\n",
+                            "SelectTopNPlugin.limit": 2
+                        }  
+                    }
+                ]
+            },
+            "addRecordStoreExampleObject":
+            {
+                "type": "object",                    
+                "properties":{
+                    "columns":{
+                        "type": "array"
+                    },                  
+                    "data":{
+                        "type": "array"                        
+                    }
+                }
+            },
+            "addRecordStoreExample":
+            {
+                "type": "array", 
+                "items": {
+                    "$ref":"#/components/examples/addRecordStoreExampleObject"
+                },  
+                "example":{                    
+                    "columns": [
+                        "source.Label",   
+                        "source.visibility",   
+                        "source.dim",    
+                        "source.Identifier", 
+                        "source.selected"
+                    ],
+                    "data":[ 
+                        [
+                            "New Node1",
+                            true,
+                            true,
+                            "New Node1",
+                            true
+                        ]
+                    ]                    
+                }
+            },
+            "setGraphAttributesExample" : {
+                "type": "array", 
+                "items": {
+                    "$ref":"#/components/examples/addRecordStoreExampleObject"
+                },  
+                "example":{                    
+                    "columns": [
+                        "blaze_size",   
+                        "highlight_color",   
+                        "draw_directed_transactions",    
+                        "custom_attribute_1", 
+                        "custom_attribute_2"
+                    ],
+                    "data":[ 
+                        [
+                            0.5,
+                            "Carrot",
+                            true,
+                            "custom value 1",
+                            "custom value 2"
+                        ]
+                    ]                    
+                }
+            }
+        }
     }
 }

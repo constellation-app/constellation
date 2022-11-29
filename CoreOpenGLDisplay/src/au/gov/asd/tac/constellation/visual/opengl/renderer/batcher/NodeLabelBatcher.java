@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.NodeGlyphStream;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs.NodeGlyphStreamContext;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -71,6 +72,7 @@ public class NodeLabelBatcher implements SceneBatcher {
     private int shaderXyzTexture;
     private int shaderGlyphInfoTexture;
     private int shaderGlyphImageTexture;
+    private int shaderGreyscale; // anaglyphic drawing
 
     private final int labelFloatsTarget;
     private final int labelIntsTarget;
@@ -80,7 +82,7 @@ public class NodeLabelBatcher implements SceneBatcher {
 
     public NodeLabelBatcher() {
         // Create the batches
-        topBatch = new Batch(GL3.GL_POINTS);
+        topBatch = new Batch(GL.GL_POINTS);
         labelFloatsTarget = topBatch.newFloatBuffer(FLOAT_BUFFERS_WIDTH, false);
         labelIntsTarget = topBatch.newIntBuffer(INT_BUFFERS_WIDTH, false);
         bottomBatch = new Batch(topBatch);
@@ -112,6 +114,7 @@ public class NodeLabelBatcher implements SceneBatcher {
         shaderXyzTexture = gl.glGetUniformLocation(shader, "xyzTexture");
         shaderGlyphInfoTexture = gl.glGetUniformLocation(shader, "glyphInfoTexture");
         shaderGlyphImageTexture = gl.glGetUniformLocation(shader, "glyphImageTexture");
+        shaderGreyscale = gl.glGetUniformLocation(shader, "greyscale");
     }
 
     @Override
@@ -209,9 +212,7 @@ public class NodeLabelBatcher implements SceneBatcher {
         for (int i = 0; i < numBottomLabels; i++) {
             labelBottomInfoReference.set(i, 3, (int) (LabelUtilities.NRADIUS_TO_LABEL_UNITS * Math.min(access.getBottomLabelSize(i), LabelUtilities.MAX_LABEL_SIZE)));
         }
-        return gl -> {
-            labelBottomInfo.set(labelBottomInfoReference);
-        };
+        return gl -> labelBottomInfo.set(labelBottomInfoReference);
     }
 
     public GLRenderableUpdateTask setBottomLabelColors(final VisualAccess access) {
@@ -220,9 +221,7 @@ public class NodeLabelBatcher implements SceneBatcher {
             final ConstellationColor labelColor = access.getBottomLabelColor(i);
             labelBottomInfoReference.setRow(labelColor.getRed(), labelColor.getGreen(), labelColor.getBlue(), labelBottomInfoReference.get(i, 3), i);
         }
-        return gl -> {
-            labelBottomInfo.set(labelBottomInfoReference);
-        };
+        return gl -> labelBottomInfo.set(labelBottomInfoReference);
     }
 
     public GLRenderableUpdateTask setTopLabelSizes(final VisualAccess access) {
@@ -230,9 +229,7 @@ public class NodeLabelBatcher implements SceneBatcher {
         for (int i = 0; i < numTopLabels; i++) {
             labelTopInfoReference.set(i, 3, (int) (LabelUtilities.NRADIUS_TO_LABEL_UNITS * Math.min(access.getTopLabelSize(i), LabelUtilities.MAX_LABEL_SIZE)));
         }
-        return gl -> {
-            labelTopInfo.set(labelTopInfoReference);
-        };
+        return gl -> labelTopInfo.set(labelTopInfoReference);
     }
 
     public GLRenderableUpdateTask setTopLabelColors(final VisualAccess access) {
@@ -241,23 +238,17 @@ public class NodeLabelBatcher implements SceneBatcher {
             final ConstellationColor labelColor = access.getTopLabelColor(i);
             labelTopInfoReference.setRow(labelColor.getRed(), labelColor.getGreen(), labelColor.getBlue(), labelTopInfoReference.get(i, 3), i);
         }
-        return gl -> {
-            labelTopInfo.set(labelTopInfoReference);
-        };
+        return gl -> labelTopInfo.set(labelTopInfoReference);
     }
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor color = access.getHighlightColor();
-        return gl -> {
-            highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
-        };
+        return gl -> highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
     }
 
     public GLRenderableUpdateTask setBackgroundColor(final VisualAccess access) {
         final ConstellationColor color = access.getBackgroundColor();
-        return gl -> {
-            backgroundColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 0.25f};
-        };
+        return gl -> backgroundColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 0.25F};
     }
 
     @Override
@@ -269,7 +260,7 @@ public class NodeLabelBatcher implements SceneBatcher {
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
         if (topBatch.isDrawable() || bottomBatch.isDrawable()) {
             gl.glUseProgram(shader);
 
@@ -291,6 +282,7 @@ public class NodeLabelBatcher implements SceneBatcher {
             gl.glUniform1i(shaderBackgroundGlyphIndex, SharedDrawable.getLabelBackgroundGlyphPosition());
             gl.glUniform4fv(shaderBackgroundColor, 1, backgroundColor, 0);
             gl.glUniform4fv(shaderHighlightColor, 1, highlightColor, 0);
+            gl.glUniform1i(shaderGreyscale, greyscale ? 1 : 0);
 
             if (topBatch.isDrawable()) {
                 topBatch.draw(gl);

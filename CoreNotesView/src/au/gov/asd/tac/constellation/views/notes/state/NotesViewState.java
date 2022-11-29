@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,20 +28,24 @@ public class NotesViewState {
 
     private final List<NotesViewEntry> notesViewEntries;
     private final List<String> selectedFilters;
+    private final List<String> tagsSelectedFilters;
 
     public NotesViewState() {
         notesViewEntries = new ArrayList();
         selectedFilters = new ArrayList();
+        tagsSelectedFilters = new ArrayList();
     }
 
     public NotesViewState(final NotesViewState currentState) {
         notesViewEntries = currentState.getNotes();
         selectedFilters = currentState.getFilters();
+        tagsSelectedFilters = currentState.getTagsFilters();
     }
 
-    public NotesViewState(final List<NotesViewEntry> notesViewEntries, final List<String> selectedFilters) {
+    public NotesViewState(final List<NotesViewEntry> notesViewEntries, final List<String> selectedFilters, final List<String> tagsSelectedFilters) {
         this.notesViewEntries = notesViewEntries;
         this.selectedFilters = selectedFilters;
+        this.tagsSelectedFilters = tagsSelectedFilters;
     }
 
     public List<NotesViewEntry> getNotes() {
@@ -52,6 +56,10 @@ public class NotesViewState {
         return selectedFilters;
     }
 
+    public List<String> getTagsFilters() {
+        return tagsSelectedFilters;
+    }
+
     public void setNotes(final List<NotesViewEntry> notesViewEntries) {
         this.notesViewEntries.clear();
         this.notesViewEntries.addAll(notesViewEntries);
@@ -60,5 +68,10 @@ public class NotesViewState {
     public void setFilters(final List<String> selectedFilters) {
         this.selectedFilters.clear();
         this.selectedFilters.addAll(selectedFilters);
+    }
+
+    public void setTagsFilters(final List<String> selectedTagsFilters) {
+        this.tagsSelectedFilters.clear();
+        this.tagsSelectedFilters.addAll(selectedTagsFilters);
     }
 }

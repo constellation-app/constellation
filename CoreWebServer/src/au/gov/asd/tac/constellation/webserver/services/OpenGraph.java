@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -79,6 +80,7 @@ public class OpenGraph extends RestService {
         final PluginParameter<StringParameterValue> fileParam = StringParameterType.build(FILE_PARAMETER_ID);
         fileParam.setName("File path");
         fileParam.setDescription("The fully qualified path of a .star file.");
+        fileParam.setRequired(true);
         parameters.addParameter(fileParam);
 
         return parameters;
@@ -92,7 +94,7 @@ public class OpenGraph extends RestService {
 
         final File fnam = new File(filePath).getAbsoluteFile();
         String name = fnam.getName();
-        if (name.toLowerCase().endsWith(GraphDataObject.FILE_EXTENSION)) {
+        if (StringUtils.endsWithIgnoreCase(name, GraphDataObject.FILE_EXTENSION)) {
             name = name.substring(0, name.length() - GraphDataObject.FILE_EXTENSION.length());
         }
 

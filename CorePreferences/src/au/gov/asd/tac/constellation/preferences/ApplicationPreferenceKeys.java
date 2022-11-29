@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.preferences;
 import au.gov.asd.tac.constellation.preferences.rest.RestDirectory;
 import java.io.File;
 import java.util.prefs.Preferences;
-import javax.swing.JFileChooser;
 import org.openide.util.Lookup;
 
 /**
@@ -53,6 +52,8 @@ public final class ApplicationPreferenceKeys {
             }
         } else if (!f.isDirectory()) {
             // TODO: warn the user.
+        } else {
+            // Do nothing
         }
 
         return userDir;
@@ -82,20 +83,16 @@ public final class ApplicationPreferenceKeys {
     public static final int AUTOSAVE_SCHEDULE_DEFAULT = 5;
 
     /**
-     * Tutorial window.
+     * Whats New window.
      */
     public static final String TUTORIAL_ON_STARTUP = "tutorialMode";
     public static final boolean TUTORIAL_ON_STARTUP_DEFAULT = false;
+
     /**
      * Welcome window.
      */
     public static final String WELCOME_ON_STARTUP = "welcomeMode";
     public static final boolean WELCOME_ON_STARTUP_DEFAULT = true;
-    /**
-     * Freeze graph view.
-     */
-    public static final String FREEZE_GRAPH_VIEW = "freezeGraphView";
-    public static final boolean FREEZE_GRAPH_VIEW_DEFAULT = true;
 
     /**
      * Web server listening port.
@@ -107,18 +104,18 @@ public final class ApplicationPreferenceKeys {
      * Jupyter notebook directory.
      */
     public static final String JUPYTER_NOTEBOOK_DIR = "jupyterNotebookDir";
-    public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new JFileChooser().getFileSystemView().getDefaultDirectory().getAbsolutePath();
+    public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new File(System.getProperty("user.dir")).getPath();
 
     /**
-     * Remember Save As location.
+     * Remember Open and Save location.
      */
-    public static final String REMEMBER_SAVE_LOCATION = "rememberSaveLocation";
-    public static final boolean REMEMBER_SAVE_LOCATION_DEFAULT = true;
+    public static final String REMEMBER_OPEN_AND_SAVE_LOCATION = "rememberOpenAndSaveLocation";
+    public static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT = true;
 
     /**
      * File Save location.
      */
-    public static final String FILE_SAVE_LOCATION = "fileSaveLocation";
+    public static final String FILE_OPEN_AND_SAVE_LOCATION = "fileOpenAndSaveLocation";
 
     /**
      * A directory where the webserver can write files to emulate REST requests.
@@ -141,6 +138,8 @@ public final class ApplicationPreferenceKeys {
             }
         } else if (!f.isDirectory()) {
             // TODO: warn the user.
+        } else {
+            // Do nothing
         }
 
         return restDir;
@@ -174,6 +173,7 @@ public final class ApplicationPreferenceKeys {
     public static final String CHART_DISPLAY_CONSTELLATION = "constellation";
     public static final String CHART_DISPLAY_BROWSER = "browser";
     public static final String CHART_DISPLAY_DEFAULT = CHART_DISPLAY_CONSTELLATION;
+
     /**
      * Scripting.
      */
@@ -184,6 +184,15 @@ public final class ApplicationPreferenceKeys {
      * Quality Control View Priorities
      */
     public static final String RULE_PRIORITIES = "customRules";
+
+    /**
+     * Default Font.
+     */
+    public static final String FONT_PREFERENCES = "au/gov/asd/tac/constellation/preferences";
+    public static final String FONT_FAMILY = "fontFamily";
+    public static String FONT_FAMILY_DEFAULT = "Arial";
+    public static final String FONT_SIZE = "fontSize";
+    public static String FONT_SIZE_DEFAULT = "12";
 
     private ApplicationPreferenceKeys() {
     }

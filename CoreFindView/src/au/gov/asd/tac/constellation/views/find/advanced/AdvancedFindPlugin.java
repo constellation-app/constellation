@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import java.util.ArrayList;
@@ -35,7 +36,7 @@ import org.openide.util.NbBundle.Messages;
  * @author betelgeuse
  * @see SimpleReadPlugin
  */
-@PluginInfo(pluginType = PluginType.SEARCH, tags = {"SEARCH"})
+@PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
 @Messages({
     "AdvancedFindPlugin=Find: Advanced Search",
     "FindResultNotification=Number of results found: "

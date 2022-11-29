@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins;
 
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -52,5 +53,5 @@ public @interface PluginInfo {
      *
      * @return a list of tags associated with this plugin.
      */
-    public String[] tags() default {"GENERAL"};
+    public String[] tags() default PluginTags.GENERAL;
 }

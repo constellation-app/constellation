@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,8 +30,9 @@ import au.gov.asd.tac.constellation.views.scripting.graph.SGraph;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.filesystems.FileChooserBuilder;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -41,6 +42,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = ScriptingModule.class)
 public class ScriptingUtilities implements ScriptingModule {
+    
+    private static final Logger LOGGER = Logger.getLogger(ScriptingUtilities.class.getName());
 
     @Override
     public String getName() {
@@ -69,9 +72,7 @@ public class ScriptingUtilities implements ScriptingModule {
      */
     public Map<String, SGraph> getOpenGraphs() {
         final Map<String, SGraph> openGraphs = new HashMap<>();
-        GraphNode.getAllGraphs().forEach((graphId, graph) -> {
-            openGraphs.put(GraphNode.getGraphNode(graphId).getDisplayName(), new SGraph(graph));
-        });
+        GraphNode.getAllGraphs().forEach((graphId, graph) -> openGraphs.put(GraphNode.getGraphNode(graphId).getDisplayName(), new SGraph(graph)));
         return openGraphs;
     }
 
@@ -103,11 +104,11 @@ public class ScriptingUtilities implements ScriptingModule {
         parameters.appendParameters(plugin.createParameters());
         try {
             PluginExecution.withPlugin(plugin).withParameters(parameters).executeNow(graph.getGraph());
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex, () -> pluginName + " was interrupted");
             Thread.currentThread().interrupt();
-        } catch (PluginException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final PluginException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -130,11 +131,11 @@ public class ScriptingUtilities implements ScriptingModule {
                 }
             });
             PluginExecution.withPlugin(plugin).withParameters(parameters).executeNow(graph.getGraph());
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex, () -> pluginName + " was interrupted");
             Thread.currentThread().interrupt();
-        } catch (PluginException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final PluginException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 }

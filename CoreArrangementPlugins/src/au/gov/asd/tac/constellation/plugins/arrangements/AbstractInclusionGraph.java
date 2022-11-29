@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,19 +108,23 @@ public abstract class AbstractInclusionGraph {
 
     private boolean updatePositionIfExisting;
 
+    // Attribute used to store whether a vertexes position should be pinned and not auto arranged
+    private final int pinnedAttr;
+
     /**
      * Create a new inclusion graph.
      *
      * @param wg The original graph.
      * @param connections How to copy transactions to the inclusion graph.
      */
-    public AbstractInclusionGraph(final GraphWriteMethods wg, final Connections connections) {
+    protected AbstractInclusionGraph(final GraphWriteMethods wg, final Connections connections) {
         this.wg = wg;
         this.connections = connections;
         attributesToCopy = new ArrayList<>();
 
         inclusionGraph = null;
         updatePositionIfExisting = true;
+        pinnedAttr = VisualConcept.VertexAttribute.PINNED.ensure(wg);
     }
 
     /**
@@ -145,31 +149,33 @@ public abstract class AbstractInclusionGraph {
     private void createInclusionGraph() {
         final int vxCount = wg.getVertexCount();
 
-        int includedCount = 0;
-        int compositeCount = 0;
+        // Loop through all vertexes and count the number that have been
+        // explictly selected by user and those that have been marked as pinned.
+        // Vertexes marked as pinned will not be 'arranged'.
+        int incCount = 0;
+        int pinnedCount = 0;
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
-
-            final boolean isIncluded = isVertexIncluded(vxId);
-            if (isIncluded) {
-                includedCount++;
+            if (isVertexIncluded(vxId)) {
+                incCount++;
+            }
+            if (!wg.getBooleanValue(pinnedAttr, vxId)) {
+                pinnedCount++;
             }
         }
 
-        // All vertices are included if (explicitly) isVertexIncluded() is true for all vertices,
-        // or (implicitly) if isVertexIncluded is true for no vertices.
-        final boolean allIncluded = includedCount == vxCount || includedCount == 0;
-
-        inclusionGraphIsOriginalGraph = compositeCount == 0 && allIncluded;
+        // If every vertex is a candidate to be moved we can just return the
+        // current graph.
+        inclusionGraphIsOriginalGraph
+                = (incCount == vxCount || incCount == 0) && (pinnedCount == 0);
         if (inclusionGraphIsOriginalGraph) {
-            // There are no composite vertices.
             // All vertices are (implicitly or explicitly) selected.
             // Pass the graph straight through.
             inclusionGraph = wg;
-
             return;
         }
 
+        // Store the IDs of attributes that will be read from wg.
         final int xAttr = VisualConcept.VertexAttribute.X.get(wg);
         final int yAttr = VisualConcept.VertexAttribute.Y.get(wg);
         final int zAttr = VisualConcept.VertexAttribute.Z.get(wg);
@@ -179,15 +185,17 @@ public abstract class AbstractInclusionGraph {
         final int nradiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
         final int lradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(wg);
 
-        final boolean xyz2 = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
+        // Are the x2, y2, z2 attributes set
+        final boolean xyz2AreSet = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
 
         // Create the inclusion graph.
-        // We need to create some basic attributes, plus whatever other attributes we've been told to create.
+        // We need to create some essential attributes, plus whatever other
+        // attributes we've been told to create via calls to addAttributeToCopy().
         final StoreGraph storeGraph = new StoreGraph(wg.getSchema());
         VisualConcept.VertexAttribute.X.ensure(storeGraph);
         VisualConcept.VertexAttribute.Y.ensure(storeGraph);
         VisualConcept.VertexAttribute.Z.ensure(storeGraph);
-        if (xyz2) {
+        if (xyz2AreSet) {
             VisualConcept.VertexAttribute.X2.ensure(storeGraph);
             VisualConcept.VertexAttribute.Y2.ensure(storeGraph);
             VisualConcept.VertexAttribute.Z2.ensure(storeGraph);
@@ -199,12 +207,14 @@ public abstract class AbstractInclusionGraph {
             VisualConcept.VertexAttribute.LABEL_RADIUS.ensure(storeGraph);
         }
 
+        // Process any attributes specified by calls to addAttributeToCopy().
         final int[] selectionAttributes = new int[attributesToCopy.size()];
         for (int i = 0; i < attributesToCopy.size(); i++) {
             final Attribute attr = attributesToCopy.get(i);
             selectionAttributes[i] = storeGraph.addAttribute(attr.getElementType(), attr.getAttributeType(), attr.getName(), attr.getDescription(), attr.getDefaultValue(), null);
         }
 
+        // Store the IDs of attributes that will be written to storeGraph.
         final int incXAttr = VisualConcept.VertexAttribute.X.get(storeGraph);
         final int incYAttr = VisualConcept.VertexAttribute.Y.get(storeGraph);
         final int incZAttr = VisualConcept.VertexAttribute.Z.get(storeGraph);
@@ -214,26 +224,29 @@ public abstract class AbstractInclusionGraph {
         final int incNradiusAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(storeGraph);
         final int incLradiusAttr = VisualConcept.VertexAttribute.LABEL_RADIUS.get(storeGraph);
 
-        // Build the inclusion graph by copying vertices, connections, and values from the original graph.
-        // We remember which vertices have been included for easy future reference.
+        // Build the inclusion graph by copying vertices, connections, and values
+        // from the original graph.  We remember which vertices have been included
+        // for easy future reference.
         final BitSet vertices = new BitSet();
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
 
-            // A vertex goes into the inclusion graph if (all vertices are included or isVertexIncluded() is true),
-            // and (the vertex is a composite parent or not part of a composite).
-            final boolean isIncluded = allIncluded || isVertexIncluded(vxId);
-            if (isIncluded) {
+            // A vertex goes into the inclusion graph if all vertexes are selected
+            // or the explicit vertex is selected and the vertex is not marked as
+            // pinned.
+            final boolean allVertexesSelected = incCount == vxCount || incCount == 0;
+            if ((allVertexesSelected || isVertexIncluded(vxId)) && !wg.getBooleanValue(pinnedAttr, vxId)) {
                 vertices.set(vxId);
 
-                // Create the vertex in the inclusion graph with the same vertex id as the original graph.
-                // This means we don't have to track original id <-> inclusion graph id.
+                // Create the vertex in the inclusion graph with the same vertex
+                // ID as the original graph. This means we don't have to track
+                // original id <-> inclusion graph id.
                 final int incVxId = storeGraph.addVertex(vxId);
 
                 storeGraph.setFloatValue(incXAttr, incVxId, wg.getFloatValue(xAttr, vxId));
                 storeGraph.setFloatValue(incYAttr, incVxId, wg.getFloatValue(yAttr, vxId));
                 storeGraph.setFloatValue(incZAttr, incVxId, wg.getFloatValue(zAttr, vxId));
-                if (xyz2) {
+                if (xyz2AreSet) {
                     storeGraph.setFloatValue(incX2Attr, incVxId, wg.getFloatValue(x2Attr, vxId));
                     storeGraph.setFloatValue(incY2Attr, incVxId, wg.getFloatValue(y2Attr, vxId));
                     storeGraph.setFloatValue(incZ2Attr, incVxId, wg.getFloatValue(z2Attr, vxId));

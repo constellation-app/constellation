@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.GLVisualProcessor;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.io.IOException;
@@ -48,11 +49,13 @@ import java.util.logging.Logger;
  * should 'snap' to the coordinates of that vertex.
  */
 public class NewLineRenderable implements GLRenderable {
+    
+    private static final Logger LOGGER = Logger.getLogger(NewLineRenderable.class.getName());
 
     // Width of the new line
     public static final int NEW_LINE_WIDTH = 2;
-    // Colour of the new line
-    public static final Vector4f NEW_LINE_COLOR = new Vector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    // Color of the new line
+    public static final Vector4f NEW_LINE_COLOR = new Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
     // Shader name
     private int shader;
     // Uniform location for the shader's MVP Matrix
@@ -74,7 +77,7 @@ public class NewLineRenderable implements GLRenderable {
 
     public NewLineRenderable(final GLVisualProcessor parent) {
         this.parent = parent;
-        batch = new Batch(GL3.GL_LINES);
+        batch = new Batch(GL.GL_LINES);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
         vertexTarget = batch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
     }
@@ -101,8 +104,8 @@ public class NewLineRenderable implements GLRenderable {
             newLineVp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.vs");
             newLineGp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruLine.gs");
             newLineFp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
-        } catch (IOException ex) {
-            Logger.getLogger(NewLineRenderable.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         shader = GLTools.loadShaderSourceWithAttributes(gl, "PassThru new line", newLineVp, newLineGp, newLineFp,
@@ -167,8 +170,8 @@ public class NewLineRenderable implements GLRenderable {
 
             final GL3 gl = drawable.getGL().getGL3();
 
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, batch.getBufferName(vertexTarget));
-            ByteBuffer bbuf = gl.glMapBuffer(GL3.GL_ARRAY_BUFFER, GL3.GL_WRITE_ONLY);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, batch.getBufferName(vertexTarget));
+            ByteBuffer bbuf = gl.glMapBuffer(GL.GL_ARRAY_BUFFER, GL.GL_WRITE_ONLY);
             FloatBuffer fbuf = bbuf.asFloatBuffer();
 
             // Update the line endpoints in the vertex buffer.
@@ -177,10 +180,10 @@ public class NewLineRenderable implements GLRenderable {
                 endPosition.getX(), endPosition.getY(), endPosition.getZ()};
             fbuf.put(vertices);
 
-            gl.glUnmapBuffer(GL3.GL_ARRAY_BUFFER);
+            gl.glUnmapBuffer(GL.GL_ARRAY_BUFFER);
 
             // Disable depth so the line is drawn over everything else.
-            gl.glDisable(GL3.GL_DEPTH_TEST);
+            gl.glDisable(GL.GL_DEPTH_TEST);
             gl.glDepthMask(false);
 
             // Draw the line.
@@ -192,11 +195,11 @@ public class NewLineRenderable implements GLRenderable {
             gl.glLineWidth(1);
 
             // Reenable depth.
-            gl.glEnable(GL3.GL_DEPTH_TEST);
+            gl.glEnable(GL.GL_DEPTH_TEST);
             gl.glDepthMask(true);
 
             // Rebind default array buffer
-            gl.glBindBuffer(GL3.GL_ARRAY_BUFFER, 0);
+            gl.glBindBuffer(GL.GL_ARRAY_BUFFER, 0);
         }
     }
 

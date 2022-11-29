@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,6 +47,10 @@ public class SchemaVertexTypeUtilities {
     private static final Map<Set<Class<? extends SchemaConcept>>, Collection<SchemaVertexType>> SCHEMA_VERTEX_TYPE_CACHE = new HashMap<>();
 
     private static final Set<Class<? extends SchemaConcept>> GET_ALL_TYPES = null;
+    
+    private SchemaVertexTypeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static SchemaVertexType getDefaultType() {
         return SchemaConceptUtilities.getDefaultVertexType();
@@ -195,7 +199,6 @@ public class SchemaVertexTypeUtilities {
             type = new SchemaVertexType.Builder(defaultType, name)
                     .setIncomplete(true)
                     .build();
-            //SchemaVertexTypeUtilities.addCustomType(type, false);
         }
 
         return type;
@@ -330,6 +333,8 @@ public class SchemaVertexTypeUtilities {
                                 break;
                             } else if (currentExtractedType.compareTo(extractedType) > 0) {
                                 deficientResults.add(extractedType);
+                            } else {
+                                // Do nothing
                             }
                         }
                         if (!isDeficientResult) {

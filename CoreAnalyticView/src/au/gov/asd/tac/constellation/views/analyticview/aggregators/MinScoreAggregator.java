@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,15 +43,15 @@ public class MinScoreAggregator implements AnalyticAggregator<ScoreResult> {
         }
 
         aggregateResult.setIgnoreNullResults(results.stream()
-                .anyMatch(result -> result.getIgnoreNullResults()));
+                .anyMatch(result -> result.isIgnoreNullResults()));
 
         results.forEach(scoreResult -> combinedResults.combine(scoreResult));
         combinedResults.getResult().forEach((key, value) -> {
             final Map<String, Float> aggregateScores = new HashMap<>();
-            aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce(Math::min).orElse(0.0f));
+            aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce(Math::min).orElse(0.0F));
             aggregateResult.add(new ElementScore(key.getElementType(), key.getElementId(), key.getIdentifier(), false, aggregateScores));
         });
-        
+
         return aggregateResult;
     }
 

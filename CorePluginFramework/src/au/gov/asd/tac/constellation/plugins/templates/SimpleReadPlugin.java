@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,12 +23,8 @@ import au.gov.asd.tac.constellation.plugins.AbstractPlugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.NbBundle;
 
 /**
  * A plugin template for plugins that only require read access to the graph.
@@ -44,19 +40,14 @@ import org.openide.util.NbBundle;
  *
  * @author sirius
  */
-@NbBundle.Messages({
-    "# {0} - graph",
-    "# {1} - name",
-    "MSG_Read_Failed=Action failed: {0}; {1}"
-})
 public abstract class SimpleReadPlugin extends AbstractPlugin {
 
     private static final Logger LOGGER = Logger.getLogger(SimpleReadPlugin.class.getName());
 
-    public SimpleReadPlugin() {
+    protected SimpleReadPlugin() {
     }
 
-    public SimpleReadPlugin(String pluginName) {
+    protected SimpleReadPlugin(String pluginName) {
         super(pluginName);
     }
 
@@ -67,35 +58,21 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
         try {
-
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, "Waiting...", true);
+
             try {
-
                 ReadableGraph readableGraph = graph.getReadableGraph();
+
                 try {
-
                     interaction.setProgress(0, 0, "Working...", true);
-
-                    try {
-                        read(readableGraph, interaction, parameters);
-                    } catch (InterruptedException e) {
-                        interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graphs.getGraph() + ": " + getName());
-                        throw e;
-                    } catch (Exception e) {
-                        final String msg = Bundle.MSG_Read_Failed(graph, getName());
-                        interaction.notify(PluginNotificationLevel.ERROR, msg + SeparatorConstants.NEWLINE + e.getMessage());
-                        LOGGER.log(Level.WARNING, msg, e);
-                    }
-
+                    read(readableGraph, interaction, parameters);
                 } finally {
                     readableGraph.release();
                 }
-
             } finally {
                 interaction.setProgress(2, 1, "Finished", true);
             }
-
         } finally {
             interaction.setBusy(graph.getId(), false);
         }
@@ -106,26 +83,14 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
         try {
-
             // Make the progress bar appear nondeterminent
             interaction.setProgress(0, 0, "Working...", true);
+
             try {
-
-                try {
-                    read(graph, interaction, parameters);
-                } catch (InterruptedException e) {
-                    interaction.notify(PluginNotificationLevel.INFO, "Plugin cancelled: " + graph + ": " + getName());
-                    throw e;
-                } catch (Exception e) {
-                    final String msg = Bundle.MSG_Read_Failed(graph, getName());
-                    interaction.notify(PluginNotificationLevel.ERROR, msg + SeparatorConstants.NEWLINE + e.getMessage());
-                    LOGGER.log(Level.WARNING, msg, e);
-                }
-
+                read(graph, interaction, parameters);
             } finally {
                 interaction.setProgress(2, 1, "Finished", true);
             }
-
         } finally {
             interaction.setBusy(graph.getId(), false);
         }

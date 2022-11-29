@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,16 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author sirius
  */
 public class MonitorManager implements GraphManagerListener, GraphChangeListener {
+
+    private static final Logger LOGGER = Logger.getLogger(MonitorManager.class.getName());
 
     private static final boolean VERBOSE = false;
 
@@ -51,7 +55,7 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
     public MonitorManager start() {
         if (++currentStartCount == requiredStartCount) {
             if (VERBOSE) {
-                System.out.println("@@MONITOR_MANAGER::starting");
+                LOGGER.log(Level.INFO,"@@MONITOR_MANAGER::starting");
             }
             newActiveGraph(GraphManager.getDefault().getActiveGraph());
             GraphManager.getDefault().addGraphManagerListener(this);
@@ -62,7 +66,7 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
     public MonitorManager stop() {
         if (currentStartCount-- == requiredStartCount) {
             if (VERBOSE) {
-                System.out.println("@@MONITOR_MANAGER::stopping");
+                LOGGER.log(Level.INFO,"@@MONITOR_MANAGER::stopping");
             }
             GraphManager.getDefault().removeGraphManagerListener(this);
             newActiveGraph(null);
@@ -87,7 +91,7 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
     @Override
     public void newActiveGraph(final Graph graph) {
         if (VERBOSE) {
-            System.out.println("@@MONITOR_MANAGER::newActiveGraph()");
+            LOGGER.log(Level.INFO,"@@MONITOR_MANAGER::newActiveGraph()");
         }
 
         if (graph != currentGraph) {
@@ -107,7 +111,7 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
     @Override
     public void graphChanged(final GraphChangeEvent event) {
         if (VERBOSE) {
-            System.out.println("@@MONITOR_MANAGER::graphChanged()");
+            LOGGER.log(Level.INFO,"@@MONITOR_MANAGER::graphChanged()");
         }
         final long latestId = event.getLatest().getId();
         if (latestId > latestEventId) {
@@ -118,13 +122,13 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
 
     private void updateMonitors(final Graph graph, final boolean newGraph) {
         if (VERBOSE) {
-            System.out.println("@@MONITOR_MANAGER::updateMonitors()");
+            LOGGER.log(Level.INFO,"@@MONITOR_MANAGER::updateMonitors()");
         }
         final ReadableGraph rg = graph == null ? null : graph.getReadableGraph();
         try {
             for (final MonitorEntry monitorEntry : monitorEntries) {
                 if (VERBOSE) {
-                    System.out.println("@@MONITOR_MANAGER::updatingMonitor(" + monitorEntry.monitor + ")");
+                    LOGGER.log(Level.INFO,"@@MONITOR_MANAGER::updatingMonitor({0})", monitorEntry.monitor);
                 }
                 monitorEntry.monitor.update(rg);
             }
@@ -133,11 +137,13 @@ public class MonitorManager implements GraphManagerListener, GraphChangeListener
                 int updateCount = 0;
                 for (final MonitorTest test : listenerEntry.tests) {
                     if (VERBOSE) {
-                        System.out.println("@@MONITOR_MANAGER::testingMonitor(" + test.listenerEntry.listener + ", " + test.monitorEntry.monitor + ", " + test.filter + ")");
+                        final String log = String.format("@@MONITOR_MANAGER::testingMonitor(" + test.listenerEntry.listener + ", " + test.monitorEntry.monitor + ", " + test.filter + ")");
+                        LOGGER.log(Level.INFO, log);
                     }
                     if (test.filter.matchesTransition(test.monitorEntry.monitor)) {
                         if (VERBOSE) {
-                            System.out.println("@@MONITOR_MANAGER::listenerAlerted(" + test.listenerEntry.listener + ", " + test.monitorEntry.monitor + ", " + test.filter + ")");
+                            final String log = String.format("@@MONITOR_MANAGER::listenerAlerted(" + test.listenerEntry.listener + ", " + test.monitorEntry.monitor + ", " + test.filter + ")");
+                            LOGGER.log(Level.INFO, log);
                         }
                         listenerEntry.listener.monitorUpdated(this, test.monitorEntry.monitor, rg, newGraph, ++updateCount);
                     }

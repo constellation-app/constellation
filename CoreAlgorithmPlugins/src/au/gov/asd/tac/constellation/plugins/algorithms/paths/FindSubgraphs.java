@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class FindSubgraphs {
      * @param graph
      * @return
      */
-    static BitSet[] traverse(final GraphWriteMethods graph) {
+    protected static BitSet[] traverse(final GraphWriteMethods graph) {
 
         final int vxCount = graph.getVertexCount();
         final BitSet update = new BitSet(vxCount);

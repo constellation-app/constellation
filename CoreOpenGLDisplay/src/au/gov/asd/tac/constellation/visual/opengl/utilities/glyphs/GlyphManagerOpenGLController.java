@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.visual.opengl.utilities.glyphs;
 
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES2;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
@@ -29,12 +32,11 @@ import java.util.List;
  */
 public class GlyphManagerOpenGLController {
 
-    private static final int EXTERNAL_FORMAT = GL3.GL_RED;
-    private static final int INTERNAL_FORMAT = GL3.GL_R8;
+    private static final int EXTERNAL_FORMAT = GL2ES2.GL_RED;
+    private static final int INTERNAL_FORMAT = GL.GL_R8;
 
     private static final int FLOATS_PER_GLYPH = 4;
     private static final int BYTES_PER_FLOAT = Float.BYTES;
-    private static final int BYTES_PER_GLYPH = BYTES_PER_FLOAT * FLOATS_PER_GLYPH;
 
     private final GlyphManager glyphManager;
 
@@ -80,13 +82,13 @@ public class GlyphManagerOpenGLController {
         gl.glGenBuffers(1, coordinatesBufferName, 0);
 
         coordinatesBufferSize = glyphManager.getGlyphTextureCoordinates().length * BYTES_PER_FLOAT;
-        gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, coordinatesBufferName[0]);
-        gl.glBufferData(GL3.GL_TEXTURE_BUFFER, coordinatesBufferSize, null, GL3.GL_DYNAMIC_DRAW);
+        gl.glBindBuffer(GL2ES3.GL_TEXTURE_BUFFER, coordinatesBufferName[0]);
+        gl.glBufferData(GL2ES3.GL_TEXTURE_BUFFER, coordinatesBufferSize, null, GL.GL_DYNAMIC_DRAW);
 
         gl.glGenTextures(1, coordinatesTextureName, 0);
 
-        gl.glBindTexture(GL3.GL_TEXTURE_BUFFER, coordinatesTextureName[0]);
-        gl.glTexBuffer(GL3.GL_TEXTURE_BUFFER, GL3.GL_RGBA32F, coordinatesBufferName[0]);
+        gl.glBindTexture(GL2ES3.GL_TEXTURE_BUFFER, coordinatesTextureName[0]);
+        gl.glTexBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL.GL_RGBA32F, coordinatesBufferName[0]);
     }
 
     private void updateCoordinates(GL3 gl) {
@@ -94,24 +96,24 @@ public class GlyphManagerOpenGLController {
         final int newTextureCoordinatesBufferSize = glyphManager.getGlyphTextureCoordinates().length * BYTES_PER_FLOAT;
         if (newTextureCoordinatesBufferSize > coordinatesBufferSize) {
             coordinatesBufferSize = newTextureCoordinatesBufferSize;
-            gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, coordinatesBufferName[0]);
-            gl.glBufferData(GL3.GL_TEXTURE_BUFFER, coordinatesBufferSize, null, GL3.GL_DYNAMIC_DRAW);
+            gl.glBindBuffer(GL2ES3.GL_TEXTURE_BUFFER, coordinatesBufferName[0]);
+            gl.glBufferData(GL2ES3.GL_TEXTURE_BUFFER, coordinatesBufferSize, null, GL.GL_DYNAMIC_DRAW);
             coordinatesBufferedGlyphs = 0;
         }
 
         if (coordinatesBufferedGlyphs < glyphManager.getGlyphCount()) {
             final int offset = coordinatesBufferedGlyphs * FLOATS_PER_GLYPH;
             final int size = glyphManager.getGlyphCount() * FLOATS_PER_GLYPH - offset;
-            gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, coordinatesBufferName[0]);
+            gl.glBindBuffer(GL2ES3.GL_TEXTURE_BUFFER, coordinatesBufferName[0]);
             final FloatBuffer glyphsCoordinates = FloatBuffer.wrap(glyphManager.getGlyphTextureCoordinates(), offset, size);
-            gl.glBufferSubData(GL3.GL_TEXTURE_BUFFER, offset * BYTES_PER_FLOAT, size * BYTES_PER_FLOAT, glyphsCoordinates);
+            gl.glBufferSubData(GL2ES3.GL_TEXTURE_BUFFER, (long) offset * BYTES_PER_FLOAT, (long) size * BYTES_PER_FLOAT, glyphsCoordinates);
             coordinatesBufferedGlyphs = glyphManager.getGlyphCount();
         }
     }
 
     private void bindCoordinates(GL3 gl, int uniformLocation, int textureUnit) {
-        gl.glActiveTexture(GL3.GL_TEXTURE0 + textureUnit);
-        gl.glBindTexture(GL3.GL_TEXTURE_BUFFER, coordinatesTextureName[0]);
+        gl.glActiveTexture(GL.GL_TEXTURE0 + textureUnit);
+        gl.glBindTexture(GL2ES3.GL_TEXTURE_BUFFER, coordinatesTextureName[0]);
         gl.glUniform1i(uniformLocation, textureUnit);
     }
 
@@ -119,17 +121,17 @@ public class GlyphManagerOpenGLController {
 
         gl.glGenTextures(1, glyphsTextureName, 0);
 
-        gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
+        gl.glBindTexture(GL2ES3.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
 
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_S, GL3.GL_CLAMP_TO_EDGE);
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_WRAP_T, GL3.GL_CLAMP_TO_EDGE);
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_MIN_FILTER, GL3.GL_LINEAR);
-        gl.glTexParameteri(GL3.GL_TEXTURE_2D_ARRAY, GL3.GL_TEXTURE_MAG_FILTER, GL3.GL_LINEAR);
+        gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_WRAP_S, GL.GL_CLAMP_TO_EDGE);
+        gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_WRAP_T, GL.GL_CLAMP_TO_EDGE);
+        gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+        gl.glTexParameteri(GL2ES3.GL_TEXTURE_2D_ARRAY, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 
         final int width = glyphManager.getTextureWidth();
         final int height = glyphManager.getTextureHeight();
         final int pageCount = glyphManager.getGlyphPageCount();
-        gl.glTexImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, INTERNAL_FORMAT, width, height, pageCount, 0, EXTERNAL_FORMAT, GL3.GL_UNSIGNED_BYTE, null);
+        gl.glTexImage3D(GL2ES3.GL_TEXTURE_2D_ARRAY, 0, INTERNAL_FORMAT, width, height, pageCount, 0, EXTERNAL_FORMAT, GL.GL_UNSIGNED_BYTE, null);
         glyphsPageCapacity = pageCount;
     }
 
@@ -151,8 +153,8 @@ public class GlyphManagerOpenGLController {
         glyphsGlyphsBuffered = glyphCount;
 
         if (pageCount > glyphsPageCapacity) {
-            gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
-            gl.glTexImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, INTERNAL_FORMAT, width, height, pageCount, 0, EXTERNAL_FORMAT, GL3.GL_UNSIGNED_BYTE, null);
+            gl.glBindTexture(GL2ES3.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
+            gl.glTexImage3D(GL2ES3.GL_TEXTURE_2D_ARRAY, 0, INTERNAL_FORMAT, width, height, pageCount, 0, EXTERNAL_FORMAT, GL.GL_UNSIGNED_BYTE, null);
             glyphsPageCapacity = pageCount;
             glyphsPagesBuffered = 0;
         }
@@ -170,8 +172,8 @@ public class GlyphManagerOpenGLController {
                 pixelBuffer.flip();
             }
 
-            gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
-            gl.glTexSubImage3D(GL3.GL_TEXTURE_2D_ARRAY, 0, 0, 0, glyphsPagesBuffered, width, height, 1, EXTERNAL_FORMAT, GL3.GL_UNSIGNED_BYTE, pixelBuffer);
+            gl.glBindTexture(GL2ES3.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
+            gl.glTexSubImage3D(GL2ES3.GL_TEXTURE_2D_ARRAY, 0, 0, 0, glyphsPagesBuffered, width, height, 1, EXTERNAL_FORMAT, GL.GL_UNSIGNED_BYTE, pixelBuffer);
 
             glyphsPagesBuffered++;
         }
@@ -179,7 +181,7 @@ public class GlyphManagerOpenGLController {
 
     private void bindGlyphs(GL3 gl, int uniformLocation, int textureUnit) {
         gl.glUniform1i(uniformLocation, textureUnit);
-        gl.glActiveTexture(GL3.GL_TEXTURE0 + textureUnit);
-        gl.glBindTexture(GL3.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
+        gl.glActiveTexture(GL.GL_TEXTURE0 + textureUnit);
+        gl.glBindTexture(GL2ES3.GL_TEXTURE_2D_ARRAY, glyphsTextureName[0]);
     }
 }

@@ -15,8 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
-import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
@@ -26,13 +24,16 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
+import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import org.openide.util.NbBundle;
 
 /**
@@ -40,17 +41,16 @@ import org.openide.util.NbBundle;
  *
  * @author canis_majoris
  */
-
-@PluginInfo(tags = {"WELCOME"})
+@PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE, PluginTags.WELCOME})
 @NbBundle.Messages("AddModeWelcomePlugin=Add Mode Welcome Plugin")
 public class AddModeWelcomePlugin implements WelcomePluginInterface {
-    
+
     public static final String NEW_GRAPH = "resources/welcome_add_graph.png";
     final ImageView addView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_GRAPH)));
     final Button newButton = new Button();
-        
+
     /**
-     * Get a unique reference that is used to identify the plugin 
+     * Get a unique reference that is used to identify the plugin
      *
      * @return a unique reference
      */
@@ -58,10 +58,10 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
     public String getName() {
         return "Add Graph Welcome";
     }
-    
+
     /**
-     * This method describes what action should be taken when the 
-     * link is clicked on the Welcome Page
+     * This method describes what action should be taken when the link is
+     * clicked on the Welcome Page
      *
      */
     @Override
@@ -73,13 +73,13 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
         sg.setBooleanValue(drawModeAttribute, 0, true);
         final Graph dualGraph = new DualGraph(sg, false);
 
-        final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().replace(" ", "").toLowerCase();
+        final String graphName = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).getLabel().trim().toLowerCase();
         GraphOpener.getDefault().openGraph(dualGraph, graphName);
 
     }
 
     /**
-     * Determines whether this analytic appear on the Welcome Page 
+     * Determines whether this analytic appear on the Welcome Page
      *
      * @return true is this analytic should be visible, false otherwise.
      */
@@ -87,20 +87,19 @@ public class AddModeWelcomePlugin implements WelcomePluginInterface {
     public boolean isVisible() {
         return true;
     }
-    
-     /**
+
+    /**
      * Creates the button object to represent this plugin
-     * 
+     *
      * @return the button object
      */
     @Override
-    public Button getButton(){
+    public Button getButton() {
         addView.setFitHeight(75);
         addView.setFitWidth(75);
         final Label title = new Label("New Graph");
-        title.setFont(new Font("Arial", 16));
         final Label subtitle = new Label("Add mode");
-        subtitle.setFont(new Font("Arial", 10));
+        subtitle.setId("smallInfoText");
         final VBox layoutVBox = new VBox(addView, title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER);
         newButton.setGraphic(layoutVBox);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.util.converter.NumberStringConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
@@ -30,6 +32,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = PluginParameterType.class)
 public class FloatParameterType extends PluginParameterType<FloatParameterValue> {
+    
+    private static final Logger LOGGER = Logger.getLogger(FloatParameterType.class.getName());
 
     /**
      * A String ID with which to distinguish parameters that have this type.
@@ -55,7 +59,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of FloatParameterType.
      */
-    public static PluginParameter<FloatParameterValue> build(String id) {
+    public static PluginParameter<FloatParameterValue> build(final String id) {
         return new PluginParameter<>(new FloatParameterValue(), INSTANCE, id);
     }
 
@@ -68,7 +72,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
      * the parameter being constructed.
      * @return A {@link PluginParameter} of FloatParameterType.
      */
-    public static PluginParameter<FloatParameterValue> build(String id, final FloatParameterValue pv) {
+    public static PluginParameter<FloatParameterValue> build(final String id, final FloatParameterValue pv) {
         return new PluginParameter<>(pv, INSTANCE, id);
     }
 
@@ -93,7 +97,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
      * @param shrinkInputWidth Whether the width of a GUI input should be
      * scaled.
      */
-    public static void setShrinkInputWidth(PluginParameter<FloatParameterValue> parameter, boolean shrinkInputWidth) {
+    public static void setShrinkInputWidth(final PluginParameter<FloatParameterValue> parameter, final boolean shrinkInputWidth) {
         parameter.setProperty(SHRINK_VAL, shrinkInputWidth);
     }
 
@@ -134,7 +138,7 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
     }
 
     @Override
-    public String validateString(PluginParameter<FloatParameterValue> param, String stringValue) {
+    public String validateString(final PluginParameter<FloatParameterValue> param, final String stringValue) {
         final FloatParameterValue v = param.getParameterValue();
         return v.validateString(stringValue);
     }
@@ -187,10 +191,14 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
         public boolean set(final float newf) {
             if (newf != f) {
                 if (min != null && newf < min) {
+                    LOGGER.log(Level.WARNING, "{0} is lower than the minimum ({1}) allowed. Changing to "
+                            + "the minimum value", new Object[]{newf, min});
                     return false;
                 }
 
                 if (max != null && newf > max) {
+                    LOGGER.log(Level.WARNING, "{0} is higher than the maximum ({1}) allowed. Changing to "
+                            + "the maximum value", new Object[]{newf, max});
                     return false;
                 }
 
@@ -253,14 +261,12 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
         }
 
         @Override
-        public boolean setStringValue(String s) {
+        public boolean setStringValue(final String s) {
             final Number n = CONVERTER.fromString(s);
             if (n != null) {
                 final float newf = n.floatValue();
-                if (newf != f) {
-                    f = newf;
-                    return true;
-                }
+                
+                return set(newf);
             }
 
             return false;
@@ -297,7 +303,10 @@ public class FloatParameterType extends PluginParameterType<FloatParameterValue>
 
         @Override
         public boolean equals(final Object o) {
-            return o instanceof FloatParameterValue && f == ((FloatParameterValue) o).f;
+            if (o == null) {
+                return false;
+            }
+            return this.getClass() == o.getClass() && f == ((FloatParameterValue) o).f;
         }
 
         @Override

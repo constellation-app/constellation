@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,8 +38,8 @@ class PQTree {
     private int numPertinentLeaves;
 
     public void addLeaves(final PQNode toNode, final List<Integer> childNums) {
-        for (int i : childNums) {
-            PQNode leaf = new PQNode(NodeType.LEAF_NODE, i, currentNumber);
+        for (final int i : childNums) {
+            final PQNode leaf = new PQNode(NodeType.LEAF_NODE, i, currentNumber);
             toNode.addChild(leaf);
             leaves.get(i - 1).add(leaf);
         }
@@ -55,7 +55,7 @@ class PQTree {
         return root;
     }
 
-    public void setRoot(PQNode root) {
+    public void setRoot(final PQNode root) {
         this.root = root;
     }
 
@@ -64,21 +64,19 @@ class PQTree {
         final Deque<PQNode> nodesToBubble = new LinkedList<>();
         final Set<PQNode> bubbled = new HashSet<>();
 
-        for (PQNode leaf : leaves.get(currentNumber - 1)) {
-//            if (leaf.virtualNum == currentNumber) {
+        for (final PQNode leaf : leaves.get(currentNumber - 1)) {
             leaf.setPertinentLeafCount(1);
             if (leaf.getParent() != null) {
                 leaf.getParent().setPertinentChildCount(leaf.getParent().getPertinentChildCount() + 1);
                 nodesToBubble.addLast(leaf.getParent());
             }
             nodesToProcess.addLast(leaf);
-//            }
         }
         numPertinentLeaves = nodesToProcess.size();
         boolean toBreak = false;
         boolean offTheTop = false;
         while (!nodesToBubble.isEmpty()) {
-            PQNode toBubble = nodesToBubble.removeFirst();
+            final PQNode toBubble = nodesToBubble.removeFirst();
             if (nodesToBubble.isEmpty() && !offTheTop) {
                 toBreak = true;
             }
@@ -100,7 +98,7 @@ class PQTree {
 
     public void reduce() {
         currentNumber++;
-        Deque<PQNode> nodesToProcess = bubble();
+        final Deque<PQNode> nodesToProcess = bubble();
         PQNode node = null;
         while (!nodesToProcess.isEmpty()) {
             node = nodesToProcess.removeFirst();
@@ -128,13 +126,13 @@ class PQTree {
     }
 
     public void vertexAddition(List<Integer> virtualNodeNums) {
-        PQNode nextPNode = new PQNode(NodeType.PNODE);
+        final PQNode nextPNode = new PQNode(NodeType.PNODE);
         if (pertinentRoot.getLabel().equals(NodeLabel.FULL)) {
             subtreeReplace(pertinentRoot, nextPNode);
         } else {
             addDirectionIndicator(pertinentRoot);
             boolean first = true;
-            for (PQNode node : pertinentRoot.getLabelView(NodeLabel.FULL)) {
+            for (final PQNode node : pertinentRoot.getLabelView(NodeLabel.FULL)) {
                 if (first) {
                     subtreeReplace(node, nextPNode);
                     first = false;
@@ -158,13 +156,13 @@ class PQTree {
         if (!pertinentRoot.getLabel().equals(NodeLabel.FULL) && pertinentRoot.labeledChildren.get(NodeLabel.FULL).isEmpty()) {
             pertinentRoot = pertinentRoot.labeledChildren.get(NodeLabel.PARTIAL).iterator().next();
         }
-        List<Integer> pertinentFrontier = new LinkedList<>();
+        final List<Integer> pertinentFrontier = new LinkedList<>();
         readPertinentFrontier(pertinentRoot, pertinentFrontier);
         return pertinentFrontier;
     }
 
-    private void addDirectionIndicator(PQNode toNode) {
-        DirectionIndicator indicator = new DirectionIndicator(currentNumber, false);
+    private void addDirectionIndicator(final PQNode toNode) {
+        final DirectionIndicator indicator = new DirectionIndicator(currentNumber, false);
         toNode.setDirectionIndicator(indicator);
         directionIndicatorLocation = toNode;
     }
@@ -175,7 +173,7 @@ class PQTree {
     public int readAndRemoveDirectionIndicator() {
         int listToReverse = -1;
         if (directionIndicatorLocation != null) {
-            DirectionIndicator indicator = directionIndicatorLocation.getDirectionIndicator();
+            final DirectionIndicator indicator = directionIndicatorLocation.getDirectionIndicator();
             directionIndicatorLocation.setDirectionIndicator(null);
             if (indicator.isReversed()) {
                 listToReverse = indicator.getNumber();
@@ -185,15 +183,15 @@ class PQTree {
         return listToReverse;
     }
 
-    private void readPertinentFrontier(PQNode node, List<Integer> frontier) {
+    private void readPertinentFrontier(final PQNode node, final List<Integer> frontier) {
         switch (node.type) {
             case PNODE:
-                for (PQNode child : node.labeledChildren.get(NodeLabel.FULL)) {
+                for (final PQNode child : node.labeledChildren.get(NodeLabel.FULL)) {
                     readPertinentFrontier(child, frontier);
                 }
                 break;
             case QNODE:
-                for (PQNode child : node.children) {
+                for (final PQNode child : node.children) {
                     if (child.getLabel().equals(NodeLabel.FULL)) {
                         readPertinentFrontier(child, frontier);
                     }
@@ -210,12 +208,12 @@ class PQTree {
     }
 
     // Replace the subtree rooted at existing by the subtree rooted at replacement in the current tree.
-    private void subtreeReplace(PQNode existing, PQNode replacement) {
+    private void subtreeReplace(final PQNode existing, final PQNode replacement) {
         if (existing == root) {
             root = replacement;
             return;
         }
-        PQNode existingParent = existing.getParent();
+        final PQNode existingParent = existing.getParent();
         existingParent.replaceChild(existing, replacement);
     }
 
@@ -223,19 +221,21 @@ class PQTree {
     // If there are no children with this label, nothing happens and null is returned.
     // If there is only one child with this label, it is returned.
     // If there is more than one child with this label, a new P-Node with the same label is created and is made the parent of all the removed nodes. This new P-node is returned.
-    private PQNode encapsulateChildrenWithLabel(PQNode node, NodeLabel label) {
+    private PQNode encapsulateChildrenWithLabel(final PQNode node, final NodeLabel label) {
         final int numLabeledChildren = node.labeledChildren.get(label).size();
         if (numLabeledChildren == 0) {
             return null;
         } else if (numLabeledChildren == 1) {
-            PQNode labeledNode = node.labeledChildren.get(label).iterator().next();
+            final PQNode labeledNode = node.labeledChildren.get(label).iterator().next();
             node.removeChild(labeledNode);
             return labeledNode;
+        } else {
+            // Do nothing
         }
-        PQNode newPNode = new PQNode(NodeType.PNODE);
+        final PQNode newPNode = new PQNode(NodeType.PNODE);
         newPNode.relabel(label);
         // Move all children of node with the given label to be children of the new PNode.
-        for (PQNode child : node.getLabelView(label)) {
+        for (final PQNode child : node.getLabelView(label)) {
             node.removeChild(child);
             newPNode.addChild(child);
         }
@@ -243,7 +243,7 @@ class PQTree {
     }
 
     // Matches leaf nodes
-    private boolean templateL1(PQNode candidate) {
+    private boolean templateL1(final PQNode candidate) {
         // Check whether candidate is a leaf node
         if (candidate.type != NodeType.LEAF_NODE) {
             return false;
@@ -256,7 +256,7 @@ class PQTree {
     }
 
     // Matches P-nodes where all children are empty, or all children are full
-    private boolean templateP1(PQNode candidate) {
+    private boolean templateP1(final PQNode candidate) {
         // Check whether candidate is a P node
         if (candidate.type != NodeType.PNODE) {
             return false;
@@ -274,7 +274,7 @@ class PQTree {
     }
 
     // Matches P-nodes that are the root of the pertinent subtree containing no partial nodes
-    private boolean templateP2(PQNode candidate) {
+    private boolean templateP2(final PQNode candidate) {
         // Check whether candidate is a P node with no partial children
         if (candidate.type != NodeType.PNODE || !candidate.labeledChildren.get(NodeLabel.PARTIAL).isEmpty()) {
             return false;
@@ -286,27 +286,27 @@ class PQTree {
         }
 
         // Encapsulate full children and add the encapsulation to candidate. Note there will always be two or more full children for this template to match.
-        PQNode fullPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
+        final PQNode fullPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
         candidate.addChild(fullPNode);
 
         return true;
     }
 
     // Matches P-nodes that are not the root of the pertinent subtree containing no partial nodes
-    private boolean templateP3(PQNode candidate) {
+    private boolean templateP3(final PQNode candidate) {
         // Check whether candidate is a P node with no partial children
         if (candidate.type != NodeType.PNODE || !candidate.labeledChildren.get(NodeLabel.PARTIAL).isEmpty()) {
             return false;
         }
 
         // Encapsulate empty children (note there will always be 1 or more to match this template)
-        PQNode emptyPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.EMPTY);
+        final PQNode emptyPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.EMPTY);
 
         // Encapsulate full children (note there will always be 1 or more to match this template)
-        PQNode fullPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
+        final PQNode fullPNode = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
 
         // Make a new QNode which will take both the empty and full encapsulations as children and replace candidate in the tree. NodeLabel it partial.
-        PQNode partialQNode = new PQNode(NodeType.QNODE);
+        final PQNode partialQNode = new PQNode(NodeType.QNODE);
         partialQNode.relabel(NodeLabel.PARTIAL);
         partialQNode.addChild(emptyPNode);
         partialQNode.addChild(fullPNode);
@@ -316,17 +316,17 @@ class PQTree {
     }
 
     // Matches P-nodes that are the root of the pertinent subtree containing exactly one partial node
-    private boolean templateP4(PQNode candidate) {
+    private boolean templateP4(final PQNode candidate) {
         // Check whether candidate is a P node with exaclty one partial child
         if (candidate.type != NodeType.PNODE || candidate.labeledChildren.get(NodeLabel.PARTIAL).size() != 1) {
             return false;
         }
 
         // Get the single partial node which is a child of candidate
-        PQNode partialChild = candidate.labeledChildren.get(NodeLabel.PARTIAL).iterator().next();
+        final PQNode partialChild = candidate.labeledChildren.get(NodeLabel.PARTIAL).iterator().next();
 
         // Encapsulate full children and add the encapsulation to the partial child of candidate
-        PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
+        final PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
         if (fullChild != null) {
             partialChild.addChild(fullChild);
         }
@@ -337,22 +337,22 @@ class PQTree {
     }
 
     // Matches P-nodes that are not the root of the pertinent subtree containing exactly one partial node
-    private boolean templateP5(PQNode candidate) {
+    private boolean templateP5(final PQNode candidate) {
         // Check whether candidate is a P node with exaclty one partial child
         if (candidate.type != NodeType.PNODE || candidate.labeledChildren.get(NodeLabel.PARTIAL).size() != 1) {
             return false;
         }
 
         // Get the single partial node which is a child of candidate
-        PQNode partialChild = candidate.labeledChildren.get(NodeLabel.PARTIAL).iterator().next();
+        final PQNode partialChild = candidate.labeledChildren.get(NodeLabel.PARTIAL).iterator().next();
 
         // Encapsulate empty children and add the encapsulation as the first child of the partial child of candidate
-        PQNode emptyChild = encapsulateChildrenWithLabel(candidate, NodeLabel.EMPTY);
+        final PQNode emptyChild = encapsulateChildrenWithLabel(candidate, NodeLabel.EMPTY);
         if (emptyChild != null) {
             partialChild.addFirstChild(emptyChild);
         }
         // Encapsulate full children and add to the partial child of candidate
-        PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
+        final PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
         if (fullChild != null) {
             partialChild.addChild(fullChild);
         }
@@ -364,19 +364,19 @@ class PQTree {
     }
 
     // Matches P-nodes that are the root of the pertinent subtree containing exactly two partial node
-    private boolean templateP6(PQNode candidate) {
+    private boolean templateP6(final PQNode candidate) {
         // Check whether candidate is a P node with exaclty two partial children.
         if (candidate.type != NodeType.PNODE || candidate.labeledChildren.get(NodeLabel.PARTIAL).size() != 2) {
             return false;
         }
 
         // Get the two partial nodes which are children of candidate, noting the order they actually occur in is not important because it is a P-node.
-        Iterator<PQNode> iter = candidate.labeledChildren.get(NodeLabel.PARTIAL).iterator();
-        PQNode firstPartialChild = iter.next();
-        PQNode secondPartialChild = iter.next();
+        final Iterator<PQNode> iter = candidate.labeledChildren.get(NodeLabel.PARTIAL).iterator();
+        final PQNode firstPartialChild = iter.next();
+        final PQNode secondPartialChild = iter.next();
 
         // Encapsulate full children and add to the first partial child of candidate
-        PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
+        final PQNode fullChild = encapsulateChildrenWithLabel(candidate, NodeLabel.FULL);
         if (fullChild != null) {
             firstPartialChild.addChild(fullChild);
         }
@@ -391,7 +391,7 @@ class PQTree {
     }
 
     // Matches Q-nodes where all children are empty, or all children are full
-    private boolean templateQ1(PQNode candidate) {
+    private boolean templateQ1(final PQNode candidate) {
         // Check whether candidate is a Q node
         if (candidate.type != NodeType.QNODE) {
             return false;
@@ -402,14 +402,11 @@ class PQTree {
             return true;
         }
         // If not all children of candidate are full, check if they are all empty.
-        boolean match = (candidate.numChildren() == candidate.labeledChildren.get(NodeLabel.EMPTY).size());
-        if (match) {
-        }
-        return match;
+        return candidate.numChildren() == candidate.labeledChildren.get(NodeLabel.EMPTY).size();
     }
 
     // Matches Q-nodes with at most one partial child, deleting extra partial children if necessary
-    private boolean templateQ2(PQNode candidate) {
+    private boolean templateQ2(final PQNode candidate) {
         // Check whether candidate is a Q node
         if (candidate.type != NodeType.QNODE) {
             return false;
@@ -418,9 +415,9 @@ class PQTree {
         // If this node's children are not in a valid order to be planar, it will be planarized by this cleaning process.
         // Regardless of whether node deletion is performed, the remaining partial child is flattened
         // and reversed as necessary. The entire node is also reversed if necessary.
-        List<PQNode> permanentlyRemovedNodes = candidate.cleanSinglyPartialQNode();
+        final List<PQNode> permanentlyRemovedNodes = candidate.cleanSinglyPartialQNode();
 
-        for (PQNode destroyed : permanentlyRemovedNodes) {
+        for (final PQNode destroyed : permanentlyRemovedNodes) {
             removeLeaves(destroyed);
             numPertinentLeaves -= destroyed.getPertinentLeafCount();
         }
@@ -431,18 +428,17 @@ class PQTree {
     }
 
     // Matches Q-nodes that are the root of the pertinent subtree with exactly two partial children, deleting extra partial children if necessary.
-    private boolean templateQ3(PQNode candidate) {
+    private boolean templateQ3(final PQNode candidate) {
         // Check whether candidate is a Q node with two or more partial children
-//        int numPartialChildren = candidate.labeledChildren.get(NodeLabel.Partial).size();
         if (candidate.type != NodeType.QNODE /*|| numPartialChildren < 2*/) {
             return false;
         }
 
         // If this node has more than two partial children or its children are otherwise not in a valid order to be planar,
         // it will be planarized by this cleaning process. Regardless of whether node deletion is performed, the two remaining partial children are flattened and reversed as necessary.
-        List<PQNode> permanentlyRemovedNodes = candidate.cleanDoublyPartialQNode();
+        final List<PQNode> permanentlyRemovedNodes = candidate.cleanDoublyPartialQNode();
 
-        for (PQNode destroyed : permanentlyRemovedNodes) {
+        for (final PQNode destroyed : permanentlyRemovedNodes) {
             removeLeaves(destroyed);
             numPertinentLeaves -= destroyed.getPertinentLeafCount();
         }
@@ -452,14 +448,13 @@ class PQTree {
         return true;
     }
 
-    private void removeLeaves(PQNode node) {
+    private void removeLeaves(final PQNode node) {
         if (node.type.equals(NodeType.LEAF_NODE)) {
             leaves.get(node.getVirtualNum() - 1).remove(node);
         } else {
-            for (PQNode child : node.children) {
+            for (final PQNode child : node.children) {
                 removeLeaves(child);
             }
         }
     }
-
 }

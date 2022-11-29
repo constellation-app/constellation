@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class CircTreeChoiceParameters {
 
     int rootVxId;
 
-    public CircTreeChoiceParameters(final float scale, final boolean strictCircularLayout, final int rootAttrId, String rootValue) {
+    public CircTreeChoiceParameters(final float scale, final boolean strictCircularLayout, final int rootAttrId, final String rootValue) {
         this.scale = scale;
         this.strictCircularLayout = strictCircularLayout;
         this.rootAttrId = rootAttrId;

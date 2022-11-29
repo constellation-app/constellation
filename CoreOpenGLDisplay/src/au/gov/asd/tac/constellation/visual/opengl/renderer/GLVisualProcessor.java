@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,8 @@ import javax.imageio.ImageIO;
  * @author antares
  */
 public class GLVisualProcessor extends VisualProcessor {
+    
+    private static final Logger LOGGER = Logger.getLogger(GLVisualProcessor.class.getName());
 
     public static final Cursor DEFAULT_CURSOR = Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR);
     public static final Cursor CROSSHAIR_CURSOR = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
@@ -245,8 +247,8 @@ public class GLVisualProcessor extends VisualProcessor {
                 // Write the image out as a PNG.
                 try {
                     ImageIO.write(img, "png", file);
-                } catch (IOException ex) {
-                    Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, null, ex);
                 }
             });
         }
@@ -393,7 +395,7 @@ public class GLVisualProcessor extends VisualProcessor {
         renderer = new GLRenderer(this, Arrays.asList(graphRenderable, axesRenderable, fpsRenderable), debugGl, printGlCapabilities);
         try {
             canvas = new GLCanvas(SharedDrawable.getGLCapabilities());
-        } catch (GLException ex) {
+        } catch (final GLException ex) {
             GLInfo.respondToIncompatibleHardwareOrGL(null);
             throw ex;
         }
@@ -410,7 +412,7 @@ public class GLVisualProcessor extends VisualProcessor {
                 new VisualChangeBuilder(VisualProperty.VERTICES_REBUILD).build(),
                 new VisualChangeBuilder(VisualProperty.CONNECTIONS_REBUILD).build(),
                 new VisualChangeBuilder(VisualProperty.BACKGROUND_COLOR).forItems(1).build(),
-                new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOUR).forItems(1).build(),
+                new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOR).forItems(1).build(),
                 new VisualChangeBuilder(VisualProperty.CONNECTIONS_OPACITY).forItems(1).build(),
                 new VisualChangeBuilder(VisualProperty.BLAZE_SIZE).forItems(1).build(),
                 //                new VisualChangeBuilder(VisualProperty.DRAW_FLAGS).forItems(1).build(),

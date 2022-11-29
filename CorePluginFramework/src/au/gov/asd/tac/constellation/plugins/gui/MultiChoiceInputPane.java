@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,11 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
-import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,12 +49,13 @@ import org.controlsfx.control.CheckComboBox;
  */
 public class MultiChoiceInputPane extends HBox {
 
+    private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
+    
     public static final int DEFAULT_WIDTH = 300;
 
     private final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
     private final MultiChoiceComboBox<ParameterValue> field;
     private boolean isAdjusting = false;
-    private static final Logger LOGGER = Logger.getLogger(MultiChoiceInputPane.class.getName());
 
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
         options.addAll(MultiChoiceParameterType.getOptionsData(parameter));
@@ -83,7 +81,7 @@ public class MultiChoiceInputPane extends HBox {
                 }
             });
 
-            field.getCheckModel().getCheckedItems().addListener((ListChangeListener.Change<? extends ParameterValue> c) -> {
+            field.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends ParameterValue> c) -> {
                 if (!isAdjusting) {
                     MultiChoiceParameterType.setChoicesData(parameter, field.getCheckModel().getCheckedItems());
                 }
@@ -92,22 +90,26 @@ public class MultiChoiceInputPane extends HBox {
 
         field.setPrefWidth(DEFAULT_WIDTH);
 
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> {
-            Platform.runLater(() -> {
+        parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
                 @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
-                PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) pluginParameter;
+                final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) pluginParameter;
                 switch (change) {
                     case VALUE:
                         isAdjusting = true;
+                        field.getCheckModel().clearChecks(); //The order matters here- this should be called before clearing the options.
                         options.clear();
                         options.addAll(MultiChoiceParameterType.getOptionsData(mcPluginParameter));
                         @SuppressWarnings("unchecked") //checkedItems will be list of parameter values
-                        List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
+                        final List<ParameterValue> checkedItems = (List<ParameterValue>) MultiChoiceParameterType.getChoicesData(mcPluginParameter);
 
                         field.getCheckModel().getCheckedItems();
                         checkedItems.forEach(checked -> {
                             field.getCheckModel().check(checked);
                         });
+                        
+                        // give a visual indicator if a required parameter is empty
+                        field.setId(mcPluginParameter.isRequired() && field.getCheckModel().isEmpty() ? "invalid selection" : "");
+                        field.setStyle("invalid selection".equals(field.getId()) ? "-fx-color: #8A1D1D" : "");
 
                         isAdjusting = false;
                         break;
@@ -124,29 +126,8 @@ public class MultiChoiceInputPane extends HBox {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            }));
         getChildren().add(field);
-        final String parameterId = parameter.getId();
-        final List<String> multiChoiceRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (multiChoiceRecentValues != null) {
-            final String multiChoiceRecentValue = multiChoiceRecentValues.get(multiChoiceRecentValues.size() > 1 ? 1 : 0);
-            final List<String> recentChoices = new ArrayList<>();
-            for (final String recentValue : multiChoiceRecentValue.split("\\n")) {
-                if (recentValue.startsWith("\u2713 ")) {
-                    recentChoices.add(recentValue.split("\u2713 ")[1]);
-                }
-            }
-            
-            final List<ParameterValue> pvs = MultiChoiceParameterType.getOptionsData(parameter);
-            final List<ParameterValue> choices = new ArrayList<>();
-            for (final ParameterValue pv : pvs) {
-                if (recentChoices.contains(pv.toString())) {
-                    choices.add(pv);
-                }
-            }
-            parameter.getParameterValue().setChoicesData(choices);
-        }
     }
 
     public class MultiChoiceComboBox<T extends Object> extends CheckComboBox<T> {

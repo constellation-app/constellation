@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,6 @@ import java.util.Comparator;
  */
 public class AttributeBin extends ObjectBin {
 
-    //TODO: Determine whether isComparable needed
-    private boolean isComparable;
     private String attributeType;
     private Comparator<Object> comparator;
 
@@ -54,7 +52,6 @@ public class AttributeBin extends ObjectBin {
     @Override
     public void prepareForPresentation() {
         final AbstractAttributeInteraction<?> attributeInteraction = AbstractAttributeInteraction.getInteraction(attributeType);
-        isComparable = attributeInteraction.isComparable();
         label = key == null ? null : attributeInteraction.getDisplayText(key);
     }
 

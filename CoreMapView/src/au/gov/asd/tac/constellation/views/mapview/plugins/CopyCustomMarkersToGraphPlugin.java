@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
-import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
@@ -49,7 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.COPY, tags = {"COPY"})
+@PluginInfo(tags = {PluginTags.MODIFY})
 @NbBundle.Messages("CopyCustomMarkersToGraphPlugin=Copy Custom Markers to Graph")
 public class CopyCustomMarkersToGraphPlugin extends SimpleEditPlugin {
 
@@ -74,10 +74,17 @@ public class CopyCustomMarkersToGraphPlugin extends SimpleEditPlugin {
             graph.setFloatValue(vertexPrecisionAttributeId, vertexId, (float) marker.getRadius());
 
             try {
-                final Shape.GeometryType geometryType = marker instanceof ConstellationMultiMarker ? Shape.GeometryType.MULTI_POLYGON
-                        : marker instanceof ConstellationPolygonMarker ? Shape.GeometryType.POLYGON
-                                : marker instanceof ConstellationLineMarker ? Shape.GeometryType.LINE
-                                        : Shape.GeometryType.POINT;
+                final Shape.GeometryType geometryType;
+                if (marker instanceof ConstellationMultiMarker) {
+                    geometryType = Shape.GeometryType.MULTI_POLYGON;
+                } else if (marker instanceof ConstellationPolygonMarker) {
+                    geometryType = Shape.GeometryType.POLYGON;
+                } else if (marker instanceof ConstellationLineMarker) {
+                    geometryType = Shape.GeometryType.LINE;
+                } else {
+                    geometryType = Shape.GeometryType.POINT;
+                }
+
                 final List<Tuple<Double, Double>> coordinates = marker.getLocations().stream()
                         .map(location -> Tuple.create((double) location.getLon(), (double) location.getLat()))
                         .collect(Collectors.toList());

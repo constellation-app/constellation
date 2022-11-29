@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,19 @@ import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.image.Image;
 import javax.net.ssl.HttpsURLConnection;
 import org.netbeans.api.annotations.common.StaticResource;
-import org.openide.util.Exceptions;
 
 /**
  *
  * @author arcturus
  */
 public class DownloadImageUtilities {
+    
+    private static final Logger LOGGER = Logger.getLogger(DownloadImageUtilities.class.getName());
 
     /**
      * Icon to state that the download failed
@@ -36,6 +39,10 @@ public class DownloadImageUtilities {
     @StaticResource
     private static final String DOWNLOAD_FAILED_ICON = "au/gov/asd/tac/constellation/utilities/file/resources/download_failed.png";
 
+    private DownloadImageUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Download a png file and return an {@code Image} instance of the image. If
      * the download failed for whatever reason, an image with
@@ -53,8 +60,8 @@ public class DownloadImageUtilities {
             if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 img = new Image(HttpsUtilities.getInputStream(connection));
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             img = new Image(DOWNLOAD_FAILED_ICON);
         } finally {
             if (connection != null) {

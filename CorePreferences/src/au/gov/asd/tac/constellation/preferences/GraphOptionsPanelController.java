@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,10 +38,10 @@ import org.openide.util.NbPreferences;
         displayName = "#GraphOption_DisplayName",
         keywords = "#GraphOption_Keywords",
         keywordsCategory = "constellation/GraphPreferences",
-        position = 0)
+        position = 600)
 @org.openide.util.NbBundle.Messages({
     "GraphOption_DisplayName=Graph",
-    "GraphOption_Keywords=blaze size blaze opacity blaze colour"
+    "GraphOption_Keywords=blaze size blaze opacity blaze color"
 })
 
 public final class GraphOptionsPanelController extends OptionsPanelController {
@@ -61,10 +61,10 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
         final String presetColorsString = NbPreferences.forModule(GraphPreferenceKeys.class)
                 .get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
 
-        // set the colours here - below generates a list of coloured icons.
+        // set the colors here - below generates a list of colored icons.
         final List<Color> colors = new ArrayList<>();
         for (final String currentColor : presetColorsString.split(";")) {
-            if (StringUtils.isNotBlank(currentColor) && !currentColor.equals("null")) {
+            if (StringUtils.isNotBlank(currentColor) && !"null".equals(currentColor)) {
                 final int r = Integer.valueOf(currentColor.substring(1, 3), 16);
                 final int g = Integer.valueOf(currentColor.substring(3, 5), 16);
                 final int b = Integer.valueOf(currentColor.substring(5, 7), 16);
@@ -74,6 +74,8 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
             }
         }
         graphOptionsPanel.setPresetColors(colors);
+        graphOptionsPanel.setLeftColor(prefs.get(GraphPreferenceKeys.LEFT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT));
+        graphOptionsPanel.setRightColor(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.RIGHT_COLOR_DEFAULT));
     }
 
     @Override
@@ -89,18 +91,24 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
 
                 prefs.putInt(GraphPreferenceKeys.BLAZE_SIZE, graphOptionsPanel.getBlazeSize());
                 prefs.putInt(GraphPreferenceKeys.BLAZE_OPACITY, graphOptionsPanel.getBlazeOpacity());
+                prefs.put(GraphPreferenceKeys.LEFT_COLOR, graphOptionsPanel.getLeftColor());
+                prefs.put(GraphPreferenceKeys.RIGHT_COLOR, graphOptionsPanel.getRightColor());
             }
         }
     }
 
     @Override
     public void cancel() {
+        // Method intentionally left blank
     }
 
     // Add code to check valid values. may be needed for expansion of this UI manu.
     @Override
     public boolean isValid() {
-        return true;
+        final GraphOptionsPanel graphOptionsPanel = getPanel();
+        final String leftEye = graphOptionsPanel.getLeftColor();
+        final String rightEye = graphOptionsPanel.getRightColor();
+        return !leftEye.equals(rightEye);
     }
 
     // Check if the preference values are changed upon adding to the UI menu
@@ -108,8 +116,11 @@ public final class GraphOptionsPanelController extends OptionsPanelController {
     public boolean isChanged() {
         final Preferences prefs = NbPreferences.forModule(GraphPreferenceKeys.class);
         final GraphOptionsPanel graphOptionsPanel = getPanel();
+
         return !(graphOptionsPanel.getBlazeSize() == prefs.getInt(GraphPreferenceKeys.BLAZE_SIZE, GraphPreferenceKeys.BLAZE_SIZE_DEFAULT)
-                && graphOptionsPanel.getBlazeOpacity() == prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT));
+                && graphOptionsPanel.getBlazeOpacity() == prefs.getInt(GraphPreferenceKeys.BLAZE_OPACITY, GraphPreferenceKeys.BLAZE_OPACITY_DEFAULT)
+                && graphOptionsPanel.getLeftColor().equals(prefs.get(GraphPreferenceKeys.LEFT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT))
+                && graphOptionsPanel.getRightColor().equals(prefs.get(GraphPreferenceKeys.RIGHT_COLOR, GraphPreferenceKeys.LEFT_COLOR_DEFAULT)));
     }
 
     @Override

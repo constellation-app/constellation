@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.file.io.GraphJsonReader;
 import au.gov.asd.tac.constellation.graph.file.io.GraphParseException;
 import au.gov.asd.tac.constellation.graph.file.opener.GraphOpener;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import java.io.File;
@@ -55,10 +56,8 @@ public final class AutosaveStartup implements Runnable {
     @Override
     public void run() {
         synchronized (String.class) {
-//            System.out.printf("@OnShowing %s %s\n", this.getClass(), this.getClass().getClassLoader());
-
             // Look for existing autosaved in-memory graphs.
-            final File[] saveFiles = AutosaveUtilities.getAutosaves(AutosaveUtilities.AUTO_EXT);
+            final File[] saveFiles = AutosaveUtilities.getAutosaves(FileExtensionConstants.STAR_AUTOSAVE);
             final long now = new Date().getTime();
 
             for (final File f : saveFiles) {
@@ -104,6 +103,8 @@ public final class AutosaveStartup implements Runnable {
                         } else if (now - f.lastModified() > PURGE_PERIOD_MS) {
                             // This autosave is old enough to be purged; the user won't remember the details of the graph.
                             AutosaveUtilities.deleteAutosave(f);
+                        } else {
+                            // Do nothing
                         }
                     } else {
                         // Some information about this autosave is missing so get rid of it.

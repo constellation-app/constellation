@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType.FloatParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -36,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author sirius
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {"LOW LEVEL"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 @NbBundle.Messages("UpdateBlazeSizeOpacityPlugin=Blazes: Update Size and Opacity")
 public class UpdateBlazeSizeOpacityPlugin extends SimpleEditPlugin {
 
@@ -50,15 +51,15 @@ public class UpdateBlazeSizeOpacityPlugin extends SimpleEditPlugin {
         final PluginParameter<FloatParameterValue> sizeParameter = FloatParameterType.build(SIZE_PARAMETER_ID);
         sizeParameter.setName("Size");
         sizeParameter.setDescription("The size of the blaze");
-        FloatParameterType.setMinimum(sizeParameter, 0f);
-        FloatParameterType.setMaximum(sizeParameter, 1f);
+        FloatParameterType.setMinimum(sizeParameter, 0F);
+        FloatParameterType.setMaximum(sizeParameter, 1F);
         parameters.addParameter(sizeParameter);
 
         final PluginParameter<FloatParameterValue> opacityParameter = FloatParameterType.build(OPACITY_PARAMETER_ID);
         opacityParameter.setName("Opacity");
         opacityParameter.setDescription("The opacity of the blaze");
-        FloatParameterType.setMinimum(opacityParameter, 0f);
-        FloatParameterType.setMaximum(opacityParameter, 1f);
+        FloatParameterType.setMinimum(opacityParameter, 0F);
+        FloatParameterType.setMaximum(opacityParameter, 1F);
         parameters.addParameter(opacityParameter);
 
         return parameters;

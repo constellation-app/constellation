@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,10 @@ import java.util.BitSet;
  */
 public class TriangleUtilities {
 
+    private TriangleUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /*
      This method counts the number of triangles each vertex is in
      Returning a tuple where the first entry is a list of neighbours each node
@@ -34,7 +38,7 @@ public class TriangleUtilities {
     public static Tuple<Tuple<BitSet[], float[]>, Float> getTriangles(final GraphReadMethods graph) {
         final int vxCount = graph.getVertexCount();
         final BitSet[] allNeighbours = new BitSet[vxCount];
-        float[] scores = new float[vxCount];
+        final float[] scores = new float[vxCount];
         final BitSet update = new BitSet(vxCount);
         final BitSet[] triangleNeighbours = new BitSet[vxCount];
         float triangles = 0;
@@ -103,8 +107,8 @@ public class TriangleUtilities {
         final int vxCount = graph.getVertexCount();
         final BitSet[] allNeighbours = new BitSet[vxCount];
         final BitSet update = new BitSet(vxCount);
-        Float triangles = 0f;
-        Float triplets = 0f;
+        Float triangles = 0F;
+        Float triplets = 0F;
 
         // initialise variables
         for (int vxPosition = 0; vxPosition < vxCount; vxPosition++) {

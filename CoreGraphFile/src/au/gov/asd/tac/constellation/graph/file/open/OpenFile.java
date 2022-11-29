@@ -73,12 +73,12 @@ public final class OpenFile {
      * @usecase CallbackImpl, OpenFileAction
      */
     public static String openFile(final File file, final int line) {
-        String msg = checkFileExists(file);
+        final String msg = checkFileExists(file);
         if (msg != null) {
             return msg;
         }
 
-        FileObject fileObject = FileUtil.toFileObject(FileUtil.normalizeFile(file));
+        final FileObject fileObject = FileUtil.toFileObject(FileUtil.normalizeFile(file));
         if (fileObject != null) {
             return open(fileObject, line);
         }
@@ -93,7 +93,7 @@ public final class OpenFile {
      * @return error message or null on success
      */
     public static String open(final FileObject fileObject, final int line) {
-        for (OpenFileImpl impl : Lookup.getDefault().lookupAll(OpenFileImpl.class)) {
+        for (final OpenFileImpl impl : Lookup.getDefault().lookupAll(OpenFileImpl.class)) {
             if (impl.open(fileObject, line)) {
                 return null;
             }

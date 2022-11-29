@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,8 +46,6 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
     private static final Logger LOGGER = Logger.getLogger(DateTimeRangePanel.class.getName());
 
     private final DateTimeListenerInterface parentPanel;
-    private JSpinner.DateEditor de1;
-    private JSpinner.DateEditor de2;
     private Calendar firstDate = null;
     private Calendar secondDate = null;
     private Date minDate = null;
@@ -72,10 +70,10 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
         }
         initComponents();
 
-        de1 = new JSpinner.DateEditor(spnDateTime1, Bundle.DateTimeFormat());
+        final JSpinner.DateEditor de1 = new JSpinner.DateEditor(spnDateTime1, Bundle.DateTimeFormat());
         spnDateTime1.setEditor(de1);
 
-        de2 = new JSpinner.DateEditor(spnDateTime2, Bundle.DateTimeFormat());
+        final JSpinner.DateEditor de2 = new JSpinner.DateEditor(spnDateTime2, Bundle.DateTimeFormat());
         spnDateTime2.setEditor(de2);
 
         presetDateRanges.removeAllItems();
@@ -287,6 +285,8 @@ public class DateTimeRangePanel extends javax.swing.JPanel {
             setPresetDates(Calendar.DAY_OF_MONTH, -6);
         } else if (value.equals(Bundle.PresetRange6())) {
             setPresetDates(Calendar.YEAR, -1);
+        } else {
+            // Do nothing
         }
 
     }//GEN-LAST:event_presetDateRangesActionPerformed

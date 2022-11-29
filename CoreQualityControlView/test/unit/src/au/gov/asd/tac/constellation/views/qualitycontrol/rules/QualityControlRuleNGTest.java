@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,60 +59,60 @@ public class QualityControlRuleNGTest {
         final int cat2Higher = 1;
 
         // Test categories are equal
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.FATAL,
-                QualityControlEvent.QualityCategory.FATAL), catEqual);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.CRITICAL,
+                QualityControlEvent.QualityCategory.CRITICAL), catEqual);
         assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.SEVERE,
                 QualityControlEvent.QualityCategory.SEVERE), catEqual);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.WARNING,
-                QualityControlEvent.QualityCategory.WARNING), catEqual);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.INFO,
-                QualityControlEvent.QualityCategory.INFO), catEqual);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.DEFAULT,
-                QualityControlEvent.QualityCategory.DEFAULT), catEqual);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MAJOR,
+                QualityControlEvent.QualityCategory.MAJOR), catEqual);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MEDIUM,
+                QualityControlEvent.QualityCategory.MEDIUM), catEqual);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MINOR,
+                QualityControlEvent.QualityCategory.MINOR), catEqual);
 
         // Test category 1 is higher
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.FATAL,
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.CRITICAL,
                 QualityControlEvent.QualityCategory.SEVERE), cat1Higher);
         assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.SEVERE,
-                QualityControlEvent.QualityCategory.WARNING), cat1Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.WARNING,
-                QualityControlEvent.QualityCategory.INFO), cat1Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.INFO,
-                QualityControlEvent.QualityCategory.DEFAULT), cat1Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.FATAL,
-                QualityControlEvent.QualityCategory.WARNING), cat1Higher);
+                QualityControlEvent.QualityCategory.MAJOR), cat1Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MAJOR,
+                QualityControlEvent.QualityCategory.MEDIUM), cat1Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MEDIUM,
+                QualityControlEvent.QualityCategory.MINOR), cat1Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.CRITICAL,
+                QualityControlEvent.QualityCategory.MAJOR), cat1Higher);
         assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.SEVERE,
-                QualityControlEvent.QualityCategory.INFO), cat1Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.WARNING,
-                QualityControlEvent.QualityCategory.DEFAULT), cat1Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.FATAL,
-                QualityControlEvent.QualityCategory.INFO), cat1Higher);
+                QualityControlEvent.QualityCategory.MEDIUM), cat1Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MAJOR,
+                QualityControlEvent.QualityCategory.MINOR), cat1Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.CRITICAL,
+                QualityControlEvent.QualityCategory.MEDIUM), cat1Higher);
         assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.SEVERE,
-                QualityControlEvent.QualityCategory.DEFAULT), cat1Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.FATAL,
-                QualityControlEvent.QualityCategory.DEFAULT), cat1Higher);
+                QualityControlEvent.QualityCategory.MINOR), cat1Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.CRITICAL,
+                QualityControlEvent.QualityCategory.MINOR), cat1Higher);
 
         // Test category 2 is higher
         assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.SEVERE,
-                QualityControlEvent.QualityCategory.FATAL), cat2Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.WARNING,
+                QualityControlEvent.QualityCategory.CRITICAL), cat2Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MAJOR,
                 QualityControlEvent.QualityCategory.SEVERE), cat2Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.INFO,
-                QualityControlEvent.QualityCategory.WARNING), cat2Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.DEFAULT,
-                QualityControlEvent.QualityCategory.INFO), cat2Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.WARNING,
-                QualityControlEvent.QualityCategory.FATAL), cat2Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.INFO,
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MEDIUM,
+                QualityControlEvent.QualityCategory.MAJOR), cat2Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MINOR,
+                QualityControlEvent.QualityCategory.MEDIUM), cat2Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MAJOR,
+                QualityControlEvent.QualityCategory.CRITICAL), cat2Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MEDIUM,
                 QualityControlEvent.QualityCategory.SEVERE), cat2Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.DEFAULT,
-                QualityControlEvent.QualityCategory.WARNING), cat2Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.INFO,
-                QualityControlEvent.QualityCategory.FATAL), cat2Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.DEFAULT,
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MINOR,
+                QualityControlEvent.QualityCategory.MAJOR), cat2Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MEDIUM,
+                QualityControlEvent.QualityCategory.CRITICAL), cat2Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MINOR,
                 QualityControlEvent.QualityCategory.SEVERE), cat2Higher);
-        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.DEFAULT,
-                QualityControlEvent.QualityCategory.FATAL), cat2Higher);
+        assertEquals(QualityControlRule.testPriority(QualityControlEvent.QualityCategory.MINOR,
+                QualityControlEvent.QualityCategory.CRITICAL), cat2Higher);
     }
 
     /**
@@ -121,39 +121,39 @@ public class QualityControlRuleNGTest {
      */
     @Test
     public void testGetCategoryByScore() {
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.DEFAULT_VALUE - 1),
-                QualityControlEvent.QualityCategory.DEFAULT); // ONE BELOW
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.DEFAULT_VALUE),
-                QualityControlEvent.QualityCategory.DEFAULT); // ON VALUE
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.DEFAULT_VALUE + 1),
-                QualityControlEvent.QualityCategory.DEFAULT); // ONE ABOVE
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MINOR_VALUE - 1),
+                QualityControlEvent.QualityCategory.OK); // ONE BELOW
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MINOR_VALUE),
+                QualityControlEvent.QualityCategory.MINOR); // ON VALUE
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MINOR_VALUE + 1),
+                QualityControlEvent.QualityCategory.MINOR); // ONE ABOVE
 
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.INFO_VALUE - 1),
-                QualityControlEvent.QualityCategory.DEFAULT); // ONE BELOW
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.INFO_VALUE),
-                QualityControlEvent.QualityCategory.INFO); // ON VALUE
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.INFO_VALUE + 1),
-                QualityControlEvent.QualityCategory.INFO); // ONE ABOVE
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MEDIUM_VALUE - 1),
+                QualityControlEvent.QualityCategory.MINOR); // ONE BELOW
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MEDIUM_VALUE),
+                QualityControlEvent.QualityCategory.MEDIUM); // ON VALUE
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MEDIUM_VALUE + 1),
+                QualityControlEvent.QualityCategory.MEDIUM); // ONE ABOVE
 
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.WARNING_VALUE - 1),
-                QualityControlEvent.QualityCategory.INFO); // ONE BELOW
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.WARNING_VALUE),
-                QualityControlEvent.QualityCategory.WARNING); // ON VALUE
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.WARNING_VALUE + 1),
-                QualityControlEvent.QualityCategory.WARNING); // ONE ABOVE
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MAJOR_VALUE - 1),
+                QualityControlEvent.QualityCategory.MEDIUM); // ONE BELOW
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MAJOR_VALUE),
+                QualityControlEvent.QualityCategory.MAJOR); // ON VALUE
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.MAJOR_VALUE + 1),
+                QualityControlEvent.QualityCategory.MAJOR); // ONE ABOVE
 
         assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.SEVERE_VALUE - 1),
-                QualityControlEvent.QualityCategory.WARNING); // ONE BELOW
+                QualityControlEvent.QualityCategory.MAJOR); // ONE BELOW
         assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.SEVERE_VALUE),
                 QualityControlEvent.QualityCategory.SEVERE); // ON VALUE
         assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.SEVERE_VALUE + 1),
                 QualityControlEvent.QualityCategory.SEVERE); // ONE ABOVE
 
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.FATAL_VALUE - 1),
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.CRITICAL_VALUE - 1),
                 QualityControlEvent.QualityCategory.SEVERE); // ONE BELOW
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.FATAL_VALUE),
-                QualityControlEvent.QualityCategory.FATAL); // ON VALUE
-        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.FATAL_VALUE + 1),
-                QualityControlEvent.QualityCategory.FATAL); // ONE ABOVE
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.CRITICAL_VALUE),
+                QualityControlEvent.QualityCategory.CRITICAL); // ON VALUE
+        assertEquals(QualityControlRule.getCategoryByScore(QualityControlEvent.CRITICAL_VALUE + 1),
+                QualityControlEvent.QualityCategory.CRITICAL); // ONE ABOVE
     }
 }

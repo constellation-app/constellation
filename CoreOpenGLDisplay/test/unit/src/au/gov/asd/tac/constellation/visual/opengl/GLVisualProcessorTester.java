@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public class GLVisualProcessorTester {
         changeSet.add(new VisualChangeBuilder(VisualProperty.VERTICES_REBUILD).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_REBUILD).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.BACKGROUND_COLOR).build());
-        changeSet.add(new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOUR).build());
+        changeSet.add(new VisualChangeBuilder(VisualProperty.HIGHLIGHT_COLOR).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.CONNECTIONS_OPACITY).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.BLAZE_SIZE).build());
         changeSet.add(new VisualChangeBuilder(VisualProperty.DRAW_FLAGS).build());

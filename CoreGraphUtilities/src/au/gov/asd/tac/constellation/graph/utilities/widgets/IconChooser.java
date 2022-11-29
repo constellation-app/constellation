@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.widgets;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -45,6 +47,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.filesystems.FileChooserBuilder;
@@ -55,8 +58,10 @@ import org.openide.filesystems.FileChooserBuilder;
  */
 public final class IconChooser extends javax.swing.JPanel implements TreeSelectionListener, ListSelectionListener {
 
+    private static final String TITLE = "Add icons";
+
     private final Set<ConstellationIcon> icons;
-    private final boolean iconAdded = false;
+    private static final boolean ICON_ADDED = false;
 
     public IconChooser(final Set<ConstellationIcon> icons, final String selectedIconName) {
         initComponents();
@@ -170,7 +175,7 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
     }
 
     public boolean isIconAdded() {
-        return iconAdded;
+        return ICON_ADDED;
     }
 
     /**
@@ -257,107 +262,82 @@ public final class IconChooser extends javax.swing.JPanel implements TreeSelecti
     }// </editor-fold>//GEN-END:initComponents
 
 private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
-    // Add an icon to the icon list.
-    String addedIcon = null;
+        FileChooser.openMultiDialog(getAddIconFileChooser()).thenAccept(optionalFiles -> optionalFiles.ifPresent(files -> {
+            // Add an icon to the icon list.
+            String addedIcon = null;
 
-    final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
-            .setTitle("Add icons")
-            .setFileFilter(new FileFilter() {
-                @Override
-                public boolean accept(final File pathName) {
-                    final int extlen = 4;
-                    final String name = pathName.getName().toLowerCase();
-                    if (pathName.isFile() && (name.endsWith(".png") || name.endsWith(".jpg"))) {
-                        final String label = name.substring(0, name.length() - extlen);
-
-                        // The name must contain at least one category (a '.' in position 1 or greater).
-                        return label.indexOf('.') > 0;
+            for (File file : files) {
+                // The name must contain at least one category (a '.' in position 1 or greater).
+                final int extlen = 4;
+                final String fnam = file.getName();
+                final String label = fnam.substring(0, fnam.length() - extlen);
+                if (label.indexOf('.') < 1) {
+                    final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Icon name %s must contain categories separated by '.'", fnam), NotifyDescriptor.ERROR_MESSAGE);
+                    nd.setTitle("Bad icon file name");
+                    DialogDisplayer.getDefault().notify(nd);
+                } else {
+                    ConstellationIcon customIcon = new ConstellationIcon.Builder(fnam, new FileIconData(file)).build();
+                    if (IconManager.addIcon(customIcon)) {
+                        addedIcon = label;
                     }
-
-                    return pathName.isDirectory();
-                }
-
-                @Override
-                public String getDescription() {
-                    return "Graph Icon";
-                }
-            });
-
-    final File[] files = fChooser.showMultiOpenDialog();
-    if (files != null) {
-        for (File file : files) {
-            // The name must contain at least one category (a '.' in position 1 or greater).
-            final int extlen = 4;
-            final String fnam = file.getName();
-            final String label = fnam.substring(0, fnam.length() - extlen);
-            if (label.indexOf('.') < 1) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Icon name %s must contain categories separated by '.'", fnam), NotifyDescriptor.ERROR_MESSAGE);
-                nd.setTitle("Bad icon file name");
-                DialogDisplayer.getDefault().notify(nd);
-            } else {
-                ConstellationIcon customIcon = new ConstellationIcon.Builder(fnam, new FileIconData(file)).build();
-                if (IconManager.addIcon(customIcon)) {
-                    addedIcon = label;
                 }
             }
-        }
-    }
 
-    if (addedIcon != null) {
-        icons.clear();
-        icons.addAll(IconManager.getIcons());
-        init(addedIcon);
-    }
+            if (addedIcon != null) {
+                icons.clear();
+                icons.addAll(IconManager.getIcons());
+                init(addedIcon);
+            }
+        }));
 }//GEN-LAST:event_addButtonActionPerformed
 
 private void removeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removeButtonActionPerformed
-    // Remove an icon from the icon list.
-    final int index = iconsList.getSelectedIndex();
-    if (index != -1) {
-        final IconListModel listModel = (IconListModel) iconsList.getModel();
-        listModel.remove(index);
-        final IconListElement element = listModel.getElementAt(index);
-        final TreePath path = iconFolders.getSelectionPath();
-        if (path != null) {
-//            final IconFoldersTreeModel treeModel = (IconFoldersTreeModel)iconFolders.getModel();
-            final IconTreeFolder folder = (IconTreeFolder) path.getLastPathComponent();
-            folder.removeChild(new IconTreeFolder(element.name));
+        // Remove an icon from the icon list.
+        final int index = iconsList.getSelectedIndex();
+        if (index != -1) {
+            final IconListModel listModel = (IconListModel) iconsList.getModel();
+            listModel.remove(index);
+            final IconListElement element = listModel.getElementAt(index);
+            final TreePath path = iconFolders.getSelectionPath();
+            if (path != null) {
+                final IconTreeFolder folder = (IconTreeFolder) path.getLastPathComponent();
+                folder.removeChild(new IconTreeFolder(element.name));
+            }
         }
-    }
 }//GEN-LAST:event_removeButtonActionPerformed
 
 private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveButtonActionPerformed
-    // Save an icon from the icon list.
-    final String iconName = getSelectedIconName();
-    if (iconName != null) {
-        final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
-                .setTitle("Save icon");
-//        final File file = fChooser.showSaveDialog();
+        // Save an icon from the icon list.
+        final String iconName = getSelectedIconName();
+        if (iconName != null) {
+            final FileChooserBuilder fChooser = new FileChooserBuilder(IconChooser.class)
+                    .setFilesOnly(true)
+                    .setTitle("Save icon");
 
-        // We need to get a JFileChooser because FileChooserBuilder doesn't have setSelectedFile().
-        final JFileChooser chooser = fChooser.createFileChooser();
+            // We need to get a JFileChooser because FileChooserBuilder doesn't have setSelectedFile().
+            final JFileChooser chooser = fChooser.createFileChooser();
 
-        chooser.setSelectedFile(new File(iconName + ".png"));
-        final int result = chooser.showSaveDialog(this);
-        final File file = result == JFileChooser.APPROVE_OPTION ? chooser.getSelectedFile() : null;
+            chooser.setSelectedFile(new File(iconName + FileExtensionConstants.PNG));
+            final int result = chooser.showSaveDialog(this);
+            final File file = result == JFileChooser.APPROVE_OPTION ? chooser.getSelectedFile() : null;
 
-        if (file != null) {
-            try {
-                final IconListModel listModel = (IconListModel) iconsList.getModel();
-                final int index = iconsList.getSelectedIndex();
-                final IconListElement element = listModel.getElementAt(index);
+            if (file != null) {
+                try {
+                    final IconListModel listModel = (IconListModel) iconsList.getModel();
+                    final int index = iconsList.getSelectedIndex();
+                    final IconListElement element = listModel.getElementAt(index);
 
-                try (final FileOutputStream fos = new FileOutputStream(file)) {
-                    fos.write(element.iconValue.buildByteArray());
-                    fos.flush();
+                    try (final FileOutputStream fos = new FileOutputStream(file)) {
+                        fos.write(element.iconValue.buildByteArray());
+                        fos.flush();
+                    }
+                } catch (IOException ex) {
+                    final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Error writing icon file %s:%n%s", file.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
+                    nd.setTitle("Icon file error");
+                    DialogDisplayer.getDefault().notify(nd);
                 }
-            } catch (IOException ex) {
-                final NotifyDescriptor nd = new NotifyDescriptor.Message(String.format("Error writing icon file %s:%n%s", file.toString(), ex.getMessage()), NotifyDescriptor.ERROR_MESSAGE);
-                nd.setTitle("Icon file error");
-                DialogDisplayer.getDefault().notify(nd);
             }
         }
-    }
 }//GEN-LAST:event_saveButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -390,6 +370,33 @@ private void saveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         saveButton.setEnabled(true);
         removeButton.setEnabled(true);
     }
+
+    public FileChooserBuilder getAddIconFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final int extlen = 4;
+                        final String name = file.getName().toLowerCase();
+                        if (file.isFile() && StringUtils.endsWithAny(name, new String[]{FileExtensionConstants.JPG, FileExtensionConstants.PNG})) {
+                            final String label = name.substring(0, name.length() - extlen);
+
+                            // The name must contain at least one category (a '.' in position 1 or greater).
+                            return label.indexOf('.') > 0;
+                        }
+
+                        return file.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "Graph Icon";
+                    }
+                });
+    }
 }
 
 class IconTreeFolder implements Comparable<IconTreeFolder> {
@@ -415,7 +422,10 @@ class IconTreeFolder implements Comparable<IconTreeFolder> {
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof IconTreeFolder && ((IconTreeFolder) other).name.equals(name);
+        if (other == null) {
+            return false;
+        }
+        return this.getClass() == other.getClass() && ((IconTreeFolder) other).name.equals(name);
     }
 
     @Override
@@ -509,7 +519,10 @@ class IconListElement {
 
     @Override
     public boolean equals(final Object other) {
-        return other instanceof IconListElement && ((IconListElement) other).name.equals(name);
+        if (other == null) {
+            return false;
+        }
+        return this.getClass() == other.getClass() && ((IconListElement) other).name.equals(name);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,10 @@ public class ReserveLock {
     private static final Comparator<Reservable> RESERVABLE_COMPARATOR = (r1, r2) -> {
         int x = System.identityHashCode(r1);
         int y = System.identityHashCode(r2);
-        return (x < y) ? -1 : ((x == y) ? 0 : 1);
+        if (x < y) {
+            return -1;
+        }
+        return (x == y) ? 0 : 1;
     };
     private final ReentrantLock lock = new ReentrantLock(true);
     private final Reservable[] reserved;

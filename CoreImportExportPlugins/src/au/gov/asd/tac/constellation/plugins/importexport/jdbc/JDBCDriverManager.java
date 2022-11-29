@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class JDBCDriverManager {
+    
+    private static final Logger LOGGER = Logger.getLogger(JDBCDriverManager.class.getName());
 
     static JDBCDriverManager driverManager = null;
 
@@ -58,7 +61,7 @@ public class JDBCDriverManager {
                 }
             }
         } catch (final SQLException | IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -82,7 +85,7 @@ public class JDBCDriverManager {
                 }
             }
         } catch (final IOException | SQLException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
         return false;
     }
@@ -94,7 +97,7 @@ public class JDBCDriverManager {
                 statement.executeUpdate();
             }
         } catch (final IOException | SQLException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -113,7 +116,7 @@ public class JDBCDriverManager {
             }
 
         } catch (final IOException | SQLException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -129,7 +132,7 @@ public class JDBCDriverManager {
                 statement.executeUpdate();
             }
         } catch (final IOException | SQLException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 

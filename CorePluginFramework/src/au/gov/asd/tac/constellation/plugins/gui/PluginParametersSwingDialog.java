@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.Dimension;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
@@ -26,7 +28,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 
 /**
@@ -38,6 +39,8 @@ import org.openide.util.HelpCtx;
  * @author algol
  */
 public class PluginParametersSwingDialog {
+    
+    private static final Logger LOGGER = Logger.getLogger(PluginParametersSwingDialog.class.getName());
 
     public static final String OK = "OK";
     public static final String CANCEL = "Cancel";
@@ -103,11 +106,6 @@ public class PluginParametersSwingDialog {
      * @param helpID The JavaHelp ID of the help.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final Set<String> excludedParameters, final String helpID) {
-//        if(!SwingUtilities.isEventDispatchThread())
-//        {
-//            throw new IllegalStateException("Not event dispatch thread");
-//        }
-
         this.title = title;
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -115,7 +113,7 @@ public class PluginParametersSwingDialog {
         Platform.runLater(() -> {
             final BorderPane root = new BorderPane();
             root.setPadding(new Insets(10));
-            root.setStyle("-fx-background-color: #DDDDDD;");
+            root.setStyle("-fx-background-color: #F0F0F0;");
 
             // Attempt to give the window a sensible width and/or height.
             root.setMinWidth(500);
@@ -123,6 +121,11 @@ public class PluginParametersSwingDialog {
             final PluginParametersPane parametersPane = PluginParametersPane.buildPane(parameters, null, excludedParameters);
             root.setCenter(parametersPane);
             final Scene scene = new Scene(root);
+
+            // TODO: the main stylesheet isn't loaded here and should be
+            // something like the following
+//            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+//            scene.getStylesheets().add(JavafxStyleManager.getDynamicStyleSheet());
             xp.setScene(scene);
             xp.setPreferredSize(new Dimension((int) scene.getWidth(), (int) scene.getHeight()));
             latch.countDown();
@@ -130,23 +133,35 @@ public class PluginParametersSwingDialog {
 
         try {
             latch.await();
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             Thread.currentThread().interrupt();
         }
+    }
+
+    public void setSize(final Dimension dimension) {
+        xp.setPreferredSize(dimension);
     }
 
     public void showAndWait() {
         final DialogDescriptor dd = new DialogDescriptor(xp, title);
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        result = r == DialogDescriptor.OK_OPTION ? OK : r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        if (r == DialogDescriptor.OK_OPTION) {
+            result = OK;
+        } else {
+            result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        }
     }
-    
+
     public void showAndWaitNoFocus() {
-        //Having 'No' button as initial value means focus is off of 'Ok' and 'Cancel' buttons
+        //Having 'No' button as initial value means focus is off of 'OK' and 'Cancel' buttons
         final DialogDescriptor dd = new DialogDescriptor(xp, title, true, DialogDescriptor.OK_CANCEL_OPTION, DialogDescriptor.NO_OPTION, null);
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        result = r == DialogDescriptor.OK_OPTION ? OK : r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        if (r == DialogDescriptor.OK_OPTION) {
+            result = OK;
+        } else {
+            result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+        }
     }
 
     /**

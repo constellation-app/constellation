@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,117 +16,76 @@
 package au.gov.asd.tac.constellation.utilities.tooltip;
 
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipProvider.TooltipDefinition;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredHyperlinkHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseEnteredTextAreaHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseExitedHandler;
+import au.gov.asd.tac.constellation.utilities.tooltip.handlers.TooltipMouseMovedHandler;
+import java.time.Duration;
 import java.util.List;
-import javafx.geometry.Point2D;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextInputControl;
-import javafx.scene.control.skin.TextAreaSkin;
-import javafx.scene.control.skin.TextFieldSkin;
-import javafx.scene.control.skin.TextInputControlSkin;
-import javafx.scene.text.HitInfo;
+import javafx.util.Pair;
+import org.fxmisc.richtext.InlineCssTextArea;
+import org.fxmisc.richtext.event.MouseOverTextEvent;
 
 /**
+ * Handles tool tip rendering on TextInputControl objects.
  *
  * @author sirius
+ * @author sol695510
  */
 public class TooltipUtilities {
+    
+    private TooltipUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void activateTextInputControl(final TextInputControl textInputControl, final TooltipPane tooltipPane) {
-
-        final int[] characterIndex = new int[1];
-        final TooltipNode[] tooltipNode = new TooltipNode[1];
-
-        textInputControl.setOnMouseEntered(event -> {
-            if (tooltipPane.isEnabled()) {
-                TextInputControlSkin<?> skin = (TextInputControlSkin<?>) textInputControl.getSkin();
-                HitInfo info = (skin instanceof TextAreaSkin) ? ((TextAreaSkin) skin).getIndex(event.getX(), event.getY()) : ((TextFieldSkin) skin).getIndex(event.getX(), event.getY());
-                characterIndex[0] = info.getCharIndex();
-                List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textInputControl.getText(), characterIndex[0]);
-                textInputControl.requestFocus();
-                selectActiveArea(textInputControl, definitions);
-                if (!definitions.isEmpty()) {
-                    tooltipNode[0] = new TooltipNode();
-                    tooltipNode[0].setTooltips(definitions);
-                    Point2D location = textInputControl.localToScene(event.getX(), textInputControl.getHeight());
-                    tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
-                }
-            }
-        });
-
-        textInputControl.setOnMouseMoved(event -> {
-            if (tooltipPane.isEnabled()) {
-                TextInputControlSkin<?> skin = (TextInputControlSkin<?>) textInputControl.getSkin();
-                HitInfo info = (skin instanceof TextAreaSkin) ? ((TextAreaSkin) skin).getIndex(event.getX(), event.getY()) : ((TextFieldSkin) skin).getIndex(event.getX(), event.getY());
-
-                // If the mouse is over a different character then get new tooltips
-                if (info.getCharIndex() != characterIndex[0]) {
-                    characterIndex[0] = info.getCharIndex();
-                    List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getTooltips(textInputControl.getText(), characterIndex[0]);
-                    selectActiveArea(textInputControl, definitions);
-                    if (definitions.isEmpty()) {
-                        tooltipNode[0] = null;
-                    } else {
-                        tooltipNode[0] = new TooltipNode();
-                        tooltipNode[0].setTooltips(definitions);
-                    }
-                }
-
-                // If we have a tooltip then reposition under mouse
-                if (tooltipNode[0] == null) {
-                    tooltipPane.hideTooltip();
-                } else {
-                    Point2D location = textInputControl.localToScene(event.getX(), textInputControl.getHeight());
-                    tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
-                }
-            }
-        });
-
-        textInputControl.setOnMouseExited(event -> {
-            if (tooltipPane.isEnabled()) {
-                tooltipPane.hideTooltip();
-            }
-        });
+        textInputControl.setOnMouseEntered(new TooltipMouseEnteredHandler(textInputControl, tooltipPane));
+        textInputControl.setOnMouseMoved(new TooltipMouseMovedHandler(textInputControl, tooltipPane));
+        textInputControl.setOnMouseExited(new TooltipMouseExitedHandler(tooltipPane));
     }
-
-    private static final double HYPERLINK_TOOLTIP_VERTICAL_GAP = 15.0;
+    
 
     public static void activateTextInputControl(final Hyperlink hyperlink, final TooltipPane tooltipPane) {
-
-        final TooltipNode[] tooltipNode = new TooltipNode[1];
-
-        hyperlink.setOnMouseEntered(event -> {
-            if (tooltipPane.isEnabled()) {
-                List<TooltipProvider.TooltipDefinition> definitions = TooltipProvider.getAllTooltips(hyperlink.getText());
-                hyperlink.requestFocus();
-                if (!definitions.isEmpty()) {
-                    tooltipNode[0] = new TooltipNode();
-                    tooltipNode[0].setTooltips(definitions);
-                    Point2D location = hyperlink.localToScene(event.getX(), event.getY() + hyperlink.getHeight() + HYPERLINK_TOOLTIP_VERTICAL_GAP);
-                    tooltipPane.showTooltip(tooltipNode[0], location.getX(), location.getY());
-                }
-            }
-        });
-
-        hyperlink.setOnMouseExited(event -> {
-            if (tooltipPane.isEnabled()) {
-                tooltipPane.hideTooltip();
-            }
-        });
+        hyperlink.setOnMouseEntered(new TooltipMouseEnteredHyperlinkHandler(hyperlink, tooltipPane));
+        hyperlink.setOnMouseExited(new TooltipMouseExitedHandler(tooltipPane));
     }
 
-    private static void selectActiveArea(TextInputControl control, List<TooltipProvider.TooltipDefinition> definitions) {
+    public static void selectActiveArea(final TextInputControl control, final List<TooltipProvider.TooltipDefinition> definitions) {
+        final Pair<Integer, Integer> result = findActiveArea(definitions);
+        if (result.getKey() != Integer.MAX_VALUE && result.getValue() != Integer.MIN_VALUE) {
+            control.selectRange(result.getKey(), result.getValue());
+        }
+    }
+
+    public static void activateTextInputControl(final InlineCssTextArea textArea, final TooltipPane tooltipPane) {
+        textArea.setMouseOverTextDelay(Duration.ofMillis(100));
+        textArea.addEventHandler(MouseOverTextEvent.MOUSE_OVER_TEXT_BEGIN, new TooltipMouseEnteredTextAreaHandler(textArea, tooltipPane));
+        textArea.addEventHandler(MouseOverTextEvent.MOUSE_OVER_TEXT_END, new TooltipMouseExitedHandler(tooltipPane));
+    }
+
+    public static void selectActiveArea(final InlineCssTextArea textArea, final List<TooltipProvider.TooltipDefinition> definitions) {
+        final Pair<Integer, Integer> result = findActiveArea(definitions);
+        if (result.getKey() != Integer.MAX_VALUE && result.getValue() != Integer.MIN_VALUE) {
+            textArea.selectRange(result.getKey(), result.getValue());
+        }
+    }
+    
+    protected static Pair<Integer,Integer> findActiveArea(final List<TooltipProvider.TooltipDefinition> definitions){
         int s = Integer.MAX_VALUE;
         int e = Integer.MIN_VALUE;
-        for (TooltipDefinition definition : definitions) {
-            if (definition.getStart() >= 0 && definition.getStart() < s) {
-                s = definition.getStart();
+        for (final TooltipDefinition definition : definitions) {
+            final int start = definition.getStart();
+            final int finish = definition.getFinish();
+            if (start >= 0 && start < s) {
+                s = start;
             }
-            if (definition.getFinish() >= 0 && definition.getFinish() > e) {
-                e = definition.getFinish();
+            if (finish >= 0 && finish > e) {
+                e = finish;
             }
         }
-        if (s != Integer.MAX_VALUE && e != Integer.MIN_VALUE) {
-            control.selectRange(s, e);
-        }
+        return new Pair(s,e);
     }
 }

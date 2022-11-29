@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -56,6 +56,10 @@ public class PlaceholderUtilities {
 
     private static final String DEFAULT_PLACEHOLDER_LABEL = "_placeholder<" + AnalyticConcept.VertexType.PLACEHOLDER.getName() + ">";
 
+    private PlaceholderUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Given a String, returns the corresponding name for a placeholder node.
      * This should be used to ensure the right data merges together by keeping
@@ -133,7 +137,7 @@ public class PlaceholderUtilities {
                     .filter(transaction -> transaction.getTypeValue().equals(SchemaTransactionTypeUtilities.getDefaultType()))
                     .forEach(GraphTransaction::deferRemove);
             g.streamVertices()
-                    .filter(vertex -> vertex.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER).equals("unknown"))
+                    .filter(vertex -> "unknown".equals(vertex.getStringValue(VisualConcept.VertexAttribute.IDENTIFIER)))
                     .forEach(GraphVertex::deferRemove);
             g.completeDeferred();
         }
@@ -277,6 +281,8 @@ public class PlaceholderUtilities {
                     } else if (graph.getTransactionDestinationVertex(correlationId) == placeholderId
                             && graph.getTransactionSourceVertex(correlationId) != leadVertex) {
                         graph.setTransactionDestinationVertex(correlationId, leadVertex);
+                    } else {
+                        // Do nothing
                     }
                 });
 

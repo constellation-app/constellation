@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,12 +25,12 @@ public class LevenshteinDistanceFunction implements DistanceFunction<String> {
 
     private final int k;
 
-    LevenshteinDistanceFunction(int k) {
+    protected LevenshteinDistanceFunction(final int k) {
         this.k = k;
     }
 
     @Override
-    public double getDistance(String firstPoint, String secondPoint) {
+    public double getDistance(final String firstPoint, final String secondPoint) {
         if (firstPoint == null || secondPoint == null) {
             throw new IllegalArgumentException("Strings must not be null.");
         }
@@ -48,6 +48,8 @@ public class LevenshteinDistanceFunction implements DistanceFunction<String> {
             return m <= k ? m : k + 1;
         } else if (m == 0) {
             return n <= k ? n : k + 1;
+        } else {
+            // Do nothing
         }
 
         if (n > m) {

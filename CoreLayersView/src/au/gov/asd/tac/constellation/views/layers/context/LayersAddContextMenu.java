@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,11 +42,6 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = ContextMenuProvider.class, position = 210)
 public class LayersAddContextMenu implements ContextMenuProvider {
 
-    public enum LayerAction {
-        ADD,
-        REMOVE
-    }
-
     private static final String LAYER_MENU = "Layers";
     private static final String NO_LAYER_TEXT = "[NO DESCRIPTION]";
     private static final String ADD_TO_LAYER = "Add Selection to Layer...";
@@ -78,6 +73,8 @@ public class LayersAddContextMenu implements ContextMenuProvider {
                             final String description = StringUtils.isBlank(txQuery.getDescription())
                                     ? NO_LAYER_TEXT : txQuery.getDescription();
                             currentLayers.add(String.valueOf(txQuery.getIndex()) + " - " + description);
+                        } else {
+                            // Do nothing
                         }
                     }
                 } else {
@@ -95,7 +92,7 @@ public class LayersAddContextMenu implements ContextMenuProvider {
     @Override
     public void selectItem(final String item, final Graph graph, final GraphElementType elementType, final int elementId, final Vector3f unprojected) {
         PluginExecution.withPlugin(new UpdateElementBitmaskPlugin(
-                Integer.parseInt(item.substring(0, 2).trim()), LayerAction.ADD))
+                Integer.parseInt(item.substring(0, 2).trim()), LayerAction.ADD, true))
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 }

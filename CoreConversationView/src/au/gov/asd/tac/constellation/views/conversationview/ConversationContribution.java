@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,20 +36,20 @@ public abstract class ConversationContribution {
     private Region content = null;
 
     /**
-     * Create a new Contribution
+     * Create a new Contribution.
      *
-     * @param provider The provider that created this contribution
-     * @param message The message that this contribution belongs to
+     * @param provider The provider that created this contribution.
+     * @param message The message that this contribution belongs to.
      */
-    public ConversationContribution(final ConversationContributionProvider provider, final ConversationMessage message) {
+    protected ConversationContribution(final ConversationContributionProvider provider, final ConversationMessage message) {
         this.provider = provider;
         this.message = message;
     }
 
     /**
-     * Get the provider that created this Contribution
+     * Get the provider that created this Contribution.
      *
-     * @return This contribution's ConversationContributionProvider
+     * @return This contribution's ConversationContributionProvider.
      */
     public final ConversationContributionProvider getProvider() {
         return provider;
@@ -65,13 +65,20 @@ public abstract class ConversationContribution {
     }
 
     /**
+     * Get the text that this contribution is associated to.
+     *
+     * @return The text that this contribution is associated to.
+     */
+    protected abstract String getText();
+
+    /**
      * Gets the javafx Region that is used to display this Contribution inside a
      * bubble in the Conversation View. This method will create the region if it
      * has not previously been created.
      *
      * @param tips The Conversation View's tooltip pane that can be used to add
-     * tooltips for this Contribution
-     * @return A javafx Region displaying this contribution
+     * tooltips for this Contribution.
+     * @return A javafx Region displaying this contribution.
      */
     public final Region getContent(final TooltipPane tips) {
         if (content == null) {
@@ -86,8 +93,8 @@ public abstract class ConversationContribution {
      * content as desired for a given Contribution.
      *
      * @param tips The Conversation View's tooltip pane that can be used to add
-     * tooltips for this Contribution
-     * @return A javafx Region displaying this contribution
+     * tooltips for this Contribution.
+     * @return A javafx Region displaying this contribution.
      */
     protected abstract Region createContent(final TooltipPane tips);
 }

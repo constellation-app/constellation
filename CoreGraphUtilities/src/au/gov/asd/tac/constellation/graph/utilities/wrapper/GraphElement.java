@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public abstract class GraphElement {
     protected GraphWrapper graph;
     protected final int id;
 
-    public GraphElement(GraphElementType type, GraphWrapper graph, int id) {
+    protected GraphElement(GraphElementType type, GraphWrapper graph, int id) {
         this.type = type;
         this.graph = graph;
         this.id = id;
@@ -169,7 +169,10 @@ public abstract class GraphElement {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof GraphElement)) {
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() != obj.getClass()) {
             return false;
         }
         GraphElement o = (GraphElement) obj;

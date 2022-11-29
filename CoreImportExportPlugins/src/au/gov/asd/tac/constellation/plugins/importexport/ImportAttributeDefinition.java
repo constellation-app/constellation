@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,8 @@ public class ImportAttributeDefinition {
     private final String defaultValue;
     private final PluginParameters parameters;
 
-    private static int ATTRIBUTE_NOT_DEFINED = -93459;
-    private static int ROWID_COLUMN_INDEX = -1;
+    private static int attributeNotDefined = -93459;
+    private static int rowIDColumnIndex = -1;
 
     /**
      * Immutable attributes are defined in {@code ImportController} as mockup
@@ -47,7 +47,7 @@ public class ImportAttributeDefinition {
      * overriddenAttributeId will be used to store the id. This approach
      * prevents any modifications to the {@code Attribute} interface.
      */
-    private int overriddenAttributeId = ATTRIBUTE_NOT_DEFINED;
+    private int overriddenAttributeId = attributeNotDefined;
 
     public ImportAttributeDefinition(final int columnIndex, final Attribute attribute, final AttributeTranslator translator, final String defaultValue, final PluginParameters parameters) {
         this.columnLabel = null;
@@ -122,7 +122,7 @@ public class ImportAttributeDefinition {
      * @return The attribute id
      */
     public int getOverriddenAttributeId() {
-        if (overriddenAttributeId == ATTRIBUTE_NOT_DEFINED) {
+        if (overriddenAttributeId == attributeNotDefined) {
             return attribute.getId();
         }
 
@@ -145,8 +145,10 @@ public class ImportAttributeDefinition {
         } else if (columnIndex >= 0) {
             final String cell = columnIndex < row.length ? row[columnIndex] : "";
             graph.setStringValue(getOverriddenAttributeId(), elementId, translator.translate(cell, parameters));
-        } else if (columnIndex == ROWID_COLUMN_INDEX) {
+        } else if (columnIndex == rowIDColumnIndex) {
             graph.setStringValue(getOverriddenAttributeId(), elementId, Integer.toString(rowIndex));
+        } else {
+            // Do nothing
         }
     }
 

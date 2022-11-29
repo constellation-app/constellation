@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,14 +78,12 @@ public interface ConstellationHttpProxy {
      */
     public default String getAdditionalProxiesString() {
         final StringBuilder additionalProxies = new StringBuilder();
-        getAdditionalProxies().forEach(additionalProxy -> {
-            additionalProxies.append(additionalProxy.getKey())
-                    .append("=")
-                    .append(additionalProxy.getValue().getKey())
-                    .append(":")
-                    .append(additionalProxy.getValue().getValue())
-                    .append(ProxyUtilities.PROXY_SEPARATOR);
-        });
+        getAdditionalProxies().forEach(additionalProxy -> additionalProxies.append(additionalProxy.getKey())
+                .append("=")
+                .append(additionalProxy.getValue().getKey())
+                .append(":")
+                .append(additionalProxy.getValue().getValue())
+                .append(ProxyUtilities.PROXY_SEPARATOR));
         return additionalProxies.toString();
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.scene.control.ContentDisplay;
@@ -40,47 +40,60 @@ import javafx.scene.shape.Shape;
  * @author ruby_crucis
  */
 public class HeadingPane extends TitledPane implements PluginParametersPaneListener {
-
     private final List<DataSourceTitledPane> dataSources = new ArrayList<>();
     private final PluginParametersPaneListener top;
 
-    private static final Color GREEN = Color.web("#5E9656");
+    private static final Color LIGHT_GREEN = Color.web("#5E9656");
+    private static final Color DARK_GREEN = Color.web("#1A4D1A");
     private static final Color GREY = Color.web("#e6e6e6").deriveColor(1, 1, 1, 0.3);
-    private static final double SQUARE_SIZE = 14; // Smaller makes it obvious that they are not center aligned
+    
+    // Smaller makes it obvious that they are not center aligned
+    private static final double SQUARE_SIZE = 14;
 
-    private final FlowPane boxes = new FlowPane();
+    private final FlowPane boxes;
 
     /**
-     * Primary constructor.
+     * Creates a new heading pane.
      *
-     * @param headingText Text to display
-     * @param plugins Plug-ins to include
+     * @param headingText text to display
+     * @param plugins plugins to include
      * @param top a component (e.g. the parent in the layout tree) which should
-     * be informed when plug-ins are selected or deselected.
-     * @param globalParamLabels the labels of the global parameters.
+     *     be informed when plug-ins are selected or deselected
+     * @param globalParamLabels the labels of the global parameters
      */
-    public HeadingPane(String headingText, List<DataAccessPlugin> plugins, PluginParametersPaneListener top, final Set<String> globalParamLabels) {
+    public HeadingPane(final String headingText,
+                       final List<DataAccessPlugin> plugins,
+                       final PluginParametersPaneListener top,
+                       final Set<String> globalParamLabels) {
         this.top = top;
+        
+        boxes = new FlowPane();
         boxes.setHgap(5);
-        plugins.stream().forEach(_item -> boxes.getChildren().add(makeInactiveSquare()));
-        setText(headingText);
+        plugins.stream()
+                .forEach(plugin -> boxes.getChildren().add(makeInactiveSquare()));
         setGraphic(boxes);
+        
+        setText(headingText);
+        
         setContentDisplay(ContentDisplay.RIGHT);
         setGraphicTextGap(5);
         setCollapsible(true);
-        setExpanded(DataAccessPreferences.isExpanded(headingText, true));
+        setExpanded(DataAccessPreferenceUtilities.isExpanded(headingText, true));
         getStyleClass().add("titled-pane-heading");
-        VBox sources = new VBox();
+        
+        final VBox sources = new VBox();
         sources.setPadding(Insets.EMPTY);
         setContent(sources);
+        
         for (DataAccessPlugin plugin : plugins) {
             final DataSourceTitledPane dataSourcePane = new DataSourceTitledPane(plugin, null, this, globalParamLabels);
             dataSources.add(dataSourcePane);
             sources.getChildren().add(dataSourcePane);
         }
 
-        expandedProperty().addListener((ChangeListener) (final ObservableValue observable, final Object oldValue, final Object newValue)
-                -> DataAccessPreferences.setExpanded(headingText, (boolean) newValue));
+        expandedProperty().addListener(
+                (final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue)
+                        -> DataAccessPreferenceUtilities.setExpanded(headingText, newValue));
     }
 
     public List<DataSourceTitledPane> getDataSources() {
@@ -88,7 +101,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
     }
 
     @Override
-    public void validityChanged(boolean enabled) {
+    public void validityChanged(final boolean enabled) {
         top.hierarchicalUpdate();
 
         // If set because a user is editing, it's already expanded so it doesn't matter.
@@ -123,7 +136,7 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
      * @return
      */
     private Shape makeActiveSquare() {
-        return makeSquare(GREEN, Color.web("#1a4d1a")); // Color.web("#336633")
+        return makeSquare(LIGHT_GREEN, DARK_GREEN);
     }
 
     /**
@@ -135,12 +148,23 @@ public class HeadingPane extends TitledPane implements PluginParametersPaneListe
         return makeSquare(GREY, GREY);
     }
 
-    private Shape makeSquare(Color colour, Color border) {
-        Stop[] stops = new Stop[]{new Stop(0, colour), new Stop(0.95, colour.deriveColor(1, 1, .75, 1)), new Stop(1.0, colour.deriveColor(1, 1, 0.5, 1))};
-        LinearGradient gradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
-        Rectangle square = new Rectangle(SQUARE_SIZE, SQUARE_SIZE);
+    private Shape makeSquare(final Color color, final Color border) {
+        final Stop[] stops = new Stop[]{
+            new Stop(0, color),
+            new Stop(0.95, color.deriveColor(1, 1, .75, 1)),
+            new Stop(1.0, color.deriveColor(1, 1, 0.5, 1))
+        };
+        
+        final LinearGradient gradient = new LinearGradient(0, 0, 0, 1, true, CycleMethod.NO_CYCLE, stops);
+        
+        final Rectangle square = new Rectangle(SQUARE_SIZE, SQUARE_SIZE);
         square.setStroke(border);
         square.setFill(gradient);
+        
         return square;
+    }
+
+    protected FlowPane getBoxes() {
+        return boxes;
     }
 }

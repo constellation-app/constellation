@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,9 +22,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class SQLiteDBManager {
+    
+    private static final Logger LOGGER = Logger.getLogger(SQLiteDBManager.class.getName());
 
     private static SQLiteDBManager __instance__ = null;
     private File sqlite;
@@ -57,18 +60,17 @@ public class SQLiteDBManager {
                     }
                 }
             } catch (final IOException | SQLException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
 
         } catch (final ClassNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
     }
 
     public Connection getConnection() throws IOException, SQLException {
-        final Connection connection = DriverManager.getConnection("jdbc:sqlite:" + sqlite.getCanonicalPath());
-        return connection;
+        return DriverManager.getConnection("jdbc:sqlite:" + sqlite.getCanonicalPath());
     }
 
     private void createDriverTable(final Connection connection) throws SQLException {

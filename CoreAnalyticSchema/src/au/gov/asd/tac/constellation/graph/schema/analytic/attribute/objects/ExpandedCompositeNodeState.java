@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -100,7 +100,7 @@ public class ExpandedCompositeNodeState {
         this.numberOfNodes = numberOfNodes;
     }
 
-    private void contractSingleVertex(GraphWriteMethods wg, final int vxId, final RecordStore constituentNodeStore, final List<String> expandedIds, final List<String> affectedExpandedIds, final Map<Integer, String> idToCopiedId) {
+    private void contractSingleVertex(final GraphWriteMethods wg, final int vxId, final RecordStore constituentNodeStore, final List<String> expandedIds, final List<String> affectedExpandedIds, final Map<Integer, String> idToCopiedId) {
 
         // Copy this vertex into the expansion record store inside the contracted composite state.
         final String[] copiedId = new String[1];
@@ -128,7 +128,7 @@ public class ExpandedCompositeNodeState {
      * @param wg The graph write lock with which to perform the expansion.
      * @return The graph ID of the now contracted composite node.
      */
-    public int contract(GraphWriteMethods wg) {
+    public int contract(final GraphWriteMethods wg) {
         final int uniqueIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.get(wg);
         final int compositeStateAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.get(wg);
         final int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
@@ -183,9 +183,8 @@ public class ExpandedCompositeNodeState {
         addToGraphStore.add(compositeNodeStore);
 
         // Add the transactions from the expanded nodes to non-constituent nodes to the contraction record store
-        idToCopiedId.entrySet().forEach(entry -> {
-            GraphRecordStoreUtilities.copyTransactionsToComposite(wg, addToGraphStore, entry.getKey(), entry.getValue(), idToCopiedId.keySet(), compositeId, new GraphAttribute(wg, uniqueIdAttr));
-        });
+        idToCopiedId.entrySet().forEach(entry
+                -> GraphRecordStoreUtilities.copyTransactionsToComposite(wg, addToGraphStore, entry.getKey(), entry.getValue(), idToCopiedId.keySet(), compositeId, new GraphAttribute(wg, uniqueIdAttr)));
         // Remove each expanded vertex from the graph
         idToCopiedId.keySet().forEach(wg::removeVertex);
 

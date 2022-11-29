@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.visual.opengl.renderer.batcher.Batch;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.GLTools;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.ShaderManager;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import java.io.IOException;
@@ -45,13 +46,15 @@ import java.util.logging.Logger;
  * @author algol
  */
 public class AxesRenderable implements GLRenderable {
+    
+    private static final Logger LOGGER = Logger.getLogger(AxesRenderable.class.getName());
 
-    private static final float LEN = 0.5f;
-    private static final float HEAD = 0.05f;
+    private static final float LEN = 0.5F;
+    private static final float HEAD = 0.05F;
     private static final int AXES_OFFSET = 50;
-    private static final Vector4f XCOLOR = new Vector4f(1, 0.5f, 0.5f, 0.75f);
-    private static final Vector4f YCOLOR = new Vector4f(0.5f, 1, 0.5f, 0.75f);
-    private static final Vector4f ZCOLOR = new Vector4f(0, 0.5f, 1, 0.75f);
+    private static final Vector4f XCOLOR = new Vector4f(1, 0.5F, 0.5F, 0.75f);
+    private static final Vector4f YCOLOR = new Vector4f(0.5F, 1, 0.5F, 0.75f);
+    private static final Vector4f ZCOLOR = new Vector4f(0, 0.5F, 1, 0.75F);
     private static final Vector3f ZERO_3F = new Vector3f(0, 0, 0);
     private static final Matrix44f IDENTITY_44F = Matrix44f.identity();
 
@@ -71,7 +74,7 @@ public class AxesRenderable implements GLRenderable {
 
     public AxesRenderable(final GLVisualProcessor parent) {
         this.parent = parent;
-        axesBatch = new Batch(GL3.GL_LINES);
+        axesBatch = new Batch(GL.GL_LINES);
         colorTarget = axesBatch.newFloatBuffer(COLOR_BUFFER_WIDTH, true);
         vertexTarget = axesBatch.newFloatBuffer(VERTEX_BUFFER_WIDTH, true);
     }
@@ -93,7 +96,7 @@ public class AxesRenderable implements GLRenderable {
             axesGp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThruLine.gs");
             axesFp = GLTools.loadFile(GLVisualProcessor.class, "shaders/PassThru.fs");
         } catch (IOException ex) {
-            Logger.getLogger(AxesRenderable.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         topRightCorner = new Vector3f();
@@ -197,7 +200,7 @@ public class AxesRenderable implements GLRenderable {
         Graphics3DUtilities.project(unitPosition, IDENTITY_44F, viewport, proj2);
         final float yScale = proj2.a[1] - proj1.a[1];
 
-        return 25.0f / yScale;
+        return 25.0F / yScale;
     }
 
     @Override
@@ -234,7 +237,7 @@ public class AxesRenderable implements GLRenderable {
         axesMatrix.multiply(translationMatrix, srMatrix);
 
         // Disable depth so the axes are drawn over everything else.
-        gl.glDisable(GL3.GL_DEPTH_TEST);
+        gl.glDisable(GL.GL_DEPTH_TEST);
         gl.glDepthMask(false);
 
         // Draw.
@@ -244,7 +247,7 @@ public class AxesRenderable implements GLRenderable {
         axesBatch.draw(gl);
 
         // Reenable depth.
-        gl.glEnable(GL3.GL_DEPTH_TEST);
+        gl.glEnable(GL.GL_DEPTH_TEST);
         gl.glDepthMask(true);
     }
 

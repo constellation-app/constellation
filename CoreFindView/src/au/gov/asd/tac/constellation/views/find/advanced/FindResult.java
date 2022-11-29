@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.find.advanced;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This class is the holder class for an individual vertex, transaction, edge or
@@ -171,5 +172,29 @@ public class FindResult {
     @Override
     public String toString() {
         return value.toString() + SEPARATOR + attributeName;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof FindResult)) {
+            return false;
+        }
+        final FindResult other = (FindResult) obj;
+
+        return (this.id == other.id);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + this.id;
+        hash = 97 * hash + (int) (this.uid ^ (this.uid >>> 32));
+        hash = 97 * hash + Objects.hashCode(this.type);
+        hash = 97 * hash + Objects.hashCode(this.attributeName);
+        hash = 97 * hash + Objects.hashCode(this.value);
+        return hash;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,13 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import java.awt.event.ActionEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 /**
@@ -44,6 +45,8 @@ import org.openide.util.NbBundle.Messages;
 })
 @Messages("CTL_CloseAction=Close")
 public final class CloseAction extends AbstractAction {
+    
+    private static final Logger LOGGER = Logger.getLogger(CloseAction.class.getName());
 
     private final GraphNode context;
 
@@ -64,11 +67,11 @@ public final class CloseAction extends AbstractAction {
                     .withPlugin(InteractiveGraphPluginRegistry.CLOSE_GRAPH)
                     .withParameter(CloseGraphPlugin.GRAPH_PARAMETER_ID, context.getGraph().getId())
                     .executeNow(context.getGraph());
-        } catch (InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, "Close Graph interrupted", ex);
             Thread.currentThread().interrupt();
-        } catch (PluginException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final PluginException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 }

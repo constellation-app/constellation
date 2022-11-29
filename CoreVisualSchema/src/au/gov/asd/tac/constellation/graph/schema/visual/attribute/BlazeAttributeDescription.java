@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,12 +38,8 @@ public final class BlazeAttributeDescription extends AbstractObjectAttributeDesc
     }
 
     @Override
-    protected Blaze convertFromString(String string) {
-        if (StringUtils.isBlank(string)) {
-            return getDefault();
-        } else {
-            return Blaze.valueOf(string);
-        }
+    protected Blaze convertFromString(final String string) {
+        return StringUtils.isBlank(string) ? getDefault() : Blaze.valueOf(string);
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -45,7 +46,6 @@ import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -54,7 +54,7 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author sirius
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class, position = 10000)
 public class ImageIconDropper implements GraphDropper {
 
@@ -69,8 +69,8 @@ public class ImageIconDropper implements GraphDropper {
         try {
             imageFlavor = new DataFlavor("image/x-java-image;class=java.awt.Image");
             imageFileFlavor = new DataFlavor("application/x-java-file-list;class=java.util.List");
-        } catch (ClassNotFoundException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ClassNotFoundException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         IMAGE_FLAVOR = imageFlavor;
@@ -98,6 +98,8 @@ public class ImageIconDropper implements GraphDropper {
                         image = ImageIO.read(file);
                     }
                 }
+            } else {
+                // Do nothing
             }
             if (image != null) {
                 final BufferedImage resultImage = image;
@@ -105,34 +107,11 @@ public class ImageIconDropper implements GraphDropper {
                     final String iconName = loadDraggedImage(resultImage);
                     if (iconName != null) {
 
-                        PluginExecution.withPlugin(new SimpleEditPlugin("Set Vertex Icons") {
-
-                            @Override
-                            protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                                int iconAttr = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
-                                if (selectedAttr != Graph.NOT_FOUND && iconAttr != Graph.NOT_FOUND) {
-
-                                    GraphIndexResult selectionResult = GraphIndexUtilities.filterElements(graph, selectedAttr, true);
-                                    int vertex = selectionResult.getNextElement();
-                                    while (vertex != Graph.NOT_FOUND) {
-                                        graph.setStringValue(iconAttr, vertex, iconName);
-                                        vertex = selectionResult.getNextElement();
-                                    }
-                                }
-                                ConstellationLoggerHelper.importPropertyBuilder(
-                                        this,
-                                        Arrays.asList(iconName),
-                                        null,
-                                        ConstellationLoggerHelper.SUCCESS
-                                );
-                            }
-
-                        }).interactively(true).executeLater(graph);
+                        PluginExecution.withPlugin(new SetVertexIconsPlugin(iconName)).interactively(true).executeLater(graph);
                     }
                 };
             }
-        } catch (UnsupportedFlavorException | IOException ex) {
+        } catch (final UnsupportedFlavorException | IOException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
@@ -158,9 +137,50 @@ public class ImageIconDropper implements GraphDropper {
 
             return iconName;
 
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             return null;
         }
+    }
+
+    /**
+     * Plugin to add the required Layers View attributes.
+     */
+    @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
+    public static class SetVertexIconsPlugin extends SimpleEditPlugin {
+
+        final String iconName;
+
+        public SetVertexIconsPlugin(final String iconName) {
+            this.iconName = iconName;
+
+        }
+
+        @Override
+        public String getName() {
+            return "Set Vertex Icons";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            int selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(graph);
+            int iconAttr = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
+            if (selectedAttr != Graph.NOT_FOUND && iconAttr != Graph.NOT_FOUND) {
+
+                GraphIndexResult selectionResult = GraphIndexUtilities.filterElements(graph, selectedAttr, true);
+                int vertex = selectionResult.getNextElement();
+                while (vertex != Graph.NOT_FOUND) {
+                    graph.setStringValue(iconAttr, vertex, iconName);
+                    vertex = selectionResult.getNextElement();
+                }
+            }
+            ConstellationLoggerHelper.importPropertyBuilder(
+                    this,
+                    Arrays.asList(iconName),
+                    null,
+                    ConstellationLoggerHelper.SUCCESS
+            );
+        }
+
     }
 }

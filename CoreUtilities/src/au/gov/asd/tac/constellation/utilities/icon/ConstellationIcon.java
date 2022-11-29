@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,12 +48,12 @@ public class ConstellationIcon {
     /**
      * A separator used when concatenating elements of a ConstellationIcon name.
      */
-    protected static final String DEFAULT_ICON_SEPARATOR = SeparatorConstants.PERIOD;
+    public static final String DEFAULT_ICON_SEPARATOR = SeparatorConstants.PERIOD;
 
     /**
      * The default file format for a ConstellationIcon.
      */
-    protected static final String DEFAULT_ICON_FORMAT = "png";
+    public static final String DEFAULT_ICON_FORMAT = "png";
 
     /**
      * The default size (ie. height and width) of a ConstellationIcon.
@@ -65,9 +65,9 @@ public class ConstellationIcon {
     /**
      * A cache to store icons
      */
-    private static final Map<ThreeTuple<IconData, Integer, Color>, Object> ICON_CACHE = new HashMap<>();
-    private static final Map<ThreeTuple<IconData, Integer, Color>, Object> IMAGE_CACHE = new HashMap<>();
-    private static final Map<ThreeTuple<IconData, Integer, Color>, Object> BUFFERED_IMAGE_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> ICON_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> IMAGE_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, Object> BUFFERED_IMAGE_CACHE = new HashMap<>();
 
     private final String name;
     private final IconData iconData;
@@ -100,9 +100,7 @@ public class ConstellationIcon {
     private String createExtendedName() {
         StringBuilder fullyQualifiedname = new StringBuilder();
         if (categories != null) {
-            categories.forEach(category -> {
-                fullyQualifiedname.append(category).append(DEFAULT_ICON_SEPARATOR);
-            });
+            categories.forEach(category -> fullyQualifiedname.append(category).append(DEFAULT_ICON_SEPARATOR));
         }
         fullyQualifiedname.append(name);
         return fullyQualifiedname.toString();
@@ -233,7 +231,7 @@ public class ConstellationIcon {
      */
     public BufferedImage buildBufferedImage(final int size, final Color color) {
         // build the cache key
-        final ThreeTuple<IconData, Integer, Color> key = buildCacheKey(iconData, size, color);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         BufferedImage icon;
         if (BUFFERED_IMAGE_CACHE.containsKey(key)) {
@@ -300,7 +298,7 @@ public class ConstellationIcon {
      */
     public Icon buildIcon(final int size, final Color color) {
         // build the cache key
-        final ThreeTuple<IconData, Integer, Color> key = buildCacheKey(iconData, size, color);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         final ImageIcon icon;
         if (ICON_CACHE.containsKey(key)) {
@@ -362,7 +360,7 @@ public class ConstellationIcon {
      */
     public Image buildImage(final int size, final Color color) {
         // build the cache key
-        final ThreeTuple<IconData, Integer, Color> key = buildCacheKey(iconData, size, color);
+        final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
         final Image image;
         if (IMAGE_CACHE.containsKey(key)) {
@@ -379,12 +377,13 @@ public class ConstellationIcon {
 
         return image;
     }
-    
+
     /**
      * Used to clear cache images in the ConstellationIcon cache. This should be
      * called when closing the last open graph to release consumed resources.
-     * 
-     * Note: The cache's purpose is to prevent duplicates when multiple graphs are open.
+     *
+     * Note: The cache's purpose is to prevent duplicates when multiple graphs
+     * are open.
      */
     public static void clearCache() {
         BUFFERED_IMAGE_CACHE.clear();
@@ -396,13 +395,13 @@ public class ConstellationIcon {
      * Build a key that can be used to index the icon byte array in the icon
      * cache.
      *
-     * @param iconData The icon data object
      * @param size The size of the icon
-     * @param color The colour of the icon
-     * @return The byte array of the icon ready for conversion
+     * @param color The color of the icon
+     *
+     * @return A unique key represented as a ThreeTuple
      */
-    private ThreeTuple<IconData, Integer, Color> buildCacheKey(final IconData iconData, final int size, final Color color) {
-        return ThreeTuple.create(iconData, size, color);
+    private ThreeTuple<Integer, Integer, Color> buildCacheKey(final int size, final Color color) {
+        return ThreeTuple.create(name.hashCode() + iconData.hashCode(), size, color);
     }
 
     /**
@@ -410,7 +409,7 @@ public class ConstellationIcon {
      *
      * @param iconData The icon data object
      * @param size The size of the icon
-     * @param color The colour of the icon
+     * @param color The color of the icon
      * @return The icon data byte array
      */
     private byte[] retrieveIconData(final IconData iconData, final int size, final Color color) {

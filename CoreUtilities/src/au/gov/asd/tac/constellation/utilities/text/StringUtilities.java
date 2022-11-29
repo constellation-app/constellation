@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,13 @@
  */
 package au.gov.asd.tac.constellation.utilities.text;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.regex.Pattern;
 
 /**
  * Provides various string operations such as escaping and pretty printing.
@@ -30,6 +33,14 @@ public class StringUtilities {
 
     public static final String ESCAPE_CHARACTER = "\\";
     public static final String SPECIAL_CHARACTERS = ".[]^$()*+?";
+
+    private static final Pattern NON_SPECIAL_CHARACTERS = Pattern.compile("[^A-Za-z0-9]");
+    private static final Pattern OPENING_SQUARE_BRACKET = Pattern.compile("^\\[");
+    private static final Pattern ENDING_SQUARE_BRACKET = Pattern.compile("]$");
+
+    private StringUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     /**
      * Escape a String.
@@ -148,6 +159,8 @@ public class StringUtilities {
                 } else if (delimiter.contains(character)) {
                     splits.add(unescape(escapedString.substring(part0, i), delimiter));
                     part0 = i + 1;
+                } else {
+                    // Do nothing
                 }
             }
 
@@ -364,7 +377,9 @@ public class StringUtilities {
      */
     public static String removeSquareBracketsFromString(final String originalString) {
         if (originalString.startsWith("[") || originalString.endsWith("]")) {
-            return originalString.replaceAll("\\[", "").replaceFirst("]$", "");
+            return ENDING_SQUARE_BRACKET.matcher(
+                    OPENING_SQUARE_BRACKET.matcher(originalString).replaceAll("")
+            ).replaceAll("");
         } else {
             return originalString;
         }
@@ -377,6 +392,41 @@ public class StringUtilities {
      * @return A {@link String} without special characters
      */
     public static String removeSpecialCharacters(final String originalString) {
-        return originalString != null ? originalString.replaceAll("[^A-Za-z0-9]", "") : null;
+        return originalString != null
+                ? NON_SPECIAL_CHARACTERS.matcher(originalString).replaceAll("") : null;
+    }
+
+    /**
+     * Returns list of tuples of all found hits of a search string (Start
+     * position and End position) within the supplied text.
+     */
+    public static List<Tuple<Integer, Integer>> searchRange(final String text, final String searchStr) {
+        final List<Tuple<Integer, Integer>> expected = new ArrayList<>();
+        if ((text != null) && (searchStr != null)) {
+            String lwrText = text.toLowerCase();
+            final String lwrSearch = searchStr.toLowerCase();
+            final int txtLen = lwrText.length();
+            int currLen = txtLen;
+            int currTxtStart = 0;
+            int origTxtStart = 0;
+            int hitStart = 0;
+            int hitEnd = 0;
+            while (hitEnd < txtLen) {
+                if (lwrText.contains(lwrSearch)) {
+                    origTxtStart = origTxtStart + hitEnd;
+                    hitStart = lwrText.indexOf(lwrSearch);
+                    hitEnd = hitStart + lwrSearch.length();
+                    final Tuple<Integer, Integer> tuple = Tuple.create(origTxtStart + hitStart, origTxtStart + hitEnd);
+                    expected.add(tuple);
+                    currTxtStart = hitEnd;
+                    lwrText = lwrText.substring(currTxtStart, currLen);
+                    currLen = currLen - currTxtStart;
+                } else {
+                    break;
+                }
+            }
+            return expected;
+        }
+        return Collections.emptyList();
     }
 }

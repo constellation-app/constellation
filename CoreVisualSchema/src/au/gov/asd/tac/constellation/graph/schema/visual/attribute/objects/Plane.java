@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,10 +123,6 @@ public final class Plane {
         this.y = y;
     }
 
-    public void setZ(final float z) {
-        this.z = z;
-    }
-
     /**
      * Returns the z position of the origin of the image when displayed.
      *
@@ -134,6 +130,10 @@ public final class Plane {
      */
     public float getZ() {
         return z;
+    }
+
+    public void setZ(final float z) {
+        this.z = z;
     }
 
     /**

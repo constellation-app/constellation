@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -46,6 +47,8 @@ import org.openide.util.lookup.ServiceProvider;
 @Deprecated
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class GraphLabelsAndDecoratorsIOProviderV0 extends AbstractGraphIOProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(GraphLabelsAndDecoratorsIOProviderV0.class.getName());
 
     @Override
     public String getName() {
@@ -77,7 +80,7 @@ public class GraphLabelsAndDecoratorsIOProviderV0 extends AbstractGraphIOProvide
                 final JsonNode lnode = it.next();
                 final String attr = lnode.get(GraphLabelsAndDecoratorsV0.FIELD_ATTR).textValue();
                 final String color = lnode.get(GraphLabelsAndDecoratorsV0.FIELD_COLOR).textValue();
-                final float radius = lnode.has(GraphLabelsAndDecoratorsV0.FIELD_RADIUS) ? (float) lnode.get(GraphLabelsAndDecoratorsV0.FIELD_RADIUS).asDouble() : 1f;
+                final float radius = lnode.has(GraphLabelsAndDecoratorsV0.FIELD_RADIUS) ? (float) lnode.get(GraphLabelsAndDecoratorsV0.FIELD_RADIUS).asDouble() : 1F;
 
                 final GraphLabelV0 label = new GraphLabelV0(attr, ConstellationColor.getColorValue(color), radius);
                 labelList.add(label);
@@ -123,8 +126,8 @@ public class GraphLabelsAndDecoratorsIOProviderV0 extends AbstractGraphIOProvide
             }
             jg.writeEndArray();
 
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
 
@@ -133,8 +136,8 @@ public class GraphLabelsAndDecoratorsIOProviderV0 extends AbstractGraphIOProvide
         if (attr != null) {
             try {
                 jg.writeStringField(dec.toString(), attr);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }

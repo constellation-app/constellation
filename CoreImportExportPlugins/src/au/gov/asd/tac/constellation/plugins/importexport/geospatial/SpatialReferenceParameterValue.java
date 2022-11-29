@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,9 @@ package au.gov.asd.tac.constellation.plugins.importexport.geospatial;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.opengis.referencing.FactoryException;
-import org.openide.util.Exceptions;
 
 /**
  * Spatial Reference Parameter Value
@@ -27,6 +28,8 @@ import org.openide.util.Exceptions;
  * @author cygnus_x-1
  */
 public class SpatialReferenceParameterValue extends ParameterValue {
+    
+    private static final Logger LOGGER = Logger.getLogger(SpatialReferenceParameterValue.class.getName());
 
     private Shape.SpatialReference spatialReference;
 
@@ -94,7 +97,7 @@ public class SpatialReferenceParameterValue extends ParameterValue {
             try {
                 stringSRS = spatialReference.getSrs();
             } catch (final FactoryException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
             return stringSRS;
         }

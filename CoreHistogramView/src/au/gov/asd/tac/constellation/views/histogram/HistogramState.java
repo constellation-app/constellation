@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,63 +25,103 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Stores the state of Histogram View.
  *
  * @author sirius
+ * @author sol695510
  */
-public class HistogramState {
+public final class HistogramState {
+
+    private Map<GraphElementType, GraphElementState> elementStateMap = Map.of(
+            GraphElementType.VERTEX, new GraphElementState(),
+            GraphElementType.TRANSACTION, new GraphElementState(),
+            GraphElementType.EDGE, new GraphElementState(),
+            GraphElementType.LINK, new GraphElementState());
 
     private GraphElementType elementType;
+
     private AttributeType attributeType;
     private String attribute;
-    private BinComparator binComparator;
     private BinFormatter binFormatter;
-    private BinSelectionMode binSelectionMode;
-    private ElementSet[] filters = new ElementSet[GraphElementType.values().length];
 
     private PluginParameters binFormatterParameters;
+    private BinComparator binComparator;
+    private BinSelectionMode binSelectionMode;
+
+    private ElementSet[] filters = new ElementSet[GraphElementType.values().length];
 
     public HistogramState() {
         this.elementType = GraphElementType.VERTEX;
-        this.attributeType = AttributeType.ATTRIBUTE;
-        this.attribute = null;
-        this.binComparator = BinComparator.REVERSE_KEY;
-        this.binFormatter = BinFormatter.DEFAULT_BIN_FORMATTER;
+        setElementState();
         this.binFormatterParameters = BinFormatter.DEFAULT_BIN_FORMATTER.createParameters();
+        this.binComparator = BinComparator.REVERSE_KEY;
         this.binSelectionMode = BinSelectionMode.FREE_SELECTION;
     }
 
-    public HistogramState(GraphElementType elementType, AttributeType attributeType, String attribute, BinComparator binComparator, BinFormatter binFormatter, BinSelectionMode binSelectionMode, ElementSet filter) {
-        this.elementType = elementType;
-        this.attributeType = attributeType;
-        this.attribute = attribute;
-        this.binComparator = binComparator;
-        this.binFormatter = binFormatter;
-        this.binFormatterParameters = binFormatter.createParameters();
-        this.binFormatter.updateParameters(this.binFormatterParameters);
-        this.binSelectionMode = binSelectionMode;
-    }
-
-    public HistogramState(HistogramState original) {
+    public HistogramState(final HistogramState original) {
         if (original == null) {
             this.elementType = GraphElementType.VERTEX;
-            this.attributeType = AttributeType.ATTRIBUTE;
-            this.attribute = null;
-            this.binComparator = BinComparator.REVERSE_KEY;
-            this.binFormatter = BinFormatter.DEFAULT_BIN_FORMATTER;
+            setElementState();
             this.binFormatterParameters = BinFormatter.DEFAULT_BIN_FORMATTER.createParameters();
+            this.binComparator = BinComparator.REVERSE_KEY;
             this.binSelectionMode = BinSelectionMode.FREE_SELECTION;
         } else {
+            this.elementStateMap = Map.copyOf(original.elementStateMap);
             this.elementType = original.elementType;
-            this.attributeType = original.attributeType;
-            this.attribute = original.attribute;
-            this.binComparator = original.binComparator;
-            this.binFormatter = original.binFormatter;
-            this.binFormatterParameters = original.binFormatterParameters == null ? null : original.binFormatterParameters.copy();
+            setElementState();
+            this.binFormatterParameters = original.binFormatterParameters != null ? original.binFormatterParameters.copy() : this.binFormatter.createParameters();
             this.binFormatter.updateParameters(this.binFormatterParameters);
+            this.binComparator = original.binComparator;
             this.binSelectionMode = original.binSelectionMode;
-
             this.filters = Arrays.copyOf(original.filters, original.filters.length);
         }
+    }
+
+    /**
+     * Stores the state of the choices for attributeType, attribute and
+     * binFormatter for each Graph Element Type respectively.
+     */
+    public final class GraphElementState {
+
+        private AttributeType attributeType = AttributeType.ATTRIBUTE;
+        private String attribute = null;
+        private BinFormatter binFormatter = BinFormatter.DEFAULT_BIN_FORMATTER;
+
+        private AttributeType getAttributeType() {
+            return attributeType;
+        }
+
+        private void setAttributeType(final AttributeType attributeType) {
+            this.attributeType = attributeType;
+        }
+
+        private String getAttribute() {
+            return attribute;
+        }
+
+        private void setAttribute(final String attribute) {
+            this.attribute = attribute;
+        }
+
+        private BinFormatter getBinFormatter() {
+            return binFormatter;
+        }
+
+        private void setBinFormatter(final BinFormatter binFormatter) {
+            this.binFormatter = binFormatter;
+
+        }
+    }
+
+    /**
+     * Sets the attributeType, attribute and binFormatter of the HistogramState
+     * to the values saved in elementStateMap for the currently selected Graph
+     * Element Type.
+     */
+    protected void setElementState() {
+        attributeType = elementStateMap.get(elementType).getAttributeType();
+        attribute = elementStateMap.get(elementType).getAttribute();
+        binFormatter = elementStateMap.get(elementType).getBinFormatter();
     }
 
     /**
@@ -92,7 +132,7 @@ public class HistogramState {
      *
      * @param graph the graph to be validated.
      */
-    public void validate(GraphReadMethods graph) {
+    public void validate(final GraphReadMethods graph) {
         if (attribute != null && attributeType != null) {
             Map<String, BinCreator> binCreators = new HashMap<>();
             attributeType.addBinCreators(graph, elementType, binCreators);
@@ -106,7 +146,7 @@ public class HistogramState {
         return elementType;
     }
 
-    public void setElementType(GraphElementType elementType) {
+    public void setElementType(final GraphElementType elementType) {
         this.elementType = elementType;
     }
 
@@ -114,55 +154,58 @@ public class HistogramState {
         return attributeType;
     }
 
-    public void setAttributeType(AttributeType attributeType) {
+    public void setAttributeType(final AttributeType attributeType) {
         this.attributeType = attributeType;
+        elementStateMap.get(elementType).setAttributeType(this.attributeType);
     }
 
     public String getAttribute() {
         return attribute;
     }
 
-    public void setAttribute(String attribute) {
+    public void setAttribute(final String attribute) {
         this.attribute = attribute;
-    }
-
-    public BinComparator getBinComparator() {
-        return binComparator;
-    }
-
-    public void setBinComparator(BinComparator binComparator) {
-        this.binComparator = binComparator;
-    }
-
-    public PluginParameters getBinFormatterParameters() {
-        return binFormatterParameters;
-    }
-
-    public void setBinFormatterParameters(PluginParameters parameters) {
-        binFormatterParameters = parameters;
+        elementStateMap.get(elementType).setAttribute(this.attribute);
     }
 
     public BinFormatter getBinFormatter() {
         return binFormatter;
     }
 
-    public void setBinFormatter(BinFormatter binFormatter) {
+    public void setBinFormatter(final BinFormatter binFormatter) {
         this.binFormatter = binFormatter;
+        elementStateMap.get(elementType).setBinFormatter(this.binFormatter);
+    }
+
+    public PluginParameters getBinFormatterParameters() {
+        return binFormatterParameters;
+    }
+
+    public void setBinFormatterParameters(final PluginParameters parameters) {
+        binFormatterParameters = parameters;
+    }
+
+    public BinComparator getBinComparator() {
+        return binComparator;
+    }
+
+    public void setBinComparator(final BinComparator binComparator) {
+        this.binComparator = binComparator;
     }
 
     public BinSelectionMode getBinSelectionMode() {
         return binSelectionMode;
     }
 
-    public void setBinSelectionMode(BinSelectionMode binSelectionMode) {
+    public void setBinSelectionMode(final BinSelectionMode binSelectionMode) {
         this.binSelectionMode = binSelectionMode;
     }
 
-    public ElementSet getFilter(GraphElementType type) {
+    public ElementSet getFilter(final GraphElementType type) {
         return filters[type.ordinal()];
     }
 
-    public void setFilter(GraphElementType type, ElementSet filter) {
+    public void setFilter(final GraphElementType type, final ElementSet filter) {
         this.filters[type.ordinal()] = filter;
     }
 

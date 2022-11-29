@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public class BBoxf {
     public float[] getCentre() {
         final float[] c = new float[3];
         for (int i = 0; i < 3; i++) {
-            c[i] = min[i] + (max[i] - min[i]) / 2f;
+            c[i] = min[i] + (max[i] - min[i]) / 2F;
         }
 
         return c;
@@ -163,17 +163,19 @@ public class BBoxf {
         final int visualStateId = VisualConcept.GraphAttribute.CAMERA.get(rg);
         final Camera visualState = rg.getObjectValue(visualStateId, 0);
         final float mix = visualState.getMix();
-        final float inverseMix = 1.0f - mix;
+        final float inverseMix = 1.0F - mix;
 
         boolean requiresMix = x2Id != Graph.NOT_FOUND && y2Id != Graph.NOT_FOUND && z2Id != Graph.NOT_FOUND;
         if (requiresMix) {
-            if (mix == 0.0f) {
+            if (mix == 0.0F) {
                 requiresMix = false;
-            } else if (mix == 1.0f) {
+            } else if (mix == 1.0F) {
                 xId = x2Id;
                 yId = y2Id;
                 zId = z2Id;
                 requiresMix = false;
+            } else {
+                // Do nothing
             }
         }
 

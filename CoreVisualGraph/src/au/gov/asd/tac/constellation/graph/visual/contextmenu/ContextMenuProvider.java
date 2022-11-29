@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,17 +64,19 @@ public interface ContextMenuProvider {
      * method and return list of ImageIcon objects to be displayed. a value of
      * null assigned to a given index will result in no icon being displayed for
      * that item.
-     * 
+     *
      * @param graph the graph that has been right-clicked on.
      * @param elementType the type of element that has been right-clicked on.
      * @param elementId the id of the element that has been right-clicked on.
-     * @return  a list of icons to be placed into the context menu aligned to
+     * @return a list of icons to be placed into the context menu aligned to
      * items provided by getItems.
      */
     default public List<ImageIcon> getIcons(final GraphReadMethods graph, final GraphElementType elementType, final int elementId) {
         return null;
-    };
-    
+    }
+
+    ;
+
     /**
      * This method is called when a user selects an item in the context menu.
      * The returned item will be from the list provided by the getItems method.

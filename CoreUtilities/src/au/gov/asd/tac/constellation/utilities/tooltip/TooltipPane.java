@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
 /**
- *
+ * TooltipPane allows for a tooltip to be presented over the top of a standard Javafx
+ * AnchorPane. There can only be one tooltip active at any time.
+ * 
  * @author sirius
  */
 public class TooltipPane extends AnchorPane {
@@ -32,8 +34,15 @@ public class TooltipPane extends AnchorPane {
         setStyle("-fx-background-color: transparent;");
         mouseTransparentProperty().set(true);
     }
+    
+    protected Pane getTooltipNode() {
+        return tooltipNode;
+    }
+    protected void setTooltipNode(final Pane pane) {
+        this.tooltipNode = pane;
+    }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -41,8 +50,14 @@ public class TooltipPane extends AnchorPane {
         return enabled;
     }
 
-    public void showTooltip(Pane node, double x, double y) {
-
+    /**
+     * Show a tooltip from the node at the specified x and y position.
+     * 
+     * @param node the pane to present the tooltip on
+     * @param x the x coordinate location
+     * @param y the y coordinate location
+     */
+    public void showTooltip(final Pane node, final double x, final double y) {
         if (tooltipNode != node) {
             if (tooltipNode != null) {
                 tooltipNode.setManaged(true);
@@ -53,14 +68,17 @@ public class TooltipPane extends AnchorPane {
             getChildren().add(tooltipNode);
         }
 
-        Point2D p = sceneToLocal(x, y);
-        double left = p.getX();
-        double top = p.getY();
+        final Point2D p = sceneToLocal(x, y);
+        final double left = p.getX();
+        final double top = p.getY();
 
         AnchorPane.setLeftAnchor(node, left);
         AnchorPane.setTopAnchor(node, top);
     }
 
+    /**
+     * Hide the current tooltip
+     */
     public void hideTooltip() {
         if (tooltipNode != null) {
             getChildren().remove(tooltipNode);
@@ -86,16 +104,15 @@ public class TooltipPane extends AnchorPane {
             if (bottom > getHeight()) {
                 top -= bottom - getHeight();
             }
-
             if (left < 0) {
                 right += left;
                 left = 0;
             }
-
             if (top < 0) {
                 bottom += top;
                 top = 0;
             }
+            
             tooltipNode.resize(right - left, bottom - top);
             tooltipNode.setLayoutX(left);
             tooltipNode.setLayoutY(top);

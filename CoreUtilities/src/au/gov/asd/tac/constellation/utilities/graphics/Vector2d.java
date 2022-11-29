@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,10 @@ public final class Vector2d {
 
     public Vector2d() {
         a = new double[LENGTH];
+    }
+
+    public double[] getA() {
+        return a;
     }
 
     public void set(final double x, final double y) {

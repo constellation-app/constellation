@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -47,7 +48,6 @@ import java.util.function.BiConsumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.NotifyDescriptor;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -55,9 +55,11 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author algol
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class)
 public class FileDropper implements GraphDropper {
+    
+    private static final Logger LOGGER = Logger.getLogger(FileDropper.class.getName());
 
     @Override
     public BiConsumer<Graph, DropInfo> drop(final DropTargetDropEvent dtde) {
@@ -71,38 +73,53 @@ public class FileDropper implements GraphDropper {
                     final List<File> files = (List<File>) data;
                     files.stream().forEach(file -> {
                         if (file.isFile()) {
-                            PluginExecution.withPlugin(new SimplePlugin("Drag and Drop: File to Graph") {
-                                @Override
-                                public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                    try {
-                                        final Graph g = new GraphJsonReader().readGraphZip(file, new HandleIoProgress(String.format("Reading %s...", file.getName())));
-                                        GraphOpener.getDefault().openGraph(g, file.getName());
-
-                                        final ReadableGraph rg = g.getReadableGraph();
-                                        try {
-                                            ConstellationLoggerHelper.importPropertyBuilder(
-                                                    this,
-                                                    GraphRecordStoreUtilities.getVertices(rg, false, false, false).getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                                    Arrays.asList(file),
-                                                    ConstellationLoggerHelper.SUCCESS
-                                            );
-                                        } finally {
-                                            rg.release();
-                                        }
-                                    } catch (final IOException | GraphParseException ex) {
-                                        Logger.getLogger(FileDropper.class.getName()).log(Level.WARNING, String.format("Error loading file %s: %s", file.getPath(), ex.getMessage()));
-                                        NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
-                                    }
-                                }
-                            }).executeLater(graph);
+                            PluginExecution.withPlugin(new DragAndDropFilePlugin(file)).executeLater(graph);
                         }
                     });
                 };
             } catch (final UnsupportedFlavorException | IOException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
 
         return null;
+    }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
+    public static class DragAndDropFilePlugin extends SimplePlugin {
+
+        private final File file;
+
+        public DragAndDropFilePlugin(final File file) {
+            this.file = file;
+        }
+
+        @Override
+        public String getName() {
+            return "Drag and Drop: File to Graph";
+        }
+
+        @Override
+        public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            try {
+                final Graph g = new GraphJsonReader().readGraphZip(file, new HandleIoProgress(String.format("Reading %s...", file.getName())));
+                GraphOpener.getDefault().openGraph(g, file.getName());
+
+                final ReadableGraph rg = g.getReadableGraph();
+                try {
+                    ConstellationLoggerHelper.importPropertyBuilder(
+                            this,
+                            GraphRecordStoreUtilities.getVertices(rg, false, false, false).getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                            Arrays.asList(file),
+                            ConstellationLoggerHelper.SUCCESS
+                    );
+                } finally {
+                    rg.release();
+                }
+            } catch (final IOException | GraphParseException ex) {
+                LOGGER.log(Level.WARNING, String.format("Error loading file %s: %s", file.getPath(), ex.getMessage()));
+                NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
+            }
+        }
     }
 }

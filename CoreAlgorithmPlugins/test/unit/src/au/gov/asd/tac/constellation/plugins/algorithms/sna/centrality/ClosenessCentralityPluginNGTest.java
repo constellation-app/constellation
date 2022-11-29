@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -253,5 +253,26 @@ public class ClosenessCentralityPluginNGTest {
         assertEquals(graph.getFloatValue(vertexHarmonicClosenessAttribute, vxId2), 0.8571429f);
         assertEquals(graph.getFloatValue(vertexHarmonicClosenessAttribute, vxId3), 1.2f / 1.2f);
         assertEquals(graph.getFloatValue(vertexHarmonicClosenessAttribute, vxId4), 0.66666675f);
+    }
+    
+    @Test
+    public void testNoDirectionCloseness() throws Exception {
+        final ClosenessCentralityPlugin instance = new ClosenessCentralityPlugin();
+        final PluginParameters parameters = instance.createParameters();
+        parameters.setBooleanValue(ClosenessCentralityPlugin.HARMONIC_PARAMETER_ID, false);
+        parameters.setBooleanValue(ClosenessCentralityPlugin.INCLUDE_CONNECTIONS_IN_PARAMETER_ID, false);
+        parameters.setBooleanValue(ClosenessCentralityPlugin.INCLUDE_CONNECTIONS_OUT_PARAMETER_ID, false);
+        parameters.setBooleanValue(ClosenessCentralityPlugin.TREAT_UNDIRECTED_BIDIRECTIONAL, false);
+        parameters.setBooleanValue(ClosenessCentralityPlugin.NORMALISE_AVAILABLE_PARAMETER_ID, false);
+        parameters.setBooleanValue(ClosenessCentralityPlugin.NORMALISE_POSSIBLE_PARAMETER_ID, false);
+        parameters.setBooleanValue(ClosenessCentralityPlugin.NORMALISE_CONNECTED_COMPONENTS_PARAMETER_ID, false);
+        parameters.setBooleanValue(ClosenessCentralityPlugin.SELECTED_ONLY_PARAMETER_ID, false);
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+
+        assertEquals(graph.getFloatValue(vertexHarmonicClosenessAttribute, vxId0), 0F);
+        assertEquals(graph.getFloatValue(vertexHarmonicClosenessAttribute, vxId1), 0F);
+        assertEquals(graph.getFloatValue(vertexHarmonicClosenessAttribute, vxId2), 0F);
+        assertEquals(graph.getFloatValue(vertexHarmonicClosenessAttribute, vxId3), 0F);
+        assertEquals(graph.getFloatValue(vertexHarmonicClosenessAttribute, vxId4), 0F);
     }
 }

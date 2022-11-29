@@ -2,16 +2,11 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
     <tocitem text="Graph">
-        <tocitem text="Editing">
-            <tocitem text="Mouse Actions: Add Mode" target="au.gov.asd.tac.constellation.graph.file.mouseAddMode"/>
-            <tocitem text="Mouse Actions: Selection Mode" target="au.gov.asd.tac.constellation.graph.file.mouseSelectionMode"/>
-        </tocitem>
         <tocitem text="File Operations">
-            <tocitem text="Auto Backup Feature" target="au.gov.asd.tac.constellation.graph.file.autosave"/>
+            <tocitem text="Autosave" target="au.gov.asd.tac.constellation.graph.file.autosave"/>
             <tocitem text="Nebula" target="au.gov.asd.tac.constellation.graph.file.nebula"/>
             <tocitem text="New Graph" target="au.gov.asd.tac.constellation.graph.file.newGraph"/>
             <tocitem text="Open Graph" target="au.gov.asd.tac.constellation.graph.file.openGraph"/>
-            <tocitem text="Open Recent Graph" target="au.gov.asd.tac.constellation.graph.file.openRecentGraph"/>
             <tocitem text="Save Graph" target="au.gov.asd.tac.constellation.graph.file.saveGraph"/>
         </tocitem>
     </tocitem>

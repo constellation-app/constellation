@@ -12,7 +12,7 @@
 #Right-clicking anywhere in the script editor pane reveals a list of simple edit 
 #functions.
 #
-#Clicking on "Actions" in the bottom-left reveals several file options:
+#Clicking on "Options" in the bottom-left reveals several file options:
 #-   "Open" launches a file dialog that lets you load an existing script from 
 #    your local profile into the pane.
 #-   "Save As..." launches a file dialog that lets you save the script currently 
@@ -42,6 +42,7 @@ print '\n'.join(dir(graph))
 
 print('\nOpening Graph...')
 with graph.writableGraph('<graph_edit_name>') as wg:
+    print wg
 
 #Your graph is now represented as an object by the variable 'wg'. There is no 
 #need to close the graph as the with context takes care of that for you. 
@@ -56,13 +57,15 @@ with graph.writableGraph('<graph_edit_name>') as wg:
 
     print('\nIterating Over Graph:')
     for vertex in wg.vertices():
-        print vertex
-        
+        if vertex.id() % 10 == 0:
+            print vertex
+
 #It is also possible to access each of these graph elements from any other graph 
 #element:
-        
-        for transaction in vertex.transactions():
-            print '  ', transaction
+
+            for transaction in vertex.transactions():
+                if transaction.id() % 10 == 0:
+                    print '  ', transaction
 
 #================================================================================
 # Accessing Attributes
@@ -74,10 +77,11 @@ with graph.writableGraph('<graph_edit_name>') as wg:
 
     print('\nAccessing Attributes:')
     for vertex in wg.vertices():
-        if vertex['selected']:
-            print vertex['Identifier']
-        else:
-            print vertex['color']
+        if vertex.id() % 10 == 0:
+            if vertex['selected']:
+                print vertex['Identifier']
+            else:
+                print vertex['color']
 
 #================================================================================
 # The Best of Both Worlds

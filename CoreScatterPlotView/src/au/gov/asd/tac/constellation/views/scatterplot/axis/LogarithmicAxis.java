@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public class LogarithmicAxis extends ValueAxis<Number> {
     @Override
     protected Object autoRange(double minValue, double maxValue, double length, double labelSize) {
         if (isAutoRanging()) {
-            if (minValue == 0){ // Can only be reached if graph is empty due to ChartBuilder:77,85 checks.
+            if (minValue == 0) { // Can only be reached if graph is empty due to ChartBuilder:77,85 checks.
                 minValue = 1; //When graph is empty set override default minimum of 0 (which is incomaptible with the logartihmic axis) and set it to 1. This results in behaviour similiar to that of the non-log axis for an empty chart.
             }
             return new double[]{minValue, maxValue};
@@ -148,7 +148,7 @@ public class LogarithmicAxis extends ValueAxis<Number> {
         final double logLowerBound = Math.log10(lowerBound);
         final double logUpperBound = Math.log10(upperBound);
 
-        // we should always start with an "even" integer, so floor the start value 
+        // we should always start with an "even" integer, so floor the start value
         // (otherwise the scale would contain odd values, rather then normal 1, 2, 3, 4, ... values)
         for (double major = Math.floor(logLowerBound); major < logUpperBound; major++) {
             double p = Math.pow(10, major);

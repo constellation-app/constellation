@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ import java.io.IOException;
 
 /**
  * A {@link GraphDisplayer} that allows the graph to be displayed in greyscale
- * or full colour.
+ * or full color.
  * <p>
  * This effect is currently used to show that the graph is busy when a user
  * tries to interact with it. More effects may be added here later as needed.

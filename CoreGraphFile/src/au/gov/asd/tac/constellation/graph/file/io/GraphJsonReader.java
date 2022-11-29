@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.graph.versioning.UpdateProvider;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
 import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultCustomIconProvider;
 import au.gov.asd.tac.constellation.utilities.stream.ExtendedBuffer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -39,16 +40,20 @@ import com.fasterxml.jackson.databind.MappingJsonFactory;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.Exceptions;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import org.openide.util.Lookup;
 
 /**
@@ -65,7 +70,6 @@ public final class GraphJsonReader {
 
     // Track classes that know how to read particular types from JSON.
     private final Map<String, AbstractGraphIOProvider> providers;
-    private Map<String, Integer> versionedItems;
     private JsonParser jp;
     private Graph graph;
     private int version;
@@ -91,7 +95,7 @@ public final class GraphJsonReader {
     public GraphJsonReader() {
         providers = new HashMap<>();
 
-        Lookup.Result<AbstractGraphIOProvider> providerResults = Lookup.getDefault().lookupResult(AbstractGraphIOProvider.class);
+        final Lookup.Result<AbstractGraphIOProvider> providerResults = Lookup.getDefault().lookupResult(AbstractGraphIOProvider.class);
         providerResults.allInstances().forEach(provider -> providers.put(provider.getName(), provider));
 
         byteReader = null;
@@ -103,22 +107,67 @@ public final class GraphJsonReader {
         }
     }
 
-    public Graph readGraphZip(final String name, InputStream bin, final IoProgress progress) throws IOException, GraphParseException {
+    public Graph readGraphZip(final String name, final InputStream bin, final IoProgress progress) throws IOException, GraphParseException {
         try (bin) {
             progress.start(100);
             byteReader = new GraphByteReader(bin);
-        } 
-        catch (final IOException ex) {
-            // An exception occured attempting to read a zip (star) file, mark progress as complete to allow status 
+        } catch (final IOException ex) {
+            // An exception occured attempting to read a zip (star) file, mark progress as complete to allow status
             // to be updated with either loading of backup file if it exists
             progress.finish();
             throw ex;
         }
 
+        boolean iconsUpdated = false;
         try {
-            // Get the graph first.
+            // Load the custom icons first
+            if (DefaultCustomIconProvider.getIconDirectory() != null) {                
+                final String directoryPath = DefaultCustomIconProvider.getIconDirectory().getAbsolutePath();
+                try (final ZipFile zFile = new ZipFile(name)) {
+                    for (final ZipEntry entry : Collections.list(zFile.entries())) {
+                        // Check for Icon entries in the source star/zip file
+                        if (entry.getName().startsWith(DefaultCustomIconProvider.USER_ICON_DIR) && !entry.isDirectory()) {
+                            final String iconName = entry.getName().substring(DefaultCustomIconProvider.USER_ICON_DIR.length());
+                            // prepare a link to an icon entry in the star/zip file
+                            final InputStream zin = zFile.getInputStream(entry);
+                            boolean saveCustomFile = true;
+                            final File file = new File(directoryPath + iconName);
+                            if (file.exists()) {
+                                if (entry.getLastModifiedTime().toMillis() < file.lastModified()) {
+                                    // do not overwrite current icon with an older icon
+                                    saveCustomFile = false;
+                                } else {
+                                    // the icon in the graph file is newer than the current constellation icon
+                                    // so we remove the current constellation icon
+                                    Files.delete(file.toPath());
+                                    if (!file.createNewFile()){
+                                        LOGGER.log(Level.WARNING, "Potential problem creating new image icon file.");
+                                    }
+                                }
+                            }
+                            if (saveCustomFile) {
+                                // copy the icon image from the zip file to the constellation user's icon directory
+                                final FileOutputStream os = new FileOutputStream(file); //NOSONAR
+                                for (int c = zin.read(); c != -1; c = zin.read()) {
+                                    os.write(c);
+                                }
+                                os.close();
+                                // new image file has now been written to the constellation folder
+                                // set a flag to have all icon images reloaded
+                                iconsUpdated = true;
+                            }
+                        }
+                    }
+                }
+            }
+            // reload the constellation icons if there have been any changes
+            if (iconsUpdated) {
+                DefaultCustomIconProvider.reloadIcons();
+            }
+
+            // Get the graph next.
             final String graphEntry = "graph" + GraphFileConstants.FILE_EXTENSION;
-            ExtendedBuffer in = byteReader.read(graphEntry);
+            final ExtendedBuffer in = byteReader.read(graphEntry);
             if (in == null) {
                 final String msg = "Entry " + graphEntry + " not found in graph file";
                 throw new GraphParseException(msg);
@@ -148,8 +197,8 @@ public final class GraphJsonReader {
      * @throws IOException
      * @throws GraphParseException
      */
-    private JsonToken readGraphModCounts(JsonToken current) throws IOException, GraphParseException {
-        //read global mod count
+    private JsonToken readGraphModCounts(final JsonToken current) throws IOException, GraphParseException {
+        // read global mod count
         final JsonNode node = jp.readValueAsTree();
         if (!node.has(GLOBAL_MOD_COUNT)) {
             final String msg = String.
@@ -166,7 +215,7 @@ public final class GraphJsonReader {
                     format(EXPECTED_LONG_FORMAT, current, jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
-        //global
+        // global
         if (node.get(GLOBAL_MOD_COUNT).isNumber()) {
             globalModCount = node.get(GLOBAL_MOD_COUNT).asLong();
         } else {
@@ -174,7 +223,7 @@ public final class GraphJsonReader {
                     format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT).asText(), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
-        //structure
+        // structure
         if (node.get(STRUCTURE_MOD_COUNT).isNumber()) {
             globalModCount = node.get(STRUCTURE_MOD_COUNT).asLong();
         } else {
@@ -182,7 +231,7 @@ public final class GraphJsonReader {
                     format(EXPECTED_NUMERIC_FORMAT, node.get(STRUCTURE_MOD_COUNT), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
-        //attribute
+        // attribute
         if (node.get(ATTRIBUTE_MOD_COUNT).isNumber()) {
             globalModCount = node.get(ATTRIBUTE_MOD_COUNT).asLong();
         } else {
@@ -190,8 +239,7 @@ public final class GraphJsonReader {
                     format(EXPECTED_NUMERIC_FORMAT, node.get(GLOBAL_MOD_COUNT), jp.getCurrentLocation());
             throw new GraphParseException(msg);
         }
-        current = jp.getLastClearedToken();
-        return current;
+        return jp.getLastClearedToken();
     }
 
     /**
@@ -245,7 +293,7 @@ public final class GraphJsonReader {
 
         // Read the file format version number.
         current = jp.nextToken();
-        if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("version")) {
+        if (current == JsonToken.FIELD_NAME && "version".equals(jp.getCurrentName())) {
             current = jp.nextToken();
             if (current == JsonToken.VALUE_NUMBER_INT) {
                 version = jp.getIntValue();
@@ -263,12 +311,12 @@ public final class GraphJsonReader {
             throw new GraphParseException(msg);
         }
 
-        versionedItems = new HashMap<>();
+        final Map<String, Integer> versionedItems = new HashMap<>();
 
         // Get the versions of various items in this graph (if the graph supports it)
         if (version >= 2) {
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("versionedItems")) {
+            if (current == JsonToken.FIELD_NAME && "versionedItems".equals(jp.getCurrentName())) {
                 current = jp.nextToken();
                 if (current == JsonToken.START_OBJECT) {
                     while ((current = jp.nextToken()) != JsonToken.END_OBJECT) {
@@ -299,7 +347,7 @@ public final class GraphJsonReader {
         // everytime we add something to prevent this.. its too late now.
         String schemaFactoryName = null;
         current = jp.nextToken();
-        if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("schema")) {
+        if (current == JsonToken.FIELD_NAME && "schema".equals(jp.getCurrentName())) {
             current = jp.nextToken();
             if (current == JsonToken.VALUE_STRING) {
                 schemaFactoryName = jp.getValueAsString();
@@ -346,7 +394,7 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("graph")) {
+            if (current == JsonToken.FIELD_NAME && "graph".equals(jp.getCurrentName())) {
                 parseElement(storeGraph, GraphElementType.GRAPH, null, null, progress, entrySize, immutableObjectCache);
             } else {
                 final String msg = String.format("Expected FIELD_NAME 'graph', found '%s' at %s", current, jp.getCurrentLocation());
@@ -367,7 +415,7 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("vertex")) {
+            if (current == JsonToken.FIELD_NAME && "vertex".equals(jp.getCurrentName())) {
                 parseElement(storeGraph, GraphElementType.VERTEX, vertexMap, null, progress, entrySize, immutableObjectCache);
             } else {
                 final String msg = String.format("Expected FIELD_NAME 'vertex', found '%s' at %s", current, jp.getCurrentLocation());
@@ -388,7 +436,7 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("transaction")) {
+            if (current == JsonToken.FIELD_NAME && "transaction".equals(jp.getCurrentName())) {
                 parseElement(storeGraph, GraphElementType.TRANSACTION, vertexMap, transactionMap, progress, entrySize, immutableObjectCache);
             } else {
                 final String msg = String.format("Expected FIELD_NAME 'transaction', found '%s' at %s", current, jp.getCurrentLocation());
@@ -409,11 +457,13 @@ public final class GraphJsonReader {
             }
 
             current = jp.nextToken();
-            if (current == JsonToken.FIELD_NAME && jp.getCurrentName().equals("meta")) {
+            if (current == JsonToken.FIELD_NAME && "meta".equals(jp.getCurrentName())) {
                 parseElement(storeGraph, GraphElementType.META, vertexMap, transactionMap, progress, entrySize, immutableObjectCache);
             } else if (current != JsonToken.END_OBJECT) {
                 final String msg = String.format("Error: expected END_OBJECT, found '%s' at %s", current, jp.getCurrentLocation());
                 throw new GraphParseException(msg);
+            } else {
+                // Do nothing
             }
 
             current = jp.nextToken();
@@ -428,7 +478,7 @@ public final class GraphJsonReader {
             }
 
         } catch (final Exception ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             jp.close();
         }
@@ -436,7 +486,7 @@ public final class GraphJsonReader {
         //set mod count vals
         if (version >= 1) {
             storeGraph.setModificationCounters(globalModCount, structModCount, attrModCount);
-            for (Entry<Integer, Long> e : attrValCount.entrySet()) {
+            for (final Entry<Integer, Long> e : attrValCount.entrySet()) {
                 storeGraph.setValueModificationCounter(e.getKey(), e.getValue());
             }
         }
@@ -447,7 +497,7 @@ public final class GraphJsonReader {
                 if (item.appliesToGraph(storeGraph)) {
                     int currentVersion = versionedItems.containsKey(item.getName()) ? versionedItems.get(item.getName()) : UpdateProvider.DEFAULT_VERSION;
                     while (itemProviders.containsKey(currentVersion)) {
-                        UpdateProvider provider = itemProviders.get(currentVersion);
+                        final UpdateProvider provider = itemProviders.get(currentVersion);
                         provider.update(storeGraph);
                         currentVersion = provider.getToVersionNumber();
                     }
@@ -456,9 +506,8 @@ public final class GraphJsonReader {
         } catch (final Exception ex) {
             final String msg = "There was an error loading some parts of the graph. The error was " + ex.getLocalizedMessage();
             // TODO: throw a plugin exception
-//            throw new PluginException(PluginNotificationLevel.ERROR, msg); 
-            LOGGER.warning(msg);
-            Exceptions.printStackTrace(ex);
+//            throw new PluginException(PluginNotificationLevel.ERROR, msg);
+            LOGGER.log(Level.WARNING, msg, ex);
         }
 
         graph = new DualGraph(schemaFactory.createSchema(), storeGraph);
@@ -467,7 +516,7 @@ public final class GraphJsonReader {
             progress.finish();
         }
 
-        LOGGER.log(Level.INFO, "immutableObjectCache={0}", immutableObjectCache);
+        LOGGER.log(Level.FINE, "immutableObjectCache={0}", immutableObjectCache);
 
         return graph;
     }
@@ -533,11 +582,15 @@ public final class GraphJsonReader {
             final String attrType = node.get("type").textValue();
             final String attrDesc = node.has("descr") ? node.get("descr").textValue() : null;
             final JsonNode dv = node.get("default");
-            final Object attrDefault
-                    = (dv == null || dv.isNull()) ? null
-                    : dv.isNumber() ? dv.numberValue()
-                    : dv.isBoolean() ? dv.booleanValue()
-                    : dv.textValue();
+            final Object attrDefault;
+            if (dv == null || dv.isNull()) {
+                attrDefault = null;
+            } else if (dv.isNumber()) {
+                attrDefault = dv.numberValue();
+            } else {
+                attrDefault = dv.isBoolean() ? dv.booleanValue()
+                        : dv.textValue();
+            }
 
             final String attributeMergerId = node.has("merger") ? node.get("merger").textValue() : null;
 
@@ -545,8 +598,8 @@ public final class GraphJsonReader {
                 final int attrId = graph.addAttribute(elementType, attrType, attrLabel, attrDesc, attrDefault, attributeMergerId);
 
                 final Attribute attr = new GraphAttribute(graph, attrId);
-                final boolean isNumber = attrType.equals("integer") || attrType.equals("float");
-                final boolean isBoolean = attrType.equals("boolean");
+                final boolean isNumber = "integer".equals(attrType) || "float".equals(attrType);
+                final boolean isBoolean = "boolean".equals(attrType);
                 final boolean isObject = ObjectAttributeDescription.class.isAssignableFrom(attr.getDataType());
                 attributes.put(attrLabel, new AttrInfo(attrId, attrType, isNumber, isBoolean, isObject));
 
@@ -687,16 +740,18 @@ public final class GraphJsonReader {
                 id = Graph.NOT_FOUND;
             }
 
-            for (Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
+            for (final Iterator<Map.Entry<String, JsonNode>> it = node.fields(); it.hasNext();) {
                 final Map.Entry<String, JsonNode> entry = it.next();
                 final String label = entry.getKey();
                 final JsonNode jnode = entry.getValue();
                 final AttrInfo ai = attributes.get(label);
                 if (ai != null && providers.containsKey(ai.attrType)) {
-                    AbstractGraphIOProvider ioProvider = providers.get(ai.attrType);
+                    final AbstractGraphIOProvider ioProvider = providers.get(ai.attrType);
                     ioProvider.readObject(ai.attrId, id, jnode, graph, vertexPositions, transactionPositions, byteReader, immutableObjectCache);
                 } else if (ai != null) {
                     throw new Exception("No IO provider found for attribute type: " + ai.attrType);
+                } else {
+                    // Do nothing
                 }
             }
 
@@ -708,6 +763,8 @@ public final class GraphJsonReader {
                     ph.progress(msg, workunit);
                 } else if (ph != null) {
                     ph.progress(msg);
+                } else {
+                    // Do nothing
                 }
             }
         }
@@ -745,7 +802,7 @@ public final class GraphJsonReader {
          * @param isBoolean Is the attribute a boolean?
          * @param isObject is the attribute an object?
          */
-        AttrInfo(final int attrId, final String attrType, final boolean isNumber, final boolean isBoolean, final boolean isObject) {
+        protected AttrInfo(final int attrId, final String attrType, final boolean isNumber, final boolean isBoolean, final boolean isObject) {
             this.attrId = attrId;
             this.attrType = attrType;
             this.isNumber = isNumber;

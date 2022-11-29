@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -153,18 +153,10 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
             secSpinner.setEditable(true);
             milliSpinner.setEditable(true);
 
-            hourSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
-            minSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
-            secSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
-            milliSpinner.valueProperty().addListener((o, n, v) -> {
-                update();
-            });
+            hourSpinner.valueProperty().addListener((o, n, v) -> update());
+            minSpinner.valueProperty().addListener((o, n, v) -> update());
+            secSpinner.valueProperty().addListener((o, n, v) -> update());
+            milliSpinner.valueProperty().addListener((o, n, v) -> update());
 
             final VBox hourLabelNode = new VBox(5);
             hourLabelNode.getChildren().addAll(hourSpinnerLabel, hourSpinner);

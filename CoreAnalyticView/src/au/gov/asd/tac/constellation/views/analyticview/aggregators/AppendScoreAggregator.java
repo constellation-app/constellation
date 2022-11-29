@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.analyticview.aggregators;
 
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
-import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import java.util.List;
 import org.apache.commons.collections4.CollectionUtils;
@@ -40,10 +39,10 @@ public class AppendScoreAggregator implements AnalyticAggregator<ScoreResult> {
         }
 
         aggregateResult.setIgnoreNullResults(results.stream()
-                .anyMatch(result -> result.getIgnoreNullResults()));
+                .anyMatch(result -> result.isIgnoreNullResults()));
 
         results.forEach(scoreResult -> aggregateResult.combine(scoreResult));
-        
+
         return aggregateResult;
     }
 

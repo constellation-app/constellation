@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ public class PieChartIconProvider implements ConstellationIconProvider {
     public static final List<ConstellationIcon> PIE_CHART_ICONS = new ArrayList<>();
 
     public PieChartIconProvider() {
-        BufferedImage[] pieChartIcons = createPieChartImages(256, 0.375f, 4);
+        BufferedImage[] pieChartIcons = createPieChartImages(256, 0.375F, 4);
 
         for (int i = 0; i < pieChartIcons.length; i++) {
             String iconName = String.valueOf(i) + "/" + PIE_CHART_LEVELS + " Pie";
@@ -58,8 +58,8 @@ public class PieChartIconProvider implements ConstellationIconProvider {
             float fraction = (float) level / (levels - 1);
             final BufferedImage pieChartImage = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
 
-            final float sampleSize = 1.0f / (size * samples);
-            final float sampleOffset = sampleSize * 0.5f;
+            final float sampleSize = 1.0F / (size * samples);
+            final float sampleOffset = sampleSize * 0.5F;
 
             for (int x = 0; x < size; x++) {
                 float xMin = (float) x / size + sampleOffset;
@@ -69,23 +69,23 @@ public class PieChartIconProvider implements ConstellationIconProvider {
                     float yMin = (float) y / size + sampleOffset;
                     float yMax = (float) (y + 1) / size + sampleOffset;
 
-                    float alpha = 0.0f;
-                    float color = 0.0f;
+                    float alpha = 0.0F;
+                    float color = 0.0F;
                     for (float xx = xMin; xx < xMax; xx += sampleSize) {
                         for (float yy = yMin; yy < yMax; yy += sampleSize) {
 
-                            float dx = xx - 0.5f;
-                            float dy = yy - 0.5f;
+                            float dx = xx - 0.5F;
+                            float dy = yy - 0.5F;
                             if (dx * dx + dy * dy < radius * radius) {
                                 alpha++;
 
                                 float f;
                                 if (dx == 0) {
-                                    f = dy < 0 ? 0f : 0.5f;
+                                    f = dy < 0 ? 0F : 0.5F;
                                 } else if (dx < 0) {
-                                    f = (float) (Math.atan(dy / dx) / 2 / Math.PI) + 0.75f;
+                                    f = (float) (Math.atan(dy / dx) / 2 / Math.PI) + 0.75F;
                                 } else {
-                                    f = (float) (Math.atan(dy / dx) / 2 / Math.PI) + 0.25f;
+                                    f = (float) (Math.atan(dy / dx) / 2 / Math.PI) + 0.25F;
                                 }
                                 if (f < fraction) {
                                     color++;
@@ -98,7 +98,7 @@ public class PieChartIconProvider implements ConstellationIconProvider {
                     color /= samples * samples;
 
                     int r = (int) (color * 255) << 16;
-                    int b = (int) ((1.0f - color) * 255);
+                    int b = (int) ((1.0F - color) * 255);
                     int a = (int) (alpha * 255) << 24;
                     pieChartImage.setRGB(x, y, r | b | a);
                 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public class BlazeAttributeInteraction extends AbstractAttributeInteraction<Blaz
 
         final Blaze blazeValue = ((Blaze) attrVal);
         final StringBuilder sBuilder = new StringBuilder();
-        sBuilder.append("Colour: ").append(blazeValue.getColor());
+        sBuilder.append("Color: ").append(blazeValue.getColor());
         sBuilder.append("; Angle: ").append(blazeValue.getAngle());
 
         return sBuilder.toString();
@@ -56,7 +56,13 @@ public class BlazeAttributeInteraction extends AbstractAttributeInteraction<Blaz
     @Override
     public List<Node> getDisplayNodes(final Object attrVal, final double width, final double height) {
         final Blaze blazeValue = ((Blaze) attrVal);
-        final double rectWidth = width == -1 ? height == -1 ? DEFAULT_NODE_SIZE : height : width;
+        final double rectWidth;
+        if (width == -1) {
+            rectWidth = height == -1 ? DEFAULT_NODE_SIZE : height;
+        } else {
+            rectWidth = width;
+        }
+
         final double rectHeight = height == -1 ? rectWidth : height;
         final Rectangle rect = new Rectangle(rectWidth, rectHeight);
         rect.setFill(blazeValue.getColor().getJavaFXColor());

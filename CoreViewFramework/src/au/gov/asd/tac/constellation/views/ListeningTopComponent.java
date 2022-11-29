@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import au.gov.asd.tac.constellation.graph.monitor.MonitorTransitionFilter;
 import au.gov.asd.tac.constellation.graph.monitor.StructureMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,8 +75,8 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
         this.preferenceMonitors = Collections.synchronizedMap(new HashMap<>());
         this.ignoredEvents = new HashSet<>();
 
-        preferenceMonitors.put(ApplicationPreferenceKeys.OUTPUT2_FONT_SIZE, event -> updateFont());
-        preferenceMonitors.put(ApplicationPreferenceKeys.OUTPUT2_FONT_FAMILY, event -> updateFont());
+        preferenceMonitors.put(ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT, event -> updateFont());
+        preferenceMonitors.put(ApplicationPreferenceKeys.FONT_SIZE_DEFAULT, event -> updateFont());
     }
 
     /**
@@ -92,7 +92,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
     public final void componentOpened() {
         super.componentOpened();
         LOGGER.finer("ComponentOpened");
-        preferenceMonitors.keySet().forEach(preference -> PreferenceUtilites.addPreferenceChangeListener(preference, this));
+        preferenceMonitors.keySet().forEach(preference -> PreferenceUtilities.addPreferenceChangeListener(preference, this));
         GraphManager.getDefault().addGraphManagerListener(ListeningTopComponent.this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
         handleComponentOpened();
@@ -102,7 +102,7 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
     public final void componentClosed() {
         super.componentClosed();
         LOGGER.finer("ComponentClosed");
-        preferenceMonitors.keySet().forEach(preference -> PreferenceUtilites.removePreferenceChangeListener(preference, this));
+        preferenceMonitors.keySet().forEach(preference -> PreferenceUtilities.removePreferenceChangeListener(preference, this));
         GraphManager.getDefault().removeGraphManagerListener(ListeningTopComponent.this);
         newActiveGraph(null);
         handleComponentClosed();
@@ -141,30 +141,22 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
                     synchronized (globalMonitors) {
                         globalMonitorsCopy = new HashMap<>(globalMonitors);
                     }
-                    globalMonitorsCopy.forEach((monitor, handler) -> {
-                        monitor.update(readableGraph);
-                    });
+                    globalMonitorsCopy.forEach((monitor, handler) -> monitor.update(readableGraph));
                     final Map<StructureMonitor, Consumer<Graph>> structureMonitorsCopy;
                     synchronized (globalMonitors) {
                         structureMonitorsCopy = new HashMap<>(structureMonitors);
                     }
-                    structureMonitorsCopy.forEach((monitor, handler) -> {
-                        monitor.update(readableGraph);
-                    });
+                    structureMonitorsCopy.forEach((monitor, handler) -> monitor.update(readableGraph));
                     final Map<AttributeCountMonitor, Consumer<Graph>> attributeCountMonitorsCopy;
                     synchronized (globalMonitors) {
                         attributeCountMonitorsCopy = new HashMap<>(attributeCountMonitors);
                     }
-                    attributeCountMonitorsCopy.forEach((monitor, handler) -> {
-                        monitor.update(readableGraph);
-                    });
+                    attributeCountMonitorsCopy.forEach((monitor, handler) -> monitor.update(readableGraph));
                     final Map<AttributeValueMonitor, Tuple<Consumer<Graph>, MonitorTransitionFilter>> attributeMonitorsCopy;
                     synchronized (globalMonitors) {
                         attributeMonitorsCopy = new HashMap<>(attributeValueMonitors);
                     }
-                    attributeMonitorsCopy.forEach((monitor, handler) -> {
-                        monitor.update(readableGraph);
-                    });
+                    attributeMonitorsCopy.forEach((monitor, handler) -> monitor.update(readableGraph));
                 } finally {
                     readableGraph.release();
                 }
@@ -266,12 +258,10 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
             preferenceMonitorsCopy = new HashMap<>(preferenceMonitors);
         }
         preferenceMonitorsCopy.forEach((preference, handler) -> {
-            if (event.getKey().equals(preference)) {
-                LOGGER.log(Level.FINER, "ManualUpdate::UpdatePreferences::{0}", preference);
+            LOGGER.log(Level.FINER, "ManualUpdate::UpdatePreferences::{0}", preference);
 
-                if (handler != null) {
-                    handler.accept(event);
-                }
+            if (handler != null) {
+                handler.accept(event);
             }
         });
 

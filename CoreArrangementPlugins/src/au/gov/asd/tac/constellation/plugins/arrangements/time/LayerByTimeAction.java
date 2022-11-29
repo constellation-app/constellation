@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegist
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.awt.ActionID;
@@ -49,6 +50,7 @@ import org.openide.util.NbBundle.Messages;
 public final class LayerByTimeAction extends AbstractAction {
 
     private final GraphNode context;
+    private final Dimension size = new Dimension(550, 750);
 
     public LayerByTimeAction(final GraphNode context) {
         this.context = context;
@@ -63,6 +65,7 @@ public final class LayerByTimeAction extends AbstractAction {
         plugin.updateParameters(graph, params);
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_LayerByTimeAction(), params);
+        dialog.setSize(size);
         dialog.showAndWait();
         if (PluginParametersDialog.OK.equals(dialog.getResult())) {
             PluginExecution.withPlugin(plugin).withParameters(params).executeLater(graph);

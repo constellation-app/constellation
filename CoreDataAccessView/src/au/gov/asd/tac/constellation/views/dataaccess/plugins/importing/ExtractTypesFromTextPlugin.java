@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessPluginCoreType;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.templates.RecordStoreQueryPlugin;
 import java.util.HashMap;
 import java.util.List;
@@ -52,8 +53,8 @@ import org.openide.util.lookup.ServiceProviders;
 @ServiceProviders({
     @ServiceProvider(service = DataAccessPlugin.class),
     @ServiceProvider(service = Plugin.class)})
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
 @Messages("ExtractTypesFromTextPlugin=Extract Types from Text")
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implements DataAccessPlugin {
 
     // plugin parameters
@@ -82,7 +83,7 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
         StringParameterType.setLines(text, 15);
         text.setName("Text");
         text.setDescription("Text to extract from");
-        text.setStringValue(null);
+        text.setRequired(true);
         params.addParameter(text);
 
         return params;
@@ -104,9 +105,7 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
         final List<ExtractedVertexType> extractedTypes = SchemaVertexTypeUtilities.extractVertexTypes(text);
 
         final Map<String, SchemaVertexType> identifiers = new HashMap<>();
-        extractedTypes.forEach(extractedType -> {
-            identifiers.put(extractedType.getIdentifier(), extractedType.getType());
-        });
+        extractedTypes.forEach(extractedType -> identifiers.put(extractedType.getIdentifier(), extractedType.getType()));
 
         for (final String identifier : identifiers.keySet()) {
             result.add();

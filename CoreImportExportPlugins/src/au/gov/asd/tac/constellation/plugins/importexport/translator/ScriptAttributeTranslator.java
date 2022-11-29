@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@ import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -42,6 +44,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributeTranslator.class)
 public class ScriptAttributeTranslator extends AttributeTranslator {
+    
+    private static final Logger LOGGER = Logger.getLogger(ScriptAttributeTranslator.class.getName());
 
     private static final String PYTHON_LANGUAGE = "Python";
     public static final String SCRIPT_PARAMETER_ID = PluginParameter.buildId(ScriptAttributeTranslator.class, "script");
@@ -91,13 +95,14 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
                 compiledScript = ((Compilable) engine).compile(script);
                 savedLanguage = PYTHON_LANGUAGE;
                 savedScript = script;
-            } catch (final ScriptException e) {
+            } catch (final ScriptException ex) {
                 bindings = null;
                 compiledScript = null;
                 savedLanguage = null;
                 savedScript = null;
                 parameters.getParameters().get(SCRIPT_PARAMETER_ID).setStringValue(DEFAULT_SCRIPT);
-                NotifyDisplayer.display(e.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                NotifyDisplayer.display(ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                 return value;
             }
         }

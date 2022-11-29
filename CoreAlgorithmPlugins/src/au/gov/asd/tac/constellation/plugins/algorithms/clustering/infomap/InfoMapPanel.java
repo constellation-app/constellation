@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,8 @@ public class InfoMapPanel extends javax.swing.JPanel {
             config.setConnectionType(Config.ConnectionType.EDGES);
         } else if (rbLinks.isSelected()) {
             config.setConnectionType(Config.ConnectionType.LINKS);
+        } else {
+            // Do nothing
         }
 
         // Dynamic type.
@@ -53,6 +55,8 @@ public class InfoMapPanel extends javax.swing.JPanel {
             config.setOutdirdir(true);
         } else if (rbRawdir.isSelected()) {
             config.setRawdir(true);
+        } else {
+            // Do nothing
         }
 
         config.setOptimizationLevel(cbOptLevel.getSelectedIndex());

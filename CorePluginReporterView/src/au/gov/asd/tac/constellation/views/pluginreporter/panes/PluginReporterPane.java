@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,10 @@ package au.gov.asd.tac.constellation.views.pluginreporter.panes;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import au.gov.asd.tac.constellation.views.pluginreporter.PluginReporterTopComponent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -46,9 +46,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.controlsfx.control.CheckComboBox;
-import org.netbeans.api.javahelp.Help;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 import org.openide.util.NbPreferences;
 
 /**
@@ -71,8 +69,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     private final CheckComboBox<String> tagComboBox = new CheckComboBox<>(availableTags);
     private final Set<String> filteredTags = new HashSet<>();
     private PluginReportFilter pluginReportFilter = null;
-    
-    private ObservableList<String> checkedIndices;
+
 
     // The height of the report box last time we looked
     // This allows us to see if a change in the vertical scroll
@@ -91,11 +88,11 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
     // the JavaFX thread from running out of memory
     private static final int MAXIMUM_REPORT_PANES = 300;
 
-    public PluginReporterPane(final PluginReporterTopComponent topComponent) {
+    public PluginReporterPane() {
 
         // Update filtered tags from preferences
         final Preferences prefs = NbPreferences.forModule(PluginReporterPane.class);
-        String filteredTagString = prefs.get(FILTERED_TAGS_KEY, "LOW LEVEL");
+        String filteredTagString = prefs.get(FILTERED_TAGS_KEY, PluginTags.LOW_LEVEL);
         filteredTags.addAll(Arrays.asList(filteredTagString.split(SeparatorConstants.TAB, 0)));
 
         // The filter drop down
@@ -124,15 +121,8 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
 
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         Button helpButton = new Button("", helpImage);
-        helpButton.setOnAction((ActionEvent event) -> {
-            final Help help = Lookup.getDefault().lookup(Help.class);
-            if (help != null) {
-                final String helpId = this.getClass().getPackage().getName();
-                if (help.isValidID(helpId, true)) {
-                    new HelpCtx(helpId).display();
-                }
-            }
-        });
+        helpButton.setOnAction((ActionEvent event)
+                -> new HelpCtx(getClass().getPackage().getName()).display());
 
         controlToolbar.getItems().addAll(
                 filterBox,
@@ -221,7 +211,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
                 // TODO: do a better job here of not adding older reports in the first place. The idea here was to reduce memory so this logic is less useful of adding and removing.
                 // remove the oldest one if we have reached the maximum
                 final int size = reportBox.getChildren().size();
-                if (size > MAXIMUM_REPORT_PANES) { 
+                if (size > MAXIMUM_REPORT_PANES) {
                     ((PluginReportPane) reportBox.getChildren().get(size - MAXIMUM_REPORT_PANES)).removeListener();
                     reportBox.getChildren().remove(size - MAXIMUM_REPORT_PANES);
                 }
@@ -241,7 +231,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             for (String tag : tags) {
                 if (!availableTags.contains(tag)) {
                     availableTags.add(tag);
-                }   
+                }
                 if (!filteredTags.contains(tag)) {
                     tagIndex = availableTags.indexOf(tag);
                     selectedIndices[selectedIndexCount++] = tagIndex; //AIOOBE = DED.

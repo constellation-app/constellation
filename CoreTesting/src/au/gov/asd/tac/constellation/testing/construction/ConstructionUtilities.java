@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,10 @@ import java.util.Map;
  */
 public class ConstructionUtilities {
 
+    private ConstructionUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     /**
      * Load a sequence of icons into a list of bytes.
      * <p>

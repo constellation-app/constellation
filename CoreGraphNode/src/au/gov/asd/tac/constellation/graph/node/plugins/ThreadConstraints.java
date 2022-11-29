@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,5 +61,15 @@ public class ThreadConstraints {
 
     public void setSilentCount(final int silentCount) {
         this.silentCount = silentCount;
+    }
+    
+    /**
+     * THREAD_LOCAL should be cleaned up when no longer in use.
+     * This method should be used when each thread is completed to 
+     * ensure that the THREAD_LOCAL field is cleaned up.
+     * This assists with garbage collection.
+     */
+    public void unload() {
+        THREAD_LOCAL.remove();
     }
 }

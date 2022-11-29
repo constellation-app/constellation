@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,20 +40,20 @@ import processing.event.MouseEvent;
 public class InfoOverlay extends MapOverlay implements MapEventListener {
 
     // colors
-    private final int eventBoxColorSendingOn = 0xFF5bdae7;
-    private final int eventBoxColorReceivingOn = 0xFFfc8720;
+    private static final int EVENT_BOX_COLOR_SENDING_ON = 0xFF5bdae7;
+    private static final int EVENT_BOX_COLOR_RECEIVING_ON = 0xFFfc8720;
 
     // event lights
-    private final float minimumTransparency = 0.3f;
-    private final float transparencyDelta = 0.05f;
-    private float panByListened = minimumTransparency;
-    private float panToListened = minimumTransparency;
-    private float zoomByListened = minimumTransparency;
-    private float zoomToListened = minimumTransparency;
-    private float panByBroadcasted = minimumTransparency;
-    private float panToBroadcasted = minimumTransparency;
-    private float zoomByBroadcasted = minimumTransparency;
-    private float zoomToBroadcasted = minimumTransparency;
+    private static final float MINIMUM_TRANSPARENCY = 0.3F;
+    private static final float TRANSPARENCY_DELTA = 0.05F;
+    private float panByListened = MINIMUM_TRANSPARENCY;
+    private float panToListened = MINIMUM_TRANSPARENCY;
+    private float zoomByListened = MINIMUM_TRANSPARENCY;
+    private float zoomToListened = MINIMUM_TRANSPARENCY;
+    private float panByBroadcasted = MINIMUM_TRANSPARENCY;
+    private float panToBroadcasted = MINIMUM_TRANSPARENCY;
+    private float zoomByBroadcasted = MINIMUM_TRANSPARENCY;
+    private float zoomToBroadcasted = MINIMUM_TRANSPARENCY;
 
     public InfoOverlay() {
         this.enabled = true;
@@ -77,12 +77,12 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
 
     @Override
     public float getX() {
-        return renderer.getComponent().getX() + 10f;
+        return renderer.getComponent().getX() + 10F;
     }
 
     @Override
     public float getY() {
-        return renderer.getComponent().getY() + 10f;
+        return renderer.getComponent().getY() + 10F;
     }
 
     @Override
@@ -90,82 +90,82 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
 
         // draw info overlay
         renderer.noStroke();
-        renderer.fill(backgroundColor);
+        renderer.fill(BACKGROUND_COLOR);
         renderer.rect(x, y, width, height);
 
-        float yOffset = y + margin;
+        float yOffset = y + MARGIN;
 
         // draw zoom info
         final String zoom = String.valueOf(map.getZoomLevel());
-        drawLabeledValue("Zoom", zoom, x + 60, yOffset, valueBoxShortWidth);
+        drawLabeledValue("Zoom", zoom, x + 60, yOffset, VALUE_BOX_SHORT_WIDTH);
         drawStepBar(map.getZoomLevel(), x + 95, yOffset + 5,
                 ((MapProvider) map.mapDisplay.getMapProvider()).zoomLevels());
 
         // draw separator
-        yOffset += valueBoxHeight + padding * 2;
+        yOffset += VALUE_BOX_HEIGHT + PADDING * 2;
         drawSeparator(yOffset);
-        yOffset += padding * 2;
+        yOffset += PADDING * 2;
 
         // draw location info
         final Location mouseLocation = map.getLocation(renderer.mouseX, renderer.mouseY);
         final String mouseLatitude = PApplet.nf(mouseLocation.getLat(), 1, 3) + "°";
         final String mouseLongitude = PApplet.nf(mouseLocation.getLon(), 1, 3) + "°";
         drawLabel("Location", x + 60, yOffset);
-        drawValue(mouseLatitude, x + 60, yOffset, valueBoxMediumWidth, false, false);
-        drawValue(mouseLongitude, x + 60 + valueBoxMediumWidth + padding, yOffset, valueBoxMediumWidth, false, false);
+        drawValue(mouseLatitude, x + 60, yOffset, VALUE_BOX_MEDIUM_WIDTH, false, false);
+        drawValue(mouseLongitude, x + 60 + VALUE_BOX_MEDIUM_WIDTH + PADDING, yOffset, VALUE_BOX_MEDIUM_WIDTH, false, false);
 
         // if debug is on, draw additional info
         if (debug) {
-            yOffset += valueBoxHeight + padding * 2;
+            yOffset += VALUE_BOX_HEIGHT + PADDING * 2;
             drawSeparator(yOffset);
-            yOffset += padding * 2;
+            yOffset += PADDING * 2;
 
-            final float debugHeight = (valueBoxHeight * 4) + (padding * 7) + 1;
+            final float debugHeight = (VALUE_BOX_HEIGHT * 4) + (PADDING * 7) + 1;
             renderer.noStroke();
-            renderer.fill(backgroundColor);
+            renderer.fill(BACKGROUND_COLOR);
             renderer.rect(x, yOffset - 1, width, debugHeight);
 
             final String renderer = this.renderer.g.getClass().getSimpleName();
-            drawLabeledValue("Renderer", renderer, x + 60, yOffset, valueBoxLongWidth);
+            drawLabeledValue("Renderer", renderer, x + 60, yOffset, VALUE_BOX_LONG_WIDTH);
 
-            yOffset += valueBoxHeight + padding;
+            yOffset += VALUE_BOX_HEIGHT + PADDING;
 
             final String provider = map.mapDisplay.getMapProvider().getClass().getSimpleName();
-            drawLabeledValue("Provider", provider, x + 60, yOffset, valueBoxLongWidth);
+            drawLabeledValue("Provider", provider, x + 60, yOffset, VALUE_BOX_LONG_WIDTH);
 
-            yOffset += valueBoxHeight + padding;
+            yOffset += VALUE_BOX_HEIGHT + PADDING;
 
             final String mouseX = String.valueOf(this.renderer.mouseX) + "px";
             final String mouseY = String.valueOf(this.renderer.mouseY) + "px";
             drawLabel("Mouse", x + 60, yOffset);
-            drawValue(mouseX, x + 60, yOffset, valueBoxMediumWidth, false, false);
-            drawValue(mouseY, x + 60 + valueBoxMediumWidth + padding, yOffset, valueBoxMediumWidth, false, false);
+            drawValue(mouseX, x + 60, yOffset, VALUE_BOX_MEDIUM_WIDTH, false, false);
+            drawValue(mouseY, x + 60 + VALUE_BOX_MEDIUM_WIDTH + PADDING, yOffset, VALUE_BOX_MEDIUM_WIDTH, false, false);
 
-            yOffset += valueBoxHeight + padding;
+            yOffset += VALUE_BOX_HEIGHT + PADDING;
 
             final String fps = String.valueOf(PApplet.round(this.renderer.frameRate));
-            drawLabeledValue("FPS", fps, x + 60, yOffset, valueBoxShortWidth);
+            drawLabeledValue("FPS", fps, x + 60, yOffset, VALUE_BOX_SHORT_WIDTH);
 
             if (eventDispatcher != null) {
-                yOffset += valueBoxHeight + padding * 2;
+                yOffset += VALUE_BOX_HEIGHT + PADDING * 2;
                 drawSeparator(yOffset);
-                yOffset += padding * 2;
+                yOffset += PADDING * 2;
 
-                final float eventHeight = (eventBoxHeight * 2) + (padding * 5) + 1;
-                this.renderer.fill(backgroundColor);
+                final float eventHeight = (EVENT_BOX_HEIGHT * 2) + (PADDING * 5) + 1;
+                this.renderer.fill(BACKGROUND_COLOR);
                 this.renderer.rect(x, yOffset, width, eventHeight);
 
-                this.renderer.fill(valueBoxColor);
-                this.renderer.rect(x + margin, yOffset, width - margin * 2, 24 + padding * 2);
+                this.renderer.fill(VALUE_BOX_COLOR);
+                this.renderer.rect(x + MARGIN, yOffset, width - MARGIN * 2, 24 + PADDING * 2);
 
                 final float xOffset = x + 80;
 
-                yOffset += padding;
+                yOffset += PADDING;
 
                 drawLabeledEvent("Pan By", panByListened, panByBroadcasted, xOffset, yOffset, 3);
                 drawLabeledEvent("Pan To", panToListened, panToBroadcasted, xOffset + 70, yOffset, 3);
 
-                yOffset += eventBoxHeight;
+                yOffset += EVENT_BOX_HEIGHT;
 
                 drawLabeledEvent("Zoom By", zoomByListened, zoomByBroadcasted, xOffset, yOffset, 3);
                 drawLabeledEvent("Zoom To", zoomToListened, zoomToBroadcasted, xOffset + 70, yOffset, 3);
@@ -218,51 +218,51 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
     protected void drawLabeledEvent(final String label, final float listeningValue,
             final float broadcastingValue, final float x, final float y, final float valueBoxWidth) {
         final int alphaSend = (int) PApplet.map(broadcastingValue, 0, 1, 0, 255);
-        drawEvent(x, y + 4, valueBoxWidth, renderer.color(eventBoxColorSendingOn, alphaSend));
+        drawEvent(x, y + 4, valueBoxWidth, renderer.color(EVENT_BOX_COLOR_SENDING_ON, alphaSend));
 
         final int alphaReceive = (int) PApplet.map(listeningValue, 0, 1, 0, 255);
-        drawEvent(x + 6, y + 4, valueBoxWidth, renderer.color(eventBoxColorReceivingOn, alphaReceive));
+        drawEvent(x + 6, y + 4, valueBoxWidth, renderer.color(EVENT_BOX_COLOR_RECEIVING_ON, alphaReceive));
 
-        final float labelX = x - padding - Math.min(renderer.textWidth(label.toUpperCase()), maxLabelLength);
-        final float labelY = y + textSize - 3;
+        final float labelX = x - PADDING - Math.min(renderer.textWidth(label.toUpperCase()), MAX_LABEL_LENGTH);
+        final float labelY = y + TEXT_SIZE - 3;
         renderer.textFont(font);
         renderer.textSize(8);
         renderer.noStroke();
-        renderer.fill(textColor);
+        renderer.fill(TEXT_COLOR);
         renderer.text(label.toUpperCase(), labelX, labelY);
     }
 
     protected void drawEvent(final float x, final float y, final float valueBoxSize, final int color) {
-        final float valueBoxX = x + padding;
+        final float valueBoxX = x + PADDING;
         final float valueBoxY = y;
         renderer.fill(color);
         renderer.rect(valueBoxX, valueBoxY, valueBoxSize, valueBoxSize);
     }
 
     protected void fadeEventLights() {
-        if (panByListened > minimumTransparency) {
-            panByListened -= transparencyDelta;
+        if (panByListened > MINIMUM_TRANSPARENCY) {
+            panByListened -= TRANSPARENCY_DELTA;
         }
-        if (panToListened > minimumTransparency) {
-            panToListened -= transparencyDelta;
+        if (panToListened > MINIMUM_TRANSPARENCY) {
+            panToListened -= TRANSPARENCY_DELTA;
         }
-        if (zoomByListened > minimumTransparency) {
-            zoomByListened -= transparencyDelta;
+        if (zoomByListened > MINIMUM_TRANSPARENCY) {
+            zoomByListened -= TRANSPARENCY_DELTA;
         }
-        if (zoomToListened > minimumTransparency) {
-            zoomToListened -= transparencyDelta;
+        if (zoomToListened > MINIMUM_TRANSPARENCY) {
+            zoomToListened -= TRANSPARENCY_DELTA;
         }
-        if (panByBroadcasted > minimumTransparency) {
-            panByBroadcasted -= transparencyDelta;
+        if (panByBroadcasted > MINIMUM_TRANSPARENCY) {
+            panByBroadcasted -= TRANSPARENCY_DELTA;
         }
-        if (panToBroadcasted > minimumTransparency) {
-            panToBroadcasted -= transparencyDelta;
+        if (panToBroadcasted > MINIMUM_TRANSPARENCY) {
+            panToBroadcasted -= TRANSPARENCY_DELTA;
         }
-        if (zoomByBroadcasted > minimumTransparency) {
-            zoomByBroadcasted -= transparencyDelta;
+        if (zoomByBroadcasted > MINIMUM_TRANSPARENCY) {
+            zoomByBroadcasted -= TRANSPARENCY_DELTA;
         }
-        if (zoomToBroadcasted > minimumTransparency) {
-            zoomToBroadcasted -= transparencyDelta;
+        if (zoomToBroadcasted > MINIMUM_TRANSPARENCY) {
+            zoomToBroadcasted -= TRANSPARENCY_DELTA;
         }
     }
 

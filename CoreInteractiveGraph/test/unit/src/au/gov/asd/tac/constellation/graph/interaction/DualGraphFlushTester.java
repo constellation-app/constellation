@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,8 @@ import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.awt.UndoRedo;
 
 /**
@@ -32,6 +34,8 @@ import org.openide.awt.UndoRedo;
  * @author twilight_sparkle
  */
 public class DualGraphFlushTester {
+
+    private static final Logger LOGGER = Logger.getLogger(DualGraphFlushTester.class.getName());
 
     public static void main(String[] args) throws InterruptedException {
         StoreGraph g = new StoreGraph();
@@ -78,18 +82,11 @@ public class DualGraphFlushTester {
                 wg.setFloatValue(z, vxId, wg.getFloatValue(z, vxId) + 3);
             }
             wg = wg.flush(false);
-//                wg = wg.flush();
-//            if (i % 100 == 0) {
-//                System.out.println("done::" + i);
-//            }
-
         }
         wg.commit();
 
-        System.out.println("took:" + (System.currentTimeMillis() - time));
-
+        LOGGER.log(Level.INFO, "took: {0}", (System.currentTimeMillis() - time));
         Thread.sleep(3000);
-        System.out.println(Arrays.toString(coordSums));
+        LOGGER.log(Level.INFO, "{0}", Arrays.toString(coordSums));
     }
-
 }

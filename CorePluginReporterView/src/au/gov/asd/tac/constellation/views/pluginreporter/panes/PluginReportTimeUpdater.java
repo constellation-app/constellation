@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class PluginReportTimeUpdater {
     private static final Set<PluginReportPane> ACTIVE_REPORTS = new LinkedHashSet<>();
     private static final String PLUGIN_REPORTER_THREAD_NAME = "Plugin Reporter Time Updater";
 
-    private static TimerThread TIMER = null;
+    private static TimerThread timer = null;
 
     private static boolean isUpdating = false;
     private static final List<PluginReportPane> REPORTS_TO_REMOVE_CACHE = new ArrayList<>();
@@ -79,9 +79,9 @@ public class PluginReportTimeUpdater {
      */
     public static void addPluginReport(PluginReportPane pane) {
         synchronized (ACTIVE_REPORTS) {
-            if (ACTIVE_REPORTS.add(pane) && TIMER == null) {
-                TIMER = new TimerThread();
-                TIMER.start();
+            if (ACTIVE_REPORTS.add(pane) && timer == null) {
+                timer = new TimerThread();
+                timer.start();
             }
         }
     }
@@ -99,8 +99,8 @@ public class PluginReportTimeUpdater {
                 return;
             }
             if (ACTIVE_REPORTS.remove(pane) && ACTIVE_REPORTS.isEmpty()) {
-                TIMER.interrupt();
-                TIMER = null;
+                timer.interrupt();
+                timer = null;
             }
         }
     }

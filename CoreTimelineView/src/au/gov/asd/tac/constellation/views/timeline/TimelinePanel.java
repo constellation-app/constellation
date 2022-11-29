@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.temporal.TimeZoneUtilities;
 import au.gov.asd.tac.constellation.views.timeline.clustering.ClusteringManager;
 import au.gov.asd.tac.constellation.views.timeline.clustering.TreeElement;
@@ -52,6 +52,8 @@ import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToolBar;
+import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -61,6 +63,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle.Messages;
 
 /**
@@ -81,6 +84,8 @@ import org.openide.util.NbBundle.Messages;
 })
 public class TimelinePanel extends Region {
 
+    private static final char ARROW_CHAR = 0x2192;
+    
     private static final String LIGHT_THEME = "resources/Style-Timeline-Light.css";
     private static final String DARK_THEME = "resources/Style-Timeline-Dark.css";
     private static final int MIN_CLUSTER_WIDTH = 14; // Min width of 14 pixels which matches the min label width.
@@ -105,9 +110,9 @@ public class TimelinePanel extends Region {
     private long expectedtxMod = Long.MIN_VALUE;
 
     /*
-     If there is no colour set for a node or transaction then set it to clouds.
+     If there is no color set for a node or transaction then set it to clouds.
      */
-    private static final Color FALLBACK_COLOUR = ConstellationColor.CLOUDS.getJavaFXColor();
+    private static final Color FALLBACK_COLOR = ConstellationColor.CLOUDS.getJavaFXColor();
 
     /**
      * Constructs a new TimelinePanel, and sets the parent top component as its
@@ -143,7 +148,6 @@ public class TimelinePanel extends Region {
 
         // Style the timeline panel:
         this.getStylesheets().add(TimelinePanel.class.getResource(DARK_THEME).toExternalForm());
-        this.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getOutputFontSize()));
     }
 
     // <editor-fold defaultstate="collapsed" desc="Layout Layers">
@@ -168,15 +172,12 @@ public class TimelinePanel extends Region {
         // Layer that combines the newly constructed time-extents with the timeline layer:
         final StackPane stackPane = new StackPane();
         StackPane.setAlignment(labelsPane, Pos.CENTER);
-//        extentLabelPane.maxHeightProperty().bind(stackPane.heightProperty());
         StackPane.setAlignment(timelinePane, Pos.CENTER);
-//        timelinePane.prefHeightProperty().bind(stackPane.heightProperty());
         stackPane.setPadding(Insets.EMPTY);
         stackPane.getChildren().addAll(timelinePane, labelsPane);
 
         // Layout the menu bar and the timeline object:
         final VBox vbox = new VBox();
-//        stackPane.prefHeightProperty().bind(vbox.heightProperty());
         VBox.setVgrow(toolbar, Priority.NEVER);
         VBox.setVgrow(stackPane, Priority.ALWAYS);
         vbox.getChildren().addAll(toolbar, stackPane);
@@ -246,7 +247,7 @@ public class TimelinePanel extends Region {
 
                     // Get the color for this transaction:
                     ConstellationColor col = ConstellationColor.getColorValue(graph.getStringValue(colorTransAttr, transactionID));
-                    final Color transColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
+                    final Color transColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOR;
 
                     // Get the selection status for the transaction:
                     final boolean transSelected = graph.getBooleanValue(selectedTransAttr, transactionID);
@@ -257,9 +258,9 @@ public class TimelinePanel extends Region {
 
                     // Get the color for each vertex:
                     col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceA));
-                    final Color sourceAColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
+                    final Color sourceAColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOR;
                     col = ConstellationColor.getColorValue(graph.getStringValue(colorVertAttr, sourceB));
-                    final Color sourceBColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOUR;
+                    final Color sourceBColor = col != null ? new Color(col.getRed(), col.getGreen(), col.getBlue(), col.getAlpha()) : FALLBACK_COLOR;
 
                     // Get the selection state for each vertex:
                     final boolean sourceASelected = graph.getBooleanValue(selectedVertAttr, sourceA);
@@ -291,12 +292,10 @@ public class TimelinePanel extends Region {
                                 sourceBSelected, transSelected, btnShowLabels.isSelected());
 
                         if (directionality == Graph.DOWNHILL) {
-                            final String label = labelMaker(sourceALabel, '→', sourceBLabel);
+                            final String label = labelMaker(sourceALabel, ARROW_CHAR, sourceBLabel);
                             transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
                         } else if (directionality == Graph.UPHILL) {
                             throw new IllegalArgumentException("source > dest is always downhill");
-//                                final String label = labelMaker(sourceBLabel, '→', sourceALabel);
-//                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
                         } else { // Undirected / Bi-directional
                             final String label = labelMaker(sourceALabel, '-', sourceBLabel);
                             transaction = new Transaction(transactionID, transColor, label, transSelected);
@@ -309,10 +308,10 @@ public class TimelinePanel extends Region {
 
                         if (directionality == Graph.DOWNHILL) {
                             throw new IllegalArgumentException("source < dest is always uphill");
-//                                final String label = labelMaker(sourceBLabel, '→', sourceALabel);
+//                                final String label = labelMaker(sourceBLabel, ARROW_CHAR, sourceALabel);
 //                                transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_UP, transSelected);
                         } else if (directionality == Graph.UPHILL) {
-                            final String label = labelMaker(sourceALabel, '→', sourceBLabel);
+                            final String label = labelMaker(sourceALabel, ARROW_CHAR, sourceBLabel);
                             transaction = new Transaction(transactionID, transColor, label, Transaction.DIRECTED_DOWN, transSelected);
                         } else { // Undirected / Bi-directional
                             final String label = labelMaker(sourceBLabel, '-', sourceALabel);
@@ -502,23 +501,10 @@ public class TimelinePanel extends Region {
             }
         });
 
-        //btnDim = new ToggleButton(Bundle.DimGraphLabel());
-        // Register a toggle event listeners for the toggle buttons:
-        /*btnDim.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
-                if (!Objects.equals(oldValue, newValue) && coordinator != null) {
-                    coordinator.setIsDimming(newValue);
-                }
-            }
-        });*/
         // Handle
         btnShowLabels = new ToggleButton(Bundle.ShowLabels());
         btnShowLabels.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) -> {
-            //                if(oldValue != newValue)
-//                {
             coordinator.setIsShowingNodeLabels(newValue);
-//                }
         });
 
         btnZoomToSelection = new Button(Bundle.ZoomtoSelection());
@@ -531,10 +517,17 @@ public class TimelinePanel extends Region {
             coordinator.setIsShowingSelectedOnly(newValue);
         });
 
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpButton.setTooltip(new Tooltip("Display help for Timeline"));
+        helpButton.setOnAction(event -> {
+            new HelpCtx(TimelineTopComponent.class.getName()).display();
+        });
+
         final Label spacer1 = new Label("   ");
         final Label spacer2 = new Label("   ");
         final Label spacer3 = new Label("   ");
         final Label spacer4 = new Label("   ");
+        final Label spacer5 = new Label("   ");
 
         // Add all of the components to the menu bar:
         tb.getItems().addAll(
@@ -547,7 +540,9 @@ public class TimelinePanel extends Region {
                 spacer3,
                 btnZoomToSelection,
                 spacer4,
-                btnShowLabels, cmbAttributeNames);
+                btnShowLabels,
+                spacer5,
+                helpButton, cmbAttributeNames);
 
         tb.setCursor(Cursor.DEFAULT);
 
@@ -602,8 +597,6 @@ public class TimelinePanel extends Region {
             toolbar.getItems().remove(cmbAttributeNames);
             cmbAttributeNames = createComboNodeLabels();
             toolbar.getItems().add(cmbAttributeNames);
-
-            //cmbAttributeNames.getItems().clear();
             cmbAttributeNames.setPromptText(Bundle.SelectLabelAttribute());
         }
     }

@@ -79,6 +79,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.help</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.plugins</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -88,14 +96,6 @@
                 </dependency>
                 <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.plugins.arrangements</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.preferences</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -144,21 +144,12 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.netbeans.modules.javahelp</code-name-base>
+                    <code-name-base>org.netbeans.modules.options.api</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
                         <release-version>1</release-version>
-                        <specification-version>2.41.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.netbeans.modules.settings</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>1.49.1</specification-version>
+                        <specification-version>1.53</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -183,6 +174,14 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.42.1</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
+                    <code-name-base>org.openide.filesystems.nb</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>9.9.1</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -238,11 +237,13 @@
             <public-packages>
                 <package>au.gov.asd.tac.constellation.views.dataaccess</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.panes</package>
+                <package>au.gov.asd.tac.constellation.views.dataaccess.plugins</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.plugins.clean</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.plugins.importing</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.plugins.utility</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.state</package>
                 <package>au.gov.asd.tac.constellation.views.dataaccess.templates</package>
+                <package>au.gov.asd.tac.constellation.views.dataaccess.utilities</package>
             </public-packages>
         </data>
     </configuration>

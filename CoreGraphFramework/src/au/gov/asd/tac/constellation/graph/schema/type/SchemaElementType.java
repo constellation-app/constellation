@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public abstract class SchemaElementType<T extends SchemaElementType<?>> {
      * modify this SchemaElementType or replace it altogether based on other
      * attributes of the element this SchemaElementType is assigned to.
      */
-    public SchemaElementType(final String name, final String description, final ConstellationColor color,
+    protected SchemaElementType(final String name, final String description, final ConstellationColor color,
             final SchemaElementType<T> superType, final SchemaElementType<T> overridenType,
             final Map<String, String> properties, final boolean incomplete) {
         this.name = name;
@@ -222,7 +222,7 @@ public abstract class SchemaElementType<T extends SchemaElementType<?>> {
         SchemaElementType<?> currentType = this;
         SchemaElementType<?> nextType = currentType.getSuperType();
         while (nextType != currentType) {
-            hierarchyAsString.insert(0, SeparatorConstants.PERIOD);
+            hierarchyAsString.insert(0, HIERARCHY_SEPARATOR_CHARACTER);
             hierarchyAsString.insert(0, nextType.getName());
             currentType = nextType;
             nextType = nextType.getSuperType();

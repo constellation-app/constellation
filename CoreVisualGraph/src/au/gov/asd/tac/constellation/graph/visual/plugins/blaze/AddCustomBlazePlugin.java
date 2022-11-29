@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,9 @@ import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUt
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.VERTEX_IDS_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.VERTEX_ID_PARAMETER_ID;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
@@ -33,6 +35,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.BitSet;
@@ -50,6 +53,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @NbBundle.Messages("AddCustomBlazePlugin=Add Custom Blazes")
+@PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.MODIFY})
 public class AddCustomBlazePlugin extends SimpleEditPlugin {
 
     @Override
@@ -58,19 +62,19 @@ public class AddCustomBlazePlugin extends SimpleEditPlugin {
 
         final PluginParameter<IntegerParameterValue> vertexIdParam = IntegerParameterType.build(VERTEX_ID_PARAMETER_ID);
         vertexIdParam.setName("Vertex Id");
-        vertexIdParam.setDescription("The vertex id to add a colour blaze");
+        vertexIdParam.setDescription("The vertex id to add a color blaze");
         vertexIdParam.setIntegerValue(Graph.NOT_FOUND);
         parameters.addParameter(vertexIdParam);
 
         final PluginParameter<ObjectParameterValue> vertexIdsParam = ObjectParameterType.build(VERTEX_IDS_PARAMETER_ID);
         vertexIdsParam.setName("Vertex Ids");
-        vertexIdsParam.setDescription("The list of vertex ids to add a colour blaze (in bulk)");
+        vertexIdsParam.setDescription("The list of vertex ids to add a color blaze (in bulk)");
         vertexIdsParam.setObjectValue(null);
         parameters.addParameter(vertexIdsParam);
 
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
-        colorParam.setDescription("The colour value");
+        colorParam.setDescription("The color value");
         parameters.addParameter(colorParam);
 
         return parameters;

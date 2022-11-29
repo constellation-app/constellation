@@ -15,7 +15,7 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.utilities</code-name-base>
+                    <code-name-base>au.gov.asd.tac.constellation.help</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
@@ -23,29 +23,11 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.netbeans.api.annotations.common</code-name-base>
+                    <code-name-base>au.gov.asd.tac.constellation.utilities</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>1.27.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.netbeans.modules.javahelp</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>2.41.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.openide.awt</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>7.67.1</specification-version>
+                        <specification-version>1.0</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -89,6 +71,8 @@
                 <package>au.gov.asd.tac.constellation.graph.attribute.io</package>
                 <package>au.gov.asd.tac.constellation.graph.attribute.utilities</package>
                 <package>au.gov.asd.tac.constellation.graph.construction</package>
+                <package>au.gov.asd.tac.constellation.graph.docs</package>
+                <package>au.gov.asd.tac.constellation.graph.docs.resources</package>
                 <package>au.gov.asd.tac.constellation.graph.locking</package>
                 <package>au.gov.asd.tac.constellation.graph.manager</package>
                 <package>au.gov.asd.tac.constellation.graph.mergers</package>
@@ -107,6 +91,7 @@
                 <package>au.gov.asd.tac.constellation.graph.value.operations</package>
                 <package>au.gov.asd.tac.constellation.graph.value.readables</package>
                 <package>au.gov.asd.tac.constellation.graph.value.stores</package>
+                <package>au.gov.asd.tac.constellation.graph.value.utilities</package>
                 <package>au.gov.asd.tac.constellation.graph.value.values</package>
                 <package>au.gov.asd.tac.constellation.graph.value.variables</package>
                 <package>au.gov.asd.tac.constellation.graph.value.writables</package>

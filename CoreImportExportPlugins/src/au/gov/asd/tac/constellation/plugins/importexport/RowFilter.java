@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.script.Bindings;
 import javax.script.Compilable;
 import javax.script.CompiledScript;
@@ -27,6 +29,7 @@ import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * The definition of a row filter.
@@ -53,6 +56,9 @@ public class RowFilter {
 
     private String[] columns = new String[0];
     private String[] encodedColumns = new String[0];
+    private static final String COLUMN_HEADER_PREFIX = "uniqueColumnHeaderPrefix_";
+    private static final String VALID_HEADER_PATTERN = "^[a-zA-Z][a-zA-Z0-9_]*$";
+    private static final Pattern VALID_HEADER_MATCHER = Pattern.compile(VALID_HEADER_PATTERN);
 
     private static final Logger LOGGER = Logger.getLogger(RowFilter.class.getName());
 
@@ -82,7 +88,13 @@ public class RowFilter {
      */
     public boolean setScript(final String script) {
         try {
-            this.script = encodeScript(script);
+            this.script = script;
+            final String validHeader = validHeader();
+            if (StringUtils.isBlank(validHeader)) {
+                this.script = null;
+                return false;
+            }
+            this.script = encodeScript(modifyScript(validHeader));
             compiledScript = ((Compilable) engine).compile(this.script);
 
             LOGGER.log(Level.INFO, "SCRIPT = {0}", this.script);
@@ -94,8 +106,37 @@ public class RowFilter {
         }
     }
 
-    private static String encodeScript(final String script) {
+    private String validHeader() {
+        final int endOfHeader = script.indexOf("==");
+        if (endOfHeader != -1) {
+            final String header = script.substring(0, endOfHeader).trim();
+            if (!StringUtils.isBlank(header)) {
+                for (int i = 0; i < columns.length; i++) {
+                    if (columns[i].equals(header)) {
+                        return header;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
+    private String modifyScript(final String validHeader) {
+        String modifiedScript = script;
+        final Matcher matcher = VALID_HEADER_MATCHER.matcher(validHeader);
+        if (!matcher.matches()) {
+            //Amend the script with the relevant ith column header containing columnHeaderPrefix
+            for (int i = 1; i < columns.length; i++) {
+                if (columns[i].equals(validHeader)) {
+                    modifiedScript = StringUtils.replaceOnce(script, validHeader, COLUMN_HEADER_PREFIX + i);
+                    break;
+                }
+            }
+        }
+        return modifiedScript;
+    }
+
+    private static String encodeScript(final String script) {
         final StringBuilder out = new StringBuilder();
         StringBuilder encodedPart = null;
 
@@ -136,7 +177,8 @@ public class RowFilter {
      * The names of the columns included in the filter.
      * <p>
      * Columns that match the pattern "^[a-zA-Z][a-zA-Z0-9_]*$" keep their
-     * names, otherwise the name of the ith column is value<i>i</i>.
+     * names, otherwise the name of the ith column with columnHeaderPrefix is
+     * value<i>i</i>.
      *
      * @param columns the columns included in the filter.
      */
@@ -144,7 +186,7 @@ public class RowFilter {
         this.columns = new String[columns.length];
         this.encodedColumns = new String[columns.length];
         for (int columnIndex = 0; columnIndex < columns.length; columnIndex++) {
-            if (columns[columnIndex] != null && columns[columnIndex].matches("^[a-zA-Z][a-zA-Z0-9_]*$")) {
+            if (columns[columnIndex] != null) {
                 this.columns[columnIndex] = columns[columnIndex];
             }
             this.encodedColumns[columnIndex] = encodeColumn(columns[columnIndex]);
@@ -195,7 +237,7 @@ public class RowFilter {
                     bindings.put(columns[i], values[i - 1]);
                 }
 
-                final String columnBinding = "$column" + i;
+                final String columnBinding = COLUMN_HEADER_PREFIX + i;
                 if (!bindings.containsKey(columnBinding)) {
                     bindings.put(columnBinding, values[i - 1]);
                 }

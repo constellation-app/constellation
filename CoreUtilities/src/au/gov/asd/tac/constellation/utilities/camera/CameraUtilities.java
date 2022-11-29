@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,11 @@ public class CameraUtilities {
 
     // Enforce a minimum distance so the user isn't overwhelmed,
     // and the label is probably visible.
-    private static final float MIN_ZOOM_DISTANCE = 16f;
+    private static final float MIN_ZOOM_DISTANCE = 16F;
+
+    private CameraUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static void refocusOnXAxis(final Camera camera, final BoundingBox bb, final boolean reverseDirection) {
         refocus(camera, new Vector3f(reverseDirection ? -1 : 1, 0, 0), new Vector3f(0, 1, 0), bb);
@@ -98,6 +102,8 @@ public class CameraUtilities {
                 camera.setMixRatio(camera.getMixRatio() + 1);
             } else if (!increaseMix && camera.getMixRatio() > Camera.MIX_RATIO_MIN) {
                 camera.setMixRatio(camera.getMixRatio() - 1);
+            } else {
+                // Do nothing
             }
         }
     }
@@ -173,13 +179,13 @@ public class CameraUtilities {
         frame.worldToLocal(camera.lookAtEye, localEye);
 
         if (xDegrees != 0) {
-            frame.rotateLocal((float) Mathf.degToRad(xDegrees), 1.0f, 0.0f, 0.0f);
+            frame.rotateLocal((float) Mathf.degToRad(xDegrees), 1.0F, 0.0F, 0.0F);
         }
         if (yDegrees != 0) {
-            frame.rotateLocal((float) Mathf.degToRad(yDegrees), 0.0f, 1.0f, 0.0f);
+            frame.rotateLocal((float) Mathf.degToRad(yDegrees), 0.0F, 1.0F, 0.0F);
         }
         if (zDegrees != 0) {
-            frame.rotateLocal((float) Mathf.degToRad(zDegrees), 0.0f, 0.0f, 1.0f);
+            frame.rotateLocal((float) Mathf.degToRad(zDegrees), 0.0F, 0.0F, 1.0F);
         }
 
         // Retrieve the rotated points from the frame.
@@ -193,9 +199,9 @@ public class CameraUtilities {
 
         if (distanceToClosestNode < Float.MAX_VALUE) {
             if (zoomAmount > 0) {
-                zoomDirection.scale(Math.max(zoomAmount, zoomAmount * distanceToClosestNode * 0.1f));
+                zoomDirection.scale(Math.max(zoomAmount, zoomAmount * distanceToClosestNode * 0.1F));
             } else {
-                zoomDirection.scale(Math.min(zoomAmount, zoomAmount * distanceToClosestNode * 0.1f));
+                zoomDirection.scale(Math.min(zoomAmount, zoomAmount * distanceToClosestNode * 0.1F));
             }
         } else {
             zoomDirection.scale(zoomAmount);

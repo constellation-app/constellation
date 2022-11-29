@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,4 +32,6 @@ public abstract class QualityControlAutoButton extends Button {
      * @param state the new QualityControlState.
      */
     protected abstract void update(final QualityControlState state);
+
+    public abstract QualityControlAutoButton copy();
 }

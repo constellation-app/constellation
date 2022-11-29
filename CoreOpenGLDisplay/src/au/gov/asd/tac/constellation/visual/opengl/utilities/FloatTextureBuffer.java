@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.visual.opengl.utilities;
 
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2ES3;
 import com.jogamp.opengl.GL3;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -39,13 +41,13 @@ public class FloatTextureBuffer extends TextureBuffer<FloatBuffer> {
 
     @Override
     protected int internalFormat() {
-        return GL3.GL_RGBA32F;
+        return GL.GL_RGBA32F;
     }
 
     @Override
     public FloatBuffer connectBuffer(GL3 gl) {
-        gl.glBindBuffer(GL3.GL_TEXTURE_BUFFER, getBufferName());
-        ByteBuffer buffer = gl.glMapBuffer(GL3.GL_TEXTURE_BUFFER, GL3.GL_READ_WRITE);
+        gl.glBindBuffer(GL2ES3.GL_TEXTURE_BUFFER, getBufferName());
+        ByteBuffer buffer = gl.glMapBuffer(GL2ES3.GL_TEXTURE_BUFFER, GL2ES3.GL_READ_WRITE);
         return buffer.order(ByteOrder.nativeOrder()).asFloatBuffer();
     }
 

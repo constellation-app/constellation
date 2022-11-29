@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.rest;
 
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -32,8 +33,10 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.net.ssl.HttpsURLConnection;
-import org.openide.util.Exceptions;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * REST Client
@@ -41,6 +44,8 @@ import org.openide.util.Exceptions;
  * @author arcturus
  */
 public abstract class RestClient {
+    
+    private static final Logger LOGGER = Logger.getLogger(RestClient.class.getName());
 
     protected static final String HOST = "{HOST}";
 
@@ -48,9 +53,7 @@ public abstract class RestClient {
      * Read the content of the HTTP response.
      *
      * @param conn The HTTPS connection.
-     *
      * @return The HTTP response content.
-     *
      * @throws IOException
      */
     private static byte[] getBody(final HttpsURLConnection conn, final int code) throws IOException {
@@ -72,23 +75,35 @@ public abstract class RestClient {
         return os.toByteArray();
     }
 
-    public static URL generateUrl(final String url, final Map<String, String> params) throws UnsupportedEncodingException, MalformedURLException {
+    /**
+     * Construct a URL string based on supplied URL and any supplied query
+     * parameters.
+     * 
+     * @param url URL to base generated URL on.
+     * @param params Any parameters to add to the URL (ie HTTP GET parameters)
+     * @return URL combining base URL and parameters.
+     * @throws UnsupportedEncodingException
+     * @throws MalformedURLException
+     */
+    public static URL generateUrl(final String url, final List<Tuple<String, String>> params) throws UnsupportedEncodingException, MalformedURLException {
         // Build the request parameters.
         final StringBuilder query = new StringBuilder();
         if (params != null) {
-            for (final Map.Entry<String, String> entry : params.entrySet()) {
-                if (query.length() > 0) {
-                    query.append('&');
-                }
-
-                query.append(String.format(
-                        "%s=%s",
-                        entry.getKey() == null ? "" : URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8.name()),
-                        entry.getValue() == null ? "" : URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8.name())
-                ));
+            for (final Tuple<String, String> param : params) {
+                // Ensure the parameter has a non empty key. Rules for parameter names seem quite relaxed in HTTP, as
+                // such we will not try and do too much validation
+                final String key = URLEncoder.encode(param.getFirst(), StandardCharsets.UTF_8.name()).replace("+", "%20");
+                final String value = URLEncoder.encode(param.getSecond(), StandardCharsets.UTF_8.name()).replace("+", "%20");
+                if (StringUtils.isNotBlank(key)) {
+                    if (query.length() > 0) {
+                        query.append('&');
+                    }
+                    query.append(String.format("%s=%s", key, value));
+                } else {
+                    LOGGER.info(String.format("Unable to add rest key/value: %s=%s to URL=%s", key, value, url));
+                } 
             }
         }
-
         return new URL(url + (query.length() > 0 ? "?" + query : ""));
     }
 
@@ -111,19 +126,28 @@ public abstract class RestClient {
      * HTTP response content.
      */
     protected byte[] bytes;
-
-    public abstract HttpsURLConnection makeGetConnection(final String url, final Map<String, String> params) throws IOException;
+    
+    /**
+     * Manage the creation of a HTTP GET connection.
+     * 
+     * @param url The URL to base the GET connection on.
+     * @param params Any parameters to add to the URL
+     * @return HttpsURLConnection object corresponding to the created connection
+     * @throws IOException 
+     */
+    public abstract HttpsURLConnection makeGetConnection(final String url, final List<Tuple<String, String>> params) throws IOException;
 
     /**
-     * Will be run before the GET connection
+     * Will be run before the GET connection - designed to be overridden as
+     * required.
      *
      * @param url The URL to request.
      * @param params Query parameters.
      */
-    public void beforeGet(final String url, final Map<String, String> params) {
+    public void beforeGet(final String url, final List<Tuple<String, String>> params) {
         // DO NOTHING
     }
-
+    
     /**
      * A generic "send request / read response" method.
      * <p>
@@ -131,10 +155,9 @@ public abstract class RestClient {
      *
      * @param url The URL to request.
      * @param params Query parameters.
-     *
      * @throws IOException
      */
-    public void get(final String url, final Map<String, String> params) throws IOException {
+    public void get(final String url, final List<Tuple<String, String>> params) throws IOException {
         beforeGet(url, params);
 
         HttpsURLConnection connection = null;
@@ -154,29 +177,38 @@ public abstract class RestClient {
                 connection.disconnect();
             }
         }
-
         afterGet(url, params);
     }
 
     /**
-     * Will be run after the GET connection has been disconnected
+     * Will be run after the GET connection has been disconnected - designed to
+     * be overridden as required.
      *
      * @param url The URL to request.
      * @param params Query parameters.
      */
-    public void afterGet(final String url, final Map<String, String> params) {
+    public void afterGet(final String url, final List<Tuple<String, String>> params) {
         // DO NOTHING
     }
-
-    public abstract HttpsURLConnection makePostConnection(final String url, final Map<String, String> params) throws IOException;
+    
+    /**
+     * Manage the creation of a HTTP POST connection.
+     * 
+     * @param url The URL to base the POST connection on.
+     * @param params Any parameters to add to the URL
+     * @return HttpsURLConnection object corresponding to the created connection
+     * @throws IOException
+     */
+    public abstract HttpsURLConnection makePostConnection(final String url, final List<Tuple<String, String>> params) throws IOException;
 
     /**
-     * Will be run before the POST connection
+     * Will be run before the POST connection - designed to be overridden as
+     * required.
      *
      * @param url The URL to request.
      * @param params Query parameters.
      */
-    public void beforePost(final String url, final Map<String, String> params) {
+    public void beforePost(final String url, final List<Tuple<String, String>> params) {
         // DO NOTHING
     }
 
@@ -191,7 +223,7 @@ public abstract class RestClient {
      *
      * @throws IOException
      */
-    public void post(final String url, final Map<String, String> params) throws IOException {
+    public void post(final String url, final List<Tuple<String, String>> params) throws IOException {
         beforePost(url, params);
 
         HttpsURLConnection connection = null;
@@ -211,8 +243,8 @@ public abstract class RestClient {
             if (Response.isCodeSuccess(responseCode)) {
                 bytes = getBody(connection, responseCode);
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -230,10 +262,9 @@ public abstract class RestClient {
      * @param params A simple key/value pair in which values do not contain
      * Arrays, Sets etc
      * @param json The json string to be posted in the message body
-     *
      * @throws IOException
      */
-    public void postWithJson(final String url, final Map<String, String> params, final String json) throws IOException {
+    public void postWithJson(final String url, final List<Tuple<String, String>> params, final String json) throws IOException {
         beforePost(url, params);
 
         HttpsURLConnection connection = null;
@@ -253,8 +284,8 @@ public abstract class RestClient {
             if (Response.isCodeSuccess(responseCode)) {
                 bytes = getBody(connection, responseCode);
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -275,7 +306,7 @@ public abstract class RestClient {
      *
      * @throws IOException
      */
-    public void postWithBytes(final String url, final Map<String, String> params, final byte[] bytes) throws IOException {
+    public void postWithBytes(final String url, final List<Tuple<String, String>> params, final byte[] bytes) throws IOException {
         beforePost(url, params);
 
         HttpsURLConnection connection = null;
@@ -294,8 +325,8 @@ public abstract class RestClient {
             if (Response.isCodeSuccess(responseCode)) {
                 this.bytes = getBody(connection, responseCode);
             }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             if (connection != null) {
                 connection.disconnect();
@@ -306,12 +337,13 @@ public abstract class RestClient {
     }
 
     /**
-     * Will be run before the POST connection has been disconnected
+     * Will be run before the POST connection has been disconnected - designed
+     * to be overridden as required.
      *
      * @param url The URL to request.
      * @param params Query parameters.
      */
-    public void afterPost(final String url, final Map<String, String> params) {
+    public void afterPost(final String url, final List<Tuple<String, String>> params) {
         // DO NOTHING
     }
 
@@ -320,16 +352,20 @@ public abstract class RestClient {
      *
      * @param params A Map of key/value pairs
      * @return A json representation of a simple map
-     *
      * @throws IOException
      */
-    private String generateJsonFromFlatMap(final Map<String, String> params) throws IOException {
+    private String generateJsonFromFlatMap(final List<Tuple<String, String>> params) throws IOException {
         final ByteArrayOutputStream json = new ByteArrayOutputStream();
         final JsonFactory jsonFactory = new MappingJsonFactory();
-        try (JsonGenerator jg = jsonFactory.createGenerator(json)) {
+        try (final JsonGenerator jg = jsonFactory.createGenerator(json)) {
             jg.writeStartObject();
-            for (final Map.Entry<String, String> param : params.entrySet()) {
-                jg.writeStringField(param.getKey(), param.getValue());
+            
+            for (final Tuple<String, String> param : params) {
+                // Ensure the parameter has a non empty key.
+                final String key = param.getFirst();
+                if (StringUtils.isNotBlank(key)) {
+                    jg.writeStringField(key,  param.getSecond());
+                }
             }
             jg.writeEndObject();
             jg.flush();
@@ -337,5 +373,4 @@ public abstract class RestClient {
 
         return json.toString(StandardCharsets.UTF_8.name());
     }
-
 }

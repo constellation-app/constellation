@@ -17,30 +17,28 @@ package au.gov.asd.tac.constellation.views.welcome;
 
 import java.util.List;
 
-
 /**
  * A plugin designed to be supported by the Welcome Page.
  *
  * @author Delphinus8821
  */
 public abstract class WelcomePageLayoutProvider {
-    
+
     /**
      * Gets the plugins for the top part of the welcome page
-     * 
+     *
      * @return ArrayList of plugins
      */
-    public List<WelcomePluginInterface> getTopPlugins(){
+    public List<WelcomePluginInterface> getTopPlugins() {
         return null;
     }
-  
-    
+
     /**
      * Gets the plugins for the side of the welcome page
-     * 
+     *
      * @return ArrayList of plugins
      */
-    public List<WelcomePluginInterface> getSidePlugins(){
+    public List<WelcomePluginInterface> getSidePlugins() {
         return null;
     }
 }

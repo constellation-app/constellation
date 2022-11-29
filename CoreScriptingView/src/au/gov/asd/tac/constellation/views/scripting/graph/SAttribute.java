@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.scripting.graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import java.util.logging.Logger;
 
 /**
  * A representation of an attribute for use with scripting.
@@ -26,8 +25,6 @@ import java.util.logging.Logger;
  * @author cygnus_x-1
  */
 public class SAttribute {
-
-    private static final Logger LOGGER = Logger.getLogger(SAttribute.class.getName());
 
     private final GraphReadMethods readableGraph;
     private final int id;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -219,7 +219,7 @@ public final class SpanningTree {
         private final GraphWriteMethods wg;
         private final int comp;
 
-        LinkSorter(final GraphWriteMethods wg, final boolean isMinimal) {
+        protected LinkSorter(final GraphWriteMethods wg, final boolean isMinimal) {
             this.wg = wg;
             this.comp = isMinimal ? 1 : -1;
         }

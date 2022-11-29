@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,17 +25,20 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.graph.file.nebula.NewNebulaAction")
@@ -43,6 +46,8 @@ import org.openide.util.NbBundle.Messages;
 @ActionReference(path = "Menu/Experimental/Tools", position = 0)
 @Messages("CTL_NewNebulaAction=New Nebula")
 public final class NewNebulaAction implements ActionListener {
+    
+    private static final Logger LOGGER = Logger.getLogger(NewNebulaAction.class.getName());
 
     public static final String NEBULA_FILE_PARAMETER_ID = PluginParameter.buildId(NewNebulaAction.class, "nebula_file");
     public static final String COLOR_PARAMETER_ID = PluginParameter.buildId(NewNebulaAction.class, "color");
@@ -59,7 +64,7 @@ public final class NewNebulaAction implements ActionListener {
         params.addParameter(fileParam);
 
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
-        colorParam.setName("Nebula colour");
+        colorParam.setName("Nebula color");
         params.addParameter(colorParam);
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(Bundle.CTL_NewNebulaAction(), params);
@@ -69,12 +74,11 @@ public final class NewNebulaAction implements ActionListener {
             if (!fpv.get().isEmpty()) {
                 final Properties props = new Properties();
                 final ConstellationColor c = colorParam.getColorValue();
-                props.setProperty("colour", String.format("%f,%f,%f", c.getRed(), c.getGreen(), c.getBlue()));
+                props.setProperty("color", String.format("%f,%f,%f", c.getRed(), c.getGreen(), c.getBlue()));
 
                 File f = fpv.get().get(0);
-                final String s = f.getName().toLowerCase();
-                if (!s.endsWith(".nebula")) {
-                    f = new File(f.getAbsoluteFile() + ".nebula");
+                if (!StringUtils.endsWithIgnoreCase(f.getName(), FileExtensionConstants.NEBULA)) {
+                    f = new File(f.getAbsoluteFile() + FileExtensionConstants.NEBULA);
                 }
 
                 try {
@@ -83,7 +87,7 @@ public final class NewNebulaAction implements ActionListener {
                         NebulaDataObject.addRecent(f);
                     }
                 } catch (final IOException ex) {
-                    Exceptions.printStackTrace(ex);
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
             }
         }

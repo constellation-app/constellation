@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.openide.modules.Places;
@@ -31,6 +33,8 @@ import org.openide.modules.Places;
  * @author arcturus
  */
 public class SupportPackage {
+
+    private static final Logger LOGGER = Logger.getLogger(SupportPackage.class.getName());
 
     /**
      * A convenient method to create a support package
@@ -52,17 +56,17 @@ public class SupportPackage {
      * @param files A list of files to zip within the sourceFolder
      * @param destinationZipFilename The destination zip filename
      */
-    void zipFolder(final String sourceFolder, final List<String> files, final String destinationZipFilename) throws IOException {
+    public void zipFolder(final String sourceFolder, final Iterable<String> files, final String destinationZipFilename) throws IOException {
         byte[] buffer = new byte[1024];
 
         final FileOutputStream fileOutputStream = new FileOutputStream(destinationZipFilename);
-        try (ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
+        try (final ZipOutputStream zipOutputStream = new ZipOutputStream(fileOutputStream)) {
             for (final String filename : files) {
                 if (!filesToIgnore(filename)) {
                     final ZipEntry zipEntry = new ZipEntry(filename);
                     zipOutputStream.putNextEntry(zipEntry);
 
-                    try (FileInputStream fileInputStream = new FileInputStream(sourceFolder + File.separator + filename)) {
+                    try (final FileInputStream fileInputStream = new FileInputStream(sourceFolder + File.separator + filename)) {
                         int len;
                         while ((len = fileInputStream.read(buffer)) > 0) {
                             zipOutputStream.write(buffer, 0, len);
@@ -83,7 +87,7 @@ public class SupportPackage {
      * @param list A list of files
      * @param startFolder The starting folder
      */
-    void generateFileList(final File node, final List<String> list, final String startFolder) {
+    public void generateFileList(final File node, final List<String> list, final String startFolder) {
         if (node.isFile()) {
             list.add(generateZipEntry(node.getAbsoluteFile().toString(), startFolder));
         }
@@ -101,10 +105,12 @@ public class SupportPackage {
      * @return A String of the directory the user log files are saved
      */
     public static String getUserLogDirectory() {
-        return String.format("%s%svar%slog", Places.getUserDirectory().getPath(), File.separator, File.separator);
+        return String.format("%s%svar%slog", (Places.getUserDirectory() != null ? Places.getUserDirectory().getPath() : new File(System.getProperty("user.home"))), File.separator, File.separator);
     }
 
     private String generateZipEntry(final String file, final String sourcePath) {
+        final String logString = file + " | " + sourcePath;
+        LOGGER.log(Level.INFO, logString);
         return file.substring(sourcePath.length() + 1, file.length());
     }
 
@@ -116,7 +122,7 @@ public class SupportPackage {
      * @param filename The filename
      * @return True to ignore the file, False otherwise
      */
-    private boolean filesToIgnore(final String filename) {
+    protected boolean filesToIgnore(final String filename) {
         return "heapdump.hprof".equals(filename) || "heapdump.hprof.old".equals(filename);
     }
 }

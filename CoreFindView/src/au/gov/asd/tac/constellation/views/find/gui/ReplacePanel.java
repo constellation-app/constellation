@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,14 +42,14 @@ public class ReplacePanel extends javax.swing.JPanel {
      */
     private final JPanel dropDownPanel;
     private final JScrollPane scrollPane;
-    private final int INITIAL_DROPDOWN_WIDTH = 150;
-    private final int INITIAL_DROPDOWN_HEIGHT = 200;
-    private final String ATTRIBUTE_COUNT = " Attribute(s) Selected";
+    private static final int INITIAL_DROPDOWN_WIDTH = 150;
+    private static final int INITIAL_DROPDOWN_HEIGHT = 200;
+    private static final String ATTRIBUTE_COUNT = " Attribute(s) Selected";
     private ArrayList<Attribute> attributes = new ArrayList<>();
     private final JCheckBox selectAll = new JCheckBox("All");
     private final HashSet<String> selectedAttributes = new HashSet<>();
-    private final Color RED_COLOR = Color.red.darker();
-    private final Color GREEN_COLOR = Color.green.darker();
+    private static final Color RED_COLOR = Color.red.darker();
+    private static final Color GREEN_COLOR = Color.green.darker();
     private ValidationListener validationListener;
     private boolean currValidity = false;
 
@@ -286,7 +286,7 @@ public class ReplacePanel extends javax.swing.JPanel {
         ArrayList<Attribute> stringAttributes = new ArrayList<>();
 
         for (Attribute a : attributes) {
-            if (a.getAttributeType().equals("string")) {
+            if ("string".equals(a.getAttributeType())) {
                 stringAttributes.add(a);
             }
 
@@ -374,7 +374,7 @@ public class ReplacePanel extends javax.swing.JPanel {
         }
     }
 
-    public boolean getValidity() {
+    public boolean isValidity() {
         return currValidity;
     }
 

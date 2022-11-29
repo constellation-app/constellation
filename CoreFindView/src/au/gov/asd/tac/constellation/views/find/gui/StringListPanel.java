@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,9 @@ import javax.swing.DefaultComboBoxModel;
 public class StringListPanel extends javax.swing.JPanel {
 
     private static final String COMMA = "Comma";
-//    private static final String NEW_LINE = "New Line";
     private static final String TAB = "Tab";
     private static final String SEMI_COLON = "Semi-colon";
     private static final String STRING = "String";
-//    private String delimiter = NEW_LINE;
     private String delimiter = COMMA;
 
     /**

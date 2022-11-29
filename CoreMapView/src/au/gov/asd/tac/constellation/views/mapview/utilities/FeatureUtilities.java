@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,10 @@ import java.util.stream.Collectors;
  */
 public class FeatureUtilities {
 
+    private FeatureUtilities() {
+        throw new IllegalStateException("Utility Class");
+    }
+
     public static ConstellationAbstractFeature convert(final Feature feature) {
         final ConstellationAbstractFeature constellationFeature;
         switch (feature.getType()) {
@@ -48,7 +52,7 @@ public class FeatureUtilities {
                 break;
             case MULTI:
                 final List<ConstellationAbstractFeature> constellationFeatures = ((MultiFeature) feature).getFeatures().stream()
-                        .map(singleFeature -> convert(singleFeature)).collect(Collectors.toList());
+                        .map(FeatureUtilities::convert).collect(Collectors.toList());
                 constellationFeature = new ConstellationMultiFeature(ConstellationFeatureType.MULTI, constellationFeatures);
                 break;
             default:

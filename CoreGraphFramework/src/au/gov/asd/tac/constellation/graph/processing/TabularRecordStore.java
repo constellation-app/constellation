@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -244,6 +244,8 @@ public class TabularRecordStore implements RecordStore {
         } else if (values.length <= record >>> BATCH_BITS) {
             values = Arrays.copyOf(values, capacity >>> BATCH_BITS);
             createColumn(key, values);
+        } else {
+            // Do nothing
         }
 
         Object[] batch = values[record >>> BATCH_BITS];

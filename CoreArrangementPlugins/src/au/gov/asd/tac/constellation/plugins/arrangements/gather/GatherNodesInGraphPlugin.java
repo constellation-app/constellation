@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,14 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType.ObjectParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
@@ -44,6 +47,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("GatherNodesInGraphPlugin=Gather Selected Nodes Plugin")
+@PluginInfo(pluginType = PluginType.DISPLAY, tags = {PluginTags.MODIFY})
 public final class GatherNodesInGraphPlugin extends SimpleEditPlugin {
 
     public static final String XYZ_PARAMETER_ID = PluginParameter.buildId(GatherNodesInGraphPlugin.class, "xyz");
@@ -57,7 +61,6 @@ public final class GatherNodesInGraphPlugin extends SimpleEditPlugin {
         final int xId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.X.getName());
         final int yId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Y.getName());
         final int zId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.Z.getName());
-//        final int nradiusId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.NODE_RADIUS.getName());
         final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
 
         final int selectedVertexCount = gathers.cardinality();
@@ -90,7 +93,7 @@ public final class GatherNodesInGraphPlugin extends SimpleEditPlugin {
 
             int h = 0;
             int v = 0;
-            float scalingFactor = 4; // *maxRadius;
+            float scalingFactor = 4;
 
             for (int vxId = gathers.nextSetBit(0); vxId >= 0; vxId = gathers.nextSetBit(vxId + 1)) {
                 if (h == 0 && v == 0) {

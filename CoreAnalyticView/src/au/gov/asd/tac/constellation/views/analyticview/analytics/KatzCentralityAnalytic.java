@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.SnaConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.sna.centrality.KatzCentralityPlugin;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -36,14 +37,14 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = AnalyticPlugin.class),
     @ServiceProvider(service = Plugin.class)
 })
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 @AnalyticInfo(analyticCategory = "Centrality")
 @NbBundle.Messages("KatzCentralityAnalytic=Katz Centrality Analytic")
 public class KatzCentralityAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analyticview-analytic-katz-centrality.html";
+        return getHelpPath() + "analytic-katz-centrality.md";
     }
 
     @Override

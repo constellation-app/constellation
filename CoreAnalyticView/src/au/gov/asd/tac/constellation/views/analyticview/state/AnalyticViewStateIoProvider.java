@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -110,7 +110,7 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeObjectFieldStart(attribute.getName());
                 jsonGenerator.writeNumberField("index", state.getCurrentAnalyticQuestionIndex());
                 jsonGenerator.writeArrayFieldStart("questions");
-                for (AnalyticQuestionDescription<?> question : state.getActiveAnalyticQuestions()) {
+                for (final AnalyticQuestionDescription<?> question : state.getActiveAnalyticQuestions()) {
                     if (question == null) {
                         jsonGenerator.writeNull();
                     } else {
@@ -119,14 +119,14 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                 }
                 jsonGenerator.writeEndArray();
                 jsonGenerator.writeArrayFieldStart("pluginLists");
-                for (List<SelectableAnalyticPlugin> plugins : state.getActiveSelectablePlugins()) {
+                for (final List<SelectableAnalyticPlugin> plugins : state.getActiveSelectablePlugins()) {
                     jsonGenerator.writeStartObject();
                     jsonGenerator.writeArrayFieldStart("pluginList");
-                    for (SelectableAnalyticPlugin selectablePlugin : plugins) {
+                    for (final SelectableAnalyticPlugin selectablePlugin : plugins) {
                         jsonGenerator.writeStartObject();
                         jsonGenerator.writeStringField("name", selectablePlugin.getPlugin().getName());
                         jsonGenerator.writeObjectFieldStart("parameters");
-                        for (String parameterName : selectablePlugin.getAllParameters().getParameters().keySet()) {
+                        for (final String parameterName : selectablePlugin.getAllParameters().getParameters().keySet()) {
                             jsonGenerator.writeStringField(parameterName, selectablePlugin.getAllParameters().getParameters().get(parameterName).getStringValue());
                         }
                         jsonGenerator.writeEndObject();

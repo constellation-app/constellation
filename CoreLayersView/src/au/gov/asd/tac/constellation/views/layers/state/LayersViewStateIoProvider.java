@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,9 +135,9 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray(layer.getIndex());
+                        jsonGenerator.writeStartArray("index", layer.getIndex());
                         jsonGenerator.writeNumber(layer.getIndex());
-                        jsonGenerator.writeBoolean(layer.getVisibility());
+                        jsonGenerator.writeBoolean(layer.isVisible());
                         jsonGenerator.writeString(layer.getQueryString());
                         jsonGenerator.writeString(layer.getDescription());
                         jsonGenerator.writeEndArray();
@@ -151,9 +151,9 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (layer == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray(layer.getIndex());
+                        jsonGenerator.writeStartArray("index", layer.getIndex());
                         jsonGenerator.writeNumber(layer.getIndex());
-                        jsonGenerator.writeBoolean(layer.getVisibility());
+                        jsonGenerator.writeBoolean(layer.isVisible());
                         jsonGenerator.writeString(layer.getQueryString());
                         jsonGenerator.writeString(layer.getDescription());
                         jsonGenerator.writeEndArray();
@@ -167,7 +167,7 @@ public class LayersViewStateIoProvider extends AbstractGraphIOProvider {
                     if (attr == null) {
                         jsonGenerator.writeNull();
                     } else {
-                        jsonGenerator.writeStartArray(count++);
+                        jsonGenerator.writeStartArray("index", count++);
                         jsonGenerator.writeString(attr.getElementType().toString());
                         jsonGenerator.writeString(attr.getName());
                         jsonGenerator.writeEndArray();

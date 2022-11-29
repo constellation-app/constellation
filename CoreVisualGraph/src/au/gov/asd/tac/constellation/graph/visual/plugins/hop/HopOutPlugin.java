@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,13 +17,16 @@ package au.gov.asd.tac.constellation.graph.visual.plugins.hop;
 
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle.Messages;
 import org.openide.util.lookup.ServiceProvider;
@@ -35,6 +38,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @Messages("HopOutPlugin=Hop Out")
+@PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
 public class HopOutPlugin extends SimpleEditPlugin {
 
     public static final String HOPS_PARAMETER_ID = PluginParameter.buildId(HopOutPlugin.class, "hops");
@@ -80,12 +84,18 @@ public class HopOutPlugin extends SimpleEditPlugin {
         final boolean incoming = parameters.getParameters().get(INCOMING_PARAMETER_ID).getBooleanValue();
         final boolean undirected = parameters.getParameters().get(UNDIRECTED_PARAMETER_ID).getBooleanValue();
 
-        if (hops == HopUtilities.HOP_OUT_HALF) {
-            HopUtilities.hopOutHalf(graph, outgoing, incoming, undirected);
-        } else if (hops == HopUtilities.HOP_OUT_ONE) {
-            HopUtilities.hopOutOne(graph, outgoing, incoming, undirected);
-        } else if (hops == HopUtilities.HOP_OUT_FULL) {
-            HopUtilities.hopOutFull(graph, outgoing, incoming, undirected);
+        switch (hops) {
+            case HopUtilities.HOP_OUT_HALF:
+                HopUtilities.hopOutHalf(graph, outgoing, incoming, undirected);
+                break;
+            case HopUtilities.HOP_OUT_ONE:
+                HopUtilities.hopOutOne(graph, outgoing, incoming, undirected);
+                break;
+            case HopUtilities.HOP_OUT_FULL:
+                HopUtilities.hopOutFull(graph, outgoing, incoming, undirected);
+                break;
+            default:
+                break;
         }
     }
 }

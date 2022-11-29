@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,12 +66,14 @@ public class GetServiceDescription extends RestService {
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(SERVICE_NAME_PARAMETER_ID);
         nameParam.setName("Service name");
         nameParam.setDescription("The name of the service to be described.");
+        nameParam.setRequired(true);
         parameters.addParameter(nameParam);
 
         final PluginParameter<StringParameterValue> methodParam = StringParameterType.build(METHOD_NAME_PARAMETER_ID);
         methodParam.setName("HTTP method name");
         methodParam.setDescription("The HTTP method by which the service id called (GET, PUT, POST), default GET.");
         methodParam.setStringValue(HttpMethod.GET.name());
+        methodParam.setRequired(true);
         parameters.addParameter(methodParam);
 
         return parameters;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -42,6 +43,8 @@ import org.openide.util.NbPreferences;
  * @author sirius
  */
 public class RecentParameterValues {
+    
+    private static final Logger LOGGER = Logger.getLogger(RecentParameterValues.class.getName());
 
     private static final Map<String, List<String>> RECENT_VALUES = new HashMap<>();
     private static final List<RecentValuesListener> LISTENERS = new ArrayList<>();
@@ -50,24 +53,27 @@ public class RecentParameterValues {
     private static final JsonFactory FACTORY = new MappingJsonFactory();
 
     public static void storeRecentValue(String parameterId, String parameterValue) {
-
-        List<String> values = RECENT_VALUES.get(parameterId);
-        if (values == null) {
-            values = new ArrayList<>();
-            RECENT_VALUES.put(parameterId, values);
-            values.add(parameterValue);
-        } else {
-            values.remove(parameterValue);
-            values.add(0, parameterValue);
+        synchronized (RECENT_VALUES) {
+            List<String> values = RECENT_VALUES.get(parameterId);
+            if (values == null) {
+                values = new ArrayList<>();
+                RECENT_VALUES.put(parameterId, values);
+                values.add(parameterValue);
+            } else {
+                values.remove(parameterValue);
+                values.add(0, parameterValue);
+            }
+            fireChangeEvent(new RecentValuesChangeEvent(parameterId, RECENT_VALUES.get(parameterId)));
         }
-        fireChangeEvent(new RecentValuesChangeEvent(parameterId, RECENT_VALUES.get(parameterId)));
     }
 
     public static List<String> getRecentValues(String parameterId) {
-        if (RECENT_VALUES.isEmpty()) {
-            loadFromPreference();
+        synchronized(RECENT_VALUES) {
+            if (RECENT_VALUES.isEmpty()) {
+                loadFromPreference();
+            }
+            return RECENT_VALUES.get(parameterId);
         }
-        return RECENT_VALUES.get(parameterId);
     }
 
     /**
@@ -103,60 +109,62 @@ public class RecentParameterValues {
         synchronized (LISTENERS) {
             for (RecentValuesListener listener : LISTENERS) {
                 listener.recentValuesChanged(e);
-            }
+            }               
         }
-//        saveToPreferences();
     }
 
     public static void saveToPreferences() {
-        final ByteArrayOutputStream json = new ByteArrayOutputStream();
-        try (final JsonGenerator jg = FACTORY.createGenerator(json)) {
-            jg.writeStartObject();
-            for (Entry<String, List<String>> entry : RECENT_VALUES.entrySet()) {
-                List<String> recentVals = entry.getValue();
-                if (entry.getKey() != null) {
-                    jg.writeFieldName(entry.getKey());
-                    jg.writeStartArray();
-                    int limit = Math.min(SAVE_LIMIT, recentVals.size());
-                    for (int i = 0; i < limit; i++) {
-                        jg.writeString(recentVals.get(i));
+        synchronized (RECENT_VALUES) {
+            final ByteArrayOutputStream json = new ByteArrayOutputStream();
+            try (final JsonGenerator jg = FACTORY.createGenerator(json)) {
+                jg.writeStartObject();
+                for (Entry<String, List<String>> entry : RECENT_VALUES.entrySet()) {
+                    List<String> recentVals = entry.getValue();
+                    if (entry.getKey() != null) {
+                        jg.writeFieldName(entry.getKey());
+                        jg.writeStartArray();
+                        int limit = Math.min(SAVE_LIMIT, recentVals.size());
+                        for (int i = 0; i < limit; i++) {
+                            jg.writeString(recentVals.get(i));
+                        }
+                        jg.writeEndArray();
                     }
-                    jg.writeEndArray();
                 }
+                jg.writeEndObject();
+                jg.flush();
+                PREFERENCES.put(RecentParameterValuesKey.RECENT_VALUES, json.toString(StandardCharsets.UTF_8.name()));
+                try {
+                    PREFERENCES.flush();
+                } catch (final BackingStoreException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
+                }
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
-            jg.writeEndObject();
-            jg.flush();
-            PREFERENCES.put(RecentParameterValuesKey.RECENT_VALUES, json.toString(StandardCharsets.UTF_8.name()));
-            try {
-                PREFERENCES.flush();
-            } catch (BackingStoreException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
         }
     }
 
     public static void loadFromPreference() {
-        final String recentValuesJSON = PREFERENCES.get(RecentParameterValuesKey.RECENT_VALUES, "");
-        if (!recentValuesJSON.isEmpty()) {
-            try (final JsonParser jp = FACTORY.createParser(recentValuesJSON)) {
-                if (jp.nextToken() == JsonToken.START_OBJECT) {
-                    while (jp.nextToken() != JsonToken.END_OBJECT) {
-                        if (jp.getCurrentToken() == JsonToken.START_ARRAY) {
-                            List<String> recentVals = new ArrayList<>();
-                            String fieldName = jp.getCurrentName();
-                            while (jp.nextToken() != JsonToken.END_ARRAY) {
-                                recentVals.add(jp.getValueAsString());
+        synchronized (RECENT_VALUES) {
+            final String recentValuesJSON = PREFERENCES.get(RecentParameterValuesKey.RECENT_VALUES, "");
+            if (!recentValuesJSON.isEmpty()) {
+                try (final JsonParser jp = FACTORY.createParser(recentValuesJSON)) {
+                    if (jp.nextToken() == JsonToken.START_OBJECT) {
+                        while (jp.nextToken() != JsonToken.END_OBJECT) {
+                            if (jp.getCurrentToken() == JsonToken.START_ARRAY) {
+                                List<String> recentVals = new ArrayList<>();
+                                String fieldName = jp.getCurrentName();
+                                while (jp.nextToken() != JsonToken.END_ARRAY) {
+                                    recentVals.add(jp.getValueAsString());
+                                }
+                                RECENT_VALUES.put(fieldName, recentVals);
                             }
-                            RECENT_VALUES.put(fieldName, recentVals);
                         }
                     }
+                } catch (final IOException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
             }
         }
-
     }
 }

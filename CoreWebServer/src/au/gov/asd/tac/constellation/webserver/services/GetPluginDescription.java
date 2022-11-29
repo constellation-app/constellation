@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,8 @@ public class GetPluginDescription extends RestService {
 
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(PLUGIN_NAME_PARAMETER_ID);
         nameParam.setName("Plugin name");
-        nameParam.setDescription("Get the plugin description and parameters.");
+        nameParam.setDescription("Plugin name to get the description and parameters.");
+        nameParam.setRequired(true);
         parameters.addParameter(nameParam);
 
         return parameters;

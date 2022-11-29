@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public class MostRecentModules {
             final String[] versionParts = modules.get(0).getSpecificationVersion().toString().split("\\.");
             if (versionParts.length == 4) {
                 final String yyyymmdd = versionParts[2];
-                StringBuilder hhmmss = new StringBuilder(String.valueOf(versionParts[3]));
+                final StringBuilder hhmmss = new StringBuilder(String.valueOf(versionParts[3]));
                 while (hhmmss.length() < 6) {
                     hhmmss.insert(0, "0");
                 }
@@ -111,8 +111,8 @@ public class MostRecentModules {
      */
     public static List<ModuleInfo> getModules() {
         final Collection<? extends ModuleInfo> modules = Lookup.getDefault().lookupAll(ModuleInfo.class);
-        final ArrayList<ModuleInfo> moduleList = new ArrayList<>();
-        for (ModuleInfo mi : modules) {
+        final List<ModuleInfo> moduleList = new ArrayList<>();
+        for (final ModuleInfo mi : modules) {
             if (!mi.getCodeNameBase().startsWith("org.netbeans")
                     && !mi.getCodeNameBase().startsWith("org.apache")
                     && !mi.getCodeNameBase().startsWith("org.openide")

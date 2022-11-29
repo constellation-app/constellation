@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,12 +61,8 @@ public class Sum {
         final OperatorRegistry registry = operators.getRegistry(NAME);
         ARITHMETIC_OPERATION.register(registry);
 
-        registry.register(StringReadable.class, StringReadable.class, StringReadable.class, (p1, p2) -> {
-            return () -> p1.readString() + p2.readString();
-        });
-        registry.register(StringConstant.class, StringConstant.class, StringConstant.class, (p1, p2) -> {
-            return () -> p1.readString() + p2.readString();
-        });
+        registry.register(StringReadable.class, StringReadable.class, StringReadable.class, (p1, p2) -> () -> p1.readString() + p2.readString());
+        registry.register(StringConstant.class, StringConstant.class, StringConstant.class, (p1, p2) -> () -> p1.readString() + p2.readString());
     }
 
     static {

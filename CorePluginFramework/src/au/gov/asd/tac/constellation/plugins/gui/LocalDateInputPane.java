@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,9 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.LocalDateParameterType.LocalDateParameterValue;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -80,16 +78,12 @@ public class LocalDateInputPane extends Pane {
         this.setManaged(parameter.isVisible());
         this.setVisible(parameter.isVisible());
 
-        field.setOnAction(event -> {
-            parameter.setLocalDateValue(field.getValue());
-        });
+        field.setOnAction(event -> parameter.setLocalDateValue(field.getValue()));
 
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> {
-            Platform.runLater(() -> {
+        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
-                        //                    final LocalDate param = LocalDate.parse(pluginParameter.getStringValue(), DATE_FORMATTER);
                         final LocalDate param = pluginParameter.getLocalDateValue();
                         if (!param.equals(field.getValue())) {
                             field.setValue(param);
@@ -108,14 +102,8 @@ public class LocalDateInputPane extends Pane {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            }));
 
         getChildren().add(field);
-        final String parameterId = parameter.getId();
-        final List<String> dateTimeRecentValues = RecentParameterValues.getRecentValues(parameterId);
-        if (dateTimeRecentValues != null) {
-            parameter.setStringValue(dateTimeRecentValues.get(dateTimeRecentValues.size() > 1 ? 1 : 0));
-        }
     }
 }

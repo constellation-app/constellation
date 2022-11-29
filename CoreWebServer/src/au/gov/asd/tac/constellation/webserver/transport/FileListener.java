@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,10 +36,10 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.awt.StatusDisplayer;
-import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -144,7 +144,7 @@ public class FileListener implements Runnable {
                         try {
                             Files.delete(p);
                         } catch (final IOException ex) {
-                            Exceptions.printStackTrace(ex);
+                            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                         }
 
                         if (json != null) {
@@ -176,7 +176,7 @@ public class FileListener implements Runnable {
                                     response(ex.getMessage());
                                 } catch (final Exception ex) {
                                     response(ex.getMessage());
-                                    Exceptions.printStackTrace(ex);
+                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                                 }
                             } else {
                                 response("Request must contain verb + endpoint + path");
@@ -196,7 +196,7 @@ public class FileListener implements Runnable {
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
             stop();
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         StatusDisplayer.getDefault().setStatusText(String.format("Stopped file listener in directory %s", restPath));
@@ -266,7 +266,7 @@ public class FileListener implements Runnable {
             if (in != null) {
                 try {
                     in.close();
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                 }
                 final boolean fqpIsDeleted = fqp.delete();
                 if (!fqpIsDeleted) {
@@ -314,7 +314,7 @@ public class FileListener implements Runnable {
         try (final OutputStream out = new FileOutputStream(p.toFile())) {
             mapper.writeValue(out, root);
         } catch (final IOException ex1) {
-            Exceptions.printStackTrace(ex1);
+            LOGGER.log(Level.SEVERE, ex1.getLocalizedMessage(), ex1);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLine
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.PlanesRenderable;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxModel;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionBoxRenderable;
+import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformModel;
+import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.SelectionFreeformRenderable;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -65,12 +67,14 @@ import java.util.stream.Stream;
 public class InteractiveGLVisualProcessor extends GLVisualProcessor implements VisualInteraction, VisualAnnotator {
 
     private final long selectionBoxUpdateId = VisualChangeBuilder.generateNewId();
+    private final long selectionFreeformUpdateId = VisualChangeBuilder.generateNewId();
     private final long newLineUpdateId = VisualChangeBuilder.generateNewId();
     private final long greyscaleUpdateId = VisualChangeBuilder.generateNewId();
     private final long hitTestId = VisualChangeBuilder.generateNewId();
     private final long hitTestPointId = VisualChangeBuilder.generateNewId();
     private final HitTester hitTester;
     private final SelectionBoxRenderable selectionBoxRenderable = new SelectionBoxRenderable();
+    private final SelectionFreeformRenderable selectionFreeformRenderable = new SelectionFreeformRenderable();
     private final NewLineRenderable newLineRenderable = new NewLineRenderable(this);
     private final PlanesRenderable planesRenderable = new PlanesRenderable();
     private final TransformableGraphDisplayer graphDisplayer = new TransformableGraphDisplayer();
@@ -94,6 +98,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         setGraphDisplayer(graphDisplayer);
         addRenderable(newLineRenderable);
         addRenderable(selectionBoxRenderable);
+        addRenderable(selectionFreeformRenderable);
         addRenderable(planesRenderable);
         hitTester = new HitTester(this);
         addRenderable(hitTester);
@@ -195,10 +200,17 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     }
 
     @Override
-    public VisualOperation setSelectionBoxModel(SelectionBoxModel model) {
+    public VisualOperation setSelectionBoxModel(final SelectionBoxModel model) {
         selectionBoxRenderable.queueModel(model);
         return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
                 .withId(selectionBoxUpdateId).build());
+    }
+
+    @Override
+    public VisualOperation setSelectionFreeformModel(final SelectionFreeformModel model) {
+        selectionFreeformRenderable.queueModel(model);
+        return () -> Arrays.asList(new VisualChangeBuilder(VisualProperty.EXTERNAL_CHANGE)
+                .withId(selectionFreeformUpdateId).build());
     }
 
     @Override
@@ -232,10 +244,10 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
 
     @Override
     public float convertTranslationToSpin(final Point from, final Point to) {
-        final float xDist = (getCanvas().getWidth() / 2.0f - to.x) / (getCanvas().getWidth() / 2.0f);
-        final float yDist = (getCanvas().getHeight() / 2.0f - to.y) / (getCanvas().getHeight() / 2.0f);
-        final float xDelta = (from.x - to.x) / 2.0f;
-        final float yDelta = (from.y - to.y) / 2.0f;
+        final float xDist = (getCanvas().getWidth() / 2.0F - to.x) / (getCanvas().getWidth() / 2.0F);
+        final float yDist = (getCanvas().getHeight() / 2.0F - to.y) / (getCanvas().getHeight() / 2.0F);
+        final float xDelta = (from.x - to.x) / 2.0F;
+        final float yDelta = (from.y - to.y) / 2.0F;
         return yDist * xDelta - xDist * yDelta;
     }
 
@@ -292,10 +304,10 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
         final float verticalScale = (float) (Math.tan(Math.toRadians(Camera.FIELD_OF_VIEW / 2.0)));
         final float horizontalScale = verticalScale * getCanvas().getWidth() / getCanvas().getHeight();
         final int[] viewport = getViewport();
-        final float leftScale = (((float) left / (float) viewport[2]) - 0.5f) * horizontalScale * 2;
-        final float rightScale = (((float) right / (float) viewport[2]) - 0.5f) * horizontalScale * 2;
-        final float topScale = (((float) (viewport[3] - top) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
-        final float bottomScale = (((float) (viewport[3] - bottom) / (float) viewport[3]) - 0.5f) * verticalScale * 2;
+        final float leftScale = (((float) left / (float) viewport[2]) - 0.5F) * horizontalScale * 2;
+        final float rightScale = (((float) right / (float) viewport[2]) - 0.5F) * horizontalScale * 2;
+        final float topScale = (((float) (viewport[3] - top) / (float) viewport[3]) - 0.5F) * verticalScale * 2;
+        final float bottomScale = (((float) (viewport[3] - bottom) / (float) viewport[3]) - 0.5F) * verticalScale * 2;
         return new float[]{leftScale, rightScale, topScale, bottomScale};
     }
 
@@ -308,7 +320,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
             return (float) ((Graphics2D) getCanvas().getGraphics()).getTransform().getScaleX();
         } catch (Exception ex) {
             LOGGER.log(Level.WARNING, "Null exception accessing interactionGraph", ex);
-            return 1.0f;
+            return 1.0F;
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class VertexMaxNeighbourDatetimeAttributeBin extends DateTimeBin {
         super(formatter);
     }
 
-    private static final ZonedDateTime MIN_DATE_TIME = TemporalFormatting.zonedDateTimeFromLong(Long.MIN_VALUE);
+    private static final ZonedDateTime MIN_DATE_TIME = TemporalFormatting.zonedDateTimeFromLong(Integer.MIN_VALUE);
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {

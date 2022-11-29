@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -82,29 +82,19 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
             controls.setFillWidth(true);
 
             drawNodesCheckBox = new CheckBox("Nodes");
-            drawNodesCheckBox.selectedProperty().addListener((v, o, n) -> {
-                update();
-            });
+            drawNodesCheckBox.selectedProperty().addListener((v, o, n) -> update());
 
             drawConnectionsCheckBox = new CheckBox("Connections");
-            drawConnectionsCheckBox.selectedProperty().addListener((v, o, n) -> {
-                update();
-            });
+            drawConnectionsCheckBox.selectedProperty().addListener((v, o, n) -> update());
 
             drawNodeLabelsCheckBox = new CheckBox("Node Labels");
-            drawNodeLabelsCheckBox.selectedProperty().addListener((v, o, n) -> {
-                update();
-            });
+            drawNodeLabelsCheckBox.selectedProperty().addListener((v, o, n) -> update());
 
             drawConnectionLabelsCheckBox = new CheckBox("Connection Labels");
-            drawConnectionLabelsCheckBox.selectedProperty().addListener((v, o, n) -> {
-                update();
-            });
+            drawConnectionLabelsCheckBox.selectedProperty().addListener((v, o, n) -> update());
 
             drawBlazesCheckBox = new CheckBox("Blazes");
-            drawBlazesCheckBox.selectedProperty().addListener((v, o, n) -> {
-                update();
-            });
+            drawBlazesCheckBox.selectedProperty().addListener((v, o, n) -> update());
 
             controls.getChildren().addAll(drawNodesCheckBox, drawConnectionsCheckBox, drawNodeLabelsCheckBox, drawConnectionLabelsCheckBox, drawBlazesCheckBox);
 

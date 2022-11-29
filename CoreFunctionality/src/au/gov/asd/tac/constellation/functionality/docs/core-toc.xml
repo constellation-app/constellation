@@ -2,13 +2,8 @@
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
     <tocitem text="Overview">
-        <tocitem text="Introduction to CONSTELLATION" target="au.gov.asd.tac.constellation.functionality.introduction"/>
-        <tocitem text="About the 3D Visual Window" target="au.gov.asd.tac.constellation.functionality.visual"/>
-    </tocitem>
-    <tocitem text="Tools" mergetype="javax.help.SortMerge">
-        <tocitem text="Compare Graph" target="au.gov.asd.tac.constellation.functionality.compare"/>
-    </tocitem>
-    <tocitem text="Preferences" mergetype="javax.help.SortMerge">
-        <tocitem text="Display" target="au.gov.asd.tac.constellation.functionality.display"/>
+        <tocitem text="About Constellation" target="au.gov.asd.tac.constellation.functionality.about"/>
+        <tocitem text="Getting Started" target="au.gov.asd.tac.constellation.functionality.gettingstarted"/>
+        <tocitem text="The Graph Window" target="au.gov.asd.tac.constellation.functionality.graphwindow"/>
     </tocitem>
 </toc>

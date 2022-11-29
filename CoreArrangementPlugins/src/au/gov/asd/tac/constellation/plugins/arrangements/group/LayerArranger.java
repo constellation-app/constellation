@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -103,7 +103,7 @@ public class LayerArranger implements Arranger {
 
         // Arrange each z around the mean of the existing z values.
         // Levels are a fraction of the width of the graph.
-        final float zmean = (zmin + zmax) / 2f;
+        final float zmean = (zmin + zmax) / 2F;
         final float width = Math.max(xmax - xmin, ymax - ymin);
 
         if (isFloat) {
@@ -117,12 +117,12 @@ public class LayerArranger implements Arranger {
 
                 final float value = wg.getFloatValue(attr, vxId);
                 final float norm = (value - minFloat) / (maxFloat - minFloat);
-                wg.setFloatValue(zAttr, vxId, (norm - 0.5f) * width + zmean);
+                wg.setFloatValue(zAttr, vxId, (norm - 0.5F) * width + zmean);
                 wg.setFloatValue(visAttr, vxId, norm);
             }
         } else {
             // Set the level height to be 5% of the graph width or 4 (twice the default node diameter), whichever is larger.
-            final float levelHeight = Math.max(width * 0.05f, 4);
+            final float levelHeight = Math.max(width * 0.05F, 4);
 
             // Figure out which value belongs in which level.
             final String[] valueArray = values.toArray(new String[values.size()]);
@@ -141,7 +141,7 @@ public class LayerArranger implements Arranger {
             }
 
             final int levelBase = (int) zmean - valueArray.length / 2;
-            final float visBase = 1f / (attrLevel.size() + 1);
+            final float visBase = 1F / (attrLevel.size() + 1);
 
             // Finally, set the positions.
             for (int position = 0; position < vxCount; position++) {
@@ -187,7 +187,7 @@ public class LayerArranger implements Arranger {
     }
 
     @Override
-    public void setMaintainMean(boolean b) {
+    public void setMaintainMean(final boolean b) {
         maintainMean = b;
     }
 }

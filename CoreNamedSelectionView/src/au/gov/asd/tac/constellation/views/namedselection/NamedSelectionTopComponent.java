@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,6 +119,8 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                 mnuOverwrite.setEnabled(!locked);
                 mnuRemove.setEnabled(!locked);
                 mnuRename.setEnabled(!locked);
+            } else {
+                // Do nothing
             }
         }
     };
@@ -131,12 +133,18 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     private final KeyListener keyListener = new KeyAdapter() {
         @Override
         public void keyPressed(final KeyEvent e) {
-            // On enter, retrieve the selection:
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                retrieveSelection();
-            } // On F2, rename the selection:
-            else if (e.getKeyCode() == KeyEvent.VK_F2) {
-                renameElement();
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_ENTER:
+                    // On enter, retrieve the selection:
+                    retrieveSelection();
+                    break;
+                case KeyEvent.VK_F2:
+                    // On F2, rename the selection:
+                    renameElement();
+                    break;
+                default:
+                    // Do nothing
+                    break;
             }
         }
     };
@@ -188,6 +196,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
      */
     @Override
     protected void handleComponentOpened() {
+        super.handleComponentOpened();
         // Ensure the manager is initialised and determine whether it is managing a graph:
         final boolean isEnabled = NamedSelectionManager.getDefault().isManagingActiveGraph();
         toggleUI(isEnabled);
@@ -958,7 +967,7 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
     private void notifyProtected(final String name) {
         final NamedSelectionProtectedPanel panel = new NamedSelectionProtectedPanel(name);
         final DialogDescriptor dd = new DialogDescriptor(panel, Bundle.ProtectedSelection());
-        dd.setOptions(new Object[]{"Ok"});
+        dd.setOptions(new Object[]{"OK"});
         DialogDisplayer.getDefault().notify(dd);
     }
 
@@ -1040,17 +1049,17 @@ public final class NamedSelectionTopComponent extends SwingTopComponent<JPanel> 
                 }
             }
 
-            if (isSelected) { // Change the colour if the named selection has been selected:
+            if (isSelected) { // Change the color if the named selection has been selected:
                 super.setBackground(list.getSelectionBackground());
                 super.setLockedStatusSelected(value.isLocked());
                 lblNamedSelection.setForeground(list.getSelectionForeground());
                 lblShortcutKey.setForeground(list.getSelectionForeground());
                 lblShortcutText.setForeground(list.getSelectionForeground());
-            } else { // Change colouring for non selected items:
+            } else { // Change coloring for non selected items:
                 super.setBackground(list.getBackground());
                 super.setLockedStatus(value.isLocked());
                 lblNamedSelection.setForeground(list.getForeground());
-                lblShortcutKey.setForeground(list.getSelectionBackground()); // Make the shortcut key a contrasting colour.
+                lblShortcutKey.setForeground(list.getSelectionBackground()); // Make the shortcut key a contrasting color.
                 lblShortcutText.setForeground(java.awt.SystemColor.controlDkShadow); // Less prominent than selection name.
             }
 

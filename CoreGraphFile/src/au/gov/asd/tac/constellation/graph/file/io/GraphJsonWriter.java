@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,13 @@ import au.gov.asd.tac.constellation.graph.attribute.io.GraphByteWriter;
 import au.gov.asd.tac.constellation.graph.schema.BareSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.versioning.UpdateProviderManager;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.IoProgress;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultCustomIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
+import au.gov.asd.tac.constellation.utilities.icon.IconData;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -40,10 +46,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Cancellable;
-import org.openide.util.Exceptions;
 
 /**
  * Write a graph in JSON format.
@@ -51,6 +60,8 @@ import org.openide.util.Exceptions;
  * @author algol
  */
 public final class GraphJsonWriter implements Cancellable {
+
+    private static final Logger LOGGER = Logger.getLogger(GraphJsonWriter.class.getName());
 
     /**
      * The current file format version.
@@ -66,12 +77,14 @@ public final class GraphJsonWriter implements Cancellable {
 
     private static final String DEFAULT_FIELD = "default";
 
+    private final List<String> customIconList = new ArrayList<>();
+
     /**
      * Construct a new GraphJsonWriter.
      */
     public GraphJsonWriter() {
         byteWriter = new GraphByteWriter();
-        for (AbstractGraphIOProvider agiop : AbstractGraphIOProvider.getProviders()) {
+        for (final AbstractGraphIOProvider agiop : AbstractGraphIOProvider.getProviders()) {
             graphIoProviders.put(agiop.getName(), agiop);
         }
     }
@@ -93,7 +106,7 @@ public final class GraphJsonWriter implements Cancellable {
      */
     public boolean writeGraphFile(final GraphReadMethods graph, final String path, final IoProgress progress) throws IOException {
         final File gf = new File(path);
-        try (FileOutputStream fos = new FileOutputStream(gf)) {
+        try (final FileOutputStream fos = new FileOutputStream(gf)) {
             writeGraphToStream(graph, fos, true, ELEMENT_TYPES_FILE_ORDER);
         }
 
@@ -104,7 +117,7 @@ public final class GraphJsonWriter implements Cancellable {
                     final String reference = entry.getKey();
                     final File fbin = entry.getValue();
 
-                    try (FileOutputStream binout = new FileOutputStream(new File(parentDir, reference))) {
+                    try (final FileOutputStream binout = new FileOutputStream(new File(parentDir, reference))) {
                         GraphByteWriter.copy(new FileInputStream(fbin), binout);
                     }
                 }
@@ -162,19 +175,40 @@ public final class GraphJsonWriter implements Cancellable {
     public boolean writeGraphToZip(final GraphReadMethods graph, final OutputStream out, final IoProgress progress, final List<GraphElementType> elementTypes) throws IOException {
         this.progress = progress;
 
-        try (ZipOutputStream zout = new ZipOutputStream(out)) {
+        try (final ZipOutputStream zout = new ZipOutputStream(out)) {
             final ZipEntry zentry = new ZipEntry("graph" + GraphFileConstants.FILE_EXTENSION);
             zout.putNextEntry(zentry);
             writeGraphToStream(graph, zout, false, elementTypes);
+            zout.closeEntry();
             try {
                 if (!isCancelled) {
-                    for (Map.Entry<String, File> entry : byteWriter.getFileMap().entrySet()) {
+                    for (final Map.Entry<String, File> entry : byteWriter.getFileMap().entrySet()) {
                         final String reference = entry.getKey();
                         final File f = entry.getValue();
-
                         final ZipEntry ze = new ZipEntry(reference);
                         zout.putNextEntry(ze);
                         GraphByteWriter.copy(new FileInputStream(f), zout);
+                        zout.closeEntry();
+                    }
+                    for (final String iconName : customIconList) {
+                        // get each of the custom icon images present in the graph being saved
+                        final ConstellationIcon icon = IconManager.getIcon(iconName);
+                        final IconData iconData = icon.getIconData();
+                        String filePath = "";
+                        if (iconData instanceof FileIconData) {
+                            filePath = ((FileIconData) iconData).getFilePath();
+                        }
+                        if (!filePath.isEmpty()) {
+                            // prepare to put the icon image into the star/zip file
+                            try (final FileInputStream is = new FileInputStream(filePath)) {
+                                final ZipEntry zent = new ZipEntry(DefaultCustomIconProvider.USER_ICON_DIR + "/" + icon.getExtendedName() + FileExtensionConstants.PNG);
+                                // create an entry in the zip archive to store the icon image
+                                zout.putNextEntry(zent);
+                                // copy the icon image from the constellation folder to the zip archive
+                                IOUtils.copy(is, zout);
+                            }
+                            zout.closeEntry();
+                        }
                     }
                 }
             } finally {
@@ -233,22 +267,22 @@ public final class GraphJsonWriter implements Cancellable {
 
             jg.writeStartObject();
 
-            //write version number
+            // write version number
             jg.writeNumberField("version", VERSION);
 
-            //write versioned items
+            // write versioned items
             jg.writeObjectFieldStart("versionedItems");
-            for (Entry<String, Integer> itemVersion : UpdateProviderManager.getLatestVersions().entrySet()) {
+            for (final Entry<String, Integer> itemVersion : UpdateProviderManager.getLatestVersions().entrySet()) {
                 jg.writeNumberField(itemVersion.getKey(), itemVersion.getValue());
             }
             jg.writeEndObject();
 
-            Schema schema = graph.getSchema();
+            final Schema schema = graph.getSchema();
 
-            //write schema
+            // write schema
             jg.writeStringField("schema", schema == null ? new BareSchemaFactory().getName() : schema.getFactory().getName());
 
-            //write global modCounts
+            // write global modCounts
             final long globalModCount = graph.getGlobalModificationCounter();
             final long structModCount = graph.getStructureModificationCounter();
             final long attrModCount = graph.getStructureModificationCounter();
@@ -256,15 +290,15 @@ public final class GraphJsonWriter implements Cancellable {
             jg.writeNumberField("structure_mod_count", structModCount);
             jg.writeNumberField("attribute_mod_count", attrModCount);
             jg.writeEndObject();
-            for (GraphElementType elementType : ELEMENT_TYPES_FILE_ORDER) {
+            for (final GraphElementType elementType : ELEMENT_TYPES_FILE_ORDER) {
                 if (!isCancelled) {
                     writeElements(jg, graph, elementType, verbose, elementTypes.contains(elementType));
                 }
             }
 
             jg.writeEndArray();
-        } catch (Exception ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final Exception ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } finally {
             jg.close();
 
@@ -303,7 +337,7 @@ public final class GraphJsonWriter implements Cancellable {
 
             ioProviders[attrId] = graphIoProviders.get(attr.getAttributeType());
             // Don't write non-META object types; we don't know what they are.
-            if (!attr.getAttributeType().equals("object") || elementType == GraphElementType.META) {
+            if (!"object".equals(attr.getAttributeType()) || elementType == GraphElementType.META) {
                 attrs.add(attr);
             }
         }
@@ -315,7 +349,7 @@ public final class GraphJsonWriter implements Cancellable {
         jg.writeArrayFieldStart("attrs");
 
         // Write the attributes.
-        for (Attribute attr : attrs) {
+        for (final Attribute attr : attrs) {
             jg.writeStartObject();
             jg.writeStringField("label", attr.getName());
             jg.writeStringField("type", attr.getAttributeType());
@@ -330,10 +364,12 @@ public final class GraphJsonWriter implements Cancellable {
             // actual attribute values inside the attribute descriptions.
             if (attr.getDefaultValue() != null && isNumeric(attr)) {
                 jg.writeNumberField(DEFAULT_FIELD, ((Number) attr.getDefaultValue()).doubleValue());
-            } else if (attr.getDefaultValue() != null && attr.getAttributeType().equals("boolean")) {
+            } else if (attr.getDefaultValue() != null && "boolean".equals(attr.getAttributeType())) {
                 jg.writeBooleanField(DEFAULT_FIELD, (Boolean) attr.getDefaultValue());
             } else if (attr.getDefaultValue() != null) {
                 jg.writeStringField(DEFAULT_FIELD, attr.getDefaultValue().toString());
+            } else {
+                // Do nothing
             }
 
             if (attr.getAttributeMerger() != null) {
@@ -370,9 +406,10 @@ public final class GraphJsonWriter implements Cancellable {
         jg.writeArrayFieldStart("data");
 
         if (!writeData) {
+            // Do nothing
         } else if (elementType == GraphElementType.GRAPH || elementType == GraphElementType.META) {
             jg.writeStartObject();
-            for (Attribute attr : attrs) {
+            for (final Attribute attr : attrs) {
                 final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
                 if (ioProvider != null) {
 
@@ -390,12 +427,22 @@ public final class GraphJsonWriter implements Cancellable {
 
             jg.writeEndObject();
         } else if (elementType == GraphElementType.VERTEX) {
+            customIconList.clear();
             for (int position = 0; position < graph.getVertexCount(); position++) {
                 final int vxId = graph.getVertex(position);
 
                 jg.writeStartObject();
                 jg.writeNumberField(GraphFileConstants.VX_ID, vxId);
-                for (Attribute attr : attrs) {
+                for (final Attribute attr : attrs) {
+                    if ("icon".equals(attr.getName())) {
+                        // get each of the custom icon images present in the graph being saved
+                        final String attrData = graph.getStringValue(attr.getId(), vxId);
+                        if (!customIconList.contains(attrData) && DefaultCustomIconProvider.containsIcon(attrData)) {
+                            // confirmed that the icon is part of the custom set
+                            // store it in a custom list (no duplication)
+                            customIconList.add(attrData);
+                        }
+                    }
                     final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
                     if (ioProvider != null) {
                         // Get the provider to write its data into an ObjectNode.
@@ -414,6 +461,8 @@ public final class GraphJsonWriter implements Cancellable {
                     return;
                 } else if (counter % REPORT_INTERVAL == 0 && progress != null) {
                     progress.progress(counter);
+                } else {
+                    // Do nothing
                 }
             }
         } else if (elementType == GraphElementType.TRANSACTION) {
@@ -425,7 +474,7 @@ public final class GraphJsonWriter implements Cancellable {
                 jg.writeNumberField(GraphFileConstants.SRC, graph.getTransactionSourceVertex(txId));
                 jg.writeNumberField(GraphFileConstants.DST, graph.getTransactionDestinationVertex(txId));
                 jg.writeBooleanField(GraphFileConstants.DIR, graph.getTransactionDirection(txId) != Graph.UNDIRECTED);
-                for (Attribute attr : attrs) {
+                for (final Attribute attr : attrs) {
                     final AbstractGraphIOProvider ioProvider = ioProviders[attr.getId()];
                     if (ioProvider != null) {
                         // Get the provider to write its data into an ObjectNode.
@@ -445,6 +494,8 @@ public final class GraphJsonWriter implements Cancellable {
                     progress.progress(counter);
                 }
             }
+        } else {
+            // Do nothing
         }
 
         jg.writeEndArray();
@@ -462,9 +513,7 @@ public final class GraphJsonWriter implements Cancellable {
      * @return true if the attribute is numeric, false otherwise.
      */
     private static boolean isNumeric(final Attribute attr) {
-        final String type = attr.getAttributeType();
-
-        return type.equals("integer") || type.equals("float");
+        return StringUtils.equalsAny(attr.getAttributeType(), new String[]{"integer", "float"});
     }
 
     @Override

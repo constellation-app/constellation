@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,27 +18,21 @@ package au.gov.asd.tac.constellation.views.scatterplot;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.AxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.CategoryAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.LogarithmicAxisBuilder;
 import au.gov.asd.tac.constellation.views.scatterplot.axis.NumberAxisBuilder;
-import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotConcept;
 import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotState;
+import au.gov.asd.tac.constellation.views.scatterplot.state.ScatterPlotStateWriter;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -52,7 +46,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.util.Callback;
-import org.netbeans.api.javahelp.Help;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
@@ -238,19 +231,10 @@ public class ScatterOptionsPane extends BorderPane {
             }
         });
 
-        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16));
+        final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         helpButton = new Button("", helpImage);
-        helpButton.setOnAction(
-                (ActionEvent event) -> {
-                    final Help help = Lookup.getDefault().lookup(Help.class);
-                    if (help != null) {
-                        final String helpId = this.getClass().getPackage().getName();
-                        if (help.isValidID(helpId, true)) {
-                            new HelpCtx(helpId).display();
-                        }
-                    }
-                }
-        );
+        helpButton.setOnAction(event
+                -> new HelpCtx(this.getClass().getPackage().getName()).display());
 
         this.optionsToolBar = new ToolBar();
         optionsToolBar.getItems().addAll(elementTypeComboBox, xAttributeComboBox, yAttributeComboBox, selectedOnlyButton, logarithmicAxisX, logarithmicAxisY, helpButton);
@@ -293,9 +277,7 @@ public class ScatterOptionsPane extends BorderPane {
                 readableGraph.release();
             }
 
-            FXCollections.sort(attributes, (attribute1, attribute2) -> {
-                return attribute1.getName().compareTo(attribute2.getName());
-            });
+            FXCollections.sort(attributes, (attribute1, attribute2) -> attribute1.getName().compareTo(attribute2.getName()));
 
             xAttributeComboBox.setItems(attributes);
             yAttributeComboBox.setItems(attributes);
@@ -340,35 +322,5 @@ public class ScatterOptionsPane extends BorderPane {
             optionsToolBar.setDisable(false);
             optionsPane.setDisable(false);
         });
-    }
-
-    /**
-     * Write the given ScatterPlotState to the active graph.
-     */
-    @PluginInfo(tags = {"LOW LEVEL"})
-    private static class ScatterPlotStateWriter extends SimpleEditPlugin {
-
-        private final ScatterPlotState scatterPlotState;
-
-        public ScatterPlotStateWriter(ScatterPlotState scatterPlotState) {
-            this.scatterPlotState = scatterPlotState;
-        }
-
-        @Override
-        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            final int scatterPlotStateAttribute = ScatterPlotConcept.MetaAttribute.SCATTER_PLOT_STATE.ensure(graph);
-            final ScatterPlotState state = new ScatterPlotState(scatterPlotState);
-            graph.setObjectValue(scatterPlotStateAttribute, 0, state);
-        }
-
-        @Override
-        protected boolean isSignificant() {
-            return true;
-        }
-
-        @Override
-        public String getName() {
-            return "Scatter Plot: Update State";
-        }
     }
 }

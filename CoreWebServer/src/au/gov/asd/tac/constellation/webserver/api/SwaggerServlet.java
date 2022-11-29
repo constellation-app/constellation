@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.webserver.api;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.webserver.WebServer.ConstellationHttpServlet;
 import au.gov.asd.tac.constellation.webserver.restapi.RestService;
 import au.gov.asd.tac.constellation.webserver.restapi.RestServiceRegistry;
@@ -85,7 +86,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
         try {
             final InputStream in = SwaggerServlet.class.getResourceAsStream(fileName);
 
-            if (fileName.equals("swagger/constellation.json")) {
+            if ("swagger/constellation.json".equals(fileName)) {
                 // The file constellation.json contains our swagger info.
                 // Dynamically add data and services.
                 final ObjectMapper mapper = new ObjectMapper();
@@ -119,7 +120,7 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     // Some parameters are passed in the body of the request.
                     // Since PluginParameter doesn't have an option to specify
                     // this, we'll improvise and look for "(body)" in the
-                    // parameter name. These will be dummy parameters;
+                    // parameter name. These will be dummy parameters,
                     // unused except for their swagger description.
                     final ArrayNode params = httpMethod.putArray("parameters");
                     rs.createParameters().getParameters().entrySet().forEach(entry -> {
@@ -128,16 +129,16 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         if (pp.getName().toLowerCase(Locale.ENGLISH).contains("(body)")) {
                             final ObjectNode requestBody = httpMethod.putObject("requestBody");
                             requestBody.put(DESCRIPTION, pp.getName().replace("(body)", " - ") + pp.getDescription());
-                            requestBody.put(REQUIRED, false); //TODO Remove hard-code in #633
+                            requestBody.put(REQUIRED, pp.isRequired());
                             final ObjectNode content = requestBody.putObject("content");
                             final ObjectNode mime = content.putObject(RestServiceUtilities.APPLICATION_JSON);
                             final ObjectNode schema = mime.putObject(SCHEMA);
-                            schema.put("type", OBJECT);
+                            schema.put("$ref", pp.getRequestBodyExampleJson());
                         } else {
                             final ObjectNode param = params.addObject();
                             param.put("name", pp.getId());
                             param.put("in", "query");
-                            param.put(REQUIRED, false); // TODO Hard-code this until PluginParameters grows a required field.
+                            param.put(REQUIRED, pp.isRequired());
                             param.put(DESCRIPTION, pp.getDescription());
                             final ObjectNode schema = param.putObject(SCHEMA);
                             schema.put("type", pp.getType().getId());
@@ -156,13 +157,11 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                     final ObjectNode responses = httpMethod.putObject("responses");
                     final ObjectNode success = responses.putObject("200");
                     success.put(DESCRIPTION, rs.getDescription());
-                    final ObjectNode content = success.putObject("content");
-                    final ObjectNode mime = content.putObject(rs.getMimeType());
-                    final ObjectNode schema = mime.putObject(SCHEMA);
-                    if (rs.getMimeType().equals(RestServiceUtilities.IMAGE_PNG)) {
-                        schema.put("type", "string");
-                        schema.put("format", "binary");
-                    } else if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
+
+                    if (rs.getMimeType().equals(RestServiceUtilities.APPLICATION_JSON)) {
+                        final ObjectNode content = success.putObject("content");
+                        final ObjectNode mime = content.putObject(rs.getMimeType());
+                        final ObjectNode schema = mime.putObject(SCHEMA);
                         // Make a wild guess about the response.
                         if (serviceKey.name.toLowerCase(Locale.ENGLISH).startsWith("list")) {
                             schema.put("type", "array");
@@ -171,13 +170,15 @@ public class SwaggerServlet extends ConstellationHttpServlet {
                         } else {
                             schema.put("type", OBJECT);
                         }
+                    } else {
+                        // Do nothing
                     }
                 });
 
                 final OutputStream out = response.getOutputStream();
                 mapper.writeValue(out, root);
             } else {
-                if (fileName.endsWith(".js")) {
+                if (fileName.endsWith(FileExtensionConstants.JAVASCRIPT)) {
                     response.setContentType("text/javascript");
                 }
 

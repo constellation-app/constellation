@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -152,7 +152,7 @@ public final class Frustum {
     public void setOrthographic(final float xMin, final float xMax, final float yMin, final float yMax, final float zMin, final float zMax) {
         init();
         projMatrix.makeOrthographicMatrix(xMin, xMax, yMin, yMax, zMin, zMax);
-        projMatrix.a[15] = 1.0f;
+        projMatrix.a[15] = 1.0F;
 
         // Fill in values for untransformed frustum corners
         // Near upper left.
@@ -241,13 +241,13 @@ public final class Frustum {
 
         // Construct the projection matrix.
         projMatrix.makeIdentity();
-        projMatrix.a[0] = (2.0f * near) / (xmax - xmin);
-        projMatrix.a[5] = (2.0f * near) / (ymax - ymin);
+        projMatrix.a[0] = (2.0F * near) / (xmax - xmin);
+        projMatrix.a[5] = (2.0F * near) / (ymax - ymin);
         projMatrix.a[8] = (xmax + xmin) / (xmax - xmin);
         projMatrix.a[9] = (ymax + ymin) / (ymax - ymin);
         projMatrix.a[10] = -((far + near) / (far - near));
         projMatrix.a[11] = -1;
-        projMatrix.a[14] = -((2.0f * far * near) / (far - near));
+        projMatrix.a[14] = -((2.0F * far * near) / (far - near));
         projMatrix.a[15] = 0;
 
         // Do the calculations for the far clipping plane.
@@ -341,17 +341,14 @@ public final class Frustum {
 
         // The Matrix
         // X Column
-//        memcpy(rotMat, vCross, sizeof(float)*3);
         rotMat.setRow(vCross, 0);
         rotMat.a[3] = 0;
 
         // Y Column
-//        memcpy(&rotMat[4], vUp, sizeof(float)*3);
         rotMat.setRow(vUp, 1);
         rotMat.a[7] = 0;
 
         // Z Column
-//        memcpy(&rotMat[8], vForward, sizeof(float)*3);
         rotMat.setRow(vForward, 2);
         rotMat.a[11] = 0;
 

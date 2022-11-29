@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
     private Object currentAnimationID;
     private Interval actualInterval = Interval.DECADE;
 
-    // the min and max datetime of the data provided. 
+    // the min and max datetime of the data provided.
     // if {@link #autoRanging} is true, these are used as lower and upper bounds.
     private ZonedDateTime minZonedDateTime;
     private ZonedDateTime maxZonedDateTime;
@@ -159,6 +159,8 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         } else if (list.size() > 1) {
             minZonedDateTime = list.get(0);
             maxZonedDateTime = list.get(list.size() - 1);
+        } else {
+            // Do nothing
         }
     }
 
@@ -337,9 +339,9 @@ public final class ZonedDateTimeAxis extends Axis<ZonedDateTime> {
         dateTimeList.add(upperBound);
 
         List<ZonedDateTime> evenDateTimeList = makeDateTimesEven(dateTimeList);
-        // if there are at least three datetimes, check if the gap between the lower datetime and the second datetime 
-        // is at least half the gap of the second and third datetime, then repeat for the upper bound. 
-        // if gaps between datetimes are too small, remove one of them (this can occur, e.g. if the lower bound is 25.12.2013 and years are shown; 
+        // if there are at least three datetimes, check if the gap between the lower datetime and the second datetime
+        // is at least half the gap of the second and third datetime, then repeat for the upper bound.
+        // if gaps between datetimes are too small, remove one of them (this can occur, e.g. if the lower bound is 25.12.2013 and years are shown;
         // then the next year shown would be 2014 (01.01.2014) which would be too narrow to 25.12.2013).
         if (evenDateTimeList.size() > 2) {
             final ZonedDateTime secondDateTime = evenDateTimeList.get(1);

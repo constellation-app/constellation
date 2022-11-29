@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,9 +83,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
             labels.clear();
             labelEntries.getChildren().clear();
             if (value != null) {
-                value.getLabels().forEach(label -> {
-                    new LabelEntry(labels, labelEntries, label.getAttributeName(), label.getColor(), label.getSize());
-                });
+                value.getLabels().forEach(label -> new LabelEntry(labels, labelEntries, label.getAttributeName(), label.getColor(), label.getSize()));
             }
         }
 
@@ -93,9 +91,8 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
         protected GraphLabels getValueFromControls() throws ControlsInvalidException {
             final List<GraphLabel> data = new ArrayList<>();
             try {
-                labels.forEach(label -> {
-                    data.add(new GraphLabel(label.attrCombo.getSelectionModel().getSelectedItem(), ConstellationColor.fromFXColor(label.color), Float.parseFloat(label.sizeText.getText())));
-                });
+                labels.forEach(label
+                        -> data.add(new GraphLabel(label.attrCombo.getSelectionModel().getSelectedItem(), ConstellationColor.fromFXColor(label.color), Float.parseFloat(label.sizeText.getText()))));
             } catch (final NumberFormatException ex) {
                 throw new ControlsInvalidException("Non numeric value entered for label size");
             }
@@ -119,7 +116,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
             final Label attrLabel = new Label("Attribute");
             attrLabel.setAlignment(Pos.CENTER);
             attrLabel.setPrefWidth(150);
-            final Label colorLabel = new Label("Colour");
+            final Label colorLabel = new Label("Color");
             colorLabel.setPrefWidth(40);
             colorLabel.setAlignment(Pos.CENTER);
             final Label sizeLabel = new Label("Size");
@@ -139,7 +136,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
             labelsScrollPane.setContent(labelPaneContent);
 
             addButton.setOnAction(e -> {
-                new LabelEntry(labels, labelEntries, attributeNames.isEmpty() ? "" : attributeNames.get(0), ConstellationColor.LIGHT_BLUE, 1);
+                new LabelEntry(labels, labelEntries, attributeNames.isEmpty() ? "" : attributeNames.get(0), ConstellationColor.WHITE, 1);
                 addButton.setDisable(labels.size() == GraphLabels.MAX_LABELS);
                 update();
             });
@@ -170,9 +167,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
                 attrCombo = new ComboBox<>(FXCollections.observableList(attributeNames));
                 attrCombo.setPrefWidth(150);
                 attrCombo.getSelectionModel().select(attributeName);
-                attrCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> {
-                    update();
-                });
+                attrCombo.getSelectionModel().selectedItemProperty().addListener((o, n, v) -> update());
 
                 colorRect = new Rectangle(20, 20);
                 this.color = color.getJavaFXColor();
@@ -182,9 +177,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
 
                 sizeText = new TextField(String.valueOf(size));
                 sizeText.setPrefWidth(50);
-                sizeText.textProperty().addListener((o, n, v) -> {
-                    update();
-                });
+                sizeText.textProperty().addListener((o, n, v) -> update());
 
                 final Button upButton = new Button("", new ImageView(UserInterfaceIconProvider.CHEVRON_UP.buildImage(16)));
                 upButton.setOnAction(e -> {
@@ -255,7 +248,7 @@ public class TransactionGraphLabelsEditorFactory extends AttributeValueEditorFac
                     final AttributeValueEditorFactory<ConstellationColor> editorFactory = new ColorEditorFactory();
 
                     final EditOperation setColorEditOperation = value -> {
-                        color = value == null ? ConstellationColor.LIGHT_BLUE.getJavaFXColor() : ((ConstellationColor) value).getJavaFXColor();
+                        color = value == null ? ConstellationColor.WHITE.getJavaFXColor() : ((ConstellationColor) value).getJavaFXColor();
                         colorRect.setFill(color);
                         update();
                     };

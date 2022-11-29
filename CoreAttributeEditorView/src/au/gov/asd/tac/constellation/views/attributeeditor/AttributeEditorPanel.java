@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,11 @@ import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConceptUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
@@ -81,7 +84,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -109,6 +111,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
@@ -127,7 +130,7 @@ import org.openide.util.NbPreferences;
 
 /**
  * The AttributeEditorPanel provides the bulk of the user interface for
- * CONSTELLATION's 'attribute editor' view.
+ * Constellation's 'attribute editor' view.
  *
  * @see AttributeEditorTopComponent
  * @author twinkle2_little
@@ -145,10 +148,10 @@ public class AttributeEditorPanel extends BorderPane {
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String NO_VALUE_TEXT = "<No Value>";
 
-    private static final String SCHEMA_ATTRIBUTE_COLOUR = "#333333";
-    private static final String PRIMARY_KEY_ATTRIBUTE_COLOUR = "#8a1d1d";
-    private static final String CUSTOM_ATTRIBUTE_COLOUR = "#1f4f8a";
-    private static final String HIDDEN_ATTRIBUTE_COLOUR = "#999999";
+    private static final String SCHEMA_ATTRIBUTE_COLOR = "#333333";
+    private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "#8a1d1d";
+    private static final String CUSTOM_ATTRIBUTE_COLOR = "#1f4f8a";
+    private static final String HIDDEN_ATTRIBUTE_COLOR = "#999999";
 
     private StackPane root;
     private ArrayList<VBox> valueTitledPaneContainers = new ArrayList<>();
@@ -161,7 +164,6 @@ public class AttributeEditorPanel extends BorderPane {
     private final AttributeEditorTopComponent topComponent;
     private final StringProperty[] headingTitleProperties = new StringProperty[3];
     private final Map<GraphElementType, List<String>> currentAttributeNames = new HashMap<>();
-    private int currentFontSize;
 
     private enum HeadingType {
         GRAPH, NODE, TRANSACTION;
@@ -171,19 +173,16 @@ public class AttributeEditorPanel extends BorderPane {
     private static final ListSelectionEditorFactory LIST_SELECTION_EDITOR_FACTORY = new ListSelectionEditorFactory();
     private static final TimeZoneEditorFactory UPDATE_TIME_ZONE_EDITOR_FACTORY = new TimeZoneEditorFactory();
 
-//    private static final HashMap<String, AbstractAttributeHandler> attributeHandlerMap = new HashMap<>();
     private final TooltipPane tooltipPane = new TooltipPane();
 
     private void addCopyHandlersToListView(final ListView<Object> newList, final AttributeData attribute) {
         final MenuItem copyItem = new MenuItem("Copy");
-        copyItem.setOnAction((ActionEvent event) -> {
-            copySelectedItems(newList, attribute.getDataType());
-        });
+        copyItem.setOnAction((final ActionEvent event) -> copySelectedItems(newList, attribute.getDataType()));
 
         copyItem.setAccelerator(new KeyCodeCombination(KeyCode.C, KeyCombination.CONTROL_DOWN));
         final ContextMenu ctxMenu = new ContextMenu(copyItem);
         newList.setContextMenu(ctxMenu);
-        newList.setOnKeyPressed((KeyEvent event) -> {
+        newList.setOnKeyPressed((final KeyEvent event) -> {
             if (event.isControlDown() && (event.getCode() == KeyCode.C)) {
                 copySelectedItems(newList, attribute.getDataType());
             }
@@ -195,7 +194,7 @@ public class AttributeEditorPanel extends BorderPane {
      *
      * @param parent The TopComponent that the AttributeEditor is in.
      */
-    public AttributeEditorPanel(AttributeEditorTopComponent parent) {
+    public AttributeEditorPanel(final AttributeEditorTopComponent parent) {
 
         initComponents();
         this.topComponent = parent;
@@ -217,8 +216,8 @@ public class AttributeEditorPanel extends BorderPane {
             for (int i = 0; i < valueTitledPaneContainers.size(); i++) {
                 headingTitleProperties[i] = new SimpleStringProperty();
                 headingTitleProperties[i].setValue(String.format(HEADING_TITLES[i], 0, ""));
-                HeadingType headingType = HeadingType.values()[i];
-                TitledPane headerPane = createHeaderTitledPane(headingType, headingTitleProperties[i], valueTitledPaneContainers.get(i));
+                final HeadingType headingType = HeadingType.values()[i];
+                final TitledPane headerPane = createHeaderTitledPane(headingType, headingTitleProperties[i], valueTitledPaneContainers.get(i));
                 headerPane.prefWidthProperty().bind(titledPaneHeadingsContainer.widthProperty());// check this
 
                 titledPaneHeadingsContainer.getChildren().add(headerPane);
@@ -228,7 +227,7 @@ public class AttributeEditorPanel extends BorderPane {
 
             completeWithSchemaItem.setStyle("-fx-fill: white;");
             completeWithSchemaItem.setSelected(false);
-            optionsMenu.getItems().addAll(createColoursMenu(), completeWithSchemaItem);
+            optionsMenu.getItems().addAll(createColorsMenu(), completeWithSchemaItem);
             optionsBar.getMenus().add(optionsMenu);
 
             borderPane.setTop(optionsBar);
@@ -240,16 +239,13 @@ public class AttributeEditorPanel extends BorderPane {
         });
 
         updateEditorPanel(null);
-        setFontSize();
     }
 
-    void rebuildColourMenu() {
-        Platform.runLater(() -> {
-            optionsMenu.getItems().set(0, createColoursMenu());
-        });
+    protected void rebuildColorMenu() {
+        Platform.runLater(() -> optionsMenu.getItems().set(0, createColorsMenu()));
     }
 
-    private MenuItem createColourMenuItem(final String itemName, final String correspondingPreference, final Color color) {
+    private MenuItem createColorMenuItem(final String itemName, final String correspondingPreference, final Color color) {
         final HBox schemaMenuNode = new HBox(CELL_ITEM_SPACING);
         final MenuItem schemaMenuItem = new MenuItem(null, schemaMenuNode);
         final Rectangle schemaMenuRect = new Rectangle(20, 20);
@@ -259,9 +255,7 @@ public class AttributeEditorPanel extends BorderPane {
         schemaMenuRect.setFill(color);
         schemaMenuRect.setStroke(Color.LIGHTGREY);
         schemaMenuItem.setOnAction(e -> {
-            final EditOperation editOperation = value -> {
-                prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
-            };
+            final EditOperation editOperation = value -> prefs.put(correspondingPreference, ((ConstellationColor) value).getHtmlColor());
             @SuppressWarnings("unchecked") // return type of createEditor will actually be AbstractEditor<ConstellationColor>
             final AbstractEditor<ConstellationColor> editor = ((AbstractEditorFactory<ConstellationColor>) AttributeValueEditorFactory.getEditFactory(ColorAttributeDescription.ATTRIBUTE_NAME)).createEditor(editOperation, String.format("for %s", itemName), ConstellationColor.fromFXColor(color));
             final AttributeEditorDialog dialog = new AttributeEditorDialog(false, editor);
@@ -270,34 +264,34 @@ public class AttributeEditorPanel extends BorderPane {
         return schemaMenuItem;
     }
 
-    private Menu createColoursMenu() {
-        final Menu coloursMenu = new Menu("Attribute Editor Colours");
+    private Menu createColorsMenu() {
+        final Menu colorsMenu = new Menu("Attribute Editor Colors");
 
-        final Color schemaColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR)).getJavaFXColor();
-        coloursMenu.getItems().add(createColourMenuItem("Schema Attributes", AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, schemaColour));
+        final Color schemaColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOR, SCHEMA_ATTRIBUTE_COLOR)).getJavaFXColor();
+        colorsMenu.getItems().add(createColorMenuItem("Schema Attributes", AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOR, schemaColor));
 
-        final Color primaryKeyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR)).getJavaFXColor();
-        coloursMenu.getItems().add(createColourMenuItem("Primary Key Attributes", AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, primaryKeyColour));
+        final Color primaryKeyColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOR, PRIMARY_KEY_ATTRIBUTE_COLOR)).getJavaFXColor();
+        colorsMenu.getItems().add(createColorMenuItem("Primary Key Attributes", AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOR, primaryKeyColor));
 
-        final Color customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR)).getJavaFXColor();
-        coloursMenu.getItems().add(createColourMenuItem("Custom Attributes (Not in the Schema)", AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, customColour));
+        final Color customColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOR, CUSTOM_ATTRIBUTE_COLOR)).getJavaFXColor();
+        colorsMenu.getItems().add(createColorMenuItem("Custom Attributes (Not in the Schema)", AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOR, customColor));
 
-        final Color hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR)).getJavaFXColor();
-        coloursMenu.getItems().add(createColourMenuItem("Hidden Attributes", AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, hiddenColour));
+        final Color hiddenColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR)).getJavaFXColor();
+        colorsMenu.getItems().add(createColorMenuItem("Hidden Attributes", AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, hiddenColor));
 
         final HBox restoreMenuNode = new HBox(5);
         final MenuItem restoreMenuItem = new MenuItem(null, restoreMenuNode);
-        final Text restoreMenuText = new Text("Restore Default Colours");
+        final Text restoreMenuText = new Text("Restore Default Colors");
         restoreMenuText.setStyle("-fx-fill: white; -fx-font-smoothing-type:lcd;");
         restoreMenuNode.getChildren().add(restoreMenuText);
         restoreMenuItem.setOnAction(e -> {
-            prefs.put(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR);
-            prefs.put(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR);
-            prefs.put(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR);
-            prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR);
+            prefs.put(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOR, SCHEMA_ATTRIBUTE_COLOR);
+            prefs.put(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOR, PRIMARY_KEY_ATTRIBUTE_COLOR);
+            prefs.put(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOR, CUSTOM_ATTRIBUTE_COLOR);
+            prefs.put(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR);
         });
-        coloursMenu.getItems().add(restoreMenuItem);
-        return coloursMenu;
+        colorsMenu.getItems().add(restoreMenuItem);
+        return colorsMenu;
     }
 
     private TitledPane createHeaderTitledPane(final HeadingType headingType, final StringProperty title, final VBox container) {
@@ -308,14 +302,13 @@ public class AttributeEditorPanel extends BorderPane {
         optionsButtons.setPadding(new Insets(2));
         final Text heading = new Text();
         heading.textProperty().bind(title);
-        heading.setStyle("-fx-font-family:\"Arial\"; -fx-font-weight:bold;");
+        heading.setStyle("-fx-font-weight:bold;");
         heading.setFill(Color.web("#e0e0e0"));
         final ToggleButton showAllToggle = new ToggleButton("Show all");
         showAllToggle.setAlignment(Pos.CENTER);
         showAllToggle.setTextAlignment(TextAlignment.CENTER);
-        showAllToggle.setStyle("-fx-font-size: 12; -fx-background-insets: 0, 0; -fx-padding: 0");
+        showAllToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
         showAllToggle.setPrefSize(60, 12);
-        showAllToggle.setMaxSize(60, 12);
         showAllToggle.setPadding(new Insets(5));
         showAllToggle.setTooltip(new Tooltip("Show hidden attributes"));
         final String key;
@@ -338,21 +331,19 @@ public class AttributeEditorPanel extends BorderPane {
                 elementType = null;
                 break;
         }
-        showAllToggle.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            prefs.putBoolean(key, newValue);
-        });
+        showAllToggle.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+                -> prefs.putBoolean(key, newValue));
         showAllToggle.setSelected(prefs.getBoolean(key, false));
 
         final Button addMenu = new Button(null, new ImageView(UserInterfaceIconProvider.ADD.buildImage(16)));
         addMenu.setAlignment(Pos.CENTER);
         addMenu.setTextAlignment(TextAlignment.CENTER);
-        addMenu.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-font-size: 12; -fx-background-insets: 0, 0; -fx-padding: 0");
+        addMenu.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-background-insets: 0, 0; -fx-padding: 0");
         addMenu.setPrefSize(18, 12);
-        addMenu.setMaxSize(18, 12);
         addMenu.setPadding(new Insets(5));
         addMenu.setTooltip(new Tooltip("Add an attribute"));
         final ContextMenu addContextMenu = new ContextMenu();
-        addMenu.setOnMouseClicked((MouseEvent event) -> {
+        addMenu.setOnMouseClicked((final MouseEvent event) -> {
             event.consume();
             addContextMenu.getItems().clear();
             if (elementType != null) {
@@ -391,9 +382,8 @@ public class AttributeEditorPanel extends BorderPane {
                         submenu.setStyle("-fx-text-fill: white;");
                         for (final SchemaAttribute attribute : entry.getValue()) {
                             final MenuItem item = new MenuItem(attribute.getName());
-                            item.setOnAction((ActionEvent event1) -> {
-                                PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph);
-                            });
+                            item.setOnAction((ActionEvent event1)
+                                    -> PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph));
                             submenu.getItems().add(item);
                         }
                         addContextMenu.getItems().add(submenu);
@@ -403,9 +393,8 @@ public class AttributeEditorPanel extends BorderPane {
                         final Menu otherSubmenu = new Menu("Other");
                         for (final SchemaAttribute attribute : otherAttributes) {
                             final MenuItem item = new MenuItem(attribute.getName());
-                            item.setOnAction((ActionEvent event1) -> {
-                                PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph);
-                            });
+                            item.setOnAction((final ActionEvent event1)
+                                    -> PluginExecution.withPlugin(new AddAttributePlugin(attribute)).executeLater(currentGraph));
                             otherSubmenu.getItems().add(item);
                         }
                         addContextMenu.getItems().add(otherSubmenu);
@@ -413,9 +402,7 @@ public class AttributeEditorPanel extends BorderPane {
 
                     final MenuItem customAttribute = new MenuItem("Custom");
                     customAttribute.setStyle("-fx-text-fill: white;");
-                    customAttribute.setOnAction(ev -> {
-                        createAttributeAction(elementType);
-                    });
+                    customAttribute.setOnAction(ev -> createAttributeAction(elementType));
                     addContextMenu.getItems().add(customAttribute);
                 }
             }
@@ -425,11 +412,11 @@ public class AttributeEditorPanel extends BorderPane {
         final Button editKeyButton = new Button(null, new ImageView(UserInterfaceIconProvider.KEY.buildImage(16)));
         editKeyButton.setAlignment(Pos.CENTER);
         editKeyButton.setTextAlignment(TextAlignment.CENTER);
-        editKeyButton.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-font-size: 12; -fx-background-insets: 0, 0; -fx-padding: 0");
+        editKeyButton.setStyle("-fx-background-color: #666666; -fx-background-radius: 2; -fx-background-insets: 0, 0; -fx-padding: 0");
         editKeyButton.setPrefSize(18, 12);
-        editKeyButton.setMaxSize(18, 12);
         editKeyButton.setPadding(new Insets(5));
         editKeyButton.setTooltip(new Tooltip("Edit primary key"));
+
         if (elementType != GraphElementType.GRAPH) {
             editKeyButton.setOnMouseClicked((MouseEvent event) -> {
                 event.consume();
@@ -441,23 +428,17 @@ public class AttributeEditorPanel extends BorderPane {
 
         optionsButtons.maxHeightProperty().bind(addMenu.heightProperty());
         optionsButtons.getChildren().addAll(showAllToggle, addMenu, editKeyButton);
-//        optionsButtons.getChildren().addAll(showAllcb, addMenu, editKeyButton);
         headerGraphic.setLeft(heading);
         headerGraphic.setRight(optionsButtons);
         headerGraphic.prefWidthProperty().bind(scrollPane.widthProperty().subtract(45));
+
         BorderPane.setMargin(heading, new Insets(2, 0, 0, 0));
         BorderPane.setMargin(optionsButtons, Insets.EMPTY);
+
         result.setGraphic(headerGraphic);
         result.setId("heading");
         result.setExpanded(false);
         return result;
-    }
-
-    public void setFontSize() {
-        currentFontSize = FontUtilities.getOutputFontSize();
-        Platform.runLater(() -> {
-            root.setStyle(String.format("-fx-font-size:%dpx;", currentFontSize));
-        });
     }
 
     private class AddAttributePlugin extends SimpleEditPlugin {
@@ -499,12 +480,8 @@ public class AttributeEditorPanel extends BorderPane {
         final AttributeTitledPane attributePane;
         if (!attribute.isKey()) {
             attributePane = new AttributeTitledPane(
-                    e -> {
-                        deleteAttributeAction(attribute.getElementType(), attributeTitle);
-                    },
-                    e -> {
-                        modifyAttributeAction(attribute);
-                    }
+                    e -> deleteAttributeAction(attribute.getElementType(), attributeTitle),
+                    e -> modifyAttributeAction(attribute)
             );
         } else {
             attributePane = new AttributeTitledPane();
@@ -513,39 +490,37 @@ public class AttributeEditorPanel extends BorderPane {
         gridPane.prefWidthProperty().bind(attributePane.widthProperty());
 
         if (attribute.getDataType().equals(ZonedDateTimeAttributeDescription.ATTRIBUTE_NAME)) {
-            attributePane.addMenuItem("Update time-zone of selection", e -> {
-                updateTimeZoneAction(attribute);
-            });
+            attributePane.addMenuItem("Update time-zone of selection", e -> updateTimeZoneAction(attribute));
         }
 
         final boolean multiValue = values != null && values.length > 1;
 
         if (attribute.isKey()) {
-            final String colour;
+            final String color;
             if (hidden) {
-                final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR));
-                final ConstellationColor keyColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR));
-                colour = (ConstellationColor.getColorValue(hiddenColour.getRed() * 0.5f + keyColour.getRed() * 0.5f, hiddenColour.getGreen() * 0.5f + keyColour.getGreen() * 0.5f, hiddenColour.getBlue() * 0.5f + keyColour.getBlue() * 0.5f, 1f)).getHtmlColor();
+                final ConstellationColor hiddenColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR));
+                final ConstellationColor keyColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOR, PRIMARY_KEY_ATTRIBUTE_COLOR));
+                color = (ConstellationColor.getColorValue(hiddenColor.getRed() * 0.5F + keyColor.getRed() * 0.5F, hiddenColor.getGreen() * 0.5F + keyColor.getGreen() * 0.5F, hiddenColor.getBlue() * 0.5F + keyColor.getBlue() * 0.5F, 1F)).getHtmlColor();
             } else {
-                colour = prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOUR, PRIMARY_KEY_ATTRIBUTE_COLOUR);
+                color = prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOR, PRIMARY_KEY_ATTRIBUTE_COLOR);
             }
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + colour + SeparatorConstants.SEMICOLON);
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + color + SeparatorConstants.SEMICOLON);
         } else if (!attribute.isSchema()) {
-            final String colour;
+            final String color;
             if (hidden) {
-                final ConstellationColor hiddenColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR));
-                final ConstellationColor customColour = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR));
-                colour = (ConstellationColor.getColorValue(hiddenColour.getRed() * 0.5f + customColour.getRed() * 0.5f, hiddenColour.getGreen() * 0.5f + customColour.getGreen() * 0.5f, hiddenColour.getBlue() * 0.5f + customColour.getBlue() * 0.5f, 1f)).getHtmlColor();
+                final ConstellationColor hiddenColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR));
+                final ConstellationColor customColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOR, CUSTOM_ATTRIBUTE_COLOR));
+                color = (ConstellationColor.getColorValue(hiddenColor.getRed() * 0.5F + customColor.getRed() * 0.5F, hiddenColor.getGreen() * 0.5F + customColor.getGreen() * 0.5F, hiddenColor.getBlue() * 0.5F + customColor.getBlue() * 0.5F, 1F)).getHtmlColor();
             } else {
-                colour = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOUR, CUSTOM_ATTRIBUTE_COLOUR);
+                color = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOR, CUSTOM_ATTRIBUTE_COLOR);
             }
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + colour + SeparatorConstants.SEMICOLON);
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + color + SeparatorConstants.SEMICOLON);
         } else if (hidden) {
-            final String hiddenColour = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOUR, HIDDEN_ATTRIBUTE_COLOUR);
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + hiddenColour + SeparatorConstants.SEMICOLON);
+            final String hiddenColor = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR);
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + hiddenColor + SeparatorConstants.SEMICOLON);
         } else {
-            final String schemaColour = prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOUR, SCHEMA_ATTRIBUTE_COLOUR);
-            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + schemaColour + SeparatorConstants.SEMICOLON);
+            final String schemaColor = prefs.get(AttributePreferenceKey.SCHEMA_ATTRIBUTE_COLOR, SCHEMA_ATTRIBUTE_COLOR);
+            attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + schemaColor + SeparatorConstants.SEMICOLON);
         }
 
         if (!multiValue) {
@@ -558,10 +533,10 @@ public class AttributeEditorPanel extends BorderPane {
         attributeTitleText.getStyleClass().add("attributeName");
         attributeTitleText.setTextAlignment(TextAlignment.RIGHT);
 
-        //Value TextField
+        // Value TextField
         final Node attributeValueNode = createAttributeValueNode(values, attribute, attributePane, multiValue);
 
-        //Edit Button
+        // Edit Button
         final Button editButton = new Button("Edit");
         editButton.setAlignment(Pos.CENTER);
         editButton.setMinWidth(buttonSize);
@@ -569,7 +544,13 @@ public class AttributeEditorPanel extends BorderPane {
         if (editorFactory == null || values == null) {
             editButton.setDisable(true);
         } else {
-            editButton.setOnMouseClicked(getEditValueHandler(attribute, editorFactory, values));
+            editButton.setOnMouseClicked(event -> getEditValueHandler(attribute, editorFactory, values));
+
+            attributeValueNode.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
+                    getEditValueHandler(attribute, editorFactory, values);
+                }
+            });
         }
 
         // If we don't do anything here, right-clicking on the Node will produce two context menus:
@@ -579,17 +560,17 @@ public class AttributeEditorPanel extends BorderPane {
         attributeValueNode.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
         editButton.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
 
-        //Title
+        // Title
         final ColumnConstraints titleConstraint = new ColumnConstraints(titleWidth);
         titleConstraint.setHalignment(HPos.RIGHT);
 
-        //Value
+        // Value
         final ColumnConstraints valueConstraint = new ColumnConstraints();
         valueConstraint.setHalignment(HPos.CENTER);
         valueConstraint.setHgrow(Priority.ALWAYS);
         valueConstraint.setFillWidth(true);
 
-        //EditButton
+        // EditButton
         final ColumnConstraints editConstraint = new ColumnConstraints(buttonSize);
         editConstraint.setHalignment(HPos.RIGHT);
 
@@ -602,7 +583,7 @@ public class AttributeEditorPanel extends BorderPane {
         attributePane.setGraphic(gridPane);
         attributePane.setTooltip(new Tooltip(attribute.getAttributeDescription()));
 
-        attributePane.setExpanded(false);
+        attributePane.setExpanded(attribute.isKeepExpanded());
 
         attributePane.setOnDragDetected(event -> {
             final Dragboard db = attributePane.startDragAndDrop(TransferMode.COPY);
@@ -616,7 +597,6 @@ public class AttributeEditorPanel extends BorderPane {
         });
 
         return attributePane;
-
     }
 
     public void updateEditorPanel(final AttributeState state) {
@@ -686,6 +666,10 @@ public class AttributeEditorPanel extends BorderPane {
             }
         });
         attributePane.setContent(dataAndMoreButtonBox);
+
+        // attributePane TitledPane EXPAND and COLLAPSE events
+        attributePane.expandedProperty().addListener((observable, wasExpanded, isNowExpanded)
+                -> attribute.setKeepExpanded(isNowExpanded));
     }
 
     private Button createLoadMoreButton(final VBox parent, final AttributeData attribute) {
@@ -717,6 +701,8 @@ public class AttributeEditorPanel extends BorderPane {
                 event.consume();
             } else if (event.isShortcutDown() && (event.getCode() == KeyCode.A)) {
                 event.consume();
+            } else {
+                // Do nothing
             }
         });
         return newList;
@@ -733,7 +719,7 @@ public class AttributeEditorPanel extends BorderPane {
                 buffer.append(interaction.getDisplayText(item));
             }
             return item;
-        }).forEach(_item -> buffer.append(SeparatorConstants.NEWLINE));
+        }).forEach(itm -> buffer.append(SeparatorConstants.NEWLINE));
 
         ClipboardUtilities.copyToClipboard(buffer.toString());
     }
@@ -749,7 +735,7 @@ public class AttributeEditorPanel extends BorderPane {
      */
     private void populateContentContainer(final AttributeState state, final GraphElementType type, final double longestTitleWidth) {
         final int elementTypeIndex;
-        //make into enum?
+
         switch (type) {
             case GRAPH:
                 elementTypeIndex = 0;
@@ -765,7 +751,7 @@ public class AttributeEditorPanel extends BorderPane {
                 break;
         }
         if (elementTypeIndex > -1 && state != null) {
-            final ArrayList<AttributeData> attributeDataList = state.getAttributeNames().get(type);
+            final List<AttributeData> attributeDataList = state.getAttributeNames().get(type);
             if (attributeDataList != null) {
                 final VBox header = valueTitledPaneContainers.get(elementTypeIndex);
                 final String hiddenAttributes = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, "");
@@ -802,33 +788,18 @@ public class AttributeEditorPanel extends BorderPane {
     private void clearHeaderTitledPanes() {
         for (final VBox box : valueTitledPaneContainers) {
             box.getChildren().clear();
-
         }
-
     }
 
     private void deleteAttributeAction(final GraphElementType elementType, final String attributeName) {
-        final SimpleEditPlugin deleteAttributePlugin = new SimpleEditPlugin() {
-
-            @Override
-            public String getName() {
-                return "Attribute Editor: Remove Attribute";
-            }
-
-            @Override
-            public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-                graph.removeAttribute(graph.getAttribute(elementType, attributeName));
-            }
-        };
-        PluginExecution.withPlugin(deleteAttributePlugin).executeLater(GraphManager.getDefault().getActiveGraph());
+        PluginExecution.withPlugin(new DeleteAttributePlugin(elementType, attributeName)).executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
     private void createAttributeAction(final GraphElementType elementType) {
         final EditOperation editOperation = new CreateAttributeEditOperation();
         final List<String> extantAttributeNames = currentAttributeNames.get(elementType);
-        final ValueValidator<AttributePrototype> validator = v -> {
-            return extantAttributeNames.contains(v.getAttributeName()) ? "An attribute with that name already exists." : null;
-        };
+        final ValueValidator<AttributePrototype> validator = v
+                -> extantAttributeNames.contains(v.getAttributeName()) ? "An attribute with that name already exists." : null;
         final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Create %s attribute", elementType.getShortLabel()), AttributePrototype.getBlankPrototype(elementType));
 
         ((AttributeEditor) editor).setGraphElementType(elementType);
@@ -840,9 +811,8 @@ public class AttributeEditorPanel extends BorderPane {
     private void modifyAttributeAction(final AttributeData attr) {
         final EditOperation editOperation = new ModifyAttributeEditOperation(attr);
         final List<String> extantAttributeNames = currentAttributeNames.get(attr.getElementType());
-        final ValueValidator<AttributePrototype> validator = v -> {
-            return extantAttributeNames.contains(v.getAttributeName()) && !attr.getAttributeName().equals(v.getAttributeName()) ? "An attribute with that name already exists." : null;
-        };
+        final ValueValidator<AttributePrototype> validator = v
+                -> extantAttributeNames.contains(v.getAttributeName()) && !attr.getAttributeName().equals(v.getAttributeName()) ? "An attribute with that name already exists." : null;
         final AbstractEditor<AttributePrototype> editor = ATTRIBUTE_EDITOR_FACTORY.createEditor(editOperation, validator, String.format("Modify %s attribute %s", attr.getElementType().getShortLabel(), attr.getAttributeName()), attr);
 
         ((AttributeEditor) editor).setGraphElementType(attr.getElementType());
@@ -885,30 +855,29 @@ public class AttributeEditorPanel extends BorderPane {
         }
     }
 
-    private EventHandler<MouseEvent> getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
-        return e -> {
-            final Object value = values.length == 1 ? values[0] : null;
-            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attributeData.getDataType());
-            final String editType = editorFactory.getAttributeType();
-            final AttributeValueTranslator fromTranslator = interaction.fromEditTranslator(editType);
-            final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
-            final ValueValidator<?> validator = interaction.fromEditValidator(editType);
-            final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
-            final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
-            final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
-            final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
-            dialog.showDialog();
-        };
+    private void getEditValueHandler(final AttributeData attributeData, final AttributeValueEditorFactory editorFactory, final Object[] values) {
+        final Object value = values.length == 1 ? values[0] : null;
+        final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attributeData.getDataType());
+        final String editType = editorFactory.getAttributeType();
+        final AttributeValueTranslator fromTranslator = interaction.fromEditTranslator(editType);
+        final AttributeValueTranslator toTranslator = interaction.toEditTranslator(editType);
+        final ValueValidator<?> validator = interaction.fromEditValidator(editType);
+        final EditOperation editOperation = new AttributeValueEditOperation(attributeData, completeWithSchemaItem.isSelected(), fromTranslator);
+        final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
+        final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
+        final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
+        dialog.showDialog();
     }
 
     private double getTextWidth(final String text) {
         // we need to manually scale the width using the font size against what we guess is the default, even though this seems unecessary.
+        final int currentFontSize = FontUtilities.getApplicationFontSize();
         final Text t = new Text(text);
         t.getStyleClass().add("attributeName");
         return t.getLayoutBounds().getWidth() * (currentFontSize / 10.0);
     }
 
-    private double calcLongestTitle(final ArrayList<AttributeData> attributeData) {
+    private double calcLongestTitle(final List<AttributeData> attributeData) {
         double maxWidth = 0;
         double currWidth = 0;
         if (attributeData != null) {
@@ -989,6 +958,14 @@ public class AttributeEditorPanel extends BorderPane {
         gridPane.add(attributeValueText, displayNodes.size(), 0);
         gridPane.getColumnConstraints().add(displayTextConstraint);
 
+        final AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
+        if (editorFactory != null && values != null) {
+            attributeValueText.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
+                    getEditValueHandler(attribute, editorFactory, values);
+                }
+            });
+        }
         return gridPane;
     }
 
@@ -1001,7 +978,7 @@ public class AttributeEditorPanel extends BorderPane {
         }
 
         @Override
-        public void updateItem(Object item, boolean empty) {
+        public void updateItem(final Object item, final boolean empty) {
             super.updateItem(item, empty);
 
             final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction.getInteraction(attrDataType);
@@ -1033,8 +1010,31 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     private Text createAttributeTitleLabel(final String attributeTitle) {
-        //Title
         return new Text(attributeTitle + SeparatorConstants.COLON);
-//        attributeTitleText.setStyle(String.format("-fx-font-size: %dpt;", fontSize));
+    }
+
+    /**
+     * Delete the attribute on the element type.
+     */
+    @PluginInfo(pluginType = PluginType.DELETE, tags = {PluginTags.DELETE})
+    public static class DeleteAttributePlugin extends SimpleEditPlugin {
+
+        final GraphElementType elementType;
+        final String attributeName;
+
+        public DeleteAttributePlugin(final GraphElementType elementType, final String attributeName) {
+            this.elementType = elementType;
+            this.attributeName = attributeName;
+        }
+
+        @Override
+        public String getName() {
+            return "Attribute Editor: Remove Attribute";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            graph.removeAttribute(graph.getAttribute(elementType, attributeName));
+        }
     }
 }

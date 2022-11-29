@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ import java.util.Arrays;
  */
 public class ElementSet {
 
-    private static long[] EMPTY_ARRAY = new long[0];
+    private static long[] emptyArray = new long[0];
 
-    private long[] elements = EMPTY_ARRAY;
+    private long[] elements = emptyArray;
     private final GraphElementType type;
 
     public ElementSet(final GraphElementType type) {

@@ -1,0 +1,21 @@
+[
+    {
+        "ColumnOrder": [
+            "ABC",
+            "DEF"
+        ],
+        "SortByColumn": {
+            "DEF": "DESCENDING"
+        }
+    },
+    {
+        "ColumnOrder": [
+            "ABC",
+            "DEF"
+        ],
+        "SortByColumn": {
+            "DEF": "ASCENDING"
+        },
+        "PageSize": 5
+    }
+]

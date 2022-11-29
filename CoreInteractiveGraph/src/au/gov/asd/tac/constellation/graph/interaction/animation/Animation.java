@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,16 +50,16 @@ import java.util.List;
  */
 public abstract class Animation {
 
-    private static Animation RUNNING_ANIMATION = null;
+    private static Animation runningAnimation = null;
 
     /**
      * If there is a currently running animation, stop it.
      */
     public static final synchronized void stopAnimation() {
-        if (RUNNING_ANIMATION != null) {
-            RUNNING_ANIMATION.stop();
+        if (runningAnimation != null) {
+            runningAnimation.stop();
         }
-        RUNNING_ANIMATION = null;
+        runningAnimation = null;
     }
 
     /**
@@ -82,7 +82,7 @@ public abstract class Animation {
     public static final synchronized void startAnimation(final Animation animation, final Graph graph) {
         stopAnimation();
         animation.run(graph);
-        RUNNING_ANIMATION = animation;
+        runningAnimation = animation;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ public class ConversationMessage {
      * @param sender The graph ID of the vertex that is the sender of this
      * message.
      * @param conversationSide a ConversationSide constant indicating which
-     * 'side' of a conversation this message should appear on
+     * 'side' of a conversation this message should appear on.
      */
     public ConversationMessage(int transaction, int sender, ConversationSide conversationSide) {
         this.transaction = transaction;
@@ -95,7 +95,7 @@ public class ConversationMessage {
     }
 
     /**
-     * Get the graph ID of the transaction that this message is associated with
+     * Get the graph ID of the transaction that this message is associated with.
      *
      * @return The ID of the transaction.
      */
@@ -104,7 +104,7 @@ public class ConversationMessage {
     }
 
     /**
-     * Get the graph ID of the vertex that is the sender of this message
+     * Get the graph ID of the vertex that is the sender of this message.
      *
      * @return The ID of the sender.
      */
@@ -168,7 +168,7 @@ public class ConversationMessage {
      * Get the color of this message. This is used to color the text when this
      * message is rendered.
      *
-     * @return A Color for this message
+     * @return A Color for this message.
      */
     public Color getColor() {
         return color;
@@ -178,7 +178,7 @@ public class ConversationMessage {
      * Set the color of this message. This is used to color the text when this
      * message is rendered.
      *
-     * @param color A Color for this message
+     * @param color A Color for this message.
      */
     public void setColor(Color color) {
         this.color = color;
@@ -188,7 +188,7 @@ public class ConversationMessage {
      * Get the background for this message. This is used as the background for
      * the bubble in which this message will be rendered.
      *
-     * @return A Background for this message
+     * @return A Background for this message.
      */
     public Background getBackground() {
         return background;
@@ -198,7 +198,7 @@ public class ConversationMessage {
      * Set the background for this message. This is used as the background for
      * the bubble in which this message will be rendered.
      *
-     * @param background A Background for this message
+     * @param background A Background for this message.
      */
     public void setBackground(Background background) {
         this.background = background;
@@ -208,7 +208,7 @@ public class ConversationMessage {
      * Get the background color for this message. This is used to color the
      * background of the bubble in which this message will be rendered.
      *
-     * @return A Color for the background of this message
+     * @return A Color for the background of this message.
      */
     public String getBackgroundColor() {
         return backgroundColor;
@@ -218,7 +218,7 @@ public class ConversationMessage {
      * Set the background color for this message. This is used to color the
      * background of the bubble in which this message will be rendered.
      *
-     * @param backgroundColor A Color for the background of this message
+     * @param backgroundColor A Color for the background of this message.
      */
     public void setBackgroundColor(String backgroundColor) {
         this.backgroundColor = backgroundColor;
@@ -293,5 +293,4 @@ public class ConversationMessage {
         }
         return Objects.equals(this.backgroundColor, other.backgroundColor);
     }
-
 }

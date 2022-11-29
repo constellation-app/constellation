@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
-import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters.PluginParametersNode;
@@ -226,7 +225,7 @@ public final class PluginParametersPane extends GridPane {
                 separator.setStyle("-fx-background-color:#444444;");
                 HBox separatorBox = new HBox(separator);
                 HBox.setHgrow(separator, Priority.ALWAYS);
-                return separatorBox;
+                return new VBox(new Label("test"), separatorBox);
             }
             final PluginParametersNode child = node.getChildren().get(currentChild);
             return child.getFormatter().getParamPane(child);
@@ -446,12 +445,12 @@ public final class PluginParametersPane extends GridPane {
         private void addElements(final PluginParametersNode node, final Region... elements) {
             final HBox singleParam = new HBox();
             singleParam.setSpacing(10);
-            for (Region element : elements) {
+            for (final Region element : elements) {
                 if (element != null) {
                     singleParam.getChildren().addAll(element);
                 }
             }
-            ColumnConstraints paramConstraints = new ColumnConstraints();
+            final ColumnConstraints paramConstraints = new ColumnConstraints();
             if (!SHOULD_NOT_EXPAND.contains(node.getParameter().getType().getId())) {
                 singleParam.setMinWidth(USE_PREF_SIZE);
             }
@@ -477,7 +476,7 @@ public final class PluginParametersPane extends GridPane {
                 HBox.setMargin(firstButton, new Insets(0, PADDING, 0, 0));
             }
 
-            for (PluginParametersNode child : node.getChildren().subList(1, node.getChildren().size() - 1)) {
+            for (final PluginParametersNode child : node.getChildren().subList(1, node.getChildren().size() - 1)) {
                 final LabelDescriptionBox label = child.getFormatter().getParamLabel(child);
                 label.setStyle("-fx-label-padding: " + -PADDING);
                 final Pane paramPane = child.getFormatter().getParamPane(child);
@@ -499,7 +498,6 @@ public final class PluginParametersPane extends GridPane {
             final Pane lastPane = lastChild.getFormatter().getParamPane(lastChild);
             addElements(lastChild, lastLabel, lastPane);
             HBox.setHgrow(lastPane, shouldHGrow ? Priority.ALWAYS : Priority.NEVER);
-            paramGroupGridPane.setPrefWidth(0);
             return paramGroupGridPane;
         }
 
@@ -549,7 +547,7 @@ public final class PluginParametersPane extends GridPane {
             paramGroupPane.setMinHeight(0);
             GridPane.setHalignment(paramGroupPane, HPos.LEFT);
             paramGroupPane.setPadding(Insets.EMPTY);
-
+            
             int row = 0;
             final DoubleProperty descriptionWidth = new SimpleDoubleProperty();
             DoubleProperty maxLabelWidth = new SimpleDoubleProperty();
@@ -558,7 +556,7 @@ public final class PluginParametersPane extends GridPane {
                 while (child.getFormatter().nextElement(child)) {
                     final RowConstraints rowConstraints = new RowConstraints();
                     rowConstraints.setVgrow(Priority.NEVER);
-                    rowConstraints.setFillHeight(true);
+                    rowConstraints.setFillHeight(false);
                     paramGroupPane.getRowConstraints().addAll(rowConstraints);
 
                     final LabelDescriptionBox label = child.getFormatter().getParamLabel(child);
@@ -597,7 +595,6 @@ public final class PluginParametersPane extends GridPane {
             }
 
             descriptionWidth.bind(Bindings.max(50, maxLabelWidth));
-
             return paramGroupPane;
         }
 
@@ -654,7 +651,7 @@ public final class PluginParametersPane extends GridPane {
             // Set the formatter for the root to buildId a parameter pane
             root.setFormatter(new ParameterPaneLayout());
             // Set the formatter appropriately for all leaf nodes
-            for (PluginParametersNode node : root.getLeaves()) {
+            for (final PluginParametersNode node : root.getLeaves()) {
                 if (excludedParameters != null && excludedParameters.contains(node.name)) {
                     node.setFormatter(new NullLayout());
                 } else {
@@ -693,6 +690,7 @@ public final class PluginParametersPane extends GridPane {
             this.label = label;
             this.description = description;
             getChildren().addAll(label, description);
+            this.setPadding(new Insets(5));
         }
 
         public void bindDescriptionToLabel() {
@@ -703,8 +701,8 @@ public final class PluginParametersPane extends GridPane {
             description.maxWidthProperty().bind(property);
         }
 
-        public DoubleProperty updateBindingWithLabelWidth(DoubleProperty property) {
-            DoubleProperty newBinding = new SimpleDoubleProperty();
+        public DoubleProperty updateBindingWithLabelWidth(final DoubleProperty property) {
+            final DoubleProperty newBinding = new SimpleDoubleProperty();
             newBinding.bind(Bindings.max(property, label.widthProperty()));
             return newBinding;
         }
@@ -730,24 +728,30 @@ public final class PluginParametersPane extends GridPane {
         private int validParams = 0;
         private final PluginParametersPaneListener top;
 
-        public PluginParameterPaneConstructor(PluginParametersPaneListener top) {
+        public PluginParameterPaneConstructor(final PluginParametersPaneListener top) {
             this.top = top;
         }
 
         @Override
-        public Button buildParameterHelp(PluginParameter<?> parameter) {
+        public Button buildParameterHelp(final PluginParameter<?> parameter) {
             return buildHelpButton(parameter.getHelpID(), String.format("parameter '%s'", parameter.getName()));
         }
 
         @Override
         public final LabelDescriptionBox buildParameterLabel(final PluginParameter<?> parameter) {
-            final Label label = new Label(parameter.getName());
+            final StringBuilder labelBuilder = new StringBuilder(parameter.getName());
+            if (parameter.isRequired()) {
+                labelBuilder.append("*");
+            }
+            final Label label = new Label(labelBuilder.toString());
             final Label description = new Label(parameter.getDescription());
-            label.setMinWidth(35);
+            label.setMinWidth(145);
             label.setWrapText(true);
-            description.setStyle("-fx-font-size: 80%;");
-            description.getStyleClass().add("description-label");
+            label.setStyle("-fx-font-weight: bold"); // TODO: temporary fix until the main and dynamic style sheets are loaded
+            description.setId("smallInfoText"); // TODO: this is not being used because the style sheets are not loaded
+            description.getStyleClass().add("description-label"); // TODO: this is not being used because the style sheets are not loaded
             description.setWrapText(true);
+            description.setStyle("-fx-font-size: smaller"); // TODO: temporary fix until the main and dynamic style sheets are loaded
             final LabelDescriptionBox labels = new LabelDescriptionBox(label, description);
             labels.setVisible(parameter.isVisible());
             labels.setManaged(parameter.isVisible());
@@ -763,7 +767,7 @@ public final class PluginParametersPane extends GridPane {
         }
 
         public void linkParameterLabelToTop(final PluginParameter<?> parameter, final LabelDescriptionBox ldb) {
-            parameter.addListener((PluginParameter<?> parameter1, ParameterChange change) -> {
+            parameter.addListener((parameter1, change) -> {
                 switch (change) {
                     case NAME:
                         ldb.label.setText(parameter1.getName());
@@ -776,14 +780,13 @@ public final class PluginParametersPane extends GridPane {
                         ldb.setVisible(parameter.isVisible());
                         break;
                     default:
-                        // do nothing
                         break;
                 }
             });
         }
 
         public void linkParameterWidgetToTop(final PluginParameter<?> parameter) {
-            parameter.addListener((PluginParameter<?> parameter1, ParameterChange change) -> {
+            parameter.addListener((parameter1, change) -> {
                 switch (change) {
                     case ERROR:
                         if (parameter1.getError() == null) {
@@ -797,7 +800,6 @@ public final class PluginParametersPane extends GridPane {
                         Platform.runLater(this::parameterHasChanged);
                         break;
                     default:
-                        // do nothing
                         break;
                 }
             });
@@ -852,7 +854,7 @@ public final class PluginParametersPane extends GridPane {
                 default:
                     throw new IllegalArgumentException("Unsupported parameter type ID: " + id);
             }
-            
+
             linkParameterWidgetToTop(parameter);
             return pane;
         }

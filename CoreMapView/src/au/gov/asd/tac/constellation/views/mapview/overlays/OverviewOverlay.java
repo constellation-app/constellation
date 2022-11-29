@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,22 +49,22 @@ public class OverviewOverlay extends MapOverlay {
 
     @Override
     public float getX() {
-        return renderer.getComponent().getX() + renderer.getComponent().getWidth() - width - 10f;
+        return renderer.getComponent().getX() + renderer.getComponent().getWidth() - width - 10F;
     }
 
     @Override
     public float getY() {
-        return renderer.getComponent().getY() + renderer.getComponent().getHeight() - height - 10f;
+        return renderer.getComponent().getY() + renderer.getComponent().getHeight() - height - 10F;
     }
 
     @Override
     public float getWidth() {
-        return super.getWidth() * 1.4f;
+        return super.getWidth() * 1.4F;
     }
 
     @Override
     public float getHeight() {
-        return super.getHeight() * 3.5f;
+        return super.getHeight() * 3.5F;
     }
 
     @Override
@@ -72,13 +72,13 @@ public class OverviewOverlay extends MapOverlay {
             final UnfoldingMap map, final EventDispatcher eventDispatcher) {
         super.initialise(renderer, map, eventDispatcher);
         this.overviewMap = new UnfoldingMap(renderer,
-                x + padding, y + padding, width - (padding * 2), height - (padding * 2));
+                x + PADDING, y + PADDING, width - (PADDING * 2), height - (PADDING * 2));
     }
 
     @Override
     public void overlay() {
         renderer.noStroke();
-        renderer.fill(backgroundColor);
+        renderer.fill(BACKGROUND_COLOR);
         renderer.rect(x, y, width, height);
 
         if (!overviewMap.mapDisplay.getMapProvider().equals(map.mapDisplay.getMapProvider())) {
@@ -142,10 +142,10 @@ public class OverviewOverlay extends MapOverlay {
 
     class Viewport {
 
-        private float x = 0f;
-        private float y = 0f;
-        private float width = 0f;
-        private float height = 0f;
+        private float x = 0F;
+        private float y = 0F;
+        private float width = 0F;
+        private float height = 0F;
         private boolean isDragging = false;
 
         public boolean isOver(final float checkX, final float checkY) {
@@ -162,17 +162,27 @@ public class OverviewOverlay extends MapOverlay {
         public void draw() {
             renderer.noFill();
             renderer.strokeWeight(2);
-            renderer.stroke(highlightColor);
+            renderer.stroke(HIGHLIGHT_COLOR);
 
-            float viewportX = Math.min(Math.max(x, getX()), getX() + getWidth());
-            float viewportWidth = x < getX() ? Math.max(width - (getX() - x), 0)
-                    : x + width > getX() + getWidth() ? Math.max(width - ((x + width) - (getX() + getWidth())), 0)
-                            : width;
+            final float viewportX = Math.min(Math.max(x, getX()), getX() + getWidth());
+            final float viewportY = Math.min(Math.max(y, getY()), getY() + getHeight());
 
-            float viewportY = Math.min(Math.max(y, getY()), getY() + getHeight());
-            float viewportHeight = y < getY() ? Math.max(height - (getY() - y), 0)
-                    : y + height > getY() + getHeight() ? Math.max(height - ((y + height) - (getY() + getHeight())), 0)
-                            : height;
+            final float viewportWidth;
+            final float viewportHeight;
+            if (x < getX()) {
+                viewportWidth = Math.max(width - (getX() - x), 0);
+            } else if (x + width > getX() + getWidth()) {
+                viewportWidth = Math.max(width - ((x + width) - (getX() + getWidth())), 0);
+            } else {
+                viewportWidth = width;
+            }
+            if (y < getY()) {
+                viewportHeight = Math.max(height - (getY() - y), 0);
+            } else if (y + height > getY() + getHeight()) {
+                viewportHeight = Math.max(height - ((y + height) - (getY() + getHeight())), 0);
+            } else {
+                viewportHeight = height;
+            }
 
             renderer.rect(viewportX, viewportY, viewportWidth, viewportHeight);
         }
@@ -180,9 +190,14 @@ public class OverviewOverlay extends MapOverlay {
         public void update(final int zoom) {
             final Location newLocation = overviewMap.mapDisplay.getLocation(
                     viewport.x + viewport.width / 2, viewport.y + viewport.height / 2);
-            final int newZoomLevel = zoom > 0 ? map.getZoomLevel() - 1
-                    : zoom < 0 ? map.getZoomLevel() + 1
-                            : map.getZoomLevel();
+            final int newZoomLevel;
+            if (zoom > 0) {
+                newZoomLevel = map.getZoomLevel() - 1;
+            } else if (zoom < 0) {
+                newZoomLevel = map.getZoomLevel() + 1;
+            } else {
+                newZoomLevel = map.getZoomLevel();
+            }
             map.setTweening(false);
             map.zoomAndPanTo(newZoomLevel, newLocation);
             map.setTweening(true);

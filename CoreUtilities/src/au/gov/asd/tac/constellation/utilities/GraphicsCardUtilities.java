@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,6 +38,10 @@ public class GraphicsCardUtilities {
     private static String graphicsDriver = null;
     private static String dxDiagInfo = null;
     private static Throwable error = null;
+    
+    private GraphicsCardUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
 
     public static String getGraphicsCard() {
         loadGraphicsCardInfo();
@@ -56,6 +61,15 @@ public class GraphicsCardUtilities {
     public static Throwable getError() {
         loadGraphicsCardInfo();
         return error;
+    }
+
+    public static void clear() {
+        loaded = false;
+        graphicsCard = null;
+        graphicsDriver = null;
+        dxDiagInfo = null;
+        error = null;
+        LOGGER.log(Level.INFO, "Cleared Graphics Card Info");
     }
 
     private static void loadGraphicsCardInfo() {
@@ -111,8 +125,10 @@ public class GraphicsCardUtilities {
                     }
 
                     dxDiagInfo = builder.toString();
-                } catch (Exception e) {
+                } catch (final IOException e) {
                     error = e;
+                    // Restore interrupted state S2142
+                    Thread.currentThread().interrupt();
                 }
             }
         }

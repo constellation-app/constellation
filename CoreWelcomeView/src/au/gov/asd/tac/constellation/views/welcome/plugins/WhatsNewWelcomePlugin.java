@@ -15,10 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.welcome.plugins;
 
-import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent;
-import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.views.welcome.WelcomePluginInterface;
+import au.gov.asd.tac.constellation.views.welcome.WelcomeTopComponent;
+import au.gov.asd.tac.constellation.views.whatsnew.WhatsNewTopComponent;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -26,7 +27,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javax.swing.SwingUtilities;
 import org.openide.util.NbBundle;
@@ -39,17 +39,16 @@ import org.openide.windows.WindowManager;
  *
  * @author Delphinus8821
  */
-
-@PluginInfo(tags = {"WELCOME"})
+@PluginInfo(tags = {PluginTags.WELCOME})
 @NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
 public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
-    
+
     public static final String WHATS_NEW = "resources/welcome_new.png";
     final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
     final Button whatsNewBtn = new Button();
-        
+
     /**
-     * Get a unique reference that is used to identify the plugin 
+     * Get a unique reference that is used to identify the plugin
      *
      * @return a unique reference
      */
@@ -57,10 +56,10 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     public String getName() {
         return "What's New Welcome";
     }
-    
+
     /**
-     * This method describes what action should be taken when the 
-     * link is clicked on the Welcome Page
+     * This method describes what action should be taken when the link is
+     * clicked on the Welcome Page
      *
      */
     @Override
@@ -78,7 +77,7 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     }
 
     /**
-     * Determines whether this analytic appear on the Welcome Page 
+     * Determines whether this analytic appear on the Welcome Page
      *
      * @return true is this analytic should be visible, false otherwise.
      */
@@ -86,22 +85,21 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     public boolean isVisible() {
         return true;
     }
-    
-     /**
+
+    /**
      * Creates the button object to represent this plugin
-     * 
+     *
      * @return the button object
      */
     @Override
-    public Button getButton(){
+    public Button getButton() {
         newView.setFitHeight(25);
         newView.setFitWidth(25);
         final Text title = new Text("What's New?");
         title.setFill(Color.WHITE);
-        title.setFont(new Font("Arial", 18));
         final Text subtitle = new Text("Features in the latest version");
+        subtitle.setId("smallInfoText");
         subtitle.setFill(Color.WHITE);
-        subtitle.setFont(new Font("Arial", 10));
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(newView, layoutVBox);

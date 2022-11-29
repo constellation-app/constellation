@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.graph.file;
 
-import au.gov.asd.tac.constellation.graph.file.nebula.NebulaDataObject;
 import au.gov.asd.tac.constellation.graph.file.open.OpenFileDialogFilter;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -39,6 +39,6 @@ public class GraphOpenFileDialogFilter extends OpenFileDialogFilter {
 
     @Override
     public String[] getSuffixes() {
-        return new String[]{GraphDataObject.FILE_EXTENSION, NebulaDataObject.FILE_EXTENSION};
+        return new String[]{FileExtensionConstants.STAR, FileExtensionConstants.NEBULA};
     }
 }

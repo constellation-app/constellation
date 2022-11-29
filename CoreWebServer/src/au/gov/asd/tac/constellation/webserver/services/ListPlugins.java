@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class ListPlugins extends RestService {
 
         final PluginParameter<BooleanParameterType.BooleanParameterValue> aliasParam = BooleanParameterType.build(ALIAS_PARAMETER_ID);
         aliasParam.setName("Show aliases");
-        aliasParam.setDescription("Show the plugin aliases if true, the full name otherwise.");
+        aliasParam.setDescription("Show the plugin aliases if true, the full name otherwise (default false).");
         aliasParam.setObjectValue(true);
         parameters.addParameter(aliasParam);
 
@@ -75,9 +75,7 @@ public class ListPlugins extends RestService {
         PluginRegistry.getPluginClassNames()
                 .stream()
                 .map(name -> alias ? PluginRegistry.getAlias(name) : name)
-                .forEachOrdered(name -> {
-                    root.add(name);
-                });
+                .forEachOrdered(name -> root.add(name));
 
         mapper.writeValue(out, root);
     }

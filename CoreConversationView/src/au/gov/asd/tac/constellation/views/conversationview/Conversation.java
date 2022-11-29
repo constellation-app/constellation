@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,6 +38,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 
@@ -76,6 +78,8 @@ import javafx.collections.ObservableList;
  * @author antares
  */
 public class Conversation {
+    
+    private static final Logger LOGGER = Logger.getLogger(Conversation.class.getName());
 
     private static final Comparator<ConversationMessage> TEMPORAL_COMPARATOR = (ConversationMessage o1, ConversationMessage o2) -> o1.getDatetime().compareTo(o2.getDatetime());
 
@@ -110,8 +114,8 @@ public class Conversation {
     private Set<ConversationContributionProvider> contributingContributionProviders = new TreeSet<>();
     private List<String> possibleSenderAttributes = new ArrayList<>();
 
-    // thread names
-    private static final String CONVERSATION_VIEW_UPDATE_COLOUR_THREAD_NAME = "Conversation View: Update Colour Stage";
+    // Thread names.
+    private static final String CONVERSATION_VIEW_UPDATE_COLOR_THREAD_NAME = "Conversation View: Update Color Stage";
     private static final String CONVERSATION_VIEW_UPDATE_CONTRIBUTIONS_THREAD_NAME = "Conversation View: Update Contributions";
     private static final String CONVERSATION_VIEW_UPDATE_DATETIME_THREAD_NAME = "Conversation View: Update Datetime";
     private static final String CONVERSATION_VIEW_UPDATE_MESSAGE_THREAD_NAME = "Conversation View: Update Message in Conversation";
@@ -122,11 +126,11 @@ public class Conversation {
      * Create a new Conversation.
      */
     public Conversation() {
-        conversationExistanceUpdater.dependOn(graphUpdateController.getNewGraphUpdateComponent());  
-        
+        conversationExistanceUpdater.dependOn(graphUpdateController.getNewGraphUpdateComponent());
+
         conversationStateUpdater.dependOn(conversationExistanceUpdater);
         conversationStateUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE));
-        
+
         possibleSenderAttributeUpdater.dependOn(conversationExistanceUpdater);
         possibleSenderAttributeUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
 
@@ -135,11 +139,11 @@ public class Conversation {
 
         contributionProviderUpdater.dependOn(conversationExistanceUpdater);
         contributionProviderUpdater.dependOn(graphUpdateController.getAttributeUpdateComponent());
-        
+
         messageUpdater.dependOn(conversationExistanceUpdater);
         messageUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(VisualConcept.VertexAttribute.SELECTED));
         messageUpdater.dependOn(graphUpdateController.createAttributeUpdateComponent(VisualConcept.TransactionAttribute.SELECTED));
-        
+
         contributionUpdater.dependOn(messageUpdater);
 
         datetimeUpdater.dependOn(contributionUpdater);
@@ -199,8 +203,6 @@ public class Conversation {
 
         @Override
         protected boolean update(GraphReadMethods graph) {
-
-            
             ConversationState newConversationState;
             if (graph != null) {
                 final int conversationStateAttribute = ConversationViewConcept.MetaAttribute.CONVERSATION_VIEW_STATE.get(graph);
@@ -317,7 +319,8 @@ public class Conversation {
                 thread.start();
 
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Messages update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
@@ -364,7 +367,8 @@ public class Conversation {
                 thread.start();
 
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Message contributions update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
@@ -401,7 +405,7 @@ public class Conversation {
                                     }
                                 }
 
-                                // we only want to add messages that contain any content in them
+                                // We only want to add messages that contain any content in them.
                                 if (message.getDatetime() != null && thereIsTextContribution) {
                                     temporalMessages.add(message);
                                 }
@@ -416,7 +420,8 @@ public class Conversation {
                 thread.start();
 
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Message datetimes update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
@@ -454,7 +459,8 @@ public class Conversation {
                 thread.start();
 
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Message senders update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
@@ -486,7 +492,7 @@ public class Conversation {
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 
-                final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_COLOUR_THREAD_NAME) {
+                final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_COLOR_THREAD_NAME) {
                     @Override
                     public void run() {
                         colorProvider.updateMessageColors(graph, senderMessages);
@@ -496,14 +502,14 @@ public class Conversation {
                 thread.start();
 
                 latch.await();
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, "Message colors update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }
 
             return true;
         }
-
     };
 
     /**
@@ -594,7 +600,7 @@ public class Conversation {
 
     /**
      * Set the resulting list of messages (post filtering and formatting) that
-     * will be observed by the GUI
+     * will be observed by the GUI.
      *
      * @param resultMessageList An ObservableList of messages.
      */
@@ -621,5 +627,15 @@ public class Conversation {
 
         updateController.registerChange(contributorUpdater);
         updateController.update();
+    }
+
+    /**
+     * Returns the current list of visible messages for the current
+     * conversation.
+     *
+     * @return List of current visible messages.
+     */
+    protected final List<ConversationMessage> getVisibleMessages() {
+        return visibleMessages;
     }
 }

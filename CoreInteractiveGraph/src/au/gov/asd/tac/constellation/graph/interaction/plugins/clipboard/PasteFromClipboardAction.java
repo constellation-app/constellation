@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,18 @@ import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegi
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.openide.util.NbBundle;
 
 /**
+ * Paste to clipboard action.
  *
  * @author algol
  */
@@ -47,20 +51,27 @@ public final class PasteFromClipboardAction extends AbstractAction {
     @Override
     public void actionPerformed(final ActionEvent e) {
         final Graph graph = context.getGraph();
-        PluginExecution.withPlugin(new SimpleEditPlugin() {
-            @Override
-            protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                boolean isEmpty = wg.getVertexCount() == 0;
-                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.PASTE).executeNow(wg);
-                if (isEmpty) {
-                    PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(wg);
-                }
-            }
+        PluginExecution.withPlugin(new PasteFromClipboard()).executeLater(graph);
+    }
 
-            @Override
-            public String getName() {
-                return "Paste";
+    /**
+     * Plugin to paste from the clipboard.
+     */
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
+    private final class PasteFromClipboard extends SimpleEditPlugin {
+
+        @Override
+        public String getName() {
+            return "Paste From Clipboard Action: Paste From Clipboard";
+        }
+
+        @Override
+        protected void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            boolean isEmpty = wg.getVertexCount() == 0;
+            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.PASTE).executeNow(wg);
+            if (isEmpty) {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(wg);
             }
-        }).executeLater(graph);
+        }
     }
 }

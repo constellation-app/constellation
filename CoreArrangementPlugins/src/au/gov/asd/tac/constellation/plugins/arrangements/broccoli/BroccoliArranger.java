@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ public final class BroccoliArranger implements Arranger {
             final int size = deg1.size();
 
             final int sideLen = (int) Math.floor(Math.sqrt(size - 1.0)) + 1;
-            final float sideLen1 = sideLen - 1f;
+            final float sideLen1 = sideLen - 1F;
 
             // Generate a suitable up vector for lookAt.
             final Vector3f tmpv = new Vector3f();
@@ -169,7 +169,7 @@ public final class BroccoliArranger implements Arranger {
     }
 
     @Override
-    public void setMaintainMean(boolean b) {
+    public void setMaintainMean(final boolean b) {
         // Required for Arranger, intentionally left blank
     }
 

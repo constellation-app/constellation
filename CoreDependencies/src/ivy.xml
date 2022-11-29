@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
     <info organisation="au.gov.asd.tac" module="third-party-dependencies"/>
-    
+
     <configurations defaultconfmapping="*->default,master">
         <conf name="compile" description="Compile-time dependencies" visibility="public"/>
         <conf name="runtime" description="Runtime dependencies" visibility="public" extends="compile"/>
@@ -37,58 +37,66 @@
         </dependency> -->
 
         <!-- Geotools -->
-        <!--<dependency org="org.geotools" name="gt-coverage" rev="24.1"/>-->
-        <dependency org="org.geotools" name="gt-cql" rev="24.1"/>
-        <dependency org="org.geotools" name="gt-jdbc" rev="24.1"/>
-        <dependency org="org.geotools" name="gt-main" rev="24.1"/>
-        <dependency org="org.geotools" name="gt-metadata" rev="24.1"/>
-        <dependency org="org.geotools" name="gt-opengis" rev="24.1"/>
-        <dependency org="org.geotools" name="gt-referencing" rev="24.1"/>
-        <!--<dependency org="org.geotools" name="gt-render" rev="24.1"/>-->
-        <dependency org="org.geotools" name="gt-xml" rev="24.1"/>
-        <dependency org="org.geotools" name="gt-epsg-hsql" rev="24.1"/>
-        <dependency org="org.geotools" name="gt-geopkg" rev="24.1"/>
-        <dependency org="org.geotools" name="gt-shapefile" rev="24.1"/>
-        <dependency org="org.geotools" name="gt-geojson" rev="24.1"/>
-        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="24.1"/>
-        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="24.1"/>
+        <!--<dependency org="org.geotools" name="gt-coverage" rev="25.1"/>-->
+        <dependency org="org.geotools" name="gt-cql" rev="25.1"/>
+        <dependency org="org.geotools" name="gt-jdbc" rev="25.1"/>
+        <dependency org="org.geotools" name="gt-main" rev="25.1"/>
+        <dependency org="org.geotools" name="gt-metadata" rev="25.1"/>
+        <dependency org="org.geotools" name="gt-opengis" rev="25.1"/>
+        <dependency org="org.geotools" name="gt-referencing" rev="25.1"/>
+        <!--<dependency org="org.geotools" name="gt-render" rev="25.1"/>-->
+        <dependency org="org.geotools" name="gt-xml" rev="25.1"/>
+        <dependency org="org.geotools" name="gt-epsg-hsql" rev="25.1"/>
+        <dependency org="org.geotools" name="gt-geopkg" rev="25.1"/>
+        <dependency org="org.geotools" name="gt-shapefile" rev="25.1"/>
+        <dependency org="org.geotools" name="gt-geojson" rev="25.1"/>
+        <dependency org="org.geotools.xsd" name="gt-xsd-core" rev="25.1"/>
+        <dependency org="org.geotools.xsd" name="gt-xsd-kml" rev="25.1"/>
 
         <!-- Apache -->
         <dependency org="org.apache.commons" name="commons-collections4" rev="4.4"/>
-        <dependency org="org.apache.commons" name="commons-csv" rev="1.8"/>
-        <dependency org="org.apache.commons" name="commons-lang3" rev="3.11"/>
+        <dependency org="org.apache.commons" name="commons-csv" rev="1.9.0"/>
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.12.0"/>
         <dependency org="org.apache.commons" name="commons-math3" rev="3.6.1"/>
         <dependency org="org.apache.commons" name="commons-text" rev="1.9"/>
-        <dependency org="org.apache.poi" name="poi" rev="4.1.2"/>
-        <dependency org="org.apache.poi" name="poi-ooxml" rev="4.1.2"/>
-        <dependency org="org.apache.poi" name="poi-ooxml-schemas" rev="4.1.2"/>
+        <dependency org="org.apache.poi" name="poi" rev="5.0.0"/>
+        <dependency org="org.apache.poi" name="poi-ooxml" rev="5.0.0"/>
 
         <!-- Other -->
-        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.12.0"/> 
-        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.12.0"/>
-        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.12.0"/>
-        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.1.1"/>
-        <dependency org="com.google.guava" name="guava" rev="30.1-jre" />
-        <dependency org="gov.nasa" name="worldwind" rev="2.0.0"/>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.12.3"/>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.12.3"/>
+        <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.12.3"/>
+        <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.1.3"/>
+        <dependency org="com.google.guava" name="guava" rev="30.1.1-jre" />
+        <dependency org="gov.nasa" name="worldwind" rev="2.0.0-986"/>
         <dependency org="javax.help" name="javahelp" rev="2.0.05"/>
         <dependency org="log4j" name="log4j" rev="1.2.17"/>
-        <dependency org="org.assertj" name="assertj-core" rev="3.18.1" />
-        <dependency org="org.controlsfx" name="controlsfx" rev="11.0.3"/>
-        <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.0"/>
-        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.0"/>
-        <dependency org="org.ejml" name="ejml-all" rev="0.40"/>
-        <dependency org="org.json" name="json" rev="20201115"/>
-        <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
+        <dependency org="org.assertj" name="assertj-core" rev="3.20.2" />
+        <dependency org="org.controlsfx" name="controlsfx" rev="11.1.0"/>
+        <dependency org="org.eclipse.jetty" name="jetty-server" rev="11.0.6"/>
+        <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="11.0.6"/>
+        <dependency org="org.ejml" name="ejml-all" rev="0.41"/>
+        <dependency org="org.json" name="json" rev="20210307"/>
+        <dependency org="org.mockito" name="mockito-inline" rev="3.11.2"/>
         <dependency org="org.python" name="jython-standalone" rev="2.7.2"/>
-        <!--<dependency org="org.python" name="jython-jyni" rev="2.7-alpha5"/>-->
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
+        <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.10.6"/>
+
+        <!-- Testing -->
+        <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.7"/>
+        <dependency org="org.testfx" name="openjfx-monocle" rev="jdk-11+26" transitive="false" />
+        <dependency org="org.testfx" name="testfx-core" rev="4.0.16-alpha" />
+
+        <!-- Downloaded Manually -->
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
+        <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
+
+        <dependency org="com.github.rjeschke" name="txtmark" rev="0.13"/>
         <dependency org="com.github.ben-manes.caffeine" name="caffeine" rev="3.0.1" />
 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
         <exclude org="javax.media" module="jai_codec"/>
-        <exclude org="javax.media" module="jai_imageio"/>
         <exclude org="javax.media" module="jai_widget"/>
         <exclude type="source" ext="jar" conf="*"/>
         <exclude type="javadoc" ext="jar" conf="*"/>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import java.awt.Color;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -101,7 +100,9 @@ public class FindRule {
         attribute = null;
         operator = null;
 
-        args.clear();
+        if (args != null) {
+            args.clear();
+        }
     }
 
     /**
@@ -174,59 +175,6 @@ public class FindRule {
     }
 
     /**
-     * Adds the given key and value to the arguments map.
-     *
-     * @param key The key to store the value under.
-     * @param value The argument.
-     */
-    public void addArg(final String key, final Object value) {
-        args.put(key, value);
-    }
-
-    /**
-     * Remove the argument that corresponds to the given key.
-     *
-     * @param key The key of the argument to be removed.
-     */
-    public void removeArg(final String key) {
-        if (args.containsKey(key)) {
-            args.remove(key);
-        }
-    }
-
-    /**
-     * Adds the given map of arguments.
-     *
-     * @param args Arguments to be added to the current state.
-     */
-    public void addArgs(final Map<String, Object> args) {
-        this.args.putAll(args);
-    }
-
-    /**
-     * Removes the given map of arguments.
-     *
-     * @param args Map of arguments to be removed.
-     */
-    public void removeArgs(final Map<String, Object> args) {
-        final Iterator<String> iterator = args.keySet().iterator();
-
-        while (iterator.hasNext()) {
-            final String key = iterator.next();
-            if (this.args.containsKey(key)) {
-                this.args.remove(key);
-            }
-        }
-    }
-
-    /**
-     * Removes all currently set arguments.
-     */
-    public void removeAllArgs() {
-        args.clear();
-    }
-
-    /**
      * Sets the arguments for the current state.
      *
      * @param args Map of arguments.
@@ -253,7 +201,7 @@ public class FindRule {
      * <code>FindRule</code>
      */
     public boolean getBooleanContent() {
-        return (Boolean) args.get(BLN_CONTENT);
+        return args != null && (Boolean) args.get(BLN_CONTENT);
     }
 
     /**
@@ -278,7 +226,7 @@ public class FindRule {
      * @see Color
      */
     public Color getColorContent() {
-        return (Color) args.get(COL_CONTENT);
+        return args != null ? (Color) args.get(COL_CONTENT) : null;
     }
 
     /**
@@ -304,7 +252,7 @@ public class FindRule {
      * @see Date
      */
     public Date getDateFirstArg() {
-        return (Date) args.get(DAT_FIRST);
+        return args != null ? (Date) args.get(DAT_FIRST) : null;
     }
 
     /**
@@ -316,7 +264,7 @@ public class FindRule {
      * @see Date
      */
     public Date getDateSecondArg() {
-        return (Date) args.get(DAT_SECOND);
+        return args != null ? (Date) args.get(DAT_SECOND) : null;
     }
 
     /**
@@ -345,7 +293,7 @@ public class FindRule {
      * @see Calendar
      */
     public Calendar getDateTimeFirstArg() {
-        return (Calendar) args.get(DT_FIRST);
+        return args != null ? (Calendar) args.get(DT_FIRST) : null;
     }
 
     /**
@@ -357,7 +305,7 @@ public class FindRule {
      * @see Calendar
      */
     public Calendar getDateTimeSecondArg() {
-        return (Calendar) args.get(DT_SECOND);
+        return args != null ? (Calendar) args.get(DT_SECOND) : null;
     }
 
     /**
@@ -400,7 +348,7 @@ public class FindRule {
      * this <code>FindRule</code>
      */
     public float getFloatFirstArg() {
-        return (Float) args.get(FLT_FIRST);
+        return args != null ? (Float) args.get(FLT_FIRST) : 0.0F;
     }
 
     /**
@@ -411,7 +359,7 @@ public class FindRule {
      * this <code>FindRule</code>
      */
     public float getFloatSecondArg() {
-        return (Float) args.get(FLT_SECOND);
+        return args != null ? (Float) args.get(FLT_SECOND) : 0.0F;
     }
 
     /**
@@ -437,7 +385,7 @@ public class FindRule {
      * this <code>FindRule</code>
      */
     public int getIntFirstArg() {
-        return (Integer) args.get(INT_FIRST);
+        return args != null ? (Integer) args.get(INT_FIRST) : 0;
     }
 
     /**
@@ -448,7 +396,7 @@ public class FindRule {
      * this <code>FindRule</code>
      */
     public int getIntSecondArg() {
-        return (Integer) args.get(INT_SECOND);
+        return args != null ? (Integer) args.get(INT_SECOND) : 0;
     }
 
     /**
@@ -472,7 +420,7 @@ public class FindRule {
      * <code>FindRule</code>
      */
     public String getIconContent() {
-        return (String) args.get(ICO_CONTENT);
+        return args != null ? (String) args.get(ICO_CONTENT) : null;
     }
 
     /**
@@ -501,7 +449,7 @@ public class FindRule {
      * <code>FindRule</code>
      */
     public String getStringContent() {
-        return (String) args.get(STR_CONTENT);
+        return args != null ? (String) args.get(STR_CONTENT) : null;
     }
 
     /**
@@ -511,7 +459,7 @@ public class FindRule {
      * @return <code>Boolean</code> representing the saved 'String Case
      * Sensitivity' value in this <code>FindRule</code>
      */
-    public boolean getStringCaseSensitivity() {
+    public boolean isStringCaseSensitivity() {
         return args.containsKey(STR_CASE) && (boolean) args.get(STR_CASE);
     }
 
@@ -522,7 +470,7 @@ public class FindRule {
      * @return <code>Boolean</code> representing the saved 'Use List' value in
      * this <code>FindRule</code>
      */
-    public boolean getStringUsingList() {
+    public boolean isStringUsingList() {
         return args.containsKey(STR_LIST) && (boolean) args.get(STR_LIST);
     }
 
@@ -535,7 +483,7 @@ public class FindRule {
      * @see Calendar
      */
     public Calendar getTimeFirstArg() {
-        return (Calendar) args.get(TIM_FIRST);
+        return args != null ? (Calendar) args.get(TIM_FIRST) : null;
     }
 
     /**
@@ -547,7 +495,7 @@ public class FindRule {
      * @see Calendar
      */
     public Calendar getTimeSecondArg() {
-        return (Calendar) args.get(TIM_SECOND);
+        return args != null ? (Calendar) args.get(TIM_SECOND) : null;
     }
 
     /**

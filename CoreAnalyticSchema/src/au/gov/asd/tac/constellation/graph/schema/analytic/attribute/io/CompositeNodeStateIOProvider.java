@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,16 +44,14 @@ public class CompositeNodeStateIOProvider extends AbstractGraphIOProvider {
     }
 
     @Override
-    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, ImmutableObjectCache cache) throws IOException {
-        final String attributeValue = jnode.asText();
-        graph.setStringValue(attributeId, elementId, attributeValue);
+    public void readObject(final int attributeId, final int elementId, final JsonNode jnode, final GraphWriteMethods graph, final Map<Integer, Integer> vertexMap, final Map<Integer, Integer> transactionMap, final GraphByteReader byteReader, final ImmutableObjectCache cache) throws IOException {
+        graph.setStringValue(attributeId, elementId, jnode.asText());
     }
 
     @Override
     public void writeObject(final Attribute attribute, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byteWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attribute.getId(), elementId)) {
-            final String attributeValue = graph.getStringValue(attribute.getId(), elementId);
-            jsonGenerator.writeStringField(attribute.getName(), attributeValue);
+            jsonGenerator.writeStringField(attribute.getName(), graph.getStringValue(attribute.getId(), elementId));
         }
     }
 }

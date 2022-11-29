@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -44,6 +45,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = MergeNodeType.class)
 public class MergeNodesBySuffix implements MergeNodeType {
+
+    private static final Logger LOGGER = Logger.getLogger(MergeNodesBySuffix.class.getName());
 
     private static final String MERGE_TYPE_NAME = "Identifier Suffix Length";
 
@@ -88,13 +91,13 @@ public class MergeNodesBySuffix implements MergeNodeType {
                 }
             }
 
-            for (Map<Integer, String> matchingVertices : prefixMap.values()) {
+            for (final Map<Integer, String> matchingVertices : prefixMap.values()) {
                 if (matchingVertices.size() > 1) {
                     int leadVertex = Graph.NOT_FOUND;
                     String leadValue = null;
                     if (leadVertexChooser != null) {
                         // calculate the lead vertex
-                        for (Map.Entry<Integer, String> e : matchingVertices.entrySet()) {
+                        for (final Map.Entry<Integer, String> e : matchingVertices.entrySet()) {
                             if (leadVertex < 0 || leadVertexChooser.compare(e.getValue(), leadValue) < 0) {
                                 leadVertex = e.getKey();
                                 leadValue = e.getValue();
@@ -103,7 +106,7 @@ public class MergeNodesBySuffix implements MergeNodeType {
                     } else {
                         // ask user to choose the lead vertex
                         final ObservableList<ItemsRow<Integer>> duplicateVertices = FXCollections.observableArrayList();
-                        for (Map.Entry<Integer, String> e : matchingVertices.entrySet()) {
+                        for (final Map.Entry<Integer, String> e : matchingVertices.entrySet()) {
                             duplicateVertices.add(new ItemsRow<>(e.getKey(), e.getValue(), ""));
                         }
 
@@ -129,8 +132,8 @@ public class MergeNodesBySuffix implements MergeNodeType {
                         try {
                             latch.await();
                             leadVertex = selected[0];
-                        } catch (InterruptedException ex) {
-                            Exceptions.printStackTrace(ex);
+                        } catch (final InterruptedException ex) {
+                            LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
                             Thread.currentThread().interrupt();
                         }
                     }
@@ -145,10 +148,10 @@ public class MergeNodesBySuffix implements MergeNodeType {
         return nodesToMerge;
     }
 
-    private String reverseString(String string) {
-        char[] stringAsCharArray = string.toCharArray();
+    private String reverseString(final String string) {
+        final char[] stringAsCharArray = string.toCharArray();
         for (int i = 0, j = string.length() - 1; i < string.length() / 2; i++, j--) {
-            char c = stringAsCharArray[i];
+            final char c = stringAsCharArray[i];
             stringAsCharArray[i] = stringAsCharArray[j];
             stringAsCharArray[j] = c;
         }

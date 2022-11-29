@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,66 +49,75 @@ public final class FlyingAnimation extends Animation {
 
     @Override
     public void initialise(GraphWriteMethods wg) {
+        // dont initilise the animation if there is less than 2 nodes
+        if (wg.getVertexCount() <= 1) {
+            stopAnimation();
+        } else {
 
-        xAttr = VisualConcept.VertexAttribute.X.get(wg);
-        yAttr = VisualConcept.VertexAttribute.Y.get(wg);
-        zAttr = VisualConcept.VertexAttribute.Z.get(wg);
-        x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
-        y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
-        z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
-        rAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
-        selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
-        doMixing = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
-        final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
-        camera = wg.getObjectValue(cameraAttribute, 0);
+            xAttr = VisualConcept.VertexAttribute.X.get(wg);
+            yAttr = VisualConcept.VertexAttribute.Y.get(wg);
+            zAttr = VisualConcept.VertexAttribute.Z.get(wg);
+            x2Attr = VisualConcept.VertexAttribute.X2.get(wg);
+            y2Attr = VisualConcept.VertexAttribute.Y2.get(wg);
+            z2Attr = VisualConcept.VertexAttribute.Z2.get(wg);
+            rAttr = VisualConcept.VertexAttribute.NODE_RADIUS.get(wg);
+            selectedAttr = VisualConcept.VertexAttribute.SELECTED.get(wg);
+            doMixing = x2Attr != Graph.NOT_FOUND && y2Attr != Graph.NOT_FOUND && z2Attr != Graph.NOT_FOUND;
+            final int cameraAttribute = VisualConcept.GraphAttribute.CAMERA.get(wg);
+            camera = wg.getObjectValue(cameraAttribute, 0);
 
-        stepsPerLink = STEPS_PER_LINK * (int) Math.sqrt(1 + (wg.getVertexCount() / 2000));
+            stepsPerLink = STEPS_PER_LINK * (int) Math.sqrt(1 + (wg.getVertexCount() / 2000));
 
-        final Vector3f vec0 = new Vector3f(camera.lookAtEye);
-        final Vector3f vec1 = new Vector3f(camera.lookAtCentre);
-        xyzQueue.add(vec0);
-        xyzQueue.add(vec1);
+            final Vector3f vec0 = new Vector3f(camera.lookAtEye);
+            final Vector3f vec1 = new Vector3f(camera.lookAtCentre);
+            xyzQueue.add(vec0);
+            xyzQueue.add(vec1);
 
-        currentVxId = Graph.NOT_FOUND;
-        for (int i = xyzQueue.size(); i < VERTICES_PER_SPLINE; i++) {
-            final Vector3f xyz = getNextVertex(wg, camera.getMix());
-            xyzQueue.add(xyz);
+            currentVxId = Graph.NOT_FOUND;
+            for (int i = xyzQueue.size(); i < VERTICES_PER_SPLINE; i++) {
+                final Vector3f xyz = getNextVertex(wg, camera.getMix());
+                xyzQueue.add(xyz);
+            }
         }
     }
 
     @Override
     public List<VisualChange> animate(GraphWriteMethods wg) {
-        if (step >= stepsPerLink) {
-            // Get the next p3 vertex.
-            final Vector3f xyz = getNextVertex(wg, camera.getMix());
+        // dont animate unless there is more than 1 node
+        if (wg.getVertexCount() > 1) {
 
-            // Remove the old p0 and add the new p3.
-            xyzQueue.removeFirst();
-            xyzQueue.addLast(xyz);
+            if (step >= stepsPerLink) {
+                // Get the next p3 vertex.
+                final Vector3f xyz = getNextVertex(wg, camera.getMix());
 
-            // The first step between p1 and p2.
-            step = 0;
+                // Remove the old p0 and add the new p3.
+                xyzQueue.removeFirst();
+                xyzQueue.addLast(xyz);
+
+                // The first step between p1 and p2.
+                step = 0;
+            }
+
+            // The four control points of the spline.
+            final Iterator<Vector3f> it = xyzQueue.iterator();
+            final float[] p0 = it.next().a;
+            final float[] p1 = it.next().a;
+            final float[] p2 = it.next().a;
+            final float[] p3 = it.next().a;
+
+            // Determine the new lookAt eye and center.
+            final float t = step / (float) stepsPerLink;
+            final float t1 = (step + 1) / (float) stepsPerLink;
+            final float[] eye = new float[3];
+            Mathf.catmullRom(eye, p0, p1, p2, p3, t);
+            final float[] centre = new float[3];
+            Mathf.catmullRom(centre, p0, p1, p2, p3, t1);
+
+            camera.lookAtEye.set(eye[0], eye[1], eye[2]);
+            camera.lookAtCentre.set(centre[0], centre[1], centre[2]);
+
+            step++;
         }
-
-        // The four control points of the spline.
-        final Iterator<Vector3f> it = xyzQueue.iterator();
-        final float[] p0 = it.next().a;
-        final float[] p1 = it.next().a;
-        final float[] p2 = it.next().a;
-        final float[] p3 = it.next().a;
-
-        // Determine the new lookAt eye and center.
-        final float t = step / (float) stepsPerLink;
-        final float t1 = (step + 1) / (float) stepsPerLink;
-        final float[] eye = new float[3];
-        Mathf.catmullRom(eye, p0, p1, p2, p3, t);
-        final float[] centre = new float[3];
-        Mathf.catmullRom(centre, p0, p1, p2, p3, t1);
-
-        camera.lookAtEye.set(eye[0], eye[1], eye[2]);
-        camera.lookAtCentre.set(centre[0], centre[1], centre[2]);
-
-        step++;
         return Arrays.asList(new VisualChangeBuilder(VisualProperty.CAMERA).forItems(1).withId(flyingAnimationId).build());
     }
 
@@ -183,7 +192,7 @@ public final class FlyingAnimation extends Animation {
         }
 
         final float r = rAttr != Graph.NOT_FOUND ? rg.getFloatValue(rAttr, currentVxId) : 1;
-        xyz = new Vector3f(x + r * 1.5f, y + r * 1.5f, z + r * 1.5f);
+        xyz = new Vector3f(x + r * 1.5F, y + r * 1.5F, z + r * 1.5F);
 
         return xyz;
     }

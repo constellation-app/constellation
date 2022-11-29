@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,10 +61,10 @@ public class MarkerState {
     }
 
     public enum MarkerColorScheme {
-        DEFAULT("Default Colours", null, null),
-        COLOR("Use Colour Attribute", VisualConcept.VertexAttribute.COLOR, VisualConcept.TransactionAttribute.COLOR),
-        OVERLAY("Use Overlay Colour", VisualConcept.VertexAttribute.OVERLAY_COLOR, VisualConcept.TransactionAttribute.OVERLAY_COLOR),
-        BLAZE("Use Blaze Colour", VisualConcept.VertexAttribute.BLAZE, null);
+        DEFAULT("Default Colors", null, null),
+        COLOR("Use Color Attribute", VisualConcept.VertexAttribute.COLOR, VisualConcept.TransactionAttribute.COLOR),
+        OVERLAY("Use Overlay Color", VisualConcept.VertexAttribute.OVERLAY_COLOR, VisualConcept.TransactionAttribute.OVERLAY_COLOR),
+        BLAZE("Use Blaze Color", VisualConcept.VertexAttribute.BLAZE, null);
 
         private final String displayName;
         private final SchemaAttribute vertexAttribute;

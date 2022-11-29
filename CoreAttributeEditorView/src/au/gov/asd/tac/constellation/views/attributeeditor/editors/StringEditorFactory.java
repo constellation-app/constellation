@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,9 +91,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
             textArea = new TextArea();
             textArea.setWrapText(true);
-            textArea.textProperty().addListener((o, n, v) -> {
-                update();
-            });
+            textArea.textProperty().addListener((o, n, v) -> update());
             textArea.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
                 if (e.getCode() == KeyCode.DELETE) {
                     IndexRange selection = textArea.getSelection();
@@ -126,6 +124,8 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
                     e.consume();
                 } else if (e.getCode() == KeyCode.ESCAPE) {
                     e.consume();
+                } else {
+                    // Do nothing
                 }
             });
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.visual.opengl.renderer.TextureUnits;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.LabelUtilities;
 import au.gov.asd.tac.constellation.visual.opengl.utilities.SharedDrawable;
 import com.jogamp.common.nio.Buffers;
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -66,6 +67,7 @@ public class LineBatcher implements SceneBatcher {
     private int lineShaderAlpha;
     private int lineShaderHighlightColor;
     private int lineShaderDirectionMotion;
+    private int lineShaderGreyscale; // anaglyphic drawing
 
     private int lineLineShaderMVMatrix;
     private int lineLineShaderPMatrix;
@@ -77,6 +79,7 @@ public class LineBatcher implements SceneBatcher {
     private int lineLineShaderAlpha;
     private int lineLineShaderHighlightColor;
     private int lineLineShaderDirectionMotion;
+    private int lineLineShaderGreyscale; // anaglyphic drawing
 
     private final int colorTarget;
     private final int connectionInfoTarget;
@@ -87,7 +90,7 @@ public class LineBatcher implements SceneBatcher {
     public LineBatcher() {
 
         // Create the batch
-        batch = new Batch(GL3.GL_LINES);
+        batch = new Batch(GL.GL_LINES);
         colorTarget = batch.newFloatBuffer(COLOR_BUFFER_WIDTH, false);
         connectionInfoTarget = batch.newIntBuffer(CONNECTION_INFO_BUFFER_WIDTH, false);
     }
@@ -114,6 +117,7 @@ public class LineBatcher implements SceneBatcher {
         lineShaderAlpha = gl.glGetUniformLocation(lineShader, "alpha");
         lineShaderHighlightColor = gl.glGetUniformLocation(lineShader, "highlightColor");
         lineShaderDirectionMotion = gl.glGetUniformLocation(lineShader, "directionMotion");
+        lineShaderGreyscale = gl.glGetUniformLocation(lineShader, "greyscale");
 
         lineLineShaderMVMatrix = gl.glGetUniformLocation(lineLineShader, "mvMatrix");
         lineLineShaderPMatrix = gl.glGetUniformLocation(lineLineShader, "pMatrix");
@@ -125,15 +129,14 @@ public class LineBatcher implements SceneBatcher {
         lineLineShaderAlpha = gl.glGetUniformLocation(lineLineShader, "alpha");
         lineLineShaderHighlightColor = gl.glGetUniformLocation(lineLineShader, "highlightColor");
         lineLineShaderDirectionMotion = gl.glGetUniformLocation(lineLineShader, "directionMotion");
+        lineLineShaderGreyscale = gl.glGetUniformLocation(lineLineShader, "greyscale");
     }
 
     @Override
     public GLRenderableUpdateTask disposeBatch() {
         connections.clear();
         connectionPosToBufferPos.clear();
-        return gl -> {
-            batch.dispose(gl);
-        };
+        return gl -> batch.dispose(gl);
     }
 
     private final SortedMap<Integer, Integer> connectionPosToBufferPos = new TreeMap<>();
@@ -201,7 +204,7 @@ public class LineBatcher implements SceneBatcher {
             final int representativeTransactionId = access.getConnectionId(pos);
             final int lowVertex = access.getConnectionLowVertex(pos);
             final int highVertex = access.getConnectionHighVertex(pos);
-            final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);
+            final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int lineStyle = access.getConnectionLineStyle(pos).ordinal();
             final ConnectionDirection connectionDirection = access.getConnectionDirection(pos);
 
@@ -224,10 +227,10 @@ public class LineBatcher implements SceneBatcher {
             final int representativeTransactionId = access.getConnectionId(pos);
             final int lowVertex = access.getConnectionLowVertex(pos);
             final int highVertex = access.getConnectionHighVertex(pos);
-            final int flags = (access.getConnectionDimmed(pos) ? 2 : 0) | (access.getConnectionSelected(pos) ? 1 : 0);
+            final int flags = (access.isConnectionDimmed(pos) ? 2 : 0) | (access.isConnectionSelected(pos) ? 1 : 0);
             final int lineStyle = access.getConnectionLineStyle(pos).ordinal();
             final ConnectionDirection connectionDirection;
-            if (access.getConnectionDirected(pos)) {
+            if (access.isConnectionDirected(pos)) {
                 if (access.getConnectionDirection(pos) != ConnectionDirection.UNDIRECTED) { // covers the case where the transaction was initially undirected
                     connectionDirection = access.getConnectionDirection(pos);
                 } else {
@@ -266,26 +269,20 @@ public class LineBatcher implements SceneBatcher {
     }
 
     public GLRenderableUpdateTask updateInfo(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateIntBufferTask(change, access, this::updateConnectionInfo, gl -> {
-            return batch.connectIntBuffer(gl, connectionInfoTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, connectionInfoTarget);
-        }, new boolean[]{true, true, true, false, true, true, true, true});
+        return SceneBatcher.updateIntBufferTask(change, access, this::updateConnectionInfo, gl -> batch.connectIntBuffer(gl, connectionInfoTarget),
+                 gl -> batch.disconnectBuffer(gl, connectionInfoTarget),
+                 new boolean[]{true, true, true, false, true, true, true, true});
     }
 
     public GLRenderableUpdateTask updateColors(final VisualAccess access, final VisualChange change) {
-        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> {
-            return batch.connectFloatBuffer(gl, colorTarget);
-        }, gl -> {
-            batch.disconnectBuffer(gl, colorTarget);
-        }, COLOR_BUFFER_WIDTH * 2);
+        return SceneBatcher.updateFloatBufferTask(change, access, this::bufferColorInfo, gl -> batch.connectFloatBuffer(gl, colorTarget),
+                 gl -> batch.disconnectBuffer(gl, colorTarget),
+                 COLOR_BUFFER_WIDTH * 2);
     }
 
     public GLRenderableUpdateTask updateOpacity(final VisualAccess access) {
         final float updatedOpacity = access.getConnectionOpacity();
-        return gl -> {
-            opacity = updatedOpacity;
-        };
+        return gl -> opacity = updatedOpacity;
     }
 
     public void setNextDrawIsHitTest() {
@@ -302,22 +299,20 @@ public class LineBatcher implements SceneBatcher {
 
     public GLRenderableUpdateTask setHighlightColor(final VisualAccess access) {
         final ConstellationColor color = access.getHighlightColor();
-        return gl -> {
-            this.highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
-        };
+        return gl -> this.highlightColor = new float[]{color.getRed(), color.getGreen(), color.getBlue(), 1};
     }
 
     @Override
-    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix) {
+    public void drawBatch(final GL3 gl, final Camera camera, final Matrix44f mvMatrix, final Matrix44f pMatrix, final boolean greyscale) {
 
         if (batch.isDrawable()) {
             // Uniform variables
             gl.glUseProgram(lineShader);
             if (drawForHitTest) {
-                gl.glUniform1i(lineShaderLocDrawHitTest, GL3.GL_TRUE);
+                gl.glUniform1i(lineShaderLocDrawHitTest, GL.GL_TRUE);
                 gl.glUniform1f(lineShaderDirectionMotion, -1);
             } else {
-                gl.glUniform1i(lineShaderLocDrawHitTest, GL3.GL_FALSE);
+                gl.glUniform1i(lineShaderLocDrawHitTest, GL.GL_FALSE);
                 gl.glUniform1f(lineShaderDirectionMotion, motion);
             }
             gl.glUniformMatrix4fv(lineShaderMVMatrix, 1, false, mvMatrix.a, 0);
@@ -328,14 +323,15 @@ public class LineBatcher implements SceneBatcher {
             gl.glUniform1i(lineShaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1f(lineShaderAlpha, opacity);
             gl.glUniform4fv(lineShaderHighlightColor, 1, highlightColor, 0);
+            gl.glUniform1i(lineShaderGreyscale, greyscale ? 1 : 0);
             batch.draw(gl);
 
             gl.glUseProgram(lineLineShader);
             if (drawForHitTest) {
-                gl.glUniform1i(lineLineShaderLocDrawHitTest, GL3.GL_TRUE);
+                gl.glUniform1i(lineLineShaderLocDrawHitTest, GL.GL_TRUE);
                 gl.glUniform1f(lineLineShaderDirectionMotion, -1);
             } else {
-                gl.glUniform1i(lineLineShaderLocDrawHitTest, GL3.GL_FALSE);
+                gl.glUniform1i(lineLineShaderLocDrawHitTest, GL.GL_FALSE);
                 gl.glUniform1f(lineLineShaderDirectionMotion, motion);
             }
             gl.glUniformMatrix4fv(lineLineShaderMVMatrix, 1, false, mvMatrix.a, 0);
@@ -346,6 +342,7 @@ public class LineBatcher implements SceneBatcher {
             gl.glUniform1i(lineLineShaderXyzTexture, TextureUnits.VERTICES);
             gl.glUniform1f(lineLineShaderAlpha, opacity);
             gl.glUniform4fv(lineLineShaderHighlightColor, 1, highlightColor, 0);
+            gl.glUniform1i(lineLineShaderGreyscale, greyscale ? 1 : 0);
             batch.draw(gl);
         }
         drawForHitTest = false;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.util.Pair;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -65,6 +66,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
             bypassProxyHosts = Arrays.asList(prefs.get(ProxyPreferenceKeys.BYPASS, ProxyPreferenceKeys.BYPASS_DEFAULT).split(ProxyUtilities.PROXY_SEPARATOR));
         }
 
+        // Iterate to remove whitespace and make lowercase
         for (int i = 0; i < bypassProxyHosts.size(); i++) {
             bypassProxyHosts.set(i, bypassProxyHosts.get(i).trim().toLowerCase());
         }
@@ -82,20 +84,20 @@ public class ConstellationHttpProxySelector extends ProxySelector {
         if (isHttp) {
             final String host = uri.getHost().toLowerCase();
 
-            // First step: is this a local host?
-            final boolean isBypassProxyHost = isLocalHost(host, bypassProxyHosts);
-            if (isBypassProxyHost) {
-                LOGGER.log(Level.FINE, "host {0} will bypass the proxy", host);
-                return NO_PROXY;
-            }
-
-            // Second step: do we have a specific proxy for this host?
+            // First step: do we have a specific proxy for this host?
             for (final Pair<String, Pair<String, Integer>> entry : additionalProxies) {
                 final String additionalProxyHost = entry.getKey();
                 if (isValidHost(host, additionalProxyHost)) {
                     LOGGER.log(Level.FINE, "host {0} will use additional proxy {1}", new Object[]{host, additionalProxyHost});
                     return makeProxy(entry.getValue());
                 }
+            }
+
+            // Second step: is this a local host?
+            final boolean isBypassProxyHost = isLocalHost(host, bypassProxyHosts);
+            if (isBypassProxyHost) {
+                LOGGER.log(Level.FINE, "host {0} will bypass the proxy", host);
+                return NO_PROXY;
             }
 
             // Third and last step: do we have a default proxy?
@@ -145,7 +147,7 @@ public class ConstellationHttpProxySelector extends ProxySelector {
      */
     private static boolean isLocalHost(final String host, final List<String> localHosts) {
         final String hostLowerCase = host.toLowerCase();
-        if (hostLowerCase.equals("localhost") || hostLowerCase.equals("127.0.0.1")) {
+        if (StringUtils.equalsAnyIgnoreCase(hostLowerCase, (CharSequence[]) new String[]{"localhost", "127.0.0.1"})) {
             return true;
         }
 
@@ -174,6 +176,8 @@ public class ConstellationHttpProxySelector extends ProxySelector {
             }
         } else if (compareHost.equals(host)) {
             return true;
+        } else {
+            // Do nothing
         }
 
         return false;

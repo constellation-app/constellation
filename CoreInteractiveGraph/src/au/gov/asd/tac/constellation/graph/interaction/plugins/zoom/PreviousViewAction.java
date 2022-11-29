@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Tools", position = 0)
 })
-@Messages("CTL_PreviousViewAction=Previous View")
+@Messages("CTL_PreviousViewAction=Previous Camera View")
 public final class PreviousViewAction implements ActionListener {
 
     private final GraphNode context;

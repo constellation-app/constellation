@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,8 @@ import java.util.logging.Logger;
  * @author algol
  */
 public class ShaderManager {
+    
+    private static final Logger LOGGER = Logger.getLogger(ShaderManager.class.getName());
 
     static class ShaderLookupEntry {
 
@@ -47,8 +49,6 @@ public class ShaderManager {
         int shaderId;
     }
 
-//    // Maximum length of shader name.
-//    //    public static final int MAX_SHADER_NAME_LENGTH = 64;
     // Stock shader ids.
     public static final int SHADER_IDENTITY = 0;
     public static final int SHADER_FLAT = 1;
@@ -93,8 +93,8 @@ public class ShaderManager {
         Properties tShaderMap = null;
         try {
             tShaderMap = loadShaders();
-        } catch (IOException ex) {
-            Logger.getLogger(ShaderManager.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, null, ex);
         }
 
         shaderMap = tShaderMap;
@@ -123,6 +123,8 @@ public class ShaderManager {
                     value = "";
                 } else if (line.length() != 0) {
                     value += line + SeparatorConstants.NEWLINE;
+                } else {
+                    // Do nothing
                 }
             }
         }

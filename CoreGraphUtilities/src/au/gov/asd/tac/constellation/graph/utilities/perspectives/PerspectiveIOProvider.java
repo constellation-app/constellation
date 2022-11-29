@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -40,6 +41,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AbstractGraphIOProvider.class)
 public class PerspectiveIOProvider extends AbstractGraphIOProvider {
+    
+    private static final Logger LOGGER = Logger.getLogger(PerspectiveIOProvider.class.getName());
 
     private static final String LIST = "list";
     private static final String LABEL = "label";
@@ -145,14 +148,14 @@ public class PerspectiveIOProvider extends AbstractGraphIOProvider {
                 jg.writeNumber(v.getY());
                 jg.writeNumber(v.getZ());
                 jg.writeEndArray();
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         } else {
             try {
                 jg.writeNullField(label);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             }
         }
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,10 @@ import au.gov.asd.tac.constellation.graph.attribute.FloatAttributeDescription;
  */
 public class LocationAttributeBuilder extends GraphBuilder {
 
-    private static final float X_DEFAULT = 0.0f;
-    private static final float Y_DEFAULT = 0.0f;
-    private static final float Z_DEFAULT = 0.0f;
-    private static final float NRADIUS_DEFAULT = 0.0f;
+    private static final float X_DEFAULT = 0.0F;
+    private static final float Y_DEFAULT = 0.0F;
+    private static final float Z_DEFAULT = 0.0F;
+    private static final float NRADIUS_DEFAULT = 0.0F;
 
     public static LocationAttributeBuilder addLocationAttributes(final GraphWriteMethods graph) {
         return addLocationAttributes(graph, X_DEFAULT, Y_DEFAULT, Z_DEFAULT, NRADIUS_DEFAULT);

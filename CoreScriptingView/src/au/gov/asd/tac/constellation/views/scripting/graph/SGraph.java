@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -173,7 +173,6 @@ public class SGraph {
             engine.eval("__func(__p1)");
             ok = true;
         } catch (ScriptException ex) {
-            LOGGER.log(Level.WARNING, "exception in context: {0}", ex.toString());
             readableGraph.release();
             throw ex;
         } finally {
@@ -224,7 +223,6 @@ public class SGraph {
             engine.eval("__func(__p1)");
             ok = true;
         } catch (ScriptException ex) {
-            LOGGER.log(Level.WARNING, "exception in context: {0}", ex.toString());
             writableGraph.rollback();
             throw ex;
         } finally {

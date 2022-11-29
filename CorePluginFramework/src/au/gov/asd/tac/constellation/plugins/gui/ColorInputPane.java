@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,8 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.RecentParameterValues;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -37,11 +35,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Callback;
 
 /**
- * A colour picker which is the GUI element corresponding to a
+ * A color picker which is the GUI element corresponding to a
  * {@link PluginParameter} of
  * {@link au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType}.
  * <p>
- * Picking a colour will set the colour value for the underlying
+ * Picking a color will set the color value for the underlying
  * {@link PluginParameter}.
  *
  * @see au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType
@@ -54,7 +52,6 @@ public class ColorInputPane extends Pane {
     private static final Logger LOGGER = Logger.getLogger(ColorInputPane.class.getName());
 
     public ColorInputPane(final PluginParameter<ColorParameterValue> parameter) {
-        final List<String> recentValues = RecentParameterValues.getRecentValues(parameter.getId());
         field = new ColorPicker();
         namedCombo = makeNamedCombo();
         final HBox hbox = new HBox(field, namedCombo);
@@ -101,12 +98,9 @@ public class ColorInputPane extends Pane {
             }
         });
 
-        field.setOnAction(event -> {
-            parameter.setColorValue(ConstellationColor.fromFXColor(field.getValue()));
-        });
+        field.setOnAction(event -> parameter.setColorValue(ConstellationColor.fromFXColor(field.getValue())));
 
-        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> {
-            Platform.runLater(() -> {
+        parameter.addListener((PluginParameter<?> pluginParameter, ParameterChange change) -> Platform.runLater(() -> {
                 switch (change) {
                     case VALUE:
                         // Don't change the value if it isn't necessary.
@@ -128,13 +122,9 @@ public class ColorInputPane extends Pane {
                         LOGGER.log(Level.FINE, "ignoring parameter change type {0}.", change);
                         break;
                 }
-            });
-        });
+            }));
 
         getChildren().add(hbox);
-        if (recentValues != null) {
-            parameter.setStringValue(recentValues.get(recentValues.size() > 1 ? 1 : 0));
-        }
     }
 
     private ComboBox<ConstellationColor> makeNamedCombo() {

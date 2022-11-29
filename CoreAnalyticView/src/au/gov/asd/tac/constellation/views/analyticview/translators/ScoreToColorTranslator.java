@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,13 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
@@ -64,6 +66,7 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
+    @PluginInfo(tags = {PluginTags.MODIFY})
     private class ColorElementsPlugin extends SimpleEditPlugin {
 
         protected static final String RESET_PARAMETER_ID = "ColorElementsPlugin.reset";
@@ -122,8 +125,8 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
             } else {
                 // find highest and lowest mean scores among available analytic events
-                float highestMeanScore = 0.0f;
-                float lowestMeanScore = 0.0f;
+                float highestMeanScore = 0.0F;
+                float lowestMeanScore = 0.0F;
                 for (final ElementScore scoreResult : scoreResults.get()) {
                     final float elementMeanScore = scoreResult.getNamedScores().values().stream()
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
@@ -145,11 +148,11 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                     final float colorIntensity = meanScoreRange != 0 ? (elementMeanScore + lowestMeanScore) / meanScoreRange : elementMeanScore + lowestMeanScore;
                     switch (elementType) {
                         case VERTEX:
-                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1f, 1f));
+                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
                             graph.setObjectValue(vertexIconAttribute, elementId, "transparent");
                             break;
                         case TRANSACTION:
-                            graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1f, 1f));
+                            graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
                             break;
                         default:
                             throw new InvalidElementTypeException("'Color Elements' is not supported "

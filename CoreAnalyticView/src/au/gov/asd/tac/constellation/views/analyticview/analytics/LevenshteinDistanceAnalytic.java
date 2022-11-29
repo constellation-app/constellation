@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -46,7 +47,7 @@ import org.openide.util.lookup.ServiceProviders;
     @ServiceProvider(service = AnalyticPlugin.class),
     @ServiceProvider(service = Plugin.class)
 })
-@PluginInfo(tags = {"ANALYTIC"})
+@PluginInfo(tags = {PluginTags.ANALYTIC})
 @AnalyticInfo(analyticCategory = "Similarity")
 @NbBundle.Messages("LevenshteinDistanceAnalytic=Levenshtein Distance Analytic")
 public class LevenshteinDistanceAnalytic extends ScoreAnalyticPlugin {
@@ -55,7 +56,7 @@ public class LevenshteinDistanceAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public String getDocumentationUrl() {
-        return "nbdocs://au.gov.asd.tac.constellation.views.analyticview/au/gov/asd/tac/constellation/views/analyticview/docs/analyticview-analytic-levenshtein-distance.html";
+        return getHelpPath() + "analytic-levenshtein-distance.md";
     }
 
     @Override
@@ -79,19 +80,19 @@ public class LevenshteinDistanceAnalytic extends ScoreAnalyticPlugin {
 
     @Override
     public void onPrerequisiteAttributeChange(final Graph graph, final PluginParameters parameters) {
-        
+
         final List<String> stringAttributes = AttributeUtilities.getAttributeNames(GraphElementType.VERTEX, StringAttributeDescription.ATTRIBUTE_NAME);
         updateParameters(parameters);
-        
+
         stringAttributes.sort(String::compareTo);
-        
+
         @SuppressWarnings("unchecked") //ATTRIBUTE_PARAMETER always of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> attributeParam = (PluginParameter<SingleChoiceParameterValue>) parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID);
-        
+
         SingleChoiceParameterType.setOptions(attributeParam, stringAttributes);
-        
+
         if (stringAttributes.contains(VisualConcept.VertexAttribute.IDENTIFIER.getName())) {
             SingleChoiceParameterType.setChoice(attributeParam, VisualConcept.VertexAttribute.IDENTIFIER.getName());
-        } 
+        }
     }
 }

@@ -1,29 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
 <toc version="2.0">
-    <tocitem text="Tools" mergetype="javax.help.SortMerge">
-        <tocitem text="Centrality" mergetype="javax.help.SortMerge">
-            <tocitem text="Betweenness Centrality" target="au.gov.asd.tac.constellation.plugins.algorithms.centrality.BetweennessCentralityPlugin"/>
-            <tocitem text="Closeness Centrality" target="au.gov.asd.tac.constellation.plugins.algorithms.centrality.ClosenessCentralityPlugin"/>
-            <tocitem text="Degree Centrality" target="au.gov.asd.tac.constellation.plugins.algorithms.centrality.DegreeCentralityPlugin"/>
-            <tocitem text="Eigenvector Centrality" target="au.gov.asd.tac.constellation.plugins.algorithms.centrality.EigenvectorCentralityPlugin"/>
-            <tocitem text="HITS Centrality" target="au.gov.asd.tac.constellation.plugins.algorithms.centrality.HitsCentralityPlugin"/>
-            <tocitem text="Katz Centrality" target="au.gov.asd.tac.constellation.plugins.algorithms.centrality.KatzCentralityPlugin"/>
-            <tocitem text="Pagerank Centrality" target="au.gov.asd.tac.constellation.plugins.algorithms.centrality.PagerankCentralityPlugin"/>
-        </tocitem>
-        <tocitem text="Cluster" mergetype="javax.help.SortMerge">
-            <tocitem text="Chinese Whispers" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers"/>
-            <tocitem text="K-Truss" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss"/>
-        </tocitem>
-        <tocitem text="Importance" mergetype="javax.help.SortMerge">
-            <tocitem text="Eccentricity" target="au.gov.asd.tac.constellation.plugins.algorithms.importance.EccentricityPlugin"/>
-            <tocitem text="Local Clustering Coefficient" target="au.gov.asd.tac.constellation.plugins.algorithms.importance.LocalClusteringCoefficientPlugin"/>
-            <tocitem text="Ratio of Reciprocity" target="au.gov.asd.tac.constellation.plugins.algorithms.importance.RatioOfReciprocityPlugin"/>
-        </tocitem>
-        <tocitem text="Similarity" mergetype="javax.help.SortMerge">
-            <tocitem text="Cosine Similarity" target="au.gov.asd.tac.constellation.plugins.algorithms.similarity.CosineSimilarityPlugin"/>
-            <tocitem text="Jaccard Index" target="au.gov.asd.tac.constellation.plugins.algorithms.similarity.JaccardIndexPlugin"/>
-        </tocitem>
+    <tocitem text="Selection" mergetype="javax.help.SortMerge">
         <tocitem text="Shortest Paths" target="au.gov.asd.tac.constellation.plugins.algorithms.paths.ShortestPathsPlugin"/>
+    </tocitem>
+    <tocitem text="Tools" mergetype="javax.help.SortMerge">
+        <tocitem text="Cluster" mergetype="javax.help.SortMerge">
+            <tocitem text="Chinese Whispers" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispers"/>
+            <tocitem text="K-Truss" target="au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss"/>
+        </tocitem>
     </tocitem>
 </toc>

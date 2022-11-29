@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,8 +32,8 @@ import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph.
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
 import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilites;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -68,10 +68,10 @@ import java.util.stream.Collectors;
  * @see RecordStore
  * @author sirius
  */
-@PluginInfo(minLogInterval = 5000, pluginType = PluginType.SEARCH, tags = {"SEARCH"})
+@PluginInfo(minLogInterval = 5000, pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
 public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
 
-    protected final String PLUGIN_NAME = getName();
+    protected final String pluginName = getName();
 
     protected RecordStore queryRecordStore;
     private RecordStore result = null;
@@ -83,11 +83,11 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
     /**
      * Base constructor for all implementations of RecordStoreQueryPlugin
      */
-    public RecordStoreQueryPlugin() {
+    protected RecordStoreQueryPlugin() {
         this(null);
     }
 
-    public RecordStoreQueryPlugin(String pluginName) {
+    protected RecordStoreQueryPlugin(String pluginName) {
         super(pluginName);
         validators = new ArrayList<>();
     }
@@ -201,7 +201,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
                     final float[] zOriginal = new float[wg.getVertexCount()];
 
                     // save original positions
-                    if (PreferenceUtilites.isGraphViewFrozen() && wg.isRecordingEdit()) {
+                    if (wg.isRecordingEdit()) {
                         saveOriginalPositionCoordinates(wg, xOriginal, yOriginal, zOriginal);
                     }
 
@@ -211,7 +211,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
                     vlGraph.retrieveCoords();
 
                     // restore the original positions
-                    if (PreferenceUtilites.isGraphViewFrozen() && wg.isRecordingEdit()) {
+                    if (wg.isRecordingEdit()) {
                         restoreOriginalPositionCoordinates(wg, xOriginal, yOriginal, zOriginal);
                     }
                 }
@@ -240,19 +240,6 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
         return GraphRecordStoreUtilities.SOURCE;
     }
 
-//    /**
-//     * Should an arrangement be done after the plugin completes?
-//     * <p>
-//     * Some plugins result in new nodes being created in a graph. In order to
-//     * make these nodes visible to the user, the new nodes should undergo a
-//     * default arrangement.
-//     *
-//     * @return True if new nodes added by this plugin are to be arranged after
-//     * the plugin completes, false if not.
-//     */
-//    public boolean arrangeOnCompletion() {
-//        return false;
-//    }
     /**
      * The arrangement to be done after the plugin completes.
      * <p>

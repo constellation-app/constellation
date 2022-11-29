@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public class EdgeMinTransactionDatetimeAttributeBin extends DateTimeBin {
         super(formatter);
     }
 
-    private static final ZonedDateTime MAX_DATE_TIME = TemporalFormatting.zonedDateTimeFromLong(Long.MAX_VALUE);
+    private static final ZonedDateTime MAX_DATE_TIME = TemporalFormatting.zonedDateTimeFromLong(Integer.MAX_VALUE);
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {
@@ -46,7 +46,7 @@ public class EdgeMinTransactionDatetimeAttributeBin extends DateTimeBin {
         for (int t = 0; t < transactionCount; t++) {
             final int transaction = graph.getEdgeTransaction(element, t);
             final ZonedDateTime zdt = graph.getObjectValue(attribute, transaction);
-            if (zdt.isBefore(currentMin)) {
+            if (zdt != null && zdt.isBefore(currentMin)) {
                 currentMin = zdt;
             }
         }

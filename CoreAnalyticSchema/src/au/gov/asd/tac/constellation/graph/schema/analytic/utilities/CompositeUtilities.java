@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,13 +34,21 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author twilight_sparkle
  */
 public class CompositeUtilities {
+    
+    private static final Logger LOGGER = Logger.getLogger(CompositeUtilities.class.getName());
 
+    private CompositeUtilities() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     private static void simplifyCompositeTransactions(final GraphWriteMethods graph, final int uniqueIdAttr, final int vxId) {
         for (int t = 0; t < graph.getVertexTransactionCount(vxId); t++) {
             final int txId = graph.getVertexTransaction(vxId, t);
@@ -76,14 +84,15 @@ public class CompositeUtilities {
         final CompositeNodeState compositeState = (CompositeNodeState) graph.getObjectValue(compositeStateAttr, vxId);
         if (compositeState != null) {
             if (compositeState.isComposite()) {
-                ContractedCompositeNodeState contractedState = compositeState.contractedState;
+                final ContractedCompositeNodeState contractedState = compositeState.contractedState;
                 resultingNodes.addAll(contractedState.expand(graph, vxId));
                 while (true) {
                     try {
                         graph.validateKey(GraphElementType.VERTEX, false);
                         break;
-                    } catch (DuplicateKeyException ex) {
-                        GraphElementMerger merger = new PrioritySurvivingGraphElementMerger();
+                    } catch (final DuplicateKeyException ex) {
+                        LOGGER.log(Level.INFO, "Duplicate Key has been found. Merging duplicate nodes");
+                        final GraphElementMerger merger = new PrioritySurvivingGraphElementMerger();
                         merger.mergeElement(graph, GraphElementType.VERTEX, ex.getNewId(), ex.getExistingId());
                     }
                 }
@@ -156,7 +165,8 @@ public class CompositeUtilities {
                 try {
                     graph.validateKey(GraphElementType.VERTEX, false);
                     break;
-                } catch (DuplicateKeyException ex) {
+                } catch (final DuplicateKeyException ex) {
+                    LOGGER.log(Level.INFO, "Duplicate Key has been found. Merging duplicate nodes");
                     final GraphElementMerger merger = new PrioritySurvivingGraphElementMerger();
                     merger.mergeElement(graph, GraphElementType.VERTEX, ex.getNewId(), ex.getExistingId());
                 }
@@ -207,8 +217,7 @@ public class CompositeUtilities {
     public static int contractComposite(final GraphWriteMethods graph, final int compositeStateAttr, final int vxId) {
         final CompositeNodeState compositeState = (CompositeNodeState) graph.getObjectValue(compositeStateAttr, vxId);
         if (compositeState != null && compositeState.comprisesAComposite()) {
-            ExpandedCompositeNodeState expandedState = compositeState.expandedState;
-            return expandedState.contract(graph);
+            return compositeState.expandedState.contract(graph);
         }
         return Graph.NOT_FOUND;
     }

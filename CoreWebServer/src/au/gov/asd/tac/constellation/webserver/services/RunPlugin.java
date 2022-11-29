@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -77,16 +77,18 @@ public class RunPlugin extends RestService {
         final PluginParameter<StringParameterValue> nameParam = StringParameterType.build(PLUGIN_NAME_PARAMETER_ID);
         nameParam.setName("Plugin name");
         nameParam.setDescription("The name of the plugin to run.");
+        nameParam.setRequired(true);
         parameters.addParameter(nameParam);
 
         final PluginParameter<StringParameterValue> graphIdParam = StringParameterType.build(GRAPH_ID_PARAMETER_ID);
         graphIdParam.setName("Graph id");
-        graphIdParam.setDescription("The id of a graph to run the plugin on (optional).");
+        graphIdParam.setDescription("The id of a graph to run the plugin on. (Default is the active graph)");
         parameters.addParameter(graphIdParam);
 
         final PluginParameter<StringParameterValue> argsParam = StringParameterType.build(ARGS_PARAMETER_ID);
         argsParam.setName("Plugin arguments (body)");
         argsParam.setDescription("A JSON object containing parameter names and values to be passed to the plugin.");
+        argsParam.setRequestBodyExampleJson("#/components/examples/runPluginExample");
         parameters.addParameter(argsParam);
 
         return parameters;

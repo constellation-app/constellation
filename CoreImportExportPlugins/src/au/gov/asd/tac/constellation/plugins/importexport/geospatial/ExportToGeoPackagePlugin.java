@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import static au.gov.asd.tac.constellation.plugins.importexport.geospatial.AbstractGeoExportPlugin.SPATIAL_REFERENCE_PARAMETER_ID;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.geospatial.Shape;
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +37,7 @@ import org.openide.util.lookup.ServiceProvider;
  * @author cygnus_x-1
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.EXPORT, tags = {"EXPORT"})
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 @NbBundle.Messages("ExportToGeoPackagePlugin=Export to GeoPackage")
 public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
 
@@ -48,7 +49,7 @@ public class ExportToGeoPackagePlugin extends AbstractGeoExportPlugin {
     @Override
     protected void exportGeo(final PluginParameters parameters, final String uuid, final Map<String, String> shapes, final Map<String, Map<String, Object>> attributes, final File output) throws IOException {
         final ParameterValue spatialReferencePV = parameters.getSingleChoice(SPATIAL_REFERENCE_PARAMETER_ID);
-        assert(spatialReferencePV instanceof SpatialReferenceParameterValue);
+        assert (spatialReferencePV instanceof SpatialReferenceParameterValue);
         final Shape.SpatialReference spatialReference = ((SpatialReferenceParameterValue) spatialReferencePV).getSpatialReference();
         Shape.generateGeoPackage(uuid, shapes, attributes, output, spatialReference);
     }

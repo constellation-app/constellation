@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -39,7 +40,8 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -48,13 +50,15 @@ import org.openide.util.lookup.ServiceProvider;
  *
  * @author sirius
  */
-@PluginInfo(pluginType = PluginType.IMPORT, tags = {"IMPORT"})
+@PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
 @ServiceProvider(service = GraphDropper.class, position = 1)
 public class RecordStoreDropper implements GraphDropper {
 
+    private static final Logger LOGGER = Logger.getLogger(RecordStoreDropper.class.getName());
+    
     private static final byte[] RECORD_STORE_BYTES;
 
-    private static final DataFlavor RECORD_STORE_FLAVOR;
+    protected static final DataFlavor RECORD_STORE_FLAVOR;
 
     static {
         DataFlavor recordStoreFlavor = null;
@@ -63,8 +67,10 @@ public class RecordStoreDropper implements GraphDropper {
         try {
             recordStoreFlavor = new DataFlavor("text/plain;class=java.io.InputStream;charset=UTF-8");
             recordStoreBytes = "RecordStore=".getBytes(StandardCharsets.UTF_8.name());
-        } catch (ClassNotFoundException | UnsupportedEncodingException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final ClassNotFoundException ex) {
+            LOGGER.log(Level.SEVERE, "The specified class could not be loaded", ex);
+        } catch (final UnsupportedEncodingException ex) {
+            LOGGER.log(Level.SEVERE, "The specified charset isn''t supported", ex);
         }
 
         RECORD_STORE_FLAVOR = recordStoreFlavor;
@@ -85,30 +91,47 @@ public class RecordStoreDropper implements GraphDropper {
                             final RecordStore recordStore = RecordStoreUtilities.fromJson(in);
 
                             if (recordStore != null) {
-                                return (graph, dropInfo) -> {
-                                    PluginExecution.withPlugin(new RecordStoreQueryPlugin("Drag and Drop: RecordStore To Graph") {
-                                        @Override
-                                        protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-                                            ConstellationLoggerHelper.importPropertyBuilder(
-                                                    this,
-                                                    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
-                                                    null,
-                                                    ConstellationLoggerHelper.SUCCESS
-                                            );
-                                            return recordStore;
-                                        }
-                                    }).executeLater(graph);
-                                };
+                                return (graph, dropInfo)
+                                        -> PluginExecution.withPlugin(new RecordStoreDropperToGraphPlugin(recordStore)).executeLater(graph);
                             }
                         }
                     }
                 }
             }
-        } catch (UnsupportedFlavorException | IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final UnsupportedFlavorException ex) {
+            LOGGER.log(Level.SEVERE, "The requested data flavour isn''t supported", ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         return null;
+    }
+
+    @PluginInfo(pluginType = PluginType.IMPORT, tags = {PluginTags.IMPORT})
+    public static class RecordStoreDropperToGraphPlugin extends RecordStoreQueryPlugin {
+
+        private final RecordStore recordStore;
+
+        public RecordStoreDropperToGraphPlugin(final RecordStore recordStore) {
+            this.recordStore = recordStore;
+        }
+
+        @Override
+        protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+            ConstellationLoggerHelper.importPropertyBuilder(
+                    this,
+                    recordStore.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.LABEL),
+                    null,
+                    ConstellationLoggerHelper.SUCCESS
+            );
+            return recordStore;
+        }
+
+        @Override
+        public String getName() {
+            return "Drag and Drop: RecordStore To Graph";
+        }
+
     }
 
 }

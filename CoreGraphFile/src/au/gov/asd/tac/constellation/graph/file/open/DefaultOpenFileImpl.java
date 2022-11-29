@@ -51,6 +51,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 import static java.util.logging.Level.FINER;
 import static java.util.logging.Level.FINEST;
 import java.util.logging.Logger;
@@ -78,7 +79,6 @@ import org.openide.nodes.Node;
 import org.openide.nodes.NodeOperation;
 import org.openide.text.NbDocument;
 import org.openide.util.ContextAwareAction;
-import org.openide.util.Exceptions;
 import org.openide.util.Mutex;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -169,26 +169,22 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
      * @return  <code>true</code> if the cookie was successfully activated,
      * <code>false</code> if some error occurred
      */
-    private boolean openEditor(final EditorCookie editorCookie,
-            final int line) {
+    private boolean openEditor(final EditorCookie editorCookie, final int line) {
         assert EventQueue.isDispatchThread();
         if (LOGGER.isLoggable(FINER)) {
             LOGGER.log(FINER, "openEditor(EditorCookie, line={0})", line); //NOI18N
         }
 
         /* if the editor is already open, just set the cursor and activate it */
-        JEditorPane[] openPanes = editorCookie.getOpenedPanes();
+        final JEditorPane[] openPanes = editorCookie.getOpenedPanes();
         if (openPanes != null) {
             LOGGER.finest("open pane(s) found");                           //NOI18N
             if (line >= 0) {
-                int cursorOffset = getCursorOffset(editorCookie.getDocument(),
-                        line);
-                openPanes[0].setCaretPosition(cursorOffset);
+                openPanes[0].setCaretPosition(getCursorOffset(editorCookie.getDocument(),line));
             }
 
             final Container c;
-            c = SwingUtilities.getAncestorOfClass(TopComponent.class,
-                    openPanes[0]);
+            c = SwingUtilities.getAncestorOfClass(TopComponent.class, openPanes[0]);
             if (c != null) {
                 WindowManager.getDefault().invokeWhenUIReady(((TopComponent) c)::requestActive);
             } else {
@@ -201,8 +197,8 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         final StyledDocument doc;
         try {
             doc = editorCookie.openDocument();
-        } catch (IOException ex) {
-            String msg = NbBundle.getMessage(
+        } catch (final IOException ex) {
+            final String msg = NbBundle.getMessage(
                     DefaultOpenFileImpl.class,
                     "MSG_cannotOpenWillClose");                     //NOI18N
             ErrorManager.getDefault().notify(
@@ -238,9 +234,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
      * @param line line to open the document at (first line = <code>0</code>);
      * must be non-negative
      */
-    private void openDocAtLine(final EditorCookie editorCookie,
-            final StyledDocument doc,
-            final int line) {
+    private void openDocAtLine(final EditorCookie editorCookie, final StyledDocument doc, final int line) {
         assert EventQueue.isDispatchThread();
         assert line >= 0;
         assert editorCookie.getDocument() == doc;
@@ -249,7 +243,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
             LOGGER.log(FINER, "openDocAtLine(EditorCookie, Document, line={0})", line);
         }
 
-        int offset = getCursorOffset(doc, line);
+        final int offset = getCursorOffset(doc, line);
         new SetCursorTask(editorCookie, offset).perform();
     }
 
@@ -260,13 +254,13 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
          * should we wait (in milliseconds) between tries?
          */
         private static final int OPEN_EDITOR_WAIT_PERIOD_MS = 200;
+        
         /**
          * if opening file using non-observable {@code EditorCookie}, how long
          * should we wait (in milliseconds) in total before giving up?
          */
         private static final int OPEN_EDITOR_TOTAL_TIMEOUT_MS = 10000;
-        private static final int MAX_TRIES = OPEN_EDITOR_TOTAL_TIMEOUT_MS
-                / OPEN_EDITOR_WAIT_PERIOD_MS;
+        private static final int MAX_TRIES = OPEN_EDITOR_TOTAL_TIMEOUT_MS / OPEN_EDITOR_WAIT_PERIOD_MS;
         private final EditorCookie editorCookie;
         private final EditorCookie.Observable observable;
         private final int offset;
@@ -314,7 +308,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         private boolean tryNow() {
             assert !success;
 
-            JEditorPane[] panes = editorCookie.getOpenedPanes();
+            final JEditorPane[] panes = editorCookie.getOpenedPanes();
             if (panes != null) {
                 this.success = true;
                 panes[0].setCaretPosition(offset);
@@ -350,11 +344,11 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
             public void run() {
                 try {
                     EventQueue.invokeAndWait(SetCursorTask.this);
-                } catch (InterruptedException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InterruptedException ex) {
+                    LOGGER.log(Level.SEVERE, "Thread was interrupted", ex);
                     Thread.currentThread().interrupt();
-                } catch (InvocationTargetException ex) {
-                    Exceptions.printStackTrace(ex);
+                } catch (final InvocationTargetException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                 }
                 if (!SetCursorTask.this.success) {
                     if (remainingTries.decrementAndGet() != 0) {
@@ -416,11 +410,11 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
 
         try {
             return NbDocument.findLineOffset(doc, line);
-        } catch (IndexOutOfBoundsException ex) {
+        } catch (final IndexOutOfBoundsException ex) {
             /* probably line number out of bounds */
 
-            Element lineRootElement = NbDocument.findLineRootElement(doc);
-            int lineCount = lineRootElement.getElementCount();
+            final Element lineRootElement = NbDocument.findLineRootElement(doc);
+            final int lineCount = lineRootElement.getElementCount();
             if (line >= lineCount) {
                 return NbDocument.findLineOffset(doc, lineCount - 1);
             } else {
@@ -531,13 +525,13 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         final DataObject dataObject;
         try {
             dataObject = DataObject.find(fileObject);
-        } catch (DataObjectNotFoundException ex) {
+        } catch (final DataObjectNotFoundException ex) {
             ErrorManager.getDefault().notify(ex);
             return false;
         }
 
         /* Set a status to notify of file opening */
-        String fileName = fileObject.getNameExt();
+        final String fileName = fileObject.getNameExt();
         StatusDisplayer.getDefault().setStatusText(
                 NbBundle.getMessage(DefaultOpenFileImpl.class,
                         "MSG_opening", //NOI18N
@@ -553,7 +547,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         }
 
         /* Attempt to open the DataObject using its default action */
-        Node dataNode = dataObject.getNodeDelegate();
+        final Node dataNode = dataObject.getNodeDelegate();
         Action action = dataNode.getPreferredAction();
         if ((action != null)
                 && !(action instanceof FileSystemAction)
@@ -586,7 +580,7 @@ public class DefaultOpenFileImpl implements OpenFileImpl, Runnable {
         }
 
         /* Look for an OpenCookie, EditCookie or ViewCookie indicating an openable file */
-        boolean success = openDataObjectByCookie(dataObject, line);
+        final boolean success = openDataObjectByCookie(dataObject, line);
         if (success) {
             return true;
         }

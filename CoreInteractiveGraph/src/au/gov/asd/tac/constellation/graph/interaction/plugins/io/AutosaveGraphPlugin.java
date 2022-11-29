@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.io;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.file.GraphDataObject;
 import au.gov.asd.tac.constellation.graph.file.io.GraphJsonWriter;
 import au.gov.asd.tac.constellation.graph.file.save.AutosaveUtilities;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
@@ -32,7 +31,9 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.HandleIoProgress;
 import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import java.io.File;
@@ -56,8 +57,8 @@ import org.openide.util.lookup.ServiceProvider;
  * @author algol
  */
 @ServiceProvider(service = Plugin.class)
-@PluginInfo(pluginType = PluginType.NONE, tags = {"LOW LEVEL"})
 @Messages("AutosaveGraphPlugin=Autosave Graph")
+@PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 public final class AutosaveGraphPlugin extends SimplePlugin {
 
     private static final Logger LOGGER = Logger.getLogger(AutosaveGraphPlugin.class.getName());
@@ -88,7 +89,7 @@ public final class AutosaveGraphPlugin extends SimplePlugin {
             final File saveDir = AutosaveUtilities.getAutosaveDir();
 
             try {
-                final String gname = graph.getId() + GraphDataObject.FILE_EXTENSION;
+                final String gname = graph.getId() + FileExtensionConstants.STAR;
                 StatusDisplayer.getDefault().setStatusText(String.format("Auto saving %s as %s at %s...", graphId, gname, new Date()));
                 final File saveFile = new File(saveDir, gname);
                 new GraphJsonWriter().writeGraphToZip(copy, saveFile.getPath(), new HandleIoProgress("Autosaving..."));

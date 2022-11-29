@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,15 +48,12 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
         final TableVisualisation<ElementFact> tableVisualisation = new TableVisualisation<>(this);
         final Set<String> factNames = result.getUniqueFactNames();
         tableVisualisation.addColumn(IDENTIFIER_COLUMN_NAME, (100 / 3) * 2);
-        factNames.forEach(factName -> {
-            tableVisualisation.addColumn(factName, (100 / (factNames.size() + 2)));
-        });
-        tableVisualisation.populateTable(result.getIgnoreNullResults()
+
+        factNames.forEach(factName -> tableVisualisation.addColumn(factName, (100 / (factNames.size() + 2))));
+        tableVisualisation.populateTable(result.isIgnoreNullResults()
                 ? result.get().stream().filter(elementScore -> !elementScore.isNull()).collect(Collectors.toList()) : result.get());
         result.addResultListener(tableVisualisation);
-        tableVisualisation.setSelectionModelListener(change -> {
-            result.setSelectionOnGraph(tableVisualisation.getSelectedItems());
-        });
+        tableVisualisation.setSelectionModelListener(change -> result.setSelectionOnGraph(tableVisualisation.getSelectedItems()));
         return tableVisualisation;
     }
 
@@ -91,15 +88,15 @@ public class FactToTableTranslator extends AbstractTableTranslator<FactResult, E
     public ConstellationColor getCellColor(final ElementFact cellValue, final Object cellItem, final String columnName) {
         final float intensity;
         if (cellValue == null) {
-            intensity = 0f;
+            intensity = 0F;
         } else if (IDENTIFIER_COLUMN_NAME.equals(columnName)) {
-            intensity = cellValue.getFactValue() ? 1f : 0f;
+            intensity = cellValue.getFactValue() ? 1F : 0F;
         } else if (cellValue.getFactName().equals(columnName)) {
-            intensity = (boolean) cellItem ? 1f : 0f;
+            intensity = (boolean) cellItem ? 1F : 0F;
         } else {
             throw new UnrecognisedColumnException(columnName);
         }
 
-        return ConstellationColor.getColorValue(intensity, intensity, 0f, 0.3f);
+        return ConstellationColor.getColorValue(intensity, intensity, 0F, 0.3F);
     }
 }

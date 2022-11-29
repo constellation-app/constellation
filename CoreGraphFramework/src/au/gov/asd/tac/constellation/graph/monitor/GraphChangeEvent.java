@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
  */
 public class GraphChangeEvent {
 
-    private static long NEXT_ID = 0;
+    private static long nextID = 0;
     private final long id;
     private GraphChangeEvent next;
     private final Graph graph;
@@ -48,7 +48,7 @@ public class GraphChangeEvent {
      */
     public GraphChangeEvent(final GraphChangeEvent previous, final Graph graph, final Object editor, final Object description) {
         synchronized (GraphChangeEvent.class) {
-            id = NEXT_ID++;
+            id = nextID++;
         }
         this.graph = graph;
         this.editor = editor;

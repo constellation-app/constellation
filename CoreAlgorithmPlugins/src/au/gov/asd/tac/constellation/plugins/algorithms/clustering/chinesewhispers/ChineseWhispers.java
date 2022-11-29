@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2020 Australian Signals Directorate
+ * Copyright 2010-2021 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispe
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,7 +87,7 @@ public final class ChineseWhispers {
             int changes = 0;
             shuffle(random, positions);
 
-            for (int position : positions) {
+            for (final int position : positions) {
                 final int vxId = wg.getVertex(position);
 
                 // Find the vertices connected to this vertex by the highest sum
@@ -101,23 +101,20 @@ public final class ChineseWhispers {
 
                     final int weight = wg.getLinkTransactionCount(linkId);
                     if (weight > maxWeight) {
-                        // This weight is a new maximum, so clear the previous
-                        // candidates.
+                        // This weight is a new maximum, so clear the previous candidates.
                         candidates.clear();
                         maxWeight = weight;
                     }
 
                     if (weight == maxWeight) {
-                        // Find the vertex at the other end of the link and
-                        // remember it as a candidate.
+                        // Find the vertex at the other end of the link and remember it as a candidate.
                         final int neighbourVxId = GraphElementType.LINK.getOtherVertex(wg, linkId, vxId);
                         candidates.add(neighbourVxId);
                     }
                 }
 
                 if (!candidates.isEmpty()) {
-                    // Choose a random vertex from the candidates and change the
-                    // cluster if it's different.
+                    // Choose a random vertex from the candidates and change the cluster if it's different.
                     final int rix = random.nextInt(candidates.size());
                     final int rneighbour = candidates.get(rix);
                     if (vxClusters[vxId] != vxClusters[rneighbour]) {
@@ -161,7 +158,7 @@ public final class ChineseWhispers {
      * @param random
      * @param a
      */
-    private static void shuffle(final SecureRandom random, int[] a) {
+    private static void shuffle(final SecureRandom random, final int[] a) {
         for (int i = a.length - 1; i > 0; i--) {
             final int ix = random.nextInt(i + 1);
             final int tmp = a[ix];
