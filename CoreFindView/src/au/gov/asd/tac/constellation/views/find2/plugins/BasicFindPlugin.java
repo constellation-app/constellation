@@ -199,6 +199,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         if (ActiveFindResultsList.getBasicResultsList() == null || !ActiveFindResultsList.getBasicResultsList().getSearchParameters().equals(this.parameters)
                 || (!this.parameters.isSearchAllGraphs() && ActiveFindResultsList.getBasicResultsList().get(0) != null && !ActiveFindResultsList.getBasicResultsList().get(0).getGraphId().equals(graph.getId()))) {
             ActiveFindResultsList.setBasicResultsList(foundResult);
+            ActiveFindResultsList.getBasicResultsList().setCurrentIndex(-1);
         } else {
             ActiveFindResultsList.addToBasicFindResultsList(foundResult);
         }

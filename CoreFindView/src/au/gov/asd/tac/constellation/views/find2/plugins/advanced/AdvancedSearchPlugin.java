@@ -272,6 +272,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
         if (ActiveFindResultsList.getAdvancedResultsList() == null || !ActiveFindResultsList.getAdvancedResultsList().getAdvancedSearchParameters().equals(this.parameters)
                 || (!this.parameters.isSearchAllGraphs() && ActiveFindResultsList.getAdvancedResultsList().get(0) != null && !ActiveFindResultsList.getAdvancedResultsList().get(0).getGraphId().equals(graph.getId()))) {
             ActiveFindResultsList.setAdvancedResultsList(foundResult);
+            ActiveFindResultsList.getAdvancedResultsList().setCurrentIndex(-1);
         } else {
             ActiveFindResultsList.addToAdvancedFindResultsList(foundResult);
         }
