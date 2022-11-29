@@ -84,7 +84,7 @@ public class ButtonToolbar {
 
     private static final ImageView HELP_ICON = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
     private static final ImageView ADD_ICON = new ImageView(UserInterfaceIconProvider.ADD.buildImage(16));
-    private static final ImageView FAVOURITE_ICON = new ImageView(AnalyticIconProvider.STAR.buildImage(16, ConstellationColor.YELLOW.getJavaColor()));
+    private static final ImageView FAVOURITE_ICON = new ImageView(AnalyticIconProvider.STAR.buildImage(16));
 
     private static final String HELP_TOOLTIP = "Display help for Data Access";
     private static final String ADD_TOOLTIP = "Add new run tab";

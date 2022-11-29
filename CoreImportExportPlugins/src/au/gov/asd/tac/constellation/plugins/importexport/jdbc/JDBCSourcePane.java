@@ -79,7 +79,6 @@ public class JDBCSourcePane extends SourcePane {
     private static final int GAP = 10;
     private static final String ACTION_CANCEL = "Cancel";
     private static final String TITLE_JDBC_IMPORT = "Database Import";
-    private static final String PROMPT_TEXT_COLOR = "-fx-prompt-text-fill: grey";
     private static final String ADD_CONNECTION = "Add Connection";
     private static final String MODIFY_CONNECTION = "Modify Connection";
     private static final String ADD_DRIVER = "Add Driver";
@@ -349,7 +348,6 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(jarLabel, 0, 0, 1, 1);
         final TextField driverFilePath = new TextField();
         driverFilePath.setPromptText("Select or enter the JDBC driver JAR file");
-        driverFilePath.setStyle(PROMPT_TEXT_COLOR);
         driverFilePath.setFocusTraversable(false);
         gp.add(driverFilePath, 1, 0, 1, 1);
 
@@ -524,7 +522,6 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(nameLabel, 0, 0, 1, 1);
         final TextField cn = new TextField(add ? "" : connection.getConnectionName());
         cn.setPromptText("Enter a name for your connection");
-        cn.setStyle(PROMPT_TEXT_COLOR);
         cn.setFocusTraversable(false);
         cn.focusedProperty().addListener((obs, oldVal, newVal) -> {
             cn.setStyle(""); 
@@ -548,7 +545,6 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(connectionStringLabel, 0, 2, 1, 1);
         final TextField connectionStringF = new TextField(add ? "" : connection.getConnectionString());
         connectionStringF.setPromptText("Enter a URL to connect to, eg. jdbc:sqlite:C:/my_folder/database.sqlite");
-        connectionStringF.setStyle(PROMPT_TEXT_COLOR);
         connectionStringF.setFocusTraversable(false);
         connectionStringF.focusedProperty().addListener((obs, oldVal, newVal) -> {
             connectionStringF.setStyle(""); 
@@ -561,14 +557,12 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(usernameLabel, 0, 3, 1, 1);
         final TextField username = new TextField();
         username.setPromptText("Optional: Set a username");
-        username.setStyle(PROMPT_TEXT_COLOR);
         username.setFocusTraversable(false);
         gp.add(username, 1, 3, 2, 1);
         final Label passwordLabel = new Label("Password");
         gp.add(passwordLabel, 0, 4, 1, 1);
         final PasswordField password = new PasswordField();
         password.setPromptText("Optional: Set a password");
-        password.setStyle(PROMPT_TEXT_COLOR);
         password.setFocusTraversable(false);
 
         gp.add(password, 1, 4, 2, 1);

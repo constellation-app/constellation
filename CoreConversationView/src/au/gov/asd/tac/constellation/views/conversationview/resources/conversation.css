@@ -43,10 +43,6 @@
     -fx-padding: 2;
 }
 
-.list-cell {
-    -fx-background-color: transparent;
-}
-
 .selectable-label {
     -fx-highlight-fill: transparent;
     -fx-text-fill: black;

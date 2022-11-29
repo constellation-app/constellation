@@ -21,24 +21,24 @@
     -fx-background-color: orange;
 }
 
-.lightNameText {
+.interrupted {
+    -fx-background-color: blue;
+}
+
+.defaultNameText {
     -fx-text-fill: #eeeeee;
 }
 
-.darkNameText {
-    -fx-text-fill: #222222;
-}
-
-.lightMessageText {
+.defaultMessageText {
     -fx-text-fill: white;
 }
 
-.darkMessageText {
+.errorMessageText {
     -fx-text-fill: #222222;
 }
 
-.interrupted {
-    -fx-background-color: blue;
+.errorMessageText {
+    -fx-text-fill: #222222;
 }
 
 .progress-bar .bar {

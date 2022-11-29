@@ -3,9 +3,10 @@
 }
 
 .accordion .titled-pane-heading .title, .titled-pane-heading > .title {
+    -fx-font-weight:bold;
     -fx-background-color: #1c5aa6;
-    -fx-color: white;
     -fx-padding: 3;
+    -fx-color: white;
 }
 
 .titled-pane > .title {
@@ -26,15 +27,7 @@
 }
 
 .titled-pane-datetime > .title {
-    -fx-base: #5E9656;
-}
-
-.text-input {
-    -fx-prompt-text-fill: gray;
-}
-
-.time-range-toggle:selected {
-    -fx-background-color: #5E9656;
+    -fx-base: #1f6fba;
 }
 
 .page-corner {

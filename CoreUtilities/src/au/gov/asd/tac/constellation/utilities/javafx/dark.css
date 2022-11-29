@@ -10,13 +10,13 @@
      *                                                                         *
      **************************************************************************/
 
-    /* The base color for objects. Instead of using -fx-base directly, 
+    /* The base color for objects. Instead of using -fx-base directly,
      * the sections in this file will typically use -fx-color.
      */
     -fx-base: #111111;
 
-    /* The background of windows. See also -fx-text-background-color, which 
-     * should be used as the -fx-text-fill value for text painted on top of 
+    /* The background of windows. See also -fx-text-background-color, which
+     * should be used as the -fx-text-fill value for text painted on top of
      * backgrounds colored with -fx-background.
      */
     -fx-background: #222222;
@@ -42,13 +42,13 @@
     -fx-mid-text-color: derive(-fx-light-text-color,-40%);
     -fx-dark-text-color: derive(-fx-light-text-color,-80%);
 
-    /* For highlighting/accenting objects.  For example: selected text; 
+    /* For highlighting/accenting objects.  For example: selected text;
      * selected items in menus, lists, trees, and tables; progress bars;
      * default buttons.
      */
     -fx-accent: #0093ff;
 
-    /* For the focus indicator of objects. Typically used as the first color 
+    /* For the focus indicator of objects. Typically used as the first color
      * in -fx-background-color for the "focused" pseudo-class. Also
      * typically used with insets of -1.4 to provide a glowing effect.
      */
@@ -86,8 +86,12 @@
     -fx-text-fill: #e0e0e0;
 }
 
-.text-field {    
-    -fx-prompt-text-fill: grey;
+.text-field {
+    -fx-prompt-text-fill: gray;
+}
+
+.text-area {
+    -fx-prompt-text-fill: gray;
 }
 
 /*******************************************************************************
@@ -213,7 +217,6 @@
     -fx-background-color: #1f6fba;
 }
 
-
 /* Uncategorised */
 .scroll-pane {
     -fx-background-color: #444444;
@@ -232,18 +235,19 @@
     -fx-control-inner-background: #444444;
 }
 
-.separator .line{
+.separator .line {
     -fx-border-color: #e0e0e0;
 }
 
-#error{
+#error {
     -fx-text-fill: #DE2446;
 }
 
-#invalid{
-    -fx-background-color: #c10000, -fx-text-box-border, -fx-control-inner-background;
+#invalid {
+    -fx-background-color: #8a1d1d;
+    -fx-control-inner-background: #8a1d1d;
 }
 
-#valid{
+#valid {
     -fx-background-color: -fx-focus-color, -fx-text-box-border, -fx-control-inner-background;
 }

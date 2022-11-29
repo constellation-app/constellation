@@ -81,8 +81,10 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     private final Label timeLabel = new Label("3:00");
     private final Label messageLabel = new Label();
 
-    private static final String LIGHT_MESSAGE_TEXT = "lightMessageText";
-    private static final String LIGHT_NAME_TEXT = "lightNameText";
+    private static final String DEFAULT_NAME_TEXT = "defaultNameText";
+    private static final String DEFAULT_MESSAGE_TEXT = "defaultMessageText";
+    private static final String ERROR_MESSAGE_TEXT = "errorMessageText";
+    private static final String ERROR_NAME_TEXT = "errorNameText";
 
     private int nextChild = 0;
 
@@ -136,6 +138,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         GridPane.setFillWidth(timeLabel, true);
         timeLabel.setPadding(new Insets(0, 0, 0, 5));
         timeLabel.setMinWidth(USE_PREF_SIZE);
+        timeLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
         contentPane.add(timeLabel, 2, 0);
 
         BorderPane messageContainer = new BorderPane();
@@ -247,14 +250,14 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
             // If the plugin is still running
             if (stopTime == -1) {
                 sequencePane.getStyleClass().add("running");
-                pluginNameLabel.getStyleClass().add(LIGHT_NAME_TEXT);
-                messageLabel.getStyleClass().add(LIGHT_MESSAGE_TEXT);
+                pluginNameLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
+                messageLabel.getStyleClass().add(DEFAULT_MESSAGE_TEXT);
 
                 // If the plugin has finished
             } else {
                 sequencePane.getStyleClass().add("finished");
-                pluginNameLabel.getStyleClass().add(LIGHT_NAME_TEXT);
-                messageLabel.getStyleClass().add(LIGHT_MESSAGE_TEXT);
+                pluginNameLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
+                messageLabel.getStyleClass().add(DEFAULT_MESSAGE_TEXT);
             }
 
             if (pluginReport.getMessage() == null) {
@@ -269,15 +272,15 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
             // If the plugin has been cancelled
             if (error instanceof InterruptedException) {
                 sequencePane.getStyleClass().add("interrupted");
-                pluginNameLabel.getStyleClass().add(LIGHT_NAME_TEXT);
-                messageLabel.getStyleClass().add(LIGHT_MESSAGE_TEXT);
+                pluginNameLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
+                messageLabel.getStyleClass().add(DEFAULT_MESSAGE_TEXT);
                 messageLabel.setText("Cancelled");
 
                 // If the plugin failed in an expected way
             } else if (error instanceof PluginException) {
                 sequencePane.getStyleClass().add("failed");
-                pluginNameLabel.getStyleClass().add("darkNameText");
-                messageLabel.getStyleClass().add("darkMessageText");
+                pluginNameLabel.getStyleClass().add(ERROR_NAME_TEXT);
+                messageLabel.getStyleClass().add(ERROR_MESSAGE_TEXT);
 
                 Writer errorWriter = new CharArrayWriter();
                 try (PrintWriter out = new PrintWriter(errorWriter)) {
@@ -290,8 +293,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
                 // If the plugin failed in an unexpected way
             } else {
                 sequencePane.getStyleClass().add("errored");
-                pluginNameLabel.getStyleClass().add(LIGHT_NAME_TEXT);
-                messageLabel.getStyleClass().add(LIGHT_MESSAGE_TEXT);
+                pluginNameLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
+                messageLabel.getStyleClass().add(DEFAULT_MESSAGE_TEXT);
 
                 Writer errorWriter = new CharArrayWriter();
                 try (PrintWriter out = new PrintWriter(errorWriter)) {

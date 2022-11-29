@@ -107,7 +107,6 @@ public class NotesViewPane extends BorderPane {
 
     private static final int DEFAULT_SPACING = 5;
     private static final int OPTIONS_SPACING = 150;
-    private static final String PROMPT_COLOR = "#909090";
     private static final String USER_COLOR = "#942483";
     private static final String AUTO_COLOR = "#1c5aa6";
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
@@ -118,7 +117,7 @@ public class NotesViewPane extends BorderPane {
 
     private static final Object LOCK = new Object();
 
-    private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private final String fontStyle = String.format("-fx-text-fill: #fff; -fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String BOLD_STYLE = "-fx-font-weight: bold;";
 
     private final List<Integer> nodesSelected = new ArrayList<>();
@@ -147,7 +146,7 @@ public class NotesViewPane extends BorderPane {
         // CheckComboBox to select and deselect various filters for note rendering.
         filterCheckComboBox = new CheckComboBox(availableFilters);
         filterCheckComboBox.setTitle("Select a filter...");
-        filterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        filterCheckComboBox.setStyle(fontStyle);
         filterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isSelectedFiltersUpdating) {               
                 setFilters(filterCheckComboBox.getCheckModel().getCheckedItems());
@@ -179,7 +178,7 @@ public class NotesViewPane extends BorderPane {
 
         // CheckComboBox for the Auto Note filters.
         autoFilterCheckComboBox = new CheckComboBox(tagsFiltersList);
-        autoFilterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        autoFilterCheckComboBox.setStyle(fontStyle);
         autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isAutoSelectedFiltersUpdating) {
                 updateSelectedTagsCombo(autoFilterCheckComboBox.getCheckModel().getCheckedItems());
@@ -208,7 +207,6 @@ public class NotesViewPane extends BorderPane {
         // TextField to enter new note title.
         final TextField titleField = new TextField();
         titleField.setPromptText("Type a title...");
-        titleField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";");
 
         // Checkbox to apply note to selection.
         final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
@@ -219,7 +217,6 @@ public class NotesViewPane extends BorderPane {
         // TextArea to enter new note content.
         final TextArea contentField = new TextArea();
         contentField.setPromptText("Type a note...");
-        contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";");
         contentField.setWrapText(true);
         contentField.setOnKeyPressed(key -> {
             // If tab is typed and shift isn't being held dowm.
@@ -233,7 +230,7 @@ public class NotesViewPane extends BorderPane {
 
         // Button to add new note.
         final Button addNoteButton = new Button("Add Note");
-        addNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        addNoteButton.setStyle(fontStyle);
         addNoteButton.setOnAction(event -> {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
@@ -599,6 +596,7 @@ public class NotesViewPane extends BorderPane {
         contentLabel.setWrapText(true);
         contentLabel.setMinWidth(50);
         contentLabel.setAlignment(Pos.TOP_LEFT);
+        contentLabel.setStyle(fontStyle);
 
         // Define content text area
         final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
@@ -648,15 +646,15 @@ public class NotesViewPane extends BorderPane {
         // Define buttons (edit, save, add, renove, delete)
         final Button editTextButton = new Button("Edit");
         editTextButton.setMinWidth(92);
-        editTextButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        editTextButton.setStyle(fontStyle);
 
         final Button saveTextButton = new Button("Save");
         saveTextButton.setMinWidth(92);
-        saveTextButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        saveTextButton.setStyle(fontStyle);
 
         final Button deleteButton = new Button("Delete Note");
         deleteButton.setMinWidth(92);
-        deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        deleteButton.setStyle(fontStyle);
 
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
@@ -664,7 +662,7 @@ public class NotesViewPane extends BorderPane {
         noteButtons.setAlignment(Pos.CENTER);
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
-        noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
+        noteBody.setStyle("-fx-padding: 5px; -fx-text-fill: white; -fx-background-color: "
                 + noteColor + "; -fx-background-radius: 10 10 10 10;");
         notesListVBox.getChildren().add(noteBody);
 

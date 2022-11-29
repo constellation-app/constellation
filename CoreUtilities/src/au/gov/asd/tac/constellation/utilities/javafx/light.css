@@ -11,8 +11,12 @@
     -fx-text-fill: #000000;
 }
 
-.text-field {    
-    -fx-prompt-text-fill: grey;
+.text-field {
+    -fx-prompt-text-fill: gray;
+}
+
+.text-area {
+    -fx-prompt-text-fill: gray;
 }
 
 /*******************************************************************************
@@ -25,8 +29,16 @@
     -fx-border-color: #1f6fba;
 }
 
-.menu:hover{
+.menu-bar .label {
+    -fx-text-fill: #ffffff;
+}
+
+.menu:hover {
     -fx-background-color: #0093FF;
+}
+
+.context-menu {
+    -fx-background-color: #999999;
 }
 
 /*******************************************************************************
@@ -34,7 +46,32 @@
  * Button                                                                      *
  *                                                                             *
  ******************************************************************************/
-.button{
+.button {
     -fx-base: #1f6fba;
     -fx-text-fill: #ffffff;
+}
+
+.toggle-button {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #999999;
+}
+
+.toggle-button:focused {
+    -fx-background-color: #999999;
+}
+
+
+.toggle-button:selected {
+    -fx-background-color: #1f6fba;
+}
+
+.toggle-button:selected:focused {
+    -fx-background-color: #1f6fba;
+}
+
+/* Uncategorised */
+
+#invalid {
+    -fx-background-color: #8a1d1d;
+    -fx-control-inner-background: #8a1d1d;
 }

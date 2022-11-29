@@ -1,0 +1,47 @@
+#pluginReport {
+    -fx-background-radius: 3;
+    -fx-border-color: #333333;
+    -fx-border-width: 1;
+    -fx-border-radius: 3;
+}
+
+.running {
+    -fx-background-color: green;
+}
+
+.finished {
+    -fx-background-color: #e3e3e3;
+}
+
+.errored {
+    -fx-background-color: #8a1d1d;
+}
+
+.failed {
+    -fx-background-color: orange;
+}
+
+.interrupted {
+    -fx-background-color: blue;
+}
+
+.defaultNameText {
+    -fx-text-fill: black;
+}
+
+.defaultMessageText {
+    -fx-text-fill: black;
+}
+
+.errorMessageText {
+    -fx-text-fill: black;
+}
+
+.errorMessageText {
+    -fx-text-fill: black;
+}
+
+.progress-bar .bar {
+    -fx-padding: 5 5 5 5;
+    -fx-background-insets: 3 4 4 4;
+}
