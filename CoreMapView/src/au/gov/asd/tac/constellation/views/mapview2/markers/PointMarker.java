@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -45,6 +47,8 @@ public class PointMarker extends AbstractMarker {
     private String defaultColour = "#FF0000";
     private String attributeColour = defaultColour;
     private String blazeColour = null;
+    private int blazeColourCount = 0;
+    private int overlayColourCount = 0;
     private String overlayColour = defaultColour;
     private String currentColour = defaultColour;
 
@@ -101,7 +105,7 @@ public class PointMarker extends AbstractMarker {
         parent.getMarkerColourProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-
+                LOGGER.log(Level.SEVERE, "Setting change listener on marker: " + markerID);
                 if (newValue.equals(MapViewPane.DEFAULT_COLOURS)) {
                     currentColour = defaultColour;
                     markerPath.setFill(Color.web(currentColour));
@@ -120,8 +124,14 @@ public class PointMarker extends AbstractMarker {
                     if (blazeColour != null) {
                         ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
                         //LOGGER.log(Level.SEVERE, colour.getHtmlColor());
+
+                        if (blazeColourCount == 1) {
                         currentColour = colour.getHtmlColor();
-                        markerPath.setFill(Color.web(currentColour));
+                            markerPath.setFill(Color.web(currentColour));
+                        } else {
+                            markerPath.setFill(Color.web("#D3D3D3"));
+                            currentColour = "#D3D3D3";
+                        }
 
                     } else
                         markerPath.setFill(Color.web(defaultColour));
@@ -164,7 +174,14 @@ public class PointMarker extends AbstractMarker {
     @Override
     public void setBlazeColour(String blazeCol) {
         blazeCol = blazeCol.split(";")[1];
-        blazeColour = blazeCol;
+
+        LOGGER.log(Level.SEVERE, "Blaze colour for: " + idList.get(0) + ": " + blazeCol);
+
+        if (blazeColourCount == 0) {
+            blazeColour = blazeCol;
+        }
+
+        ++blazeColourCount;
     }
 
     @Override

@@ -103,8 +103,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     public static final Object LOCK = new Object();
 
+    private int cacheCounter = 0;
 
-    public final MapViewPane mapViewPane;
+
+    public MapViewPane mapViewPane;
     /*private final Map<String, AbstractMarker> markers = new HashMap<>();
     private final List<Integer> selectedNodeList = new ArrayList<>();*/
 
@@ -154,6 +156,13 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         super.handleComponentOpened();
         //WindowManager.getDefault().setTopComponentFloating(this, true);
         //mapViewPane.resetContent();
+
+        LOGGER.log(Level.SEVERE, "Cache: " + (++cacheCounter));
+
+        if (mapViewPane == null) {
+            mapViewPane = new MapViewPane(this);
+        }
+
         mapViewPane.setUpMap();
         GraphManager.getDefault().getActiveGraph();
         if (GraphManager.getDefault().getActiveGraph() != null) {
@@ -164,8 +173,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        mapViewPane.getMap().clearQueriedMarkers();
-        mapViewPane.getMap().clearQueriedMarkers();
+        mapViewPane.getMap().clearAll();
     }
 
     public int getNewMarkerID() {
@@ -207,6 +215,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
+        if (mapViewPane == null) {
+            mapViewPane = new MapViewPane(this);
+        }
+
         return mapViewPane.getAllMarkers();
     }
 

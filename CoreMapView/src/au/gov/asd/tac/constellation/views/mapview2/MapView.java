@@ -124,6 +124,8 @@ public class MapView extends ScrollPane {
     private Group clusterMarkerGroup;
     //public Group pointMarkerGroup;
     public Group hiddenPointMarkerGroup;
+    private final Group overlayGroup;
+    private final Group layerGroup;
 
     private static final Logger LOGGER = Logger.getLogger("Test");
 
@@ -162,8 +164,6 @@ public class MapView extends ScrollPane {
     private ToolsOverlay toolsOverlay = null;
     private InfoOverlay infoOverlay = null;
 
-    private final Group overlayGroup;
-    private final Group layerGroup;
 
     private MapView self = this;
 
@@ -625,6 +625,23 @@ public class MapView extends ScrollPane {
     public void clearQueriedMarkers() {
         markers.clear();
         selectedNodeList.clear();
+    }
+
+    public void clearAll() {
+        markers.clear();
+        selectedNodeList.clear();
+        userMarkers.clear();
+
+        //mapCanvas.getChildren().clear();
+        countryGroup.getChildren().clear();
+        graphMarkerGroup.getChildren().clear();
+        drawnMarkerGroup.getChildren().clear();
+        polygonMarkerGroup.getChildren().clear();
+        clusterMarkerGroup.getChildren().clear();
+
+        hiddenPointMarkerGroup.getChildren().clear();
+        overlayGroup.getChildren().clear();
+        layerGroup.getChildren().clear();
     }
 
     public Graph getCurrentGraph() {

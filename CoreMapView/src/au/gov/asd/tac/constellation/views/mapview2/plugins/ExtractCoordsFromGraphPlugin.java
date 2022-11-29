@@ -97,7 +97,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             blazeID = VisualConcept.VertexAttribute.BLAZE.get(graph);
                             overlayID = VisualConcept.VertexAttribute.OVERLAY_COLOR.get(graph);
                             elementCount = graph.getVertexCount();
-                            LOGGER.log(Level.SEVERE, "Lattitude: " + latID + ", Longitude: " + lonID);
+                            //LOGGER.log(Level.SEVERE, "Lattitude: " + latID + ", Longitude: " + lonID);
 
                             //double lon = graph.getDoubleValue(latID, latID)
                             break;
@@ -130,12 +130,17 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             final float elementLon = graph.getObjectValue(lonID, elementID);
 
                             final String elementColour = graph.getStringValue(colourID, elementID);
-                            final String blazeColour = graph.getStringValue(blazeID, elementID);
-                            LOGGER.log(Level.SEVERE, "Node colour:" + blazeColour);
+
+                            String blazeColour = null;
+
+                            if (blazeID != GraphConstants.NOT_FOUND) {
+                                blazeColour = graph.getStringValue(blazeID, elementID);
+                            }
+                            //LOGGER.log(Level.SEVERE, "Node colour:" + blazeColour);
 
                             String coordinateKey = (double) elementLat + "," + (double) elementLon;
                             if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
-                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, 95, 244, elementColour);
+                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, 95, 245, elementColour); //244
                                 mapViewTopComponent.addMarker(coordinateKey, p);
 
                                 /*if (blazeColour != null) {
@@ -153,11 +158,11 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             } else {
 
                                 if (blazeColour != null) {
-                                    if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getBlazeColour() == null) {
+                                    //if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getBlazeColour() == null) {
                                         mapViewTopComponent.getAllMarkers().get(coordinateKey).setBlazeColour(blazeColour);
-                                    } else {
-                                        mapViewTopComponent.getAllMarkers().get(coordinateKey).setBlazeColour("45;#D3D3D3");
-                                    }
+                                    //} else {
+                                    //mapViewTopComponent.getAllMarkers().get(coordinateKey).setBlazeColour("45;#D3D3D3");
+                                    //}
                                 }
 
                                 if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getIdList().get(0) != elementID) {
