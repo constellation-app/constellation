@@ -412,7 +412,7 @@ public final class QualityControlViewPane extends BorderPane {
     private static void showPriorityDialog() {
         final ScrollPane rulesScrollPane = new ScrollPane();
         rulesScrollPane.setPrefHeight(240);
-        rulesScrollPane.setPrefWidth(700);
+        rulesScrollPane.setPrefWidth(750);
         rulesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         rulesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
