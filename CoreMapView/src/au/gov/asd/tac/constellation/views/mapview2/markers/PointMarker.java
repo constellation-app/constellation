@@ -101,45 +101,44 @@ public class PointMarker extends AbstractMarker {
             }
         });
 
-        ConstellationColor constyColor = ConstellationColor.getColorValue(attrColour);
-        parent.getMarkerColourProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                LOGGER.log(Level.SEVERE, "Setting change listener on marker: " + markerID);
-                if (newValue.equals(MapViewPane.DEFAULT_COLOURS)) {
-                    currentColour = defaultColour;
-                    markerPath.setFill(Color.web(currentColour));
-                } else if (newValue.equals(MapViewPane.USE_COLOUR_ATTR)) {
-                    if (idList.size() > 1) {
-                        currentColour = "#D3D3D3";
-                        //LOGGER.log(Level.SEVERE, "ID GREY: " + idList.get(0));
-                        markerPath.setFill(Color.web(currentColour));
-                    } else {
-                        //LOGGER.log(Level.SEVERE, "Attribute colour: " + attrColour);
-                        markerPath.setFill(Color.web(attributeColour));
-                        currentColour = attributeColour;
-                        //LOGGER.log(Level.SEVERE, "ID COLOUR: " + idList.get(0));
-                    }
-                } else if (newValue.equals(MapViewPane.USE_BLAZE_COL)) {
-                    if (blazeColour != null) {
-                        ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
-                        //LOGGER.log(Level.SEVERE, colour.getHtmlColor());
-
-                        if (blazeColourCount == 1) {
-                        currentColour = colour.getHtmlColor();
-                            markerPath.setFill(Color.web(currentColour));
-                        } else {
-                            markerPath.setFill(Color.web("#D3D3D3"));
-                            currentColour = "#D3D3D3";
-                        }
-
-                    } else
-                        markerPath.setFill(Color.web(defaultColour));
-                }
-                //LOGGER.log(Level.SEVERE, "Size of ID list: " + idList.size());
-            }
-        });
     }
+
+    public void changeMarkerColour(String option) {
+        //LOGGER.log(Level.SEVERE, "In changing colour function for marker: " + markerID);
+        if (option.equals(MapViewPane.DEFAULT_COLOURS)) {
+            currentColour = defaultColour;
+            markerPath.setFill(Color.web(currentColour));
+        } else if (option.equals(MapViewPane.USE_COLOUR_ATTR)) {
+            if (idList.size() > 1) {
+                currentColour = "#D3D3D3";
+                //LOGGER.log(Level.SEVERE, "ID GREY: " + idList.get(0));
+                markerPath.setFill(Color.web(currentColour));
+            } else {
+                //LOGGER.log(Level.SEVERE, "Attribute colour: " + attrColour);
+                markerPath.setFill(Color.web(attributeColour));
+                currentColour = attributeColour;
+                //LOGGER.log(Level.SEVERE, "ID COLOUR: " + idList.get(0));
+            }
+        } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
+            if (blazeColour != null) {
+                ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
+                LOGGER.log(Level.SEVERE, "Setting blaze Colour for marker: " + markerID);
+
+                if (blazeColourCount == 1) {
+                    currentColour = colour.getHtmlColor();
+                    markerPath.setFill(Color.web(currentColour));
+                } else {
+                    markerPath.setFill(Color.web("#D3D3D3"));
+                    currentColour = "#D3D3D3";
+                }
+
+            } else {
+                markerPath.setFill(Color.web(defaultColour));
+            }
+        }
+        //LOGGER.log(Level.SEVERE, "Size of ID list: " + idList.size());
+    }
+
 
 
     public double getLattitude() {
@@ -173,15 +172,19 @@ public class PointMarker extends AbstractMarker {
 
     @Override
     public void setBlazeColour(String blazeCol) {
-        blazeCol = blazeCol.split(";")[1];
+        //if (blazeCol != null && !blazeCol.isBlank() && !blazeCol.isEmpty()) {
+            blazeCol = blazeCol.split(";")[1];
 
-        LOGGER.log(Level.SEVERE, "Blaze colour for: " + idList.get(0) + ": " + blazeCol);
+        LOGGER.log(Level.SEVERE, "Setting blaze colour for marker: " + markerID);
 
-        if (blazeColourCount == 0) {
-            blazeColour = blazeCol;
-        }
+            //LOGGER.log(Level.SEVERE, "Blaze colour for: " + idList.get(0) + ": " + blazeCol);
 
-        ++blazeColourCount;
+            if (blazeColourCount == 0) {
+                blazeColour = blazeCol;
+            }
+
+            ++blazeColourCount;
+        //}
     }
 
     @Override

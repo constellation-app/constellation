@@ -50,6 +50,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,6 +64,7 @@ import javax.swing.SwingUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -99,7 +102,7 @@ import org.openide.windows.WindowManager;
 
 public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
-    private final Logger LOGGER = Logger.getLogger("test");
+    private final Logger LOGGER = Logger.getLogger("MapViewTopComponent");
 
     public static final Object LOCK = new Object();
 
@@ -112,6 +115,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     private int markerID = 0;
 
+    private MapViewTopComponent self = this;
+
     public MapViewTopComponent() {
 
         setName(Bundle.CTL_MapViewTopComponent2());
@@ -119,6 +124,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
         initComponents();
         mapViewPane = new MapViewPane(this);
+        mapViewPane.setUpMap();
         initContent();
 
     }
@@ -158,22 +164,25 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         //mapViewPane.resetContent();
 
         LOGGER.log(Level.SEVERE, "Cache: " + (++cacheCounter));
+        LOGGER.log(Level.SEVERE, "Inside handleComponentOpened");
 
-        if (mapViewPane == null) {
-            mapViewPane = new MapViewPane(this);
-        }
+        //if (mapViewPane == null) {
+        //mapViewPane = new MapViewPane(this);
+        //}
 
-        mapViewPane.setUpMap();
-        GraphManager.getDefault().getActiveGraph();
-        if (GraphManager.getDefault().getActiveGraph() != null) {
-            PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(GraphManager.getDefault().getActiveGraph());
-        }
+        //mapViewPane.setUpMap();
+        //GraphManager.getDefault().getActiveGraph();
+        //if (GraphManager.getDefault().getActiveGraph() != null) {
+        //PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(GraphManager.getDefault().getActiveGraph());
+        //}
     }
 
     @Override
     protected void handleComponentClosed() {
+        LOGGER.log(Level.SEVERE, "Inside handleComponentClosed");
         super.handleComponentClosed();
-        mapViewPane.getMap().clearAll();
+        mapViewPane.getMap().clearQueriedMarkers();
+        //mapViewPane.getMap().clearAll();
     }
 
     public int getNewMarkerID() {
@@ -207,17 +216,21 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @Override
     protected void handleGraphOpened(final Graph graph) {
         super.handleGraphOpened(graph);
-        LOGGER.log(Level.SEVERE, "Graph Has been opened");
-        mapViewPane.setUpMap();
+        LOGGER.log(Level.SEVERE, "Inside handleGraphOpened");
+        //mapViewPane.setUpMap();
         if (graph != null) {
-            PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(graph);
+            /*if (PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(graph).isDone()) {
+                mapViewPane.getMap().redrawQueriedMarkers();
+            }*/
+
+            //PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(graph);
         }
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
-        if (mapViewPane == null) {
-            mapViewPane = new MapViewPane(this);
-        }
+        //if (mapViewPane == null) {
+        //mapViewPane = new MapViewPane(this);
+        //}
 
         return mapViewPane.getAllMarkers();
     }
@@ -231,10 +244,39 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @Override
     protected void handleNewGraph(final Graph graph) {
         super.handleNewGraph(graph);
+        LOGGER.log(Level.SEVERE, "Inside handleNewGraph");
+        //mapViewPane.setUpMap(); // delete this line
         //UpdateUI();
         if (graph != null) {
-            PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(graph);
+            try {
+
+
+                CompletableFuture.runAsync(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(self)).executeNow(graph);
+                        } catch (Exception e) {
+                            LOGGER.log(Level.SEVERE, e.getMessage());
+                        }
+                    }
+                }).get();
+
+            } catch (InterruptedException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (ExecutionException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    mapViewPane.getMap().redrawQueriedMarkers();
+                }
+            });
+
         }
+
     }
 
     public void drawMarkerOnMap(double lat, double lon, double scale) {
@@ -282,9 +324,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         return mapViewPane.getProviders();
     }
 
-    public void selectOnGraph(final GraphElementType graphElementType, final Set<Integer> elementIds) {
+    /*public void selectOnGraph(final GraphElementType graphElementType, final Set<Integer> elementIds) {
+        LOGGER.log(Level.SEVERE, "Inside selectOnGraph");
         PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(getCurrentGraph());
-    }
+    }*/
 
 
 

@@ -78,6 +78,8 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
         if (graph != null) {
 
             final GraphElementType[] elementTypes = new GraphElementType[]{GraphElementType.VERTEX, GraphElementType.TRANSACTION};
+            //mapViewTopComponent.mapViewPane.getMap().clearListeners();
+            mapViewTopComponent.mapViewPane.getMap().clearQueriedMarkers();
 
             try {
                 for (GraphElementType elementType : elementTypes) {
@@ -125,7 +127,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                                 break;
                         }
 
-                        if (lonID != GraphConstants.NOT_FOUND && latID != GraphConstants.NOT_FOUND && elementType == GraphElementType.VERTEX) {
+                        if (lonID != GraphConstants.NOT_FOUND && latID != GraphConstants.NOT_FOUND && elementType == GraphElementType.VERTEX && elementID != -99) {
                             final float elementLat = graph.getObjectValue(latID, elementID);
                             final float elementLon = graph.getObjectValue(lonID, elementID);
 
@@ -140,20 +142,20 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
                             String coordinateKey = (double) elementLat + "," + (double) elementLon;
                             if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
-                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, 95, 245, elementColour); //244
+                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, 96, 245, elementColour); //244
                                 mapViewTopComponent.addMarker(coordinateKey, p);
 
-                                /*if (blazeColour != null) {
+                                if (blazeColour != null) {
                                     p.setBlazeColour(blazeColour);
-                                }*/
+                                }
 
                                 //LOGGER.log(Level.SEVERE, "Corrdindate key: " + coordinateKey);
-                                Platform.runLater(new Runnable() {
+                                /*Platform.runLater(new Runnable() {
                                     @Override
                                     public void run() {
                                         mapViewTopComponent.mapViewPane.drawMarker(p);
                                     }
-                                });
+                                });*/
 
                             } else {
 

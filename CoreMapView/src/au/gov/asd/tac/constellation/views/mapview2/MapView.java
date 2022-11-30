@@ -55,6 +55,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleSetProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.event.Event;
@@ -113,7 +115,7 @@ public class MapView extends ScrollPane {
     private Set<AbstractMarker.MarkerType> markersShowing = new HashSet<>();
     private Map<String, AbstractOverlay> overlayMap = new HashMap<>();
 
-    private final Map<String, AbstractMarker> markers = new HashMap<>();
+    private Map<String, AbstractMarker> markers = new HashMap<>();
     private final List<Integer> selectedNodeList = new ArrayList<>();
 
     private Canvas mapCanvas;
@@ -131,8 +133,8 @@ public class MapView extends ScrollPane {
 
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0);
 
-    private final PointMarker testMarker;
-    private final PointMarker testMarker2;
+    //private final PointMarker testMarker;
+    //private final PointMarker testMarker2;
 
     private final double mapScaleFactor = 1.1;
 
@@ -176,11 +178,11 @@ public class MapView extends ScrollPane {
     public MapView(MapViewPane parent) {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
-        testMarker = new PointMarker(this, -99, -99, 32.764233, 129.872696, 0.05, 95, 244, "");
-        testMarker.setMarkerPosition(mapWidth, mapHeight);
+        //testMarker = new PointMarker(this, -99, -99, 32.764233, 129.872696, 0.05, 95, 244, "");
+        //testMarker.setMarkerPosition(mapWidth, mapHeight);
 
-        testMarker2 = new PointMarker(this, -100, -100, 35.011665, 135.768326, 0.05, 95, 244, "");
-        testMarker2.setMarkerPosition(mapWidth, mapHeight);
+        //testMarker2 = new PointMarker(this, -100, -100, 35.011665, 135.768326, 0.05, 95, 244, "");
+        //testMarker2.setMarkerPosition(mapWidth, mapHeight);
         //testRegion.setShape(testMarker.getMarker());
         //markersShowing.setValue(new SetChangeListener<AbstractMarker.MarkerType>());
 
@@ -336,6 +338,25 @@ public class MapView extends ScrollPane {
 
         overlayMap.put(MapViewPane.TOOLS_OVERLAY, toolsOverlay);
         overlayMap.put(MapViewPane.INFO_OVERLAY, infoOverlay);
+
+        markerColourProperty.addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                LOGGER.log(Level.SEVERE, "Inside markerCOlourProperty change event handler");
+                for (Object value : markers.values()) {
+                    AbstractMarker m = (AbstractMarker) value;
+
+                    if (m instanceof PointMarker) {
+                        PointMarker p = (PointMarker) m;
+
+                        p.changeMarkerColour(newValue);
+                        LOGGER.log(Level.SEVERE, "Called changeMarkerColour function on marker: " + p.getMarkerId());
+                    }
+
+                    //drawMarker(m);
+                }
+            }
+        });
 
         mapGroupHolder.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -604,6 +625,14 @@ public class MapView extends ScrollPane {
         //parent.redrawQueriedMarkers();
         //hiddenPointMarkerGroup.getChildren().clear();
 
+        if (markers.isEmpty()) {
+            LOGGER.log(Level.SEVERE, "Marker map is empty");
+        }
+
+        if (markers.values().isEmpty()) {
+            LOGGER.log(Level.SEVERE, "Marker values is empty");
+        }
+
         for (Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
             drawMarker(m);
@@ -624,14 +653,18 @@ public class MapView extends ScrollPane {
 
     public void clearQueriedMarkers() {
         markers.clear();
+        //graphMarkerGroup.getChildren().clear();
+        //markers = null;
+        //markers = new HashMap<>();
         selectedNodeList.clear();
     }
 
     public void clearAll() {
-        markers.clear();
-        selectedNodeList.clear();
+        clearQueriedMarkers();
+        //markers.clear();
+        //selectedNodeList.clear();
         userMarkers.clear();
-
+        //mapCanvas = new Canvas();
         //mapCanvas.getChildren().clear();
         countryGroup.getChildren().clear();
         graphMarkerGroup.getChildren().clear();
@@ -642,6 +675,7 @@ public class MapView extends ScrollPane {
         hiddenPointMarkerGroup.getChildren().clear();
         overlayGroup.getChildren().clear();
         layerGroup.getChildren().clear();
+
     }
 
     public Graph getCurrentGraph() {
@@ -650,18 +684,22 @@ public class MapView extends ScrollPane {
 
     public void addMarkerId(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
         selectedNodeList.add(markerID);
-        if (PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph()).isDone()) {
-            selectedNodeList.clear();
-        }
+        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
+
     }
+
+    // public void clearListeners() {
+        //markerColourProperty = null;
+        //markerColourProperty = new SimpleStringProperty();
+    //}
 
     public void drawMarker(AbstractMarker marker) {
 
         if (markersShowing.contains(marker.getType())) {
             marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
-
-            
-            graphMarkerGroup.getChildren().add(marker.getMarker());
+            if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
+                graphMarkerGroup.getChildren().add(marker.getMarker());
+            }
         }
 
     }
@@ -701,6 +739,9 @@ public class MapView extends ScrollPane {
                     }
 
                 }
+
+                //clearQueriedMarkers();
+                //redrawQueriedMarkers();
             }
 
         } catch (Exception e) {
