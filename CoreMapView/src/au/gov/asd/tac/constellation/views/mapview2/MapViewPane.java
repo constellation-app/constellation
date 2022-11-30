@@ -113,6 +113,9 @@ public class MapViewPane extends BorderPane {
     public static final String USE_OVERLAY_COL = "Use Ovelay Color";
     public static final String USE_BLAZE_COL = "Use Blaze Color";
 
+    public static final String NO_LABELS = "No Labels";
+    public static final String USE_LABEL_ATTR = "Use Label Atrtibute";
+    public static final String USE_IDENT_ATTR = "Use Identifier Attribute";
 
     private final MapProvider defaultProvider;
     private final List<? extends MapProvider> providers;
@@ -125,7 +128,7 @@ public class MapViewPane extends BorderPane {
     private final CheckComboBox<String> layersDropDown;
     private final CheckComboBox<String> overlaysDropDown;
     private final ChoiceBox<String> colourDropDown;
-    private final ChoiceBox markerLabelDropDown;
+    private final ChoiceBox<String> markerLabelDropDown;
     private final ComboBox exportDropDown;
     private final Button helpButton;
 
@@ -256,9 +259,13 @@ public class MapViewPane extends BorderPane {
         });
 
 
-        markerLabelDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(MarkerState.MarkerLabel.values())));
+        markerLabelDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(NO_LABELS, USE_LABEL_ATTR, USE_IDENT_ATTR)));
         markerLabelDropDown.getSelectionModel().selectFirst();
         markerLabelDropDown.setTooltip(new Tooltip("Chose the label for markers displayed in the Map View"));
+
+        markerLabelDropDown.setOnAction((event) -> {
+            mapView.getMarkerTextProperty().set(markerLabelDropDown.getValue());
+        });
 
         final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(MapExporterWrapper::new).collect(Collectors.toList());
         exportDropDown = new ComboBox(FXCollections.observableList(exporterWrappers));

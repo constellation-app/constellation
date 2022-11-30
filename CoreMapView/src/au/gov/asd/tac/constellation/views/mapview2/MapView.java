@@ -128,6 +128,7 @@ public class MapView extends ScrollPane {
     public Group hiddenPointMarkerGroup;
     private final Group overlayGroup;
     private final Group layerGroup;
+    private final Group pointMarkerTextGroup;
 
     private static final Logger LOGGER = Logger.getLogger("Test");
 
@@ -172,6 +173,7 @@ public class MapView extends ScrollPane {
     public ClusterMarkerBuilder clusterMarkerBuilder = null;
 
     private StringProperty markerColourProperty = new SimpleStringProperty();
+    private StringProperty markerTextProperty = new SimpleStringProperty();
 
     //private final Region testRegion = new Region();
 
@@ -201,6 +203,7 @@ public class MapView extends ScrollPane {
         //pointMarkerGroup.getChildren().addAll(testMarker.getMarker(), testMarker2.getMarker());
         hiddenPointMarkerGroup = new Group();
         hiddenPointMarkerGroup.setVisible(false);
+        pointMarkerTextGroup = new Group();
 
 
 
@@ -358,6 +361,36 @@ public class MapView extends ScrollPane {
             }
         });
 
+        markerTextProperty.addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                LOGGER.log(Level.SEVERE, "Inside markerCOlourProperty change event handler");
+                for (Object value : markers.values()) {
+                    AbstractMarker m = (AbstractMarker) value;
+
+                    if (m instanceof PointMarker) {
+                        PointMarker p = (PointMarker) m;
+
+                        if (newValue.equals(MapViewPane.NO_LABELS)) {
+                            pointMarkerTextGroup.getChildren().clear();
+                            break;
+                        } else if (newValue.equals(MapViewPane.USE_LABEL_ATTR)) {
+                            //Region textRegion = new Region();
+                            Text t = new Text(p.getLabelAttr());
+                            t.setX(p.getX() - 125);
+                            t.setY(p.getY() + 103);
+
+
+                            pointMarkerTextGroup.getChildren().add(t);
+                        }
+                    }
+
+                    //drawMarker(m);
+                }
+            }
+        });
+
+
         mapGroupHolder.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -480,6 +513,7 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
         mapGroupHolder.getChildren().add(overlayGroup);
         mapGroupHolder.getChildren().add(layerGroup);
+        mapGroupHolder.getChildren().add(pointMarkerTextGroup);
 
 
         overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
@@ -692,6 +726,9 @@ public class MapView extends ScrollPane {
         //markerColourProperty = null;
         //markerColourProperty = new SimpleStringProperty();
     //}
+    public StringProperty getMarkerTextProperty() {
+        return markerTextProperty;
+    }
 
     public void drawMarker(AbstractMarker marker) {
 

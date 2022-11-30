@@ -49,8 +49,14 @@ public class PointMarker extends AbstractMarker {
     private String blazeColour = null;
     private int blazeColourCount = 0;
     private int overlayColourCount = 0;
-    private String overlayColour = defaultColour;
+    private String overlayColour = null;
     private String currentColour = defaultColour;
+
+    private String labelAttr = null;
+    private boolean labelAttrSet = false;
+    private int labelAttrCount = 0;
+
+    private String identifierAttr = null;
 
     private Logger LOGGER = Logger.getLogger("POINT MARKER LOGGER");
 
@@ -122,9 +128,24 @@ public class PointMarker extends AbstractMarker {
         } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
             if (blazeColour != null) {
                 ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
-                LOGGER.log(Level.SEVERE, "Setting blaze Colour for marker: " + markerID);
+                //LOGGER.log(Level.SEVERE, "Setting blaze Colour for marker: " + markerID);
 
                 if (blazeColourCount == 1) {
+                    currentColour = colour.getHtmlColor();
+                    markerPath.setFill(Color.web(currentColour));
+                } else {
+                    markerPath.setFill(Color.web("#D3D3D3"));
+                    currentColour = "#D3D3D3";
+                }
+
+            } else {
+                markerPath.setFill(Color.web(defaultColour));
+            }
+        } else if (option.equals(MapViewPane.USE_OVERLAY_COL)) {
+            if (overlayColour != null) {
+                ConstellationColor colour = ConstellationColor.getColorValue(overlayColour);
+
+                if (overlayColourCount == 1) {
                     currentColour = colour.getHtmlColor();
                     markerPath.setFill(Color.web(currentColour));
                 } else {
@@ -188,6 +209,17 @@ public class PointMarker extends AbstractMarker {
     }
 
     @Override
+    public void setOverlayColour(String overlayCol) {
+        //overlayCol = overlayCol.split(";")[1];
+
+        if (overlayColourCount == 0) {
+            overlayColour = overlayCol;
+        }
+
+        ++overlayColourCount;
+    }
+
+    @Override
     public String getBlazeColour() {
         return blazeColour;
     }
@@ -198,6 +230,26 @@ public class PointMarker extends AbstractMarker {
 
     public double getY() {
         return y;
+    }
+
+    @Override
+    public void setLabelAttr(String labelAttribute) {
+
+        if (!labelAttrSet) {
+            labelAttr = labelAttribute;
+        }
+
+        labelAttrSet = true;
+        ++labelAttrCount;
+    }
+
+    public String getLabelAttr() {
+
+        if (labelAttrCount > 1) {
+            return "<Multiple Values>";
+        }
+
+        return labelAttr;
     }
 
 

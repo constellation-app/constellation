@@ -88,6 +88,8 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                     int colourID = GraphConstants.NOT_FOUND;
                     int blazeID = GraphConstants.NOT_FOUND;
                     int overlayID = GraphConstants.NOT_FOUND;
+                    int labelAttrID = GraphConstants.NOT_FOUND;
+                    int identifierID = GraphConstants.NOT_FOUND;
 
                     int elementCount;
 
@@ -98,6 +100,8 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             colourID = VisualConcept.VertexAttribute.COLOR.get(graph);
                             blazeID = VisualConcept.VertexAttribute.BLAZE.get(graph);
                             overlayID = VisualConcept.VertexAttribute.OVERLAY_COLOR.get(graph);
+                            labelAttrID = VisualConcept.VertexAttribute.LABEL.get(graph);
+                            identifierID = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
                             elementCount = graph.getVertexCount();
                             //LOGGER.log(Level.SEVERE, "Lattitude: " + latID + ", Longitude: " + lonID);
 
@@ -134,10 +138,21 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             final String elementColour = graph.getStringValue(colourID, elementID);
 
                             String blazeColour = null;
+                            String overlayColour = null;
+                            String labelAttr = null;
 
                             if (blazeID != GraphConstants.NOT_FOUND) {
                                 blazeColour = graph.getStringValue(blazeID, elementID);
                             }
+
+                            if (overlayID != GraphConstants.NOT_FOUND) {
+                                overlayColour = graph.getStringValue(overlayID, elementID);
+                            }
+
+                            if (labelAttrID != GraphConstants.NOT_FOUND) {
+                                labelAttr = graph.getStringValue(labelAttrID, elementID);
+                            }
+
                             //LOGGER.log(Level.SEVERE, "Node colour:" + blazeColour);
 
                             String coordinateKey = (double) elementLat + "," + (double) elementLon;
@@ -147,6 +162,14 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
                                 if (blazeColour != null) {
                                     p.setBlazeColour(blazeColour);
+                                }
+
+                                if (overlayColour != null) {
+                                    p.setOverlayColour(overlayColour);
+                                }
+
+                                if (labelAttr != null) {
+                                    p.setLabelAttr(labelAttr);
                                 }
 
                                 //LOGGER.log(Level.SEVERE, "Corrdindate key: " + coordinateKey);
@@ -160,11 +183,18 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             } else {
 
                                 if (blazeColour != null) {
-                                    //if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getBlazeColour() == null) {
                                         mapViewTopComponent.getAllMarkers().get(coordinateKey).setBlazeColour(blazeColour);
-                                    //} else {
-                                    //mapViewTopComponent.getAllMarkers().get(coordinateKey).setBlazeColour("45;#D3D3D3");
-                                    //}
+
+                                }
+
+                                if (overlayColour != null) {
+
+                                    mapViewTopComponent.getAllMarkers().get(coordinateKey).setOverlayColour(overlayColour);
+
+                                }
+
+                                if (labelAttr != null) {
+                                    mapViewTopComponent.getAllMarkers().get(coordinateKey).setLabelAttr(labelAttr);
                                 }
 
                                 if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getIdList().get(0) != elementID) {

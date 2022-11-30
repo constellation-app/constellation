@@ -115,8 +115,16 @@ public abstract class AbstractMarker {
 
     }
 
+    public void setOverlayColour(String overlayCol) {
+
+    }
+
     public String getBlazeColour() {
         return null;
+    }
+
+    public void setLabelAttr(String labelAttribute) {
+
     }
 
 }
