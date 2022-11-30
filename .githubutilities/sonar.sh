@@ -11,7 +11,7 @@ if [ ! -z $2 ]; then
     SONAR_PULLREQUEST_BRANCH="$(echo $1 | awk '{split($0,a,"/"); print a[1]}')/$4"
     sonar-scanner \
       -Dsonar.login=$5 \
-      -Dproject.settings=/home/runner/work/constellation/constellation/sonar-project.properties \
+      -Dproject.settings=./sonar-project.properties \
       -Dsonar.pullrequest.key=$2 \
       -Dsonar.pullrequest.branch="${SONAR_PULLREQUEST_BRANCH}" \
       -Dsonar.pullrequest.base=$3
@@ -19,6 +19,6 @@ if [ ! -z $2 ]; then
 else
   sonar-scanner \
     -Dsonar.login=$5 \
-    -Dproject.settings=/home/runner/work/constellation/constellation/sonar-project.properties \
+    -Dproject.settings=./sonar-project.properties \
     -Dsonar.branch.name=$3
 fi
