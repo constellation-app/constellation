@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,6 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
 
             // Get the findResultsList variables
             final int currentIndex = jnode.get("currentIndex").asInt();
-            final String graphID = jnode.get("graphID").asText();
 
             // Get the basic find replace parameters
             final String findString = jnode.get("findString").asText();
@@ -96,11 +95,11 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
             final ArrayNode findResultsArray = (ArrayNode) jnode.withArray("findResults");
             for (int i = 0; i < findResultsArray.size(); i = i + 3) {
                 findResults.add(findResultsArray.get(i).isNull() ? null : new FindResult(findResultsArray.get(i).asInt(),
-                        findResultsArray.get(i + 1).asInt(), GraphElementType.getValue(findResultsArray.get(i + 2).asText())));
+                        findResultsArray.get(i + 1).asInt(), GraphElementType.getValue(findResultsArray.get(i + 2).asText()), findResultsArray.get(i + 3).asText()));
             }
 
             // Create the findResultList object
-            final FindResultsList findResultList = new FindResultsList(currentIndex, parameters, graphID);
+            final FindResultsList findResultList = new FindResultsList(currentIndex, parameters);
 
             // Add the find results to the findResultsList
             findResultList.addAll(findResults);
@@ -124,7 +123,6 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
                 // Store the current index and the graph ID
                 jsonGenerator.writeObjectFieldStart(attribute.getName());
                 jsonGenerator.writeNumberField("currentIndex", resultsList.getCurrentIndex());
-                jsonGenerator.writeStringField("graphID", resultsList.getGraphId());
 
                 // Stores a list of the Find Results, ID, UID and Graph element type label
                 jsonGenerator.writeArrayFieldStart("findResults");

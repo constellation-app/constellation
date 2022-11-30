@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -97,6 +97,8 @@ public class BasicFindTab extends Tab {
     protected final Label currentSelectionLabel = new Label("Current Selection:");
     protected final ChoiceBox currentSelectionChoiceBox = new ChoiceBox();
 
+    private final Label resultsFoundLabel = new Label();
+
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
@@ -151,6 +153,8 @@ public class BasicFindTab extends Tab {
         findAllButton.setOnAction(action -> findAllAction());
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPrevAction());
+
+        FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> resultsFoundLabel.setText("Results Found: " + newValue));
     }
 
     /**
@@ -242,7 +246,7 @@ public class BasicFindTab extends Tab {
         settingsGrid.add(currentSelectionLabel, 0, 2);
         settingsGrid.add(currentSelectionChoiceBox, 1, 2);
 
-        // Set the preferences for the buttonsHbox and all relvent Buttons
+        // Set the preferences for the buttonsHbox and all relevant Buttons
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
         buttonsHBox.setPadding(new Insets(5, 10, 5, 10));
         buttonsHBox.setSpacing(5);
@@ -252,14 +256,13 @@ public class BasicFindTab extends Tab {
         searchAllGraphs.setAlignment(Pos.CENTER_LEFT);
 
         // add the buttonsHBox to the buttonsVbox
-        buttonsVBox.getChildren().addAll(buttonsHBox);
+        buttonsVBox.getChildren().addAll(resultsFoundLabel, buttonsHBox);
 
         // Set the bottom of the pane to contain the buttonsVbox
         parentComponent.getParentComponent().setBottom(buttonsVBox);
 
         // add all the parent most grids to the layers
         layers.getChildren().addAll(textGrid, settingsGrid);
-
     }
 
     /**
@@ -272,7 +275,7 @@ public class BasicFindTab extends Tab {
     }
 
     /**
-     * updates the current buttons at the bottom of the pane to match the
+     * Updates the current buttons at the bottom of the pane to match the
      * currently selected tab
      */
     public void updateButtons() {
@@ -348,12 +351,10 @@ public class BasicFindTab extends Tab {
                 Thread.currentThread().interrupt();
             }
         }
-        // update the current parameters to be current
-        updateBasicFindParamters();
     }
 
     /**
-     * updates the check box menu with the items present within the selected
+     * Updates the check box menu with the items present within the selected
      * attributes list
      *
      * @param selectedAttributes
@@ -376,7 +377,6 @@ public class BasicFindTab extends Tab {
             }
             cdl.countDown();
         });
-
     }
 
     /**
@@ -599,5 +599,5 @@ public class BasicFindTab extends Tab {
     public ChoiceBox<String> getLookForChoiceBox() {
         return lookForChoiceBox;
     }
-
+    
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.find2.plugins;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -25,10 +24,12 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
-import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
-import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
+import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
+import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindViewUtilities;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,33 +73,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.findInCurrentSelection = parameters.isFindIn();
     }
 
-    /**
-     * This clears all the graph elements that are currently selected
-     *
-     * @param graph
-     */
-    private void clearSelection(final GraphWriteMethods graph) {
-        final int nodesCount = GraphElementType.VERTEX.getElementCount(graph);
-        final int nodeSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        final int transactionsCount = GraphElementType.TRANSACTION.getElementCount(graph);
-        final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-
-        // loop through all nodes that are selected and deselect them
-        if (nodeSelectedAttribute != Graph.NOT_FOUND) {
-            for (int i = 0; i < nodesCount; i++) {
-                final int currElement = GraphElementType.VERTEX.getElement(graph, i);
-                graph.setBooleanValue(nodeSelectedAttribute, currElement, false);
-            }
-        }
-        // loop through all transactions that are selected and deselect them
-        if (transactionSelectedAttribute != Graph.NOT_FOUND) {
-            for (int i = 0; i < transactionsCount; i++) {
-                final int currElement = GraphElementType.TRANSACTION.getElement(graph, i);
-                graph.setBooleanValue(transactionSelectedAttribute, currElement, false);
-            }
-        }
-    }
-
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         //Retrieve the existing FindResultList Meta attribute
@@ -111,7 +85,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
          * list with the correct index and the current find parameters
          */
         if (foundResult == null) {
-            foundResult = new FindResultsList(STARTING_INDEX, this.parameters, graph.getId());
+            foundResult = new FindResultsList(STARTING_INDEX, this.parameters);
         } else {
             /**
              * This is delicate, so don't change. This process, captures the
@@ -121,11 +95,11 @@ public class BasicFindPlugin extends SimpleEditPlugin {
              * parameters are instantiated as new variables as they were
              * manipulation issues elsewhere causing this process to fail.
              */
-            final FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getSearchParameters(), foundResult.getGraphId());
+            final FindResultsList oldList = new FindResultsList(STARTING_INDEX, foundResult.getSearchParameters());
             final BasicFindReplaceParameters oldparameters = oldList.getSearchParameters();
             final BasicFindReplaceParameters newParamters = new BasicFindReplaceParameters(this.parameters);
             int newIndex = getIndex(newParamters, oldparameters, foundResult.getCurrentIndex());
-            foundResult = new FindResultsList(newIndex, newParamters, oldList.getGraphId());
+            foundResult = new FindResultsList(newIndex, newParamters);
         }
 
         foundResult.clear();
@@ -140,13 +114,13 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
         final int elementCount = elementType.getElementCount(graph);
 
-        // do this if add to selection
+        // do this if not add to selection
         if (!addToSelection && !removeFromCurrentSelection && !findInCurrentSelection) {
-            clearSelection(graph);
+            FindViewUtilities.clearSelection(graph);
         }
 
-        final FindResultsList findInCurrentSelectionList = new FindResultsList(graph.getId());
-        final FindResultsList removeFromCurrentSelectionList = new FindResultsList(graph.getId());
+        final FindResultsList findInCurrentSelectionList = new FindResultsList();
+        final FindResultsList removeFromCurrentSelectionList = new FindResultsList();
 
         final String searchString = regex ? findString : Pattern.quote(findString);
         final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
@@ -189,8 +163,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                                 if (graph.getBooleanValue(selectedAttribute, currElement)) {
                                     // Add the element to the find in and
                                     // remove from list
-                                    findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
-                                    removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType));
+                                    findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
+                                    removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
                                 }
                             }
                             // if the user wants to select all, select the
@@ -199,7 +173,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                             }
                             // add the graph element to the foundResult list
-                            foundResult.add(new FindResult(currElement, uid, elementType));
+                            foundResult.add(new FindResult(currElement, uid, elementType, graph.getId()));
                         }
                     }
                 }
@@ -217,35 +191,18 @@ public class BasicFindPlugin extends SimpleEditPlugin {
          */
         selectRemoveFromResults(removeFromCurrentSelection, removeFromCurrentSelectionList, foundResult, graph, selectedAttribute);
 
-        /**
-         * If the user clicked find next or find previous
-         */
-        if (!selectAll) {
+        // Clean the find results list to only contain unique graph elements
+        final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
+        foundResult.clear();
+        foundResult.addAll(distinctValues);
 
-            // Clean the find results list to only contain unique graph elements
-            final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
-            foundResult.clear();
-            foundResult.addAll(distinctValues);
-
-            /**
-             * If the list isn't empty, and the user clicked find next,
-             * increment the found lists index by 1, otherwise decrement it by
-             * 1. Set the element at the specified index to selected.
-             */
-            if (!foundResult.isEmpty()) {
-                if (getNext) {
-                    foundResult.incrementCurrentIndex();
-                } else {
-                    foundResult.decrementCurrentIndex();
-                }
-                final int elementId = foundResult.get(foundResult.getCurrentIndex()).getID();
-                graph.setBooleanValue(selectedAttribute, elementId, !removeFromCurrentSelection);
-            }
-            graph.setObjectValue(stateId, 0, foundResult);
-
+        if (ActiveFindResultsList.getBasicResultsList() == null || !ActiveFindResultsList.getBasicResultsList().getSearchParameters().equals(this.parameters)
+                || (!this.parameters.isSearchAllGraphs() && ActiveFindResultsList.getBasicResultsList().get(0) != null && !ActiveFindResultsList.getBasicResultsList().get(0).getGraphId().equals(graph.getId()))) {
+            ActiveFindResultsList.setBasicResultsList(foundResult);
+            ActiveFindResultsList.getBasicResultsList().setCurrentIndex(-1);
+        } else {
+            ActiveFindResultsList.addToBasicFindResultsList(foundResult);
         }
-        //If no results are found, set the meta attribute to null
-        graph.setObjectValue(stateId, 0, foundResult.isEmpty() ? null : foundResult);
     }
 
     /**
@@ -262,7 +219,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private void selectFindInResults(final boolean findInCurrentSelection, final FindResultsList findInCurrentSelectionList,
             final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
         if (findInCurrentSelection && !findInCurrentSelectionList.isEmpty()) {
-            clearSelection(graph);
+            FindViewUtilities.clearSelection(graph);
             for (final FindResult fr : findInCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
             }
@@ -307,7 +264,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
      * @return the correct current index
      */
     private int getIndex(final BasicFindReplaceParameters currentParameters, final BasicFindReplaceParameters oldParameters, int currentIndex) {
-
         if (!selectAll && currentParameters.equals(oldParameters)) {
             // If the query hasnt changed and there must be elements in the list
             // get the current index

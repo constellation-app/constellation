@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindViewUtilities;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,6 +46,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final boolean ignorecase;
     private final boolean replaceNext;
     private final boolean replaceIn;
+    private final boolean searchAllGraphs;
 
     public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext) {
         this.elementType = parameters.getGraphElement();
@@ -55,6 +57,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
         this.ignorecase = parameters.isIgnoreCase();
         this.replaceNext = replaceNext;
         this.replaceIn = parameters.isReplaceIn();
+        this.searchAllGraphs = parameters.isSearchAllGraphs();
     }
 
     @Override
@@ -65,7 +68,6 @@ public class ReplacePlugin extends SimpleEditPlugin {
         }
 
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
-
         final int elementCount = elementType.getElementCount(graph);
         final String searchString = regex ? findString : Pattern.quote(findString);
         final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
@@ -106,6 +108,10 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                 // set the string of the element types attribute
                                 // to the new value
                                 graph.setStringValue(a.getId(), currElement, newValue);
+                                // Swap to view the graph where the element is found
+                                if (searchAllGraphs) {
+                                    FindViewUtilities.searchAllGraphs(graph);
+                                }
                                 if (replaceNext) {
                                     return;
                                 }
@@ -115,6 +121,10 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                     // set the string of the element types attribute
                                     // to the new value
                                     graph.setStringValue(a.getId(), currElement, newValue);
+                                    // Swap to view the graph where the element is found
+                                    if (searchAllGraphs) {
+                                        FindViewUtilities.searchAllGraphs(graph);
+                                    }
                                     if (replaceNext) {
                                         return;
                                     }
@@ -124,7 +134,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
                     }
                 }
             }
-        }
+        }  
     }
 
     @Override

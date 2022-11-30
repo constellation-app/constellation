@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@ public class AdvancedFindTab extends Tab {
     private final GridPane bottomGrid = new GridPane();
 
     private boolean firstSearch = true;
-    private final String foundLabelText = "Find: Advanced Search: Number of results found: ";
+    private final String foundLabelText = "Results Found: ";
     private final Label matchesFoundLabel = new Label("");
     private final Label matchesFoundCountLabel = new Label("");
 
@@ -150,13 +150,11 @@ public class AdvancedFindTab extends Tab {
         currentSelectionPane.setPadding(new Insets(1, 0, 0, 25));
         currentSelectionPane.setVgap(4.25);
 
-
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 0, 1);
         settingsGrid.add(matchCriteriaLabel, 1, 0);
         settingsGrid.add(matchCriteriaChoiceBox, 1, 1);
         settingsGrid.add(currentSelectionPane, 2, 0, 1, 2);
-
 
         settingsGrid.setPadding(new Insets(5));
         settingsGrid.setHgap(5);
@@ -191,7 +189,6 @@ public class AdvancedFindTab extends Tab {
         buttonsHBox.setSpacing(5);
 
         matchesFoundPane.setPadding(new Insets(10, 12, 5, 10));
-
 
         updateGridColors(GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem()));
     }
