@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.utilities.gui.filechooser;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import javax.swing.JFileChooser;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -36,18 +38,21 @@ public class ShowFileChooserDialogNGTest {
         final FileChooserBuilder fileChooserBuilder = mock(FileChooserBuilder.class);
         final File file = mock(File.class);
         
-        when(fileChooserBuilder.showSaveDialog()).thenReturn(file);
-        
         final ShowFileChooserDialog showFileChooserDialog = new ShowFileChooserDialog(
                 fileChooserBuilder, FileChooserMode.SAVE);
         
         assertEquals(showFileChooserDialog.getSelectedFiles(), Optional.empty());
         
+        JFileChooser jFileChooser = mock(JFileChooser.class);
+        when(jFileChooser.showSaveDialog(any())).thenReturn(1);
+        when(jFileChooser.getSelectedFile()).thenReturn(file);
+        when(fileChooserBuilder.createFileChooser()).thenReturn(jFileChooser);
+        
         showFileChooserDialog.run();
         
         assertEquals(showFileChooserDialog.getSelectedFiles().get(), List.of(file));
         
-        verify(fileChooserBuilder).showSaveDialog();
+        verify(jFileChooser).showSaveDialog(any());
     }
     
     @Test
