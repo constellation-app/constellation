@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.find2.utilities;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * The current list of all find view results
@@ -113,14 +113,11 @@ public class ActiveFindResultsList {
      * @return
      */
     public static int getUniqueGraphCount(final FindResultsList findResultsList) {
-        List<String> uniqueGraphs = new ArrayList();
+        final Set<String> uniqueGraphs = new HashSet<>();
         if (findResultsList != null) {
-            for (final FindResult result : findResultsList) {
-                String graphId = result.getGraphId();
-                if (!uniqueGraphs.contains(graphId)) {
-                    uniqueGraphs.add(graphId);
-                }
-            }
+            findResultsList.stream().map(result -> result.getGraphId()).forEachOrdered(graphId -> {
+                uniqueGraphs.add(graphId);
+            });
         }
         return uniqueGraphs.size();
     }
