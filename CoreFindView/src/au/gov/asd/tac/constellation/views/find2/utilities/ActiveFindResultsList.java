@@ -115,9 +115,8 @@ public class ActiveFindResultsList {
     public static int getUniqueGraphCount(final FindResultsList findResultsList) {
         final Set<String> uniqueGraphs = new HashSet<>();
         if (findResultsList != null) {
-            findResultsList.stream().map(result -> result.getGraphId()).forEachOrdered(graphId -> {
-                uniqueGraphs.add(graphId);
-            });
+            findResultsList.stream().map(result -> result.getGraphId()).forEachOrdered(graphId -> 
+                uniqueGraphs.add(graphId));
         }
         return uniqueGraphs.size();
     }
