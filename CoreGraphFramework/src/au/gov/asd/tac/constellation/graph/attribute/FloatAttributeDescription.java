@@ -81,7 +81,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
                 return Float.parseFloat(string);
             } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
+                        "Error converting String '%s' to float", string), ex);
             }
         }
     }
@@ -286,12 +286,12 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (FloatReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new FloatVariable() {
             @Override
             public float readFloat() {
@@ -299,7 +299,7 @@ public final class FloatAttributeDescription extends AbstractAttributeDescriptio
             }
 
             @Override
-            public void writeFloat(float value) {
+            public void writeFloat(final float value) {
                 graph.setFloatValue(attribute, indexReadable.readInt(), value);
             }
         };

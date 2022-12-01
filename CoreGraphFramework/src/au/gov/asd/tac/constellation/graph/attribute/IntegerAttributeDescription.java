@@ -81,7 +81,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
                 return Integer.parseInt(string);
             } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
+                        "Error converting String '%s' to integer", string), ex);
             }
         }
     }
@@ -286,12 +286,12 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (IntReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new IntVariable() {
             @Override
             public int readInt() {
@@ -299,7 +299,7 @@ public final class IntegerAttributeDescription extends AbstractAttributeDescript
             }
 
             @Override
-            public void writeInt(int value) {
+            public void writeInt(final int value) {
                 graph.setIntValue(attribute, indexReadable.readInt(), value);
             }
         };

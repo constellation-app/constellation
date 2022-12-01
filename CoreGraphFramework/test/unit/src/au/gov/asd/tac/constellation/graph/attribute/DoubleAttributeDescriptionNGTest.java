@@ -21,7 +21,11 @@ import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.locking.ParameterReadAccess;
 import au.gov.asd.tac.constellation.graph.locking.ParameterWriteAccess;
 import au.gov.asd.tac.constellation.graph.utilities.MultiValueStore;
-import static org.testng.Assert.*;
+import java.time.LocalDate;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -62,6 +66,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetName() {
+        System.out.println("getName");
+        
         String expResult = "double";
         String result = instance.getName();
         assertEquals(result, expResult);
@@ -72,6 +78,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetNativeClass() {
+        System.out.println("getNativeClass");
+        
         Class expResult = double.class;
         Class result = instance.getNativeClass();
         assertEquals(result, expResult);
@@ -82,6 +90,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetNativeType() {
+        System.out.println("getNativeType");
+        
         NativeAttributeType expResult = NativeAttributeType.DOUBLE;
         NativeAttributeType result = instance.getNativeType();
         assertEquals(result, expResult);
@@ -92,6 +102,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetDefault() {
+        System.out.println("getDefault");
+        
         Object expResult = 0.0;
         Object result = instance.getDefault();
         assertEquals(result, expResult);
@@ -102,6 +114,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetDefault() {
+        System.out.println("setDefault");
+        
         Object value = 1;
         instance.setDefault(value);
         assertEquals(instance.getDefault(), 1.0);
@@ -112,6 +126,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetCapacity() {
+        System.out.println("getCapacity");
+        
         int expResult = 1;
         int result = instance.getCapacity();
         assertEquals(result, expResult);
@@ -122,9 +138,12 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetCapacity() {
-        int capacity = 10;
-        instance.setCapacity(capacity);
-        assertEquals(instance.getCapacity(), capacity);
+        System.out.println("setCapacity");
+        
+        instance.setCapacity(10);
+        assertEquals(instance.getCapacity(), 10);
+        instance.setCapacity(7);
+        assertEquals(instance.getCapacity(), 7);
     }
 
     /**
@@ -132,6 +151,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetByte() {
+        System.out.println("getByte");
+        
         int id = 0;
         byte expResult = 0;
         byte result = instance.getByte(id);
@@ -143,6 +164,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetByte() {
+        System.out.println("setByte");
+        
         int id = 0;
         byte value = 0;
         instance.setByte(id, value);
@@ -154,6 +177,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetShort() {
+        System.out.println("getShort");
+        
         int id = 0;
         short expResult = 0;
         short result = instance.getShort(id);
@@ -165,6 +190,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetShort() {
+        System.out.println("setShort");
+        
         int id = 0;
         short value = 0;
         instance.setShort(id, value);
@@ -176,6 +203,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetInt() {
+        System.out.println("getInt");
+        
         int id = 0;
         int expResult = 0;
         int result = instance.getInt(id);
@@ -187,6 +216,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetInt() {
+        System.out.println("setInt");
+        
         int id = 0;
         int value = 0;
         instance.setInt(id, value);
@@ -198,6 +229,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetLong() {
+        System.out.println("getLong");
+        
         int id = 0;
         long expResult = 0L;
         long result = instance.getLong(id);
@@ -209,6 +242,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetLong() {
+        System.out.println("setLong");
+        
         int id = 0;
         long value = 0L;
         instance.setLong(id, value);
@@ -220,6 +255,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetFloat() {
+        System.out.println("getFloat");
+        
         int id = 0;
         float expResult = 0.0F;
         float result = instance.getFloat(id);
@@ -231,6 +268,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetFloat() {
+        System.out.println("setFloat");
+        
         int id = 0;
         float value = 0.0F;
         instance.setFloat(id, value);
@@ -242,6 +281,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetDouble() {
+        System.out.println("getDouble");
+        
         int id = 0;
         double expResult = 0.0;
         double result = instance.getDouble(id);
@@ -253,6 +294,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetDouble() {
+        System.out.println("setDouble");
+        
         int id = 0;
         double value = 0.0;
         instance.setDouble(id, value);
@@ -264,6 +307,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetBoolean() {
+        System.out.println("getBoolean");
+        
         int id = 0;
         boolean expResult = false;
         boolean result = instance.getBoolean(id);
@@ -275,10 +320,13 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetBoolean() {
+        System.out.println("setBoolean");
+        
         int id = 0;
-        boolean value = false;
-        instance.setBoolean(id, value);
-        assertEquals(instance.getBoolean(id), value);
+        instance.setBoolean(id, true);
+        assertTrue(instance.getBoolean(id));
+        instance.setBoolean(id, false);
+        assertFalse(instance.getBoolean(id));
     }
 
     /**
@@ -286,6 +334,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetChar() {
+        System.out.println("getChar");
+        
         int id = 0;
         char expResult = 0;
         char result = instance.getChar(id);
@@ -297,6 +347,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetChar() {
+        System.out.println("setChar");
+        
         int id = 0;
         char value = ' ';
         instance.setChar(id, value);
@@ -308,6 +360,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetString() {
+        System.out.println("getString");
+        
         int id = 0;
         String expResult = "0.0";
         String result = instance.getString(id);
@@ -319,10 +373,25 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetString() {
+        System.out.println("setString");
+        
         int id = 0;
-        String value = "";
-        instance.setString(id, value);
-        assertEquals(instance.getString(id), "0.0");
+        instance.setString(id, "");
+        assertEquals(instance.getString(id), String.valueOf(DoubleAttributeDescription.DEFAULT_VALUE));
+        instance.setString(id, "42.0");
+        assertEquals(instance.getString(id), "42.0");
+    }
+    
+    /**
+     * Test of setString method, of class DoubleAttributeDescription. Trying to convert a non-double string to double
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class, 
+            expectedExceptionsMessageRegExp = "Error converting String \'not a double\' to double")
+    public void testSetStringCantConvert() {
+        System.out.println("setStringCantConvert");
+        
+        int id = 0;
+        instance.setString(id, "not a double");
     }
 
     /**
@@ -330,10 +399,10 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testAcceptsString() {
-        String value = "";
-        String expResult = null;
-        String result = instance.acceptsString(value);
-        assertEquals(result, expResult);
+        System.out.println("acceptsString");
+        
+        assertNull(instance.acceptsString(""));
+        assertEquals(instance.acceptsString("not a double"), "Error converting String \'not a double\' to double");
     }
 
     /**
@@ -341,6 +410,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testGetObject() {
+        System.out.println("getObject");
+        
         int id = 0;
         Object expResult = 0.0;
         Object result = instance.getObject(id);
@@ -352,10 +423,33 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSetObject() {
+        System.out.println("setObject");
+        
         int id = 0;
-        Object value = 0.0;
-        instance.setObject(id, value);
-        assertEquals(instance.getObject(id), value);
+        instance.setObject(id, null);
+        assertEquals(instance.getObject(id), DoubleAttributeDescription.DEFAULT_VALUE);
+        instance.setObject(id, 42);
+        assertEquals(instance.getObject(id), 42.0);
+        instance.setObject(id, Boolean.TRUE);
+        assertEquals(instance.getObject(id), 1.0);
+        instance.setObject(id, Boolean.FALSE);
+        assertEquals(instance.getObject(id), 0.0);
+        instance.setObject(id, (char) 7);
+        assertEquals(instance.getObject(id), 7.0);
+        instance.setObject(id, "7.2");
+        assertEquals(instance.getObject(id), 7.2);
+    }
+    
+    /**
+     * Test of setObject method, of class DoubleAttributeDescription. Trying to convert an incompatible type to double
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class, 
+            expectedExceptionsMessageRegExp = "Error converting Object \'class java.time.LocalDate\' to double")
+    public void testSetObjectCantConvert() {
+        System.out.println("setObjectCantConvert");
+        
+        int id = 0;
+        instance.setObject(id, LocalDate.of(1999, 12, 31));
     }
 
     /**
@@ -363,10 +457,12 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testIsClear() {
+        System.out.println("isClear");
+        
         int id = 0;
-        boolean expResult = true;
-        boolean result = instance.isClear(id);
-        assertEquals(result, expResult);
+        assertTrue(instance.isClear(id));
+        instance.setDouble(0, 1.0);
+        assertFalse(instance.isClear(id));
     }
 
     /**
@@ -374,6 +470,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testClear() {
+        System.out.println("clear");
+        
         int id = 0;
         instance.clear(id);
         assertTrue(instance.isClear(id));
@@ -384,6 +482,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testCopy() {
+        System.out.println("copy");
+        
         GraphReadMethods graph = new StoreGraph();
         AttributeDescription expResult = instance;
         AttributeDescription result = instance.copy(graph);
@@ -395,6 +495,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testHashCode() {
+        System.out.println("hashCode");
+        
         int id = 0;
         int expResult = 0;
         int result = instance.hashCode(id);
@@ -406,11 +508,12 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testEquals() {
-        int id1 = 0;
-        int id2 = 0;
-        boolean expResult = true;
-        boolean result = instance.equals(id1, id2);
-        assertEquals(result, expResult);
+        System.out.println("equals");
+        
+        instance.setCapacity(3);
+        instance.setDouble(2, 1.0);
+        assertTrue(instance.equals(0, 1));
+        assertFalse(instance.equals(0, 2));
     }
 
     /**
@@ -418,6 +521,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSave() {
+        System.out.println("save");
+        
         int id = 0;
         ParameterWriteAccess access = new MultiValueStore();
         instance.save(id, access);
@@ -428,6 +533,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testRestore() {
+        System.out.println("restore");
+        
         int id = 0;
         ParameterReadAccess access = new MultiValueStore();
         instance.restore(id, access);
@@ -438,6 +545,8 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testSaveData() {
+        System.out.println("saveData");
+        
         Object expResult = new double[1];
         Object result = instance.saveData();
         assertEquals(result, expResult);
@@ -448,8 +557,9 @@ public class DoubleAttributeDescriptionNGTest {
      */
     @Test
     public void testRestoreData() {
+        System.out.println("restoreData");
+        
         Object savedData = new double[1];
         instance.restoreData(savedData);
     }
-
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriaval
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This Class is for the StringCriteriaValues which are created from a
@@ -84,6 +85,33 @@ public class StringCriteriaValues extends FindCriteriaValues {
      */
     public boolean isUseList() {
         return useList;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 97 * hash + Objects.hashCode(this.text);
+        hash = 97 * hash + Objects.hashCode(this.textList);
+        hash = 97 * hash + (this.ignoreCase ? 1 : 0);
+        hash = 97 * hash + (this.useList ? 1 : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final StringCriteriaValues other = (StringCriteriaValues) obj;
+        if (this.ignoreCase != other.ignoreCase || this.useList != other.useList || !Objects.equals(this.text, other.text)) {
+            return false;
+        }
+
+        return Objects.equals(this.textList, other.textList);
     }
 
 }

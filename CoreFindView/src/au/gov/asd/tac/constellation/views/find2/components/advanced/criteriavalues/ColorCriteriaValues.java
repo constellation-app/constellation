@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import java.util.Objects;
 
 /**
  * This Class is for the ColorCriteriaValues which are created from a
@@ -41,4 +42,22 @@ public class ColorCriteriaValues extends FindCriteriaValues {
         return color;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + Objects.hashCode(this.color);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final ColorCriteriaValues other = (ColorCriteriaValues) obj;
+        return Objects.equals(this.color, other.color);
+    }
 }

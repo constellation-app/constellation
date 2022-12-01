@@ -45,7 +45,7 @@ public class IntegerObjectAttributeDescription extends AbstractObjectAttributeDe
             } else if (object instanceof Boolean) {
                 return ((Boolean) object) ? 1 : 0;
             } else if (object instanceof Character) {
-                return (int) object;
+                return (int) ((Character) object);
             } else {
                 throw ex;
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -625,7 +625,9 @@ public class Table {
      * @return the newly created column
      */
     protected TableColumn<ObservableList<String>, String> createColumn(final String attributeName) {
-        return new TableColumn<>(attributeName);
+        TableColumn<ObservableList<String>, String> newColumn = new TableColumn<>(attributeName);
+        newColumn.setComparator(new TableDataComparator());
+        return newColumn;
     }
 
     /**

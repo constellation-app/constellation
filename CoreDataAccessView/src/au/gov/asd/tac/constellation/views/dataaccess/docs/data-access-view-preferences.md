@@ -9,6 +9,6 @@ You can display or hide the categories of your choice as displayed in the screen
 
 <div style="text-align: center">
 
-<img src="../constellation/CorePreferences/src/au/gov/asd/tac/constellation/preferences/resources/DataAccessCategory.png" alt="Data Access Category" />
+<img src="../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/resources/DataAccessCategory.png" alt="Data Access Category" />
 
 </div>

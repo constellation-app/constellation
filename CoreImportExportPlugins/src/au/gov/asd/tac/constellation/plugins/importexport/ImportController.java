@@ -70,7 +70,7 @@ public abstract class ImportController<D> {
     protected boolean showAllSchemaAttributes;
     protected PluginParameters currentParameters;
     protected String attributeFilter = "";
-
+    private boolean skipInvalidRows = false;
     // Attributes that exist in the graph or schema.
     private final Map<String, Attribute> autoAddedVertexAttributes;
     private final Map<String, Attribute> autoAddedTransactionAttributes;
@@ -86,7 +86,7 @@ public abstract class ImportController<D> {
 
     // preference to show or hide all graph schema attributes
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
-    
+
     private static final Object LOCK = new Object();
 
     protected ImportController() {
@@ -197,7 +197,7 @@ public abstract class ImportController<D> {
         try {
             synchronized (LOCK) {
                 updateAutoAddedAttributes(GraphElementType.VERTEX, autoAddedVertexAttributes, rg, showSchemaAttributes);
-                updateAutoAddedAttributes(GraphElementType.TRANSACTION, autoAddedTransactionAttributes, rg, showSchemaAttributes);               
+                updateAutoAddedAttributes(GraphElementType.TRANSACTION, autoAddedTransactionAttributes, rg, showSchemaAttributes);
             }
         } finally {
             rg.release();
@@ -309,9 +309,9 @@ public abstract class ImportController<D> {
         if (configurationPane != null) {
 
             synchronized (LOCK) {
-                displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes, 
+                displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes,
                         manuallyAddedVertexAttributes);
-                displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes, 
+                displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes,
                         manuallyAddedTransactionAttributes);
             }
 
@@ -383,7 +383,9 @@ public abstract class ImportController<D> {
      * A List&lt;ImportDefinition&gt; where each list element corresponds to a
      * RunPane tab.
      *
-     * @param isFilesIncludeHeadersEnabled
+     * @param isFilesIncludeHeadersEnabled When true will skip the first row and
+     * when false will include the first row
+     *
      * @return A List&lt;ImportDefinition&gt; where each list element
      * corresponds to a RunPane tab.
      */
@@ -442,12 +444,6 @@ public abstract class ImportController<D> {
         return currentData;
     }
 
-    public Attribute showNewAttributeDialog(final GraphElementType elementType) {
-        final NewAttributeDialog dialog = new NewAttributeDialog(importPane.getParentWindow(), elementType);
-        dialog.showAndWait();
-        return dialog.getAttribute();
-    }
-
     public Set<Integer> getKeys() {
         return Collections.unmodifiableSet(keys);
     }
@@ -455,4 +451,13 @@ public abstract class ImportController<D> {
     public void setImportPane(final ImportPane importPane) {
         this.importPane = importPane;
     }
+
+    public boolean isSkipInvalidRows() {
+        return skipInvalidRows;
+    }
+
+    public void setSkipInvalidRows(final boolean skipInvalidRows) {
+        this.skipInvalidRows = skipInvalidRows;
+    }
+
 }

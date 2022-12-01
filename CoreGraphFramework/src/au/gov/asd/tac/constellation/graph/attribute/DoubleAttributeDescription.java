@@ -50,7 +50,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
     public static final String ATTRIBUTE_NAME = "double";
     public static final Class<Double> NATIVE_CLASS = double.class;
     public static final NativeAttributeType NATIVE_TYPE = NativeAttributeType.DOUBLE;
-    private static final double DEFAULT_VALUE = 0;
+    public static final double DEFAULT_VALUE = 0;
 
     private double[] data = new double[0];
     private double defaultValue = DEFAULT_VALUE;
@@ -81,7 +81,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
                 return Double.parseDouble(string);
             } catch (final NumberFormatException ex) {
                 throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
+                        "Error converting String '%s' to double", string), ex);
             }
         }
     }
@@ -286,12 +286,12 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
     }
 
     @Override
-    public Object createReadObject(IntReadable indexReadable) {
+    public Object createReadObject(final IntReadable indexReadable) {
         return (DoubleReadable) () -> data[indexReadable.readInt()];
     }
 
     @Override
-    public Object createWriteObject(GraphWriteMethods graph, int attribute, IntReadable indexReadable) {
+    public Object createWriteObject(final GraphWriteMethods graph, final int attribute, final IntReadable indexReadable) {
         return new DoubleVariable() {
             @Override
             public double readDouble() {
@@ -299,7 +299,7 @@ public class DoubleAttributeDescription extends AbstractAttributeDescription {
             }
 
             @Override
-            public void writeDouble(double value) {
+            public void writeDouble(final double value) {
                 graph.setDoubleValue(attribute, indexReadable.readInt(), value);
             }
         };
