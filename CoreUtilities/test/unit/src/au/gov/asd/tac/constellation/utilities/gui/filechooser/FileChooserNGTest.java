@@ -127,6 +127,7 @@ public class FileChooserNGTest {
         doReturn(List.of(file)).when(optionalFiles).get();
 
         when(FileChooser.openSaveDialog(fileChooserBuilder)).thenReturn(completableOptional);
+        when(FileChooser.openImmediateSaveDialog(fileChooserBuilder)).thenReturn(completableOptional);
         when(FileChooser.openOpenDialog(fileChooserBuilder)).thenReturn(completableOptional);
         when(FileChooser.openMultiDialog(fileChooserBuilder)).thenReturn(optionalFiles);
         
@@ -209,6 +210,15 @@ public class FileChooserNGTest {
                 fileChooserBuilder,
                 FileChooserMode.MULTI,
                 () -> FileChooser.openMultiDialog(fileChooserBuilder)
+        );
+
+        reset(fileChooserBuilder);
+        openSingleFileDialog(
+                false,
+                false,
+                fileChooserBuilder,
+                FileChooserMode.SAVE,
+                () -> FileChooser.openImmediateSaveDialog(fileChooserBuilder)
         );
     }
 
