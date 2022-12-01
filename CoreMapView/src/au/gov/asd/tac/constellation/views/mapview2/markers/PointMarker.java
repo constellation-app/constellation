@@ -53,10 +53,10 @@ public class PointMarker extends AbstractMarker {
     private String currentColour = defaultColour;
 
     private String labelAttr = null;
-    private boolean labelAttrSet = false;
     private int labelAttrCount = 0;
 
     private String identifierAttr = null;
+    private int identifierCount = 0;
 
     private Logger LOGGER = Logger.getLogger("POINT MARKER LOGGER");
 
@@ -191,7 +191,7 @@ public class PointMarker extends AbstractMarker {
 
     }
 
-    @Override
+    //@Override
     public void setBlazeColour(String blazeCol) {
         //if (blazeCol != null && !blazeCol.isBlank() && !blazeCol.isEmpty()) {
             blazeCol = blazeCol.split(";")[1];
@@ -208,7 +208,7 @@ public class PointMarker extends AbstractMarker {
         //}
     }
 
-    @Override
+    //@Override
     public void setOverlayColour(String overlayCol) {
         //overlayCol = overlayCol.split(";")[1];
 
@@ -219,7 +219,7 @@ public class PointMarker extends AbstractMarker {
         ++overlayColourCount;
     }
 
-    @Override
+    //@Override
     public String getBlazeColour() {
         return blazeColour;
     }
@@ -232,15 +232,23 @@ public class PointMarker extends AbstractMarker {
         return y;
     }
 
-    @Override
+    //@Override
     public void setLabelAttr(String labelAttribute) {
 
-        if (!labelAttrSet) {
+        if (labelAttrCount == 0) {
             labelAttr = labelAttribute;
         }
 
-        labelAttrSet = true;
         ++labelAttrCount;
+    }
+
+    public void setIdentAttr(String identAttribute) {
+
+        if (identifierCount == 0) {
+            identifierAttr = identAttribute;
+        }
+
+        ++identifierCount;
     }
 
     public String getLabelAttr() {
@@ -250,6 +258,15 @@ public class PointMarker extends AbstractMarker {
         }
 
         return labelAttr;
+    }
+
+    public String getIdentAttr() {
+
+        if (identifierCount > 1) {
+            return "<Multiple Values>";
+        }
+
+        return identifierAttr;
     }
 
 

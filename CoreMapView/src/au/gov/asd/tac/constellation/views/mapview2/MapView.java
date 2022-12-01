@@ -364,24 +364,22 @@ public class MapView extends ScrollPane {
         markerTextProperty.addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                LOGGER.log(Level.SEVERE, "Inside markerCOlourProperty change event handler");
+                pointMarkerTextGroup.getChildren().clear();
                 for (Object value : markers.values()) {
                     AbstractMarker m = (AbstractMarker) value;
 
                     if (m instanceof PointMarker) {
                         PointMarker p = (PointMarker) m;
 
-                        if (newValue.equals(MapViewPane.NO_LABELS)) {
+                        /*if (newValue.equals(MapViewPane.NO_LABELS)) {
                             pointMarkerTextGroup.getChildren().clear();
                             break;
-                        } else if (newValue.equals(MapViewPane.USE_LABEL_ATTR)) {
-                            //Region textRegion = new Region();
-                            Text t = new Text(p.getLabelAttr());
-                            t.setX(p.getX() - 125);
-                            t.setY(p.getY() + 103);
+                        } else */
+                        if (newValue.equals(MapViewPane.USE_LABEL_ATTR)) {
 
-
-                            pointMarkerTextGroup.getChildren().add(t);
+                            setPointMarkerText(p.getLabelAttr(), p);
+                        } else if (newValue.equals(MapViewPane.USE_IDENT_ATTR)) {
+                            setPointMarkerText(p.getIdentAttr(), p);
                         }
                     }
 
@@ -520,6 +518,14 @@ public class MapView extends ScrollPane {
         overlayGroup.getChildren().addAll(infoOverlay.getOverlayPane());
 
         //graphMarkerGroup.getChildren().add(testRegion);
+    }
+
+    private void setPointMarkerText(String markerText, PointMarker p) {
+        Text t = new Text(markerText);
+        t.setX(p.getX() - 125);
+        t.setY(p.getY() + 103);
+
+        pointMarkerTextGroup.getChildren().add(t);
     }
 
     public StringProperty getMarkerColourProperty() {

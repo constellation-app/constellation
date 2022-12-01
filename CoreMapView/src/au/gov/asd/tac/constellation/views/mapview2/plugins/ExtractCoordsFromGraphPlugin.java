@@ -140,6 +140,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             String blazeColour = null;
                             String overlayColour = null;
                             String labelAttr = null;
+                            String identAttr = null;
 
                             if (blazeID != GraphConstants.NOT_FOUND) {
                                 blazeColour = graph.getStringValue(blazeID, elementID);
@@ -151,6 +152,10 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
                             if (labelAttrID != GraphConstants.NOT_FOUND) {
                                 labelAttr = graph.getStringValue(labelAttrID, elementID);
+                            }
+
+                            if (identifierID != GraphConstants.NOT_FOUND) {
+                                identAttr = graph.getStringValue(identifierID, elementID);
                             }
 
                             //LOGGER.log(Level.SEVERE, "Node colour:" + blazeColour);
@@ -172,6 +177,10 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                                     p.setLabelAttr(labelAttr);
                                 }
 
+                                if (identAttr != null) {
+                                    p.setIdentAttr(identAttr);
+                                }
+
                                 //LOGGER.log(Level.SEVERE, "Corrdindate key: " + coordinateKey);
                                 /*Platform.runLater(new Runnable() {
                                     @Override
@@ -183,23 +192,28 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             } else {
 
                                 if (blazeColour != null) {
-                                        mapViewTopComponent.getAllMarkers().get(coordinateKey).setBlazeColour(blazeColour);
+                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setBlazeColour(blazeColour);
 
                                 }
 
                                 if (overlayColour != null) {
 
-                                    mapViewTopComponent.getAllMarkers().get(coordinateKey).setOverlayColour(overlayColour);
+                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setOverlayColour(overlayColour);
 
                                 }
 
                                 if (labelAttr != null) {
-                                    mapViewTopComponent.getAllMarkers().get(coordinateKey).setLabelAttr(labelAttr);
+                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setLabelAttr(labelAttr);
+                                }
+
+                                if (identAttr != null) {
+                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setIdentAttr(identAttr);
                                 }
 
                                 if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getIdList().get(0) != elementID) {
                                     mapViewTopComponent.getAllMarkers().get(coordinateKey).addNodeID(elementID);
                                 }
+
                             }
 
                             //mapViewTopComponent.drawMarkerOnMap(elementLat, elementLon, 0.05);

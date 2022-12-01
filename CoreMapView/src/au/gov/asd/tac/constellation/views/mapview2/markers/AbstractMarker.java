@@ -111,7 +111,7 @@ public abstract class AbstractMarker {
         return markerID;
     }
 
-    public void setBlazeColour(String blazeCol) {
+    /*public void setBlazeColour(String blazeCol) {
 
     }
 
@@ -125,6 +125,6 @@ public abstract class AbstractMarker {
 
     public void setLabelAttr(String labelAttribute) {
 
-    }
+    }*/
 
 }
