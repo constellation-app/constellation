@@ -40,8 +40,8 @@ public class PointMarker extends AbstractMarker {
     private String path = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
     private double lattitude;
     private double longitude;
-    private double x;
-    private double y;
+    private double x = 0;
+    private double y = 0;
     private double scale;
 
     private String defaultColour = "#FF0000";
@@ -269,5 +269,12 @@ public class PointMarker extends AbstractMarker {
         return identifierAttr;
     }
 
+    public String getCurrentColour() {
+        return currentColour;
+    }
+
+    public String getDefaultColour() {
+        return defaultColour;
+    }
 
 }

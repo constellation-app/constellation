@@ -83,7 +83,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
 
                             String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
 
-                            LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, 0, 149);
+                            LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, 1, 149);
                             if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
                                 //parent.addMarkerToHashMap(coordinateKey, l);
 

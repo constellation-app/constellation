@@ -111,20 +111,5 @@ public abstract class AbstractMarker {
         return markerID;
     }
 
-    /*public void setBlazeColour(String blazeCol) {
-
-    }
-
-    public void setOverlayColour(String overlayCol) {
-
-    }
-
-    public String getBlazeColour() {
-        return null;
-    }
-
-    public void setLabelAttr(String labelAttribute) {
-
-    }*/
 
 }

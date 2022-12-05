@@ -61,6 +61,7 @@ import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -69,6 +70,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
@@ -79,6 +81,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
@@ -91,7 +94,6 @@ import javafx.scene.web.WebView;
  *
  * @author altair1673
  */
-// LAYER
 public class MapView extends ScrollPane {
 
     private MapViewPane parent;
@@ -129,8 +131,9 @@ public class MapView extends ScrollPane {
     private final Group overlayGroup;
     private final Group layerGroup;
     private final Group pointMarkerTextGroup;
+    private final Group thessianMarkersGroup;
 
-    private static final Logger LOGGER = Logger.getLogger("Test");
+    private static final Logger LOGGER = Logger.getLogger("MapView");
 
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0);
 
@@ -204,6 +207,7 @@ public class MapView extends ScrollPane {
         hiddenPointMarkerGroup = new Group();
         hiddenPointMarkerGroup.setVisible(false);
         pointMarkerTextGroup = new Group();
+        thessianMarkersGroup = new Group();
 
 
 
@@ -229,12 +233,26 @@ public class MapView extends ScrollPane {
         mapStackPane.getChildren().addAll(mapGroupHolder);
         mapStackPane.setBackground(Background.fill(Color.WHITE));
 
+        /*mapGroupHolder.addEventHandler(EventType.ROOT, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                LOGGER.log(Level.SEVERE, "Inside double click mouse event");
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    if (event.getClickCount() == 2) {
+                        selectedNodeList.clear();
+                        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
+                        LOGGER.log(Level.SEVERE, "Double clicked");
+                    }
+                }
+                event.consume();
+            }
+        });*/
 
         mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent e) {
                 e.consume();
-
+                int nodesOnScreen = 0;
                 if (e.getDeltaY() == 0) {
                     return;
                 }
@@ -260,6 +278,8 @@ public class MapView extends ScrollPane {
 
                 mapCanvas.setScaleX(newXScale);
                 mapCanvas.setScaleY(newYScale);
+                //self.setScaleX(newXScale);
+                //self.setScaleY(newYScale);
                 mapStackPane.setScaleX(newXScale);
                 mapStackPane.setScaleY(newYScale);
 
@@ -275,6 +295,15 @@ public class MapView extends ScrollPane {
                 }
                 //pointMarkerClusters.forEach(cluster -> drawClusterMarkers(cluster));
                 //testMarker.getMarker().setScaleY(scaleFactor);
+
+                for (Node node : thessianMarkersGroup.getChildren()) {
+                    if (mapCanvas.getBoundsInLocal().intersects(mapStackPane.sceneToLocal(self.localToScene(self.getViewportBounds())))) {
+                        ++nodesOnScreen;
+                    }
+                }
+
+                LOGGER.log(Level.SEVERE, "Nodes on Screen: " + nodesOnScreen);
+                nodesOnScreen = 0;
             }
         });
 
@@ -393,6 +422,16 @@ public class MapView extends ScrollPane {
             @Override
             public void handle(MouseEvent event) {
 
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    if (event.getClickCount() == 2) {
+                        selectedNodeList.clear();
+                        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
+                        LOGGER.log(Level.SEVERE, "Double clicked");
+                        event.consume();
+                        return;
+                    }
+                }
+
                 double x = event.getX();
                 double y = event.getY();
 
@@ -503,6 +542,14 @@ public class MapView extends ScrollPane {
 
         });
 
+        // Add this feature in later
+        /*mapGroupHolder.setOnDragDetected(new EventHandler<MouseEvent>(){
+            @Override
+            public void handle(MouseEvent event) {
+
+            }
+        });*/
+
         mapGroupHolder.getChildren().add(hiddenPointMarkerGroup);
         mapGroupHolder.getChildren().add(graphMarkerGroup);
         //mapGroupHolder.getChildren().add(pointMarkerGroup);
@@ -512,7 +559,7 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(overlayGroup);
         mapGroupHolder.getChildren().add(layerGroup);
         mapGroupHolder.getChildren().add(pointMarkerTextGroup);
-
+        mapGroupHolder.getChildren().add(thessianMarkersGroup);
 
         overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
         overlayGroup.getChildren().addAll(infoOverlay.getOverlayPane());
@@ -743,6 +790,20 @@ public class MapView extends ScrollPane {
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 graphMarkerGroup.getChildren().add(marker.getMarker());
             }
+        }
+
+        if (marker instanceof PointMarker) {
+            //PointMarker p = (PointMarker) marker;
+
+            /*Rectangle r = new Rectangle();
+            r.setWidth(5);
+            r.setHeight(5);
+
+            r.setX(graphMarkerGroup.getChildren().get(graphMarkerGroup.getChildren().size() - 1).getBoundsInParent().getCenterX());
+            r.setY(graphMarkerGroup.getChildren().get(graphMarkerGroup.getChildren().size() - 1).getBoundsInParent().getCenterY());
+            r.setFill(Color.RED);
+            graphMarkerGroup.getChildren().addAll(r);*/
+            thessianMarkersGroup.getChildren().addAll(marker.getMarker());
         }
 
     }

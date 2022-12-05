@@ -162,7 +162,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
                             String coordinateKey = (double) elementLat + "," + (double) elementLon;
                             if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
-                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, 96, 245, elementColour); //244
+                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, 95, 245, elementColour); //244
                                 mapViewTopComponent.addMarker(coordinateKey, p);
 
                                 if (blazeColour != null) {
