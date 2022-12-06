@@ -46,16 +46,18 @@ import org.fxmisc.richtext.InlineCssTextArea;
  */
 public final class EnhancedTextArea extends InlineCssTextArea {
 
-    private final Insets insets = new Insets(4, 8, 4, 8);
+    private final Insets insets = new Insets(8, 12, 8, 12);
 
     /**
      * Default constructor.
      */
     public EnhancedTextArea() {
 
+        this.setMaxHeight(Double.MAX_VALUE);  
+        this.setMaxWidth(Double.MAX_VALUE);
         this.setBackground(Background.EMPTY);
         this.setAutoHeight(true);
-        this.setWrapText(true);
+        this.setWrapText(true);        
         this.setEditable(false);
         this.setPadding(insets);
     }
@@ -68,13 +70,15 @@ public final class EnhancedTextArea extends InlineCssTextArea {
      */
     public EnhancedTextArea(final String text, final ConversationContribution contribution) {
 
+        this.setMaxHeight(Double.MAX_VALUE);  
+        this.setMaxWidth(Double.MAX_VALUE);
         this.setBackground(Background.EMPTY);
         this.setAutoHeight(true);
         this.setWrapText(true);
         this.setEditable(false);
         this.setPadding(insets);
         this.appendText(text);
-
+        
         // Implementation for the 'Copy' context menu option.
         final MenuItem copyTextMenuItem = new MenuItem("Copy");
         copyTextMenuItem.setOnAction(event -> {
