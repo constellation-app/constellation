@@ -25,6 +25,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -47,6 +49,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private Image img;
 
     private int nodeID = 0;
+
+    private static final Logger LOGGER = Logger.getLogger("ThiessenPolygons");
 
     private final Map<Integer, PointMarker> nodesOnScreen = new HashMap<Integer, PointMarker>();
     private Map<String, Line> bisectorLines = new HashMap<String, Line>();
@@ -75,7 +79,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         layer = new Group();
         sortNodes(markers);
         calculateBisectors();
-        //shortenBisectorLines();
+        shortenBisectorLines();
     }
 
     private void sortNodes(Map<String, AbstractMarker> markers) {
@@ -125,7 +129,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                         c.setCenterX(midPoint.x);
                         c.setCenterY(midPoint.y);
-                        c.setFill(Color.RED);
+                        c.setFill(Color.BLUE);
                         layer.getChildren().addAll(c);
 
 
@@ -138,17 +142,45 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         Vec3 lineStart = new Vec3(0, b);
                         Vec3 lineEnd = new Vec3(-b / reciprocal, 0);
 
+                        double distance = Vec3.getDistance(lineStart, lineEnd);
+
+                        Vec3 directVect = new Vec3((lineEnd.x - lineStart.x) / distance, (lineEnd.y - lineStart.y) / distance);
+                        lineEnd.x = lineStart.x + (directVect.x * 50000);
+                        lineEnd.y = lineStart.y + (directVect.y * 50000);
+
+                        lineStart.x = lineEnd.x - (directVect.x * 100000);
+                        lineStart.y = lineEnd.y - (directVect.y * 100000);
+
                         Line line = new Line();
                         line.setStartX(lineStart.x);
                         line.setStartY(lineStart.y);
 
                         line.setEndX(lineEnd.x);
                         line.setEndY(lineEnd.y);
-                        line.setScaleX(30);
-                        line.setScaleY(30);
-                        line.setScaleX(-30);
-                        line.setScaleY(-30);
-                        line.setStrokeWidth(0.03);
+
+                        //LOGGER.log(Level.SEVERE, "Before scaling y: " + line.getEndY());
+
+                        //line.setScaleX(30);
+
+
+                        //line.setScaleY(30);
+
+                        //LOGGER.log(Level.SEVERE, "After scaling y: " + line.getEndY());
+
+                        //line.setScaleX(-30);
+                        //line.setScaleY(-30);
+
+                        //LOGGER.log(Level.SEVERE, "After scaling y: " + line.getEndY());
+
+                        //line.setStrokeWidth(0.03);
+
+                        /*if (line.getStartX() < 0) {
+                            line.setStartX(0);
+                        }
+
+                        if (line.getStartY() < 0) {
+                            line.setStartY(0);
+                        }*/
 
                         line.setStroke(Color.RED);
                         bisectorLines.put(idPair, line);
@@ -171,10 +203,58 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             double distance = Vec3.getDistance(start, end);
             Vec3 dirVect = new Vec3((end.x - start.x) / distance, (end.y - start.y) / distance);
 
-            boolean startFound = false;
-            boolean endFouund = false;
+            Vec3[] shortLine = {null, null};
+
+            int index = 0;
+
+            Vec3 marker1 = new Vec3(nodesOnScreen.get(id1).getX() - 97, nodesOnScreen.get(id1).getY() + 93);
+            Vec3 marker2 = new Vec3(nodesOnScreen.get(id2).getX() - 97, nodesOnScreen.get(id2).getY() + 93);
             for (int i = 0; i < distance; ++i) {
 
+                Integer shortestDistanceID = null;
+                for (Integer id : nodesOnScreen.keySet()) {
+                    if (id.intValue() != id1.intValue() && id.intValue() != id2.intValue()) {
+                        Vec3 markerPos = new Vec3(nodesOnScreen.get(id).getX() - 97, nodesOnScreen.get(id).getY() + 93);
+
+                        if (Vec3.getDistance(start, markerPos) < Vec3.getDistance(start, marker1) && Vec3.getDistance(start, markerPos) < Vec3.getDistance(start, marker2)) {
+                            shortestDistanceID = id;
+                            break;
+                        }
+                    }
+
+                }
+
+                if (shortestDistanceID == null && index == 0) {
+                    shortLine[index] = new Vec3(start.x, start.y);
+                    ++index;
+                } else if (shortestDistanceID != null && index == 1) {
+                    start.x -= dirVect.x;
+                    start.y -= dirVect.y;
+
+                    shortLine[index] = new Vec3(start.x, start.y);
+
+                    break;
+                }
+
+                start.x += dirVect.x;
+                start.y += dirVect.y;
+
+
+            }
+
+            if (shortLine[1] == null) {
+                shortLine[1] = end;
+            }
+
+            if (shortLine[0] != null && shortLine[1] != null) {
+                Line l = new Line();
+                l.setStartX(shortLine[0].x);
+                l.setStartY(shortLine[0].y);
+
+                l.setEndX(shortLine[1].x);
+                l.setEndY(shortLine[1].y);
+
+                finalBisectorLines.add(l);
             }
 
         }
@@ -184,7 +264,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     public void setUp() {
         //layer.getChildren().clear();
 
-        for (Line line : bisectorLines.values()) {
+        for (Line line : finalBisectorLines) {
             layer.getChildren().add(line);
         }
 
