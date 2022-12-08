@@ -57,6 +57,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.event.Event;
@@ -256,7 +257,11 @@ public class MapView extends ScrollPane {
                 if (e.getDeltaY() == 0) {
                     return;
                 }
-
+                /*if (e.getDeltaY() > 0) {
+                    reScaleQueriedMarkers(0.94);
+                } else {
+                    reScaleQueriedMarkers(1.06);
+                }*/
                 double scaleFactor = (e.getDeltaY() > 0) ? mapScaleFactor : 1 / mapScaleFactor;
 
                 double oldXScale = mapCanvas.getScaleY();
@@ -726,6 +731,27 @@ public class MapView extends ScrollPane {
         }
     }
 
+    public void reScaleQueriedMarkers(double scale) {
+        graphMarkerGroup.getChildren().clear();
+        //parent.redrawQueriedMarkers();
+        //hiddenPointMarkerGroup.getChildren().clear();
+
+        if (markers.isEmpty()) {
+            LOGGER.log(Level.SEVERE, "Marker map is empty");
+        }
+
+        if (markers.values().isEmpty()) {
+            LOGGER.log(Level.SEVERE, "Marker values is empty");
+        }
+
+        for (Object value : markers.values()) {
+            AbstractMarker m = (AbstractMarker) value;
+            m.getMarker().setScaleX(m.getMarker().getScaleX() * scale);
+            m.getMarker().setScaleY(m.getMarker().getScaleY() * scale);
+            drawMarker(m);
+        }
+    }
+
     private void renderLayers() {
         layerGroup.getChildren().clear();
         layers.forEach(layer -> {
@@ -775,6 +801,10 @@ public class MapView extends ScrollPane {
 
     }
 
+    public ObservableList<Node> getPointMarkersOnMap() {
+        return hiddenPointMarkerGroup.getChildren();
+    }
+
     // public void clearListeners() {
         //markerColourProperty = null;
         //markerColourProperty = new SimpleStringProperty();
@@ -792,19 +822,19 @@ public class MapView extends ScrollPane {
             }
         }
 
-        if (marker instanceof PointMarker) {
-            //PointMarker p = (PointMarker) marker;
+        /*if (marker instanceof PointMarker) {
+            PointMarker p = (PointMarker) marker;
 
-            /*Rectangle r = new Rectangle();
+            Rectangle r = new Rectangle();
             r.setWidth(5);
             r.setHeight(5);
 
-            r.setX(graphMarkerGroup.getChildren().get(graphMarkerGroup.getChildren().size() - 1).getBoundsInParent().getCenterX());
-            r.setY(graphMarkerGroup.getChildren().get(graphMarkerGroup.getChildren().size() - 1).getBoundsInParent().getCenterY());
+            r.setX(p.getX() - 97);
+            r.setY(p.getY() + 93);
             r.setFill(Color.RED);
-            graphMarkerGroup.getChildren().addAll(r);*/
-            thessianMarkersGroup.getChildren().addAll(marker.getMarker());
-        }
+            graphMarkerGroup.getChildren().addAll(r);
+            //thessianMarkersGroup.getChildren().addAll(marker.getMarker());
+        }*/
 
     }
 

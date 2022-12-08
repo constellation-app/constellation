@@ -101,4 +101,12 @@ public class LineMarker extends AbstractMarker {
         markerPath.setContent(path);
     }
 
+    public double getStartX() {
+        return x1;
+    }
+
+    public double getStartY() {
+        return y1;
+    }
+
 }

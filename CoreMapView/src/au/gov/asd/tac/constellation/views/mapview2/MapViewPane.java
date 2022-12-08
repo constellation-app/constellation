@@ -305,7 +305,7 @@ public class MapViewPane extends BorderPane {
             case LOCATION_PATHS:
                 return new LocationPathsLayer(mapView, layerId++, mapView.getAllMarkers());
             case THIESSEAN_POLYGONS:
-                return new ThiessenPolygonsLayer(mapView, layerId++, null);
+                return new ThiessenPolygonsLayer(mapView, layerId++, mapView.getAllMarkers());
             default:
                 break;
         }

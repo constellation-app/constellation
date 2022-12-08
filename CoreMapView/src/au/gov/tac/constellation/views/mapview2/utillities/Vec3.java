@@ -72,4 +72,8 @@ public class Vec3 {
 
     }
 
+    public static double getDistance(Vec3 v1, Vec3 v2) {
+        return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2));
+    }
+
 }
