@@ -57,26 +57,52 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private Set<String> calculatedPairs = new HashSet<>();
     private List<Line> finalBisectorLines = new ArrayList<Line>();
 
+    private final Line top;
+    private final Line left;
+    private final Line right;
+    private final Line bottom;
+
     public ThiessenPolygonsLayer(MapView parent, int id, Map<String, AbstractMarker> markers) {
         super(parent, id);
-
-        imageView = new ImageView();
-        imageView.setOpacity(0.5);
-        imageView.setTranslateX(0);
-        imageView.setTranslateY(0);
-        /*imageView.prefWidth(MapView.mapWidth);
-        imageView.prefHeight(MapView.mapHeight);
-        imageView.maxWidth(MapView.mapWidth);
-        imageView.maxHeight(MapView.mapHeight);
-        imageView.minWidth(MapView.mapWidth);
-        imageView.minHeight(MapView.mapHeight);*/
-        imageView.setFitHeight(MapView.mapHeight);
-        imageView.setFitWidth(MapView.mapWidth);
-        //imageView.
-        img = new Image("C:\\Users\\pmazumder\\OneDrive - DXC Production\\Documents\\Work\\cryingMeme.png");
-        imageView.setImage(img);
-
         layer = new Group();
+
+        top = new Line();
+        top.setStartX(0);
+        top.setStartY(0);
+        top.setEndX(MapView.mapWidth);
+        top.setEndY(0);
+        top.setStroke(Color.RED);
+        top.setStrokeWidth(5);
+        layer.getChildren().add(top);
+
+        left = new Line();
+        left.setStartX(0);
+        left.setStartY(0);
+        left.setEndX(0);
+        left.setEndY(MapView.mapHeight);
+        left.setStroke(Color.RED);
+        left.setStrokeWidth(5);
+        layer.getChildren().add(left);
+
+        right = new Line();
+        right.setStartX(MapView.mapWidth);
+        right.setStartY(0);
+        right.setEndX(MapView.mapWidth);
+        right.setEndY(MapView.mapHeight);
+        right.setStroke(Color.RED);
+        right.setStrokeWidth(5);
+        layer.getChildren().add(right);
+
+        bottom = new Line();
+        bottom.setStartX(0);
+        bottom.setStartY(MapView.mapHeight);
+        bottom.setEndX(MapView.mapWidth);
+        bottom.setEndY(MapView.mapHeight);
+        bottom.setStroke(Color.RED);
+        bottom.setStrokeWidth(5);
+        layer.getChildren().add(bottom);
+
+
         sortNodes(markers);
         calculateBisectors();
         shortenBisectorLines();
@@ -106,6 +132,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     private void calculateBisectors() {
         bisectorLines.clear();
+        calculatedPairs.clear();
         for (Integer id : nodesOnScreen.keySet()) {
             for (Integer id2 : nodesOnScreen.keySet()) {
                 if (id.intValue() != id2.intValue()) {
@@ -124,13 +151,13 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                         Vec3 midPoint = new Vec3((coords1.x + coords2.x) / 2, (coords1.y + coords2.y) / 2);
 
-                        Circle c = new Circle();
+                        /*Circle c = new Circle();
                         c.setRadius(5);
 
                         c.setCenterX(midPoint.x);
                         c.setCenterY(midPoint.y);
                         c.setFill(Color.BLUE);
-                        layer.getChildren().addAll(c);
+                        layer.getChildren().addAll(c);*/
 
 
                         Vec3 slope = new Vec3((coords2.y - coords1.y), (coords2.x - coords1.x));
@@ -145,11 +172,12 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         double distance = Vec3.getDistance(lineStart, lineEnd);
 
                         Vec3 directVect = new Vec3((lineEnd.x - lineStart.x) / distance, (lineEnd.y - lineStart.y) / distance);
-                        lineEnd.x = lineStart.x + (directVect.x * 50000);
-                        lineEnd.y = lineStart.y + (directVect.y * 50000);
 
-                        lineStart.x = lineEnd.x - (directVect.x * 100000);
-                        lineStart.y = lineEnd.y - (directVect.y * 100000);
+                        lineStart.x = midPoint.x + (directVect.x * 1000);
+                        lineStart.y = midPoint.y + (directVect.y * 1000);
+
+                        lineEnd.x = midPoint.x - (directVect.x * 1000);
+                        lineEnd.y = midPoint.y - (directVect.y * 1000);
 
                         Line line = new Line();
                         line.setStartX(lineStart.x);
@@ -157,6 +185,13 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                         line.setEndX(lineEnd.x);
                         line.setEndY(lineEnd.y);
+
+                        /*Circle sc = new Circle();
+                        sc.setRadius(5);
+                        sc.setFill(Color.YELLOW);
+                        sc.setCenterX(line.getStartX());
+                        sc.setCenterY(line.getStartY());
+                        layer.getChildren().addAll(sc);*/
 
                         //LOGGER.log(Level.SEVERE, "Before scaling y: " + line.getEndY());
 
@@ -228,8 +263,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     shortLine[index] = new Vec3(start.x, start.y);
                     ++index;
                 } else if (shortestDistanceID != null && index == 1) {
-                    start.x -= dirVect.x;
-                    start.y -= dirVect.y;
+                    //start.x -= dirVect.x;
+                    //start.y -= dirVect.y;
 
                     shortLine[index] = new Vec3(start.x, start.y);
 
@@ -262,7 +297,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     @Override
     public void setUp() {
-        //layer.getChildren().clear();
+        layer.getChildren().clear();
 
         for (Line line : finalBisectorLines) {
             layer.getChildren().add(line);
@@ -275,6 +310,16 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         line.setEndY(200);
         line.setStroke(Color.RED);
         layer.getChildren().add(line);
+
+        /*Rectangle border = new Rectangle();
+        border.setX(0);
+        border.setY(0);
+        border.setWidth(MapView.mapWidth);
+        border.setHeight(MapView.mapHeight);
+        border.setStroke(Color.GREEN);
+        border.setStrokeWidth(10);
+        border.setOpacity(0);
+        layer.getChildren().add(border);*/
 
         //layer.getChildren().addAll(imageView);
     }
