@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.tac.constellation.views.mapview2.utillities.Vec3;
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,6 +52,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private int nodeID = 0;
 
     private static final Logger LOGGER = Logger.getLogger("ThiessenPolygons");
+
+    private Map<String, AbstractMarker> markers;
 
     private final Map<Integer, PointMarker> nodesOnScreen = new HashMap<Integer, PointMarker>();
     private Map<String, Line> bisectorLines = new HashMap<String, Line>();
@@ -102,10 +105,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         bottom.setStrokeWidth(5);
         layer.getChildren().add(bottom);
 
+        this.markers = markers;
 
-        sortNodes(markers);
-        calculateBisectors();
-        shortenBisectorLines();
     }
 
     private void sortNodes(Map<String, AbstractMarker> markers) {
@@ -115,14 +116,14 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             if (marker instanceof PointMarker) {
                 PointMarker p = (PointMarker) marker;
 
-                Rectangle r = new Rectangle();
+                /*Rectangle r = new Rectangle();
                 r.setWidth(5);
                 r.setHeight(5);
 
                 r.setX(p.getX() - 97);
                 r.setY(p.getY() + 93);
                 r.setFill(Color.RED);
-                layer.getChildren().addAll(r);
+                layer.getChildren().addAll(r);*/
 
                 nodesOnScreen.put(nodeID++, p);
             }
@@ -246,6 +247,12 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             Vec3 marker2 = new Vec3(nodesOnScreen.get(id2).getX() - 97, nodesOnScreen.get(id2).getY() + 93);
             for (int i = 0; i < distance; ++i) {
 
+                if (start.x > MapView.mapWidth + 1 || start.x < -1 || start.y < 0 || start.y > MapView.mapHeight + 1) {
+                    start.x += dirVect.x;
+                    start.y += dirVect.y;
+                    continue;
+                }
+
                 Integer shortestDistanceID = null;
                 for (Integer id : nodesOnScreen.keySet()) {
                     if (id.intValue() != id1.intValue() && id.intValue() != id2.intValue()) {
@@ -278,6 +285,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             }
 
             if (shortLine[1] == null) {
+                LOGGER.log(Level.SEVERE, "Line end is null");
                 shortLine[1] = end;
             }
 
@@ -293,11 +301,60 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             }
 
         }
+        finalBisectorLines.add(top);
+        finalBisectorLines.add(bottom);
+        finalBisectorLines.add(left);
+        finalBisectorLines.add(right);
+    }
+
+    private void calculateIntersectionCircles() {
+        for (Line bisect1 : finalBisectorLines) {
+            for (Line bisect2 : finalBisectorLines) {
+                if (bisect1 != bisect2 && doesIntersect(bisect1, bisect2)) {
+                    Vec3 slope = new Vec3((bisect1.getEndY() - bisect1.getStartY()), (bisect1.getEndX() - bisect1.getStartX()));
+
+                    double m1 = slope.x / slope.y;
+
+                    double b1 = bisect1.getStartY() - (m1 * bisect1.getStartX());
+
+                    Vec3 slope2 = new Vec3((bisect2.getEndY() - bisect2.getStartY()), (bisect2.getEndX() - bisect2.getStartX()));
+
+                    double m2 = slope2.x / slope2.y;
+
+                    double b2 = bisect2.getStartY() - (m2 * bisect2.getStartX());
+
+                    double x = (b2 - b1) / (m1 - m2);
+
+                    double y = m1 * x + b1;
+
+                    Circle c = new Circle();
+
+                    c.setRadius(5);
+                    c.setCenterX(x);
+                    c.setCenterY(y);
+
+                    c.setFill(Color.GREEN);
+
+                    layer.getChildren().add(c);
+
+                }
+            }
+        }
+    }
+
+    private boolean doesIntersect(Line l1, Line l2) {
+        Line2D line = new Line2D.Double(l1.getStartX(), l1.getStartY(), l1.getEndX(), l1.getEndY());
+        return line.intersects(l2.getStartX(), l2.getStartY(), l2.getEndX(), l2.getEndY());
     }
 
     @Override
     public void setUp() {
         layer.getChildren().clear();
+
+        sortNodes(markers);
+        calculateBisectors();
+        shortenBisectorLines();
+        calculateIntersectionCircles();
 
         for (Line line : finalBisectorLines) {
             layer.getChildren().add(line);
