@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
+import au.gov.tac.constellation.views.mapview2.utillities.IntersectionNode;
 import au.gov.tac.constellation.views.mapview2.utillities.Vec3;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 /**
  *
@@ -55,10 +57,13 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     private Map<String, AbstractMarker> markers;
 
+    private Map<String, IntersectionNode> intersectionMap = new HashMap<String, IntersectionNode>();
+    private Map<Line, ArrayList<IntersectionNode>> lineMap = new HashMap<Line, ArrayList<IntersectionNode>>();
+
     private final Map<Integer, PointMarker> nodesOnScreen = new HashMap<Integer, PointMarker>();
     private Map<String, Line> bisectorLines = new HashMap<String, Line>();
     private Set<String> calculatedPairs = new HashSet<>();
-    private List<Line> finalBisectorLines = new ArrayList<Line>();
+    private Map<String, Line> finalBisectorLines = new HashMap<String, Line>();
 
     private final Line top;
     private final Line left;
@@ -227,6 +232,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     }
 
     private void shortenBisectorLines() {
+        int count = 0;
         for (String key : bisectorLines.keySet()) {
             Integer id1 = Integer.parseInt(key.split("-")[0]);
             Integer id2 = Integer.parseInt(key.split("-")[1]);
@@ -247,7 +253,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             Vec3 marker2 = new Vec3(nodesOnScreen.get(id2).getX() - 97, nodesOnScreen.get(id2).getY() + 93);
             for (int i = 0; i < distance; ++i) {
 
-                if (start.x > MapView.mapWidth + 1 || start.x < -1 || start.y < 0 || start.y > MapView.mapHeight + 1) {
+                if (start.x > MapView.mapWidth + 2 || start.x < -2 || start.y < -2 || start.y > MapView.mapHeight + 2) {
                     start.x += dirVect.x;
                     start.y += dirVect.y;
                     continue;
@@ -270,9 +276,10 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     shortLine[index] = new Vec3(start.x, start.y);
                     ++index;
                 } else if (shortestDistanceID != null && index == 1) {
-                    //start.x -= dirVect.x;
-                    //start.y -= dirVect.y;
-
+                    start.x += dirVect.x;
+                    start.y += dirVect.y;
+                    shortLine[0].x -= dirVect.x;
+                    shortLine[0].y -= dirVect.y;
                     shortLine[index] = new Vec3(start.x, start.y);
 
                     break;
@@ -284,10 +291,13 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
             }
 
+
             if (shortLine[1] == null) {
-                LOGGER.log(Level.SEVERE, "Line end is null");
+                //LOGGER.log(Level.SEVERE, "Line end is null");
                 shortLine[1] = end;
             }
+
+
 
             if (shortLine[0] != null && shortLine[1] != null) {
                 Line l = new Line();
@@ -297,20 +307,26 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 l.setEndX(shortLine[1].x);
                 l.setEndY(shortLine[1].y);
 
-                finalBisectorLines.add(l);
+                finalBisectorLines.put(id1 + "-" + id2, l);
+                lineMap.put(finalBisectorLines.get(id1 + "-" + id2), new ArrayList<IntersectionNode>());
             }
 
         }
-        finalBisectorLines.add(top);
-        finalBisectorLines.add(bottom);
-        finalBisectorLines.add(left);
-        finalBisectorLines.add(right);
+        //finalBisectorLines.add(top);
+        //finalBisectorLines.add(bottom);
+        //finalBisectorLines.add(left);
+        //finalBisectorLines.add(right);
     }
 
     private void calculateIntersectionCircles() {
-        for (Line bisect1 : finalBisectorLines) {
-            for (Line bisect2 : finalBisectorLines) {
-                if (bisect1 != bisect2 && doesIntersect(bisect1, bisect2)) {
+        int duplicateIntersectionPoint = 0;
+        Map<String, String> bisectPairs = new HashMap<String, String>();
+        Set<String> intersections = new HashSet<String>();
+        for (String bisectID1 : finalBisectorLines.keySet()) {
+            for (String bisectID2 : finalBisectorLines.keySet()) {
+                Line bisect1 = finalBisectorLines.get(bisectID1);
+                Line bisect2 = finalBisectorLines.get(bisectID2);
+                if (!bisectID1.equals(bisectID2) && doesIntersect(bisect1, bisect2)) {
                     Vec3 slope = new Vec3((bisect1.getEndY() - bisect1.getStartY()), (bisect1.getEndX() - bisect1.getStartX()));
 
                     double m1 = slope.x / slope.y;
@@ -327,24 +343,82 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                     double y = m1 * x + b1;
 
-                    Circle c = new Circle();
+                    String intersectionPoint = x + "-" + y;
 
-                    c.setRadius(5);
-                    c.setCenterX(x);
-                    c.setCenterY(y);
+                    if (!intersections.contains(intersectionPoint)) {
+                        intersections.add(intersectionPoint);
+                        Circle c = new Circle();
 
-                    c.setFill(Color.GREEN);
 
-                    layer.getChildren().add(c);
+                        c.setRadius(5);
+                        c.setCenterX(x);
+                        c.setCenterY(y);
 
+                        c.setFill(Color.GREEN);
+
+                        layer.getChildren().add(c);
+                    } else {
+                        //LOGGER.log(Level.SEVERE, "Duplicate: " + (++duplicateIntersectionPoint));
+                    }
+
+                    if (!intersectionMap.containsKey(intersectionPoint)) {
+                        IntersectionNode intersectionNode = new IntersectionNode(x, y);
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split("-")[0]));
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split("-")[1]));
+
+
+                        intersectionMap.put(intersectionPoint, intersectionNode);
+                    } else {
+                        IntersectionNode intersectionNode = intersectionMap.get(intersectionPoint);
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split("-")[0]));
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split("-")[1]));
+                    }
+
+                    //for(Line l : lineMap.keySet())
+                    //{
+                    if (bisect2.contains(intersectionMap.get(intersectionPoint).getX(), intersectionMap.get(intersectionPoint).getY())) {
+                        for (IntersectionNode i : lineMap.get(bisect2)) {
+                            i.addConncectedPoint(intersectionMap.get(intersectionPoint));
+                        }
+                    }
+                    //}
                 }
             }
         }
+
+        /*for (String key : intersectionMap.keySet()) {
+            LOGGER.log(Level.SEVERE, key);
+        }*/
+
+    }
+
+    private Set<String> visited = new HashSet<String>();
+
+    public void printGraph(IntersectionNode node) {
+        if (visited.contains(node.getKey())) {
+            return;
+        }
+
+        visited.add(node.getKey());
+
+        Circle c = new Circle();
+
+        c.setRadius(5);
+        c.setCenterX(node.getX());
+        c.setCenterY(node.getY());
+
+        c.setFill(Color.BLACK);
+
+        layer.getChildren().add(c);
+
+        for (IntersectionNode connected : node.getConnectedPoints()) {
+            printGraph(connected);
+        }
+
     }
 
     private boolean doesIntersect(Line l1, Line l2) {
-        Line2D line = new Line2D.Double(l1.getStartX(), l1.getStartY(), l1.getEndX(), l1.getEndY());
-        return line.intersects(l2.getStartX(), l2.getStartY(), l2.getEndX(), l2.getEndY());
+        return l1.intersects(l2.getBoundsInLocal());
     }
 
     @Override
@@ -355,8 +429,9 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         calculateBisectors();
         shortenBisectorLines();
         calculateIntersectionCircles();
+        printGraph(intersectionMap.entrySet().iterator().next().getValue());
 
-        for (Line line : finalBisectorLines) {
+        for (Line line : finalBisectorLines.values()) {
             layer.getChildren().add(line);
         }
 

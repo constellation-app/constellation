@@ -50,14 +50,4 @@ public class MarkerUtilities {
         return lattitude;
     }
 
-    /**
-     * Generate a list of vertices approximating a circle around the given
-     * centre location out to the given delta location.
-     *
-     * @param centre a {@link Location} object representing the centre of the
-     * circle
-     * @param delta a {@link Location} object representing an point on the edge
-     * of the circle
-     * @return a list of {@link Location} objects approximating the circle.
-     */
 }
