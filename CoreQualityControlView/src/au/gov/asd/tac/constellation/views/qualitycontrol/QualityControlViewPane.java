@@ -84,6 +84,7 @@ import javafx.util.Callback;
 import javafx.util.Pair;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.SystemUtils;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle.Messages;
@@ -412,8 +413,8 @@ public final class QualityControlViewPane extends BorderPane {
     private static void showPriorityDialog() {
         final ScrollPane rulesScrollPane = new ScrollPane();
         rulesScrollPane.setPrefHeight(240);
-        rulesScrollPane.setPrefWidth(750);
-        rulesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        rulesScrollPane.setPrefWidth(SystemUtils.IS_OS_LINUX ? 820 : 700);
+        rulesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         rulesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         final GridPane buttonGrid = new GridPane();
