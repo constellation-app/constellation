@@ -414,7 +414,7 @@ public final class QualityControlViewPane extends BorderPane {
         final ScrollPane rulesScrollPane = new ScrollPane();
         rulesScrollPane.setPrefHeight(240);
         rulesScrollPane.setPrefWidth(SystemUtils.IS_OS_LINUX ? 820 : 700);
-        rulesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        rulesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         rulesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         final GridPane buttonGrid = new GridPane();
