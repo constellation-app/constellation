@@ -51,7 +51,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private ImageView imageView;
     private Image img;
 
-    private int nodeID = 0;
+    private int nodeID = 1;
 
     private static final Logger LOGGER = Logger.getLogger("ThiessenPolygons");
 
@@ -62,13 +62,18 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     private final Map<Integer, PointMarker> nodesOnScreen = new HashMap<Integer, PointMarker>();
     private Map<String, Line> bisectorLines = new HashMap<String, Line>();
-    private Set<String> calculatedPairs = new HashSet<>();
+
     private Map<String, Line> finalBisectorLines = new HashMap<String, Line>();
 
     private final Line top;
     private final Line left;
     private final Line right;
     private final Line bottom;
+
+    private String topID = "-1,-2";
+    private String bottomID = "-3,-4";
+    private String leftID = "-5,-6";
+    private String rightID = "-7,-8";
 
     public ThiessenPolygonsLayer(MapView parent, int id, Map<String, AbstractMarker> markers) {
         super(parent, id);
@@ -138,12 +143,12 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     private void calculateBisectors() {
         bisectorLines.clear();
-        calculatedPairs.clear();
+        Set<String> calculatedPairs = new HashSet<>();
         for (Integer id : nodesOnScreen.keySet()) {
             for (Integer id2 : nodesOnScreen.keySet()) {
                 if (id.intValue() != id2.intValue()) {
-                    String idPair = id + "-" + id2;
-                    String idPair2 = id2 + "-" + id;
+                    String idPair = id + "," + id2;
+                    String idPair2 = id2 + "," + id;
 
                     if (!calculatedPairs.contains(idPair) && !calculatedPairs.contains(idPair2)) {
                         calculatedPairs.add(idPair);
@@ -191,38 +196,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                         line.setEndX(lineEnd.x);
                         line.setEndY(lineEnd.y);
-
-                        /*Circle sc = new Circle();
-                        sc.setRadius(5);
-                        sc.setFill(Color.YELLOW);
-                        sc.setCenterX(line.getStartX());
-                        sc.setCenterY(line.getStartY());
-                        layer.getChildren().addAll(sc);*/
-
-                        //LOGGER.log(Level.SEVERE, "Before scaling y: " + line.getEndY());
-
-                        //line.setScaleX(30);
-
-
-                        //line.setScaleY(30);
-
-                        //LOGGER.log(Level.SEVERE, "After scaling y: " + line.getEndY());
-
-                        //line.setScaleX(-30);
-                        //line.setScaleY(-30);
-
-                        //LOGGER.log(Level.SEVERE, "After scaling y: " + line.getEndY());
-
-                        //line.setStrokeWidth(0.03);
-
-                        /*if (line.getStartX() < 0) {
-                            line.setStartX(0);
-                        }
-
-                        if (line.getStartY() < 0) {
-                            line.setStartY(0);
-                        }*/
-
+                        
                         line.setStroke(Color.RED);
                         bisectorLines.put(idPair, line);
                     }
@@ -232,10 +206,9 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     }
 
     private void shortenBisectorLines() {
-        int count = 0;
         for (String key : bisectorLines.keySet()) {
-            Integer id1 = Integer.parseInt(key.split("-")[0]);
-            Integer id2 = Integer.parseInt(key.split("-")[1]);
+            Integer id1 = Integer.parseInt(key.split(",")[0]);
+            Integer id2 = Integer.parseInt(key.split(",")[1]);
 
             Line bisector = bisectorLines.get(key);
 
@@ -253,7 +226,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             Vec3 marker2 = new Vec3(nodesOnScreen.get(id2).getX() - 97, nodesOnScreen.get(id2).getY() + 93);
             for (int i = 0; i < distance; ++i) {
 
-                if (start.x > MapView.mapWidth + 2 || start.x < -2 || start.y < -2 || start.y > MapView.mapHeight + 2) {
+                if (start.x > MapView.mapWidth + 5 || start.x < -5 || start.y < -2 || start.y > MapView.mapHeight + 2) {
                     start.x += dirVect.x;
                     start.y += dirVect.y;
                     continue;
@@ -292,7 +265,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             }
 
 
-            if (shortLine[1] == null) {
+            if (shortLine[1] == null && shortLine[0] != null) {
                 //LOGGER.log(Level.SEVERE, "Line end is null");
                 shortLine[1] = end;
             }
@@ -307,8 +280,9 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 l.setEndX(shortLine[1].x);
                 l.setEndY(shortLine[1].y);
 
-                finalBisectorLines.put(id1 + "-" + id2, l);
-                lineMap.put(finalBisectorLines.get(id1 + "-" + id2), new ArrayList<IntersectionNode>());
+                finalBisectorLines.put(key, l);
+                lineMap.put(finalBisectorLines.get(key), new ArrayList<IntersectionNode>());
+
             }
 
         }
@@ -316,19 +290,40 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         //finalBisectorLines.add(bottom);
         //finalBisectorLines.add(left);
         //finalBisectorLines.add(right);
+
+        finalBisectorLines.put(topID, top);
+        finalBisectorLines.put(bottomID, bottom);
+        finalBisectorLines.put(leftID, left);
+        finalBisectorLines.put(rightID, right);
+
+        lineMap.put(finalBisectorLines.get(topID), new ArrayList<IntersectionNode>());
+        lineMap.put(finalBisectorLines.get(bottomID), new ArrayList<IntersectionNode>());
+        lineMap.put(finalBisectorLines.get(leftID), new ArrayList<IntersectionNode>());
+        lineMap.put(finalBisectorLines.get(rightID), new ArrayList<IntersectionNode>());
+
     }
 
     private void calculateIntersectionCircles() {
         int duplicateIntersectionPoint = 0;
-        Map<String, String> bisectPairs = new HashMap<String, String>();
+        //Map<String, String> bisectPairs = new HashMap<String, String>();
         Set<String> intersections = new HashSet<String>();
         for (String bisectID1 : finalBisectorLines.keySet()) {
+            Line bisect1 = finalBisectorLines.get(bisectID1);
+            String intersectionPoint = "";
             for (String bisectID2 : finalBisectorLines.keySet()) {
-                Line bisect1 = finalBisectorLines.get(bisectID1);
+
                 Line bisect2 = finalBisectorLines.get(bisectID2);
+
+                if ((bisectID1.equals(topID) && bisectID2.equals(bottomID)) || (bisectID1.equals(bottomID) && bisectID2.equals(topID))) {
+                    continue;
+                }
+                if ((bisectID1.equals(leftID) && bisectID2.equals(rightID)) || (bisectID1.equals(rightID) && bisectID2.equals(leftID))) {
+                    continue;
+                }
+
                 if (!bisectID1.equals(bisectID2) && doesIntersect(bisect1, bisect2)) {
                     Vec3 slope = new Vec3((bisect1.getEndY() - bisect1.getStartY()), (bisect1.getEndX() - bisect1.getStartX()));
-
+                    // y = mx + b
                     double m1 = slope.x / slope.y;
 
                     double b1 = bisect1.getStartY() - (m1 * bisect1.getStartX());
@@ -343,7 +338,20 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                     double y = m1 * x + b1;
 
-                    String intersectionPoint = x + "-" + y;
+                    //y = m1 * ((b2 - b1) / (m1 - m2)) + b1;
+
+                    intersectionPoint = x + "," + y;
+
+
+                    if (intersectionPoint.equals("NaN,NaN")) {
+                        continue;
+                    }
+
+                    if (!(bisect1.contains(x, y) && bisect2.contains(x, y))) {
+                        continue;
+                    }
+
+                    LOGGER.log(Level.SEVERE, "Intersection point is: " + intersectionPoint);
 
                     if (!intersections.contains(intersectionPoint)) {
                         intersections.add(intersectionPoint);
@@ -358,39 +366,48 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                         layer.getChildren().add(c);
                     } else {
-                        //LOGGER.log(Level.SEVERE, "Duplicate: " + (++duplicateIntersectionPoint));
+                        LOGGER.log(Level.SEVERE, "Duplicate: " + (++duplicateIntersectionPoint));
                     }
 
                     if (!intersectionMap.containsKey(intersectionPoint)) {
                         IntersectionNode intersectionNode = new IntersectionNode(x, y);
-                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split("-")[0]));
-                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split("-")[1]));
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split(",")[0]));
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split(",")[1]));
+
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID2.split(",")[0]));
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID2.split(",")[1]));
 
 
                         intersectionMap.put(intersectionPoint, intersectionNode);
                     } else {
                         IntersectionNode intersectionNode = intersectionMap.get(intersectionPoint);
-                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split("-")[0]));
-                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split("-")[1]));
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split(",")[0]));
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID1.split(",")[1]));
+
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID2.split(",")[0]));
+                        intersectionNode.getRelevantMarkers().add(Integer.parseInt(bisectID2.split(",")[1]));
+
                     }
 
-                    //for(Line l : lineMap.keySet())
-                    //{
-                    if (bisect2.contains(intersectionMap.get(intersectionPoint).getX(), intersectionMap.get(intersectionPoint).getY())) {
-                        for (IntersectionNode i : lineMap.get(bisect2)) {
-                            i.addConncectedPoint(intersectionMap.get(intersectionPoint));
-                        }
-                    }
-                    //}
                 }
+
             }
+
         }
 
-        /*for (String key : intersectionMap.keySet()) {
-            LOGGER.log(Level.SEVERE, key);
-        }*/
 
     }
+
+    /*private void connectIntersections()
+    {
+        for(IntersectionNode n : intersectionMap.values())
+        {
+            for(Line l : finalBisectorLines.values())
+            {
+                if(l.co)
+            }
+        }
+    }*/
 
     private Set<String> visited = new HashSet<String>();
 
@@ -407,18 +424,69 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         c.setCenterX(node.getX());
         c.setCenterY(node.getY());
 
+        for (Line l : finalBisectorLines.values()) {
+            if (l.contains(node.getX(), node.getY())) {
+                l.setStroke(Color.CORAL);
+            }
+        }
+
         c.setFill(Color.BLACK);
 
         layer.getChildren().add(c);
 
+
         for (IntersectionNode connected : node.getConnectedPoints()) {
-            printGraph(connected);
+
+            Circle c2 = new Circle();
+
+            c2.setRadius(5);
+            c2.setCenterX(connected.getX());
+            c2.setCenterY(connected.getY());
+
+            c2.setFill(Color.DARKGOLDENROD);
+
+            layer.getChildren().add(c2);
+
+            //printGraph(connected);
         }
 
     }
 
     private boolean doesIntersect(Line l1, Line l2) {
-        return l1.intersects(l2.getBoundsInLocal());
+
+        if (l1.intersects(l2.getBoundsInLocal())) {
+            /*Rectangle r = new Rectangle();
+            r.setWidth(5);
+            r.setHeight(5);
+
+            r.setX(l1.getBoundsInLocal().getCenterX());
+            r.setY(l1.getBoundsInLocal().getCenterY());
+            r.setFill(Color.RED);
+            layer.getChildren().addAll(r);
+
+            Rectangle r2 = new Rectangle();
+            r2.setWidth(5);
+            r2.setHeight(5);
+
+            r2.setX(l2.getBoundsInLocal().getCenterX());
+            r2.setY(l2.getBoundsInLocal().getCenterY());
+            r2.setFill(Color.RED);
+            layer.getChildren().addAll(r2);
+
+            Line line = new Line();
+            line.setStartX(r.getX());
+            line.setStartY(r.getY());
+
+            line.setEndX(r2.getX());
+            line.setEndY(r2.getY());
+            line.setStrokeWidth(0.5);
+            line.setStroke(Color.RED);
+
+            layer.getChildren().add(line);*/
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -428,7 +496,14 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         sortNodes(markers);
         calculateBisectors();
         shortenBisectorLines();
+
+        /*finalBisectorLines.put("-1,-2", top);
+        finalBisectorLines.put("-3,-4", bottom);
+        finalBisectorLines.put("-5,-6", left);
+        finalBisectorLines.put("-7,-8", right);*/
+
         calculateIntersectionCircles();
+        //intersectionMap.remove(intersectionMap.entrySet().iterator().next().getValue().getKey());
         printGraph(intersectionMap.entrySet().iterator().next().getValue());
 
         for (Line line : finalBisectorLines.values()) {

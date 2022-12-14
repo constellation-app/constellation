@@ -31,17 +31,18 @@ public class IntersectionNode {
 
     private final List<Integer> relevantMarkers = new ArrayList<Integer>();
     private final List<IntersectionNode> connectedPoints = new ArrayList<IntersectionNode>();
+    private final List<String> connectedPointIds = new ArrayList<String>();
 
     public IntersectionNode() {
         this.x = 0;
         this.y = 0;
-        key = x + "-" + y;
+        key = x + "," + y;
     }
 
     public IntersectionNode(double x, double y) {
         this.x = x;
         this.y = y;
-        key = x + "-" + y;
+        key = x + "," + y;
     }
 
     public List<Integer> getRelevantMarkers() {
@@ -52,9 +53,15 @@ public class IntersectionNode {
         return connectedPoints;
     }
 
-    public void addConncectedPoint(IntersectionNode otherNode) {
+    public void addConnectedPoint(IntersectionNode otherNode) {
+        if (otherNode.getKey().equals(key)) {
+            return;
+        }
+        if (!connectedPointIds.contains(otherNode.getKey())) {
+            connectedPointIds.add(otherNode.getKey());
         connectedPoints.add(otherNode);
-        otherNode.getConnectedPoints().add(this);
+            otherNode.addConnectedPoint(this);
+        }
     }
 
     public String getKey() {
