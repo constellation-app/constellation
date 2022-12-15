@@ -35,6 +35,7 @@ import org.openide.filesystems.FileChooserBuilder;
  * @author formalhaunt
  */
 public class FileChooser {
+
     private static final Logger LOGGER = Logger.getLogger(FileChooser.class.getName());
     
     /**
@@ -43,6 +44,25 @@ public class FileChooser {
     private FileChooser() {
     }
     
+    /**
+     * Immediately construct a file chooser using the passed builder and opens it as a save
+     * dialog.
+     * <p/>
+     * This is intended to be called when we already know we are in the EDT / UI Thread
+     * This ensures correct program flow, with dialogs shown in the correct order,
+     * specifically for a special case where dialogs are cascaded into more dialogs 
+     * and need an immediate result from the new dialogs
+     * 
+     * @param fileChooserBuilder the file chooser builder to build and display
+     * @return a {@link CompletableFuture} that will return the selected file or
+     *     an empty optional if the user selects cancel
+     */
+    public static CompletableFuture<Optional<File>> openImmediateSaveDialog(final FileChooserBuilder fileChooserBuilder) {
+        return CompletableFuture.completedFuture(
+                openFileDialogAndGetFirstFile(fileChooserBuilder, FileChooserMode.SAVE)
+        );
+    }
+
     /**
      * Construct a file chooser using the passed builder and opens it as a save
      * dialog.
@@ -133,20 +153,24 @@ public class FileChooser {
      * @param fileDialogMode the type of file chooser dialog to open, save, open or multi
      * @return the selected file(s) or an empty optional if the user selects cancel
      */
-    private static Optional<List<File>> openFileDialog(final FileChooserBuilder fileChooserBuilder,
-                                                       final FileChooserMode fileDialogMode) {
-        final ShowFileChooserDialog showDialog = new ShowFileChooserDialog(
-                fileChooserBuilder, fileDialogMode);
+    private static Optional<List<File>> openFileDialog(final FileChooserBuilder fileChooserBuilder, final FileChooserMode fileDialogMode) {
+        final ShowFileChooserDialog showDialog = new ShowFileChooserDialog(fileChooserBuilder, fileDialogMode);
         
-        try {
-            // Make a request to open the file chooser dialog on the UI thread
-            EventQueue.invokeAndWait(showDialog);
-        } catch (final InterruptedException ex) {
-            LOGGER.log(Level.WARNING, "Thread displaying the file chooser was interrupted.", ex);
-            Thread.currentThread().interrupt();
-        } catch (final InvocationTargetException ex) {
-            LOGGER.log(Level.SEVERE, "Error occurred during selection in file chooser.", ex);
+        // Check if the calling thread is able to run this
+        if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
+            showDialog.run();
+        } else {
+            try {
+                // Make a request to open the file chooser dialog on the UI thread
+                EventQueue.invokeAndWait(showDialog);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.WARNING, "Thread displaying the file chooser was interrupted.", ex);
+                Thread.currentThread().interrupt();
+            } catch (final InvocationTargetException ex) {
+                LOGGER.log(Level.SEVERE, "Error occurred during selection in file chooser.", ex);
+            }
         }
+
 
         return showDialog.getSelectedFiles();
     }

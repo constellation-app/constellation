@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,6 +53,7 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
     private Graph currentGraph;
     private long lastGlobalModificationCounter;
     private long lastCameraModificationCounter;
+    private long lastAttributeModificationCounter;
 
     private final List<QualityControlListener> listeners;
 
@@ -151,13 +152,15 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
 
                 final long thisGlobalModificationCounter = readableGraph.getGlobalModificationCounter();
                 final long thisCameraModificationCounter = readableGraph.getValueModificationCounter(cameraAttribute);
+                final long thisAttributeModificationCounter = readableGraph.getAttributeModificationCounter();
 
                 if (thisGlobalModificationCounter != lastGlobalModificationCounter) {
-                    if (lastGlobalModificationCounter == -1 || lastCameraModificationCounter == thisCameraModificationCounter) {
+                    if (lastGlobalModificationCounter == -1 || lastCameraModificationCounter == thisCameraModificationCounter || lastAttributeModificationCounter != thisAttributeModificationCounter) {
                         updateQualityControlState(graph);
                     }
                     lastGlobalModificationCounter = thisGlobalModificationCounter;
                     lastCameraModificationCounter = thisCameraModificationCounter;
+                    lastAttributeModificationCounter = thisAttributeModificationCounter;
                 }
             } finally {
                 readableGraph.release();

@@ -27,7 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.algorithms.clustering.hierarchical.FastNewman.Group;
 import au.gov.asd.tac.constellation.plugins.algorithms.paths.DijkstraServices;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -429,8 +429,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         final boolean wasColored = state.isColored();
         state.setColored(!state.isColored());
 
-        final ColorClusters colourPlugin = new ColorClusters(!wasColored);
-        PluginExecution.withPlugin(colourPlugin).interactively(true).executeLater(graph);
+        final ColorClusters colorPlugin = new ColorClusters(!wasColored);
+        PluginExecution.withPlugin(colorPlugin).interactively(true).executeLater(graph);
     }
 
     private void updateInteractivity() {
@@ -680,15 +680,15 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
 
         @Override
         public String getName() {
-            return "Hierarchical: Set/Remove Overlay Colours";
+            return "Hierarchical: Set/Remove Overlay Colors";
         }
 
         @Override
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
             final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
             final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
-            final String vxColorAttrName = setColors ? ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOUR.getName() : null;
-            final String txColorAttrName = setColors ? ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOUR.getName() : null;
+            final String vxColorAttrName = setColors ? ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOR.getName() : null;
+            final String txColorAttrName = setColors ? ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOR.getName() : null;
             graph.setStringValue(vxColorRef, 0, vxColorAttrName);
             graph.setStringValue(txColorRef, 0, txColorAttrName);
         }
@@ -712,8 +712,8 @@ public final class HierarchicalControllerTopComponent extends TopComponent imple
         public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
             state.setRedrawCount(state.getRedrawCount() + 1);
 
-            final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOUR.ensure(graph);
-            final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOUR.ensure(graph);
+            final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.HIERARCHICAL_COLOR.ensure(graph);
+            final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.HIERARCHICAL_COLOR.ensure(graph);
             final int vertexClusterAttribute = ClusteringConcept.VertexAttribute.HIERARCHICAL_CLUSTER.ensure(graph);
             final int vertexDimmedAttribute = VisualConcept.VertexAttribute.DIMMED.ensure(graph);
             final int vertexVisibilityAttribute = VisualConcept.VertexAttribute.VISIBILITY.ensure(graph);

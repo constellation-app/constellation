@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescri
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
@@ -160,7 +160,7 @@ public class AdvancedSearchParameters {
         if (allOrAny.equals(parameters.getAllOrAny())) {
             matches++;
         }
-        if (currentSelection == parameters.getCurrentSelection()) {
+        if (currentSelection.equals(parameters.getCurrentSelection())) {
             matches++;
         }
 
@@ -184,10 +184,13 @@ public class AdvancedSearchParameters {
                         case StringAttributeDescription.ATTRIBUTE_NAME:
                             StringCriteriaValues stringParameterValues = (StringCriteriaValues) values;
                             StringCriteriaValues stringActualValues = (StringCriteriaValues) parameters.getCriteriaValuesList().get(i);
-                            if (!stringParameterValues.isIgnoreCase() == stringActualValues.isIgnoreCase()
-                                    || !stringParameterValues.isUseList() == stringActualValues.isUseList()
+                            if ((!stringParameterValues.equals(stringActualValues))
+                                    || (stringParameterValues.isIgnoreCase() != stringActualValues.isIgnoreCase())
+                                    || (stringParameterValues.isUseList() != stringActualValues.isUseList())
                                     || (!stringActualValues.isUseList() && !stringParameterValues.getText().equals(stringActualValues.getText()))
-                                    || (stringActualValues.isUseList() && !stringParameterValues.getTextList().equals(stringActualValues.getTextList()))) {
+                                    || (stringActualValues.isUseList() && !stringParameterValues.getTextList().equals(stringActualValues.getTextList()))
+                                    || (!stringActualValues.equals(stringParameterValues))
+                                    || (!stringActualValues.getText().equals(stringParameterValues.getText()))) {
                                 return false;
                             }
                             break;
@@ -210,9 +213,9 @@ public class AdvancedSearchParameters {
                             break;
                         // treat values as colors
                         case ColorAttributeDescription.ATTRIBUTE_NAME:
-                            ColourCriteriaValues colourParameterValues = (ColourCriteriaValues) values;
-                            ColourCriteriaValues colourActualValues = (ColourCriteriaValues) parameters.getCriteriaValuesList().get(i);
-                            if (!colourParameterValues.getColorValue().equals(colourActualValues.getColorValue())) {
+                            ColorCriteriaValues colorParameterValues = (ColorCriteriaValues) values;
+                            ColorCriteriaValues colorActualValues = (ColorCriteriaValues) parameters.getCriteriaValuesList().get(i);
+                            if (!colorParameterValues.getColorValue().equals(colorActualValues.getColorValue())) {
                                 return false;
                             }
                             break;

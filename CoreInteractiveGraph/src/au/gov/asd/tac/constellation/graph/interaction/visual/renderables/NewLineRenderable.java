@@ -54,7 +54,7 @@ public class NewLineRenderable implements GLRenderable {
 
     // Width of the new line
     public static final int NEW_LINE_WIDTH = 2;
-    // Colour of the new line
+    // Color of the new line
     public static final Vector4f NEW_LINE_COLOR = new Vector4f(1.0F, 1.0F, 1.0F, 1.0F);
     // Shader name
     private int shader;

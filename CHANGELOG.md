@@ -1,5 +1,34 @@
 # Constellation Changes	
 
+## Changes in October 2022
+
+-   Moved `ApplicationFontOptionsPanel`, `ApplicationFontOptionsPanelController` and
+    `ApplicationFontPreferenceKeys` into `ApplicationOptionsPanel`, `ApplicationOptionsPanelController`
+    and `ApplicationPrefrenceKeys` respectively. 
+
+-   Moved `AnaglyphicDisplayPanel`, `AnaglyphicDisplayOptionsPanelController` and
+    `AnaglyphicDisplayPreferenceKeys` into `GraphOptionsPanel`, `GraphOptionsPanelController`
+    and `GraphPreferenceKeys` respectively. 
+
+## Changes in August 2022
+
+-   Moved `ClusteringConcept`, `HierarchicalStateAttributeDescription` and
+    `KTrussStateAttributeDescription` from `CoreAlgorithmPlugins` to
+    `CoreAnalyticSchema` so that they could be used in an schema updater to 
+    update the spelling of 'color' in some attributes changed.
+
+## Changes in July 2022
+
+-   Updated `RestClient` so that `params` are passed as `List<Tuple<String, String>>`
+    rather than `Map<String, String>` - this is to allow multiple parameters with
+    the same name to be supplied, which is required for some endpoints. This
+    change will break existing classes inheriting from `RestClient` if they are
+    not modified to reflect the new parameter type.
+
+-   Removed unused classes `FileChooser` from Core Graph File and `DataAccessResultsDirChooser`
+    from Core Data Access View. Classes became unused in lieu of refactoring to utilize the class
+    `FileChooser` in Core Utilities.
+
 ## Changes in March 2022
 
 -   Added abstract classes `AbstractCachedStringIOProvider` and 
@@ -11,7 +40,7 @@
 ## Changes in February 2022
 
 -   Removed unused classes `DecoratorUtilities` and `LabelUtilities` from Core 
-    Visual Schema
+    Visual Schema.
 
 -   Added a new parameter `tabCaption` in `newTab` public methods in `DataAccessTabPane` class 
 	to provide the Step tab caption when required. This is used when the user renames the 
@@ -26,7 +55,6 @@
     summary status message after importing.
 
 ## Changes in November 2021
-
 
 -   Added `netbeans.exception.report.min.level=900` and
     `netbeans.exception.alert.min.level=900` with both set to `900` to make
@@ -57,9 +85,13 @@
     abstract classes should not have public constructors. 
 
 ## Changes in October 2021
+
 -   Added `PluginTags` class to hold all tags as constants for `PluginInfo`.
 
--   Added `isRequired` in `PluginParameter` with a getter and a setter, which
+-   Changed the parameter for takeScreenshot in RecentGraphScreenshotUtilities 
+    from filename to filepath.
+
+-   Added `isRequired` in `PluginParameter` with a getter and a setter, which 
     can be used to configure the required plugin parameters to mark as `*required`
     in the swagger.
 
@@ -150,7 +182,7 @@
 
 ## Changes in July 2021
 
--   Update to Quality Control category names and colours in
+-   Update to Quality Control category names and colors in
     `QualityControlEvent` to be easier to understand.
 
 -   Update to `openEdit`, `updateNotesUI`, `createNote` and the constructor in

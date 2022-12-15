@@ -34,7 +34,7 @@ package au.gov.asd.tac.constellation.utilities.visual;
 public enum VisualProperty {
 
     BACKGROUND_COLOR(PropertyType.OBJECT, ElementType.GRAPH),
-    HIGHLIGHT_COLOUR(PropertyType.OBJECT, ElementType.GRAPH),
+    HIGHLIGHT_COLOR(PropertyType.OBJECT, ElementType.GRAPH),
     DRAW_FLAGS(PropertyType.OBJECT, ElementType.GRAPH),
     CAMERA(PropertyType.OBJECT, ElementType.GRAPH),
     BLAZE_SIZE(PropertyType.FLOAT, ElementType.GRAPH),

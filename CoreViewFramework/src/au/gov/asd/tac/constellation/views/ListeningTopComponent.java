@@ -30,7 +30,7 @@ import au.gov.asd.tac.constellation.graph.monitor.MonitorTransition;
 import au.gov.asd.tac.constellation.graph.monitor.MonitorTransitionFilter;
 import au.gov.asd.tac.constellation.graph.monitor.StructureMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
-import au.gov.asd.tac.constellation.preferences.ApplicationFontPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.Collections;
@@ -75,8 +75,8 @@ public abstract class ListeningTopComponent<P> extends AbstractTopComponent<P> i
         this.preferenceMonitors = Collections.synchronizedMap(new HashMap<>());
         this.ignoredEvents = new HashSet<>();
 
-        preferenceMonitors.put(ApplicationFontPreferenceKeys.FONT_FAMILY_DEFAULT, event -> updateFont());
-        preferenceMonitors.put(ApplicationFontPreferenceKeys.FONT_SIZE_DEFAULT, event -> updateFont());
+        preferenceMonitors.put(ApplicationPreferenceKeys.FONT_FAMILY_DEFAULT, event -> updateFont());
+        preferenceMonitors.put(ApplicationPreferenceKeys.FONT_SIZE_DEFAULT, event -> updateFont());
     }
 
     /**

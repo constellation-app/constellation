@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ import javafx.scene.layout.Priority;
 public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
 
     private final TextField searchField = new TextField();
-    private final CheckBox caseSensitiveCheckBox = new CheckBox("Aa");
+    private final CheckBox caseSensitiveCheckBox = new CheckBox("Ignore Case");
     private final CheckBox useListCheckBox = new CheckBox("Use List");
     private final Button moreDetailsButton = new Button("List");
 
@@ -52,7 +52,6 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
     public StringCriteriaPanel(final AdvancedFindTab parentComponent, final String type, final GraphElementType graphElementType) {
         super(parentComponent, type, graphElementType);
         setGridContent();
-        caseSensitiveCheckBox.setOnAction(action -> setAaText(caseSensitiveCheckBox.selectedProperty().get()));
         useListCheckBox.setOnAction(action -> activateMoreDetails(useListCheckBox.selectedProperty().get()));
 
         getFilterChoiceBox().getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, final String oldElement, final String newElement)
@@ -112,18 +111,6 @@ public class StringCriteriaPanel extends AdvancedCriteriaBorderPane {
         return searchField.getText();
     }
 
-    /**
-     * Changes the check box, Aa, text to alter between "aa" and "Aa" to
-     * indicate if the search is case sensitive or not. This is called when the
-     * check box changes selection status.
-     *
-     * Aa for case sensitive aa for not case sensitive
-     *
-     * @param isChecked
-     */
-    private void setAaText(final boolean isChecked) {
-        caseSensitiveCheckBox.setText(isChecked ? "aa" : "Aa");
-    }
 
     /**
      * Disables / enables the moreDetailsButton based on if the useList CheckBox

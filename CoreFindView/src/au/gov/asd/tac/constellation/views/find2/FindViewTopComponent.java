@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.AdvancedCrit
 import au.gov.asd.tac.constellation.views.find2.plugins.ResetStatePlugin;
 import java.awt.Dimension;
 import java.awt.Window;
-import javafx.stage.Screen;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -60,8 +59,8 @@ import org.openide.windows.WindowManager;
 )
 @NbBundle.Messages({
     "CTL_FindView2Action=Find View",
-    "CTL_FindViewTopComponent2=Find View",
-    "HINT_FindViewTopComponent2=Find View"
+    "CTL_FindViewTopComponent2=Find and Replace",
+    "HINT_FindViewTopComponent2=Find and Replace"
 })
 
 public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane> {
@@ -159,13 +158,11 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         /**
          * This loops through all the current windows and compares this top
          * components top level ancestor with the windows parent. If they match
-         * the window is the find view so we set the location and the size of
-         * the window.
+         * the window is the find view so we set the size of the window.
          */
         for (final Window window : Window.getWindows()) {
             if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
-                window.setMinimumSize(new Dimension(485, 285));
-                window.setLocation((int) Screen.getPrimary().getBounds().getMaxX() - 510, 110);
+                window.setMinimumSize(new Dimension(500, 300));
             }
         }
     }

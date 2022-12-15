@@ -158,7 +158,7 @@ public class ConstellationIconNGTest {
         final BufferedImage expResult = testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
         final BufferedImage result = testIcon.buildBufferedImage(color);
         // Check that the new buffered image doesn't equals the default one 
-        // Both images should have different colours but the same size
+        // Both images should have different colors but the same size
         final boolean resultEquals = result.getData() != expResult.getData();
         assertTrue(resultEquals);
         assertEquals(result.getHeight(), expResult.getHeight());

@@ -28,13 +28,15 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.IconCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.StringCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
+import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -127,16 +129,16 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Is Not", "identifer name", true, false);
         findCriteriaValuesList.add(stringCriteriaValue1);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         rg.close();
 
         //Contains
@@ -159,16 +161,16 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Doesn't Contain", "identifer", true, false);
         findCriteriaValuesList.add(stringCriteriaValue1);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         rg.close();
 
         //Begins With
@@ -240,16 +242,16 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         floatCriteriaValues = new FloatCriteriaValues("float", "x", "Is Not", 1);
         findCriteriaValuesList.add(floatCriteriaValues);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         rg.close();
 
         //Is Less Than
@@ -320,8 +322,8 @@ public class AdvancedSearchPluginNGTest {
         //Constellation Color
         //Is
         findCriteriaValuesList = new ArrayList<>();
-        ColourCriteriaValues colourCriteriaValue = new ColourCriteriaValues("color", "color", "Is", ConstellationColor.BLUE);
-        findCriteriaValuesList.add(colourCriteriaValue);
+        ColorCriteriaValues colorCriteriaValue = new ColorCriteriaValues("color", "color", "Is", ConstellationColor.BLUE);
+        findCriteriaValuesList.add(colorCriteriaValue);
         parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
@@ -336,18 +338,18 @@ public class AdvancedSearchPluginNGTest {
 
         //Is Not
         findCriteriaValuesList = new ArrayList<>();
-        colourCriteriaValue = new ColourCriteriaValues("color", "color", "Is Not", ConstellationColor.BLUE);
-        findCriteriaValuesList.add(colourCriteriaValue);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        colorCriteriaValue = new ColorCriteriaValues("color", "color", "Is Not", ConstellationColor.BLUE);
+        findCriteriaValuesList.add(colorCriteriaValue);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         rg.close();
 
         //Constellation Icon
@@ -371,16 +373,16 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         iconCriteriaValue = new IconCriteriaValues("icon", "background_icon", "Is Not", IconManager.getIcon("Flag.Australia"));
         findCriteriaValuesList.add(iconCriteriaValue);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         rg.close();
 
         //DateTime
@@ -411,14 +413,14 @@ public class AdvancedSearchPluginNGTest {
         dateTimeCriteriaValue = new DateTimeCriteriaValues("datetime", "DateTime", "Didn't Occur On", formatDateTime(testTime));
         findCriteriaValuesList.add(dateTimeCriteriaValue);
 
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedT, txId1), false);
-        assertEquals(rg.getBooleanValue(selectedT, txId2), false);
+        assertEquals(rg.getBooleanValue(selectedT, txId1), true);
+        assertEquals(rg.getBooleanValue(selectedT, txId2), true);
         assertEquals(rg.getBooleanValue(selectedT, txId3), true);
         assertEquals(rg.getBooleanValue(selectedT, txId4), true);
         rg.close();
@@ -428,7 +430,7 @@ public class AdvancedSearchPluginNGTest {
         dateTimeCriteriaValue = new DateTimeCriteriaValues("datetime", "DateTime", "Occured Before", formatDateTime(plus1YearTestTime));
         findCriteriaValuesList.add(dateTimeCriteriaValue);
 
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -437,7 +439,7 @@ public class AdvancedSearchPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedT, txId1), true);
         assertEquals(rg.getBooleanValue(selectedT, txId2), true);
         assertEquals(rg.getBooleanValue(selectedT, txId3), true);
-        assertEquals(rg.getBooleanValue(selectedT, txId4), false);
+        assertEquals(rg.getBooleanValue(selectedT, txId4), true);
         rg.close();
 
         //Occured After
@@ -445,14 +447,14 @@ public class AdvancedSearchPluginNGTest {
         dateTimeCriteriaValue = new DateTimeCriteriaValues("datetime", "DateTime", "Occured After", formatDateTime(plus1YearTestTime));
         findCriteriaValuesList.add(dateTimeCriteriaValue);
 
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedT, txId1), false);
-        assertEquals(rg.getBooleanValue(selectedT, txId2), false);
+        assertEquals(rg.getBooleanValue(selectedT, txId1), true);
+        assertEquals(rg.getBooleanValue(selectedT, txId2), true);
         assertEquals(rg.getBooleanValue(selectedT, txId3), true);
         assertEquals(rg.getBooleanValue(selectedT, txId4), true);
         rg.close();
@@ -462,16 +464,16 @@ public class AdvancedSearchPluginNGTest {
         dateTimeCriteriaValue = new DateTimeCriteriaValues("datetime", "DateTime", "Occured Between", formatDateTime(testTime), formatDateTime(plus2YearTestTime));
         findCriteriaValuesList.add(dateTimeCriteriaValue);
 
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedT, txId1), false);
-        assertEquals(rg.getBooleanValue(selectedT, txId2), false);
+        assertEquals(rg.getBooleanValue(selectedT, txId1), true);
+        assertEquals(rg.getBooleanValue(selectedT, txId2), true);
         assertEquals(rg.getBooleanValue(selectedT, txId3), true);
-        assertEquals(rg.getBooleanValue(selectedT, txId4), false);
+        assertEquals(rg.getBooleanValue(selectedT, txId4), true);
         rg.close();
 
         //Test multiple criteria (any)
@@ -527,10 +529,13 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList.add(stringCriteriaValue1);
 
         elementType = GraphElementType.VERTEX;
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, true);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+        AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, true);
+        ActiveFindResultsList.getAdvancedResultsList().incrementCurrentIndex();
+        PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
@@ -541,9 +546,12 @@ public class AdvancedSearchPluginNGTest {
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, true);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, true);
+        ActiveFindResultsList.getAdvancedResultsList().incrementCurrentIndex();
+        PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
 
@@ -551,35 +559,44 @@ public class AdvancedSearchPluginNGTest {
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, true);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, true);
+        ActiveFindResultsList.getAdvancedResultsList().incrementCurrentIndex();
+        PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
 
         rg.close();
 
         //Test find prev
         elementType = GraphElementType.VERTEX;
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, false);
+        ActiveFindResultsList.getAdvancedResultsList().decrementCurrentIndex();
+        PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
-        assertEquals(rg.getBooleanValue(selectedV, vxId1), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
 
         rg.close();
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
+        findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(parameters, false, false);
+        ActiveFindResultsList.getAdvancedResultsList().decrementCurrentIndex();
+        PluginExecution.withPlugin(findGraphSelectionPlugin).executeNow(graph);
         rg = graph.getReadableGraph();
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId2), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
 
         rg.close();
 

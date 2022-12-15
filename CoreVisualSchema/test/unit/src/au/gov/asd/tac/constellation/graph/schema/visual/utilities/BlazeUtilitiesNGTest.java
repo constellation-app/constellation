@@ -123,14 +123,14 @@ public class BlazeUtilitiesNGTest {
         
         final Pair<BitSet, ConstellationColor> result = BlazeUtilities.getSelection(g, null);
         final BitSet resultBitSet = result.getKey();
-        final ConstellationColor resultColour = result.getValue();
+        final ConstellationColor resultColor = result.getValue();
         
         assertEquals(resultBitSet.cardinality(), 3);
         assertTrue(resultBitSet.get(vxId1));
         assertFalse(resultBitSet.get(vxId2));
         assertTrue(resultBitSet.get(vxId3));
         assertTrue(resultBitSet.get(vxId4));
-        assertEquals(resultColour, ConstellationColor.BLUE);
+        assertEquals(resultColor, ConstellationColor.BLUE);
     }
     
     /**
@@ -147,35 +147,35 @@ public class BlazeUtilitiesNGTest {
         
         final Pair<BitSet, ConstellationColor> result = BlazeUtilities.getSelection(g, null);
         final BitSet resultBitSet = result.getKey();
-        final ConstellationColor resultColour = result.getValue();
+        final ConstellationColor resultColor = result.getValue();
         
         assertEquals(resultBitSet.cardinality(), 3);
         assertTrue(resultBitSet.get(vxId1));
         assertFalse(resultBitSet.get(vxId2));
         assertTrue(resultBitSet.get(vxId3));
         assertTrue(resultBitSet.get(vxId4));
-        assertEquals(resultColour, ConstellationColor.LIGHT_BLUE);
+        assertEquals(resultColor, ConstellationColor.LIGHT_BLUE);
     }
     
     /**
-     * Test of getSelection method, of class BlazeUtilities. Colour input added
+     * Test of getSelection method, of class BlazeUtilities. Color input added
      */
     @Test
-    public void testGetSelectionColourInput() {
-        System.out.println("getSelectionColourInput");
+    public void testGetSelectionColorInput() {
+        System.out.println("getSelectionColorInput");
         
         final Graph g = new DualGraph(schema, graph);
         
         final Pair<BitSet, ConstellationColor> result = BlazeUtilities.getSelection(g, ConstellationColor.BANANA);
         final BitSet resultBitSet = result.getKey();
-        final ConstellationColor resultColour = result.getValue();
+        final ConstellationColor resultColor = result.getValue();
         
         assertEquals(resultBitSet.cardinality(), 3);
         assertTrue(resultBitSet.get(vxId1));
         assertFalse(resultBitSet.get(vxId2));
         assertTrue(resultBitSet.get(vxId3));
         assertTrue(resultBitSet.get(vxId4));
-        assertEquals(resultColour, ConstellationColor.BANANA);
+        assertEquals(resultColor, ConstellationColor.BANANA);
     }
 
     /**
@@ -190,7 +190,7 @@ public class BlazeUtilitiesNGTest {
         final Preferences p = Preferences.userNodeForPackage(BlazeUtilitiesNGTest.class);
         
         // keep the original application preference for blaze preset defaults so it can be restored later
-        final String defaultBlazePresetColours = GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT;
+        final String defaultBlazePresetColors = GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT;
         
         try (final MockedStatic<BlazeUtilities> blazeUtilitiesMockedStatic = mockStatic(BlazeUtilities.class, Mockito.CALLS_REAL_METHODS)) {
             blazeUtilitiesMockedStatic.when(() -> BlazeUtilities.getGraphPreferences()).thenReturn(p);                     
@@ -199,12 +199,12 @@ public class BlazeUtilitiesNGTest {
             final String presetsBefore = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsBefore, "#FF0000;#0000FF;#FFFF00;");
             
-            // add a colour to end of default list of presets
+            // add a color to end of default list of presets
             BlazeUtilities.savePreset(Color.CYAN);            
             final String presetsAfter1 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter1, "#FF0000;#0000FF;#FFFF00;#00ffff;null;null;null;null;null;null;");
             
-            // add a colour to first null value in presets
+            // add a color to first null value in presets
             BlazeUtilities.savePreset(Color.GREEN);            
             final String presetsAfter2 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter2, "#FF0000;#0000FF;#FFFF00;#00ffff;#00ff00;null;null;null;null;null;");
@@ -216,7 +216,7 @@ public class BlazeUtilitiesNGTest {
             final String presetsAfter3 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter3, "#FF0000;#0000FF;#FFFF00;#00ffff;#00ff00;#ff00ff;#ff00ff;#ff00ff;#ff00ff;#ff00ff;");
             
-            // add a colour to after the preset list has been filled
+            // add a color to after the preset list has been filled
             BlazeUtilities.savePreset(Color.WHITE);
             final String presetsAfter4 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter4, "#FF0000;#0000FF;#FFFF00;#00ffff;#00ff00;#ff00ff;#ff00ff;#ff00ff;#ff00ff;#ffffff;");
@@ -224,7 +224,7 @@ public class BlazeUtilitiesNGTest {
             // clean up, first remove Preferences nodes this test plays with
             p.removeNode();
             // and set the graph Preference back to its original setting
-            GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT = defaultBlazePresetColours;
+            GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT = defaultBlazePresetColors;
         }
         
     }
@@ -241,7 +241,7 @@ public class BlazeUtilitiesNGTest {
         final Preferences p = Preferences.userNodeForPackage(BlazeUtilitiesNGTest.class);
         
         // keep the original application preference for blaze preset defaults so it can be restored later
-        final String defaultBlazePresetColours = GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT;
+        final String defaultBlazePresetColors = GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT;
         
         try (final MockedStatic<BlazeUtilities> blazeUtilitiesMockedStatic = mockStatic(BlazeUtilities.class, Mockito.CALLS_REAL_METHODS)) {
             blazeUtilitiesMockedStatic.when(() -> BlazeUtilities.getGraphPreferences()).thenReturn(p);
@@ -250,7 +250,7 @@ public class BlazeUtilitiesNGTest {
             final String presetsBefore = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsBefore, "#FF0000;#0000FF;#FFFF00;");
             
-            // add a colour to an invalid part of the presets list
+            // add a color to an invalid part of the presets list
             BlazeUtilities.savePreset(Color.CYAN, -1);            
             final String presetsAfter1 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter1, "#FF0000;#0000FF;#FFFF00;");
@@ -259,12 +259,12 @@ public class BlazeUtilitiesNGTest {
             final String presetsAfter2 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter2, "#FF0000;#0000FF;#FFFF00;");
             
-            // add a colour to the middle of the presets list
+            // add a color to the middle of the presets list
             BlazeUtilities.savePreset(Color.CYAN, 4);            
             final String presetsAfter3 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter3, "#FF0000;#0000FF;#FFFF00;null;#00ffff;null;null;null;null;null;");
             
-            // override an existing colour
+            // override an existing color
             BlazeUtilities.savePreset(null, 1);            
             final String presetsAfter4 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
             assertEquals(presetsAfter4, "#FF0000;null;#FFFF00;null;#00ffff;null;null;null;null;null;");
@@ -272,7 +272,7 @@ public class BlazeUtilitiesNGTest {
             // clean up, first remove Preferences nodes this test plays with
             p.removeNode();
             // and set the graph Preference back to its original setting
-            GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT = defaultBlazePresetColours;
+            GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT = defaultBlazePresetColors;
         }
     }
 
@@ -283,10 +283,10 @@ public class BlazeUtilitiesNGTest {
     public void testGetHTMLColor() {
         System.out.println("getHTMLColor");
         
-        final String htmlColour1 = BlazeUtilities.getHTMLColor(null);
-        assertNull(htmlColour1);
+        final String htmlColor1 = BlazeUtilities.getHTMLColor(null);
+        assertNull(htmlColor1);
         
-        final String htmlColour2 = BlazeUtilities.getHTMLColor(Color.CYAN);
-        assertEquals(htmlColour2, "#00ffff");
+        final String htmlColor2 = BlazeUtilities.getHTMLColor(Color.CYAN);
+        assertEquals(htmlColor2, "#00ffff");
     }
 }

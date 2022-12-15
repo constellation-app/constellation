@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views;
 
-import au.gov.asd.tac.constellation.preferences.ApplicationFontPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.BorderLayout;
@@ -135,12 +135,12 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
 
     @Override
     protected void handleComponentClosed() {
-        PreferenceUtilities.removePreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
+        PreferenceUtilities.removePreferenceChangeListener(ApplicationPreferenceKeys.FONT_PREFERENCES, this);
     }
 
     @Override
     protected void handleComponentOpened() {
-        PreferenceUtilities.addPreferenceChangeListener(ApplicationFontPreferenceKeys.FONT_PREFERENCES, this);
+        PreferenceUtilities.addPreferenceChangeListener(ApplicationPreferenceKeys.FONT_PREFERENCES, this);
     }
 
 }

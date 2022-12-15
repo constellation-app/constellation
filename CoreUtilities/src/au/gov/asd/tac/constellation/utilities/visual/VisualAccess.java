@@ -74,14 +74,14 @@ public interface VisualAccess {
     public void endUpdate();
 
     /**
-     * Get the colour to be used for the background of the graph display.
+     * Get the color to be used for the background of the graph display.
      *
      * @return
      */
     public ConstellationColor getBackgroundColor();
 
     /**
-     * Get the highlight colour for the graph (can be used for indicating
+     * Get the highlight color for the graph (can be used for indicating
      * selection etc).
      *
      * @return
@@ -186,7 +186,7 @@ public interface VisualAccess {
     public boolean isLabelSummary(final int connection);
 
     /**
-     * Get the colour of the given label on top of nodes.
+     * Get the color of the given label on top of nodes.
      *
      * @param labelNum The position of the label in the list of top labels to
      * display.
@@ -195,7 +195,7 @@ public interface VisualAccess {
     public ConstellationColor getTopLabelColor(final int labelNum);
 
     /**
-     * Get the colour of the given label below nodes.
+     * Get the color of the given label below nodes.
      *
      * @param labelNum The position of the label in the list of bottom labels to
      * display.
@@ -204,7 +204,7 @@ public interface VisualAccess {
     public ConstellationColor getBottomLabelColor(final int labelNum);
 
     /**
-     * Get the colour of the given label on connections.
+     * Get the color of the given label on connections.
      *
      * @param labelNum The position of the label in the list of connection
      * labels to display.
@@ -319,7 +319,7 @@ public interface VisualAccess {
     public float getZ2(final int vertex);
 
     /**
-     * Get the colour of the given vertex.
+     * Get the color of the given vertex.
      *
      * @param vertex The position of the vertex in the list of vertices to
      * display.
@@ -408,7 +408,7 @@ public interface VisualAccess {
     public int getBlazeAngle(final int vertex);
 
     /**
-     * Get the colour to use for the blaze for the given vertex.
+     * Get the color to use for the blaze for the given vertex.
      *
      * @param vertex The position of the vertex in the list of vertices to
      * display. This should be a vertex v for which
@@ -458,7 +458,7 @@ public interface VisualAccess {
     public String getSWDecorator(final int vertex);
 
     /**
-     * Get the colour of the given connection.
+     * Get the color of the given connection.
      *
      * @param connection The position of the connection in the list of
      * connections to display.

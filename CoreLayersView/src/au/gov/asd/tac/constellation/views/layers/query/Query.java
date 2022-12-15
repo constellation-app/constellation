@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Query element that holds either a vertex or transaction query for each layer 
  *
  * @author sirius
  */
@@ -37,14 +38,7 @@ public class Query {
     private final GraphElementType elementType;
     private final String queryString;
 
-    private String graphId = null;
-
-    private long globalModificationCounter;
-    private long structureModificationCounter;
-    private long attributeModificationCounter;
-
     private int[] attributeIds = null;
-    private long[] valueModificationCounters = null;
 
     public Query(final GraphElementType elementType, final String queryString) {
         this.elementType = elementType;
@@ -59,28 +53,6 @@ public class Query {
         return elementType;
     }
 
-    public boolean requiresUpdate(final GraphReadMethods graph) {
-        if (graphId == null || !graphId.equals(graph.getId())) {
-            return true;
-        }
-
-        if (globalModificationCounter != graph.getGlobalModificationCounter()) {
-            if (attributeModificationCounter != graph.getAttributeModificationCounter()) {
-                return true;
-            }
-            if (structureModificationCounter != graph.getStructureModificationCounter()) {
-                return true;
-            }
-
-            for (int i = 0; i < attributeIds.length; i++) {
-                if (valueModificationCounters[i] != graph.getValueModificationCounter(attributeIds[i])) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public Object compile(final GraphReadMethods graph, final IntReadable index) {
         final SequenceExpression expression = ExpressionParser.parse(queryString);
 
@@ -88,13 +60,8 @@ public class Query {
 
         final Object result = ExpressionCompiler.compileSequenceExpression(expression, variableProvider, index, Operators.getDefault());
 
-        graphId = graph.getId();
-        globalModificationCounter = graph.getGlobalModificationCounter();
-        structureModificationCounter = graph.getStructureModificationCounter();
-        attributeModificationCounter = graph.getAttributeModificationCounter();
-
         attributeIds = variableProvider.getAttributeIds();
-        valueModificationCounters = new long[attributeIds.length];
+        final long[] valueModificationCounters = new long[attributeIds.length];
         for (int i = 0; i < attributeIds.length; i++) {
             valueModificationCounters[i] = graph.getValueModificationCounter(attributeIds[i]);
         }

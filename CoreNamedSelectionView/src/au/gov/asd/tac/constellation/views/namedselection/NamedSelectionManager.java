@@ -358,7 +358,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      * elements.
      * <p>
      * Member elements do not have their 'selected' attribute set, so the
-     * elements retain their original non-selected colours.
+     * elements retain their original non-selected colors.
      *
      * @param notDim The named selection to be recalled.
      *
@@ -375,7 +375,7 @@ public class NamedSelectionManager implements LookupListener, GraphChangeListene
      * Resets a graph, and automatically un-dims all member graph elements.
      * <p>
      * Member elements do not have their 'selected' attribute set, so all
-     * elements retain their original non-selected colours.
+     * elements retain their original non-selected colors.
      *
      * @param reset The named selection to be reset.
      *

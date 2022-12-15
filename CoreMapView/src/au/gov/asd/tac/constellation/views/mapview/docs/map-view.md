@@ -87,8 +87,8 @@ menu.
 
 ## Marker Customisation
 
-You customise markers with colours and labels using data on the graph.
-This can be achieved by selecting options in the <img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapMarkerColoursMenu.png" alt="Marker Colours
+You customise markers with colors and labels using data on the graph.
+This can be achieved by selecting options in the <img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapMarkerColorsMenu.png" alt="Marker Colors
 Menu" />
 and <img src="../constellation/CoreMapView/src/au/gov/asd/tac/constellation/views/mapview/docs/resources/MapMarkerLabelsMenu.png" alt="Marker Labels
 Menu" />

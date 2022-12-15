@@ -62,7 +62,7 @@ sections must appear in the following order:
 1.  *version* - An integer version number that defines the remaining
     structure. This section may also contain other unspecified data.
 2.  *graph* - Contains data relevant to the graph (e.g. background
-    colour).
+    color).
 3.  *vertex* - Contains data relevant to the nodes (e.g. the name of the
     node).
 4.  *transaction* - Contains data relevant to the transactions (e.g.
@@ -144,10 +144,10 @@ this round-tripping would work for other string formats such as CSV):
         displayed or not.
 
     e.g. "45;LightBlue;Sphere_48;true".
--   *color* - An RGBA colour. This value has two representations: a name
+-   *color* - An RGBA color. This value has two representations: a name
     ("red", "green", "blue", ...), or a comma-separated list of four
     floating-point numbers between 0 and 1 inclusive representing the
-    red, green, blue, and alpha components of the colour. The alpha
+    red, green, blue, and alpha components of the color. The alpha
     component is optional; if it is not present, it defaults to 1. For
     instance "red", "1,0,0" and "1,0,0,1" are equivalent, as are
     "DarkGreen" and "0,0.5,0". Note that the alpha component is often

@@ -112,15 +112,15 @@ public class GraphVisualAccessNGTest {
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
 
         instance.beginUpdate();
-        final ConstellationColor backgroundColour = instance.getBackgroundColor();
-        final ConstellationColor highlightColour = instance.getHighlightColor();
+        final ConstellationColor backgroundColor = instance.getBackgroundColor();
+        final ConstellationColor highlightColor = instance.getHighlightColor();
         final float blazeSize = instance.getBlazeSize();
         final float blazeOpacity = instance.getBlazeOpacity();
         final float connectionOpacity = instance.getConnectionOpacity();
         instance.endUpdate();
 
-        assertEquals(backgroundColour, VisualGraphDefaults.DEFAULT_BACKGROUND_COLOR);
-        assertEquals(highlightColour, VisualGraphDefaults.DEFAULT_HIGHLIGHT_COLOR);
+        assertEquals(backgroundColor, VisualGraphDefaults.DEFAULT_BACKGROUND_COLOR);
+        assertEquals(highlightColor, VisualGraphDefaults.DEFAULT_HIGHLIGHT_COLOR);
         assertEquals(blazeSize, VisualGraphDefaults.DEFAULT_BLAZE_SIZE);
         assertEquals(blazeOpacity, VisualGraphDefaults.DEFAULT_BLAZE_OPACITY);
         assertEquals(connectionOpacity, VisualGraphDefaults.DEFAULT_CONNECTION_OPACITY);
@@ -139,14 +139,14 @@ public class GraphVisualAccessNGTest {
 
         final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
         try {
-            final int graphBackgroundColourAttribute = VisualConcept.GraphAttribute.BACKGROUND_COLOR.ensure(wg);
-            final int graphHighlightColourAttribute = VisualConcept.GraphAttribute.HIGHLIGHT_COLOR.ensure(wg);
+            final int graphBackgroundColorAttribute = VisualConcept.GraphAttribute.BACKGROUND_COLOR.ensure(wg);
+            final int graphHighlightColorAttribute = VisualConcept.GraphAttribute.HIGHLIGHT_COLOR.ensure(wg);
             final int graphBlazeSizeAttribute = VisualConcept.GraphAttribute.BLAZE_SIZE.ensure(wg);
             final int graphBlazeOpacityAttribute = VisualConcept.GraphAttribute.BLAZE_OPACITY.ensure(wg);
             final int graphConnectionOpacityAttribute = VisualConcept.GraphAttribute.CONNECTION_OPACITY.ensure(wg);
 
-            wg.setObjectValue(graphBackgroundColourAttribute, 0, ConstellationColor.BANANA);
-            wg.setObjectValue(graphHighlightColourAttribute, 0, ConstellationColor.CARROT);
+            wg.setObjectValue(graphBackgroundColorAttribute, 0, ConstellationColor.BANANA);
+            wg.setObjectValue(graphHighlightColorAttribute, 0, ConstellationColor.CARROT);
             wg.setFloatValue(graphBlazeSizeAttribute, 0, 0.5f);
             wg.setFloatValue(graphBlazeOpacityAttribute, 0, 0.6f);
             wg.setFloatValue(graphConnectionOpacityAttribute, 0, 0.7f);
@@ -158,15 +158,15 @@ public class GraphVisualAccessNGTest {
 
         instance.beginUpdate();
         instance.updateInternally();
-        final ConstellationColor backgroundColour = instance.getBackgroundColor();
-        final ConstellationColor highlightColour = instance.getHighlightColor();
+        final ConstellationColor backgroundColor = instance.getBackgroundColor();
+        final ConstellationColor highlightColor = instance.getHighlightColor();
         final float blazeSize = instance.getBlazeSize();
         final float blazeOpacity = instance.getBlazeOpacity();
         final float connectionOpacity = instance.getConnectionOpacity();
         instance.endUpdate();
 
-        assertEquals(backgroundColour, ConstellationColor.BANANA);
-        assertEquals(highlightColour, ConstellationColor.CARROT);
+        assertEquals(backgroundColor, ConstellationColor.BANANA);
+        assertEquals(highlightColor, ConstellationColor.CARROT);
         assertEquals(blazeSize, 0.5f);
         assertEquals(blazeOpacity, 0.6f);
         assertEquals(connectionOpacity, 0.7f);
@@ -554,12 +554,12 @@ public class GraphVisualAccessNGTest {
         final GraphVisualAccess instance = new GraphVisualAccess(graph);
 
         instance.beginUpdate();
-        final ConstellationColor colour1 = instance.getVertexColor(0);
-        final ConstellationColor colour2 = instance.getVertexColor(1);
+        final ConstellationColor color1 = instance.getVertexColor(0);
+        final ConstellationColor color2 = instance.getVertexColor(1);
         instance.endUpdate();
 
-        assertEquals(colour1, VisualGraphDefaults.DEFAULT_VERTEX_COLOR);
-        assertEquals(colour2, VisualGraphDefaults.DEFAULT_VERTEX_COLOR);
+        assertEquals(color1, VisualGraphDefaults.DEFAULT_VERTEX_COLOR);
+        assertEquals(color2, VisualGraphDefaults.DEFAULT_VERTEX_COLOR);
     }
 
     /**
@@ -574,11 +574,11 @@ public class GraphVisualAccessNGTest {
 
         final WritableGraph wg = graph.getWritableGraph("Graph Visual Access", true);
         try {
-            final int graphNodeColourReferenceAttribute = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(wg);
-            final int vertexColourAttribute = VisualConcept.VertexAttribute.COLOR.ensure(wg);
-            wg.setStringValue(graphNodeColourReferenceAttribute, 0, VisualConcept.VertexAttribute.COLOR.getName());
-            wg.setObjectValue(vertexColourAttribute, vxId1, ConstellationColor.BANANA);
-            wg.setObjectValue(vertexColourAttribute, vxId2, ConstellationColor.CARROT);
+            final int graphNodeColorReferenceAttribute = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(wg);
+            final int vertexColorAttribute = VisualConcept.VertexAttribute.COLOR.ensure(wg);
+            wg.setStringValue(graphNodeColorReferenceAttribute, 0, VisualConcept.VertexAttribute.COLOR.getName());
+            wg.setObjectValue(vertexColorAttribute, vxId1, ConstellationColor.BANANA);
+            wg.setObjectValue(vertexColorAttribute, vxId2, ConstellationColor.CARROT);
         } finally {
             wg.commit();
         }
@@ -587,12 +587,12 @@ public class GraphVisualAccessNGTest {
 
         instance.beginUpdate();
         instance.updateInternally();
-        final ConstellationColor colour1 = instance.getVertexColor(0);
-        final ConstellationColor colour2 = instance.getVertexColor(1);
+        final ConstellationColor color1 = instance.getVertexColor(0);
+        final ConstellationColor color2 = instance.getVertexColor(1);
         instance.endUpdate();
 
-        assertEquals(colour1, ConstellationColor.BANANA);
-        assertEquals(colour2, ConstellationColor.CARROT);
+        assertEquals(color1, ConstellationColor.BANANA);
+        assertEquals(color2, ConstellationColor.CARROT);
     }
 
     /**

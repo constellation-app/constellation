@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.jdbc;
 
 import au.gov.asd.tac.constellation.plugins.importexport.EasyGridPane;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportController;
+import au.gov.asd.tac.constellation.plugins.importexport.ImportSingleton;
 import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -36,6 +37,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -76,11 +78,12 @@ public class JDBCSourcePane extends SourcePane {
     private static final Insets GRIDPANE_PADDING = new Insets(5);
     private static final int GAP = 10;
     private static final String ACTION_CANCEL = "Cancel";
-    private static final String TITLE_JDBC_IMPORT = "JDBC Import";
-    private static final String PROMPT_TEXT_COLOUR = "-fx-prompt-text-fill: grey";
+    private static final String TITLE_JDBC_IMPORT = "Database Import";
+    private static final String PROMPT_TEXT_COLOR = "-fx-prompt-text-fill: grey";
     private static final String ADD_CONNECTION = "Add Connection";
     private static final String MODIFY_CONNECTION = "Modify Connection";
     private static final String ADD_DRIVER = "Add Driver";
+    private static final String CLEAR_RESULTS = "Clear";
 
     private final ComboBox<JDBCConnection> dbConnectionComboBox;
 
@@ -301,20 +304,37 @@ public class JDBCSourcePane extends SourcePane {
         final Label destinationLabel = new Label("Destination:");
         GridPane.setConstraints(destinationLabel, 0, 4, 1, 1, HPos.LEFT, VPos.TOP);
 
+        final Button clearButton = new Button(CLEAR_RESULTS);
+        clearButton.setOnAction(e -> {
+            query.setText("");
+            ImportSingleton.getDefault().triggerClearDataFlag();
+        });
+
         final Button queryButton = new Button("Query");
         queryButton.setOnAction((final ActionEvent t) -> {
             if (!query.getText().isBlank() && dbConnectionComboBox.getValue() != null) {
+
                 importController.setDBConnection(dbConnectionComboBox.getValue());
                 importController.setQuery(query.getText());
                 importController.setUsername(username.getText());
                 importController.setPassword(password.getText());
                 importController.updateSampleData();
+            } else {
+                NotifyDisplayer.displayAlert(TITLE_JDBC_IMPORT, "No Query Entered",
+                        "Please enter a query.", Alert.AlertType.ERROR);
             }
         });
-        GridPane.setConstraints(queryButton, 2, 4, 2, 1, HPos.RIGHT, VPos.TOP);
+
+        final GridPane buttonPane = new GridPane();
+        buttonPane.add(clearButton, 0, 0);
+        buttonPane.add(queryButton, 1, 0);
+        buttonPane.setHgap(10);
+        buttonPane.setPadding(new Insets(0, 0, 0, 25));
+
+        GridPane.setConstraints(buttonPane, 2, 4, 3, 1, HPos.RIGHT, VPos.TOP);
 
         getChildren().addAll(fileLabel, dbConnectionComboBox, manageConnectionsBtn, usernameLabel, username,
-                passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, queryButton);
+                passwordLabel, password, queryLabel, query, destinationLabel, graphComboBox, buttonPane);
     }
 
     private void openAddDriverDialog(final JDBCDriverManager driverManager, final TableView driverTable, final ComboBox<JDBCDriver> driver, final Stage dialog) {
@@ -329,7 +349,7 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(jarLabel, 0, 0, 1, 1);
         final TextField driverFilePath = new TextField();
         driverFilePath.setPromptText("Select or enter the JDBC driver JAR file");
-        driverFilePath.setStyle(PROMPT_TEXT_COLOUR);
+        driverFilePath.setStyle(PROMPT_TEXT_COLOR);
         driverFilePath.setFocusTraversable(false);
         gp.add(driverFilePath, 1, 0, 1, 1);
 
@@ -504,7 +524,7 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(nameLabel, 0, 0, 1, 1);
         final TextField cn = new TextField(add ? "" : connection.getConnectionName());
         cn.setPromptText("Enter a name for your connection");
-        cn.setStyle(PROMPT_TEXT_COLOUR);
+        cn.setStyle(PROMPT_TEXT_COLOR);
         cn.setFocusTraversable(false);
         cn.focusedProperty().addListener((obs, oldVal, newVal) -> {
             cn.setStyle(""); 
@@ -528,7 +548,7 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(connectionStringLabel, 0, 2, 1, 1);
         final TextField connectionStringF = new TextField(add ? "" : connection.getConnectionString());
         connectionStringF.setPromptText("Enter a URL to connect to, eg. jdbc:sqlite:C:/my_folder/database.sqlite");
-        connectionStringF.setStyle(PROMPT_TEXT_COLOUR);
+        connectionStringF.setStyle(PROMPT_TEXT_COLOR);
         connectionStringF.setFocusTraversable(false);
         connectionStringF.focusedProperty().addListener((obs, oldVal, newVal) -> {
             connectionStringF.setStyle(""); 
@@ -541,14 +561,14 @@ public class JDBCSourcePane extends SourcePane {
         gp.add(usernameLabel, 0, 3, 1, 1);
         final TextField username = new TextField();
         username.setPromptText("Optional: Set a username");
-        username.setStyle(PROMPT_TEXT_COLOUR);
+        username.setStyle(PROMPT_TEXT_COLOR);
         username.setFocusTraversable(false);
         gp.add(username, 1, 3, 2, 1);
         final Label passwordLabel = new Label("Password");
         gp.add(passwordLabel, 0, 4, 1, 1);
         final PasswordField password = new PasswordField();
         password.setPromptText("Optional: Set a password");
-        password.setStyle(PROMPT_TEXT_COLOUR);
+        password.setStyle(PROMPT_TEXT_COLOR);
         password.setFocusTraversable(false);
 
         gp.add(password, 1, 4, 2, 1);

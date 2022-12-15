@@ -43,7 +43,7 @@ in float depth[];
 
 // The coordinates to lookup the glyph in the glyphImageTexture
 noperspective centroid out vec3 textureCoordinates;
-// The colour of this glyph (constant for a whole label, unless we are rendering its background or connection indicator).
+// The color of this glyph (constant for a whole label, unless we are rendering its background or connection indicator).
 out vec4 fLabelColor;
 
 flat out float fDepth;
@@ -119,7 +119,7 @@ void main(void) {
             vec4 depthVec = pMatrix * vec4(glyphLocation.xy, depth[0] + forward, glyphLocation.w);
             float calcdDepth = ((far - near)*(depthVec.z / depthVec.w) + far + near) / 2.0;
 
-            // The indicator colour is the graph highlight colour, with the alpha value that is constant across the label.
+            // The indicator color is the graph highlight color, with the alpha value that is constant across the label.
             vec4 indicatorColor = vec4(highlightColor.xyz, 1.5 * labelColor[0].a);
             vec4 trianglePoint, triangleBase1, triangleBase2;
 

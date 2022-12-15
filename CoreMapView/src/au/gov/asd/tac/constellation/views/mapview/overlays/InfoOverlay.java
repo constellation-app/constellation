@@ -40,8 +40,8 @@ import processing.event.MouseEvent;
 public class InfoOverlay extends MapOverlay implements MapEventListener {
 
     // colors
-    private static final int EVENT_BOX_COLOUR_SENDING_ON = 0xFF5bdae7;
-    private static final int EVENT_BOX_COLOUR_RECEIVING_ON = 0xFFfc8720;
+    private static final int EVENT_BOX_COLOR_SENDING_ON = 0xFF5bdae7;
+    private static final int EVENT_BOX_COLOR_RECEIVING_ON = 0xFFfc8720;
 
     // event lights
     private static final float MINIMUM_TRANSPARENCY = 0.3F;
@@ -90,7 +90,7 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
 
         // draw info overlay
         renderer.noStroke();
-        renderer.fill(BACKGROUND_COLOUR);
+        renderer.fill(BACKGROUND_COLOR);
         renderer.rect(x, y, width, height);
 
         float yOffset = y + MARGIN;
@@ -122,7 +122,7 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
 
             final float debugHeight = (VALUE_BOX_HEIGHT * 4) + (PADDING * 7) + 1;
             renderer.noStroke();
-            renderer.fill(BACKGROUND_COLOUR);
+            renderer.fill(BACKGROUND_COLOR);
             renderer.rect(x, yOffset - 1, width, debugHeight);
 
             final String renderer = this.renderer.g.getClass().getSimpleName();
@@ -152,10 +152,10 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
                 yOffset += PADDING * 2;
 
                 final float eventHeight = (EVENT_BOX_HEIGHT * 2) + (PADDING * 5) + 1;
-                this.renderer.fill(BACKGROUND_COLOUR);
+                this.renderer.fill(BACKGROUND_COLOR);
                 this.renderer.rect(x, yOffset, width, eventHeight);
 
-                this.renderer.fill(VALUE_BOX_COLOUR);
+                this.renderer.fill(VALUE_BOX_COLOR);
                 this.renderer.rect(x + MARGIN, yOffset, width - MARGIN * 2, 24 + PADDING * 2);
 
                 final float xOffset = x + 80;
@@ -218,17 +218,17 @@ public class InfoOverlay extends MapOverlay implements MapEventListener {
     protected void drawLabeledEvent(final String label, final float listeningValue,
             final float broadcastingValue, final float x, final float y, final float valueBoxWidth) {
         final int alphaSend = (int) PApplet.map(broadcastingValue, 0, 1, 0, 255);
-        drawEvent(x, y + 4, valueBoxWidth, renderer.color(EVENT_BOX_COLOUR_SENDING_ON, alphaSend));
+        drawEvent(x, y + 4, valueBoxWidth, renderer.color(EVENT_BOX_COLOR_SENDING_ON, alphaSend));
 
         final int alphaReceive = (int) PApplet.map(listeningValue, 0, 1, 0, 255);
-        drawEvent(x + 6, y + 4, valueBoxWidth, renderer.color(EVENT_BOX_COLOUR_RECEIVING_ON, alphaReceive));
+        drawEvent(x + 6, y + 4, valueBoxWidth, renderer.color(EVENT_BOX_COLOR_RECEIVING_ON, alphaReceive));
 
         final float labelX = x - PADDING - Math.min(renderer.textWidth(label.toUpperCase()), MAX_LABEL_LENGTH);
         final float labelY = y + TEXT_SIZE - 3;
         renderer.textFont(font);
         renderer.textSize(8);
         renderer.noStroke();
-        renderer.fill(TEXT_COLOUR);
+        renderer.fill(TEXT_COLOR);
         renderer.text(label.toUpperCase(), labelX, labelY);
     }
 

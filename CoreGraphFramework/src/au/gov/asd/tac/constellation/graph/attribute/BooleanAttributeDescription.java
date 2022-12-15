@@ -80,16 +80,7 @@ public final class BooleanAttributeDescription extends AbstractAttributeDescript
     }
 
     private boolean convertFromString(final String string) throws IllegalArgumentException {
-        if (StringUtils.isBlank(string)) {
-            return (boolean) getDefault();
-        } else {
-            try {
-                return Boolean.parseBoolean(string);
-            } catch (final NumberFormatException ex) {
-                throw new IllegalArgumentException(String.format(
-                        "Error converting String '%s' to short", string), ex);
-            }
-        }
+        return StringUtils.isBlank(string) ? (boolean) getDefault() : Boolean.parseBoolean(string);
     }
 
     @Override

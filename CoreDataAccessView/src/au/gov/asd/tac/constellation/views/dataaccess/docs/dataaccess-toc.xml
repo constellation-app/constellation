@@ -8,6 +8,7 @@
             <tocitem text="Import" mergetype="javax.help.SortMerge">
                 <tocitem text="Extract Types from Text" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin"/>
                 <tocitem text="Extract Words from Text" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin"/>
+                <tocitem text="Import Graph File" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin"/>
             </tocitem>
             <tocitem text="Clean" mergetype="javax.help.SortMerge">
                 <tocitem text="Merge Nodes" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin"/>
@@ -27,5 +28,8 @@
                 <tocitem text="Select Top N" target="au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopNPlugin"/>
             </tocitem>
         </tocitem>
-    </tocitem>
+    </tocitem>  
+    <tocitem text="Preferences">
+        <tocitem text="Data Access Category" target="au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewCategoryPanelController"/>
+    </tocitem> 
 </toc>

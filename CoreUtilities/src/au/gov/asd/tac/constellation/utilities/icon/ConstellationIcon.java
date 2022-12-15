@@ -48,12 +48,12 @@ public class ConstellationIcon {
     /**
      * A separator used when concatenating elements of a ConstellationIcon name.
      */
-    protected static final String DEFAULT_ICON_SEPARATOR = SeparatorConstants.PERIOD;
+    public static final String DEFAULT_ICON_SEPARATOR = SeparatorConstants.PERIOD;
 
     /**
      * The default file format for a ConstellationIcon.
      */
-    protected static final String DEFAULT_ICON_FORMAT = "png";
+    public static final String DEFAULT_ICON_FORMAT = "png";
 
     /**
      * The default size (ie. height and width) of a ConstellationIcon.
@@ -396,7 +396,7 @@ public class ConstellationIcon {
      * cache.
      *
      * @param size The size of the icon
-     * @param color The colour of the icon
+     * @param color The color of the icon
      *
      * @return A unique key represented as a ThreeTuple
      */
@@ -409,7 +409,7 @@ public class ConstellationIcon {
      *
      * @param iconData The icon data object
      * @param size The size of the icon
-     * @param color The colour of the icon
+     * @param color The color of the icon
      * @return The icon data byte array
      */
     private byte[] retrieveIconData(final IconData iconData, final int size, final Color color) {

@@ -150,7 +150,7 @@ public class ToolsOverlay extends MapOverlay {
 
         // draw tool overlay
         renderer.noStroke();
-        renderer.fill(BACKGROUND_COLOUR);
+        renderer.fill(BACKGROUND_COLOR);
         renderer.rect(x, y, width, height);
 
         float yOffset = y + MARGIN;
@@ -304,7 +304,7 @@ public class ToolsOverlay extends MapOverlay {
 
             final float drawDescriptionHeight = (VALUE_BOX_HEIGHT * 16) + (PADDING * 2) + 1;
             renderer.noStroke();
-            renderer.fill(BACKGROUND_COLOUR);
+            renderer.fill(BACKGROUND_COLOR);
             renderer.rect(x, yOffset - 1, width, drawDescriptionHeight);
 
             final String drawDescription = " > Click on the map to draw a point marker.\n"

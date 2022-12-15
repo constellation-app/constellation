@@ -58,15 +58,15 @@ public abstract class MapOverlay {
     protected PFont font;
     protected PFont titleFont;
     protected static final int TEXT_SIZE = 12;
-    protected static final int TEXT_COLOUR = 0xFFFFFFFF;
+    protected static final int TEXT_COLOR = 0xFFFFFFFF;
 
-    // colours
-    protected static final int BACKGROUND_COLOUR = 0xF0222222;
-    protected static final int HIGHLIGHT_COLOUR = 0xF0DE2446;
-    protected static final int SEPARATOR_COLOUR = 0x32FFFFFF;
-    protected static final int STEP_OFF_COLOUR = 0xFF666666;
-    protected static final int STEP_ON_COLOUR = 0xFFFFFFFF;
-    protected static final int VALUE_BOX_COLOUR = 0x7F000000;
+    // colors
+    protected static final int BACKGROUND_COLOR = 0xF0222222;
+    protected static final int HIGHLIGHT_COLOR = 0xF0DE2446;
+    protected static final int SEPARATOR_COLOR = 0x32FFFFFF;
+    protected static final int STEP_OFF_COLOR = 0xFF666666;
+    protected static final int STEP_ON_COLOR = 0xFFFFFFFF;
+    protected static final int VALUE_BOX_COLOR = 0x7F000000;
 
     protected MapOverlay() {
         this.enabled = false;
@@ -165,7 +165,7 @@ public abstract class MapOverlay {
         final float labelX = x - PADDING - Math.min(renderer.textWidth(label), MAX_LABEL_LENGTH);
         final float labelY = y + TEXT_SIZE - 1;
         renderer.noStroke();
-        renderer.fill(TEXT_COLOUR);
+        renderer.fill(TEXT_COLOR);
         renderer.text(label, labelX, labelY);
     }
 
@@ -176,11 +176,11 @@ public abstract class MapOverlay {
 
         final float valueBoxX = x + PADDING;
         final float valueBoxY = y;
-        renderer.fill(VALUE_BOX_COLOUR);
+        renderer.fill(VALUE_BOX_COLOR);
         renderer.rect(valueBoxX, valueBoxY, valueBoxWidth, VALUE_BOX_HEIGHT);
 
         if (highlight) {
-            renderer.stroke(HIGHLIGHT_COLOUR);
+            renderer.stroke(HIGHLIGHT_COLOR);
             renderer.strokeWeight(2);
             renderer.rect(valueBoxX, valueBoxY, valueBoxWidth, VALUE_BOX_HEIGHT);
         }
@@ -188,7 +188,7 @@ public abstract class MapOverlay {
         final float valueX = leftAlign ? x + (PADDING * 2)
                 : (valueBoxX + valueBoxWidth) - (PADDING * 2) - Math.min(renderer.textWidth(value), MAX_VALUE_LENGTH);
         final float valueY = y + (TEXT_SIZE - 1);
-        renderer.fill(TEXT_COLOUR);
+        renderer.fill(TEXT_COLOR);
         renderer.text(value, valueX, valueY);
     }
 
@@ -204,7 +204,7 @@ public abstract class MapOverlay {
         while (!buffer.isEmpty()) {
             final float infoBoxX = x + MARGIN + PADDING;
             final float infoBoxY = y + (row * VALUE_BOX_HEIGHT);
-            renderer.fill(VALUE_BOX_COLOUR);
+            renderer.fill(VALUE_BOX_COLOR);
             renderer.rect(infoBoxX, infoBoxY, infoBoxWidth, VALUE_BOX_HEIGHT);
 
             int bufferIndex = buffer.length();
@@ -221,7 +221,7 @@ public abstract class MapOverlay {
             final float valueX = leftAlign ? x + MARGIN + (PADDING * 2)
                     : (infoBoxX + infoBoxWidth) - (PADDING * 2) - Math.min(renderer.textWidth(buffer), maxInfoLength);
             final float valueY = y + (TEXT_SIZE - 1) + (row * VALUE_BOX_HEIGHT);
-            renderer.fill(TEXT_COLOUR);
+            renderer.fill(TEXT_COLOR);
             renderer.text(buffer, valueX, valueY);
 
             infoIndex += bufferIndex;
@@ -234,14 +234,14 @@ public abstract class MapOverlay {
         final int stepWidth = PApplet.floor((STEP_BAR_WIDTH / maxStepLevel));
         renderer.noStroke();
         for (int i = 0; i < maxStepLevel; i++) {
-            renderer.fill(i < stepLevel ? STEP_ON_COLOUR : STEP_OFF_COLOUR);
+            renderer.fill(i < stepLevel ? STEP_ON_COLOR : STEP_OFF_COLOR);
             renderer.rect(x + i * stepWidth, y, stepWidth - 1, 6);
         }
     }
 
     protected final void drawSeparator(final float y) {
         renderer.noStroke();
-        renderer.fill(SEPARATOR_COLOUR);
+        renderer.fill(SEPARATOR_COLOR);
         renderer.rect(x + MARGIN, y, width - (MARGIN * 2), 1);
     }
 }

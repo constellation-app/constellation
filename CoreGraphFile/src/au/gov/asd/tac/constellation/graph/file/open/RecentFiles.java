@@ -128,9 +128,12 @@ public final class RecentFiles {
      * @param path The path to be added to the recent file list.
      */
     public static void saved(final String path) {
-        // Convert to use the default name-separator character.
-        final String normPath = new File(path).getPath();
-        RECENT_FILE_SAVED.propertyChange(new PropertyChangeEvent(normPath, PROP_SAVED, null, normPath));
+        // Don't include the temp files
+        if (!path.contains("_tmp")) {
+            // Convert to use the default name-separator character.
+            final String normPath = new File(path).getPath();
+            RECENT_FILE_SAVED.propertyChange(new PropertyChangeEvent(normPath, PROP_SAVED, null, normPath));
+        }
     }
 
     /**
@@ -139,10 +142,9 @@ public final class RecentFiles {
      * @return list of recent files
      */
     protected static List<HistoryItem> getRecentFiles() {
-        synchronized (HISTORY_LOCK) {
-            checkHistory();
-            return Collections.unmodifiableList(HISTORY);
-        }
+        assert Thread.holdsLock(HISTORY_LOCK);
+        checkHistory();
+        return Collections.unmodifiableList(HISTORY);
     }
 
     /**
@@ -151,10 +153,12 @@ public final class RecentFiles {
      * @return list of recent files
      */
     public static List<HistoryItem> getUniqueRecentFiles() {
-        return getRecentFiles().stream()
-                .filter(file -> convertPath2File(file.getPath()) != null)
-                .distinct()
-                .collect(ImmutableList.toImmutableList());
+        synchronized (HISTORY_LOCK) {
+            return getRecentFiles().stream()
+                    .filter(file -> convertPath2File(file.getPath()) != null)
+                    .distinct()
+                    .collect(ImmutableList.toImmutableList());
+        }
     }
 
     private static volatile boolean historyProbablyValid;

@@ -62,7 +62,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
         if (StringUtils.isBlank(string)) {
             return getDefault();
         } else {
-            return Boolean.parseBoolean(string);
+            return Boolean.parseBoolean(string);            
         }
     }
 
@@ -151,7 +151,7 @@ public final class BooleanObjectAttributeDescription extends AbstractObjectAttri
         if (data[id] == null) {
             return nullHash;
         }
-        return (Boolean) data[id] ? trueHash : falseHash;
+        return (boolean) data[id] ? trueHash : falseHash;
     }
 
     @Override

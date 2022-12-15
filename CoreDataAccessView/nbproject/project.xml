@@ -103,14 +103,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.preferences</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.security</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -143,14 +135,6 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>au.gov.asd.tac.constellation.visual.opengl</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>1.0.6</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.netbeans.api.annotations.common</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
@@ -169,28 +153,11 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
-                    <code-name-base>org.netbeans.modules.settings</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <release-version>1</release-version>
-                        <specification-version>1.49.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
                     <code-name-base>org.netbeans.spi.quicksearch</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>1.27.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.openide.actions</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>6.47</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>
@@ -207,14 +174,6 @@
                     <compile-dependency/>
                     <run-dependency>
                         <specification-version>7.42.1</specification-version>
-                    </run-dependency>
-                </dependency>
-                <dependency>
-                    <code-name-base>org.openide.filesystems</code-name-base>
-                    <build-prerequisite/>
-                    <compile-dependency/>
-                    <run-dependency>
-                        <specification-version>9.18</specification-version>
                     </run-dependency>
                 </dependency>
                 <dependency>

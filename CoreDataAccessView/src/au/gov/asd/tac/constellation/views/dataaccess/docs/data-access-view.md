@@ -89,3 +89,12 @@ favourites category.
 Refer to the
 [Options](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/data-access-options.md)
 page for more details on the Workflow Options menu.
+
+## Configuring Data Access Categories
+
+Refer to the
+[Preferences](../constellation/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/data-access-view-preferences.md)
+page for more details on Configuring Data Access Categories.
+
+
+

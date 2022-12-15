@@ -16,12 +16,15 @@
 package au.gov.asd.tac.constellation.plugins.importexport.delimited.parser;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javax.swing.filechooser.FileFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -259,8 +262,28 @@ public class ExcelImportFileParser extends ImportFileParser {
         return result;
     }
 
+    /**
+     * Returns the file filter to use when browsing for files of this type.
+     *
+     * @return the file filter to use when browsing for files of this type.
+     */
     @Override
-    public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("Excel Files", "*.xls", "*.xlsx");
+    public FileFilter getFileFilter() {
+        return new FileFilter() {
+            @Override
+            public boolean accept(final File file) {
+                final String name = file.getName();
+                return (file.isFile() && (StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.XLS)
+                        || StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.XLSX)))
+                        || file.isDirectory();
+            }
+
+            @Override
+            public String getDescription() {
+                return "Excel Files ("
+                        + FileExtensionConstants.XLS + ", "
+                        + FileExtensionConstants.XLSX + ")";
+            }
+        };
     }
 }
