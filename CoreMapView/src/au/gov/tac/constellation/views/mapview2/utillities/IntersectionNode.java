@@ -17,6 +17,8 @@ package au.gov.tac.constellation.views.mapview2.utillities;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -29,6 +31,9 @@ public class IntersectionNode {
 
     private final String key;
 
+    private static final Logger LOGGER = Logger.getLogger("IntersectionNode");
+
+    private final List<Vec3> containedPoints = new ArrayList<Vec3>();
     private final List<Integer> relevantMarkers = new ArrayList<Integer>();
     private final List<IntersectionNode> connectedPoints = new ArrayList<IntersectionNode>();
     private final List<String> connectedPointIds = new ArrayList<String>();
@@ -53,15 +58,38 @@ public class IntersectionNode {
         return connectedPoints;
     }
 
+    public void addRelevantMarker(Integer id) {
+        if (!relevantMarkers.contains(id)) {
+            relevantMarkers.add(id);
+        }
+    }
+
     public void addConnectedPoint(IntersectionNode otherNode) {
-        if (otherNode.getKey().equals(key)) {
+
+        if (otherNode == null) {
             return;
         }
+
+        if (otherNode.getKey().equals(key)) {
+            LOGGER.log(Level.SEVERE, "Trying to add self to connected components: " + key);
+            return;
+        }
+
+        LOGGER.log(Level.SEVERE, "Adding another node: " + key);
+
         if (!connectedPointIds.contains(otherNode.getKey())) {
             connectedPointIds.add(otherNode.getKey());
-        connectedPoints.add(otherNode);
+            connectedPoints.add(otherNode);
             otherNode.addConnectedPoint(this);
         }
+    }
+
+    public void addContainedPoint(double x, double y) {
+        containedPoints.add(new Vec3(x, y));
+    }
+
+    public List<Vec3> getContainedPoints() {
+        return containedPoints;
     }
 
     public String getKey() {
