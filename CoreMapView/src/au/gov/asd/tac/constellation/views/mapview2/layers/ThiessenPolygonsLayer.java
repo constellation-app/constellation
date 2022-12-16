@@ -73,10 +73,10 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private final Line right;
     private final Line bottom;
 
-    private String topID = "-1,-2";
-    private String bottomID = "-3,-4";
-    private String leftID = "-5,-6";
-    private String rightID = "-7,-8";
+    private final String topID = "-1,-2";
+    private final String bottomID = "-3,-4";
+    private final String leftID = "-5,-6";
+    private final String rightID = "-7,-8";
 
     public ThiessenPolygonsLayer(MapView parent, int id, Map<String, AbstractMarker> markers) {
         super(parent, id);
@@ -338,19 +338,37 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     validIntersection = false;
                     Vec3 slope = new Vec3((bisect1.getEndY() - bisect1.getStartY()), (bisect1.getEndX() - bisect1.getStartX()));
                     // y = mx + b
+
+                    Vec3 slope2 = new Vec3((bisect2.getEndY() - bisect2.getStartY()), (bisect2.getEndX() - bisect2.getStartX()));
+
                     double m1 = slope.x / slope.y;
 
                     double b1 = bisect1.getStartY() - (m1 * bisect1.getStartX());
-
-                    Vec3 slope2 = new Vec3((bisect2.getEndY() - bisect2.getStartY()), (bisect2.getEndX() - bisect2.getStartX()));
 
                     double m2 = slope2.x / slope2.y;
 
                     double b2 = bisect2.getStartY() - (m2 * bisect2.getStartX());
 
-                    final double x = (b2 - b1) / (m1 - m2);
+                    if (slope.y == 0 && slope2.y == 0) {
+                        continue;
+                    }
 
-                    final double y = m1 * x + b1;
+                    final double x;
+                    final double y;
+
+                    if (slope.y == 0) {
+
+                        x = bisect1.getStartX();
+                        y = m2 * x + b2;
+                    } else if (slope2.y == 0) {
+                        x = bisect2.getStartX();
+                        y = m1 * x + b1;
+                    } else {
+                        x = (b2 - b1) / (m1 - m2);
+
+                        y = m1 * x + b1;
+                    }
+
 
                     final double roundedX = Math.round(x * 10000) / 10000;
                     final double roundedY = Math.round(y * 10000) / 10000;
@@ -358,9 +376,10 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                     intersectionPoint = roundedX + "," + roundedY;
 
-
+                    LOGGER.log(Level.SEVERE, "rise/run of line 1: " + slope.x + "/" + slope.y + " rise/run of line 2: " + slope2.x + "/" + slope2.y);
+                    LOGGER.log(Level.SEVERE, "Intersection point is: x=" + x + " y=" + y);
                     if (intersectionPoint.equals("NaN,NaN")) {
-                        LOGGER.log(Level.SEVERE, "Intersection point is nan");
+                        LOGGER.log(Level.SEVERE, "Intersection point is nan, rise/run of line 1: " + slope.x + "/" + slope.y + " rise/run of line 2: " + slope2.x + "/" + slope2.y);
                         continue;
                     }
 
@@ -370,7 +389,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                     validIntersection = true;
 
-                    LOGGER.log(Level.SEVERE, "Intersection point is: " + intersectionPoint);
+                    //LOGGER.log(Level.SEVERE, "Intersection point is: " + intersectionPoint);
 
                     if (!intersectionMap.containsKey(intersectionPoint)) {
                         IntersectionNode intersectionNode = new IntersectionNode(roundedX, roundedY);
@@ -416,14 +435,16 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         layer.getChildren().add(c);
                     }
 
-                    if ((bisect2.getEndY() - bisect2.getStartY()) / (bisect2.getEndX() - bisect2.getEndY()) == 0) {
+                    if ((bisect2.getEndX() - bisect2.getStartX()) == 0.0) {
+                        LOGGER.log(Level.SEVERE, "Dealing with vertical line");
+                    } else if (bisect2.getEndY() - bisect2.getStartY() == 0.0) {
                         LOGGER.log(Level.SEVERE, "Dealing with horizontal line");
                     }
 
                     if (!lineMap.get(bisect2).contains(intersectionMap.get(intersectionPoint))) {
                         lineMap.get(bisect2).add(intersectionMap.get(intersectionPoint));
                     } else {
-                        LOGGER.log(Level.SEVERE, "Duplicate: " + (++duplicateIntersectionPoint));
+                        //LOGGER.log(Level.SEVERE, "Duplicate: " + (++duplicateIntersectionPoint));
                     }
 
                     for (int i = 0; i < lineMap.get(bisect2).size(); ++i) {
@@ -510,6 +531,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 //l.setStroke(Color.CORAL);
             }
         }*/
+        showRelatedMarkers(node);
 
         c.setFill(Color.BLACK);
 
@@ -533,8 +555,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     }
 
-    private void showRelatedMarkers() {
-        for (IntersectionNode node : intersectionMap.values()) {
+    private void showRelatedMarkers(IntersectionNode node) {
+        //for (IntersectionNode node : intersectionMap.values()) {
             for (int i = 0; i < node.getRelevantMarkers().size(); ++i) {
                 if (nodesOnScreen.containsKey(node.getRelevantMarkers().get(i))) {
                     AbstractMarker m = nodesOnScreen.get(node.getRelevantMarkers().get(i));
@@ -557,11 +579,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                         l.setStroke(Color.DARKMAGENTA);
 
-                        layer.getChildren().add(l);
+                        debugLayer.getChildren().add(l);
                     }
                 }
             }
-        }
+        //}
     }
 
     private boolean doesIntersect(Line l1, Line l2) {

@@ -71,11 +71,11 @@ public class IntersectionNode {
         }
 
         if (otherNode.getKey().equals(key)) {
-            LOGGER.log(Level.SEVERE, "Trying to add self to connected components: " + key);
+            //LOGGER.log(Level.SEVERE, "Trying to add self to connected components: " + key);
             return;
         }
 
-        LOGGER.log(Level.SEVERE, "Adding another node: " + key);
+        //LOGGER.log(Level.SEVERE, "Adding another node: " + key);
 
         if (!connectedPointIds.contains(otherNode.getKey())) {
             connectedPointIds.add(otherNode.getKey());

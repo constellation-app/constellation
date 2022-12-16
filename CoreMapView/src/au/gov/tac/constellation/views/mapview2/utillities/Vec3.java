@@ -76,4 +76,13 @@ public class Vec3 {
         return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2));
     }
 
+    public Vec3 cross(Vec3 v) {
+        Vec3 ans = new Vec3();
+        ans.x = y * v.z - z * v.y;
+        ans.y = z * v.x - x * v.z;
+        ans.z = x * v.y - y * v.x;
+
+        return ans;
+    }
+
 }
