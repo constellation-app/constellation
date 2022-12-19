@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.tableview.components;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.node.plugins.ThreadConstraints;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -289,7 +290,7 @@ public class ExportMenu {
         public void handle(final ActionEvent event) {
             if (tablePane.getParentComponent().getCurrentGraph() != null) {
                 final FileChooserBuilder exportFileChooser = getExportFileChooser();
-
+                final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
                 // Open the file chooser and get the user to select a file
                 // Use the function to create the required export plugin and
                 // then execute it
@@ -300,6 +301,8 @@ public class ExportMenu {
                                         ? file.getAbsolutePath() : file.getAbsolutePath() + expectedFileExtension;
                                 final File fileName = new File(filePath);
                                 Platform.runLater(() -> {
+                                    ThreadConstraints workerConstraints = ThreadConstraints.getConstraints();
+                                    workerConstraints.setCurrentReport(callingConstraints.getCurrentReport());                                    
                                     try {
                                         PluginExecution.withPlugin(
                                                 exportPluginCreator.apply(fileName)

@@ -15,11 +15,22 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.plugins.ThreadConstraints;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -30,6 +41,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javax.swing.SwingUtilities;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 
 /**
@@ -58,7 +71,7 @@ public class AnalyticViewPane extends BorderPane {
     private Thread questionThread = null;
 
     public AnalyticViewPane(final AnalyticController analyticController) {
-
+        
         // the top level analytic view pane
         this.analyticViewPane = new VBox();
         analyticViewPane.prefWidthProperty().bind(this.widthProperty());
@@ -108,32 +121,63 @@ public class AnalyticViewPane extends BorderPane {
                 progressTab.setContent(analyticResultsPane.getProgressIndicatorPane());
                 analyticResultsPane.getInternalVisualisationPane().getTabs().add(progressTab);
                 // answer the current analytic question and display the results
-                final Thread answerQuestionThread = new Thread(() -> {
-                    Platform.runLater(() -> {
-                        runButton.setText(RUN_STOP_TEXT);
-                        runButton.setStyle(RUN_STOP_STYLE);
-                    });
+                final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                SimplePlugin virtualAnalytics = new SimplePlugin("Analytic View - Query Runner"){
+                    @Override
+                    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+                        final ThreadConstraints parentConstraints = ThreadConstraints.getConstraints();
 
-                    running = true;
-                    try {
-                        AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
-                        analyticResultsPane.displayResults(question);
-                    } catch (final AnalyticException ex) {
-                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                        final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
-                        question.addException(ex);
-                        analyticResultsPane.displayResults(question);
-                    } finally {
-                        running = false;
+                        final Thread answerQuestionThread = new Thread(() -> {
+                            ThreadConstraints localConstraints = ThreadConstraints.getConstraints();
+                            if (localConstraints.getCurrentReport() == null) {
+                                localConstraints.setCurrentReport(parentConstraints.getCurrentReport());
+                            }
+                            Platform.runLater(() -> {
+                                runButton.setText(RUN_STOP_TEXT);
+                                runButton.setStyle(RUN_STOP_STYLE);
+                            });
 
-                        Platform.runLater(() -> {
-                            runButton.setText(RUN_START_TEXT);
-                            runButton.setStyle(RUN_START_STYLE);
-                        });
+                            running = true;
+                            try {
+                                AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
+                                analyticResultsPane.displayResults(question);
+                            } catch (final AnalyticException ex) {
+                                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                                final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
+                                question.addException(ex);
+                                analyticResultsPane.displayResults(question);
+                            } finally {
+                                running = false;
+
+                                Platform.runLater(() -> {
+                                    runButton.setText(RUN_START_TEXT);
+                                    runButton.setStyle(RUN_START_STYLE);
+                                });
+                            }
+                        }, "Analytic View: Answer Question");
+                        questionThread = answerQuestionThread;
+                        answerQuestionThread.start();
+                        interaction.notify(PluginNotificationLevel.INFO, " * Working * ");
+                        answerQuestionThread.join();
+
+                        try {
+                            SwingUtilities.invokeAndWait(new Runnable(){
+                                @Override
+                                public void run() {
+                                    // waits for other queued tasks to complete, then does nothing and exits
+                                }
+                            });
+                        } catch (InvocationTargetException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
                     }
-                }, "Analytic View: Answer Question");
-                questionThread = answerQuestionThread;
-                answerQuestionThread.start();
+                };
+
+                try {
+                    PluginExecution.withPlugin(virtualAnalytics).interactively(true).executeNow(activeGraph);
+                } catch (InterruptedException | PluginException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                } 
             }
         });
         analyticOptionButtons.getChildren().addAll(helpButton, runButton);
