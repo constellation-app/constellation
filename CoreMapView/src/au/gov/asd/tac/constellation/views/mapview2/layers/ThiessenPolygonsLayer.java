@@ -693,8 +693,12 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             boolean completedShape = false;
             visited.clear();
             Polygon markerZone = new Polygon();
-            markerZone.setStroke(Color.RED);
-            markerZone.setFill(Color.WHITE);
+
+            markerZone.setStroke(palette[markerID].getJavaFXColor());
+            markerZone.setFill(palette[markerID].getJavaFXColor());
+            markerZone.setOpacity(0.5);
+
+            markerZone.setMouseTransparent(true);
             IntersectionNode relevantIntersection = relevantIntersections.get(markerID);
 
             while (!completedShape) {
