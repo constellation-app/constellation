@@ -41,6 +41,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import javafx.scene.text.Text;
 
 /**
  *
@@ -67,6 +68,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private Map<String, Line> bisectorLines = new HashMap<String, Line>();
 
     private Map<String, Line> finalBisectorLines = new HashMap<String, Line>();
+    private Map<Integer, IntersectionNode> relevantIntersections = new HashMap<Integer, IntersectionNode>();
 
     private final Line top;
     private final Line left;
@@ -167,15 +169,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                         Vec3 midPoint = new Vec3((coords1.x + coords2.x) / 2, (coords1.y + coords2.y) / 2);
 
-                        /*Circle c = new Circle();
-                        c.setRadius(5);
-
-                        c.setCenterX(midPoint.x);
-                        c.setCenterY(midPoint.y);
-                        c.setFill(Color.BLUE);
-                        layer.getChildren().addAll(c);*/
-
-
                         Vec3 slope = new Vec3((coords2.y - coords1.y), (coords2.x - coords1.x));
 
                         double reciprocal = -1 * (slope.y / slope.x);
@@ -251,13 +244,14 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 }
 
                 if (shortestDistanceID == null && index == 0) {
-                    shortLine[index] = new Vec3(start.x, start.y);
+                    shortLine[index] = new Vec3(start.x - dirVect.x, start.y - dirVect.y);
                     ++index;
                 } else if (shortestDistanceID != null && index == 1) {
                     start.x += dirVect.x;
                     start.y += dirVect.y;
                     shortLine[0].x -= dirVect.x;
                     shortLine[0].y -= dirVect.y;
+
                     shortLine[index] = new Vec3(start.x, start.y);
 
                     break;
@@ -285,6 +279,15 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 l.setEndX(shortLine[1].x);
                 l.setEndY(shortLine[1].y);
 
+                l.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent event) {
+                        LOGGER.log(Level.SEVERE, "Start x: " + l.getStartX() + " Start y: " + l.getStartY());
+                        LOGGER.log(Level.SEVERE, "End x: " + l.getEndX() + " End y: " + l.getEndY());
+                    }
+
+                });
+
                 finalBisectorLines.put(key, l);
                 lineMap.put(finalBisectorLines.get(key), new ArrayList<IntersectionNode>());
 
@@ -309,19 +312,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     }
 
     private void calculateIntersectionCircles() {
-        boolean first = true;
-        int duplicateIntersectionPoint = 0;
         //Map<String, String> bisectPairs = new HashMap<String, String>();
         Set<String> intersections = new HashSet<String>();
         for (String bisectID1 : finalBisectorLines.keySet()) {
-            boolean validIntersection = false;
             Line bisect1 = finalBisectorLines.get(bisectID1);
             String intersectionPoint;
-
-            if (first) {
-                bisect1.setStroke(Color.PURPLE);
-                first = false;
-            }
 
             for (String bisectID2 : finalBisectorLines.keySet()) {
 
@@ -335,7 +330,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 }
 
                 if (!bisectID1.equals(bisectID2) && doesIntersect(bisect1, bisect2)) {
-                    validIntersection = false;
                     Vec3 slope = new Vec3((bisect1.getEndY() - bisect1.getStartY()), (bisect1.getEndX() - bisect1.getStartX()));
                     // y = mx + b
 
@@ -357,7 +351,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     final double y;
 
                     if (slope.y == 0) {
-
                         x = bisect1.getStartX();
                         y = m2 * x + b2;
                     } else if (slope2.y == 0) {
@@ -384,10 +377,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     }
 
                     if (!(bisect1.contains(x, y) && bisect2.contains(x, y))) {
+                        /*if (bisect1.getStartX() == 0 || bisect1.getEndX() == 0 || bisect2.getStartX() == 0 || bisect2.getEndX() == 0) {
+                            LOGGER.log(Level.FINE, "Intersection Point Not on Line= x: " + x + " y:  " + y);
+                        }*/
                         continue;
                     }
-
-                    validIntersection = true;
 
                     //LOGGER.log(Level.SEVERE, "Intersection point is: " + intersectionPoint);
 
@@ -413,7 +407,19 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                     }
 
-                    if (!intersections.contains(intersectionPoint)) {
+                    Integer[] relevantMarkerIDS = {Integer.parseInt(bisectID1.split(",")[0]), Integer.parseInt(bisectID1.split(",")[1]), Integer.parseInt(bisectID2.split(",")[0]), Integer.parseInt(bisectID2.split(",")[1])};
+
+                    for (Integer id : relevantMarkerIDS) {
+                        if (nodesOnScreen.containsKey(id)) {
+                            if (relevantIntersections.containsKey(id)) {
+                                relevantIntersections.replace(id, intersectionMap.get(intersectionPoint));
+                            } else {
+                                relevantIntersections.put(id, intersectionMap.get(intersectionPoint));
+                            }
+                        }
+                    }
+
+                    /*if (!intersections.contains(intersectionPoint)) {
                         intersections.add(intersectionPoint);
                         Circle c = new Circle();
 
@@ -428,12 +434,13 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                             @Override
                             public void handle(MouseEvent event) {
                                 printGraph(intersectionMap.get(roundedX + "," + roundedY));
+                                LOGGER.log(Level.SEVERE, "Intersect x: " + roundedX + " Intersect y: " + roundedY);
                             }
 
                         });
 
                         layer.getChildren().add(c);
-                    }
+                    }*/
 
                     if ((bisect2.getEndX() - bisect2.getStartX()) == 0.0) {
                         LOGGER.log(Level.SEVERE, "Dealing with vertical line");
@@ -443,13 +450,15 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                     if (!lineMap.get(bisect2).contains(intersectionMap.get(intersectionPoint))) {
                         lineMap.get(bisect2).add(intersectionMap.get(intersectionPoint));
+
                     } else {
                         //LOGGER.log(Level.SEVERE, "Duplicate: " + (++duplicateIntersectionPoint));
                     }
 
                     for (int i = 0; i < lineMap.get(bisect2).size(); ++i) {
                         lineMap.get(bisect2).get(i).addConnectedPoint(intersectionMap.get(intersectionPoint));
-                        }
+                    }
+
                     }
 
 
@@ -496,6 +505,37 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
         return (m * x + b) == y;
 
+    }
+
+    private void printIntersectionCircles() {
+
+        for (IntersectionNode i : intersectionMap.values()) {
+            double roundedX = i.getX();
+            double roundedY = i.getY();
+
+            Text points = new Text("" + i.getContainedPoints().size());
+            points.setFill(Color.RED);
+            points.setX(roundedX);
+            points.setY(roundedY);
+        Circle c = new Circle();
+
+        c.setRadius(5);
+        c.setCenterX(roundedX);
+        c.setCenterY(roundedY);
+
+        c.setFill(Color.GREEN);
+        c.setOpacity(0.5);
+
+        c.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                printGraph(intersectionMap.get(roundedX + "," + roundedY));
+            }
+
+        });
+
+            layer.getChildren().addAll(c, points);
+        }
     }
 
     /*private void connectIntersections()
@@ -588,7 +628,20 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     private boolean doesIntersect(Line l1, Line l2) {
 
-        return l1.intersects(l2.getBoundsInLocal()) || l2.contains(l1.getStartX(), l1.getStartY()) || l2.contains(l1.getEndX(), l1.getEndY());
+        LOGGER.log(Level.SEVERE, "Line 1 rise: " + (l1.getEndY() - l1.getStartY()) + " Line 2 rise: " + (l2.getEndY() - l2.getStartY()));
+
+        boolean intersects = l1.intersects(l2.getBoundsInLocal()) && l2.intersects(l1.getBoundsInLocal());
+
+        if (intersects == false) {
+            LOGGER.log(Level.SEVERE, "Doesn't intersect");
+        } else {
+            LOGGER.log(Level.SEVERE, "Does intersect");
+        }
+
+        return intersects;
+    }
+
+    private void createPolygons() {
 
     }
 
@@ -606,15 +659,24 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         finalBisectorLines.put("-7,-8", right);*/
 
         calculateIntersectionCircles();
-        addCornerIntersectionNodes();
+        //addCornerIntersectionNodes();
         //intersectionMap.remove(intersectionMap.entrySet().iterator().next().getValue().getKey());
         Map.Entry<String, IntersectionNode> entry = intersectionMap.entrySet().iterator().next();
         //printGraph(entry.getValue());
         //showRelatedMarkers();
 
         for (Line line : finalBisectorLines.values()) {
+            /*Rectangle rect = new Rectangle();
+            rect.setHeight(1);
+            rect.setWidth(1);
+
+            rect.setFill(Color.RED);
+            rect.setX(line.getStartX());
+            rect.setY(line.getStartY());*/
+            line.setOpacity(0.5);
             layer.getChildren().add(line);
         }
+        printIntersectionCircles();
 
         Line line = new Line();
         line.setStartX(200);
