@@ -49,11 +49,15 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private boolean regex;
     private final boolean ignorecase;
     private final boolean matchWholeWord;
+    private final boolean replaceCurrentSelection;
     private final boolean addToSelection;
     private final boolean removeFromCurrentSelection;
-    private final boolean findInCurrentSelection;
+    private final boolean deleteFromGraph;
     private final boolean selectAll;
     private final boolean getNext;
+    private final boolean currentSelection;
+    private final boolean currentGraph;
+    private final boolean searchAllGraphs;
     private final BasicFindReplaceParameters parameters;
 
     private static final int STARTING_INDEX = -1;
@@ -70,7 +74,11 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.parameters = parameters;
         this.addToSelection = parameters.isAddTo();
         this.removeFromCurrentSelection = parameters.isRemoveFrom();
-        this.findInCurrentSelection = parameters.isFindIn();
+        this.deleteFromGraph = parameters.isDeleteFrom();
+        this.currentSelection = parameters.isCurrentSelection();
+        this.currentGraph = parameters.isCurrentGraph();
+        this.searchAllGraphs = parameters.isSearchAllGraphs();
+        this.replaceCurrentSelection = parameters.isReplaceSelection();
     }
 
     @Override
@@ -115,7 +123,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         final int elementCount = elementType.getElementCount(graph);
 
         // do this if not add to selection
-        if (!addToSelection && !removeFromCurrentSelection && !findInCurrentSelection) {
+        if (!addToSelection && !removeFromCurrentSelection && !deleteFromGraph && (!currentSelection && !replaceCurrentSelection)) {
             FindViewUtilities.clearSelection(graph);
         }
 
@@ -149,27 +157,23 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                     // if the value isnt null
                     if (value != null) {
 
-                        // Determine if the find string matches the attribute 
-                        // string
+                        // Determine if the find string matches the attribute string
                         Matcher match = searchPattern.matcher(value);
                         found = matchWholeWord ? match.matches() : match.find();
                         if (found) {
                             // get the UID of the element and the graph
                             final long uid = elementType.getUID(graph, currElement);
-                            // if the user wants to find it in, or remove it from 
-                            // their current selection
-                            if (findInCurrentSelection || removeFromCurrentSelection) {
+                            // if the user wants to find it in, or remove it from their current selection
+                            if (deleteFromGraph || removeFromCurrentSelection || (currentSelection && replaceCurrentSelection)) {
                                 // if the element is selected
                                 if (graph.getBooleanValue(selectedAttribute, currElement)) {
-                                    // Add the element to the find in and
-                                    // remove from list
+                                    // Add the element to the find in and remove from list
                                     findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
                                     removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
                                 }
                             }
-                            // if the user wants to select all, select the
-                            // matching element
-                            if (selectAll && !findInCurrentSelection && !removeFromCurrentSelection) {
+                            // if the user wants to select all, select the matching element
+                            if (selectAll && !deleteFromGraph && !removeFromCurrentSelection && !(currentSelection && replaceCurrentSelection)) {
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                             }
                             // add the graph element to the foundResult list
@@ -180,13 +184,13 @@ public class BasicFindPlugin extends SimpleEditPlugin {
             }
         }
         /**
-         * If findIncurrentSelection is true, clear the current selection and
+         * If currentSelection is true, clear the current selection and
          * loop through the list of found elements and set them to selected.
          */
-        selectFindInResults(findInCurrentSelection, findInCurrentSelectionList, foundResult, graph, selectedAttribute);
+        selectFindInResults(currentSelection, findInCurrentSelectionList, foundResult, graph, selectedAttribute);
 
         /**
-         * If removeFromCurrentlySelection is true, loop through the list of
+         * If removeFromCurrentSelection is true, loop through the list of
          * found elements and set their selection status to false.
          */
         selectRemoveFromResults(removeFromCurrentSelection, removeFromCurrentSelectionList, foundResult, graph, selectedAttribute);
@@ -197,7 +201,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         foundResult.addAll(distinctValues);
 
         if (ActiveFindResultsList.getBasicResultsList() == null || !ActiveFindResultsList.getBasicResultsList().getSearchParameters().equals(this.parameters)
-                || (!this.parameters.isSearchAllGraphs() && ActiveFindResultsList.getBasicResultsList().get(0) != null && !ActiveFindResultsList.getBasicResultsList().get(0).getGraphId().equals(graph.getId()))) {
+                || (!this.parameters.isSearchAllGraphs() && ActiveFindResultsList.getBasicResultsList() == null && ActiveFindResultsList.getBasicResultsList().get(0) != null
+                && !ActiveFindResultsList.getBasicResultsList().get(0).getGraphId().equals(graph.getId()))) {
             ActiveFindResultsList.setBasicResultsList(foundResult);
             ActiveFindResultsList.getBasicResultsList().setCurrentIndex(-1);
         } else {

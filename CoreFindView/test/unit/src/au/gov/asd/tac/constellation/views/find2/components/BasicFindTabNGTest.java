@@ -152,10 +152,9 @@ public class BasicFindTabNGTest {
          * getFindAllButton and getSearchAllGraphs checkbox.
          */
         basicFindTab.updateButtons();
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(0), basicFindTab.getSearchAllGraphs());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getFindAllButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindPrevButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(3), basicFindTab.getFindNextButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(0), basicFindTab.getFindAllButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getFindPrevButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindNextButton());
     }
 
     /**
@@ -351,7 +350,7 @@ public class BasicFindTabNGTest {
         basicFindTab.getFindTextField().setText("test");
         final GraphElementType elementType = GraphElementType.getValue(basicFindTab.lookForChoiceBox.getSelectionModel().getSelectedItem());
 
-        basicFindTab.currentSelectionChoiceBox.getSelectionModel().select(0);
+        basicFindTab.postSearchChoiceBox.getSelectionModel().select(0);
 
         /**
          * Call the updateBasicFindParamters function. Check that each of the
@@ -376,12 +375,10 @@ public class BasicFindTabNGTest {
          * All 4 should be false as currentSelectionChoiceBox is set to select
          * index 0 which is "Ignore"
          */
-        assertEquals(controlllerParameters.isFindIn(), false);
+        //assertEquals(controlllerParameters.isFindIn(), false);
         assertEquals(controlllerParameters.isAddTo(), false);
         assertEquals(controlllerParameters.isRemoveFrom(), false);
         assertEquals(controlllerParameters.isReplaceIn(), false);
-
-        assertEquals(controlllerParameters.isSearchAllGraphs(), basicFindTab.searchAllGraphs.isSelected());
 
     }
 
@@ -397,26 +394,26 @@ public class BasicFindTabNGTest {
          * currentSelectionChoice box Index
          */
         // Ignore
-        basicFindTab.currentSelectionChoiceBox.getSelectionModel().select(0);
+        basicFindTab.postSearchChoiceBox.getSelectionModel().select(0);
         basicFindTab.updateSelectionFactors();
         assertEquals(basicFindTab.getFindNextButton().isDisable(), false);
         assertEquals(basicFindTab.getFindPrevButton().isDisable(), false);
 
         // Add to
-        basicFindTab.currentSelectionChoiceBox.getSelectionModel().select(1);
+        basicFindTab.postSearchChoiceBox.getSelectionModel().select(1);
         basicFindTab.updateSelectionFactors();
         assertEquals(basicFindTab.getFindNextButton().isDisable(), false);
         assertEquals(basicFindTab.getFindPrevButton().isDisable(), false);
 
         // Find In
         // Should disable both buttons when selecting find In currentSelection
-        basicFindTab.currentSelectionChoiceBox.getSelectionModel().select(2);
+        basicFindTab.postSearchChoiceBox.getSelectionModel().select(2);
         basicFindTab.updateSelectionFactors();
         assertEquals(basicFindTab.getFindNextButton().isDisable(), true);
         assertEquals(basicFindTab.getFindPrevButton().isDisable(), true);
 
         // Replace in
-        basicFindTab.currentSelectionChoiceBox.getSelectionModel().select(3);
+        basicFindTab.postSearchChoiceBox.getSelectionModel().select(3);
         basicFindTab.updateSelectionFactors();
         assertEquals(basicFindTab.getFindNextButton().isDisable(), true);
         assertEquals(basicFindTab.getFindPrevButton().isDisable(), true);

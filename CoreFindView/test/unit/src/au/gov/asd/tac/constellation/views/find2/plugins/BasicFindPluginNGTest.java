@@ -62,18 +62,18 @@ public class BasicFindPluginNGTest {
     private int labelV, identifierV, xV, labelT, identiferT, widthT;
     private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
     private List<Attribute> attributeList = new ArrayList<>();
-    private BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
-    private BasicFindReplaceParameters parametersTransactionType = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.TRANSACTION, attributeList, true, false, false, false, false, false, false, false, false);
-    private BasicFindReplaceParameters parametersRegEx = new BasicFindReplaceParameters("la*", "", GraphElementType.GRAPH.VERTEX, attributeList, false, true, false, false, false, false, false, false, false);
-    private BasicFindReplaceParameters parametersIgnoreCase = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, true, false, false, false, false, false, false);
-    private BasicFindReplaceParameters parametersExactMatch = new BasicFindReplaceParameters("label", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, true, false, false, false, false, false);
-    private BasicFindReplaceParameters parametersFindIn = new BasicFindReplaceParameters("test", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false);
-    private BasicFindReplaceParameters parametersAddTo = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, true, false, false, false);
-    private BasicFindReplaceParameters parametersRemoveFrom = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, true, false, false);
+    private BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersTransactionType = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.TRANSACTION, attributeList, true, false, false, false, true, false, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersRegEx = new BasicFindReplaceParameters("la*", "", GraphElementType.GRAPH.VERTEX, attributeList, false, true, false, false, true, false, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersIgnoreCase = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, true, false, true, false, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersExactMatch = new BasicFindReplaceParameters("label", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, true, true, false, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersFindIn = new BasicFindReplaceParameters("test", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false, false);
+    private BasicFindReplaceParameters parametersAddTo = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, true, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersRemoveFrom = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, true, false, false, false, true, false);
 
-    private BasicFindReplaceParameters parameters1 = new BasicFindReplaceParameters("equal", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
-    private BasicFindReplaceParameters parameters2 = new BasicFindReplaceParameters("notEqual", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
-    private BasicFindReplaceParameters parametersClearSelections = new BasicFindReplaceParameters("clear", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
+    private BasicFindReplaceParameters parameters1 = new BasicFindReplaceParameters("equal", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parameters2 = new BasicFindReplaceParameters("notEqual", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersClearSelections = new BasicFindReplaceParameters("clear", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, false, true, false);
     private static final Logger LOGGER = Logger.getLogger(BasicFindPluginNGTest.class.getName());
 
     public BasicFindPluginNGTest() {
@@ -304,7 +304,7 @@ public class BasicFindPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId8), true);
         rg.close();
 
         /**
@@ -321,7 +321,7 @@ public class BasicFindPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId8), true);
         rg.close();
 
         /**
@@ -338,7 +338,7 @@ public class BasicFindPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
+        assertEquals(rg.getBooleanValue(selectedV, vxId8), true);
         rg.close();
 
     }

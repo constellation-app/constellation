@@ -92,10 +92,11 @@ public class BasicFindTab extends Tab {
     protected final VBox toggleVBox = new VBox();
     protected final CheckBox ignoreCaseCB = new CheckBox("Ignore Case");
     protected final CheckBox exactMatchCB = new CheckBox("Exact Match Only");
-    protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
 
-    protected final Label currentSelectionLabel = new Label("Current Selection:");
-    protected final ChoiceBox currentSelectionChoiceBox = new ChoiceBox();
+    protected final Label searchInLabel = new Label("Search In:");
+    protected final ChoiceBox searchInChoiceBox = new ChoiceBox();
+    protected final Label postSearchLabel = new Label("Post-Search Action:");
+    protected final ChoiceBox postSearchChoiceBox = new ChoiceBox();
 
     private final Label resultsFoundLabel = new Label();
 
@@ -141,8 +142,17 @@ public class BasicFindTab extends Tab {
         inAttributesMenu.setOnContextMenuRequested(event -> contextMenu.show(inAttributesMenu, event.getScreenX(), event.getScreenY()));
 
         // set the action for changing the seleciton in the
-        // currentSelctionChoiceBox
-        currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+        // postSearchChoiceBox
+        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
+                updateSelectionFactors();
+            }
+        });
+
+        // set the action for changing the seleciton in the
+        // postSearchChoiceBox
+        postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
                 updateSelectionFactors();
@@ -236,24 +246,33 @@ public class BasicFindTab extends Tab {
         settingsGrid.add(preferencesGrid, 2, 0, 2, 2);
 
         /**
-         * Add options to the currentSelectionChoiceBox and default select
-         * Ignore. Set the sizing preferences and add the currentSelectionLabel
+         * Add options to the searchInChoiceBox and set the default selection to
+         * Current Selection. Set the sizing preferences and add the searchInLabel
          * and ChoiceBox to the settings grid
          */
-        currentSelectionChoiceBox.getItems().addAll("Ignore", "Add To", "Find In", "Remove From");
-        currentSelectionChoiceBox.getSelectionModel().select(0);
-        currentSelectionChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
-        settingsGrid.add(currentSelectionLabel, 0, 2);
-        settingsGrid.add(currentSelectionChoiceBox, 1, 2);
+        searchInChoiceBox.getItems().addAll("Current Selection", "Current Graph", "All Open Graphs");
+        searchInChoiceBox.getSelectionModel().select(0);
+        searchInChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
+        settingsGrid.add(searchInLabel, 0, 2);
+        settingsGrid.add(searchInChoiceBox, 1, 2);
+
+        /**
+         * Add options to the postSearchChoiceBox and set the default selection to
+         * Replace Selection. Set the sizing preferences and add the postSearchLabel
+         * and ChoiceBox to the settings grid
+         */
+        postSearchChoiceBox.getItems().addAll("Replace Selection", "Add To Selection", "Remove From Selection", "Delete From Graph(s)");
+        postSearchChoiceBox.getSelectionModel().select(0);
+        postSearchChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
+        settingsGrid.add(postSearchLabel, 2, 2);
+        settingsGrid.add(postSearchChoiceBox, 3, 2);
 
         // Set the preferences for the buttonsHbox and all relevant Buttons
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
         buttonsHBox.setPadding(new Insets(5, 10, 5, 10));
         buttonsHBox.setSpacing(5);
-        buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(findAllButton, findPrevButton, findNextButton);
         buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
-
-        searchAllGraphs.setAlignment(Pos.CENTER_LEFT);
 
         // add the buttonsHBox to the buttonsVbox
         buttonsVBox.getChildren().addAll(resultsFoundLabel, buttonsHBox);
@@ -284,8 +303,7 @@ public class BasicFindTab extends Tab {
          * to the buttonsHbox
          */
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
-        searchAllGraphs.setAlignment(Pos.CENTER_LEFT);
+        buttonsHBox.getChildren().addAll(findAllButton, findPrevButton, findNextButton);
         parentComponent.getParentComponent().setBottom(buttonsVBox);
     }
 
@@ -452,23 +470,42 @@ public class BasicFindTab extends Tab {
     public void updateBasicFindParamters() {
         final GraphElementType elementType = GraphElementType.getValue(lookForChoiceBox.getSelectionModel().getSelectedItem());
         final List<Attribute> attributeList = new ArrayList<>(getMatchingAttributeList(elementType));
+        boolean replaceSelection = false;
         boolean addTo = false;
         boolean removeFrom = false;
-        boolean findIn = false;
+        boolean deleteFrom = false;
+        boolean searchAllGraphs = false;
+        boolean currentGraph = false;
+        boolean currentSelection = false;
 
         // retrieves the currently selected index, setting the relevent boolean
         // to true
-        switch (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex()) {
+        switch (postSearchChoiceBox.getSelectionModel().getSelectedIndex()) {
             case 0:
+                replaceSelection = true;
                 break;
             case 1:
                 addTo = true;
                 break;
             case 2:
-                findIn = true;
+                removeFrom = true;
                 break;
             case 3:
-                removeFrom = true;
+                deleteFrom = true;
+                break;
+            default:
+                break;
+        }
+
+        switch (searchInChoiceBox.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                currentSelection = true;
+                break;
+            case 1:
+                currentGraph = true;
+                break;
+            case 2:
+                searchAllGraphs = true;
                 break;
             default:
                 break;
@@ -478,7 +515,7 @@ public class BasicFindTab extends Tab {
         // UI parameters
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), "",
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
-                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), findIn, addTo, removeFrom, false, searchAllGraphs.isSelected()
+                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), replaceSelection, addTo, removeFrom, deleteFrom, false, currentSelection, currentGraph, searchAllGraphs
         );
 
         FindViewController.getDefault().updateBasicFindParameters(parameters);
@@ -489,7 +526,7 @@ public class BasicFindTab extends Tab {
      * the variables values stored in the controller
      */
     public void updateSelectionFactors() {
-        final boolean disable = currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 2 || currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 3;
+        final boolean disable = postSearchChoiceBox.getSelectionModel().getSelectedIndex() == 2 || postSearchChoiceBox.getSelectionModel().getSelectedIndex() == 3;
         findNextButton.setDisable(disable);
         findPrevButton.setDisable(disable);
     }
@@ -580,15 +617,6 @@ public class BasicFindTab extends Tab {
      */
     public Button getFindAllButton() {
         return findAllButton;
-    }
-
-    /**
-     * Gets and returns the searchAllGraphs
-     *
-     * @return searchAllGraphs
-     */
-    public CheckBox getSearchAllGraphs() {
-        return searchAllGraphs;
     }
 
     /**
