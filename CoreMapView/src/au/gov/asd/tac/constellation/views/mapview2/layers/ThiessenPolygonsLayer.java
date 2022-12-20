@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
@@ -39,6 +40,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
@@ -69,6 +71,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     private Map<String, Line> finalBisectorLines = new HashMap<String, Line>();
     private Map<Integer, IntersectionNode> relevantIntersections = new HashMap<Integer, IntersectionNode>();
+
+    private List<IntersectionNode> corners = new ArrayList<IntersectionNode>();
 
     private final Line top;
     private final Line left;
@@ -419,6 +423,15 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         }
                     }
 
+                    if ((roundedX == 0 && roundedY == 0) || (roundedX == Math.round(MapView.mapWidth) && roundedY == 0) || (roundedX == 0 && roundedY == MapView.mapHeight) || (roundedX == Math.round(MapView.mapWidth) && roundedY == MapView.mapHeight)) {
+                        LOGGER.log(Level.SEVERE, "Adding Corner");
+                        if (!corners.contains(intersectionMap.get(intersectionPoint))) {
+
+                            corners.add(intersectionMap.get(intersectionPoint));
+                        }
+                    }
+
+
                     /*if (!intersections.contains(intersectionPoint)) {
                         intersections.add(intersectionPoint);
                         Circle c = new Circle();
@@ -465,7 +478,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             }
 
         }
-
+        LOGGER.log(Level.SEVERE, "Releant intersection points: " + relevantIntersections.size());
 
     }
 
@@ -510,8 +523,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private void printIntersectionCircles() {
 
         for (IntersectionNode i : intersectionMap.values()) {
-            double roundedX = i.getX();
-            double roundedY = i.getY();
+            final double roundedX = i.getX();
+            final double roundedY = i.getY();
 
             Text points = new Text("" + i.getContainedPoints().size());
             points.setFill(Color.RED);
@@ -530,6 +543,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             @Override
             public void handle(MouseEvent event) {
                 printGraph(intersectionMap.get(roundedX + "," + roundedY));
+                LOGGER.log(Level.SEVERE, "Intersection X: " + roundedX + " Intersection Y: " + roundedY);
             }
 
         });
@@ -537,17 +551,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             layer.getChildren().addAll(c, points);
         }
     }
-
-    /*private void connectIntersections()
-    {
-        for(IntersectionNode n : intersectionMap.values())
-        {
-            for(Line l : finalBisectorLines.values())
-            {
-                if(l.co)
-            }
-        }
-    }*/
 
     private Set<String> visited = new HashSet<String>();
 
@@ -641,8 +644,79 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         return intersects;
     }
 
-    private void createPolygons() {
+    private void connectMarkersToCorners() {
+        LOGGER.log(Level.SEVERE, "Corners added: " + corners.size());
+        for (IntersectionNode n : corners) {
+            double x = n.getX();
+            double y = n.getY();
 
+            IntersectionNode nearest1 = null;
+            IntersectionNode nearest2 = null;
+            double distanceNearest1 = Double.MAX_VALUE;
+            double distanceNearest2 = Double.MAX_VALUE;
+
+            for (IntersectionNode neighbour : n.getConnectedPoints()) {
+                if (neighbour.getKey().equals(n.getKey())) {
+                    continue;
+                }
+                double distance = Vec3.getDistance(new Vec3(x, y), new Vec3(neighbour.getX(), neighbour.getY()));
+                if (neighbour.getX() == x) {
+                    if (distance < distanceNearest1) {
+                        distanceNearest1 = distance;
+                        nearest1 = neighbour;
+                    }
+                } else if (neighbour.getY() == y) {
+                    if (distance < distanceNearest2) {
+                        distanceNearest2 = distance;
+                        nearest2 = neighbour;
+                    }
+                }
+            }
+
+            for (Integer id : nearest1.getRelevantMarkers()) {
+                if (nearest2.getRelevantMarkers().contains(id)) {
+                    if (!n.getRelevantMarkers().contains(id)) {
+                        n.getRelevantMarkers().add(id);
+                    }
+                }
+            }
+
+        }
+    }
+
+    private void createPolygons() {
+        Set<String> visited = new HashSet<>();
+
+        final ConstellationColor[] palette = ConstellationColor.createPalette(nodeID);
+
+        for (Integer markerID : nodesOnScreen.keySet()) {
+            boolean completedShape = false;
+            visited.clear();
+            Polygon markerZone = new Polygon();
+            markerZone.setStroke(Color.RED);
+            markerZone.setFill(Color.WHITE);
+            IntersectionNode relevantIntersection = relevantIntersections.get(markerID);
+
+            while (!completedShape) {
+                visited.add(relevantIntersection.getKey());
+                markerZone.getPoints().addAll(new Double[]{relevantIntersection.getX(), relevantIntersection.getY()});
+
+                for (int i = 0; i < relevantIntersection.getConnectedPoints().size(); ++i) {
+                    IntersectionNode neighbor = relevantIntersection.getConnectedPoints().get(i);
+                    if (!visited.contains(neighbor.getKey()) && neighbor.getRelevantMarkers().contains(markerID)) {
+                        relevantIntersection = neighbor;
+                        break;
+                    }
+                    if (i == relevantIntersection.getConnectedPoints().size() - 1) {
+                        completedShape = true;
+                    }
+                }
+
+            }
+
+            layer.getChildren().add(markerZone);
+
+        }
     }
 
     @Override
@@ -661,11 +735,12 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         calculateIntersectionCircles();
         //addCornerIntersectionNodes();
         //intersectionMap.remove(intersectionMap.entrySet().iterator().next().getValue().getKey());
-        Map.Entry<String, IntersectionNode> entry = intersectionMap.entrySet().iterator().next();
+        //Map.Entry<String, IntersectionNode> entry = intersectionMap.entrySet().iterator().next();
         //printGraph(entry.getValue());
         //showRelatedMarkers();
+        connectMarkersToCorners();
 
-        for (Line line : finalBisectorLines.values()) {
+        /*for (Line line : finalBisectorLines.values()) {
             /*Rectangle rect = new Rectangle();
             rect.setHeight(1);
             rect.setWidth(1);
@@ -673,18 +748,19 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             rect.setFill(Color.RED);
             rect.setX(line.getStartX());
             rect.setY(line.getStartY());*/
-            line.setOpacity(0.5);
+ /*line.setOpacity(0.5);
             layer.getChildren().add(line);
-        }
-        printIntersectionCircles();
+        }*/
+        //printIntersectionCircles();
+        createPolygons();
 
-        Line line = new Line();
+        /*Line line = new Line();
         line.setStartX(200);
         line.setStartY(200);
         line.setEndX(201);
         line.setEndY(200);
         line.setStroke(Color.RED);
-        layer.getChildren().add(line);
+        layer.getChildren().add(line);*/
         layer.getChildren().add(debugLayer);
 
         LOGGER.log(Level.SEVERE, "Intersection Map Count: " + intersectionMap.size());
