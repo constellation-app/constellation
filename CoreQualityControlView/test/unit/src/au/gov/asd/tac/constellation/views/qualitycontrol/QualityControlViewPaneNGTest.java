@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.json.JsonUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlEvent.QualityCategory;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewPane.DeleteQualityControlEvents;
 import au.gov.asd.tac.constellation.views.qualitycontrol.QualityControlViewPane.DeselectQualityControlEvents;
@@ -33,16 +34,24 @@ import au.gov.asd.tac.constellation.views.qualitycontrol.rules.IdentifierInconsi
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.MissingTypeRule;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.QualityControlRule;
 import au.gov.asd.tac.constellation.views.qualitycontrol.rules.UnknownTypeRule;
+import com.fasterxml.jackson.core.JsonFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import org.mockito.MockedStatic;
+import static org.mockito.Mockito.mockStatic;
 import org.openide.util.Lookup;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -212,6 +221,47 @@ public class QualityControlViewPaneNGTest {
         final String criticalStyle = QualityControlViewPane.qualityStyle(QualityCategory.CRITICAL);
         assertEquals(criticalStyle, String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(150,%d,%d,%f);", 13, 13, 0.75f));
     }
+    
+    /**
+     * Test of readSerializedRuleEnabledStatuses method, of class QualityControlViewPane.
+     */
+    @Test
+    public void testReadSerializedRuleEnabledStatuses() {
+        System.out.println("readSerializedRuleEnabledStatuses");
+        
+        try (
+                final MockedStatic<JsonUtilities> jsonUtilitiesMockedStatic = mockStatic(JsonUtilities.class);
+                final MockedStatic<QualityControlViewPane> qualityControlViewPaneMockedStatic = mockStatic(QualityControlViewPane.class)) {
+            final Map<String, String> jsonMap = new HashMap<>();
+            jsonMap.put("Missing type", "false");
+            jsonMap.put("Unknown type", "true");
+            
+            jsonUtilitiesMockedStatic.when(() -> JsonUtilities.getStringAsMap(any(JsonFactory.class), anyString()))
+                    .thenReturn(jsonMap);
+            
+            final MissingTypeRule mRule = new MissingTypeRule();
+            final UnknownTypeRule uRule = new UnknownTypeRule();
+            
+            final Map<QualityControlRule, Boolean> enabledMap = new HashMap<>();
+            
+            qualityControlViewPaneMockedStatic.when(() -> QualityControlViewPane.getEnablementStatuses())
+                    .thenReturn(enabledMap);
+            qualityControlViewPaneMockedStatic.when(() -> QualityControlViewPane.readSerializedRuleEnabledStatuses())
+                    .thenCallRealMethod();
+            
+            QualityControlViewPane.readSerializedRuleEnabledStatuses();
+            
+            // clearing results so that we can successfully grab the rules
+            // other tests requiring results should be executing the rules anyway
+            for (final QualityControlRule rule : enabledMap.keySet()) {
+                rule.clearResults();
+            }
+            
+            assertFalse(enabledMap.get(mRule));
+            assertTrue(enabledMap.get(uRule));
+        }
+        
+    }
 
     /**
      * Test of getPriorities method, of class QualityControlViewPane.
@@ -235,6 +285,30 @@ public class QualityControlViewPaneNGTest {
         assertEquals(result.get(mRule), QualityCategory.SEVERE);
         assertEquals(result.get(uRule), QualityCategory.MINOR);
     }
+    
+    /**
+     * Test of getPriorities method, of class QualityControlViewPane.
+     */
+    @Test
+    public void testGetEnablementStatuses() {
+        System.out.println("getEnablementStatuses");
+        
+        final Map<QualityControlRule, Boolean> result = QualityControlViewPane.getEnablementStatuses();
+        assertEquals(result.size(), rules.size());
+
+        for (final QualityControlRule rule : result.keySet()) {
+            rule.clearResults();
+        }
+
+        final IdentifierInconsistentWithTypeRule iiRule = new IdentifierInconsistentWithTypeRule();
+        final MissingTypeRule mRule = new MissingTypeRule();
+        final UnknownTypeRule uRule = new UnknownTypeRule();
+
+        // all rules should be enabled by default
+        assertTrue(result.get(iiRule));
+        assertTrue(result.get(mRule));
+        assertTrue(result.get(uRule));
+    }  
 
     /**
      * Test of DeleteQualityControlEvents plugin with no events.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -184,6 +184,11 @@ public final class ApplicationPreferenceKeys {
      * Quality Control View Priorities
      */
     public static final String RULE_PRIORITIES = "customRules";
+    
+    /**
+     * Quality Control View Rule Enabled Statuses
+     */
+    public static final String RULE_ENABLED_STATUSES = "enabledRules";
 
     /**
      * Default Font.

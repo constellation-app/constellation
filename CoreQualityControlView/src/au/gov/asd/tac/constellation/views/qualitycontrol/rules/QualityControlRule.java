@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,12 +109,14 @@ public abstract class QualityControlRule {
     }
 
     protected Set<Integer> results;
+    private boolean enabled;
 
     /**
      * Construct a Rule.
      */
     protected QualityControlRule() {
         results = new HashSet<>();
+        enabled = true;
     }
 
     /**
@@ -147,12 +149,20 @@ public abstract class QualityControlRule {
      */
     public void executeRule(final GraphReadMethods graph, final List<Integer> vertexIds) {
         vertexIds.forEach(vxId -> {
-            if (this.executeRule(graph, vxId)) {
+            if (executeRule(graph, vxId)) {
                 results.add(vxId);
             }
         });
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
+    }
+    
     /**
      * Get the name of this Rule.
      *
