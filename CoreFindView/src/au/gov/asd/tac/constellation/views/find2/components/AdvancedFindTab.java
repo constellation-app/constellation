@@ -77,7 +77,7 @@ public class AdvancedFindTab extends Tab {
     private final String[] elementTypes = {GraphElementType.VERTEX.getShortLabel(), GraphElementType.TRANSACTION.getShortLabel(), GraphElementType.EDGE.getShortLabel(), GraphElementType.LINK.getShortLabel()};
     private final String[] matchCriteriaTypes = {"All", "Any"};
     private final String[] searchInTypes = {"Current Selection", "Current Graph", "All Open Graphs"};
-    private final String[] postSearchTypes = {"Replace Selection", "Add To", "Remove From", "Delete From"};
+    private final String[] postSearchTypes = {"Replace Selection", "Add To Selection", "Remove From Selection", "Delete From Graph(s)"};
 
     private final Label lookForLabel = new Label("Look For:");
     private final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(elementTypes));
@@ -118,6 +118,8 @@ public class AdvancedFindTab extends Tab {
         // Change the displayed list based on the graph element type selection
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> changeDisplayedList(newElement));
 
+   //     searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> );
+
         postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
 
         findAllButton.setOnAction(action -> findAllAction());
@@ -128,7 +130,6 @@ public class AdvancedFindTab extends Tab {
         matchesFoundPane.add(matchesFoundCountLabel, 1, 0);
         
         FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> {
-
             if (firstSearch) {
                 matchesFoundLabel.setText(foundLabelText);
                 firstSearch = false;
@@ -145,11 +146,14 @@ public class AdvancedFindTab extends Tab {
     private void setGridContent() {
         lookForChoiceBox.getItems().remove(2, 4);
         lookForChoiceBox.getSelectionModel().select(0);
+        searchInChoiceBox.getSelectionModel().select(0);
         postSearchChoiceBox.getSelectionModel().select(0);
         matchCriteriaChoiceBox.getSelectionModel().select(0);
 
-        currentSelectionPane.add(postSearchLabel, 0, 0);
-        currentSelectionPane.add(postSearchChoiceBox, 0, 1);
+        currentSelectionPane.add(searchInLabel, 0, 0);
+        currentSelectionPane.add(searchInChoiceBox, 0, 1);
+        currentSelectionPane.add(postSearchLabel, 1, 0);
+        currentSelectionPane.add(postSearchChoiceBox, 1, 1);
         currentSelectionPane.setPadding(new Insets(1, 0, 0, 25));
         currentSelectionPane.setVgap(4.25);
 
@@ -162,7 +166,6 @@ public class AdvancedFindTab extends Tab {
         settingsGrid.setPadding(new Insets(5));
         settingsGrid.setHgap(5);
         settingsGrid.setVgap(5);
-
 
         settingsBorderPane.setCenter(settingsGrid);
         settingsBorderPane.setPadding(new Insets(0, 0, 10, 0));
