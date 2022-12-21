@@ -179,19 +179,19 @@ public class AdvancedFindTabNGTest {
          * When index 2 or 3 is selected the findNextButton and the
          * FindPreviousButton will be disabled
          */
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(0);
+        advancedTab.getPostSearchChoiceBox().getSelectionModel().select(0);
         assertEquals(false, advancedTab.getFindNextButton().isDisabled());
         assertEquals(false, advancedTab.getFindPrevButton().isDisabled());
 
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(1);
+        advancedTab.getPostSearchChoiceBox().getSelectionModel().select(1);
         assertEquals(false, advancedTab.getFindNextButton().isDisabled());
         assertEquals(false, advancedTab.getFindPrevButton().isDisabled());
 
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(2);
+        advancedTab.getPostSearchChoiceBox().getSelectionModel().select(2);
         assertEquals(true, advancedTab.getFindNextButton().isDisabled());
         assertEquals(true, advancedTab.getFindPrevButton().isDisabled());
 
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(3);
+        advancedTab.getPostSearchChoiceBox().getSelectionModel().select(3);
         assertEquals(true, advancedTab.getFindNextButton().isDisabled());
         assertEquals(true, advancedTab.getFindPrevButton().isDisabled());
 
@@ -354,7 +354,7 @@ public class AdvancedFindTabNGTest {
         assertEquals(controlllerParameters.getCriteriaValuesList().size(), advancedTab.getCorrespondingCriteriaList(elementType).size());
         assertEquals(controlllerParameters.getGraphElementType(), elementType);
         assertEquals(controlllerParameters.getAllOrAny(), advancedTab.getMatchCriteriaChoiceBox().getSelectionModel().getSelectedItem());
-        assertEquals(controlllerParameters.getCurrentSelection(), advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().getSelectedItem());
+        assertEquals(controlllerParameters.getCurrentSelection(), advancedTab.getPostSearchChoiceBox().getSelectionModel().getSelectedItem());
         assertEquals(controlllerParameters.isSearchAllGraphs(), advancedTab.getSearchAllGraphs().isPressed());
 
     }
