@@ -100,7 +100,7 @@ public class MapView extends ScrollPane {
     private MapViewPane parent;
 
     private final StackPane mapStackPane;
-    private final List<AbstractMarker> userMarkers = new ArrayList<AbstractMarker>();
+
 
     private int drawnMarkerId = 0;
     private boolean drawingCircleMarker = false;
@@ -115,10 +115,12 @@ public class MapView extends ScrollPane {
     public static final double mapWidth = 1010.33;
     public static final double mapHeight = 1224;
 
+    private Map<String, AbstractMarker> markers = new HashMap<>();
+    private final List<AbstractMarker> userMarkers = new ArrayList<AbstractMarker>();
+
     private Set<AbstractMarker.MarkerType> markersShowing = new HashSet<>();
     private Map<String, AbstractOverlay> overlayMap = new HashMap<>();
 
-    private Map<String, AbstractMarker> markers = new HashMap<>();
     private final List<Integer> selectedNodeList = new ArrayList<>();
 
     private Canvas mapCanvas;
@@ -762,6 +764,20 @@ public class MapView extends ScrollPane {
 
     public Map<String, AbstractMarker> getAllMarkers() {
         return markers;
+    }
+
+    public List<AbstractMarker> getAllMarkersAsList() {
+        List<AbstractMarker> allMarkers = new ArrayList<>();
+
+        for (AbstractMarker marker : markers.values()) {
+            allMarkers.add(marker);
+        }
+
+        for (AbstractMarker marker : userMarkers) {
+            allMarkers.add(marker);
+        }
+
+        return allMarkers;
     }
 
     public void clearQueriedMarkers() {

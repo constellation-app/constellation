@@ -88,6 +88,9 @@ public class UserPointMarker extends AbstractMarker {
         x += xOffset;
         y += yOffset;
 
+        super.setX(x);
+        super.setY(y);
+
         path = "M " + x + ", " + y + " Z " + path;
 
         markerPath.setContent(path);

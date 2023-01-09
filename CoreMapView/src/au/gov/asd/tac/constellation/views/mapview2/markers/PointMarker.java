@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -184,6 +185,10 @@ public class PointMarker extends AbstractMarker {
         y = super.latToY(lattitude, mapWidth, mapHeight);
         x += xOffset;
         y -= yOffset;
+
+        super.setX(x);
+        super.setY(y);
+
 
         path = "M " + x + ", " + y + " Z " + path;
 

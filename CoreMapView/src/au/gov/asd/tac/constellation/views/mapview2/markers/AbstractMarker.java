@@ -33,6 +33,8 @@ public abstract class AbstractMarker {
     protected List<Integer> idList = new ArrayList();
     protected boolean isSelected = false;
 
+    private double x = 0;
+    private double y = 0;
     protected int xOffset;
     protected int yOffset;
 
@@ -109,6 +111,22 @@ public abstract class AbstractMarker {
 
     public int getMarkerId() {
         return markerID;
+    }
+
+    protected void setX(double x) {
+        this.x = x;
+    }
+
+    protected void setY(double y) {
+        this.y = y;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
     }
 
 
