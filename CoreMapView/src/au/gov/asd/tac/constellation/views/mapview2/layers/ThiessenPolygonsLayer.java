@@ -827,6 +827,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         layer.getChildren().clear();
 
         sortNodes(markers);
+
+        if (nodesOnScreen.size() > 1) {
         calculateBisectors();
         shortenBisectorLines();
 
@@ -835,7 +837,21 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         //addCornerIntersectionNodes();
         //showRelatedMarkers();
         connectMarkersToCorners();
-        createPolygons();
+            createPolygons();
+        } else if (nodesOnScreen.size() == 1) {
+            final ConstellationColor[] palette = ConstellationColor.createPalette(1);
+
+            Rectangle r = new Rectangle();
+            r.setX(0);
+            r.setY(0);
+            r.setWidth(MapView.mapWidth);
+            r.setHeight(MapView.mapHeight);
+            r.setFill(palette[0].getJavaFXColor());
+            r.setStroke(palette[0].getJavaFXColor());
+            r.setOpacity(0.5);
+
+            layer.getChildren().add(r);
+        }
 
         layer.getChildren().add(debugLayer);
 
