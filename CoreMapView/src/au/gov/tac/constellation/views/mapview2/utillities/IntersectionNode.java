@@ -70,7 +70,7 @@ public class IntersectionNode {
             return;
         }
 
-        if (otherNode.getKey().equals(key)) {
+        if (otherNode.getKey().equals(key) || connectedPointIds.contains(key)) {
             //LOGGER.log(Level.SEVERE, "Trying to add self to connected components: " + key);
             return;
         }
