@@ -140,8 +140,8 @@ public class MapView extends ScrollPane {
 
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0);
 
-    //private final PointMarker testMarker;
-    //private final PointMarker testMarker2;
+    //private final UserPointMarker testMarker;
+    //private final UserPointMarker testMarker2;
 
     private final double mapScaleFactor = 1.1;
 
@@ -186,11 +186,13 @@ public class MapView extends ScrollPane {
     public MapView(MapViewPane parent) {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
-        //testMarker = new PointMarker(this, -99, -99, 32.764233, 129.872696, 0.05, 95, 244, "");
-        //testMarker.setMarkerPosition(mapWidth, mapHeight);
+        /*testMarker = new UserPointMarker(this, 90, 200, 200, 0.05, 0, 0);
+        testMarker.setMarkerPosition(mapWidth, mapHeight);
 
-        //testMarker2 = new PointMarker(this, -100, -100, 35.011665, 135.768326, 0.05, 95, 244, "");
-        //testMarker2.setMarkerPosition(mapWidth, mapHeight);
+        testMarker2 = new UserPointMarker(this, 91, 200, 300, 0.05, 0, 0);
+        testMarker2.setMarkerPosition(mapWidth, mapHeight);
+        userMarkers.add(testMarker);
+        userMarkers.add(testMarker2);*/
         //testRegion.setShape(testMarker.getMarker());
         //markersShowing.setValue(new SetChangeListener<AbstractMarker.MarkerType>());
 
@@ -206,7 +208,7 @@ public class MapView extends ScrollPane {
         layerGroup = new Group();
         clusterMarkerGroup = new Group();
         //pointMarkerGroup = new Group();
-        //pointMarkerGroup.getChildren().addAll(testMarker.getMarker(), testMarker2.getMarker());
+        //drawnMarkerGroup.getChildren().addAll(testMarker.getMarker(), testMarker2.getMarker());
         hiddenPointMarkerGroup = new Group();
         hiddenPointMarkerGroup.setVisible(false);
         pointMarkerTextGroup = new Group();
