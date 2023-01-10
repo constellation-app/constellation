@@ -270,13 +270,13 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 }
 
                 if (shortestDistanceID == null && index == 0) {
-                    shortLine[index] = new Vec3(start.x - dirVect.x, start.y - dirVect.y);
+                    shortLine[index] = new Vec3(start.x /*- dirVect.x*/, start.y /*- dirVect.y*/);
                     ++index;
                 } else if (shortestDistanceID != null && index == 1) {
-                    start.x += dirVect.x;
-                    start.y += dirVect.y;
-                    shortLine[0].x -= dirVect.x;
-                    shortLine[0].y -= dirVect.y;
+                    //start.x += dirVect.x;
+                    //start.y += dirVect.y;
+                    //shortLine[0].x -= dirVect.x;
+                    //shortLine[0].y -= dirVect.y;
 
                     shortLine[index] = new Vec3(start.x, start.y);
 
@@ -405,6 +405,10 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         /*if (bisect1.getStartX() == 0 || bisect1.getEndX() == 0 || bisect2.getStartX() == 0 || bisect2.getEndX() == 0) {
                             LOGGER.log(Level.FINE, "Intersection Point Not on Line= x: " + x + " y:  " + y);
                         }*/
+                        continue;
+                    }
+
+                    if (roundedX < 0 || roundedX > MapView.mapWidth || roundedY < 0 || roundedY > MapView.mapHeight) {
                         continue;
                     }
 
