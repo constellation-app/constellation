@@ -60,9 +60,9 @@ public class BasicFindReplaceParameters {
         this.addTo = false;
         this.removeFrom = false;
         this.replaceIn = false;
-        this.currentSelection = true;
+        this.currentSelection = false;
         this.currentGraph = false;
-        this.replaceSelection = true;
+        this.replaceSelection = false;
     }
 
     /**

@@ -304,7 +304,7 @@ public class BasicFindPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId8), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
         rg.close();
 
         /**
@@ -321,7 +321,7 @@ public class BasicFindPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId4), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId8), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
         rg.close();
 
         /**
@@ -338,7 +338,7 @@ public class BasicFindPluginNGTest {
         assertEquals(rg.getBooleanValue(selectedV, vxId4), false);
         assertEquals(rg.getBooleanValue(selectedV, vxId6), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId7), false);
-        assertEquals(rg.getBooleanValue(selectedV, vxId8), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId8), false);
         rg.close();
 
     }

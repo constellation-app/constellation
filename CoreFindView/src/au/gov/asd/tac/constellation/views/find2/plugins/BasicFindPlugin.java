@@ -122,8 +122,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
         final int elementCount = elementType.getElementCount(graph);
 
-        // do this if not add to selection
-        if (!addToSelection && !removeFromCurrentSelection && !deleteFromGraph && (!currentSelection && !replaceCurrentSelection)) {
+        // do this if replace selection 
+        if (!addToSelection && !removeFromCurrentSelection && !deleteFromGraph && !currentSelection) {
             FindViewUtilities.clearSelection(graph);
         }
 
@@ -184,10 +184,12 @@ public class BasicFindPlugin extends SimpleEditPlugin {
             }
         }
         /**
-         * If currentSelection is true, clear the current selection and
+         * If currentSelection and replaceCurrentSelection are true, clear the current selection and
          * loop through the list of found elements and set them to selected.
          */
-        selectFindInResults(currentSelection, findInCurrentSelectionList, foundResult, graph, selectedAttribute);
+        if (currentSelection && replaceCurrentSelection) {
+            selectFindInResults(currentSelection, findInCurrentSelectionList, foundResult, graph, selectedAttribute);
+        }
 
         /**
          * If removeFromCurrentSelection is true, loop through the list of
@@ -200,6 +202,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         foundResult.clear();
         foundResult.addAll(distinctValues);
 
+        // If the results list is null, has different parameters to the current list, and is not searching all graphs, then create a new results list
         if (ActiveFindResultsList.getBasicResultsList() == null || !ActiveFindResultsList.getBasicResultsList().getSearchParameters().equals(this.parameters)
                 || (!this.parameters.isSearchAllGraphs() && ActiveFindResultsList.getBasicResultsList() == null && ActiveFindResultsList.getBasicResultsList().get(0) != null
                 && !ActiveFindResultsList.getBasicResultsList().get(0).getGraphId().equals(graph.getId()))) {

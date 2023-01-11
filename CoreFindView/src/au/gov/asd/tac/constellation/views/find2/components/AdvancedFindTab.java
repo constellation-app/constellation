@@ -42,7 +42,6 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -104,7 +103,6 @@ public class AdvancedFindTab extends Tab {
 
     protected final HBox buttonsHBox = new HBox();
     protected final VBox buttonsVBox = new VBox();
-    protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
@@ -118,7 +116,7 @@ public class AdvancedFindTab extends Tab {
         // Change the displayed list based on the graph element type selection
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> changeDisplayedList(newElement));
 
-   //     searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> );
+        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
 
         postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
 
@@ -205,7 +203,7 @@ public class AdvancedFindTab extends Tab {
     public void updateButtons() {
         //Clears all existing buttons, then adds this panes buttons
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(findAllButton, findPrevButton, findNextButton);
 
         buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
 
@@ -476,8 +474,7 @@ public class AdvancedFindTab extends Tab {
         final List<FindCriteriaValues> criteriaValuesList = getCriteriaValues(getCorrespondingCriteriaList(type));
         final AdvancedSearchParameters parameters = new AdvancedSearchParameters(criteriaValuesList, type,
                 matchCriteriaChoiceBox.getSelectionModel().getSelectedItem(),
-                postSearchChoiceBox.getSelectionModel().getSelectedItem(),
-                searchAllGraphs.isSelected());
+                postSearchChoiceBox.getSelectionModel().getSelectedItem(), searchInChoiceBox.getSelectionModel().getSelectedItem());
         FindViewController.getDefault().updateAdvancedSearchParameters(parameters);
     }
 
@@ -600,15 +597,6 @@ public class AdvancedFindTab extends Tab {
      */
     public Button getFindAllButton() {
         return findAllButton;
-    }
-
-    /**
-     * Gets the searchAllGraphs
-     *
-     * @return searchAllGraphs
-     */
-    public CheckBox getSearchAllGraphs() {
-        return searchAllGraphs;
     }
 
 }

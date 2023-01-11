@@ -143,10 +143,9 @@ public class AdvancedFindTabNGTest {
          * getFindAllButton and getSearchAllGraphs checkbox.
          */
         advancedTab.updateButtons();
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getSearchAllGraphs());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindAllButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindPrevButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindNextButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getFindAllButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindPrevButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindNextButton());
 
     }
 
@@ -354,8 +353,7 @@ public class AdvancedFindTabNGTest {
         assertEquals(controlllerParameters.getCriteriaValuesList().size(), advancedTab.getCorrespondingCriteriaList(elementType).size());
         assertEquals(controlllerParameters.getGraphElementType(), elementType);
         assertEquals(controlllerParameters.getAllOrAny(), advancedTab.getMatchCriteriaChoiceBox().getSelectionModel().getSelectedItem());
-        assertEquals(controlllerParameters.getCurrentSelection(), advancedTab.getPostSearchChoiceBox().getSelectionModel().getSelectedItem());
-        assertEquals(controlllerParameters.isSearchAllGraphs(), advancedTab.getSearchAllGraphs().isPressed());
+        assertEquals(controlllerParameters.getPostSearchAction(), advancedTab.getPostSearchChoiceBox().getSelectionModel().getSelectedItem());
 
     }
 

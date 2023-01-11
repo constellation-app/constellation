@@ -34,16 +34,17 @@ import au.gov.asd.tac.constellation.views.find2.utilities.FindViewUtilities;
 public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
 
     private final boolean selectAll;
-    private final boolean searchAllGraphs;
+    private final String searchInLocation;
     private final GraphElementType elementType;
-    private final String currentSelection;
-    private static final String IGNORE = "Ignore";
+    private final String postSearchAction;
+    private static final String REPLACE = "Replace Selection";
+    private static final String ALL_GRAPHS = "All Open Graphs";
 
     public AdvancedFindGraphSelectionPlugin(final AdvancedSearchParameters parameters, final boolean selectAll, final boolean getNext) {
         this.selectAll = selectAll;
-        this.searchAllGraphs = parameters.isSearchAllGraphs();
+        this.searchInLocation = parameters.getSearchInLocation();
         this.elementType = parameters.getGraphElementType();
-        this.currentSelection = parameters.getCurrentSelection();
+        this.postSearchAction = parameters.getPostSearchAction();
     }
 
     @Override
@@ -53,7 +54,7 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
 
         if (!selectAll) {
             // do this if ignore selection
-            if (IGNORE.equals(currentSelection)) {
+            if (REPLACE.equals(postSearchAction)) {
                 FindViewUtilities.clearSelection(graph);
             }
             
@@ -70,7 +71,7 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
         }
 
         // Swap to view the graph where the element is selected
-        if (searchAllGraphs && !ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
+        if (searchInLocation.equals(ALL_GRAPHS) && !ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
             FindViewUtilities.searchAllGraphs(graph);
         }
     }
