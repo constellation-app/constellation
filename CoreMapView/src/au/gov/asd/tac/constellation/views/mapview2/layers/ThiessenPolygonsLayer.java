@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -180,8 +181,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                         double reciprocal = -1 * (slope.y / slope.x);
 
-
-                        //LOGGER.log(Level.SEVERE, "Rise of bisector: " + slope.x + " Run of bisector: " + slope.y);
                         LOGGER.log(Level.SEVERE, "Reciprocal: " + reciprocal);
 
                         double b = midPoint.y - (reciprocal * midPoint.x);
@@ -193,11 +192,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                         Vec3 directVect = new Vec3((lineEnd.x - lineStart.x) / distance, (lineEnd.y - lineStart.y) / distance);
 
-                        lineStart.x = midPoint.x + (directVect.x * 1000);
-                        lineStart.y = midPoint.y + (directVect.y * 1000);
+                        lineStart.x = midPoint.x + (directVect.x * 1500);
+                        lineStart.y = midPoint.y + (directVect.y * 1500);
 
-                        lineEnd.x = midPoint.x - (directVect.x * 1000);
-                        lineEnd.y = midPoint.y - (directVect.y * 1000);
+                        lineEnd.x = midPoint.x - (directVect.x * 1500);
+                        lineEnd.y = midPoint.y - (directVect.y * 1500);
 
                         if (slope.x == 0 && slope.y != 0) {
                             lineStart.x = midPoint.x;
@@ -248,7 +247,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
             Vec3 marker1 = new Vec3(nodesOnScreen.get(id1).getX() - 97, nodesOnScreen.get(id1).getY() + 93);
             Vec3 marker2 = new Vec3(nodesOnScreen.get(id2).getX() - 97, nodesOnScreen.get(id2).getY() + 93);
-            for (int i = 0; i < distance; ++i) {
+            for (int i = 0; i < distance; i = i + 1) {
 
                 if (start.x > MapView.mapWidth + 5 || start.x < -5 || start.y < -2 || start.y > MapView.mapHeight + 2) {
                     start.x += dirVect.x;
@@ -270,13 +269,13 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 }
 
                 if (shortestDistanceID == null && index == 0) {
-                    shortLine[index] = new Vec3(start.x /*- dirVect.x*/, start.y /*- dirVect.y*/);
+                    shortLine[index] = new Vec3(start.x - dirVect.x, start.y - dirVect.y);
                     ++index;
                 } else if (shortestDistanceID != null && index == 1) {
-                    //start.x += dirVect.x;
-                    //start.y += dirVect.y;
-                    //shortLine[0].x -= dirVect.x;
-                    //shortLine[0].y -= dirVect.y;
+                    /*start.x += dirVect.x;
+                    start.y += dirVect.y;
+                    shortLine[0].x -= dirVect.x;
+                    shortLine[0].y -= dirVect.y;*/
 
                     shortLine[index] = new Vec3(start.x, start.y);
 
@@ -372,8 +371,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         continue;
                     }
 
-                    final double x;
-                    final double y;
+                    double x;
+                    double y;
 
                     if (slope.y == 0) {
                         x = bisect1.getStartX();
@@ -386,6 +385,14 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                         y = m1 * x + b1;
                     }
+
+                    /*if (bisect1.contains(bisect2.getStartX(), bisect2.getStartY())) {
+                        x = bisect2.getStartX();
+                        y = bisect2.getStartY();
+                    } else if (bisect1.contains(bisect2.getEndX(), bisect2.getEndY())) {
+                        x = bisect2.getEndX();
+                        y = bisect2.getEndY();
+                    }*/
 
                     LOGGER.log(Level.SEVERE, "Intesection Coordinates = " + x + ", " + y);
                     final double roundedX = Math.round(x * 10000) / 10000;
@@ -402,9 +409,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     }
 
                     if (!(bisect1.contains(x, y) && bisect2.contains(x, y))) {
-                        /*if (bisect1.getStartX() == 0 || bisect1.getEndX() == 0 || bisect2.getStartX() == 0 || bisect2.getEndX() == 0) {
-                            LOGGER.log(Level.FINE, "Intersection Point Not on Line= x: " + x + " y:  " + y);
-                        }*/
                         continue;
                     }
 
