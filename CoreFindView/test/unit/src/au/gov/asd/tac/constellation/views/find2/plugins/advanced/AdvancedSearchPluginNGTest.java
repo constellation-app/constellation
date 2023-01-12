@@ -34,7 +34,6 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalu
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.IconCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.StringCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
 import java.time.ZoneId;

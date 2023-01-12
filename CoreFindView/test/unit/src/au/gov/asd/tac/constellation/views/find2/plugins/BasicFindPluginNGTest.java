@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.FindViewTopComponent;
 import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
-import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
 import java.util.HashMap;

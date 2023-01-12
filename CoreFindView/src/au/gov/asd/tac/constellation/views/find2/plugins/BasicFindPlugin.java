@@ -52,13 +52,13 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean replaceCurrentSelection;
     private final boolean addToSelection;
     private final boolean removeFromCurrentSelection;
-    private final boolean deleteFromGraph;
+    private final boolean deleteFromCurrentSelection;
     private final boolean selectAll;
     private final boolean getNext;
     private final boolean currentSelection;
     private final boolean currentGraph;
     private final boolean searchAllGraphs;
-    private final BasicFindReplaceParameters parameters;
+    private final BasicFindReplaceParameters parameters;    
 
     private static final int STARTING_INDEX = -1;
 
@@ -74,7 +74,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.parameters = parameters;
         this.addToSelection = parameters.isAddTo();
         this.removeFromCurrentSelection = parameters.isRemoveFrom();
-        this.deleteFromGraph = parameters.isDeleteFrom();
+        this.deleteFromCurrentSelection = parameters.isDeleteFrom();
         this.currentSelection = parameters.isCurrentSelection();
         this.currentGraph = parameters.isCurrentGraph();
         this.searchAllGraphs = parameters.isSearchAllGraphs();
@@ -122,13 +122,14 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
         final int elementCount = elementType.getElementCount(graph);
 
-        // do this if replace selection 
-        if (!addToSelection && !removeFromCurrentSelection && !deleteFromGraph && !currentSelection) {
+        // do this if replace selection or delete from graph
+        if (!addToSelection && !removeFromCurrentSelection && !currentSelection) {
             FindViewUtilities.clearSelection(graph);
         }
 
         final FindResultsList findInCurrentSelectionList = new FindResultsList();
         final FindResultsList removeFromCurrentSelectionList = new FindResultsList();
+        final FindResultsList deleteFromCurrentSelectionList = new FindResultsList();
 
         final String searchString = regex ? findString : Pattern.quote(findString);
         final int caseSensitivity = ignorecase ? Pattern.UNICODE_CASE | Pattern.CASE_INSENSITIVE : 0;
@@ -150,10 +151,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
 
                     // get the current element
                     final int currElement = elementType.getElement(graph, i);
-
                     // get string value of it graph elements attribute
                     final String value = graph.getStringValue(graph.getAttribute(elementType, a.getName()), currElement);
-
                     // if the value isnt null
                     if (value != null) {
 
@@ -164,16 +163,17 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                             // get the UID of the element and the graph
                             final long uid = elementType.getUID(graph, currElement);
                             // if the user wants to find it in, or remove it from their current selection
-                            if (deleteFromGraph || removeFromCurrentSelection || (currentSelection && replaceCurrentSelection)) {
+                            if (deleteFromCurrentSelection || removeFromCurrentSelection || (currentSelection && replaceCurrentSelection)) {
                                 // if the element is selected
                                 if (graph.getBooleanValue(selectedAttribute, currElement)) {
                                     // Add the element to the find in and remove from list
                                     findInCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
                                     removeFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
+                                    deleteFromCurrentSelectionList.add(new FindResult(currElement, uid, elementType, graph.getId()));
                                 }
                             }
                             // if the user wants to select all, select the matching element
-                            if (selectAll && !deleteFromGraph && !removeFromCurrentSelection && !(currentSelection && replaceCurrentSelection)) {
+                            if (selectAll && !removeFromCurrentSelection && !(currentSelection && replaceCurrentSelection)) {
                                 graph.setBooleanValue(selectedAttribute, currElement, true);
                             }
                             // add the graph element to the foundResult list
@@ -196,6 +196,12 @@ public class BasicFindPlugin extends SimpleEditPlugin {
          * found elements and set their selection status to false.
          */
         selectRemoveFromResults(removeFromCurrentSelection, removeFromCurrentSelectionList, foundResult, graph, selectedAttribute);
+
+        /**
+         * If deleteFromGraph is true then loop through the list of found elements and set their selection status to true.
+         * Then create a dialog box to allow the user to delete the results from the graph(s)
+         */
+        selectDeleteFromResults(deleteFromCurrentSelection, deleteFromCurrentSelectionList, foundResult, graph, selectedAttribute);
 
         // Clean the find results list to only contain unique graph elements
         final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
@@ -261,6 +267,29 @@ public class BasicFindPlugin extends SimpleEditPlugin {
             foundResult.clear();
             foundResult.addAll(removeFromCurrentSelectionList);
         }
+    }
+
+    /**
+     * Select all the results that match the search and then allow the user to delete them from the graph
+     *
+     * @param deleteFromCurrentSelection
+     * @param deleteFromCurrentSelectionList
+     * @param foundResult
+     * @param graph
+     * @param selectedAttribute
+     */
+    private void selectDeleteFromResults(final boolean deleteFromCurrentSelection, final FindResultsList deleteFromCurrentSelectionList,
+            final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
+
+        if (deleteFromCurrentSelection && !deleteFromCurrentSelectionList.isEmpty()) {
+            FindViewUtilities.clearSelection(graph);
+            for (final FindResult fr : deleteFromCurrentSelectionList) {
+                graph.setBooleanValue(selectedAttribute, fr.getID(), true);
+            }
+            foundResult.clear();
+            foundResult.addAll(deleteFromCurrentSelectionList);
+        }
+    
     }
 
     /**

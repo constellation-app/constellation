@@ -20,15 +20,18 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
+import au.gov.asd.tac.constellation.views.find2.plugins.BasicFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.BasicFindPlugin;
+import au.gov.asd.tac.constellation.views.find2.plugins.DeleteResultsPlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.GraphAttributePlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.ReplacePlugin;
+import au.gov.asd.tac.constellation.views.find2.plugins.advanced.AdvancedFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.plugins.advanced.AdvancedSearchPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
-import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
+import au.gov.asd.tac.constellation.views.find2.utilities.FindResultsList;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -41,6 +44,8 @@ import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 
 /**
  * This controller class handles the interaction between the findView2 UI
@@ -59,6 +64,9 @@ public class FindViewController {
     private final BasicFindReplaceParameters currentBasicReplaceParameters;
     private final AdvancedSearchParameters currentAdvancedSearchParameters;
     private static final Logger LOGGER = Logger.getLogger(FindViewController.class.getName());
+
+    private static final String DELETE = "Delete";
+    private static final String CANCEL = "Cancel";
 
     private final IntegerProperty numResultsFoundFlag = new SimpleIntegerProperty(0);
 
@@ -247,6 +255,7 @@ public class FindViewController {
     public void retriveMatchingElements(final boolean selectAll, final boolean getNext) {
         final BasicFindPlugin basicFindPlugin = new BasicFindPlugin(currentBasicFindParameters, selectAll, getNext);
         final BasicFindGraphSelectionPlugin findGraphSelectionPlugin = new BasicFindGraphSelectionPlugin(currentBasicFindParameters, selectAll);
+        int graphsSearched = 0;
 
         /**
          * If search all graphs is true, execute the find plugin on all open graphs. If not only call it on the active graph.
@@ -268,6 +277,7 @@ public class FindViewController {
                     if (currentGraph != null) {
                         PluginExecution.withPlugin(basicFindPlugin).executeLater(currentGraph).get();
                     }
+                    graphsSearched++;
                 }
             } else {
                 final Graph graph = GraphManager.getDefault().getActiveGraph();
@@ -275,6 +285,7 @@ public class FindViewController {
                 if (graph != null) {
                     PluginExecution.withPlugin(basicFindPlugin).executeLater(graph).get();
                 }
+                graphsSearched = 1;
             }
         } catch (final InterruptedException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
@@ -297,6 +308,10 @@ public class FindViewController {
             Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(foundResultsLength));
         } else {
             Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(0));
+        }
+
+        if (currentBasicFindParameters.isDeleteFrom()) {
+            deleteResults(ActiveFindResultsList.getBasicResultsList(), graphsSearched);
         }
     }
 
@@ -334,6 +349,7 @@ public class FindViewController {
     public void retrieveAdvancedSearch(final boolean findAll, final boolean findNext) {
         final AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(currentAdvancedSearchParameters, findAll, findNext);
         final AdvancedFindGraphSelectionPlugin findGraphSelectionPlugin = new AdvancedFindGraphSelectionPlugin(currentAdvancedSearchParameters, findAll, findNext);
+        int graphsSearched = 0;
 
         /**
          * If search all graphs is true, execute the advanced find plugin on all
@@ -356,6 +372,7 @@ public class FindViewController {
                     if (graph != null && currentAdvancedSearchParameters.getSearchInLocation().equals("All Open Graphs")) {
                         PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph).get();
                     }
+                    graphsSearched++;
                 }
             } else {
                 final Graph graph = GraphManager.getDefault().getActiveGraph();
@@ -363,6 +380,7 @@ public class FindViewController {
                 if (graph != null) {
                     PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph).get();
                 }
+                graphsSearched = 1;
             }
         } catch (final InterruptedException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
@@ -386,6 +404,10 @@ public class FindViewController {
             Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(foundResultsLength));
         } else {
             Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(0));
+        }
+
+        if (currentAdvancedSearchParameters.getPostSearchAction().equals("Delete From Graph(s)")) {
+            deleteResults(ActiveFindResultsList.getAdvancedResultsList(), graphsSearched);
         }
     }
 
@@ -442,4 +464,31 @@ public class FindViewController {
         numResultsFoundFlag.set(value);
     }
 
+    /**
+     * Create a dialog to show the user how many results are going to be deleted across the currently open graphs
+     *
+     * @param foundResults
+     * @param graphsSearched
+     */
+    private void deleteResults(final FindResultsList foundResults, final int graphsSearched) {
+        // Show user deletion dialog box
+        final String message = String.format("%s results found across %s graph(s). Delete now?", foundResults.size(), graphsSearched);
+        final Object[] options = new Object[]{DELETE, CANCEL};
+
+        final NotifyDescriptor d = new NotifyDescriptor(message, "Delete Results", NotifyDescriptor.YES_NO_CANCEL_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, DELETE);
+        final Object o = DialogDisplayer.getDefault().notify(d);
+
+        // If delete is chosen
+        if (o.equals(DELETE)) {
+            for (final FindResult result : foundResults) {
+
+                // Delete each found result
+                final DeleteResultsPlugin deleteResultsPlugin = new DeleteResultsPlugin(result);
+                final Graph graph = GraphManager.getDefault().getAllGraphs().get(result.getGraphId());
+
+                PluginExecution.withPlugin(deleteResultsPlugin).executeLater(graph);
+
+            }
+        }
+    }
 }
