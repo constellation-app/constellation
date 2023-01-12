@@ -188,16 +188,16 @@ public class MapView extends ScrollPane {
     public MapView(MapViewPane parent) {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
-        /*testMarker = new UserPointMarker(this, 90, 201, 200, 0.05, 0, 0);
+        /*testMarker = new UserPointMarker(this, 90, 200, 200, 0.05, 0, 0);
         testMarker.setMarkerPosition(mapWidth, mapHeight);
 
-        testMarker2 = new UserPointMarker(this, 91, 199, 300, 0.05, 0, 0);
+        testMarker2 = new UserPointMarker(this, 91, 200, 300, 0.05, 0, 0);
         testMarker2.setMarkerPosition(mapWidth, mapHeight);
 
-        testMarker3 = new UserPointMarker(this, 91, 150, 251, 0.05, 0, 0);
+        testMarker3 = new UserPointMarker(this, 91, 150, 250, 0.05, 0, 0);
         testMarker3.setMarkerPosition(mapWidth, mapHeight);
 
-        testMarker4 = new UserPointMarker(this, 91, 250, 249, 0.05, 0, 0);
+        testMarker4 = new UserPointMarker(this, 91, 250, 250, 0.05, 0, 0);
         testMarker4.setMarkerPosition(mapWidth, mapHeight);
 
         userMarkers.add(testMarker);

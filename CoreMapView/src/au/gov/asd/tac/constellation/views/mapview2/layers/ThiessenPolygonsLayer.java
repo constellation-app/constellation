@@ -247,7 +247,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
             Vec3 marker1 = new Vec3(nodesOnScreen.get(id1).getX() - 97, nodesOnScreen.get(id1).getY() + 93);
             Vec3 marker2 = new Vec3(nodesOnScreen.get(id2).getX() - 97, nodesOnScreen.get(id2).getY() + 93);
-            for (int i = 0; i < distance; i = i + 1) {
+            for (double i = 0; i < distance; i = i + 1) {
 
                 if (start.x > MapView.mapWidth + 5 || start.x < -5 || start.y < -2 || start.y > MapView.mapHeight + 2) {
                     start.x += dirVect.x;
@@ -269,7 +269,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 }
 
                 if (shortestDistanceID == null && index == 0) {
-                    shortLine[index] = new Vec3(start.x - dirVect.x, start.y - dirVect.y);
+                    shortLine[index] = new Vec3(start.x - (0.5 * dirVect.x), start.y - (0.5 * dirVect.y));
                     ++index;
                 } else if (shortestDistanceID != null && index == 1) {
                     /*start.x += dirVect.x;
@@ -312,7 +312,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     }
 
                 });
-                debugLayer.getChildren().add(l);
+                //layer.getChildren().add(l);
                 finalBisectorLines.put(key, l);
                 lineMap.put(finalBisectorLines.get(key), new ArrayList<IntersectionNode>());
 
@@ -492,18 +492,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     }
 
-    private void addCornerIntersectionNodes() {
-        IntersectionNode topLeft = new IntersectionNode(0, 0);
-        IntersectionNode topRight = new IntersectionNode(MapView.mapWidth, 0);
-        IntersectionNode bottomLeft = new IntersectionNode(0, MapView.mapHeight);
-        IntersectionNode bottomRight = new IntersectionNode(MapView.mapWidth, MapView.mapHeight);
-
-        intersectionMap.put("-1,-1", topLeft);
-        intersectionMap.put("-2,-2", topRight);
-        intersectionMap.put("-3,-3", bottomLeft);
-        intersectionMap.put("-4,-4", bottomRight);
-
-    }
 
     private boolean contains(Line line, double x, double y) {
         double maxX = line.getStartX() > line.getEndX() ? line.getStartX() : line.getEndX();
@@ -860,7 +848,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         //showRelatedMarkers();
         connectMarkersToCorners();
             createPolygons();
-            printIntersectionCircles();
+            //printIntersectionCircles();
         } else if (nodesOnScreen.size() == 1) {
             final ConstellationColor[] palette = ConstellationColor.createPalette(1);
 
@@ -876,7 +864,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             layer.getChildren().add(r);
         }
 
-        layer.getChildren().add(debugLayer);
+        //layer.getChildren().add(debugLayer);
 
         LOGGER.log(Level.SEVERE, "Intersection Map Count: " + intersectionMap.size());
 
