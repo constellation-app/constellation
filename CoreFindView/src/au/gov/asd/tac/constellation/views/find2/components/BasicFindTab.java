@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.find2.components;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
+import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
 import java.util.List;
@@ -103,6 +104,7 @@ public class BasicFindTab extends Tab {
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
+    private final Button deleteResultsButton = new Button("Delete Results");
 
     protected static final int LABEL_WIDTH = 90;
     protected static final int DROP_DOWN_WIDTH = 120;
@@ -141,8 +143,7 @@ public class BasicFindTab extends Tab {
         // inAttributesMenu
         inAttributesMenu.setOnContextMenuRequested(event -> contextMenu.show(inAttributesMenu, event.getScreenX(), event.getScreenY()));
 
-        // set the action for changing the seleciton in the
-        // postSearchChoiceBox
+        // set the action for changing the seleciton in the postSearchChoiceBox
         searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
@@ -150,8 +151,7 @@ public class BasicFindTab extends Tab {
             }
         });
 
-        // set the action for changing the seleciton in the
-        // postSearchChoiceBox
+        // set the action for changing the seleciton in the postSearchChoiceBox
         postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
@@ -163,6 +163,7 @@ public class BasicFindTab extends Tab {
         findAllButton.setOnAction(action -> findAllAction());
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPrevAction());
+        deleteResultsButton.setOnAction(action -> deleteResultsAction());
 
         FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> resultsFoundLabel.setText("Results Found: " + newValue));
     }
@@ -261,7 +262,7 @@ public class BasicFindTab extends Tab {
          * Replace Selection. Set the sizing preferences and add the postSearchLabel
          * and ChoiceBox to the settings grid
          */
-        postSearchChoiceBox.getItems().addAll("Replace Selection", "Add To Selection", "Remove From Selection", "Delete From Graph(s)");
+        postSearchChoiceBox.getItems().addAll("Replace Selection", "Add To Selection", "Remove From Selection");
         postSearchChoiceBox.getSelectionModel().select(0);
         postSearchChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
         settingsGrid.add(postSearchLabel, 2, 2);
@@ -271,8 +272,10 @@ public class BasicFindTab extends Tab {
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
         buttonsHBox.setPadding(new Insets(5, 10, 5, 10));
         buttonsHBox.setSpacing(5);
-        buttonsHBox.getChildren().addAll(findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findPrevButton, findNextButton);
         buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
+
+        deleteResultsButton.setDisable(true);
 
         // add the buttonsHBox to the buttonsVbox
         buttonsVBox.getChildren().addAll(resultsFoundLabel, buttonsHBox);
@@ -303,7 +306,7 @@ public class BasicFindTab extends Tab {
          * to the buttonsHbox
          */
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findPrevButton, findNextButton);
         parentComponent.getParentComponent().setBottom(buttonsVBox);
     }
 
@@ -473,7 +476,6 @@ public class BasicFindTab extends Tab {
         boolean replaceSelection = false;
         boolean addTo = false;
         boolean removeFrom = false;
-        boolean deleteFrom = false;
         boolean searchAllGraphs = false;
         boolean currentGraph = false;
         boolean currentSelection = false;
@@ -489,9 +491,6 @@ public class BasicFindTab extends Tab {
                 break;
             case 2:
                 removeFrom = true;
-                break;
-            case 3:
-                deleteFrom = true;
                 break;
             default:
                 break;
@@ -515,7 +514,7 @@ public class BasicFindTab extends Tab {
         // UI parameters
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), "",
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
-                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), replaceSelection, addTo, removeFrom, deleteFrom, false, currentSelection, currentGraph, searchAllGraphs
+                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), replaceSelection, addTo, removeFrom, false, currentSelection, currentGraph, searchAllGraphs
         );
 
         FindViewController.getDefault().updateBasicFindParameters(parameters);
@@ -526,7 +525,7 @@ public class BasicFindTab extends Tab {
      * the variables values stored in the controller
      */
     public void updateSelectionFactors() {
-        final boolean disable = postSearchChoiceBox.getSelectionModel().getSelectedIndex() == 2 || postSearchChoiceBox.getSelectionModel().getSelectedIndex() == 3;
+        final boolean disable = postSearchChoiceBox.getSelectionModel().getSelectedIndex() == 1 || postSearchChoiceBox.getSelectionModel().getSelectedIndex() == 2;
         findNextButton.setDisable(disable);
         findPrevButton.setDisable(disable);
     }
@@ -543,6 +542,7 @@ public class BasicFindTab extends Tab {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(true, false);
+            deleteResultsButton.setDisable(false);
         }
     }
 
@@ -573,6 +573,19 @@ public class BasicFindTab extends Tab {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(false, false);
+        }
+    }
+
+    /**
+     * This is run when the user presses the delete results button.
+     * It calls a dialog box to confirm that the user wishes to delete the results of the find from all graphs searched.
+     * Then set the deleteResultsButton to be disabled to stop users from trying to delete results that have already been deleted.
+     */
+    private void deleteResultsAction() {
+        if (!ActiveFindResultsList.getBasicResultsList().isEmpty()) {
+            FindViewController.getDefault().deleteResults(ActiveFindResultsList.getBasicResultsList(), FindViewController.getGraphsSearched());
+            deleteResultsButton.setDisable(true);
+            Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(0));
         }
     }
 
@@ -626,6 +639,15 @@ public class BasicFindTab extends Tab {
      */
     public ChoiceBox<String> getLookForChoiceBox() {
         return lookForChoiceBox;
+    }
+
+    /**
+     * Gets and returns the deleteResultsButton
+     *
+     * @return deleteResultsButton
+     */
+    public Button getDeleteResultsButton() {
+        return deleteResultsButton;
     }
     
 }

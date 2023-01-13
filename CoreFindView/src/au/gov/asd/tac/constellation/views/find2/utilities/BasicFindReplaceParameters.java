@@ -38,7 +38,6 @@ public class BasicFindReplaceParameters {
     private boolean exactMatch;
     private boolean searchAllGraphs;
     private boolean addTo;
-    private boolean deleteFrom;
     private boolean removeFrom;
     private boolean replaceSelection;
     private boolean replaceIn;
@@ -56,7 +55,6 @@ public class BasicFindReplaceParameters {
         this.ignoreCase = false;
         this.exactMatch = false;
         this.searchAllGraphs = false;
-        this.deleteFrom = false;
         this.addTo = false;
         this.removeFrom = false;
         this.replaceIn = false;
@@ -89,7 +87,6 @@ public class BasicFindReplaceParameters {
         this.ignoreCase = parameters.ignoreCase;
         this.exactMatch = parameters.exactMatch;
         this.searchAllGraphs = parameters.searchAllGraphs;
-        this.deleteFrom = parameters.deleteFrom;
         this.addTo = parameters.addTo;
         this.removeFrom = parameters.removeFrom;
         this.replaceIn = parameters.replaceIn;
@@ -119,7 +116,7 @@ public class BasicFindReplaceParameters {
      */
     public BasicFindReplaceParameters(final String findString, final String replaceString, final GraphElementType graphElement,
             final List<Attribute> attributeList, final boolean standardText, final boolean regEx, final boolean ignoreCase,
-            final boolean exactMatch, final boolean replaceSelection, final boolean addTo, final boolean removeFrom, final boolean deleteFrom, final boolean replaceIn,
+            final boolean exactMatch, final boolean replaceSelection, final boolean addTo, final boolean removeFrom, final boolean replaceIn,
             final boolean currentSelection, final boolean currentGraph, final boolean searchAllGraphs) {
 
         this.findString = findString;
@@ -134,7 +131,6 @@ public class BasicFindReplaceParameters {
         this.addTo = addTo;
         this.removeFrom = removeFrom;
         this.replaceIn = replaceIn;
-        this.deleteFrom = deleteFrom;
         this.currentSelection = currentSelection;
         this.currentGraph = currentGraph;
         this.replaceSelection = replaceSelection;
@@ -249,10 +245,6 @@ public class BasicFindReplaceParameters {
 
     public boolean isAddTo() {
         return addTo;
-    }
-
-    public boolean isDeleteFrom() {
-        return deleteFrom;
     }
 
     public boolean isRemoveFrom() {

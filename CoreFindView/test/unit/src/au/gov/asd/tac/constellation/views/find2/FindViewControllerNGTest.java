@@ -61,9 +61,9 @@ public class FindViewControllerNGTest {
     private int labelV, identifierV, xV, labelT, identiferT, widthT;
     private int vxId1, vxId2, vxId3, vxId4, txId1, txId2, txId3, txId4;
     private List<Attribute> attributeList = new ArrayList<>();
-    private BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("equal", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parameters2 = new BasicFindReplaceParameters("notEqual", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, false, true, false);
-    private BasicFindReplaceParameters parametersAllGraphs = new BasicFindReplaceParameters("equal", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, false, false, true);
+    private BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("equal", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parameters2 = new BasicFindReplaceParameters("notEqual", "replace", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersAllGraphs = new BasicFindReplaceParameters("equal", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, false, true);
     private static final Logger LOGGER = Logger.getLogger(FindViewControllerNGTest.class.getName());
 
     public FindViewControllerNGTest() {
@@ -173,7 +173,7 @@ public class FindViewControllerNGTest {
         FindViewController instance = FindViewController.getDefault();
 
         List<Attribute> attributeList = new ArrayList<>();
-        BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("equal", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, false, true, false);
+        BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("equal", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
         instance.updateBasicFindParameters(parameters);
         BasicFindReplaceParameters result = instance.getCurrentBasicFindParameters();
 
@@ -181,7 +181,7 @@ public class FindViewControllerNGTest {
         // This will cause a direct comparison of the object to be false
         assertEquals(result, parameters);
 
-        BasicFindReplaceParameters parameters2 = new BasicFindReplaceParameters("notEqual", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, false, true, false);
+        BasicFindReplaceParameters parameters2 = new BasicFindReplaceParameters("notEqual", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
         assertNotEquals(result, parameters2);
 
         // TODO review the generated test code and remove the default call to fail.

@@ -24,7 +24,8 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindResult;
 
 /**
- *
+ * Delete elements from the graph using the find view
+ * 
  * @author Delphinus8821
  */
 public class DeleteResultsPlugin extends SimpleEditPlugin {
@@ -42,7 +43,7 @@ public class DeleteResultsPlugin extends SimpleEditPlugin {
             graph.removeVertex(result.getID());
         } else if (result.getType() == GraphElementType.TRANSACTION) {
             graph.removeTransaction(result.getID());
-        }
+        } 
 
         if (graph.getSchema() != null) {
             graph.getSchema().completeGraph(graph);

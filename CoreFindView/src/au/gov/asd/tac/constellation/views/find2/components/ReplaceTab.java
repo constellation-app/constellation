@@ -66,7 +66,7 @@ public class ReplaceTab extends BasicFindTab {
         buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton);
 
         // remove addTo, findIn, removeFrom
-        postSearchChoiceBox.getItems().remove(1, 4);
+        postSearchChoiceBox.getItems().remove(1, 2);
 
         // add replaceIn
         postSearchChoiceBox.getItems().add("Replace In");
@@ -125,7 +125,7 @@ public class ReplaceTab extends BasicFindTab {
         // Create the paramters with the current UI selections
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), replaceTextField.getText(),
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
-                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), false, false, false, false, replaceIn, currentSelection, currentGraph, searchAllGraphs);
+                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), false, false, false, replaceIn, currentSelection, currentGraph, searchAllGraphs);
 
         // Update the basic replace paramters with the newly created parameter
         FindViewController.getDefault().updateBasicReplaceParameters(parameters);

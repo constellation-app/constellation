@@ -68,7 +68,6 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
             final Boolean ignoreCase = jnode.get("ignoreCase").asBoolean();
             final Boolean exactMatch = jnode.get("exactMatch").asBoolean();
             final Boolean replaceSelectionWithResults = jnode.get("replaceSelectionWithResults").asBoolean();
-            final Boolean deleteFromSelection = jnode.get("deleteFrom").asBoolean();
             final Boolean addToSelection = jnode.get("addToSelection").asBoolean();
             final Boolean removeFromSelection = jnode.get("removeFromSelection").asBoolean();
             final Boolean replaceInSelected = jnode.get("replaceInSelected").asBoolean();
@@ -91,7 +90,7 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
 
             // Create the basic find replace parameter object with the variables
             final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findString, replaceString, graphElement,
-                    selectedAttributes, standardText, regEx, ignoreCase, exactMatch, deleteFromSelection, replaceSelectionWithResults, addToSelection, removeFromSelection, replaceInSelected, currentSelection, currentGraph, searchAllGraphs);
+                    selectedAttributes, standardText, regEx, ignoreCase, exactMatch, replaceSelectionWithResults, addToSelection, removeFromSelection, replaceInSelected, currentSelection, currentGraph, searchAllGraphs);
 
             // Get the find results
             final List<FindResult> findResults = new ArrayList<>();
@@ -148,7 +147,6 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeBooleanField("searchAllGraphs", parameters.isSearchAllGraphs());
                 jsonGenerator.writeBooleanField("replaceSelectionWithResults", parameters.isReplaceSelection());
                 jsonGenerator.writeBooleanField("addToSelection", parameters.isAddTo());
-                jsonGenerator.writeBooleanField("deletefrom", parameters.isDeleteFrom());
                 jsonGenerator.writeBooleanField("removeFromSelection", parameters.isRemoveFrom());
                 jsonGenerator.writeBooleanField("replaceInSelected", parameters.isReplaceIn());
                 jsonGenerator.writeBooleanField("currentSelection", parameters.isCurrentSelection());

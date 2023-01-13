@@ -76,7 +76,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     private static final String ALL = "All";
     private static final String REPLACE = "Replace Selection";
     private static final String ADD_TO = "Add To Selection";
-    private static final String DELETE_FROM = "Delete From Graph(s)";
     private static final String REMOVE_FROM = "Remove From Selection";
     private static final String IS = "Is";
     private static final String IS_NOT = "Is Not";
