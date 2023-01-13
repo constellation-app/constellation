@@ -864,7 +864,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             layer.getChildren().add(r);
         }
 
-        //layer.getChildren().add(debugLayer);
+        layer.getChildren().add(debugLayer);
 
         LOGGER.log(Level.SEVERE, "Intersection Map Count: " + intersectionMap.size());
 

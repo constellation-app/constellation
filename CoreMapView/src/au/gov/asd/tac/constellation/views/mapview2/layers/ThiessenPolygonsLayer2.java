@@ -20,10 +20,12 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
+import au.gov.tac.constellation.views.mapview2.utillities.Parabola;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.QuadCurve;
@@ -37,6 +39,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
     private final Group layer;
     private final Map<Integer, AbstractMarker> nodesOnScreen = new HashMap<Integer, AbstractMarker>();
+
+    private static final Logger LOGGER = Logger.getLogger("ThiessenPolygons2");
 
     List<AbstractMarker> markers = new ArrayList<AbstractMarker>();
 
@@ -71,14 +75,16 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
                     double x = m.getX() - 97;
                     double y = m.getY() + 93;
 
-                    QuadCurve quadCurve = new QuadCurve(0, y - 20, x, y, 0, y + 20);
+                    /*QuadCurve quadCurve = new QuadCurve(0, y - 20, x, y, 0, y + 20);
                     quadCurve.setStroke(Color.BLACK);
                     //quadCurve.setC
                     //quadCurve.setTranslateY(m.getY());
 
-                    quadCurve.setFill(Color.TRANSPARENT);
+                    quadCurve.setFill(Color.TRANSPARENT);*/
+                    Parabola p = new Parabola(x, y, y);
+                    p.generateParabola();
 
-                    layer.getChildren().add(quadCurve);
+                    layer.getChildren().add(p.getParabola());
                 }
             }
         }
