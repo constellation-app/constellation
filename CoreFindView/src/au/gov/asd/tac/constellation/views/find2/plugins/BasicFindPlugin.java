@@ -260,29 +260,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     }
 
     /**
-     * Select all the results that match the search and then allow the user to delete them from the graph
-     *
-     * @param deleteFromCurrentSelection
-     * @param deleteFromCurrentSelectionList
-     * @param foundResult
-     * @param graph
-     * @param selectedAttribute
-//     */
-//    private void selectDeleteFromResults(final boolean deleteFromCurrentSelection, final FindResultsList deleteFromCurrentSelectionList,
-//            final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
-//
-//        if (deleteFromCurrentSelection && !deleteFromCurrentSelectionList.isEmpty()) {
-//            FindViewUtilities.clearSelection(graph);
-//            for (final FindResult fr : deleteFromCurrentSelectionList) {
-//                graph.setBooleanValue(selectedAttribute, fr.getID(), true);
-//            }
-//            foundResult.clear();
-//            foundResult.addAll(deleteFromCurrentSelectionList);
-//        }
-//
-//    }
-
-    /**
      * Determines what index is correct for the found results list based on if
      * the user is finding all, doing their first find, doing a different find
      * to their previous
