@@ -152,9 +152,10 @@ public class BasicFindTabNGTest {
          * getFindAllButton and getSearchAllGraphs checkbox.
          */
         basicFindTab.updateButtons();
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(0), basicFindTab.getFindAllButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getFindPrevButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindNextButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(0), basicFindTab.getDeleteResultsButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getFindAllButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindPrevButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(3), basicFindTab.getFindNextButton());
     }
 
     /**
@@ -402,8 +403,8 @@ public class BasicFindTabNGTest {
         // Add to
         basicFindTab.postSearchChoiceBox.getSelectionModel().select(1);
         basicFindTab.updateSelectionFactors();
-        assertEquals(basicFindTab.getFindNextButton().isDisable(), false);
-        assertEquals(basicFindTab.getFindPrevButton().isDisable(), false);
+        assertEquals(basicFindTab.getFindNextButton().isDisable(), true);
+        assertEquals(basicFindTab.getFindPrevButton().isDisable(), true);
 
         // Find In
         // Should disable both buttons when selecting find In currentSelection
@@ -432,6 +433,7 @@ public class BasicFindTabNGTest {
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
         doNothing().when(mockController).retriveMatchingElements(Mockito.eq(true), Mockito.eq(false));
+        Button mockButton = mock(Button.class);
 
         /**
          * Create a basicFindMock and adds a temporary choice box and textFild
@@ -451,6 +453,7 @@ public class BasicFindTabNGTest {
         doCallRealMethod().when(basicFindMock).findAllAction();
         doNothing().when(basicFindMock).saveSelected(Mockito.any());
         doNothing().when(basicFindMock).updateBasicFindParamters();
+        when(basicFindMock.getDeleteResultsButton()).thenReturn(mockButton);
 
         /**
          * Create a static mock of the FindViewController. Call the

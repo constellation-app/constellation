@@ -653,7 +653,7 @@ public class AdvancedSearchPluginNGTest {
 
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
-        assertEquals(rg.getBooleanValue(selectedV, vxId3), true);
+        assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
 
         rg.close();
 

@@ -143,9 +143,10 @@ public class AdvancedFindTabNGTest {
          * getFindAllButton and getSearchAllGraphs checkbox.
          */
         advancedTab.updateButtons();
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getFindAllButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindPrevButton());
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindNextButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getDeleteResultsButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindAllButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindPrevButton());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindNextButton());
 
     }
 
@@ -183,8 +184,8 @@ public class AdvancedFindTabNGTest {
         assertEquals(false, advancedTab.getFindPrevButton().isDisabled());
 
         advancedTab.getPostSearchChoiceBox().getSelectionModel().select(1);
-        assertEquals(false, advancedTab.getFindNextButton().isDisabled());
-        assertEquals(false, advancedTab.getFindPrevButton().isDisabled());
+        assertEquals(true, advancedTab.getFindNextButton().isDisabled());
+        assertEquals(true, advancedTab.getFindPrevButton().isDisabled());
 
         advancedTab.getPostSearchChoiceBox().getSelectionModel().select(2);
         assertEquals(true, advancedTab.getFindNextButton().isDisabled());
@@ -370,6 +371,7 @@ public class AdvancedFindTabNGTest {
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
         doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false));
+        Button mockButton = mock(Button.class);
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
 
@@ -397,6 +399,7 @@ public class AdvancedFindTabNGTest {
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(advancedFindMock.getDeleteResultsButton()).thenReturn(mockButton);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findAllAction();

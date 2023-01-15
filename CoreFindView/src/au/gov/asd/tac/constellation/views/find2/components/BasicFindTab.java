@@ -542,7 +542,7 @@ public class BasicFindTab extends Tab {
             saveSelected(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             updateBasicFindParamters();
             FindViewController.getDefault().retriveMatchingElements(true, false);
-            deleteResultsButton.setDisable(false);
+            getDeleteResultsButton().setDisable(false);
         }
     }
 
