@@ -16,12 +16,18 @@
 package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.gui.MultiChoiceInputPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.views.mapview.exporters.GeoJsonExporter;
+import au.gov.asd.tac.constellation.views.mapview.exporters.GeoPackageExporter;
+import au.gov.asd.tac.constellation.views.mapview.exporters.KmlExporter;
 //import au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
+import au.gov.asd.tac.constellation.views.mapview.exporters.ShapefileExporter;
 import au.gov.asd.tac.constellation.views.mapview.layers.MapLayer;
 import au.gov.asd.tac.constellation.views.mapview.overlays.MapOverlay;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
@@ -76,6 +82,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import org.controlsfx.control.CheckComboBox;
 import org.controlsfx.control.IndexedCheckModel;
+import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 
 /**
@@ -120,6 +127,11 @@ public class MapViewPane extends BorderPane {
     public static final String USE_LABEL_ATTR = "Use Label Atrtibute";
     public static final String USE_IDENT_ATTR = "Use Identifier Attribute";
 
+    public static final String GEO_JSON = "GeoJSON";
+    public static final String GEO_PACKAGE = "GeoPackage";
+    public static final String KML = "KML";
+    public static final String SHAPEFILE = "Shapefile";
+
     private final MapProvider defaultProvider;
     private final List<? extends MapProvider> providers;
     private final List<? extends MapExporter> exporters;
@@ -132,10 +144,11 @@ public class MapViewPane extends BorderPane {
     private final CheckComboBox<String> overlaysDropDown;
     private final ChoiceBox<String> colourDropDown;
     private final ChoiceBox<String> markerLabelDropDown;
-    private final ComboBox exportDropDown;
+    private final ComboBox<String> exportDropDown;
     private final Button helpButton;
 
     private static MapView mapView;
+
 
     private int layerId = 0;
     private Map<String, Integer> layerMap = new HashMap<>();
@@ -271,7 +284,30 @@ public class MapViewPane extends BorderPane {
         });
 
         final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(MapExporterWrapper::new).collect(Collectors.toList());
-        exportDropDown = new ComboBox(FXCollections.observableList(exporterWrappers));
+        exportDropDown = new ComboBox(FXCollections.observableList(Arrays.asList(GEO_JSON, GEO_PACKAGE, KML, SHAPEFILE)));
+        exportDropDown.setOnAction(event -> {
+            if (parent.getCurrentGraph() != null) {
+                MapExporterWrapper exporterWrapper = null;
+                //LOGGER.log(Level.SEVERE, "Export option clicked: " + event.getEventType().getName());
+                String selectedItem = exportDropDown.getSelectionModel().getSelectedItem();
+                if (selectedItem.equals(GEO_JSON)) {
+                    exporterWrapper = new MapExporterWrapper(new GeoJsonExporter());
+                } else if (selectedItem.equals(KML)) {
+                    exporterWrapper = new MapExporterWrapper(new KmlExporter());
+                } else if (selectedItem.equals(SHAPEFILE)) {
+                    exporterWrapper = new MapExporterWrapper(new ShapefileExporter());
+                } else if (selectedItem.equals(GEO_PACKAGE)) {
+                    exporterWrapper = new MapExporterWrapper(new GeoPackageExporter());
+                }
+                //exportDropDown.getSelectionModel().clearSelection();
+                PluginExecution
+                        .withPlugin(exporterWrapper.getExporter().getPluginReference())
+                        .interactively(true)
+                        .executeLater(parent.getCurrentGraph());
+            } else {
+                NotifyDisplayer.display("Export options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
+        });
         exportDropDown.setTooltip(new Tooltip("Export from the Map View"));
 
         helpButton = new Button("Help");
