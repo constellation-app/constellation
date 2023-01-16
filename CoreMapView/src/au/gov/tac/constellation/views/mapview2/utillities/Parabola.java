@@ -54,7 +54,7 @@ public class Parabola {
     }
 
     public void generateParabola() {
-        for (double x = focusX - 250; x <= focusX + 250; ++x) {
+        for (double x = focusX - 300; x <= focusX + 300; ++x) {
 
             LOGGER.log(Level.SEVERE, "x of parabola: " + x + " y of parabola: " + getY(x));
 

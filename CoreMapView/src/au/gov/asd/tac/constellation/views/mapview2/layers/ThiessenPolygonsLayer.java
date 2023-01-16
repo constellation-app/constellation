@@ -83,6 +83,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private final String leftID = "-5,-6";
     private final String rightID = "-7,-8";
 
+    private final double lineExtend = 0.5;
+
     public ThiessenPolygonsLayer(MapView parent, int id, List<AbstractMarker> markers) {
         super(parent, id);
         layer = new Group();
@@ -247,7 +249,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
             Vec3 marker1 = new Vec3(nodesOnScreen.get(id1).getX() - 97, nodesOnScreen.get(id1).getY() + 93);
             Vec3 marker2 = new Vec3(nodesOnScreen.get(id2).getX() - 97, nodesOnScreen.get(id2).getY() + 93);
-            for (double i = 0; i < distance; i = i + 1) {
+            for (double i = 0; i < distance; i = i + lineExtend) {
 
                 if (start.x > MapView.mapWidth + 5 || start.x < -5 || start.y < -2 || start.y > MapView.mapHeight + 2) {
                     start.x += dirVect.x;
@@ -268,8 +270,10 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                 }
 
+                //dirVect.x *= lineExtend;
+                //dirVect.y *= lineExtend;
                 if (shortestDistanceID == null && index == 0) {
-                    shortLine[index] = new Vec3(start.x - (0.5 * dirVect.x), start.y - (0.5 * dirVect.y));
+                    shortLine[index] = new Vec3(start.x - (lineExtend * dirVect.x), start.y - (lineExtend * dirVect.y)); // shortLie[index] -= start * dis
                     ++index;
                 } else if (shortestDistanceID != null && index == 1) {
                     /*start.x += dirVect.x;
@@ -282,8 +286,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     break;
                 }
 
-                start.x += dirVect.x;
-                start.y += dirVect.y;
+                start.x += lineExtend * dirVect.x;
+                start.y += lineExtend * dirVect.y;
 
 
             }
@@ -298,11 +302,18 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
             if (shortLine[0] != null && shortLine[1] != null) {
                 Line l = new Line();
+                Line l2 = new Line();
                 l.setStartX(shortLine[0].x);
                 l.setStartY(shortLine[0].y);
 
                 l.setEndX(shortLine[1].x);
                 l.setEndY(shortLine[1].y);
+
+                l2.setStartX(shortLine[0].x);
+                l2.setStartY(shortLine[0].y);
+
+                l2.setEndX(shortLine[1].x);
+                l2.setEndY(shortLine[1].y);
 
                 l.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
@@ -312,7 +323,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     }
 
                 });
-                //layer.getChildren().add(l);
+                l2.setStrokeWidth(0.5);
+                layer.getChildren().add(l2);
                 finalBisectorLines.put(key, l);
                 lineMap.put(finalBisectorLines.get(key), new ArrayList<IntersectionNode>());
 
@@ -848,7 +860,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         //showRelatedMarkers();
         connectMarkersToCorners();
             createPolygons();
-            //printIntersectionCircles();
+            printIntersectionCircles();
         } else if (nodesOnScreen.size() == 1) {
             final ConstellationColor[] palette = ConstellationColor.createPalette(1);
 
