@@ -55,8 +55,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean selectAll;
     private final boolean getNext;
     private final boolean currentSelection;
-    private final boolean currentGraph;
-    private final boolean searchAllGraphs;
     private final BasicFindReplaceParameters parameters;    
 
     private static final int STARTING_INDEX = -1;
@@ -74,8 +72,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
         this.addToSelection = parameters.isAddTo();
         this.removeFromCurrentSelection = parameters.isRemoveFrom();
         this.currentSelection = parameters.isCurrentSelection();
-        this.currentGraph = parameters.isCurrentGraph();
-        this.searchAllGraphs = parameters.isSearchAllGraphs();
         this.replaceCurrentSelection = parameters.isReplaceSelection();
     }
 
@@ -160,7 +156,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                             // get the UID of the element and the graph
                             final long uid = elementType.getUID(graph, currElement);
                             // if the user wants to find it in, or remove it from their current selection
-                            if ( removeFromCurrentSelection || (currentSelection && replaceCurrentSelection)) {
+                            if (removeFromCurrentSelection || (currentSelection && replaceCurrentSelection)) {
                                 // if the element is selected
                                 if (graph.getBooleanValue(selectedAttribute, currElement)) {
                                     // Add the element to the find in and remove from list

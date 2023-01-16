@@ -92,6 +92,7 @@ public class BasicFindReplaceParameters {
         this.replaceIn = parameters.replaceIn;
         this.currentSelection = parameters.currentSelection;
         this.currentGraph = parameters.currentGraph;
+        this.replaceSelection = parameters.replaceSelection;
     }
 
     /**

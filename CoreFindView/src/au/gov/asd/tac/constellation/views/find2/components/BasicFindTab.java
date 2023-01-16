@@ -148,6 +148,7 @@ public class BasicFindTab extends Tab {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
                 updateSelectionFactors();
+                updateBasicFindParamters();
             }
         });
 
@@ -156,6 +157,7 @@ public class BasicFindTab extends Tab {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
                 updateSelectionFactors();
+                updateBasicFindParamters();
             }
         });
 

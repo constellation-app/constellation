@@ -67,6 +67,7 @@ public class FindViewController {
 
     private static final String DELETE = "Delete";
     private static final String CANCEL = "Cancel";
+    private static final String ALL_OPEN_GRAPHS = "All Open Graphs";
 
     private final IntegerProperty numResultsFoundFlag = new SimpleIntegerProperty(0);
 
@@ -363,7 +364,7 @@ public class FindViewController {
          * open graphs. If not only call it on the active graph.
          */
         try {
-            if (currentAdvancedSearchParameters.getSearchInLocation().equals("All Open Graphs")) {
+            if (currentAdvancedSearchParameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS)) {
 
                 /**
                  * If there are a different number of graphs in this search than the previous one
@@ -376,7 +377,7 @@ public class FindViewController {
 
                 for (final Graph graph : GraphManager.getDefault().getAllGraphs().values()) {
                     // check to see the graph is not null
-                    if (graph != null && currentAdvancedSearchParameters.getSearchInLocation().equals("All Open Graphs")) {
+                    if (graph != null && currentAdvancedSearchParameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS)) {
                         PluginExecution.withPlugin(advancedSearchPlugin).executeLater(graph).get();
                     }
                     setGraphsSearched(getGraphsSearched() + 1);

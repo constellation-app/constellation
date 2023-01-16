@@ -69,9 +69,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     private final String postSearchAction;
     private final String searchInLocation;
 
-    private FindResultsList findInCurrentSelectionList;
-    private FindResultsList removeFromCurrentSelectionList;
-
     private static final String ANY = "Any";
     private static final String ALL = "All";
     private static final String REPLACE = "Replace Selection";
@@ -80,6 +77,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
     private static final String IS = "Is";
     private static final String IS_NOT = "Is Not";
     private static final String CURRENT_SELECTION = "Current Selection";
+    private static final String ALL_OPEN_GRAPHS = "All Open Graphs";
 
     private static final int STARTING_INDEX = -1;
 
@@ -132,8 +130,8 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         final int elementCount = elementType.getElementCount(graph);
 
-        findInCurrentSelectionList = new FindResultsList();
-        removeFromCurrentSelectionList = new FindResultsList();
+        FindResultsList findInCurrentSelectionList = new FindResultsList();
+        FindResultsList removeFromCurrentSelectionList = new FindResultsList();
         final FindResultsList findAllMatchingResultsList = new FindResultsList();
 
         final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
@@ -275,7 +273,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         // If the results list is null, has different parameters to the current list, and is not searching all graphs, then create a new results list 
         if (ActiveFindResultsList.getAdvancedResultsList() == null || !ActiveFindResultsList.getAdvancedResultsList().getAdvancedSearchParameters().equals(this.parameters)
-                || (!this.parameters.getSearchInLocation().equals("All Open Graphs") && ActiveFindResultsList.getAdvancedResultsList() == null
+                || (!this.parameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS) && ActiveFindResultsList.getAdvancedResultsList() == null
                 && ActiveFindResultsList.getAdvancedResultsList().get(0) != null && !ActiveFindResultsList.getAdvancedResultsList().get(0).getGraphId().equals(graph.getId()))) {
             ActiveFindResultsList.setAdvancedResultsList(foundResult);
             ActiveFindResultsList.getAdvancedResultsList().setCurrentIndex(-1);
