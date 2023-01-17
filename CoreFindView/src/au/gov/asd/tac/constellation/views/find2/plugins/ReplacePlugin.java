@@ -46,7 +46,6 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private final boolean ignorecase;
     private final boolean replaceNext;
     private final boolean currentSelection;
-    private final boolean currentGraph;
     private final boolean searchAllGraphs;
 
     public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext) {
@@ -59,7 +58,6 @@ public class ReplacePlugin extends SimpleEditPlugin {
         this.replaceNext = replaceNext;
         this.searchAllGraphs = parameters.isSearchAllGraphs();
         this.currentSelection = parameters.isCurrentSelection();
-        this.currentGraph = parameters.isCurrentGraph();
     }
 
     @Override
