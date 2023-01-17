@@ -66,10 +66,11 @@ public class ReplaceTab extends BasicFindTab {
         buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton);
 
         // remove addTo, findIn, removeFrom
-        postSearchChoiceBox.getItems().remove(1, 2);
+        postSearchChoiceBox.getItems().remove(0, 3);
 
         // add replaceIn
         postSearchChoiceBox.getItems().add("Replace In");
+        postSearchChoiceBox.getSelectionModel().select(0);
 
         // remove exact match checkBox
         preferencesGrid.getChildren().remove(exactMatchCB);
@@ -111,10 +112,10 @@ public class ReplaceTab extends BasicFindTab {
 
         switch (searchInChoiceBox.getSelectionModel().getSelectedIndex()) {
             case 0:
-                currentSelection = true;
+                currentGraph = true;
                 break;
             case 1:
-                currentGraph = true;
+                currentSelection = true;
                 break;
             case 2:
                 searchAllGraphs = true;

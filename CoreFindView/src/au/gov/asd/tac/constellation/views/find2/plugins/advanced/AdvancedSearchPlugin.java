@@ -255,15 +255,21 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         // if Find in select all the find in results
         if (CURRENT_SELECTION.equals(searchInLocation) && REPLACE.equals(postSearchAction)) {
-            selectFindInResults(CURRENT_SELECTION.equals(searchInLocation), findInCurrentSelectionList, foundResult, graph, selectedAttribute);
+            selectFindInResults(CURRENT_SELECTION.equals(searchInLocation), findInCurrentSelectionList, graph, selectedAttribute);
+            foundResult.clear();
+            foundResult.addAll(findInCurrentSelectionList);
 
         // if remove from, deselect all the remove from results
         } else if (REMOVE_FROM.equals(postSearchAction)) {
-            removeFindInResults(REMOVE_FROM.equals(postSearchAction), removeFromCurrentSelectionList, foundResult, graph, selectedAttribute);
+            removeFindInResults(REMOVE_FROM.equals(postSearchAction), removeFromCurrentSelectionList, graph, selectedAttribute);
+            foundResult.clear();
+            foundResult.addAll(removeFromCurrentSelectionList);
 
         // if select all, select all the results that match all criteria
         } else if (selectAll) {
-            selectMatchingAllResults(ALL.equals(allOrAny), findAllMatchingResultsList, foundResult, graph, selectedAttribute);
+            selectMatchingAllResults(ALL.equals(allOrAny), findAllMatchingResultsList, graph, selectedAttribute);
+            foundResult.clear();
+            foundResult.addAll(findAllMatchingResultsList);
         }
 
         // Clean the find results list to only contain unique graph elements
@@ -273,8 +279,8 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
 
         // If the results list is null, has different parameters to the current list, and is not searching all graphs, then create a new results list 
         if (ActiveFindResultsList.getAdvancedResultsList() == null || !ActiveFindResultsList.getAdvancedResultsList().getAdvancedSearchParameters().equals(this.parameters)
-                || (!this.parameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS) && ActiveFindResultsList.getAdvancedResultsList() == null
-                && ActiveFindResultsList.getAdvancedResultsList().get(0) != null && !ActiveFindResultsList.getAdvancedResultsList().get(0).getGraphId().equals(graph.getId()))) {
+                || (!this.parameters.getSearchInLocation().equals(ALL_OPEN_GRAPHS) && !ActiveFindResultsList.getAdvancedResultsList().isEmpty()
+                && !ActiveFindResultsList.getAdvancedResultsList().get(0).getGraphId().equals(graph.getId()))) {
             ActiveFindResultsList.setAdvancedResultsList(foundResult);
             ActiveFindResultsList.getAdvancedResultsList().setCurrentIndex(-1);
         } else {
@@ -293,7 +299,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @param selectedAttribute the selectedAttribute
      */
     private void selectMatchingAllResults(final boolean findAllMatching, final FindResultsList findAllMatchingResultsList,
-            final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
+            final GraphWriteMethods graph, final int selectedAttribute) {
 
         // if match criteria == all and the results list isnt empty
         if (findAllMatching && !findAllMatchingResultsList.isEmpty()) {
@@ -307,10 +313,6 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
                     graph.setBooleanValue(selectedAttribute, fr.getID(), true);
                 }
             }
-
-            // clear the found result and add the findAllmatching results to it
-            foundResult.clear();
-            foundResult.addAll(findAllMatchingResultsList);
         }
     }
 
@@ -325,7 +327,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @param selectedAttribute
      */
     private void selectFindInResults(final boolean findInCurrentSelection, final FindResultsList findInCurrentSelectionList,
-            final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
+            final GraphWriteMethods graph, final int selectedAttribute) {
 
         // if currenet selection = find in and the list isnt empty
         if (findInCurrentSelection && !findInCurrentSelectionList.isEmpty()) {
@@ -335,11 +337,7 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
             // loop through the list selecting all find results
             for (final FindResult fr : findInCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
-            }
-
-            // clear the foundResult and add the findIncurrentSelection list to it
-            foundResult.clear();
-            foundResult.addAll(findInCurrentSelectionList);
+            }  
         }
     }
 
@@ -354,17 +352,13 @@ public class AdvancedSearchPlugin extends SimpleEditPlugin {
      * @param selectedAttribute
      */
     private void removeFindInResults(final boolean findInCurrentSelection, final FindResultsList removeFromCurrentSelectionList,
-            final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
+            final GraphWriteMethods graph, final int selectedAttribute) {
         if (findInCurrentSelection && !removeFromCurrentSelectionList.isEmpty()) {
 
             // loop through all results and de select them
             for (final FindResult fr : removeFromCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), false);
             }
-
-            // clear the foundResult and add the findIncurrentSelection list to it
-            foundResult.clear();
-            foundResult.addAll(removeFromCurrentSelectionList);
         }
     }
 

@@ -55,7 +55,8 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     private final boolean selectAll;
     private final boolean getNext;
     private final boolean currentSelection;
-    private final BasicFindReplaceParameters parameters;    
+    private final BasicFindReplaceParameters parameters;
+    private FindResultsList foundResult;
 
     private static final int STARTING_INDEX = -1;
 
@@ -79,7 +80,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         //Retrieve the existing FindResultList Meta attribute
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
-        FindResultsList foundResult = graph.getObjectValue(stateId, 0);
+        foundResult = graph.getObjectValue(stateId, 0);
 
         /**
          * If it doesn't exist or is null, create a new list with the starting
@@ -180,15 +181,21 @@ public class BasicFindPlugin extends SimpleEditPlugin {
          * loop through the list of found elements and set them to selected.
          */
         if (currentSelection && replaceCurrentSelection) {
-            selectFindInResults(currentSelection, findInCurrentSelectionList, foundResult, graph, selectedAttribute);
+            selectFindInResults(currentSelection, findInCurrentSelectionList, graph, selectedAttribute);
+            foundResult.clear();
+            foundResult.addAll(findInCurrentSelectionList);
         }
 
         /**
          * If removeFromCurrentSelection is true, loop through the list of
          * found elements and set their selection status to false.
          */
-        selectRemoveFromResults(removeFromCurrentSelection, removeFromCurrentSelectionList, foundResult, graph, selectedAttribute);
-
+        if (removeFromCurrentSelection) {
+            selectRemoveFromResults(removeFromCurrentSelection, removeFromCurrentSelectionList, graph, selectedAttribute);
+            foundResult.clear();
+            foundResult.addAll(removeFromCurrentSelectionList);
+        }
+        
         // Clean the find results list to only contain unique graph elements
         final List<FindResult> distinctValues = foundResult.stream().distinct().collect(Collectors.toList());
         foundResult.clear();
@@ -196,7 +203,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
 
         // If the results list is null, has different parameters to the current list, and is not searching all graphs, then create a new results list
         if (ActiveFindResultsList.getBasicResultsList() == null || !ActiveFindResultsList.getBasicResultsList().getSearchParameters().equals(this.parameters)
-                || (!this.parameters.isSearchAllGraphs() && ActiveFindResultsList.getBasicResultsList() == null && ActiveFindResultsList.getBasicResultsList().get(0) != null
+                || (!this.parameters.isSearchAllGraphs() && !ActiveFindResultsList.getBasicResultsList().isEmpty()
                 && !ActiveFindResultsList.getBasicResultsList().get(0).getGraphId().equals(graph.getId()))) {
             ActiveFindResultsList.setBasicResultsList(foundResult);
             ActiveFindResultsList.getBasicResultsList().setCurrentIndex(-1);
@@ -217,14 +224,12 @@ public class BasicFindPlugin extends SimpleEditPlugin {
      * @param selectedAttribute
      */
     private void selectFindInResults(final boolean findInCurrentSelection, final FindResultsList findInCurrentSelectionList,
-            final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
+           final GraphWriteMethods graph, final int selectedAttribute) {
         if (findInCurrentSelection && !findInCurrentSelectionList.isEmpty()) {
             FindViewUtilities.clearSelection(graph);
             for (final FindResult fr : findInCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), true);
-            }
-            foundResult.clear();
-            foundResult.addAll(findInCurrentSelectionList);
+            }     
         }
     }
 
@@ -240,7 +245,7 @@ public class BasicFindPlugin extends SimpleEditPlugin {
      * @param selectedAttribute
      */
     private void selectRemoveFromResults(final boolean removeFromCurrentSelection, final FindResultsList removeFromCurrentSelectionList,
-            final FindResultsList foundResult, final GraphWriteMethods graph, final int selectedAttribute) {
+            final GraphWriteMethods graph, final int selectedAttribute) {
         if (removeFromCurrentSelection && !removeFromCurrentSelectionList.isEmpty()) {
             for (final FindResult fr : removeFromCurrentSelectionList) {
                 graph.setBooleanValue(selectedAttribute, fr.getID(), false);
@@ -250,8 +255,6 @@ public class BasicFindPlugin extends SimpleEditPlugin {
                     break;
                 }
             }
-            foundResult.clear();
-            foundResult.addAll(removeFromCurrentSelectionList);
         }
     }
 

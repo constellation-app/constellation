@@ -77,7 +77,7 @@ public class AdvancedFindTab extends Tab {
 
     private final String[] elementTypes = {GraphElementType.VERTEX.getShortLabel(), GraphElementType.TRANSACTION.getShortLabel(), GraphElementType.EDGE.getShortLabel(), GraphElementType.LINK.getShortLabel()};
     private final String[] matchCriteriaTypes = {"All", "Any"};
-    private final String[] searchInTypes = {"Current Selection", "Current Graph", "All Open Graphs"};
+    private final String[] searchInTypes = {"Current Graph", "Current Selection", "All Open Graphs"};
     private final String[] postSearchTypes = {"Replace Selection", "Add To Selection", "Remove From Selection"};
 
     private final Label lookForLabel = new Label("Look For:");
@@ -108,7 +108,7 @@ public class AdvancedFindTab extends Tab {
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
-    private final Button deleteResultsButton = new Button("Delete Results");
+    private final Button deleteResultsButton = new Button("Delete Results From Graph(s)");
 
     public AdvancedFindTab(final FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;

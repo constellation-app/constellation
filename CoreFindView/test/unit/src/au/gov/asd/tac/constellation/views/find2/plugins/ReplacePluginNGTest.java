@@ -177,7 +177,7 @@ public class ReplacePluginNGTest {
 
         /**
          * Testing replacing the word "test" with the word "replaced" only in
-         * elements that are selected. vxId1 and 2 should change to "replaced"
+         * elements that are selected. 
          */
         wg = graph.getWritableGraph("", true);
         wg.setBooleanValue(selectedV, vxId1, true);
@@ -192,8 +192,8 @@ public class ReplacePluginNGTest {
 
         assertEquals(rg.getStringValue(labelV, vxId1), "replaced");
         assertEquals(rg.getStringValue(labelV, vxId2), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId3), "test");
-        assertEquals(rg.getStringValue(labelV, vxId4), "test");
+        assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
+        assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
         rg.close();
 
     }

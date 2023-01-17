@@ -104,7 +104,7 @@ public class BasicFindTab extends Tab {
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
-    private final Button deleteResultsButton = new Button("Delete Results");
+    private final Button deleteResultsButton = new Button("Delete Results From Graph(s)");
 
     protected static final int LABEL_WIDTH = 90;
     protected static final int DROP_DOWN_WIDTH = 120;
@@ -146,7 +146,7 @@ public class BasicFindTab extends Tab {
         // set the action for changing the seleciton in the postSearchChoiceBox
         searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
+            public void changed(final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) {
                 updateSelectionFactors();
                 updateBasicFindParamters();
             }
@@ -155,7 +155,7 @@ public class BasicFindTab extends Tab {
         // set the action for changing the seleciton in the postSearchChoiceBox
         postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
-            public void changed(ObservableValue<? extends String> observableValue, String oldElement, String newElement) {
+            public void changed(final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) {
                 updateSelectionFactors();
                 updateBasicFindParamters();
             }
@@ -253,7 +253,7 @@ public class BasicFindTab extends Tab {
          * Current Selection. Set the sizing preferences and add the searchInLabel
          * and ChoiceBox to the settings grid
          */
-        searchInChoiceBox.getItems().addAll("Current Selection", "Current Graph", "All Open Graphs");
+        searchInChoiceBox.getItems().addAll("Current Graph", "Current Selection", "All Open Graphs");
         searchInChoiceBox.getSelectionModel().select(0);
         searchInChoiceBox.setMinWidth(DROP_DOWN_WIDTH);
         settingsGrid.add(searchInLabel, 0, 2);
@@ -500,10 +500,10 @@ public class BasicFindTab extends Tab {
 
         switch (searchInChoiceBox.getSelectionModel().getSelectedIndex()) {
             case 0:
-                currentSelection = true;
+                currentGraph = true;
                 break;
             case 1:
-                currentGraph = true;
+                currentSelection = true;
                 break;
             case 2:
                 searchAllGraphs = true;

@@ -483,7 +483,7 @@ public class FindViewController {
         final NotifyDescriptor dialog = new NotifyDescriptor(message, "Delete Results", NotifyDescriptor.YES_NO_CANCEL_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, DELETE);
 
         // If delete is chosen
-        if (DialogDisplayer.getDefault().notify(dialog) == DELETE) {
+        if (DialogDisplayer.getDefault().notify(dialog).equals(DELETE)) {
             for (final FindResult result : foundResults) {
                 try {
                     // Delete each found result
