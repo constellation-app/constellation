@@ -156,7 +156,8 @@ public class MapView extends ScrollPane {
     private PolygonMarker polygonMarker = null;
     private Rectangle selectionRectangle = null;
     private boolean isSelectingMultiple = false;
-
+    private double selectionRectangleX = 0;
+    private double selectionRectangleY = 0;
     private ArrayList<ArrayList<Node>> pointMarkerClusters = new ArrayList<ArrayList<Node>>();
     private Set<Node> clusteredPointMarkers = new HashSet<>();
 
@@ -365,7 +366,7 @@ public class MapView extends ScrollPane {
             countryGroup.getChildren().add(countrySVGPaths.get(i));
         }
 
-        this.setPannable(true);
+        this.setPannable(false);
 
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -577,7 +578,9 @@ public class MapView extends ScrollPane {
                 isSelectingMultiple = true;
                 selectionRectangle = new Rectangle();
                 selectionRectangle.setX(event.getX());
-                selectionRectangle.setY(event.getY());
+                    selectionRectangle.setY(event.getY());
+                    selectionRectangleX = event.getX();
+                    selectionRectangleY = event.getY();
 
                 selectionRectangle.setFill(Color.GRAY);
                 selectionRectangle.setOpacity(0.2);
@@ -603,10 +606,24 @@ public class MapView extends ScrollPane {
                     double width = 0;
                     double height = 0;
 
-                    if (x >= selectionRectangle.getX() && y <= selectionRectangle.getY()) {
-                        width = x - selectionRectangle.getX();
-                        height = selectionRectangle.getY() - y;
+                    if (x >= selectionRectangleX && y <= selectionRectangleY) {
+                        width = x - selectionRectangleX;
+                        height = selectionRectangleY - y;
                         selectionRectangle.setY(y);
+                    } else if (x < selectionRectangleX && y < selectionRectangleY) {
+                        width = selectionRectangleX - x;
+                        height = selectionRectangleY - y;
+                        selectionRectangle.setX(x);
+                        selectionRectangle.setY(y);
+                    } else if (x >= selectionRectangleX && y >= selectionRectangleY) {
+                        width = x - selectionRectangleX;
+                        height = y - selectionRectangleY;
+
+                    } else if (x < selectionRectangleX && y > selectionRectangleY) {
+                        width = selectionRectangleX - x;
+                        height = y - selectionRectangleY;
+
+                        selectionRectangle.setX(x);
                     }
 
                     selectionRectangle.setWidth(width);
