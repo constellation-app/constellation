@@ -134,7 +134,6 @@ public class MapViewPane extends BorderPane {
 
     private final MapProvider defaultProvider;
     private final List<? extends MapProvider> providers;
-    private final List<? extends MapExporter> exporters;
     private final MarkerState markerState = null;
 
     private final ChoiceBox<MapProvider> mapProviderDropDown;
@@ -167,7 +166,7 @@ public class MapViewPane extends BorderPane {
 
         defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
         providers = new ArrayList<>(Lookup.getDefault().lookupAll(MapProvider.class));
-        exporters = new ArrayList<>(Lookup.getDefault().lookupAll(MapExporter.class));
+        //exporters = new ArrayList<>(Lookup.getDefault().lookupAll(MapExporter.class));
 
 
         providers.forEach((p) -> {
@@ -283,7 +282,6 @@ public class MapViewPane extends BorderPane {
             mapView.getMarkerTextProperty().set(markerLabelDropDown.getValue());
         });
 
-        final List<MapExporterWrapper> exporterWrappers = exporters.stream().map(MapExporterWrapper::new).collect(Collectors.toList());
         exportDropDown = new ComboBox(FXCollections.observableList(Arrays.asList(GEO_JSON, GEO_PACKAGE, KML, SHAPEFILE)));
         exportDropDown.setOnAction(event -> {
             if (parent.getCurrentGraph() != null) {

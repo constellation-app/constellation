@@ -123,7 +123,7 @@ public class MapView extends ScrollPane {
 
     private final List<Integer> selectedNodeList = new ArrayList<>();
 
-    private Canvas mapCanvas;
+    //private Canvas mapCanvas;
     private Group countryGroup;
     private Group graphMarkerGroup;
     private Group drawnMarkerGroup;
@@ -135,6 +135,7 @@ public class MapView extends ScrollPane {
     private final Group layerGroup;
     private final Group pointMarkerTextGroup;
     private final Group thessianMarkersGroup;
+    private final Group selectionRectangleGroup;
 
     private static final Logger LOGGER = Logger.getLogger("MapView");
 
@@ -153,6 +154,8 @@ public class MapView extends ScrollPane {
 
     private CircleMarker circleMarker = null;
     private PolygonMarker polygonMarker = null;
+    private Rectangle selectionRectangle = null;
+    private boolean isSelectingMultiple = false;
 
     private ArrayList<ArrayList<Node>> pointMarkerClusters = new ArrayList<ArrayList<Node>>();
     private Set<Node> clusteredPointMarkers = new HashSet<>();
@@ -224,6 +227,7 @@ public class MapView extends ScrollPane {
         hiddenPointMarkerGroup.setVisible(false);
         pointMarkerTextGroup = new Group();
         thessianMarkersGroup = new Group();
+        selectionRectangleGroup = new Group();
 
 
 
@@ -232,7 +236,7 @@ public class MapView extends ScrollPane {
         markersShowing.add(AbstractMarker.MarkerType.POLYGON_MARKER);
 
 
-        mapCanvas = new Canvas();
+        //mapCanvas = new Canvas();
 
         mapGroupHolder.setBackground(Background.fill(new Color(0.722, 0.871, 0.902, 1)));
 
@@ -244,6 +248,7 @@ public class MapView extends ScrollPane {
         mapStackPane = new StackPane();
 
         mapStackPane.setBorder(Border.EMPTY);
+        mapStackPane.setBackground(Background.fill(Color.BROWN));
 
 
         mapStackPane.getChildren().addAll(mapGroupHolder);
@@ -279,8 +284,8 @@ public class MapView extends ScrollPane {
                 }*/
                 double scaleFactor = (e.getDeltaY() > 0) ? mapScaleFactor : 1 / mapScaleFactor;
 
-                double oldXScale = mapCanvas.getScaleY();
-                double oldYScale = mapCanvas.getScaleX();
+                double oldXScale = mapStackPane.getScaleY();
+                double oldYScale = mapStackPane.getScaleX();
 
                 double newXScale = oldXScale * scaleFactor;
                 double newYScale = oldYScale * scaleFactor;
@@ -291,13 +296,13 @@ public class MapView extends ScrollPane {
                 double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
                 double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
 
-                mapCanvas.setTranslateX(mapCanvas.getTranslateX() - xAdjust * moveX);
-                mapCanvas.setTranslateY(mapCanvas.getTranslateY() - yAdjust * moveY);
+                //mapGroupHolder.setTranslateX(mapGroupHolder.getTranslateX() - xAdjust * moveX);
+                //mapGroupHolder.setTranslateY(mapGroupHolder.getTranslateY() - yAdjust * moveY);
                 mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
                 mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
 
-                mapCanvas.setScaleX(newXScale);
-                mapCanvas.setScaleY(newYScale);
+                //mapGroupHolder.setScaleX(newXScale);
+                //mapGroupHolder.setScaleY(newYScale);
                 //self.setScaleX(newXScale);
                 //self.setScaleY(newYScale);
                 mapStackPane.setScaleX(newXScale);
@@ -316,11 +321,11 @@ public class MapView extends ScrollPane {
                 //pointMarkerClusters.forEach(cluster -> drawClusterMarkers(cluster));
                 //testMarker.getMarker().setScaleY(scaleFactor);
 
-                for (Node node : thessianMarkersGroup.getChildren()) {
+                /*for (Node node : thessianMarkersGroup.getChildren()) {
                     if (mapCanvas.getBoundsInLocal().intersects(mapStackPane.sceneToLocal(self.localToScene(self.getViewportBounds())))) {
                         ++nodesOnScreen;
                     }
-                }
+                }*/
 
                 LOGGER.log(Level.SEVERE, "Nodes on Screen: " + nodesOnScreen);
                 nodesOnScreen = 0;
@@ -340,13 +345,6 @@ public class MapView extends ScrollPane {
 
         mapStackPane.setOnMouseDragged(event -> {
             if (event.isSecondaryButtonDown()) {
-
-
-                double scaleX = mapStackPane.getScaleX();
-                double scaleY = mapStackPane.getScaleY();
-
-                double canvasScaleX = mapCanvas.getScaleX();
-                double canvasScaleY = mapCanvas.getScaleY();
 
                 Node node = (Node) event.getSource();
 
@@ -436,7 +434,6 @@ public class MapView extends ScrollPane {
                 }
             }
         });
-
 
         mapGroupHolder.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -556,10 +553,78 @@ public class MapView extends ScrollPane {
                     }
                 }
 
+                /*if (isSelectingMultiple) {
+                    //double x = event.getX();
+                    //double y = event.getY();
+
+                    double width = x - selectionRectangle.getX();
+                    double height = y - selectionRectangle.getY();
+
+                    selectionRectangle.setWidth(20);
+                    selectionRectangle.setHeight(20);
+                }*/
+
 
                 event.consume();
             }
 
+        });
+
+        mapGroupHolder.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.isPrimaryButtonDown()) {
+                isSelectingMultiple = true;
+                selectionRectangle = new Rectangle();
+                selectionRectangle.setX(event.getX());
+                selectionRectangle.setY(event.getY());
+
+                selectionRectangle.setFill(Color.GRAY);
+                selectionRectangle.setOpacity(0.2);
+
+                selectionRectangleGroup.getChildren().add(selectionRectangle);
+                LOGGER.log(Level.SEVERE, "Mouse Pressed");
+
+                    //selectionRectangle.setWidth(20);
+                    //selectionRectangle.setHeight(20);
+                }
+
+                ///event.consume();
+            }
+        });
+
+        mapGroupHolder.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (isSelectingMultiple) {
+                    double x = event.getX();
+                    double y = event.getY();
+
+                    double width = 0;
+                    double height = 0;
+
+                    if (x >= selectionRectangle.getX() && y <= selectionRectangle.getY()) {
+                        width = x - selectionRectangle.getX();
+                        height = selectionRectangle.getY() - y;
+                        selectionRectangle.setY(y);
+                    }
+
+                    selectionRectangle.setWidth(width);
+                    selectionRectangle.setHeight(height);
+                }
+            }
+        });
+
+        mapGroupHolder.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (isSelectingMultiple) {
+                    isSelectingMultiple = false;
+                    selectionRectangleGroup.getChildren().clear();
+                    LOGGER.log(Level.SEVERE, "Mouse Released");
+                }
+                // event.consume();
+            }
         });
 
         // Add this feature in later
@@ -577,12 +642,15 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(clusterMarkerGroup);
         mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
         mapGroupHolder.getChildren().add(overlayGroup);
+        //mapStackPane.getChildren().add(overlayGroup);
         mapGroupHolder.getChildren().add(layerGroup);
         mapGroupHolder.getChildren().add(pointMarkerTextGroup);
         mapGroupHolder.getChildren().add(thessianMarkersGroup);
 
+
         overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
         overlayGroup.getChildren().addAll(infoOverlay.getOverlayPane());
+        mapGroupHolder.getChildren().add(selectionRectangleGroup);
 
         //graphMarkerGroup.getChildren().add(testRegion);
     }
@@ -893,7 +961,8 @@ public class MapView extends ScrollPane {
 
                         SVGPath svgPath = new SVGPath();
                         svgPath.setFill(Color.WHITE);
-                        svgPath.setStrokeWidth(5);
+                        svgPath.setStrokeWidth(0.025);
+                        svgPath.setStroke(Color.BLACK);
                         svgPath.setContent(path);
 
                         countrySVGPaths.add(svgPath);
