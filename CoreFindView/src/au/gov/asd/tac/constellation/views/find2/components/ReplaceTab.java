@@ -72,6 +72,12 @@ public class ReplaceTab extends BasicFindTab {
         postSearchChoiceBox.getItems().add("Replace In");
         postSearchChoiceBox.getSelectionModel().select(0);
 
+        // remove the choice box from the view
+        // the options are still altered in this choicebox to have replace in selected to
+        // ensure the parameters for the search are determined correctly 
+        settingsGrid.getChildren().remove(postSearchChoiceBox);
+        settingsGrid.getChildren().remove(postSearchLabel);
+
         // remove exact match checkBox
         preferencesGrid.getChildren().remove(exactMatchCB);
     }
