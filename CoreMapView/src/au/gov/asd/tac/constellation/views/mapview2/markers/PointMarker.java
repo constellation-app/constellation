@@ -82,9 +82,9 @@ public class PointMarker extends AbstractMarker {
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                //if (!isSelected) {
+                if (!isSelected) {
                     markerPath.setFill(Color.ORANGE);
-                //}
+                }
                 e.consume();
             }
         });
@@ -92,22 +92,32 @@ public class PointMarker extends AbstractMarker {
         markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
-                //if (!isSelected) {
+                if (!isSelected) {
                     markerPath.setFill(Color.web(currentColour));
-                //}
+                }
                 e.consume();
             }
         });
 
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
-                isSelected = true;
-                //markerPath.setFill(Color.BLUE);
-                parent.addMarkerId(markerID, idList, true);
+                parent.deselectAllMarkers();
+                select();
+                parent.addMarkerIdToSelectedList(markerID, idList, true);
                 e.consume();
             }
         });
 
+    }
+
+    public void deselect() {
+        markerPath.setFill(Color.web(currentColour));
+        isSelected = false;
+    }
+
+    public void select() {
+        isSelected = true;
+        markerPath.setFill(Color.BLUE);
     }
 
     public void changeMarkerColour(String option) {

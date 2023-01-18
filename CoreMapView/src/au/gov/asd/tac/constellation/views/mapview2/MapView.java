@@ -255,21 +255,6 @@ public class MapView extends ScrollPane {
         mapStackPane.getChildren().addAll(mapGroupHolder);
         mapStackPane.setBackground(Background.fill(Color.WHITE));
 
-        /*mapGroupHolder.addEventHandler(EventType.ROOT, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                LOGGER.log(Level.SEVERE, "Inside double click mouse event");
-                if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    if (event.getClickCount() == 2) {
-                        selectedNodeList.clear();
-                        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
-                        LOGGER.log(Level.SEVERE, "Double clicked");
-                    }
-                }
-                event.consume();
-            }
-        });*/
-
         mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent e) {
@@ -442,6 +427,8 @@ public class MapView extends ScrollPane {
 
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
                     if (event.getClickCount() == 2) {
+
+                        deselectAllMarkers();
                         selectedNodeList.clear();
                         PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
                         LOGGER.log(Level.SEVERE, "Double clicked");
@@ -635,7 +622,42 @@ public class MapView extends ScrollPane {
         mapGroupHolder.setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+
                 if (isSelectingMultiple) {
+
+                    LOGGER.log(Level.SEVERE, "Top left: " + selectionRectangle.getX() + ", " + selectionRectangle.getY() + " bottom right: " + (selectionRectangle.getX() + selectionRectangle.getWidth()) + ", " + (selectionRectangle.getY() + selectionRectangle.getHeight()));
+                    double pointMarkerXOffset = 95.5;
+                    double pointMarkerYOffset = 95.5;
+                    List<Integer> idList = new ArrayList<>();
+                    for (AbstractMarker m : markers.values()) {
+                        if (m instanceof PointMarker) {
+                            PointMarker p = (PointMarker) m;
+
+                            /*Rectangle r = new Rectangle();
+                            r.setWidth(1);
+                            r.setHeight(1);
+                            r.setX(p.getX() - 96);
+                            r.setY(p.getY() + 96);
+                            r.setFill(Color.RED);
+
+                            overlayGroup.getChildren().add(r);*/
+
+                            p.deselect();
+
+
+                            if (selectionRectangle.contains(p.getX() - pointMarkerXOffset, p.getY() + pointMarkerYOffset)) {
+                                //LOGGER.log(Level.SEVERE, "X coor of marker: " + p.getX() + " Y coordinate is: " + p.getY());
+                                //LOGGER.log(Level.SEVERE, "X coordinate of selection box: " + selectionRectangle.getX() + " Y coordinate of box is: " + selectionRectangle.getY());
+                                p.select();
+
+                                idList.addAll(p.getIdList());
+                            }
+
+                        }
+                    }
+
+                    selectedNodeList.addAll(idList);
+                    PluginExecution.withPlugin(new SelectOnGraphPlugin(idList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
                     isSelectingMultiple = false;
                     selectionRectangleGroup.getChildren().clear();
                     LOGGER.log(Level.SEVERE, "Mouse Released");
@@ -678,6 +700,15 @@ public class MapView extends ScrollPane {
         t.setY(p.getY() + 103);
 
         pointMarkerTextGroup.getChildren().add(t);
+    }
+
+    public void deselectAllMarkers() {
+        for (AbstractMarker value : markers.values()) {
+            if (value instanceof PointMarker) {
+                PointMarker p = (PointMarker) value;
+                p.deselect();
+            }
+        }
     }
 
     public StringProperty getMarkerColourProperty() {
@@ -909,7 +940,7 @@ public class MapView extends ScrollPane {
         return GraphManager.getDefault().getActiveGraph();
     }
 
-    public void addMarkerId(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
+    public void addMarkerIdToSelectedList(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
         selectedNodeList.add(markerID);
         PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
 

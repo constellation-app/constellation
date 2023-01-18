@@ -75,7 +75,7 @@ public class LineMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
                 isSelected = true;
                 markerPath.setStroke(Color.BLUE);
-                parent.addMarkerId(markerID, idList, false);
+                parent.addMarkerIdToSelectedList(markerID, idList, false);
                 e.consume();
             }
         });
