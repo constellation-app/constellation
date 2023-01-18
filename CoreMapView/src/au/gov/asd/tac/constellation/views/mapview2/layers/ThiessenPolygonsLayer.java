@@ -309,11 +309,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 l.setEndX(shortLine[1].x);
                 l.setEndY(shortLine[1].y);
 
-                l2.setStartX(shortLine[0].x);
+                /*l2.setStartX(shortLine[0].x);
                 l2.setStartY(shortLine[0].y);
 
                 l2.setEndX(shortLine[1].x);
-                l2.setEndY(shortLine[1].y);
+                l2.setEndY(shortLine[1].y);*/
 
                 l.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
@@ -323,8 +323,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     }
 
                 });
-                l2.setStrokeWidth(0.5);
-                layer.getChildren().add(l2);
+                //l2.setStrokeWidth(0.5);
+                //layer.getChildren().add(l2);
                 finalBisectorLines.put(key, l);
                 lineMap.put(finalBisectorLines.get(key), new ArrayList<IntersectionNode>());
 
@@ -860,7 +860,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         //showRelatedMarkers();
         connectMarkersToCorners();
             createPolygons();
-            printIntersectionCircles();
+            //printIntersectionCircles();
         } else if (nodesOnScreen.size() == 1) {
             final ConstellationColor[] palette = ConstellationColor.createPalette(1);
 
@@ -876,7 +876,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             layer.getChildren().add(r);
         }
 
-        layer.getChildren().add(debugLayer);
+        //layer.getChildren().add(debugLayer);
 
         LOGGER.log(Level.SEVERE, "Intersection Map Count: " + intersectionMap.size());
 

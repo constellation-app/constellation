@@ -624,7 +624,7 @@ public class MapView extends ScrollPane {
             public void handle(MouseEvent event) {
 
                 if (isSelectingMultiple) {
-
+                    selectedNodeList.clear();
                     LOGGER.log(Level.SEVERE, "Top left: " + selectionRectangle.getX() + ", " + selectionRectangle.getY() + " bottom right: " + (selectionRectangle.getX() + selectionRectangle.getWidth()) + ", " + (selectionRectangle.getY() + selectionRectangle.getHeight()));
                     double pointMarkerXOffset = 95.5;
                     double pointMarkerYOffset = 95.5;
@@ -879,7 +879,15 @@ public class MapView extends ScrollPane {
             AbstractMarker m = (AbstractMarker) value;
             m.getMarker().setScaleX(m.getMarker().getScaleX() * scale);
             m.getMarker().setScaleY(m.getMarker().getScaleY() * scale);
+
+            if (scale < 1) {
+                m.getMarker().setLayoutY(m.getMarker().getLayoutY() + (m.getMarker().getScaleY() * 10));
+            } else {
+                m.getMarker().setLayoutY(m.getMarker().getLayoutY() - (m.getMarker().getScaleY() * 10));
+            }
+
             drawMarker(m);
+            //m.getMarker().setLayoutY(m.getY());
         }
     }
 
@@ -943,6 +951,82 @@ public class MapView extends ScrollPane {
     public void addMarkerIdToSelectedList(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
         selectedNodeList.add(markerID);
         PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
+
+    }
+
+    public void zoomToAll() {
+        int markerCounter = 0;
+        double averageX = 0;
+        double averageY = 0;
+
+        for (AbstractMarker m : markers.values()) {
+            if (m instanceof PointMarker) {
+                averageX += (m.getX() - 95.5);
+                averageY += (m.getY() + 95.5);
+                ++markerCounter;
+            }
+        }
+
+        for (AbstractMarker m : userMarkers) {
+            if (m instanceof UserPointMarker) {
+                averageX += m.getX();
+                averageY += m.getY();
+                ++markerCounter;
+            }
+        }
+
+        averageX /= markerCounter;
+        averageY /= markerCounter;
+
+        Rectangle r = new Rectangle();
+        r.setX(averageX);
+        r.setY(averageY);
+
+        r.setWidth(5);
+        r.setHeight(5);
+
+        r.setFill(Color.BLACK);
+
+        overlayGroup.getChildren().add(r);
+
+        double moveX = averageX - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
+        double moveY = averageY - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
+
+        //mapStackPane.setTranslateX(mapStackPane.getTranslateX() - moveX);
+        //mapStackPane.setTranslateY(mapStackPane.getTranslateY() - moveY);
+        mapStackPane.setTranslateX(mapStackPane.getTranslateX() - (moveX - mapStackPane.getTranslateX()));
+        mapStackPane.setTranslateY(mapStackPane.getTranslateY() - (mapStackPane.getTranslateY() - moveY));
+    }
+
+    public void zoomSelection() {
+        int markerCounter = 0;
+        double averageX = 0;
+        double averageY = 0;
+
+        for (AbstractMarker m : markers.values()) {
+            if (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId())) {
+                averageX += (m.getX() - 95.5);
+                averageY += (m.getY() + 95.5);
+                ++markerCounter;
+            }
+        }
+
+        averageX /= markerCounter;
+        averageY /= markerCounter;
+
+        Rectangle r = new Rectangle();
+        r.setX(averageX);
+        r.setY(averageY);
+
+        r.setWidth(5);
+        r.setHeight(5);
+
+        r.setFill(Color.BLACK);
+
+        overlayGroup.getChildren().add(r);
+    }
+
+    public void zoomLocation() {
 
     }
 

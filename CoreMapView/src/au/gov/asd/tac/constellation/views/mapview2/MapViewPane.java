@@ -217,8 +217,21 @@ public class MapViewPane extends BorderPane {
         });
 
         zoomDropDown = new MenuButton("Zoom");
-        zoomDropDown.getItems().addAll(new MenuItem(ZOOM_ALL), new MenuItem(ZOOM_SELECTION), new MenuItem(ZOOM_LOCATION));
+
+        final MenuItem zoomAll = new MenuItem(ZOOM_ALL);
+        final MenuItem zoomSelection = new MenuItem(ZOOM_SELECTION);
+        final MenuItem zoomLocation = new MenuItem(ZOOM_LOCATION);
+
+        zoomDropDown.getItems().addAll(zoomAll, zoomSelection, zoomLocation);
         zoomDropDown.setTooltip(new Tooltip("Zoom based on markers or locations in the Map View"));
+
+        zoomAll.setOnAction(event -> {
+            mapView.zoomToAll();
+        });
+
+        zoomSelection.setOnAction(event -> {
+            mapView.zoomSelection();
+        });
 
         markerDropDown = new CheckComboBox(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
         markerDropDown.setTitle("Markers");
