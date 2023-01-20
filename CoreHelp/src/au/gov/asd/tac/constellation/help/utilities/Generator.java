@@ -61,7 +61,8 @@ public class Generator implements Runnable {
     @Override
     public void run() {
         baseDirectory = getBaseDirectory();
-        tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
+//        tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
+        tocDirectory = String.format("ext%1$s%2$s", File.separator, TOC_FILE_NAME);
 
         // Create TOCFile with the location of the resources file
         // Create the root node for application-wide table of contents
@@ -83,7 +84,8 @@ public class Generator implements Runnable {
      * @return a String path for the file location
      */
     public static String getTOCDirectory() {
-        tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
+//        tocDirectory = String.format("constellation%1$s%2$s", File.separator, TOC_FILE_NAME);
+        tocDirectory = String.format("ext%1$s%2$s", File.separator, TOC_FILE_NAME);
         return tocDirectory;
     }
 
@@ -99,7 +101,9 @@ public class Generator implements Runnable {
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
             final String providerTOC = provider.getHelpTOC();
             if (StringUtils.isNotEmpty(providerTOC)) {
-                tocXMLFiles.add(new File(baseDirectory + providerTOC));
+//                if (providerTOC.contains("notes-toc.xml") || providerTOC.contains("scripting-toc.xml")) {
+                    tocXMLFiles.add(new File(baseDirectory + providerTOC));
+//                }
             }
         });
         return tocXMLFiles;
@@ -117,7 +121,8 @@ public class Generator implements Runnable {
             // Get the current directory and make the file within the base project directory.
             final String userDir = getResource();
             String[] splitUserDir = userDir.split(Pattern.quote(sep));
-            while (!"constellation".equals(splitUserDir[splitUserDir.length - 1])) {
+//            while (!"constellation".equals(splitUserDir[splitUserDir.length - 1])) {
+            while (!"ext".equals(splitUserDir[splitUserDir.length - 1])) {
                 splitUserDir = Arrays.copyOfRange(splitUserDir, 0, splitUserDir.length - 1);
             }
             // split once more
@@ -136,7 +141,9 @@ public class Generator implements Runnable {
         final URL url = new URL(pathLoc);
         final URI uri = url.toURI();
         final Path path = Paths.get(uri);
-        return path != null ? path.toString() : "";
+        final int jarIx = path.toString().lastIndexOf('\\');
+        final String newPath = jarIx > -1 ? path.toString().substring(0, jarIx) : "";
+        return newPath != null ? newPath + "\\ext" : "";
     }
 
 }

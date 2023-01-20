@@ -43,8 +43,8 @@ public class MapViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String mapModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "mapview" + sep + "docs" + sep;
+        final String mapModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "mapview" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.mapview.MapViewTopComponent", mapModulePath + "map-view.md");
         map.put("au.gov.asd.tac.constellation.views.mapview.layers.DayNightLayer", mapModulePath + "mapview-layers-day-night.md");
@@ -65,7 +65,7 @@ public class MapViewHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        return CODEBASE_NAME + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "mapview" + sep + "docs" + sep + "mapview-toc.xml";
+        return "ext" + sep + "docs" + sep + "CoreMapView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "mapview" + sep + "mapview-toc.xml";
     }
 }
