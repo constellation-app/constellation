@@ -63,11 +63,14 @@ import javafx.collections.SetChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.geometry.Insets;
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -76,6 +79,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
@@ -137,7 +142,12 @@ public class MapView extends ScrollPane {
     private final Group thessianMarkersGroup;
     private final Group selectionRectangleGroup;
 
+    private boolean showingZoomToLocationPane = false;
+
     private static final Logger LOGGER = Logger.getLogger("MapView");
+
+    Vec3 medianPositionOfMarkers = null;
+    private boolean calculatedMedianMarkerPosition = false;
 
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0);
 
@@ -263,6 +273,7 @@ public class MapView extends ScrollPane {
                 if (e.getDeltaY() == 0) {
                     return;
                 }
+                calculateMedianMarkerPosition();
                 /*if (e.getDeltaY() > 0) {
                     reScaleQueriedMarkers(0.94);
                 } else {
@@ -319,13 +330,14 @@ public class MapView extends ScrollPane {
         });
 
         mapStackPane.setOnMousePressed(event -> {
+            //calculateMedianMarkerPosition();
             mouseAnchorX = event.getSceneX();
             mouseAnchorY = event.getSceneY();
 
             Node node = (Node) event.getSource();
 
-            transalateX = node.getTranslateX();
-            transalateY = node.getTranslateY();
+            transalateX = mapStackPane.getTranslateX();
+            transalateY = mapStackPane.getTranslateY();
 
         });
 
@@ -334,8 +346,8 @@ public class MapView extends ScrollPane {
 
                 Node node = (Node) event.getSource();
 
-                node.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX)));
-                node.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY)));
+                mapStackPane.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX)));
+                mapStackPane.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY)));
 
                 //mapCanvas.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX) / canvasScaleX));
                 //mapCanvas.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY) / canvasScaleY));
@@ -651,12 +663,12 @@ public class MapView extends ScrollPane {
                                 p.select();
 
                                 idList.addAll(p.getIdList());
+                                selectedNodeList.add(p.getMarkerId());
                             }
 
                         }
                     }
 
-                    selectedNodeList.addAll(idList);
                     PluginExecution.withPlugin(new SelectOnGraphPlugin(idList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
                     isSelectingMultiple = false;
                     selectionRectangleGroup.getChildren().clear();
@@ -692,6 +704,7 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
 
         //graphMarkerGroup.getChildren().add(testRegion);
+        //calculateMedianMarkerPosition();
     }
 
     private void setPointMarkerText(String markerText, PointMarker p) {
@@ -954,7 +967,9 @@ public class MapView extends ScrollPane {
 
     }
 
-    public void zoomToAll() {
+    public void calculateMedianMarkerPosition() {
+
+        if (!calculatedMedianMarkerPosition) {
         int markerCounter = 0;
         double averageX = 0;
         double averageY = 0;
@@ -974,31 +989,81 @@ public class MapView extends ScrollPane {
                 ++markerCounter;
             }
         }
+            //double viewPortCenterX = mapStackPane.parentToLocal(this.getWidth() / 2, this.getHeight() / 2).getX();
+            //double viewPortCenterY = mapStackPane.parentToLocal(this.getWidth() / 2, this.getHeight() / 2).getY();
+
+            double viewPortCenterX = this.getWidth() / 2;
+            double viewPortCenterY = this.getHeight() / 2;
 
         averageX /= markerCounter;
         averageY /= markerCounter;
 
         Rectangle r = new Rectangle();
-        r.setX(averageX);
-        r.setY(averageY);
+            r.setX(averageX);
+            r.setY(averageY);
 
         r.setWidth(5);
         r.setHeight(5);
 
-        r.setFill(Color.BLACK);
+        r.setFill(Color.RED);
+            r.setOpacity(0.25);
 
-        overlayGroup.getChildren().add(r);
+            overlayGroup.getChildren().add(r);
 
-        double moveX = averageX - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
-        double moveY = averageY - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
+            Vec3 center = new Vec3(mapWidth / 2, mapHeight / 2);
 
-        //mapStackPane.setTranslateX(mapStackPane.getTranslateX() - moveX);
-        //mapStackPane.setTranslateY(mapStackPane.getTranslateY() - moveY);
-        mapStackPane.setTranslateX(mapStackPane.getTranslateX() - (moveX - mapStackPane.getTranslateX()));
-        mapStackPane.setTranslateY(mapStackPane.getTranslateY() - (mapStackPane.getTranslateY() - moveY));
+            Point2D averageMarkerPosition = mapStackPane.localToParent(averageX, averageY);
+            Vec3 directionFromCenter = new Vec3(viewPortCenterX - averageMarkerPosition.getX(), viewPortCenterY - averageMarkerPosition.getY());
+
+            //medianPositionOfMarkers = new Vec3(mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX(), mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getY());
+            Point2D currentMapPosition = mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY());
+            medianPositionOfMarkers = new Vec3(currentMapPosition.getX() + directionFromCenter.x, currentMapPosition.getY() + directionFromCenter.y);
+        //LOGGER.log(Level.SEVERE, "X of stackPane: " + mapStackPane.getTranslateX() + " Y of stackPane: " + mapStackPane.getTranslateY());
+        //LOGGER.log(Level.SEVERE, "Local to parent coordinate- x: " + mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX() + " y: " + mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getY());
+        //LOGGER.log(Level.SEVERE, "X of ScrollPane: " + this.getTranslateX() + " Y of ScrollPane: " + this.getTranslateY());
+
+        //Vec3 start = new Vec3(0, 0);
+        //if (startingPositionOfMap == null) {
+            calculatedMedianMarkerPosition = true;
+        }
+
+
     }
 
-    public void zoomSelection() {
+    public void panToCenter() {
+        double centerX = this.getWidth() / 2;
+        double centerY = this.getHeight() / 2;
+
+
+        mapStackPane.setTranslateX(centerX - mapWidth / 2);
+        mapStackPane.setTranslateY(centerY - mapHeight / 2);
+
+    }
+
+    public void panToAll() {
+        Vec3 currentPos = new Vec3(mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX(), mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getY());
+
+        double distance = Vec3.getDistance(currentPos, medianPositionOfMarkers);
+
+        if (medianPositionOfMarkers.x == currentPos.x && medianPositionOfMarkers.y == currentPos.y) {
+            return;
+        }
+
+        Vec3 dirVect = new Vec3((medianPositionOfMarkers.x - currentPos.x) / distance, (medianPositionOfMarkers.y - currentPos.y) / distance);
+
+        while (true) {
+            mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.x);
+            mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.y);
+
+            Point2D coordinateInParentSpace = mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY());
+            LOGGER.log(Level.SEVERE, "X of stackPane: " + coordinateInParentSpace.getX() + " Y of stackPane: " + coordinateInParentSpace.getY());
+            if (((currentPos.x <= medianPositionOfMarkers.x && coordinateInParentSpace.getX() >= medianPositionOfMarkers.x) || (currentPos.x >= medianPositionOfMarkers.x && coordinateInParentSpace.getX() <= medianPositionOfMarkers.x)) && ((currentPos.y <= medianPositionOfMarkers.y && coordinateInParentSpace.getY() >= medianPositionOfMarkers.y) || (currentPos.y >= medianPositionOfMarkers.y && coordinateInParentSpace.getY() <= medianPositionOfMarkers.y))) {
+                break;
+            }
+        }
+    }
+
+    public void panToSelection() {
         int markerCounter = 0;
         double averageX = 0;
         double averageY = 0;
@@ -1007,12 +1072,19 @@ public class MapView extends ScrollPane {
             if (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId())) {
                 averageX += (m.getX() - 95.5);
                 averageY += (m.getY() + 95.5);
+
+                LOGGER.log(Level.SEVERE, "Marker selected x: " + (m.getX() - 95.5) + " y: " + (m.getY() + 95.5));
+
                 ++markerCounter;
             }
         }
 
+        LOGGER.log(Level.SEVERE, "markers selected: " + selectedNodeList.size());
+
         averageX /= markerCounter;
         averageY /= markerCounter;
+
+        LOGGER.log(Level.SEVERE, "Average x: " + averageX + " Average y: " + averageY);
 
         Rectangle r = new Rectangle();
         r.setX(averageX);
@@ -1024,10 +1096,48 @@ public class MapView extends ScrollPane {
         r.setFill(Color.BLACK);
 
         overlayGroup.getChildren().add(r);
+
+        Point2D averageMarkerPosition = mapStackPane.localToParent(averageX, averageY);
+        Vec3 center = new Vec3(mapWidth / 2, mapHeight / 2);
+
+        double parentCenterX = mapStackPane.localToParent(center.x, center.y).getX();
+        double parentCenterY = mapStackPane.localToParent(center.x, center.y).getY();
+
+        Vec3 dirVect = new Vec3(parentCenterX - averageMarkerPosition.getX(), parentCenterY - averageMarkerPosition.getY());
+
+        mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.x);
+        mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.y);
+
     }
 
     public void zoomLocation() {
+        if (!showingZoomToLocationPane) {
+        BorderPane pane = new BorderPane();
+            pane.prefWidth(60);
+            pane.prefHeight(45);
+            pane.minWidth(60);
+            pane.minHeight(45);
+            pane.maxWidth(60);
+            pane.maxHeight(45);
 
+        pane.setBackground(Background.fill(Color.BLACK));
+
+        GridPane topGridPane = new GridPane();
+        pane.setTop(topGridPane);
+        Text titleText = new Text("Zoom to Location");
+        titleText.setFill(Color.WHITE);
+        Button closeButton = new Button();
+        closeButton.setText("X");
+        closeButton.setTextFill(Color.WHITE);
+
+        topGridPane.add(titleText, 0, 0);
+        topGridPane.add(closeButton, 1, 0);
+        closeButton.setPadding(new Insets(0, 0, 0, 590));
+
+            mapGroupHolder.getChildren().add(pane);
+
+            showingZoomToLocationPane = true;
+        }
     }
 
     public ObservableList<Node> getPointMarkersOnMap() {
@@ -1066,6 +1176,7 @@ public class MapView extends ScrollPane {
         }*/
 
     }
+
 
     public void addMarkerToHashMap(String key, AbstractMarker e) {
         markers.put(key, e);

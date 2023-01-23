@@ -226,11 +226,18 @@ public class MapViewPane extends BorderPane {
         zoomDropDown.setTooltip(new Tooltip("Zoom based on markers or locations in the Map View"));
 
         zoomAll.setOnAction(event -> {
-            mapView.zoomToAll();
+            mapView.panToCenter();
+            mapView.calculateMedianMarkerPosition();
+            mapView.panToAll();
         });
 
         zoomSelection.setOnAction(event -> {
-            mapView.zoomSelection();
+            mapView.panToCenter();
+            mapView.panToSelection();
+        });
+
+        zoomLocation.setOnAction(event -> {
+            mapView.zoomLocation();
         });
 
         markerDropDown = new CheckComboBox(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
@@ -325,6 +332,8 @@ public class MapViewPane extends BorderPane {
 
         toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton);
         setTop(toolBar);
+
+        //mapView.zoomToAll();
     }
 
     private void addLayer(String key, int id) {
