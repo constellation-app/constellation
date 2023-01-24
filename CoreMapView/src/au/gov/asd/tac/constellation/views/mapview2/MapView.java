@@ -273,7 +273,7 @@ public class MapView extends ScrollPane {
                 if (e.getDeltaY() == 0) {
                     return;
                 }
-                calculateMedianMarkerPosition();
+                //calculateMedianMarkerPosition();
                 /*if (e.getDeltaY() > 0) {
                     reScaleQueriedMarkers(0.94);
                 } else {
@@ -967,9 +967,9 @@ public class MapView extends ScrollPane {
 
     }
 
-    public void calculateMedianMarkerPosition() {
+    public void panToAll() {
 
-        if (!calculatedMedianMarkerPosition) {
+        //if (!calculatedMedianMarkerPosition) {
         int markerCounter = 0;
         double averageX = 0;
         double averageY = 0;
@@ -992,9 +992,6 @@ public class MapView extends ScrollPane {
             //double viewPortCenterX = mapStackPane.parentToLocal(this.getWidth() / 2, this.getHeight() / 2).getX();
             //double viewPortCenterY = mapStackPane.parentToLocal(this.getWidth() / 2, this.getHeight() / 2).getY();
 
-            double viewPortCenterX = this.getWidth() / 2;
-            double viewPortCenterY = this.getHeight() / 2;
-
         averageX /= markerCounter;
         averageY /= markerCounter;
 
@@ -1008,24 +1005,8 @@ public class MapView extends ScrollPane {
         r.setFill(Color.RED);
             r.setOpacity(0.25);
 
-            overlayGroup.getChildren().add(r);
-
-            Vec3 center = new Vec3(mapWidth / 2, mapHeight / 2);
-
-            Point2D averageMarkerPosition = mapStackPane.localToParent(averageX, averageY);
-            Vec3 directionFromCenter = new Vec3(viewPortCenterX - averageMarkerPosition.getX(), viewPortCenterY - averageMarkerPosition.getY());
-
-            //medianPositionOfMarkers = new Vec3(mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX(), mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getY());
-            Point2D currentMapPosition = mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY());
-            medianPositionOfMarkers = new Vec3(currentMapPosition.getX() + directionFromCenter.x, currentMapPosition.getY() + directionFromCenter.y);
-        //LOGGER.log(Level.SEVERE, "X of stackPane: " + mapStackPane.getTranslateX() + " Y of stackPane: " + mapStackPane.getTranslateY());
-        //LOGGER.log(Level.SEVERE, "Local to parent coordinate- x: " + mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX() + " y: " + mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getY());
-        //LOGGER.log(Level.SEVERE, "X of ScrollPane: " + this.getTranslateX() + " Y of ScrollPane: " + this.getTranslateY());
-
-        //Vec3 start = new Vec3(0, 0);
-        //if (startingPositionOfMap == null) {
-            calculatedMedianMarkerPosition = true;
-        }
+        overlayGroup.getChildren().add(r);
+        pan(averageX, averageY);
 
 
     }
@@ -1040,27 +1021,18 @@ public class MapView extends ScrollPane {
 
     }
 
-    public void panToAll() {
-        Vec3 currentPos = new Vec3(mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX(), mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getY());
+    private void pan(double x, double y) {
+        Vec3 center = new Vec3(mapWidth / 2, mapHeight / 2);
 
-        double distance = Vec3.getDistance(currentPos, medianPositionOfMarkers);
+        Point2D averageMarkerPosition = mapStackPane.localToParent(x, y);
 
-        if (medianPositionOfMarkers.x == currentPos.x && medianPositionOfMarkers.y == currentPos.y) {
-            return;
-        }
+        double parentCenterX = mapStackPane.localToParent(center.x, center.y).getX();
+        double parentCenterY = mapStackPane.localToParent(center.x, center.y).getY();
 
-        Vec3 dirVect = new Vec3((medianPositionOfMarkers.x - currentPos.x) / distance, (medianPositionOfMarkers.y - currentPos.y) / distance);
+        Vec3 dirVect = new Vec3(parentCenterX - averageMarkerPosition.getX(), parentCenterY - averageMarkerPosition.getY());
 
-        while (true) {
-            mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.x);
-            mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.y);
-
-            Point2D coordinateInParentSpace = mapStackPane.localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY());
-            LOGGER.log(Level.SEVERE, "X of stackPane: " + coordinateInParentSpace.getX() + " Y of stackPane: " + coordinateInParentSpace.getY());
-            if (((currentPos.x <= medianPositionOfMarkers.x && coordinateInParentSpace.getX() >= medianPositionOfMarkers.x) || (currentPos.x >= medianPositionOfMarkers.x && coordinateInParentSpace.getX() <= medianPositionOfMarkers.x)) && ((currentPos.y <= medianPositionOfMarkers.y && coordinateInParentSpace.getY() >= medianPositionOfMarkers.y) || (currentPos.y >= medianPositionOfMarkers.y && coordinateInParentSpace.getY() <= medianPositionOfMarkers.y))) {
-                break;
-            }
-        }
+        mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.x);
+        mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.y);
     }
 
     public void panToSelection() {
@@ -1097,16 +1069,7 @@ public class MapView extends ScrollPane {
 
         overlayGroup.getChildren().add(r);
 
-        Point2D averageMarkerPosition = mapStackPane.localToParent(averageX, averageY);
-        Vec3 center = new Vec3(mapWidth / 2, mapHeight / 2);
-
-        double parentCenterX = mapStackPane.localToParent(center.x, center.y).getX();
-        double parentCenterY = mapStackPane.localToParent(center.x, center.y).getY();
-
-        Vec3 dirVect = new Vec3(parentCenterX - averageMarkerPosition.getX(), parentCenterY - averageMarkerPosition.getY());
-
-        mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.x);
-        mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.y);
+        pan(averageX, averageY);
 
     }
 

@@ -227,8 +227,8 @@ public class MapViewPane extends BorderPane {
 
         zoomAll.setOnAction(event -> {
             mapView.panToCenter();
-            mapView.calculateMedianMarkerPosition();
             mapView.panToAll();
+            //mapView.panToAll();
         });
 
         zoomSelection.setOnAction(event -> {
