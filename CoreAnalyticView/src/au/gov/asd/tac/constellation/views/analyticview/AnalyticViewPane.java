@@ -127,7 +127,7 @@ public class AnalyticViewPane extends BorderPane {
                     protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
                         final ThreadConstraints parentConstraints = ThreadConstraints.getConstraints();
 
-                        final Thread answerQuestionThread = new Thread(() -> {
+                        questionThread = new Thread(() -> {
                             ThreadConstraints localConstraints = ThreadConstraints.getConstraints();
                             if (localConstraints.getCurrentReport() == null) {
                                 localConstraints.setCurrentReport(parentConstraints.getCurrentReport());
@@ -155,10 +155,9 @@ public class AnalyticViewPane extends BorderPane {
                                 });
                             }
                         }, "Analytic View: Answer Question");
-                        questionThread = answerQuestionThread;
-                        answerQuestionThread.start();
+                        questionThread.start();
                         interaction.notify(PluginNotificationLevel.INFO, " * Working * ");
-                        answerQuestionThread.join();
+                        questionThread.join();
 
                         try {
                             SwingUtilities.invokeAndWait(new Runnable(){
