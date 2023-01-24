@@ -69,6 +69,7 @@ public class AnalyticViewPane extends BorderPane {
 
     private boolean running = false;
     private Thread questionThread = null;
+    private ThreadConstraints parentConstraints = null;
 
     public AnalyticViewPane(final AnalyticController analyticController) {
         
@@ -125,8 +126,7 @@ public class AnalyticViewPane extends BorderPane {
                 SimplePlugin virtualAnalytics = new SimplePlugin("Analytic View - Query Runner"){
                     @Override
                     protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-                        final ThreadConstraints parentConstraints = ThreadConstraints.getConstraints();
-
+                        parentConstraints = ThreadConstraints.getConstraints();
                         questionThread = new Thread(() -> {
                             ThreadConstraints localConstraints = ThreadConstraints.getConstraints();
                             if (localConstraints.getCurrentReport() == null) {
