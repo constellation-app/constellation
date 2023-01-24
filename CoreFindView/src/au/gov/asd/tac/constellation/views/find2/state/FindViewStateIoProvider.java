@@ -84,7 +84,10 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
                     selectedAttributes.add(null);
                 } else {
                     int attributeInt = writableGraph.getAttribute(graphElement, selectedAttributesArray.get(i).asText());
-                    selectedAttributes.add(new GraphAttribute(writableGraph, attributeInt));
+                    // Only add the attribute to the selected attributes list if it exists in the graph
+                    if (attributeInt >= 0) {
+                        selectedAttributes.add(new GraphAttribute(writableGraph, attributeInt));
+                    }
                 }
             }
 
