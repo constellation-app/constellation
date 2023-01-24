@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.find2.components.advanced.utilities;
+package au.gov.asd.tac.constellation.views.find2.plugins;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
@@ -24,53 +24,47 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.find2.state.FindViewConcept;
 import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
+import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.FindViewUtilities;
 
 /**
- * Updates the graph selection based on the results of the advanced find plugin
+ * Updates the graph selection based on the results of the basic find plugin
  * 
  * @author Delphinus8821
  */
-public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
+public class BasicFindGraphSelectionPlugin extends SimpleEditPlugin {
 
+    private final GraphElementType elementType;
+    private final boolean removeFromCurrentSelection;
     private final boolean selectAll;
     private final boolean searchAllGraphs;
-    private final GraphElementType elementType;
-    private final String currentSelection;
-    private static final String IGNORE = "Ignore";
 
-    public AdvancedFindGraphSelectionPlugin(final AdvancedSearchParameters parameters, final boolean selectAll, final boolean getNext) {
+    public BasicFindGraphSelectionPlugin(final BasicFindReplaceParameters parameters, final boolean selectAll) {
+        this.elementType = parameters.getGraphElement();
         this.selectAll = selectAll;
+        this.removeFromCurrentSelection = parameters.isRemoveFrom();
         this.searchAllGraphs = parameters.isSearchAllGraphs();
-        this.elementType = parameters.getGraphElementType();
-        this.currentSelection = parameters.getCurrentSelection();
     }
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(graph);
-        final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
 
         if (!selectAll) {
-            // do this if ignore selection
-            if (IGNORE.equals(currentSelection)) {
-                FindViewUtilities.clearSelection(graph);
-            }
-            
             /**
-             * If the list isn't empty, and the user clicked find next,
-             * increment the found lists index by 1, otherwise decrement it by
-             * 1. Set the element at the specified index to selected.
+             * If the list isn't empty, and the user clicked find next, increment the found lists index by 1, otherwise decrement it by 1. Set the
+             * element at the specified index to selected.
              */
-            if (!ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
-                final int elementId = ActiveFindResultsList.getAdvancedResultsList().get(ActiveFindResultsList.getAdvancedResultsList().getCurrentIndex()).getID();                
-                graph.setBooleanValue(selectedAttribute, elementId, true);
+            if (!ActiveFindResultsList.getBasicResultsList().isEmpty()) {
+                final int elementId = ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getID();                
+                final int selectedAttribute = graph.getAttribute(elementType, VisualConcept.VertexAttribute.SELECTED.getName());
+                graph.setBooleanValue(selectedAttribute, elementId, !removeFromCurrentSelection);
             }
-            graph.setObjectValue(stateId, 0, ActiveFindResultsList.getAdvancedResultsList());
+            graph.setObjectValue(stateId, 0, ActiveFindResultsList.getBasicResultsList());
         }
-
+         
         // Swap to view the graph where the element is selected
-        if (searchAllGraphs && !ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
+        if (searchAllGraphs && !ActiveFindResultsList.getBasicResultsList().isEmpty()) {
             FindViewUtilities.searchAllGraphs(graph);
         }
     }
@@ -79,5 +73,4 @@ public class AdvancedFindGraphSelectionPlugin extends SimpleEditPlugin {
     public String getName() {
         return "Find: Graph Selection";
     }
-    
 }

@@ -67,11 +67,13 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
             final Boolean regEx = jnode.get("regEx").asBoolean();
             final Boolean ignoreCase = jnode.get("ignoreCase").asBoolean();
             final Boolean exactMatch = jnode.get("exactMatch").asBoolean();
-            final Boolean findInSelection = jnode.get("findInSelection").asBoolean();
+            final Boolean replaceSelectionWithResults = jnode.get("replaceSelectionWithResults").asBoolean();
             final Boolean addToSelection = jnode.get("addToSelection").asBoolean();
             final Boolean removeFromSelection = jnode.get("removeFromSelection").asBoolean();
             final Boolean replaceInSelected = jnode.get("replaceInSelected").asBoolean();
             final Boolean searchAllGraphs = jnode.get("searchAllGraphs").asBoolean();
+            final Boolean currentSelection = jnode.get("currentSelection").asBoolean();
+            final Boolean currentGraph = jnode.get("currentGraph").asBoolean();
 
             // Get the selected attributes
             final List<Attribute> selectedAttributes = new ArrayList<>();
@@ -88,7 +90,7 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
 
             // Create the basic find replace parameter object with the variables
             final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findString, replaceString, graphElement,
-                    selectedAttributes, standardText, regEx, ignoreCase, exactMatch, findInSelection, addToSelection, removeFromSelection, replaceInSelected, searchAllGraphs);
+                    selectedAttributes, standardText, regEx, ignoreCase, exactMatch, replaceSelectionWithResults, addToSelection, removeFromSelection, replaceInSelected, currentSelection, currentGraph, searchAllGraphs);
 
             // Get the find results
             final List<FindResult> findResults = new ArrayList<>();
@@ -143,10 +145,12 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeBooleanField("ignoreCase", parameters.isIgnoreCase());
                 jsonGenerator.writeBooleanField("exactMatch", parameters.isExactMatch());
                 jsonGenerator.writeBooleanField("searchAllGraphs", parameters.isSearchAllGraphs());
+                jsonGenerator.writeBooleanField("replaceSelectionWithResults", parameters.isReplaceSelection());
                 jsonGenerator.writeBooleanField("addToSelection", parameters.isAddTo());
-                jsonGenerator.writeBooleanField("findInSelection", parameters.isFindIn());
                 jsonGenerator.writeBooleanField("removeFromSelection", parameters.isRemoveFrom());
                 jsonGenerator.writeBooleanField("replaceInSelected", parameters.isReplaceIn());
+                jsonGenerator.writeBooleanField("currentSelection", parameters.isCurrentSelection());
+                jsonGenerator.writeBooleanField("currentGraph", parameters.isCurrentGraph());
 
                 // Store all the selected attributes of the search
                 jsonGenerator.writeArrayFieldStart("selectedAttributes");

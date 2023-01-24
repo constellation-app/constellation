@@ -45,7 +45,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
     private boolean regex;
     private final boolean ignorecase;
     private final boolean replaceNext;
-    private final boolean replaceIn;
+    private final boolean currentSelection;
     private final boolean searchAllGraphs;
 
     public ReplacePlugin(final BasicFindReplaceParameters parameters, final boolean replaceAll, final boolean replaceNext) {
@@ -56,8 +56,8 @@ public class ReplacePlugin extends SimpleEditPlugin {
         this.regex = parameters.isRegEx();
         this.ignorecase = parameters.isIgnoreCase();
         this.replaceNext = replaceNext;
-        this.replaceIn = parameters.isReplaceIn();
         this.searchAllGraphs = parameters.isSearchAllGraphs();
+        this.currentSelection = parameters.isCurrentSelection();
     }
 
     @Override
@@ -104,7 +104,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
 
                         if (!newValue.equals(value)) {
                             // if replace in selected is false
-                            if (!replaceIn) {
+                            if (!currentSelection) {
                                 // set the string of the element types attribute
                                 // to the new value
                                 graph.setStringValue(a.getId(), currElement, newValue);
@@ -116,7 +116,7 @@ public class ReplacePlugin extends SimpleEditPlugin {
                                     return;
                                 }
                             } else {
-                                // if selected is false
+                                // if selected is true
                                 if (selected) {
                                     // set the string of the element types attribute
                                     // to the new value
