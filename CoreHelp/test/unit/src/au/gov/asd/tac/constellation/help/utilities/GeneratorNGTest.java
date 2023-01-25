@@ -80,8 +80,6 @@ public class GeneratorNGTest {
 
             try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
                 final List<File> tocXMLFiles = new ArrayList<>();
-//                final String layersTOC = "../constellation/src/au/gov/asd/tac/constellation/views/layers/docs/layers-view-toc.xml";
-//                final String notesTOC = "../constellation/src/au/gov/asd/tac/constellation/views/notes/docs/notes-view-toc.xml";
                 final String layersTOC = "../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/layers-view-toc.xml";
                 final String notesTOC  = "../ext/docs/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/notes-view-toc.xml";
 
@@ -169,7 +167,6 @@ public class GeneratorNGTest {
             for (final File file : File.listRoots()) {
 
                 // try within base level of help module
-//                final String userDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp";
                 final String userDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "ext" + sep + "CoreHelp";
 
                 // mock paths.get to return a path which is a mock - then return the user dir on call to toString()
