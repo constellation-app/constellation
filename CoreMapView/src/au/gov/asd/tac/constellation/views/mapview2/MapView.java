@@ -18,6 +18,10 @@ package au.gov.asd.tac.constellation.views.mapview2;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import static au.gov.asd.tac.constellation.views.mapview2.MapViewPane.GEO_JSON;
+import static au.gov.asd.tac.constellation.views.mapview2.MapViewPane.GEO_PACKAGE;
+import static au.gov.asd.tac.constellation.views.mapview2.MapViewPane.KML;
+import static au.gov.asd.tac.constellation.views.mapview2.MapViewPane.SHAPEFILE;
 
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
@@ -39,6 +43,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -57,6 +62,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
@@ -71,7 +77,11 @@ import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -141,6 +151,7 @@ public class MapView extends ScrollPane {
     private final Group pointMarkerTextGroup;
     private final Group thessianMarkersGroup;
     private final Group selectionRectangleGroup;
+    private final Group zoomLocationGroup;
 
     private boolean showingZoomToLocationPane = false;
 
@@ -239,7 +250,7 @@ public class MapView extends ScrollPane {
         pointMarkerTextGroup = new Group();
         thessianMarkersGroup = new Group();
         selectionRectangleGroup = new Group();
-
+        zoomLocationGroup = new Group();
 
 
         markersShowing.add(AbstractMarker.MarkerType.LINE_MARKER);
@@ -273,7 +284,6 @@ public class MapView extends ScrollPane {
                 if (e.getDeltaY() == 0) {
                     return;
                 }
-                //calculateMedianMarkerPosition();
                 /*if (e.getDeltaY() > 0) {
                     reScaleQueriedMarkers(0.94);
                 } else {
@@ -293,36 +303,22 @@ public class MapView extends ScrollPane {
                 double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
                 double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
 
-                //mapGroupHolder.setTranslateX(mapGroupHolder.getTranslateX() - xAdjust * moveX);
-                //mapGroupHolder.setTranslateY(mapGroupHolder.getTranslateY() - yAdjust * moveY);
                 mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
                 mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
 
-                //mapGroupHolder.setScaleX(newXScale);
-                //mapGroupHolder.setScaleY(newYScale);
-                //self.setScaleX(newXScale);
-                //self.setScaleY(newYScale);
+
                 mapStackPane.setScaleX(newXScale);
                 mapStackPane.setScaleY(newYScale);
 
-                //testRegion.setScaleX(scaleFactor);
-                //testRegion.setScaleY(scaleFactor);
-
-                //graphMarkerGroup.setScaleX(scaleFactor);
-                //graphMarkerGroup.setScaleY(scaleFactor);
-                //calculateClusters();
-                //clusterMarkerGroup.getChildren().clear();
                 if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
                     updateClusterMarkers();
                 }
-                //pointMarkerClusters.forEach(cluster -> drawClusterMarkers(cluster));
-                //testMarker.getMarker().setScaleY(scaleFactor);
 
-                /*for (Node node : thessianMarkersGroup.getChildren()) {
-                    if (mapCanvas.getBoundsInLocal().intersects(mapStackPane.sceneToLocal(self.localToScene(self.getViewportBounds())))) {
+                for (AbstractMarker m : markers.values()) {
+                    if (self.getParent().getBoundsInLocal().contains(m.getMarker().getBoundsInLocal())) {
                         ++nodesOnScreen;
                     }
-                }*/
+                }
 
                 LOGGER.log(Level.SEVERE, "Nodes on Screen: " + nodesOnScreen);
                 nodesOnScreen = 0;
@@ -698,7 +694,7 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(pointMarkerTextGroup);
         mapGroupHolder.getChildren().add(thessianMarkersGroup);
 
-
+        mapGroupHolder.getChildren().add(zoomLocationGroup);
         overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
         overlayGroup.getChildren().addAll(infoOverlay.getOverlayPane());
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
@@ -969,7 +965,6 @@ public class MapView extends ScrollPane {
 
     public void panToAll() {
 
-        //if (!calculatedMedianMarkerPosition) {
         int markerCounter = 0;
         double averageX = 0;
         double averageY = 0;
@@ -989,8 +984,7 @@ public class MapView extends ScrollPane {
                 ++markerCounter;
             }
         }
-            //double viewPortCenterX = mapStackPane.parentToLocal(this.getWidth() / 2, this.getHeight() / 2).getX();
-            //double viewPortCenterY = mapStackPane.parentToLocal(this.getWidth() / 2, this.getHeight() / 2).getY();
+
 
         averageX /= markerCounter;
         averageY /= markerCounter;
@@ -1007,7 +1001,7 @@ public class MapView extends ScrollPane {
 
         overlayGroup.getChildren().add(r);
         pan(averageX, averageY);
-
+        zoom(averageX, averageY);
 
     }
 
@@ -1070,38 +1064,192 @@ public class MapView extends ScrollPane {
         overlayGroup.getChildren().add(r);
 
         pan(averageX, averageY);
-
+        zoom(averageX, averageY);
     }
 
-    public void zoomLocation() {
-        if (!showingZoomToLocationPane) {
-        BorderPane pane = new BorderPane();
-            pane.prefWidth(60);
-            pane.prefHeight(45);
-            pane.minWidth(60);
-            pane.minHeight(45);
-            pane.maxWidth(60);
-            pane.maxHeight(45);
+    public void zoom(double x, double y) {
+        for (int i = 0; i < 50; ++i) {
+            double scaleFactor = 1.05;
 
-        pane.setBackground(Background.fill(Color.BLACK));
+            double oldXScale = mapStackPane.getScaleY();
+            double oldYScale = mapStackPane.getScaleX();
+
+            double newXScale = oldXScale * scaleFactor;
+            double newYScale = oldYScale * scaleFactor;
+
+            double xAdjust = (newXScale / oldXScale) - 1;
+            double yAdjust = (newYScale / oldYScale) - 1;
+
+            double moveX = mapStackPane.localToParent(x, y).getX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
+            double moveY = mapStackPane.localToParent(x, y).getY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
+
+            mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
+            mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
+
+            mapStackPane.setScaleX(newXScale);
+            mapStackPane.setScaleY(newYScale);
+        }
+    }
+
+    public void generateZoomLocationUI() {
+        if (!showingZoomToLocationPane) {
+
+            double width = 100;
+            double height = 75;
+
+        BorderPane pane = new BorderPane();
+            pane.prefWidth(width);
+            pane.prefHeight(height);
+            pane.minWidth(width);
+            pane.minHeight(height);
+            pane.maxWidth(width);
+            pane.maxHeight(height);
+
+            pane.setBackground(Background.fill(Color.BLACK));
+
+            pane.setTranslateX(mapWidth / 2 - width / 2);
+            pane.setTranslateY(mapHeight / 2 - height / 2);
 
         GridPane topGridPane = new GridPane();
-        pane.setTop(topGridPane);
+            pane.setCenter(topGridPane);
+
         Text titleText = new Text("Zoom to Location");
-        titleText.setFill(Color.WHITE);
+            titleText.setFill(Color.WHITE);
+
         Button closeButton = new Button();
         closeButton.setText("X");
-        closeButton.setTextFill(Color.WHITE);
+            closeButton.setTextFill(Color.WHITE);
+            //closeButton.prefHeight(6);
+            //closeButton.prefWidth(10);
+            //closeButton.maxHeight(6);
+            //closeButton.maxWidth(10);
+            //closeButton.minHeight(6);
+            //closeButton.minWidth(10);
+            closeButton.setPadding(new Insets(0, 0, 0, 95));
+            closeButton.setOnAction(event -> {
+                showingZoomToLocationPane = false;
+                event.consume();
+                zoomLocationGroup.getChildren().clear();
+            });
+
+            Text geoTypeLabel = new Text("Geo Type");
+            geoTypeLabel.setFill(Color.WHITE);
+
+            ComboBox<String> geoTypeMenu = new ComboBox<>(FXCollections.observableList(Arrays.asList("Coordinate", "Geohash", "MGRS")));
+            geoTypeMenu.getSelectionModel().selectFirst();
+            Text lattitudeLabel = new Text("Lattitude");
+            lattitudeLabel.setFill(Color.AQUA);
+
+            Text longitudeLabel = new Text("Longitude");
+            longitudeLabel.setFill(Color.AQUA);
+
+            Text radiusLabel = new Text("Radius");
+            radiusLabel.setFill(Color.AQUA);
+
+            TextField lattitudeInput = new TextField();
+            lattitudeInput.setBorder(Border.stroke(Color.AQUA));
+            //lattitudeInput.minWidth(180);
+            /*coordinateInput.minHeight(10);
+            coordinateInput.maxWidth(180);
+            coordinateInput.maxHeight(10);
+            coordinateInput.prefWidth(180);
+            coordinateInput.prefHeight(10);
+            coordinateInput.setPromptText("Enter a coordinate in decimal degrees (and optionally a radis in kilometers) with components seperated by spaces of commas");*/
+
+            lattitudeInput.setBackground(Background.fill(Color.WHITE));
+
+            TextField longitudeInput = new TextField();
+            longitudeInput.setBackground(Background.fill(Color.WHITE));
+            longitudeInput.setBorder(Border.stroke(Color.AQUA));
+
+            TextField radiusInput = new TextField();
+            radiusInput.setBackground(Background.fill(Color.WHITE));
+            radiusInput.setBorder(Border.stroke(Color.AQUA));
+
+            GridPane coordinateGridPane = new GridPane();
+            coordinateGridPane.setHgap(10);
+            coordinateGridPane.setPadding(new Insets(0, 0, 0, 10));
+
+            coordinateGridPane.add(lattitudeLabel, 0, 0);
+            coordinateGridPane.add(longitudeLabel, 1, 0);
+            coordinateGridPane.add(radiusLabel, 2, 0);
+
+            coordinateGridPane.add(lattitudeInput, 0, 1);
+            coordinateGridPane.add(longitudeInput, 1, 1);
+            coordinateGridPane.add(radiusInput, 2, 1);
+
+            Text geoHashLabel = new Text("Base-16 geohash value");
+            TextField geoHashInput = new TextField();
+
+            Text mgrsLabel = new Text("MGRS value");
+            TextField mgrsInput = new TextField();
+
+            geoTypeMenu.setOnAction(event -> {
+
+                coordinateGridPane.getChildren().clear();
+                String selectedItem = geoTypeMenu.getSelectionModel().getSelectedItem();
+
+                if (selectedItem.equals("Coordinate")) {
+                    coordinateGridPane.add(lattitudeLabel, 0, 0);
+                    coordinateGridPane.add(longitudeLabel, 1, 0);
+                    coordinateGridPane.add(radiusLabel, 2, 0);
+
+                    coordinateGridPane.add(lattitudeInput, 0, 1);
+                    coordinateGridPane.add(longitudeInput, 1, 1);
+                    coordinateGridPane.add(radiusInput, 2, 1);
+
+                } else if (selectedItem.equals("Geohash")) {
+                    geoHashLabel.setFill(Color.AQUA);
+                    geoHashInput.setBorder(Border.stroke(Color.AQUA));
+                    coordinateGridPane.add(geoHashLabel, 0, 0);
+                    coordinateGridPane.add(geoHashInput, 0, 1);
+                } else if (selectedItem.equals("MGRS")) {
+                    mgrsLabel.setFill(Color.AQUA);
+                    mgrsInput.setBorder(Border.stroke(Color.AQUA));
+                    coordinateGridPane.add(mgrsLabel, 0, 0);
+                    coordinateGridPane.add(mgrsInput, 0, 1);
+                }
+
+
+            });
+
+
+            Button okButton = new Button("OK");
+            okButton.setTextFill(Color.WHITE);
+
+            Button cancelButton = new Button("Cancel");
+            cancelButton.setTextFill(Color.WHITE);
+
+            cancelButton.setOnAction(event -> {
+                showingZoomToLocationPane = false;
+                event.consume();
+                zoomLocationGroup.getChildren().clear();
+            });
+
+            GridPane bottomGridPane = new GridPane();
 
         topGridPane.add(titleText, 0, 0);
-        topGridPane.add(closeButton, 1, 0);
-        closeButton.setPadding(new Insets(0, 0, 0, 590));
+            topGridPane.add(closeButton, 2, 0);
+            topGridPane.add(geoTypeLabel, 0, 1);
+            topGridPane.add(geoTypeMenu, 1, 1, 2, 1);
 
-            mapGroupHolder.getChildren().add(pane);
+            topGridPane.add(coordinateGridPane, 0, 2);
+
+
+
+            bottomGridPane.add(okButton, 0, 0);
+            bottomGridPane.add(cancelButton, 1, 0);
+
+            topGridPane.add(bottomGridPane, 3, 4);
+
+
+
+            zoomLocationGroup.getChildren().add(pane);
 
             showingZoomToLocationPane = true;
         }
     }
+
 
     public ObservableList<Node> getPointMarkersOnMap() {
         return hiddenPointMarkerGroup.getChildren();

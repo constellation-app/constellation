@@ -237,7 +237,7 @@ public class MapViewPane extends BorderPane {
         });
 
         zoomLocation.setOnAction(event -> {
-            mapView.zoomLocation();
+            mapView.generateZoomLocationUI();
         });
 
         markerDropDown = new CheckComboBox(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
