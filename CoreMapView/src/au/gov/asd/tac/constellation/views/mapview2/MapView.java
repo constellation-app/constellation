@@ -151,6 +151,7 @@ public class MapView extends ScrollPane {
     private final Group pointMarkerTextGroup;
     private final Group thessianMarkersGroup;
     private final Group selectionRectangleGroup;
+    private final Group viewPortRectangleGroup;
     private final Group zoomLocationGroup;
 
     private boolean showingZoomToLocationPane = false;
@@ -194,7 +195,7 @@ public class MapView extends ScrollPane {
 
     private final Pane mapGroupHolder = new Pane();
 
-
+    private Rectangle clipRectangle = new Rectangle();
     private final List<AbstractMapLayer> layers = new ArrayList<>();
 
     private ToolsOverlay toolsOverlay = null;
@@ -251,6 +252,7 @@ public class MapView extends ScrollPane {
         thessianMarkersGroup = new Group();
         selectionRectangleGroup = new Group();
         zoomLocationGroup = new Group();
+        viewPortRectangleGroup = new Group();
 
 
         markersShowing.add(AbstractMarker.MarkerType.LINE_MARKER);
@@ -275,6 +277,13 @@ public class MapView extends ScrollPane {
 
         mapStackPane.getChildren().addAll(mapGroupHolder);
         mapStackPane.setBackground(Background.fill(Color.WHITE));
+
+        clipRectangle.setWidth(parent.getWidth());
+        clipRectangle.setHeight(parent.getHeight());
+        clipRectangle.setX(0);
+        clipRectangle.setY(0);
+        clipRectangle.setFill(Color.TRANSPARENT);
+        //parent.setClip(clipRectangle);
 
         mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
@@ -315,13 +324,13 @@ public class MapView extends ScrollPane {
                 }
 
                 for (AbstractMarker m : markers.values()) {
-                    if (self.getParent().getBoundsInLocal().contains(m.getMarker().getBoundsInLocal())) {
+                    if (self.getParent().getBoundsInLocal().contains(m.getMarker().getBoundsInParent())) {
                         ++nodesOnScreen;
                     }
                 }
 
                 LOGGER.log(Level.SEVERE, "Nodes on Screen: " + nodesOnScreen);
-                nodesOnScreen = 0;
+
             }
         });
 
@@ -698,6 +707,20 @@ public class MapView extends ScrollPane {
         overlayGroup.getChildren().addAll(toolsOverlay.getOverlayPane());
         overlayGroup.getChildren().addAll(infoOverlay.getOverlayPane());
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
+        mapGroupHolder.getChildren().add(viewPortRectangleGroup);
+
+        Rectangle r = new Rectangle();
+        r.setX(0);
+        r.setY(0);
+
+        r.setWidth(mapWidth);
+        r.setHeight(mapHeight);
+
+        r.setFill(Color.TRANSPARENT);
+        r.setStroke(Color.RED);
+        //viewPortRectangleGroup.getChildren().add(r);
+        mapStackPane.getChildren().add(viewPortRectangleGroup);
+
 
         //graphMarkerGroup.getChildren().add(testRegion);
         //calculateMedianMarkerPosition();
@@ -1025,8 +1048,21 @@ public class MapView extends ScrollPane {
 
         Vec3 dirVect = new Vec3(parentCenterX - averageMarkerPosition.getX(), parentCenterY - averageMarkerPosition.getY());
 
+
         mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.x);
         mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.y);
+        /*viewPortRectangleGroup.getChildren().clear();
+        Rectangle r = new Rectangle();
+        r.setX(x - 50);
+        r.setY(y - 50);
+
+        r.setWidth(100);
+        r.setHeight(100);
+
+        r.setFill(Color.TRANSPARENT);
+        r.setStroke(Color.RED);
+
+        viewPortRectangleGroup.getChildren().add(r);*/
     }
 
     public void panToSelection() {
@@ -1052,23 +1088,13 @@ public class MapView extends ScrollPane {
 
         LOGGER.log(Level.SEVERE, "Average x: " + averageX + " Average y: " + averageY);
 
-        Rectangle r = new Rectangle();
-        r.setX(averageX);
-        r.setY(averageY);
-
-        r.setWidth(5);
-        r.setHeight(5);
-
-        r.setFill(Color.BLACK);
-
-        overlayGroup.getChildren().add(r);
 
         pan(averageX, averageY);
         zoom(averageX, averageY);
     }
 
     public void zoom(double x, double y) {
-        for (int i = 0; i < 50; ++i) {
+        while (true) {
             double scaleFactor = 1.05;
 
             double oldXScale = mapStackPane.getScaleY();
@@ -1088,7 +1114,36 @@ public class MapView extends ScrollPane {
 
             mapStackPane.setScaleX(newXScale);
             mapStackPane.setScaleY(newYScale);
+
+            if (!selectedMarkersInView()) {
+
+                mapStackPane.setTranslateX(mapStackPane.getTranslateX() + xAdjust * moveX);
+                mapStackPane.setTranslateY(mapStackPane.getTranslateY() + yAdjust * moveY);
+
+                mapStackPane.setScaleX(oldXScale);
+                mapStackPane.setScaleY(oldYScale);
+                break;
+            }
+
         }
+    }
+
+    private boolean selectedMarkersInView() {
+        for (AbstractMarker m : markers.values()) {
+            if (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId())) {
+                double x = (m.getX() - 95.5);
+                double y = (m.getY() + 95.5);
+
+                LOGGER.log(Level.SEVERE, "Marker selected x: " + (m.getX() - 95.5) + " y: " + (m.getY() + 95.5));
+
+                if (!parent.getViewPortRectangle().getBoundsInLocal().contains(mapStackPane.localToParent(x, y))) {
+                    return false;
+                }
+
+            }
+        }
+
+        return true;
     }
 
     public void generateZoomLocationUI() {

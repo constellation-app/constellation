@@ -32,6 +32,8 @@ import au.gov.asd.tac.constellation.views.mapview.layers.MapLayer;
 import au.gov.asd.tac.constellation.views.mapview.overlays.MapOverlay;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
+import static au.gov.asd.tac.constellation.views.mapview2.MapView.mapHeight;
+import static au.gov.asd.tac.constellation.views.mapview2.MapView.mapWidth;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ActivityHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
@@ -77,6 +79,9 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
@@ -93,6 +98,8 @@ public class MapViewPane extends BorderPane {
 
     private final MapViewTopComponent parent;
     private final ToolBar toolBar;
+    private StackPane parentStackPane = new StackPane();
+    private Rectangle viewPortRectangle = new Rectangle();
 
     private static final String MARKER_TYPE_POINT = "Point Markers";
     private static final String MARKER_TYPE_LINE = "Line Markers";
@@ -162,6 +169,9 @@ public class MapViewPane extends BorderPane {
     public MapViewPane(final MapViewTopComponent parentComponent) {
         parent = parentComponent;
 
+        //parentStackPane.setMouseTransparent(true);
+        viewPortRectangle.setMouseTransparent(true);
+
         toolBar = new ToolBar();
 
         defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
@@ -194,7 +204,6 @@ public class MapViewPane extends BorderPane {
 
             }
         });
-
 
         overlaysDropDown = new CheckComboBox(FXCollections.observableArrayList(INFO_OVERLAY, OVERVIEW_OVERLAY, TOOLS_OVERLAY));
         overlaysDropDown.setTitle("Overlays");
@@ -386,13 +395,36 @@ public class MapViewPane extends BorderPane {
         return mapView;
     }
 
+
     public void setUpMap() {
         mapView = new MapView(this);
+        parentStackPane.getChildren().add(mapView);
+
+
+        viewPortRectangle.setX(0);
+        viewPortRectangle.setY(0);
+
+        viewPortRectangle.setWidth(mapWidth);
+        viewPortRectangle.setHeight(mapHeight);
+
+        viewPortRectangle.setFill(Color.TRANSPARENT);
+        viewPortRectangle.setStroke(Color.RED);
+        //viewPortRectangleGroup.getChildren().add(r);
+        //mapStackPane.getChildren().add(viewPortRectangleGroup);
+        parentStackPane.getChildren().add(viewPortRectangle);
         Platform.runLater(() -> {
-            setCenter(mapView);
+            setCenter(parentStackPane);
 
         });
 
+    }
+
+    public StackPane getParentStackPane() {
+        return parentStackPane;
+    }
+
+    public Rectangle getViewPortRectangle() {
+        return viewPortRectangle;
     }
 
     public void redrawQueriedMarkers() {
