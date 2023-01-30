@@ -11,7 +11,7 @@ The graph window provides a 3D visual display of a graph.
 ## Navigating The Graph
 
 You can navigate the graph using the mouse and keyboard keys (refer
-[here](../ext/docs/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/docs/add-and-selection-modes.md)
+[here](../ext/docs/CoreInteractiveGraph/src/au/gov/asd/tac/constellation/graph/interaction/add-and-selection-modes.md)
 for the mouse controls). Menus can be used to manipulate the graph. Some
 menus have keys assigned to them by default, but you can change the key
 assignments using Tools -> Options -> Keymap.

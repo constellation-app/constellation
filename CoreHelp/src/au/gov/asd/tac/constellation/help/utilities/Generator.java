@@ -99,7 +99,7 @@ public class Generator implements Runnable {
         Lookup.getDefault().lookupAll(HelpPageProvider.class).forEach(provider -> {
             final String providerTOC = provider.getHelpTOC();
             if (StringUtils.isNotEmpty(providerTOC)) {
-                    tocXMLFiles.add(new File(baseDirectory + providerTOC));
+                tocXMLFiles.add(new File(baseDirectory + providerTOC));
             }
         });
         return tocXMLFiles;

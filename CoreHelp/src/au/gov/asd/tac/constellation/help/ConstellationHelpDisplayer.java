@@ -76,7 +76,6 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     }
 
     protected static InputStream getInputStream(final String filePath) throws FileNotFoundException {
-//        final Path path = Paths.get(filePath);
         final Path path = Paths.get(getPathString(filePath));
         return new FileInputStream(path.toString());
     }
@@ -95,8 +94,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
             final String removedFirstHalf = helpFilePath.substring(lastIndex, helpFilePath.length());
             final String coreRepo = "constellation";
             final String localPath = Generator.getBaseDirectory().substring(0, Generator.getBaseDirectory().indexOf(coreRepo));
-            final String fixedPath = localPath + removedFirstHalf;
-            return fixedPath;
+            return localPath + removedFirstHalf;
         } else {
             return helpFilePath;
         }
@@ -237,8 +235,8 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String helpId = helpCtx.getHelpID();
         LOGGER.log(Level.INFO, "display help for: {0}", helpId);
 
-        final String helpDefaultPath = sep + "constellation" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "docs" + sep + "about-constellation.md";
+        final String helpDefaultPath = "ext" + sep + "docs" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "about-constellation.md";
 
         final String helpAddress = HelpMapper.getHelpAddress(helpId);
         // use the requested help file, or the About Constellation page if one is not given

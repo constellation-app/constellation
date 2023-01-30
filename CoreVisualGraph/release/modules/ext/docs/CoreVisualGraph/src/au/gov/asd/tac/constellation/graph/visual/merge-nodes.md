@@ -22,7 +22,7 @@
 </table>
 
 NOTE: This is a standalone plugin. For the Data Access Plugin, go
-[here](../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/docs/merge-nodes.md)
+[here](../ext/docs/CoreDataAccessView/src/au/gov/asd/tac/constellation/views/dataaccess/merge-nodes.md)
 
 This plugin alters the structure of the graph by deleting all but one of
 the nodes and reconnecting all the transactions to the remaining node.
