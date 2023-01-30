@@ -235,7 +235,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String helpId = helpCtx.getHelpID();
         LOGGER.log(Level.INFO, "display help for: {0}", helpId);
 
-        final String helpDefaultPath = "ext" + sep + "docs" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
+        final String helpDefaultPath = sep + "ext" + sep + "docs" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "about-constellation.md";
 
         final String helpAddress = HelpMapper.getHelpAddress(helpId);
