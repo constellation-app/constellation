@@ -42,8 +42,8 @@ public class FindViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String findModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreFindView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "find" + sep + "docs" + sep;
+        final String findModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreFindView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "find" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.find", findModulePath + "find-view.md");
         return map;
@@ -58,8 +58,8 @@ public class FindViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String findViewPath;
-        findViewPath = CODEBASE_NAME + sep + "CoreFindView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "find" + sep + "docs" + sep + "find-toc.xml";
+        findViewPath = "ext" + sep + "docs" + sep + "CoreFindView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "find" + sep + "find-toc.xml";
         return findViewPath;
     }
 }

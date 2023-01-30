@@ -42,8 +42,8 @@ public class TableViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String tableModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "tableview" + sep + "docs" + sep;
+        final String tableModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "tableview" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent", tableModulePath + "table-view.md");
         return map;
@@ -58,8 +58,8 @@ public class TableViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String tableViewPath;
-        tableViewPath = CODEBASE_NAME + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "tableview" + sep + "docs" + sep + "tableview-toc.xml";
+        tableViewPath = "ext" + sep + "docs" + sep + "CoreTableView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "tableview" + sep + "tableview-toc.xml";
 
         return tableViewPath;
     }

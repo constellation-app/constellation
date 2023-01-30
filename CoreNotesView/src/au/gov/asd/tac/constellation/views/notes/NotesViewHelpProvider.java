@@ -42,8 +42,8 @@ public class NotesViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String notesModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "notes" + sep + "docs" + sep;
+        final String notesModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "notes" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent", notesModulePath + "notes-view.md");
         return map;
@@ -58,8 +58,8 @@ public class NotesViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String notesViewPath;
-        notesViewPath = CODEBASE_NAME + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "notes" + sep + "docs" + sep + "notes-toc.xml";
+        notesViewPath = "ext" + sep + "docs" + sep + "CoreNotesView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "notes" + sep + "notes-toc.xml";
         return notesViewPath;
     }
 }
