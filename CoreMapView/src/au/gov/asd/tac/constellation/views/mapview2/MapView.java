@@ -304,8 +304,8 @@ public class MapView extends ScrollPane {
                 }*/
                 double scaleFactor = (e.getDeltaY() > 0) ? mapScaleFactor : 1 / mapScaleFactor;
 
-                double oldXScale = mapStackPane.getScaleY();
-                double oldYScale = mapStackPane.getScaleX();
+                double oldXScale = mapStackPane.getScaleX();
+                double oldYScale = mapStackPane.getScaleY();
 
                 double newXScale = oldXScale * scaleFactor;
                 double newYScale = oldYScale * scaleFactor;
@@ -1024,11 +1024,14 @@ public class MapView extends ScrollPane {
         r.setHeight(5);
 
         r.setFill(Color.RED);
-            r.setOpacity(0.25);
+
+        LOGGER.log(Level.SEVERE, "Zoom to all X: " + averageX + " Zoom to all Y: " + averageY);
+
+        //r.setOpacity(0.25);
 
         overlayGroup.getChildren().add(r);
         pan(averageX, averageY);
-        zoom(averageX, averageY);
+        zoom(averageX, averageY, true);
 
     }
 
@@ -1094,15 +1097,15 @@ public class MapView extends ScrollPane {
 
 
         pan(averageX, averageY);
-        zoom(averageX, averageY);
+        zoom(averageX, averageY, false);
     }
 
-    public void zoom(double x, double y) {
+    public void zoom(double x, double y, boolean allMarkers) {
         while (true) {
             double scaleFactor = 1.05;
 
-            double oldXScale = mapStackPane.getScaleY();
-            double oldYScale = mapStackPane.getScaleX();
+            double oldXScale = mapStackPane.getScaleX();
+            double oldYScale = mapStackPane.getScaleY();
 
             double newXScale = oldXScale * scaleFactor;
             double newYScale = oldYScale * scaleFactor;
@@ -1119,7 +1122,7 @@ public class MapView extends ScrollPane {
             mapStackPane.setScaleX(newXScale);
             mapStackPane.setScaleY(newYScale);
 
-            if (!selectedMarkersInView()) {
+            if (!selectedMarkersInView(allMarkers)) {
                 LOGGER.log(Level.SEVERE, "some Markers are outside rectangle");
                 while (true) {
                     scaleFactor = 0.95;
@@ -1139,7 +1142,7 @@ public class MapView extends ScrollPane {
                     mapStackPane.setScaleX(newXScale);
                     mapStackPane.setScaleY(newYScale);
 
-                    if (selectedMarkersInView()) {
+                    if (selectedMarkersInView(allMarkers)) {
                         LOGGER.log(Level.SEVERE, "All Markers are inside rectangle");
                         break;
                     }
@@ -1160,9 +1163,9 @@ public class MapView extends ScrollPane {
         }
     }
 
-    private boolean selectedMarkersInView() {
+    private boolean selectedMarkersInView(boolean allMarkers) {
         for (AbstractMarker m : markers.values()) {
-            if (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId())) {
+            if ((m instanceof PointMarker && allMarkers) || (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId()) && !allMarkers)) {
                 double x = (m.getX() - 97.5);
                 double y = (m.getY() + 95.5);
 
@@ -1399,7 +1402,6 @@ public class MapView extends ScrollPane {
                         UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
                         marker.setMarkerPosition(0, 0);
 
-                        LOGGER.log(Level.SEVERE, "Geohash x: " + x + " Geohash y: " + y);
 
                         addUserDrawnMarker(marker);
 
