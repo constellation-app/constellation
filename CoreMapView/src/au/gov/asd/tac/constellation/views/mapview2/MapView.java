@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview2;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.geospatial.Geohash;
 import static au.gov.asd.tac.constellation.views.mapview2.MapViewPane.GEO_JSON;
 import static au.gov.asd.tac.constellation.views.mapview2.MapViewPane.GEO_PACKAGE;
 import static au.gov.asd.tac.constellation.views.mapview2.MapViewPane.KML;
@@ -38,7 +39,9 @@ import au.gov.asd.tac.constellation.views.mapview2.overlays.AbstractOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.InfoOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
+import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
 import au.gov.tac.constellation.views.mapview2.utillities.Vec3;
+import gov.nasa.worldwind.geom.coords.MGRSCoord;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -105,6 +108,7 @@ import javafx.scene.text.Text;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
+import org.apache.commons.lang3.math.NumberUtils;
 
 /**
  *
@@ -719,7 +723,7 @@ public class MapView extends ScrollPane {
         r.setFill(Color.TRANSPARENT);
         r.setStroke(Color.RED);
         //viewPortRectangleGroup.getChildren().add(r);
-        mapStackPane.getChildren().add(viewPortRectangleGroup);
+        //mapStackPane.getChildren().add(viewPortRectangleGroup);
 
 
         //graphMarkerGroup.getChildren().add(testRegion);
@@ -1116,13 +1120,41 @@ public class MapView extends ScrollPane {
             mapStackPane.setScaleY(newYScale);
 
             if (!selectedMarkersInView()) {
+                LOGGER.log(Level.SEVERE, "some Markers are outside rectangle");
+                while (true) {
+                    scaleFactor = 0.95;
 
-                mapStackPane.setTranslateX(mapStackPane.getTranslateX() + xAdjust * moveX);
-                mapStackPane.setTranslateY(mapStackPane.getTranslateY() + yAdjust * moveY);
+                    newXScale = oldXScale * scaleFactor;
+                    newYScale = oldYScale * scaleFactor;
 
-                mapStackPane.setScaleX(oldXScale);
-                mapStackPane.setScaleY(oldYScale);
-                break;
+                    xAdjust = (newXScale / oldXScale) - 1;
+                    yAdjust = (newYScale / oldYScale) - 1;
+
+                    moveX = mapStackPane.localToParent(x, y).getX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
+                    moveY = mapStackPane.localToParent(x, y).getY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
+
+                    mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
+                    mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
+
+                    mapStackPane.setScaleX(newXScale);
+                    mapStackPane.setScaleY(newYScale);
+
+                    if (selectedMarkersInView()) {
+                        LOGGER.log(Level.SEVERE, "All Markers are inside rectangle");
+                        break;
+                    }
+                }
+
+
+                mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
+                mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
+
+                mapStackPane.setScaleX(newXScale);
+                mapStackPane.setScaleY(newYScale);
+
+                return;
+            } else {
+                LOGGER.log(Level.SEVERE, "All Markers are inside rectangle");
             }
 
         }
@@ -1131,10 +1163,19 @@ public class MapView extends ScrollPane {
     private boolean selectedMarkersInView() {
         for (AbstractMarker m : markers.values()) {
             if (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId())) {
-                double x = (m.getX() - 95.5);
+                double x = (m.getX() - 97.5);
                 double y = (m.getY() + 95.5);
 
                 LOGGER.log(Level.SEVERE, "Marker selected x: " + (m.getX() - 95.5) + " y: " + (m.getY() + 95.5));
+
+                Rectangle r = new Rectangle();
+                r.setWidth(5);
+                r.setHeight(5);
+
+                r.setX(x);
+                r.setY(y);
+                r.setFill(Color.RED);
+                overlayGroup.getChildren().addAll(r);
 
                 if (!parent.getViewPortRectangle().getBoundsInLocal().contains(mapStackPane.localToParent(x, y))) {
                     return false;
@@ -1271,6 +1312,102 @@ public class MapView extends ScrollPane {
 
             Button okButton = new Button("OK");
             okButton.setTextFill(Color.WHITE);
+
+            okButton.setOnAction(event -> {
+                String selectedGeoType = geoTypeMenu.getSelectionModel().getSelectedItem();
+
+                if (selectedGeoType.equals("Coordinate")) {
+
+                    double lattitude = -3000;
+                    double longitude = -3000;
+                    double radius = -3000;
+
+                    String lattitudeText = lattitudeInput.getText();
+                    String longitudeText = longitudeInput.getText();
+                    String radiusText = radiusInput.getText();
+
+                    if (!lattitudeText.isBlank() && !lattitudeText.isEmpty() && NumberUtils.isParsable(lattitudeText.strip())) {
+                        lattitude = Double.parseDouble(lattitudeText.strip());
+                    } else {
+                        return;
+                    }
+
+                    if (!longitudeText.isBlank() && !longitudeText.isEmpty() && NumberUtils.isParsable(longitudeText.strip())) {
+                        longitude = Double.parseDouble(longitudeText.strip());
+                    } else {
+                        return;
+                    }
+
+//95, 245,
+                    double x = MarkerUtilities.longToX(longitude, minLong, mapWidth, maxLong - minLong);
+                    double y = MarkerUtilities.latToY(lattitude, mapWidth, mapHeight) - 149;
+
+                    if (!radiusText.isBlank() && !radiusText.isEmpty() && NumberUtils.isParsable(radiusText.strip())) {
+                        radius = Double.parseDouble(radiusText.strip());
+
+                        CircleMarker zoomCircleMarker = new CircleMarker(self, drawnMarkerId++, x, y, radius, 100, 100);
+
+                        zoomCircleMarker.generateCircle();
+                        drawnMarkerGroup.getChildren().add(zoomCircleMarker.getMarker());
+                        userMarkers.add(zoomCircleMarker);
+                    } else {
+                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
+                        marker.setMarkerPosition(0, 0);
+
+                        addUserDrawnMarker(marker);
+
+                        userMarkers.add(marker);
+                    }
+
+
+                    /*viewPortRectangleGroup.getChildren().clear();
+                    Rectangle r = new Rectangle();
+                    r.setX(x);
+                    r.setY(y);
+
+                    r.setWidth(5);
+                    r.setHeight(5);
+
+                    r.setFill(Color.TRANSPARENT);
+                    r.setStroke(Color.RED);
+
+                    viewPortRectangleGroup.getChildren().add(r);*/
+
+                } else if (selectedGeoType.equals("MGRS")) {
+                    String mgrs = mgrsInput.getText().strip();
+
+                    if (!mgrs.isBlank() && !mgrs.isEmpty()) {
+                        final MGRSCoord coordinate = MGRSCoord.fromString(mgrs, null);
+                        double x = MarkerUtilities.longToX(coordinate.getLongitude().degrees, minLong, mapWidth, maxLong - minLong);
+                        double y = MarkerUtilities.latToY(coordinate.getLatitude().degrees, mapWidth, mapHeight) - 149;
+
+                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 96.05, -96.15);
+                        marker.setMarkerPosition(0, 0);
+
+                        addUserDrawnMarker(marker);
+
+                        userMarkers.add(marker);
+                    }
+                } else if (selectedGeoType.equals("Geohash")) {
+                    String location = geoHashInput.getText().strip();
+
+                    if (!location.isBlank() && !location.isEmpty()) {
+                        final double[] geohashCoordinates = Geohash.decode(location, Geohash.Base.B32);
+                        double x = MarkerUtilities.longToX(geohashCoordinates[1] - geohashCoordinates[3], minLong, mapWidth, maxLong - minLong);
+                        double y = MarkerUtilities.latToY(geohashCoordinates[0] - geohashCoordinates[2], mapWidth, mapHeight) - 149;
+
+                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
+                        marker.setMarkerPosition(0, 0);
+
+                        LOGGER.log(Level.SEVERE, "Geohash x: " + x + " Geohash y: " + y);
+
+                        addUserDrawnMarker(marker);
+
+                        userMarkers.add(marker);
+
+                    }
+                }
+            });
 
             Button cancelButton = new Button("Cancel");
             cancelButton.setTextFill(Color.WHITE);

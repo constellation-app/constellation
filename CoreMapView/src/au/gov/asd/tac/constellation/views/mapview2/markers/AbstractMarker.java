@@ -35,8 +35,8 @@ public abstract class AbstractMarker {
 
     private double x = 0;
     private double y = 0;
-    protected int xOffset;
-    protected int yOffset;
+    protected double xOffset;
+    protected double yOffset;
 
     protected MapView parent;
 
@@ -49,7 +49,7 @@ public abstract class AbstractMarker {
 
     protected MarkerType type;
 
-    public AbstractMarker(MapView parent, int markerID, int nodeId, int xOffset, int yOffset, MarkerType type) {
+    public AbstractMarker(MapView parent, int markerID, int nodeId, double xOffset, double yOffset, MarkerType type) {
         this.markerID = markerID;
         this.parent = parent;
         idList.add(nodeId);

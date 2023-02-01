@@ -98,8 +98,8 @@ public class MapViewPane extends BorderPane {
 
     private final MapViewTopComponent parent;
     private final ToolBar toolBar;
-    private StackPane parentStackPane = new StackPane();
-    private Rectangle viewPortRectangle = new Rectangle();
+    private StackPane parentStackPane;
+    private Rectangle viewPortRectangle;
 
     private static final String MARKER_TYPE_POINT = "Point Markers";
     private static final String MARKER_TYPE_LINE = "Line Markers";
@@ -161,6 +161,7 @@ public class MapViewPane extends BorderPane {
 
     private static final Logger LOGGER = Logger.getLogger("MapViewPane");
 
+
     //private final Consumer<Graph> updateMarkers;
     //private au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer renderer = null;
 
@@ -168,6 +169,9 @@ public class MapViewPane extends BorderPane {
 
     public MapViewPane(final MapViewTopComponent parentComponent) {
         parent = parentComponent;
+
+        parentStackPane = new StackPane();
+        viewPortRectangle = new Rectangle();
 
         //parentStackPane.setMouseTransparent(true);
         viewPortRectangle.setMouseTransparent(true);
@@ -404,8 +408,8 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setX(0);
         viewPortRectangle.setY(0);
 
-        viewPortRectangle.setWidth(mapWidth);
-        viewPortRectangle.setHeight(mapHeight);
+        viewPortRectangle.setWidth(mapView.mapWidth);
+        viewPortRectangle.setHeight(mapView.mapHeight - 50);
 
         viewPortRectangle.setFill(Color.TRANSPARENT);
         viewPortRectangle.setStroke(Color.RED);

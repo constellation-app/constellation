@@ -32,7 +32,7 @@ public class UserPointMarker extends AbstractMarker {
     private double y;
     private double scale;
 
-    public UserPointMarker(MapView parent, int markerID, double x, double y, double scale, int xOffset, int yOffset) {
+    public UserPointMarker(MapView parent, int markerID, double x, double y, double scale, double xOffset, double yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
 
 
