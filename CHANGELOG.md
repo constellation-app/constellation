@@ -1,4 +1,8 @@
-# Constellation Changes	
+# Constellation Changes
+
+## Changes in February 2023	
+
+-   Updated `comprisingIds` parameter type in `CompositeUtilities.makeComposite()` from a List to a Collection.
 
 ## Changes in October 2022
 
