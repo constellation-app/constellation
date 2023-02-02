@@ -146,8 +146,8 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
                 } else {
                     graph.setFloatValue(ccAttribute, vertexId, 0);
                 }
-            } // subgraph just two connected nodes
-            else if (subgraph.cardinality() == 2) {
+            } else if (subgraph.cardinality() == 2) {
+                // subgraph just two connected nodes
                 if (normalise && ignoreSingletons) {
                     graph.setFloatValue(ccAttribute, vertexId, numComponents - 1);
                 } else if (normalise && !ignoreSingletons) {
@@ -155,15 +155,15 @@ public class ConnectivityDegreePlugin extends SimpleEditPlugin {
                 } else {
                     graph.setFloatValue(ccAttribute, vertexId, 0);
                 }
-            } // if on outskirts of subnetwork, deleting won't lower the number of components
-            else if (eccentricity == maxEccentricityConnectedComponents.get(subgraph) || graph.getVertexNeighbourCount(vertexId) == 1) {
+            } else if (eccentricity == maxEccentricityConnectedComponents.get(subgraph) || graph.getVertexNeighbourCount(vertexId) == 1) {
+                // if on outskirts of subnetwork, deleting won't lower the number of components
                 if (normalise) {
                     graph.setFloatValue(ccAttribute, vertexId, numComponents);
                 } else {
                     graph.setFloatValue(ccAttribute, vertexId, 0);
                 }
-            } // if not on outskirts, will need to calculate how many subgraphs get created if removed
-            else {
+            } else {
+                // if not on outskirts, will need to calculate how many subgraphs get created if removed
                 final BitSet temp = new BitSet(vertexCount);
                 temp.or(subgraph);
                 temp.set(vertexPosition, false);

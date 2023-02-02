@@ -416,9 +416,9 @@ public final class FibonacciHeap<T> {
          */
         if (one == null && two == null) { // Both null, resulting list is null.
             return null;
-        } else if (one != null && two == null) { // Two is null, result is one.
+        } else if (two == null) { // Two is null, result is one.
             return one;
-        } else if (one == null && two != null) { // One is null, result is two.
+        } else if (one == null) { // One is null, result is two.
             return two;
         } else { // Both non-null; actually do the splice.
             /* This is actually not as easy as it seems.  The idea is that we'll
@@ -521,9 +521,10 @@ public final class FibonacciHeap<T> {
             /* If there are any other children, pick one of them arbitrarily. */
             if (entry.mNext != entry) {
                 entry.mParent.mChild = entry.mNext;
-            } /* Otherwise, there aren't any children left and we should clear the
-             * pointer and drop the node's degree.
-             */ else {
+            } else {
+                /* Otherwise, there aren't any children left and we should clear the
+                 * pointer and drop the node's degree.
+                 */
                 entry.mParent.mChild = null;
             }
         }

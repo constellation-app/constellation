@@ -159,7 +159,7 @@ public abstract class InfomapBase {
                 double maxCodelength = 0;
                 LOGGER.log(Level.INFO, "Codelengths for %d trials: [{0}", config.getNumTrials());
                 for (final double mdl : codelengths) {
-                    LOGGER.log(Level.INFO, "NINE_FORMAT1", mdl);
+                    LOGGER.log(Level.INFO, NINE_FORMAT1, mdl);
                     averageCodelength += mdl;
                     minCodelength = Math.min(minCodelength, mdl);
                     maxCodelength = Math.max(maxCodelength, mdl);
@@ -167,15 +167,15 @@ public abstract class InfomapBase {
 
                 averageCodelength /= config.getNumTrials();
                 
-                final String formattedString = String.format("[min, average, max] codelength: [%.9f, %.9f, %.9f]\n\n",
+                final String formattedString = String.format("[min, average, max] codelength: [%.9f, %.9f, %.9f]%n%n",
                         minCodelength, averageCodelength, maxCodelength);
                 LOGGER.log(Level.INFO, formattedString);
             }
 
             if (bestIntermediateStatistics != null) {
-                LOGGER.log(Level.INFO, "Best intermediate solution: {0}", bestIntermediateStatistics.toString());
+                LOGGER.log(Level.INFO, "Best intermediate solution: {0}", bestIntermediateStatistics);
             }
-            LOGGER.log(Level.INFO, "Best end solution: {0}", bestSolutionStatistics.toString());
+            LOGGER.log(Level.INFO, "Best end solution: {0}", bestSolutionStatistics);
         }
     }
 
@@ -564,7 +564,7 @@ public abstract class InfomapBase {
             if (config.getVerbosity() == 0) {
                 LOGGER.log(Level.INFO, "Clearing {0} of codelength", codelength);
             } else {
-                final String formattedString = String.format("done! Two-level codelength %f + %f = %f in %d modules.\n",
+                final String formattedString = String.format("done! Two-level codelength %f + %f = %f in %d modules.%n",
                         indexCodelength, moduleCodelength, codelength, getNumTopModules());
                 LOGGER.log(Level.INFO, formattedString);
             }
@@ -607,7 +607,7 @@ public abstract class InfomapBase {
             final InfomapBase subInfomap = getNewInfomapInstance(config, rg);
             subInfomap.subLevel = subLevel + 1;
 
-            subInfomap.initSubNetwork(module, false);
+            subInfomap.initSubNetwork(module);
 
             subInfomap.partitionAndQueueNextLevel(subQueue, tryIndexing);
 
@@ -990,7 +990,7 @@ public abstract class InfomapBase {
             // To not happen to get back the same network with the same seed.
             subInfomap.reseed(NodeBase.uid());
             subInfomap.subLevel = subLevel + 1;
-            subInfomap.initSubNetwork(module, false);
+            subInfomap.initSubNetwork(module);
             subInfomap.partition(recursiveCount, fast);
 
             if (DEBUG) {
@@ -1008,7 +1008,7 @@ public abstract class InfomapBase {
         }
     }
 
-    private void initSubNetwork(final NodeBase parent, final boolean recalculateFlow) {
+    private void initSubNetwork(final NodeBase parent) {
         if (DEBUG) {
             final String log = String.format("%s.initSubNetwork()%n", getClass().getSimpleName());
             LOGGER.log(Level.INFO, log);

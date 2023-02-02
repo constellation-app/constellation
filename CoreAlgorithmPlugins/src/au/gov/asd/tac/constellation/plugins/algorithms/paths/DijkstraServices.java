@@ -476,13 +476,10 @@ public class DijkstraServices {
                 if (!followDirection || (followDirection && pivottedVertex == selectedVertices.get(0))) {
                     //Set each selected vertex as a target
                     for (final int vertex : parent.collection.get(pivottedVertex).keySet()) {
-                        //Check to make sure this vertex is selected, otherwise skip it
-                        if (!parent.selectedVertices.contains(vertex) || pivottedVertex == vertex) {
-                            continue;
-                        }
-
-                        //Check if we have found the path before
-                        if ((parent.visited.containsKey(pivottedVertex) && parent.visited.get(pivottedVertex).contains(vertex)) || (parent.visited.containsKey(vertex) && parent.visited.get(vertex).contains(pivottedVertex))) {
+                        //Check to make sure this vertex is selected and we haven't found the path before, otherwise skip it
+                        if (!parent.selectedVertices.contains(vertex) || pivottedVertex == vertex
+                                || (parent.visited.containsKey(pivottedVertex) && parent.visited.get(pivottedVertex).contains(vertex)) 
+                                || (parent.visited.containsKey(vertex) && parent.visited.get(vertex).contains(pivottedVertex))) {
                             continue;
                         }
 
@@ -569,8 +566,8 @@ public class DijkstraServices {
                         path.remove(path.indexOf(previous));
                     }
                     count++;
-                } //If we are at 0 and not at the target we have reached a dead end
-                else if (count == 0) {
+                } else if (count == 0) {
+                    //If we are at 0 and not at the target we have reached a dead end
                     //Not the shortest path
                 } else {
                     //Make sure the originating vertex has an entry in our map so we can transverse it
