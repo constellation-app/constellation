@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -320,16 +319,6 @@ public class HierarchicalArranger implements Arranger {
     private static void arrangePendants(final GraphWriteMethods wg, final Map<Integer, Set<Integer>> pendantSets) throws InterruptedException {
         final ExplicitTaxonomyArranger arranger = new ExplicitTaxonomyArranger(pendantSets);
         arranger.arrange(wg);
-    }
-
-    private static void dump(final ArrayList<ArrayList<Integer>> vxLevels) {
-        for (int i = 0; i < vxLevels.size(); i++) {
-            LOGGER.log(Level.INFO, "@@H level {0}", i);
-            final ArrayList<Integer> vxLevel = vxLevels.get(i);
-            for (Integer vxLevel1 : vxLevel) {
-                LOGGER.log(Level.INFO, "is {0}", vxLevel1);
-            }
-        }
     }
 
     @Override

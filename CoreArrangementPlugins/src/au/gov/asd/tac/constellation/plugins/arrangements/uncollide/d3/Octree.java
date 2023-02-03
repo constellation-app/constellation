@@ -157,8 +157,8 @@ public class Octree {
             } else {
                 // Do nothing
             }
-        } // Object can completely fit within the right quadrants.
-        else if (orb.getX() - orb.r > midx) {
+        } else if (orb.getX() - orb.r > midx) {
+            // Object can completely fit within the right quadrants.
             if (topQuadrant) {
                 if (frontQuadrant) {
                     index = TOP_R_F;

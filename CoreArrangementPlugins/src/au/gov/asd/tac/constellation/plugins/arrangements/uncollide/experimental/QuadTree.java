@@ -95,8 +95,8 @@ public class QuadTree extends AbstractTree {
             } else {
                 // Do nothing
             }
-        } // Object can completely fit within the right half.
-        else if (rightHalf) {
+        } else if (rightHalf) {
+            // Object can completely fit within the right half.
             if (topHalf) {
                 index = TOP_R; // fits in top right quadrant
             } else if (bottomHalf) {

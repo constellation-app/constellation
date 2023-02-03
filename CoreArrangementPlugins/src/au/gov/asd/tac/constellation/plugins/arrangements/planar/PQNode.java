@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,7 +31,7 @@ class PQNode {
 
     private PQNode parent;
     public final PQNodeList children = new PQNodeList();
-    public final EnumMap<NodeLabel, Set<PQNode>> labeledChildren = new EnumMap<>(NodeLabel.class);
+    public final Map<NodeLabel, Set<PQNode>> labeledChildren = new EnumMap<>(NodeLabel.class);
     private DirectionIndicator directionIndicator = null;
 
     public final NodeType type;
