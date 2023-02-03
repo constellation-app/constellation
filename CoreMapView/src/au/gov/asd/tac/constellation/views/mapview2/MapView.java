@@ -1145,6 +1145,7 @@ public class MapView extends ScrollPane {
                 Rectangle r = new Rectangle();
                 r.setWidth(10);
                 r.setHeight(17.5);
+                //r.setHeight(1500);
 
                 r.setStroke(Color.RED);
                 r.setX(x);

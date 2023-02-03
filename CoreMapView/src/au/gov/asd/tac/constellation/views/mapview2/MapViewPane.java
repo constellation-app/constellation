@@ -66,6 +66,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.event.EventType;
+import javafx.scene.Group;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -404,15 +405,19 @@ public class MapViewPane extends BorderPane {
         mapView = new MapView(this);
         parentStackPane.getChildren().add(mapView);
 
-
         viewPortRectangle.setX(0);
         viewPortRectangle.setY(0);
 
+        parentStackPane.setLayoutX(0);
+        parentStackPane.setLayoutY(0);
+
         viewPortRectangle.setWidth(MapView.mapWidth);
+        //viewPortRectangle.setHeight(MapView.mapHeight);
         viewPortRectangle.setHeight(MapView.mapHeight);
 
         viewPortRectangle.setFill(Color.TRANSPARENT);
         viewPortRectangle.setStroke(Color.RED);
+
         //viewPortRectangleGroup.getChildren().add(r);
         //mapStackPane.getChildren().add(viewPortRectangleGroup);
         parentStackPane.getChildren().add(viewPortRectangle);
