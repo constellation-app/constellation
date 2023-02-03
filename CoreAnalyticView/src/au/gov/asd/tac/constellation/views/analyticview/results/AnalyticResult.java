@@ -42,14 +42,14 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     protected AnalyticController analyticController = null;
     protected final List<ResultListener<D>> resultListeners = new ArrayList<>();
 
-    public void setSelectionOnGraph(final List<D> results) {
+    public void setSelectionOnGraph(final Iterable<D> results) {
         final List<Integer> verticesToSelect = new ArrayList<>();
         final List<Integer> transactionsToSelect = new ArrayList<>();
-        results.forEach(result -> {
-            if (result.getElementType() == GraphElementType.VERTEX) {
-                verticesToSelect.add(result.getElementId());
-            } else if (result.getElementType() == GraphElementType.TRANSACTION) {
-                transactionsToSelect.add(result.getElementId());
+        results.forEach(analyticResult -> {
+            if (analyticResult.getElementType() == GraphElementType.VERTEX) {
+                verticesToSelect.add(analyticResult.getElementId());
+            } else if (analyticResult.getElementType() == GraphElementType.TRANSACTION) {
+                transactionsToSelect.add(analyticResult.getElementId());
             } else {
                 // Do nothing
             }
@@ -114,8 +114,8 @@ public abstract class AnalyticResult<D extends AnalyticData> {
         this.result.put(resultData.getIdentificationData(), resultData);
     }
 
-    public void addAll(final List<D> results) {
-        results.forEach(result -> this.result.put(result.getIdentificationData(), result));
+    public void addAll(final Iterable<D> results) {
+        results.forEach(analyticResult -> this.result.put(analyticResult.getIdentificationData(), analyticResult));
     }
 
     public final boolean hasMetadata() {

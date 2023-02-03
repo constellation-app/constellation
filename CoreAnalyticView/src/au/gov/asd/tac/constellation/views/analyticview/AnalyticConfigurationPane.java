@@ -156,7 +156,7 @@ public class AnalyticConfigurationPane extends VBox {
                 "A category should be populated only with analytics of the same result type.";
         this.categoryList = new ListView<>();
         final List<String> categories = new ArrayList<>(categoryToPluginsMap.keySet());
-        Collections.sort(categories, (category1, category2) -> category1.compareToIgnoreCase(category2));
+        Collections.sort(categories, String::compareToIgnoreCase);
         categoryList.getItems().addAll(categories);
         categoryList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             currentQuestion = null;
@@ -519,9 +519,7 @@ public class AnalyticConfigurationPane extends VBox {
     public final void updateSelectablePluginsParameters() {
         if (categoryListPane.isExpanded()) {
             LOGGER.log(Level.INFO, "Update selectable plugins parameters in analytic config pane.");
-            pluginList.getItems().forEach(selectablePlugin -> {
-                selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
-            });
+            pluginList.getItems().forEach(selectablePlugin -> selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters));
 
         } else if (questionListPane.isExpanded() && currentQuestion != null) {
             pluginList.getItems().forEach(selectablePlugin -> {

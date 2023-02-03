@@ -3,6 +3,8 @@
 ## Changes in February 2023	
 
 -   Updated `comprisingIds` parameter type in `CompositeUtilities.makeComposite()` from a List to a Collection.
+-   Updated `results` parameter type in `AnalyticResult.setSelectionOnGraph()` from a List to an Iterable.
+-   Updated `results` parameter type in `AnalyticResult.addAll()` from a List to an Iterable.
 
 ## Changes in October 2022
 

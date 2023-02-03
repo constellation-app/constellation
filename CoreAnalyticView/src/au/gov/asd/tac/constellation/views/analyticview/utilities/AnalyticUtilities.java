@@ -33,7 +33,7 @@ import org.openide.util.Lookup;
  */
 public class AnalyticUtilities {
 
-    private static final Map<String, AnalyticQuestionDescription> ANALYTIC_QUESTION_DESCRIPTIONS = new HashMap<>();
+    private static final Map<String, AnalyticQuestionDescription<?>> ANALYTIC_QUESTION_DESCRIPTIONS = new HashMap<>();
     private static final Map<String, AnalyticAggregator<?>> ANALYTIC_AGGREGATORS = new HashMap<>();
     private static final Map<String, InternalVisualisationTranslator> INTERNAL_VISUALISATION_TRANSLATORS = new HashMap<>();
     private static final Map<String, GraphVisualisationTranslator> GRAPH_VISUALISATION_TRANSLATORS = new HashMap<>();
@@ -53,11 +53,11 @@ public class AnalyticUtilities {
         throw new IllegalStateException("Utility class");
     }
     
-    public static Collection<AnalyticQuestionDescription> getAnalyticQuestionDescriptions() {
+    public static Collection<AnalyticQuestionDescription<?>> getAnalyticQuestionDescriptions() {
         return Collections.unmodifiableCollection(ANALYTIC_QUESTION_DESCRIPTIONS.values());
     }
 
-    public static Collection<AnalyticQuestionDescription> lookupAnalyticQuestionDescriptions(final Class<? extends AnalyticResult<?>> analyticResultType) {
+    public static Collection<AnalyticQuestionDescription<?>> lookupAnalyticQuestionDescriptions(final Class<? extends AnalyticResult<?>> analyticResultType) {
         return Collections.unmodifiableCollection(ANALYTIC_QUESTION_DESCRIPTIONS.values().stream()
                 .filter(aggregator -> aggregator.getResultType().isAssignableFrom(analyticResultType))
                 .collect(Collectors.toList()));
@@ -65,7 +65,7 @@ public class AnalyticUtilities {
 
     public static AnalyticQuestionDescription<?> lookupAnalyticQuestionDescription(final Class<? extends AnalyticQuestionDescription<?>> questionDescriptionType) {
         return ANALYTIC_QUESTION_DESCRIPTIONS.values().stream()
-                .filter(questionDescription -> questionDescriptionType.isInstance(questionDescription))
+                .filter(questionDescriptionType::isInstance)
                 .collect(Collectors.toList()).get(0);
     }
 
@@ -85,7 +85,7 @@ public class AnalyticUtilities {
 
     public static AnalyticAggregator<?> lookupAnalyticAggregator(final Class<? extends AnalyticAggregator<?>> analyticAggregatorType) {
         return ANALYTIC_AGGREGATORS.values().stream()
-                .filter(aggregator -> analyticAggregatorType.isInstance(aggregator))
+                .filter(analyticAggregatorType::isInstance)
                 .collect(Collectors.toList()).get(0);
     }
 
