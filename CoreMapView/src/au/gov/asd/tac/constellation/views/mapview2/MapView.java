@@ -1058,18 +1058,18 @@ public class MapView extends ScrollPane {
 
         mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.x);
         mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.y);
-        /*viewPortRectangleGroup.getChildren().clear();
+        viewPortRectangleGroup.getChildren().clear();
         Rectangle r = new Rectangle();
-        r.setX(x - 50);
-        r.setY(y - 50);
+        r.setX(x - 2.5);
+        r.setY(y - 2.5);
 
-        r.setWidth(100);
-        r.setHeight(100);
+        r.setWidth(5);
+        r.setHeight(5);
 
         r.setFill(Color.TRANSPARENT);
         r.setStroke(Color.RED);
 
-        viewPortRectangleGroup.getChildren().add(r);*/
+        viewPortRectangleGroup.getChildren().add(r);
     }
 
     public void panToSelection() {
@@ -1101,8 +1101,10 @@ public class MapView extends ScrollPane {
     }
 
     public void zoom(double x, double y, boolean allMarkers) {
+        double scaleFactor = 1.05;
+        boolean zoomIn = true;
+
         while (true) {
-            double scaleFactor = 1.05;
 
             double oldXScale = mapStackPane.getScaleX();
             double oldYScale = mapStackPane.getScaleY();
@@ -1122,43 +1124,11 @@ public class MapView extends ScrollPane {
             mapStackPane.setScaleX(newXScale);
             mapStackPane.setScaleY(newYScale);
 
-            if (!selectedMarkersInView(allMarkers)) {
-                LOGGER.log(Level.SEVERE, "some Markers are outside rectangle");
-                while (true) {
-                    scaleFactor = 0.95;
-
-                    newXScale = oldXScale * scaleFactor;
-                    newYScale = oldYScale * scaleFactor;
-
-                    xAdjust = (newXScale / oldXScale) - 1;
-                    yAdjust = (newYScale / oldYScale) - 1;
-
-                    moveX = mapStackPane.localToParent(x, y).getX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
-                    moveY = mapStackPane.localToParent(x, y).getY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
-
-                    mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
-                    mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
-
-                    mapStackPane.setScaleX(newXScale);
-                    mapStackPane.setScaleY(newYScale);
-
-                    if (selectedMarkersInView(allMarkers)) {
-                        LOGGER.log(Level.SEVERE, "All Markers are inside rectangle");
-                        break;
-                    }
-                }
-
-
-                mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
-                mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
-
-                mapStackPane.setScaleX(newXScale);
-                mapStackPane.setScaleY(newYScale);
-
-                return;
-            } else {
-                LOGGER.log(Level.SEVERE, "All Markers are inside rectangle");
-            }
+            if (!selectedMarkersInView(allMarkers) && zoomIn) {
+                scaleFactor = 1 / 1.05;
+                zoomIn = false;
+            } else if (selectedMarkersInView(allMarkers) && !zoomIn)
+                break;
 
         }
     }
@@ -1166,21 +1136,24 @@ public class MapView extends ScrollPane {
     private boolean selectedMarkersInView(boolean allMarkers) {
         for (AbstractMarker m : markers.values()) {
             if ((m instanceof PointMarker && allMarkers) || (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId()) && !allMarkers)) {
-                double x = (m.getX() - 97.5);
-                double y = (m.getY() + 95.5);
+                double x = (m.getX() - 100);
+                double y = (m.getY() + 80);
+
 
                 LOGGER.log(Level.SEVERE, "Marker selected x: " + (m.getX() - 95.5) + " y: " + (m.getY() + 95.5));
 
                 Rectangle r = new Rectangle();
-                r.setWidth(5);
-                r.setHeight(5);
+                r.setWidth(10);
+                r.setHeight(17.5);
 
+                r.setStroke(Color.RED);
                 r.setX(x);
                 r.setY(y);
-                r.setFill(Color.RED);
+                r.setFill(Color.TRANSPARENT);
                 overlayGroup.getChildren().addAll(r);
 
-                if (!parent.getViewPortRectangle().getBoundsInLocal().contains(mapStackPane.localToParent(x, y))) {
+
+                if (!(parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y)) && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y)) && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y + r.getHeight())) && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y + r.getHeight())))) {
                     return false;
                 }
 
@@ -1409,6 +1382,10 @@ public class MapView extends ScrollPane {
 
                     }
                 }
+
+                showingZoomToLocationPane = false;
+                event.consume();
+                zoomLocationGroup.getChildren().clear();
             });
 
             Button cancelButton = new Button("Cancel");
