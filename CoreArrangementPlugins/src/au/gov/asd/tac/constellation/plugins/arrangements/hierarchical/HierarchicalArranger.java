@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Logger;
 
 /**
  * Hierarchical layout (Sugiyama based).
@@ -59,7 +58,6 @@ public class HierarchicalArranger implements Arranger {
 
     private final Set<Integer> roots;
     private boolean maintainMean;
-    private static final Logger LOGGER = Logger.getLogger(HierarchicalArranger.class.getName());
 
     public HierarchicalArranger(final Set<Integer> roots) {
         this.roots = roots;
