@@ -58,12 +58,19 @@ public class IntersectionNode {
         return connectedPoints;
     }
 
+
     public void addRelevantMarker(Integer id) {
         if (!relevantMarkers.contains(id)) {
             relevantMarkers.add(id);
         }
     }
 
+    /**
+     * Adds connected point if it is not already added
+     *
+     * @param otherNode - The other intersecionNode that the current node is a
+     * neighbour of
+     */
     public void addConnectedPoint(IntersectionNode otherNode) {
 
         if (otherNode == null) {
@@ -71,12 +78,10 @@ public class IntersectionNode {
         }
 
         if (otherNode.getKey().equals(key) || connectedPointIds.contains(key)) {
-            //LOGGER.log(Level.SEVERE, "Trying to add self to connected components: " + key);
             return;
         }
 
-        //LOGGER.log(Level.SEVERE, "Adding another node: " + key);
-
+        // Check to see if node is already connected
         if (!connectedPointIds.contains(otherNode.getKey())) {
             connectedPointIds.add(otherNode.getKey());
             connectedPoints.add(otherNode);

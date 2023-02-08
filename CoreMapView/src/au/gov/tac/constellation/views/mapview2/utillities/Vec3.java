@@ -16,6 +16,7 @@
 package au.gov.tac.constellation.views.mapview2.utillities;
 
 /**
+ * Utility class to hold 3 variables and do vector maths on them
  *
  * @author altair1673
  */

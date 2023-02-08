@@ -46,32 +46,57 @@ public class ClusterMarkerBuilder {
         this.parent = parent;
     }
 
+    /**
+     * Calculate the clusters based on distance between markers
+     *
+     * @param pointMarkerGroup
+     */
     private void calculateClusters(Group pointMarkerGroup) {
         clusterCircles.clear();
         clusterValues.clear();
         clusteredPointMarkers.clear();
         pointMarkerClusters.clear();
+
+        // Loop through all the nodes on screen
         for (int i = 0; i < pointMarkerGroup.getChildren().size(); ++i) {
 
+            // If the node hasn't been clustered yet
             if (!clusteredPointMarkers.contains(pointMarkerGroup.getChildren().get(i))) {
+                // Add node to the clusered set
                 clusteredPointMarkers.add(pointMarkerGroup.getChildren().get(i));
                 ArrayList<Node> clusterArray = new ArrayList<>();
+
                 clusterArray.add(pointMarkerGroup.getChildren().get(i));
+
+                // Loop through all the nodes again
                 for (int j = 0; j < pointMarkerGroup.getChildren().size(); ++j) {
                     if (i != j && !clusteredPointMarkers.contains(pointMarkerGroup.getChildren().get(j))) {
+
+                        // Get distance bewteen nodes
                         double distance = getNodeDistance(pointMarkerGroup.getChildren().get(i), pointMarkerGroup.getChildren().get(j));
 
+                        // If at the right distance then cluster the markers
                         if (distance < 150) {
                             clusteredPointMarkers.add(pointMarkerGroup.getChildren().get(j));
                             clusterArray.add(pointMarkerGroup.getChildren().get(j));
                         }
                     }
                 }
+
+                // Add array of cluster nodes to pointMarkerCluster 2D array
                 pointMarkerClusters.add(clusterArray);
             }
         }
     }
 
+    /**
+     * '
+     * Calculate distance between n1 and n2
+     *
+     * @param n1
+     * @param n2
+     * @return
+     */
     private double getNodeDistance(Node n1, Node n2) {
         double x1 = n1.localToScreen(n1.getBoundsInLocal().getCenterX(), n1.getBoundsInLocal().getCenterY()).getX();
         double y1 = n1.localToScreen(n1.getBoundsInLocal().getCenterX(), n1.getBoundsInLocal().getCenterY()).getY();
@@ -80,14 +105,19 @@ public class ClusterMarkerBuilder {
         double y2 = n2.localToScreen(n2.getBoundsInLocal().getCenterX(), n2.getBoundsInLocal().getCenterY()).getY();
 
         double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-
-        //LOGGER.log(Level.SEVERE, "Test X1: " + x1);
-        //LOGGER.log(Level.SEVERE, "Test Distance: " + distance);
         return distance;
     }
 
+    /**
+     * Updates the cluster markers, called every time a new marker is added on
+     * to the map
+     *
+     * @param pointMarkerGroup
+     */
     public void update(Group pointMarkerGroup) {
         calculateClusters(pointMarkerGroup);
+
+        // Calculate cluster circles and add them to circles
         pointMarkerClusters.forEach(c -> {
             clusterCircles.add(new ClusterMarker(parent, c));
             clusterValues.add(clusterCircles.get(clusterCircles.size() - 1).getClusterValues());

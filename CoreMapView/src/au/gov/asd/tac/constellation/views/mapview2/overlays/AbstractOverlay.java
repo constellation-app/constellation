@@ -27,6 +27,7 @@ import javafx.scene.paint.Color;
  */
 public class AbstractOverlay {
 
+    // The main pane to hold all UI elements
     protected BorderPane overlayPane = null;
     protected GridPane gridPane = null;
 
@@ -35,13 +36,14 @@ public class AbstractOverlay {
 
     protected boolean isShowing = false;
 
-    public AbstractOverlay(int positionX, int positionY) {
+    public AbstractOverlay(double positionX, double positionY) {
 
         overlayPane = new BorderPane();
         gridPane = new GridPane();
 
         overlayPane.setCenter(gridPane);
 
+        // Set up the ui for main border pane
         overlayPane.setPrefHeight(height);
         overlayPane.setPrefWidth(width);
         overlayPane.setMinWidth(width);

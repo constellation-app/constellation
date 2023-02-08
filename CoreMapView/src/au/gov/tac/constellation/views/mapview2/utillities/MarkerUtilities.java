@@ -25,10 +25,28 @@ public class MarkerUtilities {
 
     }
 
+    /**
+     * Convert longitude to x coordinate
+     *
+     * @param longitude - the longitude in degrees
+     * @param minLong - the left most longitude on map
+     * @param mapWidth - width of map
+     * @param lonDelta - different between right most longitude and left most
+     * longitude
+     * @return x coordinate
+     */
     public static double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
         return (longitude - minLong) * (mapWidth / lonDelta);
     }
 
+    /**
+     * Convert latitude to y coordinate
+     *
+     * @param lattitude - latitude in degrees
+     * @param mapWidth
+     * @param mapHeight
+     * @return y coordinate
+     */
     public static double latToY(double lattitude, double mapWidth, double mapHeight) {
         lattitude = lattitude * (Math.PI / 180);
         double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
@@ -37,11 +55,28 @@ public class MarkerUtilities {
         return y;
     }
 
+    /**
+     * Convert x coordinate to longitude
+     *
+     * @param x - x coordinate
+     * @param minLong - left most longitude
+     * @param mapWidth
+     * @param lonDelta - difference between right and left most longitude
+     * @return - longitude
+     */
     public static double XToLong(double x, double minLong, double mapWidth, double lonDelta) {
         double longitude = (x / (mapWidth / lonDelta)) + minLong;
         return longitude;
     }
 
+    /**
+     * Convert y coordinate to latitude
+     *
+     * @param y
+     * @param mapWidth
+     * @param mapHeight
+     * @return latitude
+     */
     public static double YToLat(double y, double mapWidth, double mapHeight) {
 
         y = ((-y + (mapHeight / 2)) * (2 * Math.PI)) / mapWidth;

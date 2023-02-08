@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
 /**
  *
  * @author altair1673
+ *
  */
 public class MapViewPluginRegistry {
     public static final String EXTRACT_COORDS_FROM_GRAPH = ExtractCoordsFromGraphPlugin.class.getName();

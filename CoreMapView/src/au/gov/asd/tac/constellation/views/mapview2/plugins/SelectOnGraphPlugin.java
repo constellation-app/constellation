@@ -39,6 +39,7 @@ import org.openide.util.lookup.ServiceProvider;
 @NbBundle.Messages("SelectOnGraphPlugin=Highlights nodes on their corresponding marker gets selected on the map")
 public class SelectOnGraphPlugin extends SimpleEditPlugin {
 
+    // IDs of the selected nodes
     private List<Integer> selectedNodeList = new ArrayList<Integer>();
     private boolean isSelectingVertex = true;
 
@@ -51,9 +52,20 @@ public class SelectOnGraphPlugin extends SimpleEditPlugin {
 
     }
 
+    /**
+     * Select vertices on graph which correspond to selected markers on the map
+     *
+     * @param graph
+     * @param interaction
+     * @param parameters
+     * @throws InterruptedException
+     * @throws PluginException
+     */
     @Override
     protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+
         if (graph != null) {
+            // Select vertex
             if (isSelectingVertex) {
                 final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
                 final int vertexCount = graph.getVertexCount();
@@ -62,7 +74,8 @@ public class SelectOnGraphPlugin extends SimpleEditPlugin {
                     final int vertexID = graph.getVertex(i);
                     graph.setBooleanValue(vertexSelectedAttribute, vertexID, selectedNodeList.contains(vertexID));
                 }
-            } else {
+            } // Select transactions
+            else {
                 final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
                 final int transactionCount = graph.getTransactionCount();
 

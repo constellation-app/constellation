@@ -120,44 +120,64 @@ public class MapView extends ScrollPane {
 
     private final StackPane mapStackPane;
 
-
+    // ID of th enext user drawn marker
     private int drawnMarkerId = 0;
+
+    // Flags for the different drawing modes
     private boolean drawingCircleMarker = false;
     private boolean drawingPolygonMarker = false;
 
+    // Furthest lattiude to the east and west
     public static final double minLong = -169.1110266;
     public static final double maxLong = 190.48712;
 
+    // Furthest longitude to the north and south
     public static final double minLat = -58.488473;
     public static final double maxLat = 83.63001;
 
     public static final double mapWidth = 1010.33;
     public static final double mapHeight = 1224;
 
+    // Two containers that hold queried markers and user drawn markers
     private Map<String, AbstractMarker> markers = new HashMap<>();
     private final List<AbstractMarker> userMarkers = new ArrayList<AbstractMarker>();
 
+    // Set of the types of markers currently showing on screen
     private Set<AbstractMarker.MarkerType> markersShowing = new HashSet<>();
+
+    // Set of overlays that are active at all times
     private Map<String, AbstractOverlay> overlayMap = new HashMap<>();
 
     private final List<Integer> selectedNodeList = new ArrayList<>();
 
-    //private Canvas mapCanvas;
+    // The group that contains all the country graphics
     private Group countryGroup;
+
+    // The two groups that hold the queried and user marker groups
     private Group graphMarkerGroup;
     private Group drawnMarkerGroup;
+
+    // Groups for user drawn polygons, cluster markers and "hidden" point markers used for cluster calculations
     private Group polygonMarkerGroup;
     private Group clusterMarkerGroup;
-    //public Group pointMarkerGroup;
     public Group hiddenPointMarkerGroup;
+
+    // Groups for the ovelays and layers
     private final Group overlayGroup;
     private final Group layerGroup;
+
+    // Attribute and Identifier text groups for markers
     private final Group pointMarkerTextGroup;
+
+    // Group for thessian polygons
     private final Group thessianMarkersGroup;
+
+    // Group for the rectangle the user drags to select multiple markers
     private final Group selectionRectangleGroup;
     private final Group viewPortRectangleGroup;
     private final Group zoomLocationGroup;
 
+    // Flag for zoom to location menu
     private boolean showingZoomToLocationPane = false;
 
     private static final Logger LOGGER = Logger.getLogger("MapView");
@@ -167,29 +187,33 @@ public class MapView extends ScrollPane {
 
     private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0);
 
-    /*private final UserPointMarker testMarker;
-    private final UserPointMarker testMarker2;
-    private final UserPointMarker testMarker3;
-    private final UserPointMarker testMarker4;*/
-
+    // Factor to scale map by when zooming
     private final double mapScaleFactor = 1.1;
 
     private double scale = 1.0;
     //private final SVGPath p = new SVGPath();
+
+    // The paths for the edges of all the countries
     private final List<SVGPath> countrySVGPaths = new ArrayList<>();
 
+    // The UI overlys for the shapes the user can draw
     private CircleMarker circleMarker = null;
     private PolygonMarker polygonMarker = null;
     private Rectangle selectionRectangle = null;
+
+    // Flag is the user is selecting multiple markers on screen
     private boolean isSelectingMultiple = false;
     private double selectionRectangleX = 0;
     private double selectionRectangleY = 0;
+
     private ArrayList<ArrayList<Node>> pointMarkerClusters = new ArrayList<ArrayList<Node>>();
     private Set<Node> clusteredPointMarkers = new HashSet<>();
 
+    // Flag for the line the user draws to smell distance between
     private boolean drawingMeasureLine = false;
     private Line measureLine = null;
 
+    // Panning variables
     private double mouseAnchorX;
     private double mouseAnchorY;
     private double transalateX;
@@ -197,19 +221,28 @@ public class MapView extends ScrollPane {
 
     private int markerID = 0;
 
+    // Pane that hold all the groups for allt he different graphical outputs
     private final Pane mapGroupHolder = new Pane();
 
     private Rectangle clipRectangle = new Rectangle();
+
+    // All the layers are stored here
     private final List<AbstractMapLayer> layers = new ArrayList<>();
 
     private ToolsOverlay toolsOverlay = null;
     private InfoOverlay infoOverlay = null;
 
+    private final double toolOverlayWidth = 815;
+    private final double toolsOverlayHeight = 20;
+
+    private final double infoOverlayWidth = 20;
+    private final double infoOverlayHeight = 20;
 
     private MapView self = this;
 
     public ClusterMarkerBuilder clusterMarkerBuilder = null;
 
+    // Flags for what attribute marker colour and text should be derived from
     private StringProperty markerColourProperty = new SimpleStringProperty();
     private StringProperty markerTextProperty = new SimpleStringProperty();
 
@@ -218,29 +251,10 @@ public class MapView extends ScrollPane {
     public MapView(MapViewPane parent) {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
-        /*testMarker = new UserPointMarker(this, 90, 200, 200, 0.05, 0, 0);
-        testMarker.setMarkerPosition(mapWidth, mapHeight);
 
-        testMarker2 = new UserPointMarker(this, 91, 200, 300, 0.05, 0, 0);
-        testMarker2.setMarkerPosition(mapWidth, mapHeight);
-
-        testMarker3 = new UserPointMarker(this, 91, 150, 250, 0.05, 0, 0);
-        testMarker3.setMarkerPosition(mapWidth, mapHeight);
-
-        testMarker4 = new UserPointMarker(this, 91, 250, 250, 0.05, 0, 0);
-        testMarker4.setMarkerPosition(mapWidth, mapHeight);
-
-        userMarkers.add(testMarker);
-        userMarkers.add(testMarker2);
-        userMarkers.add(testMarker3);
-        userMarkers.add(testMarker4);*/
-        //testRegion.setShape(testMarker.getMarker());
-        //markersShowing.setValue(new SetChangeListener<AbstractMarker.MarkerType>());
-
-        //testRegion.setTranslateX(200);
-        //testRegion.setTranslateY(200);
         clusterMarkerBuilder = new ClusterMarkerBuilder(this);
 
+        // Instasntiate all the groups for the graphical outputs
         countryGroup = new Group();
         graphMarkerGroup = new Group();
         drawnMarkerGroup = new Group();
@@ -258,7 +272,7 @@ public class MapView extends ScrollPane {
         zoomLocationGroup = new Group();
         viewPortRectangleGroup = new Group();
 
-
+        // By default all markers should be showing
         markersShowing.add(AbstractMarker.MarkerType.LINE_MARKER);
         markersShowing.add(AbstractMarker.MarkerType.POINT_MARKER);
         markersShowing.add(AbstractMarker.MarkerType.POLYGON_MARKER);
@@ -268,13 +282,12 @@ public class MapView extends ScrollPane {
 
         mapGroupHolder.setBackground(Background.fill(new Color(0.722, 0.871, 0.902, 1)));
 
+        // Clear any existing paths and read the SVG paths of countries from the files
         countrySVGPaths.clear();
         parseMapSVG();
-        LOGGER.log(Level.SEVERE, "Size of country array: " + countrySVGPaths.size());
 
-
+        // The stackPane to store
         mapStackPane = new StackPane();
-
         mapStackPane.setBorder(Border.EMPTY);
         mapStackPane.setBackground(Background.fill(Color.BROWN));
 
@@ -289,6 +302,7 @@ public class MapView extends ScrollPane {
         clipRectangle.setFill(Color.TRANSPARENT);
         //parent.setClip(clipRectangle);
 
+        // Scoll to zoom
         mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
             public void handle(ScrollEvent e) {
@@ -302,31 +316,40 @@ public class MapView extends ScrollPane {
                 } else {
                     reScaleQueriedMarkers(1.06);
                 }*/
+
+                // Scroll factor is more or less than 1 depending on which way the scroll wheele is scrolled
                 double scaleFactor = (e.getDeltaY() > 0) ? mapScaleFactor : 1 / mapScaleFactor;
 
+                // Get the current scale of the map view
                 double oldXScale = mapStackPane.getScaleX();
                 double oldYScale = mapStackPane.getScaleY();
 
+                // Change the scale based on which way the scroll wheel is turned
                 double newXScale = oldXScale * scaleFactor;
                 double newYScale = oldYScale * scaleFactor;
 
+                // Calculate how much the map will have to move
                 double xAdjust = (newXScale / oldXScale) - 1;
                 double yAdjust = (newYScale / oldYScale) - 1;
 
+                // Calculate how much the map will have to move
                 double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
                 double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
 
+                // Move the map
                 mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
                 mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
 
-
+                // Scale the map
                 mapStackPane.setScaleX(newXScale);
                 mapStackPane.setScaleY(newYScale);
 
+                // If cluster markers are showing then update them based on distance between markers
                 if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
                     updateClusterMarkers();
                 }
 
+                // Update how many markers are on screen
                 for (AbstractMarker m : markers.values()) {
                     if (self.getParent().getBoundsInLocal().contains(m.getMarker().getBoundsInParent())) {
                         ++nodesOnScreen;
@@ -338,76 +361,91 @@ public class MapView extends ScrollPane {
             }
         });
 
+        // Panning code
+        // Record where the mouse has been pressed
         mapStackPane.setOnMousePressed(event -> {
             //calculateMedianMarkerPosition();
+
+            // Coordinate within scene
             mouseAnchorX = event.getSceneX();
             mouseAnchorY = event.getSceneY();
 
             Node node = (Node) event.getSource();
 
+            // Position of map when moise is clicked
             transalateX = mapStackPane.getTranslateX();
             transalateY = mapStackPane.getTranslateY();
 
         });
 
+        // When user drags the mouse
         mapStackPane.setOnMouseDragged(event -> {
+            // Check they are dragging the right mouse button
             if (event.isSecondaryButtonDown()) {
 
                 Node node = (Node) event.getSource();
 
+                // Move the map
                 mapStackPane.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX)));
                 mapStackPane.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY)));
 
-                //mapCanvas.setTranslateX(transalateX + ((event.getSceneX() - mouseAnchorX) / canvasScaleX));
-                //mapCanvas.setTranslateY(transalateY + ((event.getSceneY() - mouseAnchorY) / canvasScaleY));
 
                 event.consume();
             }
 
         });
 
-
+        // Clear any country grpahics that already exist within group
         countryGroup.getChildren().clear();
+
+        // Add paths to group to display them on screen
         for (int i = 0; i < countrySVGPaths.size(); ++i) {
             countryGroup.getChildren().add(countrySVGPaths.get(i));
         }
 
+        // Set default pan behaviour to false
         this.setPannable(false);
 
+        // No scroll bars allowed!!
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
 
         setContent(mapStackPane);
 
-
+        // Center content
         this.setHvalue(this.getHmin() + (this.getHmax() - this.getHmin()) / 2);
         this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
 
-        mapGroupHolder.setPrefWidth(1010.33);
-
-        mapGroupHolder.setPrefHeight(1224);
-
+        // Add the country group the the the pane
+        mapGroupHolder.setPrefWidth(mapWidth);
+        mapGroupHolder.setPrefHeight(mapHeight);
         mapGroupHolder.getChildren().add(countryGroup);
 
-        toolsOverlay = new ToolsOverlay(815, 20);
-        infoOverlay = new InfoOverlay(20, 20);
+        // INstantiate overlays
+        toolsOverlay = new ToolsOverlay(toolOverlayWidth, toolsOverlayHeight);
+        infoOverlay = new InfoOverlay(infoOverlayWidth, infoOverlayHeight);
 
+        // Put overlays in map
         overlayMap.put(MapViewPane.TOOLS_OVERLAY, toolsOverlay);
         overlayMap.put(MapViewPane.INFO_OVERLAY, infoOverlay);
 
+        // Event listener for what colour point markers should be
         markerColourProperty.addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                LOGGER.log(Level.SEVERE, "Inside markerCOlourProperty change event handler");
+
+                // Loop through all markers on screen
                 for (Object value : markers.values()) {
                     AbstractMarker m = (AbstractMarker) value;
 
+                    // If the marker is a point marker
                     if (m instanceof PointMarker) {
                         PointMarker p = (PointMarker) m;
 
+                        // Change the marker colour
                         p.changeMarkerColour(newValue);
-                        LOGGER.log(Level.SEVERE, "Called changeMarkerColour function on marker: " + p.getMarkerId());
+
                     }
 
                     //drawMarker(m);
@@ -415,20 +453,21 @@ public class MapView extends ScrollPane {
             }
         });
 
+        // Handler for what type of text to display under the markers
         markerTextProperty.addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                // Clear any existing text
                 pointMarkerTextGroup.getChildren().clear();
+
+                // Loop through all the markers
                 for (Object value : markers.values()) {
                     AbstractMarker m = (AbstractMarker) value;
 
+                    // If its a point marker change its text
                     if (m instanceof PointMarker) {
                         PointMarker p = (PointMarker) m;
 
-                        /*if (newValue.equals(MapViewPane.NO_LABELS)) {
-                            pointMarkerTextGroup.getChildren().clear();
-                            break;
-                        } else */
                         if (newValue.equals(MapViewPane.USE_LABEL_ATTR)) {
 
                             setPointMarkerText(p.getLabelAttr(), p);
@@ -442,11 +481,14 @@ public class MapView extends ScrollPane {
             }
         });
 
+        // Event handler when mouse is clicked on the map
         mapGroupHolder.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
+                // If left clicked
                 if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    // if double clicked desekect all marekers from both the map and the graph in consty
                     if (event.getClickCount() == 2) {
 
                         deselectAllMarkers();
@@ -458,26 +500,35 @@ public class MapView extends ScrollPane {
                     }
                 }
 
+                // Record location of mouse click
                 double x = event.getX();
                 double y = event.getY();
 
+                // If drawing is enabled and measurment is disabled
                 if (toolsOverlay.getDrawingEnabled().get() && !toolsOverlay.getMeasureEnabled().get()) {
+
+                    // If shift is down then display circle drawing
                     if (event.isShiftDown()) {
                         drawingCircleMarker = true;
                         circleMarker = new CircleMarker(self, drawnMarkerId++, x, y, 0, 100, 100);
                         polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
                         polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
 
-                    } else if (drawingCircleMarker) {
+                    } // If user is drawing a circle then add it to the map and clear any UI elements
+                    else if (drawingCircleMarker) {
                         circleMarker.generateCircle();
                         drawnMarkerGroup.getChildren().add(circleMarker.getMarker());
                         userMarkers.add(circleMarker);
                         circleMarker = null;
                         polygonMarkerGroup.getChildren().clear();
                         drawingCircleMarker = false;
+
+                        // Reset the distance shown on the tools ovelay
                         toolsOverlay.resetMeasureText();
-                        //updateClusterMarkers();
-                    } else if (event.isControlDown()) {
+
+                    } // If control is down
+                    else if (event.isControlDown()) {
+                        // if user is not current;y drawing a polygon marker or a circle marker then show UI to draw a polygon on screen
                         if (!drawingPolygonMarker && !drawingCircleMarker) {
                             polygonMarker = new PolygonMarker(self, drawnMarkerId++, 0, 0);
 
@@ -487,7 +538,8 @@ public class MapView extends ScrollPane {
                             polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
                         }
                         toolsOverlay.resetMeasureText();
-                    } else if (drawingPolygonMarker) {
+                    } // If the user is drawing a polygon marker then add the polygon to the screen and clear any UI elements
+                    else if (drawingPolygonMarker) {
                         drawingPolygonMarker = false;
                         polygonMarker.generatePath();
                         addUserDrawnMarker(polygonMarker);
@@ -495,19 +547,19 @@ public class MapView extends ScrollPane {
                         userMarkers.add(polygonMarker);
                         polygonMarker.endDrawing();
                         polygonMarkerGroup.getChildren().clear();
-                        //updateClusterMarkers();
-                    } else if (!drawingPolygonMarker && !drawingCircleMarker) {
+                    } // If the user is not drawing any type of marker then generate point marker where they clicked
+                    else if (!drawingPolygonMarker && !drawingCircleMarker) {
                         UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
                         marker.setMarkerPosition(0, 0);
-                        //drawnMarkerGroup.getChildren().addAll(marker.getMarker());
-                        addUserDrawnMarker(marker);
-                        //pointMarkerGroup.getChildren().addAll(marker.getMarker());
+
                         userMarkers.add(marker);
                         updateClusterMarkers();
                     }
-                } else if (!toolsOverlay.getDrawingEnabled().get() && toolsOverlay.getMeasureEnabled().get()) {
+                } // If drawing is not enabled but measuring is
+                else if (!toolsOverlay.getDrawingEnabled().get() && toolsOverlay.getMeasureEnabled().get()) {
 
                     //if (event.isPrimaryButtonDown()) {
+                    // If the user is not drawing a measureing line then spawn it at mouse click location else get rid of the line
                         if (!drawingMeasureLine) {
                             LOGGER.log(Level.SEVERE, "Drawing measure line");
                             measureLine = new Line();
@@ -533,27 +585,40 @@ public class MapView extends ScrollPane {
 
         });
 
+        // If the mouse is moved
         mapGroupHolder.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 double x = event.getX();
                 double y = event.getY();
 
+                // Change lattitude and logitude text on info overlay if its showing
                 if (infoOverlay != null && infoOverlay.getIsShowing()) {
                     infoOverlay.updateLocation(x, y);
                 }
 
+                // If drawing is enabled
                 if (toolsOverlay.getDrawingEnabled().get() && !toolsOverlay.getMeasureEnabled().get()) {
+
+                    // if drawing circle marker then change the circle marker UI's radius to the distance between the original click position and the mouse's
+                    // current position
                     if (drawingCircleMarker && circleMarker != null && !drawingPolygonMarker) {
 
                         circleMarker.setRadius(x, y);
                         circleMarker.setLineEnd(x, y);
+
+                        // Change distance text on tools overlay
                         toolsOverlay.setDistanceText(circleMarker.getCenterX(), circleMarker.getCenterY(), x, y);
-                    } else if (drawingPolygonMarker && polygonMarker != null && !drawingCircleMarker) {
+
+                    } // If the user is drawing a polygon marker then update the polygon drawing UI
+                    else if (drawingPolygonMarker && polygonMarker != null && !drawingCircleMarker) {
                         polygonMarker.setEnd(x, y);
+
+                        // Update distance text
                         toolsOverlay.setDistanceText(polygonMarker.getCurrentLine().getStartX(), polygonMarker.getCurrentLine().getStartY(), polygonMarker.getCurrentLine().getEndX(), polygonMarker.getCurrentLine().getEndY());
                     }
-                } else if (toolsOverlay.getMeasureEnabled().get() && !toolsOverlay.getDrawingEnabled().get()) {
+                } // If the user isn't drawing anything but IS measuring distance then update the size of the measurement line
+                else if (toolsOverlay.getMeasureEnabled().get() && !toolsOverlay.getDrawingEnabled().get()) {
                     if (measureLine != null) {
                         measureLine.setEndX(event.getX());
                         measureLine.setEndY(event.getY());
@@ -579,9 +644,12 @@ public class MapView extends ScrollPane {
 
         });
 
+        // When mouse is pressed
         mapGroupHolder.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+
+                // create the selection rectangle
                 if (event.isPrimaryButtonDown()) {
                 isSelectingMultiple = true;
                 selectionRectangle = new Rectangle();
@@ -604,9 +672,12 @@ public class MapView extends ScrollPane {
             }
         });
 
+        // When mouse is dragged
         mapGroupHolder.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+
+                // If the user is draing a selection rectangle
                 if (isSelectingMultiple) {
                     double x = event.getX();
                     double y = event.getY();
@@ -614,6 +685,7 @@ public class MapView extends ScrollPane {
                     double width = 0;
                     double height = 0;
 
+                    // Change positiona nd zie of rectangle based on where the user moves their mouse
                     if (x >= selectionRectangleX && y <= selectionRectangleY) {
                         width = x - selectionRectangleX;
                         height = selectionRectangleY - y;
@@ -640,61 +712,50 @@ public class MapView extends ScrollPane {
             }
         });
 
+        // When mouse is released
         mapGroupHolder.setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
 
+                // If the user is selecting multiple markers
                 if (isSelectingMultiple) {
                     selectedNodeList.clear();
-                    LOGGER.log(Level.SEVERE, "Top left: " + selectionRectangle.getX() + ", " + selectionRectangle.getY() + " bottom right: " + (selectionRectangle.getX() + selectionRectangle.getWidth()) + ", " + (selectionRectangle.getY() + selectionRectangle.getHeight()));
+
                     double pointMarkerXOffset = 95.5;
                     double pointMarkerYOffset = 95.5;
                     List<Integer> idList = new ArrayList<>();
+
+                    // Loop through all the markers
                     for (AbstractMarker m : markers.values()) {
                         if (m instanceof PointMarker) {
                             PointMarker p = (PointMarker) m;
 
-                            /*Rectangle r = new Rectangle();
-                            r.setWidth(1);
-                            r.setHeight(1);
-                            r.setX(p.getX() - 96);
-                            r.setY(p.getY() + 96);
-                            r.setFill(Color.RED);
-
-                            overlayGroup.getChildren().add(r);*/
 
                             p.deselect();
 
-
+                            // If marker is within the selection rectangle then select the marker
                             if (selectionRectangle.contains(p.getX() - pointMarkerXOffset, p.getY() + pointMarkerYOffset)) {
-                                //LOGGER.log(Level.SEVERE, "X coor of marker: " + p.getX() + " Y coordinate is: " + p.getY());
-                                //LOGGER.log(Level.SEVERE, "X coordinate of selection box: " + selectionRectangle.getX() + " Y coordinate of box is: " + selectionRectangle.getY());
+
                                 p.select();
 
-                                idList.addAll(p.getIdList());
+                                idList.addAll(p.getConnectedNodeIdList());
                                 selectedNodeList.add(p.getMarkerId());
                             }
 
                         }
                     }
 
+                    // Select all noded that correspond to selected markers in consty
                     PluginExecution.withPlugin(new SelectOnGraphPlugin(idList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
                     isSelectingMultiple = false;
                     selectionRectangleGroup.getChildren().clear();
                     LOGGER.log(Level.SEVERE, "Mouse Released");
                 }
-                // event.consume();
+
             }
         });
 
-        // Add this feature in later
-        /*mapGroupHolder.setOnDragDetected(new EventHandler<MouseEvent>(){
-            @Override
-            public void handle(MouseEvent event) {
-
-            }
-        });*/
-
+        // Add all garphical groups to pane
         mapGroupHolder.getChildren().add(hiddenPointMarkerGroup);
         mapGroupHolder.getChildren().add(graphMarkerGroup);
         //mapGroupHolder.getChildren().add(pointMarkerGroup);
@@ -713,23 +774,9 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
         mapGroupHolder.getChildren().add(viewPortRectangleGroup);
 
-        Rectangle r = new Rectangle();
-        r.setX(0);
-        r.setY(0);
-
-        r.setWidth(mapWidth);
-        r.setHeight(mapHeight);
-
-        r.setFill(Color.TRANSPARENT);
-        r.setStroke(Color.RED);
-        //viewPortRectangleGroup.getChildren().add(r);
-        //mapStackPane.getChildren().add(viewPortRectangleGroup);
-
-
-        //graphMarkerGroup.getChildren().add(testRegion);
-        //calculateMedianMarkerPosition();
     }
 
+    // Sets text on the map at a specific location
     private void setPointMarkerText(String markerText, PointMarker p) {
         Text t = new Text(markerText);
         t.setX(p.getX() - 125);
@@ -738,6 +785,7 @@ public class MapView extends ScrollPane {
         pointMarkerTextGroup.getChildren().add(t);
     }
 
+    // Deselects all markers
     public void deselectAllMarkers() {
         for (AbstractMarker value : markers.values()) {
             if (value instanceof PointMarker) {
@@ -751,7 +799,9 @@ public class MapView extends ScrollPane {
         return markerColourProperty;
     }
 
+    // Add user drawn marker on screen
     private void addUserDrawnMarker(AbstractMarker marker) {
+        // Only draw marker is it's type is set to be showing on screen
         if (markersShowing.contains(marker.getType())) {
 
             if (marker instanceof ClusterMarker) {
@@ -763,7 +813,10 @@ public class MapView extends ScrollPane {
         }
     }
 
+    // Remove a user drawn marker
     public void removeUserMarker(int id) {
+        // Loop through all the user drawn markers and if their id matches with the one passed in
+        // to this function then remove them
         for (int i = 0; i < userMarkers.size(); ++i) {
             if (userMarkers.get(i).getMarkerId() == id) {
 
@@ -773,10 +826,12 @@ public class MapView extends ScrollPane {
             }
         }
 
+        // Redraw the user markers now that one has been removed
         redrawUserMarkers();
         updateClusterMarkers();
     }
 
+    // Hide/Show diferent map pverlays
     public void toggleOverlay(String overlay, boolean show) {
         if (overlayMap.containsKey(overlay) && overlayMap.get(overlay).getIsShowing() != show) {
             overlayMap.get(overlay).toggleOverlay();
@@ -787,27 +842,30 @@ public class MapView extends ScrollPane {
         return parent.getNewMarkerID();
     }
 
+    // Add a cluster marker
     public void addClusterMarkers(List<ClusterMarker> clusters, List<Text> clusterValues) {
-        // REMOVE THIS IF STATEMENT
+
+        // If cluster marker is showing
         if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
         clusterMarkerGroup.getChildren().clear();
 
+            // Draw each cluster marker on map
         clusters.forEach(cluster -> {
             addUserDrawnMarker(cluster);
         });
 
+            // Add how many markers are in one cluster
         clusterValues.forEach(numNodes -> {
             clusterMarkerGroup.getChildren().add(numNodes);
             });
         }
     }
 
-    //private List<ClusterMarker> clusterMarkers = new ArrayList<>();
-
     private void redrawUserMarkers() {
-        drawnMarkerGroup.getChildren().clear();
-        //hiddenPointMarkerGroup.getChildren().clear();
 
+        drawnMarkerGroup.getChildren().clear();
+
+        // Redraw all user created markers
         userMarkers.forEach((marker) -> {
 
             if (markersShowing.contains(marker.getType())) {
@@ -817,6 +875,7 @@ public class MapView extends ScrollPane {
             }
         });
 
+        // Cluster markers are showing as well as point markers then update the clister markers
         if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER) && markersShowing.contains(AbstractMarker.MarkerType.POINT_MARKER)) {
             updateClusterMarkers();
         } else
@@ -826,6 +885,7 @@ public class MapView extends ScrollPane {
     private void updateClusterMarkers() {
         hiddenPointMarkerGroup.getChildren().clear();
 
+        // Add point markers to the hiddenPointMarker groups
         for (Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
             if (m instanceof PointMarker) {
@@ -836,6 +896,7 @@ public class MapView extends ScrollPane {
             }
         }
 
+        // Add user created markers to the hiddenPointMarker group
         userMarkers.forEach(m -> {
             if (m instanceof UserPointMarker) {
                 SVGPath p = new SVGPath();
@@ -844,11 +905,14 @@ public class MapView extends ScrollPane {
             }
         });
 
+        // Calculate the clusters
         clusterMarkerBuilder.update(hiddenPointMarkerGroup);
+
+        // Add cluster markers to map
         addClusterMarkers(clusterMarkerBuilder.getClusterMarkers(), clusterMarkerBuilder.getClusterValues());
     }
 
-
+    // Sets up and adds a layer to the map
     public void addLayer(AbstractMapLayer layer) {
         layer.setUp();
         layers.add(layer);
@@ -867,22 +931,24 @@ public class MapView extends ScrollPane {
         renderLayers();
     }
 
+    // Hide/Shows a type of marker on the screen
     public void updateShowingMarkers(AbstractMarker.MarkerType type, boolean adding) {
 
+        // Add or remove a type of marker
         if (markersShowing.contains(type) && !adding) {
             markersShowing.remove(type);
         } else if (!markersShowing.contains(type) && adding) {
             markersShowing.add(type);
         }
 
+        // Redraw all markers on screen
         redrawUserMarkers();
         redrawQueriedMarkers();
     }
 
     public void redrawQueriedMarkers() {
         graphMarkerGroup.getChildren().clear();
-        //parent.redrawQueriedMarkers();
-        //hiddenPointMarkerGroup.getChildren().clear();
+
 
         if (markers.isEmpty()) {
             LOGGER.log(Level.SEVERE, "Marker map is empty");
@@ -892,16 +958,16 @@ public class MapView extends ScrollPane {
             LOGGER.log(Level.SEVERE, "Marker values is empty");
         }
 
+        // Redraw all queried markers
         for (Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
             drawMarker(m);
         }
     }
 
+    // Scale the size of the markers
     public void reScaleQueriedMarkers(double scale) {
         graphMarkerGroup.getChildren().clear();
-        //parent.redrawQueriedMarkers();
-        //hiddenPointMarkerGroup.getChildren().clear();
 
         if (markers.isEmpty()) {
             LOGGER.log(Level.SEVERE, "Marker map is empty");
@@ -916,6 +982,7 @@ public class MapView extends ScrollPane {
             m.getMarker().setScaleX(m.getMarker().getScaleX() * scale);
             m.getMarker().setScaleY(m.getMarker().getScaleY() * scale);
 
+            // Scale markers up and down based on whether or not the map is being zoomed in or out
             if (scale < 1) {
                 m.getMarker().setLayoutY(m.getMarker().getLayoutY() + (m.getMarker().getScaleY() * 10));
             } else {
@@ -923,10 +990,11 @@ public class MapView extends ScrollPane {
             }
 
             drawMarker(m);
-            //m.getMarker().setLayoutY(m.getY());
+
         }
     }
 
+    // Rredraw layers
     private void renderLayers() {
         layerGroup.getChildren().clear();
         layers.forEach(layer -> {
@@ -955,19 +1023,14 @@ public class MapView extends ScrollPane {
 
     public void clearQueriedMarkers() {
         markers.clear();
-        //graphMarkerGroup.getChildren().clear();
-        //markers = null;
-        //markers = new HashMap<>();
         selectedNodeList.clear();
     }
 
     public void clearAll() {
         clearQueriedMarkers();
-        //markers.clear();
-        //selectedNodeList.clear();
+
         userMarkers.clear();
-        //mapCanvas = new Canvas();
-        //mapCanvas.getChildren().clear();
+
         countryGroup.getChildren().clear();
         graphMarkerGroup.getChildren().clear();
         drawnMarkerGroup.getChildren().clear();
@@ -996,6 +1059,7 @@ public class MapView extends ScrollPane {
         double averageX = 0;
         double averageY = 0;
 
+        // Add the positions of all queried markers
         for (AbstractMarker m : markers.values()) {
             if (m instanceof PointMarker) {
                 averageX += (m.getX() - 95.5);
@@ -1004,6 +1068,7 @@ public class MapView extends ScrollPane {
             }
         }
 
+        // Add the positions of all user markers
         for (AbstractMarker m : userMarkers) {
             if (m instanceof UserPointMarker) {
                 averageX += m.getX();
@@ -1012,13 +1077,13 @@ public class MapView extends ScrollPane {
             }
         }
 
-
+        // find average position
         averageX /= markerCounter;
         averageY /= markerCounter;
 
-        Rectangle r = new Rectangle();
-            r.setX(averageX);
-            r.setY(averageY);
+        /*Rectangle r = new Rectangle();
+        r.setX(averageX);
+        r.setY(averageY);
 
         r.setWidth(5);
         r.setHeight(5);
@@ -1029,12 +1094,16 @@ public class MapView extends ScrollPane {
 
         //r.setOpacity(0.25);
 
-        overlayGroup.getChildren().add(r);
+        overlayGroup.getChildren().add(r);*/
+        // Pan to location
         pan(averageX, averageY);
+
+        // Zoom to average location
         zoom(averageX, averageY, true);
 
     }
 
+    // Pan to the center of the component
     public void panToCenter() {
         double centerX = this.getWidth() / 2;
         double centerY = this.getHeight() / 2;
@@ -1045,7 +1114,9 @@ public class MapView extends ScrollPane {
 
     }
 
+    // Pan to specific location
     private void pan(double x, double y) {
+
         Vec3 center = new Vec3(mapWidth / 2, mapHeight / 2);
 
         Point2D averageMarkerPosition = mapStackPane.localToParent(x, y);
@@ -1058,7 +1129,7 @@ public class MapView extends ScrollPane {
 
         mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.x);
         mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.y);
-        viewPortRectangleGroup.getChildren().clear();
+        /*viewPortRectangleGroup.getChildren().clear();
         Rectangle r = new Rectangle();
         r.setX(x - 2.5);
         r.setY(y - 2.5);
@@ -1069,7 +1140,7 @@ public class MapView extends ScrollPane {
         r.setFill(Color.TRANSPARENT);
         r.setStroke(Color.RED);
 
-        viewPortRectangleGroup.getChildren().add(r);
+        viewPortRectangleGroup.getChildren().add(r);*/
     }
 
     public void panToSelection() {
@@ -1077,23 +1148,21 @@ public class MapView extends ScrollPane {
         double averageX = 0;
         double averageY = 0;
 
+        // Add coordinates of the all selected markers
         for (AbstractMarker m : markers.values()) {
             if (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId())) {
                 averageX += (m.getX() - 95.5);
                 averageY += (m.getY() + 95.5);
 
-                LOGGER.log(Level.SEVERE, "Marker selected x: " + (m.getX() - 95.5) + " y: " + (m.getY() + 95.5));
 
                 ++markerCounter;
             }
         }
 
-        LOGGER.log(Level.SEVERE, "markers selected: " + selectedNodeList.size());
-
+        // Average location of all selecter markers
         averageX /= markerCounter;
         averageY /= markerCounter;
 
-        LOGGER.log(Level.SEVERE, "Average x: " + averageX + " Average y: " + averageY);
 
 
         pan(averageX, averageY);
@@ -1104,6 +1173,7 @@ public class MapView extends ScrollPane {
         double scaleFactor = 1.05;
         boolean zoomIn = true;
 
+        // Keep zooming in
         while (true) {
 
             double oldXScale = mapStackPane.getScaleX();
@@ -1124,6 +1194,7 @@ public class MapView extends ScrollPane {
             mapStackPane.setScaleX(newXScale);
             mapStackPane.setScaleY(newYScale);
 
+            // When required markers are no longer in view then zoom out untill they are and break
             if (!selectedMarkersInView(allMarkers) && zoomIn) {
                 scaleFactor = 1 / 1.05;
                 zoomIn = false;
@@ -1133,26 +1204,18 @@ public class MapView extends ScrollPane {
         }
     }
 
+    // Calculate if all or selected marker sare in view
     private boolean selectedMarkersInView(boolean allMarkers) {
         for (AbstractMarker m : markers.values()) {
             if ((m instanceof PointMarker && allMarkers) || (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId()) && !allMarkers)) {
                 double x = (m.getX() - 100);
                 double y = (m.getY() + 80);
 
-
-                LOGGER.log(Level.SEVERE, "Marker selected x: " + (m.getX() - 95.5) + " y: " + (m.getY() + 95.5));
-
                 Rectangle r = new Rectangle();
                 r.setWidth(10);
                 r.setHeight(17.5);
-                //r.setHeight(1500);
-
-                r.setStroke(Color.RED);
                 r.setX(x);
                 r.setY(y);
-                r.setFill(Color.TRANSPARENT);
-                overlayGroup.getChildren().addAll(r);
-
 
                 if (!(parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y)) && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y)) && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y + r.getHeight())) && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y + r.getHeight())))) {
                     return false;
@@ -1164,6 +1227,7 @@ public class MapView extends ScrollPane {
         return true;
     }
 
+    // Create the zoom to location UI
     public void generateZoomLocationUI() {
         if (!showingZoomToLocationPane) {
 
@@ -1180,7 +1244,7 @@ public class MapView extends ScrollPane {
 
             pane.setBackground(Background.fill(Color.BLACK));
 
-            pane.setTranslateX(mapWidth / 2 - width / 2);
+            pane.setTranslateX((mapWidth / 2) - 300);
             pane.setTranslateY(mapHeight / 2 - height / 2);
 
         GridPane topGridPane = new GridPane();
@@ -1192,12 +1256,7 @@ public class MapView extends ScrollPane {
         Button closeButton = new Button();
         closeButton.setText("X");
             closeButton.setTextFill(Color.WHITE);
-            //closeButton.prefHeight(6);
-            //closeButton.prefWidth(10);
-            //closeButton.maxHeight(6);
-            //closeButton.maxWidth(10);
-            //closeButton.minHeight(6);
-            //closeButton.minWidth(10);
+
             closeButton.setPadding(new Insets(0, 0, 0, 95));
             closeButton.setOnAction(event -> {
                 showingZoomToLocationPane = false;
@@ -1221,13 +1280,6 @@ public class MapView extends ScrollPane {
 
             TextField lattitudeInput = new TextField();
             lattitudeInput.setBorder(Border.stroke(Color.AQUA));
-            //lattitudeInput.minWidth(180);
-            /*coordinateInput.minHeight(10);
-            coordinateInput.maxWidth(180);
-            coordinateInput.maxHeight(10);
-            coordinateInput.prefWidth(180);
-            coordinateInput.prefHeight(10);
-            coordinateInput.setPromptText("Enter a coordinate in decimal degrees (and optionally a radis in kilometers) with components seperated by spaces of commas");*/
 
             lattitudeInput.setBackground(Background.fill(Color.WHITE));
 
@@ -1257,6 +1309,7 @@ public class MapView extends ScrollPane {
             Text mgrsLabel = new Text("MGRS value");
             TextField mgrsInput = new TextField();
 
+            // Change coordinate UI based on geoType
             geoTypeMenu.setOnAction(event -> {
 
                 coordinateGridPane.getChildren().clear();
@@ -1293,6 +1346,7 @@ public class MapView extends ScrollPane {
             okButton.setOnAction(event -> {
                 String selectedGeoType = geoTypeMenu.getSelectionModel().getSelectedItem();
 
+                // Convert coordinate input to x and y coordinates
                 if (selectedGeoType.equals("Coordinate")) {
 
                     double lattitude = -3000;
@@ -1315,19 +1369,20 @@ public class MapView extends ScrollPane {
                         return;
                     }
 
-//95, 245,
                     double x = MarkerUtilities.longToX(longitude, minLong, mapWidth, maxLong - minLong);
                     double y = MarkerUtilities.latToY(lattitude, mapWidth, mapHeight) - 149;
 
                     if (!radiusText.isBlank() && !radiusText.isEmpty() && NumberUtils.isParsable(radiusText.strip())) {
                         radius = Double.parseDouble(radiusText.strip());
 
+                        // draw circle at entered location
                         CircleMarker zoomCircleMarker = new CircleMarker(self, drawnMarkerId++, x, y, radius, 100, 100);
 
                         zoomCircleMarker.generateCircle();
                         drawnMarkerGroup.getChildren().add(zoomCircleMarker.getMarker());
                         userMarkers.add(zoomCircleMarker);
-                    } else {
+                    } // If no radius is provided then draw point marker at location
+                    else {
                         UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
                         marker.setMarkerPosition(0, 0);
 
@@ -1336,21 +1391,8 @@ public class MapView extends ScrollPane {
                         userMarkers.add(marker);
                     }
 
-
-                    /*viewPortRectangleGroup.getChildren().clear();
-                    Rectangle r = new Rectangle();
-                    r.setX(x);
-                    r.setY(y);
-
-                    r.setWidth(5);
-                    r.setHeight(5);
-
-                    r.setFill(Color.TRANSPARENT);
-                    r.setStroke(Color.RED);
-
-                    viewPortRectangleGroup.getChildren().add(r);*/
-
-                } else if (selectedGeoType.equals("MGRS")) {
+                } // Convert mgrs value to x and y
+                else if (selectedGeoType.equals("MGRS")) {
                     String mgrs = mgrsInput.getText().strip();
 
                     if (!mgrs.isBlank() && !mgrs.isEmpty()) {
@@ -1365,7 +1407,8 @@ public class MapView extends ScrollPane {
 
                         userMarkers.add(marker);
                     }
-                } else if (selectedGeoType.equals("Geohash")) {
+                } // Convert geohash value to x and y
+                else if (selectedGeoType.equals("Geohash")) {
                     String location = geoHashInput.getText().strip();
 
                     if (!location.isBlank() && !location.isEmpty()) {
@@ -1427,14 +1470,11 @@ public class MapView extends ScrollPane {
         return hiddenPointMarkerGroup.getChildren();
     }
 
-    // public void clearListeners() {
-        //markerColourProperty = null;
-        //markerColourProperty = new SimpleStringProperty();
-    //}
     public StringProperty getMarkerTextProperty() {
         return markerTextProperty;
     }
 
+    // Draw a user created marker on the screen
     public void drawMarker(AbstractMarker marker) {
 
         if (markersShowing.contains(marker.getType())) {
@@ -1444,20 +1484,6 @@ public class MapView extends ScrollPane {
             }
         }
 
-        /*if (marker instanceof PointMarker) {
-            PointMarker p = (PointMarker) marker;
-
-            Rectangle r = new Rectangle();
-            r.setWidth(5);
-            r.setHeight(5);
-
-            r.setX(p.getX() - 97);
-            r.setY(p.getY() + 93);
-            r.setFill(Color.RED);
-            graphMarkerGroup.getChildren().addAll(r);
-            //thessianMarkersGroup.getChildren().addAll(marker.getMarker());
-        }*/
-
     }
 
 
@@ -1465,19 +1491,22 @@ public class MapView extends ScrollPane {
         markers.put(key, e);
     }
 
+    // Load the world map
     private void parseMapSVG() {
         countryGroup.getChildren().clear();
-        LOGGER.log(Level.SEVERE, "in parse svg map");
 
+        // Read map from file
         try {
             try (BufferedReader bFileReader = new BufferedReader(new FileReader("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapView\\resources\\MercratorMapView4.txt"))) {
                 String path = "";
                 String line = "";
 
+                // While there is more to read
                 while ((line = bFileReader.readLine()) != null) {
+                    // Strip the line read in
                     line = line.strip();
 
-
+                    // Extract the svg path segment from the line
                     if (line.startsWith("<path")) {
                         int startIndex = line.indexOf("d=");
 
@@ -1485,6 +1514,7 @@ public class MapView extends ScrollPane {
 
                         path = line.substring(startIndex + 3, endIndex - 2);
 
+                        // Create the SVGPath object and add it to an array
                         SVGPath svgPath = new SVGPath();
                         svgPath.setFill(Color.WHITE);
                         svgPath.setStrokeWidth(0.025);
@@ -1495,11 +1525,7 @@ public class MapView extends ScrollPane {
 
                         path = "";
                     }
-
                 }
-
-                //clearQueriedMarkers();
-                //redrawQueriedMarkers();
             }
 
         } catch (Exception e) {

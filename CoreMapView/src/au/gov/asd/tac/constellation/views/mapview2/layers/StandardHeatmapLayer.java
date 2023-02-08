@@ -28,6 +28,12 @@ public class StandardHeatmapLayer extends AbstractHeatmapLayer {
         super(parent, id);
     }
 
+    /**
+     * standard heat-map is the amount of nodes the marker points to
+     *
+     * @param marker
+     * @return the weight
+     */
     @Override
     public int getWeight(AbstractMarker marker) {
         return marker.getWeight();

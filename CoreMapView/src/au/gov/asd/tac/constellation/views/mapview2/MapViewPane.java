@@ -99,9 +99,14 @@ public class MapViewPane extends BorderPane {
 
     private final MapViewTopComponent parent;
     private final ToolBar toolBar;
+
+    // Stackpane to hold the map
     private StackPane parentStackPane;
+
+    // Rectangle to repesent the view port
     private Rectangle viewPortRectangle;
 
+    // String for all the menu options
     private static final String MARKER_TYPE_POINT = "Point Markers";
     private static final String MARKER_TYPE_LINE = "Line Markers";
     private static final String MARKER_TYPE_POLYGON = "Polygon Markers";
@@ -140,10 +145,12 @@ public class MapViewPane extends BorderPane {
     public static final String KML = "KML";
     public static final String SHAPEFILE = "Shapefile";
 
+    // Map providers
     private final MapProvider defaultProvider;
     private final List<? extends MapProvider> providers;
     private final MarkerState markerState = null;
 
+    // All the toolbar UI elements
     private final ChoiceBox<MapProvider> mapProviderDropDown;
     private final MenuButton zoomDropDown;
     private final CheckComboBox<String> markerDropDown;
@@ -153,20 +160,17 @@ public class MapViewPane extends BorderPane {
     private final ChoiceBox<String> markerLabelDropDown;
     private final ComboBox<String> exportDropDown;
     private final Button helpButton;
+    private final List<String> dropDownOptions = new ArrayList<>();
 
     private static MapView mapView;
 
-
+    // A map of all the layers
     private int layerId = 0;
     private Map<String, Integer> layerMap = new HashMap<>();
 
     private static final Logger LOGGER = Logger.getLogger("MapViewPane");
 
 
-    //private final Consumer<Graph> updateMarkers;
-    //private au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer renderer = null;
-
-    private final List<String> dropDownOptions = new ArrayList<>();
 
     public MapViewPane(final MapViewTopComponent parentComponent) {
         parent = parentComponent;
@@ -174,7 +178,6 @@ public class MapViewPane extends BorderPane {
         parentStackPane = new StackPane();
         viewPortRectangle = new Rectangle();
 
-        //parentStackPane.setMouseTransparent(true);
         viewPortRectangle.setMouseTransparent(true);
 
         toolBar = new ToolBar();
@@ -183,11 +186,12 @@ public class MapViewPane extends BorderPane {
         providers = new ArrayList<>(Lookup.getDefault().lookupAll(MapProvider.class));
         //exporters = new ArrayList<>(Lookup.getDefault().lookupAll(MapExporter.class));
 
-
+        // get all the map types in string form from the providers
         providers.forEach((p) -> {
             dropDownOptions.add(p.toString());
         });
 
+        // Add the providers to the toolbar
         mapProviderDropDown = new ChoiceBox(FXCollections.observableList(providers));
         mapProviderDropDown.getSelectionModel().selectFirst();
         mapProviderDropDown.setTooltip(new Tooltip("Select a basemap for the Map View"));
@@ -195,10 +199,12 @@ public class MapViewPane extends BorderPane {
         final List<? extends MapLayer> layers = new ArrayList<>(Lookup.getDefault().lookupAll(MapLayer.class));
         setDropDownOptions(layers);
 
+        // Add all the layers to the toolbar
         layersDropDown = new CheckComboBox(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS, THIESSEAN_POLYGONS_2, POINT_MARKER_ERROR));
         layersDropDown.setTitle("Layers");
         layersDropDown.setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
 
+        // Event handler for selecting different layers to show
         layersDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
             public void onChanged(ListChangeListener.Change<? extends String> c) {
 
@@ -210,10 +216,12 @@ public class MapViewPane extends BorderPane {
             }
         });
 
+        // Add overlays to toolbar
         overlaysDropDown = new CheckComboBox(FXCollections.observableArrayList(INFO_OVERLAY, OVERVIEW_OVERLAY, TOOLS_OVERLAY));
         overlaysDropDown.setTitle("Overlays");
         overlaysDropDown.setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
 
+        // Overlay event handler
         overlaysDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
             public void onChanged(ListChangeListener.Change<? extends String> c) {
 
@@ -230,8 +238,8 @@ public class MapViewPane extends BorderPane {
             }
         });
 
+        // Zoom menu set up and event handling
         zoomDropDown = new MenuButton("Zoom");
-
         final MenuItem zoomAll = new MenuItem(ZOOM_ALL);
         final MenuItem zoomSelection = new MenuItem(ZOOM_SELECTION);
         final MenuItem zoomLocation = new MenuItem(ZOOM_LOCATION);
@@ -254,6 +262,7 @@ public class MapViewPane extends BorderPane {
             mapView.generateZoomLocationUI();
         });
 
+        // Menu to show/hide markers
         markerDropDown = new CheckComboBox(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
         markerDropDown.setTitle("Markers");
         markerDropDown.setTooltip(new Tooltip("Choose which markers are displayed in the Map View"));
@@ -261,6 +270,8 @@ public class MapViewPane extends BorderPane {
         markerDropDown.getCheckModel().check(MARKER_TYPE_LINE);
         markerDropDown.getCheckModel().check(MARKER_TYPE_POLYGON);
         //markerDropDown.getCheckModel().check(MARKER_TYPE_MULTI);
+
+        // Event handler for hiding/showing markers
         markerDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
             public void onChanged(ListChangeListener.Change<? extends String> c) {
                 markerDropDown.getItems().forEach(item -> {
@@ -293,21 +304,16 @@ public class MapViewPane extends BorderPane {
             }
         });
 
+        // Marker colour mneu setup and event handling
         colourDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(DEFAULT_COLOURS, USE_COLOUR_ATTR, USE_OVERLAY_COL, USE_BLAZE_COL)));
         colourDropDown.getSelectionModel().selectFirst();
         colourDropDown.setTooltip(new Tooltip("Chose the color scheme for markers displayed in the Map View"));
 
-        /*colourDropDown.selectionModelProperty().addListener((InvalidationListener) new ListChangeListener<String>() {
-            @Override
-            public void onChanged(ListChangeListener.Change<? extends String> c) {
-                LOGGER.log(Level.SEVERE, colourDropDown.getSelectionModel().getSelectedItem());
-            }
-        });*/
         colourDropDown.setOnAction((event) -> {
             mapView.getMarkerColourProperty().set(colourDropDown.getValue());
         });
 
-
+        // Marker label menu setup and event handling
         markerLabelDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(NO_LABELS, USE_LABEL_ATTR, USE_IDENT_ATTR)));
         markerLabelDropDown.getSelectionModel().selectFirst();
         markerLabelDropDown.setTooltip(new Tooltip("Chose the label for markers displayed in the Map View"));
@@ -316,11 +322,12 @@ public class MapViewPane extends BorderPane {
             mapView.getMarkerTextProperty().set(markerLabelDropDown.getValue());
         });
 
+        // Export menu setup and eventer handling
         exportDropDown = new ComboBox(FXCollections.observableList(Arrays.asList(GEO_JSON, GEO_PACKAGE, KML, SHAPEFILE)));
         exportDropDown.setOnAction(event -> {
             if (parent.getCurrentGraph() != null) {
                 MapExporterWrapper exporterWrapper = null;
-                //LOGGER.log(Level.SEVERE, "Export option clicked: " + event.getEventType().getName());
+
                 String selectedItem = exportDropDown.getSelectionModel().getSelectedItem();
                 if (selectedItem.equals(GEO_JSON)) {
                     exporterWrapper = new MapExporterWrapper(new GeoJsonExporter());
@@ -347,9 +354,9 @@ public class MapViewPane extends BorderPane {
         toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton);
         setTop(toolBar);
 
-        //mapView.zoomToAll();
     }
 
+    // Add/remove layer to the map
     private void addLayer(String key, int id) {
         if (layersDropDown.getCheckModel().getCheckedItems().contains(key) && !layerMap.containsKey(key)) {
             LOGGER.log(Level.SEVERE, "Adding layer: " + key);
@@ -362,6 +369,7 @@ public class MapViewPane extends BorderPane {
         }
     }
 
+    // Create a map layer based on a key
     private AbstractMapLayer getLayerFromKey(String key) {
         switch (key) {
             case DAY_NIGHT:
@@ -400,11 +408,13 @@ public class MapViewPane extends BorderPane {
         return mapView;
     }
 
-
+    // Set up the map
     public void setUpMap() {
+        // Create the actual map view
         mapView = new MapView(this);
         parentStackPane.getChildren().add(mapView);
 
+        // Set position of "viewport" rectagngle
         viewPortRectangle.setX(0);
         viewPortRectangle.setY(0);
 
@@ -412,14 +422,12 @@ public class MapViewPane extends BorderPane {
         parentStackPane.setLayoutY(0);
 
         viewPortRectangle.setWidth(MapView.mapWidth);
-        //viewPortRectangle.setHeight(MapView.mapHeight);
         viewPortRectangle.setHeight(MapView.mapHeight);
 
         viewPortRectangle.setFill(Color.TRANSPARENT);
         viewPortRectangle.setStroke(Color.RED);
 
-        //viewPortRectangleGroup.getChildren().add(r);
-        //mapStackPane.getChildren().add(viewPortRectangleGroup);
+        // Adds the mapView and viewport rect underneath the toolbar
         parentStackPane.getChildren().add(viewPortRectangle);
         Platform.runLater(() -> {
             setCenter(parentStackPane);
@@ -460,22 +468,12 @@ public class MapViewPane extends BorderPane {
         return parent.getCurrentGraph();
     }
 
-    public void drawMarker(double lat, double lon, double scale) {
-        if (mapView != null) {
-            //mapView.drawMarker(lat, lon, scale);
-        }
-    }
-
     public void drawMarker(AbstractMarker marker) {
         if (marker != null && mapView != null) {
             mapView.drawMarker(marker);
 
         }
     }
-
-    //public void drawMarker()
-    //{
-    //}
 
     public MapProvider getDefaultProvider() {
         return defaultProvider;
@@ -491,25 +489,6 @@ public class MapViewPane extends BorderPane {
 
     public void resetContent() {
 
-        /*Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-
-                if (renderer != null) {
-                    renderer.dispose();
-                }
-
-                renderer = new MapViewTileRenderer(parent);
-                glComponent = renderer.init();
-                parent.setMapImage(glComponent);
-
-                //mapView.setContent((JComponent) glComponent);
-
-                //setCenter(mapView);
-
-            }
-
-        });*/
     }
 
     private void setDropDownOptions(List<?> options) {

@@ -27,6 +27,7 @@ import javafx.scene.Group;
  */
 public class AbstractPathsLayer extends AbstractMapLayer {
 
+    // Group to hold all the line markers representing paths
     protected Group entityPaths;
 
     protected Map<String, AbstractMarker> queriedMarkers;

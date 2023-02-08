@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -33,14 +34,20 @@ import javafx.scene.shape.Shape;
  */
 public class DayNightLayer extends AbstractMapLayer {
 
+    // Layer that holds the graphical shadow elements
     private final Group dayNightGroup;
+
     private static final int EARTH_RADIUS_M = 6_371_008;
 
     private static final Logger LOGGER = Logger.getLogger("DayNightMapLogger");
 
+    private final double shadowLocationYOffset = 149;
+    private final double sunRadius = 5;
+
     private Location leftShadowLocation = null;
     private Location rightShadowLocation = null;
 
+    // Colours of the different shadows
     private final Color twighlightCivilColour = new Color(0, 0, 0, 0.122);
     private final Color twighlightNauticalColour = new Color(0, 0, 0, 0.247);
     private final Color twighlightAstronomicalColour = new Color(0, 0, 0, 0.373);
@@ -56,12 +63,15 @@ public class DayNightLayer extends AbstractMapLayer {
 
     @Override
     public void setUp() {
+        // Get the sun location and create a circle to represent the sin
         Location sunLocation = getSunLocation(System.currentTimeMillis());
         Circle sun = getSun(sunLocation);
 
+        // Calculate left and right shadow locations
         leftShadowLocation = getShadowPosition(sunLocation, true);
         rightShadowLocation = getShadowPosition(sunLocation, false);
 
+        // Add sun graphic to group
         dayNightGroup.getChildren().add(sun);
 
         // calculate shadow radius
@@ -70,11 +80,13 @@ public class DayNightLayer extends AbstractMapLayer {
         final float twighlightAstronomicalRadiusMeters = getShadowRadiusFromAngle(12.0);
         final float nightRadiusMeters = getShadowRadiusFromAngle(18.0);
 
+        // Create left shadows
         createShadow(twighlightCivilRadiusMeters, leftShadowLocation, twighlightCivilColour);
         createShadow(twighlightNauticalRadiusMeters, leftShadowLocation, twighlightNauticalColour);
         createShadow(twighlightAstronomicalRadiusMeters, leftShadowLocation, twighlightAstronomicalColour);
         createShadow(nightRadiusMeters, leftShadowLocation, nightColour);
 
+        // Create right shadows
         createShadow(twighlightCivilRadiusMeters, rightShadowLocation, twighlightCivilColour);
         createShadow(twighlightNauticalRadiusMeters, rightShadowLocation, twighlightNauticalColour);
         createShadow(twighlightAstronomicalRadiusMeters, rightShadowLocation, twighlightAstronomicalColour);
@@ -82,46 +94,86 @@ public class DayNightLayer extends AbstractMapLayer {
 
     }
 
+    /**
+     * Creates at a specific location
+     *
+     * @param shadowRadius - radius of shadow
+     * @param shadowLocation - geo coordinate of shadow
+     * @param colour
+     */
     private void createShadow(float shadowRadius, Location shadowLocation, Color colour) {
+        // Find coordinate of shadow in Haversine format
         final Location shadowCoordinates = new Location(
                 shadowLocation.lat - Distance.Haversine.kilometersToDecimalDegrees(shadowRadius / 1000),
                 shadowLocation.lon - Distance.Haversine.kilometersToDecimalDegrees(shadowRadius / 1000));
+
+        // Get all the locations of the edges of the shadow
         final List<Location> shadowLocations = generateCircle(shadowLocation, shadowCoordinates);
+
+        // Project the circular show onto the world
         projectShadowCoordinates(shadowLocations);
+
+        // Get the actual shadow svg path
         String shadowPath = generatePath(shadowLocations);
+
+        // Add that shadow path to the graphics group
         addShadowToGroup(shadowPath, colour);
     }
 
+    /**
+     * Adds shadow graphic to group
+     *
+     * @param shadowPath - the raw string svg path
+     * @param colour
+     */
     private void addShadowToGroup(String shadowPath, Color colour) {
+        // Create the shadow graphic and colour it
         SVGPath shadowMarker = new SVGPath();
         shadowMarker.setContent(shadowPath);
         shadowMarker.setFill(colour);
-        //shadowMarker.setStroke(Color.BLACK);
-        //shadowMarker.setOpacity(0.5);
+
+        // Get rid of borders and allow events to pass through the shadow
         shadowMarker.setStrokeWidth(0);
         shadowMarker.setMouseTransparent(true);
+
         dayNightGroup.getChildren().add(shadowMarker);
     }
 
+    /**
+     * Convert lat and long coordinates of shadow edges to x and y coords
+     *
+     * @param locations - array of Location objects that only have their
+     * lattitude and longitude fields calculated
+     */
     private void projectShadowCoordinates(List<Location> locations) {
+        // For every location calculate its x and y coordinate
         locations.forEach(location -> {
 
-            location.x = super.longToX(location.x, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-            location.y = super.latToY(location.y, 1010.33, 1224) - 149;
+            location.x = MarkerUtilities.longToX(location.x, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
+            location.y = MarkerUtilities.latToY(location.y, MapView.mapWidth, MapView.mapHeight) - shadowLocationYOffset;
 
 
         });
 
     }
 
+    /**
+     * Generate the actual path from the shadow locations
+     *
+     * @param locations
+     * @return the string that containing the raw svg path
+     */
     private String generatePath(List<Location> locations) {
         String path = "";
         boolean first = true;
+
+        // Loop through all the locations
         for (int i = 0; i < locations.size(); ++i) {
             if (Double.isNaN(locations.get(i).y) || Double.isNaN(locations.get(i).x)) {
                 continue;
             }
 
+            // If is the first location then append a move command if not append a line command
             if (first) {
                 path = "M" + locations.get(i).x + "," + locations.get(i).y;
 
@@ -137,17 +189,25 @@ public class DayNightLayer extends AbstractMapLayer {
         return path;
     }
 
+    /**
+     * Create a sun at the specified location
+     *
+     * @param sunLocation
+     * @return a circle vector graphic at the current position
+     */
     private Circle getSun(Location sunLocation) {
         Circle sun = new Circle();
 
-        sun.setRadius(5);
+        sun.setRadius(sunRadius);
 
-        double sunX = super.longToX(sunLocation.lon, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-        double sunY = super.latToY(sunLocation.lat, 1010.33, 1224) - 149;
+        // Calculate x and y from lat and lon
+        double sunX = MarkerUtilities.longToX(sunLocation.lon, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
+        double sunY = MarkerUtilities.latToY(sunLocation.lat, MapView.mapWidth, MapView.mapHeight) - shadowLocationYOffset;
 
         sun.setTranslateX(sunX);
         sun.setTranslateY(sunY);
 
+        // Colour in the sun
         sun.setFill(Color.YELLOW);
         sun.setOpacity(0.75);
         sun.setMouseTransparent(true);
@@ -160,6 +220,13 @@ public class DayNightLayer extends AbstractMapLayer {
         return dayNightGroup;
     }
 
+    /**
+     * Get the shadow position based on the sun position
+     *
+     * @param sunPosition
+     * @param leftOrientation
+     * @return returns Location object containing shadow position
+     */
     final Location getShadowPosition(final Location sunPosition, final boolean leftOrientation) {
         if (sunPosition == null) {
             return null;
@@ -169,6 +236,12 @@ public class DayNightLayer extends AbstractMapLayer {
                 ? sunPosition.lon - 180 : sunPosition.lon + 180);
     }
 
+    /**
+     * Calculate location of sun based on the current time
+     *
+     * @param currentTime
+     * @return location of the sun
+     */
     private Location getSunLocation(long currentTime) {
         final double rad = 0.017453292519943295;
         final double jc = (getDay(currentTime) - 2_451_545) / 36525;
@@ -196,33 +269,56 @@ public class DayNightLayer extends AbstractMapLayer {
         return new Location(lat, lon);
     }
 
+    /**
+     * Get the current day based on the time
+     *
+     * @param currentTime
+     * @return A double representing the day
+     */
     private double getDay(final long currentTime) {
         return (currentTime / 86_400_000.0) + 2_440_587.5;
     }
 
+    /**
+     * Gets the shadow radius from angle
+     *
+     * @param angle
+     * @return radius of shadow
+     */
     private float getShadowRadiusFromAngle(final double angle) {
         final double shadowRadius = EARTH_RADIUS_M * Math.PI * 0.5;
         final double twilightDistance = ((EARTH_RADIUS_M * 2 * Math.PI) / 360) * angle;
         return (float) (shadowRadius - twilightDistance);
     }
 
+    /**
+     * Generates an array of locations representing the shadow
+     *
+     * @param centre
+     * @param delta
+     * @return return an array of locations
+     */
     public List<Location> generateCircle(final Location centre, final Location delta) {
         final List<Location> circleVertices = new ArrayList<>();
 
+        // Find the radius of the shadow based on center and a point on the edge
         final float radius = (float) Math.sqrt(
                 Math.pow((delta.x - centre.x), 2)
                 + Math.pow((delta.y - centre.y), 2));
 
+        // Calculate the edges of the shadow
+        // Ammount of points to calculate
         final int points = 60;
+
+        // Spacing between each point
         final double spacing = (2 * Math.PI) / points;
         for (int i = 0; i < points + 1; i++) {
             final double angle = spacing * i;
 
+            // Calculate coordinate at specific angle from the center
             final double vertexX = centre.x + radius * Math.cos(angle);
             final double vertexY = centre.y + radius * Math.sin(angle);
             final Location vertexLocation = new Location(vertexY, vertexX);
-            //vertexLocation.x = vertexX;
-            //vertexLocation.y = vertexY;
             circleVertices.add(vertexLocation);
         }
 

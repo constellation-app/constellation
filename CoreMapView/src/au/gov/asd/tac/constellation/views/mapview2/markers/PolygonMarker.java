@@ -40,8 +40,8 @@ public class PolygonMarker extends AbstractMarker {
         markerPath.setStroke(Color.BLACK);
         markerPath.setFill(Color.ORANGE);
         markerPath.setOpacity(0.4);
-        //markerPath.setMouseTransparent(true);
 
+        // Event handler for the polygon marker
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
@@ -70,7 +70,16 @@ public class PolygonMarker extends AbstractMarker {
         });
     }
 
+    /**
+     * Adds a new line to the polygon marker
+     *
+     * @param prevLineEndX
+     * @param prevLineEndY
+     * @return
+     */
     public Line addNewLine(double prevLineEndX, double prevLineEndY) {
+        // If current line is null it mean the first line is being drawn
+        // Else finish off the current line and add it to the UI
         if (currentLine == null) {
             currentLine = new Line();
             currentLine.setStartX(prevLineEndX);
@@ -91,6 +100,9 @@ public class PolygonMarker extends AbstractMarker {
         return currentLine;
     }
 
+    /**
+     * Clear the gui that shows the polygon the user is drawing
+     */
     public void endDrawing() {
         currentLine = null;
         polygonLineUI.clear();
@@ -103,9 +115,13 @@ public class PolygonMarker extends AbstractMarker {
         }
     }
 
+    /**
+     * Generate the polygon SVG shape
+     */
     public void generatePath() {
         String path = "";
 
+        // generate raw path based on vertices
         if (!polygonLineUI.isEmpty()) {
             for (int i = 0; i < polygonLineUI.size(); ++i) {
                 if (i == 0) {
@@ -116,6 +132,7 @@ public class PolygonMarker extends AbstractMarker {
                 }
             }
 
+            // Connect polygon mmarker back to the start to complete the shape
             path += "L" + polygonLineUI.get(0).getStartX() + "," + polygonLineUI.get(0).getStartY();
             if (polygonLineUI.size() == 1) {
                 markerPath.setStroke(Color.RED);

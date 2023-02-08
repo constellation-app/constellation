@@ -24,6 +24,7 @@ import javafx.scene.Group;
  * @author altair1673
  */
 public abstract class AbstractMapLayer {
+
     protected MapView parent;
     protected Graph currentGraph = null;
     protected boolean isShowing = false;
@@ -36,6 +37,7 @@ public abstract class AbstractMapLayer {
         this.id = id;
     }
 
+    // Class to hold a location in lattitude and longitude and its corresponding x and y values
     protected class Location {
 
         public double lat;
@@ -74,7 +76,7 @@ public abstract class AbstractMapLayer {
     }
 
 
-    protected double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
+    /*protected double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
         return (longitude - minLong) * (mapWidth / lonDelta);
     }
 
@@ -84,6 +86,6 @@ public abstract class AbstractMapLayer {
         y = (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
 
         return y;
-    }
+    }*/
 
 }

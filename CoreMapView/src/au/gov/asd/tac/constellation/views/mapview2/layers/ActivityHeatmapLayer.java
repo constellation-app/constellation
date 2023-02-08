@@ -33,15 +33,19 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
     }
 
     @Override
+    // Gets the specific attribute to act as the "weight" for the marker
+    // This code gets the ammount of transactions each ndoe has as the weight
     public int getWeight(AbstractMarker marker) {
+        // Holds the ammount of transactions
         int activityCount = 0;
 
         if (currentGraph != null) {
+            // Get the current readable graph
             final ReadableGraph readableGraph = currentGraph.getReadableGraph();
             try {
                 final GraphElementType[] elementTypes = new GraphElementType[]{GraphElementType.VERTEX, GraphElementType.TRANSACTION};
 
-                final Set<Integer> seenLinks = new HashSet<>();
+                // For each type of graph element
                 for (final GraphElementType element : elementTypes) {
                     int elementCount = 0;
 
@@ -56,11 +60,14 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
                             break;
                     }
 
+                    // FOr every vertext
                     if (element == GraphElementType.VERTEX) {
                         for (int position = 0; position < elementCount; ++position) {
                             int vertexID = readableGraph.getVertex(position);
 
-                            if (marker.getIdList().contains(vertexID)) {
+                            // Check if the node represented by the current marker has the current vertext as its neighbour
+                            if (marker.getConnectedNodeIdList().contains(vertexID)) {
+                                // The activitiy count is the ammount of transactions this neighbour has
                                 activityCount += readableGraph.getVertexTransactionCount(vertexID);
                             }
                         }

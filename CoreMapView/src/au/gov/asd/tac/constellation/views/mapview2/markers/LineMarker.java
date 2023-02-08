@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -39,7 +40,7 @@ public class LineMarker extends AbstractMarker {
     private double y2;
 
 
-    public LineMarker(MapView parent, int markerID, int id, double lattitude1, double longitude1, double lattitude2, double longitude2, int xOffset, int yOffset) {
+    public LineMarker(MapView parent, int markerID, int id, double lattitude1, double longitude1, double lattitude2, double longitude2, double xOffset, double yOffset) {
         super(parent, markerID, id, xOffset, yOffset, AbstractMarker.MarkerType.LINE_MARKER);
 
         lat1 = lattitude1;
@@ -50,6 +51,7 @@ public class LineMarker extends AbstractMarker {
         markerPath.setStroke(Color.BLACK);
         markerPath.setStrokeWidth(1);
 
+        // Set event handlers for the line marker
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
@@ -82,16 +84,22 @@ public class LineMarker extends AbstractMarker {
 
     }
 
+    /**
+     * Set the position of the marker in x and y from geo coordinates
+     *
+     * @param mapWidth
+     * @param mapHeight
+     */
     @Override
     public void setMarkerPosition(double mapWidth, double mapHeight) {
-        x1 = super.longToX(lon1, MapView.minLong, mapWidth, MapView.maxLong - MapView.minLong);
-        y1 = super.latToY(lat1, mapWidth, mapHeight);
+        x1 = MarkerUtilities.longToX(lon1, MapView.minLong, mapWidth, MapView.maxLong - MapView.minLong);
+        y1 = MarkerUtilities.latToY(lat1, mapWidth, mapHeight);
 
         x1 += xOffset;
         y1 -= yOffset;
 
-        x2 = super.longToX(lon2, MapView.minLong, mapWidth, MapView.maxLong - MapView.minLong);
-        y2 = super.latToY(lat2, mapWidth, mapHeight);
+        x2 = MarkerUtilities.longToX(lon2, MapView.minLong, mapWidth, MapView.maxLong - MapView.minLong);
+        y2 = MarkerUtilities.latToY(lat2, mapWidth, mapHeight);
 
         x2 += xOffset;
         y2 -= yOffset;

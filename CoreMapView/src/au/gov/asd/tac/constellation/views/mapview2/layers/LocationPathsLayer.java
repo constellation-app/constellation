@@ -37,6 +37,9 @@ import java.util.Map;
  */
 public class LocationPathsLayer extends AbstractPathsLayer {
 
+    final double lineMarkerXOffset = 1;
+    final double lineMarkerYOffset = 149;
+
     public LocationPathsLayer(MapView parent, int id, Map<String, AbstractMarker> queriedMarkers) {
         super(parent, id, queriedMarkers);
     }
@@ -47,34 +50,53 @@ public class LocationPathsLayer extends AbstractPathsLayer {
         GraphReadMethods graph = parent.getCurrentGraph().getReadableGraph();
         final List<Integer> idList = new ArrayList<Integer>();
 
+        // For every queried markers add all its connected neighbours to the idList
         for (Object value : queriedMarkers.values()) {
             AbstractMarker m = (AbstractMarker) value;
 
             if (m instanceof PointMarker) {
-                m.getIdList().forEach(id -> idList.add(id));
+                m.getConnectedNodeIdList().forEach(id -> idList.add(id));
             }
         }
+
+        // Get the the lattiuide,longitude and type attribute ID
         final int lonID2 = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
         final int latID2 = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
         final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.get(graph);
+
+        // For every connected vertex
         for (int i = 0; i < idList.size(); ++i) {
 
             final int vertexID = idList.get(i);
 
-
+            // Get the schema vertex type
             final SchemaVertexType vertexType = graph.getObjectValue(vertexTypeAttributeId, vertexID);
+
+            // If the type is of "location"
             if (vertexType != null && vertexType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
+
+                // Get the ceighbour count of the vertex
                 final int neighbourCount = graph.getVertexNeighbourCount(vertexID);
+
+                // Loop through its neighbours
                 for (int neighbourPosition = 0; neighbourPosition < neighbourCount; neighbourPosition++) {
                     final int neighbourId = graph.getVertexNeighbour(vertexID, neighbourPosition);
                     final SchemaVertexType neighbourType = graph.getObjectValue(vertexTypeAttributeId, neighbourId);
                     if (neighbourType != null && neighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
-                        final int neighbourLinkId = graph.getLink(vertexID, neighbourId);
-                        final int outgoingDirection = vertexID < neighbourId ? GraphConstants.UPHILL : GraphConstants.DOWNHILL;
-                        final int linkOutgoingTransactionCount = graph.getLinkTransactionCount(neighbourLinkId, outgoingDirection);
-                        for (int j = 0; j < linkOutgoingTransactionCount; ++j) {
-                            //paths.add(Tuple.create(element, new GraphElement(neighbourId, GraphElementType.VERTEX)));
 
+                        // Get the linkID
+                        final int neighbourLinkId = graph.getLink(vertexID, neighbourId);
+
+                        // See which way the transaction is going
+                        final int outgoingDirection = vertexID < neighbourId ? GraphConstants.UPHILL : GraphConstants.DOWNHILL;
+
+                        // Get the count of outgoing transactions
+                        final int linkOutgoingTransactionCount = graph.getLinkTransactionCount(neighbourLinkId, outgoingDirection);
+
+                        // For every one of those transacttions
+                        for (int j = 0; j < linkOutgoingTransactionCount; ++j) {
+
+                            // Get coordinates of both vertexes int transaction
                             final float sourceLat = graph.getObjectValue(latID2, vertexID);
                             final float sourceLon = graph.getObjectValue(lonID2, vertexID);
 
@@ -83,7 +105,8 @@ public class LocationPathsLayer extends AbstractPathsLayer {
 
                             String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
 
-                            LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, 1, 149);
+                            // Draw line beteeen the two vertices
+                            LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, lineMarkerXOffset, lineMarkerYOffset);
                             if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
                                 //parent.addMarkerToHashMap(coordinateKey, l);
 

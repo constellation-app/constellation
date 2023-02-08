@@ -52,9 +52,11 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
 @NbBundle.Messages("ExtractCoordsFromGraphPlugin=Extracts geographic coordinates from the graph")
 public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
-
-    //private final Logger LOGGER = Logger.getLogger("ExtractCoords");
     private static final Logger LOGGER = Logger.getLogger(ExtractCoordsFromGraphPlugin.class.getName());
+
+    // 95, 245,
+    private final double pointMarkerXOffset = 95;
+    private final double pointMarkerYOffset = 245;
 
     private MapViewTopComponent mapViewTopComponent;
     private boolean transactionsOnly;
@@ -72,17 +74,27 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
         return "ExtractCoordsFromGraphPlugin";
     }
 
+    /**
+     * Read the graph to extract geo coordinated
+     *
+     * @param graph - the current graph
+     * @param interaction
+     * @param parameters
+     * @throws InterruptedException
+     * @throws PluginException
+     */
     @Override
     protected void read(final GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
 
         if (graph != null) {
 
             final GraphElementType[] elementTypes = new GraphElementType[]{GraphElementType.VERTEX, GraphElementType.TRANSACTION};
-            //mapViewTopComponent.mapViewPane.getMap().clearListeners();
+
             mapViewTopComponent.mapViewPane.getMap().clearQueriedMarkers();
 
             try {
                 for (GraphElementType elementType : elementTypes) {
+                    // Ids for all attributes needed from a single vertext of a graph
                     int lonID = GraphConstants.NOT_FOUND;
                     int latID = GraphConstants.NOT_FOUND;
                     int colourID = GraphConstants.NOT_FOUND;
@@ -95,6 +107,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
                     switch (elementType) {
                         case VERTEX:
+                            // Get IDs
                             lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
                             latID = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
                             colourID = VisualConcept.VertexAttribute.COLOR.get(graph);
@@ -103,9 +116,6 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             labelAttrID = VisualConcept.VertexAttribute.LABEL.get(graph);
                             identifierID = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
                             elementCount = graph.getVertexCount();
-                            //LOGGER.log(Level.SEVERE, "Lattitude: " + latID + ", Longitude: " + lonID);
-
-                            //double lon = graph.getDoubleValue(latID, latID)
                             break;
                         case TRANSACTION:
                             lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
@@ -116,6 +126,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             continue;
                     }
 
+                    // Loop though every graph element
                     for (int elementPos = 0; elementPos < elementCount; ++elementPos) {
                         int elementID = -99;
 
@@ -131,10 +142,13 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                                 break;
                         }
 
+                        // For all the vertices
                         if (lonID != GraphConstants.NOT_FOUND && latID != GraphConstants.NOT_FOUND && elementType == GraphElementType.VERTEX && elementID != -99) {
+                            // Get lattidue and longitude
                             final float elementLat = graph.getObjectValue(latID, elementID);
                             final float elementLon = graph.getObjectValue(lonID, elementID);
 
+                            // Get the nodes colour
                             final String elementColour = graph.getStringValue(colourID, elementID);
 
                             String blazeColour = null;
@@ -142,6 +156,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             String labelAttr = null;
                             String identAttr = null;
 
+                            // Get other ccolous if they are available
                             if (blazeID != GraphConstants.NOT_FOUND) {
                                 blazeColour = graph.getStringValue(blazeID, elementID);
                             }
@@ -150,6 +165,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                                 overlayColour = graph.getStringValue(overlayID, elementID);
                             }
 
+                            // Get label text if they are available
                             if (labelAttrID != GraphConstants.NOT_FOUND) {
                                 labelAttr = graph.getStringValue(labelAttrID, elementID);
                             }
@@ -158,13 +174,16 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                                 identAttr = graph.getStringValue(identifierID, elementID);
                             }
 
-                            //LOGGER.log(Level.SEVERE, "Node colour:" + blazeColour);
-
+                            // Generate a key from the vertex coordinate
                             String coordinateKey = (double) elementLat + "," + (double) elementLon;
+
+                            // If another vertext of the same location hasn't been queried yet
                             if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
-                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, 95, 245, elementColour); //244
+                                // Create a new point marker and add it to the map
+                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, pointMarkerXOffset, pointMarkerYOffset, elementColour); //244
                                 mapViewTopComponent.addMarker(coordinateKey, p);
 
+                                // Set colours and labels if they are available
                                 if (blazeColour != null) {
                                     p.setBlazeColour(blazeColour);
                                 }
@@ -181,13 +200,6 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                                     p.setIdentAttr(identAttr);
                                 }
 
-                                //LOGGER.log(Level.SEVERE, "Corrdindate key: " + coordinateKey);
-                                /*Platform.runLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mapViewTopComponent.mapViewPane.drawMarker(p);
-                                    }
-                                });*/
 
                             } else {
 
@@ -210,13 +222,12 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                                     ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setIdentAttr(identAttr);
                                 }
 
-                                if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getIdList().get(0) != elementID) {
+                                if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getConnectedNodeIdList().get(0) != elementID) {
                                     mapViewTopComponent.getAllMarkers().get(coordinateKey).addNodeID(elementID);
                                 }
 
                             }
 
-                            //mapViewTopComponent.drawMarkerOnMap(elementLat, elementLon, 0.05);
                         }
 
                     }
@@ -228,7 +239,6 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                 LOGGER.log(Level.SEVERE, e.getMessage());
             }
 
-            //mapViewTopComponent.drawMarkerOnMap();
         }
 
     }

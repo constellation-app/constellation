@@ -33,6 +33,12 @@ public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
         super(parent, id);
     }
 
+    /**
+     * Get he weight of the current marker
+     *
+     * @param marker
+     * @return the weight
+     */
     @Override
     public int getWeight(AbstractMarker marker) {
         int popularityCount = 0;
@@ -40,12 +46,15 @@ public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
         if (currentGraph != null) {
             final ReadableGraph readableGraph = currentGraph.getReadableGraph();
             try {
+                // Get graph element types
                 final GraphElementType[] elementTypes = new GraphElementType[]{GraphElementType.VERTEX, GraphElementType.TRANSACTION};
 
                 final Set<Integer> seenLinks = new HashSet<>();
+                // For each element type
                 for (final GraphElementType element : elementTypes) {
                     int elementCount = 0;
 
+                    // Get the count of that element type
                     switch (element) {
                         case VERTEX:
                             elementCount = readableGraph.getVertexCount();
@@ -57,11 +66,14 @@ public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
                             break;
                     }
 
+                    // If element type is vertex
                     if (element == GraphElementType.VERTEX) {
+                        // For every element of that type
                         for (int position = 0; position < elementCount; ++position) {
                             int vertexID = readableGraph.getVertex(position);
 
-                            if (marker.getIdList().contains(vertexID)) {
+                            // Get its transaction count and record it as its popularity
+                            if (marker.getConnectedNodeIdList().contains(vertexID)) {
                                 popularityCount += readableGraph.getVertexNeighbourCount(vertexID);
                             }
                         }

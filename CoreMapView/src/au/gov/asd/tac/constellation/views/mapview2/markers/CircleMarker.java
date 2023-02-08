@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.EventHandler;
@@ -37,6 +38,8 @@ public class CircleMarker extends AbstractMarker {
     private double centerY = 0;
     private double radius = 0;
 
+    private final double centerYOffset = 149;
+
     private final Circle circle = new Circle();
     private final Line line = new Line();
 
@@ -49,9 +52,11 @@ public class CircleMarker extends AbstractMarker {
         this.centerY = centerY; //+ yOffset;
         this.radius = radius;
 
+        // Set up circle svg
         circle.setCenterX(this.centerX);
         circle.setCenterY(this.centerY);
 
+        // Line that extends from center to edge of circle
         line.setStartX(this.centerX);
         line.setStartY(this.centerY);
 
@@ -62,14 +67,15 @@ public class CircleMarker extends AbstractMarker {
 
         circle.setRadius(radius);
         circle.setOpacity(0.5);
-        //circle.setStrokeWidth(5);
         circle.setFill(Color.BLACK);
         circle.setStroke(Color.BLACK);
 
+        // Set up the SVG path to represent the projected circle
         markerPath.setStroke(Color.BLACK);
         markerPath.setFill(Color.ORANGE);
         markerPath.setOpacity(0.4);
 
+        // Event handler for changing colours when mouse hovers over the projected circle
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
@@ -88,6 +94,7 @@ public class CircleMarker extends AbstractMarker {
             }
         });
 
+        // Event handler for removing handler when clicked
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent e) {
 
@@ -119,11 +126,16 @@ public class CircleMarker extends AbstractMarker {
         return radius;
     }
 
+    /**
+     * Generates the projected circle
+     */
     public void generateCircle() {
         final int EARTH_RADIUS_M = 6_371_008;
-        centerY += 149;
-        double centerYLat = super.YToLat(centerY, 1010.33, 1224);
-        double centerXLon = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+        centerY += centerYOffset;
+
+        // Calculate lattitude and longitude fro x and y
+        double centerYLat = MarkerUtilities.YToLat(centerY, MapView.mapWidth, MapView.mapHeight);
+        double centerXLon = MarkerUtilities.XToLong(centerX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
 
         double vertexY = centerYLat;
         double vertexX = centerXLon + (radius / EARTH_RADIUS_M) * (180 / Math.PI) / Math.cos(centerYLat * (Math.PI / 180));
@@ -131,23 +143,29 @@ public class CircleMarker extends AbstractMarker {
 
         String path = "";
         boolean first = true;
+
+        // Projected circle will have 60 vertices
         final int points = 60;
         final double spacing = (2 * Math.PI) / points;
+
+        // Generate vertices
         for (int i = 0; i < points + 1; i++) {
             final double angle = spacing * i;
 
+            // Edge of circle
             vertexX = centerXLon + radius * Math.cos(angle);
             vertexY = centerYLat + radius * Math.sin(angle);
 
-
-            vertexX = super.longToX(vertexX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-            vertexY = super.latToY(vertexY, 1010.33, 1224) - 149;
+            // Convert edge to x and y from geo coordinates
+            vertexX = MarkerUtilities.longToX(vertexX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
+            vertexY = MarkerUtilities.latToY(vertexY, MapView.mapWidth, MapView.mapHeight) - centerYOffset;
 
 
             if (Double.isNaN(vertexX) || Double.isNaN(vertexY)) {
                 continue;
             }
 
+            // Append vertex to path string
             if (first) {
                 path = "M" + vertexX + "," + vertexY;
 
@@ -157,7 +175,7 @@ public class CircleMarker extends AbstractMarker {
             }
 
         }
-        LOGGER.log(Level.SEVERE, "Circle path: " + path);
+
         markerPath.setContent(path);
     }
 
@@ -166,23 +184,35 @@ public class CircleMarker extends AbstractMarker {
         circle.setRadius(radius);
     }
 
+    /**
+     * Sets the radius by calculating the distance from the center of the circle
+     * to an edge
+     *
+     * @param edgeX - x coordinate of edge
+     * @param edgeY - y coordinate of edge
+     */
     public void setRadius(double edgeX, double edgeY) {
 
+        // Set on screen radius to the circle marker
         circle.setRadius(Math.sqrt(Math.pow(edgeX - centerX, 2) + Math.pow(edgeY - centerY, 2)));
-        edgeY += 149;
-        edgeX = super.XToLong(edgeX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-        edgeY = super.YToLat(edgeY, 1010.33, 1224) - 149;
 
-        double newCenterY = centerY + 149;
-        double X = super.XToLong(centerX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-        double Y = super.YToLat(newCenterY, 1010.33, 1224) - 149;
+        // Calculate radius in geo coordinates
+        edgeY += centerYOffset;
+        edgeX = MarkerUtilities.XToLong(edgeX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
+        edgeY = MarkerUtilities.YToLat(edgeY, MapView.mapWidth, MapView.mapHeight) - centerYOffset;
 
+        double newCenterY = centerY + centerYOffset;
+        double X = MarkerUtilities.XToLong(centerX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
+        double Y = MarkerUtilities.YToLat(newCenterY, MapView.mapWidth, MapView.mapHeight) - centerYOffset;
+
+        // Caclulate distance with geo coordinates
         double distance = Math.sqrt(
                 Math.pow((edgeX - X), 2)
                 + Math.pow((edgeY - Y), 2));
 
+        // Set the radius variable to the class to the geo distance
         this.radius = distance;
-        //circle.setRadius(distance);
+
     }
 
     public void setLineEnd(double x, double y) {

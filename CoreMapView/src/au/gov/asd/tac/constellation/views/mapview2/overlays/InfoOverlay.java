@@ -36,8 +36,15 @@ public class InfoOverlay extends AbstractOverlay {
     private Label lonText = null;
     private Label latText = null;
 
+    private final double locationYOffset = 149;
 
-    public InfoOverlay(int positionX, int positionY) {
+    /**
+     * Set up the UI
+     *
+     * @param positionX
+     * @param positionY
+     */
+    public InfoOverlay(double positionX, double positionY) {
         super(positionX, positionY);
 
         width = 200;
@@ -57,8 +64,14 @@ public class InfoOverlay extends AbstractOverlay {
 
     }
 
+    /**
+     * Update the location UI
+     *
+     * @param x
+     * @param y
+     */
     public void updateLocation(double x, double y) {
-        y += 149;
+        y += locationYOffset;
 
         double lon = MarkerUtilities.XToLong(x, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
         double lat = MarkerUtilities.YToLat(y, MapView.mapWidth, MapView.mapHeight);

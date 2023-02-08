@@ -39,10 +39,13 @@ import javafx.scene.text.Text;
  */
 public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
+    // Group to hold all heatmap graphical elements
     protected Group layerGroup;
 
+    private final double xOffset = 96;
+    private final double yOffset = 92;
 
-    private static final Logger LOGGER = Logger.getLogger("ABstractHeatMapLayer");
+    private static final Logger LOGGER = Logger.getLogger("AbstractHeatMapLayer");
 
     public AbstractHeatmapLayer(MapView parent, int id) {
         super(parent, id);
@@ -51,54 +54,37 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
     @Override
     public void setUp() {
-
+        // Get queried markers
         Map<String, AbstractMarker> markers = parent.getAllMarkers();
 
-        double max = 1;
-        double min = 0;
-
-
-        //LOGGER.log(Level.SEVERE, "min: " + min + " max: " + max);
-
-
-
+        // Loop through all the markers
         for (Object value : parent.getAllMarkers().values()) {
 
+            // If marker is a point marker
             if (value instanceof PointMarker) {
+
                 Text markerWeight = new Text();
 
                 PointMarker marker = (PointMarker) value;
 
+                // Get the "weight" of the marker in a graphical text element
                 markerWeight.setText(Integer.toString(getWeight(marker)));
 
-
-                int startingX = (int) marker.getX() - 96;
-                int startingY = (int) marker.getY() + 92;
+                // Offset the text element so that it lines up with the markers
+                double startingX = marker.getX() - xOffset;
+                double startingY = marker.getY() + yOffset;
 
                 markerWeight.setX(startingX);
                 markerWeight.setY(startingY);
 
                 markerWeight.setFill(Color.BLACK);
 
-
-                //LOGGER.log(Level.SEVERE, "Heatmap center x: " + heatMapColours[13][13].x);
-
-                //LOGGER.log(Level.SEVERE, "normalized value: " + normalizedValue);
-
-                //LOGGER.log(Level.SEVERE, "X coord: " + marker.getX() + "," + marker.getY());
-
+                // Add text to group
                 layerGroup.getChildren().add(markerWeight);
             }
         }
 
 
-        /*path = "M100,100" + path;
-
-        SVGPath box = new SVGPath();
-        box.setStrokeWidth(15);
-        box.setContent(path);
-
-        layerGroup.getChildren().add(box);*/
     }
 
 

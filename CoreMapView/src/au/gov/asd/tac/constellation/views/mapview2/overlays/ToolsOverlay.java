@@ -40,19 +40,25 @@ import javafx.scene.text.Font;
  */
 public class ToolsOverlay extends AbstractOverlay {
 
+    // Flags for the different mdoes available in the tools overlay
     private BooleanProperty drawingEnabled = new SimpleBooleanProperty(false);
     private BooleanProperty measureEnabled = new SimpleBooleanProperty(false);
 
     private Label measureToggleText = new Label("Disabled");
 
-
+    private final double locationYOffset = 149;
     private final String[] units = {"km", "nmi", "mi"};
     private int unitSelected = 0;
 
     private Label measureUnitText = new Label(units[unitSelected]);
 
-
-    public ToolsOverlay(int positionX, int positionY) {
+    /**
+     * Set up the UI
+     *
+     * @param positionX - x coordinate of pane
+     * @param positionY - y coordinate of pane
+     */
+    public ToolsOverlay(double positionX, double positionY) {
         super(positionX, positionY);
 
 
@@ -136,10 +142,6 @@ public class ToolsOverlay extends AbstractOverlay {
         drawingEnabled.addListener((o, oldVal, newVal) -> {
             if (drawingEnabled.get()) {
                 gridPane.add(descriptionLabel, 0, 2, 3, 3);
-                //overlayPane.prefHeight(300);
-                //overlayPane.minHeight(300);
-                //overlayPane.maxHeight(300);
-                //overlayPane.setScaleY(3);
             } else
                 gridPane.getChildren().removeIf(node -> GridPane.getColumnIndex(node) == 0 && GridPane.getRowIndex(node) == 2);
         });
@@ -157,25 +159,31 @@ public class ToolsOverlay extends AbstractOverlay {
         gridPane.add(drawSymbol, 2, 1);
 
 
-
-
-        //overlayPane.setTranslateX(815);
-        //overlayPane.setTranslateY(20);
-
     }
 
+    /**
+     * Displays the distance from one mouse location to another in the specified
+     * unit
+     *
+     * @param startX
+     * @param startY
+     * @param endX
+     * @param endY
+     */
     public void setDistanceText(double startX, double startY, double endX, double endY) {
-        startY += 149;
-        endY += 149;
+        startY += locationYOffset;
+        endY += locationYOffset;
 
-        double startLon = MarkerUtilities.XToLong(startX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
-        double endLon = MarkerUtilities.XToLong(endX, MapView.minLong, 1010.33, MapView.maxLong - MapView.minLong);
+        // Calculate lattitude and longitude from coordinates
+        double startLon = MarkerUtilities.XToLong(startX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
+        double endLon = MarkerUtilities.XToLong(endX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
 
-        double startLat = MarkerUtilities.YToLat(startY, 1010.33, 1224);
-        double endLat = MarkerUtilities.YToLat(endY, 1010.33, 1224);
+        double startLat = MarkerUtilities.YToLat(startY, MapView.mapWidth, MapView.mapHeight);
+        double endLat = MarkerUtilities.YToLat(endY, MapView.mapWidth, MapView.mapHeight);
 
         double distance = 0;
 
+        // Calculate distance depending on unit of measure
         if (measureUnitText.getText().equals("km")) {
             distance = Distance.Haversine.estimateDistanceInKilometers(startLat, startLon, endLat, endLon);
         } else if (measureUnitText.getText().equals("mi")) {

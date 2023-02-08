@@ -28,8 +28,11 @@ import javafx.scene.shape.Shape;
  */
 public abstract class AbstractMarker {
 
+    // The svg path for the actual marker
     protected final SVGPath markerPath;
     protected int markerID = 0;
+
+    // Id list contains ids of all nodes this marker represents
     protected List<Integer> idList = new ArrayList();
     protected boolean isSelected = false;
 
@@ -72,33 +75,8 @@ public abstract class AbstractMarker {
         idList.add(id);
     }
 
-    public List<Integer> getIdList() {
+    public List<Integer> getConnectedNodeIdList() {
         return idList;
-    }
-
-    protected double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
-        return (longitude - minLong) * (mapWidth / lonDelta);
-    }
-
-    protected double latToY(double lattitude, double mapWidth, double mapHeight) {
-        lattitude = lattitude * (Math.PI / 180);
-        double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
-        y = (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
-
-        return y;
-    }
-
-    protected double XToLong(double x, double minLong, double mapWidth, double lonDelta) {
-        double longitude = (x / (mapWidth / lonDelta)) + minLong;
-        return longitude;
-    }
-
-    protected double YToLat(double y, double mapWidth, double mapHeight) {
-
-        y = ((-y + (mapHeight / 2)) * (2 * Math.PI)) / mapWidth;
-        y = (Math.atan(Math.exp(y)) - (Math.PI / 4)) * 2;
-        double lattitude = y / (Math.PI / 180);
-        return lattitude;
     }
 
     public void setMarkerPosition(double mapWidth, double mapHeight) {

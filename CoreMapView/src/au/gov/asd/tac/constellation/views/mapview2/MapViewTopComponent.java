@@ -108,10 +108,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     private int cacheCounter = 0;
 
-
+    // The mapview itself
     public MapViewPane mapViewPane;
-    /*private final Map<String, AbstractMarker> markers = new HashMap<>();
-    private final List<Integer> selectedNodeList = new ArrayList<>();*/
+
 
     private int markerID = 0;
 
@@ -160,21 +159,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        //WindowManager.getDefault().setTopComponentFloating(this, true);
-        //mapViewPane.resetContent();
-
         LOGGER.log(Level.SEVERE, "Cache: " + (++cacheCounter));
         LOGGER.log(Level.SEVERE, "Inside handleComponentOpened");
 
-        //if (mapViewPane == null) {
-        //mapViewPane = new MapViewPane(this);
-        //}
-
-        //mapViewPane.setUpMap();
-        //GraphManager.getDefault().getActiveGraph();
-        //if (GraphManager.getDefault().getActiveGraph() != null) {
-        //PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(GraphManager.getDefault().getActiveGraph());
-        //}
     }
 
     @Override
@@ -182,7 +169,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         LOGGER.log(Level.SEVERE, "Inside handleComponentClosed");
         super.handleComponentClosed();
         mapViewPane.getMap().clearQueriedMarkers();
-        //mapViewPane.getMap().clearAll();
     }
 
     public int getNewMarkerID() {
@@ -199,7 +185,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
             }
         });
 
-        //jfxContainer.setVisible(true);
 
     }
 
@@ -228,9 +213,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
-        //if (mapViewPane == null) {
-        //mapViewPane = new MapViewPane(this);
-        //}
+
 
         return mapViewPane.getAllMarkers();
     }
@@ -245,8 +228,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     protected void handleNewGraph(final Graph graph) {
         super.handleNewGraph(graph);
         LOGGER.log(Level.SEVERE, "Inside handleNewGraph");
-        //mapViewPane.setUpMap(); // delete this line
-        //UpdateUI();
+
         if (graph != null) {
             try {
 
@@ -278,12 +260,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         }
 
     }
-
-    public void drawMarkerOnMap(double lat, double lon, double scale) {
-        mapViewPane.drawMarker(lat, lon, scale);
-    }
-
-
 
     /**
      * Get the findViewPane
@@ -324,10 +300,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         return mapViewPane.getProviders();
     }
 
-    /*public void selectOnGraph(final GraphElementType graphElementType, final Set<Integer> elementIds) {
-        LOGGER.log(Level.SEVERE, "Inside selectOnGraph");
-        PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(getCurrentGraph());
-    }*/
 
 
 
