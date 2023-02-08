@@ -425,7 +425,7 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setHeight(MapView.mapHeight);
 
         viewPortRectangle.setFill(Color.TRANSPARENT);
-        viewPortRectangle.setStroke(Color.RED);
+        viewPortRectangle.setStroke(Color.TRANSPARENT);
 
         // Adds the mapView and viewport rect underneath the toolbar
         parentStackPane.getChildren().add(viewPortRectangle);

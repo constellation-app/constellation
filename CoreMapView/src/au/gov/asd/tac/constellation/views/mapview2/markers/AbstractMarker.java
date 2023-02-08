@@ -75,6 +75,10 @@ public abstract class AbstractMarker {
         idList.add(id);
     }
 
+    public boolean getMarkerSelected() {
+        return isSelected;
+    }
+
     public List<Integer> getConnectedNodeIdList() {
         return idList;
     }

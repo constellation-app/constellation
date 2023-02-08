@@ -54,7 +54,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
     private static final Logger LOGGER = Logger.getLogger(ExtractCoordsFromGraphPlugin.class.getName());
 
-    // 95, 245,
     private final double pointMarkerXOffset = 95;
     private final double pointMarkerYOffset = 245;
 

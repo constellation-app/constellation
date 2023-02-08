@@ -76,16 +76,4 @@ public abstract class AbstractMapLayer {
     }
 
 
-    /*protected double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
-        return (longitude - minLong) * (mapWidth / lonDelta);
-    }
-
-    protected double latToY(double lattitude, double mapWidth, double mapHeight) {
-        lattitude = lattitude * (Math.PI / 180);
-        double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
-        y = (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
-
-        return y;
-    }*/
-
 }

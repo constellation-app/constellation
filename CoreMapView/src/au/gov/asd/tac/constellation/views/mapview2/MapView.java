@@ -183,9 +183,6 @@ public class MapView extends ScrollPane {
     private static final Logger LOGGER = Logger.getLogger("MapView");
 
     Vec3 medianPositionOfMarkers = null;
-    private boolean calculatedMedianMarkerPosition = false;
-
-    private final DoubleProperty zoomProperty = new SimpleDoubleProperty(1.0);
 
     // Factor to scale map by when zooming
     private final double mapScaleFactor = 1.1;
@@ -262,8 +259,6 @@ public class MapView extends ScrollPane {
         overlayGroup = new Group();
         layerGroup = new Group();
         clusterMarkerGroup = new Group();
-        //pointMarkerGroup = new Group();
-        //drawnMarkerGroup.getChildren().addAll(testMarker.getMarker(), testMarker2.getMarker(), testMarker3.getMarker(), testMarker4.getMarker());
         hiddenPointMarkerGroup = new Group();
         hiddenPointMarkerGroup.setVisible(false);
         pointMarkerTextGroup = new Group();
@@ -276,9 +271,6 @@ public class MapView extends ScrollPane {
         markersShowing.add(AbstractMarker.MarkerType.LINE_MARKER);
         markersShowing.add(AbstractMarker.MarkerType.POINT_MARKER);
         markersShowing.add(AbstractMarker.MarkerType.POLYGON_MARKER);
-
-
-        //mapCanvas = new Canvas();
 
         mapGroupHolder.setBackground(Background.fill(new Color(0.722, 0.871, 0.902, 1)));
 
@@ -356,8 +348,6 @@ public class MapView extends ScrollPane {
                     }
                 }
 
-                LOGGER.log(Level.SEVERE, "Nodes on Screen: " + nodesOnScreen);
-
             }
         });
 
@@ -430,6 +420,7 @@ public class MapView extends ScrollPane {
         overlayMap.put(MapViewPane.TOOLS_OVERLAY, toolsOverlay);
         overlayMap.put(MapViewPane.INFO_OVERLAY, infoOverlay);
 
+        markerColourProperty.set(parent.DEFAULT_COLOURS);
         // Event listener for what colour point markers should be
         markerColourProperty.addListener(new ChangeListener<String>() {
             @Override
@@ -661,14 +652,10 @@ public class MapView extends ScrollPane {
                 selectionRectangle.setFill(Color.GRAY);
                 selectionRectangle.setOpacity(0.2);
 
-                selectionRectangleGroup.getChildren().add(selectionRectangle);
-                LOGGER.log(Level.SEVERE, "Mouse Pressed");
+                    selectionRectangleGroup.getChildren().add(selectionRectangle);
 
-                    //selectionRectangle.setWidth(20);
-                    //selectionRectangle.setHeight(20);
                 }
 
-                ///event.consume();
             }
         });
 
@@ -758,12 +745,10 @@ public class MapView extends ScrollPane {
         // Add all garphical groups to pane
         mapGroupHolder.getChildren().add(hiddenPointMarkerGroup);
         mapGroupHolder.getChildren().add(graphMarkerGroup);
-        //mapGroupHolder.getChildren().add(pointMarkerGroup);
         mapGroupHolder.getChildren().addAll(drawnMarkerGroup);
         mapGroupHolder.getChildren().add(clusterMarkerGroup);
         mapGroupHolder.getChildren().addAll(polygonMarkerGroup);
         mapGroupHolder.getChildren().add(overlayGroup);
-        //mapStackPane.getChildren().add(overlayGroup);
         mapGroupHolder.getChildren().add(layerGroup);
         mapGroupHolder.getChildren().add(pointMarkerTextGroup);
         mapGroupHolder.getChildren().add(thessianMarkersGroup);
@@ -1081,20 +1066,6 @@ public class MapView extends ScrollPane {
         averageX /= markerCounter;
         averageY /= markerCounter;
 
-        /*Rectangle r = new Rectangle();
-        r.setX(averageX);
-        r.setY(averageY);
-
-        r.setWidth(5);
-        r.setHeight(5);
-
-        r.setFill(Color.RED);
-
-        LOGGER.log(Level.SEVERE, "Zoom to all X: " + averageX + " Zoom to all Y: " + averageY);
-
-        //r.setOpacity(0.25);
-
-        overlayGroup.getChildren().add(r);*/
         // Pan to location
         pan(averageX, averageY);
 
@@ -1129,18 +1100,6 @@ public class MapView extends ScrollPane {
 
         mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.x);
         mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.y);
-        /*viewPortRectangleGroup.getChildren().clear();
-        Rectangle r = new Rectangle();
-        r.setX(x - 2.5);
-        r.setY(y - 2.5);
-
-        r.setWidth(5);
-        r.setHeight(5);
-
-        r.setFill(Color.TRANSPARENT);
-        r.setStroke(Color.RED);
-
-        viewPortRectangleGroup.getChildren().add(r);*/
     }
 
     public void panToSelection() {
@@ -1465,6 +1424,9 @@ public class MapView extends ScrollPane {
         }
     }
 
+    public List<AbstractMarker> getUserMarkers() {
+        return userMarkers;
+    }
 
     public ObservableList<Node> getPointMarkersOnMap() {
         return hiddenPointMarkerGroup.getChildren();
