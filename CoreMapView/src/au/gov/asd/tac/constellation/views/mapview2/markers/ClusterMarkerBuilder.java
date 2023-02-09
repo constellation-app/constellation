@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Circle;
@@ -98,11 +99,22 @@ public class ClusterMarkerBuilder {
      * @return
      */
     private double getNodeDistance(Node n1, Node n2) {
-        double x1 = n1.localToScreen(n1.getBoundsInLocal().getCenterX(), n1.getBoundsInLocal().getCenterY()).getX();
-        double y1 = n1.localToScreen(n1.getBoundsInLocal().getCenterX(), n1.getBoundsInLocal().getCenterY()).getY();
+        if (n1 == null || n2 == null) {
+            return 0;
+        }
 
-        double x2 = n2.localToScreen(n2.getBoundsInLocal().getCenterX(), n2.getBoundsInLocal().getCenterY()).getX();
-        double y2 = n2.localToScreen(n2.getBoundsInLocal().getCenterX(), n2.getBoundsInLocal().getCenterY()).getY();
+        Point2D screenN1Coords = n1.localToScreen(n1.getBoundsInLocal().getCenterX(), n1.getBoundsInLocal().getCenterY());
+        Point2D screenN2Coords = n2.localToScreen(n2.getBoundsInLocal().getCenterX(), n2.getBoundsInLocal().getCenterY());
+
+        if (screenN1Coords == null || screenN2Coords == null) {
+            return 0;
+        }
+
+        double x1 = screenN1Coords.getX();
+        double y1 = screenN1Coords.getY();
+
+        double x2 = screenN2Coords.getX();
+        double y2 = screenN2Coords.getY();
 
         double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         return distance;

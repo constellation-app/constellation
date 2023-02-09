@@ -155,6 +155,7 @@ public class MapView extends ScrollPane {
 
     // The two groups that hold the queried and user marker groups
     private Group graphMarkerGroup;
+
     private Group drawnMarkerGroup;
 
     // Groups for user drawn polygons, cluster markers and "hidden" point markers used for cluster calculations
@@ -226,8 +227,8 @@ public class MapView extends ScrollPane {
     // All the layers are stored here
     private final List<AbstractMapLayer> layers = new ArrayList<>();
 
-    private ToolsOverlay toolsOverlay = null;
-    private InfoOverlay infoOverlay = null;
+    public static ToolsOverlay toolsOverlay = null;
+    public static InfoOverlay infoOverlay = null;
 
     private final double toolOverlayWidth = 815;
     private final double toolsOverlayHeight = 20;
@@ -549,8 +550,6 @@ public class MapView extends ScrollPane {
                 } // If drawing is not enabled but measuring is
                 else if (!toolsOverlay.getDrawingEnabled().get() && toolsOverlay.getMeasureEnabled().get()) {
 
-                    //if (event.isPrimaryButtonDown()) {
-                    // If the user is not drawing a measureing line then spawn it at mouse click location else get rid of the line
                         if (!drawingMeasureLine) {
                             LOGGER.log(Level.SEVERE, "Drawing measure line");
                             measureLine = new Line();
@@ -569,7 +568,7 @@ public class MapView extends ScrollPane {
                             drawingMeasureLine = false;
                             measureLine = null;
                         }
-                    //}
+
                 }
                 event.consume();
             }
@@ -617,18 +616,6 @@ public class MapView extends ScrollPane {
                         toolsOverlay.setDistanceText(measureLine.getStartX(), measureLine.getStartY(), measureLine.getEndX(), measureLine.getEndY());
                     }
                 }
-
-                /*if (isSelectingMultiple) {
-                    //double x = event.getX();
-                    //double y = event.getY();
-
-                    double width = x - selectionRectangle.getX();
-                    double height = y - selectionRectangle.getY();
-
-                    selectionRectangle.setWidth(20);
-                    selectionRectangle.setHeight(20);
-                }*/
-
 
                 event.consume();
             }
@@ -929,6 +916,10 @@ public class MapView extends ScrollPane {
         // Redraw all markers on screen
         redrawUserMarkers();
         redrawQueriedMarkers();
+    }
+
+    public List<AbstractMapLayer> getLayers() {
+        return layers;
     }
 
     public void redrawQueriedMarkers() {
@@ -1428,6 +1419,10 @@ public class MapView extends ScrollPane {
         return userMarkers;
     }
 
+    public List<Integer> getSelectedNodeList() {
+        return selectedNodeList;
+    }
+
     public ObservableList<Node> getPointMarkersOnMap() {
         return hiddenPointMarkerGroup.getChildren();
     }
@@ -1448,9 +1443,16 @@ public class MapView extends ScrollPane {
 
     }
 
+    public Group getGraphMarkerGroup() {
+        return graphMarkerGroup;
+    }
 
     public void addMarkerToHashMap(String key, AbstractMarker e) {
         markers.put(key, e);
+    }
+
+    public Set<AbstractMarker.MarkerType> getMarkersShowing() {
+        return markersShowing;
     }
 
     // Load the world map

@@ -17,10 +17,12 @@ package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
+import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.ClusterMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javafx.beans.property.StringProperty;
@@ -72,8 +74,8 @@ public class MapViewNGTest {
         String coordinateKey = "-1" + "," + "-2";
         String coordinateKey2 = "-3" + "," + "-4";
 
-        PointMarker p1 = new PointMarker(instance, mapViewTopComponent.getNewMarkerID(), 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
-        PointMarker p2 = new PointMarker(instance, mapViewTopComponent.getNewMarkerID(), 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+        PointMarker p1 = new PointMarker(instance, -99, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
+        PointMarker p2 = new PointMarker(instance, -100, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
 
         mapViewTopComponent.addMarker(coordinateKey, p1);
         mapViewTopComponent.addMarker(coordinateKey2, p2);
@@ -110,7 +112,7 @@ public class MapViewNGTest {
         System.out.println("removeUserMarker");
         int id = 1;
         MapView instance = mapViewTopComponent.mapViewPane.getMap();
-
+        instance.getUserMarkers().clear();
         UserPointMarker usm = new UserPointMarker(instance, id, 4, 4, 0.05, 4, 4);
 
         instance.getUserMarkers().add(usm);
@@ -126,12 +128,15 @@ public class MapViewNGTest {
     @Test
     public void testToggleOverlay() {
         System.out.println("toggleOverlay");
-        String overlay = "";
-        boolean show = false;
-        MapView instance = null;
-        instance.toggleOverlay(overlay, show);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        String overlay = mapViewTopComponent.mapViewPane.INFO_OVERLAY;
+
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+        instance.toggleOverlay(overlay, true);
+
+        assertEquals(MapView.infoOverlay.getIsShowing(), true);
+        instance.toggleOverlay(overlay, false);
+
+        assertEquals(MapView.infoOverlay.getIsShowing(), false);
     }
 
     /**
@@ -140,27 +145,17 @@ public class MapViewNGTest {
     @Test
     public void testGetNewMarkerID() {
         System.out.println("getNewMarkerID");
-        MapView instance = null;
-        int expResult = 0;
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
         int result = instance.getNewMarkerID();
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(result, 1);
+
+        result = instance.getNewMarkerID();
+        assertEquals(result, 2);
+
+
     }
 
-    /**
-     * Test of addClusterMarkers method, of class MapView.
-     */
-    @Test
-    public void testAddClusterMarkers() {
-        System.out.println("addClusterMarkers");
-        List<ClusterMarker> clusters = null;
-        List<Text> clusterValues = null;
-        MapView instance = null;
-        instance.addClusterMarkers(clusters, clusterValues);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
     /**
      * Test of addLayer method, of class MapView.
@@ -168,11 +163,12 @@ public class MapViewNGTest {
     @Test
     public void testAddLayer() {
         System.out.println("addLayer");
-        AbstractMapLayer layer = null;
-        MapView instance = null;
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+        AbstractMapLayer layer = new DayNightLayer(instance, 0);
+
         instance.addLayer(layer);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        assertEquals(layer.getIsShowing(), true);
     }
 
     /**
@@ -182,10 +178,10 @@ public class MapViewNGTest {
     public void testRemoveLayer() {
         System.out.println("removeLayer");
         int id = 0;
-        MapView instance = null;
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
         instance.removeLayer(id);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        assertEquals(instance.getLayers().isEmpty(), true);
     }
 
     /**
@@ -194,30 +190,30 @@ public class MapViewNGTest {
     @Test
     public void testUpdateShowingMarkers() {
         System.out.println("updateShowingMarkers");
-        AbstractMarker.MarkerType type = null;
-        boolean adding = false;
-        MapView instance = null;
+        AbstractMarker.MarkerType type = AbstractMarker.MarkerType.POLYGON_MARKER;
+        boolean adding = true;
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
         instance.updateShowingMarkers(type, adding);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        assertEquals(instance.getMarkersShowing().contains(type), true);
     }
 
     /**
      * Test of redrawQueriedMarkers method, of class MapView.
      */
-    @Test
+    /*@Test
     public void testRedrawQueriedMarkers() {
         System.out.println("redrawQueriedMarkers");
         MapView instance = null;
         instance.redrawQueriedMarkers();
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
-    }
+    }*/
 
     /**
      * Test of reScaleQueriedMarkers method, of class MapView.
      */
-    @Test
+    /*@Test
     public void testReScaleQueriedMarkers() {
         System.out.println("reScaleQueriedMarkers");
         double scale = 0.0;
@@ -225,7 +221,7 @@ public class MapViewNGTest {
         instance.reScaleQueriedMarkers(scale);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
-    }
+    }*/
 
     /**
      * Test of getAllMarkers method, of class MapView.
@@ -233,12 +229,19 @@ public class MapViewNGTest {
     @Test
     public void testGetAllMarkers() {
         System.out.println("getAllMarkers");
-        MapView instance = null;
-        Map expResult = null;
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
+        instance.getAllMarkers().clear();
+
+        PointMarker p1 = new PointMarker(instance, -999, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
+        PointMarker p2 = new PointMarker(instance, -101, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+
+        mapViewTopComponent.addMarker("testCoord1", p1);
+        mapViewTopComponent.addMarker("testCoord2", p2);
+
         Map result = instance.getAllMarkers();
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(result.size(), 2);
+
     }
 
     /**
@@ -247,12 +250,22 @@ public class MapViewNGTest {
     @Test
     public void testGetAllMarkersAsList() {
         System.out.println("getAllMarkersAsList");
-        MapView instance = null;
-        List expResult = null;
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+        instance.getAllMarkers().clear();
+        instance.getUserMarkers().clear();
+
+        PointMarker p1 = new PointMarker(instance, -999, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
+        PointMarker p2 = new PointMarker(instance, -101, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+
+        mapViewTopComponent.addMarker("testCoord1", p1);
+        mapViewTopComponent.addMarker("testCoord2", p2);
+
+        UserPointMarker usm = new UserPointMarker(instance, 45, 4, 4, 0.05, 4, 4);
+
+        instance.getUserMarkers().add(usm);
+
         List result = instance.getAllMarkersAsList();
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(result.size(), 3);
     }
 
     /**
@@ -261,10 +274,19 @@ public class MapViewNGTest {
     @Test
     public void testClearQueriedMarkers() {
         System.out.println("clearQueriedMarkers");
-        MapView instance = null;
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
+        PointMarker p2 = new PointMarker(instance, -107, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+
+        mapViewTopComponent.addMarker("testCoord2", p2);
+
+        UserPointMarker usm = new UserPointMarker(instance, 46, 4, 4, 0.05, 4, 4);
+
+        instance.getUserMarkers().add(usm);
+
         instance.clearQueriedMarkers();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        assertEquals(instance.getAllMarkers().size(), 0);
     }
 
     /**
@@ -273,25 +295,13 @@ public class MapViewNGTest {
     @Test
     public void testClearAll() {
         System.out.println("clearAll");
-        MapView instance = null;
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
         instance.clearAll();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        assertEquals(instance.getAllMarkers().isEmpty(), true);
+        assertEquals(instance.getUserMarkers().isEmpty(), true);
     }
 
-    /**
-     * Test of getCurrentGraph method, of class MapView.
-     */
-    @Test
-    public void testGetCurrentGraph() {
-        System.out.println("getCurrentGraph");
-        MapView instance = null;
-        Graph expResult = null;
-        Graph result = instance.getCurrentGraph();
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
     /**
      * Test of addMarkerIdToSelectedList method, of class MapView.
@@ -299,104 +309,19 @@ public class MapViewNGTest {
     @Test
     public void testAddMarkerIdToSelectedList() {
         System.out.println("addMarkerIdToSelectedList");
-        int markerID = 0;
-        List<Integer> selectedNodes = null;
-        boolean selectingVertex = false;
-        MapView instance = null;
+        int markerID = -107;
+        List<Integer> selectedNodes = new ArrayList<Integer>();
+        boolean selectingVertex = true;
+
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
+        PointMarker p2 = new PointMarker(instance, markerID, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+
+        mapViewTopComponent.addMarker("testCoord2", p2);
+
         instance.addMarkerIdToSelectedList(markerID, selectedNodes, selectingVertex);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
 
-    /**
-     * Test of panToAll method, of class MapView.
-     */
-    @Test
-    public void testPanToAll() {
-        System.out.println("panToAll");
-        MapView instance = null;
-        instance.panToAll();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of panToCenter method, of class MapView.
-     */
-    @Test
-    public void testPanToCenter() {
-        System.out.println("panToCenter");
-        MapView instance = null;
-        instance.panToCenter();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of panToSelection method, of class MapView.
-     */
-    @Test
-    public void testPanToSelection() {
-        System.out.println("panToSelection");
-        MapView instance = null;
-        instance.panToSelection();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of zoom method, of class MapView.
-     */
-    @Test
-    public void testZoom() {
-        System.out.println("zoom");
-        double x = 0.0;
-        double y = 0.0;
-        boolean allMarkers = false;
-        MapView instance = null;
-        instance.zoom(x, y, allMarkers);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of generateZoomLocationUI method, of class MapView.
-     */
-    @Test
-    public void testGenerateZoomLocationUI() {
-        System.out.println("generateZoomLocationUI");
-        MapView instance = null;
-        instance.generateZoomLocationUI();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getPointMarkersOnMap method, of class MapView.
-     */
-    @Test
-    public void testGetPointMarkersOnMap() {
-        System.out.println("getPointMarkersOnMap");
-        MapView instance = null;
-        ObservableList expResult = null;
-        ObservableList result = instance.getPointMarkersOnMap();
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of getMarkerTextProperty method, of class MapView.
-     */
-    @Test
-    public void testGetMarkerTextProperty() {
-        System.out.println("getMarkerTextProperty");
-        MapView instance = null;
-        StringProperty expResult = null;
-        StringProperty result = instance.getMarkerTextProperty();
-        assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        assertEquals(instance.getSelectedNodeList().size(), 1);
     }
 
     /**
@@ -405,11 +330,14 @@ public class MapViewNGTest {
     @Test
     public void testDrawMarker() {
         System.out.println("drawMarker");
-        AbstractMarker marker = null;
-        MapView instance = null;
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+        AbstractMarker marker = new PointMarker(instance, -32, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+
+        assertEquals(instance.getGraphMarkerGroup().getChildren().size(), 0);
+
         instance.drawMarker(marker);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        assertEquals(instance.getGraphMarkerGroup().getChildren().size(), 1);
     }
 
     /**
@@ -418,12 +346,13 @@ public class MapViewNGTest {
     @Test
     public void testAddMarkerToHashMap() {
         System.out.println("addMarkerToHashMap");
-        String key = "";
-        AbstractMarker e = null;
-        MapView instance = null;
+        String key = "60,89";
+        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+        AbstractMarker e = new PointMarker(instance, 32, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+
         instance.addMarkerToHashMap(key, e);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
+        assertEquals(instance.getAllMarkers().containsKey(key), true);
     }
 
 }
