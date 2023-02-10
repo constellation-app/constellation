@@ -274,10 +274,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         return mapViewPane.getDefaultProvider();
     }
 
-    public MarkerState getMarkerState() {
-        return mapViewPane.getMarkerState();
-    }
-
     public boolean shouldUpdate() {
         return this.needsUpdate();
     }

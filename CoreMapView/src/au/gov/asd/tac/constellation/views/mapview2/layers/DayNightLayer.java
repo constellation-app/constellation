@@ -227,7 +227,7 @@ public class DayNightLayer extends AbstractMapLayer {
      * @param leftOrientation
      * @return returns Location object containing shadow position
      */
-    final Location getShadowPosition(final Location sunPosition, final boolean leftOrientation) {
+    private Location getShadowPosition(final Location sunPosition, final boolean leftOrientation) {
         if (sunPosition == null) {
             return null;
         }
@@ -298,7 +298,7 @@ public class DayNightLayer extends AbstractMapLayer {
      * @param delta
      * @return return an array of locations
      */
-    public List<Location> generateCircle(final Location centre, final Location delta) {
+    private List<Location> generateCircle(final Location centre, final Location delta) {
         final List<Location> circleVertices = new ArrayList<>();
 
         // Find the radius of the shadow based on center and a point on the edge

@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -33,6 +35,9 @@ public class PolygonMarker extends AbstractMarker {
 
     private List<Line> polygonLineUI = new ArrayList<Line>();
     private Line currentLine = null;
+    private String rawPath = "";
+
+    private Logger LOGGER = Logger.getLogger("PolygonMarker");
 
     public PolygonMarker(MapView parent, int markerID, int xOffset, int yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
@@ -140,6 +145,9 @@ public class PolygonMarker extends AbstractMarker {
             }
         }
 
+        LOGGER.log(Level.SEVERE, path);
+
+        rawPath = path;
         markerPath.setContent(path);
 
     }
@@ -148,5 +156,7 @@ public class PolygonMarker extends AbstractMarker {
         return currentLine;
     }
 
-
+    public String getRawPath() {
+        return rawPath;
+    }
 }

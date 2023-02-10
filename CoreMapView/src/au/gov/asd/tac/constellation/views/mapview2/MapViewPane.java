@@ -148,7 +148,6 @@ public class MapViewPane extends BorderPane {
     // Map providers
     private final MapProvider defaultProvider;
     private final List<? extends MapProvider> providers;
-    private final MarkerState markerState = null;
 
     // All the toolbar UI elements
     private final ChoiceBox<MapProvider> mapProviderDropDown;
@@ -448,10 +447,6 @@ public class MapViewPane extends BorderPane {
         mapView.redrawQueriedMarkers();
     }
 
-    public void toggleHeatmapLayer() {
-        //mapView.toggleHeatmapLayer();
-    }
-
     public Map<String, AbstractMarker> getAllMarkers() {
         if (mapView != null) {
             return mapView.getAllMarkers();
@@ -479,9 +474,6 @@ public class MapViewPane extends BorderPane {
         return defaultProvider;
     }
 
-    public MarkerState getMarkerState() {
-        return markerState;
-    }
 
     public List<? extends MapProvider> getProviders() {
         return providers;

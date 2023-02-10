@@ -524,11 +524,10 @@ public class MapView extends ScrollPane {
                         if (!drawingPolygonMarker && !drawingCircleMarker) {
                             polygonMarker = new PolygonMarker(self, drawnMarkerId++, 0, 0);
 
-                            polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
                             drawingPolygonMarker = true;
-                        } else {
-                            polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
                         }
+                            polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
+
                         toolsOverlay.resetMeasureText();
                     } // If the user is drawing a polygon marker then add the polygon to the screen and clear any UI elements
                     else if (drawingPolygonMarker) {
@@ -543,7 +542,7 @@ public class MapView extends ScrollPane {
                     else if (!drawingPolygonMarker && !drawingCircleMarker) {
                         UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
                         marker.setMarkerPosition(0, 0);
-
+                        addUserDrawnMarker(marker);
                         userMarkers.add(marker);
                         updateClusterMarkers();
                     }

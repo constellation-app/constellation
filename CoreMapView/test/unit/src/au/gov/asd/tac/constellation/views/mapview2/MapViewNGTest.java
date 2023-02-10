@@ -198,30 +198,6 @@ public class MapViewNGTest {
         assertEquals(instance.getMarkersShowing().contains(type), true);
     }
 
-    /**
-     * Test of redrawQueriedMarkers method, of class MapView.
-     */
-    /*@Test
-    public void testRedrawQueriedMarkers() {
-        System.out.println("redrawQueriedMarkers");
-        MapView instance = null;
-        instance.redrawQueriedMarkers();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }*/
-
-    /**
-     * Test of reScaleQueriedMarkers method, of class MapView.
-     */
-    /*@Test
-    public void testReScaleQueriedMarkers() {
-        System.out.println("reScaleQueriedMarkers");
-        double scale = 0.0;
-        MapView instance = null;
-        instance.reScaleQueriedMarkers(scale);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }*/
 
     /**
      * Test of getAllMarkers method, of class MapView.

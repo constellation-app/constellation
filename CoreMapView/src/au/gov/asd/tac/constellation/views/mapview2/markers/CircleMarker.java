@@ -48,8 +48,8 @@ public class CircleMarker extends AbstractMarker {
     public CircleMarker(MapView parent, int markerID, double centerX, double centerY, double radius, int xOffset, int yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
 
-        this.centerX = centerX; //+ xOffset;
-        this.centerY = centerY; //+ yOffset;
+        this.centerX = centerX;
+        this.centerY = centerY;
         this.radius = radius;
 
         // Set up circle svg
@@ -99,7 +99,6 @@ public class CircleMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
 
                 parent.removeUserMarker(markerID);
-                //parent.drawPointMarkerOnMap();
                 e.consume();
             }
         });
