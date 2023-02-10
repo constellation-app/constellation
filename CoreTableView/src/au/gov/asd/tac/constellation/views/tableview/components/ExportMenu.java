@@ -301,7 +301,7 @@ public class ExportMenu {
                                         ? file.getAbsolutePath() : file.getAbsolutePath() + expectedFileExtension;
                                 final File fileName = new File(filePath);
                                 Platform.runLater(() -> {
-                                    ThreadConstraints workerConstraints = ThreadConstraints.getConstraints();
+                                    final ThreadConstraints workerConstraints = ThreadConstraints.getConstraints();
                                     workerConstraints.setCurrentReport(callingConstraints.getCurrentReport());                                    
                                     try {
                                         PluginExecution.withPlugin(

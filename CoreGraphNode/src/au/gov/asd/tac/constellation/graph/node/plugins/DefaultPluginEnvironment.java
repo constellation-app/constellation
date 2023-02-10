@@ -93,9 +93,9 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             PluginReport currentReport = null;
             final GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
             // a graph report can have multiple plugin reports ... a plugin report can have multiple child plugin reports
-            if (graphReport != null) {                
-                PluginReport parentThreadReport = parentConstraints.getCurrentReport();
-                PluginReport existingReport = callingConstraints.getCurrentReport();
+            if (graphReport != null) {     
+                final PluginReport parentThreadReport = parentConstraints.getCurrentReport();
+                final PluginReport existingReport = callingConstraints.getCurrentReport();
                 if (parentThreadReport == null && existingReport == null) {
                     currentReport = graphReport.addPluginReport(plugin);
                 } else if (existingReport != null) {
@@ -104,7 +104,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
                     currentReport = parentThreadReport.addChildReport(plugin);
                 }
                 callingConstraints.setCurrentReport(currentReport);            
-            } 
+            }
 
             try {
                 ConstellationLogger.getDefault().pluginStarted(plugin, parameters, graph);
@@ -284,7 +284,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             }
             callingConstraints.setCurrentReport(currentReport);
         }
-
+        
         final PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, null);
         final PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
         try {

@@ -123,12 +123,12 @@ public class AnalyticViewPane extends BorderPane {
                 analyticResultsPane.getInternalVisualisationPane().getTabs().add(progressTab);
                 // answer the current analytic question and display the results
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-                SimplePlugin virtualAnalytics = new SimplePlugin("Analytic View - Query Runner"){
+                final SimplePlugin virtualAnalytics = new SimplePlugin("Analytic View - Query Runner"){
                     @Override
                     protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
                         parentConstraints = ThreadConstraints.getConstraints();
                         questionThread = new Thread(() -> {
-                            ThreadConstraints localConstraints = ThreadConstraints.getConstraints();
+                            final ThreadConstraints localConstraints = ThreadConstraints.getConstraints();
                             if (localConstraints.getCurrentReport() == null) {
                                 localConstraints.setCurrentReport(parentConstraints.getCurrentReport());
                             }
@@ -139,7 +139,7 @@ public class AnalyticViewPane extends BorderPane {
 
                             running = true;
                             try {
-                                AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
+                                final AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
                                 analyticResultsPane.displayResults(question);
                             } catch (final AnalyticException ex) {
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
@@ -167,6 +167,7 @@ public class AnalyticViewPane extends BorderPane {
                                 }
                             });
                         } catch (InvocationTargetException ex) {
+                            // Not severe enough to warrant an exception popup message to user
                             Exceptions.printStackTrace(ex);
                         }
                     }

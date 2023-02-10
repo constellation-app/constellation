@@ -128,7 +128,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
             GraphRecordStoreUtilities.addRecordStoreToGraph(batchGraph, batch, true, true, null, vertexMap, transactionMap);
             final WorkerQueryPlugin worker = new WorkerQueryPlugin(getWorkflow(), batchGraph, exceptions, getErrorHandlingPlugin(), addPartialResults());
             workerPlugins.add(workflowExecutor.submit(() -> {
-                ThreadConstraints workerConstraints = ThreadConstraints.getConstraints();
+                final ThreadConstraints workerConstraints = ThreadConstraints.getConstraints();
                 workerConstraints.setCurrentReport(callingConstraints.getCurrentReport());
 
                 Thread.currentThread().setName(THREAD_POOL_NAME);
