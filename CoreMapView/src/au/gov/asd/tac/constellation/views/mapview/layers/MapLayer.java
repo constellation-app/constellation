@@ -90,7 +90,6 @@ public abstract class MapLayer {
 
                 // update layer
                 layer = update();
-
             }).start();
             mouseIsReleased = false;
             mouseIsScrolling = false;

@@ -232,7 +232,6 @@ public class MapViewTileRenderer extends PApplet {
     }
 
     public void updateMarkers(final Graph graph, final MarkerState markerState) {
-        LOGGER.log(Level.SEVERE, "Inside updateMarkers");
         if (!parent.shouldUpdate()) {
             return;
         }

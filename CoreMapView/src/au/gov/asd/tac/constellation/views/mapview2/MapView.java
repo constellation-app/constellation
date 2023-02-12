@@ -188,7 +188,6 @@ public class MapView extends ScrollPane {
     // Factor to scale map by when zooming
     private final double mapScaleFactor = 1.1;
 
-    private double scale = 1.0;
     //private final SVGPath p = new SVGPath();
 
     // The paths for the edges of all the countries
@@ -203,9 +202,6 @@ public class MapView extends ScrollPane {
     private boolean isSelectingMultiple = false;
     private double selectionRectangleX = 0;
     private double selectionRectangleY = 0;
-
-    private ArrayList<ArrayList<Node>> pointMarkerClusters = new ArrayList<ArrayList<Node>>();
-    private Set<Node> clusteredPointMarkers = new HashSet<>();
 
     // Flag for the line the user draws to smell distance between
     private boolean drawingMeasureLine = false;
