@@ -199,6 +199,9 @@ public class ToolsOverlay extends AbstractOverlay {
         measureToggleText.setText(df.format(distance));
     }
 
+    /**
+     * Toggles the measurement text from disabled to enabled and vice versa
+     */
     public void resetMeasureText() {
         if (measureEnabled.get()) {
             measureToggleText.setText("Enabled");

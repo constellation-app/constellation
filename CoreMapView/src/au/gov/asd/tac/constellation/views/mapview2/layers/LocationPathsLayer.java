@@ -44,6 +44,9 @@ public class LocationPathsLayer extends AbstractPathsLayer {
         super(parent, id, queriedMarkers);
     }
 
+    /**
+     * Sets up the line markers for the location paths
+     */
     @Override
     public void setUp() {
         entityPaths.getChildren().clear();

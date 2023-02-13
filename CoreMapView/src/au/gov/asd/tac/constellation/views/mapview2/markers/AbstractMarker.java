@@ -63,6 +63,11 @@ public abstract class AbstractMarker {
         markerPath = new SVGPath();
     }
 
+    /**
+     * Gets the amount of nodes the marker represents
+     *
+     * @return
+     */
     public int getWeight() {
         return idList.size();
     }
@@ -71,6 +76,12 @@ public abstract class AbstractMarker {
         return type;
     }
 
+    /**
+     * Adds the id of a graph node to the idList array which means that this
+     * marker represents that node in the map view
+     *
+     * @param id
+     */
     public void addNodeID(int id) {
         idList.add(id);
     }

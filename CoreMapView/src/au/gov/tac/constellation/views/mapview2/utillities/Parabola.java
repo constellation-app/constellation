@@ -49,6 +49,10 @@ public class Parabola {
         return (Math.pow((x - focusX), 2) / (2 * (focusY - directtrix))) + ((focusY + directtrix) / 2);
     }
 
+    /**
+     * Calculates the points of the parabola and adds them to the Polyline
+     * object
+     */
     public void generateParabola() {
         for (double x = focusX - 300; x <= focusX + 300; ++x) {
 

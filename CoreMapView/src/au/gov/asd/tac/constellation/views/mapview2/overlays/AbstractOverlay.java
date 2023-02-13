@@ -78,6 +78,9 @@ public class AbstractOverlay {
         isShowing = showing;
     }
 
+    /**
+     * Toggle whether overlay is visible
+     */
     public void toggleOverlay() {
         isShowing = !isShowing;
         overlayPane.setVisible(!overlayPane.isVisible());

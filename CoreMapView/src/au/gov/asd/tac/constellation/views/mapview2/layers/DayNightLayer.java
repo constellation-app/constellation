@@ -61,6 +61,9 @@ public class DayNightLayer extends AbstractMapLayer {
 
     }
 
+    /**
+     * Calculates the shadows, sun location and colours them in
+     */
     @Override
     public void setUp() {
         // Get the sun location and create a circle to represent the sin
@@ -294,8 +297,8 @@ public class DayNightLayer extends AbstractMapLayer {
     /**
      * Generates an array of locations representing the shadow
      *
-     * @param centre
-     * @param delta
+     * @param centre - center of circle
+     * @param delta - location on the edge of circle
      * @return return an array of locations
      */
     private List<Location> generateCircle(final Location centre, final Location delta) {

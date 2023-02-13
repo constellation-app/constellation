@@ -47,6 +47,9 @@ public class EntityPathsLayer extends AbstractPathsLayer {
         super(parent, id, queriedMarkers);
     }
 
+    /**
+     * Sets up the line markers for the entity paths
+     */
     @Override
     public void setUp() {
         entityPaths.getChildren().clear();

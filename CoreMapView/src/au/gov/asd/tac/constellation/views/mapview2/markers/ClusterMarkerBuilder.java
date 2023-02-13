@@ -94,8 +94,8 @@ public class ClusterMarkerBuilder {
      * '
      * Calculate distance between n1 and n2
      *
-     * @param n1
-     * @param n2
+     * @param n1 - Node1
+     * @param n2 - Node2
      * @return
      */
     private double getNodeDistance(Node n1, Node n2) {

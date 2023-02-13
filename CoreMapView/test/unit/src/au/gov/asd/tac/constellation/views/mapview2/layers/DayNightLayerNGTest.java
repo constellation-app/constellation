@@ -33,9 +33,12 @@ import org.testng.annotations.Test;
  */
 public class DayNightLayerNGTest {
 
-    private final MapViewTopComponent component = new MapViewTopComponent();
-    private final MapView map = component.mapViewPane.getMap();
+    private final MapViewTopComponent component;
+    private final MapView map;
+
     public DayNightLayerNGTest() {
+        component = new MapViewTopComponent();
+        map = component.mapViewPane.getMap();
     }
 
     @BeforeClass
@@ -60,8 +63,7 @@ public class DayNightLayerNGTest {
      */
     @Test
     public void testGetLayer() {
-        System.out.println("getLayer");
-        //MapView parent = Mockito.mock(MapView.class, "");
+        System.out.println("getLayer");;
 
         DayNightLayer instance = new DayNightLayer(map, 5);
 

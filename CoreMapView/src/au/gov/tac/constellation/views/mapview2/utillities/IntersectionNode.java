@@ -89,6 +89,12 @@ public class IntersectionNode {
         }
     }
 
+    /**
+     * Holds the intersection nodes in the same location and this one
+     *
+     * @param x - x coordinate of intersection nodes
+     * @param y - y coordinate of intersection nodes
+     */
     public void addContainedPoint(double x, double y) {
         containedPoints.add(new Vec3(x, y));
     }
