@@ -29,6 +29,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
@@ -66,7 +67,7 @@ public class ToolsOverlay extends AbstractOverlay {
         measureText.setTextFill(Color.WHITE);
 
         measureToggleText.setTextFill(Color.WHITE);
-        measureToggleText.setBackground(Background.fill(Color.BLACK));
+        measureToggleText.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         measureToggleText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -86,7 +87,7 @@ public class ToolsOverlay extends AbstractOverlay {
         });
 
         measureUnitText.setTextFill(Color.WHITE);
-        measureUnitText.setBackground(Background.fill(Color.BLACK));
+        measureUnitText.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         measureUnitText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -108,7 +109,7 @@ public class ToolsOverlay extends AbstractOverlay {
 
         Label drawToggleText = new Label("Disabled");
         drawToggleText.setTextFill(Color.WHITE);
-        drawToggleText.setBackground(Background.fill(Color.BLACK));
+        drawToggleText.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         drawToggleText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -148,7 +149,7 @@ public class ToolsOverlay extends AbstractOverlay {
 
         Label drawSymbol = new Label("+");
         drawSymbol.setTextFill(Color.WHITE);
-        drawSymbol.setBackground(Background.fill(Color.BLACK));
+        drawSymbol.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         gridPane.add(measureText, 0, 0);
         gridPane.add(measureToggleText, 1, 0);

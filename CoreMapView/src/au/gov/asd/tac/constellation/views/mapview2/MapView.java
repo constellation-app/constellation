@@ -91,8 +91,10 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
@@ -267,7 +269,7 @@ public class MapView extends ScrollPane {
         markersShowing.add(AbstractMarker.MarkerType.POINT_MARKER);
         markersShowing.add(AbstractMarker.MarkerType.POLYGON_MARKER);
 
-        mapGroupHolder.setBackground(Background.fill(new Color(0.722, 0.871, 0.902, 1)));
+        mapGroupHolder.setBackground(new Background(new BackgroundFill(new Color(0.722, 0.871, 0.902, 1), null, null)));
 
         // Clear any existing paths and read the SVG paths of countries from the files
         countrySVGPaths.clear();
@@ -276,11 +278,11 @@ public class MapView extends ScrollPane {
         // The stackPane to store
         mapStackPane = new StackPane();
         mapStackPane.setBorder(Border.EMPTY);
-        mapStackPane.setBackground(Background.fill(Color.BROWN));
+        mapStackPane.setBackground(new Background(new BackgroundFill(Color.BROWN, null, null)));
 
 
         mapStackPane.getChildren().addAll(mapGroupHolder);
-        mapStackPane.setBackground(Background.fill(Color.WHITE));
+        mapStackPane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
         clipRectangle.setWidth(parent.getWidth());
         clipRectangle.setHeight(parent.getHeight());
@@ -1245,7 +1247,7 @@ public class MapView extends ScrollPane {
             pane.maxWidth(width);
             pane.maxHeight(height);
 
-            pane.setBackground(Background.fill(Color.BLACK));
+            pane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
             pane.setTranslateX((mapWidth / 2) - 300);
             pane.setTranslateY(mapHeight / 2 - height / 2);
@@ -1282,17 +1284,17 @@ public class MapView extends ScrollPane {
             radiusLabel.setFill(Color.AQUA);
 
             TextField lattitudeInput = new TextField();
-            lattitudeInput.setBorder(Border.stroke(Color.AQUA));
+            lattitudeInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
 
-            lattitudeInput.setBackground(Background.fill(Color.WHITE));
+            lattitudeInput.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
             TextField longitudeInput = new TextField();
-            longitudeInput.setBackground(Background.fill(Color.WHITE));
-            longitudeInput.setBorder(Border.stroke(Color.AQUA));
+            longitudeInput.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+            longitudeInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
 
             TextField radiusInput = new TextField();
-            radiusInput.setBackground(Background.fill(Color.WHITE));
-            radiusInput.setBorder(Border.stroke(Color.AQUA));
+            radiusInput.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+            radiusInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
 
             GridPane coordinateGridPane = new GridPane();
             coordinateGridPane.setHgap(10);
@@ -1329,12 +1331,12 @@ public class MapView extends ScrollPane {
 
                 } else if (selectedItem.equals("Geohash")) {
                     geoHashLabel.setFill(Color.AQUA);
-                    geoHashInput.setBorder(Border.stroke(Color.AQUA));
+                    geoHashInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
                     coordinateGridPane.add(geoHashLabel, 0, 0);
                     coordinateGridPane.add(geoHashInput, 0, 1);
                 } else if (selectedItem.equals("MGRS")) {
                     mgrsLabel.setFill(Color.AQUA);
-                    mgrsInput.setBorder(Border.stroke(Color.AQUA));
+                    mgrsInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
                     coordinateGridPane.add(mgrsLabel, 0, 0);
                     coordinateGridPane.add(mgrsInput, 0, 1);
                 }
