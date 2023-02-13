@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.mapview.exporters.GeoJsonExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.GeoPackageExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.KmlExporter;
-//import au.gov.asd.tac.constellation.views.mapview2.MapViewTileRenderer;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
 import au.gov.asd.tac.constellation.views.mapview.exporters.ShapefileExporter;
@@ -167,7 +166,6 @@ public class MapViewPane extends BorderPane {
     private int layerId = 0;
     private Map<String, Integer> layerMap = new HashMap<>();
 
-    private static final Logger LOGGER = Logger.getLogger("MapViewPane");
 
 
 
@@ -183,7 +181,6 @@ public class MapViewPane extends BorderPane {
 
         defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
         providers = new ArrayList<>(Lookup.getDefault().lookupAll(MapProvider.class));
-        //exporters = new ArrayList<>(Lookup.getDefault().lookupAll(MapExporter.class));
 
         // get all the map types in string form from the providers
         providers.forEach((p) -> {
@@ -358,11 +355,9 @@ public class MapViewPane extends BorderPane {
     // Add/remove layer to the map
     private void addLayer(String key, int id) {
         if (layersDropDown.getCheckModel().getCheckedItems().contains(key) && !layerMap.containsKey(key)) {
-            LOGGER.log(Level.SEVERE, "Adding layer: " + key);
             mapView.addLayer(getLayerFromKey(key));
             layerMap.put(key, id);
         } else if (!layersDropDown.getCheckModel().getCheckedItems().contains(key) && layerMap.containsKey(key)) {
-            LOGGER.log(Level.SEVERE, "Removing layer: " + key);
             mapView.removeLayer(layerMap.get(key));
             layerMap.remove(key);
         }
@@ -453,10 +448,6 @@ public class MapViewPane extends BorderPane {
         }
 
         return new HashMap<String, AbstractMarker>();
-    }
-
-    private void testEventHandler() {
-        LOGGER.log(Level.SEVERE, "test");
     }
 
     public Graph getCurrentGraph() {

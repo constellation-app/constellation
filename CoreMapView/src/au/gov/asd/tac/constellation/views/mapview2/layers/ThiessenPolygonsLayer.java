@@ -112,7 +112,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         top.setEndX(MapView.mapWidth);
         top.setEndY(0);
         top.setStroke(Color.RED);
-        //top.setStrokeWidth(5);
+
         layer.getChildren().add(top);
 
         left = new Line();
@@ -121,7 +121,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         left.setEndX(0);
         left.setEndY(MapView.mapHeight);
         left.setStroke(Color.RED);
-        //left.setStrokeWidth(5);
+
         layer.getChildren().add(left);
 
         right = new Line();
@@ -130,7 +130,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         right.setEndX(MapView.mapWidth);
         right.setEndY(MapView.mapHeight);
         right.setStroke(Color.RED);
-        //right.setStrokeWidth(5);
+
         layer.getChildren().add(right);
 
         bottom = new Line();
@@ -139,7 +139,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         bottom.setEndX(MapView.mapWidth);
         bottom.setEndY(MapView.mapHeight);
         bottom.setStroke(Color.RED);
-        //bottom.setStrokeWidth(5);
+
         layer.getChildren().add(bottom);
 
         this.markers = markers;
@@ -212,7 +212,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         // Reciprocal of the slope
                         double reciprocal = -1 * (slope.y / slope.x);
 
-                        LOGGER.log(Level.SEVERE, "Reciprocal: " + reciprocal);
 
                         // the b is the y intercept for the formula y = ax + b
                         double b = midPoint.y - (reciprocal * midPoint.x);
@@ -256,7 +255,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         
                         line.setStroke(Color.RED);
 
-                        //debugLayer.getChildren().add(line);
                         // Add bisector lines to the map along with the ids of the markers it bisects as the key
                         bisectorLines.put(idPair, line);
                     }
@@ -356,29 +354,22 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                 // Create the new shortened line with the 2 calculated ends
                 Line l = new Line();
-                //Line l2 = new Line();
+
                 l.setStartX(shortLine[0].x);
                 l.setStartY(shortLine[0].y);
 
                 l.setEndX(shortLine[1].x);
                 l.setEndY(shortLine[1].y);
 
-                /*l2.setStartX(shortLine[0].x);
-                l2.setStartY(shortLine[0].y);
-
-                l2.setEndX(shortLine[1].x);
-                l2.setEndY(shortLine[1].y);*/
 
                 l.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent event) {
-                        //LOGGER.log(Level.SEVERE, "Start x: " + l.getStartX() + " Start y: " + l.getStartY());
-                        //LOGGER.log(Level.SEVERE, "End x: " + l.getEndX() + " End y: " + l.getEndY());
+
                     }
 
                 });
-                //l2.setStrokeWidth(0.5);
-                //layer.getChildren().add(l2);
+
 
                 // Put line in a new map with the key from this iteration of the main for loop
                 finalBisectorLines.put(key, l);
@@ -707,7 +698,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 // Then add it to the relevantMarkerIds above
                 if (nearest2.getRelevantMarkers().contains(id)) {
                     if (!n.getRelevantMarkers().contains(id)) {
-                        //n.getRelevantMarkers().add(id);
                         relevantMarkerIds.add(id);
                     }
                 }
@@ -845,8 +835,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             layer.getChildren().add(r);
         }
 
-
-        LOGGER.log(Level.SEVERE, "Intersection Map Count: " + intersectionMap.size());
 
     }
 

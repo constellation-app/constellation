@@ -32,10 +32,6 @@ public class Parabola {
 
     private Polyline parabola;
 
-    /*public Parabola() {
-        parabola = new Polyline();
-        parabola.setStroke(Color.BLACK);
-    }*/
     private static final Logger LOGGER = Logger.getLogger("Parabola");
 
     public Parabola(double focusX, double focusY, double directtrix) {

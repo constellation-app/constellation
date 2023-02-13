@@ -145,7 +145,6 @@ public class PolygonMarker extends AbstractMarker {
             }
         }
 
-        LOGGER.log(Level.SEVERE, path);
 
         rawPath = path;
         markerPath.setContent(path);

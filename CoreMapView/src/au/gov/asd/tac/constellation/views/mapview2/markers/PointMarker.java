@@ -237,9 +237,7 @@ public class PointMarker extends AbstractMarker {
 
     }
 
-    //@Override
     public void setOverlayColour(String overlayCol) {
-        //overlayCol = overlayCol.split(";")[1];
 
         if (overlayColourCount == 0) {
             overlayColour = overlayCol;

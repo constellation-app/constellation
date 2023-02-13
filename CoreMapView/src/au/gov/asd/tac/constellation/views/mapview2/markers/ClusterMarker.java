@@ -150,8 +150,6 @@ public class ClusterMarker extends AbstractMarker {
             diameter = Math.sqrt(Math.pow((maxPosition.x - minPosition.x), 2)
                     + Math.pow((maxPosition.y - minPosition.y), 2));
 
-            /*diameter = Math.sqrt(Math.pow((farthestNode2X - farthestNode1X), 2)
-                    + Math.pow((farthestNode2Y - farthestNode1Y), 2));*/
         }
         double clusterRadius = Math.max((float) diameter / 2, MIN_RADIUS);
 

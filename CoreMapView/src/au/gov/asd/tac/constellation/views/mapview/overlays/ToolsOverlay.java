@@ -346,7 +346,6 @@ public class ToolsOverlay extends MapOverlay {
                 renderer.strokeWeight(2);
                 renderer.line(drawOriginX, drawOriginY, drawDeltaX, drawDeltaY);
                 if (drawCircle) {
-                    LOGGER.log(Level.SEVERE, "Mouse Clicked to draw circle overlay");
                     final float radius = (float) Math.sqrt(
                             Math.pow((drawDeltaX - drawOriginX), 2)
                             + Math.pow((drawDeltaY - drawOriginY), 2));
@@ -452,7 +451,6 @@ public class ToolsOverlay extends MapOverlay {
                             drawDeltaX = -1;
                             drawDeltaY = -1;
                         } else if (drawCircle) {
-                            LOGGER.log(Level.SEVERE, "Mouse Clicked to draw circle on MAP");
                             drawVertices.addAll(MarkerUtilities.generateCircle(
                                     map.getLocation(drawOriginX, drawOriginY),
                                     map.getLocation(drawDeltaX, drawDeltaY)));

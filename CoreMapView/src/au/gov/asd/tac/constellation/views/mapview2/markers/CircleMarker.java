@@ -45,7 +45,7 @@ public class CircleMarker extends AbstractMarker {
 
     private static final Logger LOGGER = Logger.getLogger("CircleMarkerLogger");
 
-    public CircleMarker(MapView parent, int markerID, double centerX, double centerY, double radius, int xOffset, int yOffset) {
+    public CircleMarker(MapView parent, int markerID, double centerX, double centerY, double radius, double xOffset, double yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
 
         this.centerX = centerX;

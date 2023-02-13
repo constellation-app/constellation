@@ -49,7 +49,6 @@ public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
                 // Get graph element types
                 final GraphElementType[] elementTypes = new GraphElementType[]{GraphElementType.VERTEX, GraphElementType.TRANSACTION};
 
-                final Set<Integer> seenLinks = new HashSet<>();
                 // For each element type
                 for (final GraphElementType element : elementTypes) {
                     int elementCount = 0;

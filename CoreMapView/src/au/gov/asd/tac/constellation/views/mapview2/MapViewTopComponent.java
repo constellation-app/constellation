@@ -201,14 +201,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @Override
     protected void handleGraphOpened(final Graph graph) {
         super.handleGraphOpened(graph);
-        LOGGER.log(Level.SEVERE, "Inside handleGraphOpened");
-        //mapViewPane.setUpMap();
-        if (graph != null) {
-            /*if (PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(graph).isDone()) {
-                mapViewPane.getMap().redrawQueriedMarkers();
-            }*/
 
-            //PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(this)).executeLater(graph);
+        if (graph != null) {
+
         }
     }
 
@@ -227,7 +222,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @Override
     protected void handleNewGraph(final Graph graph) {
         super.handleNewGraph(graph);
-        LOGGER.log(Level.SEVERE, "Inside handleNewGraph");
 
         if (graph != null) {
             try {

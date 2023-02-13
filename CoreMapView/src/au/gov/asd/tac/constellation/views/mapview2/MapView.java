@@ -188,7 +188,6 @@ public class MapView extends ScrollPane {
     // Factor to scale map by when zooming
     private final double mapScaleFactor = 1.1;
 
-    //private final SVGPath p = new SVGPath();
 
     // The paths for the edges of all the countries
     private final List<SVGPath> countrySVGPaths = new ArrayList<>();
@@ -240,7 +239,6 @@ public class MapView extends ScrollPane {
     private StringProperty markerColourProperty = new SimpleStringProperty();
     private StringProperty markerTextProperty = new SimpleStringProperty();
 
-    //private final Region testRegion = new Region();
 
     public MapView(MapViewPane parent) {
         this.parent = parent;
@@ -289,7 +287,6 @@ public class MapView extends ScrollPane {
         clipRectangle.setX(0);
         clipRectangle.setY(0);
         clipRectangle.setFill(Color.TRANSPARENT);
-        //parent.setClip(clipRectangle);
 
         // Scoll to zoom
         mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
@@ -300,11 +297,6 @@ public class MapView extends ScrollPane {
                 if (e.getDeltaY() == 0) {
                     return;
                 }
-                /*if (e.getDeltaY() > 0) {
-                    reScaleQueriedMarkers(0.94);
-                } else {
-                    reScaleQueriedMarkers(1.06);
-                }*/
 
                 // Scroll factor is more or less than 1 depending on which way the scroll wheele is scrolled
                 double scaleFactor = (e.getDeltaY() > 0) ? mapScaleFactor : 1 / mapScaleFactor;
@@ -436,7 +428,6 @@ public class MapView extends ScrollPane {
 
                     }
 
-                    //drawMarker(m);
                 }
             }
         });
@@ -464,7 +455,6 @@ public class MapView extends ScrollPane {
                         }
                     }
 
-                    //drawMarker(m);
                 }
             }
         });
@@ -828,6 +818,9 @@ public class MapView extends ScrollPane {
         }
     }
 
+    /**
+     * Clears and re-renders all user created markers on screen
+     */
     private void redrawUserMarkers() {
 
         drawnMarkerGroup.getChildren().clear();
@@ -856,7 +849,6 @@ public class MapView extends ScrollPane {
         for (Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
             if (m instanceof PointMarker) {
-                //m.setMarkerPosition(mapWidth, mapHeight);
                 SVGPath p = new SVGPath();
                 p.setContent(((PointMarker) m).getPath());
                 hiddenPointMarkerGroup.getChildren().add(p);
@@ -969,7 +961,6 @@ public class MapView extends ScrollPane {
     private void renderLayers() {
         layerGroup.getChildren().clear();
         layers.forEach(layer -> {
-            //layer.setUp();
             layerGroup.getChildren().add(layer.getLayer());
         });
     }
@@ -1060,7 +1051,9 @@ public class MapView extends ScrollPane {
 
     }
 
-    // Pan to the center of the component
+    /**
+     * Pan to the center of the component
+     */
     public void panToCenter() {
         double centerX = this.getWidth() / 2;
         double centerY = this.getHeight() / 2;
@@ -1071,7 +1064,12 @@ public class MapView extends ScrollPane {
 
     }
 
-    // Pan to specific location
+    /**
+     * Pan to specific location
+     *
+     * @param x - coordinate
+     * @param y - coordinate
+     */
     private void pan(double x, double y) {
 
         Vec3 center = new Vec3(mapWidth / 2, mapHeight / 2);
@@ -1288,6 +1286,15 @@ public class MapView extends ScrollPane {
             Button okButton = new Button("OK");
             okButton.setTextFill(Color.WHITE);
 
+            final double zoomCircleMarkerXOffset = 100;
+            final double zoomCircleMarkerYOffset = 100;
+
+            final double zoomUserMarkerXOffset = 95;
+            final double zoomUserMarkerYOffset = -95;
+
+            final double mgrsZoomUserMarkerXOffset = 96.05;
+            final double mgrsZoomUserMarkerYOffset = -96.15;
+
             okButton.setOnAction(event -> {
                 String selectedGeoType = geoTypeMenu.getSelectionModel().getSelectedItem();
 
@@ -1321,14 +1328,14 @@ public class MapView extends ScrollPane {
                         radius = Double.parseDouble(radiusText.strip());
 
                         // draw circle at entered location
-                        CircleMarker zoomCircleMarker = new CircleMarker(self, drawnMarkerId++, x, y, radius, 100, 100);
+                        CircleMarker zoomCircleMarker = new CircleMarker(self, drawnMarkerId++, x, y, radius, zoomCircleMarkerXOffset, zoomCircleMarkerYOffset);
 
                         zoomCircleMarker.generateCircle();
                         drawnMarkerGroup.getChildren().add(zoomCircleMarker.getMarker());
                         userMarkers.add(zoomCircleMarker);
                     } // If no radius is provided then draw point marker at location
                     else {
-                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
+                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
                         marker.setMarkerPosition(0, 0);
 
                         addUserDrawnMarker(marker);
@@ -1345,7 +1352,7 @@ public class MapView extends ScrollPane {
                         double x = MarkerUtilities.longToX(coordinate.getLongitude().degrees, minLong, mapWidth, maxLong - minLong);
                         double y = MarkerUtilities.latToY(coordinate.getLatitude().degrees, mapWidth, mapHeight) - 149;
 
-                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 96.05, -96.15);
+                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, mgrsZoomUserMarkerXOffset, mgrsZoomUserMarkerYOffset);
                         marker.setMarkerPosition(0, 0);
 
                         addUserDrawnMarker(marker);
@@ -1361,7 +1368,7 @@ public class MapView extends ScrollPane {
                         double x = MarkerUtilities.longToX(geohashCoordinates[1] - geohashCoordinates[3], minLong, mapWidth, maxLong - minLong);
                         double y = MarkerUtilities.latToY(geohashCoordinates[0] - geohashCoordinates[2], mapWidth, mapHeight) - 149;
 
-                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
+                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
                         marker.setMarkerPosition(0, 0);
 
 
@@ -1456,7 +1463,7 @@ public class MapView extends ScrollPane {
 
         // Read map from file
         try {
-            try (BufferedReader bFileReader = new BufferedReader(new FileReader("C:\\Projects\\constellation\\CoreMapView\\src\\au\\gov\\asd\\tac\\constellation\\views\\mapView\\resources\\MercratorMapView4.txt"))) {
+            try (BufferedReader bFileReader = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/au/gov/asd/tac/constellation/views/mapView/resources/MercratorMapView4.txt"))) {
                 String path = "";
                 String line = "";
 

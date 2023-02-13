@@ -75,12 +75,6 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
                     double x = m.getX() - 97;
                     double y = m.getY() + 93;
 
-                    /*QuadCurve quadCurve = new QuadCurve(0, y - 20, x, y, 0, y + 20);
-                    quadCurve.setStroke(Color.BLACK);
-                    //quadCurve.setC
-                    //quadCurve.setTranslateY(m.getY());
-
-                    quadCurve.setFill(Color.TRANSPARENT);*/
                     Parabola p = new Parabola(x, y, y);
                     p.generateParabola();
 
