@@ -733,7 +733,12 @@ public class MapView extends ScrollPane {
 
     }
 
-    // Sets text on the map at a specific location
+    /**
+     * Sets text on the map at a specific location
+     *
+     * @param markerText - Text to appear below the marker
+     * @param p - The marker itself
+     */
     private void setPointMarkerText(String markerText, PointMarker p) {
         Text t = new Text(markerText);
         t.setX(p.getX() - 125);
@@ -742,7 +747,9 @@ public class MapView extends ScrollPane {
         pointMarkerTextGroup.getChildren().add(t);
     }
 
-    // Deselects all markers
+    /**
+     * Deselects all markers
+     */
     public void deselectAllMarkers() {
         for (AbstractMarker value : markers.values()) {
             if (value instanceof PointMarker) {
@@ -756,7 +763,11 @@ public class MapView extends ScrollPane {
         return markerColourProperty;
     }
 
-    // Add user drawn marker on screen
+    /**
+     * Add user drawn marker on screen
+     *
+     * @param marker - marker to add
+     */
     private void addUserDrawnMarker(AbstractMarker marker) {
         // Only draw marker is it's type is set to be showing on screen
         if (markersShowing.contains(marker.getType())) {
@@ -770,7 +781,11 @@ public class MapView extends ScrollPane {
         }
     }
 
-    // Remove a user drawn marker
+    /**
+     * Remove a user drawn marker
+     *
+     * @param id - id of marker to remove
+     */
     public void removeUserMarker(int id) {
         // Loop through all the user drawn markers and if their id matches with the one passed in
         // to this function then remove them
@@ -788,7 +803,12 @@ public class MapView extends ScrollPane {
         updateClusterMarkers();
     }
 
-    // Hide/Show diferent map pverlays
+    /**
+     * Hide/Show different map overlays
+     *
+     * @param overlay - overlay to hide/show
+     * @param show - flag
+     */
     public void toggleOverlay(String overlay, boolean show) {
         if (overlayMap.containsKey(overlay) && overlayMap.get(overlay).getIsShowing() != show) {
             overlayMap.get(overlay).toggleOverlay();
@@ -842,6 +862,10 @@ public class MapView extends ScrollPane {
             clusterMarkerGroup.getChildren().clear();
     }
 
+    /**
+     * Reduces number od cluster makers or increases the size of existing ones
+     * based on distance between marker
+     */
     private void updateClusterMarkers() {
         hiddenPointMarkerGroup.getChildren().clear();
 
@@ -890,7 +914,12 @@ public class MapView extends ScrollPane {
         renderLayers();
     }
 
-    // Hide/Shows a type of marker on the screen
+    /**
+     * Hide/Shows a type of marker on the screen
+     *
+     * @param type - the type of marker to show/hide
+     * @param adding - flag
+     */
     public void updateShowingMarkers(AbstractMarker.MarkerType type, boolean adding) {
 
         // Add or remove a type of marker
@@ -909,6 +938,9 @@ public class MapView extends ScrollPane {
         return layers;
     }
 
+    /**
+     * Redraw all markers that have been extracted from the graph
+     */
     public void redrawQueriedMarkers() {
         graphMarkerGroup.getChildren().clear();
 
@@ -928,7 +960,11 @@ public class MapView extends ScrollPane {
         }
     }
 
-    // Scale the size of the markers
+    /**
+     * Scale the size of the markers
+     *
+     * @param scale
+     */
     public void reScaleQueriedMarkers(double scale) {
         graphMarkerGroup.getChildren().clear();
 
@@ -957,7 +993,9 @@ public class MapView extends ScrollPane {
         }
     }
 
-    // Rredraw layers
+    /**
+     * Render layers on the map
+     */
     private void renderLayers() {
         layerGroup.getChildren().clear();
         layers.forEach(layer -> {
@@ -969,6 +1007,11 @@ public class MapView extends ScrollPane {
         return markers;
     }
 
+    /**
+     * Put user drawn markers and graph markers in a list
+     *
+     * @return an array list of all markers on the map
+     */
     public List<AbstractMarker> getAllMarkersAsList() {
         List<AbstractMarker> allMarkers = new ArrayList<>();
 
@@ -1009,12 +1052,22 @@ public class MapView extends ScrollPane {
         return GraphManager.getDefault().getActiveGraph();
     }
 
+    /**
+     * Selects one or nodes on the graph
+     *
+     * @param markerID - ID of selected marker
+     * @param selectedNodes - Node id's that are represented by the
+     * @param selectingVertex - Flag for vertex or transaction selection
+     */
     public void addMarkerIdToSelectedList(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
         selectedNodeList.add(markerID);
         PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
 
     }
 
+    /**
+     * Pans to all markers
+     */
     public void panToAll() {
 
         int markerCounter = 0;
@@ -1147,7 +1200,12 @@ public class MapView extends ScrollPane {
         }
     }
 
-    // Calculate if all or selected marker sare in view
+    /**
+     * Calculate if all or selected markers are in view
+     *
+     * @param allMarkers
+     * @return whether or not markers are in view
+     */
     private boolean selectedMarkersInView(boolean allMarkers) {
         for (AbstractMarker m : markers.values()) {
             if ((m instanceof PointMarker && allMarkers) || (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId()) && !allMarkers)) {
@@ -1170,7 +1228,9 @@ public class MapView extends ScrollPane {
         return true;
     }
 
-    // Create the zoom to location UI
+    /**
+     * Create the zoom to location UI
+     */
     public void generateZoomLocationUI() {
         if (!showingZoomToLocationPane) {
 
@@ -1433,7 +1493,11 @@ public class MapView extends ScrollPane {
         return markerTextProperty;
     }
 
-    // Draw a user created marker on the screen
+    /**
+     * Draw a user created marker on the screen
+     *
+     * @param marker - marker to be added to the map
+     */
     public void drawMarker(AbstractMarker marker) {
 
         if (markersShowing.contains(marker.getType())) {
@@ -1457,7 +1521,9 @@ public class MapView extends ScrollPane {
         return markersShowing;
     }
 
-    // Load the world map
+    /**
+     * Load the world map
+     */
     private void parseMapSVG() {
         countryGroup.getChildren().clear();
 

@@ -32,9 +32,14 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
         super(parent, id);
     }
 
+    /**
+     * Gets the specific attribute to act as the "weight" for the marker This
+     * code gets the amount of transactions each node has as the weight
+     *
+     * @param marker
+     * @returns the weight value
+     */
     @Override
-    // Gets the specific attribute to act as the "weight" for the marker
-    // This code gets the ammount of transactions each ndoe has as the weight
     public int getWeight(AbstractMarker marker) {
         // Holds the ammount of transactions
         int activityCount = 0;
@@ -60,7 +65,7 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
                             break;
                     }
 
-                    // FOr every vertext
+                    // For every vertex
                     if (element == GraphElementType.VERTEX) {
                         for (int position = 0; position < elementCount; ++position) {
                             int vertexID = readableGraph.getVertex(position);

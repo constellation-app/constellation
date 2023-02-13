@@ -352,7 +352,12 @@ public class MapViewPane extends BorderPane {
 
     }
 
-    // Add/remove layer to the map
+    /**
+     * Add/remove layer to the map
+     *
+     * @param key - key specifying the layer
+     * @param id - a new id for the layer if it is going to be working
+     */
     private void addLayer(String key, int id) {
         if (layersDropDown.getCheckModel().getCheckedItems().contains(key) && !layerMap.containsKey(key)) {
             mapView.addLayer(getLayerFromKey(key));
@@ -363,7 +368,12 @@ public class MapViewPane extends BorderPane {
         }
     }
 
-    // Create a map layer based on a key
+    /**
+     * Create a map layer based on a key
+     *
+     * @param key - key specifying which layer to create
+     * @return
+     */
     private AbstractMapLayer getLayerFromKey(String key) {
         switch (key) {
             case DAY_NIGHT:
@@ -402,7 +412,10 @@ public class MapViewPane extends BorderPane {
         return mapView;
     }
 
-    // Set up the map
+    /**
+     * Set up the map and view-port rectangle Add components to stack pane and
+     * scroll pane
+     */
     public void setUpMap() {
         // Create the actual map view
         mapView = new MapView(this);
@@ -438,6 +451,9 @@ public class MapViewPane extends BorderPane {
         return viewPortRectangle;
     }
 
+    /**
+     * Redraw queried markers
+     */
     public void redrawQueriedMarkers() {
         mapView.redrawQueriedMarkers();
     }
@@ -454,6 +470,11 @@ public class MapViewPane extends BorderPane {
         return parent.getCurrentGraph();
     }
 
+    /**
+     * draw marker on the map
+     *
+     * @param marker - marker to be added
+     */
     public void drawMarker(AbstractMarker marker) {
         if (marker != null && mapView != null) {
             mapView.drawMarker(marker);

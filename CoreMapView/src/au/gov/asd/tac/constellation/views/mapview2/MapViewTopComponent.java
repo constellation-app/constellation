@@ -276,6 +276,12 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         return getWidth();
     }
 
+    /**
+     * Adds marker on the map
+     *
+     * @param key - key which is the coordinate of the marker
+     * @param e - the marker itself
+     */
     public void addMarker(String key, AbstractMarker e) {
         if (mapViewPane.getMap() != null) {
             mapViewPane.getMap().addMarkerToHashMap(key, e);

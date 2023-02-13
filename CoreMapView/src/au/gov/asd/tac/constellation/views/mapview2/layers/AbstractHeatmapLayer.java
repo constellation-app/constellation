@@ -52,6 +52,9 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
         layerGroup = new Group();
     }
 
+    /**
+     * Set up the heatmap layer
+     */
     @Override
     public void setUp() {
         // Get queried markers
