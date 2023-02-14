@@ -40,14 +40,9 @@ public class CircleMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(CircleMarkerNGTest.class.getName());
 
-    //private final MapViewTopComponent component;
-    //private final MapViewPane mapViewPane;
-    //private final MapView map;
 
     public CircleMarkerNGTest() {
-        //component = new MapViewTopComponent();
-        //mapViewPane = Mockito.spy(new MapViewPane(component));
-        //map = Mockito.spy(new MapView(mapViewPane));
+
     }
 
     @BeforeClass

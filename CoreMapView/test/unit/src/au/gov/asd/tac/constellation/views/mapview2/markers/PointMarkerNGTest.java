@@ -38,15 +38,9 @@ public class PointMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(PointMarkerNGTest.class.getName());
 
-    //private static MapView parent;
-
-    //private final MapViewTopComponent component;
-    //private final MapViewPane mapViewPane;
 
     public PointMarkerNGTest() {
-        //component = new MapViewTopComponent();
-        //mapViewPane = Mockito.spy(new MapViewPane(component));
-        //parent = Mockito.spy(new MapView(mapViewPane));
+
     }
 
     @BeforeClass

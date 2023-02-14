@@ -40,14 +40,9 @@ public class PolygonMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(PolygonMarkerNGTest.class.getName());
 
-    //private MapViewTopComponent component = new MapViewTopComponent();
-
-    //private final MapView map;
 
     public PolygonMarkerNGTest() {
 
-        //MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        //map = Mockito.spy(new MapView(mapViewPane));
     }
 
     @BeforeClass

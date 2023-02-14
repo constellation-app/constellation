@@ -49,17 +49,9 @@ public class MapViewNGTest {
     private static final Logger LOGGER = Logger.getLogger(MapViewNGTest.class.getName());
 
 
-    //private final MapViewTopComponent mapViewTopComponent;
-
-    //private final MapViewPane mapViewPane;
-    //private final MapView instance;
-
 
     public MapViewNGTest() {
-        //mapViewTopComponent = new MapViewTopComponent();
 
-        //mapViewPane = Mockito.spy(new MapViewPane(mapViewTopComponent));
-        //instance = Mockito.spy(new MapView(mapViewPane));
 
     }
 
