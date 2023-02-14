@@ -46,7 +46,8 @@ import org.mockito.Mockito;
  */
 public class MapViewNGTest {
 
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
+    private static final Logger LOGGER = Logger.getLogger(MapViewNGTest.class.getName());
+
 
     private final MapViewTopComponent mapViewTopComponent;
 
@@ -58,7 +59,8 @@ public class MapViewNGTest {
         mapViewTopComponent = new MapViewTopComponent();
 
         mapViewPane = Mockito.spy(new MapViewPane(mapViewTopComponent));
-        instance = new MapView(mapViewPane);
+        instance = Mockito.spy(new MapView(mapViewPane));
+
     }
 
     @BeforeClass
@@ -98,6 +100,9 @@ public class MapViewNGTest {
 
         PointMarker p1 = new PointMarker(instance, -99, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
         PointMarker p2 = new PointMarker(instance, -100, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+
+        //Mockito.doNothing().when(instance).addMarkerToHashMap(coordinateKey, p1);
+        //Mockito.doNothing().when(instance).addMarkerToHashMap(coordinateKey2, p2);
 
         instance.addMarkerToHashMap(coordinateKey, p1);
         instance.addMarkerToHashMap(coordinateKey2, p2);

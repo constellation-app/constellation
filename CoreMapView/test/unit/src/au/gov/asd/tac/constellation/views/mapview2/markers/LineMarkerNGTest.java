@@ -35,7 +35,9 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class LineMarkerNGTest {
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
+
+    private static final Logger LOGGER = Logger.getLogger(LineMarkerNGTest.class.getName());
+
 
     private MapViewTopComponent component;
     private static MapView parent;
@@ -43,7 +45,7 @@ public class LineMarkerNGTest {
     public LineMarkerNGTest() {
         component = new MapViewTopComponent();
         MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        parent = mapViewPane.getMap();
+        parent = Mockito.spy(new MapView(mapViewPane));
     }
 
     @BeforeClass

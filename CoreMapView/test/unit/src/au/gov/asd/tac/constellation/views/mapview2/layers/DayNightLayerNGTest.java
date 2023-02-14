@@ -38,7 +38,8 @@ import java.util.logging.Logger;
  */
 public class DayNightLayerNGTest {
 
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
+    private static final Logger LOGGER = Logger.getLogger(DayNightLayerNGTest.class.getName());
+
 
 
     public DayNightLayerNGTest() {

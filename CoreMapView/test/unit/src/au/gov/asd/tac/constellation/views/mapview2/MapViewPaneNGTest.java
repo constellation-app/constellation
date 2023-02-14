@@ -42,7 +42,8 @@ import java.util.logging.Logger;
  */
 public class MapViewPaneNGTest {
 
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
+    private static final Logger LOGGER = Logger.getLogger(MapViewPaneNGTest.class.getName());
+
 
     public MapViewPaneNGTest() {
 

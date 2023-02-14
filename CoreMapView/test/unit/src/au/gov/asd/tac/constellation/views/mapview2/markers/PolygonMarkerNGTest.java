@@ -37,7 +37,9 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class PolygonMarkerNGTest {
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
+
+    private static final Logger LOGGER = Logger.getLogger(PolygonMarkerNGTest.class.getName());
+
     private MapViewTopComponent component = new MapViewTopComponent();
 
     private final MapView map;
@@ -45,7 +47,7 @@ public class PolygonMarkerNGTest {
     public PolygonMarkerNGTest() {
 
         MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        map = mapViewPane.getMap();
+        map = Mockito.spy(new MapView(mapViewPane));
     }
 
     @BeforeClass

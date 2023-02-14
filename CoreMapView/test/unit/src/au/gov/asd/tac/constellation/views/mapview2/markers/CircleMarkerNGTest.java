@@ -37,7 +37,9 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class CircleMarkerNGTest {
-    private static final Logger LOGGER = Logger.getAnonymousLogger();
+
+    private static final Logger LOGGER = Logger.getLogger(CircleMarkerNGTest.class.getName());
+
     private final MapViewTopComponent component;
     private final MapViewPane mapViewPane;
     private final MapView map;
@@ -45,7 +47,7 @@ public class CircleMarkerNGTest {
     public CircleMarkerNGTest() {
         component = new MapViewTopComponent();
         mapViewPane = Mockito.spy(new MapViewPane(component));
-        map = mapViewPane.getMap();
+        map = Mockito.spy(new MapView(mapViewPane));
     }
 
     @BeforeClass
