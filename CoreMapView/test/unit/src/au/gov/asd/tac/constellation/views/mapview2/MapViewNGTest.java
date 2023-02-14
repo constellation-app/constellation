@@ -57,7 +57,7 @@ public class MapViewNGTest {
     public MapViewNGTest() {
         mapViewTopComponent = new MapViewTopComponent();
 
-        mapViewPane = Mockito.mock(MapViewPane.class);
+        mapViewPane = Mockito.spy(new MapViewPane(mapViewTopComponent));
         instance = new MapView(mapViewPane);
     }
 
