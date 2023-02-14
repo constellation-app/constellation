@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
@@ -37,8 +38,13 @@ public class PointMarkerNGTest {
     private static final Logger LOGGER = Logger.getAnonymousLogger();
     private static MapView parent;
 
+    private final MapViewTopComponent component;
+    private final MapViewPane mapViewPane;
+
     public PointMarkerNGTest() {
-        parent = MapViewPane.getMap();
+        component = new MapViewTopComponent();
+        mapViewPane = Mockito.spy(new MapViewPane(component));
+        parent = mapViewPane.getMap();
     }
 
     @BeforeClass

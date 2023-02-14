@@ -17,9 +17,11 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
+import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
@@ -34,10 +36,14 @@ import org.testng.annotations.Test;
  */
 public class LineMarkerNGTest {
     private static final Logger LOGGER = Logger.getAnonymousLogger();
+
+    private MapViewTopComponent component;
     private static MapView parent;
 
     public LineMarkerNGTest() {
-        parent = MapViewPane.getMap();
+        component = new MapViewTopComponent();
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        parent = mapViewPane.getMap();
     }
 
     @BeforeClass

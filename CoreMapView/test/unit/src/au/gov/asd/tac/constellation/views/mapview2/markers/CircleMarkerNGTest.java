@@ -38,13 +38,14 @@ import org.testng.annotations.Test;
  */
 public class CircleMarkerNGTest {
     private static final Logger LOGGER = Logger.getAnonymousLogger();
-    private MapViewTopComponent component = new MapViewTopComponent();
-    //private final MapViewPane mapViewPane;
+    private final MapViewTopComponent component;
+    private final MapViewPane mapViewPane;
     private final MapView map;
 
     public CircleMarkerNGTest() {
-        //mapViewPane = Mockito.mock(MapViewPane.class);
-        map = Mockito.mock(MapView.class);
+        component = new MapViewTopComponent();
+        mapViewPane = Mockito.spy(new MapViewPane(component));
+        map = mapViewPane.getMap();
     }
 
     @BeforeClass

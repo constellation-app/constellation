@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -42,7 +43,9 @@ public class PolygonMarkerNGTest {
     private final MapView map;
 
     public PolygonMarkerNGTest() {
-        map = Mockito.mock(MapView.class);
+
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        map = mapViewPane.getMap();
     }
 
     @BeforeClass
