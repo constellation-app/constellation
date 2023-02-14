@@ -40,14 +40,14 @@ public class PolygonMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(PolygonMarkerNGTest.class.getName());
 
-    private MapViewTopComponent component = new MapViewTopComponent();
+    //private MapViewTopComponent component = new MapViewTopComponent();
 
-    private final MapView map;
+    //private final MapView map;
 
     public PolygonMarkerNGTest() {
 
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        map = Mockito.spy(new MapView(mapViewPane));
+        //MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        //map = Mockito.spy(new MapView(mapViewPane));
     }
 
     @BeforeClass
@@ -80,6 +80,11 @@ public class PolygonMarkerNGTest {
     @Test
     public void testAddNewLine() {
         System.out.println("addNewLine");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView map = Mockito.spy(new MapView(mapViewPane));
+
         double prevLineEndX = 54;
         double prevLineEndY = 54;
         PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
@@ -96,6 +101,9 @@ public class PolygonMarkerNGTest {
     @Test
     public void testEndDrawing() {
         System.out.println("endDrawing");
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView map = Mockito.spy(new MapView(mapViewPane));
         PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
         instance.endDrawing();
 
@@ -109,6 +117,9 @@ public class PolygonMarkerNGTest {
     @Test
     public void testSetEnd() {
         System.out.println("setEnd");
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView map = Mockito.spy(new MapView(mapViewPane));
 
         double xNewLine = 3;
         double yNewLine = 3;
@@ -133,6 +144,9 @@ public class PolygonMarkerNGTest {
     @Test
     public void testGeneratePath() {
         System.out.println("generatePath");
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView map = Mockito.spy(new MapView(mapViewPane));
         PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
 
         instance.addNewLine(640.5983769798281, 654.7539097213746);

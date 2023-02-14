@@ -78,8 +78,9 @@ public class DayNightLayerNGTest {
     public void testGetLayer() {
         System.out.println("getLayer");
 
-        MapViewPane mapViewPane = Mockito.mock(MapViewPane.class);
-        MapView map = new MapView(mapViewPane);
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView map = Mockito.spy(new MapView(mapViewPane));
 
         DayNightLayer instance = new DayNightLayer(map, 5);
 

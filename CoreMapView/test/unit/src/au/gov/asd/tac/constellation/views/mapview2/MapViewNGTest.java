@@ -49,17 +49,17 @@ public class MapViewNGTest {
     private static final Logger LOGGER = Logger.getLogger(MapViewNGTest.class.getName());
 
 
-    private final MapViewTopComponent mapViewTopComponent;
+    //private final MapViewTopComponent mapViewTopComponent;
 
-    private final MapViewPane mapViewPane;
-    private final MapView instance;
+    //private final MapViewPane mapViewPane;
+    //private final MapView instance;
 
 
     public MapViewNGTest() {
-        mapViewTopComponent = new MapViewTopComponent();
+        //mapViewTopComponent = new MapViewTopComponent();
 
-        mapViewPane = Mockito.spy(new MapViewPane(mapViewTopComponent));
-        instance = Mockito.spy(new MapView(mapViewPane));
+        //mapViewPane = Mockito.spy(new MapViewPane(mapViewTopComponent));
+        //instance = Mockito.spy(new MapView(mapViewPane));
 
     }
 
@@ -94,6 +94,9 @@ public class MapViewNGTest {
     @Test
     public void testDeselectAllMarkers() {
         System.out.println("deselectAllMarkers");
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
 
         String coordinateKey = "-1" + "," + "-2";
         String coordinateKey2 = "-3" + "," + "-4";
@@ -123,6 +126,10 @@ public class MapViewNGTest {
     @Test
     public void testGetMarkerColourProperty() {
         System.out.println("getMarkerColourProperty");
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
         String expResult = mapViewPane.DEFAULT_COLOURS;
         StringProperty result = instance.getMarkerColourProperty();
 
@@ -136,6 +143,10 @@ public class MapViewNGTest {
     @Test
     public void testRemoveUserMarker() {
         System.out.println("removeUserMarker");
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
         int id = 1;
         instance.getUserMarkers().clear();
         UserPointMarker usm = new UserPointMarker(instance, id, 4, 4, 0.05, 4, 4);
@@ -153,6 +164,11 @@ public class MapViewNGTest {
     @Test
     public void testToggleOverlay() {
         System.out.println("toggleOverlay");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
         //Mockito.when(mapViewPane.INFO_OVERLAY).then("gh");
         String overlay = "Info Overlay";
 
@@ -189,6 +205,10 @@ public class MapViewNGTest {
     public void testAddLayer() {
         System.out.println("addLayer");
 
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
         AbstractMapLayer layer = new DayNightLayer(instance, 0);
 
         instance.addLayer(layer);
@@ -202,6 +222,11 @@ public class MapViewNGTest {
     @Test
     public void testRemoveLayer() {
         System.out.println("removeLayer");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
         int id = 0;
 
         instance.removeLayer(id);
@@ -215,6 +240,11 @@ public class MapViewNGTest {
     @Test
     public void testUpdateShowingMarkers() {
         System.out.println("updateShowingMarkers");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
         AbstractMarker.MarkerType type = AbstractMarker.MarkerType.POLYGON_MARKER;
         boolean adding = true;
 
@@ -230,6 +260,10 @@ public class MapViewNGTest {
     @Test
     public void testGetAllMarkers() {
         System.out.println("getAllMarkers");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
 
 
         instance.getAllMarkers().clear();
@@ -251,6 +285,10 @@ public class MapViewNGTest {
     @Test
     public void testGetAllMarkersAsList() {
         System.out.println("getAllMarkersAsList");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
 
         instance.getAllMarkers().clear();
         instance.getUserMarkers().clear();
@@ -276,6 +314,10 @@ public class MapViewNGTest {
     public void testClearQueriedMarkers() {
         System.out.println("clearQueriedMarkers");
 
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
 
         PointMarker p2 = new PointMarker(instance, -107, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
 
@@ -297,6 +339,10 @@ public class MapViewNGTest {
     public void testClearAll() {
         System.out.println("clearAll");
 
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
         instance.clearAll();
 
         assertEquals(instance.getAllMarkers().isEmpty(), true);
@@ -310,6 +356,11 @@ public class MapViewNGTest {
     @Test
     public void testAddMarkerIdToSelectedList() {
         System.out.println("addMarkerIdToSelectedList");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
         int markerID = -107;
         List<Integer> selectedNodes = new ArrayList<Integer>();
         boolean selectingVertex = true;
@@ -331,6 +382,10 @@ public class MapViewNGTest {
     public void testDrawMarker() {
         System.out.println("drawMarker");
 
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
         AbstractMarker marker = new PointMarker(instance, -32, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
 
         assertEquals(instance.getGraphMarkerGroup().getChildren().size(), 0);
@@ -346,6 +401,11 @@ public class MapViewNGTest {
     @Test
     public void testAddMarkerToHashMap() {
         System.out.println("addMarkerToHashMap");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView instance = Mockito.spy(new MapView(mapViewPane));
+
         String key = "60,89";
 
         AbstractMarker e = new PointMarker(instance, 32, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");

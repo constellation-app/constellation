@@ -81,7 +81,7 @@ public class MapViewPaneNGTest {
     public void testGetNewMarkerID() {
         MapViewTopComponent mapViewTopComponent = Mockito.mock(MapViewTopComponent.class);
 
-        final MapViewPane instance = new MapViewPane(mapViewTopComponent);
+        final MapViewPane instance = Mockito.spy(new MapViewPane(mapViewTopComponent));
 
         Mockito.when(mapViewTopComponent.getMapViewPane()).thenCallRealMethod();
         Mockito.when(mapViewTopComponent.getNewMarkerID()).thenCallRealMethod();

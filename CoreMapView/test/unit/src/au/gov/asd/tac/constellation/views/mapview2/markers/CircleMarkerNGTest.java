@@ -40,14 +40,14 @@ public class CircleMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(CircleMarkerNGTest.class.getName());
 
-    private final MapViewTopComponent component;
-    private final MapViewPane mapViewPane;
-    private final MapView map;
+    //private final MapViewTopComponent component;
+    //private final MapViewPane mapViewPane;
+    //private final MapView map;
 
     public CircleMarkerNGTest() {
-        component = new MapViewTopComponent();
-        mapViewPane = Mockito.spy(new MapViewPane(component));
-        map = Mockito.spy(new MapView(mapViewPane));
+        //component = new MapViewTopComponent();
+        //mapViewPane = Mockito.spy(new MapViewPane(component));
+        //map = Mockito.spy(new MapView(mapViewPane));
     }
 
     @BeforeClass
@@ -80,6 +80,11 @@ public class CircleMarkerNGTest {
     @Test
     public void testGetCenterX() {
         System.out.println("getCenterX");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView map = Mockito.spy(new MapView(mapViewPane));
+
         CircleMarker instance = new CircleMarker(map, 0, 45, 45, 76, 0, 0);
         double expResult = 45;
         double result = instance.getCenterX();
@@ -92,6 +97,10 @@ public class CircleMarkerNGTest {
     @Test
     public void testGetCenterY() {
         System.out.println("getCenterY");
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView map = Mockito.spy(new MapView(mapViewPane));
+
         CircleMarker instance = new CircleMarker(map, 0, 45, 45, 76, 0, 0);
         double expResult = 45;
         double result = instance.getCenterY();
@@ -105,6 +114,10 @@ public class CircleMarkerNGTest {
     @Test
     public void testGetRadius() {
         System.out.println("getRadius");
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView map = Mockito.spy(new MapView(mapViewPane));
+
         CircleMarker instance = new CircleMarker(map, 0, 45, 45, 76, 0, 0);
         double expResult = 76;
         double result = instance.getRadius();
@@ -118,6 +131,11 @@ public class CircleMarkerNGTest {
     @Test
     public void testSetRadius_double() {
         System.out.println("setRadius");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView map = Mockito.spy(new MapView(mapViewPane));
+
         double radius = 54;
         CircleMarker instance = new CircleMarker(map, 0, 45, 45, 76, 0, 0);
         double expResult = 54;
@@ -135,6 +153,11 @@ public class CircleMarkerNGTest {
     @Test
     public void testSetLineEnd() {
         System.out.println("setLineEnd");
+
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        MapView map = Mockito.spy(new MapView(mapViewPane));
+
         double x = 10.0;
         double y = 50.0;
         CircleMarker instance = new CircleMarker(map, 0, 45, 45, 76, 0, 0);
