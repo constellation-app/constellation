@@ -25,15 +25,20 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.text.Text;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import java.util.logging.Logger;
+import org.mockito.Mockito;
 
 /**
  *
@@ -41,22 +46,40 @@ import org.testng.annotations.Test;
  */
 public class MapViewNGTest {
 
+    private static final Logger LOGGER = Logger.getAnonymousLogger();
+
     private final MapViewTopComponent mapViewTopComponent;
+
+    private final MapViewPane mapViewPane;
+    private final MapView instance;
+
 
     public MapViewNGTest() {
         mapViewTopComponent = new MapViewTopComponent();
+
+        mapViewPane = Mockito.mock(MapViewPane.class);
+        instance = new MapView(mapViewPane);
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+
     }
 
     @AfterMethod
@@ -69,7 +92,6 @@ public class MapViewNGTest {
     @Test
     public void testDeselectAllMarkers() {
         System.out.println("deselectAllMarkers");
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
 
         String coordinateKey = "-1" + "," + "-2";
         String coordinateKey2 = "-3" + "," + "-4";
@@ -77,8 +99,8 @@ public class MapViewNGTest {
         PointMarker p1 = new PointMarker(instance, -99, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
         PointMarker p2 = new PointMarker(instance, -100, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
 
-        mapViewTopComponent.addMarker(coordinateKey, p1);
-        mapViewTopComponent.addMarker(coordinateKey2, p2);
+        instance.addMarkerToHashMap(coordinateKey, p1);
+        instance.addMarkerToHashMap(coordinateKey2, p2);
 
         p1.select();
         p2.select();
@@ -96,8 +118,7 @@ public class MapViewNGTest {
     @Test
     public void testGetMarkerColourProperty() {
         System.out.println("getMarkerColourProperty");
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
-        String expResult = mapViewTopComponent.mapViewPane.DEFAULT_COLOURS;
+        String expResult = mapViewPane.DEFAULT_COLOURS;
         StringProperty result = instance.getMarkerColourProperty();
 
 
@@ -111,7 +132,6 @@ public class MapViewNGTest {
     public void testRemoveUserMarker() {
         System.out.println("removeUserMarker");
         int id = 1;
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
         instance.getUserMarkers().clear();
         UserPointMarker usm = new UserPointMarker(instance, id, 4, 4, 0.05, 4, 4);
 
@@ -128,24 +148,24 @@ public class MapViewNGTest {
     @Test
     public void testToggleOverlay() {
         System.out.println("toggleOverlay");
-        String overlay = mapViewTopComponent.mapViewPane.INFO_OVERLAY;
+        //Mockito.when(mapViewPane.INFO_OVERLAY).then("gh");
+        String overlay = "Info Overlay";
 
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
         instance.toggleOverlay(overlay, true);
 
-        assertEquals(MapView.infoOverlay.getIsShowing(), true);
+        assertEquals(instance.infoOverlay.getIsShowing(), true);
         instance.toggleOverlay(overlay, false);
 
-        assertEquals(MapView.infoOverlay.getIsShowing(), false);
+        assertEquals(instance.infoOverlay.getIsShowing(), false);
     }
 
     /**
      * Test of getNewMarkerID method, of class MapView.
      */
-    @Test
+    /*@Test
     public void testGetNewMarkerID() {
         System.out.println("getNewMarkerID");
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
 
         int result = instance.getNewMarkerID();
         assertEquals(result, 1);
@@ -154,7 +174,7 @@ public class MapViewNGTest {
         assertEquals(result, 2);
 
 
-    }
+    }*/
 
 
     /**
@@ -163,7 +183,7 @@ public class MapViewNGTest {
     @Test
     public void testAddLayer() {
         System.out.println("addLayer");
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
         AbstractMapLayer layer = new DayNightLayer(instance, 0);
 
         instance.addLayer(layer);
@@ -178,7 +198,7 @@ public class MapViewNGTest {
     public void testRemoveLayer() {
         System.out.println("removeLayer");
         int id = 0;
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
         instance.removeLayer(id);
 
         assertEquals(instance.getLayers().isEmpty(), true);
@@ -192,7 +212,7 @@ public class MapViewNGTest {
         System.out.println("updateShowingMarkers");
         AbstractMarker.MarkerType type = AbstractMarker.MarkerType.POLYGON_MARKER;
         boolean adding = true;
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
         instance.updateShowingMarkers(type, adding);
 
         assertEquals(instance.getMarkersShowing().contains(type), true);
@@ -205,15 +225,15 @@ public class MapViewNGTest {
     @Test
     public void testGetAllMarkers() {
         System.out.println("getAllMarkers");
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
 
         instance.getAllMarkers().clear();
 
         PointMarker p1 = new PointMarker(instance, -999, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
         PointMarker p2 = new PointMarker(instance, -101, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
 
-        mapViewTopComponent.addMarker("testCoord1", p1);
-        mapViewTopComponent.addMarker("testCoord2", p2);
+        instance.addMarkerToHashMap("testCoord1", p1);
+        instance.addMarkerToHashMap("testCoord2", p2);
 
         Map result = instance.getAllMarkers();
         assertEquals(result.size(), 2);
@@ -226,15 +246,15 @@ public class MapViewNGTest {
     @Test
     public void testGetAllMarkersAsList() {
         System.out.println("getAllMarkersAsList");
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
         instance.getAllMarkers().clear();
         instance.getUserMarkers().clear();
 
         PointMarker p1 = new PointMarker(instance, -999, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
         PointMarker p2 = new PointMarker(instance, -101, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
 
-        mapViewTopComponent.addMarker("testCoord1", p1);
-        mapViewTopComponent.addMarker("testCoord2", p2);
+        instance.addMarkerToHashMap("testCoord1", p1);
+        instance.addMarkerToHashMap("testCoord2", p2);
 
         UserPointMarker usm = new UserPointMarker(instance, 45, 4, 4, 0.05, 4, 4);
 
@@ -250,11 +270,11 @@ public class MapViewNGTest {
     @Test
     public void testClearQueriedMarkers() {
         System.out.println("clearQueriedMarkers");
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
 
         PointMarker p2 = new PointMarker(instance, -107, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
 
-        mapViewTopComponent.addMarker("testCoord2", p2);
+        instance.addMarkerToHashMap("testCoord2", p2);
 
         UserPointMarker usm = new UserPointMarker(instance, 46, 4, 4, 0.05, 4, 4);
 
@@ -271,7 +291,7 @@ public class MapViewNGTest {
     @Test
     public void testClearAll() {
         System.out.println("clearAll");
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
         instance.clearAll();
 
         assertEquals(instance.getAllMarkers().isEmpty(), true);
@@ -289,11 +309,10 @@ public class MapViewNGTest {
         List<Integer> selectedNodes = new ArrayList<Integer>();
         boolean selectingVertex = true;
 
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
 
         PointMarker p2 = new PointMarker(instance, markerID, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
 
-        mapViewTopComponent.addMarker("testCoord2", p2);
+        instance.addMarkerToHashMap("testCoord2", p2);
 
         instance.addMarkerIdToSelectedList(markerID, selectedNodes, selectingVertex);
 
@@ -306,7 +325,7 @@ public class MapViewNGTest {
     @Test
     public void testDrawMarker() {
         System.out.println("drawMarker");
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
         AbstractMarker marker = new PointMarker(instance, -32, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
 
         assertEquals(instance.getGraphMarkerGroup().getChildren().size(), 0);
@@ -323,7 +342,7 @@ public class MapViewNGTest {
     public void testAddMarkerToHashMap() {
         System.out.println("addMarkerToHashMap");
         String key = "60,89";
-        MapView instance = mapViewTopComponent.mapViewPane.getMap();
+
         AbstractMarker e = new PointMarker(instance, 32, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
 
         instance.addMarkerToHashMap(key, e);

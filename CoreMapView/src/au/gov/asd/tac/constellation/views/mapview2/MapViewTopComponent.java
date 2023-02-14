@@ -100,7 +100,7 @@ import org.openide.windows.WindowManager;
     "HINT_MapViewTopComponent2=Map View"
 })
 
-public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
+public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     private final Logger LOGGER = Logger.getLogger("MapViewTopComponent");
 
@@ -124,8 +124,13 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         initComponents();
         mapViewPane = new MapViewPane(this);
         mapViewPane.setUpMap();
-        initContent();
+        initContent2();
 
+    }
+
+
+    public void initContent2() {
+        super.initContent();
     }
 
     /**

@@ -16,16 +16,21 @@
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import javafx.scene.Group;
 import org.mockito.Mockito;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import java.util.logging.Logger;
 
 /**
  *
@@ -33,20 +38,27 @@ import org.testng.annotations.Test;
  */
 public class DayNightLayerNGTest {
 
-    private final MapViewTopComponent component;
-    private final MapView map;
+    private static final Logger LOGGER = Logger.getAnonymousLogger();
+
 
     public DayNightLayerNGTest() {
-        component = new MapViewTopComponent();
-        map = component.mapViewPane.getMap();
+
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
@@ -63,7 +75,10 @@ public class DayNightLayerNGTest {
      */
     @Test
     public void testGetLayer() {
-        System.out.println("getLayer");;
+        System.out.println("getLayer");
+
+        MapViewPane mapViewPane = Mockito.mock(MapViewPane.class);
+        MapView map = new MapView(mapViewPane);
 
         DayNightLayer instance = new DayNightLayer(map, 5);
 
