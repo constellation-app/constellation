@@ -16,10 +16,15 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import org.mockito.Mockito;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -32,19 +37,30 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class CircleMarkerNGTest {
-
+    private static final Logger LOGGER = Logger.getAnonymousLogger();
     private MapViewTopComponent component = new MapViewTopComponent();
-    private MapView map = component.mapViewPane.getMap();
+    //private final MapViewPane mapViewPane;
+    private final MapView map;
 
     public CircleMarkerNGTest() {
+        //mapViewPane = Mockito.mock(MapViewPane.class);
+        map = Mockito.mock(MapView.class);
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
