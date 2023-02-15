@@ -184,10 +184,10 @@ public class PointMarkerNGTest {
     /*@Test
     public void testSetMarkerPosition() {
         System.out.println("setMarkerPosition");
-        double mapWidth = 0.0;
-        double mapHeight = 0.0;
+        double MAP_WIDTH = 0.0;
+        double MAP_HEIGHT = 0.0;
         PointMarker instance = null;
-        instance.setMarkerPosition(mapWidth, mapHeight);
+        instance.setMarkerPosition(MAP_WIDTH, MAP_HEIGHT);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }*/
@@ -222,7 +222,7 @@ public class PointMarkerNGTest {
         MapView parent = Mockito.spy(new MapView(mapViewPane));
 
         PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
-        instance.setMarkerPosition(MapView.mapWidth, MapView.mapHeight);
+        instance.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
         double expResult = 0.0;
         double result = instance.getX();
         assertEquals(result, expResult, 0.0);

@@ -109,7 +109,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         top = new Line();
         top.setStartX(0);
         top.setStartY(0);
-        top.setEndX(MapView.mapWidth);
+        top.setEndX(MapView.MAP_WIDTH);
         top.setEndY(0);
         top.setStroke(Color.RED);
 
@@ -119,25 +119,25 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         left.setStartX(0);
         left.setStartY(0);
         left.setEndX(0);
-        left.setEndY(MapView.mapHeight);
+        left.setEndY(MapView.MAP_HEIGHT);
         left.setStroke(Color.RED);
 
         layer.getChildren().add(left);
 
         right = new Line();
-        right.setStartX(MapView.mapWidth);
+        right.setStartX(MapView.MAP_WIDTH);
         right.setStartY(0);
-        right.setEndX(MapView.mapWidth);
-        right.setEndY(MapView.mapHeight);
+        right.setEndX(MapView.MAP_WIDTH);
+        right.setEndY(MapView.MAP_HEIGHT);
         right.setStroke(Color.RED);
 
         layer.getChildren().add(right);
 
         bottom = new Line();
         bottom.setStartX(0);
-        bottom.setStartY(MapView.mapHeight);
-        bottom.setEndX(MapView.mapWidth);
-        bottom.setEndY(MapView.mapHeight);
+        bottom.setStartY(MapView.MAP_HEIGHT);
+        bottom.setEndX(MapView.MAP_WIDTH);
+        bottom.setEndY(MapView.MAP_HEIGHT);
         bottom.setStroke(Color.RED);
 
         layer.getChildren().add(bottom);
@@ -238,11 +238,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                             lineStart.x = midPoint.x;
                             lineStart.y = 0;
                             lineEnd.x = midPoint.x;
-                            lineEnd.y = MapView.mapHeight;
+                            lineEnd.y = MapView.MAP_HEIGHT;
                         } else if (slope.y == 0 && slope.x != 0) {
                             lineStart.x = 0;
                             lineStart.y = midPoint.y;
-                            lineEnd.x = MapView.mapWidth;
+                            lineEnd.x = MapView.MAP_WIDTH;
                             lineEnd.y = midPoint.y;
                         }
 
@@ -297,7 +297,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             for (double i = 0; i < distance; i = i + lineExtend) {
 
                 // If the starting coordinate is outside the map then move the start point in the direction of the end point
-                if (start.x > MapView.mapWidth + 5 || start.x < -5 || start.y < -2 || start.y > MapView.mapHeight + 2) {
+                if (start.x > MapView.MAP_WIDTH + 5 || start.x < -5 || start.y < -2 || start.y > MapView.MAP_HEIGHT + 2) {
                     start.x += dirVect.x;
                     start.y += dirVect.y;
                     continue;
@@ -473,7 +473,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     }
 
                     // If intersection point occurs outside the mapn then continue
-                    if (roundedX < 0 || roundedX > MapView.mapWidth || roundedY < 0 || roundedY > MapView.mapHeight) {
+                    if (roundedX < 0 || roundedX > MapView.MAP_WIDTH || roundedY < 0 || roundedY > MapView.MAP_HEIGHT) {
                         continue;
                     }
 
@@ -536,7 +536,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     }
 
                     // If the intersection point is at a corner
-                    if ((roundedX == 0 && roundedY == 0) || (roundedX == Math.round(MapView.mapWidth) && roundedY == 0) || (roundedX == 0 && roundedY == MapView.mapHeight) || (roundedX == Math.round(MapView.mapWidth) && roundedY == MapView.mapHeight)) {
+                    if ((roundedX == 0 && roundedY == 0) || (roundedX == Math.round(MapView.MAP_WIDTH) && roundedY == 0) || (roundedX == 0 && roundedY == MapView.MAP_HEIGHT) || (roundedX == Math.round(MapView.MAP_WIDTH) && roundedY == MapView.MAP_HEIGHT)) {
                         // Then add the node to the corners array created earlier
                         if (!corners.contains(intersectionMap.get(intersectionPoint))) {
 
@@ -826,8 +826,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             Rectangle r = new Rectangle();
             r.setX(0);
             r.setY(0);
-            r.setWidth(MapView.mapWidth);
-            r.setHeight(MapView.mapHeight);
+            r.setWidth(MapView.MAP_WIDTH);
+            r.setHeight(MapView.MAP_HEIGHT);
             r.setFill(palette[0].getJavaFXColor());
             r.setStroke(palette[0].getJavaFXColor());
             r.setOpacity(0.5);

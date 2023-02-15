@@ -92,13 +92,13 @@ public class LineMarker extends AbstractMarker {
      */
     @Override
     public void setMarkerPosition(double mapWidth, double mapHeight) {
-        x1 = MarkerUtilities.longToX(lon1, MapView.minLong, mapWidth, MapView.maxLong - MapView.minLong);
+        x1 = MarkerUtilities.longToX(lon1, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG);
         y1 = MarkerUtilities.latToY(lat1, mapWidth, mapHeight);
 
         x1 += xOffset;
         y1 -= yOffset;
 
-        x2 = MarkerUtilities.longToX(lon2, MapView.minLong, mapWidth, MapView.maxLong - MapView.minLong);
+        x2 = MarkerUtilities.longToX(lon2, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG);
         y2 = MarkerUtilities.latToY(lat2, mapWidth, mapHeight);
 
         x2 += xOffset;

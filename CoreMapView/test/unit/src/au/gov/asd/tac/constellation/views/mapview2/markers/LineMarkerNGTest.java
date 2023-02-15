@@ -83,8 +83,8 @@ public class LineMarkerNGTest {
         MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        double mapWidth = MapView.mapWidth;
-        double mapHeight = MapView.mapHeight;
+        double mapWidth = MapView.MAP_WIDTH;
+        double mapHeight = MapView.MAP_HEIGHT;
         LineMarker instance = new LineMarker(parent, -99, -99, 83.63001, -169.1110266, -58.488473, 190.48712, 0, 0);
         instance.setMarkerPosition(mapWidth, mapHeight);
         assertEquals(instance.getStartX(), 0.0);

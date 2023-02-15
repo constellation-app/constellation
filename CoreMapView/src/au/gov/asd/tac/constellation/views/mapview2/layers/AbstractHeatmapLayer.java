@@ -42,12 +42,10 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
     // Group to hold all heatmap graphical elements
     protected Group layerGroup;
 
-    private final double xOffset = 96;
-    private final double yOffset = 92;
+    private static final double X_OFFSET = 96;
+    private static final double Y_OFFSET = 92;
 
-    private static final Logger LOGGER = Logger.getLogger("AbstractHeatMapLayer");
-
-    public AbstractHeatmapLayer(MapView parent, int id) {
+    protected AbstractHeatmapLayer(MapView parent, int id) {
         super(parent, id);
         layerGroup = new Group();
     }
@@ -57,9 +55,6 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
      */
     @Override
     public void setUp() {
-        // Get queried markers
-        Map<String, AbstractMarker> markers = parent.getAllMarkers();
-
         // Loop through all the markers
         for (Object value : parent.getAllMarkers().values()) {
 
@@ -74,8 +69,8 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
                 markerWeight.setText(Integer.toString(getWeight(marker)));
 
                 // Offset the text element so that it lines up with the markers
-                double startingX = marker.getX() - xOffset;
-                double startingY = marker.getY() + yOffset;
+                double startingX = marker.getX() - X_OFFSET;
+                double startingY = marker.getY() + Y_OFFSET;
 
                 markerWeight.setX(startingX);
                 markerWeight.setY(startingY);

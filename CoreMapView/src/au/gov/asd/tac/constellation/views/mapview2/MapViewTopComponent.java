@@ -102,14 +102,12 @@ import org.openide.windows.WindowManager;
 
 public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
-    private final Logger LOGGER = Logger.getLogger("MapViewTopComponent");
+    private static final Logger LOGGER = Logger.getLogger("MapViewTopComponent");
 
     public static final Object LOCK = new Object();
 
-    private int cacheCounter = 0;
-
     // The mapview itself
-    public MapViewPane mapViewPane;
+    public static MapViewPane mapViewPane;
 
 
     private int markerID = 0;
@@ -164,14 +162,13 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        LOGGER.log(Level.SEVERE, "Cache: " + (++cacheCounter));
-        LOGGER.log(Level.SEVERE, "Inside handleComponentOpened");
+
 
     }
 
     @Override
     protected void handleComponentClosed() {
-        LOGGER.log(Level.SEVERE, "Inside handleComponentClosed");
+
         super.handleComponentClosed();
         mapViewPane.getMap().clearQueriedMarkers();
     }
@@ -182,12 +179,9 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     public void setMapImage(Component mapComponent) {
 
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                jfxContainer.add(mapComponent);
-                validate();
-            }
+        SwingUtilities.invokeLater(() -> {
+            jfxContainer.add(mapComponent);
+            validate();
         });
 
 
@@ -207,14 +201,9 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     protected void handleGraphOpened(final Graph graph) {
         super.handleGraphOpened(graph);
 
-        if (graph != null) {
-
-        }
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
-
-
         return mapViewPane.getAllMarkers();
     }
 
@@ -230,16 +219,11 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
         if (graph != null) {
             try {
-
-
-                CompletableFuture.runAsync(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(self)).executeNow(graph);
-                        } catch (Exception e) {
-                            LOGGER.log(Level.SEVERE, e.getMessage());
-                        }
+                CompletableFuture.runAsync(() -> {
+                    try {
+                        PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(self)).executeNow(graph);
+                    } catch (Exception e) {
+                        LOGGER.log(Level.SEVERE, e.getMessage());
                     }
                 }).get();
 
@@ -249,11 +233,8 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                 Exceptions.printStackTrace(ex);
             }
 
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    mapViewPane.getMap().redrawQueriedMarkers();
-                }
+            Platform.runLater(() -> {
+                mapViewPane.getMap().redrawQueriedMarkers();
             });
 
         }

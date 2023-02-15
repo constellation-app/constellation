@@ -176,11 +176,11 @@ public class ToolsOverlay extends AbstractOverlay {
         endY += locationYOffset;
 
         // Calculate lattitude and longitude from coordinates
-        double startLon = MarkerUtilities.XToLong(startX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
-        double endLon = MarkerUtilities.XToLong(endX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
+        double startLon = MarkerUtilities.XToLong(startX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        double endLon = MarkerUtilities.XToLong(endX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
 
-        double startLat = MarkerUtilities.YToLat(startY, MapView.mapWidth, MapView.mapHeight);
-        double endLat = MarkerUtilities.YToLat(endY, MapView.mapWidth, MapView.mapHeight);
+        double startLat = MarkerUtilities.YToLat(startY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        double endLat = MarkerUtilities.YToLat(endY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
 
         double distance = 0;
 

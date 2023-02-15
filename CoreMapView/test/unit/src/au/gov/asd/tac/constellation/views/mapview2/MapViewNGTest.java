@@ -166,10 +166,10 @@ public class MapViewNGTest {
 
         instance.toggleOverlay(overlay, true);
 
-        assertEquals(instance.infoOverlay.getIsShowing(), true);
+        assertEquals(instance.getInfoOverlay().getIsShowing(), true);
         instance.toggleOverlay(overlay, false);
 
-        assertEquals(instance.infoOverlay.getIsShowing(), false);
+        assertEquals(instance.getInfoOverlay().getIsShowing(), false);
     }
 
     /**

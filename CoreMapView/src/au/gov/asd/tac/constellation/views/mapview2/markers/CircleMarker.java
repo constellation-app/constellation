@@ -133,8 +133,8 @@ public class CircleMarker extends AbstractMarker {
         centerY += centerYOffset;
 
         // Calculate lattitude and longitude fro x and y
-        double centerYLat = MarkerUtilities.YToLat(centerY, MapView.mapWidth, MapView.mapHeight);
-        double centerXLon = MarkerUtilities.XToLong(centerX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
+        double centerYLat = MarkerUtilities.YToLat(centerY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        double centerXLon = MarkerUtilities.XToLong(centerX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
 
         double vertexY = centerYLat;
         double vertexX = centerXLon + (radius / EARTH_RADIUS_M) * (180 / Math.PI) / Math.cos(centerYLat * (Math.PI / 180));
@@ -156,8 +156,8 @@ public class CircleMarker extends AbstractMarker {
             vertexY = centerYLat + radius * Math.sin(angle);
 
             // Convert edge to x and y from geo coordinates
-            vertexX = MarkerUtilities.longToX(vertexX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
-            vertexY = MarkerUtilities.latToY(vertexY, MapView.mapWidth, MapView.mapHeight) - centerYOffset;
+            vertexX = MarkerUtilities.longToX(vertexX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+            vertexY = MarkerUtilities.latToY(vertexY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - centerYOffset;
 
 
             if (Double.isNaN(vertexX) || Double.isNaN(vertexY)) {
@@ -197,12 +197,12 @@ public class CircleMarker extends AbstractMarker {
 
         // Calculate radius in geo coordinates
         edgeY += centerYOffset;
-        edgeX = MarkerUtilities.XToLong(edgeX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
-        edgeY = MarkerUtilities.YToLat(edgeY, MapView.mapWidth, MapView.mapHeight) - centerYOffset;
+        edgeX = MarkerUtilities.XToLong(edgeX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        edgeY = MarkerUtilities.YToLat(edgeY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - centerYOffset;
 
         double newCenterY = centerY + centerYOffset;
-        double X = MarkerUtilities.XToLong(centerX, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
-        double Y = MarkerUtilities.YToLat(newCenterY, MapView.mapWidth, MapView.mapHeight) - centerYOffset;
+        double X = MarkerUtilities.XToLong(centerX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        double Y = MarkerUtilities.YToLat(newCenterY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - centerYOffset;
 
         // Caclulate distance with geo coordinates
         double distance = Math.sqrt(

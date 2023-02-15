@@ -152,8 +152,8 @@ public class DayNightLayer extends AbstractMapLayer {
         // For every location calculate its x and y coordinate
         locations.forEach(location -> {
 
-            location.x = MarkerUtilities.longToX(location.x, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
-            location.y = MarkerUtilities.latToY(location.y, MapView.mapWidth, MapView.mapHeight) - shadowLocationYOffset;
+            location.x = MarkerUtilities.longToX(location.x, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+            location.y = MarkerUtilities.latToY(location.y, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - shadowLocationYOffset;
 
 
         });
@@ -204,8 +204,8 @@ public class DayNightLayer extends AbstractMapLayer {
         sun.setRadius(sunRadius);
 
         // Calculate x and y from lat and lon
-        double sunX = MarkerUtilities.longToX(sunLocation.lon, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
-        double sunY = MarkerUtilities.latToY(sunLocation.lat, MapView.mapWidth, MapView.mapHeight) - shadowLocationYOffset;
+        double sunX = MarkerUtilities.longToX(sunLocation.lon, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        double sunY = MarkerUtilities.latToY(sunLocation.lat, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - shadowLocationYOffset;
 
         sun.setTranslateX(sunX);
         sun.setTranslateY(sunY);

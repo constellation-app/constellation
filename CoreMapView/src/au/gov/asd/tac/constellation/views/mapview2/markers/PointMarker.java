@@ -204,7 +204,7 @@ public class PointMarker extends AbstractMarker {
      */
     @Override
     public void setMarkerPosition(double mapWidth, double mapHeight) {
-        x = MarkerUtilities.longToX(longitude, MapView.minLong, mapWidth, MapView.maxLong - MapView.minLong);
+        x = MarkerUtilities.longToX(longitude, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG);
         y = MarkerUtilities.latToY(lattitude, mapWidth, mapHeight);
         x += xOffset;
         y -= yOffset;

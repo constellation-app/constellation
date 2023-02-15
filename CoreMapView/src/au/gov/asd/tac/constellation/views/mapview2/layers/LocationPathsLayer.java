@@ -113,7 +113,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
                             if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
                                 //parent.addMarkerToHashMap(coordinateKey, l);
 
-                                l.setMarkerPosition(MapView.mapWidth, MapView.mapHeight);
+                                l.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
                                 entityPaths.getChildren().add(l.getMarker());
                             } else {
                                 //parent.getAllMarkers().get(coordinateKey).addNodeID(vertexID);

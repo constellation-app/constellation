@@ -73,8 +73,8 @@ public class InfoOverlay extends AbstractOverlay {
     public void updateLocation(double x, double y) {
         y += locationYOffset;
 
-        double lon = MarkerUtilities.XToLong(x, MapView.minLong, MapView.mapWidth, MapView.maxLong - MapView.minLong);
-        double lat = MarkerUtilities.YToLat(y, MapView.mapWidth, MapView.mapHeight);
+        double lon = MarkerUtilities.XToLong(x, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        double lat = MarkerUtilities.YToLat(y, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
 
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);
