@@ -40,11 +40,11 @@ public abstract class AbstractMapLayer {
     // Class to hold a location in lattitude and longitude and its corresponding x and y values
     protected class Location {
 
-        public double lat;
-        public double lon;
+        private double lat;
+        private double lon;
 
-        public double x = 0;
-        public double y = 0;
+        private double x = 0;
+        private double y = 0;
 
         public Location(double lat, double lon) {
             this.lat = lat;
@@ -54,12 +54,44 @@ public abstract class AbstractMapLayer {
             y = lat;
 
         }
+
+        public double getLat() {
+            return lat;
+        }
+
+        public void setLat(double lat) {
+            this.lat = lat;
+        }
+
+        public double getLon() {
+            return lon;
+        }
+
+        public void setLon(double lon) {
+            this.lon = lon;
+        }
+
+        public double getX() {
+            return x;
+        }
+
+        public void setX(double x) {
+            this.x = x;
+        }
+
+        public double getY() {
+            return y;
+        }
+
+        public void setY(double y) {
+            this.y = y;
+        }
     }
 
     public void setUp() {
     }
 
-    public boolean getIsShowing() {
+    public boolean isShowing() {
         return isShowing;
     }
 

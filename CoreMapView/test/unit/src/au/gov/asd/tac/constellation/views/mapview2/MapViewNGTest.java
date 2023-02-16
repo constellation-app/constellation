@@ -205,7 +205,7 @@ public class MapViewNGTest {
 
         instance.addLayer(layer);
 
-        assertEquals(layer.getIsShowing(), true);
+        assertEquals(layer.isShowing(), true);
     }
 
     /**

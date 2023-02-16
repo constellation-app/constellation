@@ -37,8 +37,8 @@ import java.util.Map;
  */
 public class LocationPathsLayer extends AbstractPathsLayer {
 
-    final double lineMarkerXOffset = 1;
-    final double lineMarkerYOffset = 149;
+    final static double LINE_MARKER_X_OFFSET = 1;
+    final static double LINE_MARKER_Y_OFFSET = 149;
 
     public LocationPathsLayer(MapView parent, int id, Map<String, AbstractMarker> queriedMarkers) {
         super(parent, id, queriedMarkers);
@@ -51,7 +51,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
     public void setUp() {
         entityPaths.getChildren().clear();
         GraphReadMethods graph = parent.getCurrentGraph().getReadableGraph();
-        final List<Integer> idList = new ArrayList<Integer>();
+        final List<Integer> idList = new ArrayList<>();
 
         // For every queried markers add all its connected neighbours to the idList
         for (Object value : queriedMarkers.values()) {
@@ -109,14 +109,11 @@ public class LocationPathsLayer extends AbstractPathsLayer {
                             String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
 
                             // Draw line beteeen the two vertices
-                            LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, lineMarkerXOffset, lineMarkerYOffset);
+                            LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, LINE_MARKER_X_OFFSET, LINE_MARKER_Y_OFFSET);
                             if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
-                                //parent.addMarkerToHashMap(coordinateKey, l);
 
                                 l.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
                                 entityPaths.getChildren().add(l.getMarker());
-                            } else {
-                                //parent.getAllMarkers().get(coordinateKey).addNodeID(vertexID);
                             }
                         }
                     }

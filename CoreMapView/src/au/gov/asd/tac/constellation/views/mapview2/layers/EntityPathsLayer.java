@@ -48,6 +48,22 @@ public class EntityPathsLayer extends AbstractPathsLayer {
     }
 
     /**
+     * For every queried markers add all its connected neighbours to the idList
+     *
+     * @param idList
+     */
+    private void extractQueriedMarkersAndNeighbours(List<Integer> idList) {
+        for (Object value : queriedMarkers.values()) {
+            AbstractMarker m = (AbstractMarker) value;
+
+            if (m instanceof PointMarker) {
+                m.getConnectedNodeIdList().forEach(id -> idList.add(id));
+            }
+        }
+
+    }
+
+    /**
      * Sets up the line markers for the entity paths
      */
     @Override
@@ -62,19 +78,12 @@ public class EntityPathsLayer extends AbstractPathsLayer {
 
         final int transDateTimeAttrId = TemporalConcept.TransactionAttribute.DATETIME.get(graph);
 
-        final List<Integer> idList = new ArrayList<Integer>();
+        final List<Integer> idList = new ArrayList<>();
 
         final double lineMarkerXOffset = 1;
         final double lineMarkerYOffset = 149;
 
-        // For every queried markers add all its connected neighbours to the idList
-        for (Object value : queriedMarkers.values()) {
-            AbstractMarker m = (AbstractMarker) value;
-
-            if (m instanceof PointMarker) {
-                m.getConnectedNodeIdList().forEach(id -> idList.add(id));
-            }
-        }
+        extractQueriedMarkersAndNeighbours(idList);
 
         // For all connected neighbours
         for (int i = 0; i < idList.size(); ++i) {
@@ -83,19 +92,19 @@ public class EntityPathsLayer extends AbstractPathsLayer {
             int vertexID = graph.getVertex(idList.get(i));
 
             // Get the type attribute of the vertex
-                final SchemaVertexType vertexType = graph.getObjectValue(vertexTypeAttributeId, vertexID);
+            final SchemaVertexType vertexType = graph.getObjectValue(vertexTypeAttributeId, vertexID);
 
             // If the type is a "location"
             if (vertexType != null && vertexType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
 
                 // Get the neighbour count of that vertex
-                    final int neighbourCount = graph.getVertexNeighbourCount(vertexID);
+                final int neighbourCount = graph.getVertexNeighbourCount(vertexID);
 
                     // For every neighbour
                     for (int neighbourPos = 0; neighbourPos < neighbourCount; ++neighbourPos) {
 
                         // Get the neighbour id
-                        final int neighbourID = graph.getVertexNeighbour(vertexID, neighbourPos);
+                    final int neighbourID = graph.getVertexNeighbour(vertexID, neighbourPos);
 
                         // Get the the type attribute from the neighbour
                         final SchemaVertexType neighbourType = graph.getObjectValue(vertexTypeAttributeId, neighbourID);
@@ -178,12 +187,10 @@ public class EntityPathsLayer extends AbstractPathsLayer {
 
                                     LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, lineMarkerXOffset, lineMarkerYOffset);
                                     if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
-                                        //parent.addMarkerToHashMap(coordinateKey, l);
+
 
                                         l.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
                                         entityPaths.getChildren().add(l.getMarker());
-                                    } else {
-                                        //parent.getAllMarkers().get(coordinateKey).addNodeID(vertexID);
                                     }
                                 }
 
