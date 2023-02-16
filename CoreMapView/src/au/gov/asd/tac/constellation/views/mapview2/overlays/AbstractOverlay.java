@@ -35,7 +35,7 @@ public class AbstractOverlay {
     protected int height = 75;
     protected int width = 175;
 
-    protected boolean isShowing = false;
+    protected boolean showing = false;
 
     public AbstractOverlay(double positionX, double positionY) {
 
@@ -70,19 +70,19 @@ public class AbstractOverlay {
         return overlayPane;
     }
 
-    public boolean getIsShowing() {
-        return isShowing;
+    public boolean isShowing() {
+        return showing;
     }
 
     public void setIsShowing(boolean showing) {
-        isShowing = showing;
+        this.showing = showing;
     }
 
     /**
      * Toggle whether overlay is visible
      */
     public void toggleOverlay() {
-        isShowing = !isShowing;
+        showing = !showing;
         overlayPane.setVisible(!overlayPane.isVisible());
     }
 }

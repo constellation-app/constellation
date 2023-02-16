@@ -54,11 +54,10 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
     private static final Logger LOGGER = Logger.getLogger(ExtractCoordsFromGraphPlugin.class.getName());
 
-    private final double pointMarkerXOffset = 95;
-    private final double pointMarkerYOffset = 245;
+    private static final double POINT_MARKER_X_OFFSET = 95;
+    private static final double POINT_MARKER_Y_OFFSET = 245;
 
     private MapViewTopComponent mapViewTopComponent;
-    private boolean transactionsOnly;
 
     public ExtractCoordsFromGraphPlugin() {
 
@@ -179,7 +178,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             // If another vertext of the same location hasn't been queried yet
                             if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
                                 // Create a new point marker and add it to the map
-                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, pointMarkerXOffset, pointMarkerYOffset, elementColour); //244
+                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour); //244
                                 mapViewTopComponent.addMarker(coordinateKey, p);
 
                                 // Set colours and labels if they are available

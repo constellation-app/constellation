@@ -40,11 +40,11 @@ import org.openide.util.lookup.ServiceProvider;
 public class SelectOnGraphPlugin extends SimpleEditPlugin {
 
     // IDs of the selected nodes
-    private List<Integer> selectedNodeList = new ArrayList<Integer>();
+    private List<Integer> selectedNodeList = new ArrayList<>();
     private boolean isSelectingVertex = true;
 
     public SelectOnGraphPlugin(List<Integer> selectedNodeList, boolean isSelectingVertex) {
-        this.selectedNodeList = selectedNodeList;
+        this.selectedNodeList = new ArrayList<>(selectedNodeList);
         this.isSelectingVertex = isSelectingVertex;
     }
 
@@ -74,8 +74,9 @@ public class SelectOnGraphPlugin extends SimpleEditPlugin {
                     final int vertexID = graph.getVertex(i);
                     graph.setBooleanValue(vertexSelectedAttribute, vertexID, selectedNodeList.contains(vertexID));
                 }
-            } // Select transactions
-            else {
+
+                // Select transactions
+            } else {
                 final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
                 final int transactionCount = graph.getTransactionCount();
 

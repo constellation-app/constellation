@@ -452,17 +452,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                     intersectionPoint = roundedX + "," + roundedY;
 
-                    if ("NaN,NaN".equals(intersectionPoint)) {
+                    if ("NaN,NaN".equals(intersectionPoint)
+                            || !(bisect1.contains(x, y) && bisect2.contains(x, y))
+                            || roundedX < 0 || roundedX > MapView.MAP_WIDTH
+                            || roundedY < 0 || roundedY > MapView.MAP_HEIGHT) {
 
-                        continue;
-                    }
-
-                    if (!(bisect1.contains(x, y) && bisect2.contains(x, y))) {
-                        continue;
-                    }
-
-                    // If intersection point occurs outside the mapn then continue
-                    if (roundedX < 0 || roundedX > MapView.MAP_WIDTH || roundedY < 0 || roundedY > MapView.MAP_HEIGHT) {
                         continue;
                     }
 
@@ -471,39 +465,25 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         // Create new entry in the intersection node map
                         IntersectionNode intersectionNode = new IntersectionNode(roundedX, roundedY);
 
-                        // Add the current intersection coordinate to the intersectionNode contained points array
-                        intersectionNode.addContainedPoint(x, y);
-
-                        // If the bisector is not on the edge then add the id of the markers seperated by the bisector
-                        // to the intersectionNode's relevant marker container
-                        if (!isEdgeLine(bisectID1)) {
-                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID1.split(",")[0]));
-                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID1.split(",")[1]));
-                        }
-
-                        // Do the same with the second line
-                        if (!isEdgeLine(bisectID2)) {
-                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID2.split(",")[0]));
-                            intersectionNode.addRelevantMarker(Integer.parseInt(bisectID2.split(",")[1]));
-                        }
-
                         // Put the intersectionNode in the intersectionMap with its coordinate as the key
                         intersectionMap.put(intersectionPoint, intersectionNode);
-                    } // Same thing here except that the intersectionNode already exists in the intersectionMap
-                    else {
-                        IntersectionNode intersectionNode = intersectionMap.get(intersectionPoint);
-                        intersectionNode.addContainedPoint(x, y);
+                    }
 
-                        if (!isEdgeLine(bisectID1)) {
+                    IntersectionNode intersectionNode = intersectionMap.get(intersectionPoint);
+                    // Add the current intersection coordinate to the intersectionNode contained points array
+                    intersectionNode.addContainedPoint(x, y);
+
+                    // If the bisector is not on the edge then add the id of the markers seperated by the bisector
+                    // to the intersectionNode's relevant marker container
+                    if (!isEdgeLine(bisectID1)) {
                         intersectionNode.addRelevantMarker(Integer.parseInt(bisectID1.split(",")[0]));
-                            intersectionNode.addRelevantMarker(Integer.parseInt(bisectID1.split(",")[1]));
-                        }
+                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID1.split(",")[1]));
+                    }
 
-                        if (!isEdgeLine(bisectID2)) {
+                    // Do the same with the second line
+                    if (!isEdgeLine(bisectID2)) {
                         intersectionNode.addRelevantMarker(Integer.parseInt(bisectID2.split(",")[0]));
-                            intersectionNode.addRelevantMarker(Integer.parseInt(bisectID2.split(",")[1]));
-                        }
-
+                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID2.split(",")[1]));
                     }
 
                     // Get the relevant marker IDs for this intersection
@@ -551,12 +531,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
 
             }
-
         }
-
-
     }
-
 
     private boolean doesIntersect(Line l1, Line l2) {
         return l1.intersects(l2.getBoundsInLocal()) && l2.intersects(l1.getBoundsInLocal());
@@ -699,11 +675,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 }
 
                 // Finally we can add the relevant marker to the corner
-                n.getRelevantMarkers().add(id);
+                n.addRelevantMarker(id);
 
                 // If there is only one marker in the relevantMarkerIds list then just add the first one to the corner
             } else if (!relevantMarkerIds.isEmpty()) {
-                n.getRelevantMarkers().add(relevantMarkerIds.get(0));
+                n.addRelevantMarker(relevantMarkerIds.get(0));
             }
 
 

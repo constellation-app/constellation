@@ -38,11 +38,9 @@ import javafx.scene.shape.Rectangle;
 public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
     private final Group layer;
-    private final Map<Integer, AbstractMarker> nodesOnScreen = new HashMap<Integer, AbstractMarker>();
+    private final Map<Integer, AbstractMarker> nodesOnScreen = new HashMap<>();
 
-    private static final Logger LOGGER = Logger.getLogger("ThiessenPolygons2");
-
-    List<AbstractMarker> markers = new ArrayList<AbstractMarker>();
+    List<AbstractMarker> markers = new ArrayList<>();
 
     public ThiessenPolygonsLayer2(MapView parent, int id, List<AbstractMarker> markers) {
         super(parent, id);

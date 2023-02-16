@@ -105,11 +105,11 @@ public class MapViewNGTest {
         p1.select();
         p2.select();
 
-        assertEquals(p1.getMarkerSelected() && p2.getMarkerSelected(), true);
+        assertEquals(p1.isSelected() && p2.isSelected(), true);
 
         instance.deselectAllMarkers();
 
-        assertEquals(!p1.getMarkerSelected() && !p2.getMarkerSelected(), true);
+        assertEquals(!p1.isSelected() && !p2.isSelected(), true);
     }
 
     /**
@@ -166,10 +166,10 @@ public class MapViewNGTest {
 
         instance.toggleOverlay(overlay, true);
 
-        assertEquals(instance.getInfoOverlay().getIsShowing(), true);
+        assertEquals(instance.getInfoOverlay().isShowing(), true);
         instance.toggleOverlay(overlay, false);
 
-        assertEquals(instance.getInfoOverlay().getIsShowing(), false);
+        assertEquals(instance.getInfoOverlay().isShowing(), false);
     }
 
     /**

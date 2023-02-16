@@ -64,9 +64,8 @@ public class MarkerUtilities {
      * @param lonDelta - difference between right and left most longitude
      * @return - longitude
      */
-    public static double XToLong(double x, double minLong, double mapWidth, double lonDelta) {
-        double longitude = (x / (mapWidth / lonDelta)) + minLong;
-        return longitude;
+    public static double xToLong(double x, double minLong, double mapWidth, double lonDelta) {
+        return (x / (mapWidth / lonDelta)) + minLong;
     }
 
     /**
@@ -77,12 +76,11 @@ public class MarkerUtilities {
      * @param mapHeight
      * @return latitude
      */
-    public static double YToLat(double y, double mapWidth, double mapHeight) {
+    public static double yToLat(double y, double mapWidth, double mapHeight) {
 
         y = ((-y + (mapHeight / 2)) * (2 * Math.PI)) / mapWidth;
         y = (Math.atan(Math.exp(y)) - (Math.PI / 4)) * 2;
-        double lattitude = y / (Math.PI / 180);
-        return lattitude;
+        return y / (Math.PI / 180);
     }
 
 }

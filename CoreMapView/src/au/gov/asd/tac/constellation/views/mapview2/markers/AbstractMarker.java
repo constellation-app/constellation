@@ -33,7 +33,7 @@ public abstract class AbstractMarker {
     protected int markerID = 0;
 
     // Id list contains ids of all nodes this marker represents
-    protected List<Integer> idList = new ArrayList();
+    protected List<Integer> idList = new ArrayList<Integer>();
     protected boolean isSelected = false;
 
     private double x = 0;
@@ -43,7 +43,7 @@ public abstract class AbstractMarker {
 
     protected MapView parent;
 
-    public static enum MarkerType {
+    public enum MarkerType {
         POINT_MARKER,
         LINE_MARKER,
         POLYGON_MARKER,
@@ -52,7 +52,7 @@ public abstract class AbstractMarker {
 
     protected MarkerType type;
 
-    public AbstractMarker(MapView parent, int markerID, int nodeId, double xOffset, double yOffset, MarkerType type) {
+    protected AbstractMarker(MapView parent, int markerID, int nodeId, double xOffset, double yOffset, MarkerType type) {
         this.markerID = markerID;
         this.parent = parent;
         idList.add(nodeId);
@@ -86,7 +86,7 @@ public abstract class AbstractMarker {
         idList.add(id);
     }
 
-    public boolean getMarkerSelected() {
+    public boolean isSelected() {
         return isSelected;
     }
 

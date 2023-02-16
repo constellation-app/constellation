@@ -35,7 +35,7 @@ public class ClusterMarkerBuilder {
     private List<ClusterMarker> clusterCircles = new ArrayList<>();
     private List<Text> clusterValues = new ArrayList<>();
 
-    private ArrayList<ArrayList<Node>> pointMarkerClusters = new ArrayList<ArrayList<Node>>();
+    private ArrayList<ArrayList<Node>> pointMarkerClusters = new ArrayList<>();
     private Set<Node> clusteredPointMarkers = new HashSet<>();
     private MapView parent = null;
 
@@ -116,8 +116,8 @@ public class ClusterMarkerBuilder {
         double x2 = screenN2Coords.getX();
         double y2 = screenN2Coords.getY();
 
-        double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-        return distance;
+        return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
     }
 
     /**

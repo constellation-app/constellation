@@ -38,12 +38,10 @@ public class CircleMarker extends AbstractMarker {
     private double centerY = 0;
     private double radius = 0;
 
-    private final double centerYOffset = 149;
+    private static final double CENTER_Y_OFFSET = 149;
 
     private final Circle circle = new Circle();
     private final Line line = new Line();
-
-    private static final Logger LOGGER = Logger.getLogger("CircleMarkerLogger");
 
     public CircleMarker(MapView parent, int markerID, double centerX, double centerY, double radius, double xOffset, double yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
@@ -130,19 +128,18 @@ public class CircleMarker extends AbstractMarker {
      */
     public void generateCircle() {
         final int EARTH_RADIUS_M = 6_371_008;
-        centerY += centerYOffset;
+        centerY += CENTER_Y_OFFSET;
 
         // Calculate lattitude and longitude fro x and y
-        double centerYLat = MarkerUtilities.YToLat(centerY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
-        double centerXLon = MarkerUtilities.XToLong(centerX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        double centerYLat = MarkerUtilities.yToLat(centerY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        double centerXLon = MarkerUtilities.xToLong(centerX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
 
         double vertexY = centerYLat;
         double vertexX = centerXLon + (radius / EARTH_RADIUS_M) * (180 / Math.PI) / Math.cos(centerYLat * (Math.PI / 180));
 
 
-        String path = "";
         boolean first = true;
-
+        StringBuilder pathStringBuilder = new StringBuilder();
         // Projected circle will have 60 vertices
         final int points = 60;
         final double spacing = (2 * Math.PI) / points;
@@ -157,25 +154,26 @@ public class CircleMarker extends AbstractMarker {
 
             // Convert edge to x and y from geo coordinates
             vertexX = MarkerUtilities.longToX(vertexX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-            vertexY = MarkerUtilities.latToY(vertexY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - centerYOffset;
-
+            vertexY = MarkerUtilities.latToY(vertexY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - CENTER_Y_OFFSET;
 
             if (Double.isNaN(vertexX) || Double.isNaN(vertexY)) {
                 continue;
             }
 
+
             // Append vertex to path string
             if (first) {
-                path = "M" + vertexX + "," + vertexY;
-
+                pathStringBuilder.append("M");
                 first = false;
             } else {
-                path += "L" + vertexX + "," + vertexY;
+                pathStringBuilder.append("L");
             }
-
+            pathStringBuilder.append(vertexX);
+            pathStringBuilder.append(",");
+            pathStringBuilder.append(vertexY);
         }
 
-        markerPath.setContent(path);
+        markerPath.setContent(pathStringBuilder.toString());
     }
 
     public void setRadius(double radius) {
@@ -196,18 +194,18 @@ public class CircleMarker extends AbstractMarker {
         circle.setRadius(Math.sqrt(Math.pow(edgeX - centerX, 2) + Math.pow(edgeY - centerY, 2)));
 
         // Calculate radius in geo coordinates
-        edgeY += centerYOffset;
-        edgeX = MarkerUtilities.XToLong(edgeX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        edgeY = MarkerUtilities.YToLat(edgeY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - centerYOffset;
+        edgeY += CENTER_Y_OFFSET;
+        edgeX = MarkerUtilities.xToLong(edgeX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        edgeY = MarkerUtilities.yToLat(edgeY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - CENTER_Y_OFFSET;
 
-        double newCenterY = centerY + centerYOffset;
-        double X = MarkerUtilities.XToLong(centerX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        double Y = MarkerUtilities.YToLat(newCenterY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - centerYOffset;
+        double newCenterY = centerY + CENTER_Y_OFFSET;
+        double x = MarkerUtilities.xToLong(centerX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        double y = MarkerUtilities.yToLat(newCenterY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - CENTER_Y_OFFSET;
 
         // Caclulate distance with geo coordinates
         double distance = Math.sqrt(
-                Math.pow((edgeX - X), 2)
-                + Math.pow((edgeY - Y), 2));
+                Math.pow((edgeX - x), 2)
+                + Math.pow((edgeY - y), 2));
 
         // Set the radius variable to the class to the geo distance
         this.radius = distance;

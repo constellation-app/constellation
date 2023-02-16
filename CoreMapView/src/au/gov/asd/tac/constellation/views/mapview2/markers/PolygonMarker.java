@@ -33,11 +33,9 @@ import javafx.scene.shape.SVGPath;
  */
 public class PolygonMarker extends AbstractMarker {
 
-    private List<Line> polygonLineUI = new ArrayList<Line>();
+    private List<Line> polygonLineUI = new ArrayList<>();
     private Line currentLine = null;
     private String rawPath = "";
-
-    private Logger LOGGER = Logger.getLogger("PolygonMarker");
 
     public PolygonMarker(MapView parent, int markerID, int xOffset, int yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
@@ -69,7 +67,6 @@ public class PolygonMarker extends AbstractMarker {
             public void handle(MouseEvent e) {
 
                 parent.removeUserMarker(markerID);
-                //parent.drawPointMarkerOnMap();
                 e.consume();
             }
         });

@@ -36,7 +36,7 @@ public class InfoOverlay extends AbstractOverlay {
     private Label lonText = null;
     private Label latText = null;
 
-    private final double locationYOffset = 149;
+    private static final double LOCATION_Y_OFFSET = 149;
 
     /**
      * Set up the UI
@@ -71,10 +71,10 @@ public class InfoOverlay extends AbstractOverlay {
      * @param y
      */
     public void updateLocation(double x, double y) {
-        y += locationYOffset;
+        y += LOCATION_Y_OFFSET;
 
-        double lon = MarkerUtilities.XToLong(x, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        double lat = MarkerUtilities.YToLat(y, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        double lon = MarkerUtilities.xToLong(x, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        double lat = MarkerUtilities.yToLat(y, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
 
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);

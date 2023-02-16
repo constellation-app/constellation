@@ -31,12 +31,11 @@ public class IntersectionNode {
 
     private final String key;
 
-    private static final Logger LOGGER = Logger.getLogger("IntersectionNode");
 
-    private final List<Vec3> containedPoints = new ArrayList<Vec3>();
-    private final List<Integer> relevantMarkers = new ArrayList<Integer>();
-    private final List<IntersectionNode> connectedPoints = new ArrayList<IntersectionNode>();
-    private final List<String> connectedPointIds = new ArrayList<String>();
+    private final List<Vec3> containedPoints = new ArrayList<>();
+    private final List<Integer> relevantMarkers = new ArrayList<>();
+    private final List<IntersectionNode> connectedPoints = new ArrayList<>();
+    private final List<String> connectedPointIds = new ArrayList<>();
 
     public IntersectionNode() {
         this.x = 0;
@@ -51,11 +50,11 @@ public class IntersectionNode {
     }
 
     public List<Integer> getRelevantMarkers() {
-        return relevantMarkers;
+        return new ArrayList<>(relevantMarkers);
     }
 
     public List<IntersectionNode> getConnectedPoints() {
-        return connectedPoints;
+        return new ArrayList<>(connectedPoints);
     }
 
 

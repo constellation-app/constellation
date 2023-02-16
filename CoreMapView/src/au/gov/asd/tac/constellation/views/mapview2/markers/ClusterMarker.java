@@ -64,7 +64,7 @@ public class ClusterMarker extends AbstractMarker {
             return;
         }
 
-        double MIN_RADIUS = 15;
+        double minRadius = 15;
         Vec3 clusterCenter = new Vec3();
 
         // Get the center of each marker on the map
@@ -151,7 +151,7 @@ public class ClusterMarker extends AbstractMarker {
                     + Math.pow((maxPosition.y - minPosition.y), 2));
 
         }
-        double clusterRadius = Math.max((float) diameter / 2, MIN_RADIUS);
+        double clusterRadius = Math.max((float) diameter / 2, minRadius);
 
         // Generate the cluster circle
         cluster = new Circle();

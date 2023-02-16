@@ -117,4 +117,11 @@ public class LineMarker extends AbstractMarker {
         return y1;
     }
 
+    public double getEndX() {
+        return x2;
+    }
+
+    public double getEndY() {
+        return y2;
+    }
 }

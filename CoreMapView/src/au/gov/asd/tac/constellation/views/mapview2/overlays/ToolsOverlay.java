@@ -45,9 +45,12 @@ public class ToolsOverlay extends AbstractOverlay {
     private BooleanProperty drawingEnabled = new SimpleBooleanProperty(false);
     private BooleanProperty measureEnabled = new SimpleBooleanProperty(false);
 
-    private Label measureToggleText = new Label("Disabled");
+    private static final String DISABLED_STRING = "Disabled";
+    private static final String ENABLED_STRING = "Enabled";
 
-    private final double locationYOffset = 149;
+    private Label measureToggleText = new Label(DISABLED_STRING);
+
+    private static final double LOCATION_Y_OFFSET = 149;
     private final String[] units = {"km", "nmi", "mi"};
     private int unitSelected = 0;
 
@@ -76,9 +79,9 @@ public class ToolsOverlay extends AbstractOverlay {
                     measureEnabled.set(!measureEnabled.get());
 
                     if (measureEnabled.get()) {
-                        measureToggleText.setText("Enabled");
+                        measureToggleText.setText(ENABLED_STRING);
                     } else {
-                        measureToggleText.setText("Disabled");
+                        measureToggleText.setText(DISABLED_STRING);
                     }
                 }
 
@@ -107,7 +110,7 @@ public class ToolsOverlay extends AbstractOverlay {
         Label drawLabelText = new Label("Draw");
         drawLabelText.setTextFill(Color.WHITE);
 
-        Label drawToggleText = new Label("Disabled");
+        Label drawToggleText = new Label(DISABLED_STRING);
         drawToggleText.setTextFill(Color.WHITE);
         drawToggleText.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
@@ -118,9 +121,9 @@ public class ToolsOverlay extends AbstractOverlay {
                     drawingEnabled.set(!drawingEnabled.get());
 
                     if (drawingEnabled.get()) {
-                        drawToggleText.setText("Enabled");
+                        drawToggleText.setText(ENABLED_STRING);
                     } else {
-                        drawToggleText.setText("Disabled");
+                        drawToggleText.setText(DISABLED_STRING);
                     }
                 }
 
@@ -143,8 +146,9 @@ public class ToolsOverlay extends AbstractOverlay {
         drawingEnabled.addListener((o, oldVal, newVal) -> {
             if (drawingEnabled.get()) {
                 gridPane.add(descriptionLabel, 0, 2, 3, 3);
-            } else
+            } else {
                 gridPane.getChildren().removeIf(node -> GridPane.getColumnIndex(node) == 0 && GridPane.getRowIndex(node) == 2);
+            }
         });
 
         Label drawSymbol = new Label("+");
@@ -172,24 +176,24 @@ public class ToolsOverlay extends AbstractOverlay {
      * @param endY
      */
     public void setDistanceText(double startX, double startY, double endX, double endY) {
-        startY += locationYOffset;
-        endY += locationYOffset;
+        startY += LOCATION_Y_OFFSET;
+        endY += LOCATION_Y_OFFSET;
 
         // Calculate lattitude and longitude from coordinates
-        double startLon = MarkerUtilities.XToLong(startX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        double endLon = MarkerUtilities.XToLong(endX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        double startLon = MarkerUtilities.xToLong(startX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        double endLon = MarkerUtilities.xToLong(endX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
 
-        double startLat = MarkerUtilities.YToLat(startY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
-        double endLat = MarkerUtilities.YToLat(endY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        double startLat = MarkerUtilities.yToLat(startY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        double endLat = MarkerUtilities.yToLat(endY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
 
         double distance = 0;
 
         // Calculate distance depending on unit of measure
-        if (measureUnitText.getText().equals("km")) {
+        if ("km".equals(measureUnitText.getText())) {
             distance = Distance.Haversine.estimateDistanceInKilometers(startLat, startLon, endLat, endLon);
-        } else if (measureUnitText.getText().equals("mi")) {
+        } else if ("mi".equals(measureUnitText.getText())) {
             distance = Distance.Haversine.estimateDistanceInMiles(startLat, startLon, endLat, endLon);
-        } else if (measureUnitText.getText().equals("nmi")) {
+        } else if ("nmi".equals(measureUnitText.getText())) {
             distance = Distance.Haversine.estimateDistanceInNauticalMiles(startLat, startLon, endLat, endLon);
         }
         
@@ -204,9 +208,9 @@ public class ToolsOverlay extends AbstractOverlay {
      */
     public void resetMeasureText() {
         if (measureEnabled.get()) {
-            measureToggleText.setText("Enabled");
+            measureToggleText.setText(ENABLED_STRING);
         } else {
-            measureToggleText.setText("Disabled");
+            measureToggleText.setText(DISABLED_STRING);
         }
     }
 

@@ -545,7 +545,7 @@ public class MapView extends ScrollPane {
                 double y = event.getY();
 
                 // Change lattitude and logitude text on info overlay if its showing
-                if (INFO_OVERLAY != null && INFO_OVERLAY.getIsShowing()) {
+                if (INFO_OVERLAY != null && INFO_OVERLAY.isShowing()) {
                     INFO_OVERLAY.updateLocation(x, y);
                 }
 
@@ -708,17 +708,6 @@ public class MapView extends ScrollPane {
 
     }
 
-    private void setMousePressedEventHandler() {
-
-    }
-
-    /**
-     * Set even handler for scrolling the mouse
-     */
-    private void setMouseScrollEventHandler() {
-
-    }
-
     /**
      * Sets text on the map at a specific location
      *
@@ -796,7 +785,7 @@ public class MapView extends ScrollPane {
      * @param show - flag
      */
     public void toggleOverlay(String overlay, boolean show) {
-        if (overlayMap.containsKey(overlay) && overlayMap.get(overlay).getIsShowing() != show) {
+        if (overlayMap.containsKey(overlay) && overlayMap.get(overlay).isShowing() != show) {
             overlayMap.get(overlay).toggleOverlay();
         }
     }

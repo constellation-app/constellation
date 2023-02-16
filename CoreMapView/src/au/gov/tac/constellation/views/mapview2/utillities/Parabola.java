@@ -30,14 +30,12 @@ public class Parabola {
     private double focusY;
     private double directtrix;
 
-    private Polyline parabola;
-
-    private static final Logger LOGGER = Logger.getLogger("Parabola");
+    private Polyline parabolaLine;
 
     public Parabola(double focusX, double focusY, double directtrix) {
-        parabola = new Polyline();
-        parabola.setStroke(Color.BLACK);
-        parabola.setStrokeWidth(1);
+        parabolaLine = new Polyline();
+        parabolaLine.setStroke(Color.BLACK);
+        parabolaLine.setStrokeWidth(1);
         this.focusX = focusX;
         this.focusY = focusY;
 
@@ -50,20 +48,17 @@ public class Parabola {
     }
 
     /**
-     * Calculates the points of the parabola and adds them to the Polyline
+     * Calculates the points of the parabolaLine and adds them to the Polyline
      * object
      */
     public void generateParabola() {
         for (double x = focusX - 300; x <= focusX + 300; ++x) {
-
-            LOGGER.log(Level.SEVERE, "x of parabola: " + x + " y of parabola: " + getY(x));
-
-            parabola.getPoints().addAll(new Double[]{x, getY(x)});
+            parabolaLine.getPoints().addAll(new Double[]{x, getY(x)});
         }
     }
 
     public Polyline getParabola() {
-        return parabola;
+        return parabolaLine;
     }
 
 
