@@ -442,14 +442,12 @@ public class MapView extends ScrollPane {
                 // If left clicked
                 if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
                     // if double clicked desekect all marekers from both the map and the graph in consty
-
-
-                        deselectAllMarkers();
-                        selectedNodeList.clear();
-                        PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
-                        LOGGER.log(Level.SEVERE, "Double clicked");
-                        event.consume();
-                        return;
+                    deselectAllMarkers();
+                    selectedNodeList.clear();
+                    PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
+                    LOGGER.log(Level.SEVERE, "Double clicked");
+                    event.consume();
+                    return;
 
                 }
 
@@ -487,7 +485,7 @@ public class MapView extends ScrollPane {
 
                             drawingPolygonMarker = true;
                         }
-                            polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
+                        polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
 
                         TOOLS_OVERLAY.resetMeasureText();
 
@@ -512,24 +510,24 @@ public class MapView extends ScrollPane {
 
                     // If drawing is not enabled but measuring is
                 } else if (!TOOLS_OVERLAY.getDrawingEnabled().get() && TOOLS_OVERLAY.getMeasureEnabled().get()) {
-                        if (!drawingMeasureLine) {
-                            LOGGER.log(Level.SEVERE, "Drawing measure line");
-                            measureLine = new Line();
-                            measureLine.setStroke(Color.RED);
-                            measureLine.setStartX(event.getX());
-                            measureLine.setStartY(event.getY());
-                            measureLine.setEndX(event.getX());
-                            measureLine.setEndY(event.getY());
-                            measureLine.setStrokeWidth(1);
-                            polygonMarkerGroup.getChildren().add(measureLine);
-                            drawingMeasureLine = true;
-                        } else {
-                            LOGGER.log(Level.SEVERE, "Erasing measure line");
-                            polygonMarkerGroup.getChildren().clear();
-                            TOOLS_OVERLAY.resetMeasureText();
-                            drawingMeasureLine = false;
-                            measureLine = null;
-                        }
+                    if (!drawingMeasureLine) {
+                        LOGGER.log(Level.SEVERE, "Drawing measure line");
+                        measureLine = new Line();
+                        measureLine.setStroke(Color.RED);
+                        measureLine.setStartX(event.getX());
+                        measureLine.setStartY(event.getY());
+                        measureLine.setEndX(event.getX());
+                        measureLine.setEndY(event.getY());
+                        measureLine.setStrokeWidth(1);
+                        polygonMarkerGroup.getChildren().add(measureLine);
+                        drawingMeasureLine = true;
+                    } else {
+                        LOGGER.log(Level.SEVERE, "Erasing measure line");
+                        polygonMarkerGroup.getChildren().clear();
+                        TOOLS_OVERLAY.resetMeasureText();
+                        drawingMeasureLine = false;
+                        measureLine = null;
+                    }
 
                 }
                 event.consume();
@@ -573,10 +571,10 @@ public class MapView extends ScrollPane {
                     // If the user isn't drawing anything but IS measuring distance then update the size of the measurement line
                 } else if (TOOLS_OVERLAY.getMeasureEnabled().get() && !TOOLS_OVERLAY.getDrawingEnabled().get() && measureLine != null) {
 
-                        measureLine.setEndX(event.getX());
-                        measureLine.setEndY(event.getY());
+                    measureLine.setEndX(event.getX());
+                    measureLine.setEndY(event.getY());
 
-                        TOOLS_OVERLAY.setDistanceText(measureLine.getStartX(), measureLine.getStartY(), measureLine.getEndX(), measureLine.getEndY());
+                    TOOLS_OVERLAY.setDistanceText(measureLine.getStartX(), measureLine.getStartY(), measureLine.getEndX(), measureLine.getEndY());
 
                 }
 
@@ -592,9 +590,9 @@ public class MapView extends ScrollPane {
 
                 // create the selection rectangle
                 if (event.isPrimaryButtonDown()) {
-                isSelectingMultiple = true;
-                selectionRectangle = new Rectangle();
-                selectionRectangle.setX(event.getX());
+                    isSelectingMultiple = true;
+                    selectionRectangle = new Rectangle();
+                    selectionRectangle.setX(event.getX());
                     selectionRectangle.setY(event.getY());
                     selectionRectangleX = event.getX();
                     selectionRectangleY = event.getY();
@@ -798,13 +796,13 @@ public class MapView extends ScrollPane {
     public void addClusterMarkers(List<ClusterMarker> clusters, List<Text> clusterValues) {
         // If cluster marker is showing
         if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
-        clusterMarkerGroup.getChildren().clear();
+            clusterMarkerGroup.getChildren().clear();
 
             // Draw each cluster marker on map
-        clusters.forEach(cluster -> addUserDrawnMarker(cluster));
+            clusters.forEach(cluster -> addUserDrawnMarker(cluster));
 
             // Add how many markers are in one cluster
-        clusterValues.forEach(numNodes -> clusterMarkerGroup.getChildren().add(numNodes));
+            clusterValues.forEach(numNodes -> clusterMarkerGroup.getChildren().add(numNodes));
         }
     }
 

@@ -213,7 +213,6 @@ public class PointMarker extends AbstractMarker {
         path = "M " + x + ", " + y + " Z " + path;
 
         markerPath.setContent(path);
-
     }
 
     /**
@@ -223,14 +222,14 @@ public class PointMarker extends AbstractMarker {
      */
     public void setBlazeColour(String blazeCol) {
         // Get the blaze colure in the correct format
-            blazeCol = blazeCol.split(";")[1];
+        blazeCol = blazeCol.split(";")[1];
 
 
-            if (blazeColourCount == 0) {
-                blazeColour = blazeCol;
-            }
+        if (blazeColourCount == 0) {
+            blazeColour = blazeCol;
+        }
 
-            ++blazeColourCount;
+        ++blazeColourCount;
 
     }
 

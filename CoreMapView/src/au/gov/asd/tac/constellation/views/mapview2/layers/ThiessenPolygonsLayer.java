@@ -765,11 +765,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
         if (nodesOnScreen.size() > 1) {
             // calculate and shorten bisector lines
-        calculateBisectors();
-        shortenBisectorLines();
+            calculateBisectors();
+            shortenBisectorLines();
 
             // calculate intersections
-        calculateIntersectionCircles();
+            calculateIntersectionCircles();
 
             // Connect corners to relevant markers
             connectMarkersToCorners();

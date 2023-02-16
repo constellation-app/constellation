@@ -107,7 +107,7 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     public static final Object LOCK = new Object();
 
     // The mapview itself
-    private static MapViewPane mapViewPane;
+    private MapViewPane mapViewPane;
 
 
     private int markerID = 0;

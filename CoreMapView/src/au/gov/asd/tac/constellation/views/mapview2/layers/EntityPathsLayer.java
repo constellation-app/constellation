@@ -104,7 +104,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                     for (int neighbourPos = 0; neighbourPos < neighbourCount; ++neighbourPos) {
 
                         // Get the neighbour id
-                    final int neighbourID = graph.getVertexNeighbour(vertexID, neighbourPos);
+                        final int neighbourID = graph.getVertexNeighbour(vertexID, neighbourPos);
 
                         // Get the the type attribute from the neighbour
                         final SchemaVertexType neighbourType = graph.getObjectValue(vertexTypeAttributeId, neighbourID);
