@@ -1211,7 +1211,7 @@ public class MapView extends ScrollPane {
             double width = 100;
             double height = 75;
 
-        BorderPane pane = new BorderPane();
+            BorderPane pane = new BorderPane();
             pane.prefWidth(width);
             pane.prefHeight(height);
             pane.minWidth(width);
@@ -1224,14 +1224,14 @@ public class MapView extends ScrollPane {
             pane.setTranslateX((MAP_WIDTH / 2) - 300);
             pane.setTranslateY(MAP_HEIGHT / 2 - height / 2);
 
-        GridPane topGridPane = new GridPane();
+            GridPane topGridPane = new GridPane();
             pane.setCenter(topGridPane);
 
-        Text titleText = new Text("Zoom to Location");
+            Text titleText = new Text("Zoom to Location");
             titleText.setFill(Color.WHITE);
 
-        Button closeButton = new Button();
-        closeButton.setText("X");
+            Button closeButton = new Button();
+            closeButton.setText("X");
             closeButton.setTextFill(Color.WHITE);
 
             closeButton.setPadding(new Insets(0, 0, 0, 95));
