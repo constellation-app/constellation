@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.node.plugins.ThreadConstraints;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegistry;
@@ -98,7 +99,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
         if (queryBatches.isEmpty()) {
             queryBatches.add(new GraphRecordStore());
         }
-
+        final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         // run plugin once for every batch record store
         queryBatches.forEach(batch -> {
             final StoreGraph batchGraph = new StoreGraph(graph.getSchema() != null ? graph.getSchema().getFactory().createSchema() : null);
@@ -127,6 +128,9 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
             GraphRecordStoreUtilities.addRecordStoreToGraph(batchGraph, batch, true, true, null, vertexMap, transactionMap);
             final WorkerQueryPlugin worker = new WorkerQueryPlugin(getWorkflow(), batchGraph, exceptions, getErrorHandlingPlugin(), addPartialResults());
             workerPlugins.add(workflowExecutor.submit(() -> {
+                final ThreadConstraints workerConstraints = ThreadConstraints.getConstraints();
+                workerConstraints.setCurrentReport(callingConstraints.getCurrentReport());
+
                 Thread.currentThread().setName(THREAD_POOL_NAME);
                 try {
                     PluginExecution.withPlugin(worker).withParameters(parameters).executeNow(graph);
