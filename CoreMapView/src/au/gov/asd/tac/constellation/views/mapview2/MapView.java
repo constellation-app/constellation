@@ -479,8 +479,8 @@ public class MapView extends ScrollPane {
                         // Reset the distance shown on the tools ovelay
                         TOOLS_OVERLAY.resetMeasureText();
 
-                    } // If control is down
-                    else if (event.isControlDown() && !drawingCircleMarker) {
+                        // If control is down
+                    } else if (event.isControlDown()) {
                         // if user is not current;y drawing a polygon marker or a circle marker then show UI to draw a polygon on screen
                         if (!drawingPolygonMarker) {
                             polygonMarker = new PolygonMarker(self, drawnMarkerId++, 0, 0);
@@ -502,7 +502,7 @@ public class MapView extends ScrollPane {
                         polygonMarkerGroup.getChildren().clear();
 
                         // If the user is not drawing any type of marker then generate point marker where they clicked
-                    } else if (!drawingPolygonMarker && !drawingCircleMarker) {
+                    } else {
                         UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
                         marker.setMarkerPosition(0, 0);
                         addUserDrawnMarker(marker);
@@ -545,7 +545,7 @@ public class MapView extends ScrollPane {
                 double y = event.getY();
 
                 // Change lattitude and logitude text on info overlay if its showing
-                if (INFO_OVERLAY != null && INFO_OVERLAY.isShowing()) {
+                if (INFO_OVERLAY.isShowing()) {
                     INFO_OVERLAY.updateLocation(x, y);
                 }
 
@@ -1061,6 +1061,10 @@ public class MapView extends ScrollPane {
             }
         }
 
+        if (markerCounter == 0) {
+            return;
+        }
+
         // find average position
         averageX /= markerCounter;
         averageY /= markerCounter;
@@ -1118,10 +1122,12 @@ public class MapView extends ScrollPane {
             if (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId())) {
                 averageX += (m.getX() - 95.5);
                 averageY += (m.getY() + 95.5);
-
-
                 ++markerCounter;
             }
+        }
+
+        if (markerCounter == 0) {
+            return;
         }
 
         // Average location of all selecter markers
@@ -1163,8 +1169,9 @@ public class MapView extends ScrollPane {
             if (!selectedMarkersInView(allMarkers) && zoomIn) {
                 scaleFactor = 1 / 1.05;
                 zoomIn = false;
-            } else if (selectedMarkersInView(allMarkers) && !zoomIn)
+            } else if (selectedMarkersInView(allMarkers) && !zoomIn) {
                 break;
+            }
 
         }
     }

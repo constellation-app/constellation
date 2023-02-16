@@ -33,7 +33,7 @@ public abstract class AbstractMarker {
     protected int markerID = 0;
 
     // Id list contains ids of all nodes this marker represents
-    protected List<Integer> idList = new ArrayList<Integer>();
+    protected List<Integer> idList = new ArrayList<>();
     protected boolean isSelected = false;
 
     private double x = 0;

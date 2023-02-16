@@ -88,7 +88,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
             final GraphElementType[] elementTypes = new GraphElementType[]{GraphElementType.VERTEX, GraphElementType.TRANSACTION};
 
-            mapViewTopComponent.mapViewPane.getMap().clearQueriedMarkers();
+            mapViewTopComponent.getMapViewPane().getMap().clearQueriedMarkers();
 
             try {
                 for (GraphElementType elementType : elementTypes) {
@@ -178,7 +178,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             // If another vertext of the same location hasn't been queried yet
                             if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
                                 // Create a new point marker and add it to the map
-                                PointMarker p = new PointMarker(mapViewTopComponent.mapViewPane.getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour); //244
+                                PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour); //244
                                 mapViewTopComponent.addMarker(coordinateKey, p);
 
                                 // Set colours and labels if they are available

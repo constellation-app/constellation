@@ -194,7 +194,7 @@ public class MapViewPane extends BorderPane {
         setDropDownOptions(layers);
 
         // Add all the layers to the toolbar
-        layersDropDown = new CheckComboBox<String>(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS, THIESSEAN_POLYGONS_2, POINT_MARKER_ERROR));
+        layersDropDown = new CheckComboBox<>(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS, THIESSEAN_POLYGONS_2, POINT_MARKER_ERROR));
         layersDropDown.setTitle("Layers");
         layersDropDown.setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
 
@@ -206,18 +206,14 @@ public class MapViewPane extends BorderPane {
         });
 
         // Add overlays to toolbar
-        overlaysDropDown = new CheckComboBox<String>(FXCollections.observableArrayList(INFO_OVERLAY, OVERVIEW_OVERLAY, TOOLS_OVERLAY));
+        overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, OVERVIEW_OVERLAY, TOOLS_OVERLAY));
         overlaysDropDown.setTitle("Overlays");
         overlaysDropDown.setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
 
         // Overlay event handler
         overlaysDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
             public void onChanged(ListChangeListener.Change<? extends String> c) {
-                overlaysDropDown.getItems().forEach(item -> {
-                    toggleOverlay(item);
-
-                });
-
+                overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
             }
         });
 
@@ -243,7 +239,7 @@ public class MapViewPane extends BorderPane {
         zoomLocation.setOnAction(event -> mapView.generateZoomLocationUI());
 
         // Menu to show/hide markers
-        markerDropDown = new CheckComboBox<String>(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
+        markerDropDown = new CheckComboBox<>(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
         markerDropDown.setTitle("Markers");
         markerDropDown.setTooltip(new Tooltip("Choose which markers are displayed in the Map View"));
         markerDropDown.getCheckModel().check(MARKER_TYPE_POINT);
@@ -288,9 +284,7 @@ public class MapViewPane extends BorderPane {
         colourDropDown.getSelectionModel().selectFirst();
         colourDropDown.setTooltip(new Tooltip("Chose the color scheme for markers displayed in the Map View"));
 
-        colourDropDown.setOnAction((event) -> {
-            mapView.getMarkerColourProperty().set(colourDropDown.getValue());
-        });
+        colourDropDown.setOnAction(event -> mapView.getMarkerColourProperty().set(colourDropDown.getValue()));
 
         // Marker label menu setup and event handling
         markerLabelDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(NO_LABELS, USE_LABEL_ATTR, USE_IDENT_ATTR)));
@@ -339,11 +333,7 @@ public class MapViewPane extends BorderPane {
      * @param overlay - string representing the overlay
      */
     private void toggleOverlay(String overlay) {
-        if (overlaysDropDown.getCheckModel().isChecked(overlay)) {
-            mapView.toggleOverlay(overlay, true);
-        } else {
-            mapView.toggleOverlay(overlay, false);
-        }
+        mapView.toggleOverlay(overlay, overlaysDropDown.getCheckModel().isChecked(overlay));
     }
 
     /**

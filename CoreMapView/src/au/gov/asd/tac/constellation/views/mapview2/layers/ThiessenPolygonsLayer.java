@@ -60,8 +60,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private static final double NODE_X_OFFSET = 97;
     private static final double NODE_Y_OFFSET = 93;
 
-    private static final Logger LOGGER = Logger.getLogger("ThiessenPolygons");
-
     // All markers on the map
     private List<AbstractMarker> markers = new ArrayList<>();
 
@@ -375,10 +373,10 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         finalBisectorLines.put(RIGHT_ID, right);
 
         // Add in a lineMap input for each edge
-        lineMap.put(finalBisectorLines.get(TOP_ID), new ArrayList<IntersectionNode>());
-        lineMap.put(finalBisectorLines.get(BOTTOM_ID), new ArrayList<IntersectionNode>());
-        lineMap.put(finalBisectorLines.get(LEFT_ID), new ArrayList<IntersectionNode>());
-        lineMap.put(finalBisectorLines.get(RIGHT_ID), new ArrayList<IntersectionNode>());
+        lineMap.put(finalBisectorLines.get(TOP_ID), new ArrayList<>());
+        lineMap.put(finalBisectorLines.get(BOTTOM_ID), new ArrayList<>());
+        lineMap.put(finalBisectorLines.get(LEFT_ID), new ArrayList<>());
+        lineMap.put(finalBisectorLines.get(RIGHT_ID), new ArrayList<>());
 
     }
 
@@ -576,6 +574,10 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     distanceNearest2 = distance;
                     nearest2 = neighbour;
                 }
+            }
+
+            if (nearest1 == null || nearest2 == null) {
+                return;
             }
 
             // If the nearest neighbours both have relevant markers they belong to then valid neighbours have been found

@@ -31,7 +31,7 @@ public abstract class AbstractMapLayer {
 
     protected int id;
 
-    public AbstractMapLayer(MapView parent, int id) {
+    protected AbstractMapLayer(MapView parent, int id) {
         this.parent = parent;
         currentGraph = parent.getCurrentGraph();
         this.id = id;

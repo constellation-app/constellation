@@ -107,7 +107,7 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     public static final Object LOCK = new Object();
 
     // The mapview itself
-    public static MapViewPane mapViewPane;
+    private static MapViewPane mapViewPane;
 
 
     private int markerID = 0;
@@ -229,13 +229,12 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+
             } catch (ExecutionException ex) {
                 Exceptions.printStackTrace(ex);
             }
 
-            Platform.runLater(() -> {
-                mapViewPane.getMap().redrawQueriedMarkers();
-            });
+            Platform.runLater(() -> mapViewPane.getMap().redrawQueriedMarkers());
 
         }
 
