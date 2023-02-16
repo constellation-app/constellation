@@ -125,7 +125,7 @@ public class AnalyticViewPane extends BorderPane {
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 final SimplePlugin virtualAnalytics = new SimplePlugin("Analytic View - Query Runner"){
                     @Override
-                    protected void execute(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+                    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
                         parentConstraints = ThreadConstraints.getConstraints();
                         questionThread = new Thread(() -> {
                             final ThreadConstraints localConstraints = ThreadConstraints.getConstraints();
@@ -166,7 +166,7 @@ public class AnalyticViewPane extends BorderPane {
                                     // waits for other queued tasks to complete, then does nothing and exits
                                 }
                             });
-                        } catch (InvocationTargetException ex) {
+                        } catch (final InvocationTargetException ex) {
                             // Not severe enough to warrant an exception popup message to user
                             Exceptions.printStackTrace(ex);
                         }
@@ -175,7 +175,10 @@ public class AnalyticViewPane extends BorderPane {
 
                 try {
                     PluginExecution.withPlugin(virtualAnalytics).interactively(true).executeNow(activeGraph);
-                } catch (InterruptedException | PluginException ex) {
+                } catch (final InterruptedException iex) {
+                    LOGGER.log(Level.SEVERE, iex.getLocalizedMessage());
+                    Thread.currentThread().interrupt();
+                } catch (final PluginException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 } 
             }
