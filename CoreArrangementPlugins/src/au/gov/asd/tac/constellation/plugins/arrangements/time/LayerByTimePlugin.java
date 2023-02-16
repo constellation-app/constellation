@@ -238,8 +238,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     SingleChoiceParameterType.setOptions(unitParam, new ArrayList<>(BIN_CALENDAR_UNITS.keySet()));
                     SingleChoiceParameterType.setChoice(unitParam, UNIT_PARAMETER_ID_BIN_DEFAULT);
                     parameters.getParameters().get(AMOUNT_PARAMETER_ID).setEnabled(false);
-                } else {
-                    // Do nothing
                 }
             }
         });

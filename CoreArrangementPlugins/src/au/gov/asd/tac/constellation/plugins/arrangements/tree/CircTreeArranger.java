@@ -183,8 +183,6 @@ public final class CircTreeArranger implements Arranger {
             return 1;
         } else if (children.size() == 1) {
             onlyChildren.set(children.iterator().next().vxId);
-        } else {
-            // Do nothing
         }
 
         // Remove these children from consideration.
@@ -244,8 +242,6 @@ public final class CircTreeArranger implements Arranger {
             fullRadii[vxId] = fullRadius;
 
             return fullRadius;
-        } else {
-            // Do nothing
         }
 
         // Force inner circle of childless children, if it makes sense to do so.

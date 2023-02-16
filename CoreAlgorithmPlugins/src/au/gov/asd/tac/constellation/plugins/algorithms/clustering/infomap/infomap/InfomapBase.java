@@ -297,8 +297,6 @@ public abstract class InfomapBase {
             return hierarchicalCodelength;
         } else if (tryIndexing) {
             tryIndexingIteratively();
-        } else {
-            // Do nothing
         }
 
         queueTopModules(partitionQueue);
@@ -365,8 +363,6 @@ public abstract class InfomapBase {
                     LOGGER.log(Level.INFO, "two-level index codebook not improved over one-level.");
                 }
                 break;
-            } else {
-                // Do nothing
             }
 
             minHierarchicalCodelength += superInfomap.codelength - indexCodelength;
@@ -1345,8 +1341,6 @@ public abstract class InfomapBase {
                 } else {
                     aggregatePerLevelCodelength(module, indexLengths, leafLengths, level + 1);
                 }
-            } else {
-                // Do nothing
             }
         }
     }

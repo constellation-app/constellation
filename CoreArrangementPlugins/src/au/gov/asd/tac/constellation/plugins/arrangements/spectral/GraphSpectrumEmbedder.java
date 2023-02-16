@@ -120,8 +120,6 @@ public class GraphSpectrumEmbedder {
                         continue;
                     } else if (idToMatrixPosition.get(neighbourID) == i) {
                         continue;
-                    } else {
-                        // Do nothing
                     }
                     neighbourCount++;
                     if (type != null) {

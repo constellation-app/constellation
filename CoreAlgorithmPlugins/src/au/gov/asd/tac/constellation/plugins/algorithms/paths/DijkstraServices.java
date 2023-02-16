@@ -416,9 +416,8 @@ public class DijkstraServices {
                                             continue;
                                         } else if (n == vertex) {
                                             break;
-                                        } else {
-                                            // Do nothing
                                         }
+                                        
                                         final double pathCost = curr.getPriority() + getWeight(curr.getValue(), n, weights);
                                         final FibonacciHeap.Entry<Integer> neigh = entries.get(n);
                                         if (pathCost < neigh.getPriority()) {
@@ -434,8 +433,6 @@ public class DijkstraServices {
                                             }
                                         } else if (pathCost == neigh.getPriority()) {
                                             incMapSet(parent.lookupMap, n, curr.getValue());
-                                        } else {
-                                            // Do nothing
                                         }
                                     }
                                 }

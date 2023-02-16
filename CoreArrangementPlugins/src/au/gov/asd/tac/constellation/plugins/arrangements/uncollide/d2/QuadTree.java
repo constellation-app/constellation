@@ -129,8 +129,6 @@ public class QuadTree {
                 index = TOP_L;
             } else if (bottomQuadrant) {
                 index = BOT_L;
-            } else {
-                // Do nothing
             }
         } else if (orb.getX() - orb.r > midx) {
             // Object can completely fit within the right quadrants.
@@ -138,8 +136,6 @@ public class QuadTree {
                 index = TOP_R;
             } else if (bottomQuadrant) {
                 index = BOT_R;
-            } else {
-                // Do nothing
             }
         } else {
             // Do nothing

@@ -435,8 +435,6 @@ public abstract class InfomapGreedy extends InfomapBase {
                         oldModuleDelta.setDeltaExit(oldModuleDelta.getDeltaExit() + edge.getData().flow);
                     } else if (otherModule == newM) {
                         newModuleDelta.setDeltaExit(newModuleDelta.getDeltaExit() + edge.getData().flow);
-                    } else {
-                        // Do nothing
                     }
                 }
 
@@ -451,8 +449,6 @@ public abstract class InfomapGreedy extends InfomapBase {
                         oldModuleDelta.setDeltaEnter(oldModuleDelta.getDeltaEnter() + edge.getData().flow);
                     } else if (otherModule == newM) {
                         newModuleDelta.setDeltaEnter(newModuleDelta.getDeltaEnter() + edge.getData().flow);
-                    } else {
-                        // Do nothing
                     }
                 }
 

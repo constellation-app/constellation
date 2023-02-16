@@ -232,8 +232,6 @@ public class HierarchicalArranger implements Arranger {
                     levels[neighbourVxId] = levels[currentVxId] + 1;
                     neighbourQueue.addLast(neighbourVxId);
                     maxLevel = Math.max(maxLevel, levels[neighbourVxId]);
-                } else {
-                    // Do nothing
                 }
             }
         }

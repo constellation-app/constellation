@@ -464,8 +464,6 @@ public class AnalyticConfigurationPane extends VBox {
             aggregators.add(new AnalyticAggregatorParameterValue(AnalyticUtilities.lookupAnalyticAggregator(questionAggregatorType)));
             SingleChoiceParameterType.setOptionsData(aggregatorParameter, aggregators);
             SingleChoiceParameterType.setChoiceData(aggregatorParameter, aggregators.get(0));
-        } else {
-            // Do nothing
         }
         pluginList.getItems().forEach(selectablePlugin
                 -> selectablePlugin.setUpdatedParameter(aggregatorParameter.getId(), aggregatorParameter.getStringValue()));
@@ -526,8 +524,6 @@ public class AnalyticConfigurationPane extends VBox {
                 selectablePlugin.parameters.updateParameterValues(selectablePlugin.updatedParameters);
                 currentQuestion.initialiseParameters(selectablePlugin.plugin, selectablePlugin.parameters);
             });
-        } else {
-            // Do nothing
         }
         updateGlobalParameters();
     }

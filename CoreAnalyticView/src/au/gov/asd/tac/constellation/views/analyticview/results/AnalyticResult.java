@@ -50,8 +50,6 @@ public abstract class AnalyticResult<D extends AnalyticData> {
                 verticesToSelect.add(analyticResult.getElementId());
             } else if (analyticResult.getElementType() == GraphElementType.TRANSACTION) {
                 transactionsToSelect.add(analyticResult.getElementId());
-            } else {
-                // Do nothing
             }
         });
         analyticController.selectOnGraph(GraphElementType.VERTEX, verticesToSelect);
@@ -66,8 +64,6 @@ public abstract class AnalyticResult<D extends AnalyticData> {
                 ignoredElementScores.add(elementScore);
             } else if (elementIds.contains(elementScore.getElementId())) {
                 selectedElementScores.add(elementScore);
-            } else {
-                // Do nothing
             }
         });
         resultListeners.forEach(listener -> listener.resultChanged(selectedElementScores, ignoredElementScores));
