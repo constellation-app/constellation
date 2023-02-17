@@ -276,50 +276,8 @@ public class MapView extends ScrollPane {
         clipRectangle.setY(0);
         clipRectangle.setFill(Color.TRANSPARENT);
 
-        // Scoll to zoom
-        mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
-            @Override
-            public void handle(ScrollEvent e) {
-                e.consume();
+        setScrollEventHandler();
 
-                if (e.getDeltaY() == 0) {
-                    return;
-                }
-
-                // Scroll factor is more or less than 1 depending on which way the scroll wheele is scrolled
-                double scaleFactor = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
-
-                // Get the current scale of the map view
-                double oldXScale = mapStackPane.getScaleX();
-                double oldYScale = mapStackPane.getScaleY();
-
-                // Change the scale based on which way the scroll wheel is turned
-                double newXScale = oldXScale * scaleFactor;
-                double newYScale = oldYScale * scaleFactor;
-
-                // Calculate how much the map will have to move
-                double xAdjust = (newXScale / oldXScale) - 1;
-                double yAdjust = (newYScale / oldYScale) - 1;
-
-                // Calculate how much the map will have to move
-                double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
-                double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
-
-                // Move the map
-                mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
-                mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
-
-                // Scale the map
-                mapStackPane.setScaleX(newXScale);
-                mapStackPane.setScaleY(newYScale);
-
-                // If cluster markers are showing then update them based on distance between markers
-                if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
-                    updateClusterMarkers();
-                }
-
-            }
-        });
 
         // Panning code
         // Record where the mouse has been pressed
@@ -704,6 +662,53 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
         mapGroupHolder.getChildren().add(viewPortRectangleGroup);
 
+    }
+
+    private void setScrollEventHandler() {
+        // Scoll to zoom
+        mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
+            @Override
+            public void handle(ScrollEvent e) {
+                e.consume();
+
+                if (e.getDeltaY() == 0) {
+                    return;
+                }
+
+                // Scroll factor is more or less than 1 depending on which way the scroll wheele is scrolled
+                double scaleFactor = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
+
+                // Get the current scale of the map view
+                double oldXScale = mapStackPane.getScaleX();
+                double oldYScale = mapStackPane.getScaleY();
+
+                // Change the scale based on which way the scroll wheel is turned
+                double newXScale = oldXScale * scaleFactor;
+                double newYScale = oldYScale * scaleFactor;
+
+                // Calculate how much the map will have to move
+                double xAdjust = (newXScale / oldXScale) - 1;
+                double yAdjust = (newYScale / oldYScale) - 1;
+
+                // Calculate how much the map will have to move
+                double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
+                double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
+
+                // Move the map
+                mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
+                mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
+
+                // Scale the map
+                mapStackPane.setScaleX(newXScale);
+                mapStackPane.setScaleY(newYScale);
+
+                // If cluster markers are showing then update them based on distance between markers
+                if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
+                    updateClusterMarkers();
+                }
+
+            }
+        });
     }
 
     /**

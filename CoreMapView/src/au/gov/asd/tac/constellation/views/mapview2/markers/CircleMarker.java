@@ -134,10 +134,6 @@ public class CircleMarker extends AbstractMarker {
         double centerYLat = MarkerUtilities.yToLat(centerY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
         double centerXLon = MarkerUtilities.xToLong(centerX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
 
-        double vertexY = centerYLat;
-        double vertexX = centerXLon + (radius / EARTH_RADIUS_M) * (180 / Math.PI) / Math.cos(centerYLat * (Math.PI / 180));
-
-
         boolean first = true;
         StringBuilder pathStringBuilder = new StringBuilder();
         // Projected circle will have 60 vertices
@@ -149,8 +145,8 @@ public class CircleMarker extends AbstractMarker {
             final double angle = spacing * i;
 
             // Edge of circle
-            vertexX = centerXLon + radius * Math.cos(angle);
-            vertexY = centerYLat + radius * Math.sin(angle);
+            double vertexX = centerXLon + radius * Math.cos(angle);
+            double vertexY = centerYLat + radius * Math.sin(angle);
 
             // Convert edge to x and y from geo coordinates
             vertexX = MarkerUtilities.longToX(vertexX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);

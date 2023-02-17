@@ -60,7 +60,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     private static final double NODE_X_OFFSET = 97;
     private static final double NODE_Y_OFFSET = 93;
-    private static final Logger LOGGER = Logger.getLogger(ThiessenPolygonsLayer.class.getName());
 
 
     // All markers on the map
@@ -530,7 +529,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         lineMap.get(bisect2).get(i).addConnectedPoint(intersectionMap.get(intersectionPoint));
                     }
 
-                    }
+                }
 
 
             }
