@@ -46,6 +46,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -59,6 +60,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     private static final double NODE_X_OFFSET = 97;
     private static final double NODE_Y_OFFSET = 93;
+    private static final Logger LOGGER = Logger.getLogger(ThiessenPolygonsLayer.class.getName());
+
 
     // All markers on the map
     private List<AbstractMarker> markers = new ArrayList<>();
@@ -444,11 +447,13 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     }
 
                     // Round interseciton point to avoid floating point errors
-                    final double roundedX = Math.round(x * 10000) / 10000;
-                    final double roundedY = Math.round(y * 10000) / 10000;
+                    // Change variables to double if things break in the future
+                    final int roundedX = (int) (Math.round(x * 10000) / 10000);
+                    final int roundedY = (int) (Math.round(y * 10000) / 10000);
 
 
                     intersectionPoint = roundedX + "," + roundedY;
+
 
                     if ("NaN,NaN".equals(intersectionPoint)
                             || !(bisect1.contains(x, y) && bisect2.contains(x, y))
@@ -743,7 +748,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
             // Add the marker to the graphics layer
             layer.getChildren().add(markerZone);
-
         }
     }
 
