@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -30,7 +31,7 @@ class PQNode {
 
     private PQNode parent;
     public final PQNodeList children = new PQNodeList();
-    public final EnumMap<NodeLabel, Set<PQNode>> labeledChildren = new EnumMap<>(NodeLabel.class);
+    public final Map<NodeLabel, Set<PQNode>> labeledChildren = new EnumMap<>(NodeLabel.class);
     private DirectionIndicator directionIndicator = null;
 
     public final NodeType type;
@@ -231,8 +232,6 @@ class PQNode {
                     removed.add(grandchild);
                 }
                 toFlatten = child;
-            } else {
-                // Do nothing
             }
             if (child == dividingNode) {
                 if (child.label.equals(NodeLabel.PARTIAL)) {
@@ -277,8 +276,6 @@ class PQNode {
                     toFlatten = child;
                 }
                 toRemove = NodeLabel.FULL;
-            } else {
-                // Do nothing
             }
             if (child.label.equals(toRemove)) {
                 removeChild(child);
@@ -289,8 +286,6 @@ class PQNode {
                     removed.add(grandchild);
                 }
                 toFlatten = child;
-            } else {
-                // Do nothing
             }
         }
         if (toFlatten != null) {
@@ -415,8 +410,6 @@ class PQNode {
             } else if (count > maxCountSinceAnchor) {
                 maxCountSinceAnchor = count;
                 maxNodeSinceAnchor = child;
-            } else {
-                // Do nothing
             }
         }
         count += carry;

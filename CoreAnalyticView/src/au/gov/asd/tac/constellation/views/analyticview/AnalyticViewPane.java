@@ -59,7 +59,7 @@ public class AnalyticViewPane extends BorderPane {
     private static final String RUN_STOP_TEXT = "Stop";
     private static final String RUN_STOP_STYLE = "-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;";
 
-    private final VBox analyticViewPane;
+    private final VBox viewPane;
     private final AnchorPane analyticOptionsPane;
     private final HBox analyticOptionButtons;
     private final Button runButton;
@@ -74,21 +74,21 @@ public class AnalyticViewPane extends BorderPane {
     public AnalyticViewPane(final AnalyticController analyticController) {
         
         // the top level analytic view pane
-        this.analyticViewPane = new VBox();
-        analyticViewPane.prefWidthProperty().bind(this.widthProperty());
+        this.viewPane = new VBox();
+        viewPane.prefWidthProperty().bind(this.widthProperty());
 
         // the pane allowing analytic view options to be set
         this.analyticOptionsPane = new AnchorPane();
-        analyticOptionsPane.prefWidthProperty().bind(analyticViewPane.widthProperty());
+        analyticOptionsPane.prefWidthProperty().bind(viewPane.widthProperty());
 
         // the pane which displays all visualisations and options relating to the results of an analytic question
         this.analyticResultsPane = new AnalyticResultsPane(analyticController);
-        analyticResultsPane.prefWidthProperty().bind(analyticViewPane.widthProperty());
-        analyticResultsPane.minHeightProperty().bind(analyticViewPane.heightProperty().multiply(0.4));
+        analyticResultsPane.prefWidthProperty().bind(viewPane.widthProperty());
+        analyticResultsPane.minHeightProperty().bind(viewPane.heightProperty().multiply(0.4));
 
         // the pane allowing selection and configuration of an analytic question
         this.analyticConfigurationPane = new AnalyticConfigurationPane();
-        analyticConfigurationPane.prefWidthProperty().bind(analyticViewPane.widthProperty());
+        analyticConfigurationPane.prefWidthProperty().bind(viewPane.widthProperty());
 
         // the pane holding the analytic option buttons
         this.analyticOptionButtons = new HBox();
@@ -99,8 +99,8 @@ public class AnalyticViewPane extends BorderPane {
         runButton.setOnAction(event -> {
             if (running) {
                 // hide results pane
-                if (analyticViewPane.getChildren().contains(analyticResultsPane)) {
-                    analyticViewPane.getChildren().remove(analyticResultsPane);
+                if (viewPane.getChildren().contains(analyticResultsPane)) {
+                    viewPane.getChildren().remove(analyticResultsPane);
                 }
 
                 // stop execution of the current analytic question
@@ -112,8 +112,8 @@ public class AnalyticViewPane extends BorderPane {
                 runButton.setStyle(RUN_START_STYLE);
             } else {
                 // display results pane
-                if (!analyticViewPane.getChildren().contains(analyticResultsPane)) {
-                    analyticViewPane.getChildren().add(1, analyticResultsPane);
+                if (!viewPane.getChildren().contains(analyticResultsPane)) {
+                    viewPane.getChildren().add(1, analyticResultsPane);
                 }
                 // display progress indicator
                 analyticResultsPane.getInternalVisualisationPane().getTabs().clear();
@@ -190,17 +190,17 @@ public class AnalyticViewPane extends BorderPane {
         AnchorPane.setRightAnchor(analyticOptionButtons, 5.0);
 
         // populate the analytic view pane
-        analyticViewPane.getChildren().addAll(analyticOptionsPane, analyticConfigurationPane);
+        viewPane.getChildren().addAll(analyticOptionsPane, analyticConfigurationPane);
 
         // initialise the top level pane
-        this.setCenter(analyticViewPane);
+        this.setCenter(viewPane);
     }
 
     protected final void reset() {
         Platform.runLater(() -> {
             // hide results pane
-            if (analyticViewPane.getChildren().contains(analyticResultsPane)) {
-                analyticViewPane.getChildren().remove(analyticResultsPane);
+            if (viewPane.getChildren().contains(analyticResultsPane)) {
+                viewPane.getChildren().remove(analyticResultsPane);
             }
             analyticConfigurationPane.reset();
             analyticResultsPane.reset();

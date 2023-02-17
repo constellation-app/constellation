@@ -38,7 +38,7 @@ public class TaxFromNeighbours {
      *
      * @return the graph taxonomy.
      */
-    public static GraphTaxonomy getTaxonomy(final GraphWriteMethods graph, final Set<Integer> verticesToConsider) {
+    public static GraphTaxonomy getTaxonomy(final GraphWriteMethods graph, final Iterable<Integer> verticesToConsider) {
         // We'll use a Map<Set, Set<Integer>>, where a Set key represents a set of neighbour vertexIds defined by
         // the bits that are set.
         final Map<Set<Integer>, Set<Integer>> commonNeighbours = new HashMap<>();
