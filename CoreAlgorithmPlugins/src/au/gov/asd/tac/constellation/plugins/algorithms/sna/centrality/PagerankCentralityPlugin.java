@@ -177,8 +177,6 @@ public class PagerankCentralityPlugin extends SimpleEditPlugin {
                                     || graph.getEdgeDestinationVertex(edgeId) == pgVertex.vertexId) {
                                 // If edge is facing towards vertex add the source as a neighbour.
                                 pgVertex.neighbours.add(pagerankVertices.get(neighbourId));
-                            } else {
-                                // Do nothing
                             }
                         }
                     }

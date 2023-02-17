@@ -154,8 +154,6 @@ public class MdsArranger implements Arranger {
                 vxsToArrange[numVxsToArrange++] = vxId;
             } else if (arrangeIt && !useLocs) {
                 vxsToArrangeLater[numVxsLater++] = vxId;
-            } else {
-                // Do nothing
             }
             if (influence && (useLocs || !arrangeIt)) {
                 vxsToInfluence[numVxsToInfluence++] = vxId;

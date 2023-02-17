@@ -355,6 +355,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
 
                         borderPane.setLeft(paddingPane);
                         borderPane.setCenter(childPane);
+                        childPane.updateChildren();
                     }
 
                     sequencePane.getChildren().add(borderPane);

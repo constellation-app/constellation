@@ -92,10 +92,7 @@ public class IdentificationData {
         if (!Objects.equals(this.identifier, other.identifier)) {
             return false;
         }
-        if (this.elementType != other.elementType) {
-            return false;
-        }
-        return true;
+        return this.elementType == other.elementType;
     }
 
 }

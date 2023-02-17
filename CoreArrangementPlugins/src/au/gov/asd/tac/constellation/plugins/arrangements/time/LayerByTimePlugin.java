@@ -238,8 +238,6 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
                     SingleChoiceParameterType.setOptions(unitParam, new ArrayList<>(BIN_CALENDAR_UNITS.keySet()));
                     SingleChoiceParameterType.setChoice(unitParam, UNIT_PARAMETER_ID_BIN_DEFAULT);
                     parameters.getParameters().get(AMOUNT_PARAMETER_ID).setEnabled(false);
-                } else {
-                    // Do nothing
                 }
             }
         });
@@ -502,8 +500,7 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             final long date = wgcopy.getLongValue(dtAttr, txId);
 
             if (d1t <= date && date < d2t) {
-                final long layerId = (date - d1t) / intervalLength;
-                final float layer = (float) layerId;
+                final float layer = (float) (date - d1t) / intervalLength;
 
                 if (!transactionLayers.containsKey(layer)) {
                     transactionLayers.put(layer, new ArrayList<>());
@@ -609,19 +606,15 @@ public class LayerByTimePlugin extends SimpleReadPlugin {
             //Create new layer
             final List<Float> runningLayers = new ArrayList<>();
             final int currentBinAmount = j + binAmount;
-            try {
-                for (; j < currentBinAmount && j < values.size(); j++) {
-                    //Add value to layer
-                    runningLayers.add(values.get(j));
-                }
-                if (!runningLayers.isEmpty()) {
-                    remappedLayers.put(i, runningLayers);
-                }
-                if (currentBinAmount > maxUnit && maxUnit % remappedLayers.values().size() == 0) {
-                    break;
-                }
-            } catch (final Exception e) {
-                LOGGER.log(Level.SEVERE, "ERROR: {0}", e.getMessage());
+            for (; j < currentBinAmount && j < values.size(); j++) {
+                //Add value to layer
+                runningLayers.add(values.get(j));
+            }
+            if (!runningLayers.isEmpty()) {
+                remappedLayers.put(i, runningLayers);
+            }
+            if (currentBinAmount > maxUnit && maxUnit % remappedLayers.values().size() == 0) {
+                break;
             }
         }
 

@@ -115,8 +115,7 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
             } else {
                 // estimate size of graph
                 final BBoxf graphBoundingBox = BBoxf.getGraphBoundingBox(graph);
-                float graphEstimatedDiameter = 0.0f;
-                graphEstimatedDiameter = Math.max(graphBoundingBox.getMax()[BBoxf.X] - graphBoundingBox.getMin()[BBoxf.X],
+                float graphEstimatedDiameter = Math.max(graphBoundingBox.getMax()[BBoxf.X] - graphBoundingBox.getMin()[BBoxf.X],
                         graphBoundingBox.getMax()[BBoxf.Y] - graphBoundingBox.getMin()[BBoxf.Y]);
                 graphEstimatedDiameter = Math.max(graphEstimatedDiameter,
                         graphBoundingBox.getMax()[BBoxf.Z] - graphBoundingBox.getMin()[BBoxf.Z]);
@@ -126,7 +125,7 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                     final GraphElementType elementType = factResult.getElementType();
                     final int elementId = factResult.getElementId();
                     final float elementValue = factResult.getFactValue() ? 1F : 0F;
-                    final float sizeIntensity = (float) Math.log((double) (elementValue * graphEstimatedDiameter));
+                    final float sizeIntensity = (float) Math.log(elementValue * graphEstimatedDiameter);
                     switch (elementType) {
                         case VERTEX:
                             graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);

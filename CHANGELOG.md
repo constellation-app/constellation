@@ -1,4 +1,17 @@
-# Constellation Changes	
+# Constellation Changes
+
+## Changes in February 2023	
+
+-   Removed unused class `NestedIncircleDrawing` from Core Arrangement Plugins.
+-   Removed several unused methods from `PQTree` in Core Arrangement Plugins.
+-   Updated `comprisingIds` parameter type in `CompositeUtilities.makeComposite()` from List to Collection.
+-   Updated `results` parameter type in `AnalyticResult.setSelectionOnGraph()` from List to Iterable.
+-   Updated `results` parameter type in `AnalyticResult.addAll()` from List to Iterable.
+-   Updated `keys` parameter type in `GraphTaxonomy.setArrangeRectangularly()` from Set to Iterable.
+-   Updated `childNums` parameter type in `PQTree.addLeaves()` from List to Iterable.
+-   Updated `includedVertices` and `excludedLinks` parameters type in `GraphSpectrumEmbedder.matrixFromGraph()` from Set to Collection.
+-   Updated `circles` parameter type in `BoundingCircle.enclosingCircle()` from List to Iterable.
+-   Updated `verticesToConsider` parameter type in `TaxFromNeighbours.getTaxonomy()` from Set to Iterable.
 
 ## Changes in October 2022
 
