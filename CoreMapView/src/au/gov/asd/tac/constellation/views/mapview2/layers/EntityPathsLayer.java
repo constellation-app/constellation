@@ -100,108 +100,108 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                 // Get the neighbour count of that vertex
                 final int neighbourCount = graph.getVertexNeighbourCount(vertexID);
 
-                    // For every neighbour
-                    for (int neighbourPos = 0; neighbourPos < neighbourCount; ++neighbourPos) {
+                // For every neighbour
+                for (int neighbourPos = 0; neighbourPos < neighbourCount; ++neighbourPos) {
 
-                        // Get the neighbour id
-                        final int neighbourID = graph.getVertexNeighbour(vertexID, neighbourPos);
+                    // Get the neighbour id
+                    final int neighbourID = graph.getVertexNeighbour(vertexID, neighbourPos);
 
-                        // Get the the type attribute from the neighbour
-                        final SchemaVertexType neighbourType = graph.getObjectValue(vertexTypeAttributeId, neighbourID);
+                    // Get the the type attribute from the neighbour
+                    final SchemaVertexType neighbourType = graph.getObjectValue(vertexTypeAttributeId, neighbourID);
 
-                        // If the type is a "location"
-                        if (neighbourType != null && !neighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
+                    // If the type is a "location"
+                    if (neighbourType != null && !neighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
 
-                            final Set<Long> locationDateTimes = new HashSet<>();
+                        final Set<Long> locationDateTimes = new HashSet<>();
 
-                            final int neighbourLinkID = graph.getLink(vertexID, neighbourID);
+                        final int neighbourLinkID = graph.getLink(vertexID, neighbourID);
 
-                            // Get the ammount of transactions connecting the two vertices
-                            final int neighbourLinkTransactionCount = graph.getLinkTransactionCount(neighbourLinkID);
+                        // Get the ammount of transactions connecting the two vertices
+                        final int neighbourLinkTransactionCount = graph.getLinkTransactionCount(neighbourLinkID);
 
-                            // For every transaction
-                            for (int neighbourLinkTransPos = 0; neighbourLinkTransPos < neighbourLinkTransactionCount; ++neighbourLinkTransPos) {
-                                final int neighbourLinkTransID = graph.getLinkTransaction(neighbourLinkID, neighbourLinkTransPos);
+                        // For every transaction
+                        for (int neighbourLinkTransPos = 0; neighbourLinkTransPos < neighbourLinkTransactionCount; ++neighbourLinkTransPos) {
+                            final int neighbourLinkTransID = graph.getLinkTransaction(neighbourLinkID, neighbourLinkTransPos);
 
-                                // Extract its time and store it
-                                final long neighbourLinkTransDateTime = graph.getLongValue(transDateTimeAttrId, neighbourLinkTransID);
-                                locationDateTimes.add(neighbourLinkTransDateTime);
-                            }
-
-                            // For all second neighbours
-                            final List<Integer> validSecondNeighbours = new ArrayList<>();
-                            final int secondNeighbourCount = graph.getVertexNeighbourCount(neighbourID);
-
-                            for (int secondNeighbourPos = 0; secondNeighbourPos < secondNeighbourCount; ++secondNeighbourPos) {
-                                final int secondNeighbourID = graph.getVertexNeighbour(neighbourID, secondNeighbourPos);
-
-                                // Get the type attribute
-                                final SchemaVertexType secondNeighbourType = graph.getObjectValue(vertexTypeAttributeId, secondNeighbourID);
-
-                                // Add velid second neighbours to array
-                                if (secondNeighbourType != null && secondNeighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
-                                    validSecondNeighbours.add(secondNeighbourID);
-                                }
-                            }
-
-                            // Get lattitud and logitude attribute
-                            final int lonID2 = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
-                            final int latID2 = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
-
-                            // For each datetime transaction
-                            locationDateTimes.forEach(locationDateTime -> {
-                                int pathSecondNeighbour = GraphConstants.NOT_FOUND;
-                                long closestTimeDifference = Long.MAX_VALUE;
-
-                                // For all the second neighbours
-                                for (final int secondNeighbourId : validSecondNeighbours) {
-                                    // Get the transaction count between neighbour and second neighbour
-                                    final int secondNeighbourLinkId = graph.getLink(neighbourID, secondNeighbourId);
-                                    final int secondNeighbourLinkTransactionCount = graph.getLinkTransactionCount(secondNeighbourLinkId);
-
-                                    // For every transaction
-                                    for (int secondNeighbourLinkTransactionPosition = 0; secondNeighbourLinkTransactionPosition < secondNeighbourLinkTransactionCount; secondNeighbourLinkTransactionPosition++) {
-
-                                        final int secondNeighbourLinkTransactionId = graph.getLinkTransaction(secondNeighbourLinkId, secondNeighbourLinkTransactionPosition);
-                                        final long secondNeighbourLinkTransactionDateTime = graph.getLongValue(transDateTimeAttrId, secondNeighbourLinkTransactionId);
-                                        final long timeDifference = secondNeighbourLinkTransactionDateTime - locationDateTime;
-
-                                        // If the time difference between the transaction of the second neigbour and the transaction of the first neighbour
-                                        // is less than the closestTimeDifference then store it
-                                        if (timeDifference > 0 && timeDifference < closestTimeDifference) {
-                                            closestTimeDifference = timeDifference;
-                                            pathSecondNeighbour = secondNeighbourId;
-                                        }
-                                    }
-                                }
-
-                                // Draw a line from neighbour to second neighbour
-                                if (pathSecondNeighbour != GraphConstants.NOT_FOUND) {
-                                    final float sourceLat = graph.getObjectValue(latID2, vertexID);
-                                    final float sourceLon = graph.getObjectValue(lonID2, vertexID);
-
-                                    final float destLat = graph.getObjectValue(latID2, pathSecondNeighbour);
-                                    final float destLon = graph.getObjectValue(lonID2, pathSecondNeighbour);
-
-                                    String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
-
-                                    LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, lineMarkerXOffset, lineMarkerYOffset);
-                                    if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
-
-
-                                        l.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
-                                        entityPaths.getChildren().add(l.getMarker());
-                                    }
-                                }
-
-                            });
-
+                            // Extract its time and store it
+                            final long neighbourLinkTransDateTime = graph.getLongValue(transDateTimeAttrId, neighbourLinkTransID);
+                            locationDateTimes.add(neighbourLinkTransDateTime);
                         }
+
+                        // For all second neighbours
+                        final List<Integer> validSecondNeighbours = new ArrayList<>();
+                        final int secondNeighbourCount = graph.getVertexNeighbourCount(neighbourID);
+
+                        for (int secondNeighbourPos = 0; secondNeighbourPos < secondNeighbourCount; ++secondNeighbourPos) {
+                            final int secondNeighbourID = graph.getVertexNeighbour(neighbourID, secondNeighbourPos);
+
+                            // Get the type attribute
+                            final SchemaVertexType secondNeighbourType = graph.getObjectValue(vertexTypeAttributeId, secondNeighbourID);
+
+                            // Add velid second neighbours to array
+                            if (secondNeighbourType != null && secondNeighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)) {
+                                validSecondNeighbours.add(secondNeighbourID);
+                            }
+                        }
+
+                        // Get lattitud and logitude attribute
+                        final int lonID2 = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
+                        final int latID2 = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
+
+                        // For each datetime transaction
+                        locationDateTimes.forEach(locationDateTime -> {
+                            int pathSecondNeighbour = GraphConstants.NOT_FOUND;
+                            long closestTimeDifference = Long.MAX_VALUE;
+
+                            // For all the second neighbours
+                            for (final int secondNeighbourId : validSecondNeighbours) {
+                                // Get the transaction count between neighbour and second neighbour
+                                final int secondNeighbourLinkId = graph.getLink(neighbourID, secondNeighbourId);
+                                final int secondNeighbourLinkTransactionCount = graph.getLinkTransactionCount(secondNeighbourLinkId);
+
+                                // For every transaction
+                                for (int secondNeighbourLinkTransactionPosition = 0; secondNeighbourLinkTransactionPosition < secondNeighbourLinkTransactionCount; secondNeighbourLinkTransactionPosition++) {
+
+                                    final int secondNeighbourLinkTransactionId = graph.getLinkTransaction(secondNeighbourLinkId, secondNeighbourLinkTransactionPosition);
+                                    final long secondNeighbourLinkTransactionDateTime = graph.getLongValue(transDateTimeAttrId, secondNeighbourLinkTransactionId);
+                                    final long timeDifference = secondNeighbourLinkTransactionDateTime - locationDateTime;
+
+                                    // If the time difference between the transaction of the second neigbour and the transaction of the first neighbour
+                                    // is less than the closestTimeDifference then store it
+                                    if (timeDifference > 0 && timeDifference < closestTimeDifference) {
+                                        closestTimeDifference = timeDifference;
+                                        pathSecondNeighbour = secondNeighbourId;
+                                    }
+                                }
+                            }
+
+                            // Draw a line from neighbour to second neighbour
+                            if (pathSecondNeighbour != GraphConstants.NOT_FOUND) {
+                                final float sourceLat = graph.getObjectValue(latID2, vertexID);
+                                final float sourceLon = graph.getObjectValue(lonID2, vertexID);
+
+                                final float destLat = graph.getObjectValue(latID2, pathSecondNeighbour);
+                                final float destLon = graph.getObjectValue(lonID2, pathSecondNeighbour);
+
+                                String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
+
+                                LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, lineMarkerXOffset, lineMarkerYOffset);
+                                if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
+
+
+                                    l.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+                                    entityPaths.getChildren().add(l.getMarker());
+                                }
+                            }
+
+                        });
 
                     }
 
                 }
+
             }
+        }
 
     }
 

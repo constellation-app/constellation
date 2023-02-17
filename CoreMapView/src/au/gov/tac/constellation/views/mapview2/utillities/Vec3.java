@@ -21,9 +21,9 @@ package au.gov.tac.constellation.views.mapview2.utillities;
  * @author altair1673
  */
 public class Vec3 {
-    public double x = 0;
-    public double y = 0;
-    public double z = 0;
+    private double x = 0;
+    private double y = 0;
+    private double z = 0;
 
     public Vec3(Vec3 vec3) {
         x = vec3.x;
@@ -85,5 +85,30 @@ public class Vec3 {
 
         return ans;
     }
+
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public void setY(double y) {
+        this.y = y;
+    }
+
+    public double getZ() {
+        return z;
+    }
+
+    public void setZ(double z) {
+        this.z = z;
+    }
+
 
 }

@@ -200,17 +200,17 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         Vec3 coords2 = new Vec3(node2.getX() - NODE_X_OFFSET, node2.getY() + NODE_Y_OFFSET);
 
                         // Calculate the midpoint bewteen the 2 points
-                        Vec3 midPoint = new Vec3((coords1.x + coords2.x) / 2, (coords1.y + coords2.y) / 2);
+                        Vec3 midPoint = new Vec3((coords1.getX() + coords2.getX()) / 2, (coords1.getY() + coords2.getY()) / 2);
 
                         // Calculating slope of line between 2 points
-                        Vec3 slope = new Vec3((coords2.y - coords1.y), (coords2.x - coords1.x));
+                        Vec3 slope = new Vec3((coords2.getY() - coords1.getY()), (coords2.getX() - coords1.getX()));
 
                         // Reciprocal of the slope
-                        double reciprocal = -1 * (slope.y / slope.x);
+                        double reciprocal = -1 * (slope.getY() / slope.getX());
 
 
                         // the b is the y intercept for the formula y = ax + b
-                        double b = midPoint.y - (reciprocal * midPoint.x);
+                        double b = midPoint.getY() - (reciprocal * midPoint.getX());
 
                         // Get the start and end of the bisectorline
                         Vec3 lineStart = new Vec3(0, b);
@@ -220,34 +220,34 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                         double distance = Vec3.getDistance(lineStart, lineEnd);
 
                         // Get normalized direction vector of the line
-                        Vec3 directVect = new Vec3((lineEnd.x - lineStart.x) / distance, (lineEnd.y - lineStart.y) / distance);
+                        Vec3 directVect = new Vec3((lineEnd.getX() - lineStart.getX()) / distance, (lineEnd.getY() - lineStart.getY()) / distance);
 
                         // Extend line in both directions
-                        lineStart.x = midPoint.x + (directVect.x * 1500);
-                        lineStart.y = midPoint.y + (directVect.y * 1500);
+                        lineStart.setX(midPoint.getX() + (directVect.getX() * 1500));
+                        lineStart.setY(midPoint.getY() + (directVect.getY() * 1500));
 
-                        lineEnd.x = midPoint.x - (directVect.x * 1500);
-                        lineEnd.y = midPoint.y - (directVect.y * 1500);
+                        lineEnd.setX(midPoint.getX() - (directVect.getX() * 1500));
+                        lineEnd.setY(midPoint.getY() - (directVect.getY() * 1500));
 
                         // If the line is either horizontal or vertical then make the ends and start of the line th edges of the map
-                        if (slope.x == 0 && slope.y != 0) {
-                            lineStart.x = midPoint.x;
-                            lineStart.y = 0;
-                            lineEnd.x = midPoint.x;
-                            lineEnd.y = MapView.MAP_HEIGHT;
-                        } else if (slope.y == 0 && slope.x != 0) {
-                            lineStart.x = 0;
-                            lineStart.y = midPoint.y;
-                            lineEnd.x = MapView.MAP_WIDTH;
-                            lineEnd.y = midPoint.y;
+                        if (slope.getX() == 0 && slope.getY() != 0) {
+                            lineStart.setX(midPoint.getX());
+                            lineStart.setY(0);
+                            lineEnd.setX(midPoint.getX());
+                            lineEnd.setY(MapView.MAP_HEIGHT);
+                        } else if (slope.getY() == 0 && slope.getX() != 0) {
+                            lineStart.setX(0);
+                            lineStart.setY(midPoint.getY());
+                            lineEnd.setX(MapView.MAP_WIDTH);
+                            lineEnd.setY(midPoint.getY());
                         }
 
                         Line line = new Line();
-                        line.setStartX(lineStart.x);
-                        line.setStartY(lineStart.y);
+                        line.setStartX(lineStart.getX());
+                        line.setStartY(lineStart.getY());
 
-                        line.setEndX(lineEnd.x);
-                        line.setEndY(lineEnd.y);
+                        line.setEndX(lineEnd.getX());
+                        line.setEndY(lineEnd.getY());
                         
                         line.setStroke(Color.RED);
 
@@ -278,7 +278,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
             // Get distance of line and then calculate normalized direction vector
             double distance = Vec3.getDistance(start, end);
-            Vec3 dirVect = new Vec3((end.x - start.x) / distance, (end.y - start.y) / distance);
+            Vec3 dirVect = new Vec3((end.getX() - start.getX()) / distance, (end.getY() - start.getY()) / distance);
 
             // Array to hold the start and end points of the shortened line
             Vec3[] shortLine = {null, null};
@@ -293,9 +293,9 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             for (double i = 0; i < distance; i = i + LINE_EXTEND) {
 
                 // If the starting coordinate is outside the map then move the start point in the direction of the end point
-                if (start.x > MapView.MAP_WIDTH + 5 || start.x < -5 || start.y < -2 || start.y > MapView.MAP_HEIGHT + 2) {
-                    start.x += dirVect.x;
-                    start.y += dirVect.y;
+                if (start.getX() > MapView.MAP_WIDTH + 5 || start.getX() < -5 || start.getY() < -2 || start.getY() > MapView.MAP_HEIGHT + 2) {
+                    start.setX(start.getX() + dirVect.getX());
+                    start.setY(start.getY() + dirVect.getY());
                     continue;
                 }
 
@@ -323,19 +323,19 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 // Index represents if we are calculating the start or end of the line
                 if (shortestDistanceID == null && index == 0) {
                     // Record the start position is shortLine array
-                    shortLine[index] = new Vec3(start.x - (LINE_EXTEND * dirVect.x), start.y - (LINE_EXTEND * dirVect.y)); // shortLie[index] -= start * dis
+                    shortLine[index] = new Vec3(start.getX() - (LINE_EXTEND * dirVect.getX()), start.getY() - (LINE_EXTEND * dirVect.getY())); // shortLie[index] -= start * dis
                     ++index;
                     // If index is 1 it means we are at the end of the line so record the line end
                 } else if (shortestDistanceID != null && index == 1) {
 
-                    shortLine[index] = new Vec3(start.x, start.y);
+                    shortLine[index] = new Vec3(start.getX(), start.getY());
 
                     break;
                 }
 
                 // Move the start point along the direction vector
-                start.x += LINE_EXTEND * dirVect.x;
-                start.y += LINE_EXTEND * dirVect.y;
+                start.setX(start.getX() + LINE_EXTEND * dirVect.getX());
+                start.setY(start.getY() + LINE_EXTEND * dirVect.getY());
 
 
             }
@@ -351,11 +351,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 // Create the new shortened line with the 2 calculated ends
                 Line l = new Line();
 
-                l.setStartX(shortLine[0].x);
-                l.setStartY(shortLine[0].y);
+                l.setStartX(shortLine[0].getX());
+                l.setStartY(shortLine[0].getY());
 
-                l.setEndX(shortLine[1].x);
-                l.setEndY(shortLine[1].y);
+                l.setEndX(shortLine[1].getX());
+                l.setEndY(shortLine[1].getY());
 
                 // Put line in a new map with the key from this iteration of the main for loop
                 finalBisectorLines.put(key, l);
@@ -414,16 +414,16 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                     // For formula y = mx + b, represent both bisectors with this formula
                     // calculate the different variables for the formula
-                    double m1 = slope.x / slope.y;
+                    double m1 = slope.getX() / slope.getY();
 
                     double b1 = bisect1.getStartY() - (m1 * bisect1.getStartX());
 
-                    double m2 = slope2.x / slope2.y;
+                    double m2 = slope2.getX() / slope2.getY();
 
                     double b2 = bisect2.getStartY() - (m2 * bisect2.getStartX());
 
                     // If lines are completely vertical or horizontal then they don't intersect
-                    if (slope.y == 0 && slope2.y == 0) {
+                    if (slope.getY() == 0 && slope2.getY() == 0) {
                         continue;
                     }
 
@@ -431,10 +431,10 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     double y;
 
                     // If either line is either vertical or horizontal then tweak the formula slightly to calculate intersection point
-                    if (slope.y == 0) {
+                    if (slope.getY() == 0) {
                         x = bisect1.getStartX();
                         y = m2 * x + b2;
-                    } else if (slope2.y == 0) {
+                    } else if (slope2.getY() == 0) {
                         x = bisect2.getStartX();
                         y = m1 * x + b1;
                     } else {

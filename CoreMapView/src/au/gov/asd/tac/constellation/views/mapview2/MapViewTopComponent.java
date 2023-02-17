@@ -229,6 +229,7 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
             } catch (InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
+                Thread.currentThread().interrupt();
 
             } catch (ExecutionException ex) {
                 Exceptions.printStackTrace(ex);

@@ -130,39 +130,39 @@ public class ClusterMarker extends AbstractMarker {
                 }
 
                 // Find center or furthest nodes
-                clusterCenter.x = (farthestNode1X + farthestNode2X) / 2;
-                clusterCenter.y = (farthestNode1Y + farthestNode2Y) / 2;
+                clusterCenter.setX((farthestNode1X + farthestNode2X) / 2);
+                clusterCenter.setY((farthestNode1Y + farthestNode2Y) / 2);
 
                 // If there is only 1 marker
-                if (clusterCenter.x == 0 && clusterCenter.y == 0) {
-                    clusterCenter.x = node.getBoundsInParent().getCenterX();
-                    clusterCenter.y = node.getBoundsInParent().getCenterY();
+                if (clusterCenter.getX() == 0 && clusterCenter.getY() == 0) {
+                    clusterCenter.setX(node.getBoundsInParent().getCenterX());
+                    clusterCenter.setY(node.getBoundsInParent().getCenterY());
                 }
 
                 // Store the min and max position
-                minPosition.x = Math.min(position.x, minPosition.x);
-                minPosition.y = Math.min(position.y, minPosition.y);
-                maxPosition.x = Math.max(position.x, maxPosition.x);
-                maxPosition.y = Math.max(position.y, maxPosition.y);
+                minPosition.setX(Math.min(position.getX(), minPosition.getX()));
+                minPosition.setY(Math.min(position.getY(), minPosition.getY()));
+                maxPosition.setX(Math.max(position.getX(), maxPosition.getX()));
+                maxPosition.setY(Math.max(position.getY(), maxPosition.getY()));
             }
 
             // Calclate diameter of the circle
-            diameter = Math.sqrt(Math.pow((maxPosition.x - minPosition.x), 2)
-                    + Math.pow((maxPosition.y - minPosition.y), 2));
+            diameter = Math.sqrt(Math.pow((maxPosition.getX() - minPosition.getX()), 2)
+                    + Math.pow((maxPosition.getY() - minPosition.getY()), 2));
 
         }
         double clusterRadius = Math.max((float) diameter / 2, minRadius);
 
         // Generate the cluster circle
         cluster = new Circle();
-        cluster.setCenterX(clusterCenter.x);
-        cluster.setCenterY(clusterCenter.y);
+        cluster.setCenterX(clusterCenter.getX());
+        cluster.setCenterY(clusterCenter.getY());
         cluster.setRadius(clusterRadius);
         cluster.setFill(Color.DARKBLUE);
         cluster.setOpacity(0.6);
         cluster.setMouseTransparent(true);
 
-        numNodes = new Text(clusterCenter.x - 5, clusterCenter.y + 5, "" + nodes.size());
+        numNodes = new Text(clusterCenter.getX() - 5, clusterCenter.getY() + 5, "" + nodes.size());
         numNodes.setFill(Color.YELLOW);
         numNodes.setFont(new Font(20));
         numNodes.setMouseTransparent(true);

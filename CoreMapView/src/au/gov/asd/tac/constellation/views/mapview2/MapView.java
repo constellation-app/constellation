@@ -597,7 +597,7 @@ public class MapView extends ScrollPane {
                     selectionRectangleX = event.getX();
                     selectionRectangleY = event.getY();
 
-                selectionRectangle.setFill(Color.GRAY);
+                    selectionRectangle.setFill(Color.GRAY);
                     selectionRectangle.setOpacity(0.2);
                     selectionRectangleGroup.getChildren().add(selectionRectangle);
                 }
@@ -627,7 +627,7 @@ public class MapView extends ScrollPane {
                         height = selectionRectangleY - y;
                         selectionRectangle.setX(x);
                         selectionRectangle.setY(y);
-                    } else if (x >= selectionRectangleX && y >= selectionRectangleY) {
+                    } else if (x >= selectionRectangleX) {
                         width = x - selectionRectangleX;
                         height = y - selectionRectangleY;
 
@@ -1100,14 +1100,14 @@ public class MapView extends ScrollPane {
 
         Point2D averageMarkerPosition = mapStackPane.localToParent(x, y);
 
-        double parentCenterX = mapStackPane.localToParent(center.x, center.y).getX();
-        double parentCenterY = mapStackPane.localToParent(center.x, center.y).getY();
+        double parentCenterX = mapStackPane.localToParent(center.getX(), center.getY()).getX();
+        double parentCenterY = mapStackPane.localToParent(center.getX(), center.getY()).getY();
 
         Vec3 dirVect = new Vec3(parentCenterX - averageMarkerPosition.getX(), parentCenterY - averageMarkerPosition.getY());
 
 
-        mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.x);
-        mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.y);
+        mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.getX());
+        mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.getY());
     }
 
     public void panToSelection() {
@@ -1431,7 +1431,7 @@ public class MapView extends ScrollPane {
 
             GridPane bottomGridPane = new GridPane();
 
-        topGridPane.add(titleText, 0, 0);
+            topGridPane.add(titleText, 0, 0);
             topGridPane.add(closeButton, 2, 0);
             topGridPane.add(geoTypeLabel, 0, 1);
             topGridPane.add(geoTypeMenu, 1, 1, 2, 1);
