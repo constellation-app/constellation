@@ -44,9 +44,9 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
     
     private static final Logger LOGGER = Logger.getLogger(OpenGraphWelcomePlugin.class.getName());
 
-    public static final String OPEN = "resources/welcome_open_folder.png";
-    final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
-    final Button openFile = new Button();
+    private static final String OPEN = "resources/welcome_open_folder.png";
+    private final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
+    private final Button openFile = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -75,16 +75,6 @@ public class OpenGraphWelcomePlugin implements WelcomePluginInterface {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
-    }
-
-    /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    @Override
-    public boolean isVisible() {
-        return true;
     }
 
     /**

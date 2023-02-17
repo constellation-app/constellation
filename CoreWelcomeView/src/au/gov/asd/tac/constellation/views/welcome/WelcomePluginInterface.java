@@ -40,13 +40,6 @@ public interface WelcomePluginInterface {
     public void run();
 
     /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    public boolean isVisible();
-
-    /**
      * Creates the button object to represent this plugin
      *
      * @return the button object
