@@ -716,14 +716,14 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
             markerZone.setMouseTransparent(true);
 
-            // Get closes intersection point to the marker
+            // Get closest intersection point to the marker
             IntersectionNode relevantIntersection = relevantIntersections.get(markerID);
 
             while (!completedShape) {
                 // Add the intersection node to the visited set
                 visited.add(relevantIntersection.getKey());
 
-                // Add the starting intersectionNode as the starting point of the shape
+                // Add the intersectionNode as the point of the shape
                 markerZone.getPoints().addAll(new Double[]{relevantIntersection.getX(), relevantIntersection.getY()});
 
                 // for all the intersectionNode's connected neighbours
@@ -780,7 +780,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             // create the polygons
             createPolygons();
 
-            // If only 1 marker exists on screen no calculations are needed the shape will jus be a rectangle with one colour
+            // If only 1 marker exists on screen no calculations are needed the shape will just be a rectangle with one colour
         } else if (nodesOnScreen.size() == 1) {
             final ConstellationColor[] palette = ConstellationColor.createPalette(1);
 

@@ -187,8 +187,6 @@ public class EntityPathsLayer extends AbstractPathsLayer {
 
                                 LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, lineMarkerXOffset, lineMarkerYOffset);
                                 if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
-
-
                                     l.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
                                     entityPaths.getChildren().add(l.getMarker());
                                 }
