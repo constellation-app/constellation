@@ -57,18 +57,12 @@ public class ExtractCoordsFromGraphPluginNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
+
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        }
+
     }
 
     @BeforeMethod
