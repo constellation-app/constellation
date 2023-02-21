@@ -184,12 +184,15 @@ public class PointMarkerNGTest {
     /*@Test
     public void testSetMarkerPosition() {
         System.out.println("setMarkerPosition");
+
+        MapViewPane mapViewPane = Mockito.mock(MapViewPane.class);
+        MapView parent = Mockito.spy(new MapView(mapViewPane));
+
         double MAP_WIDTH = 0.0;
         double MAP_HEIGHT = 0.0;
-        PointMarker instance = null;
+        PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
         instance.setMarkerPosition(MAP_WIDTH, MAP_HEIGHT);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+
     }*/
 
     /**
@@ -289,15 +292,26 @@ public class PointMarkerNGTest {
     /**
      * Test of getIdentAttr method, of class PointMarker.
      */
-    /*@Test
-    public void testGetIdentAttr() {
+    @Test
+    public void testGetIdentAttr() {        
         System.out.println("getIdentAttr");
-        PointMarker instance = null;
-        String expResult = "";
+
+        MapView parent = Mockito.mock(MapView.class);
+        PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
+
+        String expResult = "TestIdentity";
+
+        instance.setIdentAttr("TestIdentity");
         String result = instance.getIdentAttr();
+
         assertEquals(result, expResult);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }*/
+
+        instance.setIdentAttr("TestIdentity2");
+        expResult = "<Multiple Values>";
+        result = instance.getIdentAttr();
+
+        assertEquals(result, expResult);
+        
+    }
 
 }

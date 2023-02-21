@@ -31,6 +31,8 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import au.gov.asd.tac.constellation.views.mapview2.markers.LineMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
@@ -88,7 +90,10 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
             final GraphElementType[] elementTypes = new GraphElementType[]{GraphElementType.VERTEX, GraphElementType.TRANSACTION};
 
-            mapViewTopComponent.getMapViewPane().getMap().clearQueriedMarkers();
+            //mapViewTopComponent.getMapViewPane().getMap().clearQueriedMarkers();
+            MapViewPane mapViewPane = mapViewTopComponent.getMapViewPane();
+            MapView mapView = mapViewPane.getMap();
+            mapView.clearQueriedMarkers();
 
             try {
                 for (GraphElementType elementType : elementTypes) {

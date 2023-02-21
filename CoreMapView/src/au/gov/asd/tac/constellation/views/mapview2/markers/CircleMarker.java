@@ -127,7 +127,6 @@ public class CircleMarker extends AbstractMarker {
      * Generates the projected circle
      */
     public void generateCircle() {
-        final int EARTH_RADIUS_M = 6_371_008;
         centerY += CENTER_Y_OFFSET;
 
         // Calculate lattitude and longitude fro x and y

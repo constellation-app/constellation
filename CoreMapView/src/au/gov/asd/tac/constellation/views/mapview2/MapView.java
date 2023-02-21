@@ -1527,7 +1527,7 @@ public class MapView extends ScrollPane {
     /**
      * Load the world map
      */
-    private void parseMapSVG() {
+    public void parseMapSVG() {
         countryGroup.getChildren().clear();
 
         // Read map from file
