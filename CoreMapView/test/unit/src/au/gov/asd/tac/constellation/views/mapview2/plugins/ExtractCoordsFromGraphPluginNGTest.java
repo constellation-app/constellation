@@ -83,7 +83,7 @@ public class ExtractCoordsFromGraphPluginNGTest {
         System.out.println("read");
 
         MapViewTopComponent component = Mockito.spy(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.mock(MapViewPane.class);
+        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         MapView mapView = Mockito.spy(new MapView(mapViewPane));
 
         Mockito.doNothing().when(mapView).clearQueriedMarkers();
