@@ -51,18 +51,12 @@ public class ExtractCoordsFromGraphPluginNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
+
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        }
+
     }
 
     @BeforeMethod
@@ -82,7 +76,7 @@ public class ExtractCoordsFromGraphPluginNGTest {
     public void testRead() throws Exception {
         System.out.println("read");
 
-        MapViewTopComponent component = Mockito.spy(MapViewTopComponent.class);
+        MapViewTopComponent component = Mockito.spy(new MapViewTopComponent());
         MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         MapView mapView = Mockito.spy(new MapView(mapViewPane));
 
