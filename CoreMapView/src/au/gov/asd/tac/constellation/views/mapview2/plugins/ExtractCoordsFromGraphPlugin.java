@@ -91,9 +91,16 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
             final GraphElementType[] elementTypes = new GraphElementType[]{GraphElementType.VERTEX, GraphElementType.TRANSACTION};
 
             //mapViewTopComponent.getMapViewPane().getMap().clearQueriedMarkers();
+
             MapViewPane mapViewPane = mapViewTopComponent.getMapViewPane();
+            if (mapViewPane == null) {
+                System.out.println("Map View Pane is null");
+            }
+
+            if (mapViewPane != null) {
             MapView mapView = mapViewPane.getMap();
-            mapView.clearQueriedMarkers();
+                mapView.clearQueriedMarkers();
+            }
 
             try {
                 for (GraphElementType elementType : elementTypes) {

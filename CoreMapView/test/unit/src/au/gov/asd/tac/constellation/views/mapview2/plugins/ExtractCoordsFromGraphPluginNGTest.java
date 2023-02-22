@@ -15,22 +15,15 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.plugins;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
-import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -52,21 +45,29 @@ public class ExtractCoordsFromGraphPluginNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(ExtractCoordsFromGraphPluginNGTest.class.getName());
 
+
     public ExtractCoordsFromGraphPluginNGTest() {
     }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterClass
     public static void tearDownClass() throws Exception {
-
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+
     }
 
     @AfterMethod
@@ -75,6 +76,7 @@ public class ExtractCoordsFromGraphPluginNGTest {
 
     /**
      * Test of read method, of class ExtractCoordsFromGraphPlugin.
+     * @throws java.lang.Exception
      */
     @Test
     public void testRead() throws Exception {
@@ -84,12 +86,11 @@ public class ExtractCoordsFromGraphPluginNGTest {
         MapViewPane mapViewPane = Mockito.mock(MapViewPane.class);
         MapView mapView = Mockito.spy(new MapView(mapViewPane));
 
-        Mockito.doCallRealMethod().when(component).addMarker(Mockito.anyString(), Mockito.any(AbstractMarker.class));
-        Mockito.when(component.getMapViewPane()).thenReturn(mapViewPane);
-        Mockito.when(mapViewPane.getMap()).thenReturn(mapView);
-
         Mockito.doNothing().when(mapView).clearQueriedMarkers();
-        Mockito.doNothing().when(mapView).parseMapSVG();
+        Mockito.when(mapViewPane.getMap()).thenReturn(mapView);
+        Mockito.doReturn(mapViewPane).when(component).getMapViewPane();
+
+        Mockito.doCallRealMethod().when(component).addMarker(Mockito.anyString(), Mockito.any(AbstractMarker.class));
         Mockito.doCallRealMethod().when(mapView).addMarkerToHashMap(Mockito.anyString(), Mockito.any(AbstractMarker.class));
         Mockito.when(mapView.getAllMarkers()).thenCallRealMethod();
 

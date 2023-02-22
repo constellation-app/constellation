@@ -401,7 +401,7 @@ public class MapViewPane extends BorderPane {
      * scroll pane
      */
     public void setUpMap() {
-        // Create the actual map view
+        // Create the actual map display area
         mapView = new MapView(this);
         parentStackPane.getChildren().add(mapView);
 
