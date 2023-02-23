@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import javafx.beans.property.StringProperty;

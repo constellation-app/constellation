@@ -93,13 +93,12 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
             //mapViewTopComponent.getMapViewPane().getMap().clearQueriedMarkers();
 
             MapViewPane mapViewPane = mapViewTopComponent.getMapViewPane();
-            if (mapViewPane == null) {
-                System.out.println("Map View Pane is null");
-            }
 
             if (mapViewPane != null) {
             MapView mapView = mapViewPane.getMap();
                 mapView.clearQueriedMarkers();
+            } else {
+                System.out.println("Map View Pane is null");
             }
 
             try {

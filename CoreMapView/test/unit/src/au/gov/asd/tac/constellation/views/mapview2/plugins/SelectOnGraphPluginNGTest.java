@@ -81,11 +81,8 @@ public class SelectOnGraphPluginNGTest {
         Mockito.when(graph.getVertex(Mockito.anyInt())).thenReturn(vertexID);
         Mockito.when(graph.getTransaction(Mockito.anyInt())).thenReturn(transactionID);
 
-        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
-
-        int vertexSelectID = VisualConcept.VertexAttribute.SELECTED.get(graph);
-        int transactionSelectID = VisualConcept.TransactionAttribute.SELECTED.get(graph);
+        int vertexSelectID = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        int transactionSelectID = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
         Mockito.doNothing().when(graph).setBooleanValue(vertexSelectID, vertexID, selectedNodeList.contains(vertexID));
         Mockito.doNothing().when(graph).setBooleanValue(transactionSelectID, transactionID, selectedNodeList.contains(transactionID));

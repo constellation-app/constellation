@@ -82,13 +82,13 @@ public class ExtractCoordsFromGraphPluginNGTest {
     public void testRead() throws Exception {
         System.out.println("read");
 
-        MapViewTopComponent component = Mockito.spy(MapViewTopComponent.class);
+        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
         MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         MapView mapView = Mockito.spy(new MapView(mapViewPane));
 
+        Mockito.doReturn(mapViewPane).when(component).getMapViewPane();
         Mockito.doNothing().when(mapView).clearQueriedMarkers();
         Mockito.when(mapViewPane.getMap()).thenReturn(mapView);
-        Mockito.doReturn(mapViewPane).when(component).getMapViewPane();
 
         Mockito.doCallRealMethod().when(component).addMarker(Mockito.anyString(), Mockito.any(AbstractMarker.class));
         Mockito.doCallRealMethod().when(mapView).addMarkerToHashMap(Mockito.anyString(), Mockito.any(AbstractMarker.class));
@@ -101,13 +101,9 @@ public class ExtractCoordsFromGraphPluginNGTest {
 
         Mockito.doReturn(vertexCount).when(graph).getVertexCount();
         Mockito.doReturn(vertexID).when(graph).getVertex(0);
-        Mockito.doCallRealMethod().when(component).getMapViewPane();
 
-        SpatialConcept.VertexAttribute.LATITUDE.ensure(graph);
-        SpatialConcept.VertexAttribute.LONGITUDE.ensure(graph);
-
-        int lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
-        int latID = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
+        int lonID = SpatialConcept.VertexAttribute.LATITUDE.ensure(graph);
+        int latID = SpatialConcept.VertexAttribute.LONGITUDE.ensure(graph);
 
         Mockito.doReturn(Float.parseFloat("100")).when(graph).getObjectValue(lonID, vertexID);
         Mockito.doReturn(Float.parseFloat("100")).when(graph).getObjectValue(latID, vertexID);

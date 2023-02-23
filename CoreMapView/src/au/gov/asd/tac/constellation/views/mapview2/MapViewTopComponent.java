@@ -269,8 +269,8 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
      * @param e - the marker itself
      */
     public void addMarker(String key, AbstractMarker e) {
-        if (mapViewPane.getMap() != null) {
-            mapViewPane.getMap().addMarkerToHashMap(key, e);
+        if (getMapViewPane().getMap() != null) {
+            getMapViewPane().getMap().addMarkerToHashMap(key, e);
         }
     }
 
