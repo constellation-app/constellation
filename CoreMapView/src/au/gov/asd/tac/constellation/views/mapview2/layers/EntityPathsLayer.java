@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
