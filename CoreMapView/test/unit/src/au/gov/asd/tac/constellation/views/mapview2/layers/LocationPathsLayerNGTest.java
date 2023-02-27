@@ -97,12 +97,15 @@ public class LocationPathsLayerNGTest {
         Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
         Mockito.when(graphMock.getReadableGraph()).thenReturn(graph);
 
-        MockedStatic<SpatialConcept> spaceConcept = Mockito.mockStatic(SpatialConcept.class);
-        MockedStatic<AnalyticConcept> analConcept = Mockito.mockStatic(AnalyticConcept.class);
+        try (MockedStatic<SpatialConcept> spaceConcept = Mockito.mockStatic(SpatialConcept.class)) {
+            spaceConcept.when(() -> SpatialConcept.VertexAttribute.LONGITUDE.get(graph)).thenReturn(lonID2);
+            spaceConcept.when(() -> SpatialConcept.VertexAttribute.LATITUDE.get(graph)).thenReturn(latID2);
+        }
 
-        spaceConcept.when(() -> SpatialConcept.VertexAttribute.LONGITUDE.get(graph)).thenReturn(lonID2);
-        spaceConcept.when(() -> SpatialConcept.VertexAttribute.LATITUDE.get(graph)).thenReturn(latID2);
-        analConcept.when(() -> AnalyticConcept.VertexAttribute.TYPE.get(graph)).thenReturn(vertexTypeAttributeId);
+        try (MockedStatic<AnalyticConcept> analConcept = Mockito.mockStatic(AnalyticConcept.class)) {
+            analConcept.when(() -> AnalyticConcept.VertexAttribute.TYPE.get(graph)).thenReturn(vertexTypeAttributeId);
+        }
+
 
         SchemaVertexType vertexType = Mockito.mock(SchemaVertexType.class);
         Mockito.when(graph.getObjectValue(vertexTypeAttributeId, vertexID)).thenReturn(vertexType);
@@ -114,7 +117,6 @@ public class LocationPathsLayerNGTest {
         SchemaVertexType neighbourType = Mockito.mock(SchemaVertexType.class);
         Mockito.when(graph.getObjectValue(vertexTypeAttributeId, neighbourID)).thenReturn(neighbourType);
         Mockito.when(neighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)).thenReturn(true);
-
 
         Mockito.when(graph.getLink(vertexID, neighbourID)).thenReturn(neighbourLinkID);
         Mockito.when(graph.getLinkTransactionCount(neighbourLinkID, GraphConstants.UPHILL)).thenReturn(linkOutgoingTransactionCount);
@@ -129,7 +131,7 @@ public class LocationPathsLayerNGTest {
         PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, 0.05, 0, 0, "#ffffff");
         queriedMarkers.put("5,5", pMarker);
 
-        LocationPathsLayer instance = new LocationPathsLayer(parent, 0, queriedMarkers);
+        LocationPathsLayer instance = new LocationPathsLayer(parent, 20, queriedMarkers);
         instance.setUp();
 
         Mockito.verify(graph).getObjectValue(latID2, vertexID);

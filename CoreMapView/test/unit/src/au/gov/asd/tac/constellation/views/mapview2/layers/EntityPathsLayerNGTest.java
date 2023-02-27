@@ -118,17 +118,18 @@ public class EntityPathsLayerNGTest {
         Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
         Mockito.when(graphMock.getReadableGraph()).thenReturn(graph);
 
-        //GraphManager gm = Mockito.mock(GraphManager.class);
-        //MockedStatic<GraphManager> mockedStatic = Mockito.mockStatic(GraphManager.class);
-        //mockedStatic.when(()->GraphManager.getDefault()).thenReturn(gm);
-        MockedStatic<AnalyticConcept> analConcept = Mockito.mockStatic(AnalyticConcept.class);
-        MockedStatic<TemporalConcept> tempConcept = Mockito.mockStatic(TemporalConcept.class);
-        MockedStatic<SpatialConcept> spaceConcept = Mockito.mockStatic(SpatialConcept.class);
+        try (MockedStatic<AnalyticConcept> analConcept = Mockito.mockStatic(AnalyticConcept.class)) {
+            analConcept.when(() -> AnalyticConcept.VertexAttribute.TYPE.get(graph)).thenReturn(vertexTypeAttributeId);
+        }
 
-        analConcept.when(() -> AnalyticConcept.VertexAttribute.TYPE.get(graph)).thenReturn(vertexTypeAttributeId);
-        tempConcept.when(() -> TemporalConcept.TransactionAttribute.DATETIME.get(graph)).thenReturn(transDateTimeAttrId);
-        spaceConcept.when(() -> SpatialConcept.VertexAttribute.LONGITUDE.get(graph)).thenReturn(lonID2);
-        spaceConcept.when(() -> SpatialConcept.VertexAttribute.LATITUDE.get(graph)).thenReturn(latID2);
+        try (MockedStatic<TemporalConcept> tempConcept = Mockito.mockStatic(TemporalConcept.class)) {
+            tempConcept.when(() -> TemporalConcept.TransactionAttribute.DATETIME.get(graph)).thenReturn(transDateTimeAttrId);
+        }
+
+        try (MockedStatic<SpatialConcept> spaceConcept = Mockito.mockStatic(SpatialConcept.class)) {
+            spaceConcept.when(() -> SpatialConcept.VertexAttribute.LONGITUDE.get(graph)).thenReturn(lonID2);
+            spaceConcept.when(() -> SpatialConcept.VertexAttribute.LATITUDE.get(graph)).thenReturn(latID2);
+        }
 
         Mockito.when(graph.getVertex(vertexID)).thenReturn(vertexID);
 
@@ -156,7 +157,6 @@ public class EntityPathsLayerNGTest {
 
         Mockito.when(graph.getObjectValue(vertexTypeAttributeId, secondNeighbourID)).thenReturn(secondNeighbourType);
         Mockito.when(secondNeighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)).thenReturn(true);
-
 
         Mockito.when(graph.getLink(neighbourID, secondNeighbourID)).thenReturn(secondNeighbourLinkID);
         Mockito.when(graph.getLinkTransactionCount(secondNeighbourLinkID)).thenReturn(secondNeighbourLinkTransactionCount);
