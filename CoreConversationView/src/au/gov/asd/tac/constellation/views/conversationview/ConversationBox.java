@@ -413,7 +413,7 @@ public final class ConversationBox extends StackPane {
     private class BubbleCell extends ListCell<ConversationMessage> {
 
         public BubbleCell() {
-            setContentDisplay(ContentDisplay.GRAPHIC_ONLY); // Was GRAPHIC_ONLY
+            setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
             setWrapText(true);
             setPrefWidth(0);
         }
