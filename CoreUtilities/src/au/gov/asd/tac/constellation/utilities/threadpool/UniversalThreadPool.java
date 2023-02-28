@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.threadpool;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -26,6 +27,7 @@ public class UniversalThreadPool {
 
     private static UniversalThreadPool threadPool = null;
     private ScheduledExecutorService scheduledExecutorService = null;
+    private ExecutorService fixedThreadPool = null;
 
     private UniversalThreadPool() {
 
@@ -42,10 +44,18 @@ public class UniversalThreadPool {
 
     public ScheduledExecutorService getScheduledExecutorService() {
         if (scheduledExecutorService == null) {
-            scheduledExecutorService = Executors.newScheduledThreadPool(1);
+            scheduledExecutorService = Executors.newScheduledThreadPool(2);
         }
 
         return scheduledExecutorService;
+    }
+
+    public ExecutorService getFixedThreadPool() {
+        if (fixedThreadPool == null) {
+            fixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+        }
+
+        return fixedThreadPool;
     }
 
 }

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.api;
 
+import au.gov.asd.tac.constellation.utilities.threadpool.UniversalThreadPool;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;
@@ -70,7 +71,7 @@ public class DataAccessPaneState {
         // so only need to be loaded once at initialization.
         PLUGIN_LOAD = CompletableFuture.supplyAsync(
                 new LookupPluginsTask(),
-                Executors.newSingleThreadExecutor()
+                UniversalThreadPool.getThreadPool().getFixedThreadPool()
         ).thenApply(plugins -> {
             // Sort the DataAccessPlugin lists within each type including the category type
             // so that favourites category is sorted properly.
