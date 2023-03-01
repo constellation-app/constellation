@@ -20,6 +20,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
+ * This class holds global objects for the variouse thead pools needed by the
+ * application
  *
  * @author altair1673
  */
@@ -35,6 +37,11 @@ public class UniversalThreadPool {
 
     }
 
+    /**
+     * Static function to only get one instance of this object
+     *
+     * @return an instance of this class
+     */
     public static UniversalThreadPool getThreadPool() {
         if (threadPool == null) {
             threadPool = new UniversalThreadPool();
@@ -44,6 +51,11 @@ public class UniversalThreadPool {
 
     }
 
+    /**
+     * Instantiates exactly 1 ScheduledExecutorService
+     *
+     * @return a ScheduledExecutorService
+     */
     public ScheduledExecutorService getScheduledExecutorService() {
         if (scheduledExecutorService == null) {
             scheduledExecutorService = Executors.newScheduledThreadPool(5);
@@ -52,6 +64,11 @@ public class UniversalThreadPool {
         return scheduledExecutorService;
     }
 
+    /**
+     * Instantiates exactly 1 FixedThreadPool containing all available threads
+     *
+     * @return a FixedThreadPool objects
+     */
     public ExecutorService getFixedThreadPool() {
         if (fixedThreadPool == null) {
             fixedThreadPool = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
@@ -60,6 +77,11 @@ public class UniversalThreadPool {
         return fixedThreadPool;
     }
 
+    /**
+     * Creates only 1 CachedThreadPool
+     *
+     * @return a CachedThradPool object
+     */
     public ExecutorService getCachedThreadPool() {
         if (cachedThreadPool == null) {
             cachedThreadPool = Executors.newCachedThreadPool();
@@ -68,6 +90,12 @@ public class UniversalThreadPool {
         return cachedThreadPool;
     }
 
+    /**
+     * Also creates a cached thread pool however this is only used by the
+     * default plugin environment
+     *
+     * @return A CachedThreadPool object
+     */
     public ExecutorService getDefaultPluginEnvPool() {
         if (defaultPluginEnvironmentPool == null) {
             defaultPluginEnvironmentPool = Executors.newCachedThreadPool();
