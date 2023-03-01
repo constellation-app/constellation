@@ -71,7 +71,7 @@ public class DataAccessPaneState {
         // so only need to be loaded once at initialization.
         PLUGIN_LOAD = CompletableFuture.supplyAsync(
                 new LookupPluginsTask(),
-                UniversalThreadPool.getThreadPool().getFixedThreadPool()
+                Executors.newSingleThreadExecutor()
         ).thenApply(plugins -> {
             // Sort the DataAccessPlugin lists within each type including the category type
             // so that favourites category is sorted properly.

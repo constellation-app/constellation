@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.help;
 import au.gov.asd.tac.constellation.help.preferences.HelpPreferenceKeys;
 import au.gov.asd.tac.constellation.help.utilities.Generator;
 import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
-//import au.gov.asd.tac.constellation.utilities.threadpool.UniversalThreadPool;
 import com.github.rjeschke.txtmark.Processor;
 import java.awt.Desktop;
 import java.io.File;
