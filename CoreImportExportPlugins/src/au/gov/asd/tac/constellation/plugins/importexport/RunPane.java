@@ -124,7 +124,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     protected static final CompletableFuture<Void> FILTER_LOAD;
 
     static {
-        FILTER_LOAD = CompletableFuture.supplyAsync(RowFilter::new, UniversalThreadPool.getThreadPool().getFixedThreadPool()/*Executors.newSingleThreadExecutor()*/)
+        FILTER_LOAD = CompletableFuture.supplyAsync(RowFilter::new, Executors.newSingleThreadExecutor())
                 .thenAccept(rf -> rowFilter = rf);
     }
 
