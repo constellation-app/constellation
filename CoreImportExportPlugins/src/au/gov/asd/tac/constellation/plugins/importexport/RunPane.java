@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.model.CellValue;
 import au.gov.asd.tac.constellation.plugins.importexport.model.TableRow;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.threadpool.UniversalThreadPool;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -123,7 +124,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     protected static final CompletableFuture<Void> FILTER_LOAD;
 
     static {
-        FILTER_LOAD = CompletableFuture.supplyAsync(RowFilter::new, Executors.newSingleThreadExecutor())
+        FILTER_LOAD = CompletableFuture.supplyAsync(RowFilter::new, UniversalThreadPool.getThreadPool().getFixedThreadPool()/*Executors.newSingleThreadExecutor()*/)
                 .thenAccept(rf -> rowFilter = rf);
     }
 

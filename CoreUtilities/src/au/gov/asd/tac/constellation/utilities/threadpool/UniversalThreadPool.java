@@ -28,6 +28,8 @@ public class UniversalThreadPool {
     private static UniversalThreadPool threadPool = null;
     private ScheduledExecutorService scheduledExecutorService = null;
     private ExecutorService fixedThreadPool = null;
+    private ExecutorService cachedThreadPool = null;
+    private ExecutorService defaultPluginEnvironmentPool = null;
 
     private UniversalThreadPool() {
 
@@ -44,7 +46,7 @@ public class UniversalThreadPool {
 
     public ScheduledExecutorService getScheduledExecutorService() {
         if (scheduledExecutorService == null) {
-            scheduledExecutorService = Executors.newScheduledThreadPool(2);
+            scheduledExecutorService = Executors.newScheduledThreadPool(5);
         }
 
         return scheduledExecutorService;
@@ -56,6 +58,22 @@ public class UniversalThreadPool {
         }
 
         return fixedThreadPool;
+    }
+
+    public ExecutorService getCachedThreadPool() {
+        if (cachedThreadPool == null) {
+            cachedThreadPool = Executors.newCachedThreadPool();
+        }
+
+        return cachedThreadPool;
+    }
+
+    public ExecutorService getDefaultPluginEnvPool() {
+        if (defaultPluginEnvironmentPool == null) {
+            defaultPluginEnvironmentPool = Executors.newCachedThreadPool();
+        }
+
+        return defaultPluginEnvironmentPool;
     }
 
 }

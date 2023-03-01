@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.threadpool.UniversalThreadPool;
 import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,7 +92,9 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
 
         // create a service for executing jobs, limiting concurrent executions to the max concurrent plugins parameter.
         final int maxConcurrentPlugins = parameters.getIntegerValue(MAX_CONCURRENT_PLUGINS_PARAMETER_ID);
-        final ExecutorService workflowExecutor = Executors.newFixedThreadPool(maxConcurrentPlugins);
+
+        // THERE IS A POSSIBLE BUG HERE, GO BACK TO OLD METHOD IF ANY ISSUES
+        final ExecutorService workflowExecutor = UniversalThreadPool.getThreadPool().getFixedThreadPool();
 
         // schedule a job for each batch, where the job is to execute the defined workflow
         final List<Future<?>> workerPlugins = new ArrayList<>();

@@ -321,8 +321,6 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         // top component resize listener
         addComponentListener(new ComponentAdapter() {
-            /*ScheduledExecutorService scheduledExecutorService
-                    = Executors.newScheduledThreadPool(1);*/
             ScheduledFuture<?> scheduledFuture;
 
             @Override
