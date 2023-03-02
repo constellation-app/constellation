@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -73,8 +74,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -759,9 +761,10 @@ public class NotesViewPane extends BorderPane {
                     notesViewController.writeState(activeGraph);
                 }
             });
-
-            final Menu colourMenuItem = new Menu("Set Colour");
-            final CustomMenuItem colourPickerItem = new CustomMenuItem();
+            final ColorPicker colorPicker2 = new ColorPicker();
+            final MenuItem colourMenuItem = new MenuItem("Set Colour");
+            colourMenuItem.setGraphic(colorPicker2);
+            /*final CustomMenuItem colourPickerItem = new CustomMenuItem();
             final ColorPicker colorPicker = new ColorPicker();
             BorderPane p = new BorderPane();
             p.setBackground(new Background(new BackgroundFill(Color.BLUE, null, null)));
@@ -769,13 +772,20 @@ public class NotesViewPane extends BorderPane {
             p.maxHeight(500);
             p.minWidth(500);
             p.maxWidth(500);
-            colourPickerItem.setGraphic(colorPicker);
+            colourPickerItem.setGraphic(colorPicker);*/
 
-            colourPickerItem.setOnAction(event -> {
+            colourMenuItem.setOnAction(event -> {
+                ColorPicker colorPicker = new ColorPicker();
+                noteBody.getChildren().add(colorPicker);
+                colorPicker.show();
+                //JPanel j = new JPanel();
+                //final Color colour = JColorChooser.showDialog(null, "Choose a color", j.getBackground());
+                //ConstellationColor constyColour = new ConstellationColor(colour.getRed(), colour.getBlue(), colour.getGreen());
+                //noteBody.setBackgound(new BackgroundFill(ConstellationColor.fromJavaColor(colour).getJavaFXColor(), null, null));
             });
 
 
-            colourMenuItem.getItems().add(colourPickerItem);
+            //colourMenuItem.getItems().add(colourPickerItem);
             if (newNote.getNodesSelected() != null && newNote.getTransactionsSelected() != null && newNote.getNodesSelected().isEmpty() && newNote.getTransactionsSelected().isEmpty()) {
                 addOnGraphMenuItem.disableProperty().set(true);
                 removeOnGraphMenuItem.disableProperty().set(true);
