@@ -33,7 +33,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
-import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -49,6 +48,8 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -74,6 +75,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -673,6 +675,8 @@ public class NotesViewPane extends BorderPane {
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
         final VBox noteButtons = new VBox(DEFAULT_SPACING, newNote.getEditMode() ? saveTextButton : editTextButton, deleteButton);
+        final ColorPicker colourPicker = new ColorPicker(Color.TRANSPARENT);
+        noteButtons.getChildren().add(colourPicker);
         noteButtons.setAlignment(Pos.CENTER);
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
@@ -761,9 +765,9 @@ public class NotesViewPane extends BorderPane {
                     notesViewController.writeState(activeGraph);
                 }
             });
-            final ColorPicker colorPicker2 = new ColorPicker();
-            final MenuItem colourMenuItem = new MenuItem("Set Colour");
-            colourMenuItem.setGraphic(colorPicker2);
+
+
+
             /*final CustomMenuItem colourPickerItem = new CustomMenuItem();
             final ColorPicker colorPicker = new ColorPicker();
             BorderPane p = new BorderPane();
@@ -774,14 +778,10 @@ public class NotesViewPane extends BorderPane {
             p.maxWidth(500);
             colourPickerItem.setGraphic(colorPicker);*/
 
-            colourMenuItem.setOnAction(event -> {
-                ColorPicker colorPicker = new ColorPicker();
-                noteBody.getChildren().add(colorPicker);
-                colorPicker.show();
-                //JPanel j = new JPanel();
-                //final Color colour = JColorChooser.showDialog(null, "Choose a color", j.getBackground());
-                //ConstellationColor constyColour = new ConstellationColor(colour.getRed(), colour.getBlue(), colour.getGreen());
-                //noteBody.setBackgound(new BackgroundFill(ConstellationColor.fromJavaColor(colour).getJavaFXColor(), null, null));
+            colourPicker.setOnAction(event -> {
+                Color col = colourPicker.getValue();
+                noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
+                        + ConstellationColor.fromFXColor(col).getHtmlColor() + "; -fx-background-radius: 10 10 10 10;");
             });
 
 
@@ -793,7 +793,7 @@ public class NotesViewPane extends BorderPane {
 
             // Context menu is only added to user created notes.
             final ContextMenu contextMenu = new ContextMenu();
-            contextMenu.getItems().addAll(selectOnGraphMenuItem, addOnGraphMenuItem, removeOnGraphMenuItem, colourMenuItem);
+            contextMenu.getItems().addAll(selectOnGraphMenuItem, addOnGraphMenuItem, removeOnGraphMenuItem);
 
             noteBody.setOnContextMenuRequested(event -> contextMenu.show(this, event.getScreenX(), event.getScreenY()));
         }
