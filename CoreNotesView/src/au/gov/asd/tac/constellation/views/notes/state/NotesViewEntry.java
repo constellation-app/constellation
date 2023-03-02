@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.paint.Color;
 
 /**
  * Holds the information for a note in the Notes View.
@@ -30,6 +31,7 @@ public class NotesViewEntry implements PluginReportListener {
     private final String dateTime;
     private String noteTitle;
     private String noteContent;
+    private String nodeColour;
     private final Boolean userCreated;
     private Boolean graphAttribute;
     private List<Integer> nodesSelected;
@@ -37,10 +39,11 @@ public class NotesViewEntry implements PluginReportListener {
     private List<String> tags = new ArrayList<>();
     private boolean editMode;
 
-    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute) {
+    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, String nodeColour) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
+        this.nodeColour = nodeColour;
         this.userCreated = userCreated;
         this.graphAttribute = graphAttribute;
         this.editMode = false;
@@ -100,6 +103,14 @@ public class NotesViewEntry implements PluginReportListener {
 
     public List<String> getTags() {
         return tags;
+    }
+
+    public String getNodeColour() {
+        return nodeColour;
+    }
+
+    public void setNodeColour(String nodeColour) {
+        this.nodeColour = nodeColour;
     }
 
     public void setTags(final List<String> tags) {

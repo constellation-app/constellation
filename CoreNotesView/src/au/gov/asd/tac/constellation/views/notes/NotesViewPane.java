@@ -125,6 +125,8 @@ public class NotesViewPane extends BorderPane {
     private static final String AUTO_COLOR = "#1c5aa6";
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
+    private final Color userColour = Color.web("#942483");
+
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
     private static final String USER_NOTES_FILTER = "User Notes";
     private static final String SELECTED_FILTER = "Selected";
@@ -261,7 +263,8 @@ public class NotesViewPane extends BorderPane {
                                 titleField.getText(),
                                 contentField.getText(),
                                 true,
-                                !applySelected
+                                !applySelected,
+                                USER_COLOR
                         ));
                         if (applySelected) {
                             // Get selected nodes from the graph.
@@ -384,7 +387,8 @@ public class NotesViewPane extends BorderPane {
                     pluginReport.getPluginName(),
                     pluginReport.getMessage(),
                     false,
-                    false
+                    false,
+                    "#ffffff"
             );
 
             final String[] tags = pluginReport.getTags();
@@ -592,7 +596,7 @@ public class NotesViewPane extends BorderPane {
             throw new IllegalStateException("Not processing on the JavaFX Application Thread");
         }
         
-        final String noteColor = newNote.isUserCreated() ? USER_COLOR : AUTO_COLOR;
+        final String noteColor = newNote.isUserCreated() ? USER_COLOR : newNote.getNodeColour();
 
         // Define dateTime label
         final Label dateTimeLabel = new Label((new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(newNote.getDateTime())))));
@@ -675,7 +679,9 @@ public class NotesViewPane extends BorderPane {
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
         final VBox noteButtons = new VBox(DEFAULT_SPACING, newNote.getEditMode() ? saveTextButton : editTextButton, deleteButton);
-        final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(USER_COLOR).getJavaFXColor());
+
+        // Colour picker for each note
+        final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
 
 
         noteButtons.getChildren().add(colourPicker);
@@ -684,13 +690,15 @@ public class NotesViewPane extends BorderPane {
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
         noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                + USER_COLOR + "; -fx-background-radius: 10 10 10 10;");
+                + newNote.getNodeColour() + "; -fx-background-radius: 10 10 10 10;");
         notesListVBox.getChildren().add(noteBody);
 
+        // Change colour of note to whatever user sleects
         colourPicker.setOnAction(event -> {
             Color col = colourPicker.getValue();
             noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
                     + ConstellationColor.fromFXColor(col).getHtmlColor() + "; -fx-background-radius: 10 10 10 10;");
+            newNote.setNodeColour(ConstellationColor.fromFXColor(col).getHtmlColor());
         });
 
         if (newNote.isUserCreated()) {
@@ -775,8 +783,6 @@ public class NotesViewPane extends BorderPane {
                 }
             });
 
-
-            //colourMenuItem.getItems().add(colourPickerItem);
             if (newNote.getNodesSelected() != null && newNote.getTransactionsSelected() != null && newNote.getNodesSelected().isEmpty() && newNote.getTransactionsSelected().isEmpty()) {
                 addOnGraphMenuItem.disableProperty().set(true);
                 removeOnGraphMenuItem.disableProperty().set(true);
