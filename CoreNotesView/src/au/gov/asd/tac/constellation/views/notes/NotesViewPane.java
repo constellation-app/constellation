@@ -675,14 +675,23 @@ public class NotesViewPane extends BorderPane {
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
         final VBox noteButtons = new VBox(DEFAULT_SPACING, newNote.getEditMode() ? saveTextButton : editTextButton, deleteButton);
-        final ColorPicker colourPicker = new ColorPicker(Color.TRANSPARENT);
+        final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(USER_COLOR).getJavaFXColor());
+
+
         noteButtons.getChildren().add(colourPicker);
         noteButtons.setAlignment(Pos.CENTER);
 
+
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
         noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                + noteColor + "; -fx-background-radius: 10 10 10 10;");
+                + USER_COLOR + "; -fx-background-radius: 10 10 10 10;");
         notesListVBox.getChildren().add(noteBody);
+
+        colourPicker.setOnAction(event -> {
+            Color col = colourPicker.getValue();
+            noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
+                    + ConstellationColor.fromFXColor(col).getHtmlColor() + "; -fx-background-radius: 10 10 10 10;");
+        });
 
         if (newNote.isUserCreated()) {
             // Add a right click context menu to user notes.
@@ -764,24 +773,6 @@ public class NotesViewPane extends BorderPane {
                     updateNotesUI();
                     notesViewController.writeState(activeGraph);
                 }
-            });
-
-
-
-            /*final CustomMenuItem colourPickerItem = new CustomMenuItem();
-            final ColorPicker colorPicker = new ColorPicker();
-            BorderPane p = new BorderPane();
-            p.setBackground(new Background(new BackgroundFill(Color.BLUE, null, null)));
-            p.minHeight(500);
-            p.maxHeight(500);
-            p.minWidth(500);
-            p.maxWidth(500);
-            colourPickerItem.setGraphic(colorPicker);*/
-
-            colourPicker.setOnAction(event -> {
-                Color col = colourPicker.getValue();
-                noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                        + ConstellationColor.fromFXColor(col).getHtmlColor() + "; -fx-background-radius: 10 10 10 10;");
             });
 
 
