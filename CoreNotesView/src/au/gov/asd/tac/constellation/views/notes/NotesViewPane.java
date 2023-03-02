@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParamete
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.preferences.GraphOptionsPanelController;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -53,8 +54,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
@@ -63,16 +67,20 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.controlsfx.control.CheckComboBox;
 import org.openide.util.HelpCtx;
+import org.openide.util.Lookup;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -83,6 +91,7 @@ import org.openide.windows.WindowManager;
  */
 public class NotesViewPane extends BorderPane {
 
+    private NotesViewPane self = this;
     private final NotesViewController notesViewController;
     private final List<NotesViewEntry> notesViewEntries;
 
@@ -115,6 +124,7 @@ public class NotesViewPane extends BorderPane {
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
     private static final String USER_NOTES_FILTER = "User Notes";
     private static final String SELECTED_FILTER = "Selected";
+
 
     private static final Object LOCK = new Object();
 
@@ -750,6 +760,22 @@ public class NotesViewPane extends BorderPane {
                 }
             });
 
+            final Menu colourMenuItem = new Menu("Set Colour");
+            final CustomMenuItem colourPickerItem = new CustomMenuItem();
+            final ColorPicker colorPicker = new ColorPicker();
+            BorderPane p = new BorderPane();
+            p.setBackground(new Background(new BackgroundFill(Color.BLUE, null, null)));
+            p.minHeight(500);
+            p.maxHeight(500);
+            p.minWidth(500);
+            p.maxWidth(500);
+            colourPickerItem.setGraphic(colorPicker);
+
+            colourPickerItem.setOnAction(event -> {
+            });
+
+
+            colourMenuItem.getItems().add(colourPickerItem);
             if (newNote.getNodesSelected() != null && newNote.getTransactionsSelected() != null && newNote.getNodesSelected().isEmpty() && newNote.getTransactionsSelected().isEmpty()) {
                 addOnGraphMenuItem.disableProperty().set(true);
                 removeOnGraphMenuItem.disableProperty().set(true);
@@ -757,7 +783,7 @@ public class NotesViewPane extends BorderPane {
 
             // Context menu is only added to user created notes.
             final ContextMenu contextMenu = new ContextMenu();
-            contextMenu.getItems().addAll(selectOnGraphMenuItem, addOnGraphMenuItem, removeOnGraphMenuItem);
+            contextMenu.getItems().addAll(selectOnGraphMenuItem, addOnGraphMenuItem, removeOnGraphMenuItem, colourMenuItem);
 
             noteBody.setOnContextMenuRequested(event -> contextMenu.show(this, event.getScreenX(), event.getScreenY()));
         }
