@@ -94,8 +94,6 @@ import org.openide.windows.WindowManager;
  * @author sol695510
  */
 public class NotesViewPane extends BorderPane {
-
-    private NotesViewPane self = this;
     private final NotesViewController notesViewController;
     private final List<NotesViewEntry> notesViewEntries;
 
@@ -124,8 +122,6 @@ public class NotesViewPane extends BorderPane {
     private static final String USER_COLOR = "#942483";
     private static final String AUTO_COLOR = "#1c5aa6";
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
-
-    private final Color userColour = Color.web("#942483");
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
     private static final String USER_NOTES_FILTER = "User Notes";
