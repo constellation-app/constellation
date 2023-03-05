@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -125,9 +126,14 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         refreshRunnable = () -> {
             try {
                 final ArrayList<Object> devNull = new ArrayList<>();
+
                 while (queue.drainTo(devNull) > 0) {
                     Thread.sleep(50);
                 }
+
+                /*while (queue.size() > 0) {
+                    queue.drainTo(devNull);
+                }*/
 
                 if (reader != null) {
                     attributePanel.updateEditorPanel(reader.refreshAttributes());
@@ -137,6 +143,10 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
                 Thread.currentThread().interrupt();
             }
         };
+
+        CompletableFuture<void> future = CompletableFuture.runAsync(() -> {
+
+        });
 
         GraphManager.getDefault().addGraphManagerListener(AttributeEditorTopComponent.this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
