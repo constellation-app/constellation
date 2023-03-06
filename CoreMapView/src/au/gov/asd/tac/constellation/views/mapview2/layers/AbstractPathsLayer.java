@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
-import java.util.List;
 import java.util.Map;
 import javafx.scene.Group;
 
@@ -32,7 +31,7 @@ public class AbstractPathsLayer extends AbstractMapLayer {
 
     protected Map<String, AbstractMarker> queriedMarkers;
 
-    public AbstractPathsLayer(MapView parent, int id, Map<String, AbstractMarker> queriedMarkers) {
+    public AbstractPathsLayer(final MapView parent, final int id, final Map<String, AbstractMarker> queriedMarkers) {
         super(parent, id);
 
         entityPaths = new Group();

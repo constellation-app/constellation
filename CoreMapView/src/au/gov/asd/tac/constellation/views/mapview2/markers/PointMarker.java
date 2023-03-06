@@ -18,20 +18,10 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
-import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.SVGPath;
-
-import java.util.logging.Logger;
 
 /**
  *
@@ -62,7 +52,7 @@ public class PointMarker extends AbstractMarker {
     private String identifierAttr = null;
     private int identifierCount = 0;
 
-    public PointMarker(MapView parent, int markerID, int nodeId, double lattitude, double longitude, double scale, double xOffset, double yOffset, String attrColour) {
+    public PointMarker(final MapView parent, final int markerID, final int nodeId, final double lattitude, final double longitude, final double scale, final double xOffset, final double yOffset, final String attrColour) {
         super(parent, markerID, nodeId, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
 
         this.lattitude = lattitude;
@@ -80,7 +70,7 @@ public class PointMarker extends AbstractMarker {
 
         // Event handlers for the marker
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 if (!isSelected) {
                     markerPath.setFill(Color.ORANGE);
@@ -90,7 +80,7 @@ public class PointMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 if (!isSelected) {
                     markerPath.setFill(Color.web(currentColour));
@@ -100,7 +90,7 @@ public class PointMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
                 parent.deselectAllMarkers();
                 select();
                 parent.addMarkerIdToSelectedList(markerID, idList, true);
@@ -125,7 +115,7 @@ public class PointMarker extends AbstractMarker {
      *
      * @param option
      */
-    public void changeMarkerColour(String option) {
+    public void changeMarkerColour(final String option) {
         // Depending on the option change the colour of the marker
         if (option.equals(MapViewPane.DEFAULT_COLOURS)) {
             currentColour = defaultColour;
@@ -200,7 +190,7 @@ public class PointMarker extends AbstractMarker {
      * @param mapHeight
      */
     @Override
-    public void setMarkerPosition(double mapWidth, double mapHeight) {
+    public void setMarkerPosition(final double mapWidth, final double mapHeight) {
         x = MarkerUtilities.longToX(longitude, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG);
         y = MarkerUtilities.latToY(lattitude, mapWidth, mapHeight);
         x += xOffset;
@@ -233,7 +223,7 @@ public class PointMarker extends AbstractMarker {
 
     }
 
-    public void setOverlayColour(String overlayCol) {
+    public void setOverlayColour(final String overlayCol) {
 
         if (overlayColourCount == 0) {
             overlayColour = overlayCol;
@@ -254,7 +244,7 @@ public class PointMarker extends AbstractMarker {
         return y;
     }
 
-    public void setLabelAttr(String labelAttribute) {
+    public void setLabelAttr(final String labelAttribute) {
 
         if (labelAttrCount == 0) {
             labelAttr = labelAttribute;
@@ -263,7 +253,7 @@ public class PointMarker extends AbstractMarker {
         ++labelAttrCount;
     }
 
-    public void setIdentAttr(String identAttribute) {
+    public void setIdentAttr(final String identAttribute) {
 
         if (identifierCount == 0) {
             identifierAttr = identAttribute;

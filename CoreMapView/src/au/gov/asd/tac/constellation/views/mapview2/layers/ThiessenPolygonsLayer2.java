@@ -20,15 +20,12 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
-import au.gov.tac.constellation.views.mapview2.utillities.Parabola;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.Parabola;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.QuadCurve;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -42,7 +39,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
     List<AbstractMarker> markers = new ArrayList<>();
 
-    public ThiessenPolygonsLayer2(MapView parent, int id, List<AbstractMarker> markers) {
+    public ThiessenPolygonsLayer2(final MapView parent, final int id, final List<AbstractMarker> markers) {
         super(parent, id);
 
         layer = new Group();
@@ -67,7 +64,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             r.setMouseTransparent(true);
             layer.getChildren().add(r);
         } else {
-            for (AbstractMarker m : markers) {
+            for (final AbstractMarker m : markers) {
                 if (m instanceof PointMarker || m instanceof UserPointMarker) {
 
                     double x = m.getX() - 97;

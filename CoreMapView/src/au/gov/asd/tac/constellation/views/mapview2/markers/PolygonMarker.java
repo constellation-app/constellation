@@ -16,16 +16,12 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.SVGPath;
 
 /**
  *
@@ -33,11 +29,11 @@ import javafx.scene.shape.SVGPath;
  */
 public class PolygonMarker extends AbstractMarker {
 
-    private List<Line> polygonLineUI = new ArrayList<>();
+    private final List<Line> polygonLineUI = new ArrayList<>();
     private Line currentLine = null;
     private String rawPath = "";
 
-    public PolygonMarker(MapView parent, int markerID, int xOffset, int yOffset) {
+    public PolygonMarker(final MapView parent, final int markerID, final int xOffset, final int yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
 
         markerPath.setStroke(Color.BLACK);
@@ -46,7 +42,7 @@ public class PolygonMarker extends AbstractMarker {
 
         // Event handler for the polygon marker
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 markerPath.setFill(Color.YELLOW);
 
@@ -55,7 +51,7 @@ public class PolygonMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 markerPath.setFill(Color.ORANGE);
 
@@ -64,7 +60,7 @@ public class PolygonMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 parent.removeUserMarker(markerID);
                 e.consume();
@@ -79,7 +75,7 @@ public class PolygonMarker extends AbstractMarker {
      * @param prevLineEndY
      * @return
      */
-    public Line addNewLine(double prevLineEndX, double prevLineEndY) {
+    public Line addNewLine(final double prevLineEndX, final double prevLineEndY) {
         // If current line is null it mean the first line is being drawn
         // Else finish off the current line and add it to the UI
         if (currentLine == null) {
@@ -110,7 +106,7 @@ public class PolygonMarker extends AbstractMarker {
         polygonLineUI.clear();
     }
 
-    public void setEnd(double x, double y) {
+    public void setEnd(final double x, final double y) {
         if (currentLine != null) {
             currentLine.setEndX(x);
             currentLine.setEndY(y);

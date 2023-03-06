@@ -18,10 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview2.plugins;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -31,18 +28,10 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
-import au.gov.asd.tac.constellation.views.mapview2.markers.LineMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -93,7 +82,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
             mapViewTopComponent.getMapViewPane().getMap().clearQueriedMarkers();
 
             try {
-                for (GraphElementType elementType : elementTypes) {
+                for (final GraphElementType elementType : elementTypes) {
                     // Ids for all attributes needed from a single vertext of a graph
                     int lonID = GraphConstants.NOT_FOUND;
                     int latID = GraphConstants.NOT_FOUND;
@@ -234,8 +223,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
 
                 }
-            } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "EXCEPTION CAUGHT!!", e);
+            } catch (final Exception e) {
                 LOGGER.log(Level.SEVERE, e.getMessage());
             }
 

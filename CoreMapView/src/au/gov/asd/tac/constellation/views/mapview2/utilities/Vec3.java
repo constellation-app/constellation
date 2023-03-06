@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.tac.constellation.views.mapview2.utillities;
+package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
 /**
  * Utility class to hold 3 variables and do vector maths on them
@@ -25,43 +25,43 @@ public class Vec3 {
     private double y = 0;
     private double z = 0;
 
-    public Vec3(Vec3 vec3) {
+    public Vec3(final Vec3 vec3) {
         x = vec3.x;
         y = vec3.y;
         z = vec3.z;
     }
 
-    public Vec3(double x, double y) {
+    public Vec3(final double x, final double y) {
         z = 0;
         this.x = x;
         this.y = y;
     }
 
-    public Vec3(double x, double y, double z) {
+    public Vec3(final double x, final double y, final double z) {
         this.x = x;
         this.y = y;
         this.z = z;
     }
 
-    public void multiplyFloat(float value) {
+    public void multiplyFloat(final float value) {
         x *= value;
         y *= value;
         z *= value;
     }
 
-    public void multiplyDouble(double value) {
+    public void multiplyDouble(final double value) {
         x *= value;
         y *= value;
         z *= value;
     }
 
-    public void addVector(Vec3 value) {
+    public void addVector(final Vec3 value) {
         x += value.x;
         y += value.y;
         z += value.z;
     }
 
-    public void divVector(double d) {
+    public void divVector(final double d) {
         if (d != 0) {
             x /= d;
             y /= d;
@@ -73,11 +73,11 @@ public class Vec3 {
 
     }
 
-    public static double getDistance(Vec3 v1, Vec3 v2) {
+    public static double getDistance(final Vec3 v1, final Vec3 v2) {
         return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2));
     }
 
-    public Vec3 cross(Vec3 v) {
+    public Vec3 cross(final Vec3 v) {
         Vec3 ans = new Vec3();
         ans.x = y * v.z - z * v.y;
         ans.y = z * v.x - x * v.z;
@@ -90,7 +90,7 @@ public class Vec3 {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(final double x) {
         this.x = x;
     }
 
@@ -98,7 +98,7 @@ public class Vec3 {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(final double y) {
         this.y = y;
     }
 
@@ -106,7 +106,7 @@ public class Vec3 {
         return z;
     }
 
-    public void setZ(double z) {
+    public void setZ(final double z) {
         this.z = z;
     }
 

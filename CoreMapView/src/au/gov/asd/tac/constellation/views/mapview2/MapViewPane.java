@@ -17,20 +17,14 @@ package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.gui.MultiChoiceInputPane;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.mapview.exporters.GeoJsonExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.GeoPackageExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.KmlExporter;
-import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
 import au.gov.asd.tac.constellation.views.mapview.exporters.ShapefileExporter;
 import au.gov.asd.tac.constellation.views.mapview.layers.MapLayer;
-import au.gov.asd.tac.constellation.views.mapview.overlays.MapOverlay;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
-import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ActivityHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
@@ -41,54 +35,28 @@ import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer2;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
-import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
-import javafx.embed.swing.SwingNode;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
-import javafx.scene.Group;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
-import javax.swing.event.DocumentEvent;
 import org.controlsfx.control.CheckComboBox;
-import org.controlsfx.control.IndexedCheckModel;
 import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
-import static au.gov.asd.tac.constellation.views.mapview2.MapView.MAP_WIDTH;
-import static au.gov.asd.tac.constellation.views.mapview2.MapView.MAP_HEIGHT;
 
 /**
  *
@@ -100,10 +68,10 @@ public class MapViewPane extends BorderPane {
     private final ToolBar toolBar;
 
     // Stackpane to hold the map
-    private StackPane parentStackPane;
+    private final StackPane parentStackPane;
 
     // Rectangle to repesent the view port
-    private Rectangle viewPortRectangle;
+    private final Rectangle viewPortRectangle;
 
     // String for all the menu options
     private static final String MARKER_TYPE_POINT = "Point Markers";
@@ -164,7 +132,7 @@ public class MapViewPane extends BorderPane {
 
     // A map of all the layers
     private int layerId = 0;
-    private Map<String, Integer> layerMap = new HashMap<>();
+    private final Map<String, Integer> layerMap = new HashMap<>();
 
 
 
@@ -200,7 +168,8 @@ public class MapViewPane extends BorderPane {
 
         // Event handler for selecting different layers to show
         layersDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            public void onChanged(ListChangeListener.Change<? extends String> c) {
+            @Override
+            public void onChanged(final ListChangeListener.Change<? extends String> c) {
                 layersDropDown.getItems().forEach(item -> addLayer(item, layerId));
             }
         });
@@ -212,7 +181,8 @@ public class MapViewPane extends BorderPane {
 
         // Overlay event handler
         overlaysDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            public void onChanged(ListChangeListener.Change<? extends String> c) {
+            @Override
+            public void onChanged(final ListChangeListener.Change<? extends String> c) {
                 overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
             }
         });
@@ -248,7 +218,8 @@ public class MapViewPane extends BorderPane {
 
         // Event handler for hiding/showing markers
         markerDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            public void onChanged(ListChangeListener.Change<? extends String> c) {
+            @Override
+            public void onChanged(final ListChangeListener.Change<? extends String> c) {
                 markerDropDown.getItems().forEach(item -> {
 
                     if (markerDropDown.getCheckModel().isChecked(item)) {
@@ -332,7 +303,7 @@ public class MapViewPane extends BorderPane {
      *
      * @param overlay - string representing the overlay
      */
-    private void toggleOverlay(String overlay) {
+    private void toggleOverlay(final String overlay) {
         mapView.toggleOverlay(overlay, overlaysDropDown.getCheckModel().isChecked(overlay));
     }
 
@@ -342,7 +313,7 @@ public class MapViewPane extends BorderPane {
      * @param key - key specifying the layer
      * @param id - a new id for the layer if it is going to be working
      */
-    private void addLayer(String key, int id) {
+    private void addLayer(final String key, final int id) {
         if (layersDropDown.getCheckModel().getCheckedItems().contains(key) && !layerMap.containsKey(key)) {
             mapView.addLayer(getLayerFromKey(key));
             layerMap.put(key, id);
@@ -358,7 +329,7 @@ public class MapViewPane extends BorderPane {
      * @param key - key specifying which layer to create
      * @return
      */
-    private AbstractMapLayer getLayerFromKey(String key) {
+    private AbstractMapLayer getLayerFromKey(final String key) {
         switch (key) {
             case DAY_NIGHT:
                 return new DayNightLayer(mapView, layerId++);
@@ -456,7 +427,7 @@ public class MapViewPane extends BorderPane {
      *
      * @param marker - marker to be added
      */
-    public void drawMarker(AbstractMarker marker) {
+    public void drawMarker(final AbstractMarker marker) {
         if (marker != null && mapView != null) {
             mapView.drawMarker(marker);
 
@@ -472,7 +443,7 @@ public class MapViewPane extends BorderPane {
         return new ArrayList<>(providers);
     }
 
-    private void setDropDownOptions(List<?> options) {
+    private void setDropDownOptions(final List<?> options) {
         dropDownOptions.clear();
         options.forEach(o -> dropDownOptions.add(o.toString()));
     }

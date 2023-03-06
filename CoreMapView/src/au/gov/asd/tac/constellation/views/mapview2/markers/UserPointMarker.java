@@ -16,11 +16,9 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.SVGPath;
 
 /**
  *
@@ -33,7 +31,7 @@ public class UserPointMarker extends AbstractMarker {
     private double x;
     private double y;
 
-    public UserPointMarker(MapView parent, int markerID, double x, double y, double scale, double xOffset, double yOffset) {
+    public UserPointMarker(final MapView parent, final int markerID, final double x, final double y, final double scale, final double xOffset, final double yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
 
 
@@ -50,7 +48,7 @@ public class UserPointMarker extends AbstractMarker {
 
         // Set up event handlers for user draw point marker
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 markerPath.setFill(Color.YELLOW);
 
@@ -59,7 +57,7 @@ public class UserPointMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 markerPath.setFill(Color.ORANGE);
 
@@ -68,7 +66,7 @@ public class UserPointMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 parent.removeUserMarker(markerID);
 
@@ -84,7 +82,7 @@ public class UserPointMarker extends AbstractMarker {
      * @param mapHeight
      */
     @Override
-    public void setMarkerPosition(double mapWidth, double mapHeight) {
+    public void setMarkerPosition(final double mapWidth, final double mapHeight) {
 
         x += xOffset;
         y += yOffset;

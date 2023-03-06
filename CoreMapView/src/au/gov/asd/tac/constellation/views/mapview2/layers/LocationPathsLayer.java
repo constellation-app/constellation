@@ -16,13 +16,10 @@
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.graph.GraphConstants;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
-import au.gov.asd.tac.constellation.views.mapview.utilities.GraphElement;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.LineMarker;
@@ -40,7 +37,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
     static final double LINE_MARKER_X_OFFSET = 1;
     static final double LINE_MARKER_Y_OFFSET = 149;
 
-    public LocationPathsLayer(MapView parent, int id, Map<String, AbstractMarker> queriedMarkers) {
+    public LocationPathsLayer(final MapView parent, final int id, final Map<String, AbstractMarker> queriedMarkers) {
         super(parent, id, queriedMarkers);
     }
 
@@ -54,7 +51,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
         final List<Integer> idList = new ArrayList<>();
 
         // For every queried markers add all its connected neighbours to the idList
-        for (Object value : queriedMarkers.values()) {
+        for (final Object value : queriedMarkers.values()) {
             AbstractMarker m = (AbstractMarker) value;
 
             if (m instanceof PointMarker) {

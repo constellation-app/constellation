@@ -100,7 +100,7 @@ import org.apache.commons.lang3.math.NumberUtils;
  */
 public class MapView extends ScrollPane {
 
-    private MapViewPane parent;
+    private final MapViewPane parent;
 
     private final StackPane mapStackPane;
 
@@ -127,25 +127,25 @@ public class MapView extends ScrollPane {
     private final List<AbstractMarker> userMarkers = new ArrayList<>();
 
     // Set of the types of markers currently showing on screen
-    private Set<AbstractMarker.MarkerType> markersShowing = new HashSet<>();
+    private final Set<AbstractMarker.MarkerType> markersShowing = new HashSet<>();
 
     // Set of overlays that are active at all times
-    private Map<String, AbstractOverlay> overlayMap = new HashMap<>();
+    private final Map<String, AbstractOverlay> overlayMap = new HashMap<>();
 
     private final List<Integer> selectedNodeList = new ArrayList<>();
 
     // The group that contains all the country graphics
-    private Group countryGroup;
+    private final Group countryGroup;
 
     // The two groups that hold the queried and user marker groups
-    private Group graphMarkerGroup;
+    private final Group graphMarkerGroup;
 
-    private Group drawnMarkerGroup;
+    private final Group drawnMarkerGroup;
 
     // Groups for user drawn polygons, cluster markers and "hidden" point markers used for cluster calculations
-    private Group polygonMarkerGroup;
-    private Group clusterMarkerGroup;
-    private Group hiddenPointMarkerGroup;
+    private final Group polygonMarkerGroup;
+    private final Group clusterMarkerGroup;
+    private final Group hiddenPointMarkerGroup;
 
     // Groups for the ovelays and layers
     private final Group overlayGroup;
@@ -200,7 +200,7 @@ public class MapView extends ScrollPane {
     // Pane that hold all the groups for allt he different graphical outputs
     private final Pane mapGroupHolder = new Pane();
 
-    private Rectangle clipRectangle = new Rectangle();
+    private final Rectangle clipRectangle = new Rectangle();
 
     // All the layers are stored here
     private final List<AbstractMapLayer> layers = new ArrayList<>();
@@ -219,16 +219,16 @@ public class MapView extends ScrollPane {
     private static final String GEOHASH = "Geohash";
     private static final String MGRS = "MGRS";
 
-    private MapView self = this;
+    private final MapView self = this;
 
     private ClusterMarkerBuilder clusterMarkerBuilder = null;
 
     // Flags for what attribute marker colour and text should be derived from
-    private StringProperty markerColourProperty = new SimpleStringProperty();
-    private StringProperty markerTextProperty = new SimpleStringProperty();
+    private final StringProperty markerColourProperty = new SimpleStringProperty();
+    private final StringProperty markerTextProperty = new SimpleStringProperty();
 
 
-    public MapView(MapViewPane parent) {
+    public MapView(final MapViewPane parent) {
         this.parent = parent;
         LOGGER.log(Level.SEVERE, "In MapView constructor");
 
@@ -330,51 +330,44 @@ public class MapView extends ScrollPane {
 
         markerColourProperty.set(parent.DEFAULT_COLOURS);
         // Event listener for what colour point markers should be
-        markerColourProperty.addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+        markerColourProperty.addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+            // Loop through all markers on screen
+            for (final Object value : markers.values()) {
+                AbstractMarker m = (AbstractMarker) value;
 
-                // Loop through all markers on screen
-                for (Object value : markers.values()) {
-                    AbstractMarker m = (AbstractMarker) value;
+                // If the marker is a point marker
+                if (m instanceof PointMarker) {
+                    PointMarker p = (PointMarker) m;
 
-                    // If the marker is a point marker
-                    if (m instanceof PointMarker) {
-                        PointMarker p = (PointMarker) m;
-
-                        // Change the marker colour
-                        p.changeMarkerColour(newValue);
-
-                    }
+                    // Change the marker colour
+                    p.changeMarkerColour(newValue);
 
                 }
+
             }
         });
 
         // Handler for what type of text to display under the markers
-        markerTextProperty.addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                // Clear any existing text
-                pointMarkerTextGroup.getChildren().clear();
+        markerTextProperty.addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+            // Clear any existing text
+            pointMarkerTextGroup.getChildren().clear();
 
-                // Loop through all the markers
-                for (Object value : markers.values()) {
-                    AbstractMarker m = (AbstractMarker) value;
+            // Loop through all the markers
+            for (final Object value : markers.values()) {
+                AbstractMarker m = (AbstractMarker) value;
 
-                    // If its a point marker change its text
-                    if (m instanceof PointMarker) {
-                        PointMarker p = (PointMarker) m;
+                // If its a point marker change its text
+                if (m instanceof PointMarker) {
+                    PointMarker p = (PointMarker) m;
 
-                        if (newValue.equals(MapViewPane.USE_LABEL_ATTR)) {
+                    if (newValue.equals(MapViewPane.USE_LABEL_ATTR)) {
 
-                            setPointMarkerText(p.getLabelAttr(), p);
-                        } else if (newValue.equals(MapViewPane.USE_IDENT_ATTR)) {
-                            setPointMarkerText(p.getIdentAttr(), p);
-                        }
+                        setPointMarkerText(p.getLabelAttr(), p);
+                    } else if (newValue.equals(MapViewPane.USE_IDENT_ATTR)) {
+                        setPointMarkerText(p.getIdentAttr(), p);
                     }
-
                 }
+
             }
         });
 
@@ -432,7 +425,7 @@ public class MapView extends ScrollPane {
         // When mouse is dragged
         mapGroupHolder.setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(final MouseEvent event) {
                 // If the user is draing a selection rectangle
                 if (isSelectingMultiple) {
                     double x = event.getX();
@@ -471,18 +464,18 @@ public class MapView extends ScrollPane {
         // When mouse is released
         mapGroupHolder.setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(final MouseEvent event) {
 
                 // If the user is selecting multiple markers
                 if (isSelectingMultiple) {
                     selectedNodeList.clear();
 
-                    double pointMarkerXOffset = 95.5;
-                    double pointMarkerYOffset = 95.5;
+                    final double pointMarkerXOffset = 95.5;
+                    final double pointMarkerYOffset = 95.5;
                     List<Integer> idList = new ArrayList<>();
 
                     // Loop through all the markers
-                    for (AbstractMarker m : markers.values()) {
+                    for (final AbstractMarker m : markers.values()) {
                         if (m instanceof PointMarker) {
                             PointMarker p = (PointMarker) m;
 
@@ -553,7 +546,7 @@ public class MapView extends ScrollPane {
         // When mouse is pressed instantiate multi-select rectangle
         mapGroupHolder.setOnMousePressed(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(final MouseEvent event) {
 
                 // create the selection rectangle
                 if (event.isPrimaryButtonDown()) {
@@ -580,7 +573,7 @@ public class MapView extends ScrollPane {
 
         mapGroupHolder.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(final MouseEvent event) {
 
                 // If left clicked
                 if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
@@ -686,7 +679,7 @@ public class MapView extends ScrollPane {
         // Scoll to zoom
         mapStackPane.setOnScroll(new EventHandler<ScrollEvent>() {
             @Override
-            public void handle(ScrollEvent e) {
+            public void handle(final ScrollEvent e) {
                 e.consume();
 
                 if (e.getDeltaY() == 0) {
@@ -735,7 +728,7 @@ public class MapView extends ScrollPane {
      * @param markerText - Text to appear below the marker
      * @param p - The marker itself
      */
-    private void setPointMarkerText(String markerText, PointMarker p) {
+    private void setPointMarkerText(final String markerText, final PointMarker p) {
         Text t = new Text(markerText);
         t.setX(p.getX() - 125);
         t.setY(p.getY() + 103);
@@ -747,7 +740,7 @@ public class MapView extends ScrollPane {
      * Deselects all markers
      */
     public void deselectAllMarkers() {
-        for (AbstractMarker value : markers.values()) {
+        for (final AbstractMarker value : markers.values()) {
             if (value instanceof PointMarker) {
                 PointMarker p = (PointMarker) value;
                 p.deselect();
@@ -764,7 +757,7 @@ public class MapView extends ScrollPane {
      *
      * @param marker - marker to add
      */
-    private void addUserDrawnMarker(AbstractMarker marker) {
+    private void addUserDrawnMarker(final AbstractMarker marker) {
         // Only draw marker is it's type is set to be showing on screen
         if (markersShowing.contains(marker.getType())) {
 
@@ -782,7 +775,7 @@ public class MapView extends ScrollPane {
      *
      * @param id - id of marker to remove
      */
-    public void removeUserMarker(int id) {
+    public void removeUserMarker(final int id) {
         // Loop through all the user drawn markers and if their id matches with the one passed in
         // to this function then remove them
         for (int i = 0; i < userMarkers.size(); ++i) {
@@ -805,7 +798,7 @@ public class MapView extends ScrollPane {
      * @param overlay - overlay to hide/show
      * @param show - flag
      */
-    public void toggleOverlay(String overlay, boolean show) {
+    public void toggleOverlay(final String overlay, final boolean show) {
         if (overlayMap.containsKey(overlay) && overlayMap.get(overlay).isShowing() != show) {
             overlayMap.get(overlay).toggleOverlay();
         }
@@ -816,7 +809,7 @@ public class MapView extends ScrollPane {
     }
 
     // Add a cluster marker
-    public void addClusterMarkers(List<ClusterMarker> clusters, List<Text> clusterValues) {
+    public void addClusterMarkers(final List<ClusterMarker> clusters, final List<Text> clusterValues) {
         // If cluster marker is showing
         if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
             clusterMarkerGroup.getChildren().clear();
@@ -862,7 +855,7 @@ public class MapView extends ScrollPane {
         hiddenPointMarkerGroup.getChildren().clear();
 
         // Add point markers to the hiddenPointMarker groups
-        for (Object value : markers.values()) {
+        for (final Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
             if (m instanceof PointMarker) {
                 SVGPath p = new SVGPath();
@@ -888,14 +881,14 @@ public class MapView extends ScrollPane {
     }
 
     // Sets up and adds a layer to the map
-    public void addLayer(AbstractMapLayer layer) {
+    public void addLayer(final AbstractMapLayer layer) {
         layer.setUp();
         layers.add(layer);
         layerGroup.getChildren().add(layer.getLayer());
         layer.setIsShowing(true);
     }
 
-    public void removeLayer(int id) {
+    public void removeLayer(final int id) {
         layerGroup.getChildren().clear();
         for (int i = 0; i < layers.size(); ++i) {
             if (layers.get(i).getId() == id) {
@@ -912,7 +905,7 @@ public class MapView extends ScrollPane {
      * @param type - the type of marker to show/hide
      * @param adding - flag
      */
-    public void updateShowingMarkers(AbstractMarker.MarkerType type, boolean adding) {
+    public void updateShowingMarkers(final AbstractMarker.MarkerType type, final boolean adding) {
 
         // Add or remove a type of marker
         if (markersShowing.contains(type) && !adding) {
@@ -946,7 +939,7 @@ public class MapView extends ScrollPane {
         }
 
         // Redraw all queried markers
-        for (Object value : markers.values()) {
+        for (final Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
             drawMarker(m);
         }
@@ -957,7 +950,7 @@ public class MapView extends ScrollPane {
      *
      * @param scale
      */
-    public void reScaleQueriedMarkers(double scale) {
+    public void reScaleQueriedMarkers(final double scale) {
         graphMarkerGroup.getChildren().clear();
 
         if (markers.isEmpty()) {
@@ -968,7 +961,7 @@ public class MapView extends ScrollPane {
             LOGGER.log(Level.SEVERE, "Marker values is empty");
         }
 
-        for (Object value : markers.values()) {
+        for (final Object value : markers.values()) {
             AbstractMarker m = (AbstractMarker) value;
             m.getMarker().setScaleX(m.getMarker().getScaleX() * scale);
             m.getMarker().setScaleY(m.getMarker().getScaleY() * scale);
@@ -1005,11 +998,11 @@ public class MapView extends ScrollPane {
     public List<AbstractMarker> getAllMarkersAsList() {
         List<AbstractMarker> allMarkers = new ArrayList<>();
 
-        for (AbstractMarker marker : markers.values()) {
+        for (final AbstractMarker marker : markers.values()) {
             allMarkers.add(marker);
         }
 
-        for (AbstractMarker marker : userMarkers) {
+        for (final AbstractMarker marker : userMarkers) {
             allMarkers.add(marker);
         }
 
@@ -1049,7 +1042,7 @@ public class MapView extends ScrollPane {
      * @param selectedNodes - Node id's that are represented by the
      * @param selectingVertex - Flag for vertex or transaction selection
      */
-    public void addMarkerIdToSelectedList(int markerID, List<Integer> selectedNodes, boolean selectingVertex) {
+    public void addMarkerIdToSelectedList(final int markerID, final List<Integer> selectedNodes, final boolean selectingVertex) {
         selectedNodeList.add(markerID);
         PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
 
@@ -1065,7 +1058,7 @@ public class MapView extends ScrollPane {
         double averageY = 0;
 
         // Add the positions of all queried markers
-        for (AbstractMarker m : markers.values()) {
+        for (final AbstractMarker m : markers.values()) {
             if (m instanceof PointMarker) {
                 averageX += (m.getX() - 95.5);
                 averageY += (m.getY() + 95.5);
@@ -1074,7 +1067,7 @@ public class MapView extends ScrollPane {
         }
 
         // Add the positions of all user markers
-        for (AbstractMarker m : userMarkers) {
+        for (final AbstractMarker m : userMarkers) {
             if (m instanceof UserPointMarker) {
                 averageX += m.getX();
                 averageY += m.getY();
@@ -1102,8 +1095,8 @@ public class MapView extends ScrollPane {
      * Pan to the center of the component
      */
     public void panToCenter() {
-        double centerX = this.getWidth() / 2;
-        double centerY = this.getHeight() / 2;
+        final double centerX = this.getWidth() / 2;
+        final double centerY = this.getHeight() / 2;
 
 
         mapStackPane.setTranslateX(centerX - MAP_WIDTH / 2);
@@ -1117,7 +1110,7 @@ public class MapView extends ScrollPane {
      * @param x - coordinate
      * @param y - coordinate
      */
-    private void pan(double x, double y) {
+    private void pan(final double x, final double y) {
 
         Vec3 center = new Vec3(MAP_WIDTH / 2, MAP_HEIGHT / 2);
 
@@ -1139,7 +1132,7 @@ public class MapView extends ScrollPane {
         double averageY = 0;
 
         // Add coordinates of the all selected markers
-        for (AbstractMarker m : markers.values()) {
+        for (final AbstractMarker m : markers.values()) {
             if (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId())) {
                 averageX += (m.getX() - 95.5);
                 averageY += (m.getY() + 95.5);
@@ -1161,7 +1154,7 @@ public class MapView extends ScrollPane {
         zoom(averageX, averageY, false);
     }
 
-    public void zoom(double x, double y, boolean allMarkers) {
+    public void zoom(final double x, final double y, final boolean allMarkers) {
         double scaleFactor = 1.05;
         boolean zoomIn = true;
 
@@ -1203,8 +1196,8 @@ public class MapView extends ScrollPane {
      * @param allMarkers
      * @return whether or not markers are in view
      */
-    private boolean selectedMarkersInView(boolean allMarkers) {
-        for (AbstractMarker m : markers.values()) {
+    private boolean selectedMarkersInView(final boolean allMarkers) {
+        for (final AbstractMarker m : markers.values()) {
             if ((m instanceof PointMarker && allMarkers) || (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId()) && !allMarkers)) {
                 double x = (m.getX() - 100);
                 double y = (m.getY() + 80);
@@ -1497,7 +1490,7 @@ public class MapView extends ScrollPane {
      *
      * @param marker - marker to be added to the map
      */
-    public void drawMarker(AbstractMarker marker) {
+    public void drawMarker(final AbstractMarker marker) {
 
         if (markersShowing.contains(marker.getType())) {
             marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
@@ -1512,7 +1505,7 @@ public class MapView extends ScrollPane {
         return graphMarkerGroup;
     }
 
-    public void addMarkerToHashMap(String key, AbstractMarker e) {
+    public void addMarkerToHashMap(final String key, final AbstractMarker e) {
         markers.put(key, e);
     }
 
@@ -1563,7 +1556,7 @@ public class MapView extends ScrollPane {
                 }
             }
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOGGER.log(Level.SEVERE, "Exception thrown");
             LOGGER.log(Level.SEVERE, e.getMessage());
         }

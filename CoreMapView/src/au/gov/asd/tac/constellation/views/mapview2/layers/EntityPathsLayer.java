@@ -15,12 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
@@ -34,8 +30,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import javafx.application.Platform;
 
 /**
  *
@@ -44,7 +38,7 @@ import javafx.application.Platform;
 public class EntityPathsLayer extends AbstractPathsLayer {
 
 
-    public EntityPathsLayer(MapView parent, int id, Map<String, AbstractMarker> queriedMarkers) {
+    public EntityPathsLayer(final MapView parent, final int id, final Map<String, AbstractMarker> queriedMarkers) {
         super(parent, id, queriedMarkers);
     }
 
@@ -53,8 +47,8 @@ public class EntityPathsLayer extends AbstractPathsLayer {
      *
      * @param idList
      */
-    private void extractQueriedMarkersAndNeighbours(List<Integer> idList) {
-        for (Object value : queriedMarkers.values()) {
+    private void extractQueriedMarkersAndNeighbours(final List<Integer> idList) {
+        for (final Object value : queriedMarkers.values()) {
             AbstractMarker m = (AbstractMarker) value;
 
             if (m instanceof PointMarker) {

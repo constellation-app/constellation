@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.tac.constellation.views.mapview2.utillities;
+package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -43,7 +41,7 @@ public class IntersectionNode {
         key = x + "," + y;
     }
 
-    public IntersectionNode(double x, double y) {
+    public IntersectionNode(final double x, final double y) {
         this.x = x;
         this.y = y;
         key = x + "," + y;
@@ -58,7 +56,7 @@ public class IntersectionNode {
     }
 
 
-    public void addRelevantMarker(Integer id) {
+    public void addRelevantMarker(final Integer id) {
         if (!relevantMarkers.contains(id)) {
             relevantMarkers.add(id);
         }
@@ -70,7 +68,7 @@ public class IntersectionNode {
      * @param otherNode - The other intersecionNode that the current node is a
      * neighbour of
      */
-    public void addConnectedPoint(IntersectionNode otherNode) {
+    public void addConnectedPoint(final IntersectionNode otherNode) {
 
         if (otherNode == null) {
             return;
@@ -94,7 +92,7 @@ public class IntersectionNode {
      * @param x - x coordinate of intersection nodes
      * @param y - y coordinate of intersection nodes
      */
-    public void addContainedPoint(double x, double y) {
+    public void addContainedPoint(final double x, final double y) {
         containedPoints.add(new Vec3(x, y));
     }
 

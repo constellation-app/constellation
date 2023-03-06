@@ -15,18 +15,13 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
-import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
-import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.SVGPath;
 
 /**
  *
@@ -43,7 +38,7 @@ public class CircleMarker extends AbstractMarker {
     private final Circle circle = new Circle();
     private final Line line = new Line();
 
-    public CircleMarker(MapView parent, int markerID, double centerX, double centerY, double radius, double xOffset, double yOffset) {
+    public CircleMarker(final MapView parent, final int markerID, final double centerX, final double centerY, final double radius, final double xOffset, final double yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
 
         this.centerX = centerX;
@@ -75,7 +70,7 @@ public class CircleMarker extends AbstractMarker {
 
         // Event handler for changing colours when mouse hovers over the projected circle
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 markerPath.setFill(Color.YELLOW);
 
@@ -84,7 +79,7 @@ public class CircleMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 markerPath.setFill(Color.ORANGE);
 
@@ -94,7 +89,7 @@ public class CircleMarker extends AbstractMarker {
 
         // Event handler for removing handler when clicked
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 parent.removeUserMarker(markerID);
                 e.consume();
@@ -171,7 +166,7 @@ public class CircleMarker extends AbstractMarker {
         markerPath.setContent(pathStringBuilder.toString());
     }
 
-    public void setRadius(double radius) {
+    public void setRadius(final double radius) {
         this.radius = radius;
         circle.setRadius(radius);
     }
@@ -207,7 +202,7 @@ public class CircleMarker extends AbstractMarker {
 
     }
 
-    public void setLineEnd(double x, double y) {
+    public void setLineEnd(final double x, final double y) {
         line.setEndX(x);
         line.setEndY(y);
     }

@@ -18,19 +18,8 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
-import au.gov.tac.constellation.views.mapview2.utillities.Vec3;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 
 /**
@@ -45,7 +34,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
     private static final double X_OFFSET = 96;
     private static final double Y_OFFSET = 92;
 
-    protected AbstractHeatmapLayer(MapView parent, int id) {
+    protected AbstractHeatmapLayer(final MapView parent, final int id) {
         super(parent, id);
         layerGroup = new Group();
     }
@@ -56,7 +45,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
     @Override
     public void setUp() {
         // Loop through all the markers
-        for (Object value : parent.getAllMarkers().values()) {
+        for (final Object value : parent.getAllMarkers().values()) {
 
             // If marker is a point marker
             if (value instanceof PointMarker) {
@@ -93,7 +82,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
         return layerGroup;
     }
 
-    public int getWeight(AbstractMarker marker) {
+    public int getWeight(final AbstractMarker marker) {
         return 0;
     }
 

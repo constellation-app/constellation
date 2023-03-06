@@ -19,8 +19,6 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  *
@@ -28,7 +26,7 @@ import java.util.Set;
  */
 public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
 
-    public ActivityHeatmapLayer(MapView parent, int id) {
+    public ActivityHeatmapLayer(final MapView parent, final int id) {
         super(parent, id);
     }
 
@@ -40,7 +38,7 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
      * @returns the weight value
      */
     @Override
-    public int getWeight(AbstractMarker marker) {
+    public int getWeight(final AbstractMarker marker) {
         // Holds the ammount of transactions
         int activityCount = 0;
 

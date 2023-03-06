@@ -17,11 +17,8 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.views.mapview.utilities.GraphElement;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  *
@@ -29,7 +26,7 @@ import java.util.Set;
  */
 public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
 
-    public PopularityHeatmapLayer(MapView parent, int id) {
+    public PopularityHeatmapLayer(final MapView parent, final int id) {
         super(parent, id);
     }
 
@@ -40,7 +37,7 @@ public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
      * @return the weight
      */
     @Override
-    public int getWeight(AbstractMarker marker) {
+    public int getWeight(final AbstractMarker marker) {
         int popularityCount = 0;
 
         if (currentGraph != null) {

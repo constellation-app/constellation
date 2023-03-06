@@ -16,12 +16,10 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
-import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.SVGPath;
 
 /**
  *
@@ -40,7 +38,7 @@ public class LineMarker extends AbstractMarker {
     private double y2;
 
 
-    public LineMarker(MapView parent, int markerID, int id, double lattitude1, double longitude1, double lattitude2, double longitude2, double xOffset, double yOffset) {
+    public LineMarker(final MapView parent, final int markerID, final int id, final double lattitude1, final double longitude1, final double lattitude2, final double longitude2, final double xOffset, final double yOffset) {
         super(parent, markerID, id, xOffset, yOffset, AbstractMarker.MarkerType.LINE_MARKER);
 
         lat1 = lattitude1;
@@ -53,7 +51,7 @@ public class LineMarker extends AbstractMarker {
 
         // Set event handlers for the line marker
         markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 if (!isSelected) {
                     markerPath.setStroke(Color.ORANGE);
@@ -63,7 +61,7 @@ public class LineMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
 
                 if (!isSelected) {
                     markerPath.setStroke(Color.BLACK);
@@ -74,7 +72,7 @@ public class LineMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent e) {
+            public void handle(final MouseEvent e) {
                 isSelected = true;
                 markerPath.setStroke(Color.BLUE);
                 parent.addMarkerIdToSelectedList(markerID, idList, false);
@@ -91,7 +89,7 @@ public class LineMarker extends AbstractMarker {
      * @param mapHeight
      */
     @Override
-    public void setMarkerPosition(double mapWidth, double mapHeight) {
+    public void setMarkerPosition(final double mapWidth, final double mapHeight) {
         x1 = MarkerUtilities.longToX(lon1, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG);
         y1 = MarkerUtilities.latToY(lat1, mapWidth, mapHeight);
 

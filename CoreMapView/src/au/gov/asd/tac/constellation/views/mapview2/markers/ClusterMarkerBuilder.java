@@ -23,7 +23,6 @@ import java.util.Set;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
 /**
@@ -32,18 +31,18 @@ import javafx.scene.text.Text;
  */
 public class ClusterMarkerBuilder {
 
-    private List<ClusterMarker> clusterCircles = new ArrayList<>();
-    private List<Text> clusterValues = new ArrayList<>();
+    private final List<ClusterMarker> clusterCircles = new ArrayList<>();
+    private final List<Text> clusterValues = new ArrayList<>();
 
-    private ArrayList<ArrayList<Node>> pointMarkerClusters = new ArrayList<>();
-    private Set<Node> clusteredPointMarkers = new HashSet<>();
+    private final ArrayList<ArrayList<Node>> pointMarkerClusters = new ArrayList<>();
+    private final Set<Node> clusteredPointMarkers = new HashSet<>();
     private MapView parent = null;
 
     public ClusterMarkerBuilder() {
 
     }
 
-    public ClusterMarkerBuilder(MapView parent) {
+    public ClusterMarkerBuilder(final MapView parent) {
         this.parent = parent;
     }
 
@@ -52,7 +51,7 @@ public class ClusterMarkerBuilder {
      *
      * @param pointMarkerGroup
      */
-    private void calculateClusters(Group pointMarkerGroup) {
+    private void calculateClusters(final Group pointMarkerGroup) {
         clusterCircles.clear();
         clusterValues.clear();
         clusteredPointMarkers.clear();
@@ -98,7 +97,7 @@ public class ClusterMarkerBuilder {
      * @param n2 - Node2
      * @return
      */
-    private double getNodeDistance(Node n1, Node n2) {
+    private double getNodeDistance(final Node n1, final Node n2) {
         if (n1 == null || n2 == null) {
             return 0;
         }

@@ -16,15 +16,10 @@
 package au.gov.asd.tac.constellation.views.mapview2.overlays;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 
 /**
  *
@@ -44,7 +39,7 @@ public class InfoOverlay extends AbstractOverlay {
      * @param positionX
      * @param positionY
      */
-    public InfoOverlay(double positionX, double positionY) {
+    public InfoOverlay(final double positionX, final double positionY) {
         super(positionX, positionY);
 
         width = 200;
@@ -70,7 +65,7 @@ public class InfoOverlay extends AbstractOverlay {
      * @param x
      * @param y
      */
-    public void updateLocation(double x, double y) {
+    public void updateLocation(final double x, double y) {
         y += LOCATION_Y_OFFSET;
 
         double lon = MarkerUtilities.xToLong(x, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);

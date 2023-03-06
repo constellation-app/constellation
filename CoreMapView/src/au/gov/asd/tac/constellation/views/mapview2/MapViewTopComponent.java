@@ -16,50 +16,20 @@
 package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphConstants;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
-import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
-import au.gov.asd.tac.constellation.views.mapview2.markers.LineMarker;
-import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.plugins.ExtractCoordsFromGraphPlugin;
-import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
 import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Window;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleListProperty;
-import javafx.collections.ObservableList;
 import javafx.embed.swing.JFXPanel;
-import javafx.stage.Screen;
 import javax.swing.SwingUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -67,7 +37,6 @@ import org.openide.awt.ActionReferences;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  *
@@ -100,19 +69,19 @@ import org.openide.windows.WindowManager;
     "HINT_MapViewTopComponent2=Map View"
 })
 
-public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
+public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     private static final Logger LOGGER = Logger.getLogger("MapViewTopComponent");
 
     public static final Object LOCK = new Object();
 
     // The mapview itself
-    private MapViewPane mapViewPane;
+    private final MapViewPane mapViewPane;
 
 
     private int markerID = 0;
 
-    private MapViewTopComponent self = this;
+    private final MapViewTopComponent self = this;
 
     public MapViewTopComponent() {
 
@@ -177,7 +146,7 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         return ++markerID;
     }
 
-    public void setMapImage(Component mapComponent) {
+    public void setMapImage(final Component mapComponent) {
 
         SwingUtilities.invokeLater(() -> {
             jfxContainer.add(mapComponent);
@@ -222,16 +191,16 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                 CompletableFuture.runAsync(() -> {
                     try {
                         PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(self)).executeNow(graph);
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         LOGGER.log(Level.SEVERE, e.getMessage());
                     }
                 }).get();
 
-            } catch (InterruptedException ex) {
+            } catch (final InterruptedException ex) {
                 Exceptions.printStackTrace(ex);
                 Thread.currentThread().interrupt();
 
-            } catch (ExecutionException ex) {
+            } catch (final ExecutionException ex) {
                 Exceptions.printStackTrace(ex);
             }
 
@@ -268,7 +237,7 @@ public class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
      * @param key - key which is the coordinate of the marker
      * @param e - the marker itself
      */
-    public void addMarker(String key, AbstractMarker e) {
+    public void addMarker(final String key, final AbstractMarker e) {
         if (getMapViewPane().getMap() != null) {
             getMapViewPane().getMap().addMarkerToHashMap(key, e);
         }

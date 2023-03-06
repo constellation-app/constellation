@@ -16,14 +16,8 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
-import au.gov.tac.constellation.views.mapview2.utillities.Vec3;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -45,9 +39,9 @@ public class ClusterMarker extends AbstractMarker {
 
     // the nodes inside a cluster
     // These are not the marker objects themselves but the graphical marker elements on screen
-    private ArrayList<Node> nodes;
+    private final ArrayList<Node> nodes;
 
-    public ClusterMarker(MapView parent, ArrayList<Node> nodes) {
+    public ClusterMarker(final MapView parent, final ArrayList<Node> nodes) {
         super(parent, -99, -99, 0, 0, AbstractMarker.MarkerType.CLUSTER_MARKER);
 
         isSelected = false;

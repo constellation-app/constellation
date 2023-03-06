@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.tac.constellation.views.mapview2.utillities;
+package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
 /**
  *
@@ -35,7 +35,7 @@ public class MarkerUtilities {
      * longitude
      * @return x coordinate
      */
-    public static double longToX(double longitude, double minLong, double mapWidth, double lonDelta) {
+    public static double longToX(final double longitude, final double minLong, final double mapWidth, final double lonDelta) {
         return (longitude - minLong) * (mapWidth / lonDelta);
     }
 
@@ -47,7 +47,7 @@ public class MarkerUtilities {
      * @param mapHeight
      * @return y coordinate
      */
-    public static double latToY(double lattitude, double mapWidth, double mapHeight) {
+    public static double latToY(double lattitude, final double mapWidth, final double mapHeight) {
         lattitude = lattitude * (Math.PI / 180);
         double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
         y = (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
@@ -64,7 +64,7 @@ public class MarkerUtilities {
      * @param lonDelta - difference between right and left most longitude
      * @return - longitude
      */
-    public static double xToLong(double x, double minLong, double mapWidth, double lonDelta) {
+    public static double xToLong(final double x, final double minLong, final double mapWidth, final double lonDelta) {
         return (x / (mapWidth / lonDelta)) + minLong;
     }
 
@@ -76,7 +76,7 @@ public class MarkerUtilities {
      * @param mapHeight
      * @return latitude
      */
-    public static double yToLat(double y, double mapWidth, double mapHeight) {
+    public static double yToLat(double y, final double mapWidth, final double mapHeight) {
 
         y = ((-y + (mapHeight / 2)) * (2 * Math.PI)) / mapWidth;
         y = (Math.atan(Math.exp(y)) - (Math.PI / 4)) * 2;

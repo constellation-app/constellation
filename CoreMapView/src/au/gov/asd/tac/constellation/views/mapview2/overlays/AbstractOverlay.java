@@ -74,7 +74,7 @@ public class AbstractOverlay {
         return showing;
     }
 
-    public void setIsShowing(boolean showing) {
+    public void setIsShowing(final boolean showing) {
         this.showing = showing;
     }
 

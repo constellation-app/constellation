@@ -17,16 +17,13 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.Shape;
 
 /**
  *
@@ -49,7 +46,7 @@ public class DayNightLayer extends AbstractMapLayer {
     private final Color twighlightAstronomicalColour = new Color(0, 0, 0, 0.373);
     private final Color nightColour = new Color(0, 0, 0, 0.5);
 
-    public DayNightLayer(MapView parent, int id) {
+    public DayNightLayer(final MapView parent, final int id) {
         super(parent, id);
 
         dayNightGroup = new Group();
@@ -101,7 +98,7 @@ public class DayNightLayer extends AbstractMapLayer {
      * @param shadowLocation - geo coordinate of shadow
      * @param colour
      */
-    private void createShadow(float shadowRadius, Location shadowLocation, Color colour) {
+    private void createShadow(final float shadowRadius, final Location shadowLocation, final Color colour) {
         // Find coordinate of shadow in Haversine format
         final Location shadowCoordinates = new Location(
                 shadowLocation.getLat() - Distance.Haversine.kilometersToDecimalDegrees(shadowRadius / 1000),
@@ -126,7 +123,7 @@ public class DayNightLayer extends AbstractMapLayer {
      * @param shadowPath - the raw string svg path
      * @param colour
      */
-    private void addShadowToGroup(String shadowPath, Color colour) {
+    private void addShadowToGroup(final String shadowPath, final Color colour) {
         // Create the shadow graphic and colour it
         SVGPath shadowMarker = new SVGPath();
         shadowMarker.setContent(shadowPath);
@@ -145,7 +142,7 @@ public class DayNightLayer extends AbstractMapLayer {
      * @param locations - array of Location objects that only have their
      * lattitude and longitude fields calculated
      */
-    private void projectShadowCoordinates(List<Location> locations) {
+    private void projectShadowCoordinates(final List<Location> locations) {
         // For every location calculate its x and y coordinate
         locations.forEach(location -> {
 
@@ -163,7 +160,7 @@ public class DayNightLayer extends AbstractMapLayer {
      * @param locations
      * @return the string that containing the raw svg path
      */
-    private String generatePath(List<Location> locations) {
+    private String generatePath(final List<Location> locations) {
         String path = "";
         boolean first = true;
 
@@ -195,7 +192,7 @@ public class DayNightLayer extends AbstractMapLayer {
      * @param sunLocation
      * @return a circle vector graphic at the current position
      */
-    private Circle getSun(Location sunLocation) {
+    private Circle getSun(final Location sunLocation) {
         Circle sun = new Circle();
 
         sun.setRadius(SUN_RADIUS);
@@ -242,7 +239,7 @@ public class DayNightLayer extends AbstractMapLayer {
      * @param currentTime
      * @return location of the sun
      */
-    private Location getSunLocation(long currentTime) {
+    private Location getSunLocation(final long currentTime) {
         final double rad = 0.017453292519943295;
         final double jc = (getDay(currentTime) - 2_451_545) / 36525;
         final double meanLongSun = (280.46646 + jc * (36000.76983 + jc * 0.0003032)) % 360;

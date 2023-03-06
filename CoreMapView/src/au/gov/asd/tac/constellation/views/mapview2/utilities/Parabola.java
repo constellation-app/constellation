@@ -13,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.tac.constellation.views.mapview2.utillities;
+package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polyline;
 
@@ -26,13 +24,13 @@ import javafx.scene.shape.Polyline;
  */
 public class Parabola {
 
-    private double focusX;
-    private double focusY;
-    private double directtrix;
+    private final double focusX;
+    private final double focusY;
+    private final double directtrix;
 
-    private Polyline parabolaLine;
+    private final Polyline parabolaLine;
 
-    public Parabola(double focusX, double focusY, double directtrix) {
+    public Parabola(final double focusX, final double focusY, final double directtrix) {
         parabolaLine = new Polyline();
         parabolaLine.setStroke(Color.BLACK);
         parabolaLine.setStrokeWidth(1);
@@ -43,7 +41,7 @@ public class Parabola {
 
     }
 
-    public double getY(double x) {
+    public double getY(final double x) {
         return (Math.pow((x - focusX), 2) / (2 * (focusY - directtrix))) + ((focusY + directtrix) / 2);
     }
 

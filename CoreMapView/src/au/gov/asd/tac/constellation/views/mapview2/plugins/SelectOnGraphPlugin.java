@@ -43,7 +43,7 @@ public class SelectOnGraphPlugin extends SimpleEditPlugin {
     private List<Integer> selectedNodeList = new ArrayList<>();
     private boolean isSelectingVertex = true;
 
-    public SelectOnGraphPlugin(List<Integer> selectedNodeList, boolean isSelectingVertex) {
+    public SelectOnGraphPlugin(final List<Integer> selectedNodeList, final boolean isSelectingVertex) {
         this.selectedNodeList = new ArrayList<>(selectedNodeList);
         this.isSelectingVertex = isSelectingVertex;
     }
@@ -62,7 +62,7 @@ public class SelectOnGraphPlugin extends SimpleEditPlugin {
      * @throws PluginException
      */
     @Override
-    protected void edit(GraphWriteMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         if (graph != null) {
             // Select vertex

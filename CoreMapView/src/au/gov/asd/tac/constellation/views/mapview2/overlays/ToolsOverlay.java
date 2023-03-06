@@ -17,23 +17,18 @@ package au.gov.asd.tac.constellation.views.mapview2.overlays;
 
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
-import au.gov.tac.constellation.views.mapview2.utillities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.EventListener;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 
 /**
  *
@@ -42,19 +37,19 @@ import javafx.scene.text.Font;
 public class ToolsOverlay extends AbstractOverlay {
 
     // Flags for the different mdoes available in the tools overlay
-    private BooleanProperty drawingEnabled = new SimpleBooleanProperty(false);
-    private BooleanProperty measureEnabled = new SimpleBooleanProperty(false);
+    private final BooleanProperty drawingEnabled = new SimpleBooleanProperty(false);
+    private final BooleanProperty measureEnabled = new SimpleBooleanProperty(false);
 
     private static final String DISABLED_STRING = "Disabled";
     private static final String ENABLED_STRING = "Enabled";
 
-    private Label measureToggleText = new Label(DISABLED_STRING);
+    private final Label measureToggleText = new Label(DISABLED_STRING);
 
     private static final double LOCATION_Y_OFFSET = 149;
     private final String[] units = {"km", "nmi", "mi"};
     private int unitSelected = 0;
 
-    private Label measureUnitText = new Label(units[unitSelected]);
+    private final Label measureUnitText = new Label(units[unitSelected]);
 
     /**
      * Set up the UI
@@ -62,7 +57,7 @@ public class ToolsOverlay extends AbstractOverlay {
      * @param positionX - x coordinate of pane
      * @param positionY - y coordinate of pane
      */
-    public ToolsOverlay(double positionX, double positionY) {
+    public ToolsOverlay(final double positionX, final double positionY) {
         super(positionX, positionY);
 
 
@@ -74,7 +69,7 @@ public class ToolsOverlay extends AbstractOverlay {
 
         measureToggleText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(final MouseEvent event) {
                 if (!drawingEnabled.get()) {
                     measureEnabled.set(!measureEnabled.get());
 
@@ -94,7 +89,7 @@ public class ToolsOverlay extends AbstractOverlay {
 
         measureUnitText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(final MouseEvent event) {
                 if (!drawingEnabled.get()) {
                     ++unitSelected;
 
@@ -116,7 +111,7 @@ public class ToolsOverlay extends AbstractOverlay {
 
         drawToggleText.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(final MouseEvent event) {
                 if (!measureEnabled.get()) {
                     drawingEnabled.set(!drawingEnabled.get());
 
@@ -175,7 +170,7 @@ public class ToolsOverlay extends AbstractOverlay {
      * @param endX
      * @param endY
      */
-    public void setDistanceText(double startX, double startY, double endX, double endY) {
+    public void setDistanceText(final double startX, double startY, final double endX, double endY) {
         startY += LOCATION_Y_OFFSET;
         endY += LOCATION_Y_OFFSET;
 

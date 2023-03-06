@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.shape.SVGPath;
@@ -52,7 +51,7 @@ public abstract class AbstractMarker {
 
     protected MarkerType type;
 
-    protected AbstractMarker(MapView parent, int markerID, int nodeId, double xOffset, double yOffset, MarkerType type) {
+    protected AbstractMarker(final MapView parent, final int markerID, final int nodeId, final double xOffset, final double yOffset, final MarkerType type) {
         this.markerID = markerID;
         this.parent = parent;
         idList.add(nodeId);
@@ -82,7 +81,7 @@ public abstract class AbstractMarker {
      *
      * @param id
      */
-    public void addNodeID(int id) {
+    public void addNodeID(final int id) {
         idList.add(id);
     }
 
@@ -94,7 +93,7 @@ public abstract class AbstractMarker {
         return idList;
     }
 
-    public void setMarkerPosition(double mapWidth, double mapHeight) {
+    public void setMarkerPosition(final double mapWidth, final double mapHeight) {
 
     }
 
@@ -106,11 +105,11 @@ public abstract class AbstractMarker {
         return markerID;
     }
 
-    protected void setX(double x) {
+    protected void setX(final double x) {
         this.x = x;
     }
 
-    protected void setY(double y) {
+    protected void setY(final double y) {
         this.y = y;
     }
 

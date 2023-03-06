@@ -31,7 +31,7 @@ public abstract class AbstractMapLayer {
 
     protected int id;
 
-    protected AbstractMapLayer(MapView parent, int id) {
+    protected AbstractMapLayer(final MapView parent, final int id) {
         this.parent = parent;
         currentGraph = parent.getCurrentGraph();
         this.id = id;
@@ -46,7 +46,7 @@ public abstract class AbstractMapLayer {
         private double x = 0;
         private double y = 0;
 
-        public Location(double lat, double lon) {
+        public Location(final double lat, final double lon) {
             this.lat = lat;
             this.lon = lon;
 
@@ -59,7 +59,7 @@ public abstract class AbstractMapLayer {
             return lat;
         }
 
-        public void setLat(double lat) {
+        public void setLat(final double lat) {
             this.lat = lat;
         }
 
@@ -67,7 +67,7 @@ public abstract class AbstractMapLayer {
             return lon;
         }
 
-        public void setLon(double lon) {
+        public void setLon(final double lon) {
             this.lon = lon;
         }
 
@@ -75,7 +75,7 @@ public abstract class AbstractMapLayer {
             return x;
         }
 
-        public void setX(double x) {
+        public void setX(final double x) {
             this.x = x;
         }
 
@@ -83,7 +83,7 @@ public abstract class AbstractMapLayer {
             return y;
         }
 
-        public void setY(double y) {
+        public void setY(final double y) {
             this.y = y;
         }
     }
@@ -99,7 +99,7 @@ public abstract class AbstractMapLayer {
         return id;
     }
 
-    public void setIsShowing(boolean showing) {
+    public void setIsShowing(final boolean showing) {
         isShowing = showing;
     }
 
