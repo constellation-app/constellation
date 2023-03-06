@@ -350,15 +350,17 @@ public final class ConversationBox extends StackPane {
             spaceColumn.setMinWidth(50);
             spaceColumn.setPrefWidth(50);
 
+
             final ColumnConstraints contentColumn = new ColumnConstraints();
             contentColumn.setHalignment(message.getConversationSide() == ConversationSide.LEFT ? HPos.LEFT : HPos.RIGHT);
             contentColumn.setFillWidth(false);
             contentColumn.setHgrow(Priority.NEVER);
 
+
             final RowConstraints contentRow = new RowConstraints();
             contentRow.setFillHeight(true);
-            contentRow.setMaxHeight(Double.MAX_VALUE);
             contentRow.setValignment(VPos.TOP);
+            contentRow.setVgrow(Priority.NEVER);
 
             getRowConstraints().addAll(contentRow);
 
