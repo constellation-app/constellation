@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.scene.paint.Color;
 
 /**
  * Holds the information for a note in the Notes View.
@@ -39,7 +38,7 @@ public class NotesViewEntry implements PluginReportListener {
     private List<String> tags = new ArrayList<>();
     private boolean editMode;
 
-    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, String nodeColour) {
+    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
@@ -109,7 +108,7 @@ public class NotesViewEntry implements PluginReportListener {
         return nodeColour;
     }
 
-    public void setNodeColour(String nodeColour) {
+    public void setNodeColour(final String nodeColour) {
         this.nodeColour = nodeColour;
     }
 
@@ -121,7 +120,7 @@ public class NotesViewEntry implements PluginReportListener {
         return editMode;
     }
 
-    public void setEditMode(boolean editMode) {
+    public void setEditMode(final boolean editMode) {
         this.editMode = editMode;
     }
 

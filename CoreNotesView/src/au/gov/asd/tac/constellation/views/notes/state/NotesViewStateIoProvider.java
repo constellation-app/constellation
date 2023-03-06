@@ -69,8 +69,12 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(2).asText(),
                                 notesArray.get(i).get(3).asBoolean(),
                                 notesArray.get(i).get(4).asBoolean(),
-                                notesArray.get(i).get(5).asText()
+                                "#942483"
                         ));
+
+                        if (notesArray.get(i).get(5) != null) {
+                            noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(5).asText());
+                        }
 
                         if (notesArray.get(i).get(3).asBoolean() == true && notesArray.get(i).get(4).asBoolean() == false) {
                             // Add the selected nodes
