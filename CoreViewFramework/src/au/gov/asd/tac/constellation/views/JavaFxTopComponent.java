@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -43,7 +44,7 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
     protected JFXPanel jfxContainer = new JFXPanel();
     protected Scene scene;
     protected ScrollPane scrollPane;
-
+    public static final Logger LOGGER = Logger.getLogger(JavaFxTopComponent.class.getName());
     /**
      * A JavaFxTopComponent will have a ScrollPane by default, as it cannot know
      * the expected layout of the given pane. If you wish to remove the
@@ -91,6 +92,8 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
             this.scene = new Scene(scrollPane);
             scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
             if (createStyle() != null) {
+                //AC check this
+                LOGGER.info(">>-- Jfx check style : " + getClass().getResource(createStyle()).toExternalForm());
                 scene.getStylesheets().add(getClass().getResource(createStyle()).toExternalForm());
             }
             scene.getStylesheets().add(JavafxStyleManager.getDynamicStyleSheet());
