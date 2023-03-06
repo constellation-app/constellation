@@ -124,29 +124,20 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         setToolTipText(Bundle.HINT_AttributeEditorTopComponent());
 
         refreshRunnable = () -> {
-            try {
+
                 final ArrayList<Object> devNull = new ArrayList<>();
 
-                while (queue.drainTo(devNull) > 0) {
-                    Thread.sleep(50);
-                }
 
-                /*while (queue.size() > 0) {
+            while (queue.size() > 0) {
                     queue.drainTo(devNull);
-                }*/
+            }
 
                 if (reader != null) {
                     attributePanel.updateEditorPanel(reader.refreshAttributes());
                 }
-            } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "Thread was interrupted");
-                Thread.currentThread().interrupt();
-            }
+
         };
 
-        CompletableFuture<void> future = CompletableFuture.runAsync(() -> {
-
-        });
 
         GraphManager.getDefault().addGraphManagerListener(AttributeEditorTopComponent.this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
