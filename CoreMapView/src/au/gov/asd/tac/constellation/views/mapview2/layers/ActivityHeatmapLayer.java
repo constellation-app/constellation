@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 
 /**
+ * Heatmap layer that tracks amount of transactions for each node
  *
  * @author altair1673
  */

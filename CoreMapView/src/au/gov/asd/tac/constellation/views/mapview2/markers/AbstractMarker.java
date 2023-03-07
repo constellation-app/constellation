@@ -22,6 +22,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
 
 /**
+ * Parent of all markers
  *
  * @author altair1673
  */

@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Polyline;
 
 /**
+ * Class that represents a parabola
  *
  * @author altair1673
  */

@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
 /**
+ * Marker that represent the shapes the user draws
  *
  * @author altair1673
  */

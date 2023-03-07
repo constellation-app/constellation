@@ -31,6 +31,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 /**
+ * Overlay that has measuring and drawing functionality
  *
  * @author altair1673
  */

@@ -35,6 +35,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
 /**
+ * Draws a zone around markers containing the point closest to them
  *
  * @author altair1673
  */

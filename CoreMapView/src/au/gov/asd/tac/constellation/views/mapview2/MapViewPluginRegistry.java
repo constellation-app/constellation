@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
 
 
 /**
+ * Registry for the two plugins used by the map view.
  *
  * @author altair1673
  *

@@ -23,6 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 
 /**
+ * Parent marker for all overlay classes
  *
  * @author altair1673
  */

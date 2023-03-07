@@ -59,6 +59,9 @@ import org.openide.NotifyDescriptor;
 import org.openide.util.Lookup;
 
 /**
+ * MapViewPane holds container of the MapView and the entire toolbar All toolbar
+ * options are set here and event handlers for toolbar options call functions in
+ * MapView class to manipulate the map
  *
  * @author altair1673
  */

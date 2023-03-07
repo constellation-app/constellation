@@ -29,6 +29,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Another path layer that draws a line from one node to the other but takes
+ * into account different conditions
  *
  * @author altair1673
  */

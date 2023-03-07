@@ -29,6 +29,8 @@ import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 
 /**
+ * More efficient away of calculating closest zones but will implement in the
+ * future
  *
  * @author altair1673
  */

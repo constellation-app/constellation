@@ -26,6 +26,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.SVGPath;
 
 /**
+ * Shows which parts of the planet are in night
  *
  * @author altair1673
  */

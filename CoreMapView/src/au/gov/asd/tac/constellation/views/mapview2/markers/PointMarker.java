@@ -24,6 +24,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 /**
+ * Point marker that represents a geo coordinate on the map
  *
  * @author altair1673
  */

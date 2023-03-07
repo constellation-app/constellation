@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * Draws line marker from one node to another
  *
  * @author altair1673
  */

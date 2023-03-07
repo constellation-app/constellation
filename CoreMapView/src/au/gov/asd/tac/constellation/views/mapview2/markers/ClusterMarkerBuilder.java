@@ -26,6 +26,7 @@ import javafx.scene.Node;
 import javafx.scene.text.Text;
 
 /**
+ * Builds cluster markers
  *
  * @author altair1673
  */

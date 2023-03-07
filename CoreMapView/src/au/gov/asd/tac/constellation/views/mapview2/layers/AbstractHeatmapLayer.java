@@ -23,6 +23,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 /**
+ * Parent class to heatmap classes
  *
  * @author altair1673
  */

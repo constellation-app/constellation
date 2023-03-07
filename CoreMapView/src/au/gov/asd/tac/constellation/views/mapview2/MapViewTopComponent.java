@@ -39,6 +39,7 @@ import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
 /**
+ * Top component for the MapView
  *
  * @author altair1673
  */

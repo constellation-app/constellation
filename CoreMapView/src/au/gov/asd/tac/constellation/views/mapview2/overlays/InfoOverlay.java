@@ -22,6 +22,8 @@ import java.text.DecimalFormat;
 import javafx.scene.control.Label;
 
 /**
+ * Overlay that shows the exact geo-coordinates of wherever the user hovers
+ * their mouse on the map
  *
  * @author altair1673
  */

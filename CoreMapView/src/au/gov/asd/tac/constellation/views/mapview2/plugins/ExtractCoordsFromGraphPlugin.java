@@ -36,6 +36,7 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * Plugin to extract geo-coordinates form graph node
  *
  * @author altair1673
  */

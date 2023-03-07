@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Class representing the intersection between edges of the thiessen polygons
  *
  * @author altair1673
  */

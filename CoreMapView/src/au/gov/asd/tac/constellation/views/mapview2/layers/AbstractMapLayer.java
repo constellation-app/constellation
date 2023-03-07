@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import javafx.scene.Group;
 
 /**
+ * Parent class to all layers
  *
  * @author altair1673
  */

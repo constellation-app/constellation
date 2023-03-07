@@ -21,6 +21,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 /**
+ * Point marker that get generated wherever the user clicks on the map
  *
  * @author altair1673
  */

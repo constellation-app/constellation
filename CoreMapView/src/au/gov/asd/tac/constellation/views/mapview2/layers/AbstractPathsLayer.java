@@ -21,6 +21,7 @@ import java.util.Map;
 import javafx.scene.Group;
 
 /**
+ * Parent class of all paths layers
  *
  * @author altair1673
  */

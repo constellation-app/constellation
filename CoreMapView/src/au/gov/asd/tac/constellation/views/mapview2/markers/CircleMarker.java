@@ -24,6 +24,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 
 /**
+ * Circle marker that is projected onto the map
  *
  * @author altair1673
  */

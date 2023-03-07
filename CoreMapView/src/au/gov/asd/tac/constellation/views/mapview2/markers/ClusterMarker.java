@@ -26,6 +26,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 /**
+ * Cluster marker that surrounds nodes based on the distances between them
  *
  * @author altair1673
  */

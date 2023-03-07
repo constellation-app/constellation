@@ -31,6 +31,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
+ * plugin to select nodes on the graph when there corresponding markers are
+ * selected in the map view
  *
  * @author altair1673
  */

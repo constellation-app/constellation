@@ -22,6 +22,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 /**
+ * Line marker to connect markers together
  *
  * @author altair1673
  */

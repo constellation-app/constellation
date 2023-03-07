@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 
 /**
+ * Heatmap layers showing how many locations one marker points at
  *
  * @author altair1673
  */

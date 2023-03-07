@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 
 /**
+ * Heatmap layer that also represent node neighbours
  *
  * @author altair1673
  */
