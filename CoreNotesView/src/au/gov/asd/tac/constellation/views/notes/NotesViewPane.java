@@ -108,10 +108,11 @@ public class NotesViewPane extends BorderPane {
     private final ScrollPane notesListScrollPane;
 
     private static final int DEFAULT_SPACING = 5;
-    private static final int OPTIONS_SPACING = 150;
+    private static final int OPTIONS_SPACING = 30;
     private static final String PROMPT_COLOR = "#909090";
     private static final String USER_COLOR = "#942483";
     private static final String AUTO_COLOR = "#1c5aa6";
+    private static String USER_CHOSEN_COLOUR = USER_COLOR;
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
@@ -234,7 +235,13 @@ public class NotesViewPane extends BorderPane {
             }
         });
 
-        // Button to add new note.
+        // Colourpicker to set colour of new note
+        ColorPicker newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(USER_CHOSEN_COLOUR).getJavaFXColor());
+        newNoteColour.setOnAction(event -> {
+            USER_CHOSEN_COLOUR = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor();
+        });
+
+        // Button to add new note
         final Button addNoteButton = new Button("Add Note");
         addNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         addNoteButton.setOnAction(event -> {
@@ -251,7 +258,7 @@ public class NotesViewPane extends BorderPane {
                                 contentField.getText(),
                                 true,
                                 !applySelected,
-                                USER_COLOR
+                                USER_CHOSEN_COLOUR
                         ));
                         if (applySelected) {
                             // Get selected nodes from the graph.
@@ -309,7 +316,7 @@ public class NotesViewPane extends BorderPane {
             }
         });
         // HBox to store the control items at the bottom of the view.
-        final HBox noteHBox = new HBox(OPTIONS_SPACING, applyToSelection, addNoteButton);
+        final HBox noteHBox = new HBox(OPTIONS_SPACING, applyToSelection, newNoteColour, addNoteButton);
 
         // VBox to store control items used to add new note.
         addNoteVBox = new VBox(DEFAULT_SPACING, titleField, contentField, noteHBox);
