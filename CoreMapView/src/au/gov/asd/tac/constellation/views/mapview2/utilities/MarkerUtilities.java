@@ -42,13 +42,13 @@ public class MarkerUtilities {
     /**
      * Convert latitude to y coordinate
      *
-     * @param lattitude - latitude in degrees
+     * @param lat - latitude in degrees
      * @param mapWidth
      * @param mapHeight
      * @return y coordinate
      */
-    public static double latToY(double lattitude, final double mapWidth, final double mapHeight) {
-        lattitude = lattitude * (Math.PI / 180);
+    public static double latToY(final double lat, final double mapWidth, final double mapHeight) {
+        double lattitude = lat * (Math.PI / 180);
         double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
         y = (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
 
@@ -71,14 +71,14 @@ public class MarkerUtilities {
     /**
      * Convert y coordinate to latitude
      *
-     * @param y
+     * @param yCoord
      * @param mapWidth
      * @param mapHeight
      * @return latitude
      */
-    public static double yToLat(double y, final double mapWidth, final double mapHeight) {
+    public static double yToLat(final double yCoord, final double mapWidth, final double mapHeight) {
 
-        y = ((-y + (mapHeight / 2)) * (2 * Math.PI)) / mapWidth;
+        double y = ((-yCoord + (mapHeight / 2)) * (2 * Math.PI)) / mapWidth;
         y = (Math.atan(Math.exp(y)) - (Math.PI / 4)) * 2;
         return y / (Math.PI / 180);
     }

@@ -83,6 +83,10 @@ import javafx.scene.text.Text;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
+ * This class holds the actual MapView vector graphic and all panes asscoiated
+ * with it Its got all of the event handlers for drawing, labels, colours,
+ * markers etc... It has all the groups that hold all other graphical elements
+ * such as cluster markers, daynight layer and thiessen polygon layer
  *
  * @author altair1673
  */
@@ -218,7 +222,6 @@ public class MapView extends ScrollPane {
 
     public MapView(final MapViewPane parent) {
         this.parent = parent;
-        LOGGER.log(Level.SEVERE, "In MapView constructor");
 
         clusterMarkerBuilder = new ClusterMarkerBuilder(this);
 
@@ -486,7 +489,6 @@ public class MapView extends ScrollPane {
                     PluginExecution.withPlugin(new SelectOnGraphPlugin(idList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
                     isSelectingMultiple = false;
                     selectionRectangleGroup.getChildren().clear();
-                    LOGGER.log(Level.SEVERE, "Mouse Released");
                 }
 
             }
@@ -569,7 +571,6 @@ public class MapView extends ScrollPane {
                     deselectAllMarkers();
                     selectedNodeList.clear();
                     PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
-                    LOGGER.log(Level.SEVERE, "Double clicked");
                     event.consume();
                     return;
 
@@ -635,7 +636,6 @@ public class MapView extends ScrollPane {
                     // If drawing is not enabled but measuring is
                 } else if (!TOOLS_OVERLAY.getDrawingEnabled().get() && TOOLS_OVERLAY.getMeasureEnabled().get()) {
                     if (!drawingMeasureLine) {
-                        LOGGER.log(Level.SEVERE, "Drawing measure line");
                         measureLine = new Line();
                         measureLine.setStroke(Color.RED);
                         measureLine.setStartX(event.getX());
@@ -646,7 +646,6 @@ public class MapView extends ScrollPane {
                         polygonMarkerGroup.getChildren().add(measureLine);
                         drawingMeasureLine = true;
                     } else {
-                        LOGGER.log(Level.SEVERE, "Erasing measure line");
                         polygonMarkerGroup.getChildren().clear();
                         TOOLS_OVERLAY.resetMeasureText();
                         drawingMeasureLine = false;
@@ -919,11 +918,11 @@ public class MapView extends ScrollPane {
 
 
         if (markers.isEmpty()) {
-            LOGGER.log(Level.SEVERE, "Marker map is empty");
+            LOGGER.log(Level.INFO, "Marker map is empty");
         }
 
         if (markers.values().isEmpty()) {
-            LOGGER.log(Level.SEVERE, "Marker values is empty");
+            LOGGER.log(Level.INFO, "Marker values is empty");
         }
 
         // Redraw all queried markers
@@ -942,11 +941,11 @@ public class MapView extends ScrollPane {
         graphMarkerGroup.getChildren().clear();
 
         if (markers.isEmpty()) {
-            LOGGER.log(Level.SEVERE, "Marker map is empty");
+            LOGGER.log(Level.INFO, "Marker map is empty");
         }
 
         if (markers.values().isEmpty()) {
-            LOGGER.log(Level.SEVERE, "Marker values is empty");
+            LOGGER.log(Level.INFO, "Marker values is empty");
         }
 
         for (final Object value : markers.values()) {
@@ -1545,7 +1544,6 @@ public class MapView extends ScrollPane {
             }
 
         } catch (final Exception e) {
-            LOGGER.log(Level.SEVERE, "Exception thrown");
             LOGGER.log(Level.SEVERE, e.getMessage());
         }
 

@@ -73,7 +73,7 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
      * @throws PluginException
      */
     @Override
-    protected void read(final GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         if (graph != null) {
 
