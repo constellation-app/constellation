@@ -42,6 +42,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -664,8 +665,13 @@ public class NotesViewPane extends BorderPane {
         // the correct java fx elements
         final VBox noteButtons = new VBox(DEFAULT_SPACING, newNote.getEditMode() ? saveTextButton : editTextButton, deleteButton);
 
-        // Colour picker for each note
+
+        if (newNote.getNodeColour().isBlank() || newNote.getNodeColour().isEmpty()) {
+            newNote.setNodeColour(USER_COLOR);
+        }
+
         final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
+        LOGGER.log(Level.SEVERE, "Node colour: " + newNote.getNodeColour());
 
 
         noteButtons.getChildren().add(colourPicker);
@@ -675,7 +681,7 @@ public class NotesViewPane extends BorderPane {
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
         if (newNote.isUserCreated()) {
         noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                + newNote.getNodeColour() + "; -fx-background-radius: 10 10 10 10;");
+                    + newNote.getNodeColour() + "; -fx-background-radius: 10 10 10 10;");
             notesListVBox.getChildren().add(noteBody);
         } else {
             noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "

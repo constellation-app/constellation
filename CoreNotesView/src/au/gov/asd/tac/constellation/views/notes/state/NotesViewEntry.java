@@ -30,7 +30,7 @@ public class NotesViewEntry implements PluginReportListener {
     private final String dateTime;
     private String noteTitle;
     private String noteContent;
-    private String nodeColour;
+    private String nodeColour = "#942483";
     private final Boolean userCreated;
     private Boolean graphAttribute;
     private List<Integer> nodesSelected;
@@ -42,7 +42,10 @@ public class NotesViewEntry implements PluginReportListener {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
-        this.nodeColour = nodeColour;
+
+        if (nodeColour != null) {
+            this.nodeColour = nodeColour;
+        }
         this.userCreated = userCreated;
         this.graphAttribute = graphAttribute;
         this.editMode = false;
