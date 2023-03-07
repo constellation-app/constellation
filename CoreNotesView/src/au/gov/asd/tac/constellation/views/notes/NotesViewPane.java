@@ -661,9 +661,14 @@ public class NotesViewPane extends BorderPane {
         deleteButton.setMinWidth(92);
         deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
+        final Button cancelButton = new Button("Cancel");
+        cancelButton.setMinWidth(92);
+        cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
-        final VBox noteButtons = new VBox(DEFAULT_SPACING, newNote.getEditMode() ? saveTextButton : editTextButton, deleteButton);
+        final VBox noteButtons;
+
 
 
         if (newNote.getNodeColour().isBlank() || newNote.getNodeColour().isEmpty()) {
@@ -671,10 +676,18 @@ public class NotesViewPane extends BorderPane {
         }
 
         final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
-        LOGGER.log(Level.SEVERE, "Node colour: " + newNote.getNodeColour());
+        colourPicker.setMinWidth(92);
+
+        if (newNote.getEditMode()) {
+            noteButtons = new VBox(DEFAULT_SPACING, saveTextButton, cancelButton, colourPicker);
+            newNote.setEditMode(true);
+        } else {
+            newNote.setEditMode(false);
+            noteButtons = new VBox(DEFAULT_SPACING, editTextButton, deleteButton);
+        }
 
 
-        noteButtons.getChildren().add(colourPicker);
+        //noteButtons.getChildren().add(colourPicker);
         noteButtons.setAlignment(Pos.CENTER);
 
 
@@ -816,12 +829,25 @@ public class NotesViewPane extends BorderPane {
 
         // Edit button activates editable text boxs for title and label
         editTextButton.setOnAction(event -> {
-            noteButtons.getChildren().removeAll(editTextButton, deleteButton, colourPicker);
-            noteButtons.getChildren().addAll(saveTextButton, deleteButton);
+            String currentColour = newNote.getNodeColour();
+            noteButtons.getChildren().removeAll(editTextButton, deleteButton);
+            noteButtons.getChildren().addAll(saveTextButton, cancelButton, colourPicker);
 
             noteInformation.getChildren().removeAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
             noteInformation.getChildren().addAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
             newNote.setEditMode(true);
+
+            cancelButton.setOnAction(cancelEvent -> {
+                colourPicker.setValue(ConstellationColor.fromHtmlColor(currentColour).getJavaFXColor());
+                noteButtons.getChildren().removeAll(saveTextButton, cancelButton, colourPicker);
+                noteButtons.getChildren().addAll(editTextButton, deleteButton);
+                noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
+                noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+                newNote.setEditMode(false);
+                noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
+                        + currentColour + "; -fx-background-radius: 10 10 10 10;");
+                newNote.setNodeColour(currentColour);
+            });
         });
 
         // Save button deactivates editable text boxs for title and label
@@ -836,8 +862,8 @@ public class NotesViewPane extends BorderPane {
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());
 
-                noteButtons.getChildren().removeAll(saveTextButton, deleteButton);
-                noteButtons.getChildren().addAll(editTextButton, deleteButton, colourPicker);
+                noteButtons.getChildren().removeAll(saveTextButton, cancelButton, colourPicker);
+                noteButtons.getChildren().addAll(editTextButton, deleteButton);
 
                 noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
                 noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
