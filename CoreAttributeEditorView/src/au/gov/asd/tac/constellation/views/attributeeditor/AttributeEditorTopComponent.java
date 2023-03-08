@@ -125,8 +125,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
         refreshRunnable = () -> {
 
-                final ArrayList<Object> devNull = new ArrayList<>();
-
+            final ArrayList<Object> devNull = new ArrayList<>();
 
             while (queue.size() > 0) {
                     queue.drainTo(devNull);
