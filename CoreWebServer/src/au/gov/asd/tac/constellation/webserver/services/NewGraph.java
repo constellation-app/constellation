@@ -36,6 +36,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -113,7 +116,17 @@ public class NewGraph extends RestService {
         final String graphName = SchemaFactoryUtilities.getSchemaFactory(schemaName).getLabel().trim().toLowerCase();
         GraphOpener.getDefault().openGraph(dualGraph, graphName);
 
-        final String newId = RestServiceUtilities.waitForGraphChange(existingId);
+        final String newId;
+
+        try {
+            newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
+        } catch (InterruptedException ex) {
+            throw new RestServiceException(ex);
+        } catch (ExecutionException ex) {
+            throw new RestServiceException(ex);
+        } catch (TimeoutException ex) {
+            throw new RestServiceException(ex);
+        }
 
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();

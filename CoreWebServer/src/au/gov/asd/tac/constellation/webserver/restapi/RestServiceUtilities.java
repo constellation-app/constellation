@@ -27,6 +27,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Various helper functions for REST services.
@@ -170,36 +172,24 @@ public class RestServiceUtilities {
      *
      * @return The new graph id.
      */
-    public static String waitForGraphChange(final String existingId) {
-        // Now we wait for the new graph to become active.
-        //
-        int waits = 0;
-        while (true) {
-            // Wait a bit to give the new graph time to become active.
-            //
-            try {
-                Thread.sleep(1000);
-            } catch (final InterruptedException ex) {
-                Thread.currentThread().interrupt();
-                throw new RestServiceException(ex);
-            }
+    public static CompletableFuture<String> waitForGraphChange(final String existingId) {
 
-            final Graph newGraph = GraphManager.getDefault().getActiveGraph();
-            final String newId = newGraph != null ? newGraph.getId() : null;
-            if ((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
-                // - there was no existing graph, and the new graph is active, or
-                // - there was an existing graph, and the active graph is not the existing graph.
-                // - we assume the user hasn't interfered by manually switching to another graph at the same time.
-                //
-                return newId;
-            }
+        CompletableFuture<String> checkIfGraphAvailable = CompletableFuture.supplyAsync(() -> {
+                while (true) {
+                    if (GraphManager.getDefault().getActiveGraph() != null) {
+                        final Graph newGraph = GraphManager.getDefault().getActiveGraph();
+                        final String newId = newGraph != null ? newGraph.getId() : null;
+                        if ((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
+                            // - there was no existing graph, and the new graph is active, or
+                            // - there was an existing graph, and the active graph is not the existing graph.
+                            // - we assume the user hasn't interfered by manually switching to another graph at the same time.
+                            //
+                            return newId;
+                        }
+                    }
+                }
+        });
 
-            // We only have so much patience.
-            //
-            if (++waits > 10) {
-                throw new RestServiceException("The new graph has taken too long to become active");
-            }
-        }
-
+        return checkIfGraphAvailable;
     }
 }

@@ -36,6 +36,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -102,7 +105,11 @@ public class OpenGraph extends RestService {
             final Graph g = new GraphJsonReader().readGraphZip(fnam, new HandleIoProgress(String.format("Loading graph %s...", fnam)));
             GraphOpener.getDefault().openGraph(g, name, false);
 
-            final String newId = RestServiceUtilities.waitForGraphChange(existingId);
+            final String newId;
+
+            newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
+
+
             final Graph graph = GraphNode.getGraphNode(newId).getGraph();
 
             final ObjectMapper mapper = new ObjectMapper();
@@ -113,6 +120,12 @@ public class OpenGraph extends RestService {
             mapper.writeValue(out, root);
         } catch (final GraphParseException | FileNotFoundException ex) {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
+        } catch (InterruptedException ex) {
+            throw new RestServiceException(ex);
+        } catch (ExecutionException ex) {
+            throw new RestServiceException(ex);
+        } catch (TimeoutException ex) {
+            throw new RestServiceException(ex);
         }
     }
 }
