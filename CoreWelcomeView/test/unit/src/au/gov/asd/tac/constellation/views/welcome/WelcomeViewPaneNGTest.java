@@ -68,7 +68,7 @@ public class WelcomeViewPaneNGTest {
     @Test
     public void testSetButtonProps() {
         System.out.println("setButtonProps");
-        Button button = mock(Button.class);
+        final Button button = mock(Button.class);
         
         welcomePane.setButtonProps(button);
 
@@ -83,7 +83,7 @@ public class WelcomeViewPaneNGTest {
     @Test
     public void testCreateRecentButtons() {
         System.out.println("createRecentButtons");
-        Button button = mock(Button.class);
+        final Button button = mock(Button.class);
 
         welcomePane.createRecentButtons(button);
 
@@ -98,7 +98,7 @@ public class WelcomeViewPaneNGTest {
     @Test
     public void testSetInfoButtons() {
         System.out.println("setInfoButtons");
-        Button button = mock(Button.class);
+        final Button button = mock(Button.class);
         
         welcomePane.setInfoButtons(button);
 

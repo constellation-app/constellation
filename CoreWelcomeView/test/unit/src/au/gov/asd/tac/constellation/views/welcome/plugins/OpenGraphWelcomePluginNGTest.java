@@ -57,9 +57,9 @@ public class OpenGraphWelcomePluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        OpenGraphWelcomePlugin instance = new OpenGraphWelcomePlugin();
-        String expResult = "Open Graph Welcome";
-        String result = instance.getName();
+        final OpenGraphWelcomePlugin instance = new OpenGraphWelcomePlugin();
+        final String expResult = "Open Graph Welcome";
+        final String result = instance.getName();
         assertEquals(result, expResult);
     }
 
@@ -69,9 +69,9 @@ public class OpenGraphWelcomePluginNGTest {
     @Test
     public void testGetButton() {
         System.out.println("getButton");
-        OpenGraphWelcomePlugin instance = new OpenGraphWelcomePlugin();
-        VBox expResult = new VBox();
-        Button result = instance.getButton();
+        final OpenGraphWelcomePlugin instance = new OpenGraphWelcomePlugin();
+        final VBox expResult = new VBox();
+        final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
 

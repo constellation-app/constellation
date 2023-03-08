@@ -56,9 +56,9 @@ public class JoinCommWelcomePluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        JoinCommWelcomePlugin instance = new JoinCommWelcomePlugin();
-        String expResult = "Join Community Welcome";
-        String result = instance.getName();
+        final JoinCommWelcomePlugin instance = new JoinCommWelcomePlugin();
+        final String expResult = "Join Community Welcome";
+        final String result = instance.getName();
         assertEquals(result, expResult);
     }
 
@@ -68,9 +68,9 @@ public class JoinCommWelcomePluginNGTest {
     @Test
     public void testGetButton() {
         System.out.println("getButton");
-        JoinCommWelcomePlugin instance = new JoinCommWelcomePlugin();
-        HBox expResult = new HBox();
-        Button result = instance.getButton();
+        final JoinCommWelcomePlugin instance = new JoinCommWelcomePlugin();
+        final HBox expResult = new HBox();
+        final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
 

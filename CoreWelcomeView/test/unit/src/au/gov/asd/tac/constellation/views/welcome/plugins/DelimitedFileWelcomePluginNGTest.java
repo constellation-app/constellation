@@ -57,9 +57,9 @@ public class DelimitedFileWelcomePluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        DelimitedFileWelcomePlugin instance = new DelimitedFileWelcomePlugin();
-        String expResult = "Import File Welcome";
-        String result = instance.getName();
+        final DelimitedFileWelcomePlugin instance = new DelimitedFileWelcomePlugin();
+        final String expResult = "Import File Welcome";
+        final String result = instance.getName();
         assertEquals(result, expResult);
     }
 
@@ -69,9 +69,9 @@ public class DelimitedFileWelcomePluginNGTest {
     @Test
     public void testGetButton() {
         System.out.println("getButton");
-        DelimitedFileWelcomePlugin instance = new DelimitedFileWelcomePlugin();
-        VBox expResult = new VBox();
-        Button result = instance.getButton();
+        final DelimitedFileWelcomePlugin instance = new DelimitedFileWelcomePlugin();
+        final VBox expResult = new VBox();
+        final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
 

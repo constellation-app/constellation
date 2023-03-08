@@ -65,7 +65,7 @@ public class PluginReporterTopComponentNGTest {
     @Test
     public void testHandleComponentOpened() {
         System.out.println("handleComponentOpened");
-        PluginReporterTopComponent instance = mock(PluginReporterTopComponent.class);
+        final PluginReporterTopComponent instance = mock(PluginReporterTopComponent.class);
 
         doCallRealMethod().when(instance).handleComponentOpened();
         doNothing().when(instance).handleNewGraph(any(Graph.class));
@@ -89,7 +89,7 @@ public class PluginReporterTopComponentNGTest {
     @Test
     public void testComponentShowing() {
         System.out.println("componentShowing");
-        PluginReporterTopComponent instance = mock(PluginReporterTopComponent.class);
+        final PluginReporterTopComponent instance = mock(PluginReporterTopComponent.class);
         
         doCallRealMethod().when(instance).componentShowing();
         doNothing().when(instance).handleNewGraph(any(Graph.class));
@@ -113,7 +113,7 @@ public class PluginReporterTopComponentNGTest {
     @Test
     public void testCreateStyle() {
         System.out.println("createStyle");
-        PluginReporterTopComponent instance = mock(PluginReporterTopComponent.class);
+        final PluginReporterTopComponent instance = mock(PluginReporterTopComponent.class);
         doCallRealMethod().when(instance).createStyle();
 
         assertEquals("resources/plugin-reporter.css", instance.createStyle());

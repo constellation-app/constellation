@@ -57,9 +57,9 @@ public class WhatsNewWelcomePluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        WhatsNewWelcomePlugin instance = new WhatsNewWelcomePlugin();
-        String expResult = "What's New Welcome";
-        String result = instance.getName();
+        final WhatsNewWelcomePlugin instance = new WhatsNewWelcomePlugin();
+        final String expResult = "What's New Welcome";
+        final String result = instance.getName();
         assertEquals(result, expResult);
     }
 
@@ -69,9 +69,9 @@ public class WhatsNewWelcomePluginNGTest {
     @Test
     public void testGetButton() {
         System.out.println("getButton");
-        WhatsNewWelcomePlugin instance = new WhatsNewWelcomePlugin();
-        HBox expResult = new HBox();
-        Button result = instance.getButton();
+        final WhatsNewWelcomePlugin instance = new WhatsNewWelcomePlugin();
+        final HBox expResult = new HBox();
+        final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
 

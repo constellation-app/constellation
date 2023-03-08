@@ -57,9 +57,9 @@ public class AddModeWelcomePluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        AddModeWelcomePlugin instance = new AddModeWelcomePlugin();
-        String expResult = "Add Graph Welcome";
-        String result = instance.getName();
+        final AddModeWelcomePlugin instance = new AddModeWelcomePlugin();
+        final String expResult = "Add Graph Welcome";
+        final String result = instance.getName();
         assertEquals(result, expResult);
 
     }
@@ -70,9 +70,9 @@ public class AddModeWelcomePluginNGTest {
     @Test
     public void testGetButton() {
         System.out.println("getButton");
-        AddModeWelcomePlugin instance = new AddModeWelcomePlugin();
-        VBox expResult = new VBox();
-        Button result = instance.getButton();
+        final AddModeWelcomePlugin instance = new AddModeWelcomePlugin();
+        final VBox expResult = new VBox();
+        final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
 

@@ -56,9 +56,9 @@ public class SelectionModeWelcomePluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        SelectionModeWelcomePlugin instance = new SelectionModeWelcomePlugin();
-        String expResult = "Selection Mode Graph Welcome";
-        String result = instance.getName();
+        final SelectionModeWelcomePlugin instance = new SelectionModeWelcomePlugin();
+        final String expResult = "Selection Mode Graph Welcome";
+        final String result = instance.getName();
         assertEquals(result, expResult);
     }
 
@@ -68,9 +68,9 @@ public class SelectionModeWelcomePluginNGTest {
     @Test
     public void testGetButton() {
         System.out.println("getButton");
-        SelectionModeWelcomePlugin instance = new SelectionModeWelcomePlugin();
-        VBox expResult = new VBox();
-        Button result = instance.getButton();
+        final SelectionModeWelcomePlugin instance = new SelectionModeWelcomePlugin();
+        final VBox expResult = new VBox();
+        final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
 

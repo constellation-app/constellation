@@ -56,9 +56,9 @@ public class JDBCImportWelcomePluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        JDBCImportWelcomePlugin instance = new JDBCImportWelcomePlugin();
-        String expResult = "Import Database Welcome";
-        String result = instance.getName();
+        final JDBCImportWelcomePlugin instance = new JDBCImportWelcomePlugin();
+        final String expResult = "Import Database Welcome";
+        final String result = instance.getName();
         assertEquals(result, expResult);
     }
 
@@ -68,9 +68,9 @@ public class JDBCImportWelcomePluginNGTest {
     @Test
     public void testGetButton() {
         System.out.println("getButton");
-        JDBCImportWelcomePlugin instance = new JDBCImportWelcomePlugin();
-        VBox expResult = new VBox();
-        Button result = instance.getButton();
+        final JDBCImportWelcomePlugin instance = new JDBCImportWelcomePlugin();
+        final VBox expResult = new VBox();
+        final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
 

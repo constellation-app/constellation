@@ -58,9 +58,9 @@ public class ProvideFeedbackWelcomePluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        ProvideFeedbackWelcomePlugin instance = new ProvideFeedbackWelcomePlugin();
-        String expResult = "Provide Feedback Welcome";
-        String result = instance.getName();
+        final ProvideFeedbackWelcomePlugin instance = new ProvideFeedbackWelcomePlugin();
+        final String expResult = "Provide Feedback Welcome";
+        final String result = instance.getName();
         assertEquals(result, expResult);
 
     }
@@ -71,9 +71,9 @@ public class ProvideFeedbackWelcomePluginNGTest {
     @Test
     public void testGetButton() {
         System.out.println("getButton");
-        ProvideFeedbackWelcomePlugin instance = new ProvideFeedbackWelcomePlugin();
-        HBox expResult = new HBox();
-        Button result = instance.getButton();
+        final ProvideFeedbackWelcomePlugin instance = new ProvideFeedbackWelcomePlugin();
+        final HBox expResult = new HBox();
+        final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
 

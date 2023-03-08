@@ -66,12 +66,12 @@ public class PluginReporterPaneNGTest {
     @Test
     public void testOnChanged() {
         System.out.println("onChanged");
-        String key = "filteredTags";
-        Preferences prefs = mock(Preferences.class);
-        String returnValue = "LOW LEVEL";
+        final String key = "filteredTags";
+        final Preferences prefs = mock(Preferences.class);
+        final String returnValue = "LOW LEVEL";
 
-        ListChangeListener.Change<? extends String> c = null;
-        PluginReporterPane instance = new PluginReporterPane();
+        final ListChangeListener.Change<? extends String> c = null;
+        final PluginReporterPane instance = new PluginReporterPane();
 
         try (MockedStatic<NbPreferences> mockedStatic = Mockito.mockStatic(NbPreferences.class)) {
             mockedStatic.when(() -> NbPreferences.forModule(Mockito.eq(PluginReporterPane.class))).thenReturn(prefs);
@@ -88,8 +88,8 @@ public class PluginReporterPaneNGTest {
     @Test
     public void testSetPluginReportFilter() {
         System.out.println("setPluginReportFilter");
-        PluginReportFilter pluginReportFilter = (PluginReport report) -> true;
-        PluginReporterPane instance = new PluginReporterPane();
+        final PluginReportFilter pluginReportFilter = (PluginReport report) -> true;
+        final PluginReporterPane instance = new PluginReporterPane();
         
         instance.setPluginReportFilter(pluginReportFilter);
         assertEquals(instance.getPluginReportFilter(), pluginReportFilter);
@@ -101,9 +101,9 @@ public class PluginReporterPaneNGTest {
     @Test
     public void testSetGraphReport() {
         System.out.println("setGraphReport");
-        String graphId = "graphId";
-        GraphReport graphReport = new GraphReport(graphId);
-        PluginReporterPane instance = new PluginReporterPane();
+        final String graphId = "graphId";
+        final GraphReport graphReport = new GraphReport(graphId);
+        final PluginReporterPane instance = new PluginReporterPane();
         instance.setGraphReport(graphReport);
 
         assertEquals(instance.getGraphReport(), graphReport);

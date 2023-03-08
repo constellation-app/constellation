@@ -58,9 +58,9 @@ public class PluginReportPaneNGTest {
     @Test
     public void testToString() {
         System.out.println("toString");
-        PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
-        PluginReport pluginReport = mock(PluginReport.class);
-        PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
+        final PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
+        final PluginReport pluginReport = mock(PluginReport.class);
+        final PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
         
         when(pluginReport.getPluginName()).thenReturn("plugin name");
         String expResult = "plugin name";
@@ -74,9 +74,9 @@ public class PluginReportPaneNGTest {
     @Test
     public void testGetPluginReport() {
         System.out.println("getPluginReport");
-        PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
-        PluginReport pluginReport = mock(PluginReport.class);
-        PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
+        final PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
+        final PluginReport pluginReport = mock(PluginReport.class);
+        final PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
 
         PluginReport result = instance.getPluginReport();
         assertEquals(result, pluginReport);
@@ -88,9 +88,9 @@ public class PluginReportPaneNGTest {
     @Test
     public void testUpdateTimeHour() {
         System.out.println("updateTime");
-        PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
-        PluginReport pluginReport = mock(PluginReport.class);
-        PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
+        final PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
+        final PluginReport pluginReport = mock(PluginReport.class);
+        final PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
 
         when(pluginReport.getStartTime()).thenReturn((long)5000000);
         when(pluginReport.getStopTime()).thenReturn((long)10000000);
@@ -107,9 +107,9 @@ public class PluginReportPaneNGTest {
     @Test
     public void testUpdateTimeMinute() {
         System.out.println("updateTime");
-        PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
-        PluginReport pluginReport = mock(PluginReport.class);
-        PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
+        final PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
+        final PluginReport pluginReport = mock(PluginReport.class);
+        final PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
 
         when(pluginReport.getStartTime()).thenReturn((long)500000);
         when(pluginReport.getStopTime()).thenReturn((long)1000000);
@@ -126,9 +126,9 @@ public class PluginReportPaneNGTest {
     @Test
     public void testUpdateTimeSecond() {
         System.out.println("updateTime");
-        PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
-        PluginReport pluginReport = mock(PluginReport.class);
-        PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
+        final PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
+        final PluginReport pluginReport = mock(PluginReport.class);
+        final PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
 
         when(pluginReport.getStartTime()).thenReturn((long)50000);
         when(pluginReport.getStopTime()).thenReturn((long)100000);
@@ -145,9 +145,9 @@ public class PluginReportPaneNGTest {
     @Test
     public void testUpdateTimeMilli() {
         System.out.println("updateTime");
-        PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
-        PluginReport pluginReport = mock(PluginReport.class);
-        PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
+        final PluginReporterPane pluginReporterPane = mock(PluginReporterPane.class);
+        final PluginReport pluginReport = mock(PluginReport.class);
+        final PluginReportPane instance = new PluginReportPane(pluginReporterPane, pluginReport, null, null);
         
         when(pluginReport.getStartTime()).thenReturn((long)500);
         when(pluginReport.getStopTime()).thenReturn((long)1000);

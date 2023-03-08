@@ -57,9 +57,9 @@ public class DataAccessViewWelcomePluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        DataAccessViewWelcomePlugin instance = new DataAccessViewWelcomePlugin();
-        String expResult = "Open Data Access";
-        String result = instance.getName();
+        final DataAccessViewWelcomePlugin instance = new DataAccessViewWelcomePlugin();
+        final String expResult = "Open Data Access";
+        final String result = instance.getName();
         assertEquals(result, expResult);
     }
 
@@ -69,9 +69,9 @@ public class DataAccessViewWelcomePluginNGTest {
     @Test
     public void testGetButton() {
         System.out.println("getButton");
-        DataAccessViewWelcomePlugin instance = new DataAccessViewWelcomePlugin();
-        VBox expResult = new VBox();
-        Button result = instance.getButton();
+        final DataAccessViewWelcomePlugin instance = new DataAccessViewWelcomePlugin();
+        final VBox expResult = new VBox();
+        final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
 

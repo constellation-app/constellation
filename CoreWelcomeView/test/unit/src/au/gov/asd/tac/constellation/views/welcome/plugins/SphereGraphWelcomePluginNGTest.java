@@ -57,9 +57,9 @@ public class SphereGraphWelcomePluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        SphereGraphWelcomePlugin instance = new SphereGraphWelcomePlugin();
-        String expResult = "Add Sphere Graph Welcome";
-        String result = instance.getName();
+        final SphereGraphWelcomePlugin instance = new SphereGraphWelcomePlugin();
+        final String expResult = "Add Sphere Graph Welcome";
+        final String result = instance.getName();
         assertEquals(result, expResult);
     }
 
@@ -69,9 +69,9 @@ public class SphereGraphWelcomePluginNGTest {
     @Test
     public void testGetButton() {
         System.out.println("getButton");
-        SphereGraphWelcomePlugin instance = new SphereGraphWelcomePlugin();
-        VBox expResult = new VBox();
-        Button result = instance.getButton();
+        final SphereGraphWelcomePlugin instance = new SphereGraphWelcomePlugin();
+        final VBox expResult = new VBox();
+        final Button result = instance.getButton();
         assertEquals(result.getGraphic().getClass(), expResult.getClass());
     }
 
