@@ -44,7 +44,7 @@ public class ErrorReportDialogManager {
     
     public void showErrorDialog(ErrorReportEntry entry){
         LOGGER.info("\n\n ******** **** showErrorDialog:  mode=" + popupDisplayMode + " , activePopups=" + activePopupIds.size());
-        if (popupDisplayMode == 0 || (latestPopupDismissDate != null && entry.getLastDate().before(latestPopupDismissDate))) {
+        if (entry.isBlockRepeatedPopups() || popupDisplayMode == 0 || (latestPopupDismissDate != null && entry.getLastDate().before(latestPopupDismissDate))) {
             return; // mode 0 = Never                    
         }
         if (popupDisplayMode == 1) {

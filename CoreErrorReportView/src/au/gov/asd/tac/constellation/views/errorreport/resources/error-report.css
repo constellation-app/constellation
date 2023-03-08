@@ -39,6 +39,13 @@ and open the template in the editor.
     -fx-background-insets: 3 4 4 4;
 }
 
+.text-area {
+    text-area-background: black ;
+}
+
+.text-area .content {
+    -fx-background-color: text-area-background ;
+}
 /*
 
 .titled-pane-heading .title, .titled-pane-heading > .title {

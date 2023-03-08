@@ -22,6 +22,7 @@ public class ErrorReportEntry {
     private boolean expanded = true;
     private double entryId = -1;
     private Date lastPopupDate = null;
+    private boolean preventRepeatedPopups = false;
     
     public ErrorReportEntry(String errorHeading, String errorMessage, double id){
         heading = errorHeading;
@@ -95,7 +96,14 @@ public class ErrorReportEntry {
     public void setLastPopupDate(Date popupDate) {
         lastPopupDate = popupDate;
     }
-    
+
+    public boolean isBlockRepeatedPopups() {
+        return preventRepeatedPopups;
+    }
+
+    public void setBlockRepeatedPopups(boolean blockRepeatedPopups) {
+        preventRepeatedPopups = blockRepeatedPopups;
+    }    
 
 //    public boolean showDialog(){
 //        LOGGER.info("\n\n ********* calling showDialog()");
@@ -135,6 +143,7 @@ public class ErrorReportEntry {
                 + ", [occurrences=" + occurrences + "]"
                 + ", [lastDate=" + lastDate + "]"
                 + ", [lastPopupDate=" + lastPopupDate + "]"
+                + ", [preventRepeatedPopups=" + preventRepeatedPopups + "]"
                 + "]";
     }
 }

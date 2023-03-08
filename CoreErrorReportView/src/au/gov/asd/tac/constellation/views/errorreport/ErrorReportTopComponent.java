@@ -6,6 +6,7 @@
 package au.gov.asd.tac.constellation.views.errorreport;
 
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.icon.CharacterIconProvider;
 import javafx.geometry.Insets;
 import javafx.scene.layout.BorderPane;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
@@ -87,11 +88,9 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
     public static final Logger LOGGER = Logger.getLogger(ErrorReportTopComponent.class.getName());
 
     private List<ErrorReportEntry> sessionErrors = new ArrayList<>();
-    private ScrollPane errorScrollPane = new ScrollPane();
     static VBox sessionErrorsBox = new VBox();
     private ComboBox<String> popupControl;
 
-    //private static ErrorReportTopComponent instance = null;
     private boolean iconFlashing = false;
     private BorderPane erbp = null;
     
@@ -124,11 +123,12 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
                 Platform.runLater(new Runnable(){
                     public void run() {
                         if(updateInProgress != null && !updateInProgress.get()) {                            
-                            if (latestRetrievalDate == null || latestRetrievalDate.before(ErrorReportSessionData.lastUpdate)) {
+                            if (latestRetrievalDate == null || latestRetrievalDate.before(ErrorReportSessionData.lastUpdate) || ErrorReportSessionData.screenUpdateRequested) {
                                 latestRetrievalDate = new Date();
                                 flashErrorIcon(true);
                                 ErrorReportDialogManager.getInstance().updatePopupMode(getPopupControlValue());
-                                updateSessionErrorsBox(-1);    
+                                updateSessionErrorsBox(-1);
+                                ErrorReportSessionData.screenUpdateRequested = false;
                             }
                         }
                     }                    
@@ -137,7 +137,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
         };
         
         refreshTimer = new Timer();
-        refreshTimer.schedule(refreshAction, 10000, 400);
+        refreshTimer.schedule(refreshAction, 4000, 400);
     }
     
     @Override
@@ -175,16 +175,39 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
             updateSessionErrorsBox(-1);
         });
 
+
+        final ImageView expandButtonImage = new ImageView(CharacterIconProvider.CHAR_002B.buildImage(15, Color.WHITE));
+        final Button expandButton = new Button("");
+        expandButton.setGraphic(expandButtonImage);
+        expandButton.setTooltip(new Tooltip("Expand All Error Reports"));
+        expandButton.setOnAction((ActionEvent event) -> {
+            setReportsExpanded(true);
+        });
+
+        final ImageView shrinkButtonImage = new ImageView(CharacterIconProvider.CHAR_002D.buildImage(15, Color.WHITE));
+        final Button shrinkButton = new Button("");
+        shrinkButton.setGraphic(shrinkButtonImage);
+        shrinkButton.setTooltip(new Tooltip("Shrink All Error Reports"));
+        shrinkButton.setOnAction((ActionEvent event) -> {
+            setReportsExpanded(false);
+        });
+
         
         ToolBar controlToolbar = new ToolBar();
-        controlToolbar.getItems().addAll(popupLabel, popupControl,clearButton);
-        componentBox.getChildren().add(controlToolbar);
+        controlToolbar.getItems().addAll(popupLabel, popupControl, shrinkButton, expandButton, clearButton);
+        HBox toolboxContainer = new HBox();
+        toolboxContainer.getChildren().add(controlToolbar);
+        toolboxContainer.getChildren().add(new Label("  "));
+        GridPane.setHgrow(controlToolbar, Priority.ALWAYS);
+        
+        
+        componentBox.getChildren().add(toolboxContainer);
         
         erbp = new BorderPane();
         erbp.setStyle("-fx-text-fill: purple; -fx-text-background-color: blue; -fx-background-color: black;");
-        sessionErrorsBox.setPadding(new Insets(1,1,1,1));
+        sessionErrorsBox.setPadding(new Insets(0,0,0,0));
         sessionErrorsBox.setSpacing(2);
-        
+                
         erbp.addEventFilter(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
                             public void handle(final MouseEvent mouseEvent) {
                                 LOGGER.info("\n\n -- handle mouse event : " + mouseEvent);
@@ -194,15 +217,24 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
                         });
         
         erbp.setTop(sessionErrorsBox);
-        errorScrollPane.setContent(erbp);
-        errorScrollPane.setFitToHeight(true);
-        errorScrollPane.setFitToWidth(true);
-        errorScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        errorScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        componentBox.getChildren().add(errorScrollPane);
+        componentBox.getChildren().add(erbp);
         outerPane.setTop(componentBox);
         
         return outerPane;
+    }
+    
+    @Override
+    protected ScrollPane.ScrollBarPolicy getVerticalScrollPolicy() {
+        return ScrollPane.ScrollBarPolicy.ALWAYS;
+    }    
+    
+    public void setReportsExpanded(boolean expandedMode){
+        int errCount = sessionErrors.size();
+        if (sessionErrorsBox.getChildren().size() > 0) {
+            for (int i=0; i<errCount; i++) {
+                ((TitledPane)sessionErrorsBox.getChildren().get(i)).setExpanded(expandedMode);
+            }      
+        }
     }
     
     public ErrorReportEntry findActiveEntryWithId(double id){
@@ -219,37 +251,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
         int errCount = sessionErrors.size();
         if (sessionErrorsBox.getChildren().size() > 0) {
             for (int i=0; i<errCount; i++) {
-                sessionErrors.get(i).setExpanded(((TitledPane)sessionErrorsBox.getChildren().get(i)).isExpanded());
+                ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(
+                        sessionErrors.get(i).getEntryId(), null, null, ((TitledPane)sessionErrorsBox.getChildren().get(i)).isExpanded());
             }      
         }
-
-        if (sessionErrors.isEmpty()) {
-            sessionErrors = ErrorReportSessionData.getInstance().getSessionErrorsCopy();
-        } else {
-            List<ErrorReportEntry> oldSessionErrors = new ArrayList<>();
-            //oldSessionErrors.addAll(sessionErrors);
-            for (ErrorReportEntry testEntry: sessionErrors) {
-                LOGGER.info("\n -- REFRESH : add old entry : " + testEntry);
-                oldSessionErrors.add(testEntry);
-            }
-            sessionErrors = ErrorReportSessionData.getInstance().getSessionErrorsCopy();
-
-            for (ErrorReportEntry testEntry: sessionErrors) {
-                LOGGER.info("\n -- REFRESH : active entry : " + testEntry);
-            }
-            // update local data with new incoming data
-            for (ErrorReportEntry oldEntry: oldSessionErrors) {
-                ErrorReportEntry activeEntry = findActiveEntryWithId(oldEntry.getEntryId());
-                if (activeEntry != null) {
-                    // update active entry with old entry's data
-                    activeEntry.setExpanded(oldEntry.getExpanded());
-                    if (oldEntry.getLastPopupDate() != null) {
-                        activeEntry.setLastPopupDate(new Date(oldEntry.getLastPopupDate().getTime()));
-                    }
-                    LOGGER.info("\n -- REFRESH : active entry updated : " + activeEntry);
-                }
-            }            
-        }
+        sessionErrors = ErrorReportSessionData.getInstance().refreshDisplayedErrors();
     }
     
     public void updateSessionErrorsBox(int insertPos){
@@ -277,23 +283,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
             }
         }
     }
-    
-    void generateSampleErrorMessages(){
-        String errorMessage = "ABC Exception on line 007 ...\nat somewhere.someclass.method(line 007)\nat somewhereelse.anotherclass.badmethod(line 666)";
-        ErrorReportEntry rep1 = new ErrorReportEntry("test1", errorMessage, 99999);
-        String errorMessage2 = "ABC Exception on line 007b ...\nat somewhere.someclass.method(line 007)\nat somewhereelse.anotherclass.badmethod(line 666)";
-        ErrorReportEntry rep2 = new ErrorReportEntry("test2", errorMessage2, 99998);
-        String errorMessage3 = "ABC Exception on line 007c ...\nat somewhere.someclass.method(line 007)\nat somewhereelse.anotherclass.badmethod(line 666)";
-        ErrorReportEntry rep3 = new ErrorReportEntry("test3", errorMessage3, 99997);
-        String errorMessage4 = "ABC Exception on line 007b ...\nat somewhere.someclass.method(line 007)\nat somewhereelse.anotherclass.badmethod(line 666)";
-        ErrorReportEntry rep4 = new ErrorReportEntry("test4", errorMessage4, 99996);
-        
-        ErrorReportSessionData.getInstance().storeSessionError(rep1);
-        ErrorReportSessionData.getInstance().storeSessionError(rep2);
-        ErrorReportSessionData.getInstance().storeSessionError(rep3);
-        ErrorReportSessionData.getInstance().storeSessionError(rep4);        
-    }
-
     
     public boolean isIconFlashing(){
         return iconFlashing;
@@ -353,23 +342,36 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
     
     public TitledPane generateErrorReportTitledPane(ErrorReportEntry ere){
         TitledPane tp = new TitledPane();
-        String alertColour = "#d0d0d0";
+        String alertColour = "#f0b0b0";
+        String backgroundColour = "#380000";
+        String areaBackgroundColour ="#280000";
         if (ere.getOccurrences() > 999) {
-            alertColour = "#d06060";
+            alertColour = "#d06868";
+            backgroundColour = "#780000";
+            areaBackgroundColour ="#540000";
         } else if (ere.getOccurrences() > 99) {
             alertColour = "#e07878";
+            backgroundColour = "#680000";
+            areaBackgroundColour ="#480000";
         } else if (ere.getOccurrences() > 9) {
-            alertColour = "#f09090";
+            alertColour = "#f08080";
+            backgroundColour = "#580000";
+            areaBackgroundColour ="#3c0000";
         } else if (ere.getOccurrences() > 1) {
-            alertColour = "#f0b0b0";
+            alertColour = "#f09898";
+            backgroundColour = "#480000";
+            areaBackgroundColour ="#300000";
         }
 
         BorderPane bop = new BorderPane();
         VBox vBox = new VBox();
-        vBox.setPadding(new Insets(1,1,1,1));
+        vBox.setPadding(new Insets(1));
+        
         TextArea data = new TextArea(ere.getErrorData());
-        data.setStyle("-fx-text-fill: #c0c0c0; -fx-text-background-color: brown; -fx-background-color: #505050;");
+        data.setStyle("-fx-text-fill: #c0c0c0; -fx-background-color: " + backgroundColour + "; text-area-background: " + areaBackgroundColour + "; -fx-border-color: #505050; -fx-border-width: 2;"); //  + backgroundColour
         data.setEditable(false);
+        data.setPadding(new Insets(2));
+        data.setPrefRowCount(14);        
         vBox.getChildren().add(data);
         
         tp.setText("");      
@@ -377,6 +379,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
         tp.setExpanded(ere.getExpanded());           
         HBox hBoxTitle = new HBox();
         HBox hBoxLeft = new HBox();
+        HBox hBoxRight = new HBox();
         Label timeLabel = new Label(ere.getTimeText());
         Label label = new Label(ere.getHeading());
         label.setTooltip(new Tooltip(label.getText()));
@@ -384,7 +387,19 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
         
         GridPane.setHgrow(label, Priority.ALWAYS);
         
-        //final Color deepRed = new Color(220,40,40);
+        final ImageView shieldImageHighlight = new ImageView(UserInterfaceIconProvider.LOCK.buildImage(15, Color.ORANGE.darker()));
+        final ImageView visibleImageHighlight = new ImageView(UserInterfaceIconProvider.UNLOCK.buildImage(15, Color.CYAN.darker()));
+        final Button blockPopupsButton = new Button("");
+        blockPopupsButton.setStyle("-fx-background-color:" + backgroundColour +"; -fx-border-color: #404040");
+        blockPopupsButton.setGraphic(ere.isBlockRepeatedPopups() ? shieldImageHighlight : visibleImageHighlight);
+        blockPopupsButton.setTooltip(ere.isBlockRepeatedPopups() ? new Tooltip("Popups Blocked") : new Tooltip("Popups Allowed"));
+        blockPopupsButton.setPadding(new Insets(3,2,1,2));
+        blockPopupsButton.setOnAction((ActionEvent event) -> {
+            ere.setBlockRepeatedPopups(!ere.isBlockRepeatedPopups());
+            blockPopupsButton.setGraphic(ere.isBlockRepeatedPopups() ? shieldImageHighlight : visibleImageHighlight);
+            blockPopupsButton.setTooltip(ere.isBlockRepeatedPopups() ? new Tooltip("Popups Blocked") : new Tooltip("Popups Allowed"));
+        });
+
         final ImageView crossImageHighlight = new ImageView(UserInterfaceIconProvider.CROSS.buildImage(13, Color.LIGHT_GRAY));
         final Button dismissButton = new Button("");
         dismissButton.setStyle("-fx-background-color: #505050; -fx-border-color: #404040");
@@ -403,33 +418,40 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
                                 mouseEvent.consume();
                             }
                         });
-        dismissButton.setPrefSize(14, 14);
-        dismissButton.setMaxSize(14, 14);
+        dismissButton.setPadding(new Insets(2));
         dismissButton.setOnAction((ActionEvent event) -> {
             ErrorReportSessionData.getInstance().removeEntry(ere.getEntryId());
             updateSessionErrorsBox(-1);
         });
 
-        label.setStyle("-fx-text-fill: " + alertColour + ";");
-        timeLabel.setStyle("-fx-text-fill: " + alertColour + ";");
-        counterLabel.setStyle(" -fx-background-color: " + alertColour + "; -fx-text-background-color: cyan; -fx-text-fill: black;");
+        label.setStyle("-fx-text-fill: #c0c0c0;");
+        timeLabel.setStyle("-fx-text-fill: #c0c0c0;");
+        hBoxLeft.setStyle("-fx-background-color: " + backgroundColour + ";");
+        hBoxTitle.setStyle("-fx-background-color: " + backgroundColour + ";");
+        hBoxRight.setStyle("-fx-background-color: " + backgroundColour + ";");
+        
+        counterLabel.setStyle(" -fx-background-color: black; -fx-text-background-color: cyan; -fx-text-fill: " + alertColour + "; -fx-font-weight: bold");
         counterLabel.setTooltip(new Tooltip("Repeated occurrences"));
         hBoxLeft.getChildren().add(timeLabel);
         hBoxLeft.getChildren().add(counterLabel);
         hBoxTitle.getChildren().add(label);
-        hBoxLeft.setPadding(new Insets(4,6,0,0));
-        hBoxTitle.setPadding(new Insets(4,6,0,0));
-
+        hBoxLeft.setPadding(new Insets(4,6,1,0));
+        hBoxTitle.setPadding(new Insets(4,6,1,0));
+        hBoxRight.setPadding(new Insets(1,1,1,6));
+        hBoxRight.setSpacing(2);
+        hBoxRight.getChildren().add(blockPopupsButton);
+        hBoxRight.getChildren().add(dismissButton);
+        
         bop.setLeft(hBoxLeft);
         bop.setCenter(hBoxTitle);
-        bop.setRight(dismissButton);
-        bop.setPadding(new Insets(0,0,1,0));
+        bop.setRight(hBoxRight);
+        bop.setPadding(new Insets(0,0,0,0));
         bop.setStyle("-fx-border-color:grey");
         
-        bop.prefWidthProperty().bind(errorScrollPane.widthProperty().subtract(36));
+        bop.prefWidthProperty().bind(scrollPane.widthProperty().subtract(48));
 
         tp.setGraphic(bop);
-        tp.setPadding(new Insets(0));
+        tp.setPadding(new Insets(0,16,0,0));
         
         return tp;
     }

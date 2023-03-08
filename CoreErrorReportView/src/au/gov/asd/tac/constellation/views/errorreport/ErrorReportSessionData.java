@@ -19,11 +19,14 @@ public class ErrorReportSessionData {
  
     public static final Logger LOGGER = Logger.getLogger(ErrorReportSessionData.class.getName());
     
-        private List<ErrorReportEntry> sessionErrors = new ArrayList<>();
-
+        final private List<ErrorReportEntry> sessionErrors = new ArrayList<>();
+        final private List<ErrorReportEntry> displayedErrors = new ArrayList<>();
+        
         private static ErrorReportSessionData instance = null;
         private static double entryId = 0;
         public static Date lastUpdate = new Date();
+        
+        public static boolean screenUpdateRequested = false;
         
         ErrorReportSessionData(){
             
@@ -95,4 +98,64 @@ public class ErrorReportSessionData {
         }
         return returnData;
     }
+    
+    public List<ErrorReportEntry> refreshDisplayedErrors(){
+        // take a snapshot of sessionErrors to use in the display screen
+        List<ErrorReportEntry> refreshedData = new ArrayList<>();
+        synchronized(sessionErrors){
+             synchronized(displayedErrors){
+                LOGGER.info("\n -- SESSION DATA creating session data copy ");
+                for (ErrorReportEntry entry : sessionErrors) {
+                    ErrorReportEntry refreshedEntry = entry.copy();
+                    ErrorReportEntry displayedEntry = findDisplayedEntryWithId(entry.getEntryId());
+                    if (displayedEntry != null) {
+                        refreshedEntry.setExpanded(displayedEntry.getExpanded());
+                        refreshedEntry.setBlockRepeatedPopups(displayedEntry.isBlockRepeatedPopups());
+                        if (displayedEntry.getLastPopupDate() != null) {
+                            refreshedEntry.setLastPopupDate(new Date(displayedEntry.getLastPopupDate().getTime()));
+                        }
+                    }
+                    refreshedData.add(refreshedEntry);
+                }
+                displayedErrors.clear();
+                displayedErrors.addAll(refreshedData);
+             }
+        }
+        return displayedErrors;
+    }
+
+    public ErrorReportEntry findDisplayedEntryWithId(double id){
+        for (ErrorReportEntry activeEntry: displayedErrors) {
+            if (activeEntry.getEntryId() == id) {
+                return activeEntry;
+            }
+        }        
+        return null;
+    }
+    
+    public void requestScreenUpdate(boolean updateRequested){
+        screenUpdateRequested = updateRequested;
+    }
+    
+    public void updateDisplayedEntryScreenSettings(double entryId, Date lastPopupDate, Boolean blockPopups, Boolean expanded){
+        LOGGER.info("\n -- SESSION DATA update on entry : " + entryId);
+        synchronized(displayedErrors){
+            ErrorReportEntry displayedEntry = findDisplayedEntryWithId(entryId);
+            if (displayedEntry != null) {
+                if (blockPopups != null) {
+                    LOGGER.info("\n -- SESSION DATA block popups : " + blockPopups);
+                    displayedEntry.setBlockRepeatedPopups(blockPopups);
+                }
+                if (lastPopupDate != null) {
+                    LOGGER.info("\n -- SESSION DATA lastPopupDate : " + lastPopupDate);
+                    displayedEntry.setLastPopupDate(lastPopupDate);
+                }
+                if (expanded != null) {
+                    LOGGER.info("\n -- SESSION DATA expanded : " + expanded);
+                    displayedEntry.setExpanded(expanded);
+                }
+            }
+        }
+    }
+    
 }
