@@ -116,23 +116,25 @@ public class NewGraph extends RestService {
         final String graphName = SchemaFactoryUtilities.getSchemaFactory(schemaName).getLabel().trim().toLowerCase();
         GraphOpener.getDefault().openGraph(dualGraph, graphName);
 
-        final String newId;
+        String newId = "";
 
         try {
             newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        } catch (final ExecutionException ex) {
             throw new RestServiceException(ex);
-        } catch (ExecutionException ex) {
-            throw new RestServiceException(ex);
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             throw new RestServiceException(ex);
         }
 
+        if (!newId.isBlank() && !newId.isEmpty()) {
         final ObjectMapper mapper = new ObjectMapper();
         final ObjectNode root = mapper.createObjectNode();
         root.put("id", newId);
         root.put("name", GraphNode.getGraphNode(newId).getDisplayName());
         root.put("schema", schemaName);
-        mapper.writeValue(out, root);
+            mapper.writeValue(out, root);
+        }
     }
 }

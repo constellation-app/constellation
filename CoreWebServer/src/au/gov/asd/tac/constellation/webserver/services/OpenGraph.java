@@ -120,11 +120,11 @@ public class OpenGraph extends RestService {
             mapper.writeValue(out, root);
         } catch (final GraphParseException | FileNotFoundException ex) {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
-        } catch (InterruptedException ex) {
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+        } catch (final ExecutionException ex) {
             throw new RestServiceException(ex);
-        } catch (ExecutionException ex) {
-            throw new RestServiceException(ex);
-        } catch (TimeoutException ex) {
+        } catch (final TimeoutException ex) {
             throw new RestServiceException(ex);
         }
     }
