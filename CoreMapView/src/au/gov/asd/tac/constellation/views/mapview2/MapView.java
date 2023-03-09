@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview2;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
 import au.gov.asd.tac.constellation.utilities.geospatial.Geohash;
 
 
@@ -38,6 +39,7 @@ import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import gov.nasa.worldwind.geom.coords.MGRSCoord;
 import java.io.BufferedReader;
+import java.io.File;
 
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -1512,7 +1514,9 @@ public class MapView extends ScrollPane {
 
         // Read map from file
         try {
-            try (BufferedReader bFileReader = new BufferedReader(new FileReader(System.getProperty("user.dir") + "/src/au/gov/asd/tac/constellation/views/mapView/resources/MercratorMapView4.txt"))) {
+
+            final File map = ConstellationInstalledFileLocator.locate("modules/ext/data/MercratorMapView4.txt", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain());
+            try (BufferedReader bFileReader = new BufferedReader(new FileReader(map))) {
                 String path = "";
                 String line = "";
 

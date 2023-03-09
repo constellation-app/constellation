@@ -168,6 +168,8 @@ public class MapViewPane extends BorderPane {
         layersDropDown = new CheckComboBox<>(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS, THIESSEAN_POLYGONS_2));
         layersDropDown.setTitle("Layers");
         layersDropDown.setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
+        layersDropDown.setMinWidth(85);
+        layersDropDown.setMaxWidth(85);
 
         // Event handler for selecting different layers to show
         layersDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
@@ -181,6 +183,8 @@ public class MapViewPane extends BorderPane {
         overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, OVERVIEW_OVERLAY, TOOLS_OVERLAY));
         overlaysDropDown.setTitle("Overlays");
         overlaysDropDown.setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
+        overlaysDropDown.setMinWidth(95);
+        overlaysDropDown.setMaxWidth(95);
 
         // Overlay event handler
         overlaysDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
@@ -198,6 +202,7 @@ public class MapViewPane extends BorderPane {
 
         zoomDropDown.getItems().addAll(zoomAll, zoomSelection, zoomLocation);
         zoomDropDown.setTooltip(new Tooltip("Zoom based on markers or locations in the Map View"));
+
 
         zoomAll.setOnAction(event -> {
             mapView.panToCenter();
@@ -218,6 +223,8 @@ public class MapViewPane extends BorderPane {
         markerDropDown.getCheckModel().check(MARKER_TYPE_POINT);
         markerDropDown.getCheckModel().check(MARKER_TYPE_LINE);
         markerDropDown.getCheckModel().check(MARKER_TYPE_POLYGON);
+        markerDropDown.setMinWidth(90);
+        markerDropDown.setMaxWidth(90);
 
         // Event handler for hiding/showing markers
         markerDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
@@ -259,6 +266,8 @@ public class MapViewPane extends BorderPane {
         colourDropDown.setTooltip(new Tooltip("Chose the color scheme for markers displayed in the Map View"));
 
         colourDropDown.setOnAction(event -> mapView.getMarkerColourProperty().set(colourDropDown.getValue()));
+        colourDropDown.setMinWidth(120);
+        colourDropDown.setMaxWidth(120);
 
         // Marker label menu setup and event handling
         markerLabelDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(NO_LABELS, USE_LABEL_ATTR, USE_IDENT_ATTR)));
@@ -266,6 +275,8 @@ public class MapViewPane extends BorderPane {
         markerLabelDropDown.setTooltip(new Tooltip("Chose the label for markers displayed in the Map View"));
 
         markerLabelDropDown.setOnAction(event -> mapView.getMarkerTextProperty().set(markerLabelDropDown.getValue()));
+        markerLabelDropDown.setMinWidth(95);
+        markerLabelDropDown.setMaxWidth(95);
 
         // Export menu setup and eventer handling
         exportDropDown = new ComboBox(FXCollections.observableList(Arrays.asList(GEO_JSON, GEO_PACKAGE, KML, SHAPEFILE)));
@@ -293,6 +304,8 @@ public class MapViewPane extends BorderPane {
             }
         });
         exportDropDown.setTooltip(new Tooltip("Export from the Map View"));
+        exportDropDown.setMinWidth(110);
+        exportDropDown.setMaxWidth(110);
 
         helpButton = new Button("Help");
 
