@@ -33,8 +33,10 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,6 +56,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.DatePicker;
@@ -69,6 +72,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -76,6 +81,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -212,12 +218,37 @@ public class NotesViewPane extends BorderPane {
 
         dateTimeGridpane.add(fromDate.getPane(), 0, 0);
         dateTimeGridpane.add(toDate.getPane(), 1, 0);
-        dateTimeGridpane.setHgap(30);
+        dateTimeGridpane.setHgap(15);
+        dateTimeGridpane.setVgap(10);
 
         dateTimePane.getChildren().add(dateTimeGridpane);
 
         TitledPane timeRangePane = new TitledPane("Select time range...", dateTimePane);
         timeRangeAccordian.getPanes().add(timeRangePane);
+
+        final ArrayList<String> timeZones = new ArrayList<>(ZoneId.getAvailableZoneIds());
+        Collections.sort(timeZones);
+        final ChoiceBox<String> timeZoneChoiceBox = new ChoiceBox(FXCollections.observableList(timeZones));
+        //timeZoneChoiceBox.getSelectionModel().select(ZoneId.systemDefault().getId());
+        dateTimeGridpane.add(timeZoneChoiceBox, 0, 1);
+
+        final Button utcButton = new Button("UTC");
+        final Button localButton = new Button("LOCAL");
+        final Button resetButton = new Button("RESET");
+        resetButton.setStyle("-fx-background-color: #FFA500; ");
+        resetButton.setTextFill(Color.BLACK);
+        final Button applyButton = new Button("APPLY");
+        applyButton.setStyle("-fx-background-color: #0080FF; ");
+
+        final GridPane timeZoneButtons = new GridPane();
+        timeZoneButtons.add(utcButton, 0, 0);
+        timeZoneButtons.add(localButton, 1, 0);
+        timeZoneButtons.add(resetButton, 2, 0);
+        timeZoneButtons.add(applyButton, 3, 0);
+        timeZoneButtons.setHgap(10);
+
+        dateTimeGridpane.add(timeZoneButtons, 1, 1);
+
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
