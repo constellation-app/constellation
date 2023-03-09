@@ -49,24 +49,34 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.CustomMenuItem;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
@@ -192,6 +202,22 @@ public class NotesViewPane extends BorderPane {
             }
         });
         autoFilterCheckComboBox.setStyle("visibility: hidden;");
+        Accordion timeRangeAccordian = new Accordion();
+
+        DateTimePicker fromDate = new DateTimePicker(true);
+        DateTimePicker toDate = new DateTimePicker(false);
+
+        final Pane dateTimePane = new Pane();
+        final GridPane dateTimeGridpane = new GridPane();
+
+        dateTimeGridpane.add(fromDate.getPane(), 0, 0);
+        dateTimeGridpane.add(toDate.getPane(), 1, 0);
+        dateTimeGridpane.setHgap(30);
+
+        dateTimePane.getChildren().add(dateTimeGridpane);
+
+        TitledPane timeRangePane = new TitledPane("Select time range...", dateTimePane);
+        timeRangeAccordian.getPanes().add(timeRangePane);
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
@@ -201,7 +227,7 @@ public class NotesViewPane extends BorderPane {
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
         // VBox to store control items used to filter notes.
-        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, autoFilterCheckComboBox, helpButton);
+        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, autoFilterCheckComboBox, timeRangeAccordian, helpButton);
         filterNotesHBox.setAlignment(Pos.CENTER_LEFT);
         filterNotesHBox.setStyle("-fx-padding: 5px;");
 

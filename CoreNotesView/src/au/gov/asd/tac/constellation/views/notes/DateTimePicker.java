@@ -1,0 +1,90 @@
+/*
+ * Copyright 2010-2022 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.views.notes;
+
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.Spinner;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
+
+/**
+ *
+ * @author altair1673
+ */
+public class DateTimePicker {
+
+    private final Pane dateTimePane;
+    private final DatePicker datePicker = new DatePicker();
+    private final Spinner<Integer> hourPicker = new Spinner<>(0, 23, 0);
+    private final Spinner<Integer> minPicker = new Spinner<>(0, 59, 0);
+    private final Spinner<Integer> secPicker = new Spinner<>(0, 59, 0);
+
+    private final GridPane mainGridPane = new GridPane();
+    private final String FROM_TEXT = "From:";
+    private final String TO_TEXT = "To:";
+
+    public DateTimePicker(final boolean from) {
+        dateTimePane = new Pane();
+
+        dateTimePane.getChildren().add(mainGridPane);
+
+        GridPane datePickerGridPane = new GridPane();
+
+        Label datePickerLabel = new Label();
+
+        if (from) {
+            datePickerLabel.setText(FROM_TEXT);
+        } else {
+            datePickerLabel.setText(TO_TEXT);
+        }
+
+        datePickerGridPane.add(datePickerLabel, 0, 0);
+        datePickerGridPane.add(datePicker, 1, 0);
+
+        GridPane timePickerGrid = new GridPane();
+        Label hourLabel = new Label("Hour");
+        Label minLabel = new Label("Minute");
+        Label secLabel = new Label("Second");
+
+        timePickerGrid.add(hourLabel, 0, 0);
+        timePickerGrid.add(minLabel, 1, 0);
+        timePickerGrid.add(secLabel, 2, 0);
+
+        hourPicker.setMinWidth(60);
+        minPicker.setMinWidth(60);
+        secPicker.setMinWidth(60);
+
+        hourPicker.setMaxWidth(60);
+        minPicker.setMaxWidth(60);
+        secPicker.setMaxWidth(60);
+
+        hourPicker.setEditable(true);
+        minPicker.setEditable(true);
+        secPicker.setEditable(true);
+
+        timePickerGrid.add(hourPicker, 0, 1);
+        timePickerGrid.add(minPicker, 1, 1);
+        timePickerGrid.add(secPicker, 2, 1);
+
+        mainGridPane.add(datePickerGridPane, 0, 0);
+        mainGridPane.add(timePickerGrid, 0, 1);
+    }
+
+    public Pane getPane() {
+        return dateTimePane;
+    }
+}
