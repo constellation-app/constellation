@@ -113,7 +113,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 300, Short.MAX_VALUE)
         );
-
+        
         setName(Bundle.CTL_ErrorReportTopComponent());
         setToolTipText(Bundle.HINT_ErrorReportTopComponent());
         initContent();
@@ -299,13 +299,13 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
                 final Image alertIcon = ImageIO.read(ErrorReportTopComponent.class.getResourceAsStream("resources/error-report-alert.png"));
                 final Image defaultIcon = ImageIO.read(ErrorReportTopComponent.class.getResourceAsStream("resources/error-report-default.png"));
                 Thread flasher = new Thread(() -> {
-                    int countDown = 10;
+                    int countDown = 3;
                     requestAttention(true);
                     while (isIconFlashing()) {                            
                         try {
                             countDown--;
                             if (countDown <= 0) {
-                                countDown = 10;
+                                countDown = 3;
                                 requestAttention(true);
                             }
                             SwingUtilities.invokeAndWait(() -> {
@@ -343,24 +343,24 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane>  { /
     public TitledPane generateErrorReportTitledPane(ErrorReportEntry ere){
         TitledPane tp = new TitledPane();
         String alertColour = "#f0b0b0";
-        String backgroundColour = "#380000";
-        String areaBackgroundColour ="#280000";
+        String backgroundColour = "#4a0000";
+        String areaBackgroundColour ="linear-gradient(to bottom right, #4a0000, #100000)";//28
         if (ere.getOccurrences() > 999) {
             alertColour = "#d06868";
-            backgroundColour = "#780000";
-            areaBackgroundColour ="#540000";
+            backgroundColour = "#7c0000";
+            areaBackgroundColour ="linear-gradient(to bottom right, #7c0000, #240000)";//54
         } else if (ere.getOccurrences() > 99) {
             alertColour = "#e07878";
-            backgroundColour = "#680000";
-            areaBackgroundColour ="#480000";
+            backgroundColour = "#6e0000";
+            areaBackgroundColour ="linear-gradient(to bottom right, #6e0000, #1f0000)";//48
         } else if (ere.getOccurrences() > 9) {
             alertColour = "#f08080";
-            backgroundColour = "#580000";
-            areaBackgroundColour ="#3c0000";
+            backgroundColour = "#600000";
+            areaBackgroundColour ="linear-gradient(to bottom right, #600000, #1a0000)";//3c
         } else if (ere.getOccurrences() > 1) {
             alertColour = "#f09898";
-            backgroundColour = "#480000";
-            areaBackgroundColour ="#300000";
+            backgroundColour = "#540000";
+            areaBackgroundColour ="linear-gradient(to bottom right, #540000, #150000)"; //30
         }
 
         BorderPane bop = new BorderPane();
