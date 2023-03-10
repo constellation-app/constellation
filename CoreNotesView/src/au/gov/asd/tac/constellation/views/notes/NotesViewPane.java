@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -43,7 +44,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -227,23 +230,34 @@ public class NotesViewPane extends BorderPane {
         timeRangeAccordian.getPanes().add(timeRangePane);
 
         final ArrayList<String> timeZones = new ArrayList<>(ZoneId.getAvailableZoneIds());
+
+
         Collections.sort(timeZones);
         final ChoiceBox<String> timeZoneChoiceBox = new ChoiceBox(FXCollections.observableList(timeZones));
-        //timeZoneChoiceBox.getSelectionModel().select(ZoneId.systemDefault().getId());
+
+        fromDate.setCurrentDateTime(ZoneId.systemDefault());
+        toDate.setCurrentDateTime(ZoneId.systemDefault());
+        timeZoneChoiceBox.getSelectionModel().select(ZoneId.systemDefault().getId());
+
+        timeZoneChoiceBox.setOnAction(event -> {
+            fromDate.convertCurrentDateTime(ZoneId.of(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
+            toDate.convertCurrentDateTime(ZoneId.of(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
+        });
+
         dateTimeGridpane.add(timeZoneChoiceBox, 0, 1);
 
         final Button utcButton = new Button("UTC");
         final Button localButton = new Button("LOCAL");
-        final Button resetButton = new Button("RESET");
-        resetButton.setStyle("-fx-background-color: #FFA500; ");
-        resetButton.setTextFill(Color.BLACK);
+        final Button activeButton = new Button("OFF");
+        activeButton.setStyle("-fx-background-color: #FFA500; ");
+        activeButton.setTextFill(Color.BLACK);
         final Button applyButton = new Button("APPLY");
         applyButton.setStyle("-fx-background-color: #0080FF; ");
 
         final GridPane timeZoneButtons = new GridPane();
         timeZoneButtons.add(utcButton, 0, 0);
         timeZoneButtons.add(localButton, 1, 0);
-        timeZoneButtons.add(resetButton, 2, 0);
+        timeZoneButtons.add(activeButton, 2, 0);
         timeZoneButtons.add(applyButton, 3, 0);
         timeZoneButtons.setHgap(10);
 

@@ -15,6 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.notes;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -37,6 +43,10 @@ public class DateTimePicker {
     private final String FROM_TEXT = "From:";
     private final String TO_TEXT = "To:";
 
+    boolean active = true;
+
+    private ZoneId zone;
+
     public DateTimePicker(final boolean from) {
         dateTimePane = new Pane();
 
@@ -51,6 +61,7 @@ public class DateTimePicker {
         } else {
             datePickerLabel.setText(TO_TEXT);
         }
+
 
         datePickerGridPane.add(datePickerLabel, 0, 0);
         datePickerGridPane.add(datePicker, 1, 0);
@@ -87,4 +98,47 @@ public class DateTimePicker {
     public Pane getPane() {
         return dateTimePane;
     }
+
+    public void setCurrentDateTime(ZoneId zone) {
+        this.zone = zone;
+
+        /*LocalDateTime ldt = LocalDateTime.of(datePicker.getValue().getYear(), datePicker.getValue().getMonth(), datePicker.getValue().getDayOfMonth(),
+                hourPicker.getValue(),
+                minPicker.getValue(), secPicker.getValue());*/
+        ZonedDateTime timeAtZone = ZonedDateTime.now(zone);
+
+        datePicker.valueProperty().set(LocalDate.now(zone));
+        hourPicker.getValueFactory().setValue(timeAtZone.getHour());
+        minPicker.getValueFactory().setValue(timeAtZone.getMinute());
+        secPicker.getValueFactory().setValue(timeAtZone.getSecond());
+    }
+
+    public void convertCurrentDateTime(ZoneId convertTo) {
+        if (convertTo == null) {
+            return;
+        }
+
+        ZonedDateTime currentTime = ZonedDateTime.of(datePicker.getValue().getYear(),
+                datePicker.getValue().getMonthValue(),
+                datePicker.getValue().getDayOfMonth(),
+                hourPicker.getValue(),
+                minPicker.getValue(),
+                secPicker.getValue(),
+                0,
+                zone);
+
+        currentTime = currentTime.withZoneSameInstant(convertTo);
+        zone = convertTo;
+
+        datePicker.valueProperty().set(currentTime.toLocalDate());
+        hourPicker.getValueFactory().setValue(currentTime.getHour());
+        minPicker.getValueFactory().setValue(currentTime.getMinute());
+        secPicker.getValueFactory().setValue(currentTime.getSecond());
+
+    }
+
+    public void toggleActive() {
+        active = !active;
+    }
+
 }
