@@ -244,6 +244,7 @@ public class NotesViewPane extends BorderPane {
             toDate.convertCurrentDateTime(ZoneId.of(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
         });
 
+
         dateTimeGridpane.add(timeZoneChoiceBox, 0, 1);
 
         final Button utcButton = new Button("UTC");
@@ -253,6 +254,30 @@ public class NotesViewPane extends BorderPane {
         activeButton.setTextFill(Color.BLACK);
         final Button applyButton = new Button("APPLY");
         applyButton.setStyle("-fx-background-color: #0080FF; ");
+
+        localButton.setOnAction(event -> {
+            fromDate.convertCurrentDateTime(ZoneId.systemDefault());
+            toDate.convertCurrentDateTime(ZoneId.systemDefault());
+            timeZoneChoiceBox.getSelectionModel().select(ZoneId.systemDefault().getId());
+        });
+
+        utcButton.setOnAction(event -> {
+            fromDate.convertCurrentDateTime(ZoneId.of("UTC"));
+            toDate.convertCurrentDateTime(ZoneId.of("UTC"));
+            timeZoneChoiceBox.getSelectionModel().select("UTC");
+        });
+
+        activeButton.setOnAction(event -> {
+            fromDate.toggleActive();
+            toDate.toggleActive();
+            if (activeButton.getText().equals("OFF")) {
+                activeButton.setStyle("-fx-background-color: #FF0000; ");
+                activeButton.setText("ON");
+            } else if (activeButton.getText().equals("ON")) {
+                activeButton.setStyle("-fx-background-color: #FFA500; ");
+                activeButton.setText("OFF");
+            }
+        });
 
         final GridPane timeZoneButtons = new GridPane();
         timeZoneButtons.add(utcButton, 0, 0);

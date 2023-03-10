@@ -43,7 +43,7 @@ public class DateTimePicker {
     private final String FROM_TEXT = "From:";
     private final String TO_TEXT = "To:";
 
-    boolean active = true;
+    boolean active = false;
 
     private ZoneId zone;
 
