@@ -676,8 +676,6 @@ public class NotesViewPane extends BorderPane {
         // the correct java fx elements
         final VBox noteButtons;
 
-
-
         if (newNote.getNodeColour().isBlank() || newNote.getNodeColour().isEmpty()) {
             newNote.setNodeColour(USER_COLOR);
         }
@@ -693,10 +691,7 @@ public class NotesViewPane extends BorderPane {
             noteButtons = new VBox(DEFAULT_SPACING, editTextButton, deleteButton);
         }
 
-
-        //noteButtons.getChildren().add(colourPicker);
         noteButtons.setAlignment(Pos.CENTER);
-
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
         if (newNote.isUserCreated()) {
