@@ -44,12 +44,13 @@ public class DateTimePicker {
     private final String TO_TEXT = "To:";
 
     boolean active = false;
+    boolean from = false;
 
     private ZoneId zone;
 
     public DateTimePicker(final boolean from) {
         dateTimePane = new Pane();
-
+        this.from = from;
         dateTimePane.getChildren().add(mainGridPane);
 
         GridPane datePickerGridPane = new GridPane();
@@ -102,9 +103,6 @@ public class DateTimePicker {
     public void setCurrentDateTime(ZoneId zone) {
         this.zone = zone;
 
-        /*LocalDateTime ldt = LocalDateTime.of(datePicker.getValue().getYear(), datePicker.getValue().getMonth(), datePicker.getValue().getDayOfMonth(),
-                hourPicker.getValue(),
-                minPicker.getValue(), secPicker.getValue());*/
         ZonedDateTime timeAtZone = ZonedDateTime.now(zone);
 
         datePicker.valueProperty().set(LocalDate.now(zone));
@@ -139,6 +137,35 @@ public class DateTimePicker {
 
     public void toggleActive() {
         active = !active;
+    }
+
+    public boolean getActive() {
+        return active;
+    }
+
+    public ZonedDateTime getCurrentDateTime() {
+
+        /*if (!active) {
+            if(from)
+            {
+
+            }
+        }*/
+
+        ZonedDateTime currentTime = ZonedDateTime.of(datePicker.getValue().getYear(),
+                datePicker.getValue().getMonthValue(),
+                datePicker.getValue().getDayOfMonth(),
+                hourPicker.getValue(),
+                minPicker.getValue(),
+                secPicker.getValue(),
+                0,
+                zone);
+
+        return currentTime;
+    }
+
+    public ZoneId getZoneId() {
+        return zone;
     }
 
 }

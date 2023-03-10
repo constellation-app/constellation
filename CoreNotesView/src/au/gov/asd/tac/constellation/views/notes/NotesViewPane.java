@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -47,6 +48,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.TimeZone;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -147,6 +149,10 @@ public class NotesViewPane extends BorderPane {
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
 
+    final DateTimePicker fromDate = new DateTimePicker(true);
+    final DateTimePicker toDate = new DateTimePicker(false);
+
+
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
     /**
@@ -213,8 +219,6 @@ public class NotesViewPane extends BorderPane {
         autoFilterCheckComboBox.setStyle("visibility: hidden;");
         Accordion timeRangeAccordian = new Accordion();
 
-        DateTimePicker fromDate = new DateTimePicker(true);
-        DateTimePicker toDate = new DateTimePicker(false);
 
         final Pane dateTimePane = new Pane();
         final GridPane dateTimeGridpane = new GridPane();
@@ -277,6 +281,16 @@ public class NotesViewPane extends BorderPane {
                 activeButton.setStyle("-fx-background-color: #FFA500; ");
                 activeButton.setText("OFF");
             }
+        });
+
+        applyButton.setOnAction(event -> {
+
+                final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                if (activeGraph != null) {
+                    updateNotesUI();
+                    controller.writeState(activeGraph);
+                }
+
         });
 
         final GridPane timeZoneButtons = new GridPane();
@@ -569,16 +583,53 @@ public class NotesViewPane extends BorderPane {
         
         synchronized (LOCK) {
             notesViewEntries.forEach(entry -> {
+                if (fromDate.getActive() && toDate.getActive()) {
+                    String dateFormat = new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(entry.getDateTime())));
+
+                    String[] dateTimeComponents = dateFormat.split(" ");
+                    String time = dateTimeComponents[0];
+                    String date = dateTimeComponents[3];
+
+                    String[] timeComponents = time.split(":");
+                    int hour = Integer.parseInt(timeComponents[0]);
+                    int min = Integer.parseInt(timeComponents[1]);
+                    int sec = Integer.parseInt(timeComponents[2]);
+
+                    if (dateTimeComponents[1].equals("pm")) {
+                        hour = 24 - hour;
+                    }
+
+                    String[] dateComponents = date.split("/");
+                    int day = Integer.parseInt(dateComponents[0]);
+                    int month = Integer.parseInt(dateComponents[1]);
+                    int year = Integer.parseInt(dateComponents[2]);
+
+                    ZonedDateTime entryTime = ZonedDateTime.of(year, month, day, hour, min, sec, 0, ZoneId.of(ZoneId.systemDefault().getId()));
+                    entryTime = entryTime.withZoneSameInstant(fromDate.getZoneId());
+
+                    ZonedDateTime fromTime = fromDate.getCurrentDateTime();
+                    ZonedDateTime toTime = toDate.getCurrentDateTime();
+
+                    if (entryTime.isEqual(fromTime) || entryTime.isEqual(toTime) || (entryTime.isAfter(fromTime) && entryTime.isBefore(toTime))) {
+                        entry.setShowing(true);
+                    } else {
+                        entry.setShowing(false);
+                    }
+
+                } else {
+                    entry.setShowing(true);
+                }
+
                 // Add note to render list if its respective filter is selected.
-                if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated())) {
+                if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated() && entry.getShowing())) {
                     notesToRender.add(entry);
 
-                } else if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated()) {
+                } else if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated() && entry.getShowing()) {
                     if (updateAutoNotesDisplayed(entry)) {
                         notesToRender.add(entry);
                     }
 
-                } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated()) {
+                } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated() && entry.getShowing()) {
                     // If no nodes or transactions are selected, show notes applied to the whole graph.
                     if (entry.isGraphAttribute()) {
                         notesToRender.add(entry);
@@ -597,6 +648,7 @@ public class NotesViewPane extends BorderPane {
                         }
                     }
                 }
+
             });
         }
         

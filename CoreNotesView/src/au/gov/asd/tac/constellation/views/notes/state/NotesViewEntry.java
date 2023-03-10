@@ -36,6 +36,7 @@ public class NotesViewEntry implements PluginReportListener {
     private List<Integer> transactionsSelected;
     private List<String> tags = new ArrayList<>();
     private boolean editMode;
+    private boolean isShowing = true;
 
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute) {
         this.dateTime = dateTime;
@@ -112,6 +113,14 @@ public class NotesViewEntry implements PluginReportListener {
 
     public void setEditMode(boolean editMode) {
         this.editMode = editMode;
+    }
+
+    public void setShowing(final boolean showing) {
+        isShowing = showing;
+    }
+
+    public boolean getShowing() {
+        return isShowing;
     }
 
     @Override
