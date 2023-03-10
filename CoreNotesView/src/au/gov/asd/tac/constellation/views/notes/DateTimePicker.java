@@ -28,6 +28,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
 /**
+ * A DateTime Selector that is in JavaFX instead of Swing.
  *
  * @author altair1673
  */
@@ -96,10 +97,16 @@ public class DateTimePicker {
         mainGridPane.add(timePickerGrid, 0, 1);
     }
 
+
     public Pane getPane() {
         return dateTimePane;
     }
 
+    /**
+     * Sets the current date time to whatever the current local time is
+     *
+     * @param zone - zone ID of current location
+     */
     public void setCurrentDateTime(ZoneId zone) {
         this.zone = zone;
 
@@ -111,6 +118,11 @@ public class DateTimePicker {
         secPicker.getValueFactory().setValue(timeAtZone.getSecond());
     }
 
+    /**
+     * Converts time to another time zone
+     *
+     * @param convertTo - id of zone to convert to
+     */
     public void convertCurrentDateTime(ZoneId convertTo) {
         if (convertTo == null) {
             return;
@@ -135,6 +147,10 @@ public class DateTimePicker {
 
     }
 
+    /**
+     * Sets whether this component will be "active" meaning whether or not
+     * inputs should be queried from this
+     */
     public void toggleActive() {
         active = !active;
     }
@@ -143,15 +159,12 @@ public class DateTimePicker {
         return active;
     }
 
+    /**
+     * Gets the current date time from the controls
+     *
+     * @return
+     */
     public ZonedDateTime getCurrentDateTime() {
-
-        /*if (!active) {
-            if(from)
-            {
-
-            }
-        }*/
-
         ZonedDateTime currentTime = ZonedDateTime.of(datePicker.getValue().getYear(),
                 datePicker.getValue().getMonthValue(),
                 datePicker.getValue().getDayOfMonth(),

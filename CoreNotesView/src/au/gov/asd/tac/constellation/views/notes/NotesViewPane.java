@@ -217,9 +217,11 @@ public class NotesViewPane extends BorderPane {
             }
         });
         autoFilterCheckComboBox.setStyle("visibility: hidden;");
+
+        // Time range selection accordion
         Accordion timeRangeAccordian = new Accordion();
 
-
+        // Set up the date time selection pane with to range selection components
         final Pane dateTimePane = new Pane();
         final GridPane dateTimeGridpane = new GridPane();
 
@@ -233,16 +235,18 @@ public class NotesViewPane extends BorderPane {
         TitledPane timeRangePane = new TitledPane("Select time range...", dateTimePane);
         timeRangeAccordian.getPanes().add(timeRangePane);
 
+        // Get all available time zone ids
         final ArrayList<String> timeZones = new ArrayList<>(ZoneId.getAvailableZoneIds());
-
 
         Collections.sort(timeZones);
         final ChoiceBox<String> timeZoneChoiceBox = new ChoiceBox(FXCollections.observableList(timeZones));
 
+        // Set time of the range selectors to the current time
         fromDate.setCurrentDateTime(ZoneId.systemDefault());
         toDate.setCurrentDateTime(ZoneId.systemDefault());
         timeZoneChoiceBox.getSelectionModel().select(ZoneId.systemDefault().getId());
 
+        // Event handler for changing time zones
         timeZoneChoiceBox.setOnAction(event -> {
             fromDate.convertCurrentDateTime(ZoneId.of(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
             toDate.convertCurrentDateTime(ZoneId.of(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
@@ -259,18 +263,21 @@ public class NotesViewPane extends BorderPane {
         final Button applyButton = new Button("APPLY");
         applyButton.setStyle("-fx-background-color: #0080FF; ");
 
+        // Convert time to local time zone
         localButton.setOnAction(event -> {
             fromDate.convertCurrentDateTime(ZoneId.systemDefault());
             toDate.convertCurrentDateTime(ZoneId.systemDefault());
             timeZoneChoiceBox.getSelectionModel().select(ZoneId.systemDefault().getId());
         });
 
+        // Convert time to UTC
         utcButton.setOnAction(event -> {
             fromDate.convertCurrentDateTime(ZoneId.of("UTC"));
             toDate.convertCurrentDateTime(ZoneId.of("UTC"));
             timeZoneChoiceBox.getSelectionModel().select("UTC");
         });
 
+        // Set whether or not a time filter should even be applied
         activeButton.setOnAction(event -> {
             fromDate.toggleActive();
             toDate.toggleActive();
@@ -283,6 +290,33 @@ public class NotesViewPane extends BorderPane {
             }
         });
 
+        // Event handler for when user hovers over active and apply button
+        activeButton.setOnMouseEntered(event -> {
+            if (activeButton.getText().equals("OFF")) {
+                activeButton.setStyle("-fx-background-color: #FF8C00; ");
+            } else if (activeButton.getText().equals("ON")) {
+                activeButton.setStyle("-fx-background-color: #CC0000; ");
+            }
+        });
+
+        activeButton.setOnMouseExited(event -> {
+            if (activeButton.getText().equals("OFF")) {
+                activeButton.setStyle("-fx-background-color: #FFA500; ");
+            } else if (activeButton.getText().equals("ON")) {
+                activeButton.setStyle("-fx-background-color: #FF0000; ");
+            }
+        });
+
+        applyButton.setOnMouseEntered(event -> {
+            applyButton.setStyle("-fx-background-color: #078BC9; ");
+        });
+
+        applyButton.setOnMouseExited(event -> {
+            applyButton.setStyle("-fx-background-color: #0080FF; ");
+        });
+
+
+        // Hide/show notes based on their entry time
         applyButton.setOnAction(event -> {
 
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
@@ -584,12 +618,15 @@ public class NotesViewPane extends BorderPane {
         synchronized (LOCK) {
             notesViewEntries.forEach(entry -> {
                 if (fromDate.getActive() && toDate.getActive()) {
+                    // Get date time of entry in proper format
                     String dateFormat = new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(entry.getDateTime())));
 
+                    // Extract date components
                     String[] dateTimeComponents = dateFormat.split(" ");
                     String time = dateTimeComponents[0];
                     String date = dateTimeComponents[3];
 
+                    // Split time into hour, minute and day
                     String[] timeComponents = time.split(":");
                     int hour = Integer.parseInt(timeComponents[0]);
                     int min = Integer.parseInt(timeComponents[1]);
@@ -599,17 +636,20 @@ public class NotesViewPane extends BorderPane {
                         hour = 24 - hour;
                     }
 
+                    // Split date into day, month and year
                     String[] dateComponents = date.split("/");
                     int day = Integer.parseInt(dateComponents[0]);
                     int month = Integer.parseInt(dateComponents[1]);
                     int year = Integer.parseInt(dateComponents[2]);
 
+                    // Convert time of notes to user specified time zone
                     ZonedDateTime entryTime = ZonedDateTime.of(year, month, day, hour, min, sec, 0, ZoneId.of(ZoneId.systemDefault().getId()));
                     entryTime = entryTime.withZoneSameInstant(fromDate.getZoneId());
 
                     ZonedDateTime fromTime = fromDate.getCurrentDateTime();
                     ZonedDateTime toTime = toDate.getCurrentDateTime();
 
+                    // Compare times and show notes if they fall within the range
                     if (entryTime.isEqual(fromTime) || entryTime.isEqual(toTime) || (entryTime.isAfter(fromTime) && entryTime.isBefore(toTime))) {
                         entry.setShowing(true);
                     } else {
