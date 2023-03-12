@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -41,8 +40,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javax.swing.SwingUtilities;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 
 /**
@@ -108,9 +105,9 @@ public class AnalyticViewPane extends BorderPane {
                     questionThread.interrupt();
                 }
                 running = false;
-                runButton.setText(RUN_START_TEXT);
-                runButton.setStyle(RUN_START_STYLE);
+                setRunButtonMode(true);
             } else {
+                setRunButtonMode(false);
                 // display results pane
                 if (!viewPane.getChildren().contains(analyticResultsPane)) {
                     viewPane.getChildren().add(1, analyticResultsPane);
@@ -132,11 +129,6 @@ public class AnalyticViewPane extends BorderPane {
                             if (localConstraints.getCurrentReport() == null) {
                                 localConstraints.setCurrentReport(parentConstraints.getCurrentReport());
                             }
-                            Platform.runLater(() -> {
-                                runButton.setText(RUN_STOP_TEXT);
-                                runButton.setStyle(RUN_STOP_STYLE);
-                            });
-
                             running = true;
                             try {
                                 final AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
@@ -148,39 +140,22 @@ public class AnalyticViewPane extends BorderPane {
                                 analyticResultsPane.displayResults(question);
                             } finally {
                                 running = false;
-
-                                Platform.runLater(() -> {
-                                    runButton.setText(RUN_START_TEXT);
-                                    runButton.setStyle(RUN_START_STYLE);
-                                });
+                                setRunButtonMode(true);
                             }
                         }, "Analytic View: Answer Question");
                         questionThread.start();
                         interaction.notify(PluginNotificationLevel.INFO, " * Working * ");
-                        questionThread.join();
-
-                        try {
-                            SwingUtilities.invokeAndWait(new Runnable(){
-                                @Override
-                                public void run() {
-                                    // waits for other queued tasks to complete, then does nothing and exits
-                                }
-                            });
-                        } catch (final InvocationTargetException ex) {
-                            // Not severe enough to warrant an exception popup message to user
-                            Exceptions.printStackTrace(ex);
-                        }
                     }
                 };
 
                 try {
-                    PluginExecution.withPlugin(virtualAnalytics).interactively(true).executeNow(activeGraph);
+                    PluginExecution.withPlugin(virtualAnalytics).interactively(false).executeNow(activeGraph);
                 } catch (final InterruptedException iex) {
                     LOGGER.log(Level.SEVERE, iex.getLocalizedMessage());
                     Thread.currentThread().interrupt();
                 } catch (final PluginException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                } 
+                }
             }
         });
         analyticOptionButtons.getChildren().addAll(helpButton, runButton);
@@ -196,6 +171,13 @@ public class AnalyticViewPane extends BorderPane {
         this.setCenter(viewPane);
     }
 
+    private void setRunButtonMode(final boolean isRunMode){
+        Platform.runLater(() -> {
+            runButton.setText(isRunMode ? RUN_START_TEXT : RUN_STOP_TEXT);
+            runButton.setStyle(isRunMode ? RUN_START_STYLE : RUN_STOP_STYLE);
+        });
+    }
+    
     protected final void reset() {
         Platform.runLater(() -> {
             // hide results pane
