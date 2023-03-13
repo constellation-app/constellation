@@ -122,18 +122,16 @@ public class NewGraph extends RestService {
             newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-        } catch (final ExecutionException ex) {
-            throw new RestServiceException(ex);
-        } catch (final TimeoutException ex) {
+        } catch (final ExecutionException | TimeoutException ex) {
             throw new RestServiceException(ex);
         }
 
         if (!newId.isBlank() && !newId.isEmpty()) {
-        final ObjectMapper mapper = new ObjectMapper();
-        final ObjectNode root = mapper.createObjectNode();
-        root.put("id", newId);
-        root.put("name", GraphNode.getGraphNode(newId).getDisplayName());
-        root.put("schema", schemaName);
+            final ObjectMapper mapper = new ObjectMapper();
+            final ObjectNode root = mapper.createObjectNode();
+            root.put("id", newId);
+            root.put("name", GraphNode.getGraphNode(newId).getDisplayName());
+            root.put("schema", schemaName);
             mapper.writeValue(out, root);
         }
     }

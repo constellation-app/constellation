@@ -122,9 +122,7 @@ public class OpenGraph extends RestService {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-        } catch (final ExecutionException ex) {
-            throw new RestServiceException(ex);
-        } catch (final TimeoutException ex) {
+        } catch (final ExecutionException | TimeoutException ex) {
             throw new RestServiceException(ex);
         }
     }
