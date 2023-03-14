@@ -108,6 +108,7 @@ public class NotesViewPane extends BorderPane {
     private final ScrollPane notesListScrollPane;
 
     private static final int DEFAULT_SPACING = 5;
+    private static final int EDIT_SPACING = 110;
     private static final int OPTIONS_SPACING = 30;
     private static final String PROMPT_COLOR = "#909090";
     private static final String USER_COLOR = "#942483";
@@ -672,6 +673,9 @@ public class NotesViewPane extends BorderPane {
         cancelButton.setMinWidth(92);
         cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
+        final VBox editScreenButtons = new VBox(DEFAULT_SPACING, saveTextButton, cancelButton);
+        editScreenButtons.setAlignment(Pos.CENTER);
+
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
         final VBox noteButtons;
@@ -683,8 +687,9 @@ public class NotesViewPane extends BorderPane {
         final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
         colourPicker.setMinWidth(92);
 
+
         if (newNote.getEditMode()) {
-            noteButtons = new VBox(DEFAULT_SPACING, saveTextButton, cancelButton, colourPicker);
+            noteButtons = new VBox(EDIT_SPACING, colourPicker, editScreenButtons);
             newNote.setEditMode(true);
         } else {
             newNote.setEditMode(false);
@@ -706,7 +711,7 @@ public class NotesViewPane extends BorderPane {
 
         // Change colour of note to whatever user sleects
         colourPicker.setOnAction(event -> {
-            Color col = colourPicker.getValue();
+            final Color col = colourPicker.getValue();
             noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
                     + ConstellationColor.fromFXColor(col).getHtmlColor() + "; -fx-background-radius: 10 10 10 10;");
             newNote.setNodeColour(ConstellationColor.fromFXColor(col).getHtmlColor());
@@ -831,9 +836,10 @@ public class NotesViewPane extends BorderPane {
 
         // Edit button activates editable text boxs for title and label
         editTextButton.setOnAction(event -> {
-            String currentColour = newNote.getNodeColour();
+            final String currentColour = newNote.getNodeColour();
             noteButtons.getChildren().removeAll(editTextButton, deleteButton);
-            noteButtons.getChildren().addAll(saveTextButton, cancelButton, colourPicker);
+            noteButtons.getChildren().addAll(colourPicker, editScreenButtons);
+            noteButtons.setSpacing(EDIT_SPACING);
 
             noteInformation.getChildren().removeAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
             noteInformation.getChildren().addAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
@@ -841,8 +847,9 @@ public class NotesViewPane extends BorderPane {
 
             cancelButton.setOnAction(cancelEvent -> {
                 colourPicker.setValue(ConstellationColor.fromHtmlColor(currentColour).getJavaFXColor());
-                noteButtons.getChildren().removeAll(saveTextButton, cancelButton, colourPicker);
+                noteButtons.getChildren().removeAll(colourPicker, editScreenButtons);
                 noteButtons.getChildren().addAll(editTextButton, deleteButton);
+                noteButtons.setSpacing(DEFAULT_SPACING);
                 noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
                 noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
                 newNote.setEditMode(false);
@@ -864,8 +871,9 @@ public class NotesViewPane extends BorderPane {
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());
 
-                noteButtons.getChildren().removeAll(saveTextButton, cancelButton, colourPicker);
+                noteButtons.getChildren().removeAll(colourPicker, editScreenButtons);
                 noteButtons.getChildren().addAll(editTextButton, deleteButton);
+                noteButtons.setSpacing(DEFAULT_SPACING);
 
                 noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
                 noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
