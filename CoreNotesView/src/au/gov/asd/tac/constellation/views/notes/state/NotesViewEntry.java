@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class NotesViewEntry implements PluginReportListener {
 
-    private int ID = -99;
+    private int id = -99;
 
     private final String dateTime;
     private String noteTitle;
@@ -130,11 +130,11 @@ public class NotesViewEntry implements PluginReportListener {
     }
 
     public int getID() {
-        return ID;
+        return id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setID(final int id) {
+        this.id = id;
     }
 
     @Override

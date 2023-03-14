@@ -116,7 +116,7 @@ public class NotesViewPane extends BorderPane {
     private static final String PROMPT_COLOR = "#909090";
     private static final String USER_COLOR = "#942483";
     private static final String AUTO_COLOR = "#1c5aa6";
-    private static String USER_CHOSEN_COLOUR = USER_COLOR;
+    private static String userChosenColour = USER_COLOR;
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
@@ -243,10 +243,8 @@ public class NotesViewPane extends BorderPane {
         });
 
         // Colourpicker to set colour of new note
-        ColorPicker newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(USER_CHOSEN_COLOUR).getJavaFXColor());
-        newNoteColour.setOnAction(event -> {
-            USER_CHOSEN_COLOUR = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor();
-        });
+        ColorPicker newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(userChosenColour).getJavaFXColor());
+        newNoteColour.setOnAction(event -> userChosenColour = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
 
         // Button to add new note
         final Button addNoteButton = new Button("Add Note");
@@ -265,7 +263,7 @@ public class NotesViewPane extends BorderPane {
                                 contentField.getText(),
                                 true,
                                 !applySelected,
-                                USER_CHOSEN_COLOUR
+                                userChosenColour
                         ));
                         if (applySelected) {
                             // Get selected nodes from the graph.
