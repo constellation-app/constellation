@@ -98,6 +98,8 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 }
                                 noteViewEntries.get(i).setTransactionsSelected(selectedTransactions);
                             }
+                        } else if (notesArray.get(i).get(3).asBoolean() && notesArray.get(i).get(4).asBoolean() && notesArray.get(i).get(5) != null) {
+                            noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(5).asText());
                         } else if (notesArray.get(i).get(3).asBoolean() == false) {
                             // Create auto notes with the tags they have assigned to them
                             final JsonNode tagsArrayNode = notesArray.get(i).get(5);
@@ -206,6 +208,8 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
                             jsonGenerator.writeString(note.getNodeColour());
 
+                        } else if (note.isGraphAttribute() && note.isUserCreated()) {
+                            jsonGenerator.writeString(note.getNodeColour());
                         }
                         if (!note.isUserCreated()) {
                             final int tagsLength = note.getTags().size();
