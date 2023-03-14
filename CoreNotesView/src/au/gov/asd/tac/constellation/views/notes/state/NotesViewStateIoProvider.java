@@ -72,13 +72,16 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 "#942483"
                         ));
 
-                        if (notesArray.get(i).get(5) != null) {
-                            noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(5).asText());
+                        if (notesArray.get(i).get(7) != null) {
+                            noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(7).asText());
                         }
 
                         if (notesArray.get(i).get(3).asBoolean() == true && notesArray.get(i).get(4).asBoolean() == false) {
+
+                            final JsonNode nodesArrayNode = notesArray.get(i).get(5);
+                            final JsonNode transactionsArrayNode = notesArray.get(i).get(6);
+
                             // Add the selected nodes
-                            final JsonNode nodesArrayNode = notesArray.get(i).get(6);
                             if (nodesArrayNode != null) {
                                 final List<Integer> selectedNodes = new ArrayList<>();
                                 for (int j = 0; j < nodesArrayNode.size(); j++) {
@@ -88,7 +91,6 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                             }
 
                             // Add the selected transactions
-                            final JsonNode transactionsArrayNode = notesArray.get(i).get(7);
                             if (transactionsArrayNode != null) {
                                 List<Integer> selectedTransactions = new ArrayList<>();
                                 for (int j = 0; j < transactionsArrayNode.size(); j++) {
@@ -118,7 +120,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(2).asText(),
                                 notesArray.get(i).get(3).asBoolean(),
                                 true,
-                                notesArray.get(i).get(5).asText()
+                                notesArray.get(i).get(7).asText()
                         ));
                     }
                 }
@@ -175,9 +177,9 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeString(note.getNoteContent());
                         jsonGenerator.writeBoolean(note.isUserCreated());
                         jsonGenerator.writeBoolean(note.isGraphAttribute());
-                        jsonGenerator.writeString(note.getNodeColour());
 
                         if (!note.isGraphAttribute() && note.isUserCreated()) {
+
                             if (note.getNodesSelected() != null) {
                                 // Add nodes that are selected to the note
                                 final int nodesLength = note.getNodesSelected().size();
@@ -201,6 +203,9 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 }
                                 jsonGenerator.writeArray(transactionsArray, 0, transactionsLength);
                             }
+
+                            jsonGenerator.writeString(note.getNodeColour());
+
                         }
                         if (!note.isUserCreated()) {
                             final int tagsLength = note.getTags().size();
@@ -212,6 +217,7 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
                             jsonGenerator.writeArray(tagsArray, 0, tagsLength);
                         }
+
                         jsonGenerator.writeEndArray();
                     }
                 }
