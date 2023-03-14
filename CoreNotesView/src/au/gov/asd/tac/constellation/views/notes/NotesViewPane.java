@@ -39,8 +39,10 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -94,6 +96,7 @@ public class NotesViewPane extends BorderPane {
      */
     private final Set<String> notesDateTimeCache;
 
+
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
     private final CheckComboBox filterCheckComboBox;
@@ -132,6 +135,9 @@ public class NotesViewPane extends BorderPane {
     private ObservableList<String> tagsFiltersList;
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
+
+    private int noteID = 0;
+    private final Map<Integer, String> previouseColourMap = new HashMap<>();
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -591,6 +597,14 @@ public class NotesViewPane extends BorderPane {
             throw new IllegalStateException("Not processing on the JavaFX Application Thread");
         }
 
+        if (newNote.getID() < 0) {
+            newNote.setID(++noteID);
+        }
+
+        if (!previouseColourMap.containsKey(newNote.getID())) {
+            previouseColourMap.put(newNote.getID(), newNote.getNodeColour());
+        }
+
         // Define dateTime label
         final Label dateTimeLabel = new Label((new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(newNote.getDateTime())))));
         dateTimeLabel.setWrapText(true);
@@ -818,6 +832,9 @@ public class NotesViewPane extends BorderPane {
 
             deleteAlert.showAndWait();
             if (deleteAlert.getResult() == ButtonType.OK) {
+                if (previouseColourMap.containsKey(newNote.getID())) {
+                    previouseColourMap.remove(newNote.getID());
+                }
                 synchronized (LOCK) {
                     if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
                         notesDateTimeCache.remove(newNote.getDateTime());
@@ -836,7 +853,7 @@ public class NotesViewPane extends BorderPane {
 
         // Edit button activates editable text boxs for title and label
         editTextButton.setOnAction(event -> {
-            final String currentColour = newNote.getNodeColour();
+
             noteButtons.getChildren().removeAll(editTextButton, deleteButton);
             noteButtons.getChildren().addAll(colourPicker, editScreenButtons);
             noteButtons.setSpacing(EDIT_SPACING);
@@ -845,19 +862,24 @@ public class NotesViewPane extends BorderPane {
             noteInformation.getChildren().addAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
             newNote.setEditMode(true);
 
-            cancelButton.setOnAction(cancelEvent -> {
-                colourPicker.setValue(ConstellationColor.fromHtmlColor(currentColour).getJavaFXColor());
-                noteButtons.getChildren().removeAll(colourPicker, editScreenButtons);
-                noteButtons.getChildren().addAll(editTextButton, deleteButton);
-                noteButtons.setSpacing(DEFAULT_SPACING);
-                noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
-                noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
-                newNote.setEditMode(false);
-                noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                        + currentColour + "; -fx-background-radius: 10 10 10 10;");
-                newNote.setNodeColour(currentColour);
-            });
+
         });
+
+        cancelButton.setOnAction(cancelEvent -> {
+            final String currentColour = previouseColourMap.get(newNote.getID());
+            colourPicker.setValue(ConstellationColor.fromHtmlColor(currentColour).getJavaFXColor());
+            noteButtons.getChildren().removeAll(colourPicker, editScreenButtons);
+            noteButtons.getChildren().addAll(editTextButton, deleteButton);
+            noteButtons.setSpacing(DEFAULT_SPACING);
+            noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
+            noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+            newNote.setEditMode(false);
+            noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
+                    + currentColour + "; -fx-background-radius: 10 10 10 10;");
+            newNote.setNodeColour(currentColour);
+        });
+
+
 
         // Save button deactivates editable text boxs for title and label
         saveTextButton.setOnAction(event -> {
@@ -870,6 +892,7 @@ public class NotesViewPane extends BorderPane {
 
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());
+                previouseColourMap.replace(newNote.getID(), newNote.getNodeColour());
 
                 noteButtons.getChildren().removeAll(colourPicker, editScreenButtons);
                 noteButtons.getChildren().addAll(editTextButton, deleteButton);

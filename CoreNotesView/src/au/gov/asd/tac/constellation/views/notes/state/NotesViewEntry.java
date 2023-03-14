@@ -27,6 +27,8 @@ import java.util.List;
  */
 public class NotesViewEntry implements PluginReportListener {
 
+    private int ID = -99;
+
     private final String dateTime;
     private String noteTitle;
     private String noteContent;
@@ -125,6 +127,14 @@ public class NotesViewEntry implements PluginReportListener {
 
     public void setEditMode(final boolean editMode) {
         this.editMode = editMode;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     @Override
