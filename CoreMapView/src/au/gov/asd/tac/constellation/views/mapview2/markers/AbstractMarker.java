@@ -47,7 +47,8 @@ public abstract class AbstractMarker {
         POINT_MARKER,
         LINE_MARKER,
         POLYGON_MARKER,
-        CLUSTER_MARKER
+        CLUSTER_MARKER,
+        SELECTED
     }
 
     protected MarkerType type;

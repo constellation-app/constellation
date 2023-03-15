@@ -241,6 +241,8 @@ public class MapViewPane extends BorderPane {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, true);
                         } else if (item.equals(MARKER_TYPE_CLUSTER)) {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, true);
+                        } else if (item.equals(SELECTED_ONLY)) {
+                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, true);
                         }
 
                         } else {
@@ -252,7 +254,10 @@ public class MapViewPane extends BorderPane {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, false);
                         } else if (item.equals(MARKER_TYPE_CLUSTER)) {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, false);
+                        } else if (item.equals(SELECTED_ONLY)) {
+                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, false);
                         }
+
                         }
 
                 });
@@ -279,7 +284,9 @@ public class MapViewPane extends BorderPane {
         markerLabelDropDown.setMaxWidth(95);
 
         // Export menu setup and eventer handling
-        exportDropDown = new ComboBox(FXCollections.observableList(Arrays.asList(GEO_JSON, GEO_PACKAGE, KML, SHAPEFILE)));
+        exportDropDown = new ComboBox(FXCollections.observableList(Arrays.asList("Export", GEO_JSON, GEO_PACKAGE, KML, SHAPEFILE)));
+        exportDropDown.getSelectionModel().selectFirst();
+
         exportDropDown.setOnAction(event -> {
             if (parent.getCurrentGraph() != null) {
                 MapExporterWrapper exporterWrapper = null;

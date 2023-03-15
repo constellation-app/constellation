@@ -427,7 +427,7 @@ public class MapView extends ScrollPane {
                     double width = 0;
                     double height = 0;
 
-                    // Change positiona nd zie of rectangle based on where the user moves their mouse
+                    // Change position and size of rectangle based on where the user moves their mouse
                     if (x >= selectionRectangleX && y <= selectionRectangleY) {
                         width = x - selectionRectangleX;
                         height = selectionRectangleY - y;
@@ -917,7 +917,6 @@ public class MapView extends ScrollPane {
      */
     public void redrawQueriedMarkers() {
         graphMarkerGroup.getChildren().clear();
-
 
         if (markers.isEmpty()) {
             LOGGER.log(Level.INFO, "Marker map is empty");
@@ -1482,9 +1481,17 @@ public class MapView extends ScrollPane {
     public void drawMarker(final AbstractMarker marker) {
 
         if (markersShowing.contains(marker.getType())) {
-            marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
-            if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
-                graphMarkerGroup.getChildren().add(marker.getMarker());
+
+            if (markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) {
+                marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+                if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
+                    graphMarkerGroup.getChildren().add(marker.getMarker());
+                }
+            } else if (!markersShowing.contains(AbstractMarker.MarkerType.SELECTED)) {
+                marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+                if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
+                    graphMarkerGroup.getChildren().add(marker.getMarker());
+                }
             }
         }
 
