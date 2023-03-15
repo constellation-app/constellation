@@ -17,7 +17,9 @@ package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.mapview.exporters.GeoJsonExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.GeoPackageExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.KmlExporter;
@@ -52,6 +54,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -346,7 +349,7 @@ public class MapViewPane extends BorderPane {
         exportDropDown.setMinWidth(110);
         exportDropDown.setMaxWidth(110);
 
-        helpButton = new Button("Help");
+        helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
 
         toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton, latLabel, latField, lonLabel, lonField);
         setTop(toolBar);
