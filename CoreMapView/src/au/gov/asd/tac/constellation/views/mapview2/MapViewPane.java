@@ -46,6 +46,7 @@ import javafx.collections.ListChangeListener;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToolBar;
@@ -69,6 +70,7 @@ public class MapViewPane extends BorderPane {
 
     private final MapViewTopComponent parent;
     private final ToolBar toolBar;
+    private final ToolBar bottomBar;
 
     // Stackpane to hold the map
     private final StackPane parentStackPane;
@@ -130,16 +132,17 @@ public class MapViewPane extends BorderPane {
     private final ComboBox<String> exportDropDown;
     private final Button helpButton;
     private final List<String> dropDownOptions = new ArrayList<>();
+    private final Label latLabel = new Label("Lattitude: ");
+    private final Label lonLabel = new Label("Longtitude: ");
+    private final Label latField = new Label("0.00");
+    private final Label lonField = new Label("0.00");
 
     private MapView mapView;
 
     // A map of all the layers
     private int layerId = 0;
     private final Map<String, Integer> layerMap = new HashMap<>();
-
-
-
-
+    
     public MapViewPane(final MapViewTopComponent parentComponent) {
         parent = parentComponent;
 
@@ -149,6 +152,14 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setMouseTransparent(true);
 
         toolBar = new ToolBar();
+        bottomBar = new ToolBar();
+
+        setBottom(bottomBar);
+
+        latLabel.setVisible(false);
+        lonLabel.setVisible(false);
+
+        //bottomBar.getItems().addAll(latLabel, lonLabel);
 
         defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
         providers = new ArrayList<>(Lookup.getDefault().lookupAll(MapProvider.class));
@@ -190,7 +201,21 @@ public class MapViewPane extends BorderPane {
         overlaysDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
             @Override
             public void onChanged(final ListChangeListener.Change<? extends String> c) {
-                overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
+                overlaysDropDown.getItems().forEach(item -> {
+                    toggleOverlay(item);
+
+                });
+                if (overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
+                    latLabel.setVisible(true);
+                    lonLabel.setVisible(true);
+                    latField.setVisible(true);
+                    lonField.setVisible(true);
+                } else if (!overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
+                    latLabel.setVisible(false);
+                    lonLabel.setVisible(false);
+                    latField.setVisible(false);
+                    lonField.setVisible(false);
+                }
             }
         });
 
@@ -316,7 +341,7 @@ public class MapViewPane extends BorderPane {
 
         helpButton = new Button("Help");
 
-        toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton);
+        toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton, latLabel, latField, lonLabel, lonField);
         setTop(toolBar);
 
     }
@@ -328,6 +353,14 @@ public class MapViewPane extends BorderPane {
      */
     private void toggleOverlay(final String overlay) {
         mapView.toggleOverlay(overlay, overlaysDropDown.getCheckModel().isChecked(overlay));
+    }
+
+    public void setLonFieldText(final String longitude) {
+        lonField.setText(longitude);
+    }
+
+    public void setLatFieldText(final String lattitude) {
+        latField.setText(lattitude);
     }
 
     /**

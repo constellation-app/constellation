@@ -43,22 +43,9 @@ public class InfoOverlay extends AbstractOverlay {
      */
     public InfoOverlay(final double positionX, final double positionY) {
         super(positionX, positionY);
-
-        width = 200;
-        overlayPane.setPrefWidth(width);
-        overlayPane.setMaxWidth(width);
-        overlayPane.setMinWidth(width);
-
-        gridPane.add(new Label("Location"), 0, 0);
-
-        overlayPane.setCenter(gridPane);
-
-        lonText = new Label("0.000°");
-        latText = new Label("0.000°");
-
-        gridPane.add(lonText, 2, 0);
-        gridPane.add(latText, 1, 0);
-
+        lonText = new Label();
+        latText = new Label();
+        overlayPane.setOpacity(0);
     }
 
     /**
@@ -78,6 +65,14 @@ public class InfoOverlay extends AbstractOverlay {
 
         lonText.setText(df.format(lon) + "°");
         latText.setText(df.format(lat) + "°");
+    }
+
+    public Label getLonText() {
+        return lonText;
+    }
+
+    public Label getLatText() {
+        return latText;
     }
 
 }

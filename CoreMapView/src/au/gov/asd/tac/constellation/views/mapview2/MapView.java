@@ -376,6 +376,8 @@ public class MapView extends ScrollPane {
                 // Change lattitude and logitude text on info overlay if its showing
                 if (INFO_OVERLAY.isShowing()) {
                     INFO_OVERLAY.updateLocation(x, y);
+                    parent.setLatFieldText(INFO_OVERLAY.getLatText().getText());
+                    parent.setLonFieldText(INFO_OVERLAY.getLonText().getText());
                 }
 
                 // If drawing is enabled
@@ -788,6 +790,7 @@ public class MapView extends ScrollPane {
      * @param show - flag
      */
     public void toggleOverlay(final String overlay, final boolean show) {
+
         if (overlayMap.containsKey(overlay) && overlayMap.get(overlay).isShowing() != show) {
             overlayMap.get(overlay).toggleOverlay();
         }
