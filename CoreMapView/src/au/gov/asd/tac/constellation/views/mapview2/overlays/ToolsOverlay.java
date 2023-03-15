@@ -24,6 +24,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -127,22 +128,28 @@ public class ToolsOverlay extends AbstractOverlay {
             }
         });
 
-        final String drawDescription = " > Click on the map to draw a point marker.\n"
-                + " > Click on the map while holding\n shift to begin drawing a circle"
-                + "  marker, click again with or without shift to complete it.\n"
-                + " > Click on the map while holding\n control to begin drawing a polygon"
-                + "  marker, continue clicking while holding control to draw edges,"
-                + "  then release control and click\n once more to complete it.\n"
-                + " > Click on a drawn marker to remove it.";
+        final String drawDescription = " > Click on the map to draw a\npoint marker.\n"
+                + " > Click on the map while\nholding shift to\nbegin drawing a circle\n"
+                + "  marker, click again with\nor without shift to complete it.\n"
+                + " > Click on the map while\nholding control to\nbegin drawing a\n polygon"
+                + "  marker, continue\nclicking while holding control\nto draw edges,"
+                + "  then\nrelease control and click\n once more to complete it.\n"
+                + " > Click on a drawn marker\n to remove it.";
 
-        Label descriptionLabel = new Label(drawDescription);
-        descriptionLabel.setScaleX(0.5);
-        descriptionLabel.setScaleY(0.5);
+        Label description = new Label(drawDescription);
+        description.setMinWidth(width);
+        description.setMaxWidth(width);
+        //descriptionLabel.setScaleX(0.9);
+        //descriptionLabel.setScaleY(0.9);
 
         drawingEnabled.addListener((o, oldVal, newVal) -> {
             if (drawingEnabled.get()) {
-                gridPane.add(descriptionLabel, 0, 2, 3, 3);
+                overlayPane.setMinHeight(overlayPane.getHeight() * 4.5);
+                overlayPane.setMaxHeight(overlayPane.getHeight() * 4.5);
+                gridPane.add(description, 0, 2, 7, 3);
             } else {
+                overlayPane.setMinHeight(height);
+                overlayPane.setMaxHeight(height);
                 gridPane.getChildren().removeIf(node -> GridPane.getColumnIndex(node) == 0 && GridPane.getRowIndex(node) == 2);
             }
         });
