@@ -1234,16 +1234,6 @@ public class MapView extends ScrollPane {
             Text titleText = new Text("Zoom to Location");
             titleText.setFill(Color.WHITE);
 
-            Button closeButton = new Button();
-            closeButton.setText("X");
-            closeButton.setTextFill(Color.WHITE);
-
-            closeButton.setPadding(new Insets(0, 0, 0, 95));
-            closeButton.setOnAction(event -> {
-                showingZoomToLocationPane = false;
-                event.consume();
-                zoomLocationGroup.getChildren().clear();
-            });
 
             Text geoTypeLabel = new Text("Geo Type");
             geoTypeLabel.setFill(Color.WHITE);
@@ -1436,9 +1426,10 @@ public class MapView extends ScrollPane {
             GridPane bottomGridPane = new GridPane();
 
             topGridPane.add(titleText, 0, 0);
-            topGridPane.add(closeButton, 2, 0);
             topGridPane.add(geoTypeLabel, 0, 1);
-            topGridPane.add(geoTypeMenu, 1, 1, 2, 1);
+            topGridPane.add(geoTypeMenu, 1, 1);
+            topGridPane.setHgap(10);
+            topGridPane.setVgap(10);
 
             topGridPane.add(coordinateGridPane, 0, 2);
 
@@ -1446,6 +1437,7 @@ public class MapView extends ScrollPane {
 
             bottomGridPane.add(okButton, 0, 0);
             bottomGridPane.add(cancelButton, 1, 0);
+            bottomGridPane.setHgap(10);
 
             topGridPane.add(bottomGridPane, 3, 4);
 
