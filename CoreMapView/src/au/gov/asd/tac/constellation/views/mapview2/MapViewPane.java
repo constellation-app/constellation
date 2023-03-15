@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer2;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
+import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -79,7 +80,6 @@ public class MapViewPane extends BorderPane {
 
     // Rectangle to repesent the view port
     private final Rectangle viewPortRectangle;
-
     // String for all the menu options
     private static final String MARKER_TYPE_POINT = "Point Markers";
     private static final String MARKER_TYPE_LINE = "Line Markers";
@@ -162,8 +162,6 @@ public class MapViewPane extends BorderPane {
         lonLabel.setVisible(false);
         latField.setVisible(false);
         lonField.setVisible(false);
-        //latField.setTextFill(Color.BLACK);
-        //lonField.setTextFill(Color.BLACK);
         latField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         lonField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
 
@@ -224,6 +222,7 @@ public class MapViewPane extends BorderPane {
                     latField.setVisible(false);
                     lonField.setVisible(false);
                 }
+
             }
         });
 
@@ -440,9 +439,11 @@ public class MapViewPane extends BorderPane {
         mapView = new MapView(this);
         parentStackPane.getChildren().add(mapView);
 
-        // Set position of "viewport" rectagngle
+        // Set position of "viewport" rectangle
         viewPortRectangle.setX(0);
         viewPortRectangle.setY(0);
+
+        parentStackPane.getChildren().add(mapView.TOOLS_OVERLAY.getOverlayPane());
 
         parentStackPane.setLayoutX(0);
         parentStackPane.setLayoutY(0);

@@ -139,8 +139,6 @@ public class ToolsOverlay extends AbstractOverlay {
         Label description = new Label(drawDescription);
         description.setMinWidth(width);
         description.setMaxWidth(width);
-        //descriptionLabel.setScaleX(0.9);
-        //descriptionLabel.setScaleY(0.9);
 
         drawingEnabled.addListener((o, oldVal, newVal) -> {
             if (drawingEnabled.get()) {
@@ -165,8 +163,6 @@ public class ToolsOverlay extends AbstractOverlay {
         gridPane.add(drawLabelText, 0, 1);
         gridPane.add(drawToggleText, 1, 1);
         gridPane.add(drawSymbol, 2, 1);
-
-
     }
 
     /**

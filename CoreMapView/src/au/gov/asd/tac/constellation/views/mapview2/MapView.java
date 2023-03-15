@@ -199,14 +199,10 @@ public class MapView extends ScrollPane {
     // All the layers are stored here
     private final List<AbstractMapLayer> layers = new ArrayList<>();
 
-
-    private static final double TOOLS_OVERLAY_WIDTH = 815;
-    private static final double TOOLS_OVERLAY_HEIGHT = 20;
-
     private static final double INFO_OVERLAY_WIDTH = 20;
     private static final double INFO_OVERLAY_HEIGHT = 20;
 
-    private static final ToolsOverlay TOOLS_OVERLAY = new ToolsOverlay(TOOLS_OVERLAY_WIDTH, TOOLS_OVERLAY_HEIGHT);
+    public static final ToolsOverlay TOOLS_OVERLAY = new ToolsOverlay(510, -500);
     private static final InfoOverlay INFO_OVERLAY = new InfoOverlay(INFO_OVERLAY_WIDTH, INFO_OVERLAY_HEIGHT);
 
     private static final String COORDINATE = "Coordinate";
@@ -510,7 +506,7 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(thessianMarkersGroup);
 
         mapGroupHolder.getChildren().add(zoomLocationGroup);
-        overlayGroup.getChildren().addAll(TOOLS_OVERLAY.getOverlayPane());
+        //overlayGroup.getChildren().addAll(TOOLS_OVERLAY.getOverlayPane());
         overlayGroup.getChildren().addAll(INFO_OVERLAY.getOverlayPane());
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
         mapGroupHolder.getChildren().add(viewPortRectangleGroup);
