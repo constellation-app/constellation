@@ -63,6 +63,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.controlsfx.control.CheckComboBox;
 import org.openide.NotifyDescriptor;
+import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
 /**
@@ -350,6 +351,8 @@ public class MapViewPane extends BorderPane {
         exportDropDown.setMaxWidth(110);
 
         helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
+        helpButton.setTooltip(new Tooltip("Help on using the Map View"));
 
         toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton, latLabel, latField, lonLabel, lonField);
         setTop(toolBar);
