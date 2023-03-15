@@ -50,11 +50,9 @@ public class MarkerUtilities {
      * @return y coordinate
      */
     public static double latToY(final double lat, final double mapWidth, final double mapHeight) {
-        double lattitude = lat * (Math.PI / 180);
-        double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
-        y = (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
-
-        return y;
+        final double lattitude = lat * (Math.PI / 180);
+        final double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
+        return (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
     }
 
     /**

@@ -103,7 +103,7 @@ public class LineMarker extends AbstractMarker {
         x2 += xOffset;
         y2 -= yOffset;
 
-        String path = "M " + x1 + ", " + y1 + " Z L " + x2 + "," + y2 + " z";
+        final String path = "M " + x1 + ", " + y1 + " Z L " + x2 + "," + y2 + " z";
 
         markerPath.setContent(path);
     }

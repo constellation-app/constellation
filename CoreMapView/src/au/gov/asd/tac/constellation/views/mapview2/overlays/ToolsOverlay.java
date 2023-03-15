@@ -63,7 +63,7 @@ public class ToolsOverlay extends AbstractOverlay {
         super(positionX, positionY);
 
 
-        Label measureText = new Label("Measure");
+        final Label measureText = new Label("Measure");
         measureText.setTextFill(Color.WHITE);
 
         measureToggleText.setTextFill(Color.WHITE);
@@ -104,10 +104,10 @@ public class ToolsOverlay extends AbstractOverlay {
             }
         });
 
-        Label drawLabelText = new Label("Draw");
+        final Label drawLabelText = new Label("Draw");
         drawLabelText.setTextFill(Color.WHITE);
 
-        Label drawToggleText = new Label(DISABLED_STRING);
+        final Label drawToggleText = new Label(DISABLED_STRING);
         drawToggleText.setTextFill(Color.WHITE);
         drawToggleText.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
@@ -136,7 +136,7 @@ public class ToolsOverlay extends AbstractOverlay {
                 + "  then\nrelease control and click\n once more to complete it.\n"
                 + " > Click on a drawn marker\n to remove it.";
 
-        Label description = new Label(drawDescription);
+        final Label description = new Label(drawDescription);
         description.setMinWidth(width);
         description.setMaxWidth(width);
 
@@ -152,7 +152,7 @@ public class ToolsOverlay extends AbstractOverlay {
             }
         });
 
-        Label drawSymbol = new Label("+");
+        final Label drawSymbol = new Label("+");
         drawSymbol.setTextFill(Color.WHITE);
         drawSymbol.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
@@ -174,16 +174,13 @@ public class ToolsOverlay extends AbstractOverlay {
      * @param endX
      * @param endY
      */
-    public void setDistanceText(final double startX, double startY, final double endX, double endY) {
-        startY += LOCATION_Y_OFFSET;
-        endY += LOCATION_Y_OFFSET;
-
+    public void setDistanceText(final double startX, final double startY, final double endX, final double endY) {
         // Calculate lattitude and longitude from coordinates
-        double startLon = MarkerUtilities.xToLong(startX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        double endLon = MarkerUtilities.xToLong(endX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        final double startLon = MarkerUtilities.xToLong(startX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        final double endLon = MarkerUtilities.xToLong(endX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
 
-        double startLat = MarkerUtilities.yToLat(startY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
-        double endLat = MarkerUtilities.yToLat(endY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final double startLat = MarkerUtilities.yToLat(startY + LOCATION_Y_OFFSET, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final double endLat = MarkerUtilities.yToLat(endY + LOCATION_Y_OFFSET, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
 
         double distance = 0;
 
@@ -196,7 +193,7 @@ public class ToolsOverlay extends AbstractOverlay {
             distance = Distance.Haversine.estimateDistanceInNauticalMiles(startLat, startLon, endLat, endLon);
         }
         
-        DecimalFormat df = new DecimalFormat("#.###");
+        final DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);
 
         measureToggleText.setText(df.format(distance));

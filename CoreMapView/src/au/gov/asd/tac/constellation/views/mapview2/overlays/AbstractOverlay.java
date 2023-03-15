@@ -38,7 +38,7 @@ public class AbstractOverlay {
 
     protected boolean showing = false;
 
-    public AbstractOverlay(double positionX, double positionY) {
+    public AbstractOverlay(final double positionX, final double positionY) {
 
         overlayPane = new BorderPane();
         gridPane = new GridPane();

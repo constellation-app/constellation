@@ -54,11 +54,9 @@ public class InfoOverlay extends AbstractOverlay {
      * @param x
      * @param y
      */
-    public void updateLocation(final double x, double y) {
-        y += LOCATION_Y_OFFSET;
-
+    public void updateLocation(final double x, final double y) {
         double lon = MarkerUtilities.xToLong(x, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        double lat = MarkerUtilities.yToLat(y, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        double lat = MarkerUtilities.yToLat(y + LOCATION_Y_OFFSET, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
 
         DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);

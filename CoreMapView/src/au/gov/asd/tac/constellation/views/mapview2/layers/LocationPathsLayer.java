@@ -49,12 +49,12 @@ public class LocationPathsLayer extends AbstractPathsLayer {
     @Override
     public void setUp() {
         entityPaths.getChildren().clear();
-        GraphReadMethods graph = parent.getCurrentGraph().getReadableGraph();
+        final GraphReadMethods graph = parent.getCurrentGraph().getReadableGraph();
         final List<Integer> idList = new ArrayList<>();
 
         // For every queried markers add all its connected neighbours to the idList
         for (final Object value : queriedMarkers.values()) {
-            AbstractMarker m = (AbstractMarker) value;
+            final AbstractMarker m = (AbstractMarker) value;
 
             if (m instanceof PointMarker) {
                 m.getConnectedNodeIdList().forEach(id -> idList.add(id));
@@ -105,10 +105,10 @@ public class LocationPathsLayer extends AbstractPathsLayer {
                             final float destLat = graph.getObjectValue(latID2, neighbourId);
                             final float destLon = graph.getObjectValue(lonID2, neighbourId);
 
-                            String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
+                            final String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
 
                             // Draw line beteeen the two vertices
-                            LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, LINE_MARKER_X_OFFSET, LINE_MARKER_Y_OFFSET);
+                            final LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, LINE_MARKER_X_OFFSET, LINE_MARKER_Y_OFFSET);
                             if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
 
                                 l.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);

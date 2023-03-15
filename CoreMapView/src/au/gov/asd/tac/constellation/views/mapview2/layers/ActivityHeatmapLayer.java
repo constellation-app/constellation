@@ -67,7 +67,7 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
                     // For every vertex
                     if (element == GraphElementType.VERTEX) {
                         for (int position = 0; position < elementCount; ++position) {
-                            int vertexID = readableGraph.getVertex(position);
+                            final int vertexID = readableGraph.getVertex(position);
 
                             // Check if the node represented by the current marker has the current vertext as its neighbour
                             if (marker.getConnectedNodeIdList().contains(vertexID)) {

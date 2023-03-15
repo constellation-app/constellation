@@ -165,12 +165,12 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
                             }
 
                             // Generate a key from the vertex coordinate
-                            String coordinateKey = (double) elementLat + "," + (double) elementLon;
+                            final String coordinateKey = (double) elementLat + "," + (double) elementLon;
 
                             // If another vertext of the same location hasn't been queried yet
                             if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
                                 // Create a new point marker and add it to the map
-                                PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour); //244
+                                final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour); //244
                                 mapViewTopComponent.addMarker(coordinateKey, p);
 
                                 // Set colours and labels if they are available

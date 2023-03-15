@@ -51,9 +51,9 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
             // If marker is a point marker
             if (value instanceof PointMarker) {
 
-                Text markerWeight = new Text();
+                final Text markerWeight = new Text();
 
-                PointMarker marker = (PointMarker) value;
+                final PointMarker marker = (PointMarker) value;
 
                 // Get the "weight" of the marker in a graphical text element
                 markerWeight.setText(Integer.toString(getWeight(marker)));

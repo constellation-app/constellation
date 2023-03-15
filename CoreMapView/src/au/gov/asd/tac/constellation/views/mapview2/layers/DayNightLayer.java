@@ -61,13 +61,13 @@ public class DayNightLayer extends AbstractMapLayer {
     @Override
     public void setUp() {
         // Get the sun location and create a circle to represent the sin
-        Location sunLocation = getSunLocation(System.currentTimeMillis());
-        Circle sun = getSun(sunLocation);
+        final Location sunLocation = getSunLocation(System.currentTimeMillis());
+        final Circle sun = getSun(sunLocation);
 
 
         // Calculate left and right shadow locations
-        Location leftShadowLocation = getShadowPosition(sunLocation, true);
-        Location rightShadowLocation = getShadowPosition(sunLocation, false);
+        final Location leftShadowLocation = getShadowPosition(sunLocation, true);
+        final Location rightShadowLocation = getShadowPosition(sunLocation, false);
 
         // Add sun graphic to group
         dayNightGroup.getChildren().add(sun);
@@ -112,7 +112,7 @@ public class DayNightLayer extends AbstractMapLayer {
         projectShadowCoordinates(shadowLocations);
 
         // Get the actual shadow svg path
-        String shadowPath = generatePath(shadowLocations);
+        final String shadowPath = generatePath(shadowLocations);
 
         // Add that shadow path to the graphics group
         addShadowToGroup(shadowPath, colour);
@@ -126,7 +126,7 @@ public class DayNightLayer extends AbstractMapLayer {
      */
     private void addShadowToGroup(final String shadowPath, final Color colour) {
         // Create the shadow graphic and colour it
-        SVGPath shadowMarker = new SVGPath();
+        final SVGPath shadowMarker = new SVGPath();
         shadowMarker.setContent(shadowPath);
         shadowMarker.setFill(colour);
 
@@ -194,7 +194,7 @@ public class DayNightLayer extends AbstractMapLayer {
      * @return a circle vector graphic at the current position
      */
     private Circle getSun(final Location sunLocation) {
-        Circle sun = new Circle();
+        final Circle sun = new Circle();
 
         sun.setRadius(SUN_RADIUS);
 

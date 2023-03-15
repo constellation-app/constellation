@@ -59,8 +59,8 @@ public class ClusterMarker extends AbstractMarker {
             return;
         }
 
-        double minRadius = 15;
-        Vec3 clusterCenter = new Vec3();
+        final double minRadius = 15;
+        final Vec3 clusterCenter = new Vec3();
 
         // Get the center of each marker on the map
         nodes.forEach(node -> {
@@ -92,26 +92,26 @@ public class ClusterMarker extends AbstractMarker {
 
             // Loop through all nodes
             for (int i = 0; i < nodes.size(); ++i) {
-                Node node = nodes.get(i);
+                final Node node = nodes.get(i);
 
                 // Get its coordinates
-                double nodeX = node.getBoundsInParent().getCenterX();
-                double nodeY = node.getBoundsInParent().getCenterY();
+                final double nodeX = node.getBoundsInParent().getCenterX();
+                final double nodeY = node.getBoundsInParent().getCenterY();
 
-                Vec3 position = new Vec3(nodeX, nodeY);
+                final Vec3 position = new Vec3(nodeX, nodeY);
 
                 // Loop through all nodes
                 for (int j = 0; j < nodes.size(); ++j) {
-                    Node node2 = nodes.get(j);
+                    final Node node2 = nodes.get(j);
 
                     // If the 2 nodes are not the same
                     if (node != node2) {
 
                         // Get the distance between the 2 nodes
-                        double node2X = node2.getBoundsInParent().getCenterX();
-                        double node2Y = node2.getBoundsInParent().getCenterY();
+                        final double node2X = node2.getBoundsInParent().getCenterX();
+                        final double node2Y = node2.getBoundsInParent().getCenterY();
 
-                        double distance = Math.sqrt(Math.pow(node2X - nodeX, 2) + Math.pow(node2Y - nodeY, 2));
+                        final double distance = Math.sqrt(Math.pow(node2X - nodeX, 2) + Math.pow(node2Y - nodeY, 2));
 
                         // Store the nodes that have the largest distance
                         if (maxDistance < distance) {

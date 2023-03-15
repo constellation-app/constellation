@@ -78,7 +78,7 @@ public class Vec3 {
     }
 
     public Vec3 cross(final Vec3 v) {
-        Vec3 ans = new Vec3();
+        final Vec3 ans = new Vec3();
         ans.x = y * v.z - z * v.y;
         ans.y = z * v.x - x * v.z;
         ans.z = x * v.y - y * v.x;

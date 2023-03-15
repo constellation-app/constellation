@@ -65,7 +65,7 @@ public class ClusterMarkerBuilder {
             if (!clusteredPointMarkers.contains(pointMarkerGroup.getChildren().get(i))) {
                 // Add node to the clusered set
                 clusteredPointMarkers.add(pointMarkerGroup.getChildren().get(i));
-                ArrayList<Node> clusterArray = new ArrayList<>();
+                final ArrayList<Node> clusterArray = new ArrayList<>();
 
                 clusterArray.add(pointMarkerGroup.getChildren().get(i));
 
@@ -74,7 +74,7 @@ public class ClusterMarkerBuilder {
                     if (i != j && !clusteredPointMarkers.contains(pointMarkerGroup.getChildren().get(j))) {
 
                         // Get distance bewteen nodes
-                        double distance = getNodeDistance(pointMarkerGroup.getChildren().get(i), pointMarkerGroup.getChildren().get(j));
+                        final double distance = getNodeDistance(pointMarkerGroup.getChildren().get(i), pointMarkerGroup.getChildren().get(j));
 
                         // If at the right distance then cluster the markers
                         if (distance < 150) {
@@ -103,18 +103,18 @@ public class ClusterMarkerBuilder {
             return 0;
         }
 
-        Point2D screenN1Coords = n1.localToScreen(n1.getBoundsInLocal().getCenterX(), n1.getBoundsInLocal().getCenterY());
-        Point2D screenN2Coords = n2.localToScreen(n2.getBoundsInLocal().getCenterX(), n2.getBoundsInLocal().getCenterY());
+        final Point2D screenN1Coords = n1.localToScreen(n1.getBoundsInLocal().getCenterX(), n1.getBoundsInLocal().getCenterY());
+        final Point2D screenN2Coords = n2.localToScreen(n2.getBoundsInLocal().getCenterX(), n2.getBoundsInLocal().getCenterY());
 
         if (screenN1Coords == null || screenN2Coords == null) {
             return 0;
         }
 
-        double x1 = screenN1Coords.getX();
-        double y1 = screenN1Coords.getY();
+        final double x1 = screenN1Coords.getX();
+        final double y1 = screenN1Coords.getY();
 
-        double x2 = screenN2Coords.getX();
-        double y2 = screenN2Coords.getY();
+        final double x2 = screenN2Coords.getX();
+        final double y2 = screenN2Coords.getY();
 
         return Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
 
@@ -126,7 +126,7 @@ public class ClusterMarkerBuilder {
      *
      * @param pointMarkerGroup
      */
-    public void update(Group pointMarkerGroup) {
+    public void update(final Group pointMarkerGroup) {
         calculateClusters(pointMarkerGroup);
 
         // Calculate cluster circles and add them to circles

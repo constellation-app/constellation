@@ -133,7 +133,7 @@ public class PointMarker extends AbstractMarker {
             }
         } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
             if (blazeColour != null) {
-                ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
+                final ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
 
 
                 if (blazeColourCount == 1) {
@@ -149,7 +149,7 @@ public class PointMarker extends AbstractMarker {
             }
         } else if (option.equals(MapViewPane.USE_OVERLAY_COL)) {
             if (overlayColour != null) {
-                ConstellationColor colour = ConstellationColor.getColorValue(overlayColour);
+                final ConstellationColor colour = ConstellationColor.getColorValue(overlayColour);
 
                 if (overlayColourCount == 1) {
                     currentColour = colour.getHtmlColor();
@@ -211,7 +211,8 @@ public class PointMarker extends AbstractMarker {
      *
      * @param blazeCol
      */
-    public void setBlazeColour(String blazeCol) {
+    public void setBlazeColour(final String blaze) {
+        String blazeCol = blaze;
         // Get the blaze colure in the correct format
         blazeCol = blazeCol.split(";")[1];
 
