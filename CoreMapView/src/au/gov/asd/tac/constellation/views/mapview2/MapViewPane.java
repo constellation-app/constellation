@@ -51,6 +51,8 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -158,6 +160,12 @@ public class MapViewPane extends BorderPane {
 
         latLabel.setVisible(false);
         lonLabel.setVisible(false);
+        latField.setVisible(false);
+        lonField.setVisible(false);
+        //latField.setTextFill(Color.BLACK);
+        //lonField.setTextFill(Color.BLACK);
+        latField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+        lonField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
 
         //bottomBar.getItems().addAll(latLabel, lonLabel);
 
