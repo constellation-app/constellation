@@ -68,6 +68,8 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -267,7 +269,8 @@ public class NotesViewPane extends BorderPane {
         clearButton.setOnAction(event -> {
             fromDate.setActive(false);
             toDate.setActive(false);
-
+            timeRangePane.setText("Select time range...");
+            timeRangePane.setTextFill(Color.WHITE);
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 updateNotesUI();
@@ -301,6 +304,8 @@ public class NotesViewPane extends BorderPane {
         applyButton.setOnAction(event -> {
             fromDate.setActive(true);
             toDate.setActive(true);
+            timeRangePane.setText("Filter Applied");
+            timeRangePane.setTextFill(Color.YELLOW);
 
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
@@ -601,7 +606,6 @@ public class NotesViewPane extends BorderPane {
                 if (fromDate.getActive() && toDate.getActive()) {
                     // Get date time of entry in proper format
                     String dateFormat = new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(entry.getDateTime())));
-                    //new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(newNote.getDateTime())
 
                     // Extract date components
                     String[] dateTimeComponents = dateFormat.split(" ");
