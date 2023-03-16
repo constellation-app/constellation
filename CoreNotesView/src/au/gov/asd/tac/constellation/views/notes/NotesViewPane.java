@@ -308,24 +308,13 @@ public class NotesViewPane extends BorderPane {
         });
 
         // Event handler for when user hovers over active and apply button
-        clearButton.setOnMouseEntered(event -> {
-            clearButton.setStyle("-fx-background-color: #23FFB5; ");
+        clearButton.setOnMouseEntered(event -> clearButton.setStyle("-fx-background-color: #23FFB5; "));
 
-        });
+        clearButton.setOnMouseExited(event -> clearButton.setStyle("-fx-background-color: #7FFFD4;  "));
 
-        clearButton.setOnMouseExited(event -> {
+        applyButton.setOnMouseEntered(event -> applyButton.setStyle("-fx-background-color: #078BC9; "));
 
-            clearButton.setStyle("-fx-background-color: #7FFFD4;  ");
-
-        });
-
-        applyButton.setOnMouseEntered(event -> {
-            applyButton.setStyle("-fx-background-color: #078BC9; ");
-        });
-
-        applyButton.setOnMouseExited(event -> {
-            applyButton.setStyle("-fx-background-color: #0080FF; ");
-        });
+        applyButton.setOnMouseExited(event -> applyButton.setStyle("-fx-background-color: #0080FF; "));
 
 
         // Hide/show notes based on their entry time
@@ -631,7 +620,7 @@ public class NotesViewPane extends BorderPane {
         
         synchronized (LOCK) {
             notesViewEntries.forEach(entry -> {
-                if (fromDate.getActive() && toDate.getActive()) {
+                if (fromDate.isActive() && toDate.isActive()) {
                     // Get date time of entry in proper format
                     String dateFormat = new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(entry.getDateTime())));
 

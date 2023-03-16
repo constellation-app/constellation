@@ -144,7 +144,7 @@ public class DateTimePicker {
 
     }
 
-    public boolean getActive() {
+    public boolean isActive() {
         return active;
     }
 
@@ -158,7 +158,7 @@ public class DateTimePicker {
      * @return
      */
     public ZonedDateTime getCurrentDateTime() {
-        ZonedDateTime currentTime = ZonedDateTime.of(datePicker.getValue().getYear(),
+        return ZonedDateTime.of(datePicker.getValue().getYear(),
                 datePicker.getValue().getMonthValue(),
                 datePicker.getValue().getDayOfMonth(),
                 hourPicker.getValue(),
@@ -166,8 +166,6 @@ public class DateTimePicker {
                 secPicker.getValue(),
                 0,
                 zone);
-
-        return currentTime;
     }
 
     public ZoneId getZoneId() {
