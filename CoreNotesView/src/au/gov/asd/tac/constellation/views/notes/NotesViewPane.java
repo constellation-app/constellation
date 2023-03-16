@@ -123,6 +123,8 @@ public class NotesViewPane extends BorderPane {
     private static final String USER_NOTES_FILTER = "User Notes";
     private static final String SELECTED_FILTER = "Selected";
 
+    private final String paddingAndBGColourStyle = "-fx-padding: 5px; -fx-background-color: ";
+    private final String bgRadiusStyle = "; -fx-background-radius: 10 10 10 10;";
 
     private static final Object LOCK = new Object();
 
@@ -699,7 +701,6 @@ public class NotesViewPane extends BorderPane {
         final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
         colourPicker.setMinWidth(92);
 
-
         if (newNote.getEditMode()) {
             noteButtons = new VBox(EDIT_SPACING, colourPicker, editScreenButtons);
             newNote.setEditMode(true);
@@ -712,20 +713,17 @@ public class NotesViewPane extends BorderPane {
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
         if (newNote.isUserCreated()) {
-        noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                    + newNote.getNodeColour() + "; -fx-background-radius: 10 10 10 10;");
+            noteBody.setStyle(paddingAndBGColourStyle + newNote.getNodeColour() + bgRadiusStyle);
             notesListVBox.getChildren().add(noteBody);
         } else {
-            noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                    + AUTO_COLOR + "; -fx-background-radius: 10 10 10 10;");
+            noteBody.setStyle(paddingAndBGColourStyle + AUTO_COLOR + bgRadiusStyle);
             notesListVBox.getChildren().add(noteBody);
         }
 
         // Change colour of note to whatever user sleects
         colourPicker.setOnAction(event -> {
             final Color col = colourPicker.getValue();
-            noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                    + ConstellationColor.fromFXColor(col).getHtmlColor() + "; -fx-background-radius: 10 10 10 10;");
+            noteBody.setStyle(paddingAndBGColourStyle + ConstellationColor.fromFXColor(col).getHtmlColor() + bgRadiusStyle);
             newNote.setNodeColour(ConstellationColor.fromFXColor(col).getHtmlColor());
         });
 
@@ -872,8 +870,8 @@ public class NotesViewPane extends BorderPane {
             noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
             noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
             newNote.setEditMode(false);
-            noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                    + currentColour + "; -fx-background-radius: 10 10 10 10;");
+            noteBody.setStyle(paddingAndBGColourStyle
+                    + currentColour + bgRadiusStyle);
             newNote.setNodeColour(currentColour);
         });
 
