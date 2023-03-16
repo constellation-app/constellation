@@ -42,8 +42,10 @@ import java.util.BitSet;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,6 +61,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -142,6 +145,7 @@ public class NotesViewPane extends BorderPane {
     final DateTimePicker fromDate = new DateTimePicker(true);
     final DateTimePicker toDate = new DateTimePicker(false);
 
+    final Map<String, ZoneId> timeZoneMap = new HashMap<>();
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -229,11 +233,12 @@ public class NotesViewPane extends BorderPane {
         final ArrayList<String> timeZones = new ArrayList<>();
         final ArrayList<String> plusFromGMT = new ArrayList<>();
         final ArrayList<String> minusFromGMT = new ArrayList<>();
-        DateTimeFormatter offSet = DateTimeFormatter.ofPattern("xxx");
+        final DateTimeFormatter offSet = DateTimeFormatter.ofPattern("xxx");
 
+        // Sort date times in there respective arrays
         for (String zone : ZoneId.getAvailableZoneIds()) {
-            ZoneId zoneID = ZoneId.of(zone);
-            String timeString = offSet.format(zoneID.getRules().getOffset(Instant.now())) + " " + zone;
+            final ZoneId zoneID = ZoneId.of(zone);
+            final String timeString = offSet.format(zoneID.getRules().getOffset(Instant.now())) + " " + zone;
 
             if (timeString.startsWith("-")) {
                 minusFromGMT.add(timeString);
@@ -241,26 +246,31 @@ public class NotesViewPane extends BorderPane {
                 plusFromGMT.add(timeString);
             }
 
+            timeZoneMap.put(timeString, zoneID);
+
         }
 
+        // Sort time zone strings in ascending and descending order
         Collections.sort(plusFromGMT);
         Collections.sort(minusFromGMT, Collections.reverseOrder());
+
         timeZones.addAll(minusFromGMT);
         timeZones.addAll(plusFromGMT);
 
-        final ChoiceBox<String> timeZoneChoiceBox = new ChoiceBox(FXCollections.observableList(timeZones));
+        final ComboBox<String> timeZoneChoiceBox = new ComboBox(FXCollections.observableList(timeZones));
+
+        final String localTimeString = offSet.format(ZoneId.systemDefault().getRules().getOffset(Instant.now())) + " " + ZoneId.systemDefault().getId();
 
         // Set time of the range selectors to the current time
         fromDate.setCurrentDateTime(ZoneId.systemDefault());
         toDate.setCurrentDateTime(ZoneId.systemDefault());
-        timeZoneChoiceBox.getSelectionModel().select(ZoneId.systemDefault().getId());
+        timeZoneChoiceBox.getSelectionModel().select(localTimeString);
 
         // Event handler for changing time zones
         timeZoneChoiceBox.setOnAction(event -> {
-            fromDate.convertCurrentDateTime(ZoneId.of(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
-            toDate.convertCurrentDateTime(ZoneId.of(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
+            fromDate.convertCurrentDateTime(timeZoneMap.get(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
+            toDate.convertCurrentDateTime(timeZoneMap.get(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
         });
-
 
         dateTimeGridpane.add(timeZoneChoiceBox, 0, 1);
 
@@ -276,14 +286,14 @@ public class NotesViewPane extends BorderPane {
         localButton.setOnAction(event -> {
             fromDate.convertCurrentDateTime(ZoneId.systemDefault());
             toDate.convertCurrentDateTime(ZoneId.systemDefault());
-            timeZoneChoiceBox.getSelectionModel().select(ZoneId.systemDefault().getId());
+            timeZoneChoiceBox.getSelectionModel().select(localTimeString);
         });
 
         // Convert time to UTC
         utcButton.setOnAction(event -> {
             fromDate.convertCurrentDateTime(ZoneId.of("UTC"));
             toDate.convertCurrentDateTime(ZoneId.of("UTC"));
-            timeZoneChoiceBox.getSelectionModel().select("UTC");
+            timeZoneChoiceBox.getSelectionModel().select("+00:00 UTC");
         });
 
         // Set whether or not a time filter should even be applied
