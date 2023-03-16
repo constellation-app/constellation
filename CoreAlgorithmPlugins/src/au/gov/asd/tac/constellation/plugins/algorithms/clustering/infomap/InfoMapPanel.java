@@ -42,8 +42,6 @@ public class InfoMapPanel extends javax.swing.JPanel {
             config.setConnectionType(Config.ConnectionType.EDGES);
         } else if (rbLinks.isSelected()) {
             config.setConnectionType(Config.ConnectionType.LINKS);
-        } else {
-            // Do nothing
         }
 
         // Dynamic type.
@@ -55,8 +53,6 @@ public class InfoMapPanel extends javax.swing.JPanel {
             config.setOutdirdir(true);
         } else if (rbRawdir.isSelected()) {
             config.setRawdir(true);
-        } else {
-            // Do nothing
         }
 
         config.setOptimizationLevel(cbOptLevel.getSelectedIndex());

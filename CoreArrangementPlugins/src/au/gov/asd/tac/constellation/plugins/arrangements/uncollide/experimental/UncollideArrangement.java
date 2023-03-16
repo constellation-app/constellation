@@ -205,8 +205,6 @@ public class UncollideArrangement implements Arranger {
         } else if (delta < 0) {
             wg.setFloatValue(axisId, subject, wg.getFloatValue(axisId, subject) - (float) nudge);
             wg.setFloatValue(axisId, twin, wg.getFloatValue(axisId, twin) + (float) nudge);
-        } else {
-            // Do nothing
         }
     }
 

@@ -116,8 +116,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
             } else {
                 // estimate size of graph
                 final BBoxf graphBoundingBox = BBoxf.getGraphBoundingBox(graph);
-                float graphEstimatedDiameter = 0.0F;
-                graphEstimatedDiameter = Math.max(graphBoundingBox.getMax()[BBoxf.X] - graphBoundingBox.getMin()[BBoxf.X],
+                float graphEstimatedDiameter = Math.max(graphBoundingBox.getMax()[BBoxf.X] - graphBoundingBox.getMin()[BBoxf.X],
                         graphBoundingBox.getMax()[BBoxf.Y] - graphBoundingBox.getMin()[BBoxf.Y]);
                 graphEstimatedDiameter = Math.max(graphEstimatedDiameter,
                         graphBoundingBox.getMax()[BBoxf.Z] - graphBoundingBox.getMin()[BBoxf.Z]);

@@ -53,9 +53,9 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
 
     private static final Logger LOGGER = Logger.getLogger(SphereGraphWelcomePlugin.class.getName());
 
-    public static final String NEW_SPHERE = "resources/welcome_add_sphere.png";
-    final ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));
-    final Button sphereGraphButton = new Button();
+    private static final String NEW_SPHERE = "resources/welcome_add_sphere.png";
+    private final ImageView newSphere = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(NEW_SPHERE)));
+    private final Button sphereGraphButton = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -103,17 +103,7 @@ public class SphereGraphWelcomePlugin implements WelcomePluginInterface {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
     }
-
-    /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    @Override
-    public boolean isVisible() {
-        return true;
-    }
-
+    
     /**
      * Creates the button object to represent this plugin
      *

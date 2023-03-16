@@ -159,7 +159,7 @@ public class ArrangeInScatter3dGeneralPlugin extends SimpleEditPlugin {
         final String yDimensionName = pp.get(SCATTER_3D_Y_ATTRIBUTE).getStringValue();
         final String zDimensionName = pp.get(SCATTER_3D_Z_ATTRIBUTE).getStringValue();
 
-        if (StringUtils.isAnyBlank(new String[]{xDimensionName, yDimensionName, zDimensionName})) {
+        if (StringUtils.isAnyBlank(xDimensionName, yDimensionName, zDimensionName)) {
             interaction.notify(PluginNotificationLevel.FATAL, "You must supply all 3 attribute names for Scatter 3D");
             return;
         }
