@@ -33,8 +33,10 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -224,9 +226,28 @@ public class NotesViewPane extends BorderPane {
         timeRangeAccordian.getPanes().add(timeRangePane);
 
         // Get all available time zone ids
-        final ArrayList<String> timeZones = new ArrayList<>(ZoneId.getAvailableZoneIds());
+        final ArrayList<String> timeZones = new ArrayList<>();
+        final ArrayList<String> plusFromGMT = new ArrayList<>();
+        final ArrayList<String> minusFromGMT = new ArrayList<>();
+        DateTimeFormatter offSet = DateTimeFormatter.ofPattern("xxx");
 
-        Collections.sort(timeZones);
+        for (String zone : ZoneId.getAvailableZoneIds()) {
+            ZoneId zoneID = ZoneId.of(zone);
+            String timeString = offSet.format(zoneID.getRules().getOffset(Instant.now())) + " " + zone;
+
+            if (timeString.startsWith("-")) {
+                minusFromGMT.add(timeString);
+            } else if (timeString.startsWith("+")) {
+                plusFromGMT.add(timeString);
+            }
+
+        }
+
+        Collections.sort(plusFromGMT);
+        Collections.sort(minusFromGMT, Collections.reverseOrder());
+        timeZones.addAll(minusFromGMT);
+        timeZones.addAll(plusFromGMT);
+
         final ChoiceBox<String> timeZoneChoiceBox = new ChoiceBox(FXCollections.observableList(timeZones));
 
         // Set time of the range selectors to the current time
