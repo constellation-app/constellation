@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Various helper functions for REST services.
@@ -174,22 +173,20 @@ public class RestServiceUtilities {
      */
     public static CompletableFuture<String> waitForGraphChange(final String existingId) {
 
-        CompletableFuture<String> checkIfGraphAvailable = CompletableFuture.supplyAsync(() -> {
-                while (true) {
-                    if (GraphManager.getDefault().getActiveGraph() != null) {
-                        final Graph newGraph = GraphManager.getDefault().getActiveGraph();
-                        final String newId = newGraph != null ? newGraph.getId() : null;
-                        if ((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
-                            // - there was no existing graph, and the new graph is active, or
-                            // - there was an existing graph, and the active graph is not the existing graph.
-                            // - we assume the user hasn't interfered by manually switching to another graph at the same time.
-                            //
-                            return newId;
-                        }
+        return CompletableFuture.supplyAsync(() -> {
+            while (true) {
+                if (GraphManager.getDefault().getActiveGraph() != null) {
+                    final Graph newGraph = GraphManager.getDefault().getActiveGraph();
+                    final String newId = newGraph != null ? newGraph.getId() : null;
+                    if ((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
+                        // - there was no existing graph, and the new graph is active, or
+                        // - there was an existing graph, and the active graph is not the existing graph.
+                        // - we assume the user hasn't interfered by manually switching to another graph at the same time.
+                        //
+                        return newId;
                     }
                 }
+            }
         });
-
-        return checkIfGraphAvailable;
     }
 }

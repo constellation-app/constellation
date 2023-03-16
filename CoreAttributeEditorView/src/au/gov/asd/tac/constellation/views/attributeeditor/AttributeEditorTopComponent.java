@@ -24,9 +24,7 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
@@ -104,8 +102,6 @@ import org.openide.windows.TopComponent;
     "HINT_AttributeEditorTopComponent=Attribute Editor"
 })
 public final class AttributeEditorTopComponent extends JavaFxTopComponent<AttributeEditorPanel> implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider, PreferenceChangeListener {
-    
-    private static final Logger LOGGER = Logger.getLogger(AttributeEditorTopComponent.class.getName());
 
     private static final String ATTRIBUTE_EDITOR_GRAPH_CHANGED_THREAD_NAME = "Attribute Editor Graph Changed Updater";
     private final AttributeEditorPanel attributePanel;
@@ -127,13 +123,13 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
             final ArrayList<Object> devNull = new ArrayList<>();
 
-            while (queue.size() > 0) {
-                    queue.drainTo(devNull);
+            while (!queue.isEmpty()) {
+                queue.drainTo(devNull);
             }
 
-                if (reader != null) {
-                    attributePanel.updateEditorPanel(reader.refreshAttributes());
-                }
+            if (reader != null) {
+                attributePanel.updateEditorPanel(reader.refreshAttributes());
+            }
 
         };
 

@@ -105,11 +105,7 @@ public class OpenGraph extends RestService {
             final Graph g = new GraphJsonReader().readGraphZip(fnam, new HandleIoProgress(String.format("Loading graph %s...", fnam)));
             GraphOpener.getDefault().openGraph(g, name, false);
 
-            final String newId;
-
-            newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
-
-
+            final String newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
             final Graph graph = GraphNode.getGraphNode(newId).getGraph();
 
             final ObjectMapper mapper = new ObjectMapper();
