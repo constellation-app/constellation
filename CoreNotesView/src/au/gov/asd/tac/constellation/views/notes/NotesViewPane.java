@@ -47,7 +47,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -60,7 +59,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -73,8 +71,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -246,6 +242,7 @@ public class NotesViewPane extends BorderPane {
                 plusFromGMT.add(timeString);
             }
 
+            // Populate a map containing the time zone string as key and the actual ID as value
             timeZoneMap.put(timeString, zoneID);
 
         }
@@ -365,7 +362,7 @@ public class NotesViewPane extends BorderPane {
 
         // VBox to store control items used to filter notes.
         filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, autoFilterCheckComboBox, timeRangeAccordian, helpButton);
-        filterNotesHBox.setAlignment(Pos.CENTER_LEFT);
+        filterNotesHBox.setAlignment(Pos.TOP_LEFT);
         filterNotesHBox.setStyle("-fx-padding: 5px;");
 
         // TextField to enter new note title.
