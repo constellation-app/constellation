@@ -16,11 +16,8 @@
 package au.gov.asd.tac.constellation.views.notes;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -41,8 +38,8 @@ public class DateTimePicker {
     private final Spinner<Integer> secPicker = new Spinner<>(0, 59, 0);
 
     private final GridPane mainGridPane = new GridPane();
-    private final String FROM_TEXT = "From:";
-    private final String TO_TEXT = "To:";
+    private final String fromText = "From:";
+    private final String toText = "To:";
 
     boolean active = false;
     boolean from = false;
@@ -59,9 +56,9 @@ public class DateTimePicker {
         Label datePickerLabel = new Label();
 
         if (from) {
-            datePickerLabel.setText(FROM_TEXT);
+            datePickerLabel.setText(fromText);
         } else {
-            datePickerLabel.setText(TO_TEXT);
+            datePickerLabel.setText(toText);
         }
 
 
@@ -107,7 +104,7 @@ public class DateTimePicker {
      *
      * @param zone - zone ID of current location
      */
-    public void setCurrentDateTime(ZoneId zone) {
+    public void setCurrentDateTime(final ZoneId zone) {
         this.zone = zone;
 
         ZonedDateTime timeAtZone = ZonedDateTime.now(zone);
@@ -123,7 +120,7 @@ public class DateTimePicker {
      *
      * @param convertTo - id of zone to convert to
      */
-    public void convertCurrentDateTime(ZoneId convertTo) {
+    public void convertCurrentDateTime(final ZoneId convertTo) {
         if (convertTo == null) {
             return;
         }
@@ -147,16 +144,12 @@ public class DateTimePicker {
 
     }
 
-    /**
-     * Sets whether this component will be "active" meaning whether or not
-     * inputs should be queried from this
-     */
-    public void toggleActive() {
-        active = !active;
-    }
-
     public boolean getActive() {
         return active;
+    }
+
+    public void setActive(final boolean active) {
+        this.active = active;
     }
 
     /**

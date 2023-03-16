@@ -43,6 +43,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -242,9 +243,9 @@ public class NotesViewPane extends BorderPane {
 
         final Button utcButton = new Button("UTC");
         final Button localButton = new Button("LOCAL");
-        final Button activeButton = new Button("OFF");
-        activeButton.setStyle("-fx-background-color: #FFA500; ");
-        activeButton.setTextFill(Color.BLACK);
+        final Button clearButton = new Button("CLEAR");
+        clearButton.setStyle("-fx-background-color: #7FFFD4; ");
+        clearButton.setTextFill(Color.BLACK);
         final Button applyButton = new Button("APPLY");
         applyButton.setStyle("-fx-background-color: #0080FF; ");
 
@@ -263,33 +264,28 @@ public class NotesViewPane extends BorderPane {
         });
 
         // Set whether or not a time filter should even be applied
-        activeButton.setOnAction(event -> {
-            fromDate.toggleActive();
-            toDate.toggleActive();
-            if (activeButton.getText().equals("OFF")) {
-                activeButton.setStyle("-fx-background-color: #FF0000; ");
-                activeButton.setText("ON");
-            } else if (activeButton.getText().equals("ON")) {
-                activeButton.setStyle("-fx-background-color: #FFA500; ");
-                activeButton.setText("OFF");
+        clearButton.setOnAction(event -> {
+            fromDate.setActive(false);
+            toDate.setActive(false);
+
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (activeGraph != null) {
+                updateNotesUI();
+                controller.writeState(activeGraph);
             }
+
         });
 
         // Event handler for when user hovers over active and apply button
-        activeButton.setOnMouseEntered(event -> {
-            if (activeButton.getText().equals("OFF")) {
-                activeButton.setStyle("-fx-background-color: #FF8C00; ");
-            } else if (activeButton.getText().equals("ON")) {
-                activeButton.setStyle("-fx-background-color: #CC0000; ");
-            }
+        clearButton.setOnMouseEntered(event -> {
+            clearButton.setStyle("-fx-background-color: #23FFB5; ");
+
         });
 
-        activeButton.setOnMouseExited(event -> {
-            if (activeButton.getText().equals("OFF")) {
-                activeButton.setStyle("-fx-background-color: #FFA500; ");
-            } else if (activeButton.getText().equals("ON")) {
-                activeButton.setStyle("-fx-background-color: #FF0000; ");
-            }
+        clearButton.setOnMouseExited(event -> {
+
+            clearButton.setStyle("-fx-background-color: #7FFFD4;  ");
+
         });
 
         applyButton.setOnMouseEntered(event -> {
@@ -303,19 +299,21 @@ public class NotesViewPane extends BorderPane {
 
         // Hide/show notes based on their entry time
         applyButton.setOnAction(event -> {
+            fromDate.setActive(true);
+            toDate.setActive(true);
 
-                final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-                if (activeGraph != null) {
-                    updateNotesUI();
-                    controller.writeState(activeGraph);
-                }
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (activeGraph != null) {
+                updateNotesUI();
+                controller.writeState(activeGraph);
+            }
 
         });
 
         final GridPane timeZoneButtons = new GridPane();
         timeZoneButtons.add(utcButton, 0, 0);
         timeZoneButtons.add(localButton, 1, 0);
-        timeZoneButtons.add(activeButton, 2, 0);
+        timeZoneButtons.add(clearButton, 2, 0);
         timeZoneButtons.add(applyButton, 3, 0);
         timeZoneButtons.setHgap(10);
 
@@ -603,6 +601,7 @@ public class NotesViewPane extends BorderPane {
                 if (fromDate.getActive() && toDate.getActive()) {
                     // Get date time of entry in proper format
                     String dateFormat = new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(entry.getDateTime())));
+                    //new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(newNote.getDateTime())
 
                     // Extract date components
                     String[] dateTimeComponents = dateFormat.split(" ");
@@ -615,8 +614,8 @@ public class NotesViewPane extends BorderPane {
                     int min = Integer.parseInt(timeComponents[1]);
                     int sec = Integer.parseInt(timeComponents[2]);
 
-                    if (dateTimeComponents[1].equals("pm")) {
-                        hour = 24 - hour;
+                    if (dateTimeComponents[1].equals("pm") && hour < 12) {
+                        hour = 12 + hour;
                     }
 
                     // Split date into day, month and year
