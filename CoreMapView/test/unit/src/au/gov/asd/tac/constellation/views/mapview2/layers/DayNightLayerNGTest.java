@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import javafx.scene.Group;
@@ -78,13 +77,13 @@ public class DayNightLayerNGTest {
     public void testGetLayer() {
         System.out.println("getLayer");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView map = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView map = Mockito.spy(new MapView(mapViewPane));
 
-        DayNightLayer instance = new DayNightLayer(map, 5);
+        final DayNightLayer instance = new DayNightLayer(map, 5);
 
-        Group result = instance.getLayer();
+        final Group result = instance.getLayer();
         assertEquals(result != null, true);
 
     }

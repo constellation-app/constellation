@@ -64,15 +64,15 @@ public class SelectOnGraphPluginNGTest {
 
         boolean isSelectingVertex = true;
 
-        List<Integer> selectedNodeList = new ArrayList<>();
+        final List<Integer> selectedNodeList = new ArrayList<>();
 
         selectedNodeList.add(3);
         selectedNodeList.add(7);
 
-        int vertexCount = 5;
-        int transactionCount = 8;
-        int vertexID = 3;
-        int transactionID = 7;
+        final int vertexCount = 5;
+        final int transactionCount = 8;
+        final int vertexID = 3;
+        final int transactionID = 7;
 
 
         GraphWriteMethods graph = Mockito.spy(new StoreGraph());
@@ -81,15 +81,14 @@ public class SelectOnGraphPluginNGTest {
         Mockito.when(graph.getVertex(Mockito.anyInt())).thenReturn(vertexID);
         Mockito.when(graph.getTransaction(Mockito.anyInt())).thenReturn(transactionID);
 
-        int vertexSelectID = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        int transactionSelectID = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
+        final int vertexSelectID = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        final int transactionSelectID = VisualConcept.TransactionAttribute.SELECTED.ensure(graph);
 
         Mockito.doNothing().when(graph).setBooleanValue(vertexSelectID, vertexID, selectedNodeList.contains(vertexID));
         Mockito.doNothing().when(graph).setBooleanValue(transactionSelectID, transactionID, selectedNodeList.contains(transactionID));
 
-        PluginInteraction interaction = Mockito.mock(PluginInteraction.class);
-        PluginParameters parameters = Mockito.mock(PluginParameters.class);
-
+        final PluginInteraction interaction = Mockito.mock(PluginInteraction.class);
+        final PluginParameters parameters = Mockito.mock(PluginParameters.class);
 
         SelectOnGraphPlugin instance = new SelectOnGraphPlugin(selectedNodeList, isSelectingVertex);
         instance.edit(graph, interaction, parameters);
@@ -110,9 +109,9 @@ public class SelectOnGraphPluginNGTest {
     @Test
     public void testGetName() {
         System.out.println("getName");
-        SelectOnGraphPlugin instance = new SelectOnGraphPlugin();
-        String expResult = "SelectOnGraphPlugin2";
-        String result = instance.getName();
+        final SelectOnGraphPlugin instance = new SelectOnGraphPlugin();
+        final String expResult = "SelectOnGraphPlugin2";
+        final String result = instance.getName();
         assertEquals(result, expResult);
     }
 

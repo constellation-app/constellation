@@ -22,7 +22,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.SVGPath;
 import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
@@ -76,15 +75,15 @@ public class PolygonMarkerNGTest {
     public void testAddNewLine() {
         System.out.println("addNewLine");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView map = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView map = Mockito.spy(new MapView(mapViewPane));
 
-        double prevLineEndX = 54;
-        double prevLineEndY = 54;
-        PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
+        final double prevLineEndX = 54;
+        final double prevLineEndY = 54;
+        final PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
 
-        Line result = instance.addNewLine(prevLineEndX, prevLineEndY);
+        final Line result = instance.addNewLine(prevLineEndX, prevLineEndY);
 
         assertEquals((result.getEndX() == prevLineEndX) && (result.getEndY() == prevLineEndY), true);
 
@@ -96,10 +95,10 @@ public class PolygonMarkerNGTest {
     @Test
     public void testEndDrawing() {
         System.out.println("endDrawing");
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView map = Mockito.spy(new MapView(mapViewPane));
-        PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView map = Mockito.spy(new MapView(mapViewPane));
+        final PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
         instance.endDrawing();
 
         assertEquals(instance.getCurrentLine() == null, true);
@@ -112,22 +111,22 @@ public class PolygonMarkerNGTest {
     @Test
     public void testSetEnd() {
         System.out.println("setEnd");
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView map = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView map = Mockito.spy(new MapView(mapViewPane));
 
-        double xNewLine = 3;
-        double yNewLine = 3;
+        final double xNewLine = 3;
+        final double yNewLine = 3;
 
-        double x = 23;
-        double y = 23;
-        PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
+        final double x = 23;
+        final double y = 23;
+        final PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
 
         instance.addNewLine(xNewLine, yNewLine);
 
         instance.setEnd(x, y);
 
-        Line result = instance.getCurrentLine();
+        final Line result = instance.getCurrentLine();
 
         assertEquals((result.getEndX() == x) && (result.getEndY() == y), true);
 
@@ -139,19 +138,18 @@ public class PolygonMarkerNGTest {
     @Test
     public void testGeneratePath() {
         System.out.println("generatePath");
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView map = Mockito.spy(new MapView(mapViewPane));
-        PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView map = Mockito.spy(new MapView(mapViewPane));
+        final PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
 
         instance.addNewLine(640.5983769798281, 654.7539097213746);
         instance.addNewLine(707.6983769798281, 702.0539097213747);
         instance.addNewLine(738.4983769798281, 615.1539097213747);
-        //instance.addNewLine(595.9868734233639, 589.9531776579943);
 
         instance.generatePath();
 
-        String path = "M640.5983769798281,654.7539097213746L707.6983769798281,702.0539097213747L738.4983769798281,615.1539097213747L640.5983769798281,654.7539097213746";
+        final String path = "M640.5983769798281,654.7539097213746L707.6983769798281,702.0539097213747L738.4983769798281,615.1539097213747L640.5983769798281,654.7539097213746";
 
         assertEquals(path.equals(instance.getRawPath()), true);
 

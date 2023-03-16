@@ -54,8 +54,8 @@ public class Vec3NGTest {
     @Test
     public void testMultiplyFloat() {
         System.out.println("multiplyFloat");
-        float value = 3.0f;
-        Vec3 instance = new Vec3(4, 4, 4);
+        final float value = 3.0f;
+        final Vec3 instance = new Vec3(4, 4, 4);
         instance.multiplyFloat(value);
 
         assertEquals(instance.getX(), 12.0);
@@ -69,8 +69,8 @@ public class Vec3NGTest {
     @Test
     public void testMultiplyDouble() {
         System.out.println("multiplyDouble");
-        double value = 4;
-        Vec3 instance = new Vec3(5, 5, 5);
+        final double value = 4;
+        final Vec3 instance = new Vec3(5, 5, 5);
         instance.multiplyDouble(value);
 
         assertEquals(instance.getX(), 20.0);
@@ -84,8 +84,8 @@ public class Vec3NGTest {
     @Test
     public void testAddVector() {
         System.out.println("addVector");
-        Vec3 value = new Vec3(1, 2, 3);
-        Vec3 instance = new Vec3(4, 5, 6);
+        final Vec3 value = new Vec3(1, 2, 3);
+        final Vec3 instance = new Vec3(4, 5, 6);
         instance.addVector(value);
 
         assertEquals(instance.getX(), 5.0);
@@ -100,7 +100,7 @@ public class Vec3NGTest {
     public void testDivVector() {
         System.out.println("divVector");
         double d = 0.0;
-        Vec3 instance = new Vec3(5, 5, 5);
+        final Vec3 instance = new Vec3(5, 5, 5);
         instance.divVector(d);
 
         assertEquals(instance.getX(), 5.0);
@@ -121,10 +121,10 @@ public class Vec3NGTest {
     @Test
     public void testGetDistance() {
         System.out.println("getDistance");
-        Vec3 v1 = new Vec3(1, 1, 1);
-        Vec3 v2 = new Vec3(4, 5, 1);
-        double expResult = 5.0;
-        double result = Vec3.getDistance(v1, v2);
+        final Vec3 v1 = new Vec3(1, 1, 1);
+        final Vec3 v2 = new Vec3(4, 5, 1);
+        final double expResult = 5.0;
+        final double result = Vec3.getDistance(v1, v2);
         assertEquals(result, expResult);
     }
 
@@ -135,13 +135,13 @@ public class Vec3NGTest {
     public void testCross() {
         System.out.println("cross");
 
-        Vec3 v = new Vec3(3, 1, 4);
+        final Vec3 v = new Vec3(3, 1, 4);
 
-        Vec3 instance = new Vec3(-2, 0, 5);
+        final Vec3 instance = new Vec3(-2, 0, 5);
 
-        Vec3 expResult = new Vec3(5, -23, 2);
+        final Vec3 expResult = new Vec3(5, -23, 2);
 
-        Vec3 result = v.cross(instance);
+        final Vec3 result = v.cross(instance);
 
         assertEquals(result.getX(), expResult.getX());
         assertEquals(result.getY(), expResult.getY());
@@ -155,9 +155,9 @@ public class Vec3NGTest {
     @Test
     public void testGetX() {
         System.out.println("getX");
-        Vec3 instance = new Vec3(3, 3, 3);
-        double expResult = 3.0;
-        double result = instance.getX();
+        final Vec3 instance = new Vec3(3, 3, 3);
+        final double expResult = 3.0;
+        final double result = instance.getX();
         assertEquals(result, expResult);
     }
 
@@ -167,8 +167,8 @@ public class Vec3NGTest {
     @Test
     public void testSetX() {
         System.out.println("setX");
-        double x = 6;
-        Vec3 instance = new Vec3();
+        final double x = 6;
+        final Vec3 instance = new Vec3();
         instance.setX(x);
 
         assertEquals(instance.getX(), x);
@@ -180,9 +180,9 @@ public class Vec3NGTest {
     @Test
     public void testGetY() {
         System.out.println("getY");
-        Vec3 instance = new Vec3(3, 3, 3);
-        double expResult = 3.0;
-        double result = instance.getY();
+        final Vec3 instance = new Vec3(3, 3, 3);
+        final double expResult = 3.0;
+        final double result = instance.getY();
         assertEquals(result, expResult);
     }
 
@@ -192,8 +192,8 @@ public class Vec3NGTest {
     @Test
     public void testSetY() {
         System.out.println("setY");
-        double y = 6;
-        Vec3 instance = new Vec3();
+        final double y = 6;
+        final Vec3 instance = new Vec3();
         instance.setY(y);
 
         assertEquals(instance.getY(), y);
@@ -205,9 +205,9 @@ public class Vec3NGTest {
     @Test
     public void testGetZ() {
         System.out.println("getZ");
-        Vec3 instance = new Vec3(3, 3, 3);
-        double expResult = 3.0;
-        double result = instance.getZ();
+        final Vec3 instance = new Vec3(3, 3, 3);
+        final double expResult = 3.0;
+        final double result = instance.getZ();
         assertEquals(result, expResult);
     }
 
@@ -217,8 +217,8 @@ public class Vec3NGTest {
     @Test
     public void testSetZ() {
         System.out.println("setZ");
-        double z = 6;
-        Vec3 instance = new Vec3();
+        final double z = 6;
+        final Vec3 instance = new Vec3();
         instance.setZ(z);
 
         assertEquals(instance.getZ(), z);

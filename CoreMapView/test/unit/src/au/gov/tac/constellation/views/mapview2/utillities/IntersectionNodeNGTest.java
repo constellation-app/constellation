@@ -57,13 +57,13 @@ public class IntersectionNodeNGTest {
     @Test
     public void testGetRelevantMarkers() {
         System.out.println("getRelevantMarkers");
-        IntersectionNode instance = new IntersectionNode(5, 6);
+        final IntersectionNode instance = new IntersectionNode(5, 6);
         instance.addRelevantMarker(54);
 
-        List<Integer> expResult = new ArrayList();
+        final List<Integer> expResult = new ArrayList();
         expResult.add(54);
 
-        List result = instance.getRelevantMarkers();
+        final List result = instance.getRelevantMarkers();
         assertEquals(result.get(0), expResult.get(0));
     }
 
@@ -73,12 +73,12 @@ public class IntersectionNodeNGTest {
     @Test
     public void testGetConnectedPoints() {
         System.out.println("getConnectedPoints");
-        IntersectionNode instance = new IntersectionNode(2, 3);
-        List<IntersectionNode> expResult = new ArrayList<>();
+        final IntersectionNode instance = new IntersectionNode(2, 3);
+        final List<IntersectionNode> expResult = new ArrayList<>();
         expResult.add(new IntersectionNode(4, 5));
         instance.addConnectedPoint(new IntersectionNode(4, 5));
 
-        List<IntersectionNode> result = instance.getConnectedPoints();
+        final List<IntersectionNode> result = instance.getConnectedPoints();
         assertEquals(result.get(0).getX(), expResult.get(0).getX());
         assertEquals(result.get(0).getY(), expResult.get(0).getY());
     }
@@ -89,8 +89,8 @@ public class IntersectionNodeNGTest {
     @Test
     public void testAddRelevantMarker() {
         System.out.println("addRelevantMarker");
-        Integer id = 54;
-        IntersectionNode instance = new IntersectionNode();
+        final Integer id = 54;
+        final IntersectionNode instance = new IntersectionNode();
         instance.addRelevantMarker(id);
 
         assertEquals(instance.getRelevantMarkers().contains(id), true);
@@ -104,8 +104,8 @@ public class IntersectionNodeNGTest {
     @Test
     public void testAddConnectedPoint() {
         System.out.println("addConnectedPoint");
-        IntersectionNode otherNode = new IntersectionNode(5, 5);
-        IntersectionNode instance = new IntersectionNode(4, 4);
+        final IntersectionNode otherNode = new IntersectionNode(5, 5);
+        final IntersectionNode instance = new IntersectionNode(4, 4);
         instance.addConnectedPoint(null);
 
         assertEquals(instance.getConnectedPoints().size(), 0);
@@ -129,9 +129,9 @@ public class IntersectionNodeNGTest {
     @Test
     public void testAddContainedPoint() {
         System.out.println("addContainedPoint");
-        double x = 6.0;
-        double y = 7.0;
-        IntersectionNode instance = new IntersectionNode();
+        final double x = 6.0;
+        final double y = 7.0;
+        final IntersectionNode instance = new IntersectionNode();
         instance.addContainedPoint(x, y);
 
         assertEquals(instance.getContainedPoints().get(0).getX(), x);
@@ -144,9 +144,9 @@ public class IntersectionNodeNGTest {
     @Test
     public void testGetContainedPoints() {
         System.out.println("getContainedPoints");
-        IntersectionNode instance = new IntersectionNode(5, 6);
+        final IntersectionNode instance = new IntersectionNode(5, 6);
         instance.addContainedPoint(7, 8);
-        List<Vec3> expResult = new ArrayList<Vec3>();
+        final List<Vec3> expResult = new ArrayList<>();
         expResult.add(new Vec3(7, 8));
 
         assertEquals(instance.getContainedPoints().get(0).getX(), expResult.get(0).getX());
@@ -159,9 +159,9 @@ public class IntersectionNodeNGTest {
     @Test
     public void testGetKey() {
         System.out.println("getKey");
-        IntersectionNode instance = new IntersectionNode(5, 6);
-        String expResult = "5.0,6.0";
-        String result = instance.getKey();
+        final IntersectionNode instance = new IntersectionNode(5, 6);
+        final String expResult = "5.0,6.0";
+        final String result = instance.getKey();
         assertEquals(result, expResult);
     }
 
@@ -171,9 +171,9 @@ public class IntersectionNodeNGTest {
     @Test
     public void testGetX() {
         System.out.println("getX");
-        IntersectionNode instance = new IntersectionNode(5, 6);
-        double expResult = 5.0;
-        double result = instance.getX();
+        final IntersectionNode instance = new IntersectionNode(5, 6);
+        final double expResult = 5.0;
+        final double result = instance.getX();
         assertEquals(result, expResult);
     }
 
@@ -183,9 +183,9 @@ public class IntersectionNodeNGTest {
     @Test
     public void testGetY() {
         System.out.println("getY");
-        IntersectionNode instance = new IntersectionNode(5, 6);
-        double expResult = 6.0;
-        double result = instance.getY();
+        final IntersectionNode instance = new IntersectionNode(5, 6);
+        final double expResult = 6.0;
+        final double result = instance.getY();
         assertEquals(result, expResult);
     }
 

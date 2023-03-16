@@ -164,23 +164,6 @@ public class MapViewNGTest {
         assertEquals(instance.getInfoOverlay().isShowing(), false);
     }
 
-    /**
-     * Test of getNewMarkerID method, of class MapView.
-     */
-    /*@Test
-    public void testGetNewMarkerID() {
-        System.out.println("getNewMarkerID");
-
-
-        int result = instance.getNewMarkerID();
-        assertEquals(result, 1);
-
-        result = instance.getNewMarkerID();
-        assertEquals(result, 2);
-
-
-    }*/
-
 
     /**
      * Test of addLayer method, of class MapView.

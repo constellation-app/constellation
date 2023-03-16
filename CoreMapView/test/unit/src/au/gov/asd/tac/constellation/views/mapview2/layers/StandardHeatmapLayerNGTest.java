@@ -72,16 +72,16 @@ public class StandardHeatmapLayerNGTest {
     public void testGetWeight() {
         System.out.println("getWeight");
 
-        MapView mapView = Mockito.mock(MapView.class);
+        final MapView mapView = Mockito.mock(MapView.class);
 
-        AbstractMarker marker = Mockito.spy(new PointMarker(mapView, -99, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000"));
+        final AbstractMarker marker = Mockito.spy(new PointMarker(mapView, -99, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000"));
         Mockito.when(marker.getConnectedNodeIdList()).thenCallRealMethod();
         Mockito.doCallRealMethod().when(marker).addNodeID(1);
         Mockito.when(marker.getWeight()).thenCallRealMethod();
 
-        StandardHeatmapLayer instance = new StandardHeatmapLayer(mapView, 0);
-        int expResult = 1;
-        int result = instance.getWeight(marker);
+        final StandardHeatmapLayer instance = new StandardHeatmapLayer(mapView, 0);
+        final int expResult = 1;
+        final int result = instance.getWeight(marker);
         assertEquals(result, expResult);
 
     }

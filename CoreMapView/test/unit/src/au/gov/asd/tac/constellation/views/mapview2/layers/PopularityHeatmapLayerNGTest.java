@@ -76,15 +76,15 @@ public class PopularityHeatmapLayerNGTest {
     @Test
     public void testGetWeight() {
         System.out.println("getWeight");
-        MapView mapView = Mockito.mock(MapView.class);
+        final MapView mapView = Mockito.mock(MapView.class);
 
         final Graph graph = mock(Graph.class);
         final ReadableGraph readableGraph = mock(ReadableGraph.class);
 
-        int vertexCount = 1;
-        int vertexID = 2;
+        final int vertexCount = 1;
+        final int vertexID = 2;
 
-        List<Integer> idList = new ArrayList<>();
+        final List<Integer> idList = new ArrayList<>();
         idList.add(vertexID);
 
         Mockito.when(mapView.getCurrentGraph()).thenReturn(graph);
@@ -95,13 +95,13 @@ public class PopularityHeatmapLayerNGTest {
 
         Mockito.doNothing().when(readableGraph).release();
 
-        AbstractMarker marker = Mockito.mock(PointMarker.class);
+        final AbstractMarker marker = Mockito.mock(PointMarker.class);
         Mockito.when(marker.getConnectedNodeIdList()).thenReturn(idList);
 
-        PopularityHeatmapLayer instance = new PopularityHeatmapLayer(mapView, 0);
+        final PopularityHeatmapLayer instance = new PopularityHeatmapLayer(mapView, 0);
 
-        int expResult = 4;
-        int result = instance.getWeight(marker);
+        final int expResult = 4;
+        final int result = instance.getWeight(marker);
 
         assertEquals(result, expResult);
     }

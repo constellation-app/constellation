@@ -82,9 +82,9 @@ public class ExtractCoordsFromGraphPluginNGTest {
     public void testRead() throws Exception {
         System.out.println("read");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView mapView = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView mapView = Mockito.spy(new MapView(mapViewPane));
 
         Mockito.doReturn(mapViewPane).when(component).getMapViewPane();
         Mockito.doNothing().when(mapView).clearQueriedMarkers();
@@ -94,30 +94,30 @@ public class ExtractCoordsFromGraphPluginNGTest {
         Mockito.doCallRealMethod().when(mapView).addMarkerToHashMap(Mockito.anyString(), Mockito.any(AbstractMarker.class));
         Mockito.when(mapView.getAllMarkers()).thenCallRealMethod();
 
-        GraphWriteMethods graph = Mockito.spy(new StoreGraph());
+        final GraphWriteMethods graph = Mockito.spy(new StoreGraph());
 
-        int vertexCount = 1;
-        int vertexID = 1;
+        final int vertexCount = 1;
+        final int vertexID = 1;
 
         Mockito.doReturn(vertexCount).when(graph).getVertexCount();
         Mockito.doReturn(vertexID).when(graph).getVertex(0);
 
-        int lonID = SpatialConcept.VertexAttribute.LATITUDE.ensure(graph);
-        int latID = SpatialConcept.VertexAttribute.LONGITUDE.ensure(graph);
+        final int lonID = SpatialConcept.VertexAttribute.LATITUDE.ensure(graph);
+        final int latID = SpatialConcept.VertexAttribute.LONGITUDE.ensure(graph);
 
         Mockito.doReturn(Float.parseFloat("100")).when(graph).getObjectValue(lonID, vertexID);
         Mockito.doReturn(Float.parseFloat("100")).when(graph).getObjectValue(latID, vertexID);
         Mockito.doReturn("#000000").when(graph).getStringValue(Mockito.anyInt(), Mockito.anyInt());
 
-        PluginInteraction interaction = Mockito.mock(PluginInteraction.class);
-        PluginParameters parameters = Mockito.mock(PluginParameters.class);
+        final PluginInteraction interaction = Mockito.mock(PluginInteraction.class);
+        final PluginParameters parameters = Mockito.mock(PluginParameters.class);
 
-        ExtractCoordsFromGraphPlugin instance = new ExtractCoordsFromGraphPlugin(component);
+        final ExtractCoordsFromGraphPlugin instance = new ExtractCoordsFromGraphPlugin(component);
         instance.read(graph, interaction, parameters);
 
-        String exp = "100.0,100.0";
+        final String exp = "100.0,100.0";
 
-        Set<String> markerKeys = component.getMapViewPane().getMap().getAllMarkers().keySet();
+        final Set<String> markerKeys = component.getMapViewPane().getMap().getAllMarkers().keySet();
 
         assertEquals(markerKeys.contains(exp), true);
     }

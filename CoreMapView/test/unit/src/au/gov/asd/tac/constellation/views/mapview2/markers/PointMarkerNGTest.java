@@ -75,12 +75,12 @@ public class PointMarkerNGTest {
 
         System.out.println("changeMarkerColour");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        String option = MapViewPane.DEFAULT_COLOURS;
-        PointMarker instance = new PointMarker(parent, -99, -99, 0, 0, 0.05, 0, 0, "#ffffff");
+        final String option = MapViewPane.DEFAULT_COLOURS;
+        final PointMarker instance = new PointMarker(parent, -99, -99, 0, 0, 0.05, 0, 0, "#ffffff");
 
         // Test default Colour
         instance.changeMarkerColour(option);
@@ -101,11 +101,6 @@ public class PointMarkerNGTest {
         instance.changeMarkerColour(MapViewPane.USE_OVERLAY_COL);
         assertEquals(instance.getCurrentColour(), "#990a0a");
 
-        /*instance.setOverlayColour("#990a0a");
-        instance.changeMarkerColour(MapViewPane.USE_OVERLAY_COL);
-        assertEquals(instance.getCurrentColour(), "#D3D3D3");*/
-
-
     }
 
     /**
@@ -115,16 +110,14 @@ public class PointMarkerNGTest {
     public void testGetLattitude() {
         System.out.println("getLattitude");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
-        double expResult = 108;
-        double result = instance.getLattitude();
+        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
+        final double expResult = 108;
+        final double result = instance.getLattitude();
         assertEquals(result, expResult, 0.0);
-        // TODO review the generated test code and remove the default call to fail.
-        //fail("The test case is a prototype.");
     }
 
     /**
@@ -134,13 +127,13 @@ public class PointMarkerNGTest {
     public void testGetLongitude() {
         System.out.println("getLongitude");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
-        double expResult = 56;
-        double result = instance.getLongitude();
+        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
+        final double expResult = 56;
+        final double result = instance.getLongitude();
         assertEquals(result, expResult, 0.0);
     }
 
@@ -151,13 +144,13 @@ public class PointMarkerNGTest {
     public void testGetScale() {
         System.out.println("getScale");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
-        double expResult = 0.05;
-        double result = instance.getScale();
+        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
+        final double expResult = 0.05;
+        final double result = instance.getScale();
         assertEquals(result, expResult, 0.0);
     }
 
@@ -168,32 +161,15 @@ public class PointMarkerNGTest {
     public void testGetPath() {
         System.out.println("getPath");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
-        String expResult = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
-        String result = instance.getPath();
+        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
+        final String expResult = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
+        final String result = instance.getPath();
         assertEquals(result, expResult);
     }
-
-    /**
-     * Test of setMarkerPosition method, of class PointMarker.
-     */
-    /*@Test
-    public void testSetMarkerPosition() {
-        System.out.println("setMarkerPosition");
-
-        MapViewPane mapViewPane = Mockito.mock(MapViewPane.class);
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
-
-        double MAP_WIDTH = 0.0;
-        double MAP_HEIGHT = 0.0;
-        PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
-        instance.setMarkerPosition(MAP_WIDTH, MAP_HEIGHT);
-
-    }*/
 
     /**
      * Test of getBlazeColour method, of class PointMarker.
@@ -202,14 +178,14 @@ public class PointMarkerNGTest {
     public void testGetBlazeColour() {
         System.out.println("getBlazeColour");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
         instance.setBlazeColour("Green;#gggggg");
-        String expResult = "#gggggg";
-        String result = instance.getBlazeColour();
+        final String expResult = "#gggggg";
+        final String result = instance.getBlazeColour();
         assertEquals(result, expResult);
     }
 
@@ -220,14 +196,14 @@ public class PointMarkerNGTest {
     public void testGetX() {
         System.out.println("getX");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
         instance.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
-        double expResult = 0.0;
-        double result = instance.getX();
+        final double expResult = 0.0;
+        final double result = instance.getX();
         assertEquals(result, expResult, 0.0);
     }
 
@@ -238,13 +214,13 @@ public class PointMarkerNGTest {
     public void testGetY() {
         System.out.println("getY");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
-        double expResult = 0.0;
-        double result = instance.getY();
+        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
+        final double expResult = 0.0;
+        final double result = instance.getY();
         assertEquals(result, expResult, 0.0);
     }
 
@@ -255,12 +231,12 @@ public class PointMarkerNGTest {
     public void testSetLabelAttr() {
         System.out.println("setLabelAttr");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        String labelAttribute = "Example Label";
-        PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
+        final String labelAttribute = "Example Label";
+        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
         instance.setLabelAttr(labelAttribute);
         assertEquals(instance.getLabelAttr(), "Example Label");
 
@@ -276,12 +252,12 @@ public class PointMarkerNGTest {
     public void testSetIdentAttr() {
         System.out.println("setIdentAttr");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        String identAttribute = "Example Identifier";
-        PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
+        final String identAttribute = "Example Identifier";
+        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
         instance.setIdentAttr(identAttribute);
         assertEquals(instance.getIdentAttr(), "Example Identifier");
 
@@ -296,8 +272,8 @@ public class PointMarkerNGTest {
     public void testGetIdentAttr() {        
         System.out.println("getIdentAttr");
 
-        MapView parent = Mockito.mock(MapView.class);
-        PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
+        final MapView parent = Mockito.mock(MapView.class);
+        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
 
         String expResult = "TestIdentity";
 

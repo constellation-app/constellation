@@ -38,14 +38,8 @@ public class LineMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(LineMarkerNGTest.class.getName());
 
-
-    //private MapViewTopComponent component;
-    //private static MapView parent;
-
     public LineMarkerNGTest() {
-        //component = new MapViewTopComponent();
-        //MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        //parent = Mockito.spy(new MapView(mapViewPane));
+
     }
 
     @BeforeClass
@@ -79,16 +73,15 @@ public class LineMarkerNGTest {
     public void testSetMarkerPosition() {
         System.out.println("setMarkerPosition");
 
-        MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
+        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        double mapWidth = MapView.MAP_WIDTH;
-        double mapHeight = MapView.MAP_HEIGHT;
-        LineMarker instance = new LineMarker(parent, -99, -99, 83.63001, -169.1110266, -58.488473, 190.48712, 0, 0);
+        final double mapWidth = MapView.MAP_WIDTH;
+        final double mapHeight = MapView.MAP_HEIGHT;
+        final LineMarker instance = new LineMarker(parent, -99, -99, 83.63001, -169.1110266, -58.488473, 190.48712, 0, 0);
         instance.setMarkerPosition(mapWidth, mapHeight);
         assertEquals(instance.getStartX(), 0.0);
-        //assertEquals(instance.getStartY(), 0.0);
     }
 
 }

@@ -85,7 +85,7 @@ public class ActivityHeatmapLayerNGTest {
         int vertexCount = 1;
         int vertexID = 2;
 
-        List<Integer> idList = new ArrayList<>();
+        final List<Integer> idList = new ArrayList<>();
         idList.add(vertexID);
 
         Mockito.when(mapView.getCurrentGraph()).thenReturn(graph);

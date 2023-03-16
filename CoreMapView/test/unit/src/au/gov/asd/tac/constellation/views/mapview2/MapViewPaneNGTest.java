@@ -15,16 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2;
 
-import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
-import au.gov.asd.tac.constellation.views.mapview.utilities.MarkerState;
-import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Rectangle;
 import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
@@ -79,7 +70,7 @@ public class MapViewPaneNGTest {
      */
     @Test
     public void testGetNewMarkerID() {
-        MapViewTopComponent mapViewTopComponent = Mockito.mock(MapViewTopComponent.class);
+        final MapViewTopComponent mapViewTopComponent = Mockito.mock(MapViewTopComponent.class);
 
         final MapViewPane instance = Mockito.spy(new MapViewPane(mapViewTopComponent));
 

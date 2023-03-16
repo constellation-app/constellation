@@ -16,16 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.locking.DualGraph;
-import au.gov.asd.tac.constellation.graph.locking.LockingManager;
-import au.gov.asd.tac.constellation.graph.locking.LockingStoreGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
@@ -41,7 +32,6 @@ import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -95,24 +85,24 @@ public class EntityPathsLayerNGTest {
         final int lonID2 = 9;
         final int latID2 = 10;
 
-        int vertexID = 56;
-        int neighbourID = 65;
-        int neighbourLinkID = 70;
-        int neighbourLinkTransID = 75;
-        int secondNeighbourID = 80;
-        int secondNeighbourLinkID = 85;
-        int neighbourCount = 1;
-        int secondNeighbourCount = 1;
-        int neighbourLinkTransactionCount = 1;
-        int secondNeighbourLinkTransactionCount = 1;
-        int secondNeighbourLinkTransactionId = 90;
+        final int vertexID = 56;
+        final int neighbourID = 65;
+        final int neighbourLinkID = 70;
+        final int neighbourLinkTransID = 75;
+        final int secondNeighbourID = 80;
+        final int secondNeighbourLinkID = 85;
+        final int neighbourCount = 1;
+        final int secondNeighbourCount = 1;
+        final int neighbourLinkTransactionCount = 1;
+        final int secondNeighbourLinkTransactionCount = 1;
+        final int secondNeighbourLinkTransactionId = 90;
 
-        MapView parent = Mockito.mock(MapView.class);
-        Graph graphMock = Mockito.mock(Graph.class);
-        ReadableGraph graph = Mockito.mock(ReadableGraph.class);
+        final MapView parent = Mockito.mock(MapView.class);
+        final Graph graphMock = Mockito.mock(Graph.class);
+        final ReadableGraph graph = Mockito.mock(ReadableGraph.class);
 
-        Map<String, AbstractMarker> queriedMarkers = new HashMap<>();
-        PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, 0.05, 0, 0, "#ffffff");
+        final Map<String, AbstractMarker> queriedMarkers = new HashMap<>();
+        final PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, 0.05, 0, 0, "#ffffff");
         queriedMarkers.put("5,5", pMarker);
 
         Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
@@ -133,14 +123,14 @@ public class EntityPathsLayerNGTest {
 
         Mockito.when(graph.getVertex(vertexID)).thenReturn(vertexID);
 
-        SchemaVertexType vertexType = Mockito.mock(SchemaVertexType.class);
+        final SchemaVertexType vertexType = Mockito.mock(SchemaVertexType.class);
 
         Mockito.when(graph.getObjectValue(vertexTypeAttributeId, vertexID)).thenReturn(vertexType);
         Mockito.when(vertexType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)).thenReturn(true);
         Mockito.when(graph.getVertexNeighbourCount(vertexID)).thenReturn(neighbourCount);
         Mockito.when(graph.getVertexNeighbour(vertexID, 0)).thenReturn(neighbourID);
 
-        SchemaVertexType neighbourType = Mockito.mock(SchemaVertexType.class);
+        final SchemaVertexType neighbourType = Mockito.mock(SchemaVertexType.class);
 
         Mockito.when(graph.getObjectValue(vertexTypeAttributeId, neighbourID)).thenReturn(neighbourType);
         Mockito.when(neighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)).thenReturn(false);
@@ -153,7 +143,7 @@ public class EntityPathsLayerNGTest {
         Mockito.when(graph.getVertexNeighbourCount(neighbourID)).thenReturn(secondNeighbourCount);
         Mockito.when(graph.getVertexNeighbour(neighbourID, 0)).thenReturn(secondNeighbourID);
 
-        SchemaVertexType secondNeighbourType = Mockito.mock(SchemaVertexType.class);
+        final SchemaVertexType secondNeighbourType = Mockito.mock(SchemaVertexType.class);
 
         Mockito.when(graph.getObjectValue(vertexTypeAttributeId, secondNeighbourID)).thenReturn(secondNeighbourType);
         Mockito.when(secondNeighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)).thenReturn(true);
@@ -170,12 +160,10 @@ public class EntityPathsLayerNGTest {
         Mockito.when(graph.getObjectValue(latID2, secondNeighbourID)).thenReturn(10f);
         Mockito.when(graph.getObjectValue(lonID2, secondNeighbourID)).thenReturn(10f);
 
-        EntityPathsLayer instance = new EntityPathsLayer(parent, 6, queriedMarkers);
+        final EntityPathsLayer instance = new EntityPathsLayer(parent, 6, queriedMarkers);
         instance.setUp();
 
         Mockito.verify(graph, Mockito.atMost(4)).getLongValue(Mockito.eq(transDateTimeAttrId), Mockito.eq(secondNeighbourLinkTransactionId));
-        //Mockito.verify(graph).getObjectValue(Mockito.eq(latID2), Mockito.eq(vertexID));
-        //Mockito.verify(graph).getObjectValue(Mockito.eq(latID2), Mockito.eq(secondNeighbourID));
     }
 
 }

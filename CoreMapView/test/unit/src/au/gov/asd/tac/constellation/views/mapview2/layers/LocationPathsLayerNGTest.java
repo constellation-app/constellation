@@ -32,7 +32,6 @@ import java.util.logging.Logger;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -80,15 +79,15 @@ public class LocationPathsLayerNGTest {
     @Test
     public void testSetUp() {
         System.out.println("setUp");
-        int vertexID = 56;
-        int neighbourID = 65;
-        int neighbourLinkID = 70;
-        int vertexNeighbourCount = 1;
-        int linkOutgoingTransactionCount = 1;
+        final int vertexID = 56;
+        final int neighbourID = 65;
+        final int neighbourLinkID = 70;
+        final int vertexNeighbourCount = 1;
+        final int linkOutgoingTransactionCount = 1;
 
-        MapView parent = Mockito.mock(MapView.class);
-        Graph graphMock = Mockito.mock(Graph.class);
-        ReadableGraph graph = Mockito.mock(ReadableGraph.class);
+        final MapView parent = Mockito.mock(MapView.class);
+        final Graph graphMock = Mockito.mock(Graph.class);
+        final ReadableGraph graph = Mockito.mock(ReadableGraph.class);
 
         final int lonID2 = 11;
         final int latID2 = 22;
@@ -106,15 +105,14 @@ public class LocationPathsLayerNGTest {
             analConcept.when(() -> AnalyticConcept.VertexAttribute.TYPE.get(graph)).thenReturn(vertexTypeAttributeId);
         }
 
-
-        SchemaVertexType vertexType = Mockito.mock(SchemaVertexType.class);
+        final SchemaVertexType vertexType = Mockito.mock(SchemaVertexType.class);
         Mockito.when(graph.getObjectValue(vertexTypeAttributeId, vertexID)).thenReturn(vertexType);
         Mockito.when(vertexType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)).thenReturn(true);
 
         Mockito.when(graph.getVertexNeighbourCount(vertexID)).thenReturn(vertexNeighbourCount);
         Mockito.when(graph.getVertexNeighbour(vertexID, 0)).thenReturn(neighbourID);
 
-        SchemaVertexType neighbourType = Mockito.mock(SchemaVertexType.class);
+        final SchemaVertexType neighbourType = Mockito.mock(SchemaVertexType.class);
         Mockito.when(graph.getObjectValue(vertexTypeAttributeId, neighbourID)).thenReturn(neighbourType);
         Mockito.when(neighbourType.isSubTypeOf(AnalyticConcept.VertexType.LOCATION)).thenReturn(true);
 
@@ -127,11 +125,11 @@ public class LocationPathsLayerNGTest {
         Mockito.when(graph.getObjectValue(latID2, neighbourID)).thenReturn(70f);
         Mockito.when(graph.getObjectValue(lonID2, neighbourID)).thenReturn(70f);
 
-        Map<String, AbstractMarker> queriedMarkers = new HashMap<>();
-        PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, 0.05, 0, 0, "#ffffff");
+        final Map<String, AbstractMarker> queriedMarkers = new HashMap<>();
+        final PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, 0.05, 0, 0, "#ffffff");
         queriedMarkers.put("5,5", pMarker);
 
-        LocationPathsLayer instance = new LocationPathsLayer(parent, 20, queriedMarkers);
+        final LocationPathsLayer instance = new LocationPathsLayer(parent, 20, queriedMarkers);
         instance.setUp();
 
         Mockito.verify(graph).getObjectValue(latID2, vertexID);
