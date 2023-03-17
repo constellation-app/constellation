@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -59,7 +60,11 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
+
 import javafx.scene.control.ComboBox;
+
+import javafx.scene.control.ColorPicker;
+
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -93,7 +98,6 @@ import org.openide.windows.WindowManager;
  * @author sol695510
  */
 public class NotesViewPane extends BorderPane {
-
     private final NotesViewController notesViewController;
     private final List<NotesViewEntry> notesViewEntries;
 
@@ -102,6 +106,7 @@ public class NotesViewPane extends BorderPane {
      * exists in notesViewEntries. This is a necessary optimisation.
      */
     private final Set<String> notesDateTimeCache;
+
 
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
@@ -116,15 +121,20 @@ public class NotesViewPane extends BorderPane {
     private final ScrollPane notesListScrollPane;
 
     private static final int DEFAULT_SPACING = 5;
-    private static final int OPTIONS_SPACING = 150;
+    private static final int EDIT_SPACING = 110;
+    private static final int OPTIONS_SPACING = 30;
     private static final String PROMPT_COLOR = "#909090";
     private static final String USER_COLOR = "#942483";
     private static final String AUTO_COLOR = "#1c5aa6";
+    private static String userChosenColour = USER_COLOR;
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
     private static final String USER_NOTES_FILTER = "User Notes";
     private static final String SELECTED_FILTER = "Selected";
+
+    private static final String PADDING_BG_COLOUR_STYLE = "-fx-padding: 5px; -fx-background-color: ";
+    private static final String BG_RADIUS_STYLE = "; -fx-background-radius: 10 10 10 10;";
 
     private static final Object LOCK = new Object();
 
@@ -138,10 +148,15 @@ public class NotesViewPane extends BorderPane {
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
 
+
     final DateTimePicker fromDate = new DateTimePicker(true);
     final DateTimePicker toDate = new DateTimePicker(false);
 
     final Map<String, ZoneId> timeZoneMap = new HashMap<>();
+
+    private int noteID = 0;
+    private final Map<Integer, String> previouseColourMap = new HashMap<>();
+
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -380,7 +395,11 @@ public class NotesViewPane extends BorderPane {
             }
         });
 
-        // Button to add new note.
+        // Colourpicker to set colour of new note
+        ColorPicker newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(userChosenColour).getJavaFXColor());
+        newNoteColour.setOnAction(event -> userChosenColour = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
+
+        // Button to add new note
         final Button addNoteButton = new Button("Add Note");
         addNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         addNoteButton.setOnAction(event -> {
@@ -396,7 +415,8 @@ public class NotesViewPane extends BorderPane {
                                 titleField.getText(),
                                 contentField.getText(),
                                 true,
-                                !applySelected
+                                !applySelected,
+                                userChosenColour
                         ));
                         if (applySelected) {
                             // Get selected nodes from the graph.
@@ -454,7 +474,7 @@ public class NotesViewPane extends BorderPane {
             }
         });
         // HBox to store the control items at the bottom of the view.
-        final HBox noteHBox = new HBox(OPTIONS_SPACING, applyToSelection, addNoteButton);
+        final HBox noteHBox = new HBox(OPTIONS_SPACING, applyToSelection, newNoteColour, addNoteButton);
 
         // VBox to store control items used to add new note.
         addNoteVBox = new VBox(DEFAULT_SPACING, titleField, contentField, noteHBox);
@@ -517,7 +537,8 @@ public class NotesViewPane extends BorderPane {
                     pluginReport.getPluginName(),
                     pluginReport.getMessage(),
                     false,
-                    false
+                    false,
+                    "#ffffff"
             );
 
             final String[] tags = pluginReport.getTags();
@@ -768,8 +789,14 @@ public class NotesViewPane extends BorderPane {
         if (!Platform.isFxApplicationThread()) {
             throw new IllegalStateException("Not processing on the JavaFX Application Thread");
         }
-        
-        final String noteColor = newNote.isUserCreated() ? USER_COLOR : AUTO_COLOR;
+
+        if (newNote.getID() < 0) {
+            newNote.setID(++noteID);
+        }
+
+        if (!previouseColourMap.containsKey(newNote.getID())) {
+            previouseColourMap.put(newNote.getID(), newNote.getNodeColour());
+        }
 
         // Define dateTime label
         final Label dateTimeLabel = new Label((new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(newNote.getDateTime())))));
@@ -849,15 +876,49 @@ public class NotesViewPane extends BorderPane {
         deleteButton.setMinWidth(92);
         deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
+        final Button cancelButton = new Button("Cancel");
+        cancelButton.setMinWidth(92);
+        cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+
+        final VBox editScreenButtons = new VBox(DEFAULT_SPACING, saveTextButton, cancelButton);
+        editScreenButtons.setAlignment(Pos.CENTER);
+
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
-        final VBox noteButtons = new VBox(DEFAULT_SPACING, newNote.getEditMode() ? saveTextButton : editTextButton, deleteButton);
+        final VBox noteButtons;
+
+        if (newNote.getNodeColour().isBlank() || newNote.getNodeColour().isEmpty()) {
+            newNote.setNodeColour(USER_COLOR);
+        }
+
+        final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
+        colourPicker.setMinWidth(92);
+
+        if (newNote.getEditMode()) {
+            noteButtons = new VBox(EDIT_SPACING, colourPicker, editScreenButtons);
+            newNote.setEditMode(true);
+        } else {
+            newNote.setEditMode(false);
+            noteButtons = new VBox(DEFAULT_SPACING, editTextButton, deleteButton);
+        }
+
         noteButtons.setAlignment(Pos.CENTER);
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
-        noteBody.setStyle("-fx-padding: 5px; -fx-background-color: "
-                + noteColor + "; -fx-background-radius: 10 10 10 10;");
-        notesListVBox.getChildren().add(noteBody);
+        if (newNote.isUserCreated()) {
+            noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
+            notesListVBox.getChildren().add(noteBody);
+        } else {
+            noteBody.setStyle(PADDING_BG_COLOUR_STYLE + AUTO_COLOR + BG_RADIUS_STYLE);
+            notesListVBox.getChildren().add(noteBody);
+        }
+
+        // Change colour of note to whatever user sleects
+        colourPicker.setOnAction(event -> {
+            final Color col = colourPicker.getValue();
+            noteBody.setStyle(PADDING_BG_COLOUR_STYLE + ConstellationColor.fromFXColor(col).getHtmlColor() + BG_RADIUS_STYLE);
+            newNote.setNodeColour(ConstellationColor.fromFXColor(col).getHtmlColor());
+        });
 
         if (newNote.isUserCreated()) {
             // Add a right click context menu to user notes.
@@ -960,6 +1021,9 @@ public class NotesViewPane extends BorderPane {
 
             deleteAlert.showAndWait();
             if (deleteAlert.getResult() == ButtonType.OK) {
+                if (previouseColourMap.containsKey(newNote.getID())) {
+                    previouseColourMap.remove(newNote.getID());
+                }
                 synchronized (LOCK) {
                     if (notesViewEntries.removeIf(note -> note.getDateTime().equals(newNote.getDateTime()))) {
                         notesDateTimeCache.remove(newNote.getDateTime());
@@ -978,13 +1042,33 @@ public class NotesViewPane extends BorderPane {
 
         // Edit button activates editable text boxs for title and label
         editTextButton.setOnAction(event -> {
+
             noteButtons.getChildren().removeAll(editTextButton, deleteButton);
-            noteButtons.getChildren().addAll(saveTextButton, deleteButton);
+            noteButtons.getChildren().addAll(colourPicker, editScreenButtons);
+            noteButtons.setSpacing(EDIT_SPACING);
 
             noteInformation.getChildren().removeAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
             noteInformation.getChildren().addAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
             newNote.setEditMode(true);
+
+
         });
+
+        cancelButton.setOnAction(cancelEvent -> {
+            final String currentColour = previouseColourMap.get(newNote.getID());
+            colourPicker.setValue(ConstellationColor.fromHtmlColor(currentColour).getJavaFXColor());
+            noteButtons.getChildren().removeAll(colourPicker, editScreenButtons);
+            noteButtons.getChildren().addAll(editTextButton, deleteButton);
+            noteButtons.setSpacing(DEFAULT_SPACING);
+            noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
+            noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+            newNote.setEditMode(false);
+            noteBody.setStyle(PADDING_BG_COLOUR_STYLE
+                    + currentColour + BG_RADIUS_STYLE);
+            newNote.setNodeColour(currentColour);
+        });
+
+
 
         // Save button deactivates editable text boxs for title and label
         saveTextButton.setOnAction(event -> {
@@ -997,9 +1081,11 @@ public class NotesViewPane extends BorderPane {
 
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());
+                previouseColourMap.replace(newNote.getID(), newNote.getNodeColour());
 
-                noteButtons.getChildren().removeAll(saveTextButton, deleteButton);
+                noteButtons.getChildren().removeAll(colourPicker, editScreenButtons);
                 noteButtons.getChildren().addAll(editTextButton, deleteButton);
+                noteButtons.setSpacing(DEFAULT_SPACING);
 
                 noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
                 noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
