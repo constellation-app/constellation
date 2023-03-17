@@ -157,6 +157,7 @@ public class MapViewPane extends BorderPane {
 
         toolBar = new ToolBar();
 
+
         latLabel.setVisible(false);
         lonLabel.setVisible(false);
         latField.setVisible(false);
@@ -346,7 +347,7 @@ public class MapViewPane extends BorderPane {
 
         toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton, latLabel, latField, lonLabel, lonField);
         setTop(toolBar);
-
+        toolBar.prefWidthProperty().bind(this.widthProperty().subtract(10000));
     }
 
     /**
