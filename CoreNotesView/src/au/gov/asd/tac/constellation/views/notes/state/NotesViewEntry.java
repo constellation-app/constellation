@@ -138,6 +138,7 @@ public class NotesViewEntry implements PluginReportListener {
 
     public boolean getShowing() {
         return isShowing;
+    }
 
     public int getID() {
         return id;
