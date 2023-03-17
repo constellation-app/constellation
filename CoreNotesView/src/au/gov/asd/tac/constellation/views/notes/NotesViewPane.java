@@ -123,8 +123,8 @@ public class NotesViewPane extends BorderPane {
     private static final String USER_NOTES_FILTER = "User Notes";
     private static final String SELECTED_FILTER = "Selected";
 
-    private final String paddingAndBGColourStyle = "-fx-padding: 5px; -fx-background-color: ";
-    private final String bgRadiusStyle = "; -fx-background-radius: 10 10 10 10;";
+    private static final String PADDING_BG_COLOUR_STYLE = "-fx-padding: 5px; -fx-background-color: ";
+    private static final String BG_RADIUS_STYLE = "; -fx-background-radius: 10 10 10 10;";
 
     private static final Object LOCK = new Object();
 
@@ -713,17 +713,17 @@ public class NotesViewPane extends BorderPane {
 
         final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
         if (newNote.isUserCreated()) {
-            noteBody.setStyle(paddingAndBGColourStyle + newNote.getNodeColour() + bgRadiusStyle);
+            noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
             notesListVBox.getChildren().add(noteBody);
         } else {
-            noteBody.setStyle(paddingAndBGColourStyle + AUTO_COLOR + bgRadiusStyle);
+            noteBody.setStyle(PADDING_BG_COLOUR_STYLE + AUTO_COLOR + BG_RADIUS_STYLE);
             notesListVBox.getChildren().add(noteBody);
         }
 
         // Change colour of note to whatever user sleects
         colourPicker.setOnAction(event -> {
             final Color col = colourPicker.getValue();
-            noteBody.setStyle(paddingAndBGColourStyle + ConstellationColor.fromFXColor(col).getHtmlColor() + bgRadiusStyle);
+            noteBody.setStyle(PADDING_BG_COLOUR_STYLE + ConstellationColor.fromFXColor(col).getHtmlColor() + BG_RADIUS_STYLE);
             newNote.setNodeColour(ConstellationColor.fromFXColor(col).getHtmlColor());
         });
 
@@ -870,8 +870,8 @@ public class NotesViewPane extends BorderPane {
             noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
             noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
             newNote.setEditMode(false);
-            noteBody.setStyle(paddingAndBGColourStyle
-                    + currentColour + bgRadiusStyle);
+            noteBody.setStyle(PADDING_BG_COLOUR_STYLE
+                    + currentColour + BG_RADIUS_STYLE);
             newNote.setNodeColour(currentColour);
         });
 
