@@ -506,7 +506,6 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(thessianMarkersGroup);
 
         mapGroupHolder.getChildren().add(zoomLocationGroup);
-        //overlayGroup.getChildren().addAll(TOOLS_OVERLAY.getOverlayPane());
         overlayGroup.getChildren().addAll(INFO_OVERLAY.getOverlayPane());
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
         mapGroupHolder.getChildren().add(viewPortRectangleGroup);
@@ -1473,12 +1472,7 @@ public class MapView extends ScrollPane {
 
         if (markersShowing.contains(marker.getType())) {
 
-            if (markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) {
-                marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
-                if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
-                    graphMarkerGroup.getChildren().add(marker.getMarker());
-                }
-            } else if (!markersShowing.contains(AbstractMarker.MarkerType.SELECTED)) {
+            if ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED)) {
                 marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
                 if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                     graphMarkerGroup.getChildren().add(marker.getMarker());

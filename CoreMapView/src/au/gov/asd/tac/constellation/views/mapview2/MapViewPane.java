@@ -77,7 +77,6 @@ public class MapViewPane extends BorderPane {
 
     private final MapViewTopComponent parent;
     private final ToolBar toolBar;
-    private final ToolBar bottomBar;
 
     // Stackpane to hold the map
     private final StackPane parentStackPane;
@@ -103,7 +102,6 @@ public class MapViewPane extends BorderPane {
     private static final String LOCATION_PATHS = "Location Paths";
     private static final String THIESSEAN_POLYGONS = "Thiessean Polygons";
     private static final String THIESSEAN_POLYGONS_2 = "Thiessean Polygons 2";
-    private static final String POINT_MARKER_ERROR = "Point Marker Error Region (Experimental)";
 
     public static final String INFO_OVERLAY = "Info Overlay";
     public static final String TOOLS_OVERLAY = "Tools Overlay";
@@ -158,9 +156,6 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setMouseTransparent(true);
 
         toolBar = new ToolBar();
-        bottomBar = new ToolBar();
-
-        setBottom(bottomBar);
 
         latLabel.setVisible(false);
         lonLabel.setVisible(false);
@@ -168,8 +163,6 @@ public class MapViewPane extends BorderPane {
         lonField.setVisible(false);
         latField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         lonField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-
-        //bottomBar.getItems().addAll(latLabel, lonLabel);
 
         defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
         providers = new ArrayList<>(Lookup.getDefault().lookupAll(MapProvider.class));
@@ -201,7 +194,7 @@ public class MapViewPane extends BorderPane {
         });
 
         // Add overlays to toolbar
-        overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, OVERVIEW_OVERLAY, TOOLS_OVERLAY));
+        overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY));
         overlaysDropDown.setTitle("Overlays");
         overlaysDropDown.setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
         overlaysDropDown.setMinWidth(95);
@@ -211,10 +204,7 @@ public class MapViewPane extends BorderPane {
         overlaysDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
             @Override
             public void onChanged(final ListChangeListener.Change<? extends String> c) {
-                overlaysDropDown.getItems().forEach(item -> {
-                    toggleOverlay(item);
-
-                });
+                overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
                 if (overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
                     latLabel.setVisible(true);
                     lonLabel.setVisible(true);
