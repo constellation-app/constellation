@@ -38,8 +38,8 @@ public class DateTimePicker {
     private final Spinner<Integer> secPicker = new Spinner<>(0, 59, 0);
 
     private final GridPane mainGridPane = new GridPane();
-    private final String fromText = "From:";
-    private final String toText = "To:";
+    private static final String FROM_TEXT = "From:";
+    private static final String TO_TEXT = "To:";
 
     boolean active = false;
     boolean from = false;
@@ -56,9 +56,9 @@ public class DateTimePicker {
         Label datePickerLabel = new Label();
 
         if (from) {
-            datePickerLabel.setText(fromText);
+            datePickerLabel.setText(FROM_TEXT);
         } else {
-            datePickerLabel.setText(toText);
+            datePickerLabel.setText(TO_TEXT);
         }
 
 

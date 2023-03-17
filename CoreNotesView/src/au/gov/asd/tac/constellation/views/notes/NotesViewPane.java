@@ -635,7 +635,7 @@ public class NotesViewPane extends BorderPane {
                     int min = Integer.parseInt(timeComponents[1]);
                     int sec = Integer.parseInt(timeComponents[2]);
 
-                    if (dateTimeComponents[1].equals("pm") && hour < 12) {
+                    if ("pm".equals(dateTimeComponents[1]) && hour < 12) {
                         hour = 12 + hour;
                     }
 

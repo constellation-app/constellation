@@ -30,7 +30,7 @@ public class NotesViewEntry implements PluginReportListener {
     private final String dateTime;
     private String noteTitle;
     private String noteContent;
-    private final Boolean userCreated;
+    private final boolean userCreated;
     private Boolean graphAttribute;
     private List<Integer> nodesSelected;
     private List<Integer> transactionsSelected;
@@ -63,7 +63,7 @@ public class NotesViewEntry implements PluginReportListener {
         return noteContent;
     }
 
-    public Boolean isUserCreated() {
+    public boolean isUserCreated() {
         return userCreated;
     }
 
