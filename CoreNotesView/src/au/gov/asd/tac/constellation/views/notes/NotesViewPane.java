@@ -658,6 +658,8 @@ public class NotesViewPane extends BorderPane {
 
                     if ("pm".equals(dateTimeComponents[1]) && hour < 12) {
                         hour = 12 + hour;
+                    } else if ("am".equals(dateTimeComponents[1]) && hour > 11) {
+                        hour = 0;
                     }
 
                     // Split date into day, month and year
