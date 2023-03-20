@@ -33,10 +33,8 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -47,7 +45,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -55,31 +52,23 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
-
-import javafx.scene.control.ComboBox;
-
 import javafx.scene.control.ColorPicker;
-
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -148,11 +137,7 @@ public class NotesViewPane extends BorderPane {
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
 
-
-    final DateTimePicker fromDate = new DateTimePicker(true);
-    final DateTimePicker toDate = new DateTimePicker(false);
-
-    final Map<String, ZoneId> timeZoneMap = new HashMap<>();
+    private final DateTimeRangePicker dateTimeRangePicker = new DateTimeRangePicker();
 
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
@@ -223,97 +208,11 @@ public class NotesViewPane extends BorderPane {
         });
         autoFilterCheckComboBox.setStyle("visibility: hidden;");
 
-        // Time range selection accordion
-        Accordion timeRangeAccordian = new Accordion();
-
-        // Set up the date time selection pane with to range selection components
-        final Pane dateTimePane = new Pane();
-        final GridPane dateTimeGridpane = new GridPane();
-
-        dateTimeGridpane.add(fromDate.getPane(), 0, 0);
-        dateTimeGridpane.add(toDate.getPane(), 1, 0);
-        dateTimeGridpane.setHgap(15);
-        dateTimeGridpane.setVgap(10);
-
-        dateTimePane.getChildren().add(dateTimeGridpane);
-
-        TitledPane timeRangePane = new TitledPane("Select time range...", dateTimePane);
-        timeRangeAccordian.getPanes().add(timeRangePane);
-
-        // Get all available time zone ids
-        final ArrayList<String> timeZones = new ArrayList<>();
-        final ArrayList<String> plusFromGMT = new ArrayList<>();
-        final ArrayList<String> minusFromGMT = new ArrayList<>();
-        final DateTimeFormatter offSet = DateTimeFormatter.ofPattern("xxx");
-
-        // Sort date times in there respective arrays
-        for (String zone : ZoneId.getAvailableZoneIds()) {
-            final ZoneId zoneID = ZoneId.of(zone);
-            final String timeString = offSet.format(zoneID.getRules().getOffset(Instant.now())) + " " + zone;
-
-            if (timeString.startsWith("-")) {
-                minusFromGMT.add(timeString);
-            } else if (timeString.startsWith("+")) {
-                plusFromGMT.add(timeString);
-            }
-
-            // Populate a map containing the time zone string as key and the actual ID as value
-            timeZoneMap.put(timeString, zoneID);
-
-        }
-
-        // Sort time zone strings in ascending and descending order
-        Collections.sort(plusFromGMT);
-        Collections.sort(minusFromGMT, Collections.reverseOrder());
-
-        timeZones.addAll(minusFromGMT);
-        timeZones.addAll(plusFromGMT);
-
-        final ComboBox<String> timeZoneChoiceBox = new ComboBox(FXCollections.observableList(timeZones));
-
-        final String localTimeString = offSet.format(ZoneId.systemDefault().getRules().getOffset(Instant.now())) + " " + ZoneId.systemDefault().getId();
-
-        // Set time of the range selectors to the current time
-        fromDate.setCurrentDateTime(ZoneId.systemDefault());
-        toDate.setCurrentDateTime(ZoneId.systemDefault());
-        timeZoneChoiceBox.getSelectionModel().select(localTimeString);
-
-        // Event handler for changing time zones
-        timeZoneChoiceBox.setOnAction(event -> {
-            fromDate.convertCurrentDateTime(timeZoneMap.get(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
-            toDate.convertCurrentDateTime(timeZoneMap.get(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
-        });
-
-        dateTimeGridpane.add(timeZoneChoiceBox, 0, 1);
-
-        final Button utcButton = new Button("UTC");
-        final Button localButton = new Button("LOCAL");
-        final Button clearButton = new Button("CLEAR");
-        clearButton.setStyle("-fx-background-color: #7FFFD4; ");
-        clearButton.setTextFill(Color.BLACK);
-        final Button applyButton = new Button("APPLY");
-        applyButton.setStyle("-fx-background-color: #0080FF; ");
-
-        // Convert time to local time zone
-        localButton.setOnAction(event -> {
-            fromDate.convertCurrentDateTime(ZoneId.systemDefault());
-            toDate.convertCurrentDateTime(ZoneId.systemDefault());
-            timeZoneChoiceBox.getSelectionModel().select(localTimeString);
-        });
-
-        // Convert time to UTC
-        utcButton.setOnAction(event -> {
-            fromDate.convertCurrentDateTime(ZoneId.of("UTC"));
-            toDate.convertCurrentDateTime(ZoneId.of("UTC"));
-            timeZoneChoiceBox.getSelectionModel().select("+00:00 UTC");
-        });
-
         // Set whether or not a time filter should even be applied
-        clearButton.setOnAction(event -> {
-            fromDate.setActive(false);
-            toDate.setActive(false);
-            timeRangePane.setText("Select time range...");
-            timeRangePane.setTextFill(Color.WHITE);
+        dateTimeRangePicker.getClearButton().setOnAction(event -> {
+            dateTimeRangePicker.setActive(false);
+            dateTimeRangePicker.getTimeRangePane().setText("Select time range...");
+            dateTimeRangePicker.getTimeRangePane().setTextFill(Color.WHITE);
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 updateNotesUI();
@@ -321,23 +220,12 @@ public class NotesViewPane extends BorderPane {
             }
 
         });
-
-        // Event handler for when user hovers over active and apply button
-        clearButton.setOnMouseEntered(event -> clearButton.setStyle("-fx-background-color: #23FFB5; "));
-
-        clearButton.setOnMouseExited(event -> clearButton.setStyle("-fx-background-color: #7FFFD4;  "));
-
-        applyButton.setOnMouseEntered(event -> applyButton.setStyle("-fx-background-color: #078BC9; "));
-
-        applyButton.setOnMouseExited(event -> applyButton.setStyle("-fx-background-color: #0080FF; "));
-
 
         // Hide/show notes based on their entry time
-        applyButton.setOnAction(event -> {
-            fromDate.setActive(true);
-            toDate.setActive(true);
-            timeRangePane.setText("Filter Applied");
-            timeRangePane.setTextFill(Color.YELLOW);
+        dateTimeRangePicker.getApplyButton().setOnAction(event -> {
+            dateTimeRangePicker.setActive(true);
+            dateTimeRangePicker.getTimeRangePane().setText("Filter Applied");
+            dateTimeRangePicker.getTimeRangePane().setTextFill(Color.YELLOW);
 
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
@@ -346,16 +234,6 @@ public class NotesViewPane extends BorderPane {
             }
 
         });
-
-        final GridPane timeZoneButtons = new GridPane();
-        timeZoneButtons.add(utcButton, 0, 0);
-        timeZoneButtons.add(localButton, 1, 0);
-        timeZoneButtons.add(clearButton, 2, 0);
-        timeZoneButtons.add(applyButton, 3, 0);
-        timeZoneButtons.setHgap(10);
-
-        dateTimeGridpane.add(timeZoneButtons, 1, 1);
-
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
@@ -365,7 +243,7 @@ public class NotesViewPane extends BorderPane {
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
         // VBox to store control items used to filter notes.
-        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, autoFilterCheckComboBox, timeRangeAccordian, helpButton);
+        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, autoFilterCheckComboBox, dateTimeRangePicker.getTimeRangeAccordian(), helpButton);
         filterNotesHBox.setAlignment(Pos.TOP_LEFT);
         filterNotesHBox.setStyle("-fx-padding: 5px;");
 
@@ -641,7 +519,7 @@ public class NotesViewPane extends BorderPane {
         
         synchronized (LOCK) {
             notesViewEntries.forEach(entry -> {
-                if (fromDate.isActive() && toDate.isActive()) {
+                if (dateTimeRangePicker.isActive()) {
                     // Get date time of entry in proper format
                     String dateFormat = new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(entry.getDateTime())));
 
@@ -670,17 +548,8 @@ public class NotesViewPane extends BorderPane {
 
                     // Convert time of notes to user specified time zone
                     ZonedDateTime entryTime = ZonedDateTime.of(year, month, day, hour, min, sec, 0, ZoneId.of(ZoneId.systemDefault().getId()));
-                    entryTime = entryTime.withZoneSameInstant(fromDate.getZoneId());
 
-                    ZonedDateTime fromTime = fromDate.getCurrentDateTime();
-                    ZonedDateTime toTime = toDate.getCurrentDateTime();
-
-                    // Compare times and show notes if they fall within the range
-                    if (entryTime.isEqual(fromTime) || entryTime.isEqual(toTime) || (entryTime.isAfter(fromTime) && entryTime.isBefore(toTime))) {
-                        entry.setShowing(true);
-                    } else {
-                        entry.setShowing(false);
-                    }
+                    entry.setShowing(dateTimeRangePicker.checkIsWithinRange(entryTime));
 
                 } else {
                     entry.setShowing(true);
