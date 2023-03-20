@@ -121,7 +121,7 @@ public class DateTimePicker {
      * @param convertTo - id of zone to convert to
      */
     public void convertCurrentDateTime(final ZoneId convertTo) {
-        if (convertTo == null) {
+        if (convertTo == null || zone == convertTo) {
             return;
         }
 

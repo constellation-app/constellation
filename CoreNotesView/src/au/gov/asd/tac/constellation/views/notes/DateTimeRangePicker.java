@@ -33,6 +33,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 /**
+ * A pane with 2 DateTimePicker objects which represent a time range This class
+ * provides a way to define a time range and a function to check if a certain
+ * time falls within the range. A CLEAR and APPLY button can be accessed
+ * publicly and appropriate event handlers can be set to them to handle if a
+ * time falls within the range. Different timezones can be set
  *
  * @author altair1673
  */
@@ -147,14 +152,9 @@ public class DateTimeRangePicker {
 
         // Event handler for when user hovers over active and apply button
         clearButton.setOnMouseEntered(event -> clearButton.setStyle("-fx-background-color: #23FFB5; "));
-
         clearButton.setOnMouseExited(event -> clearButton.setStyle("-fx-background-color: #7FFFD4;  "));
-
         applyButton.setOnMouseEntered(event -> applyButton.setStyle("-fx-background-color: #078BC9; "));
-
         applyButton.setOnMouseExited(event -> applyButton.setStyle("-fx-background-color: #0080FF; "));
-
-
     }
 
     public Button getClearButton() {
@@ -165,24 +165,51 @@ public class DateTimeRangePicker {
         return applyButton;
     }
 
+    /**
+     * Whether or not the time range selector is active, can be used to
+     * determine a on/off state
+     *
+     * @return
+     */
     public boolean isActive() {
         return active;
     }
 
+    /**
+     * Set whether or not this is active
+     *
+     * @param active
+     */
     public void setActive(boolean active) {
         this.active = active;
     }
 
-
+    /**
+     * Get collapsible of this control
+     *
+     * @return
+     */
     public Accordion getTimeRangeAccordian() {
         return timeRangeAccordian;
     }
 
+    /**
+     * Get the actual pane that hold the DateTimePicker objects
+     *
+     * @return
+     */
     public TitledPane getTimeRangePane() {
         return timeRangePane;
     }
 
+    /**
+     * Check if a passed in time is within the time range
+     *
+     * @param entryTime - Time that is being checked
+     * @return whether entryTime is within range
+     */
     public boolean checkIsWithinRange(ZonedDateTime entryTime) {
+        // Convert entry time to time zone of DateTimePickers
         entryTime = entryTime.withZoneSameInstant(fromDate.getZoneId());
 
         ZonedDateTime fromTime = fromDate.getCurrentDateTime();
