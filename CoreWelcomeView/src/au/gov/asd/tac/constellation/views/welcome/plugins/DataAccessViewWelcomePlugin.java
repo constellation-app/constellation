@@ -43,7 +43,6 @@ public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
     private static final String OPEN = "resources/welcome_data_access.png";
     private final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
     private final Button openButton = new Button();
-    private final TopComponent stage = WindowManager.getDefault().findTopComponent(DataAccessViewTopComponent.class.getSimpleName());
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -61,8 +60,9 @@ public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
      */
     @Override
     public void run() {
-        SwingUtilities.invokeLater(() -> {     
-            if (getStage() != null) {
+        SwingUtilities.invokeLater(() -> {
+            final TopComponent stage = WindowManager.getDefault().findTopComponent(DataAccessViewTopComponent.class.getSimpleName());
+            if (stage != null) {
                 if (!stage.isOpened()) {
                     stage.open();
                 }
@@ -88,13 +88,5 @@ public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
         layoutVBox.setAlignment(Pos.CENTER);
         openButton.setGraphic(layoutVBox);
         return openButton;
-    }
-
-    /**
-     * Getter for the stage variable for unit testing
-     * @return stage
-     */
-    protected TopComponent getStage() {
-        return stage;
     }
 }

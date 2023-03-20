@@ -89,7 +89,7 @@ public class IconEditorFactoryNGTest {
         System.out.println("getIconEditorFileChooser");
 
         final String fileChooserTitle = "Add New Icon(s)";
-        final String fileChooserDescription = "Image Files (" + FileExtensionConstants.PNG + ")";
+        final String fileChooserDescription = "Image Files (*" + FileExtensionConstants.JPG + ";*" + FileExtensionConstants.GIF + ";*" + FileExtensionConstants.PNG + ")";
 
         final IconEditor instance = (IconEditor) new IconEditorFactory().createEditor(
                 mock(EditOperation.class),
