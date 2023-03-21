@@ -77,8 +77,8 @@ public class ConstellationLAFSettings {
         final Color selectedLowerDarkBlue = new Color(70, 150, 255);
         final Color unselectedUpperGray = new Color(225, 225, 225);
         final Color unselectedLowerGreyBlue = new Color(175, 185, 195);
-        final Color attentionUpperOrange = new Color(255, 210, 210);
-        final Color attentionLowerOrange = new Color(225, 145, 145);
+        final Color attentionUpperOrange = new Color(255, 220, 200);
+        final Color attentionLowerOrange = new Color(220, 140, 120);
 
         try {
             // To apply new tab colors to a Windows LAF
@@ -227,7 +227,7 @@ public class ConstellationLAFSettings {
             inactiveUnderlineBlue = new Color(20, 100, 175);
             selectedBackgroundBlue = new Color(30, 60, 95);
             hoverBackgroundBlue = new Color(45, 75, 115);
-            attentionBackgroundOrange = new Color(175, 75, 100);
+            attentionBackgroundOrange = new Color(138, 42, 30);
         } else {
             // Fixed set of Blue shade colors
             // appropriate for FlatLafLight LAF
@@ -235,7 +235,7 @@ public class ConstellationLAFSettings {
             inactiveUnderlineBlue = new Color(95, 130, 185);
             selectedBackgroundBlue = new Color(200, 220, 255);
             hoverBackgroundBlue = new Color(190, 210, 255);
-            attentionBackgroundOrange = new Color(255, 175, 200);
+            attentionBackgroundOrange = new Color(250, 180, 160);
         }
 
         try {

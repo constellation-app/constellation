@@ -133,10 +133,10 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                                 if (ErrorReportDialogManager.getInstance().getLatestPopupDismissDate() != null && ErrorReportDialogManager.getInstance().getLatestPopupDismissDate().after(ErrorReportSessionData.lastUpdate)) {
                                     flashRequired = false;
                                 }
-                                flashErrorIcon(flashRequired);
                                 ErrorReportDialogManager.getInstance().updatePopupMode(getPopupControlValue());
                                 updateSessionErrorsBox(-1);
                                 ErrorReportSessionData.screenUpdateRequested = false;
+                                flashErrorIcon(flashRequired);
                             }
                         }
                     }
