@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -44,7 +45,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -105,7 +105,6 @@ public class NotesViewPane extends BorderPane {
     private boolean isAutoSelectedFiltersUpdating = false;
 
     private final HBox filterNotesHBox;
-    private final VBox notesViewPaneVBox;
     private final VBox addNoteVBox;
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
@@ -138,8 +137,11 @@ public class NotesViewPane extends BorderPane {
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
     private boolean applySelected;
 
+    private final DateTimeRangePicker dateTimeRangePicker = new DateTimeRangePicker();
+
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
+
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -206,6 +208,28 @@ public class NotesViewPane extends BorderPane {
         });
         autoFilterCheckComboBox.setStyle("visibility: hidden;");
 
+        // Set whether or not a time filter should even be applied
+        dateTimeRangePicker.getClearButton().setOnAction(event -> {
+            dateTimeRangePicker.setActive(false);
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (activeGraph != null) {
+                updateNotesUI();
+                controller.writeState(activeGraph);
+            }
+
+        });
+
+        // Hide/show notes based on their entry time
+        dateTimeRangePicker.getApplyButton().setOnAction(event -> {
+            dateTimeRangePicker.setActive(true);
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (activeGraph != null) {
+                updateNotesUI();
+                controller.writeState(activeGraph);
+            }
+
+        });
+
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Notes View"));
@@ -214,8 +238,8 @@ public class NotesViewPane extends BorderPane {
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
         // VBox to store control items used to filter notes.
-        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, autoFilterCheckComboBox, helpButton);
-        filterNotesHBox.setAlignment(Pos.CENTER_LEFT);
+        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, autoFilterCheckComboBox, dateTimeRangePicker.getTimeRangeAccordian(), helpButton);
+        filterNotesHBox.setAlignment(Pos.TOP_LEFT);
         filterNotesHBox.setStyle("-fx-padding: 5px;");
 
         // TextField to enter new note title.
@@ -338,12 +362,10 @@ public class NotesViewPane extends BorderPane {
         notesListScrollPane.setContent(notesListVBox);
         notesListScrollPane.setStyle(fontStyle + "-fx-padding: 5px; -fx-background-color: transparent;");
         notesListScrollPane.setFitToWidth(true);
-        VBox.setVgrow(notesListScrollPane, Priority.ALWAYS);
 
-        // Main Notes View Pane VBox.
-        notesViewPaneVBox = new VBox(DEFAULT_SPACING, filterNotesHBox, notesListScrollPane, addNoteVBox);
-        notesViewPaneVBox.setAlignment(Pos.BOTTOM_CENTER);
-        setCenter(notesViewPaneVBox);
+        setTop(filterNotesHBox);
+        setCenter(notesListScrollPane);
+        setBottom(addNoteVBox);
     }
 
     /**
@@ -492,16 +514,52 @@ public class NotesViewPane extends BorderPane {
         
         synchronized (LOCK) {
             notesViewEntries.forEach(entry -> {
+                if (dateTimeRangePicker.isActive()) {
+                    // Get date time of entry in proper format
+                    final String dateFormat = new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(entry.getDateTime())));
+
+                    // Extract date components
+                    final String[] dateTimeComponents = dateFormat.split(" ");
+                    final String time = dateTimeComponents[0];
+                    final String date = dateTimeComponents[3];
+
+                    // Split time into hour, minute and day
+                    final String[] timeComponents = time.split(":");
+                    int hour = Integer.parseInt(timeComponents[0]);
+                    final int min = Integer.parseInt(timeComponents[1]);
+                    final int sec = Integer.parseInt(timeComponents[2]);
+
+                    if ("pm".equals(dateTimeComponents[1]) && hour < 12) {
+                        hour = 12 + hour;
+                    } else if ("am".equals(dateTimeComponents[1]) && hour > 11) {
+                        hour = 0;
+                    }
+
+                    // Split date into day, month and year
+                    final String[] dateComponents = date.split("/");
+                    final int day = Integer.parseInt(dateComponents[0]);
+                    final int month = Integer.parseInt(dateComponents[1]);
+                    final int year = Integer.parseInt(dateComponents[2]);
+
+                    // Convert time of notes to user specified time zone
+                    final ZonedDateTime entryTime = ZonedDateTime.of(year, month, day, hour, min, sec, 0, ZoneId.of(ZoneId.systemDefault().getId()));
+
+                    entry.setShowing(dateTimeRangePicker.checkIsWithinRange(entryTime));
+
+                } else {
+                    entry.setShowing(true);
+                }
+
                 // Add note to render list if its respective filter is selected.
-                if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated())) {
+                if ((selectedFilters.contains(USER_NOTES_FILTER) && entry.isUserCreated() && entry.getShowing())) {
                     notesToRender.add(entry);
 
-                } else if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated()) {
+                } else if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated() && entry.getShowing()) {
                     if (updateAutoNotesDisplayed(entry)) {
                         notesToRender.add(entry);
                     }
 
-                } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated()) {
+                } else if (selectedFilters.contains(SELECTED_FILTER) && entry.isUserCreated() && entry.getShowing()) {
                     // If no nodes or transactions are selected, show notes applied to the whole graph.
                     if (entry.isGraphAttribute()) {
                         notesToRender.add(entry);
@@ -520,6 +578,7 @@ public class NotesViewPane extends BorderPane {
                         }
                     }
                 }
+
             });
         }
         

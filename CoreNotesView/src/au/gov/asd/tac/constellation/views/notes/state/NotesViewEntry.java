@@ -32,6 +32,7 @@ public class NotesViewEntry implements PluginReportListener {
     private final String dateTime;
     private String noteTitle;
     private String noteContent;
+
     private String nodeColour = "#942483";
     private final boolean userCreated;
     private Boolean graphAttribute;
@@ -39,6 +40,7 @@ public class NotesViewEntry implements PluginReportListener {
     private List<Integer> transactionsSelected;
     private List<String> tags = new ArrayList<>();
     private boolean editMode;
+    private boolean isShowing = true;
 
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
         this.dateTime = dateTime;
@@ -69,7 +71,7 @@ public class NotesViewEntry implements PluginReportListener {
         return noteContent;
     }
 
-    public Boolean isUserCreated() {
+    public boolean isUserCreated() {
         return userCreated;
     }
 
@@ -129,12 +131,22 @@ public class NotesViewEntry implements PluginReportListener {
         this.editMode = editMode;
     }
 
+
+    public void setShowing(final boolean showing) {
+        isShowing = showing;
+    }
+
+    public boolean getShowing() {
+        return isShowing;
+    }
+
     public int getID() {
         return id;
     }
 
     public void setID(final int id) {
         this.id = id;
+
     }
 
     @Override
