@@ -167,8 +167,10 @@ public class DateTimeRangePicker {
         applyButton.setOnMouseEntered(event -> applyButton.setStyle("-fx-background-color: #078BC9; "));
         applyButton.setOnMouseExited(event -> applyButton.setStyle("-fx-background-color: #0080FF; "));
 
+        // Set up title bar
         titleText = new Label(TITLE);
         titleText.setTextFill(Color.WHITE);
+        titleText.setStyle("-fx-text-fill:WHITE;");
         titleText.setMinWidth(115);
         final GridPane topBarGridPane = new GridPane();
         topBarGridPane.add(titleText, 0, 0);
@@ -210,11 +212,11 @@ public class DateTimeRangePicker {
     public void setActive(boolean active) {
         if (active) {
             titleText.setText("Filter applied");
-            titleText.setTextFill(Color.YELLOW);
+            titleText.setStyle("-fx-text-fill:YELLOW;");
             clearButton.setVisible(true);
         } else {
             titleText.setText(TITLE);
-            titleText.setTextFill(Color.WHITE);
+            titleText.setStyle("-fx-text-fill:WHITE;");
             clearButton.setVisible(false);
         }
 
