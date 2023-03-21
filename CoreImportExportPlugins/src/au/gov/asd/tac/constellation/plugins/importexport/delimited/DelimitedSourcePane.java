@@ -281,13 +281,17 @@ public class DelimitedSourcePane extends SourcePane {
      */
     @Override
     public void update(final ImportController importController) {
+        LOGGER.log(Level.SEVERE, "In DelimedSourcePane.java file's update function");
         graphComboBox.getItems().stream()
                 .filter(importDestination -> importController.getDestination().toString().equals(importDestination.toString()))
                 .findAny()
                 .ifPresent(graphComboBox.getSelectionModel()::select);
+        LOGGER.log(Level.SEVERE, "Type in importController: " + importController.getDestination().toString());
+        LOGGER.log(Level.SEVERE, "Graph type: " + graphComboBox.getSelectionModel().getSelectedItem().toString());
 
         importFileParserComboBox.getSelectionModel().select(((DelimitedImportController) importController).getImportFileParser());
         schemaCheckBox.setSelected(importController.isSchemaInitialised());
         filesIncludeHeadersCheckBox.setSelected(((DelimitedImportController) importController).isFilesIncludeHeadersEnabled());
+        importController.setDestination(graphComboBox.getSelectionModel().getSelectedItem());
     }
 }

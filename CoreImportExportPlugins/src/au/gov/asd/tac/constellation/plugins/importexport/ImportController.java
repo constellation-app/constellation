@@ -35,6 +35,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
@@ -50,6 +52,8 @@ import org.openide.util.NbPreferences;
  * @param <D>
  */
 public abstract class ImportController<D> {
+
+    private static final Logger LOGGER = Logger.getLogger(ImportController.class.getName());
 
     /**
      * Pseudo-attribute to indicate directed transactions.
@@ -154,6 +158,9 @@ public abstract class ImportController<D> {
     public void setDestination(final ImportDestination<D> destination) {
         if (destination != null) {
             currentDestination = destination;
+            LOGGER.log(Level.SEVERE, "Destination is NOT null, it is: " + destination.toString());
+        } else {
+            LOGGER.log(Level.SEVERE, "Destination is null");
         }
         if (currentDestination == null) {
             return;
