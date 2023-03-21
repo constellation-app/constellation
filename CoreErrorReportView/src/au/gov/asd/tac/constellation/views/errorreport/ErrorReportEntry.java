@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2010-2023 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
@@ -9,12 +19,13 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
- * This is a data class to store the exception stack-trace 
- * and maintain a count of occurrences
+ * This is a data class to store the exception stack-trace and maintain a count
+ * of occurrences
+ *
  * @author OrionsGuardian
  */
 public class ErrorReportEntry {
-    
+
     private String errorData = null;
     private String heading = null;
     private int occurrences = 0;
@@ -23,69 +34,89 @@ public class ErrorReportEntry {
     private double entryId = -1;
     private Date lastPopupDate = null;
     private boolean preventRepeatedPopups = false;
-    
-    public ErrorReportEntry(String errorHeading, String errorMessage, double id){
+    private String summaryHeading = null;
+
+    public ErrorReportEntry(final String errorHeading, final String summary, final String errorMessage, final double id) {
         heading = errorHeading;
+        summaryHeading = summary;
         errorData = errorMessage;
         entryId = id;
         lastDate = new Date();
         occurrences = 1;
     }
-    
-    public ErrorReportEntry copy(){
-        ErrorReportEntry dataCopy = new ErrorReportEntry(heading, errorData, entryId);
+
+    public ErrorReportEntry copy() {
+        ErrorReportEntry dataCopy = new ErrorReportEntry(heading, summaryHeading, errorData, entryId);
         dataCopy.expanded = expanded;
         dataCopy.lastDate = new Date(lastDate.getTime());
         dataCopy.lastPopupDate = (lastPopupDate == null ? null : new Date(lastPopupDate.getTime()));
         dataCopy.occurrences = occurrences;
         return dataCopy;
     }
-    
-    public String getHeading(){
-        if (heading == null) return null;
-        int limit = Math.min(120, heading.length());
-        return heading.substring(0, limit);
+
+    public String getTrimmedHeading(final int length) {
+        if (heading == null) {
+            return "-NULL-";
+        }
+        if (heading.length() < length) {
+            return heading;
+        }
+        if (length <= 4) {
+            return heading.substring(0, 4);
+        }
+        return heading.substring(0, length - 4) + " ...";
     }
-    
-    public void setHeading(String errorHeading){
+
+    public String getHeading() {
+        if (heading == null) {
+            return "-NULL-";
+        }
+        return heading;
+    }
+
+    public void setHeading(final String errorHeading) {
         heading = errorHeading;
     }
-    
-    public void incrementOccurrences(){
+
+    public String getSummaryHeading() {
+        return summaryHeading;
+    }
+
+    public void incrementOccurrences() {
         occurrences++;
         lastDate = new Date();
     }
-    
-    public String getErrorData(){
+
+    public String getErrorData() {
         return errorData;
     }
-    
-    public int getOccurrences(){
+
+    public int getOccurrences() {
         return occurrences;
-    }    
-    
-    public Date getLastDate(){
+    }
+
+    public Date getLastDate() {
         return lastDate;
     }
-    
-    public String getTimeText(){
-            SimpleDateFormat sdf = new SimpleDateFormat(" HH:mm:ss ");
-            return sdf.format(lastDate);
+
+    public String getTimeText() {
+        final SimpleDateFormat sdf = new SimpleDateFormat(" HH:mm:ss ");
+        return sdf.format(lastDate);
     }
-    
-    public boolean getExpanded(){
+
+    public boolean getExpanded() {
         return expanded;
     }
-    
-    public double getEntryId(){
+
+    public double getEntryId() {
         return entryId;
     }
-    
-    public void setEntryId(double id){
+
+    public void setEntryId(final double id) {
         entryId = id;
     }
-    
-    public void setExpanded(boolean expandedState){
+
+    public void setExpanded(final boolean expandedState) {
         expanded = expandedState;
     }
 
@@ -93,7 +124,7 @@ public class ErrorReportEntry {
         return lastPopupDate;
     }
 
-    public void setLastPopupDate(Date popupDate) {
+    public void setLastPopupDate(final Date popupDate) {
         lastPopupDate = popupDate;
     }
 
@@ -101,45 +132,14 @@ public class ErrorReportEntry {
         return preventRepeatedPopups;
     }
 
-    public void setBlockRepeatedPopups(boolean blockRepeatedPopups) {
+    public void setBlockRepeatedPopups(final boolean blockRepeatedPopups) {
         preventRepeatedPopups = blockRepeatedPopups;
-    }    
+    }
 
-//    public boolean showDialog(){
-//        LOGGER.info("\n\n ********* calling showDialog()");
-//        if (dialogShown.compareAndSet(false, true)) {
-//            if (dismissed.compareAndSet(true, false)){                
-//                Platform.runLater(() -> {
-//                    LOGGER.info("\n\n ********* call to create error report dialog");                                        
-//                    lastPopupDate = new Date();
-//                    ErrorReportDialog ced = new ErrorReportDialog(this);
-//                    LOGGER.info("\n\n ********* about to show error report dialog");
-//                    ced.showDialog("Unexpected Exception Occurred ...");
-//                    LOGGER.info("\n\n ********* error report dialog is shown");
-//                    try {
-//                        LOGGER.info("\n\n ********* call wait on error report dialog");
-//                        ced.wait();
-//                        LOGGER.info("\n\n ********* ended wait call on error report dialog");
-//                    } catch (InterruptedException ex) {
-//                        Exceptions.printStackTrace(ex);
-//                    }
-//                    LOGGER.info("\n\n ********* setting dismissed to true");
-//                    dismissed.set(true);
-//                    LOGGER.info("\n\n ********* setting LatestDismissDate");
-//                    ErrorReportDialogManager.getInstance().setLatestDismissDate(new Date());
-//                });
-//                LOGGER.info("\n\n ********* returning true");
-//                return true;
-//            }
-//        }
-//        LOGGER.info("\n\n ********* returning false");
-//        return false;
-//    }
-    
     @Override
-    public String toString(){
+    public String toString() {
         return "[ErrorReportEntry:[id=" + entryId + "]"
-                + ", [header=" + getHeading() + "]"
+                + ", [header=" + heading + "]"
                 + ", [occurrences=" + occurrences + "]"
                 + ", [lastDate=" + lastDate + "]"
                 + ", [lastPopupDate=" + lastPopupDate + "]"
