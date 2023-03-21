@@ -211,8 +211,6 @@ public class NotesViewPane extends BorderPane {
         // Set whether or not a time filter should even be applied
         dateTimeRangePicker.getClearButton().setOnAction(event -> {
             dateTimeRangePicker.setActive(false);
-            dateTimeRangePicker.getTimeRangePane().setText("Select time range...");
-            dateTimeRangePicker.getTimeRangePane().setTextFill(Color.WHITE);
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 updateNotesUI();
@@ -224,9 +222,6 @@ public class NotesViewPane extends BorderPane {
         // Hide/show notes based on their entry time
         dateTimeRangePicker.getApplyButton().setOnAction(event -> {
             dateTimeRangePicker.setActive(true);
-            dateTimeRangePicker.getTimeRangePane().setText("Filter Applied");
-            dateTimeRangePicker.getTimeRangePane().setTextFill(Color.YELLOW);
-
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 updateNotesUI();
@@ -521,18 +516,18 @@ public class NotesViewPane extends BorderPane {
             notesViewEntries.forEach(entry -> {
                 if (dateTimeRangePicker.isActive()) {
                     // Get date time of entry in proper format
-                    String dateFormat = new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(entry.getDateTime())));
+                    final String dateFormat = new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(entry.getDateTime())));
 
                     // Extract date components
-                    String[] dateTimeComponents = dateFormat.split(" ");
-                    String time = dateTimeComponents[0];
-                    String date = dateTimeComponents[3];
+                    final String[] dateTimeComponents = dateFormat.split(" ");
+                    final String time = dateTimeComponents[0];
+                    final String date = dateTimeComponents[3];
 
                     // Split time into hour, minute and day
-                    String[] timeComponents = time.split(":");
+                    final String[] timeComponents = time.split(":");
                     int hour = Integer.parseInt(timeComponents[0]);
-                    int min = Integer.parseInt(timeComponents[1]);
-                    int sec = Integer.parseInt(timeComponents[2]);
+                    final int min = Integer.parseInt(timeComponents[1]);
+                    final int sec = Integer.parseInt(timeComponents[2]);
 
                     if ("pm".equals(dateTimeComponents[1]) && hour < 12) {
                         hour = 12 + hour;
@@ -541,13 +536,13 @@ public class NotesViewPane extends BorderPane {
                     }
 
                     // Split date into day, month and year
-                    String[] dateComponents = date.split("/");
-                    int day = Integer.parseInt(dateComponents[0]);
-                    int month = Integer.parseInt(dateComponents[1]);
-                    int year = Integer.parseInt(dateComponents[2]);
+                    final String[] dateComponents = date.split("/");
+                    final int day = Integer.parseInt(dateComponents[0]);
+                    final int month = Integer.parseInt(dateComponents[1]);
+                    final int year = Integer.parseInt(dateComponents[2]);
 
                     // Convert time of notes to user specified time zone
-                    ZonedDateTime entryTime = ZonedDateTime.of(year, month, day, hour, min, sec, 0, ZoneId.of(ZoneId.systemDefault().getId()));
+                    final ZonedDateTime entryTime = ZonedDateTime.of(year, month, day, hour, min, sec, 0, ZoneId.of(ZoneId.systemDefault().getId()));
 
                     entry.setShowing(dateTimeRangePicker.checkIsWithinRange(entryTime));
 

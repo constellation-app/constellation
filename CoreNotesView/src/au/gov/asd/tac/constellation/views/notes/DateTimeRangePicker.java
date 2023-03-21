@@ -24,13 +24,22 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.collections.FXCollections;
+import javafx.geometry.Insets;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 
 /**
  * A pane with 2 DateTimePicker objects which represent a time range This class
@@ -46,6 +55,9 @@ public class DateTimeRangePicker {
     // Time range selection accordion
     private final Accordion timeRangeAccordian = new Accordion();
     private final TitledPane timeRangePane;
+    final Label titleText;
+
+    private static final String TITLE = "Select a time range...";
 
     private final DateTimePicker fromDate = new DateTimePicker(true);
     private final DateTimePicker toDate = new DateTimePicker(false);
@@ -71,7 +83,7 @@ public class DateTimeRangePicker {
 
         dateTimePane.getChildren().add(dateTimeGridpane);
 
-        timeRangePane = new TitledPane("Select time range...", dateTimePane);
+        timeRangePane = new TitledPane("", dateTimePane);
         timeRangeAccordian.getPanes().add(timeRangePane);
 
         // Get all available time zone ids
@@ -126,9 +138,8 @@ public class DateTimeRangePicker {
         final GridPane timeZoneButtons = new GridPane();
         timeZoneButtons.add(utcButton, 0, 0);
         timeZoneButtons.add(localButton, 1, 0);
-        timeZoneButtons.add(clearButton, 2, 0);
-        timeZoneButtons.add(applyButton, 3, 0);
-        timeZoneButtons.setHgap(10);
+        timeZoneButtons.add(applyButton, 2, 0);
+        timeZoneButtons.setHgap(20);
 
         dateTimeGridpane.add(timeZoneButtons, 1, 1);
 
@@ -155,6 +166,21 @@ public class DateTimeRangePicker {
         clearButton.setOnMouseExited(event -> clearButton.setStyle("-fx-background-color: #7FFFD4;  "));
         applyButton.setOnMouseEntered(event -> applyButton.setStyle("-fx-background-color: #078BC9; "));
         applyButton.setOnMouseExited(event -> applyButton.setStyle("-fx-background-color: #0080FF; "));
+
+        titleText = new Label(TITLE);
+        titleText.setTextFill(Color.WHITE);
+        titleText.setMinWidth(115);
+        final GridPane topBarGridPane = new GridPane();
+        topBarGridPane.add(titleText, 0, 0);
+        topBarGridPane.add(clearButton, 1, 0);
+        clearButton.setMinHeight(17);
+        clearButton.setMaxHeight(17);
+        clearButton.setTextAlignment(TextAlignment.JUSTIFY);
+        clearButton.setPadding(new Insets(0, 8, 0, 8));
+        clearButton.setVisible(false);
+        topBarGridPane.setHgap(290);
+        timeRangePane.setGraphic(topBarGridPane);
+
     }
 
     public Button getClearButton() {
@@ -176,11 +202,22 @@ public class DateTimeRangePicker {
     }
 
     /**
-     * Set whether or not this is active
+     * Set whether or not this is active, changes title based on active status
+     * Also changes visibility of clear button
      *
      * @param active
      */
     public void setActive(boolean active) {
+        if (active) {
+            titleText.setText("Filter applied");
+            titleText.setTextFill(Color.YELLOW);
+            clearButton.setVisible(true);
+        } else {
+            titleText.setText(TITLE);
+            titleText.setTextFill(Color.WHITE);
+            clearButton.setVisible(false);
+        }
+
         this.active = active;
     }
 
