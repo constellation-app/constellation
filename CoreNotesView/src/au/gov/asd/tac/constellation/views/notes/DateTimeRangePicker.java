@@ -55,7 +55,7 @@ public class DateTimeRangePicker {
     // Time range selection accordion
     private final Accordion timeRangeAccordian = new Accordion();
     private final TitledPane timeRangePane;
-    final Label titleText;
+    private final Label titleText;
 
     private static final String TITLE = "Select a time range...";
 
@@ -209,7 +209,7 @@ public class DateTimeRangePicker {
      *
      * @param active
      */
-    public void setActive(boolean active) {
+    public void setActive(final boolean active) {
         if (active) {
             titleText.setText("Filter applied");
             titleText.setStyle("-fx-text-fill:YELLOW;");
