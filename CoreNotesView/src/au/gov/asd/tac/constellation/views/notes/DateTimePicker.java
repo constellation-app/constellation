@@ -51,9 +51,9 @@ public class DateTimePicker {
         this.from = from;
         dateTimePane.getChildren().add(mainGridPane);
 
-        GridPane datePickerGridPane = new GridPane();
+        final GridPane datePickerGridPane = new GridPane();
 
-        Label datePickerLabel = new Label();
+        final Label datePickerLabel = new Label();
 
         if (from) {
             datePickerLabel.setText(FROM_TEXT);
@@ -65,10 +65,10 @@ public class DateTimePicker {
         datePickerGridPane.add(datePickerLabel, 0, 0);
         datePickerGridPane.add(datePicker, 1, 0);
 
-        GridPane timePickerGrid = new GridPane();
-        Label hourLabel = new Label("Hour");
-        Label minLabel = new Label("Minute");
-        Label secLabel = new Label("Second");
+        final GridPane timePickerGrid = new GridPane();
+        final Label hourLabel = new Label("Hour");
+        final Label minLabel = new Label("Minute");
+        final Label secLabel = new Label("Second");
 
         timePickerGrid.add(hourLabel, 0, 0);
         timePickerGrid.add(minLabel, 1, 0);
@@ -107,7 +107,7 @@ public class DateTimePicker {
     public void setCurrentDateTime(final ZoneId zone) {
         this.zone = zone;
 
-        ZonedDateTime timeAtZone = ZonedDateTime.now(zone);
+        final ZonedDateTime timeAtZone = ZonedDateTime.now(zone);
 
         datePicker.valueProperty().set(LocalDate.now(zone));
         hourPicker.getValueFactory().setValue(timeAtZone.getHour());

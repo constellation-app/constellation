@@ -212,8 +212,8 @@ public class DateTimeRangePicker {
         // Convert entry time to time zone of DateTimePickers
         entryTime = entryTime.withZoneSameInstant(fromDate.getZoneId());
 
-        ZonedDateTime fromTime = fromDate.getCurrentDateTime();
-        ZonedDateTime toTime = toDate.getCurrentDateTime();
+        final ZonedDateTime fromTime = fromDate.getCurrentDateTime();
+        final ZonedDateTime toTime = toDate.getCurrentDateTime();
 
         return entryTime.isEqual(fromTime) || entryTime.isEqual(toTime) || (entryTime.isAfter(fromTime) && entryTime.isBefore(toTime));
     }

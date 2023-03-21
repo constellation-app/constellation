@@ -71,9 +71,9 @@ public class DateTimePickerNGTest {
     @Test
     public void testSetCurrentDateTime() {
         System.out.println("setCurrentDateTime");
-        ZoneId zone = ZoneId.of("Australia/Perth");
-        ZonedDateTime currentTime = ZonedDateTime.now(zone);
-        DateTimePicker instance = new DateTimePicker(true);
+        final ZoneId zone = ZoneId.of("Australia/Perth");
+        final ZonedDateTime currentTime = ZonedDateTime.now(zone);
+        final DateTimePicker instance = new DateTimePicker(true);
         instance.setCurrentDateTime(zone);
 
         assertEquals(currentTime.getSecond() == instance.getCurrentDateTime().getSecond(), true);
@@ -87,9 +87,9 @@ public class DateTimePickerNGTest {
     @Test
     public void testConvertCurrentDateTime() {
         System.out.println("convertCurrentDateTime");
-        ZoneId convertTo = ZoneId.of("Australia/Perth");
-        ZoneId currentZone = ZoneId.of("Australia/Perth");
-        DateTimePicker instance = new DateTimePicker(true);
+        final ZoneId convertTo = ZoneId.of("Australia/Perth");
+        final ZoneId currentZone = ZoneId.of("Australia/Perth");
+        final DateTimePicker instance = new DateTimePicker(true);
 
         instance.setCurrentDateTime(currentZone);
 
@@ -108,9 +108,9 @@ public class DateTimePickerNGTest {
     @Test
     public void testIsActive() {
         System.out.println("isActive");
-        DateTimePicker instance = new DateTimePicker(true);
-        boolean expResult = false;
-        boolean result = instance.isActive();
+        final DateTimePicker instance = new DateTimePicker(true);
+        final boolean expResult = false;
+        final boolean result = instance.isActive();
         assertEquals(result, expResult);
         instance.setActive(true);
         assertEquals(instance.isActive(), true);
@@ -122,8 +122,8 @@ public class DateTimePickerNGTest {
     @Test
     public void testSetActive() {
         System.out.println("setActive");
-        boolean active = true;
-        DateTimePicker instance = new DateTimePicker(true);
+        final boolean active = true;
+        final DateTimePicker instance = new DateTimePicker(true);
         instance.setActive(active);
 
         assertEquals(instance.isActive(), true);
@@ -135,10 +135,10 @@ public class DateTimePickerNGTest {
     @Test
     public void testGetCurrentDateTime() {
         System.out.println("getCurrentDateTime");
-        DateTimePicker instance = new DateTimePicker(true);
+        final DateTimePicker instance = new DateTimePicker(true);
         instance.setCurrentDateTime(ZoneId.of("Australia/Adelaide"));
-        ZonedDateTime expResult = ZonedDateTime.now(ZoneId.of("Australia/Adelaide"));
-        ZonedDateTime result = instance.getCurrentDateTime();
+        final ZonedDateTime expResult = ZonedDateTime.now(ZoneId.of("Australia/Adelaide"));
+        final ZonedDateTime result = instance.getCurrentDateTime();
 
         assertEquals(expResult.getSecond() == result.getSecond(), true);
         assertEquals(expResult.getMinute() == result.getMinute(), true);
@@ -151,11 +151,11 @@ public class DateTimePickerNGTest {
     @Test
     public void testGetZoneId() {
         System.out.println("getZoneId");
-        DateTimePicker instance = new DateTimePicker(true);
-        ZoneId zone = ZoneId.of("Australia/Perth");
+        final DateTimePicker instance = new DateTimePicker(true);
+        final ZoneId zone = ZoneId.of("Australia/Perth");
         instance.setCurrentDateTime(zone);
 
-        ZoneId result = instance.getZoneId();
+        final ZoneId result = instance.getZoneId();
         assertEquals(result, zone);
 
     }
