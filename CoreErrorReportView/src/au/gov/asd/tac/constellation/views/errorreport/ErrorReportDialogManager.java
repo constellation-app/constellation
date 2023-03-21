@@ -21,7 +21,7 @@ import java.util.List;
 import javafx.application.Platform;
 
 /**
- * maintain a session variable with active dialogs that are shown
+ * Maintain a session variable with active dialogs that are shown
  *
  * @author OrionsGuardian
  */
@@ -38,10 +38,6 @@ public class ErrorReportDialogManager {
             instance = new ErrorReportDialogManager();
         }
         return instance;
-    }
-
-    public void setLatestDismissDate(final Date dismissDate) {
-        latestPopupDismissDate = dismissDate;
     }
 
     public void updatePopupMode(final int popupMode) {
@@ -78,6 +74,11 @@ public class ErrorReportDialogManager {
         showDialog(entry);
     }
 
+    /**
+     * Create and show an Error Report Dialog for the supplied error report entry
+     * 
+     * @param entry 
+     */
     public void showDialog(final ErrorReportEntry entry) {
         Platform.runLater(() -> {
             entry.setLastPopupDate(new Date());
@@ -86,6 +87,10 @@ public class ErrorReportDialogManager {
         });
     }
 
+    /**
+     * Remove entry from active popup list
+     * @param id 
+     */
     public void removeActivePopupId(final Double id) {
         activePopupIds.remove(id);
     }
@@ -94,6 +99,10 @@ public class ErrorReportDialogManager {
         return latestPopupDismissDate;
     }
 
+    /**
+     * set the date/time at which the latest popup was closed.
+     * @param latestPopupDismissDate 
+     */
     public void setLatestPopupDismissDate(final Date latestPopupDismissDate) {
         this.latestPopupDismissDate = latestPopupDismissDate;
     }

@@ -40,6 +40,7 @@ import org.openide.DialogDisplayer;
 import org.openide.modules.Places;
 
 /**
+ * This defines the dialog that will be displayed when an Unexpected Error occurs
  *
  * @author OrionsGuardian
  */
@@ -47,23 +48,28 @@ public class ErrorReportDialog {
 
     protected final JFXPanel fxPanel;
     protected JDialog dialog;
-    private static final java.awt.Color TRANSPARENT = new java.awt.Color(0, 0, 0, 0);
+    private static final Color TRANSPARENT = new Color(0, 0, 0, 0);
     private static final Insets BORDERPANE_PADDING = new Insets(8);
     private static final Insets BUTTONPANE_PADDING = new Insets(4, 4, 4, 4);
 
-    private CheckBox blockRepeatsCheckbox = new CheckBox("Block all future popups for this exception");
-    private Button showHideButton = new Button("Show Details");
-    private TextArea errorMsgArea;
-    private Label summaryLabel = new Label("");
-    private BorderPane root;
-    private Label errorLabel;
-    private VBox detailsBox;
+    private final CheckBox blockRepeatsCheckbox = new CheckBox("Block all future popups for this exception");
+    private final Button showHideButton = new Button("Show Details");
+    private final TextArea errorMsgArea;
+    private final Label summaryLabel = new Label("");
+    private final BorderPane root;
+    private final Label errorLabel;
+    private final VBox detailsBox;
 
     protected double mouseOrigX = 0;
     protected double mouseOrigY = 0;
     private ErrorReportEntry currentError = null;
     private boolean showingDetails = false;
 
+    /**
+     * Construct the Error Report Dialog for a supplied Error Report Entry
+     * 
+     * @param errorEntry 
+     */
     public ErrorReportDialog(final ErrorReportEntry errorEntry) {
         currentError = errorEntry;
         fxPanel = new JFXPanel();
@@ -112,12 +118,8 @@ public class ErrorReportDialog {
     }
 
     /**
-     * Shows this dialog with no title.
+     * Switch the dialog between summary mode and detailed mode
      */
-    public void showDialog() {
-        showDialog(null);
-    }
-
     public void toggleExceptionDisplay() {
         showingDetails = !showingDetails;
         showHideButton.setText(showingDetails ? "Hide Details" : "Show Details");
@@ -130,6 +132,13 @@ public class ErrorReportDialog {
             detailsBox.getChildren().add(summaryLabel);
             dialog.setSize(new Dimension(430, 220));
         }
+    }
+
+    /**
+     * Shows this dialog with no title.
+     */
+    public void showDialog() {
+        showDialog(null);
     }
 
     /**
@@ -148,9 +157,10 @@ public class ErrorReportDialog {
             dialog.setModal(true);
             dialog.setVisible(true);
 
+            // upon closing dialog, update session settings ...
             ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(currentError.getEntryId(), new Date(), blockRepeatsCheckbox.isSelected(), null);
             ErrorReportDialogManager.getInstance().removeActivePopupId(currentError.getEntryId());
-            ErrorReportDialogManager.getInstance().setLatestDismissDate(new Date());
+            ErrorReportDialogManager.getInstance().setLatestPopupDismissDate(new Date());
             ErrorReportSessionData.screenUpdateRequested = true;
         });
     }

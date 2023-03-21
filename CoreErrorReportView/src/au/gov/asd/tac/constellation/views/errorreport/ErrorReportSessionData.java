@@ -20,7 +20,8 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *
+ * This is a data storage class to maintain the list of errors that have been generated,
+ * and the list of errors that have been displayed in the Error Report View
  * @author OrionsGuardian
  */
 public class ErrorReportSessionData {
@@ -29,7 +30,7 @@ public class ErrorReportSessionData {
     final private List<ErrorReportEntry> displayedErrors = new ArrayList<>();
 
     private static ErrorReportSessionData instance = null;
-    private static double entryId = 0;
+    private static Double nextEntryId = 0D;
     public static Date lastUpdate = new Date();
 
     public static boolean screenUpdateRequested = false;
@@ -44,6 +45,11 @@ public class ErrorReportSessionData {
         return instance;
     }
 
+    /**
+     * process an incoming error message and either add a new entry or increment the occurrences of an existing one.
+     * @param entry
+     * @return 
+     */
     public boolean storeSessionError(final ErrorReportEntry entry) {
         boolean foundMatch = false;
         synchronized (sessionErrors) {
@@ -83,20 +89,15 @@ public class ErrorReportSessionData {
             if (foundPos > -1) {
                 sessionErrors.remove(foundPos);
             }
-            lastUpdate = new Date();
+            screenUpdateRequested = true;
         }
     }
 
-    public List<ErrorReportEntry> getSessionErrorsCopy() {
-        final List<ErrorReportEntry> returnData = new ArrayList<>();
-        for (ErrorReportEntry entry : sessionErrors) {
-            returnData.add(entry.copy());
-        }
-        return returnData;
-    }
-
+    /**
+     * Take as snapshot of sessionErrors to use in the display screen
+     * @return 
+     */
     public List<ErrorReportEntry> refreshDisplayedErrors() {
-        // take a snapshot of sessionErrors to use in the display screen
         final List<ErrorReportEntry> refreshedData = new ArrayList<>();
         synchronized (sessionErrors) {
             synchronized (displayedErrors) {
@@ -132,6 +133,13 @@ public class ErrorReportSessionData {
         screenUpdateRequested = updateRequested;
     }
 
+    /**
+     * For a specified entry id, this sets the lastPopupDate, blockPopups flag, and if the control is in expanded form.
+     * @param entryId
+     * @param lastPopupDate
+     * @param blockPopups
+     * @param expanded 
+     */
     public void updateDisplayedEntryScreenSettings(final double entryId, final Date lastPopupDate, final Boolean blockPopups, final Boolean expanded) {
         synchronized (displayedErrors) {
             final ErrorReportEntry displayedEntry = findDisplayedEntryWithId(entryId);
@@ -149,4 +157,13 @@ public class ErrorReportSessionData {
         }
     }
 
+    public static double getNextEntryId(){
+        double returnVal = -1;
+        synchronized(nextEntryId){
+            returnVal = nextEntryId;
+            nextEntryId++;
+        }
+        return returnVal;
+    }
+    
 }

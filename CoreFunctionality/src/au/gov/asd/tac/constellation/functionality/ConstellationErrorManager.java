@@ -27,40 +27,40 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Handler.class, supersedes = "org.netbeans.core.NbErrorManager")
 public class ConstellationErrorManager extends Handler {
-    
-    private static double entryId = 0;
-    
+
     @Override
-    public void publish(final LogRecord record) {
-        if (record != null && record.getThrown() != null) {
-            final StackTraceElement[] elems = record.getThrown().getStackTrace();
+    public void publish(final LogRecord errorRecord) {
+        if (errorRecord != null && errorRecord.getThrown() != null) {
+            final StackTraceElement[] elems = errorRecord.getThrown().getStackTrace();
             final StringBuilder errorMsg = new StringBuilder();
-            String recordHeader = record.getThrown().getLocalizedMessage() != null ? record.getThrown().getLocalizedMessage() : "<< No Message >>";
+            String recordHeader = errorRecord.getThrown().getLocalizedMessage() != null ? errorRecord.getThrown().getLocalizedMessage() : "<< No Message >>";
             if (!recordHeader.endsWith("\n")) {
                 recordHeader += "\n";
             }
-            String summary = record.getThrown().toString();
-            if (!summary.endsWith("\n")) {
-                summary += "\n";
+            String errorSummary = errorRecord.getThrown().toString();
+            if (!errorSummary.endsWith("\n")) {
+                errorSummary += "\n";
             }
             if (elems == null || elems.length == 0) {
                 errorMsg.append(" >> No stacktrace available for error:\n >> ").append(recordHeader);
             } else {
-                for (int i=0; i<elems.length; i++){
+                for (int i = 0; i < elems.length; i++) {
                     errorMsg.append(elems[i].toString()).append("\n");
                 }
             }
-            final ErrorReportEntry rep4 = new ErrorReportEntry(recordHeader, summary, errorMsg.toString(), entryId++);
-            ErrorReportSessionData.getInstance().storeSessionError(rep4);            
+            final ErrorReportEntry rep4 = new ErrorReportEntry(recordHeader, errorSummary, errorMsg.toString(), ErrorReportSessionData.getNextEntryId());
+            ErrorReportSessionData.getInstance().storeSessionError(rep4);
         }
     }
 
     @Override
     public void flush() {
+        // no buffered data blocks to output
     }
 
     @Override
     public void close() throws SecurityException {
+        // no persistent data objects to clear
     }
-    
+
 }

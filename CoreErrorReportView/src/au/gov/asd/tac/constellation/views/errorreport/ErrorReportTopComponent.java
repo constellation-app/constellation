@@ -289,17 +289,18 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         return iconFlashing;
     }
 
+    /**
+     * enable or disable flashing of the alert icon, as well as flashing of the tab label
+     * @param enabled 
+     */
     public void flashErrorIcon(final boolean enabled) {
-
         if (!enabled) {
             iconFlashing = false;
             return;
         }
-
         if (sessionErrorsBox.getChildren().isEmpty()) {
             return;
         }
-
         if (!iconFlashing) {
             iconFlashing = true;
             try {
@@ -344,27 +345,32 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         return popupControl.getSelectionModel().getSelectedIndex();
     }
 
+    /**
+     * Generate the TitledPane object containing the details for the error report entry.
+     * @param entry
+     * @return 
+     */
     public TitledPane generateErrorReportTitledPane(final ErrorReportEntry entry) {
         final TitledPane ttlPane = new TitledPane();
         String alertColour = "#f0b0b0";
         String backgroundColour = "#4a0000";
-        String areaBackgroundColour = "radial-gradient(radius 100%, #4a0000 0%, #140000 100%)";//linear-gradient(from 0% 0% to 75% 50%, #4a0000, #100000)
+        String areaBackgroundColour = "radial-gradient(radius 100%, #4a0000 0%, #140000 100%)";
         if (entry.getOccurrences() > 999) {
             alertColour = "#d06868";
             backgroundColour = "#7c0000";
-            areaBackgroundColour = "radial-gradient(radius 100%, #7c0000 0%, #240000 100%)";//54
+            areaBackgroundColour = "radial-gradient(radius 100%, #7c0000 0%, #240000 100%)";
         } else if (entry.getOccurrences() > 99) {
             alertColour = "#e07878";
             backgroundColour = "#6e0000";
-            areaBackgroundColour = "radial-gradient(radius 100%, #6e0000 0%, #200000 100%)";//48
+            areaBackgroundColour = "radial-gradient(radius 100%, #6e0000 0%, #200000 100%)";
         } else if (entry.getOccurrences() > 9) {
             alertColour = "#f08080";
             backgroundColour = "#600000";
-            areaBackgroundColour = "radial-gradient(radius 100%, #600000 0%, #1c0000 100%)";//3c
+            areaBackgroundColour = "radial-gradient(radius 100%, #600000 0%, #1c0000 100%)";
         } else if (entry.getOccurrences() > 1) {
             alertColour = "#f09898";
             backgroundColour = "#540000";
-            areaBackgroundColour = "radial-gradient(radius 100%, #540000 0%, #180000 100%)"; //30
+            areaBackgroundColour = "radial-gradient(radius 100%, #540000 0%, #180000 100%)";
         }
 
         final BorderPane bdrPane = new BorderPane();
