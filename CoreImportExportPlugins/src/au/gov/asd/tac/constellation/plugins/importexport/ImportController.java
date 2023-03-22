@@ -199,6 +199,7 @@ public abstract class ImportController<D> {
      * included.
      */
     public void loadAllSchemaAttributes(final ImportDestination<?> destination, final boolean showSchemaAttributes) {
+        LOGGER.log(Level.SEVERE, "Loading Schema attributes");
         final Graph graph = destination.getGraph();
         final ReadableGraph rg = graph.getReadableGraph();
         try {
@@ -272,6 +273,9 @@ public abstract class ImportController<D> {
         for (int i = 0; i < attributeCount; i++) {
             final int attributeId = rg.getAttribute(elementType, i);
             final Attribute attribute = new GraphAttribute(rg, attributeId);
+            if (elementType == GraphElementType.VERTEX) {
+                LOGGER.log(Level.SEVERE, "Loading: " + attribute.getName());
+            }
             attributes.put(attribute.getName(), attribute);
         }
 
@@ -348,6 +352,7 @@ public abstract class ImportController<D> {
             for (final String attributeName : autoAddedAttributes.keySet()) {
                 if (attributeName.toLowerCase(Locale.ENGLISH).contains(attributeFilter.toLowerCase(Locale.ENGLISH))) {
                     displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
+                    LOGGER.log(Level.SEVERE, "Adding to displayedAttributes map: " + attributeName);
                 }
             }
             for (final String attributeName : manuallyAddedAttributes.keySet()) {
@@ -358,6 +363,12 @@ public abstract class ImportController<D> {
         } else {
             displayedAttributes.putAll(manuallyAddedAttributes);
             displayedAttributes.putAll(autoAddedAttributes);
+
+            if (displayedAttributes.containsKey("Type")) {
+                LOGGER.log(Level.SEVERE, "Type exists in displayedAttributes map");
+            } else {
+                LOGGER.log(Level.SEVERE, "Type does NOT exist in displayedAttributes map");
+            }
         }
         return displayedAttributes;
     }

@@ -200,4 +200,9 @@ public class ImportPane extends BorderPane {
         showSchemaAttributesCheckBox.setSelected(showAllSchemaAttributes);
         importExportPrefs.putBoolean(ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES, showAllSchemaAttributes);
     }
+
+    public CheckBox getShowSchemaAttributesCheckBox() {
+        return showSchemaAttributesCheckBox;
+    }
+
 }
