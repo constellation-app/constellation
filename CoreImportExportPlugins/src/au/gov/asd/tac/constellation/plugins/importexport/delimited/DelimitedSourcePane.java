@@ -281,7 +281,6 @@ public class DelimitedSourcePane extends SourcePane {
      */
     @Override
     public void update(final ImportController importController) {
-        LOGGER.log(Level.SEVERE, "In DelimedSourcePane.java file's update function");
         graphComboBox.getItems().stream()
                 .filter(importDestination -> importController.getDestination().toString().equals(importDestination.toString()))
                 .findAny()
