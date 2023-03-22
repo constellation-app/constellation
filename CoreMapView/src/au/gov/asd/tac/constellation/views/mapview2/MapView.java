@@ -273,13 +273,9 @@ public class MapView extends ScrollPane {
         mapStackPane.setOnMouseDragged(event -> {
             // Check they are dragging the right mouse button
             if (event.isSecondaryButtonDown()) {
-
-                Node node = (Node) event.getSource();
-
                 // Move the map
                 mapStackPane.setTranslateX(transalateX + (event.getSceneX() - mouseAnchorX));
                 mapStackPane.setTranslateY(transalateY + (event.getSceneY() - mouseAnchorY));
-
 
                 event.consume();
             }
@@ -322,11 +318,11 @@ public class MapView extends ScrollPane {
         markerColourProperty.addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
             // Loop through all markers on screen
             for (final Object value : markers.values()) {
-                AbstractMarker m = (AbstractMarker) value;
+                final AbstractMarker m = (AbstractMarker) value;
 
                 // If the marker is a point marker
                 if (m instanceof PointMarker) {
-                    PointMarker p = (PointMarker) m;
+                    final PointMarker p = (PointMarker) m;
 
                     // Change the marker colour
                     p.changeMarkerColour(newValue);
@@ -343,11 +339,11 @@ public class MapView extends ScrollPane {
 
             // Loop through all the markers
             for (final Object value : markers.values()) {
-                AbstractMarker m = (AbstractMarker) value;
+                final AbstractMarker m = (AbstractMarker) value;
 
                 // If its a point marker change its text
                 if (m instanceof PointMarker) {
-                    PointMarker p = (PointMarker) m;
+                    final PointMarker p = (PointMarker) m;
 
                     if (newValue.equals(MapViewPane.USE_LABEL_ATTR)) {
 
@@ -366,8 +362,8 @@ public class MapView extends ScrollPane {
         mapGroupHolder.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                double x = event.getX();
-                double y = event.getY();
+                final double x = event.getX();
+                final double y = event.getY();
 
                 // Change lattitude and logitude text on info overlay if its showing
                 if (INFO_OVERLAY.isShowing()) {
@@ -419,8 +415,8 @@ public class MapView extends ScrollPane {
             public void handle(final MouseEvent event) {
                 // If the user is draing a selection rectangle
                 if (isSelectingMultiple) {
-                    double x = event.getX();
-                    double y = event.getY();
+                    final double x = event.getX();
+                    final double y = event.getY();
 
                     double width = 0;
                     double height = 0;
@@ -463,21 +459,17 @@ public class MapView extends ScrollPane {
 
                     final double pointMarkerXOffset = 95.5;
                     final double pointMarkerYOffset = 95.5;
-                    List<Integer> idList = new ArrayList<>();
+                    final List<Integer> idList = new ArrayList<>();
 
                     // Loop through all the markers
                     for (final AbstractMarker m : markers.values()) {
                         if (m instanceof PointMarker) {
-                            PointMarker p = (PointMarker) m;
-
-
+                            final PointMarker p = (PointMarker) m;
                             p.deselect();
 
                             // If marker is within the selection rectangle then select the marker
                             if (selectionRectangle.contains(p.getX() - pointMarkerXOffset, p.getY() + pointMarkerYOffset)) {
-
                                 p.select();
-
                                 idList.addAll(p.getConnectedNodeIdList());
                                 selectedNodeList.add(p.getMarkerId());
                             }
@@ -523,8 +515,6 @@ public class MapView extends ScrollPane {
             // Coordinate within scene
             mouseAnchorX = event.getSceneX();
             mouseAnchorY = event.getSceneY();
-
-            Node node = (Node) event.getSource();
 
             // Position of map when moise is clicked
             transalateX = mapStackPane.getTranslateX();
@@ -576,8 +566,8 @@ public class MapView extends ScrollPane {
                 }
 
                 // Record location of mouse click
-                double x = event.getX();
-                double y = event.getY();
+                final double x = event.getX();
+                final double y = event.getY();
 
                 // If drawing is enabled and measurment is disabled
                 if (TOOLS_OVERLAY.getDrawingEnabled().get() && !TOOLS_OVERLAY.getMeasureEnabled().get()) {
@@ -673,23 +663,23 @@ public class MapView extends ScrollPane {
                 }
 
                 // Scroll factor is more or less than 1 depending on which way the scroll wheele is scrolled
-                double scaleFactor = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
+                final double scaleFactor = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
 
                 // Get the current scale of the map view
-                double oldXScale = mapStackPane.getScaleX();
-                double oldYScale = mapStackPane.getScaleY();
+                final double oldXScale = mapStackPane.getScaleX();
+                final double oldYScale = mapStackPane.getScaleY();
 
                 // Change the scale based on which way the scroll wheel is turned
-                double newXScale = oldXScale * scaleFactor;
-                double newYScale = oldYScale * scaleFactor;
+                final double newXScale = oldXScale * scaleFactor;
+                final double newYScale = oldYScale * scaleFactor;
 
                 // Calculate how much the map will have to move
-                double xAdjust = (newXScale / oldXScale) - 1;
+                final double xAdjust = (newXScale / oldXScale) - 1;
                 double yAdjust = (newYScale / oldYScale) - 1;
 
                 // Calculate how much the map will have to move
-                double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
-                double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
+                final double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
+                final double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
 
                 // Move the map
                 mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
@@ -715,7 +705,7 @@ public class MapView extends ScrollPane {
      * @param p - The marker itself
      */
     private void setPointMarkerText(final String markerText, final PointMarker p) {
-        Text t = new Text(markerText);
+        final Text t = new Text(markerText);
         t.setX(p.getX() - 125);
         t.setY(p.getY() + 103);
 
@@ -728,7 +718,7 @@ public class MapView extends ScrollPane {
     public void deselectAllMarkers() {
         for (final AbstractMarker value : markers.values()) {
             if (value instanceof PointMarker) {
-                PointMarker p = (PointMarker) value;
+                final PointMarker p = (PointMarker) value;
                 p.deselect();
             }
         }
@@ -843,9 +833,9 @@ public class MapView extends ScrollPane {
 
         // Add point markers to the hiddenPointMarker groups
         for (final Object value : markers.values()) {
-            AbstractMarker m = (AbstractMarker) value;
+            final AbstractMarker m = (AbstractMarker) value;
             if (m instanceof PointMarker) {
-                SVGPath p = new SVGPath();
+                final SVGPath p = new SVGPath();
                 p.setContent(((PointMarker) m).getPath());
                 hiddenPointMarkerGroup.getChildren().add(p);
             }
@@ -854,7 +844,7 @@ public class MapView extends ScrollPane {
         // Add user created markers to the hiddenPointMarker group
         userMarkers.forEach(m -> {
             if (m instanceof UserPointMarker) {
-                SVGPath p = new SVGPath();
+                final SVGPath p = new SVGPath();
                 p.setContent(((UserPointMarker) m).getPath());
                 hiddenPointMarkerGroup.getChildren().add(p);
             }
@@ -926,7 +916,7 @@ public class MapView extends ScrollPane {
 
         // Redraw all queried markers
         for (final Object value : markers.values()) {
-            AbstractMarker m = (AbstractMarker) value;
+            final AbstractMarker m = (AbstractMarker) value;
             drawMarker(m);
         }
     }
@@ -948,7 +938,7 @@ public class MapView extends ScrollPane {
         }
 
         for (final Object value : markers.values()) {
-            AbstractMarker m = (AbstractMarker) value;
+            final AbstractMarker m = (AbstractMarker) value;
             m.getMarker().setScaleX(m.getMarker().getScaleX() * scale);
             m.getMarker().setScaleY(m.getMarker().getScaleY() * scale);
 
@@ -982,7 +972,7 @@ public class MapView extends ScrollPane {
      * @return an array list of all markers on the map
      */
     public List<AbstractMarker> getAllMarkersAsList() {
-        List<AbstractMarker> allMarkers = new ArrayList<>();
+        final List<AbstractMarker> allMarkers = new ArrayList<>();
 
         for (final AbstractMarker marker : markers.values()) {
             allMarkers.add(marker);
@@ -1098,14 +1088,14 @@ public class MapView extends ScrollPane {
      */
     private void pan(final double x, final double y) {
 
-        Vec3 center = new Vec3(MAP_WIDTH / 2, MAP_HEIGHT / 2);
+        final Vec3 center = new Vec3(MAP_WIDTH / 2, MAP_HEIGHT / 2);
 
-        Point2D averageMarkerPosition = mapStackPane.localToParent(x, y);
+        final Point2D averageMarkerPosition = mapStackPane.localToParent(x, y);
 
-        double parentCenterX = mapStackPane.localToParent(center.getX(), center.getY()).getX();
-        double parentCenterY = mapStackPane.localToParent(center.getX(), center.getY()).getY();
+        final double parentCenterX = mapStackPane.localToParent(center.getX(), center.getY()).getX();
+        final double parentCenterY = mapStackPane.localToParent(center.getX(), center.getY()).getY();
 
-        Vec3 dirVect = new Vec3(parentCenterX - averageMarkerPosition.getX(), parentCenterY - averageMarkerPosition.getY());
+        final Vec3 dirVect = new Vec3(parentCenterX - averageMarkerPosition.getX(), parentCenterY - averageMarkerPosition.getY());
 
 
         mapStackPane.setTranslateX(mapStackPane.getTranslateX() + dirVect.getX());
@@ -1147,17 +1137,17 @@ public class MapView extends ScrollPane {
         // Keep zooming in
         while (true) {
 
-            double oldXScale = mapStackPane.getScaleX();
-            double oldYScale = mapStackPane.getScaleY();
+            final double oldXScale = mapStackPane.getScaleX();
+            final double oldYScale = mapStackPane.getScaleY();
 
-            double newXScale = oldXScale * scaleFactor;
-            double newYScale = oldYScale * scaleFactor;
+            final double newXScale = oldXScale * scaleFactor;
+            final double newYScale = oldYScale * scaleFactor;
 
-            double xAdjust = (newXScale / oldXScale) - 1;
-            double yAdjust = (newYScale / oldYScale) - 1;
+            final double xAdjust = (newXScale / oldXScale) - 1;
+            final double yAdjust = (newYScale / oldYScale) - 1;
 
-            double moveX = mapStackPane.localToParent(x, y).getX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
-            double moveY = mapStackPane.localToParent(x, y).getY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
+            final double moveX = mapStackPane.localToParent(x, y).getX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
+            final double moveY = mapStackPane.localToParent(x, y).getY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
 
             mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
             mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
@@ -1185,8 +1175,8 @@ public class MapView extends ScrollPane {
     private boolean selectedMarkersInView(final boolean allMarkers) {
         for (final AbstractMarker m : markers.values()) {
             if ((m instanceof PointMarker && allMarkers) || (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId()) && !allMarkers)) {
-                double x = (m.getX() - 100);
-                double y = (m.getY() + 80);
+                final double x = (m.getX() - 100);
+                final double y = (m.getY() + 80);
 
                 Rectangle r = new Rectangle();
                 r.setWidth(10);
@@ -1210,10 +1200,10 @@ public class MapView extends ScrollPane {
     public void generateZoomLocationUI() {
         if (!showingZoomToLocationPane) {
 
-            double width = 100;
-            double height = 75;
+            final double width = 100;
+            final double height = 75;
 
-            BorderPane pane = new BorderPane();
+            final BorderPane pane = new BorderPane();
             pane.prefWidth(width);
             pane.prefHeight(height);
             pane.minWidth(width);
@@ -1226,41 +1216,41 @@ public class MapView extends ScrollPane {
             pane.setTranslateX((MAP_WIDTH / 2) - 300);
             pane.setTranslateY(MAP_HEIGHT / 2 - height / 2);
 
-            GridPane topGridPane = new GridPane();
+            final GridPane topGridPane = new GridPane();
             pane.setCenter(topGridPane);
 
-            Text titleText = new Text("Zoom to Location");
+            final Text titleText = new Text("Zoom to Location");
             titleText.setFill(Color.WHITE);
 
 
-            Text geoTypeLabel = new Text("Geo Type");
+            final Text geoTypeLabel = new Text("Geo Type");
             geoTypeLabel.setFill(Color.WHITE);
 
-            ComboBox<String> geoTypeMenu = new ComboBox<>(FXCollections.observableList(Arrays.asList(COORDINATE, GEOHASH, MGRS)));
+            final ComboBox<String> geoTypeMenu = new ComboBox<>(FXCollections.observableList(Arrays.asList(COORDINATE, GEOHASH, MGRS)));
             geoTypeMenu.getSelectionModel().selectFirst();
-            Text lattitudeLabel = new Text("Lattitude");
+            final Text lattitudeLabel = new Text("Lattitude");
             lattitudeLabel.setFill(Color.AQUA);
 
-            Text longitudeLabel = new Text("Longitude");
+            final Text longitudeLabel = new Text("Longitude");
             longitudeLabel.setFill(Color.AQUA);
 
-            Text radiusLabel = new Text("Radius");
+            final Text radiusLabel = new Text("Radius");
             radiusLabel.setFill(Color.AQUA);
 
-            TextField lattitudeInput = new TextField();
+            final TextField lattitudeInput = new TextField();
             lattitudeInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
 
             lattitudeInput.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
-            TextField longitudeInput = new TextField();
+            final TextField longitudeInput = new TextField();
             longitudeInput.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
             longitudeInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
 
-            TextField radiusInput = new TextField();
+            final TextField radiusInput = new TextField();
             radiusInput.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
             radiusInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
 
-            GridPane coordinateGridPane = new GridPane();
+            final GridPane coordinateGridPane = new GridPane();
             coordinateGridPane.setHgap(10);
             coordinateGridPane.setPadding(new Insets(0, 0, 0, 10));
 
@@ -1272,17 +1262,17 @@ public class MapView extends ScrollPane {
             coordinateGridPane.add(longitudeInput, 1, 1);
             coordinateGridPane.add(radiusInput, 2, 1);
 
-            Text geoHashLabel = new Text("Base-16 geohash value");
-            TextField geoHashInput = new TextField();
+            final Text geoHashLabel = new Text("Base-16 geohash value");
+            final TextField geoHashInput = new TextField();
 
-            Text mgrsLabel = new Text("MGRS value");
-            TextField mgrsInput = new TextField();
+            final Text mgrsLabel = new Text("MGRS value");
+            final TextField mgrsInput = new TextField();
 
             // Change coordinate UI based on geoType
             geoTypeMenu.setOnAction(event -> {
 
                 coordinateGridPane.getChildren().clear();
-                String selectedItem = geoTypeMenu.getSelectionModel().getSelectedItem();
+                final String selectedItem = geoTypeMenu.getSelectionModel().getSelectedItem();
 
                 if (selectedItem.equals(COORDINATE)) {
                     coordinateGridPane.add(lattitudeLabel, 0, 0);
@@ -1309,7 +1299,7 @@ public class MapView extends ScrollPane {
             });
 
 
-            Button okButton = new Button("OK");
+            final Button okButton = new Button("OK");
             okButton.setTextFill(Color.WHITE);
 
             final double zoomCircleMarkerXOffset = 100;
@@ -1331,9 +1321,9 @@ public class MapView extends ScrollPane {
                     double longitude = -3000;
                     double radius = -3000;
 
-                    String lattitudeText = lattitudeInput.getText();
-                    String longitudeText = longitudeInput.getText();
-                    String radiusText = radiusInput.getText();
+                    final String lattitudeText = lattitudeInput.getText();
+                    final String longitudeText = longitudeInput.getText();
+                    final String radiusText = radiusInput.getText();
 
                     if (!lattitudeText.isBlank() && !lattitudeText.isEmpty() && NumberUtils.isParsable(lattitudeText.strip())) {
                         lattitude = Double.parseDouble(lattitudeText.strip());
@@ -1347,14 +1337,14 @@ public class MapView extends ScrollPane {
                         return;
                     }
 
-                    double x = MarkerUtilities.longToX(longitude, MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
-                    double y = MarkerUtilities.latToY(lattitude, MAP_WIDTH, MAP_HEIGHT) - 149;
+                    final double x = MarkerUtilities.longToX(longitude, MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
+                    final double y = MarkerUtilities.latToY(lattitude, MAP_WIDTH, MAP_HEIGHT) - 149;
 
                     if (!radiusText.isBlank() && !radiusText.isEmpty() && NumberUtils.isParsable(radiusText.strip())) {
                         radius = Double.parseDouble(radiusText.strip());
 
                         // draw circle at entered location
-                        CircleMarker zoomCircleMarker = new CircleMarker(self, drawnMarkerId++, x, y, radius, zoomCircleMarkerXOffset, zoomCircleMarkerYOffset);
+                        final CircleMarker zoomCircleMarker = new CircleMarker(self, drawnMarkerId++, x, y, radius, zoomCircleMarkerXOffset, zoomCircleMarkerYOffset);
 
                         zoomCircleMarker.generateCircle();
                         drawnMarkerGroup.getChildren().add(zoomCircleMarker.getMarker());
@@ -1362,7 +1352,7 @@ public class MapView extends ScrollPane {
 
                         // If no radius is provided then draw point marker at location
                     } else {
-                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
+                        final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
                         marker.setMarkerPosition(0, 0);
 
                         addUserDrawnMarker(marker);
@@ -1372,7 +1362,7 @@ public class MapView extends ScrollPane {
 
                     // Convert mgrs value to x and y
                 } else if (selectedGeoType.equals(MGRS)) {
-                    String mgrs = mgrsInput.getText().strip();
+                    final String mgrs = mgrsInput.getText().strip();
 
                     if (!mgrs.isBlank() && !mgrs.isEmpty()) {
                         final MGRSCoord coordinate = MGRSCoord.fromString(mgrs, null);
@@ -1389,14 +1379,14 @@ public class MapView extends ScrollPane {
 
                     // Convert geohash value to x and y
                 } else if (selectedGeoType.equals(GEOHASH)) {
-                    String location = geoHashInput.getText().strip();
+                    final String location = geoHashInput.getText().strip();
 
                     if (!location.isBlank() && !location.isEmpty()) {
                         final double[] geohashCoordinates = Geohash.decode(location, Geohash.Base.B32);
-                        double x = MarkerUtilities.longToX(geohashCoordinates[1] - geohashCoordinates[3], MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
-                        double y = MarkerUtilities.latToY(geohashCoordinates[0] - geohashCoordinates[2], MAP_WIDTH, MAP_HEIGHT) - 149;
+                        final double x = MarkerUtilities.longToX(geohashCoordinates[1] - geohashCoordinates[3], MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
+                        final double y = MarkerUtilities.latToY(geohashCoordinates[0] - geohashCoordinates[2], MAP_WIDTH, MAP_HEIGHT) - 149;
 
-                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
+                        final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
                         marker.setMarkerPosition(0, 0);
 
 
@@ -1412,7 +1402,7 @@ public class MapView extends ScrollPane {
                 zoomLocationGroup.getChildren().clear();
             });
 
-            Button cancelButton = new Button("Cancel");
+            final Button cancelButton = new Button("Cancel");
             cancelButton.setTextFill(Color.WHITE);
 
             cancelButton.setOnAction(event -> {
@@ -1421,7 +1411,7 @@ public class MapView extends ScrollPane {
                 zoomLocationGroup.getChildren().clear();
             });
 
-            GridPane bottomGridPane = new GridPane();
+            final GridPane bottomGridPane = new GridPane();
 
             topGridPane.add(titleText, 0, 0);
             topGridPane.add(geoTypeLabel, 0, 1);
@@ -1526,7 +1516,7 @@ public class MapView extends ScrollPane {
                         path = line.substring(startIndex + 3, endIndex - 2);
 
                         // Create the SVGPath object and add it to an array
-                        SVGPath svgPath = new SVGPath();
+                        final SVGPath svgPath = new SVGPath();
                         svgPath.setFill(Color.WHITE);
                         svgPath.setStrokeWidth(0.025);
                         svgPath.setStroke(Color.BLACK);
