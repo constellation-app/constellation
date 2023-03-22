@@ -24,8 +24,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -45,8 +43,6 @@ import javafx.scene.layout.VBox;
  * @author sirius
  */
 public class AttributeList extends VBox {
-
-    private static final Logger LOGGER = Logger.getLogger(AttributeList.class.getName());
 
     private static final int MIN_WIDTH = 50;
     private static final int MIN_HEIGHT = 100;
@@ -93,15 +89,6 @@ public class AttributeList extends VBox {
         final AttributeNode attributeNode = new AttributeNode(this, attribute, keys.contains(attribute.getId()));
 
         attributeNodes.put(attribute.getName(), attributeNode);
-        LOGGER.log(Level.SEVERE, "Adding node :" + attributeNode.getAttribute().getName());
-
-        if (attributeNodes.containsKey(attribute.getName())) {
-            if (attributeNodes.get(attribute.getName()) != null) {
-                LOGGER.log(Level.SEVERE, attributeNodes.get(attribute.getName()).getAttribute().getName() + " exists in map");
-            } else {
-                LOGGER.log(Level.SEVERE, attribute.getName() + " DOES NOT exists in map");
-            }
-        }
 
         attributeNode.setOnMousePressed((final MouseEvent t) -> {
             if (t.isPrimaryButtonDown()) {
@@ -197,14 +184,8 @@ public class AttributeList extends VBox {
         attributes.values().forEach(attribute -> {
             final AttributeNode attributeNode = attributeNodes.get(attribute.getName());
             if (attributeNode == null) {
-                if (attribute.getName().equals("Type") || attribute.getName().equals("Raw")) {
-                    LOGGER.log(Level.SEVERE, "Creating attribute: " + attribute.getName());
-                }
                 createAttribute(attribute);
             } else {
-                if (attribute.getName().equals("Type") || attribute.getName().equals("Raw")) {
-                    LOGGER.log(Level.SEVERE, "Setting attribute: " + attribute.getName());
-                }
                 attributeNode.setAttribute(attribute, keys.contains(attribute.getId()));
 
                 // Show the default value

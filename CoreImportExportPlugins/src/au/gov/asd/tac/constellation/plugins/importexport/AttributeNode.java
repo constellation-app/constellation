@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
@@ -58,8 +56,6 @@ import javafx.stage.Window;
  * @author sirius
  */
 public final class AttributeNode extends Label implements Comparable<AttributeNode> {
-
-    private static final Logger LOGGER = Logger.getLogger(AttributeNode.class.getName());
 
     private static final Image KEY_IMAGE = UserInterfaceIconProvider.KEY.buildImage(16, ConstellationColor.CHERRY.getJavaColor());
     private static final Image ADD_IMAGE = UserInterfaceIconProvider.ADD.buildImage(16, Color.BLACK);
@@ -253,10 +249,6 @@ public final class AttributeNode extends Label implements Comparable<AttributeNo
             setTooltip(new Tooltip(String.format("%s: %s", attribute.getAttributeType(), attribute.getDescription())));
 
             deleteMenu.setDisable(!(attribute instanceof NewAttribute));
-        } else if (attribute == this.attribute && (attribute.getName().equals("Type") || attribute.getName().equals("Raw"))) {
-            LOGGER.log(Level.SEVERE, "This is already a: " + attribute.getName());
-        } else if (this.isKey == isKey && (attribute.getName().equals("Type") || attribute.getName().equals("Raw"))) {
-            LOGGER.log(Level.SEVERE, "This is already the same key");
         }
     }
 
