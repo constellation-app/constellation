@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -140,7 +141,7 @@ public class NotesViewPane extends BorderPane {
 
     private final DateTimeRangePicker dateTimeRangePicker = new DateTimeRangePicker();
     private final Button createNewNoteButton = new Button();
-
+    private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
 
@@ -269,10 +270,19 @@ public class NotesViewPane extends BorderPane {
                 contentField.getParent().getChildrenUnmodifiable().get(contentField.getParent().getChildrenUnmodifiable().indexOf(contentField) + 1).requestFocus();
             }
         });
-
+        newNotePane = new NewNotePane(userChosenColour);
         // Colourpicker to set colour of new note
         ColorPicker newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(userChosenColour).getJavaFXColor());
         newNoteColour.setOnAction(event -> userChosenColour = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
+
+        // Button to trigger pop-up window to make a new note
+        createNewNoteButton.setText("Create Note");
+        createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+
+        createNewNoteButton.setOnAction(event -> {
+
+            newNotePane.showPopUp();
+        });
 
         // Button to add new note
         final Button addNoteButton = new Button("Add Note");
@@ -349,14 +359,6 @@ public class NotesViewPane extends BorderPane {
             }
         });
 
-        // Button to trigger pop-up window to make a new note
-        createNewNoteButton.setText("Create Note");
-        createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-
-        createNewNoteButton.setOnAction(event -> {
-            NewNotePane newNotePane = new NewNotePane(this.getScene().getWindow(), userChosenColour);
-            newNotePane.showPopUp();
-        });
 
         // HBox to store the control items at the bottom of the view.
         final HBox noteHBox = new HBox(OPTIONS_SPACING, applyToSelection, newNoteColour, addNoteButton, createNewNoteButton);
