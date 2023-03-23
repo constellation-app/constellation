@@ -20,8 +20,10 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * This is a data storage class to maintain the list of errors that have been generated,
- * and the list of errors that have been displayed in the Error Report View
+ * This is a data storage class to maintain the list of errors that have been
+ * generated, and the list of errors that have been displayed in the Error
+ * Report View
+ *
  * @author OrionsGuardian
  */
 public class ErrorReportSessionData {
@@ -46,9 +48,11 @@ public class ErrorReportSessionData {
     }
 
     /**
-     * process an incoming error message and either add a new entry or increment the occurrences of an existing one.
+     * process an incoming error message and either add a new entry or increment
+     * the occurrences of an existing one.
+     *
      * @param entry
-     * @return 
+     * @return
      */
     public boolean storeSessionError(final ErrorReportEntry entry) {
         boolean foundMatch = false;
@@ -95,23 +99,31 @@ public class ErrorReportSessionData {
 
     /**
      * Take as snapshot of sessionErrors to use in the display screen
-     * @return 
+     * limited to entries that match on one of the filters
+     * 
+     * @param filters
+     * @return
      */
-    public List<ErrorReportEntry> refreshDisplayedErrors() {
+    public List<ErrorReportEntry> refreshDisplayedErrors(final ArrayList<String> filters) {
         final List<ErrorReportEntry> refreshedData = new ArrayList<>();
         synchronized (sessionErrors) {
             synchronized (displayedErrors) {
-                for (ErrorReportEntry entry : sessionErrors) {
-                    ErrorReportEntry refreshedEntry = entry.copy();
-                    ErrorReportEntry displayedEntry = findDisplayedEntryWithId(entry.getEntryId());
-                    if (displayedEntry != null) {
-                        refreshedEntry.setExpanded(displayedEntry.getExpanded());
-                        refreshedEntry.setBlockRepeatedPopups(displayedEntry.isBlockRepeatedPopups());
-                        if (displayedEntry.getLastPopupDate() != null) {
-                            refreshedEntry.setLastPopupDate(new Date(displayedEntry.getLastPopupDate().getTime()));
+                for (final ErrorReportEntry entry : sessionErrors) {
+                    if (filters.contains(entry.getErrorLevel().getName())) {
+                        ErrorReportEntry refreshedEntry = entry.copy();
+                        ErrorReportEntry displayedEntry = findDisplayedEntryWithId(entry.getEntryId());
+                        if (displayedEntry != null) {
+                            refreshedEntry.setExpanded(displayedEntry.getExpanded());
+                            refreshedEntry.setBlockRepeatedPopups(displayedEntry.isBlockRepeatedPopups());
+                            entry.setExpanded(displayedEntry.getExpanded());
+                            entry.setBlockRepeatedPopups(displayedEntry.isBlockRepeatedPopups());
+                            if (displayedEntry.getLastPopupDate() != null) {
+                                refreshedEntry.setLastPopupDate(new Date(displayedEntry.getLastPopupDate().getTime()));
+                                entry.setLastPopupDate(new Date(displayedEntry.getLastPopupDate().getTime()));
+                            }
                         }
+                        refreshedData.add(refreshedEntry);
                     }
-                    refreshedData.add(refreshedEntry);
                 }
                 displayedErrors.clear();
                 displayedErrors.addAll(refreshedData);
@@ -121,7 +133,7 @@ public class ErrorReportSessionData {
     }
 
     public ErrorReportEntry findDisplayedEntryWithId(final double id) {
-        for (ErrorReportEntry activeEntry : displayedErrors) {
+        for (final ErrorReportEntry activeEntry : displayedErrors) {
             if (activeEntry.getEntryId() == id) {
                 return activeEntry;
             }
@@ -134,11 +146,13 @@ public class ErrorReportSessionData {
     }
 
     /**
-     * For a specified entry id, this sets the lastPopupDate, blockPopups flag, and if the control is in expanded form.
+     * For a specified entry id, this sets the lastPopupDate, blockPopups flag,
+     * and if the control is in expanded form.
+     *
      * @param entryId
      * @param lastPopupDate
      * @param blockPopups
-     * @param expanded 
+     * @param expanded
      */
     public void updateDisplayedEntryScreenSettings(final double entryId, final Date lastPopupDate, final Boolean blockPopups, final Boolean expanded) {
         synchronized (displayedErrors) {
@@ -157,13 +171,13 @@ public class ErrorReportSessionData {
         }
     }
 
-    public static double getNextEntryId(){
+    public static double getNextEntryId() {
         double returnVal = -1;
-        synchronized(nextEntryId){
+        synchronized (nextEntryId) {
             returnVal = nextEntryId;
             nextEntryId++;
         }
         return returnVal;
     }
-    
+
 }

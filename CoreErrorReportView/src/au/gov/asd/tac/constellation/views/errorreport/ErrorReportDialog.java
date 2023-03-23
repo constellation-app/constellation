@@ -89,8 +89,22 @@ public class ErrorReportDialog {
         root.setStyle("-fx-background-color: #DDDDDD;");
         root.setPadding(BORDERPANE_PADDING);
 
-        errorLabel = new Label("An error has occurred.\n" + errorEntry.getHeading());
-        final ImageView errorImage = new ImageView(UserInterfaceIconProvider.ERROR.buildImage(32, new Color(210, 95, 95)));
+        errorLabel = new Label("Error level: " + errorEntry.getErrorLevel().toString() + "\n" + errorEntry.getHeading());
+        final Color errorIconColor;
+        switch(errorEntry.getErrorLevel().getName()) {
+            case "SEVERE":  errorIconColor = new Color(215, 95, 95);
+                            break;
+            case "WARNING":  errorIconColor = new Color(210, 130, 65);
+                            break;
+            case "INFO" :   errorIconColor = new Color(170, 170, 65);
+                            break;
+            case "FINE":
+            case "FINER":
+            case "FINEST":  errorIconColor = new Color(50, 160, 160);
+                            break;
+            default: errorIconColor = new Color(200, 120, 150);
+        }
+        final ImageView errorImage = new ImageView(UserInterfaceIconProvider.ERROR.buildImage(32, errorIconColor));
         errorLabel.setGraphic(errorImage);
         detailsBox = new VBox();
         root.setTop(detailsBox);

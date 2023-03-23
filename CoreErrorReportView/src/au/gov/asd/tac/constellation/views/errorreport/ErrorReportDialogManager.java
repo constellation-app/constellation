@@ -28,7 +28,7 @@ import javafx.application.Platform;
 public class ErrorReportDialogManager {
 
     private int popupDisplayMode = 1;
-    private List<Double> activePopupIds = new ArrayList<>();
+    private final List<Double> activePopupIds = new ArrayList<>();
     private Date latestPopupDismissDate = null;
 
     private static ErrorReportDialogManager instance = null;

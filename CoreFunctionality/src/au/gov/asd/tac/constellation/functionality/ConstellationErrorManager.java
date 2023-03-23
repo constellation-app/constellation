@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.functionality;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportEntry;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportSessionData;
 import java.util.logging.Handler;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -37,6 +38,7 @@ public class ConstellationErrorManager extends Handler {
             if (!recordHeader.endsWith("\n")) {
                 recordHeader += "\n";
             }
+            Level errLevel = errorRecord.getLevel();
             String errorSummary = errorRecord.getThrown().toString();
             if (!errorSummary.endsWith("\n")) {
                 errorSummary += "\n";
@@ -48,7 +50,7 @@ public class ConstellationErrorManager extends Handler {
                     errorMsg.append(elems[i].toString()).append("\n");
                 }
             }
-            final ErrorReportEntry rep4 = new ErrorReportEntry(recordHeader, errorSummary, errorMsg.toString(), ErrorReportSessionData.getNextEntryId());
+            final ErrorReportEntry rep4 = new ErrorReportEntry(errLevel, recordHeader, errorSummary, errorMsg.toString(), ErrorReportSessionData.getNextEntryId());
             ErrorReportSessionData.getInstance().storeSessionError(rep4);
         }
     }

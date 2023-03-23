@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
+import java.util.logging.Level;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -26,6 +27,7 @@ import java.util.Date;
  */
 public class ErrorReportEntry {
 
+    private Level errorLevel = null;
     private String errorData = null;
     private String heading = null;
     private int occurrences = 0;
@@ -36,7 +38,8 @@ public class ErrorReportEntry {
     private boolean preventRepeatedPopups = false;
     private String summaryHeading = null;
 
-    public ErrorReportEntry(final String errorHeading, final String summary, final String errorMessage, final double id) {
+    public ErrorReportEntry(final Level errLevel, final String errorHeading, final String summary, final String errorMessage, final double id) {
+        errorLevel = errLevel;
         heading = errorHeading;
         summaryHeading = summary;
         errorData = errorMessage;
@@ -46,7 +49,7 @@ public class ErrorReportEntry {
     }
 
     public ErrorReportEntry copy() {
-        ErrorReportEntry dataCopy = new ErrorReportEntry(heading, summaryHeading, errorData, entryId);
+        ErrorReportEntry dataCopy = new ErrorReportEntry(errorLevel, heading, summaryHeading, errorData, entryId);
         dataCopy.expanded = expanded;
         dataCopy.lastDate = new Date(lastDate.getTime());
         dataCopy.lastPopupDate = (lastPopupDate == null ? null : new Date(lastPopupDate.getTime()));
@@ -136,6 +139,10 @@ public class ErrorReportEntry {
         preventRepeatedPopups = blockRepeatedPopups;
     }
 
+    public Level getErrorLevel(){
+        return errorLevel;
+    }
+    
     @Override
     public String toString() {
         return "[ErrorReportEntry:[id=" + entryId + "]"

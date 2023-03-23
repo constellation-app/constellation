@@ -15,28 +15,30 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.CharacterIconProvider;
-import javafx.geometry.Insets;
+import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import javafx.scene.layout.BorderPane;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.Color;
 import java.awt.Image;
-import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import javafx.scene.input.MouseEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -52,6 +54,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
+import org.controlsfx.control.CheckComboBox;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -95,9 +98,13 @@ import org.openide.windows.TopComponent;
 
 public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
+    private static final Logger LOGGER = Logger.getLogger(ErrorReportTopComponent.class.getName());
+    
     private List<ErrorReportEntry> sessionErrors = new ArrayList<>();
     static VBox sessionErrorsBox = new VBox();
     private ComboBox<String> popupControl;
+    private CheckComboBox<String> filterControl;
+    private Date filterUpdateDate = new Date();
 
     private boolean iconFlashing = false;
     private BorderPane errorBPane = null;
@@ -127,7 +134,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 Platform.runLater(new Runnable() {
                     public void run() {
                         if (updateInProgress != null && !updateInProgress.get()) {
-                            if (latestRetrievalDate == null || latestRetrievalDate.before(ErrorReportSessionData.lastUpdate) || ErrorReportSessionData.screenUpdateRequested) {
+                            if (latestRetrievalDate == null || latestRetrievalDate.before(ErrorReportSessionData.lastUpdate) || latestRetrievalDate.before(filterUpdateDate) || ErrorReportSessionData.screenUpdateRequested) {
                                 latestRetrievalDate = new Date();
                                 boolean flashRequired = true;
                                 if (ErrorReportDialogManager.getInstance().getLatestPopupDismissDate() != null && ErrorReportDialogManager.getInstance().getLatestPopupDismissDate().after(ErrorReportSessionData.lastUpdate)) {
@@ -158,19 +165,42 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final BorderPane outerPane = new BorderPane();
         final VBox componentBox = new VBox();
 
-        final Label popupLabel = new Label("Show Error Popups: ");
+        final ObservableList<String> filterOptions = FXCollections.observableArrayList();
+        filterOptions.add("SEVERE");
+        filterOptions.add("WARNING");
+        filterOptions.add("INFO");
+        filterOptions.add("FINE");
+        filterControl = new CheckComboBox<>(filterOptions);
+        filterControl.getCheckModel().check(0);
+        filterControl.setMaxWidth(200);
+
+        filterControl.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
+            public void onChanged(ListChangeListener.Change<? extends String> c) {
+                 while(c.next()) {
+                     // update the screen with latest selections
+                 }
+                 LOGGER.info("\n-------");
+                 for (String filterEntry : filterControl.getCheckModel().getCheckedItems()) {
+                    LOGGER.info(filterEntry);
+                 }
+                 filterUpdateDate = new Date();
+                 LOGGER.info("\n=======");
+            }
+        });
+                
         final ObservableList<String> popupOptions = FXCollections.observableArrayList();
-        popupOptions.add("Never");
-        popupOptions.add("One only");
-        popupOptions.add("One only, redisplayable");
-        popupOptions.add("One per source");
-        popupOptions.add("One per source, redisplayable");
+        popupOptions.add("Never Show Popups");
+        popupOptions.add("Show one popup only");
+        popupOptions.add("Show one popup, redisplayable");
+        popupOptions.add("Show one popup per source");
+        popupOptions.add("Show one per source, redisplayable");
         popupControl = new ComboBox<>(popupOptions);
         popupControl.getSelectionModel().select(1);
-
+        popupControl.setMaxWidth(200);
+        
         final Button clearButton = new Button("Clear All Reports");
         clearButton.setTooltip(new Tooltip("Clear all current error reports"));
-        clearButton.setOnAction((ActionEvent event) -> {
+        clearButton.setOnAction((final ActionEvent event) -> {
             // remove all matching entries in the data class
             int errCount = sessionErrors.size();
             for (int i = 0; i < errCount; i++) {
@@ -184,7 +214,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final Button expandButton = new Button("");
         expandButton.setGraphic(expandButtonImage);
         expandButton.setTooltip(new Tooltip("Expand All Error Reports"));
-        expandButton.setOnAction((ActionEvent event) -> {
+        expandButton.setOnAction((final ActionEvent event) -> {
             setReportsExpanded(true);
         });
 
@@ -192,12 +222,12 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final Button shrinkButton = new Button("");
         shrinkButton.setGraphic(shrinkButtonImage);
         shrinkButton.setTooltip(new Tooltip("Shrink All Error Reports"));
-        shrinkButton.setOnAction((ActionEvent event) -> {
+        shrinkButton.setOnAction((final ActionEvent event) -> {
             setReportsExpanded(false);
         });
 
         final ToolBar controlToolbar = new ToolBar();
-        controlToolbar.getItems().addAll(popupLabel, popupControl, shrinkButton, expandButton, clearButton);
+        controlToolbar.getItems().addAll(filterControl, popupControl, shrinkButton, expandButton, clearButton);
         final HBox toolboxContainer = new HBox();
         toolboxContainer.getChildren().add(controlToolbar);
         toolboxContainer.getChildren().add(new Label("  "));
@@ -239,7 +269,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     }
 
     public ErrorReportEntry findActiveEntryWithId(final double id) {
-        for (ErrorReportEntry activeEntry : sessionErrors) {
+        for (final ErrorReportEntry activeEntry : sessionErrors) {
             if (activeEntry.getEntryId() == id) {
                 return activeEntry;
             }
@@ -256,7 +286,9 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                         sessionErrors.get(i).getEntryId(), null, null, ((TitledPane) sessionErrorsBox.getChildren().get(i)).isExpanded());
             }
         }
-        sessionErrors = ErrorReportSessionData.getInstance().refreshDisplayedErrors();
+        final ArrayList<String> activeFilters = new ArrayList<>();
+        activeFilters.addAll(filterControl.getCheckModel().getCheckedItems());
+        sessionErrors = ErrorReportSessionData.getInstance().refreshDisplayedErrors(activeFilters);
     }
 
     public void updateSessionErrorsBox(final int insertPos) {
@@ -269,10 +301,14 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 // rebuild                
                 sessionErrorsBox.getChildren().clear();
                 for (int i = 0; i < errCount; i++) {
+                    final int errorLevelIndex = filterControl.getCheckModel().getItemIndex(sessionErrors.get(i).getErrorLevel().getName());
+                    boolean allowDisplay = filterControl.getCheckModel().isChecked(errorLevelIndex);
                     sessionErrorsBox.getChildren().add(generateErrorReportTitledPane(sessionErrors.get(i)));
-                    ErrorReportDialogManager.getInstance().showErrorDialog(sessionErrors.get(i));
+                    if (allowDisplay && sessionErrors.get(i).getLastDate().after(filterUpdateDate)) {
+                        ErrorReportDialogManager.getInstance().showErrorDialog(sessionErrors.get(i));
+                    }
+                    LOGGER.info("\n ###### Displaying error with level = " + sessionErrors.get(i).getErrorLevel().getName());
                 }
-
                 sessionUpdated = true;
                 updateInProgress.set(false);
             } else {
@@ -324,7 +360,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                                 setIcon(defaultIcon);
                             });
                             Thread.sleep(650);
-                        } catch (InvocationTargetException | InterruptedException ex) {
+                        } catch (final InvocationTargetException | InterruptedException ex) {
                             Exceptions.printStackTrace(ex);
                         }
                     }
@@ -352,27 +388,38 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
      */
     public TitledPane generateErrorReportTitledPane(final ErrorReportEntry entry) {
         final TitledPane ttlPane = new TitledPane();
-        String alertColour = "#f0b0b0";
         String backgroundColour = "#4a0000";
         String areaBackgroundColour = "radial-gradient(radius 100%, #4a0000 0%, #140000 100%)";
         if (entry.getOccurrences() > 999) {
-            alertColour = "#d06868";
             backgroundColour = "#7c0000";
             areaBackgroundColour = "radial-gradient(radius 100%, #7c0000 0%, #240000 100%)";
         } else if (entry.getOccurrences() > 99) {
-            alertColour = "#e07878";
             backgroundColour = "#6e0000";
             areaBackgroundColour = "radial-gradient(radius 100%, #6e0000 0%, #200000 100%)";
         } else if (entry.getOccurrences() > 9) {
-            alertColour = "#f08080";
             backgroundColour = "#600000";
             areaBackgroundColour = "radial-gradient(radius 100%, #600000 0%, #1c0000 100%)";
         } else if (entry.getOccurrences() > 1) {
-            alertColour = "#f09898";
             backgroundColour = "#540000";
             areaBackgroundColour = "radial-gradient(radius 100%, #540000 0%, #180000 100%)";
         }
 
+        String alertColour = "#a0a0a0";
+        String severityColour = "#808080";
+        if (entry.getErrorLevel() == Level.SEVERE) {
+            alertColour = "#d87878";
+            severityColour = "#a03030";
+        } else if (entry.getErrorLevel() == Level.WARNING) {
+            alertColour = "#c08860";
+            severityColour = "#905828";
+        } else if (entry.getErrorLevel() == Level.INFO) {
+            alertColour = "#a8a848";
+            severityColour = "#787820";
+        } else if (entry.getErrorLevel() == Level.FINE) {
+            alertColour = "#48b0b0";
+            severityColour = "#207878";
+        }
+        
         final BorderPane bdrPane = new BorderPane();
         final VBox vBox = new VBox();
         vBox.setPadding(new Insets(1));
@@ -400,11 +447,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final ImageView shieldImageHighlight = new ImageView(UserInterfaceIconProvider.LOCK.buildImage(15, Color.ORANGE.darker()));
         final ImageView visibleImageHighlight = new ImageView(UserInterfaceIconProvider.UNLOCK.buildImage(15, Color.CYAN.darker()));
         final Button blockPopupsButton = new Button("");
-        blockPopupsButton.setStyle("-fx-background-color:" + backgroundColour + "; -fx-border-color: #404040");
+        blockPopupsButton.setStyle("-fx-background-color: linear-gradient( " + severityColour + " 1% , " + backgroundColour + " 28%, " + backgroundColour + " 72%, " + severityColour + " 99% ); -fx-border-color: #404040");
         blockPopupsButton.setGraphic(entry.isBlockRepeatedPopups() ? shieldImageHighlight : visibleImageHighlight);
         blockPopupsButton.setTooltip(entry.isBlockRepeatedPopups() ? new Tooltip("Popups Blocked") : new Tooltip("Popups Allowed"));
         blockPopupsButton.setPadding(new Insets(3, 2, 1, 2));
-        blockPopupsButton.setOnAction((ActionEvent event) -> {
+        blockPopupsButton.setOnAction((final ActionEvent event) -> {
             entry.setBlockRepeatedPopups(!entry.isBlockRepeatedPopups());
             blockPopupsButton.setGraphic(entry.isBlockRepeatedPopups() ? shieldImageHighlight : visibleImageHighlight);
             blockPopupsButton.setTooltip(entry.isBlockRepeatedPopups() ? new Tooltip("Popups Blocked") : new Tooltip("Popups Allowed"));
@@ -427,23 +474,25 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             }
         });
         dismissButton.setPadding(new Insets(2));
-        dismissButton.setOnAction((ActionEvent event) -> {
+        dismissButton.setOnAction((final ActionEvent event) -> {
             ErrorReportSessionData.getInstance().removeEntry(entry.getEntryId());
             updateSessionErrorsBox(-1);
         });
 
         label.setStyle("-fx-text-fill: #c0c0c0;");
         timeLabel.setStyle("-fx-text-fill: #c0c0c0;");
-        hBoxLeft.setStyle("-fx-background-color: " + backgroundColour + ";");
-        hBoxTitle.setStyle("-fx-background-color: " + backgroundColour + ";");
-        hBoxRight.setStyle("-fx-background-color: " + backgroundColour + ";");
-
-        counterLabel.setStyle(" -fx-background-color: black; -fx-text-background-color: cyan; -fx-text-fill: " + alertColour + "; -fx-font-weight: bold");
+        
+        hBoxLeft.setStyle("-fx-background-color: linear-gradient( " + severityColour + " 1% , " + backgroundColour + " 28%, " + backgroundColour + " 72%, " + severityColour + " 99% );");
+        hBoxTitle.setStyle("-fx-background-color: linear-gradient( " + severityColour + " 1% , " + backgroundColour + " 28%, " + backgroundColour + " 72%, " + severityColour + " 99% );");
+        hBoxRight.setStyle("-fx-background-color: linear-gradient( " + severityColour + " 1% , " + backgroundColour + " 28%, " + backgroundColour + " 72%, " + severityColour + " 99% );");
+        counterLabel.setStyle(" -fx-background-color: black; -fx-text-background-color: cyan; -fx-text-fill: " + alertColour + " ; -fx-font-weight: bold; -fx-border-color: " + severityColour);
         counterLabel.setTooltip(new Tooltip("Repeated occurrences"));
+        counterLabel.setPadding(new Insets(1,0,1,0));
+        timeLabel.setPadding(new Insets(2,0,0,0));
         hBoxLeft.getChildren().add(timeLabel);
         hBoxLeft.getChildren().add(counterLabel);
         hBoxTitle.getChildren().add(label);
-        hBoxLeft.setPadding(new Insets(4, 6, 1, 0));
+        hBoxLeft.setPadding(new Insets(2, 6, 1, 0));
         hBoxTitle.setPadding(new Insets(4, 6, 1, 0));
         hBoxRight.setPadding(new Insets(1, 1, 1, 6));
         hBoxRight.setSpacing(2);
