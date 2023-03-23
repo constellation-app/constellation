@@ -61,8 +61,6 @@ public class ToolsOverlay extends AbstractOverlay {
      */
     public ToolsOverlay(final double positionX, final double positionY) {
         super(positionX, positionY);
-
-
         final Label measureText = new Label("Measure");
         measureText.setTextFill(Color.WHITE);
 

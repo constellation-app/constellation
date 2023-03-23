@@ -202,7 +202,7 @@ public class MapView extends ScrollPane {
     private static final double INFO_OVERLAY_WIDTH = 20;
     private static final double INFO_OVERLAY_HEIGHT = 20;
 
-    public static final ToolsOverlay TOOLS_OVERLAY = new ToolsOverlay(510, -500);
+    public static final ToolsOverlay TOOLS_OVERLAY = new ToolsOverlay(0, 0);
     private static final InfoOverlay INFO_OVERLAY = new InfoOverlay(INFO_OVERLAY_WIDTH, INFO_OVERLAY_HEIGHT);
 
     private static final String COORDINATE = "Coordinate";

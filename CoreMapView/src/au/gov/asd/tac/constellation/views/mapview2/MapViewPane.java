@@ -46,6 +46,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
@@ -54,6 +55,7 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
@@ -136,7 +138,7 @@ public class MapViewPane extends BorderPane {
     private final ComboBox<String> exportDropDown;
     private final Button helpButton;
     private final List<String> dropDownOptions = new ArrayList<>();
-    private final Label latLabel = new Label("Lattitude: ");
+    private final Label latLabel = new Label("Latitude: ");
     private final Label lonLabel = new Label("Longitude: ");
     private final Label latField = new Label("0.00");
     private final Label lonField = new Label("0.00");
@@ -448,7 +450,15 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setX(0);
         viewPortRectangle.setY(0);
 
-        parentStackPane.getChildren().add(mapView.TOOLS_OVERLAY.getOverlayPane());
+        final AnchorPane anchorPane = new AnchorPane();
+        anchorPane.setTopAnchor(parentStackPane, 0.0);
+        anchorPane.setRightAnchor(parentStackPane, 0.0);
+        anchorPane.setLeftAnchor(parentStackPane, 0.0);
+
+        anchorPane.setTopAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
+        anchorPane.setRightAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
+
+        anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane());
 
         parentStackPane.setLayoutX(0);
         parentStackPane.setLayoutY(0);
@@ -461,7 +471,7 @@ public class MapViewPane extends BorderPane {
 
         // Adds the mapView and viewport rect underneath the toolbar
         parentStackPane.getChildren().add(viewPortRectangle);
-        Platform.runLater(() -> setCenter(parentStackPane));
+        Platform.runLater(() -> setCenter(anchorPane));
 
     }
 
