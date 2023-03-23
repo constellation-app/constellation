@@ -37,7 +37,6 @@ import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer2;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
-import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,13 +45,13 @@ import java.util.Map;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -62,6 +61,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import org.controlsfx.control.CheckComboBox;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
@@ -77,7 +77,6 @@ import org.openide.util.Lookup;
 public class MapViewPane extends BorderPane {
 
     private final MapViewTopComponent parent;
-    private final ToolBar toolBar;
     private final GridPane toolBarGridPane;
     // Stackpane to hold the map
     private final StackPane parentStackPane;
@@ -138,7 +137,7 @@ public class MapViewPane extends BorderPane {
     private final Button helpButton;
     private final List<String> dropDownOptions = new ArrayList<>();
     private final Label latLabel = new Label("Lattitude: ");
-    private final Label lonLabel = new Label("Longtitude: ");
+    private final Label lonLabel = new Label("Longitude: ");
     private final Label latField = new Label("0.00");
     private final Label lonField = new Label("0.00");
 
@@ -156,12 +155,18 @@ public class MapViewPane extends BorderPane {
 
         viewPortRectangle.setMouseTransparent(true);
 
-        toolBar = new ToolBar();
         toolBarGridPane = new GridPane();
         toolBarGridPane.setHgap(5);
+        toolBarGridPane.setVgap(10);
 
-        latField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-        lonField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+        latLabel.setFont(Font.font(15));
+        lonLabel.setFont(Font.font(15));
+        latLabel.setPadding(new Insets(0, 0, 0, 8));
+
+        latField.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+        latField.setFont(Font.font(15));
+        lonField.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+        lonField.setFont(Font.font(15));
 
         defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
         providers = new ArrayList<>(Lookup.getDefault().lookupAll(MapProvider.class));
@@ -341,7 +346,6 @@ public class MapViewPane extends BorderPane {
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
         helpButton.setTooltip(new Tooltip("Help on using the Map View"));
 
-        //toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton, latLabel, latField, lonLabel, lonField);
         toolBarGridPane.add(mapProviderDropDown, 0, 0);
         toolBarGridPane.add(layersDropDown, 1, 0);
         toolBarGridPane.add(overlaysDropDown, 2, 0);
