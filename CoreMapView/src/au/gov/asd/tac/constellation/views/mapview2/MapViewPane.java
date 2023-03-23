@@ -58,6 +58,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -77,7 +78,7 @@ public class MapViewPane extends BorderPane {
 
     private final MapViewTopComponent parent;
     private final ToolBar toolBar;
-
+    private final GridPane toolBarGridPane;
     // Stackpane to hold the map
     private final StackPane parentStackPane;
 
@@ -156,12 +157,9 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setMouseTransparent(true);
 
         toolBar = new ToolBar();
+        toolBarGridPane = new GridPane();
+        toolBarGridPane.setHgap(5);
 
-
-        latLabel.setVisible(false);
-        lonLabel.setVisible(false);
-        latField.setVisible(false);
-        lonField.setVisible(false);
         latField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
         lonField.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
 
@@ -207,15 +205,13 @@ public class MapViewPane extends BorderPane {
             public void onChanged(final ListChangeListener.Change<? extends String> c) {
                 overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
                 if (overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
-                    latLabel.setVisible(true);
-                    lonLabel.setVisible(true);
-                    latField.setVisible(true);
-                    lonField.setVisible(true);
+                    toolBarGridPane.add(latLabel, 0, 1);
+                    toolBarGridPane.add(latField, 1, 1);
+                    toolBarGridPane.add(lonLabel, 2, 1);
+                    toolBarGridPane.add(lonField, 3, 1);
+
                 } else if (!overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
-                    latLabel.setVisible(false);
-                    lonLabel.setVisible(false);
-                    latField.setVisible(false);
-                    lonField.setVisible(false);
+                    toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
                 }
 
             }
@@ -345,9 +341,17 @@ public class MapViewPane extends BorderPane {
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
         helpButton.setTooltip(new Tooltip("Help on using the Map View"));
 
-        toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton, latLabel, latField, lonLabel, lonField);
-        setTop(toolBar);
-        toolBar.prefWidthProperty().bind(this.widthProperty().subtract(10000));
+        //toolBar.getItems().addAll(mapProviderDropDown, layersDropDown, overlaysDropDown, zoomDropDown, markerDropDown, colourDropDown, markerLabelDropDown, exportDropDown, helpButton, latLabel, latField, lonLabel, lonField);
+        toolBarGridPane.add(mapProviderDropDown, 0, 0);
+        toolBarGridPane.add(layersDropDown, 1, 0);
+        toolBarGridPane.add(overlaysDropDown, 2, 0);
+        toolBarGridPane.add(zoomDropDown, 3, 0);
+        toolBarGridPane.add(markerDropDown, 4, 0);
+        toolBarGridPane.add(colourDropDown, 5, 0);
+        toolBarGridPane.add(markerLabelDropDown, 6, 0);
+        toolBarGridPane.add(exportDropDown, 7, 0);
+        toolBarGridPane.add(helpButton, 8, 0);
+        setTop(toolBarGridPane);
     }
 
     /**

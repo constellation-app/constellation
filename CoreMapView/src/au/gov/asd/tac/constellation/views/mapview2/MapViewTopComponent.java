@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.control.ScrollPane;
 import javax.swing.SwingUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -252,7 +253,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         return mapViewPane.getProviders();
     }
 
-
+    public ScrollPane getScrollPane() {
+        return scrollPane;
+    }
 
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
