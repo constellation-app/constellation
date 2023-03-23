@@ -72,6 +72,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
@@ -138,6 +139,7 @@ public class NotesViewPane extends BorderPane {
     private boolean applySelected;
 
     private final DateTimeRangePicker dateTimeRangePicker = new DateTimeRangePicker();
+    private final Button createNewNoteButton = new Button();
 
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
@@ -346,8 +348,18 @@ public class NotesViewPane extends BorderPane {
                 }
             }
         });
+
+        // Button to trigger pop-up window to make a new note
+        createNewNoteButton.setText("Create Note");
+        createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+
+        createNewNoteButton.setOnAction(event -> {
+            NewNotePane newNotePane = new NewNotePane(this.getScene().getWindow(), userChosenColour);
+            newNotePane.showPopUp();
+        });
+
         // HBox to store the control items at the bottom of the view.
-        final HBox noteHBox = new HBox(OPTIONS_SPACING, applyToSelection, newNoteColour, addNoteButton);
+        final HBox noteHBox = new HBox(OPTIONS_SPACING, applyToSelection, newNoteColour, addNoteButton, createNewNoteButton);
 
         // VBox to store control items used to add new note.
         addNoteVBox = new VBox(DEFAULT_SPACING, titleField, contentField, noteHBox);
