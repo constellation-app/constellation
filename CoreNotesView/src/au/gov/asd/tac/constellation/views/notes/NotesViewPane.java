@@ -669,7 +669,7 @@ public class NotesViewPane extends BorderPane {
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());
 
-        if (newNote.getNoteContent().length() > noteDescriptionCap) {
+        if (newNote.getNoteContent().length() > noteDescriptionCap && !newNote.getEditMode()) {
             contentLabel.setText(newNote.getNoteContent().substring(0, noteDescriptionCap - 1));
         }
 
@@ -777,7 +777,7 @@ public class NotesViewPane extends BorderPane {
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteButtons, noteInformation) : new VBox(DEFAULT_SPACING, noteInformation);
         if (newNote.isUserCreated()) {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
-            if (newNote.getNoteContent().length() > noteDescriptionCap) {
+            if (newNote.getNoteContent().length() > noteDescriptionCap && !newNote.getEditMode()) {
                 noteInformation.getChildren().add(showMoreButton);
             }
             notesListVBox.getChildren().add(noteBody);
@@ -946,6 +946,7 @@ public class NotesViewPane extends BorderPane {
 
             if (newNote.getNoteContent().length() > noteDescriptionCap) {
                 noteInformation.getChildren().add(showMoreButton);
+                contentLabel.setText(newNote.getNoteContent().substring(0, noteDescriptionCap - 1));
             }
             newNote.setEditMode(false);
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE
