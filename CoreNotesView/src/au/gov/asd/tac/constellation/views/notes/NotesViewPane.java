@@ -145,7 +145,7 @@ public class NotesViewPane extends BorderPane {
     private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
-
+    private final int noteDescriptionCap = 500;
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -668,6 +668,11 @@ public class NotesViewPane extends BorderPane {
 
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());
+
+        if (newNote.getNoteContent().length() > noteDescriptionCap) {
+            contentLabel.setText(newNote.getNoteContent().substring(0, noteDescriptionCap - 1));
+        }
+
         contentLabel.setWrapText(true);
         contentLabel.setMinWidth(50);
         contentLabel.setAlignment(Pos.TOP_LEFT);
@@ -757,15 +762,31 @@ public class NotesViewPane extends BorderPane {
         }
 
         noteButtons.setAlignment(Pos.CENTER_RIGHT);
+        final Button showMoreButton = new Button("Show more");
+
+        showMoreButton.setOnAction(event -> {
+            if (showMoreButton.getText().equals("Show more")) {
+                contentLabel.setText(newNote.getNoteContent());
+                showMoreButton.setText("Show less");
+            } else if (showMoreButton.getText().equals("Show less")) {
+                contentLabel.setText(newNote.getNoteContent().substring(0, noteDescriptionCap - 1));
+                showMoreButton.setText("Show more");
+            }
+        });
 
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteButtons, noteInformation) : new VBox(DEFAULT_SPACING, noteInformation);
         if (newNote.isUserCreated()) {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
+            if (newNote.getNoteContent().length() > noteDescriptionCap) {
+                noteInformation.getChildren().add(showMoreButton);
+            }
             notesListVBox.getChildren().add(noteBody);
+
         } else {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + AUTO_COLOR + BG_RADIUS_STYLE);
             notesListVBox.getChildren().add(noteBody);
         }
+
 
         // Change colour of note to whatever user sleects
         colourPicker.setOnAction(event -> {
@@ -902,6 +923,11 @@ public class NotesViewPane extends BorderPane {
             noteButtons.setSpacing(EDIT_SPACING);
 
             noteInformation.getChildren().removeAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+
+            if (noteInformation.getChildren().contains(showMoreButton)) {
+                noteInformation.getChildren().remove(showMoreButton);
+            }
+
             noteInformation.getChildren().addAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
             newNote.setEditMode(true);
 
@@ -915,7 +941,12 @@ public class NotesViewPane extends BorderPane {
             noteButtons.getChildren().addAll(editTextButton, deleteButton);
             noteButtons.setSpacing(DEFAULT_SPACING);
             noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
+
             noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+
+            if (newNote.getNoteContent().length() > noteDescriptionCap) {
+                noteInformation.getChildren().add(showMoreButton);
+            }
             newNote.setEditMode(false);
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE
                     + currentColour + BG_RADIUS_STYLE);
@@ -943,6 +974,11 @@ public class NotesViewPane extends BorderPane {
 
                 noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
                 noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+
+                if (newNote.getNoteContent().length() > noteDescriptionCap) {
+                    noteInformation.getChildren().add(showMoreButton);
+                    contentLabel.setText(newNote.getNoteContent().substring(0, noteDescriptionCap - 1));
+                }
                 newNote.setEditMode(false);
             }
         });
