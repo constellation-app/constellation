@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -137,7 +138,7 @@ public class NotesViewPane extends BorderPane {
     private final List<String> tagsUpdater = new ArrayList<>();
     private ObservableList<String> tagsFiltersList;
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
-    private boolean applySelected;
+    //private boolean applySelected;
 
     private final DateTimeRangePicker dateTimeRangePicker = new DateTimeRangePicker();
     private final Button createNewNoteButton = new Button();
@@ -245,65 +246,38 @@ public class NotesViewPane extends BorderPane {
         filterNotesHBox.setAlignment(Pos.TOP_LEFT);
         filterNotesHBox.setStyle("-fx-padding: 5px;");
 
-        // TextField to enter new note title.
-        final TextField titleField = new TextField();
-        titleField.setPromptText("Type a title...");
-        titleField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";");
-
-        // Checkbox to apply note to selection.
-        final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
-        applyToSelection.setSelected(true);
-        applySelected = true;
-        applyToSelection.selectedProperty().addListener((ov, oldVal, newVal) -> applySelected = applyToSelection.isSelected());
-
-        // TextArea to enter new note content.
-        final TextArea contentField = new TextArea();
-        contentField.setPromptText("Type a note...");
-        contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";");
-        contentField.setWrapText(true);
-        contentField.setOnKeyPressed(key -> {
-            // If tab is typed and shift isn't being held dowm.
-            if (key.getCode() == KeyCode.TAB && !key.isShiftDown()) {
-                // Backspace any tabs typed.
-                contentField.fireEvent(new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.BACK_SPACE, false, false, false, false));
-                // Move focus to the next UI element.
-                contentField.getParent().getChildrenUnmodifiable().get(contentField.getParent().getChildrenUnmodifiable().indexOf(contentField) + 1).requestFocus();
-            }
-        });
         newNotePane = new NewNotePane(userChosenColour);
-        // Colourpicker to set colour of new note
-        ColorPicker newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(userChosenColour).getJavaFXColor());
-        newNoteColour.setOnAction(event -> userChosenColour = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
-
         // Button to trigger pop-up window to make a new note
         createNewNoteButton.setText("Create Note");
         createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
         createNewNoteButton.setOnAction(event -> {
-
             newNotePane.showPopUp();
         });
 
         // Button to add new note
         final Button addNoteButton = new Button("Add Note");
         addNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        addNoteButton.setOnAction(event -> {
+        newNotePane.getAddButtion().setOnAction(event -> {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
-                if ((titleField.getText().isBlank() && titleField.getText().isEmpty())
-                        || (contentField.getText().isBlank() && contentField.getText().isEmpty())) {
+                if ((newNotePane.getTitleField().getText().isBlank() && newNotePane.getTitleField().getText().isEmpty())
+                        || (newNotePane.getContentField().getText().isBlank() && newNotePane.getContentField().getText().isEmpty())) {
+                    newNotePane.closePopUp();
                     JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
+                    newNotePane.showPopUp();
                 } else {
                     synchronized (LOCK) {
                         notesViewEntries.add(new NotesViewEntry(
                                 Long.toString(ZonedDateTime.now().toInstant().toEpochMilli()),
-                                titleField.getText(),
-                                contentField.getText(),
+                                newNotePane.getTitleField().getText(),
+                                newNotePane.getContentField().getText(),
                                 true,
-                                !applySelected,
-                                userChosenColour
+                                !newNotePane.isApplySelected(),
+                                newNotePane.getUserChosenColour()
                         ));
-                        if (applySelected) {
+                        if (newNotePane.isApplySelected()) {
+                            LOGGER.log(Level.SEVERE, "Selecting nodes to link to note");
                             // Get selected nodes from the graph.
                             final List<Integer> selectedNodes = new ArrayList<>();
                             // Get selected transactions from the graph.
@@ -350,10 +324,11 @@ public class NotesViewPane extends BorderPane {
                             }
                         }
                     }
-                    titleField.clear();
-                    contentField.clear();
+                    newNotePane.getTitleField().clear();
+                    newNotePane.getContentField().clear();
                     updateNotesUI();
                     controller.writeState(activeGraph);
+                    newNotePane.closePopUp();
                     event.consume();
                 }
             }
@@ -361,13 +336,12 @@ public class NotesViewPane extends BorderPane {
 
 
         // HBox to store the control items at the bottom of the view.
-        final HBox noteHBox = new HBox(OPTIONS_SPACING, applyToSelection, newNoteColour, addNoteButton, createNewNoteButton);
+        final HBox noteHBox = new HBox(createNewNoteButton);
 
         // VBox to store control items used to add new note.
-        addNoteVBox = new VBox(DEFAULT_SPACING, titleField, contentField, noteHBox);
+        addNoteVBox = new VBox(DEFAULT_SPACING, noteHBox);
         addNoteVBox.setAlignment(Pos.CENTER_RIGHT);
         addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
-        addNoteVBox.setMinHeight(200);
 
         // VBox in a ScrollPane for holding expanding list of user and plugin generated notes.
         notesListVBox = new VBox(DEFAULT_SPACING);

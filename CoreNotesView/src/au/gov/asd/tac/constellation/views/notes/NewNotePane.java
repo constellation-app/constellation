@@ -33,6 +33,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -57,18 +62,21 @@ public class NewNotePane {
     private static final double WIDTH = 1000;
     private static final double HEIGHT = 175;
 
-    final TextField titleField = new TextField();
+    private final TextArea contentField;
+    private final TextField titleField = new TextField();
     private final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
 
-    private boolean applySelected;
-    private static String userChosenColour = "#942483";
+    private final ColorPicker newNoteColour;
+
+    private boolean applySelected = true;
+    private static String USER_CHOSEN_COLOUR = "#942483";
 
     private final Button addButton = new Button("Add Note");
     private final Button cancelButton = new Button("Cancel");
     private Stage stage = null;
 
     public NewNotePane(final String userChosenColour) {
-        this.userChosenColour = userChosenColour;
+        USER_CHOSEN_COLOUR = userChosenColour;
 
         dialogPane = new Pane();
         dialogPane.setMinHeight(HEIGHT);
@@ -85,22 +93,20 @@ public class NewNotePane {
         titleField.setStyle(fontStyle + "-fx-prompt-text-f\n" +
  "        titleField.setStyle(ill: " + PROMPT_COLOR + ";");
         titleField.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-        titleField.setMaxWidth(WIDTH);
-        titleField.setMinWidth(WIDTH);
+        titleField.setStyle("-fx-text-fill: #FFFFFF;");
+        titleField.setMinWidth(WIDTH - 5);
 
 
         // Checkbox to apply note to selection.
         applyToSelection.setSelected(true);
         applyToSelection.setTextFill(Color.WHITE);
         applyToSelection.setStyle("-fx-selected-box-color: #000000");
-        applySelected = true;
         applyToSelection.selectedProperty().addListener((ov, oldVal, newVal) -> applySelected = applyToSelection.isSelected());
 
         // TextArea to enter new note content.
-        final TextArea contentField = new TextArea();
+        contentField = new TextArea();
 
-        contentField.setMaxWidth(WIDTH);
-        contentField.setMinWidth(WIDTH);
+        contentField.setMinWidth(WIDTH - 5);
         contentField.setPromptText("Type a note...");
         contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
         //contentField.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
@@ -116,14 +122,28 @@ public class NewNotePane {
         });
 
         // Colourpicker to set colour of new note
-        ColorPicker newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(userChosenColour).getJavaFXColor());
-        newNoteColour.setOnAction(event -> this.userChosenColour = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
+        newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(userChosenColour).getJavaFXColor());
+        newNoteColour.setOnAction(event -> USER_CHOSEN_COLOUR = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
+        newNoteColour.setStyle("-fx-background-color: #000000;");
+        newNoteColour.setOnMouseEntered(event -> newNoteColour.setStyle("-fx-background-color: #242124; "));
+        newNoteColour.setOnMouseExited(event -> newNoteColour.setStyle("-fx-background-color: #000000;  "));
+        newNoteColour.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
 
-        addButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        addButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()) + "-fx-background-color: #26ED49;");
         addButton.setPadding(new Insets(0, 15, 0, 15));
-        cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        addButton.setMinHeight(25);
+        addButton.setTextFill(Color.BLACK);
+        addButton.setOnMouseEntered(event -> addButton.setStyle("-fx-background-color: #86ED26; "));
+        addButton.setOnMouseExited(event -> addButton.setStyle("-fx-background-color: #26ED49;  "));
+
+
+        cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()) + "-fx-background-color: #DEC20B;");
         cancelButton.setPadding(new Insets(0, 15, 0, 15));
-        cancelButton.setOnAction(event -> stage.close());
+        cancelButton.setMinHeight(25);
+        cancelButton.setTextFill(Color.BLACK);
+        cancelButton.setOnAction(event -> closePopUp());
+        cancelButton.setOnMouseEntered(event -> cancelButton.setStyle("-fx-background-color: #DBA800; "));
+        cancelButton.setOnMouseExited(event -> cancelButton.setStyle("-fx-background-color: #DEC20B;  "));
 
         final HBox noteHBox = new HBox(30, applyToSelection, newNoteColour, addButton, cancelButton);
 
@@ -142,10 +162,11 @@ public class NewNotePane {
             stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setTitle("Create new note");
-            stage.setMaxHeight(HEIGHT * 2);
+            //stage.setMaxHeight(HEIGHT * 2);
             stage.setMinHeight(HEIGHT * 2);
-            stage.setMaxWidth(WIDTH);
+            //stage.setMaxWidth(WIDTH);
             stage.setMinWidth(WIDTH);
+            stage.setResizable(true);
             stage.setScene(new Scene(dialogPane));
             isFirstTime = false;
         }
@@ -154,5 +175,31 @@ public class NewNotePane {
             stage.show();
         }
 
+    }
+
+    public TextField getTitleField() {
+        return titleField;
+    }
+
+    public TextArea getContentField() {
+        return contentField;
+    }
+
+    public Button getAddButtion() {
+        return addButton;
+    }
+
+    public String getUserChosenColour() {
+        return USER_CHOSEN_COLOUR;
+    }
+
+    public boolean isApplySelected() {
+        return applySelected;
+    }
+
+    public void closePopUp() {
+        if (stage != null) {
+            stage.close();
+        }
     }
 }
