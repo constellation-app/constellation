@@ -734,12 +734,12 @@ public class NotesViewPane extends BorderPane {
         cancelButton.setMinWidth(92);
         cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
-        final VBox editScreenButtons = new VBox(DEFAULT_SPACING, saveTextButton, cancelButton);
+        final HBox editScreenButtons = new HBox(DEFAULT_SPACING, saveTextButton, cancelButton);
         editScreenButtons.setAlignment(Pos.CENTER);
 
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
-        final VBox noteButtons;
+        final HBox noteButtons;
 
         if (newNote.getNodeColour().isBlank() || newNote.getNodeColour().isEmpty()) {
             newNote.setNodeColour(USER_COLOR);
@@ -749,16 +749,16 @@ public class NotesViewPane extends BorderPane {
         colourPicker.setMinWidth(92);
 
         if (newNote.getEditMode()) {
-            noteButtons = new VBox(EDIT_SPACING, colourPicker, editScreenButtons);
+            noteButtons = new HBox(EDIT_SPACING, colourPicker, editScreenButtons);
             newNote.setEditMode(true);
         } else {
             newNote.setEditMode(false);
-            noteButtons = new VBox(DEFAULT_SPACING, editTextButton, deleteButton);
+            noteButtons = new HBox(DEFAULT_SPACING, editTextButton, deleteButton);
         }
 
-        noteButtons.setAlignment(Pos.CENTER);
+        noteButtons.setAlignment(Pos.CENTER_RIGHT);
 
-        final HBox noteBody = newNote.isUserCreated() ? new HBox(DEFAULT_SPACING, noteInformation, noteButtons) : new HBox(DEFAULT_SPACING, noteInformation);
+        final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteButtons, noteInformation) : new VBox(DEFAULT_SPACING, noteInformation);
         if (newNote.isUserCreated()) {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
             notesListVBox.getChildren().add(noteBody);
