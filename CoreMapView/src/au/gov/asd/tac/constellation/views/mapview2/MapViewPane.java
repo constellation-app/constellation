@@ -58,7 +58,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -200,7 +205,7 @@ public class MapViewPane extends BorderPane {
         });
 
         // Add overlays to toolbar
-        overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY));
+        overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY, OVERVIEW_OVERLAY));
         overlaysDropDown.setTitle("Overlays");
         overlaysDropDown.setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
         overlaysDropDown.setMinWidth(95);
@@ -451,14 +456,17 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setY(0);
 
         final AnchorPane anchorPane = new AnchorPane();
-        anchorPane.setTopAnchor(parentStackPane, 0.0);
-        anchorPane.setRightAnchor(parentStackPane, 0.0);
-        anchorPane.setLeftAnchor(parentStackPane, 0.0);
+        AnchorPane.setTopAnchor(parentStackPane, 0.0);
+        AnchorPane.setRightAnchor(parentStackPane, 0.0);
+        AnchorPane.setLeftAnchor(parentStackPane, 0.0);
 
-        anchorPane.setTopAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
-        anchorPane.setRightAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
+        AnchorPane.setTopAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
+        AnchorPane.setRightAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
 
-        anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane());
+        AnchorPane.setBottomAnchor(mapView.OVERVIEW_OVERLAY.getOverlayPane(), 290.0);
+        AnchorPane.setRightAnchor(mapView.OVERVIEW_OVERLAY.getOverlayPane(), 5.0);
+
+        anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.OVERVIEW_OVERLAY.getOverlayPane());
 
         parentStackPane.setLayoutX(0);
         parentStackPane.setLayoutY(0);

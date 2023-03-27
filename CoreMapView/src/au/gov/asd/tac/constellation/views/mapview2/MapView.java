@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.PolygonMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.AbstractOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.InfoOverlay;
+import au.gov.asd.tac.constellation.views.mapview2.overlays.OverviewOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
@@ -199,11 +200,9 @@ public class MapView extends ScrollPane {
     // All the layers are stored here
     private final List<AbstractMapLayer> layers = new ArrayList<>();
 
-    private static final double INFO_OVERLAY_WIDTH = 20;
-    private static final double INFO_OVERLAY_HEIGHT = 20;
-
     public static final ToolsOverlay TOOLS_OVERLAY = new ToolsOverlay(0, 0);
-    private static final InfoOverlay INFO_OVERLAY = new InfoOverlay(INFO_OVERLAY_WIDTH, INFO_OVERLAY_HEIGHT);
+    private static final InfoOverlay INFO_OVERLAY = new InfoOverlay();
+    public static OverviewOverlay OVERVIEW_OVERLAY;
 
     private static final String COORDINATE = "Coordinate";
     private static final String GEOHASH = "Geohash";
@@ -289,7 +288,7 @@ public class MapView extends ScrollPane {
         for (int i = 0; i < countrySVGPaths.size(); ++i) {
             countryGroup.getChildren().add(countrySVGPaths.get(i));
         }
-
+        OVERVIEW_OVERLAY = new OverviewOverlay(0, 0, countrySVGPaths);
         // Set default pan behaviour to false
         this.setPannable(false);
 
@@ -312,6 +311,7 @@ public class MapView extends ScrollPane {
         // Put overlays in map
         overlayMap.put(MapViewPane.TOOLS_OVERLAY, TOOLS_OVERLAY);
         overlayMap.put(MapViewPane.INFO_OVERLAY, INFO_OVERLAY);
+        overlayMap.put(MapViewPane.OVERVIEW_OVERLAY, OVERVIEW_OVERLAY);
 
         markerColourProperty.set(parent.DEFAULT_COLOURS);
         // Event listener for what colour point markers should be

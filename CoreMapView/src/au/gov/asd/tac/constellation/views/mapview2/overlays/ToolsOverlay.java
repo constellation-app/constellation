@@ -61,6 +61,15 @@ public class ToolsOverlay extends AbstractOverlay {
      */
     public ToolsOverlay(final double positionX, final double positionY) {
         super(positionX, positionY);
+
+        // Set up the ui for main border pane
+        overlayPane.setPrefHeight(height);
+        overlayPane.setPrefWidth(width);
+        overlayPane.setMinWidth(width);
+        overlayPane.setMaxWidth(width);
+        overlayPane.setMinHeight(height);
+        overlayPane.setMaxHeight(height);
+
         final Label measureText = new Label("Measure");
         measureText.setTextFill(Color.WHITE);
 

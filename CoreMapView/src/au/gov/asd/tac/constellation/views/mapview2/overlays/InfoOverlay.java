@@ -23,7 +23,9 @@ import javafx.scene.control.Label;
 
 /**
  * Overlay that shows the exact geo-coordinates of wherever the user hovers
- * their mouse on the map
+ * their mouse on the map. This appears on a second line under the toolbar The
+ * positionX and positionY variables needed to pass to the abstract overlay have
+ * no effect
  *
  * @author altair1673
  */
@@ -41,8 +43,8 @@ public class InfoOverlay extends AbstractOverlay {
      * @param positionX
      * @param positionY
      */
-    public InfoOverlay(final double positionX, final double positionY) {
-        super(positionX, positionY);
+    public InfoOverlay() {
+        super(0, 0);
         lonText = new Label();
         latText = new Label();
         overlayPane.setOpacity(0);
