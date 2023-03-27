@@ -17,13 +17,10 @@ package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
-import java.util.Optional;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
@@ -43,9 +40,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.FontPosture;
 import javafx.stage.Modality;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
@@ -75,8 +70,12 @@ public class NewNotePane {
     private final Button cancelButton = new Button("Cancel");
     private Stage stage = null;
 
+    private Window parent = null;
+
     public NewNotePane(final String userChosenColour) {
         USER_CHOSEN_COLOUR = userChosenColour;
+
+        //parent.setOnCloseRequest(event -> closePopUp());
 
         dialogPane = new Pane();
         dialogPane.setMinHeight(HEIGHT);
@@ -159,12 +158,11 @@ public class NewNotePane {
 
     public void showPopUp() {
         if (isFirstTime) {
+            parent.setOnCloseRequest(event -> closePopUp());
             stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setTitle("Create new note");
-            //stage.setMaxHeight(HEIGHT * 2);
             stage.setMinHeight(HEIGHT * 2);
-            //stage.setMaxWidth(WIDTH);
             stage.setMinWidth(WIDTH);
             stage.setResizable(true);
             stage.setScene(new Scene(dialogPane));
@@ -202,4 +200,9 @@ public class NewNotePane {
             stage.close();
         }
     }
+
+    public void setParent(Window parent) {
+        this.parent = parent;
+    }
+
 }

@@ -138,10 +138,11 @@ public class NotesViewPane extends BorderPane {
     private final List<String> tagsUpdater = new ArrayList<>();
     private ObservableList<String> tagsFiltersList;
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
-    //private boolean applySelected;
+
 
     private final DateTimeRangePicker dateTimeRangePicker = new DateTimeRangePicker();
     private final Button createNewNoteButton = new Button();
+    private boolean creatingFirstNote = true;
     private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
@@ -252,12 +253,14 @@ public class NotesViewPane extends BorderPane {
         createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
         createNewNoteButton.setOnAction(event -> {
+            if (creatingFirstNote) {
+                newNotePane.setParent(this.getScene().getWindow());
+                creatingFirstNote = false;
+            }
             newNotePane.showPopUp();
         });
 
-        // Button to add new note
-        final Button addNoteButton = new Button("Add Note");
-        addNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        // Event handler to add new note
         newNotePane.getAddButtion().setOnAction(event -> {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
