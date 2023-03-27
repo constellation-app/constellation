@@ -109,8 +109,8 @@ public class NotesViewPane extends BorderPane {
 
     private static final int DEFAULT_SPACING = 5;
     private static final int EDIT_SPACING = 110;
-    private static final int OPTIONS_SPACING = 30;
-    private static final String PROMPT_COLOR = "#909090";
+    private final static String SHOW_MORE = "Show more";
+    private final static String SHOW_LESS = "Show less";
     private static final String USER_COLOR = "#942483";
     private static final String AUTO_COLOR = "#1c5aa6";
     private static String userChosenColour = USER_COLOR;
@@ -141,7 +141,7 @@ public class NotesViewPane extends BorderPane {
     private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
-    private final int noteDescriptionCap = 500;
+    private final static int NOTE_DESCRIPTION_CAP = 500;
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -669,8 +669,8 @@ public class NotesViewPane extends BorderPane {
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());
 
-        if (newNote.getNoteContent().length() > noteDescriptionCap && !newNote.getEditMode()) {
-            contentLabel.setText(newNote.getNoteContent().substring(0, noteDescriptionCap - 1));
+        if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP && !newNote.getEditMode()) {
+            contentLabel.setText(newNote.getNoteContent().substring(0, NOTE_DESCRIPTION_CAP - 1));
         }
 
         contentLabel.setWrapText(true);
@@ -762,22 +762,22 @@ public class NotesViewPane extends BorderPane {
         }
 
         noteButtons.setAlignment(Pos.CENTER_RIGHT);
-        final Button showMoreButton = new Button("Show more");
+        final Button showMoreButton = new Button(SHOW_MORE);
 
         showMoreButton.setOnAction(event -> {
-            if (showMoreButton.getText().equals("Show more")) {
+            if (showMoreButton.getText().equals(SHOW_MORE)) {
                 contentLabel.setText(newNote.getNoteContent());
-                showMoreButton.setText("Show less");
-            } else if (showMoreButton.getText().equals("Show less")) {
-                contentLabel.setText(newNote.getNoteContent().substring(0, noteDescriptionCap - 1));
-                showMoreButton.setText("Show more");
+                showMoreButton.setText(SHOW_LESS);
+            } else if (showMoreButton.getText().equals(SHOW_LESS)) {
+                contentLabel.setText(newNote.getNoteContent().substring(0, NOTE_DESCRIPTION_CAP - 1));
+                showMoreButton.setText(SHOW_MORE);
             }
         });
 
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteButtons, noteInformation) : new VBox(DEFAULT_SPACING, noteInformation);
         if (newNote.isUserCreated()) {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
-            if (newNote.getNoteContent().length() > noteDescriptionCap && !newNote.getEditMode()) {
+            if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP && !newNote.getEditMode()) {
                 noteInformation.getChildren().add(showMoreButton);
             }
             notesListVBox.getChildren().add(noteBody);
@@ -944,9 +944,9 @@ public class NotesViewPane extends BorderPane {
 
             noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
 
-            if (newNote.getNoteContent().length() > noteDescriptionCap) {
+            if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP) {
                 noteInformation.getChildren().add(showMoreButton);
-                contentLabel.setText(newNote.getNoteContent().substring(0, noteDescriptionCap - 1));
+                contentLabel.setText(newNote.getNoteContent().substring(0, NOTE_DESCRIPTION_CAP - 1));
             }
             newNote.setEditMode(false);
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE
@@ -976,9 +976,9 @@ public class NotesViewPane extends BorderPane {
                 noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
                 noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
 
-                if (newNote.getNoteContent().length() > noteDescriptionCap) {
+                if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP) {
                     noteInformation.getChildren().add(showMoreButton);
-                    contentLabel.setText(newNote.getNoteContent().substring(0, noteDescriptionCap - 1));
+                    contentLabel.setText(newNote.getNoteContent().substring(0, NOTE_DESCRIPTION_CAP - 1));
                 }
                 newNote.setEditMode(false);
             }

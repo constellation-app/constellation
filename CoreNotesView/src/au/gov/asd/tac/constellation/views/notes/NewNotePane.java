@@ -52,8 +52,9 @@ import javafx.stage.Window;
 public class NewNotePane {
     private boolean isFirstTime = true;
     private final Pane dialogPane;
-    private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
-    private final String titleFontStyle = String.format("-fx-font-size:%d;", 20);
+    private final static String FONT_SIZE_STRING = "-fx-font-size:%d;";
+    private final String fontStyle = String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize());
+    private final String titleFontStyle = String.format(FONT_SIZE_STRING, 20);
     private static final String PROMPT_COLOR = "#909090";
     private static final double WIDTH = 1000;
     private static final double HEIGHT = 175;
@@ -65,7 +66,7 @@ public class NewNotePane {
     private final ColorPicker newNoteColour;
 
     private boolean applySelected = true;
-    private static String USER_CHOSEN_COLOUR = "#942483";
+    private static String userChosenColour;
 
     private final Button addButton = new Button("Add Note");
     private final Button cancelButton = new Button("Cancel");
@@ -74,7 +75,7 @@ public class NewNotePane {
     private Window parent = null;
 
     public NewNotePane(final String userChosenColour) {
-        USER_CHOSEN_COLOUR = userChosenColour;
+        this.userChosenColour = userChosenColour;
 
         dialogPane = new Pane();
         dialogPane.setMinHeight(HEIGHT);
@@ -94,7 +95,6 @@ public class NewNotePane {
         titleField.setStyle("-fx-text-fill: #FFFFFF;");
         titleField.setMinWidth(WIDTH - 5);
 
-
         // Checkbox to apply note to selection.
         applyToSelection.setSelected(true);
         applyToSelection.setTextFill(Color.WHITE);
@@ -103,7 +103,6 @@ public class NewNotePane {
 
         // TextArea to enter new note content.
         contentField = new TextArea();
-
         contentField.setMinWidth(WIDTH - 5);
         contentField.setPromptText("Type a note...");
         contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
@@ -119,10 +118,10 @@ public class NewNotePane {
         });
 
         // Colourpicker to set colour of new note
-        newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(userChosenColour).getJavaFXColor());
-        newNoteColour.setOnAction(event -> USER_CHOSEN_COLOUR = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
+        newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(NewNotePane.userChosenColour).getJavaFXColor());
+        newNoteColour.setOnAction(event -> NewNotePane.userChosenColour = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
         newNoteColour.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-        addButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()) + "-fx-background-color: #26ED49;");
+        addButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()) + "-fx-background-color: #26ED49;");
         addButton.setPadding(new Insets(0, 15, 0, 15));
         addButton.setMinHeight(25);
         addButton.setTextFill(Color.BLACK);
@@ -130,7 +129,7 @@ public class NewNotePane {
         addButton.setOnMouseExited(event -> addButton.setStyle("-fx-background-color: #26ED49;  "));
 
         // Cancel button to stop creating a new note
-        cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()) + "-fx-background-color: #DEC20B;");
+        cancelButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()) + "-fx-background-color: #DEC20B;");
         cancelButton.setPadding(new Insets(0, 15, 0, 15));
         cancelButton.setMinHeight(25);
         cancelButton.setTextFill(Color.BLACK);
@@ -174,7 +173,6 @@ public class NewNotePane {
         if (!stage.isShowing()) {
             stage.show();
         }
-
     }
 
     public TextField getTitleField() {
@@ -190,7 +188,7 @@ public class NewNotePane {
     }
 
     public String getUserChosenColour() {
-        return USER_CHOSEN_COLOUR;
+        return userChosenColour;
     }
 
     public boolean isApplySelected() {
