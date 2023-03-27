@@ -44,7 +44,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,7 +56,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -67,14 +65,11 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
@@ -247,7 +242,9 @@ public class NotesViewPane extends BorderPane {
         filterNotesHBox.setAlignment(Pos.TOP_LEFT);
         filterNotesHBox.setStyle("-fx-padding: 5px;");
 
+        // Create the actual note that allows user to add new notes
         newNotePane = new NewNotePane(userChosenColour);
+
         // Button to trigger pop-up window to make a new note
         createNewNoteButton.setText("Create Note");
         createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
@@ -327,8 +324,7 @@ public class NotesViewPane extends BorderPane {
                             }
                         }
                     }
-                    newNotePane.getTitleField().clear();
-                    newNotePane.getContentField().clear();
+                    newNotePane.clearTextFields();
                     updateNotesUI();
                     controller.writeState(activeGraph);
                     newNotePane.closePopUp();
@@ -668,6 +664,7 @@ public class NotesViewPane extends BorderPane {
         final Label titleLabel = new Label(newNote.getNoteTitle());
         titleLabel.setWrapText(true);
         titleLabel.setStyle(BOLD_STYLE + fontStyle);
+        titleLabel.setStyle("-fx-font-color: #FFFFFF;");
 
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());

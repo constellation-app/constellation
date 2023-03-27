@@ -45,6 +45,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 /**
+ * A Pane that has all the controls that lets user create a new Note
  *
  * @author altair1673
  */
@@ -74,8 +75,6 @@ public class NewNotePane {
 
     public NewNotePane(final String userChosenColour) {
         USER_CHOSEN_COLOUR = userChosenColour;
-
-        //parent.setOnCloseRequest(event -> closePopUp());
 
         dialogPane = new Pane();
         dialogPane.setMinHeight(HEIGHT);
@@ -108,7 +107,6 @@ public class NewNotePane {
         contentField.setMinWidth(WIDTH - 5);
         contentField.setPromptText("Type a note...");
         contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
-        //contentField.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
         contentField.setWrapText(true);
         contentField.setOnKeyPressed(key -> {
             // If tab is typed and shift isn't being held dowm.
@@ -123,11 +121,7 @@ public class NewNotePane {
         // Colourpicker to set colour of new note
         newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(userChosenColour).getJavaFXColor());
         newNoteColour.setOnAction(event -> USER_CHOSEN_COLOUR = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
-        newNoteColour.setStyle("-fx-background-color: #000000;");
-        newNoteColour.setOnMouseEntered(event -> newNoteColour.setStyle("-fx-background-color: #242124; "));
-        newNoteColour.setOnMouseExited(event -> newNoteColour.setStyle("-fx-background-color: #000000;  "));
         newNoteColour.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-
         addButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()) + "-fx-background-color: #26ED49;");
         addButton.setPadding(new Insets(0, 15, 0, 15));
         addButton.setMinHeight(25);
@@ -135,7 +129,7 @@ public class NewNotePane {
         addButton.setOnMouseEntered(event -> addButton.setStyle("-fx-background-color: #86ED26; "));
         addButton.setOnMouseExited(event -> addButton.setStyle("-fx-background-color: #26ED49;  "));
 
-
+        // Cancel button to stop creating a new note
         cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()) + "-fx-background-color: #DEC20B;");
         cancelButton.setPadding(new Insets(0, 15, 0, 15));
         cancelButton.setMinHeight(25);
@@ -156,9 +150,17 @@ public class NewNotePane {
         dialogPane.getChildren().add(addNoteVBox);
     }
 
+    /**
+     * Instantiate stage for the pop up and set event handler to close it when
+     * consty closes
+     */
     public void showPopUp() {
         if (isFirstTime) {
-            parent.setOnCloseRequest(event -> closePopUp());
+            parent.setOnCloseRequest(event -> {
+                addButton.setDisable(true);
+                cancelButton.setDisable(true);
+                closePopUp();
+            });
             stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setTitle("Create new note");
@@ -203,6 +205,11 @@ public class NewNotePane {
 
     public void setParent(Window parent) {
         this.parent = parent;
+    }
+
+    public void clearTextFields() {
+        titleField.clear();
+        contentField.clear();
     }
 
 }
