@@ -576,13 +576,16 @@ public class MapView extends ScrollPane {
         final Vec3 mapTopRight = new Vec3(mapPos.getX() + mapStackPane.getWidth(), mapPos.getY());
         final Vec3 topRightViewPort = new Vec3(viewPortRect.getX() + viewPortRect.getWidth(), viewPortRect.getY());
 
+        final Point2D screenViewPortTopLeft = viewPortRect.localToScreen(viewPortRect.getX(), viewPortRect.getY());
+        final Point2D screenViewPortTopRight = viewPortRect.localToScreen(viewPortRect.getX() + viewPortRect.getWidth(), viewPortRect.getY());
+
         final Vec3 topLeftVect = new Vec3(viewPortPos.getX() - mapPos.getX(), viewPortPos.getY() - mapPos.getY());
         final Vec3 topRightVect = new Vec3(topRightViewPort.getX() - mapTopRight.getX(), topRightViewPort.getY() - mapTopRight.getY());
 
         final Vec3 newTopLeft = new Vec3(clipRectangle.getX() + topLeftVect.getX(), clipRectangle.getY() + topLeftVect.getY());
         final Vec3 newTopRight = new Vec3((clipRectangle.getX() + clipRectangle.getWidth()) + topRightVect.getX(), clipRectangle.getY() + topRightVect.getY());
 
-        final double width = newTopRight.getX() - newTopLeft.getX();
+        final double width = screenViewPortTopRight.getX() - screenViewPortTopLeft.getX();
 
         OVERVIEW_OVERLAY.update(topLeftVect, width);
     }
