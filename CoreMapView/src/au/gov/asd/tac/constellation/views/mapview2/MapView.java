@@ -532,6 +532,13 @@ public class MapView extends ScrollPane {
             transalateX = mapStackPane.getTranslateX();
             transalateY = mapStackPane.getTranslateY();
 
+            final Rectangle viewPortRect = parent.getViewPortRectangle();
+
+            clipRectangle.setX(viewPortRect.getX());
+            clipRectangle.setY(viewPortRect.getY());
+            clipRectangle.setWidth(viewPortRect.getWidth());
+            clipRectangle.setHeight(viewPortRect.getHeight());
+
         });
 
         // When mouse is pressed instantiate multi-select rectangle
@@ -557,20 +564,27 @@ public class MapView extends ScrollPane {
         });
     }
 
-    int counter = 0;
     private void updateOverviewOverlay() {
         final Rectangle viewPortRect = parent.getViewPortRectangle();
 
-        LOGGER.log(Level.SEVERE, ++counter + ": x coord of map: " + mapStackPane.getParent().localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX());
+        LOGGER.log(Level.SEVERE, ": x coord of map: " + mapStackPane.getParent().localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX());
 
-        LOGGER.log(Level.SEVERE, counter + ": x coord of view port rect: " + viewPortRect.localToParent(viewPortRect.getX(), viewPortRect.getY()).getX());
+        LOGGER.log(Level.SEVERE, ": x coord of view port rect: " + viewPortRect.localToParent(viewPortRect.getX(), viewPortRect.getY()).getX());
 
         final Point2D mapPos = mapStackPane.getParent().localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY());
         final Point2D viewPortPos = viewPortRect.localToParent(viewPortRect.getX(), viewPortRect.getY());
+        final Vec3 mapTopRight = new Vec3(mapPos.getX() + mapStackPane.getWidth(), mapPos.getY());
+        final Vec3 topRightViewPort = new Vec3(viewPortRect.getX() + viewPortRect.getWidth(), viewPortRect.getY());
 
         final Vec3 topLeftVect = new Vec3(viewPortPos.getX() - mapPos.getX(), viewPortPos.getY() - mapPos.getY());
+        final Vec3 topRightVect = new Vec3(topRightViewPort.getX() - mapTopRight.getX(), topRightViewPort.getY() - mapTopRight.getY());
 
-        OVERVIEW_OVERLAY.update(topLeftVect);
+        final Vec3 newTopLeft = new Vec3(clipRectangle.getX() + topLeftVect.getX(), clipRectangle.getY() + topLeftVect.getY());
+        final Vec3 newTopRight = new Vec3((clipRectangle.getX() + clipRectangle.getWidth()) + topRightVect.getX(), clipRectangle.getY() + topRightVect.getY());
+
+        final double width = newTopRight.getX() - newTopLeft.getX();
+
+        OVERVIEW_OVERLAY.update(topLeftVect, width);
     }
 
     /**
@@ -690,6 +704,13 @@ public class MapView extends ScrollPane {
                     return;
                 }
 
+                final Rectangle viewPortRect = parent.getViewPortRectangle();
+
+                clipRectangle.setX(viewPortRect.getX());
+                clipRectangle.setY(viewPortRect.getY());
+                clipRectangle.setWidth(viewPortRect.getWidth());
+                clipRectangle.setHeight(viewPortRect.getHeight());
+
                 // Scroll factor is more or less than 1 depending on which way the scroll wheele is scrolled
                 final double scaleFactor = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
 
@@ -716,6 +737,8 @@ public class MapView extends ScrollPane {
                 // Scale the map
                 mapStackPane.setScaleX(newXScale);
                 mapStackPane.setScaleY(newYScale);
+
+                updateOverviewOverlay();
 
                 // If cluster markers are showing then update them based on distance between markers
                 if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {

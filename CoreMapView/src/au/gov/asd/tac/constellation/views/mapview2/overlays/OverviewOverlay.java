@@ -83,9 +83,10 @@ public class OverviewOverlay extends AbstractOverlay {
         return overlayPane;
     }
 
-    public void update(final Vec3 moveVect) {
+    public void update(final Vec3 moveVect, final double width) {
         panningRect.setTranslateX(moveVect.getX() * MAP_SCALE);
         panningRect.setTranslateY(moveVect.getY() * MAP_SCALE);
+        panningRect.setWidth(width * MAP_SCALE);
     }
 
 }
