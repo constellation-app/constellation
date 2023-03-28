@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.overlays;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import java.util.List;
 import javafx.scene.Group;
 import javafx.scene.layout.Background;
@@ -26,6 +28,7 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 
 /**
@@ -37,13 +40,23 @@ public class OverviewOverlay extends AbstractOverlay {
     //private static final Pane map = new Pane();
     private final static double MAP_SCALE = 0.2;
 
+    private final Rectangle panningRect = new Rectangle();
+    private final Group panRectGroup = new Group();
+
     public OverviewOverlay(double positionX, double positionY, final List<SVGPath> countrySVGPaths) {
         super(positionX, positionY);
 
-        overlayPane.setMinWidth(203);
-        overlayPane.setMaxWidth(203);
-        overlayPane.setMinHeight(245);
-        overlayPane.setMaxHeight(245);
+        overlayPane.setMinWidth(MapView.MAP_WIDTH * MAP_SCALE);
+        overlayPane.setMaxWidth(MapView.MAP_WIDTH * MAP_SCALE);
+        overlayPane.setMinHeight(MapView.MAP_HEIGHT * MAP_SCALE);
+        overlayPane.setMaxHeight(MapView.MAP_HEIGHT * MAP_SCALE);
+
+        panningRect.setWidth(MapView.MAP_WIDTH * MAP_SCALE);
+        panningRect.setHeight(MapView.MAP_HEIGHT * MAP_SCALE);
+        panningRect.setFill(Color.TRANSPARENT);
+        panningRect.setStroke(Color.RED);
+        panningRect.setStrokeWidth(3);
+        panRectGroup.getChildren().add(panningRect);
 
         overlayPane.getChildren().clear();
         overlayPane.setBackground(new Background(new BackgroundFill(new Color(0.722, 0.871, 0.902, 1), null, null)));
@@ -61,14 +74,18 @@ public class OverviewOverlay extends AbstractOverlay {
         overlayPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         countryGroup.setScaleX(MAP_SCALE);
         countryGroup.setScaleY(MAP_SCALE);
-        //overlayPane.setScaleX(0.2);
-        //overlayPane.setScaleY(0.2);
+        overlayPane.getChildren().add(panRectGroup);
         overlayPane.setCenter(countryGroup);
     }
 
     @Override
     public Pane getOverlayPane() {
         return overlayPane;
+    }
+
+    public void update(final Vec3 moveVect) {
+        panningRect.setTranslateX(moveVect.getX() * MAP_SCALE);
+        panningRect.setTranslateY(moveVect.getY() * MAP_SCALE);
     }
 
 }

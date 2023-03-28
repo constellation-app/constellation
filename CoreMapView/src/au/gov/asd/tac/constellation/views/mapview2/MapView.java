@@ -99,7 +99,7 @@ public class MapView extends ScrollPane {
 
     private final StackPane mapStackPane;
 
-    // ID of th enext user drawn marker
+    // ID of the next user drawn marker
     private int drawnMarkerId = 0;
 
     // Flags for the different drawing modes
@@ -192,7 +192,7 @@ public class MapView extends ScrollPane {
     private double transalateY;
 
 
-    // Pane that hold all the groups for allt he different graphical outputs
+    // Pane that hold all the groups for all the different graphical outputs
     private final Pane mapGroupHolder = new Pane();
 
     private final Rectangle clipRectangle = new Rectangle();
@@ -216,6 +216,7 @@ public class MapView extends ScrollPane {
     private final StringProperty markerColourProperty = new SimpleStringProperty();
     private final StringProperty markerTextProperty = new SimpleStringProperty();
 
+    private final Rectangle enclosingRectangle = new Rectangle();
 
     public MapView(final MapViewPane parent) {
         this.parent = parent;
@@ -237,6 +238,7 @@ public class MapView extends ScrollPane {
         selectionRectangleGroup = new Group();
         zoomLocationGroup = new Group();
         viewPortRectangleGroup = new Group();
+        Group enclosingRectangleGroup = new Group();
 
         // By default all markers should be showing
         markersShowing.add(AbstractMarker.MarkerType.LINE_MARKER);
@@ -275,7 +277,9 @@ public class MapView extends ScrollPane {
                 // Move the map
                 mapStackPane.setTranslateX(transalateX + (event.getSceneX() - mouseAnchorX));
                 mapStackPane.setTranslateY(transalateY + (event.getSceneY() - mouseAnchorY));
-
+                enclosingRectangle.setTranslateX(enclosingRectangle.getTranslateX() - (event.getSceneX() - mouseAnchorX));
+                enclosingRectangle.setTranslateY(enclosingRectangle.getTranslateY() - (event.getSceneY() - mouseAnchorY));
+                updateOverviewOverlay();
                 event.consume();
             }
 
@@ -289,13 +293,21 @@ public class MapView extends ScrollPane {
             countryGroup.getChildren().add(countrySVGPaths.get(i));
         }
         OVERVIEW_OVERLAY = new OverviewOverlay(0, 0, countrySVGPaths);
+        enclosingRectangle.setWidth(MAP_WIDTH);
+        enclosingRectangle.setHeight(MAP_HEIGHT);
+
+        enclosingRectangle.setStroke(Color.RED);
+        enclosingRectangle.setStrokeWidth(8);
+        enclosingRectangle.setFill(Color.TRANSPARENT);
+        enclosingRectangle.setMouseTransparent(true);
+        enclosingRectangleGroup.getChildren().add(enclosingRectangle);
+
         // Set default pan behaviour to false
         this.setPannable(false);
 
         // No scroll bars allowed!!
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-
 
         setContent(mapStackPane);
 
@@ -500,7 +512,7 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(zoomLocationGroup);
         overlayGroup.getChildren().addAll(INFO_OVERLAY.getOverlayPane());
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
-        mapGroupHolder.getChildren().add(viewPortRectangleGroup);
+        mapGroupHolder.getChildren().addAll(viewPortRectangleGroup);
 
     }
 
@@ -543,6 +555,22 @@ public class MapView extends ScrollPane {
 
             }
         });
+    }
+
+    int counter = 0;
+    private void updateOverviewOverlay() {
+        final Rectangle viewPortRect = parent.getViewPortRectangle();
+
+        LOGGER.log(Level.SEVERE, ++counter + ": x coord of map: " + mapStackPane.getParent().localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX());
+
+        LOGGER.log(Level.SEVERE, counter + ": x coord of view port rect: " + viewPortRect.localToParent(viewPortRect.getX(), viewPortRect.getY()).getX());
+
+        final Point2D mapPos = mapStackPane.getParent().localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY());
+        final Point2D viewPortPos = viewPortRect.localToParent(viewPortRect.getX(), viewPortRect.getY());
+
+        final Vec3 topLeftVect = new Vec3(viewPortPos.getX() - mapPos.getX(), viewPortPos.getY() - mapPos.getY());
+
+        OVERVIEW_OVERLAY.update(topLeftVect);
     }
 
     /**
