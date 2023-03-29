@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.SourcePane;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -48,7 +49,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
@@ -294,8 +294,9 @@ public class JDBCSourcePane extends SourcePane {
         final Label queryLabel = new Label("Query:");
         GridPane.setConstraints(queryLabel, 0, 3, 1, 1, HPos.LEFT, VPos.TOP);
 
-        final TextArea query = new TextArea();
-        query.setPrefRowCount(5);
+        final SpellCheckingTextArea query = new SpellCheckingTextArea();
+        query.setPrefHeight(80);
+
         GridPane.setConstraints(query, 1, 3, 2, 1, HPos.LEFT, VPos.TOP);
 
         final Label destinationLabel = new Label("Destination:");
@@ -505,9 +506,9 @@ public class JDBCSourcePane extends SourcePane {
         cn.setStyle(PROMPT_TEXT_COLOUR);
         cn.setFocusTraversable(false);
         cn.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            cn.setStyle(""); 
+            cn.setStyle("");
             if (!newVal && StringUtils.isBlank(cn.getText())){
-                cn.setStyle("-fx-text-box-border: red;");  
+                cn.setStyle("-fx-text-box-border: red;");
             }
         });
         gp.add(cn, 1, 0, 2, 1);
@@ -529,9 +530,9 @@ public class JDBCSourcePane extends SourcePane {
         connectionStringF.setStyle(PROMPT_TEXT_COLOUR);
         connectionStringF.setFocusTraversable(false);
         connectionStringF.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            connectionStringF.setStyle(""); 
+            connectionStringF.setStyle("");
             if (!newVal && StringUtils.isBlank(connectionStringF.getText())){
-                connectionStringF.setStyle("-fx-text-box-border: red;");  
+                connectionStringF.setStyle("-fx-text-box-border: red;");
             }
         });
         gp.add(connectionStringF, 1, 2, 2, 1);
