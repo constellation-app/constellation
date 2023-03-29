@@ -52,7 +52,7 @@ public class OverviewOverlay extends AbstractOverlay {
         overlayPane.setMinHeight(MapView.MAP_HEIGHT * MAP_SCALE);
         overlayPane.setMaxHeight(MapView.MAP_HEIGHT * MAP_SCALE);
 
-        panningRect.setWidth(MapView.MAP_WIDTH * MAP_SCALE);
+        panningRect.setWidth(1600 * MAP_SCALE);
         panningRect.setHeight(MapView.MAP_HEIGHT * MAP_SCALE);
         panningRect.setFill(Color.TRANSPARENT);
         panningRect.setStroke(Color.RED);
@@ -80,6 +80,7 @@ public class OverviewOverlay extends AbstractOverlay {
         final StackPane stackPane = new StackPane();
         stackPane.getChildren().add(countryGroup);
         stackPane.getChildren().add(panningRect);
+        panRectGroup.setMouseTransparent(true);
         overlayPane.setCenter(stackPane);
     }
 
@@ -89,9 +90,9 @@ public class OverviewOverlay extends AbstractOverlay {
     }
 
     public void update(final Vec3 moveVect, final double width) {
-        panningRect.setTranslateX(moveVect.getX() * MAP_SCALE);
+        panningRect.setTranslateX(moveVect.getX() * MAP_SCALE + 65);
         panningRect.setTranslateY(moveVect.getY() * MAP_SCALE);
-        //panningRect.setWidth(width * MAP_SCALE);
+        panningRect.setWidth(width * MAP_SCALE);
     }
 
 }

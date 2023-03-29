@@ -470,7 +470,7 @@ public class MapViewPane extends BorderPane {
         AnchorPane.setRightAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
 
         AnchorPane.setBottomAnchor(mapView.OVERVIEW_OVERLAY.getOverlayPane(), 290.0);
-        AnchorPane.setRightAnchor(mapView.OVERVIEW_OVERLAY.getOverlayPane(), 5.0);
+        AnchorPane.setRightAnchor(mapView.OVERVIEW_OVERLAY.getOverlayPane(), 100.0);
 
         anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.OVERVIEW_OVERLAY.getOverlayPane());
 
@@ -481,17 +481,34 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setHeight(MapView.MAP_HEIGHT);
 
         viewPortRectangle.setFill(Color.TRANSPARENT);
-        viewPortRectangle.setStroke(Color.RED);
+        viewPortRectangle.setStroke(Color.TRANSPARENT);
+
+        borderRectangle.setFill(Color.TRANSPARENT);
+        borderRectangle.setStroke(Color.RED);
+
+        //borderRectangle.setWidth(1600);
+        borderRectangle.widthProperty().bind(this.widthProperty().subtract(20));
+        borderRectangle.setHeight(MapView.MAP_HEIGHT);
+        borderRectangle.setStrokeWidth(3);
+
+        AnchorPane.setTopAnchor(borderRectangle, 0.0);
+        //AnchorPane.setRightAnchor(borderRectangle, 0.0);
+        AnchorPane.setLeftAnchor(borderRectangle, 0.0);
+
+        anchorPane.getChildren().add(borderRectangle);
 
         // Adds the mapView and viewport rect underneath the toolbar
-        parentStackPane.getChildren().addAll(viewPortRectangle);
+        parentStackPane.getChildren().add(viewPortRectangle);
         Platform.runLater(() -> setCenter(anchorPane));
-
     }
 
 
     public StackPane getParentStackPane() {
         return parentStackPane;
+    }
+
+    public Rectangle getBorderRectangle() {
+        return borderRectangle;
     }
 
     public Rectangle getViewPortRectangle() {

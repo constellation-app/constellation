@@ -133,8 +133,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-
-
     }
 
     @Override

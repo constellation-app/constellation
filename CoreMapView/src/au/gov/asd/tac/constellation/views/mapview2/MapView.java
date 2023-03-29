@@ -565,21 +565,21 @@ public class MapView extends ScrollPane {
     }
 
     private void updateOverviewOverlay() {
-        final Rectangle viewPortRect = parent.getViewPortRectangle();
+        final Rectangle borderRect = parent.getBorderRectangle();
 
-        LOGGER.log(Level.SEVERE, ": x coord of map: " + mapStackPane.getParent().localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX());
+        LOGGER.log(Level.SEVERE, ": x coord of map: " + mapStackPane.getParent().getParent().localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY()).getX());
 
-        LOGGER.log(Level.SEVERE, ": x coord of view port rect: " + viewPortRect.localToParent(viewPortRect.getX(), viewPortRect.getY()).getX());
+        LOGGER.log(Level.SEVERE, ": x coord of view port rect: " + borderRect.localToParent(borderRect.getX(), borderRect.getY()).getX());
 
-        final Point2D mapPos = mapStackPane.getParent().localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY());
-        final Point2D viewPortPos = viewPortRect.localToParent(viewPortRect.getX(), viewPortRect.getY());
+        final Point2D mapPos = mapStackPane.getParent().getParent().localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY());
+        final Point2D viewPortPos = new Point2D(borderRect.getX(), borderRect.getY());
         final Vec3 mapTopRight = new Vec3(mapPos.getX() + mapStackPane.getWidth(), mapPos.getY());
-        final Vec3 topRightViewPort = new Vec3(viewPortRect.getX() + viewPortRect.getWidth(), viewPortRect.getY());
+        final Vec3 topRightViewPort = new Vec3(borderRect.getX() + borderRect.getWidth(), borderRect.getY());
 
-        final Point2D screenViewPortTopLeft = viewPortRect.localToScreen(viewPortRect.getX(), viewPortRect.getY());
-        final Point2D screenViewPortTopRight = viewPortRect.localToScreen(viewPortRect.getX() + viewPortRect.getWidth(), viewPortRect.getY());
+        final Point2D screenViewPortTopLeft = borderRect.localToScreen(borderRect.getX(), borderRect.getY());
+        final Point2D screenViewPortTopRight = borderRect.localToScreen(borderRect.getX() + borderRect.getWidth(), borderRect.getY());
 
-        final Vec3 topLeftVect = new Vec3(viewPortPos.getX() - mapPos.getX(), viewPortPos.getY() - mapPos.getY());
+        final Vec3 topLeftVect = new Vec3((viewPortPos.getX() - mapPos.getX()), viewPortPos.getY() - mapPos.getY());
         final Vec3 topRightVect = new Vec3(topRightViewPort.getX() - mapTopRight.getX(), topRightViewPort.getY() - mapTopRight.getY());
 
         final Vec3 newTopLeft = new Vec3(clipRectangle.getX() + topLeftVect.getX(), clipRectangle.getY() + topLeftVect.getY());
@@ -587,7 +587,7 @@ public class MapView extends ScrollPane {
 
         final double width = screenViewPortTopRight.getX() - screenViewPortTopLeft.getX();
 
-        OVERVIEW_OVERLAY.update(topLeftVect, width);
+        OVERVIEW_OVERLAY.update(topLeftVect, parent.getBorderRectangle().getWidth());
     }
 
     /**
