@@ -27,6 +27,7 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
@@ -74,8 +75,12 @@ public class OverviewOverlay extends AbstractOverlay {
         overlayPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         countryGroup.setScaleX(MAP_SCALE);
         countryGroup.setScaleY(MAP_SCALE);
-        overlayPane.getChildren().add(panRectGroup);
-        overlayPane.setCenter(countryGroup);
+        //overlayPane.getChildren().add(panRectGroup);
+
+        final StackPane stackPane = new StackPane();
+        stackPane.getChildren().add(countryGroup);
+        stackPane.getChildren().add(panningRect);
+        overlayPane.setCenter(stackPane);
     }
 
     @Override

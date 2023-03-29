@@ -90,6 +90,10 @@ public class MapViewPane extends BorderPane {
 
     // Rectangle to repesent the view port
     private final Rectangle viewPortRectangle;
+
+    // Rectangle to represent border of scene
+    private final Rectangle borderRectangle;
+
     // String for all the menu options
     private static final String MARKER_TYPE_POINT = "Point Markers";
     private static final String MARKER_TYPE_LINE = "Line Markers";
@@ -159,8 +163,10 @@ public class MapViewPane extends BorderPane {
 
         parentStackPane = new StackPane();
         viewPortRectangle = new Rectangle();
+        borderRectangle = new Rectangle();
 
         viewPortRectangle.setMouseTransparent(true);
+        borderRectangle.setMouseTransparent(true);
 
         toolBarGridPane = new GridPane();
         toolBarGridPane.setHgap(5);
@@ -468,8 +474,8 @@ public class MapViewPane extends BorderPane {
 
         anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.OVERVIEW_OVERLAY.getOverlayPane());
 
-        parentStackPane.setLayoutX(0);
-        parentStackPane.setLayoutY(0);
+        //parentStackPane.setLayoutX(0);
+        //parentStackPane.setLayoutY(0);
 
         viewPortRectangle.setWidth(MapView.MAP_WIDTH);
         viewPortRectangle.setHeight(MapView.MAP_HEIGHT);
@@ -478,10 +484,11 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setStroke(Color.RED);
 
         // Adds the mapView and viewport rect underneath the toolbar
-        parentStackPane.getChildren().add(viewPortRectangle);
+        parentStackPane.getChildren().addAll(viewPortRectangle);
         Platform.runLater(() -> setCenter(anchorPane));
 
     }
+
 
     public StackPane getParentStackPane() {
         return parentStackPane;
