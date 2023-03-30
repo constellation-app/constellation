@@ -24,6 +24,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -40,6 +42,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -57,9 +60,11 @@ public class NewNotePane {
     private final String titleFontStyle = String.format(FONT_SIZE_STRING, 20);
     private static final String PROMPT_COLOR = "#909090";
     private static final double WIDTH = 1005;
-    private static final double HEIGHT = 175;
+    private static final double HEIGHT = 190;
 
     private final TextArea contentField;
+    private final TabPane tabPane;
+    private final TextFlow preview;
     private final TextField titleField = new TextField();
     private final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
 
@@ -119,6 +124,22 @@ public class NewNotePane {
             }
         });
 
+        preview = new TextFlow();
+        preview.setMinWidth(WIDTH - 5);
+
+        tabPane = new TabPane();
+        Tab writeTab = new Tab();
+        writeTab.setText("Write");
+        writeTab.setContent(contentField);
+        writeTab.setClosable(false);
+
+        Tab previewTab = new Tab();
+        previewTab.setText("Preview");
+        previewTab.setContent(preview);
+        previewTab.setClosable(false);
+
+        tabPane.getTabs().addAll(writeTab, previewTab);
+
         // Colourpicker to set colour of new note
         newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(NewNotePane.userChosenColour).getJavaFXColor());
         newNoteColour.setOnAction(event -> NewNotePane.userChosenColour = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
@@ -141,7 +162,7 @@ public class NewNotePane {
 
         final HBox noteHBox = new HBox(30, applyToSelection, newNoteColour, addButton, cancelButton);
 
-        final VBox addNoteVBox = new VBox(5, titleLabel, titleField, contentField, noteHBox);
+        final VBox addNoteVBox = new VBox(5, titleLabel, titleField, tabPane, noteHBox);
         addNoteVBox.setAlignment(Pos.CENTER_LEFT);
         addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
         addNoteVBox.setMinHeight(200);
