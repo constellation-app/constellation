@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
+import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -261,6 +262,9 @@ public class NotesViewPane extends BorderPane {
 
         // Event handler to add new note
         newNotePane.getAddButtion().setOnAction(event -> {
+            MarkdownTree mdTree = new MarkdownTree(newNotePane.getContentField().getText());
+            mdTree.parse();
+            mdTree.print();
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 if ((newNotePane.getTitleField().getText().isBlank() && newNotePane.getTitleField().getText().isEmpty())

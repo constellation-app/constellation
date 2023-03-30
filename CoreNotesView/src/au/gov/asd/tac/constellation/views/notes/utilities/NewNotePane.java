@@ -122,6 +122,7 @@ public class NewNotePane {
                 // Move focus to the next UI element.
                 contentField.getParent().getChildrenUnmodifiable().get(contentField.getParent().getChildrenUnmodifiable().indexOf(contentField) + 1).requestFocus();
             }
+
         });
 
         preview = new TextFlow();

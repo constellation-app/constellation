@@ -15,11 +15,17 @@
  */
 package au.gov.asd.tac.constellation.views.notes.utilities;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author altair1673
  */
 public class MarkdownTree {
+
+    private static final Logger LOGGER = Logger.getLogger(MarkdownTree.class.getName());
+
     private final MarkdownNode root;
 
     private String rawString = "";
@@ -31,10 +37,19 @@ public class MarkdownTree {
 
     public MarkdownTree(String rawString) {
         root = new MarkdownNode();
-        this.rawString = rawString + "\n";
+        this.rawString += rawString + "\n";
+        LOGGER.log(Level.SEVERE, "The raw string: " + rawString);
     }
 
-    public void parseString(MarkdownNode currentNode, String text) {
+    public void parse() {
+        parseString(root, rawString);
+    }
+
+    private void parseString(MarkdownNode currentNode, String text) {
+        if (text.isBlank() || text.isEmpty()) {
+            return;
+        }
+
         int currentIndex = 0;
         final char[] syntaxList = {'#', '\n', '*'};
         while (true) {
@@ -46,11 +61,18 @@ public class MarkdownTree {
                     closestSyntax = text.indexOf(syntaxList[i], currentIndex);
                 }
             }
+            if (closestSyntax == Integer.MAX_VALUE) {
+                LOGGER.log(Level.SEVERE, "No syntax found");
+                closestSyntax = currentIndex;
+            } else if (closestSyntax != currentIndex) {
+                MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
+                currentNode.getChildren().add(normal);
+            }
 
             if (text.charAt(closestSyntax) == '#') {
                 int indexOfHeading = text.indexOf("#");
                 currentIndex = indexOfHeading + 1;
-                int level = -1;
+                int level = 0;
                 for (int i = 0; i < text.length(); ++i) {
                     if (text.charAt(i) == '#') {
                         ++level;
@@ -58,7 +80,7 @@ public class MarkdownTree {
                         int endIndex = text.indexOf("\n", i);
                         MarkdownNode heading = new MarkdownNode(MarkdownNode.Type.HEADING, i, endIndex, text.substring(i + 1, endIndex), level);
                         currentNode.getChildren().add(heading);
-                        currentIndex = endIndex;
+                        currentIndex = endIndex + 1;
                         break;
                     }
                 }
@@ -67,12 +89,36 @@ public class MarkdownTree {
                 currentIndex = closestSyntax;
                 int endIndex = text.indexOf("\n", currentIndex);
                 if (endIndex != -1) {
-                    MarkdownNode paragraph = new MarkdownNode(MarkdownNode.Type.PARAGRAPH, closestSyntax, endIndex, text.substring(currentIndex + 1, endIndex), -99);
+                    MarkdownNode paragraph = new MarkdownNode(MarkdownNode.Type.PARAGRAPH, closestSyntax, endIndex, "Paragraph", -99);
                     currentNode.getChildren().add(paragraph);
-                    parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
+                    parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex, endIndex));
                 }
-            } else if (text.charAt(closestSyntax) != '*') {
+            } else if (text.charAt(closestSyntax) == '*') {
+                currentIndex = closestSyntax;
 
+                if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == '*') {
+                    ++currentIndex;
+                    if (text.indexOf("**", currentIndex + 1) != -1) {
+                        int endIndex = text.indexOf("**", currentIndex + 1);
+                        MarkdownNode bold = new MarkdownNode(MarkdownNode.Type.BOLD, currentIndex, endIndex, "Bold", -99);
+                        currentNode.getChildren().add(bold);
+                        parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
+                        currentIndex = endIndex + 2;
+                    }
+
+                } else if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) != '*') {
+                    if (text.indexOf("*", currentIndex + 1) != -1) {
+                        int endIndex = text.indexOf("*", currentIndex + 1);
+                        MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex, endIndex, "Italic", -99);
+                        currentNode.getChildren().add(italic);
+                        parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
+                        currentIndex = endIndex + 1;
+                    }
+                }
+            } else {
+                MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, text.length() - 1, text.substring(currentIndex + 1, text.length() - 1), -99);
+                currentNode.getChildren().add(normal);
+                return;
             }
 
 
@@ -80,5 +126,24 @@ public class MarkdownTree {
                 return;
             }
         }
+    }
+
+    public void print() {
+        printContents(root);
+    }
+
+    private void printContents(MarkdownNode currentNode) {
+        if (currentNode.getType() == MarkdownNode.Type.NORMAL) {
+            LOGGER.log(Level.SEVERE, "Actual text: " + currentNode.getValue());
+            return;
+        }
+
+        LOGGER.log(Level.SEVERE, "Parent: " + currentNode.getValue());
+
+        for (int i = 0; i < currentNode.getChildren().size(); ++i) {
+            printContents(currentNode.getChildren().get(i));
+        }
+
+        LOGGER.log(Level.SEVERE, "Parent: " + currentNode.getValue());
     }
 }
