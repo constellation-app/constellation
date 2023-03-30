@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.notes;
+package au.gov.asd.tac.constellation.views.notes.utilities;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
@@ -56,7 +56,7 @@ public class NewNotePane {
     private final String fontStyle = String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize());
     private final String titleFontStyle = String.format(FONT_SIZE_STRING, 20);
     private static final String PROMPT_COLOR = "#909090";
-    private static final double WIDTH = 1000;
+    private static final double WIDTH = 1005;
     private static final double HEIGHT = 175;
 
     private final TextArea contentField;
@@ -94,6 +94,7 @@ public class NewNotePane {
         titleField.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
         titleField.setStyle("-fx-text-fill: #FFFFFF;");
         titleField.setMinWidth(WIDTH - 5);
+        //titleField.setPadding(new Insets(5, 5, 5, 5));
 
         // Checkbox to apply note to selection.
         applyToSelection.setSelected(true);
@@ -104,6 +105,7 @@ public class NewNotePane {
         // TextArea to enter new note content.
         contentField = new TextArea();
         contentField.setMinWidth(WIDTH - 5);
+        //contentField.setPadding(new Insets(5, 5, 5, 5));
         contentField.setPromptText("Type a note...");
         contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
         contentField.setWrapText(true);

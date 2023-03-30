@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.notes;
 
+import au.gov.asd.tac.constellation.views.notes.utilities.DateTimeRangePicker;
+import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
