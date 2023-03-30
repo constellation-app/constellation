@@ -147,6 +147,7 @@ public class ErrorReportEntry {
     public String toString() {
         return "[ErrorReportEntry:[id=" + entryId + "]"
                 + ", [header=" + heading + "]"
+                + ", [errorLevel=" + errorLevel.getName() + "]"
                 + ", [occurrences=" + occurrences + "]"
                 + ", [lastDate=" + lastDate + "]"
                 + ", [lastPopupDate=" + lastPopupDate + "]"

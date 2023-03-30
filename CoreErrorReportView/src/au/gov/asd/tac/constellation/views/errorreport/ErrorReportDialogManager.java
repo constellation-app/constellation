@@ -45,6 +45,19 @@ public class ErrorReportDialogManager {
     }
 
     public void showErrorDialog(final ErrorReportEntry entry) {
+        if (activePopupIds.size() >= 10) {
+            // too many different errors at the same time
+            return;
+        }
+        Date currentDate = new Date();
+        Date latestDismissDate = ErrorReportDialogManager.getInstance().getLatestPopupDismissDate();
+        Date graceIntervalDate = latestDismissDate == null ? new Date() : new Date(latestDismissDate.getTime() + 5000);
+        if (currentDate.before(graceIntervalDate)) {
+            // prevent popups for 5 seconds ... just in case of an infinite cycle of popups
+            // this allows some time to set the popup mode to 0 (disabling any more popups)
+            return;
+        }
+
         if (entry.isBlockRepeatedPopups() || popupDisplayMode == 0 || (latestPopupDismissDate != null && entry.getLastDate().before(latestPopupDismissDate))) {
             return; // mode 0 = Never                    
         }
@@ -71,19 +84,20 @@ public class ErrorReportDialogManager {
         }
         // display the popup
         activePopupIds.add(entry.getEntryId());
-        showDialog(entry);
+        showDialog(entry, false);
     }
 
     /**
      * Create and show an Error Report Dialog for the supplied error report entry
      * 
      * @param entry 
+     * @param review 
      */
-    public void showDialog(final ErrorReportEntry entry) {
+    public void showDialog(final ErrorReportEntry entry, boolean review) {
         Platform.runLater(() -> {
             entry.setLastPopupDate(new Date());
-            ErrorReportDialog ced = new ErrorReportDialog(entry);
-            ced.showDialog("Unexpected Exception Occurred ...");
+            final ErrorReportDialog errorDlg = new ErrorReportDialog(entry);
+            errorDlg.showDialog((review ? "Reviewing: " : "") + "Unexpected Exception ..." + (entry.getOccurrences() > 1 ? " [" + entry.getOccurrences() + " Repeated Occurrences]" : ""));
         });
     }
 
@@ -107,4 +121,12 @@ public class ErrorReportDialogManager {
         this.latestPopupDismissDate = latestPopupDismissDate;
     }
 
+    public ArrayList<String> getActivePopupErrorLevels(){
+        final ArrayList<String> resultList = new ArrayList<>();
+        for (final Double id : activePopupIds) {
+            final String errorLevel = ErrorReportSessionData.getInstance().findDisplayedEntryWithId(id).getErrorLevel().getName();
+            resultList.add(errorLevel);
+        }
+        return resultList;
+    }
 }

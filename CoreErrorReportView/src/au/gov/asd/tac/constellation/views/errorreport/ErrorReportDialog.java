@@ -125,6 +125,7 @@ public class ErrorReportDialog {
         final Button closeButton = new Button("Close");
         closeButton.setOnAction((ActionEvent event) -> hideDialog());
         buttonPane.setLeft(showHideButton);
+        blockRepeatsCheckbox.setSelected(errorEntry.isBlockRepeatedPopups());
         buttonPane.setCenter(blockRepeatsCheckbox);
         buttonPane.setRight(closeButton);
         final Scene scene = new Scene(root);
