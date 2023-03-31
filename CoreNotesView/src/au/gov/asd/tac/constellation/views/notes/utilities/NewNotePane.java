@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.notes.utilities;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -42,6 +43,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -126,7 +128,9 @@ public class NewNotePane {
         });
 
         preview = new TextFlow();
-        preview.setMinWidth(WIDTH - 5);
+        preview.setPrefWidth(WIDTH - 5);
+        preview.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+
 
         tabPane = new TabPane();
         Tab writeTab = new Tab();
@@ -139,6 +143,18 @@ public class NewNotePane {
         previewTab.setContent(preview);
         previewTab.setClosable(false);
 
+        previewTab.setOnSelectionChanged(event -> {
+            if (previewTab.isSelected()) {
+                preview.getChildren().clear();
+                final MarkdownTree mdTree = new MarkdownTree(contentField.getText());
+                mdTree.parse();
+                final List<Text> textNodes = mdTree.getTextNodes();
+
+                for (int i = 0; i < textNodes.size(); ++i) {
+                    preview.getChildren().add(textNodes.get(i));
+                }
+            }
+        });
         tabPane.getTabs().addAll(writeTab, previewTab);
 
         // Colourpicker to set colour of new note

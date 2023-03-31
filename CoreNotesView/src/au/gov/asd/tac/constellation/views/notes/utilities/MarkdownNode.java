@@ -40,11 +40,16 @@ public class MarkdownNode {
         PARAGRAPH,
         BOLD,
         ITALIC,
+        STRIKETHROUGH,
+        ORDERED_LIST,
+        UNORDERED_LIST,
+        LIST_ITEM,
         NORMAL
     }
 
     public MarkdownNode() {
         type = Type.ROOT;
+        value = "ROOT";
     }
 
     public MarkdownNode(Type type, int startIndex, int endIndex, String value, int headingLevel) {
@@ -74,6 +79,25 @@ public class MarkdownNode {
 
     public Type getType() {
         return type;
+    }
+
+    public String getTypeString() {
+        switch (type) {
+            case ROOT:
+                return "ROOT";
+            case HEADING:
+                return "HEADING " + headingLevel;
+            case PARAGRAPH:
+                return "PARAGRAPH";
+            case BOLD:
+                return "BOLD";
+            case ITALIC:
+                return "ITALIC";
+            case NORMAL:
+                return "NORMAL";
+            default:
+                return "Type doesn't exist";
+        }
     }
 
     public int getHeadingLevel() {
