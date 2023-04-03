@@ -2654,6 +2654,7 @@
                 <package>org.hsqldb.types</package>
                 <package>org.hsqldb.util</package>
                 <package>org.huldra.math</package>
+                <package>org.intellij.lang.annotations</package>
                 <package>org.jaitools</package>
                 <package>org.jaitools.imageutils</package>
                 <package>org.jaitools.imageutils.iterator</package>
@@ -2763,6 +2764,44 @@
                 <package>org.jvnet.fastinfoset.stax</package>
                 <package>org.jvnet.staxex</package>
                 <package>org.jvnet.staxex.util</package>
+                <package>org.languagetool</package>
+                <package>org.languagetool.bitext</package>
+                <package>org.languagetool.broker</package>
+                <package>org.languagetool.chunking</package>
+                <package>org.languagetool.language</package>
+                <package>org.languagetool.languagemodel</package>
+                <package>org.languagetool.languagemodel.bert</package>
+                <package>org.languagetool.languagemodel.bert.grpc</package>
+                <package>org.languagetool.markup</package>
+                <package>org.languagetool.noop</package>
+                <package>org.languagetool.rules</package>
+                <package>org.languagetool.rules.bitext</package>
+                <package>org.languagetool.rules.en</package>
+                <package>org.languagetool.rules.en.translation</package>
+                <package>org.languagetool.rules.ml</package>
+                <package>org.languagetool.rules.neuralnetwork</package>
+                <package>org.languagetool.rules.ngrams</package>
+                <package>org.languagetool.rules.patterns</package>
+                <package>org.languagetool.rules.patterns.bitext</package>
+                <package>org.languagetool.rules.spelling</package>
+                <package>org.languagetool.rules.spelling.hunspell</package>
+                <package>org.languagetool.rules.spelling.morfologik</package>
+                <package>org.languagetool.rules.spelling.morfologik.suggestions_ordering</package>
+                <package>org.languagetool.rules.spelling.suggestions</package>
+                <package>org.languagetool.rules.spelling.symspell.implementation</package>
+                <package>org.languagetool.rules.translation</package>
+                <package>org.languagetool.synthesis</package>
+                <package>org.languagetool.synthesis.en</package>
+                <package>org.languagetool.tagging</package>
+                <package>org.languagetool.tagging.disambiguation</package>
+                <package>org.languagetool.tagging.disambiguation.rules</package>
+                <package>org.languagetool.tagging.disambiguation.xx</package>
+                <package>org.languagetool.tagging.en</package>
+                <package>org.languagetool.tagging.ner</package>
+                <package>org.languagetool.tagging.xx</package>
+                <package>org.languagetool.tokenizers</package>
+                <package>org.languagetool.tokenizers.en</package>
+                <package>org.languagetool.tools</package>
                 <package>org.locationtech.jts</package>
                 <package>org.locationtech.jts.algorithm</package>
                 <package>org.locationtech.jts.algorithm.construct</package>
@@ -3502,11 +3541,13 @@
                 <package>tech.units.indriya</package>
                 <package>tech.units.indriya.format</package>
                 <package>tech.units.indriya.function</package>
+                <package>tech.units.indriya.internal</package>
                 <package>tech.units.indriya.internal.format</package>
                 <package>tech.units.indriya.internal.format.l10n</package>
                 <package>tech.units.indriya.internal.function.calc</package>
                 <package>tech.units.indriya.internal.function.radix</package>
                 <package>tech.units.indriya.internal.function.simplify</package>
+                <package>tech.units.indriya.internal.simplify</package>
                 <package>tech.units.indriya.quantity</package>
                 <package>tech.units.indriya.quantity.time</package>
                 <package>tech.units.indriya.spi</package>
@@ -4027,8 +4068,8 @@
                 <binary-origin>release/modules/ext/imageio-ext-utilities-1.3.6.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/indriya-2.0.2.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/indriya-2.0.2.jar</binary-origin>
+                <runtime-relative-path>ext/indriya-1.3.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/indriya-1.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/istack-commons-runtime-3.0.7.jar</runtime-relative-path>
@@ -4333,6 +4374,18 @@
             <class-path-extension>
                 <runtime-relative-path>ext/jython-standalone-2.7.2.jar</runtime-relative-path>
                 <binary-origin>release/modules/ext/jython-standalone-2.7.2.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/language-detector-0.6.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/language-detector-0.6.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/language-en-5.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/language-en-5.7.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/languagetool-core-5.7.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/languagetool-core-5.7.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/listenablefuture-9999.0-empty-to-avoid-conflict-with-guava.jar</runtime-relative-path>
