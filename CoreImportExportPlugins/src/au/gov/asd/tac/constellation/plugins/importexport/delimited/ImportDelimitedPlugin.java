@@ -356,16 +356,16 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
-    private static Map<String, Integer> processSourceVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, 
+    private static Map<String, Integer> processSourceVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
             final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
         return processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
     }
-    
-    private static Map<String, Integer> processDestinationVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, 
+
+    private static Map<String, Integer> processDestinationVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
             final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
         return processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
     }
-    
+
     private static Map<String, Integer> processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType,
             final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
@@ -384,30 +384,39 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             interaction.setProgress(++currentRow, totalRows, "Importing Vertices: " + source, true);
 
             final String[] row = data.get(i);
-            if (filter == null || filter.passesFilter(i - 1, row)) {
+            
+            try {
+                if (filter == null || filter.passesFilter(i - 1, row)) {
 
-                final int vertexId = graph.addVertex();
+                    final int vertexId = graph.addVertex();
 
-                try {
+                    try {
 
-                    for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
-                        attributeDefinition.setValue(graph, vertexId, row, (i - 1));
+                        for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
+                            attributeDefinition.setValue(graph, vertexId, row, (i - 1));
+                        }
+
+                        if (initialiseWithSchema && graph.getSchema() != null) {
+                            graph.getSchema().completeVertex(graph, vertexId);
+                        }
+
+                        // Count the number of processed rows to notify in the status message
+                        ++importedRows;
+
+                    } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
+                        if (skipInvalidRows) {
+                            graph.removeVertex(vertexId);
+                            ++skippedRow;
+                        } else {
+                            throw ex;
+                        }
                     }
-
-                    if (initialiseWithSchema && graph.getSchema() != null) {
-                        graph.getSchema().completeVertex(graph, vertexId);
-                    }
-
-                    // Count the number of processed rows to notify in the status message
-                    ++importedRows;
-
-                } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
-                    if (skipInvalidRows) {
-                        graph.removeVertex(vertexId);
-                        ++skippedRow;
-                    } else {
-                        throw ex;
-                    }
+                }
+            } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
+                if (skipInvalidRows) {                    
+                    ++skippedRow;
+                } else {
+                    throw ex;
                 }
             }
         }
