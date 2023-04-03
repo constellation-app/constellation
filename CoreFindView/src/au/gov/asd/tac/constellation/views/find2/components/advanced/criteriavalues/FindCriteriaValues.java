@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues;
+
+import java.util.Objects;
 
 /**
  * This Class is the parent class for all the criteriaValueObjects
@@ -59,4 +61,29 @@ public class FindCriteriaValues {
         return filter;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + Objects.hashCode(this.attributeType);
+        hash = 71 * hash + Objects.hashCode(this.attribute);
+        hash = 71 * hash + Objects.hashCode(this.filter);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final FindCriteriaValues other = (FindCriteriaValues) obj;
+        if (!Objects.equals(this.attributeType, other.attributeType) || !Objects.equals(this.attribute, other.attribute)) {
+            return false; 
+        }
+        
+        return Objects.equals(this.filter, other.filter);
+    }
 }

@@ -34,7 +34,7 @@ import org.openide.util.NbPreferences;
         displayName = "#ProxyOptions_DisplayName",
         keywords = "#ProxyOptions_Keywords",
         keywordsCategory = "constellation/Preferences",
-        position = 900)
+        position = 1200)
 @org.openide.util.NbBundle.Messages({
     "ProxyOptions_DisplayName=Proxy",
     "ProxyOptions_Keywords=proxy"

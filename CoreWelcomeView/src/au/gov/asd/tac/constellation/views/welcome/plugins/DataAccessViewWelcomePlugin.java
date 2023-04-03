@@ -40,7 +40,7 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("DataAcessViewWelcomePluging=Data Acess View Welcome Plugin")
 public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
 
-    public static final String OPEN = "resources/welcome_data_access.png";
+    private static final String OPEN = "resources/welcome_data_access.png";
     private final ImageView openImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(OPEN)));
     private final Button openButton = new Button();
 
@@ -70,16 +70,6 @@ public class DataAccessViewWelcomePlugin implements WelcomePluginInterface {
                 stage.requestActive();
             }
         });
-    }
-
-    /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true if this analytic should be visible, false otherwise.
-     */
-    @Override
-    public boolean isVisible() {
-        return true;
     }
 
     /**

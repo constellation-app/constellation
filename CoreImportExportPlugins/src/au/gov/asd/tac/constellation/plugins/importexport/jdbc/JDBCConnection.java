@@ -51,7 +51,7 @@ public class JDBCConnection {
     public boolean testConnection(final String user, final String password, final boolean showError) {
         try (final Connection conn = getConnection(user, password)) {
             if (conn == null) {
-                NotifyDisplayer.displayLargeAlert("JDBC Import", "Connection Failed",
+                NotifyDisplayer.displayLargeAlert("Database Import", "Connection Failed",
                         "Testing of the connection failed, please recheck your connection string settings.",
                         Alert.AlertType.ERROR);
                 return false;
@@ -61,7 +61,7 @@ public class JDBCConnection {
                 | IllegalArgumentException | InvocationTargetException ex) {
             if (showError) {
                 LOGGER.log(Level.WARNING, ex.getMessage());
-                NotifyDisplayer.displayLargeAlert("JDBC Import", "Testing of the connection failed, "
+                NotifyDisplayer.displayLargeAlert("Database Import", "Testing of the connection failed, "
                         + "please recheck your settings.", ex.getMessage(), Alert.AlertType.ERROR);
             }
             return false;

@@ -32,7 +32,7 @@ import org.openide.util.NbBundle.Messages;
 @ActionID(category = "Selection", id = "au.gov.asd.tac.constellation.functionality.select.DeselectAction")
 @ActionRegistration(displayName = "#CTL_DeselectAllAction",
         iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/select/resources/deselect_all.png",
-        surviveFocusChange = true)
+        surviveFocusChange = false)
 @ActionReferences({
     @ActionReference(path = "Menu/Selection", position = 100),
     @ActionReference(path = "Shortcuts", name = "Escape")

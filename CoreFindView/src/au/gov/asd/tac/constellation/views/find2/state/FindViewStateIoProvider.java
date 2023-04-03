@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,6 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
 
             // Get the findResultsList variables
             final int currentIndex = jnode.get("currentIndex").asInt();
-            final String graphID = jnode.get("graphID").asText();
 
             // Get the basic find replace parameters
             final String findString = jnode.get("findString").asText();
@@ -68,11 +67,13 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
             final Boolean regEx = jnode.get("regEx").asBoolean();
             final Boolean ignoreCase = jnode.get("ignoreCase").asBoolean();
             final Boolean exactMatch = jnode.get("exactMatch").asBoolean();
-            final Boolean findInSelection = jnode.get("findInSelection").asBoolean();
+            final Boolean replaceSelectionWithResults = jnode.get("replaceSelectionWithResults").asBoolean();
             final Boolean addToSelection = jnode.get("addToSelection").asBoolean();
             final Boolean removeFromSelection = jnode.get("removeFromSelection").asBoolean();
             final Boolean replaceInSelected = jnode.get("replaceInSelected").asBoolean();
             final Boolean searchAllGraphs = jnode.get("searchAllGraphs").asBoolean();
+            final Boolean currentSelection = jnode.get("currentSelection").asBoolean();
+            final Boolean currentGraph = jnode.get("currentGraph").asBoolean();
 
             // Get the selected attributes
             final List<Attribute> selectedAttributes = new ArrayList<>();
@@ -83,24 +84,27 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
                     selectedAttributes.add(null);
                 } else {
                     int attributeInt = writableGraph.getAttribute(graphElement, selectedAttributesArray.get(i).asText());
-                    selectedAttributes.add(new GraphAttribute(writableGraph, attributeInt));
+                    // Only add the attribute to the selected attributes list if it exists in the graph
+                    if (attributeInt >= 0) {
+                        selectedAttributes.add(new GraphAttribute(writableGraph, attributeInt));
+                    }
                 }
             }
 
             // Create the basic find replace parameter object with the variables
             final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findString, replaceString, graphElement,
-                    selectedAttributes, standardText, regEx, ignoreCase, exactMatch, findInSelection, addToSelection, removeFromSelection, replaceInSelected, searchAllGraphs);
+                    selectedAttributes, standardText, regEx, ignoreCase, exactMatch, replaceSelectionWithResults, addToSelection, removeFromSelection, replaceInSelected, currentSelection, currentGraph, searchAllGraphs);
 
             // Get the find results
             final List<FindResult> findResults = new ArrayList<>();
             final ArrayNode findResultsArray = (ArrayNode) jnode.withArray("findResults");
             for (int i = 0; i < findResultsArray.size(); i = i + 3) {
                 findResults.add(findResultsArray.get(i).isNull() ? null : new FindResult(findResultsArray.get(i).asInt(),
-                        findResultsArray.get(i + 1).asInt(), GraphElementType.getValue(findResultsArray.get(i + 2).asText())));
+                        findResultsArray.get(i + 1).asInt(), GraphElementType.getValue(findResultsArray.get(i + 2).asText()), findResultsArray.get(i + 3).asText()));
             }
 
             // Create the findResultList object
-            final FindResultsList findResultList = new FindResultsList(currentIndex, parameters, graphID);
+            final FindResultsList findResultList = new FindResultsList(currentIndex, parameters);
 
             // Add the find results to the findResultsList
             findResultList.addAll(findResults);
@@ -124,7 +128,6 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
                 // Store the current index and the graph ID
                 jsonGenerator.writeObjectFieldStart(attribute.getName());
                 jsonGenerator.writeNumberField("currentIndex", resultsList.getCurrentIndex());
-                jsonGenerator.writeStringField("graphID", resultsList.getGraphId());
 
                 // Stores a list of the Find Results, ID, UID and Graph element type label
                 jsonGenerator.writeArrayFieldStart("findResults");
@@ -145,10 +148,12 @@ public class FindViewStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeBooleanField("ignoreCase", parameters.isIgnoreCase());
                 jsonGenerator.writeBooleanField("exactMatch", parameters.isExactMatch());
                 jsonGenerator.writeBooleanField("searchAllGraphs", parameters.isSearchAllGraphs());
+                jsonGenerator.writeBooleanField("replaceSelectionWithResults", parameters.isReplaceSelection());
                 jsonGenerator.writeBooleanField("addToSelection", parameters.isAddTo());
-                jsonGenerator.writeBooleanField("findInSelection", parameters.isFindIn());
                 jsonGenerator.writeBooleanField("removeFromSelection", parameters.isRemoveFrom());
                 jsonGenerator.writeBooleanField("replaceInSelected", parameters.isReplaceIn());
+                jsonGenerator.writeBooleanField("currentSelection", parameters.isCurrentSelection());
+                jsonGenerator.writeBooleanField("currentGraph", parameters.isCurrentGraph());
 
                 // Store all the selected attributes of the search
                 jsonGenerator.writeArrayFieldStart("selectedAttributes");

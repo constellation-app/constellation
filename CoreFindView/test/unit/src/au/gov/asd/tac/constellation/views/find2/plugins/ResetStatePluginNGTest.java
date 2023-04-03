@@ -112,8 +112,8 @@ public class ResetStatePluginNGTest {
             final int stateId = FindViewConcept.MetaAttribute.FINDVIEW_STATE.ensure(wg);
 
             ArrayList<Attribute> attributeList = new ArrayList<>();
-            BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
-            FindResultsList foundResult = new FindResultsList(2, parameters, graph.getId());
+            BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
+            FindResultsList foundResult = new FindResultsList(2, parameters);
 
             wg.setObjectValue(stateId, 0, foundResult);
 

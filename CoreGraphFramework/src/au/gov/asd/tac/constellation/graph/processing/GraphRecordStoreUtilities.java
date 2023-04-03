@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,14 +165,21 @@ public class GraphRecordStoreUtilities {
             } catch (NumberFormatException ex) {
             }
 
-            // TODO: shouldn't this be done first??
             Integer vertex = vertexMap.get(id);
             if (vertex != null) {
-                return vertex;
+                if (graph.vertexExists(vertex)) {
+                    // if we hit here, it is because the vertex already exists on the graph but the graph doesn't have a vertex id attribute
+                    // (since it skipped the earlier existence check due to the non-integer id generated in the super-fuction)
+                    return vertex;
+                }
+                // if we hit here, we are likely trying to copy a vertex from another graph including its original id
+                // calling addVertex ensrure the graph has capacity to handle the id
+                vertex = graph.addVertex(vertex);
+            } else {               
+                vertex = graph.addVertex();
+                vertexMap.put(id, vertex);
             }
 
-            vertex = graph.addVertex();
-            vertexMap.put(id, vertex);
             if (initializeWithSchema) {
                 graph.getSchema().newVertex(graph, vertex);
             }
@@ -242,13 +249,21 @@ public class GraphRecordStoreUtilities {
 
             Integer transaction = transactionMap.get(id);
             if (transaction != null) {
-                return transaction;
-            }
-            if (source == NO_ELEMENT || destination == NO_ELEMENT) {
+                if (graph.transactionExists(transaction)) {
+                    // if we hit here, it is because the transaction already exists on the graph but the graph doesn't have a transaction id attribute
+                    // (since it skipped the earlier existence check due to the null id being passed)
+                    return transaction;
+                }
+                // if we hit here, we are likely trying to copy a transaction from another graph including its original id
+                // calling addTransaction ensures the graph has capacity to handle the id
+                transaction = graph.addTransaction(transaction, source, destination, directed);
+            } else if (source == NO_ELEMENT || destination == NO_ELEMENT) {
                 return NO_ELEMENT;
+            } else {
+                transaction = graph.addTransaction(source, destination, directed);
+                transactionMap.put(id, transaction);
             }
-            transaction = graph.addTransaction(source, destination, directed);
-            transactionMap.put(id, transaction);
+            
             if (initializeWithSchema) {
                 graph.getSchema().newTransaction(graph, transaction);
             }
@@ -608,9 +623,19 @@ public class GraphRecordStoreUtilities {
     public static List<GraphRecordStore> getSelectedVerticesBatches(final GraphReadMethods graph, final int batchSize) {
         final List<GraphRecordStore> batches = new ArrayList<>();
 
-        int[] offset = new int[]{0};
+        final int[] offset = new int[]{0};
         while (offset[0] < graph.getVertexCount()) {
             batches.add(getVertices(graph, false, true, false, offset, batchSize));
+        }
+        return batches;
+    }
+    
+    public static List<GraphRecordStore> getSelectedTransactionBatches(final GraphReadMethods graph, final int batchSize) {
+        final List<GraphRecordStore> batches = new ArrayList<>();
+
+        final int[] offset = new int[]{0};
+        while (offset[0] < graph.getTransactionCount()) {
+            batches.add(getTransactions(graph, true, false, offset, batchSize));
         }
         return batches;
     }
@@ -743,6 +768,27 @@ public class GraphRecordStoreUtilities {
      * @return A {@link RecordStore} representing the graph's transactions.
      */
     public static GraphRecordStore getTransactions(final GraphReadMethods graph, final boolean selectedOnly, final boolean disassociateIds) {
+        return getTransactions(graph, selectedOnly, disassociateIds, new int[]{0}, -1);
+    }
+    
+    /**
+     * Populate a new {@link RecordStore} with the attribute values of the
+     * transactions and their endpoint vertices.
+     *
+     * @param graph A {@link GraphReadMethods} from which the RecordStore will
+     * be created.
+     * @param selectedOnly A boolean value specifying whether or not to only
+     * include selected transactions in the {@link RecordStore}.
+     * @param disassociateIds If true, the ids of the transactions in the
+     * created {@link RecordStore} will be distinct from the ids of the
+     * transactions on the graph.
+     * @param offset An array of integers, where the zeroth value represents the 
+     * transaction position from which to begin collection
+     * @param limit An integer value representing the maximum number of transactions 
+     * to collect.
+     * @return A {@link RecordStore} representing the graph's transactions.
+     */
+    public static GraphRecordStore getTransactions(final GraphReadMethods graph, final boolean selectedOnly, final boolean disassociateIds, final int[] offset, final int limit) {
         final GraphRecordStore recordStore = new GraphRecordStore();
 
         final int transactionAttributeCount = graph.getAttributeCount(GraphElementType.TRANSACTION);
@@ -761,7 +807,8 @@ public class GraphRecordStoreUtilities {
 
         final int selected = graph.getAttribute(GraphElementType.TRANSACTION, SELECTED_ATTRIBUTE_NAME);
         final int transactionCount = graph.getTransactionCount();
-        for (int t = 0; t < transactionCount; t++) {
+        boolean limitReached = false;
+        for (int t = offset[0]; t < transactionCount; t++) {
             final int txId = graph.getTransaction(t);
             final int source = graph.getTransactionSourceVertex(txId);
             final int destination = graph.getTransactionDestinationVertex(txId);
@@ -785,7 +832,17 @@ public class GraphRecordStoreUtilities {
                 recordStore.set(TRANSACTION + ID, disassociateIds ? "id-" + txId : String.valueOf(txId));
                 recordStore.set(SOURCE + ID, disassociateIds ? "id-" + source : String.valueOf(source));
                 recordStore.set(DESTINATION + ID, disassociateIds ? "id-" + destination : String.valueOf(destination));
+                
+                if (limit > 0 && recordStore.size() >= limit) {
+                    offset[0] = t + 1;
+                    limitReached = true;
+                    break;
+                }
             }
+        }
+        
+        if (!limitReached) {
+            offset[0] = graph.getTransactionCount();
         }
 
         return recordStore;

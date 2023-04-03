@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ import au.gov.asd.tac.constellation.graph.attribute.ZonedDateTimeAttributeDescri
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.ColorAttributeDescription;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.BooleanCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColourCriteriaValues;
+import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.ColorCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.DateTimeCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
@@ -42,8 +42,8 @@ public class AdvancedSearchParameters {
     private List<FindCriteriaValues> criteriaValuesList;
     private GraphElementType graphElementType;
     private String allOrAny;
-    private String currentSelection;
-    private boolean searchAllGraphs;
+    private String postSearchAction;
+    private String searchInLocation;
 
     /**
      * Default constructor sets all variables to their default values
@@ -52,8 +52,8 @@ public class AdvancedSearchParameters {
         this.criteriaValuesList = new ArrayList<>();
         this.graphElementType = GraphElementType.VERTEX;
         this.allOrAny = "All";
-        this.currentSelection = "Ignore";
-        this.searchAllGraphs = false;
+        this.postSearchAction = "Replace Selection";
+        this.searchInLocation = "Current Selection";
     }
 
     /**
@@ -65,12 +65,12 @@ public class AdvancedSearchParameters {
      * @param currentSelection
      * @param searchAllGraphs
      */
-    public AdvancedSearchParameters(final List<FindCriteriaValues> criteriaValuesList, final GraphElementType graphElementType, final String allOrAny, final String currentSelection, final boolean searchAllGraphs) {
+    public AdvancedSearchParameters(final List<FindCriteriaValues> criteriaValuesList, final GraphElementType graphElementType, final String allOrAny, final String postSearchAction, final String searchInLocation) {
         this.criteriaValuesList = criteriaValuesList;
         this.graphElementType = graphElementType;
         this.allOrAny = allOrAny;
-        this.currentSelection = currentSelection;
-        this.searchAllGraphs = searchAllGraphs;
+        this.postSearchAction = postSearchAction;
+        this.searchInLocation = searchInLocation;
     }
 
     public AdvancedSearchParameters(final AdvancedSearchParameters parameters) {
@@ -86,8 +86,8 @@ public class AdvancedSearchParameters {
         this.criteriaValuesList = parameters.criteriaValuesList;
         this.graphElementType = parameters.graphElementType;
         this.allOrAny = parameters.allOrAny;
-        this.currentSelection = parameters.currentSelection;
-        this.searchAllGraphs = parameters.searchAllGraphs;
+        this.postSearchAction = parameters.postSearchAction;
+        this.searchInLocation = parameters.searchInLocation;
     }
 
     /**
@@ -123,17 +123,17 @@ public class AdvancedSearchParameters {
      *
      * @return
      */
-    public String getCurrentSelection() {
-        return currentSelection;
+    public String getPostSearchAction() {
+        return postSearchAction;
     }
 
     /**
-     * Gets the isSearchAllGraphs boolean value
+     * Gets the searchInLocation string
      *
      * @return
      */
-    public boolean isSearchAllGraphs() {
-        return searchAllGraphs;
+    public String getSearchInLocation() {
+        return searchInLocation;
     }
 
     /**
@@ -151,7 +151,7 @@ public class AdvancedSearchParameters {
         }
         final AdvancedSearchParameters parameters = (AdvancedSearchParameters) object;
 
-        if (searchAllGraphs == parameters.isSearchAllGraphs()) {
+        if (searchInLocation.equals(parameters.getSearchInLocation())) {
             matches++;
         }
         if (graphElementType.equals(parameters.getGraphElementType())) {
@@ -160,7 +160,7 @@ public class AdvancedSearchParameters {
         if (allOrAny.equals(parameters.getAllOrAny())) {
             matches++;
         }
-        if (currentSelection == parameters.getCurrentSelection()) {
+        if (postSearchAction.equals(parameters.getPostSearchAction())) {
             matches++;
         }
 
@@ -184,10 +184,13 @@ public class AdvancedSearchParameters {
                         case StringAttributeDescription.ATTRIBUTE_NAME:
                             StringCriteriaValues stringParameterValues = (StringCriteriaValues) values;
                             StringCriteriaValues stringActualValues = (StringCriteriaValues) parameters.getCriteriaValuesList().get(i);
-                            if (!stringParameterValues.isIgnoreCase() == stringActualValues.isIgnoreCase()
-                                    || !stringParameterValues.isUseList() == stringActualValues.isUseList()
+                            if ((!stringParameterValues.equals(stringActualValues))
+                                    || (stringParameterValues.isIgnoreCase() != stringActualValues.isIgnoreCase())
+                                    || (stringParameterValues.isUseList() != stringActualValues.isUseList())
                                     || (!stringActualValues.isUseList() && !stringParameterValues.getText().equals(stringActualValues.getText()))
-                                    || (stringActualValues.isUseList() && !stringParameterValues.getTextList().equals(stringActualValues.getTextList()))) {
+                                    || (stringActualValues.isUseList() && !stringParameterValues.getTextList().equals(stringActualValues.getTextList()))
+                                    || (!stringActualValues.equals(stringParameterValues))
+                                    || (!stringActualValues.getText().equals(stringParameterValues.getText()))) {
                                 return false;
                             }
                             break;
@@ -210,9 +213,9 @@ public class AdvancedSearchParameters {
                             break;
                         // treat values as colors
                         case ColorAttributeDescription.ATTRIBUTE_NAME:
-                            ColourCriteriaValues colourParameterValues = (ColourCriteriaValues) values;
-                            ColourCriteriaValues colourActualValues = (ColourCriteriaValues) parameters.getCriteriaValuesList().get(i);
-                            if (!colourParameterValues.getColorValue().equals(colourActualValues.getColorValue())) {
+                            ColorCriteriaValues colorParameterValues = (ColorCriteriaValues) values;
+                            ColorCriteriaValues colorActualValues = (ColorCriteriaValues) parameters.getCriteriaValuesList().get(i);
+                            if (!colorParameterValues.getColorValue().equals(colorActualValues.getColorValue())) {
                                 return false;
                             }
                             break;
@@ -255,8 +258,8 @@ public class AdvancedSearchParameters {
         hash = 67 * hash + Objects.hashCode(this.criteriaValuesList);
         hash = 67 * hash + Objects.hashCode(this.graphElementType);
         hash = 67 * hash + Objects.hashCode(this.allOrAny);
-        hash = 67 * hash + Objects.hashCode(this.currentSelection);
-        hash = 67 * hash + (this.searchAllGraphs ? 1 : 0);
+        hash = 67 * hash + Objects.hashCode(this.postSearchAction);
+        hash = 67 * hash + Objects.hashCode(this.searchInLocation);
         return hash;
     }
 

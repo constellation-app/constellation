@@ -34,11 +34,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -67,7 +70,7 @@ public abstract class ImportController<D> {
     protected boolean showAllSchemaAttributes;
     protected PluginParameters currentParameters;
     protected String attributeFilter = "";
-
+    private boolean skipInvalidRows = false;
     // Attributes that exist in the graph or schema.
     private final Map<String, Attribute> autoAddedVertexAttributes;
     private final Map<String, Attribute> autoAddedTransactionAttributes;
@@ -83,6 +86,8 @@ public abstract class ImportController<D> {
 
     // preference to show or hide all graph schema attributes
     private final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
+
+    private static final Object LOCK = new Object();
 
     protected ImportController() {
         showAllSchemaAttributes = false;
@@ -108,7 +113,7 @@ public abstract class ImportController<D> {
      * @param alertType Type of alert being displayed, range from undefined,
      * info through to warnings and errors.
      */
-    public void displayAlert(String header, String message, Alert.AlertType alertType) {
+    public void displayAlert(final String header, final String message, final AlertType alertType) {
         final Alert dialog;
         dialog = new Alert(alertType, "", ButtonType.OK);
         dialog.setTitle("Delimited Importer");
@@ -117,7 +122,7 @@ public abstract class ImportController<D> {
         dialog.showAndWait();
     }
 
-    public ImportPane getStage() {
+    public ImportPane getImportPane() {
         return importPane;
     }
 
@@ -164,12 +169,18 @@ public abstract class ImportController<D> {
         }
         keys.clear();
 
-        Platform.runLater(() -> {
+        CompletableFuture.runAsync(() -> {
             final boolean showSchemaAttributes = importExportPrefs.getBoolean(
                     ImportExportPreferenceKeys.SHOW_SCHEMA_ATTRIBUTES,
                     ImportExportPreferenceKeys.DEFAULT_SHOW_SCHEMA_ATTRIBUTES);
+
             loadAllSchemaAttributes(currentDestination, showSchemaAttributes);
-            updateDisplayedAttributes();
+        }).thenRun(() -> {
+            if (Platform.isFxApplicationThread()) {
+                updateDisplayedAttributes();
+            } else {
+                Platform.runLater(() -> updateDisplayedAttributes());
+            }
         });
     }
 
@@ -184,9 +195,10 @@ public abstract class ImportController<D> {
         final Graph graph = destination.getGraph();
         final ReadableGraph rg = graph.getReadableGraph();
         try {
-            updateAutoAddedAttributes(GraphElementType.VERTEX, autoAddedVertexAttributes, rg, showSchemaAttributes);
-            updateAutoAddedAttributes(GraphElementType.TRANSACTION, autoAddedTransactionAttributes, rg,
-                    showSchemaAttributes);
+            synchronized (LOCK) {
+                updateAutoAddedAttributes(GraphElementType.VERTEX, autoAddedVertexAttributes, rg, showSchemaAttributes);
+                updateAutoAddedAttributes(GraphElementType.TRANSACTION, autoAddedTransactionAttributes, rg, showSchemaAttributes);
+            }
         } finally {
             rg.release();
         }
@@ -249,10 +261,10 @@ public abstract class ImportController<D> {
         attributes.clear();
 
         // Add attributes from the graph
-        int attributeCount = rg.getAttributeCount(elementType);
+        final int attributeCount = rg.getAttributeCount(elementType);
         for (int i = 0; i < attributeCount; i++) {
-            int attributeId = rg.getAttribute(elementType, i);
-            Attribute attribute = new GraphAttribute(rg, attributeId);
+            final int attributeId = rg.getAttribute(elementType, i);
+            final Attribute attribute = new GraphAttribute(rg, attributeId);
             attributes.put(attribute.getName(), attribute);
         }
 
@@ -276,7 +288,7 @@ public abstract class ImportController<D> {
         }
 
         // Add primary keys
-        for (int key : rg.getPrimaryKey(elementType)) {
+        for (final int key : rg.getPrimaryKey(elementType)) {
             keys.add(key);
         }
     }
@@ -296,20 +308,23 @@ public abstract class ImportController<D> {
     public void updateDisplayedAttributes() {
         if (configurationPane != null) {
 
-            displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes,
-                    manuallyAddedVertexAttributes);
-            displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes,
-                    manuallyAddedTransactionAttributes);
+            synchronized (LOCK) {
+                displayedVertexAttributes = createDisplayedAttributes(autoAddedVertexAttributes,
+                        manuallyAddedVertexAttributes);
+                displayedTransactionAttributes = createDisplayedAttributes(autoAddedTransactionAttributes,
+                        manuallyAddedTransactionAttributes);
+            }
 
-            for (Attribute attribute : configurationPane.getAllocatedAttributes()) {
+            //This adds the previously allocated attributes if they are missing
+            for (final Attribute attribute : configurationPane.getAllocatedAttributes()) {
                 if (attribute.getElementType() == GraphElementType.VERTEX) {
                     if (!displayedVertexAttributes.containsKey(attribute.getName())) {
-                        Attribute newAttribute = new NewAttribute(attribute);
+                        final Attribute newAttribute = new NewAttribute(attribute);
                         displayedVertexAttributes.put(newAttribute.getName(), newAttribute);
                     }
                 } else {
                     if (!displayedTransactionAttributes.containsKey(attribute.getName())) {
-                        Attribute newAttribute = new NewAttribute(attribute);
+                        final Attribute newAttribute = new NewAttribute(attribute);
                         displayedTransactionAttributes.put(newAttribute.getName(), newAttribute);
                     }
                 }
@@ -322,7 +337,7 @@ public abstract class ImportController<D> {
     private Map<String, Attribute> createDisplayedAttributes(final Map<String, Attribute> autoAddedAttributes,
             final Map<String, Attribute> manuallyAddedAttributes) {
         final Map<String, Attribute> displayedAttributes = new HashMap<>();
-        if (attributeFilter != null && attributeFilter.length() > 0) {
+        if (StringUtils.isNotBlank(attributeFilter)) {
             for (final String attributeName : autoAddedAttributes.keySet()) {
                 if (attributeName.toLowerCase(Locale.ENGLISH).contains(attributeFilter.toLowerCase(Locale.ENGLISH))) {
                     displayedAttributes.put(attributeName, autoAddedAttributes.get(attributeName));
@@ -341,7 +356,7 @@ public abstract class ImportController<D> {
     }
 
     public void createManualAttribute(final Attribute attribute) {
-        Map<String, Attribute> attributes = attribute.getElementType() == GraphElementType.VERTEX
+        final Map<String, Attribute> attributes = attribute.getElementType() == GraphElementType.VERTEX
                 ? manuallyAddedVertexAttributes : manuallyAddedTransactionAttributes;
 
         if (!attributes.containsKey(attribute.getName())) {
@@ -367,6 +382,9 @@ public abstract class ImportController<D> {
     /**
      * A List&lt;ImportDefinition&gt; where each list element corresponds to a
      * RunPane tab.
+     *
+     * @param isFilesIncludeHeadersEnabled When true will skip the first row and
+     * when false will include the first row
      *
      * @return A List&lt;ImportDefinition&gt; where each list element
      * corresponds to a RunPane tab.
@@ -426,12 +444,6 @@ public abstract class ImportController<D> {
         return currentData;
     }
 
-    public Attribute showNewAttributeDialog(final GraphElementType elementType) {
-        final NewAttributeDialog dialog = new NewAttributeDialog(importPane.getParentWindow(), elementType);
-        dialog.showAndWait();
-        return dialog.getAttribute();
-    }
-
     public Set<Integer> getKeys() {
         return Collections.unmodifiableSet(keys);
     }
@@ -439,4 +451,13 @@ public abstract class ImportController<D> {
     public void setImportPane(final ImportPane importPane) {
         this.importPane = importPane;
     }
+
+    public boolean isSkipInvalidRows() {
+        return skipInvalidRows;
+    }
+
+    public void setSkipInvalidRows(final boolean skipInvalidRows) {
+        this.skipInvalidRows = skipInvalidRows;
+    }
+
 }

@@ -34,7 +34,7 @@ import org.openide.util.NbPreferences;
         displayName = "#HelpOptions_DisplayName",
         keywords = "#HelpOptions_Keywords",
         keywordsCategory = "constellation/Preferences",
-        position = 1000)
+        position = 800)
 @org.openide.util.NbBundle.Messages({
     "HelpOptions_DisplayName=Help",
     "HelpOptions_Keywords=Help"

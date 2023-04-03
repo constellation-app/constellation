@@ -42,8 +42,8 @@ public class TimelineViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String timelineModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreTimelineView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "timeline" + sep + "docs" + sep;
+        final String timelineModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreTimelineView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "timeline" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.timeline.TimelineTopComponent", timelineModulePath + "timeline-view.md");
         return map;
@@ -58,8 +58,8 @@ public class TimelineViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String timelineViewPath;
-        timelineViewPath = CODEBASE_NAME + sep + "CoreTimelineView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "views" + sep + "timeline" + sep + "docs" + sep + "timeline-toc.xml";
+        timelineViewPath = "ext" + sep + "docs" + sep + "CoreTimelineView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + CODEBASE_NAME + sep + "views" + sep + "timeline" + sep + "timeline-toc.xml";
         return timelineViewPath;
     }
 }

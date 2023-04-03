@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -184,7 +184,20 @@ public final class ApplicationPreferenceKeys {
      * Quality Control View Priorities
      */
     public static final String RULE_PRIORITIES = "customRules";
+    
+    /**
+     * Quality Control View Rule Enabled Statuses
+     */
+    public static final String RULE_ENABLED_STATUSES = "enabledRules";
 
+    /**
+     * Default Font.
+     */
+    public static final String FONT_PREFERENCES = "au/gov/asd/tac/constellation/preferences";
+    public static final String FONT_FAMILY = "fontFamily";
+    public static String FONT_FAMILY_DEFAULT = "Arial";
+    public static final String FONT_SIZE = "fontSize";
+    public static String FONT_SIZE_DEFAULT = "12";
 
     private ApplicationPreferenceKeys() {
     }

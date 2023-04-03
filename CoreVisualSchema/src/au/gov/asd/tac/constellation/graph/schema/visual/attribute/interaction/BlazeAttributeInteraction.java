@@ -47,7 +47,7 @@ public class BlazeAttributeInteraction extends AbstractAttributeInteraction<Blaz
 
         final Blaze blazeValue = ((Blaze) attrVal);
         final StringBuilder sBuilder = new StringBuilder();
-        sBuilder.append("Colour: ").append(blazeValue.getColor());
+        sBuilder.append("Color: ").append(blazeValue.getColor());
         sBuilder.append("; Angle: ").append(blazeValue.getAngle());
 
         return sBuilder.toString();

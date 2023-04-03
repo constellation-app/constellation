@@ -37,7 +37,7 @@ public class VertexMaxTransactionDatetimeAttributeBin extends DateTimeBin {
         super(formatter);
     }
 
-    private static final ZonedDateTime MIN_DATE_TIME = TemporalFormatting.zonedDateTimeFromLong(Long.MIN_VALUE);
+    private static final ZonedDateTime MIN_DATE_TIME = TemporalFormatting.zonedDateTimeFromLong(Integer.MIN_VALUE);
 
     @Override
     public void setKey(GraphReadMethods graph, int attribute, int element) {

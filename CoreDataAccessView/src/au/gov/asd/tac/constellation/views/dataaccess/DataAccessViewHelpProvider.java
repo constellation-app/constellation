@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,8 +42,8 @@ public class DataAccessViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String dataModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "dataaccess" + sep + "docs" + sep;
+        final String dataModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "dataaccess" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters", dataModulePath + "datetime-range.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.io.ParameterIO", dataModulePath + "data-access-options.md");
@@ -52,6 +52,7 @@ public class DataAccessViewHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveUnusedAttributesPlugin", dataModulePath + "remove-unused-attributes.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractTypesFromTextPlugin", dataModulePath + "extract-types-from-text.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ExtractWordsFromTextPlugin", dataModulePath + "extract-words-from-text.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin", dataModulePath + "import-graph-file.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeNodesPlugin", dataModulePath + "merge-nodes.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.MergeTransactionsPlugin", dataModulePath + "merge-transactions.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin", dataModulePath + "remove-nodes.md");
@@ -59,6 +60,7 @@ public class DataAccessViewHelpProvider extends HelpPageProvider {
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.experimental.TestParametersBatched", dataModulePath + "test-parameters.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectAllPlugin", dataModulePath + "select-all.md");
         map.put("au.gov.asd.tac.constellation.views.dataaccess.plugins.utility.SelectTopNPlugin", dataModulePath + "select-top-n.md");
+        map.put("au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewCategoryPanelController", dataModulePath + "data-access-view-preferences.md");
         return map;
     }
 
@@ -71,8 +73,8 @@ public class DataAccessViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String dataViewPath;
-        dataViewPath = CODEBASE_NAME + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "dataaccess" + sep + "docs" + sep + "dataaccess-toc.xml";
+        dataViewPath = "ext" + sep + "docs" + sep + "CoreDataAccessView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "dataaccess" + sep + "dataaccess-toc.xml";
         return dataViewPath;
     }
 }

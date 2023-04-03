@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE toc PUBLIC "-//Sun Microsystems Inc.//DTD JavaHelp TOC Version 2.0//EN" "http://java.sun.com/products/javahelp/toc_2_0.dtd">
+<toc version="2.0">
+    <tocitem text="Preferences">
+        <tocitem text="Application" target="au.gov.asd.tac.constellation.preferences.application"/>
+        <tocitem text="Developer" target="au.gov.asd.tac.constellation.preferences.developer"/>
+        <tocitem text="Graph" target="au.gov.asd.tac.constellation.preferences.graph"/>
+    </tocitem>
+</toc>

@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.security.ConstellationSecurityManager;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import java.io.File;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -60,7 +61,7 @@ import org.openide.util.NbPreferences;
  * @author Delphinus8821
  */
 public class WelcomeViewPane extends BorderPane {
-    
+
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
 
     private final BorderPane pane;
@@ -71,12 +72,19 @@ public class WelcomeViewPane extends BorderPane {
 
     // place holder image
     public static final String LOGO = "resources/constellation_logo.png";
-    private static final Image PLACEHOLDER_IMAGE =  new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"));
+    private static final Image PLACEHOLDER_IMAGE = new Image(WelcomeTopComponent.class.getResourceAsStream("resources/placeholder_icon.png"));
 
     private static final Button[] recentGraphButtons = new Button[10];
 
     public WelcomeViewPane() {
         pane = new BorderPane();
+        initContent();
+    }
+
+    /**
+     * Create the content for the welcome view pane
+     */
+    private void initContent() {
         ConstellationSecurityManager.startSecurityLaterFX(() -> {
             Platform.setImplicitExit(false);
 
@@ -166,8 +174,8 @@ public class WelcomeViewPane extends BorderPane {
 
             // Create a preferenceListener in order to identify when user preference is changed
             // Keeps tutorial page and options tutorial selections in-sync when both are open
-            PREFERENCES.addPreferenceChangeListener(evt ->
-                showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()))
+            PREFERENCES.addPreferenceChangeListener(evt
+                    -> showOnStartUpCheckBox.setSelected(PREFERENCES.getBoolean(ApplicationPreferenceKeys.WELCOME_ON_STARTUP, showOnStartUpCheckBox.isSelected()))
             );
 
             leftVBox.getChildren().add(lowerLeftHBox);
@@ -179,50 +187,59 @@ public class WelcomeViewPane extends BorderPane {
             rightVBox.getChildren().add(recent);
             rightVBox.getChildren().add(bottomHBox);
 
-            final FlowPane flow = new FlowPane();
-            flow.setPrefWrapLength(1000);
-            flow.setHgap(20);
-            flow.setVgap(20);
-
-            //Create the buttons for the recent page
-            final String screenshotFilenameFormat = RecentGraphScreenshotUtilities.getScreenshotsDir() + File.separator + "%s.png";
-            final List<HistoryItem> fileDetails = RecentFiles.getUniqueRecentFiles();
-            for (int i = 0; i < recentGraphButtons.length; i++) {
-                recentGraphButtons[i] = new Button();
-                //if the user has recent files get the names
-                //and make them the text of the buttons
-                createRecentButtons(recentGraphButtons[i]);
-                if (i < fileDetails.size()) {
-                    recentGraphButtons[i].setText(fileDetails.get(i).getFileName());
-                    final Tooltip toolTip = new Tooltip(fileDetails.get(i).getPath());
-                    recentGraphButtons[i].setTooltip(toolTip);
-                    final String text = recentGraphButtons[i].getText();
-
-                    final String screenshotFilename = String.format(screenshotFilenameFormat, text);
-                    if (new File(screenshotFilename).exists()) {
-                        recentGraphButtons[i].setGraphic(buildGraphic(
-                                new Image("file:///" + screenshotFilename)
-                        ));
-                    } else if (i < fileDetails.size()) {
-                        recentGraphButtons[i].setGraphic(buildGraphic(PLACEHOLDER_IMAGE));
-                    }
-
-                    //Calls the method for the recent graphs to open
-                    //on the button action
-                    final String path = fileDetails.get(i).getPath(); 
-                    recentGraphButtons[i].setOnAction(e -> {
-                        OpenFile.open(RecentFiles.convertPath2File(path), -1);
-                        saveCurrentDirectory(path);
-                    });
-                }
-                flow.getChildren().add(recentGraphButtons[i]);
-            }
+            // add the recent graphs section 
+            final FlowPane flow = recentGraphsSetup();
             bottomHBox.getChildren().add(flow);
             splitPane.getDividers().get(0).setPosition(SPLIT_POS);
             VBox.setVgrow(rightVBox, Priority.ALWAYS);
             this.setCenter(pane);
             scrollPane.setVvalue(-1);
         });
+    }
+
+    /**
+     * Setup the content for the recent graphs part of the welcome page
+     * 
+     * @return flowpane
+     */
+    private FlowPane recentGraphsSetup() {
+        final FlowPane flow = new FlowPane();
+        flow.setPrefWrapLength(1000);
+        flow.setHgap(20);
+        flow.setVgap(20);
+
+        //Create the buttons for the recent page
+        final List<HistoryItem> fileDetails = RecentFiles.getUniqueRecentFiles();
+        for (int i = 0; i < recentGraphButtons.length; i++) {
+            recentGraphButtons[i] = new Button();
+            //if the user has recent files get the names
+            //and make them the text of the buttons
+            createRecentButtons(recentGraphButtons[i]);
+            if (i < fileDetails.size()) {
+                recentGraphButtons[i].setText(fileDetails.get(i).getFileName());
+                final Tooltip toolTip = new Tooltip(fileDetails.get(i).getPath());
+                recentGraphButtons[i].setTooltip(toolTip);
+
+                final Optional<File> screenshotFile = RecentGraphScreenshotUtilities.findScreenshot(fileDetails.get(i).getPath(), fileDetails.get(i).getFileName());
+                if (screenshotFile.isPresent()) {
+                    recentGraphButtons[i].setGraphic(buildGraphic(
+                            new Image("file:///" + screenshotFile.get().getAbsolutePath())
+                    ));
+                } else if (i < fileDetails.size()) {
+                    recentGraphButtons[i].setGraphic(buildGraphic(PLACEHOLDER_IMAGE));
+                }
+
+                //Calls the method for the recent graphs to open
+                //on the button action
+                final String path = fileDetails.get(i).getPath();
+                recentGraphButtons[i].setOnAction(e -> {
+                    OpenFile.open(RecentFiles.convertPath2File(path), -1);
+                    saveCurrentDirectory(path);
+                });
+            }
+            flow.getChildren().add(recentGraphButtons[i]);
+        }
+        return flow;
     }
 
     /**
@@ -242,6 +259,11 @@ public class WelcomeViewPane extends BorderPane {
         return defaultImage;
     }
 
+    /**
+     * Add a new top menu button and set its properties
+     *
+     * @param button
+     */
     public void setButtonProps(final Button button) {
         button.setPrefSize(135, 135);
         button.setMaxSize(150, 150);
@@ -250,6 +272,11 @@ public class WelcomeViewPane extends BorderPane {
         button.setContentDisplay(ContentDisplay.TOP);
     }
 
+    /**
+     * Add a new recent graph button and set its properties
+     *
+     * @param button
+     */
     public void createRecentButtons(final Button button) {
         button.setPrefSize(160, 160);
         button.setMaxSize(175, 175);
@@ -258,6 +285,11 @@ public class WelcomeViewPane extends BorderPane {
         button.setContentDisplay(ContentDisplay.TOP);
     }
 
+    /**
+     * Add a new left menu button and set its properties
+     *
+     * @param button
+     */
     public void setInfoButtons(final Button button) {
         button.setPrefSize(310, 45);
         button.setMaxSize(310, 50);
@@ -265,10 +297,11 @@ public class WelcomeViewPane extends BorderPane {
         button.setCursor(Cursor.HAND);
         button.setAlignment(Pos.CENTER_LEFT);
     }
-    
+
     /**
-     * If the remember open and save location preference is enabled, this saves the current directory as that location
-     * 
+     * If the remember open and save location preference is enabled, this saves
+     * the current directory as that location
+     *
      * @param path the new location to open from when opening or saving a graph
      */
     private static void saveCurrentDirectory(final String path) {

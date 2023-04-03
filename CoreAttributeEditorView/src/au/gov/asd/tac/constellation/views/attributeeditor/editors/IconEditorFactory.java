@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.attributeeditor.editors;
 import au.gov.asd.tac.constellation.graph.attribute.interaction.ValueValidator;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.IconAttributeDescription;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.FileIconData;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -53,9 +54,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
+import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -64,6 +65,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = AttributeValueEditorFactory.class)
 public class IconEditorFactory extends AttributeValueEditorFactory<ConstellationIcon> {
+
+    private static final String TITLE = "Add New Icon(s)";
 
     @Override
     public AbstractEditor<ConstellationIcon> createEditor(final EditOperation editOperation, final DefaultGetter<ConstellationIcon> defaultGetter, final ValueValidator<ConstellationIcon> validator, final String editedItemName, final ConstellationIcon initialValue) {
@@ -168,31 +171,45 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             refreshIconList(iconFile);
         }
 
-        private List<File> pngWalk(File path) {
+        /**
+         * Search for all valid icons, starting at the supplied path.
+         * @param path Path to search for icons.
+         * @return List of all icon files found.
+         */
+        private List<File> iconWalk(File path) {
             final List<File> files = new ArrayList<>();
-            pngWalk(path, files);
+            iconWalk(path, files);
             return files;
         }
 
-        private List<File> pngWalk(final File path, final List<File> files) {
+        /**
+         * Navigate through all files in path and its subdirectories, adding any
+         * files found to match icon file types to the list of icons returned.
+         * @param path Path to search for icons.
+         * @param files Files already found.
+         * @return Complete list of all icon files found (new + those passed in).
+         */
+        private List<File> iconWalk(final File path, final List<File> files) {
             final List<File> addedFiles = new ArrayList<>();
-            for(final File f : path.listFiles()){
+            for (final File f : path.listFiles()) {
                 if (f.isDirectory()) {
                     addedFiles.add(f);
                 } else {
-                    if(StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
+                    if (StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.JPG) ||
+                        StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.GIF) ||
+                        StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
                         addedFiles.add(f);
                     }
                 }
             }
-            
-            for (final File file : addedFiles) {
+
+            addedFiles.forEach(file -> {
                 if (file.isDirectory()) {
-                    pngWalk(file, files);
+                    iconWalk(file, files);
                 } else {
                     files.add(file);
                 }
-            }
+            });
             return files;
         }
 
@@ -246,61 +263,90 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             }
         }
 
-        private HBox createAddRemoveBox() {
-            //add/remove button
-            final HBox addRemoveBox = new HBox(BUTTON_SPACING);
-            addRemoveBox.setAlignment(Pos.CENTER_RIGHT);
-            final Button addFilesButton = new Button("Add File(s)...");
-            final Button addDirButton = new Button("Add Directory...");
-            final Button removeButton = new Button("Remove");
-            addFilesButton.setOnAction(event -> {
-                final FileChooser addIconChooser = new FileChooser();
-                addIconChooser.setTitle("Add new Icon(s)");
-                addIconChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PNG images", "*.*png", "*.*PNG"));
-                final List<File> selectedFiles = addIconChooser.showOpenMultipleDialog(null);
-                String lastIconName = null;
-                if (selectedFiles != null) {
-                    for (File file : selectedFiles) {
-                        final String iconName = file.getName().substring(0, file.getName().length() - 4);
-                        final ConstellationIcon customIcon = new ConstellationIcon.Builder(iconName, new FileIconData(file)).build();
-                        if (IconManager.addIcon(customIcon)) {
-                            lastIconName = file.getName().substring(0, file.getName().length() - 4);
+        private void addIcons(final List<File> selectedFiles) {
+            Platform.runLater(() -> {
+                if (!selectedFiles.isEmpty()) {
+                    String lastIconName = null;
+
+                    for (final File selectedFile : selectedFiles) {
+                        if (selectedFile != null) {
+                            final String iconName = selectedFile.getName().substring(0, selectedFile.getName().length() - 4);
+                            final ConstellationIcon customIcon = new ConstellationIcon.Builder(iconName, new FileIconData(selectedFile)).build();
+
+                            if (IconManager.addIcon(customIcon)) {
+                                lastIconName = selectedFile.getName().substring(0, selectedFile.getName().length() - 4);
+                            }
                         }
                     }
+
                     if (lastIconName != null) {
                         reloadUserDefinedIcons(lastIconName);
                     }
                 }
             });
-            addDirButton.setOnAction(event -> {
-                final DirectoryChooser addFolderChooser = new DirectoryChooser();
-                addFolderChooser.setTitle("Add new Icons");
-                final File selectedFolder = addFolderChooser.showDialog(null);
-                if (selectedFolder != null) {
-                    final List<File> selectedFiles = pngWalk(selectedFolder);
-                    if (!selectedFiles.isEmpty()) {
-                        String lastIconFile = null;
-                        for (final File file : selectedFiles) {
-                            final String iconName = file.getName().substring(0, file.getName().length() - 4);
-                            final ConstellationIcon customIcon = new ConstellationIcon.Builder(iconName, new FileIconData(file)).build();
-                            if (IconManager.addIcon(customIcon)) {
-                                lastIconFile = file.getName().substring(0, file.getName().length() - 4);
-                            }
-                        }
-                        if (lastIconFile != null) {
-                            reloadUserDefinedIcons(lastIconFile);
-                        }
-                    }
-                }
-            });
+        }
+
+        private HBox createAddRemoveBox() {
+            //add/remove/clear button
+            final HBox addRemoveBox = new HBox(BUTTON_SPACING);
+            addRemoveBox.setAlignment(Pos.CENTER_RIGHT);
+            final Button addFilesButton = new Button("Add File(s)...");
+            final Button addDirButton = new Button("Add Directory...");
+            final Button removeButton = new Button("Remove");
+
+            addFilesButton.setOnAction(event -> FileChooser.openMultiDialog(getIconEditorFileChooser()).thenAccept(optionalFiles -> optionalFiles.ifPresent(files -> addIcons(files))));
+
+            addDirButton.setOnAction(event -> FileChooser.openOpenDialog(getIconEditorFolderChooser()).thenAccept(optionalFolder -> optionalFolder.ifPresent(folder -> addIcons(iconWalk(folder)))));
+
             removeButton.setOnAction(event -> {
                 final boolean iconRemoved = IconManager.removeIcon(listView.getSelectionModel().getSelectedItem());
                 if (iconRemoved) {
                     reloadUserDefinedIcons("");
                 }
             });
+
             addRemoveBox.getChildren().addAll(addFilesButton, addDirButton, removeButton);
             return addRemoveBox;
+        }
+
+        /**
+         * Creates a new file chooser.
+         *
+         * @return the created file chooser.
+         */
+        public FileChooserBuilder getIconEditorFileChooser() {
+            return new FileChooserBuilder(TITLE)
+                    .setTitle(TITLE)
+                    .setAcceptAllFileFilterUsed(false)
+                    .setFilesOnly(true)
+                    .setFileFilter(new FileFilter() {
+                        @Override
+                        public boolean accept(final File file) {
+                            final String name = file.getName();
+                            final boolean imageFilename = (
+                                    StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JPG) ||
+                                    StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.GIF) ||
+                                    StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG));
+                            return ((file.isFile() && imageFilename) || file.isDirectory());
+                        }
+
+                        @Override
+                        public String getDescription() {
+                            return "Image Files (*" + FileExtensionConstants.JPG + ";*" + FileExtensionConstants.GIF + ";*" + FileExtensionConstants.PNG + ")";
+                        }
+                    });
+        }
+
+        /**
+         * Creates a new folder chooser.
+         *
+         * @return the created folder chooser.
+         */
+        public FileChooserBuilder getIconEditorFolderChooser() {
+            return new FileChooserBuilder(TITLE)
+                    .setTitle(TITLE)
+                    .setAcceptAllFileFilterUsed(false)
+                    .setDirectoriesOnly(true);
         }
     }
 

@@ -15,9 +15,11 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.plugins.zoom;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -51,6 +53,13 @@ public final class ZoomToSelectionPlugin extends SimpleEditPlugin {
         final Camera camera = new Camera(oldCamera);
         BoundingBoxUtilities.recalculateFromGraph(box, graph, true);
         CameraUtilities.zoomToBoundingBox(camera, box);
-        Animation.startAnimation(new PanAnimation("Zoom to Selection", oldCamera, camera, true));
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
+            // Only do the camera animation if the edited graph is currently active
+            Animation.startAnimation(new PanAnimation("Zoom to Selection", oldCamera, camera, true));
+        } else {
+            // Skip the animation, just set the new camera position
+            VisualGraphUtilities.setCamera(graph, camera);
+        }        
     }
 }

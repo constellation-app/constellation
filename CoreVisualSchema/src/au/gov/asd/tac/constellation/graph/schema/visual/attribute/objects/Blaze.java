@@ -119,7 +119,7 @@ public final class Blaze implements Serializable, Comparable<Blaze> {
                 final int angle = Integer.valueOf(m.group(1));
                 final ConstellationColor color = ConstellationColor.getColorValue(m.group(2));
                 if (color == null) {
-                    throw new IllegalBlazeFormatException("Undefined colour for blaze.");
+                    throw new IllegalBlazeFormatException("Undefined color for blaze.");
                 }
                 return new Blaze(angle, color);
             }

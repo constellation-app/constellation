@@ -154,7 +154,7 @@ public class GraphDisplayer implements GLRenderable {
         gl.glGenFramebuffers(1, graphFboName, 0);
         gl.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, graphFboName[0]);
 
-        // Create a texture for colour information.
+        // Create a texture for color information.
         gl.glGenTextures(1, graphColorTextureName, 0);
         gl.glBindTexture(GL.GL_TEXTURE_2D, graphColorTextureName[0]);
         gl.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_NEAREST);

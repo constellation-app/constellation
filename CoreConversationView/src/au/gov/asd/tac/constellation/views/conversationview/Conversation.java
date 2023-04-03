@@ -115,7 +115,7 @@ public class Conversation {
     private List<String> possibleSenderAttributes = new ArrayList<>();
 
     // Thread names.
-    private static final String CONVERSATION_VIEW_UPDATE_COLOUR_THREAD_NAME = "Conversation View: Update Colour Stage";
+    private static final String CONVERSATION_VIEW_UPDATE_COLOR_THREAD_NAME = "Conversation View: Update Color Stage";
     private static final String CONVERSATION_VIEW_UPDATE_CONTRIBUTIONS_THREAD_NAME = "Conversation View: Update Contributions";
     private static final String CONVERSATION_VIEW_UPDATE_DATETIME_THREAD_NAME = "Conversation View: Update Datetime";
     private static final String CONVERSATION_VIEW_UPDATE_MESSAGE_THREAD_NAME = "Conversation View: Update Message in Conversation";
@@ -492,7 +492,7 @@ public class Conversation {
             try {
                 final CountDownLatch latch = new CountDownLatch(1);
 
-                final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_COLOUR_THREAD_NAME) {
+                final Thread thread = new Thread(CONVERSATION_VIEW_UPDATE_COLOR_THREAD_NAME) {
                     @Override
                     public void run() {
                         colorProvider.updateMessageColors(graph, senderMessages);
@@ -503,7 +503,7 @@ public class Conversation {
 
                 latch.await();
             } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "Message colours update was interrupted");
+                LOGGER.log(Level.SEVERE, "Message colors update was interrupted");
                 Thread.currentThread().interrupt();
                 return false;
             }

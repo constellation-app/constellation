@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.graph.utilities.hashmod;
 
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -22,15 +24,15 @@ import java.io.File;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle;
-import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.Mnemonics;
+import org.openide.filesystems.FileChooserBuilder;
 import org.openide.util.NbBundle;
 import org.openide.util.NbBundle.Messages;
 
@@ -46,7 +48,8 @@ import org.openide.util.NbBundle.Messages;
         })
 public class HashmodPanel extends javax.swing.JPanel {
 
-    private static final String HASHMOD_CSV_FILE = "user.home";
+    private static final String TITLE = "Select a CSV for the Hashmod";
+
     private String hashmodCSVFileStr = "";
     private boolean isChainedHashmods = false;
     private int numChainedHashmods = 0;
@@ -116,6 +119,30 @@ public class HashmodPanel extends javax.swing.JPanel {
 
     public boolean isCreateTransactionsSelected() {
         return createTransactionsCheckbox.isSelected();
+    }
+
+    /**
+     * Creates a new file chooser.
+     *
+     * @return the created file chooser.
+     */
+    public FileChooserBuilder getHasmodFileChooser() {
+        return new FileChooserBuilder(TITLE)
+                .setTitle(TITLE)
+                .setAcceptAllFileFilterUsed(false)
+                .setFilesOnly(true)
+                .setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(final File file) {
+                        final String name = file.getName();
+                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.COMMA_SEPARATED_VALUE)) || file.isDirectory();
+                    }
+
+                    @Override
+                    public String getDescription() {
+                        return "CSV Files (" + FileExtensionConstants.COMMA_SEPARATED_VALUE + ")";
+                    }
+                });
     }
 
     /**
@@ -295,16 +322,8 @@ public class HashmodPanel extends javax.swing.JPanel {
 
     private void hashmodButtonActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_hashmodButtonActionPerformed
     {//GEN-HEADEREND:event_hashmodButtonActionPerformed
-        final JFileChooser fc = new JFileChooser(System.getProperty(HASHMOD_CSV_FILE));
-        final String hashmodCSV = hashmodCSVFile.getText().trim();
-        if (!hashmodCSV.isEmpty()) {
-            fc.setSelectedFile(new File(hashmodCSV));
-        }
-        fc.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fc.setFileFilter(new FileNameExtensionFilter(("CSV files [.csv]"), "csv"));
-
-        if (fc.showDialog(this, "Select a CSV for the Hashmod") == JFileChooser.APPROVE_OPTION) {
-            final String fname = fc.getSelectedFile().getPath();
+        FileChooser.openOpenDialog(getHasmodFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
+            final String fname = file.getPath();
             hashmodCSVFile.setText(fname);
             hashmodCSVFileStr = fname;
             final Hashmod thisHashmod = getHashmod();
@@ -313,8 +332,7 @@ public class HashmodPanel extends javax.swing.JPanel {
             } else {
                 setAttributeNames(null, null, null);
             }
-
-        }
+        }));
     }//GEN-LAST:event_hashmodButtonActionPerformed
 
     private void hashmodButton1ActionPerformed(ActionEvent evt) {//GEN-FIRST:event_hashmodButton1ActionPerformed

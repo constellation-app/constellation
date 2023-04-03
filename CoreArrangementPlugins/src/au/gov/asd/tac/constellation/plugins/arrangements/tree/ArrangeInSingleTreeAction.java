@@ -94,7 +94,7 @@ public final class ArrangeInSingleTreeAction extends SimpleAction {
             }
             final int colorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
 
-            // Colour the taxonomies so we can see what's going on.
+            // Color the taxonomies so we can see what's going on.
             if (tax != null) {
                 for (final Integer subvxId : tax.getTaxa().keySet()) {
                     final ConstellationColor color = ConstellationColor.getColorValue(r.nextFloat(), r.nextFloat(), r.nextFloat(), 1F);

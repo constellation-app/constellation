@@ -15,6 +15,16 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview;
 
+import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.plugins.ThreadConstraints;
+import au.gov.asd.tac.constellation.plugins.PluginException;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.plugins.PluginGraphs;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
@@ -46,7 +56,7 @@ public class AnalyticViewPane extends BorderPane {
     private static final String RUN_STOP_TEXT = "Stop";
     private static final String RUN_STOP_STYLE = "-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;";
 
-    private final VBox analyticViewPane;
+    private final VBox viewPane;
     private final AnchorPane analyticOptionsPane;
     private final HBox analyticOptionButtons;
     private final Button runButton;
@@ -56,25 +66,26 @@ public class AnalyticViewPane extends BorderPane {
 
     private boolean running = false;
     private Thread questionThread = null;
+    private ThreadConstraints parentConstraints = null;
 
     public AnalyticViewPane(final AnalyticController analyticController) {
-
+        
         // the top level analytic view pane
-        this.analyticViewPane = new VBox();
-        analyticViewPane.prefWidthProperty().bind(this.widthProperty());
+        this.viewPane = new VBox();
+        viewPane.prefWidthProperty().bind(this.widthProperty());
 
         // the pane allowing analytic view options to be set
         this.analyticOptionsPane = new AnchorPane();
-        analyticOptionsPane.prefWidthProperty().bind(analyticViewPane.widthProperty());
+        analyticOptionsPane.prefWidthProperty().bind(viewPane.widthProperty());
 
         // the pane which displays all visualisations and options relating to the results of an analytic question
         this.analyticResultsPane = new AnalyticResultsPane(analyticController);
-        analyticResultsPane.prefWidthProperty().bind(analyticViewPane.widthProperty());
-        analyticResultsPane.minHeightProperty().bind(analyticViewPane.heightProperty().multiply(0.4));
+        analyticResultsPane.prefWidthProperty().bind(viewPane.widthProperty());
+        analyticResultsPane.minHeightProperty().bind(viewPane.heightProperty().multiply(0.4));
 
         // the pane allowing selection and configuration of an analytic question
         this.analyticConfigurationPane = new AnalyticConfigurationPane();
-        analyticConfigurationPane.prefWidthProperty().bind(analyticViewPane.widthProperty());
+        analyticConfigurationPane.prefWidthProperty().bind(viewPane.widthProperty());
 
         // the pane holding the analytic option buttons
         this.analyticOptionButtons = new HBox();
@@ -85,8 +96,8 @@ public class AnalyticViewPane extends BorderPane {
         runButton.setOnAction(event -> {
             if (running) {
                 // hide results pane
-                if (analyticViewPane.getChildren().contains(analyticResultsPane)) {
-                    analyticViewPane.getChildren().remove(analyticResultsPane);
+                if (viewPane.getChildren().contains(analyticResultsPane)) {
+                    viewPane.getChildren().remove(analyticResultsPane);
                 }
 
                 // stop execution of the current analytic question
@@ -94,12 +105,12 @@ public class AnalyticViewPane extends BorderPane {
                     questionThread.interrupt();
                 }
                 running = false;
-                runButton.setText(RUN_START_TEXT);
-                runButton.setStyle(RUN_START_STYLE);
+                setRunButtonMode(true);
             } else {
+                setRunButtonMode(false);
                 // display results pane
-                if (!analyticViewPane.getChildren().contains(analyticResultsPane)) {
-                    analyticViewPane.getChildren().add(1, analyticResultsPane);
+                if (!viewPane.getChildren().contains(analyticResultsPane)) {
+                    viewPane.getChildren().add(1, analyticResultsPane);
                 }
                 // display progress indicator
                 analyticResultsPane.getInternalVisualisationPane().getTabs().clear();
@@ -108,32 +119,43 @@ public class AnalyticViewPane extends BorderPane {
                 progressTab.setContent(analyticResultsPane.getProgressIndicatorPane());
                 analyticResultsPane.getInternalVisualisationPane().getTabs().add(progressTab);
                 // answer the current analytic question and display the results
-                final Thread answerQuestionThread = new Thread(() -> {
-                    Platform.runLater(() -> {
-                        runButton.setText(RUN_STOP_TEXT);
-                        runButton.setStyle(RUN_STOP_STYLE);
-                    });
-
-                    running = true;
-                    try {
-                        AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
-                        analyticResultsPane.displayResults(question);
-                    } catch (final AnalyticException ex) {
-                        LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                        final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
-                        question.addException(ex);
-                        analyticResultsPane.displayResults(question);
-                    } finally {
-                        running = false;
-
-                        Platform.runLater(() -> {
-                            runButton.setText(RUN_START_TEXT);
-                            runButton.setStyle(RUN_START_STYLE);
-                        });
+                final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                final SimplePlugin virtualAnalytics = new SimplePlugin("Analytic View - Query Runner"){
+                    @Override
+                    protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                        parentConstraints = ThreadConstraints.getConstraints();
+                        questionThread = new Thread(() -> {
+                            final ThreadConstraints localConstraints = ThreadConstraints.getConstraints();
+                            if (localConstraints.getCurrentReport() == null) {
+                                localConstraints.setCurrentReport(parentConstraints.getCurrentReport());
+                            }
+                            running = true;
+                            try {
+                                final AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
+                                analyticResultsPane.displayResults(question);
+                            } catch (final AnalyticException ex) {
+                                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                                final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
+                                question.addException(ex);
+                                analyticResultsPane.displayResults(question);
+                            } finally {
+                                running = false;
+                                setRunButtonMode(true);
+                            }
+                        }, "Analytic View: Answer Question");
+                        questionThread.start();
+                        interaction.notify(PluginNotificationLevel.INFO, " * Working * ");
                     }
-                }, "Analytic View: Answer Question");
-                questionThread = answerQuestionThread;
-                answerQuestionThread.start();
+                };
+
+                try {
+                    PluginExecution.withPlugin(virtualAnalytics).interactively(false).executeNow(activeGraph);
+                } catch (final InterruptedException iex) {
+                    LOGGER.log(Level.SEVERE, iex.getLocalizedMessage());
+                    Thread.currentThread().interrupt();
+                } catch (final PluginException ex) {
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                }
             }
         });
         analyticOptionButtons.getChildren().addAll(helpButton, runButton);
@@ -143,17 +165,24 @@ public class AnalyticViewPane extends BorderPane {
         AnchorPane.setRightAnchor(analyticOptionButtons, 5.0);
 
         // populate the analytic view pane
-        analyticViewPane.getChildren().addAll(analyticOptionsPane, analyticConfigurationPane);
+        viewPane.getChildren().addAll(analyticOptionsPane, analyticConfigurationPane);
 
         // initialise the top level pane
-        this.setCenter(analyticViewPane);
+        this.setCenter(viewPane);
     }
 
+    private void setRunButtonMode(final boolean isRunMode){
+        Platform.runLater(() -> {
+            runButton.setText(isRunMode ? RUN_START_TEXT : RUN_STOP_TEXT);
+            runButton.setStyle(isRunMode ? RUN_START_STYLE : RUN_STOP_STYLE);
+        });
+    }
+    
     protected final void reset() {
         Platform.runLater(() -> {
             // hide results pane
-            if (analyticViewPane.getChildren().contains(analyticResultsPane)) {
-                analyticViewPane.getChildren().remove(analyticResultsPane);
+            if (viewPane.getChildren().contains(analyticResultsPane)) {
+                viewPane.getChildren().remove(analyticResultsPane);
             }
             analyticConfigurationPane.reset();
             analyticResultsPane.reset();

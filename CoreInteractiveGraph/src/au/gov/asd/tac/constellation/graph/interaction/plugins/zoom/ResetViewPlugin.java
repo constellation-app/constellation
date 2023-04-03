@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.Plugin;
@@ -107,7 +108,14 @@ public final class ResetViewPlugin extends SimpleEditPlugin {
             }
 
             // add an animation to the refocused camera so that it pans from the old position.
-            Animation.startAnimation(new PanAnimation("Reset View", oldCamera, camera, parameters.getBooleanValue(SIGNIFICANT_PARAMETER_ID)));
+            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+            if (activeGraph != null && activeGraph.getId().equals(graph.getId())) {
+                // Only do the camera animation if the edited graph is currently active
+                Animation.startAnimation(new PanAnimation("Reset View", oldCamera, camera, parameters.getBooleanValue(SIGNIFICANT_PARAMETER_ID)));
+            } else {
+                // Skip the animation, just set the new camera position
+                graph.setObjectValue(cameraAttribute, 0, camera);
+            }
         }
     }
 }

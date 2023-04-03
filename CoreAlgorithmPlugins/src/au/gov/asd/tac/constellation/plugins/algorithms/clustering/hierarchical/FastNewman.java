@@ -19,8 +19,8 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -294,10 +294,10 @@ public class FastNewman {
 
     private static class Link implements Comparable<Link> {
 
-        private Group highGroup;
-        private Group lowGroup;
+        private Group highGroup = null;
+        private Group lowGroup = null;
         private float weight = 0.0F;
-        private float deltaQ;
+        private float deltaQ = 0.0F;
         private boolean initial = false;
 
         @Override

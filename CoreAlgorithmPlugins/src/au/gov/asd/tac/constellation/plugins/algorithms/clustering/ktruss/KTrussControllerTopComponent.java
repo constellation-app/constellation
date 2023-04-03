@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.plugins.algorithms.clustering.ClusteringConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
@@ -727,7 +727,7 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             return;
         }
 
-        // Determine if interactive is enabled, if it isn't, then overlay colours need to be removed.
+        // Determine if interactive is enabled, if it isn't, then overlay colors need to be removed.
         // This is used to revert the graph display when the component is closed and was previously
         // set to interactive.
         final boolean interactive = state.isInteractive();
@@ -754,13 +754,13 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
         final boolean wasColored = state.isNestedTrussesColored();
         state.toggleNestedTrussesColored();
 
-        final SimpleEditPlugin colourPlugin;
+        final SimpleEditPlugin colorPlugin;
         if (wasColored) {
-            colourPlugin = new RemoveOverlayColors();
+            colorPlugin = new RemoveOverlayColors();
         } else {
-            colourPlugin = new ColorTrusses(state);
+            colorPlugin = new ColorTrusses(state);
         }
-        PluginExecution.withPlugin(colourPlugin).interactively(true).executeLater(graph);
+        PluginExecution.withPlugin(colorPlugin).interactively(true).executeLater(graph);
     }
 
     private void selectOnGraph() {
@@ -817,12 +817,12 @@ public final class KTrussControllerTopComponent extends TopComponent implements 
             // Retrieve (or if not extant, create) the node and transaction attributes pertaining to k-trusses and selection.
             final int vxKTrussAttr = ClusteringConcept.VertexAttribute.K_TRUSS_CLUSTER.ensure(graph);
             final int txKTrussAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_CLUSTER.ensure(graph);
-            final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.K_TRUSS_COLOUR.ensure(graph);
-            final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_COLOUR.ensure(graph);
+            final int vxOverlayColorAttr = ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.ensure(graph);
+            final int txOverlayColorAttr = ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.ensure(graph);
             final int vxColorRef = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
             final int txColorRef = VisualConcept.GraphAttribute.TRANSACTION_COLOR_REFERENCE.ensure(graph);
-            graph.setStringValue(vxColorRef, 0, ClusteringConcept.VertexAttribute.K_TRUSS_COLOUR.getName());
-            graph.setStringValue(txColorRef, 0, ClusteringConcept.TransactionAttribute.K_TRUSS_COLOUR.getName());
+            graph.setStringValue(vxColorRef, 0, ClusteringConcept.VertexAttribute.K_TRUSS_COLOR.getName());
+            graph.setStringValue(txColorRef, 0, ClusteringConcept.TransactionAttribute.K_TRUSS_COLOR.getName());
 
             final ConstellationColor[] colors = ConstellationColor.createPalettePhi(state.getNumUniqueValuesOfK() + 2, 0, 0.5F, 0.95F);
             colors[0] = colors[colors.length - 1];

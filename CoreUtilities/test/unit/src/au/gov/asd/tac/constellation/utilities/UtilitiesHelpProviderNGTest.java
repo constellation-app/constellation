@@ -81,16 +81,16 @@ public class UtilitiesHelpProviderNGTest {
         //the file separator used will vary from OS to OS so rather than copying the
         //exact string from the actual class and asserting what we got is the same,
         //we'll assert that some of the keyparts of the expected filepath are present
+        assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("CoreUtilities"));
         assertTrue(tocLocation.contains("src"));
         assertTrue(tocLocation.contains("utilities"));
-        assertTrue(tocLocation.contains("docs"));
         assertTrue(tocLocation.contains("utilities-toc.xml"));
 
+        assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("CoreUtilities"));
         assertTrue(tocLocation.indexOf("CoreUtilities") < tocLocation.indexOf("src"));
         assertTrue(tocLocation.indexOf("src") < tocLocation.indexOf("utilities"));
-        assertTrue(tocLocation.indexOf("utilities") < tocLocation.indexOf("docs"));
-        assertTrue(tocLocation.indexOf("docs") < tocLocation.indexOf("utilities-toc.xml"));
+        assertTrue(tocLocation.indexOf("utilities") < tocLocation.indexOf("utilities-toc.xml"));
     }
 
 }

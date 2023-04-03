@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.views.layers.components.LayersViewPane;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +47,7 @@ import org.openide.windows.TopComponent;
         category = "Window",
         id = "au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent")
 @ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Views", position = 600),
+    @ActionReference(path = "Menu/Views", position = 600),
     @ActionReference(path = "Shortcuts", name = "CS-L")})
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_LayersViewAction",
@@ -78,11 +79,6 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
             layersViewController.readStateFuture();
             layersViewController.updateQueries(graph);
         });
-    }
-
-    public void update() {
-        layersViewController.readState();
-        layersViewController.updateQueries(GraphManager.getDefault().getActiveGraph());
     }
 
     public void removeValueHandlers(final List<AttributeValueMonitor> valueMonitors) {
@@ -142,7 +138,9 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
     @Override
     protected void componentShowing() {
         super.componentShowing();
-        preparePane();
+        createContent().setEnabled(true);
+        layersViewController.readState();
+        layersViewController.addAttributes();
         setPaneStatus();
     }
 
@@ -159,7 +157,6 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
      */
     protected void setPaneStatus(){
         createContent().setEnabled(GraphManager.getDefault().getActiveGraph() != null);
-        
     }
 
     /**

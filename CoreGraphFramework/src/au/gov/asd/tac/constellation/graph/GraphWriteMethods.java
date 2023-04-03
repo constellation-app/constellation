@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,6 +113,25 @@ public interface GraphWriteMethods extends GraphReadMethods {
      * @see GraphReadMethods#getVertexCapacity()
      */
     int addVertex();
+    
+    /**
+     * Adds a new vertex to the graph.
+     * <p>
+     * The new vertex will be given the id supplied from the parameters. It
+     * will fail if there already exists a transaction with that id. If the
+     * graph's vertex capacity is exhausted then the capacity will be
+     * increased so that the new vertex can be accommodated.
+     * <p>
+     * If a primary key has been set on vertices in the graph, it is important
+     * that this new vertex be allocated unique primary key attribute values
+     * before the changes are committed to the graph or automatic vertex merging
+     * may occur.
+     *
+     * @param vertex the id to be given to the vertex
+     * @return the id of the new vertex.
+     * @see GraphReadMethods#getVertexCapacity()
+     */
+    int addVertex(final int vertex);
 
     /**
      * Removes the specified vertex from the graph. This will also cause the
