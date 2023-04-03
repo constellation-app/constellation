@@ -50,6 +50,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -62,6 +63,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -408,14 +410,16 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                             graph.removeVertex(vertexId);
                             ++skippedRow;
                         } else {
+                            NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Ignore invalid rows", NotifyDescriptor.PLAIN_MESSAGE);                     
                             throw ex;
                         }
                     }
                 }
             } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
-                if (skipInvalidRows) {                    
+                if (skipInvalidRows) {          
                     ++skippedRow;
                 } else {
+                    NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Ignore invalid rows", NotifyDescriptor.PLAIN_MESSAGE);                     
                     throw ex;
                 }
             }
