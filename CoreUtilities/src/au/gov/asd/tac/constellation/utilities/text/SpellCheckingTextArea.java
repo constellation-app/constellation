@@ -52,10 +52,10 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      */
     public SpellCheckingTextArea(final String text) {
         this();
-        SetText(text);
+        setText(text);
     }
 
-    public void SetText(final String text) {
+    public void setText(final String text) {
         this.replaceText(text);
     }
 
