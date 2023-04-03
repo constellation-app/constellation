@@ -95,6 +95,8 @@ public class MarkdownNode {
                 return "ITALIC";
             case NORMAL:
                 return "NORMAL";
+            case STRIKETHROUGH:
+                return "STRIKETHROUGH";
             default:
                 return "Type doesn't exist";
         }

@@ -34,7 +34,7 @@ public class TextHelper {
     private FontPosture posture = FontPosture.REGULAR;
     private double size = 15.0;
 
-    public TextHelper(String rawText) {
+    public TextHelper(final String rawText) {
         text = new Text(rawText);
         text.setFont(Font.font(family, weight, posture, size));
     }
@@ -43,7 +43,7 @@ public class TextHelper {
         return text;
     }
 
-    public void setText(String rawText) {
+    public void setText(final String rawText) {
         text.setText(rawText);
         applyFont();
     }
@@ -52,28 +52,33 @@ public class TextHelper {
         text.setFont(Font.font(family, weight, posture, size));
     }
 
-    public void setFontFamily(String family) {
+    public void setFontFamily(final String family) {
         this.family = family;
         applyFont();
     }
 
-    public void setWeight(FontWeight weight) {
+    public void setWeight(final FontWeight weight) {
         this.weight = weight;
         applyFont();
     }
 
-    public void setPosture(FontPosture posture) {
+    public void setPosture(final FontPosture posture) {
         this.posture = posture;
         applyFont();
     }
 
-    public void setSize(double size) {
+    public void setSize(final double size) {
         this.size = size;
         applyFont();
     }
 
-    public void setFill(Color colour) {
+    public void setFill(final Color colour) {
         text.setFill(colour);
+        applyFont();
+    }
+
+    public void setStrikeThrough(final boolean strikeThrough) {
+        text.setStrikethrough(strikeThrough);
         applyFont();
     }
 
