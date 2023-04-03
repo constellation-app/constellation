@@ -44,6 +44,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -128,9 +129,8 @@ public class NewNotePane {
         });
 
         preview = new TextFlow();
-        preview.setPrefWidth(WIDTH - 5);
+        preview.setMaxWidth(WIDTH - 5);
         preview.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-
 
         tabPane = new TabPane();
         Tab writeTab = new Tab();
@@ -143,15 +143,16 @@ public class NewNotePane {
         previewTab.setContent(preview);
         previewTab.setClosable(false);
 
+
         previewTab.setOnSelectionChanged(event -> {
             if (previewTab.isSelected()) {
                 preview.getChildren().clear();
                 final MarkdownTree mdTree = new MarkdownTree(contentField.getText());
                 mdTree.parse();
-                final List<Text> textNodes = mdTree.getTextNodes();
+                final List<TextHelper> textNodes = mdTree.getTextNodes();
 
                 for (int i = 0; i < textNodes.size(); ++i) {
-                    preview.getChildren().add(textNodes.get(i));
+                    preview.getChildren().add(textNodes.get(i).getText());
                 }
             }
         });

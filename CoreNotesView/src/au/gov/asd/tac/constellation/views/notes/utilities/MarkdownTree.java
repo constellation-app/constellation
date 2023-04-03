@@ -57,16 +57,11 @@ public class MarkdownTree {
             return;
         }
 
-        if (text.charAt(text.length() - 1) != '\n') {
-            text += "\n";
-        }
-
-        LOGGER.log(Level.SEVERE, "Passing in: " + text);
 
         int currentIndex = 0;
         final char[] syntaxList = {'#', '\n', '*'};
         while (true) {
-
+            LOGGER.log(Level.SEVERE, "working on: " + text);
             int closestSyntax = Integer.MAX_VALUE;
 
             for (int i = 0; i < 3; ++i) {
@@ -114,14 +109,15 @@ public class MarkdownTree {
                     currentNode.getChildren().add(paragraph);
                     parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
                     currentIndex = endIndex + 1;
-                }
+                } else
+                    ++currentIndex;
             } else if (text.charAt(closestSyntax) == '*') {
                 currentIndex = closestSyntax;
 
                 if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == '*') {
                     ++currentIndex;
-                    if (text.indexOf("**", currentIndex + 1) != -1) {
-                        int endIndex = text.indexOf("**", currentIndex + 1);
+                    int endIndex = text.indexOf("**", currentIndex + 1);
+                    if (endIndex != -1) {
                         MarkdownNode bold = new MarkdownNode(MarkdownNode.Type.BOLD, currentIndex, endIndex, "Bold", -99);
                         currentNode.getChildren().add(bold);
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
@@ -130,11 +126,11 @@ public class MarkdownTree {
                         ++currentIndex;
 
                 } else if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) != '*') {
-                    if (text.indexOf("*", currentIndex + 1) != -1) {
-                        int endIndex = text.indexOf("*", currentIndex + 1);
-                        while (endIndex < text.length()) {
-                            if (endIndex + 1 < text.length() && text.charAt(endIndex + 1) != '*') {
-                                MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex, endIndex, "Italic", -99);
+                    int endIndex = text.indexOf("*", currentIndex + 1);
+                    if (endIndex != -1) {
+                        while (endIndex < text.length() && endIndex != -1) {
+                            if ((endIndex + 1 < text.length() && text.charAt(endIndex + 1) != '*') || endIndex == text.length() - 1) {
+                                MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, endIndex, "Italic", -99);
                                 currentNode.getChildren().add(italic);
                                 parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
                                 currentIndex = endIndex + 1;
@@ -179,47 +175,46 @@ public class MarkdownTree {
         LOGGER.log(Level.SEVERE, currentNode.getTypeString());
     }
 
-    public List<Text> getTextNodes() {
+    public List<TextHelper> getTextNodes() {
         return getText(root);
     }
 
-    private List<Text> getText(MarkdownNode currentNode) {
-        List<Text> textNodes = new ArrayList<Text>();
+    private List<TextHelper> getText(MarkdownNode currentNode) {
+        List<TextHelper> textNodes = new ArrayList<TextHelper>();
 
         if (currentNode.getType() == MarkdownNode.Type.NORMAL) {
-            Text text = new Text(currentNode.getValue());
+            TextHelper text = new TextHelper(currentNode.getValue());
             text.setFill(Color.WHITE);
-            text.setFont(Font.font("Helvetica", FontWeight.NORMAL, FontPosture.REGULAR, 10));
             textNodes.add(text);
             return textNodes;
         }
 
         for (int i = 0; i < currentNode.getChildren().size(); ++i) {
-            List<Text> childTextNodes = getText(currentNode.getChildren().get(i));
+            List<TextHelper> childTextNodes = getText(currentNode.getChildren().get(i));
 
             for (int j = 0; j < childTextNodes.size(); ++j) {
-                Text currentText = childTextNodes.get(j);
+                TextHelper currentText = childTextNodes.get(j);
                 if (currentNode.getType() == MarkdownNode.Type.HEADING) {
                     int level = currentNode.getHeadingLevel();
                     if (level == 1) {
-                        currentText.setFont(Font.font(32));
+                        currentText.setSize(32.0);
                     } else if (level == 2) {
-                        currentText.setFont(Font.font(24));
+                        currentText.setSize(24.0);
                     } else if (level == 3) {
-                        currentText.setFont(Font.font(18.72));
+                        currentText.setSize(18.72);
                     } else if (level == 4) {
-                        currentText.setFont(Font.font(16));
+                        currentText.setSize(16.0);
                     } else if (level == 5) {
-                        currentText.setFont(Font.font(13.28));
+                        currentText.setSize(12.28);
                     } else {
-                        currentText.setFont(Font.font(10.72));
+                        currentText.setSize(10.72);
                     }
                 } else if (currentNode.getType() == MarkdownNode.Type.ITALIC) {
-                    currentText.setFont(Font.font(currentText.getFont().getFamily(), FontPosture.ITALIC, currentText.getFont().getSize()));
+                    currentText.setPosture(FontPosture.ITALIC);
                 } else if (currentNode.getType() == MarkdownNode.Type.BOLD) {
-                    currentText.setFont(Font.font(currentText.getFont().getFamily(), FontWeight.BOLD, currentText.getFont().getSize()));
+                    currentText.setWeight(FontWeight.BOLD);
                 } else if (currentNode.getType() == MarkdownNode.Type.PARAGRAPH) {
-                    currentText.setText("\n\n" + currentText.getText());
+                    currentText.setText("\n\n" + currentText.getText().getText());
                 }
 
                 textNodes.add(currentText);
