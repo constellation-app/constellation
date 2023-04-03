@@ -97,6 +97,12 @@ public class MarkdownNode {
                 return "NORMAL";
             case STRIKETHROUGH:
                 return "STRIKETHROUGH";
+            case UNORDERED_LIST:
+                return "UNORDERED LIST";
+            case ORDERED_LIST:
+                return "ORDERED LIST";
+            case LIST_ITEM:
+                return "LIST ITEM";
             default:
                 return "Type doesn't exist";
         }
