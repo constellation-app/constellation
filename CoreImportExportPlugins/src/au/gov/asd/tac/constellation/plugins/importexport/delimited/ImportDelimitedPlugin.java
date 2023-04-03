@@ -409,8 +409,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                         if (skipInvalidRows) {
                             graph.removeVertex(vertexId);
                             ++skippedRow;
-                        } else {
-                            NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Ignore invalid rows", NotifyDescriptor.PLAIN_MESSAGE);                     
+                        } else {                            
                             throw ex;
                         }
                     }
@@ -418,8 +417,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
                 if (skipInvalidRows) {          
                     ++skippedRow;
-                } else {
-                    NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Ignore invalid rows", NotifyDescriptor.PLAIN_MESSAGE);                     
+                } else {                    
                     throw ex;
                 }
             }
@@ -497,6 +495,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                         graph.removeVertex(destinationVertexId);
                         ++skippedRow;
                     } else {
+                        NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Ignore invalid rows", NotifyDescriptor.PLAIN_MESSAGE);                     
                         throw ex;
                     }
                 }
