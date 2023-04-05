@@ -45,7 +45,7 @@ public class MarkdownTree {
     public MarkdownTree(String rawString) {
         root = new MarkdownNode();
         this.rawString += rawString + "\n";
-        LOGGER.log(Level.SEVERE, "The raw string: " + rawString);
+        //LOGGER.log(Level.SEVERE, "The raw string: " + rawString);
     }
 
     public void parse() {
@@ -65,10 +65,10 @@ public class MarkdownTree {
         int currentIndex = 0;
         final char[] syntaxList = {'#', '\n', '*', '_', '~', '.'};
         while (true) {
-            LOGGER.log(Level.SEVERE, "working on: " + text);
+            //LOGGER.log(Level.SEVERE, "working on: " + text);
             int closestSyntax = Integer.MAX_VALUE;
 
-            for (int i = 0; i < 5; ++i) {
+            for (int i = 0; i < 6; ++i) {
                 if (text.indexOf(syntaxList[i], currentIndex) != -1 && text.indexOf(syntaxList[i], currentIndex) < closestSyntax) {
                     closestSyntax = text.indexOf(syntaxList[i], currentIndex);
                 }
@@ -82,11 +82,17 @@ public class MarkdownTree {
 
 
             if (closestSyntax == Integer.MAX_VALUE) {
-                LOGGER.log(Level.SEVERE, "No syntax found");
+                //LOGGER.log(Level.SEVERE, "No syntax found");
                 closestSyntax = currentIndex;
             } else if (closestSyntax != currentIndex) {
                 LOGGER.log(Level.SEVERE, "Making early text for: " + text.substring(currentIndex, closestSyntax));
+
                 MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
+
+                if (closestSyntax != text.length() - 1 && text.charAt(closestSyntax) == '\n') {
+                    normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax + 1), -99);
+                }
+
                 currentNode.getChildren().add(normal);
             }
 
@@ -103,7 +109,7 @@ public class MarkdownTree {
                         MarkdownNode heading = new MarkdownNode(MarkdownNode.Type.HEADING, i + 1, endIndex, text.substring(i + 1, endIndex), level);
                         currentNode.getChildren().add(heading);
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(i + 1, endIndex));
-                        currentIndex = endIndex + 1;
+                        currentIndex = endIndex;
                         break;
                     }
                     else {
@@ -115,14 +121,32 @@ public class MarkdownTree {
 
             } else if (text.charAt(closestSyntax) == '\n') {
                 currentIndex = closestSyntax;
-                int endIndex = text.indexOf("\n", currentIndex + 1);
-                if (endIndex != -1) {
-                    MarkdownNode paragraph = new MarkdownNode(MarkdownNode.Type.PARAGRAPH, currentIndex + 1, endIndex, "Paragraph", -99);
-                    currentNode.getChildren().add(paragraph);
-                    parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
-                    currentIndex = endIndex + 1;
-                } else
+                LOGGER.log(Level.SEVERE, "Found first enter at " + currentIndex);
+                if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == '\n') {
                     ++currentIndex;
+                    LOGGER.log(Level.SEVERE, "Found second enter at " + currentIndex);
+                    int endIndex = text.indexOf("\n\n", currentIndex + 1);
+                    if (endIndex == -1) {
+                        endIndex = text.length() - 1;
+                    }
+                    //if (endIndex != -1 && ((endIndex + 1 < text.length() && text.charAt(endIndex + 1) == '\n') || endIndex == text.length() - 1)) {
+                        MarkdownNode paragraph = new MarkdownNode(MarkdownNode.Type.PARAGRAPH, currentIndex + 1, endIndex, "Paragraph", -99);
+
+                        LOGGER.log(Level.SEVERE, "Processing text: " + text.substring(currentIndex + 1, endIndex));
+                        LOGGER.log(Level.SEVERE, "Found enter at end index: " + endIndex);
+                        currentNode.getChildren().add(paragraph);
+                        parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
+                        currentIndex = endIndex;
+                    //} else {
+                    //++currentIndex;
+                    //}
+                } else {
+                    /*if (currentIndex - 2 >= 0 && text.substring(currentIndex - 2, currentIndex).isBlank()) {
+                        MarkdownNode lineBreak = new MarkdownNode(MarkdownNode.Type.LINE_BREAK, currentIndex, currentIndex, "\n", -99);
+                        currentNode.getChildren().add(lineBreak);
+                    }*/
+                    ++currentIndex;
+                }
             } else if (text.charAt(closestSyntax) == boldSyntax) {
                 currentIndex = closestSyntax;
 
@@ -146,7 +170,7 @@ public class MarkdownTree {
                                 currentNode.getChildren().add(italic);
                                 parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
                                 currentIndex = endIndex + 1;
-                                LOGGER.log(Level.SEVERE, "character after italics: " + text.charAt(currentIndex));
+                                //LOGGER.log(Level.SEVERE, "character after italics: " + text.charAt(currentIndex));
                                 break;
                             } else if (endIndex + 2 < text.length()) {
                                 endIndex = text.indexOf(boldSyntax, endIndex + 2);
@@ -173,20 +197,55 @@ public class MarkdownTree {
 
                 }
 
+            } else if (text.charAt(closestSyntax) == '.') {
+                currentIndex = closestSyntax;
+                int numIndex = closestSyntax - 1;
+                int enterIndex = closestSyntax - 2;
+
+                if (numIndex >= 0) {
+                    if (text.charAt(numIndex) == '1' && (enterIndex < 0 || text.charAt(enterIndex) == '\n') && currentNode.getType() != MarkdownNode.Type.UNORDERED_LIST && currentNode.getType() != MarkdownNode.Type.ORDERED_LIST) {
+                        MarkdownNode orderedList = new MarkdownNode(MarkdownNode.Type.ORDERED_LIST, numIndex, text.length() - 1, "ORDERED LIST", 99);
+                        orderedList.setTabs(1);
+
+                        if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
+                            orderedList.setTabs(currentNode.getTabs() + 1);
+                        }
+
+                        currentNode.getChildren().add(orderedList);
+                        parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(numIndex));
+                        MarkdownNode listParent = currentNode.getChildren().get(currentNode.getChildren().size() - 1);
+                        currentIndex = listParent.getChildren().get(listParent.getChildren().size() - 1).getEndIndex() + 1;
+                    } else if (Character.isDigit(text.charAt(numIndex)) && (currentNode.getType() == MarkdownNode.Type.UNORDERED_LIST || currentNode.getType() == MarkdownNode.Type.ORDERED_LIST)) {
+                        int endIndex = text.indexOf('\n', currentIndex);
+                        if (endIndex == -1) {
+                            text += "\n";
+                            endIndex = text.length() - 1;
+                        }
+
+                        MarkdownNode listItem = new MarkdownNode(MarkdownNode.Type.LIST_ITEM, currentIndex + 1, endIndex, "LIST ITEM", 99);
+                        listItem.setLatestListItem(currentNode.getLatestListItem());
+                        listItem.setTabs(currentNode.getTabs());
+                        currentNode.setLatestListItem(currentNode.getLatestListItem() + 1);
+
+                        //LOGGER.log(Level.SEVERE, "List item: " + text.substring(currentIndex + 1, endIndex));
+                        currentNode.getChildren().add(listItem);
+                        parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
+
+                        currentIndex = endIndex + 1;
+                    } else
+                        ++currentIndex;
+                } else
+                    ++currentIndex;
+
             } else {
-                LOGGER.log(Level.SEVERE, "Making text node for: " + text.substring(currentIndex));
-                MarkdownNode normal = null;
-                //if (currentIndex == text.length() - 1) {
-                //normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, Character.toString(text.charAt(currentIndex)), -99);
-                //} else {
-                    normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, text.length() - 1, text.substring(currentIndex), -99);
-                //}
+                //LOGGER.log(Level.SEVERE, "Making text node for: " + text.substring(currentIndex));
+                MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, text.length() - 1, text.substring(currentIndex), -99);
                 currentNode.getChildren().add(normal);
                 return;
             }
 
 
-            if (currentIndex > text.length() - 1) {
+            if (currentIndex > text.length() - 1 || currentIndex < 0) {
                 return;
             }
         }
@@ -223,6 +282,9 @@ public class MarkdownTree {
             text.setFill(Color.WHITE);
             textNodes.add(text);
             return textNodes;
+        } else if (currentNode.getType() == MarkdownNode.Type.LINE_BREAK) {
+            textNodes.add(new TextHelper("\n"));
+            return textNodes;
         }
 
         for (int i = 0; i < currentNode.getChildren().size(); ++i) {
@@ -251,12 +313,17 @@ public class MarkdownTree {
                     currentText.setWeight(FontWeight.BOLD);
                 } else if (currentNode.getType() == MarkdownNode.Type.STRIKETHROUGH) {
                     currentText.setStrikeThrough(true);
+                } else if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
+                    currentText.setText(currentNode.getLatestListItem() + ". " + currentText.getText().getText());
+                    for (int tabs = 0; tabs < currentNode.getTabs(); ++tabs) {
+                        currentText.setText("\t" + currentText.getText().getText());
+                    }
                 }
 
                 textNodes.add(currentText);
             }
 
-            if (currentNode.getType() == MarkdownNode.Type.PARAGRAPH && !textNodes.isEmpty()) {
+            if ((currentNode.getType() == MarkdownNode.Type.PARAGRAPH || currentNode.getType() == MarkdownNode.Type.ORDERED_LIST || currentNode.getType() == MarkdownNode.Type.UNORDERED_LIST) && !textNodes.isEmpty()) {
                 textNodes.get(0).setText("\n\n" + textNodes.get(0).getText().getText());
             }
         }

@@ -30,6 +30,9 @@ public class MarkdownNode {
 
     private String value = "";
 
+    private int tabs = 0;
+    private int latestListItem = 1;
+
     private Type type;
 
     private int headingLevel = -99;
@@ -40,6 +43,7 @@ public class MarkdownNode {
         PARAGRAPH,
         BOLD,
         ITALIC,
+        LINE_BREAK,
         STRIKETHROUGH,
         ORDERED_LIST,
         UNORDERED_LIST,
@@ -81,6 +85,23 @@ public class MarkdownNode {
         return type;
     }
 
+    public int getTabs() {
+        return tabs;
+    }
+
+    public void setTabs(int tabs) {
+        this.tabs = tabs;
+    }
+
+    public int getLatestListItem() {
+        return latestListItem;
+    }
+
+    public void setLatestListItem(int latestListItem) {
+        this.latestListItem = latestListItem;
+    }
+
+
     public String getTypeString() {
         switch (type) {
             case ROOT:
@@ -103,6 +124,8 @@ public class MarkdownNode {
                 return "ORDERED LIST";
             case LIST_ITEM:
                 return "LIST ITEM";
+            case LINE_BREAK:
+                return "LINE BREAK";
             default:
                 return "Type doesn't exist";
         }
