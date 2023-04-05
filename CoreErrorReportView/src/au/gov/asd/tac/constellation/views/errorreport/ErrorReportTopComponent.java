@@ -126,7 +126,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     private final FlowPane fineReportFilter = new FlowPane();
 
     private Date filterUpdateDate = new Date();
-    private int popupMode = 1;
+    private int popupMode = 2;
+    private final ArrayList<String> popupFilters = new ArrayList<>();
+    private boolean errorReportRunning = true;
+    private boolean waitForGracePeriod = false;
+
     private Date flashActivatedDate = null;
     private boolean iconFlashing = false;
     private BorderPane errorBPane = null;
@@ -156,15 +160,25 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             public void run() {
                 Platform.runLater(new Runnable() {
                     public void run() {
-                        if (updateInProgress != null && !updateInProgress.get()) {
-                            if (latestRetrievalDate == null || latestRetrievalDate.before(ErrorReportSessionData.lastUpdate) || latestRetrievalDate.before(filterUpdateDate) || ErrorReportSessionData.screenUpdateRequested) {
+                        boolean gracePeriodRefresh = false;
+                        final Date currentDate = new Date();
+                        if (waitForGracePeriod) {
+                            final Date resumptionDate = ErrorReportDialogManager.getInstance().getGracePeriodResumptionDate();
+                            if (currentDate.after(resumptionDate)) {
+                                waitForGracePeriod = false;
+                                gracePeriodRefresh = true;
+                            }
+                        }
+                        if (errorReportRunning && updateInProgress != null && !updateInProgress.get()) {
+                            if (gracePeriodRefresh || latestRetrievalDate == null || latestRetrievalDate.before(ErrorReportSessionData.lastUpdate) || latestRetrievalDate.before(filterUpdateDate) || ErrorReportSessionData.screenUpdateRequested) {
                                 previousRetrievalDate = latestRetrievalDate == null ? null : new Date(latestRetrievalDate.getTime());
                                 latestRetrievalDate = new Date();
                                 boolean flashRequired = true;
                                 if (ErrorReportDialogManager.getInstance().getLatestPopupDismissDate() != null && ErrorReportDialogManager.getInstance().getLatestPopupDismissDate().after(ErrorReportSessionData.lastUpdate)) {
                                     flashRequired = false;
                                 }
-                                ErrorReportDialogManager.getInstance().updatePopupMode(getPopupControlValue());
+                                updateFilterData();
+                                ErrorReportDialogManager.getInstance().updatePopupSettings(getPopupControlValue(), popupFilters);
                                 Date topEntryPrevDate = null;
                                 if (!sessionErrors.isEmpty()) {
                                     topEntryPrevDate = sessionErrors.get(0).getLastDate();
@@ -185,7 +199,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         };
 
         refreshTimer = new Timer();
-        refreshTimer.schedule(refreshAction, 4000, 400);
+        refreshTimer.schedule(refreshAction, 840, 480);
     }
 
     @Override
@@ -245,7 +259,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         finePopCheckBox.setSelected(false);
         finePopCheckBox.setOnAction((final ActionEvent event) -> updateSettings());
         finePopCheckBox.setPadding(new Insets(0, 0, 8, 0));
-
+        
         severeRepCheckBox.setSelected(true);
         severeRepCheckBox.setOnAction((final ActionEvent event) -> {filterUpdateDate = new Date(); updateSettings();});
         severeRepCheckBox.setPadding(new Insets(0, 0, 0, 0));
@@ -299,14 +313,14 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         final RadioMenuItem oneRedispItem = new RadioMenuItem("2 : Show one popup, redisplayable");
         oneRedispItem.setOnAction((final ActionEvent event) -> {popupMode = 2; popupControl.setText("Popup Mode : 2 ");} );
         oneRedispItem.setToggleGroup(popupFrequency);
-        final RadioMenuItem multiItem = new RadioMenuItem("3 : Show one popup per source");
+        final RadioMenuItem multiItem = new RadioMenuItem("3 : Show one popup per source (max 5) ");
         multiItem.setOnAction((final ActionEvent event) -> {popupMode = 3; popupControl.setText("Popup Mode : 3 ");} );
         multiItem.setToggleGroup(popupFrequency);
         final RadioMenuItem multiRedispItem = new RadioMenuItem("4 : Show one per source, redisplayable");
         multiRedispItem.setOnAction((final ActionEvent event) -> {popupMode = 4; popupControl.setText("Popup Mode : 4 ");} );
         multiRedispItem.setToggleGroup(popupFrequency);
-        oneItem.setSelected(true);
-        popupControl = new MenuButton("Popup Mode : 1 ");
+        oneRedispItem.setSelected(true);
+        popupControl = new MenuButton("Popup Mode : 2 ");
         popupControl.getItems().add(neverItem);
         popupControl.getItems().add(oneItem);
         popupControl.getItems().add(oneRedispItem);
@@ -375,6 +389,26 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         return ScrollPane.ScrollBarPolicy.ALWAYS;
     }
 
+    /**
+     * This view will control popups while it is open
+     */
+    @Override
+    protected void handleComponentOpened() {
+        errorReportRunning = true;
+        ErrorReportDialogManager.getInstance().setErrorReportRunning(errorReportRunning);
+    }
+
+    /**
+     * Return popup control to the ErrorReportDialogManager when this view is closed
+     */
+    @Override
+    protected void handleComponentClosed() {
+        errorReportRunning = false;
+        updateFilterData();
+        ErrorReportDialogManager.getInstance().updatePopupSettings(getPopupControlValue(), popupFilters);
+        ErrorReportDialogManager.getInstance().setErrorReportRunning(errorReportRunning);
+    }
+    
     private void updateSettings(){
         final String severeFill = "#c02020";
         final String warningFill = "#b86820";
@@ -401,7 +435,25 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         updateSettingsIcon(severePopupAllowed, severePopupInner, severePopCheckBox.isSelected() ? severeBorder : severeFill);
         updateSettingsIcon(warnPopupAllowed, warningPopupInner, warningPopCheckBox.isSelected() ? warningBorder : warningFill);
         updateSettingsIcon(infoPopupAllowed, infoPopupInner, infoPopCheckBox.isSelected() ? infoBorder : infoFill);
-        updateSettingsIcon(finePopupAllowed, finePopupInner, finePopCheckBox.isSelected() ? fineBorder : fineFill);        
+        updateSettingsIcon(finePopupAllowed, finePopupInner, finePopCheckBox.isSelected() ? fineBorder : fineFill);      
+        
+        updateFilterData();
+    }
+    
+    public void updateFilterData(){
+        popupFilters.clear();
+        if (severePopCheckBox.isSelected()) {
+            popupFilters.add("SEVERE");
+        }
+        if (warningPopCheckBox.isSelected()) {
+            popupFilters.add("WARNING");
+        }
+        if (infoPopCheckBox.isSelected()) {
+            popupFilters.add("INFO");
+        }
+        if (finePopCheckBox.isSelected()) {
+            popupFilters.add("FINE");
+        }
     }
     
     private void updateSettingsIcon(final FlowPane settingsPane, final String innerShade, final String borderShade){
@@ -488,15 +540,16 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         while (!sessionUpdated) {
             if (updateInProgress.compareAndSet(false, true)) {
                 refreshSessionErrors();
+                final Date nextFilterDate = new Date();
                 final int errCount = sessionErrors.size();
                 // rebuild                
                 sessionErrorsBox.getChildren().clear();
                 for (int i = 0; i < errCount; i++) {
                     boolean allowPopupDisplay = false;
-                    if (("SEVERE".equals(sessionErrors.get(i).getErrorLevel().getName()) && severePopCheckBox.isSelected())
+                    if (errorReportRunning && (("SEVERE".equals(sessionErrors.get(i).getErrorLevel().getName()) && severePopCheckBox.isSelected())
                             || ("WARNING".equals(sessionErrors.get(i).getErrorLevel().getName()) && warningPopCheckBox.isSelected())
                             || ("INFO".equals(sessionErrors.get(i).getErrorLevel().getName()) && infoPopCheckBox.isSelected())
-                            || ("FINE".equals(sessionErrors.get(i).getErrorLevel().getName()) && finePopCheckBox.isSelected())) {
+                            || ("FINE".equals(sessionErrors.get(i).getErrorLevel().getName()) && finePopCheckBox.isSelected()))) {
                         allowPopupDisplay = true;
                     }
                     sessionErrorsBox.getChildren().add(generateErrorReportTitledPane(sessionErrors.get(i)));
@@ -506,12 +559,19 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 }
                 
                 // check if popup needed on hidden entries ... these entries can only exist with the allow popup checkbox ticked
-                for (ErrorReportEntry entry : hiddenErrors) {
-                    if (entry.getLastDate().after(filterUpdateDate)) {
-                        ErrorReportDialogManager.getInstance().showErrorDialog(entry);
+                if (errorReportRunning) {
+                    for (final ErrorReportEntry entry : hiddenErrors) {
+                        if (entry.getLastDate().after(filterUpdateDate)) {
+                            ErrorReportDialogManager.getInstance().showErrorDialog(entry);
+                        }
                     }
                 }
-                
+                final Date resumptionDate = ErrorReportDialogManager.getInstance().getGracePeriodResumptionDate();
+                if (resumptionDate == null || nextFilterDate.after(resumptionDate)) {
+                    filterUpdateDate = new Date(nextFilterDate.getTime());
+                } else {
+                    waitForGracePeriod = true;
+                }
                 sessionUpdated = true;
                 updateInProgress.set(false);
             } else {
@@ -538,6 +598,11 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     public void flashErrorIcon(final boolean enabled) {
         if (!enabled) {
             iconFlashing = false;
+            if (waitForGracePeriod) {
+                filterUpdateDate = new Date();
+                waitForGracePeriod = false;
+            }
+            cancelRequestAttention();
             return;
         }
         if (sessionErrorsBox.getChildren().isEmpty()) {
@@ -545,26 +610,20 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         }
         if (!iconFlashing) {
             iconFlashing = true;
-            flashActivatedDate = new Date(previousRetrievalDate.getTime());
+            flashActivatedDate = previousRetrievalDate == null ? new Date() : new Date(previousRetrievalDate.getTime());
             try {
                 final Image alertIcon = ImageIO.read(ErrorReportTopComponent.class.getResourceAsStream("resources/error-report-alert.png"));
                 final Image defaultIcon = ImageIO.read(ErrorReportTopComponent.class.getResourceAsStream("resources/error-report-default.png"));
                 final Thread flasher = new Thread(() -> {
                     final ArrayList<String> errorReportLevels = new ArrayList<>();
                     final ArrayList<String> errorPopupLevels = new ArrayList<>();
-                    int countDown = 3;
-                    requestAttention(true);
+                    requestAttention(false);
                     while (isIconFlashing()) {
                         errorPopupLevels.clear();
                         errorPopupLevels.addAll(ErrorReportDialogManager.getInstance().getActivePopupErrorLevels());
                         errorReportLevels.clear();
                         errorReportLevels.addAll(getErrorLevelList(true));
                         try {
-                            countDown--;
-                            if (countDown <= 0) {
-                                countDown = 3;
-                                requestAttention(true);
-                            }
                             SwingUtilities.invokeAndWait(() -> {
                                 setIcon(alertIcon);
                                 updateSettings();
@@ -824,7 +883,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         bdrPane.setRight(hBoxRight);
         bdrPane.setPadding(new Insets(0, 0, 0, 0));
         bdrPane.setStyle("-fx-border-color:grey");
-
         bdrPane.prefWidthProperty().bind(scrollPane.widthProperty().subtract(48));
 
         ttlPane.setGraphic(bdrPane);

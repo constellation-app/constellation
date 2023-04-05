@@ -15,10 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
+import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.io.File;
 import java.util.Date;
 import javafx.embed.swing.JFXPanel;
@@ -29,9 +31,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
@@ -57,7 +64,6 @@ public class ErrorReportDialog {
     private final TextArea errorMsgArea;
     private final Label summaryLabel = new Label("");
     private final BorderPane root;
-    private final Label errorLabel;
     private final VBox detailsBox;
 
     protected double mouseOrigX = 0;
@@ -77,6 +83,7 @@ public class ErrorReportDialog {
         fxPanel.setLayout(layout);
         fxPanel.setOpaque(false);
         fxPanel.setBackground(TRANSPARENT);
+        final boolean showOccs = errorEntry.getOccurrences() > 1;
 
         final File userDir = Places.getUserDirectory();
         String logFileLocation = "var/log/";
@@ -89,7 +96,7 @@ public class ErrorReportDialog {
         root.setStyle("-fx-background-color: #DDDDDD;");
         root.setPadding(BORDERPANE_PADDING);
 
-        errorLabel = new Label("Error level: " + errorEntry.getErrorLevel().toString() + "\n" + errorEntry.getHeading());
+        final Label imageLabel = new Label(" \n ");
         final Color errorIconColor;
         switch(errorEntry.getErrorLevel().getName()) {
             case "SEVERE":  errorIconColor = new Color(215, 95, 95);
@@ -104,17 +111,51 @@ public class ErrorReportDialog {
                             break;
             default: errorIconColor = new Color(200, 120, 150);
         }
-        final ImageView errorImage = new ImageView(UserInterfaceIconProvider.ERROR.buildImage(32, errorIconColor));
-        errorLabel.setGraphic(errorImage);
+        final ImageView errorImage = new ImageView(UserInterfaceIconProvider.ERROR.buildImage(36, errorIconColor));
+        imageLabel.setGraphic(errorImage);
+        imageLabel.setPadding(new Insets(2 + (showOccs ? 4 : 0),0,0,0));
         detailsBox = new VBox();
         root.setTop(detailsBox);
-        detailsBox.getChildren().add(errorLabel);
+        
+        final BorderPane errorHeadingPane = new BorderPane();
+        final TextFlow errorHeadingText = new TextFlow();
+        final FlowPane headerSeverityPane = new FlowPane();
+        final Label severityDesc = new Label("Error Level: " + errorEntry.getErrorLevel().getName() + " ");
+        severityDesc.setPadding(new Insets(0,0,0,0));
+        final Label occurrenceDesc = new Label(" " + errorEntry.getOccurrences() + " Occurrences ");
+        headerSeverityPane.getChildren().add(severityDesc);
+        final Font outputFont = FontUtilities.getOutputFont();
+        final Text messageDesc = new Text(errorEntry.getHeading());
+        messageDesc.setStyle("-fx-font-family: " + outputFont.getFamily());
+        errorHeadingText.getChildren().add(messageDesc);
+        errorHeadingText.setPadding(new Insets(3,0,0,0));
+        
+        final BorderPane headingSection = new BorderPane();
+        
+        if (showOccs) {
+            headerSeverityPane.setPadding(new Insets(4,0,0,0));
+            occurrenceDesc.setTooltip(new Tooltip("Repeated Occurrences of this Exception"));
+            occurrenceDesc.setStyle("-fx-border-color:#808080; -fx-background-color: #e0e0e0");
+            occurrenceDesc.setTextAlignment(TextAlignment.CENTER);
+            occurrenceDesc.setPadding(new Insets(0));
+            final BorderPane occBox = new BorderPane();
+            occBox.setCenter(occurrenceDesc);
+            occBox.setStyle("-fx-background-color: #bcbcbc");
+            detailsBox.getChildren().add(occBox);
+        }
+        
+        headingSection.setCenter(headerSeverityPane);        
+        headingSection.setBottom(errorHeadingText);
+        errorHeadingPane.setLeft(imageLabel);
+        errorHeadingPane.setCenter(headingSection);
+
+        detailsBox.getChildren().add(errorHeadingPane);
         errorMsgArea = new TextArea(errorEntry.getSummaryHeading() + "\n" + errorEntry.getErrorData());
         errorMsgArea.setPrefRowCount(24);
         errorMsgArea.setEditable(false);
 
-        summaryLabel.setText("\nClick Show Details or see the messages.log file in your\n" + logFileLocation + " folder");
-        final ImageView blankImage = new ImageView(DefaultIconProvider.TRANSPARENT.buildImage(32, Color.RED));
+        summaryLabel.setText(" Click Show Details or see the messages.log file in your\n " + logFileLocation + " folder");
+        final ImageView blankImage = new ImageView(DefaultIconProvider.TRANSPARENT.buildImage(36, Color.RED));
         summaryLabel.setGraphic(blankImage);
         detailsBox.getChildren().add(summaryLabel);
         final BorderPane buttonPane = new BorderPane();
@@ -141,11 +182,11 @@ public class ErrorReportDialog {
         if (showingDetails) {
             detailsBox.getChildren().remove(summaryLabel);
             detailsBox.getChildren().add(errorMsgArea);
-            dialog.setSize(new Dimension(575, 535));
+            dialog.setSize(new Dimension(575, 575));
         } else {
             detailsBox.getChildren().remove(errorMsgArea);
             detailsBox.getChildren().add(summaryLabel);
-            dialog.setSize(new Dimension(430, 220));
+            dialog.setSize(new Dimension(430, 230));
         }
     }
 

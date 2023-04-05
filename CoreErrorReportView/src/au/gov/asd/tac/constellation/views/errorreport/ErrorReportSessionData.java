@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.errorreport;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * This is a data storage class to maintain the list of errors that have been
@@ -43,6 +42,7 @@ public class ErrorReportSessionData {
     public static ErrorReportSessionData getInstance() {
         if (instance == null) {
             instance = new ErrorReportSessionData();
+            ErrorReportDialogManager.getInstance();
         }
         return instance;
     }
@@ -57,18 +57,32 @@ public class ErrorReportSessionData {
     public boolean storeSessionError(final ErrorReportEntry entry) {
         boolean foundMatch = false;
         synchronized (sessionErrors) {
-            final String comparisonData = entry.getErrorData();
+            // check for repeated exception, but compare only the top portion of the stacktrace, 
+            // as there are cases where different threads can generate the same exception, but have a 
+            // different origin (thread number) in their stack trace
+            final String[] comparisonLines = entry.getErrorData().split("\n");
+            final StringBuilder sb = new StringBuilder();
+            if (comparisonLines.length > 7) {
+                final int topNlines = 2 + comparisonLines.length / 4;
+                for (int i = 0; i < topNlines; i++) {
+                    sb.append(comparisonLines[i]).append("\n");
+                }
+            } else {
+                sb.append(entry.getErrorData());
+            }
+            final String comparisonData = sb.toString(); 
             final int errCount = sessionErrors.size();
             for (int i = 0; i < errCount; i++) {
-                if (sessionErrors.get(i).getErrorData().equals(comparisonData)) {
+                if (sessionErrors.get(i).getErrorLevel().equals(entry.getErrorLevel()) && sessionErrors.get(i).getErrorData().startsWith(comparisonData)) {
                     final ErrorReportEntry ere = sessionErrors.get(i);
                     ere.incrementOccurrences();
                     ere.setExpanded(true);
                     ere.setHeading(entry.getHeading());
                     foundMatch = true;
                     if (i > 0) {
+                        // move updated entry to the top
                         sessionErrors.remove(i);
-                        sessionErrors.add(0, ere); // move updated entry to the top
+                        sessionErrors.add(0, ere);
                     }
                 }
             }
