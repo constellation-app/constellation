@@ -119,12 +119,12 @@ public class NewNotePane {
         contentField.setWrapText(true);
         contentField.setOnKeyPressed(key -> {
             // If tab is typed and shift isn't being held dowm.
-            if (key.getCode() == KeyCode.TAB && !key.isShiftDown()) {
+            /*if (key.getCode() == KeyCode.TAB && !key.isShiftDown()) {
                 // Backspace any tabs typed.
                 contentField.fireEvent(new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.BACK_SPACE, false, false, false, false));
                 // Move focus to the next UI element.
                 contentField.getParent().getChildrenUnmodifiable().get(contentField.getParent().getChildrenUnmodifiable().indexOf(contentField) + 1).requestFocus();
-            }
+            }*/
 
         });
 
