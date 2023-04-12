@@ -87,15 +87,25 @@ public class MarkdownTree {
             } else if (closestSyntax != currentIndex) {
                 //LOGGER.log(Level.SEVERE, "Making early text for: " + text.substring(currentIndex, closestSyntax));
 
-                MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
+                MarkdownNode normal;
 
                 if (closestSyntax != text.length() - 1 && text.charAt(closestSyntax) == '\n') {
                     normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax + 1), -99);
-                } else if (text.charAt(closestSyntax) == '.' && closestSyntax - 1 >= 0 && Character.isDigit(text.charAt(closestSyntax - 1)) && ((currentNode.getType() == MarkdownNode.Type.ORDERED_LIST || currentNode.getType() == MarkdownNode.Type.UNORDERED_LIST || currentNode.getType() == MarkdownNode.Type.LIST_ITEM) || text.charAt(closestSyntax - 1) == '1')) {
+                } else if (text.charAt(closestSyntax) == '.'
+                        && closestSyntax - 1 >= 0
+                        && Character.isDigit(text.charAt(closestSyntax - 1))
+                        && ((currentNode.getType() == MarkdownNode.Type.ORDERED_LIST
+                        || currentNode.getType() == MarkdownNode.Type.UNORDERED_LIST
+                        || currentNode.getType() == MarkdownNode.Type.LIST_ITEM)
+                        || text.charAt(closestSyntax - 1) == '1')) {
                     normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax - 1), -99);
-                }
+                } else
+                    normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
 
-                currentNode.getChildren().add(normal);
+                //if (!(normal.getValue().isBlank() || normal.getValue().isEmpty())) {
+                    LOGGER.log(Level.SEVERE, "Making early text for: " + text.substring(currentIndex, closestSyntax - 1));
+                    currentNode.getChildren().add(normal);
+                //}
             }
 
             if (text.charAt(closestSyntax) == '#') {
@@ -132,21 +142,14 @@ public class MarkdownTree {
                         endIndex = text.length() - 1;
                     }
                     //if (endIndex != -1 && ((endIndex + 1 < text.length() && text.charAt(endIndex + 1) == '\n') || endIndex == text.length() - 1)) {
-                        MarkdownNode paragraph = new MarkdownNode(MarkdownNode.Type.PARAGRAPH, currentIndex + 1, endIndex, "Paragraph", -99);
+                    final MarkdownNode paragraph = new MarkdownNode(MarkdownNode.Type.PARAGRAPH, currentIndex + 1, endIndex, "Paragraph", -99);
 
                     //LOGGER.log(Level.SEVERE, "Processing text: " + text.substring(currentIndex + 1, endIndex));
                     //LOGGER.log(Level.SEVERE, "Found enter at end index: " + endIndex);
-                        currentNode.getChildren().add(paragraph);
-                        parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
-                        currentIndex = endIndex;
-                    //} else {
-                    //++currentIndex;
-                    //}
+                    currentNode.getChildren().add(paragraph);
+                    parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
+                    currentIndex = endIndex;
                 } else {
-                    /*if (currentIndex - 2 >= 0 && text.substring(currentIndex - 2, currentIndex).isBlank()) {
-                        MarkdownNode lineBreak = new MarkdownNode(MarkdownNode.Type.LINE_BREAK, currentIndex, currentIndex, "\n", -99);
-                        currentNode.getChildren().add(lineBreak);
-                    }*/
                     ++currentIndex;
                 }
             } else if (text.charAt(closestSyntax) == boldSyntax) {
@@ -215,7 +218,7 @@ public class MarkdownTree {
                         //orderedList.setTabs(1);
 
                         orderedList.setTabs(currentNode.getTabs());
-                        LOGGER.log(Level.SEVERE, "Ordered list: " + text.substring(numIndex, text.length() - 1));
+                        //LOGGER.log(Level.SEVERE, "Ordered list: " + text.substring(numIndex, text.length() - 1));
 
                         currentNode.getChildren().add(orderedList);
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(numIndex));
@@ -262,8 +265,6 @@ public class MarkdownTree {
 
                         currentNode.getChildren().add(listItem);
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex).strip());
-                        LOGGER.log(Level.SEVERE, "List item: " + text.substring(currentIndex + 1, endIndex));
-                        LOGGER.log(Level.SEVERE, "Ammount of tabs: " + currentNode.getTabs());
                         if (endIndex + 1 < text.length() && text.charAt(endIndex + 1) == '\n') {
                             return;
                         }
@@ -288,7 +289,7 @@ public class MarkdownTree {
                 }
 
             }*/ else {
-                //LOGGER.log(Level.SEVERE, "Making text node for: " + text.substring(currentIndex));
+                LOGGER.log(Level.SEVERE, "Making text node for: " + text.substring(currentIndex));
                 MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, text.length() - 1, text.substring(currentIndex), -99);
                 currentNode.getChildren().add(normal);
                 return;
@@ -332,20 +333,21 @@ public class MarkdownTree {
             text.setFill(Color.WHITE);
             textNodes.add(text);
             return textNodes;
-        } else if (currentNode.getType() == MarkdownNode.Type.PARAGRAPH /*|| currentNode.getType() == MarkdownNode.Type.ORDERED_LIST || currentNode.getType() == MarkdownNode.Type.UNORDERED_LIST*/) {
+        } else if (currentNode.getType() == MarkdownNode.Type.PARAGRAPH) {
             textNodes.add(new TextHelper("\n\n"));
             //return textNodes;
         }
         else if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
-
+            LOGGER.log(Level.SEVERE, "Processing list item that has: " + currentNode.getChildren().size() + " children");
             String tabString = "";
             for (int tabs = 0; tabs < currentNode.getTabs(); ++tabs) {
                 //LOGGER.log(Level.SEVERE, "Adding tabs");
                 tabString += "\t";
             }
+            final TextHelper listItemNumber = new TextHelper("\n" + tabString + currentNode.getLatestListItem() + ". ");
+            listItemNumber.setFill(Color.WHITE);
+            textNodes.add(listItemNumber);
 
-            textNodes.add(new TextHelper("\n" + tabString));
-            //textNodes.add(new TextHelper(currentNode.getLatestListItem() + ". "));
         }
 
         for (int i = 0; i < currentNode.getChildren().size(); ++i) {
@@ -374,21 +376,19 @@ public class MarkdownTree {
                     currentText.setWeight(FontWeight.BOLD);
                 } else if (currentNode.getType() == MarkdownNode.Type.STRIKETHROUGH) {
                     currentText.setStrikeThrough(true);
-                } else if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
+                }/* else if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
 
                     if (!(currentText.getText().getText().isBlank() || currentText.getText().getText().isEmpty())) {
                         //LOGGER.log(Level.SEVERE, "List item text: " + currentText.getText().getText());
-                        currentText.setText(currentNode.getLatestListItem() + ". " + currentText.getText().getText());
+                        currentText.setText(" " + currentText.getText().getText());
                     }
-                }
+                }*/
 
-                textNodes.add(currentText);
-            }
+                //LOGGER.log(Level.SEVERE, "List item text: " + currentText.getText().getText());
+                //if (!(currentText.getText().getText().isBlank() || currentText.getText().getText().isEmpty())) {
+                    textNodes.add(currentText);
+                //}
 
-            if ((currentNode.getType() == MarkdownNode.Type.ORDERED_LIST || currentNode.getType() == MarkdownNode.Type.UNORDERED_LIST) && !textNodes.isEmpty()) {
-                //textNodes.get(0).setText("\n\n" + textNodes.get(0).getText().getText());
-                //textNodes.add(new TextHelper("\n"));
-                //textNodes.add(new TextHelper("\n"));
             }
         }
 

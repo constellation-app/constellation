@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.views.notes.utilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -81,6 +83,8 @@ public class NewNotePane {
     private Stage stage = null;
 
     private Window parent = null;
+    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
+
 
     public NewNotePane(final String userChosenColour) {
         this.userChosenColour = userChosenColour;
@@ -130,7 +134,9 @@ public class NewNotePane {
 
         preview = new TextFlow();
         preview.setMaxWidth(WIDTH - 5);
+
         preview.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+
 
         tabPane = new TabPane();
         Tab writeTab = new Tab();
@@ -152,6 +158,7 @@ public class NewNotePane {
                 final List<TextHelper> textNodes = mdTree.getTextNodes();
 
                 for (int i = 0; i < textNodes.size(); ++i) {
+                    LOGGER.log(Level.SEVERE, "Adding to text flow: " + textNodes.get(i).getText().getText());
                     preview.getChildren().add(textNodes.get(i).getText());
                 }
             }
