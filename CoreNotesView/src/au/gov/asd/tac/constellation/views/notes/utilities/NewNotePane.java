@@ -27,6 +27,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
@@ -137,6 +138,9 @@ public class NewNotePane {
 
         preview.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
+        final ScrollPane previewTabScrollPane = new ScrollPane();
+        previewTabScrollPane.setContent(preview);
+        previewTabScrollPane.setMaxWidth(WIDTH - 5);
 
         tabPane = new TabPane();
         Tab writeTab = new Tab();
@@ -146,9 +150,8 @@ public class NewNotePane {
 
         Tab previewTab = new Tab();
         previewTab.setText("Preview");
-        previewTab.setContent(preview);
+        previewTab.setContent(previewTabScrollPane);
         previewTab.setClosable(false);
-
 
         previewTab.setOnSelectionChanged(event -> {
             if (previewTab.isSelected()) {
@@ -213,7 +216,7 @@ public class NewNotePane {
             stage.setTitle("Create new note");
             stage.setMinHeight(HEIGHT * 2);
             stage.setMinWidth(WIDTH);
-            stage.setResizable(true);
+            stage.setResizable(false);
             stage.setScene(new Scene(dialogPane));
             isFirstTime = false;
         }
