@@ -242,7 +242,7 @@ public class NotesViewPane extends BorderPane {
         filterNotesHBox.setAlignment(Pos.TOP_LEFT);
         filterNotesHBox.setStyle("-fx-padding: 5px;");
 
-        // Create the actual note that allows user to add new notes
+        // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(userChosenColour);
 
         // Button to trigger pop-up window to make a new note
