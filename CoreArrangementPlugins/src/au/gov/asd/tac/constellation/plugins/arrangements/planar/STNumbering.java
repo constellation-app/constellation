@@ -212,8 +212,6 @@ public class STNumbering {
                             path.add(x);
                             w = x;
                             break;
-                        } else {
-                            // Do nothing
                         }
                     }
                 }

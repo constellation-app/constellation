@@ -35,14 +35,15 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.IconCriteria
 import au.gov.asd.tac.constellation.views.find2.components.advanced.StringCriteriaPanel;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FindCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
+import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -76,14 +77,17 @@ public class AdvancedFindTab extends Tab {
 
     private final String[] elementTypes = {GraphElementType.VERTEX.getShortLabel(), GraphElementType.TRANSACTION.getShortLabel(), GraphElementType.EDGE.getShortLabel(), GraphElementType.LINK.getShortLabel()};
     private final String[] matchCriteriaTypes = {"All", "Any"};
-    private final String[] currentSelectionTypes = {"Ignore", "Add To", "Find In", "Remove From"};
+    private final String[] searchInTypes = {"Current Graph", "Current Selection", "All Open Graphs"};
+    private final String[] postSearchTypes = {"Replace Selection", "Add To Selection", "Remove From Selection"};
 
     private final Label lookForLabel = new Label("Look For:");
     private final ChoiceBox<String> lookForChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(elementTypes));
     private final Label matchCriteriaLabel = new Label("Match Criteria:");
     private final ChoiceBox<String> matchCriteriaChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(matchCriteriaTypes));
-    private final Label currentSeletionLabel = new Label("Current Selection:");
-    private final ChoiceBox<String> currentSelectionChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(currentSelectionTypes));
+    private final Label searchInLabel = new Label("Search In:");
+    private final ChoiceBox<String> searchInChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(searchInTypes));
+    private final Label postSearchLabel = new Label("Post-Search Actions:");
+    private final ChoiceBox<String> postSearchChoiceBox = new ChoiceBox<>(FXCollections.observableArrayList(postSearchTypes));
     private final Button addCriteriaPaneButton = new Button("+");
     private final GridPane addButtonGP = new GridPane();
     private final Pane widthSpacer = new Pane();
@@ -101,10 +105,10 @@ public class AdvancedFindTab extends Tab {
 
     protected final HBox buttonsHBox = new HBox();
     protected final VBox buttonsVBox = new VBox();
-    protected final CheckBox searchAllGraphs = new CheckBox("Search all open Graphs");
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
+    private final Button deleteResultsButton = new Button("Delete Results From Graph(s)");
 
     public AdvancedFindTab(final FindViewTabs parentComponent) {
         this.parentComponent = parentComponent;
@@ -115,17 +119,19 @@ public class AdvancedFindTab extends Tab {
         // Change the displayed list based on the graph element type selection
         lookForChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> changeDisplayedList(newElement));
 
-        currentSelectionChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
+        searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
+
+        postSearchChoiceBox.getSelectionModel().selectedItemProperty().addListener((final ObservableValue<? extends String> observableValue, final String oldElement, final String newElement) -> updateSelectionFactors());
 
         findAllButton.setOnAction(action -> findAllAction());
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPreviousAction());
+        deleteResultsButton.setOnAction(action -> deleteResultsAction());
 
         matchesFoundPane.add(matchesFoundLabel, 0, 0);
         matchesFoundPane.add(matchesFoundCountLabel, 1, 0);
         
         FindViewController.getDefault().getNumResultsFound().addListener((observable, oldValue, newValue) -> {
-
             if (firstSearch) {
                 matchesFoundLabel.setText(foundLabelText);
                 firstSearch = false;
@@ -142,11 +148,14 @@ public class AdvancedFindTab extends Tab {
     private void setGridContent() {
         lookForChoiceBox.getItems().remove(2, 4);
         lookForChoiceBox.getSelectionModel().select(0);
-        currentSelectionChoiceBox.getSelectionModel().select(0);
+        searchInChoiceBox.getSelectionModel().select(0);
+        postSearchChoiceBox.getSelectionModel().select(0);
         matchCriteriaChoiceBox.getSelectionModel().select(0);
 
-        currentSelectionPane.add(currentSeletionLabel, 0, 0);
-        currentSelectionPane.add(currentSelectionChoiceBox, 0, 1);
+        currentSelectionPane.add(searchInLabel, 0, 0);
+        currentSelectionPane.add(searchInChoiceBox, 0, 1);
+        currentSelectionPane.add(postSearchLabel, 1, 0);
+        currentSelectionPane.add(postSearchChoiceBox, 1, 1);
         currentSelectionPane.setPadding(new Insets(1, 0, 0, 25));
         currentSelectionPane.setVgap(4.25);
 
@@ -159,7 +168,6 @@ public class AdvancedFindTab extends Tab {
         settingsGrid.setPadding(new Insets(5));
         settingsGrid.setHgap(5);
         settingsGrid.setVgap(5);
-
 
         settingsBorderPane.setCenter(settingsGrid);
         settingsBorderPane.setPadding(new Insets(0, 0, 10, 0));
@@ -199,7 +207,9 @@ public class AdvancedFindTab extends Tab {
     public void updateButtons() {
         //Clears all existing buttons, then adds this panes buttons
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(searchAllGraphs, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findPrevButton, findNextButton);
+
+        deleteResultsButton.setDisable(true);
 
         buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
 
@@ -225,7 +235,7 @@ public class AdvancedFindTab extends Tab {
      * the variables values stored in the controller
      */
     public void updateSelectionFactors() {
-        final boolean disable = currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 2 || currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 3;
+        final boolean disable = postSearchChoiceBox.getSelectionModel().getSelectedIndex() == 1 || postSearchChoiceBox.getSelectionModel().getSelectedIndex() == 2;
         findNextButton.setDisable(disable);
         findPrevButton.setDisable(disable);
     }
@@ -470,8 +480,7 @@ public class AdvancedFindTab extends Tab {
         final List<FindCriteriaValues> criteriaValuesList = getCriteriaValues(getCorrespondingCriteriaList(type));
         final AdvancedSearchParameters parameters = new AdvancedSearchParameters(criteriaValuesList, type,
                 matchCriteriaChoiceBox.getSelectionModel().getSelectedItem(),
-                currentSelectionChoiceBox.getSelectionModel().getSelectedItem(),
-                searchAllGraphs.isSelected());
+                postSearchChoiceBox.getSelectionModel().getSelectedItem(), searchInChoiceBox.getSelectionModel().getSelectedItem());
         FindViewController.getDefault().updateAdvancedSearchParameters(parameters);
     }
 
@@ -484,6 +493,7 @@ public class AdvancedFindTab extends Tab {
         if (!getCriteriaValues(getCorrespondingCriteriaList(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()))).isEmpty()) {
             updateAdvancedSearchParameters(GraphElementType.getValue(getLookForChoiceBox().getSelectionModel().getSelectedItem()));
             FindViewController.getDefault().retrieveAdvancedSearch(true, false);
+            getDeleteResultsButton().setDisable(false);
         }
     }
 
@@ -513,6 +523,19 @@ public class AdvancedFindTab extends Tab {
     }
 
     /**
+     * This is run when the user presses the delete results button.
+     * It calls a dialog box to confirm that the user wishes to delete the results of the find from all graphs searched.
+     * Then set the deleteResultsButton to be disabled to stop users from trying to delete results that have already been deleted.
+     */
+    private void deleteResultsAction() {
+        if (!ActiveFindResultsList.getAdvancedResultsList().isEmpty()) {
+            FindViewController.getDefault().deleteResults(ActiveFindResultsList.getAdvancedResultsList(), FindViewController.getGraphsSearched());
+            deleteResultsButton.setDisable(true);
+            Platform.runLater(() -> FindViewController.getDefault().setNumResultsFound(0));
+        }
+    }
+
+    /**
      * Gets the lookForChoiceBox
      *
      * @return
@@ -522,13 +545,13 @@ public class AdvancedFindTab extends Tab {
     }
 
     /**
-     * Gets the currentSelectionChoiceBox. This contains: Ignore, Add To, Remove
-     * From and Find In
+     * Gets the postSearchChoiceBox. This contains: Replace Selection, Add To, Remove
+     * From and Delete From
      *
      * @return currentSelectionChoiceBox
      */
-    public ChoiceBox<String> getCurrentSelectionChoiceBox() {
-        return currentSelectionChoiceBox;
+    public ChoiceBox<String> getPostSearchChoiceBox() {
+        return postSearchChoiceBox;
     }
 
     /**
@@ -597,12 +620,12 @@ public class AdvancedFindTab extends Tab {
     }
 
     /**
-     * Gets the searchAllGraphs
+     * Gets and returns the deleteResultsButton
      *
-     * @return searchAllGraphs
+     * @return deleteResultsButton
      */
-    public CheckBox getSearchAllGraphs() {
-        return searchAllGraphs;
+    public Button getDeleteResultsButton() {
+        return deleteResultsButton;
     }
 
 }

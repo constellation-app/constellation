@@ -42,8 +42,8 @@ public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String algorithmModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep;
+        final String algorithmModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "algorithms" + sep;
 
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.chinesewhispers.ChineseWhispers", algorithmModulePath + "chinese-whispers.md");
         map.put("au.gov.asd.tac.constellation.plugins.algorithms.clustering.ktruss.KTruss", algorithmModulePath + "k-truss.md");
@@ -60,8 +60,8 @@ public class AlgorithmPluginsHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String algorithmPath;
-        algorithmPath = CODEBASE_NAME + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "plugins" + sep + "algorithms" + sep + "docs" + sep + "algorithms-toc.xml";
+        algorithmPath = "ext" + sep + "docs" + sep + "CoreAlgorithmPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "plugins" + sep + "algorithms" + sep + "algorithms-toc.xml";
 
         return algorithmPath;
     }

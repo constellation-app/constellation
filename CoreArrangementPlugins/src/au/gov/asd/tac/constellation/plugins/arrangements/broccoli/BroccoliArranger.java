@@ -19,13 +19,13 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
 import au.gov.asd.tac.constellation.plugins.arrangements.Arranger;
 import au.gov.asd.tac.constellation.utilities.graphics.Frame;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Given a vertex with neighbours of degree 1, arrange those neighbours in a
@@ -76,22 +76,18 @@ public final class BroccoliArranger implements Arranger {
     public void arrange(final GraphWriteMethods wg) throws InterruptedException {
         set(wg);
 
-        final Vector3f centre = getCentre();
-
         for (int position = 0; position < vxCount; position++) {
             final int vxId = wg.getVertex(position);
 
             if (wg.getVertexNeighbourCount(vxId) > 1 && (noneSelected || wg.getBooleanValue(selectedId, vxId))) {
-                arrangeVertex(centre, vxId);
+                arrangeVertex(vxId);
             }
         }
     }
 
     public void arrange(final GraphWriteMethods wg, final int vxId) {
         set(wg);
-
-        final Vector3f centre = getCentre();
-        arrangeVertex(centre, vxId);
+        arrangeVertex(vxId);
     }
 
     /**
@@ -101,9 +97,9 @@ public final class BroccoliArranger implements Arranger {
      * @param centre
      * @param vid
      */
-    private void arrangeVertex(final Vector3f centre, final int vxId) {
+    private void arrangeVertex(final int vxId) {
         float maxRadius = 0;
-        final ArrayList<Integer> deg1 = new ArrayList<>();
+        final List<Integer> deg1 = new ArrayList<>();
         final int vncount = wg.getVertexNeighbourCount(vxId);
         for (int i = 0; i < vncount; i++) {
             final int vnId = wg.getVertexNeighbour(vxId, i);
@@ -171,21 +167,5 @@ public final class BroccoliArranger implements Arranger {
     @Override
     public void setMaintainMean(final boolean b) {
         // Required for Arranger, intentionally left blank
-    }
-
-    private Vector3f getCentre() {
-        final BBoxf box = new BBoxf();
-        for (int position = 0; position < vxCount; position++) {
-            final int vxId = wg.getVertex(position);
-
-            final float x = wg.getFloatValue(xId, vxId);
-            final float y = wg.getFloatValue(yId, vxId);
-            final float z = wg.getFloatValue(zId, vxId);
-            box.add(x, y, z);
-        }
-
-        final float[] c = box.getCentre();
-
-        return new Vector3f(c[BBoxf.X], c[BBoxf.Y], c[BBoxf.Z]);
     }
 }

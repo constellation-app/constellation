@@ -42,8 +42,8 @@ public class FunctionalityHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String functionalityModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "functionality" + sep + "docs" + sep;
+        final String functionalityModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "functionality" + sep;
 
         map.put("au.gov.asd.tac.constellation.functionality.about", functionalityModulePath + "about-constellation.md");
         map.put("au.gov.asd.tac.constellation.functionality.gettingstarted", functionalityModulePath + "getting-started.md");
@@ -60,8 +60,8 @@ public class FunctionalityHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String functionalityPath;
-        functionalityPath = CODEBASE_NAME + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "functionality" + sep + "docs" + sep + "core-toc.xml";
+        functionalityPath = "ext" + sep + "docs" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + CODEBASE_NAME + sep + "functionality" + sep + "core-toc.xml";
         return functionalityPath;
     }
 }

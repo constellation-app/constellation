@@ -186,7 +186,7 @@ public class SaveAsAction extends AbstractAction implements ContextAwareAction {
         final Collection<? extends SaveAsCapable> inst = lkpInfo.allInstances();
         if (!inst.isEmpty()) {
             final SaveAsCapable saveAs = inst.iterator().next();
-            FileChooser.openSaveDialog(getSaveFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
+            FileChooser.openImmediateSaveDialog(getSaveFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
                 try {
                     saveAs.saveAs(FileUtil.toFileObject(file.getParentFile()), file.getName());
 

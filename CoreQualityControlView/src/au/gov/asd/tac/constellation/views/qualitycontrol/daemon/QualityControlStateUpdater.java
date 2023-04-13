@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2022 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,8 +76,10 @@ public class QualityControlStateUpdater extends SimpleReadPlugin {
             if (!vertexList.isEmpty()) {
                 for (final QualityControlRule rule : QualityControlAutoVetter.getRules()) {
                     rule.clearResults();
-                    rule.executeRule(graph, vertexList);
-                    registeredRules.add(rule);
+                    if (rule.isEnabled()) {
+                        rule.executeRule(graph, vertexList);
+                        registeredRules.add(rule);
+                    }
                 }
             }
 

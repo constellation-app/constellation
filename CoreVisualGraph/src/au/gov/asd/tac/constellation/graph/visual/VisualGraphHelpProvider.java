@@ -42,8 +42,8 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String visualModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "visual" + sep + "docs" + sep;
+        final String visualModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "visual" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.visual.inducedSubgraph", visualModulePath + "induced-subgraph.md");
         map.put("au.gov.asd.tac.constellation.graph.visual.hopOut", visualModulePath + "hop-out.md");
@@ -65,8 +65,8 @@ public class VisualGraphHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String visualPath;
-        visualPath = CODEBASE_NAME + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "graph" + sep + "visual" + sep + "docs" + sep + "visualgraph-toc.xml";
+        visualPath = "ext" + sep + "docs" + sep + "CoreVisualGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "graph" + sep + "visual" + sep + "visualgraph-toc.xml";
         return visualPath;
     }
 }

@@ -169,7 +169,7 @@ public class CommonNeighboursPlugin extends SimpleEditPlugin {
                     final int vertexOneId = graph.getVertex(vertexOnePosition);
                     final int vertexTwoId = graph.getVertex(vertexTwoPosition);
 
-                    float commonNeighbours = (float) intersection.cardinality();
+                    float commonNeighbours = intersection.cardinality();
                     if (community && (selected.get(vertexOnePosition) && selected.get(vertexTwoPosition))) {
                         commonNeighbours += 1;
                     }

@@ -27,20 +27,29 @@ import java.util.List;
  */
 public class NotesViewEntry implements PluginReportListener {
 
+    private int id = -99;
+
     private final String dateTime;
     private String noteTitle;
     private String noteContent;
-    private final Boolean userCreated;
+
+    private String nodeColour = "#942483";
+    private final boolean userCreated;
     private Boolean graphAttribute;
     private List<Integer> nodesSelected;
     private List<Integer> transactionsSelected;
     private List<String> tags = new ArrayList<>();
     private boolean editMode;
+    private boolean isShowing = true;
 
-    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute) {
+    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
+
+        if (nodeColour != null) {
+            this.nodeColour = nodeColour;
+        }
         this.userCreated = userCreated;
         this.graphAttribute = graphAttribute;
         this.editMode = false;
@@ -62,7 +71,7 @@ public class NotesViewEntry implements PluginReportListener {
         return noteContent;
     }
 
-    public Boolean isUserCreated() {
+    public boolean isUserCreated() {
         return userCreated;
     }
 
@@ -70,7 +79,7 @@ public class NotesViewEntry implements PluginReportListener {
         return graphAttribute;
     }
 
-    public void setGraphAttribute(final Boolean graphAttribute) {
+    public void setGraphAttribute(final boolean graphAttribute) {
         this.graphAttribute = graphAttribute;
     }
 
@@ -102,6 +111,14 @@ public class NotesViewEntry implements PluginReportListener {
         return tags;
     }
 
+    public String getNodeColour() {
+        return nodeColour;
+    }
+
+    public void setNodeColour(final String nodeColour) {
+        this.nodeColour = nodeColour;
+    }
+
     public void setTags(final List<String> tags) {
         this.tags = tags;
     }
@@ -110,8 +127,26 @@ public class NotesViewEntry implements PluginReportListener {
         return editMode;
     }
 
-    public void setEditMode(boolean editMode) {
+    public void setEditMode(final boolean editMode) {
         this.editMode = editMode;
+    }
+
+
+    public void setShowing(final boolean showing) {
+        isShowing = showing;
+    }
+
+    public boolean getShowing() {
+        return isShowing;
+    }
+
+    public int getID() {
+        return id;
+    }
+
+    public void setID(final int id) {
+        this.id = id;
+
     }
 
     @Override

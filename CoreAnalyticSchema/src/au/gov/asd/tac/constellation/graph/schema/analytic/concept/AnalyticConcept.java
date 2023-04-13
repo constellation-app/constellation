@@ -219,15 +219,15 @@ public class AnalyticConcept extends SchemaConcept {
         public static final SchemaVertexType IPV4 = new SchemaVertexType.Builder("IPv4 Address")
                 .setDescription("A node representing an IP address (in the IPv4 format) on a network, eg. the private ip address 192.168.0.1")
                 .setSuperType(IP_ADDRESS)
-                .setDetectionRegex(Pattern.compile("(?:(?:25[0-5]|(2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(2[0-4]|1?[0-9])?[0-9])", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("^(?:(?:25[0-5]|(2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(2[0-4]|1?[0-9])?[0-9])$", Pattern.CASE_INSENSITIVE))
+                .setDetectionRegex(Pattern.compile("(?:(?:25[0-5]|(2[0-4]|1?\\d)?\\d)\\.){3}(?:25[0-5]|(2[0-4]|1?\\d)?\\d)", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^(?:(?:25[0-5]|(2[0-4]|1?\\d)?\\d)\\.){3}(?:25[0-5]|(2[0-4]|1?\\d)?\\d)$", Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType IPV6 = new SchemaVertexType.Builder("IPv6 Address")
                 .setDescription("A node representing an IP address (in the IPv6 format) on a network, eg. the ip address 1:2:3:4:5:6:7:8")
                 .setSuperType(IP_ADDRESS)
                 .setDetectionRegex(Pattern.compile("(?:"
-                        + "(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])|" // 2001:db8:3:4::192.0.2.33 | 64:ff9b::192.0.2.33 (IPv4-Embedded IPv6 Address)
-                        + "::(?:[fF]{4}(?::0{1,4})?:)?(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])|" // ::255.255.255.255 | ::ffff:255.255.255.255 | ::ffff:0:255.255.255.255 (IPv4-mapped IPv6 addresses and IPv4-translated addresses)
+                        + "(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1?\\d)?\\d)\\.){3}(?:25[0-5]|(?:2[0-4]|1?\\d)?\\d)|" // 2001:db8:3:4::192.0.2.33 | 64:ff9b::192.0.2.33 (IPv4-Embedded IPv6 Address)
+                        + "::(?:[fF]{4}(?::0{1,4})?:)?(?:(?:25[0-5]|(?:2[0-4]|1?\\d)?\\d)\\.){3}(?:25[0-5]|(?:2[0-4]|1?\\d)?\\d)|" // ::255.255.255.255 | ::ffff:255.255.255.255 | ::ffff:0:255.255.255.255 (IPv4-mapped IPv6 addresses and IPv4-translated addresses)
                         + "[fe|FE]80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]+|" // fe80::7:8%eth0 | fe80::7:8%1 (link-local IPv6 addresses with zone index)
                         + ":(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|" // ::2:3:4:5:6:7:8 | ::2:3:4:5:6:7:8 | ::8 | ::
                         + "[0-9a-fA-F]{1,4}:(?::[0-9a-fA-F]{1,4}){1,6}|" // 1::3:4:5:6:7:8 | 1::3:4:5:6:7:8 | 1::8
@@ -237,11 +237,11 @@ public class AnalyticConcept extends SchemaConcept {
                         + "(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|" // 1::7:8 | 1:2:3:4:5::7:8 | 1:2:3:4:5::8
                         + "(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|" // 1::8 | 1:2:3:4:5:6::8 | 1:2:3:4:5:6::8
                         + "(?:[0-9a-fA-F]{1,4}:){1,7}:|" // 1:: | 1:2:3:4:5:6:7::
-                        + "(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}" // 1:2:3:4:5:6:7:8
+                        + "(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}" // 1:2:3:4:5:6:7:8
                         + ")", Pattern.CASE_INSENSITIVE))
                 .setValidationRegex(Pattern.compile("^(?:"
-                        + "(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])|" // 2001:db8:3:4::192.0.2.33 | 64:ff9b::192.0.2.33 (IPv4-Embedded IPv6 Address)
-                        + "::(?:[fF]{4}(?::0{1,4})?:)?(?:(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])\\.){3,3}(?:25[0-5]|(?:2[0-4]|1?[0-9])?[0-9])|" // ::255.255.255.255 | ::ffff:255.255.255.255 | ::ffff:0:255.255.255.255 (IPv4-mapped IPv6 addresses and IPv4-translated addresses)
+                        + "(?:[0-9a-fA-F]{1,4}:){1,4}:(?:(?:25[0-5]|(?:2[0-4]|1?\\d)?\\d)\\.){3}(?:25[0-5]|(?:2[0-4]|1?\\d)?\\d)|" // 2001:db8:3:4::192.0.2.33 | 64:ff9b::192.0.2.33 (IPv4-Embedded IPv6 Address)
+                        + "::(?:[fF]{4}(?::0{1,4})?:)?(?:(?:25[0-5]|(?:2[0-4]|1?\\d)?\\d)\\.){3}(?:25[0-5]|(?:2[0-4]|1?\\d)?\\d)|" // ::255.255.255.255 | ::ffff:255.255.255.255 | ::ffff:0:255.255.255.255 (IPv4-mapped IPv6 addresses and IPv4-translated addresses)
                         + "[fe|FE]80:(?::[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]+|" // fe80::7:8%eth0 | fe80::7:8%1 (link-local IPv6 addresses with zone index)
                         + ":(?:(?::[0-9a-fA-F]{1,4}){1,7}|:)|" // ::2:3:4:5:6:7:8 | ::2:3:4:5:6:7:8 | ::8 | ::
                         + "[0-9a-fA-F]{1,4}:(?::[0-9a-fA-F]{1,4}){1,6}|" // 1::3:4:5:6:7:8 | 1::3:4:5:6:7:8 | 1::8
@@ -251,7 +251,7 @@ public class AnalyticConcept extends SchemaConcept {
                         + "(?:[0-9a-fA-F]{1,4}:){1,5}(?::[0-9a-fA-F]{1,4}){1,2}|" // 1::7:8 | 1:2:3:4:5::7:8 | 1:2:3:4:5::8
                         + "(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|" // 1::8 | 1:2:3:4:5:6::8 | 1:2:3:4:5:6::8
                         + "(?:[0-9a-fA-F]{1,4}:){1,7}:|" // 1:: | 1:2:3:4:5:6:7::
-                        + "(?:[0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}" // 1:2:3:4:5:6:7:8
+                        + "(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}" // 1:2:3:4:5:6:7:8
                         + ")$", Pattern.CASE_INSENSITIVE))
                 .build();
         // online location derived types
@@ -261,10 +261,10 @@ public class AnalyticConcept extends SchemaConcept {
                 .setForegroundIcon(AnalyticIconProvider.EMAIL)
                 .setSuperType(ONLINE_IDENTIFIER)
                 .setDetectionRegex(Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
-                        + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])", // domain component 
+                        + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d))\\.){3}(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d)|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])", // domain component 
                         Pattern.CASE_INSENSITIVE))
                 .setValidationRegex(Pattern.compile("^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
-                        + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$", // domain component 
+                        + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d))\\.){3}(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d)|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$", // domain component 
                         Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType USER_NAME = new SchemaVertexType.Builder("User Name")
@@ -331,7 +331,7 @@ public class AnalyticConcept extends SchemaConcept {
         public static final SchemaVertexType MGRS = new SchemaVertexType.Builder("MGRS")
                 .setDescription("A node representing a Military Grid Reference System coordinate")
                 .setSuperType(LOCATION)
-                .setValidationRegex(Pattern.compile("^(?:[1-9]|[1-5]\\d|60)[^abioyz]{1}[^io]{2}(?:\\d\\d){0,5}$", Pattern.CASE_INSENSITIVE))
+                .setValidationRegex(Pattern.compile("^(?:[1-9]|[1-5]\\d|60)[^abioyz][^io]{2}(?:\\d\\d){0,5}$", Pattern.CASE_INSENSITIVE))
                 .build();
         // hash derived types
         public static final SchemaVertexType MD5 = new SchemaVertexType.Builder("MD5 Hash")

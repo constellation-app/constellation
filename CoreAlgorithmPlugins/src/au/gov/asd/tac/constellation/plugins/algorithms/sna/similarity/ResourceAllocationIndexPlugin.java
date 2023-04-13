@@ -153,11 +153,8 @@ public class ResourceAllocationIndexPlugin extends SimpleEditPlugin {
         for (int vertexOnePosition = update.nextSetBit(0); vertexOnePosition >= 0; vertexOnePosition = update.nextSetBit(vertexOnePosition + 1)) {
             for (int vertexTwoPosition = update.nextSetBit(0); vertexTwoPosition >= 0; vertexTwoPosition = update.nextSetBit(vertexTwoPosition + 1)) {
                 if (!selectedOnly || (selected.get(vertexOnePosition) || selected.get(vertexTwoPosition))) {
-                    if (vertexOnePosition >= vertexTwoPosition) {
-                        continue;
-                    }
-
-                    if (community && (!selected.get(vertexOnePosition) || !selected.get(vertexTwoPosition))) {
+                    if (vertexOnePosition >= vertexTwoPosition
+                            || (community && (!selected.get(vertexOnePosition) || !selected.get(vertexTwoPosition)))) {
                         continue;
                     }
 

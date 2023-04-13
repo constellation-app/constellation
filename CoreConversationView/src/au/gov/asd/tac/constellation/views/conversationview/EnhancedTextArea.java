@@ -46,7 +46,7 @@ import org.fxmisc.richtext.InlineCssTextArea;
  */
 public final class EnhancedTextArea extends InlineCssTextArea {
 
-    private final Insets insets = new Insets(6, 10, 6, 10);
+    private final Insets insets = new Insets(6, 10, -8, 10);
 
     /**
      * Default constructor.
@@ -73,7 +73,7 @@ public final class EnhancedTextArea extends InlineCssTextArea {
         this.setWrapText(true);
         this.setEditable(false);
         this.setPadding(insets);
-        this.appendText(text);
+        this.appendText(text + "\n");
         //make sure to request focus everytime text area is loaded so ensure cached text been wrapped correctly.
         this.requestFocus();
         

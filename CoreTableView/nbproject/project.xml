@@ -23,6 +23,14 @@
                     </run-dependency>
                 </dependency>
                 <dependency>
+                    <code-name-base>au.gov.asd.tac.constellation.graph.node</code-name-base>
+                    <build-prerequisite/>
+                    <compile-dependency/>
+                    <run-dependency>
+                        <specification-version>1.0.4</specification-version>
+                    </run-dependency>
+                </dependency>
+                <dependency>
                     <code-name-base>au.gov.asd.tac.constellation.graph.schema.visual</code-name-base>
                     <build-prerequisite/>
                     <compile-dependency/>

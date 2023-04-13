@@ -49,6 +49,9 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
     public DefaultQualityControlAutoButton() {
         getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
         setStyle(QUERY_RISK_DEFAULT_STYLE + BUTTON_STYLE + String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        
+        QualityControlViewPane.readSerializedRulePriorities();
+        QualityControlViewPane.readSerializedRuleEnabledStatuses();
 
         setOnAction(value -> SwingUtilities.invokeLater(() -> {
             final TopComponent qualityControlView = WindowManager.getDefault().findTopComponent(QualityControlViewTopComponent.class.getSimpleName());

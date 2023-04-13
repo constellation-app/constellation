@@ -42,8 +42,8 @@ public class HistogramViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String histogramModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "histogram" + sep + "docs" + sep;
+        final String histogramModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "histogram" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.histogram", histogramModulePath + "histogram-view.md");
         return map;
@@ -58,8 +58,8 @@ public class HistogramViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String histogramViewPath;
-        histogramViewPath = CODEBASE_NAME + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "views" + sep + "histogram" + sep + "docs" + sep + "histogram-toc.xml";
+        histogramViewPath = "ext" + sep + "docs" + sep + "CoreHistogramView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + CODEBASE_NAME + sep + "views" + sep + "histogram" + sep + "histogram-toc.xml";
         return histogramViewPath;
     }
 }

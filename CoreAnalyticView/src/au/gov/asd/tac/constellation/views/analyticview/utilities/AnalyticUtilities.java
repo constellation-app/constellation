@@ -65,7 +65,7 @@ public class AnalyticUtilities {
 
     public static AnalyticQuestionDescription<?> lookupAnalyticQuestionDescription(final Class<? extends AnalyticQuestionDescription<?>> questionDescriptionType) {
         return ANALYTIC_QUESTION_DESCRIPTIONS.values().stream()
-                .filter(questionDescription -> questionDescriptionType.isInstance(questionDescription))
+                .filter(questionDescriptionType::isInstance)
                 .collect(Collectors.toList()).get(0);
     }
 
@@ -85,7 +85,7 @@ public class AnalyticUtilities {
 
     public static AnalyticAggregator<?> lookupAnalyticAggregator(final Class<? extends AnalyticAggregator<?>> analyticAggregatorType) {
         return ANALYTIC_AGGREGATORS.values().stream()
-                .filter(aggregator -> analyticAggregatorType.isInstance(aggregator))
+                .filter(analyticAggregatorType::isInstance)
                 .collect(Collectors.toList()).get(0);
     }
 
