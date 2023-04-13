@@ -109,8 +109,8 @@ public class NotesViewPane extends BorderPane {
 
     private static final int DEFAULT_SPACING = 5;
     private static final int EDIT_SPACING = 110;
-    private final static String SHOW_MORE = "Show more";
-    private final static String SHOW_LESS = "Show less";
+    private static final String SHOW_MORE = "Show more";
+    private static final String SHOW_LESS = "Show less";
     private static final String USER_COLOR = "#942483";
     private static final String AUTO_COLOR = "#1c5aa6";
     private static String userChosenColour = USER_COLOR;
@@ -141,7 +141,7 @@ public class NotesViewPane extends BorderPane {
     private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
-    private final static int NOTE_DESCRIPTION_CAP = 500;
+    private static final int NOTE_DESCRIPTION_CAP = 500;
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
