@@ -18,11 +18,15 @@ package au.gov.asd.tac.constellation.views.notes;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.chrono.Chronology;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.util.StringConverter;
 
 /**
  * A DateTime Selector that is in JavaFX instead of Swing.
@@ -48,6 +52,32 @@ public class DateTimePicker {
 
     public DateTimePicker(final boolean from) {
         dateTimePane = new Pane();
+        datePicker.setChronology(Chronology.ofLocale(Locale.CHINA));
+
+        datePicker.setConverter(new StringConverter<LocalDate>() {
+            String pattern = "yyyy-MM-dd";
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+
+            @Override
+            public String toString(LocalDate object) {
+                if (object != null) {
+                    return dateFormatter.format(object);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override
+            public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+
+        });
+
         this.from = from;
         dateTimePane.getChildren().add(mainGridPane);
 
