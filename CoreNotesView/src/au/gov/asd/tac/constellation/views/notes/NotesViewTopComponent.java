@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import java.awt.Dimension;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -85,6 +86,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
             }
             notesViewPane.updateNotesUI();
         });
+        jfxContainer.setMinimumSize(new Dimension(1000, 500));
     }
 
     @Override

@@ -85,7 +85,8 @@ public class DateTimeRangePicker {
 
         timeRangePane = new TitledPane("", dateTimePane);
         timeRangeAccordian.getPanes().add(timeRangePane);
-
+        timeRangeAccordian.setMaxWidth(500);
+        timeRangeAccordian.setMinWidth(500);
         // Get all available time zone ids
         final ArrayList<String> timeZones = new ArrayList<>();
         final ArrayList<String> plusFromGMT = new ArrayList<>();

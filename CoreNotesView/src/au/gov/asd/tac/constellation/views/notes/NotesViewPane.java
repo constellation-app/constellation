@@ -162,6 +162,7 @@ public class NotesViewPane extends BorderPane {
         // CheckComboBox to select and deselect various filters for note rendering.
         filterCheckComboBox = new CheckComboBox(availableFilters);
         filterCheckComboBox.setTitle("Select a filter...");
+        filterCheckComboBox.setMinWidth(200);
         filterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         filterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isSelectedFiltersUpdating) {               
@@ -261,8 +262,8 @@ public class NotesViewPane extends BorderPane {
         newNotePane.getAddButtion().setOnAction(event -> {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
-                if ((newNotePane.getTitleField().getText().isBlank() && newNotePane.getTitleField().getText().isEmpty())
-                        || (newNotePane.getContentField().getText().isBlank() && newNotePane.getContentField().getText().isEmpty())) {
+                if (newNotePane.getTitleField().getText().isBlank()
+                        || newNotePane.getContentField().getText().isBlank()) {
                     newNotePane.closePopUp();
                     JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
                     newNotePane.showPopUp();
@@ -325,9 +326,9 @@ public class NotesViewPane extends BorderPane {
                         }
                     }
                     newNotePane.clearTextFields();
+                    newNotePane.closePopUp();
                     updateNotesUI();
                     controller.writeState(activeGraph);
-                    newNotePane.closePopUp();
                     event.consume();
                 }
             }
@@ -746,7 +747,7 @@ public class NotesViewPane extends BorderPane {
         // the correct java fx elements
         final HBox noteButtons;
 
-        if (newNote.getNodeColour().isBlank() || newNote.getNodeColour().isEmpty()) {
+        if (newNote.getNodeColour().isBlank()) {
             newNote.setNodeColour(USER_COLOR);
         }
 
@@ -775,6 +776,9 @@ public class NotesViewPane extends BorderPane {
         });
 
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteButtons, noteInformation) : new VBox(DEFAULT_SPACING, noteInformation);
+        noteBody.prefWidthProperty().bind(this.widthProperty());
+        noteBody.setMinWidth(500);
+        this.setMinWidth(500);
         if (newNote.isUserCreated()) {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
             if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP && !newNote.getEditMode()) {

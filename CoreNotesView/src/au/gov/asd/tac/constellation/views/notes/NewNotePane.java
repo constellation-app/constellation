@@ -201,7 +201,7 @@ public class NewNotePane {
         }
     }
 
-    public void setParent(Window parent) {
+    public void setParent(final Window parent) {
         this.parent = parent;
     }
 

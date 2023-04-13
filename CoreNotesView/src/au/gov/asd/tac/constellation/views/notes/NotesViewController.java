@@ -69,7 +69,9 @@ public class NotesViewController {
             return;
         }
 
-        PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
+        if (graph != null && pane != null) {
+            PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
+        }
     }
 
     /**
@@ -84,7 +86,9 @@ public class NotesViewController {
             return;
         }
 
-        PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes(), pane.getFilters(), pane.getTagsFilters())).executeLater(graph);
+        if (graph != null && pane != null) {
+            PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes(), pane.getFilters(), pane.getTagsFilters())).executeLater(graph);
+        }
     }
 
     /**
