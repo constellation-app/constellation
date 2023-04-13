@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.api;
 
-import au.gov.asd.tac.constellation.utilities.threadpool.UniversalThreadPool;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;

@@ -25,15 +25,15 @@ import java.util.concurrent.ScheduledExecutorService;
  *
  * @author altair1673
  */
-public class UniversalThreadPool {
+public class ConstellationGlobalThreadPool {
 
-    private static UniversalThreadPool threadPool = null;
+    private static ConstellationGlobalThreadPool threadPool = null;
     private ScheduledExecutorService scheduledExecutorService = null;
     private ExecutorService fixedThreadPool = null;
     private ExecutorService cachedThreadPool = null;
     private ExecutorService defaultPluginEnvironmentPool = null;
 
-    private UniversalThreadPool() {
+    private ConstellationGlobalThreadPool() {
 
     }
 
@@ -42,9 +42,9 @@ public class UniversalThreadPool {
      *
      * @return an instance of this class
      */
-    public static UniversalThreadPool getThreadPool() {
+    public static ConstellationGlobalThreadPool getThreadPool() {
         if (threadPool == null) {
-            threadPool = new UniversalThreadPool();
+            threadPool = new ConstellationGlobalThreadPool();
         }
 
         return threadPool;

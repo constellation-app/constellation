@@ -34,7 +34,7 @@ import au.gov.asd.tac.constellation.plugins.arrangements.VertexListInclusionGrap
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
-import au.gov.asd.tac.constellation.utilities.threadpool.UniversalThreadPool;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -79,7 +79,7 @@ public abstract class RecordStoreQueryPlugin extends SimpleQueryPlugin {
     private final List<RecordStoreValidator> validators;
 
     private static final String THREAD_POOL_NAME = "RecordStore Query Plugin";
-    private static final ExecutorService PLUGIN_EXECUTOR = UniversalThreadPool.getThreadPool().getCachedThreadPool();
+    private static final ExecutorService PLUGIN_EXECUTOR = ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool();
 
     /**
      * Base constructor for all implementations of RecordStoreQueryPlugin
