@@ -15,10 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.notes;
 
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Window;
+import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -31,6 +35,8 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class NewNotePaneNGTest {
+
+    private static final Logger LOGGER = Logger.getLogger(NewNotePaneNGTest.class.getName());
 
     public NewNotePaneNGTest() {
     }
@@ -46,10 +52,18 @@ public class NewNotePaneNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        if (!FxToolkit.isFXApplicationThreadRunning()) {
+            FxToolkit.registerPrimaryStage();
+        }
     }
 
     @AfterMethod
     public void tearDownMethod() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
+        }
     }
 
     /**
