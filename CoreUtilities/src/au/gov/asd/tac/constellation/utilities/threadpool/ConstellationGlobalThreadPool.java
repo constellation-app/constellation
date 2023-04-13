@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
- * This class holds global objects for the variouse thead pools needed by the
+ * This class holds global objects for the various thread pools needed by the
  * application
  *
  * @author altair1673
@@ -34,7 +34,6 @@ public class ConstellationGlobalThreadPool {
     private ExecutorService defaultPluginEnvironmentPool = null;
 
     private ConstellationGlobalThreadPool() {
-
     }
 
     /**
