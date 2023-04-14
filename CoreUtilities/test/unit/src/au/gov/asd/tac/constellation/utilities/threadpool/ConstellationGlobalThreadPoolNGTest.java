@@ -69,7 +69,9 @@ public class ConstellationGlobalThreadPoolNGTest {
     @Test
     public void testGetThreadPool() {
         System.out.println("getThreadPool");
-        assertEquals(ConstellationGlobalThreadPool.getThreadPool() instanceof ConstellationGlobalThreadPool, true);
+        ConstellationGlobalThreadPool c1 = ConstellationGlobalThreadPool.getThreadPool();
+        ConstellationGlobalThreadPool c2 = ConstellationGlobalThreadPool.getThreadPool();
+        assertEquals(c1 == c2, true);
     }
 
     /**
@@ -78,7 +80,9 @@ public class ConstellationGlobalThreadPoolNGTest {
     @Test
     public void testGetScheduledExecutorService() {
         System.out.println("getScheduledExecutorService");
-        assertEquals(ConstellationGlobalThreadPool.getThreadPool().getScheduledExecutorService() instanceof ScheduledExecutorService, true);
+        ScheduledExecutorService s1 = ConstellationGlobalThreadPool.getThreadPool().getScheduledExecutorService();
+        ScheduledExecutorService s2 = ConstellationGlobalThreadPool.getThreadPool().getScheduledExecutorService();
+        assertEquals(s1 == s2, true);
     }
 
     /**
@@ -87,7 +91,9 @@ public class ConstellationGlobalThreadPoolNGTest {
     @Test
     public void testGetFixedThreadPool() {
         System.out.println("getFixedThreadPool");
-        assertEquals(ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool() instanceof ExecutorService, true);
+        ExecutorService f1 = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
+        ExecutorService f2 = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
+        assertEquals(f1 == f2, true);
     }
 
     /**
@@ -96,7 +102,9 @@ public class ConstellationGlobalThreadPoolNGTest {
     @Test
     public void testGetCachedThreadPool() {
         System.out.println("getCachedThreadPool");
-        assertEquals(ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool() instanceof ExecutorService, true);
+        ExecutorService e1 = ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool();
+        ExecutorService e2 = ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool();
+        assertEquals(e1 == e2, true);
     }
 
     /**
@@ -105,7 +113,9 @@ public class ConstellationGlobalThreadPoolNGTest {
     @Test
     public void testGetDefaultPluginEnvPool() {
         System.out.println("getDefaultPluginEnvPool");
-        assertEquals(ConstellationGlobalThreadPool.getThreadPool().getDefaultPluginEnvPool() instanceof ExecutorService, true);
+        ExecutorService dep1 = ConstellationGlobalThreadPool.getThreadPool().getDefaultPluginEnvPool();
+        ExecutorService dep2 = ConstellationGlobalThreadPool.getThreadPool().getDefaultPluginEnvPool();
+        assertEquals(dep1 == dep2, true);
     }
 
 }
