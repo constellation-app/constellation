@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeListener;
@@ -121,7 +122,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
         refreshRunnable = () -> {
 
-            final ArrayList<Object> devNull = new ArrayList<>();
+            final List<Object> devNull = new ArrayList<>();
 
             while (!queue.isEmpty()) {
                 queue.drainTo(devNull);

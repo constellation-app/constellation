@@ -175,8 +175,8 @@ public class RestServiceUtilities {
 
         return CompletableFuture.supplyAsync(() -> {
             while (true) {
-                if (GraphManager.getDefault().getActiveGraph() != null) {
-                    final Graph newGraph = GraphManager.getDefault().getActiveGraph();
+                final Graph newGraph = GraphManager.getDefault().getActiveGraph();
+                if (newGraph != null) {
                     final String newId = newGraph != null ? newGraph.getId() : null;
                     if ((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
                         // - there was no existing graph, and the new graph is active, or

@@ -39,6 +39,8 @@ import java.io.OutputStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -52,6 +54,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = RestService.class)
 public class OpenGraph extends RestService {
+
+    private static final Logger LOGGER = Logger.getLogger(OpenGraph.class.getName());
 
     private static final String NAME = "open_graph";
     private static final String FILE_PARAMETER_ID = "filename";
@@ -118,6 +122,7 @@ public class OpenGraph extends RestService {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
+            LOGGER.log(Level.SEVERE, "This thread has been interrupted");
         } catch (final ExecutionException | TimeoutException ex) {
             throw new RestServiceException(ex);
         }

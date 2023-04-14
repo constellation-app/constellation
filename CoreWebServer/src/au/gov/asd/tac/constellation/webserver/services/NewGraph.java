@@ -39,6 +39,8 @@ import java.io.OutputStream;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -51,6 +53,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = RestService.class)
 public class NewGraph extends RestService {
+
+    private static final Logger LOGGER = Logger.getLogger(NewGraph.class.getName());
 
     private static final String NAME = "new_graph";
     private static final String SCHEMA_PARAMETER_ID = "schema_name";
@@ -120,19 +124,20 @@ public class NewGraph extends RestService {
 
         try {
             newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
+            if (!newId.isBlank()) {
+                final ObjectMapper mapper = new ObjectMapper();
+                final ObjectNode root = mapper.createObjectNode();
+                root.put("id", newId);
+                root.put("name", GraphNode.getGraphNode(newId).getDisplayName());
+                root.put("schema", schemaName);
+                mapper.writeValue(out, root);
+            }
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
+            LOGGER.log(Level.SEVERE, "Thread interrupted");
         } catch (final ExecutionException | TimeoutException ex) {
             throw new RestServiceException(ex);
         }
 
-        if (!newId.isBlank() && !newId.isEmpty()) {
-            final ObjectMapper mapper = new ObjectMapper();
-            final ObjectNode root = mapper.createObjectNode();
-            root.put("id", newId);
-            root.put("name", GraphNode.getGraphNode(newId).getDisplayName());
-            root.put("schema", schemaName);
-            mapper.writeValue(out, root);
-        }
     }
 }
