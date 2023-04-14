@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.schemaview;
 
-import au.gov.asd.tac.constellation.utilities.threadpool.UniversalThreadPool;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.schemaview.providers.SchemaViewNodeProvider;
 import java.util.Collection;
 import java.util.concurrent.Executor;
@@ -45,7 +45,7 @@ public class SchemaViewPane extends BorderPane {
 
     public void populate() {
         Platform.runLater(() -> {
-            final Executor pool = UniversalThreadPool.getThreadPool().getFixedThreadPool();
+            final Executor pool = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
             schemaViewProviders = Lookup.getDefault().lookupAll(SchemaViewNodeProvider.class);
             schemaViewProviders.stream().forEach(provider -> {
                 final Tab tab = new Tab(provider.getText());
