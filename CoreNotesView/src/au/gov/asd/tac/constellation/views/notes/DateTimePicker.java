@@ -52,28 +52,20 @@ public class DateTimePicker {
 
     public DateTimePicker(final boolean from) {
         dateTimePane = new Pane();
-        datePicker.setChronology(Chronology.ofLocale(Locale.CHINA));
+        datePicker.setChronology(Chronology.ofLocale(Locale.ENGLISH));
 
         datePicker.setConverter(new StringConverter<LocalDate>() {
-            String pattern = "yyyy-MM-dd";
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+            final String pattern = "yyyy-MM-dd";
+            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
 
             @Override
-            public String toString(LocalDate object) {
-                if (object != null) {
-                    return dateFormatter.format(object);
-                } else {
-                    return "";
-                }
+            public String toString(final LocalDate object) {
+                return object != null ? dateFormatter.format(object) : "";
             }
 
             @Override
-            public LocalDate fromString(String string) {
-                if (string != null && !string.isEmpty()) {
-                    return LocalDate.parse(string, dateFormatter);
-                } else {
-                    return null;
-                }
+            public LocalDate fromString(final String string) {
+                return !string.isBlank() ? LocalDate.parse(string, dateFormatter) : null;
             }
 
         });
