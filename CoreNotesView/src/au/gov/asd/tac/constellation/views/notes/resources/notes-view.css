@@ -15,6 +15,6 @@
     -fx-fill: #ffffff;
 }
 
-.color-picker .color-picker-palette{
+.combo-box-popup{
     -fx-background-color: black;
 }
