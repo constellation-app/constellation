@@ -1,0 +1,20 @@
+.check-box .box {
+    -fx-background-color: black;
+    -fx-border-color:white;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+.color-picker{
+    -fx-background-color: black;
+}
+
+.color-picker .color-picker-label .text{
+    -fx-fill: #ffffff;
+}
+
+.color-picker .color-picker-palette{
+    -fx-background-color: black;
+}

@@ -17,6 +17,13 @@ package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -37,11 +44,16 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Screen;
 import javafx.stage.Window;
 
 /**
@@ -58,6 +70,7 @@ public class NewNotePane {
     private static final String PROMPT_COLOR = "#909090";
     private static final double WIDTH = 1000;
     private static final double HEIGHT = 175;
+    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
 
     private final TextArea contentField;
     private final TextField titleField = new TextField();
@@ -103,7 +116,7 @@ public class NewNotePane {
 
         // TextArea to enter new note content.
         contentField = new TextArea();
-        contentField.setMinWidth(WIDTH - 5);
+        contentField.setMinWidth(WIDTH - 10);
         contentField.setPromptText("Type a note...");
         contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
         contentField.setWrapText(true);
@@ -137,8 +150,10 @@ public class NewNotePane {
         cancelButton.setOnMouseEntered(event -> cancelButton.setStyle("-fx-background-color: #DBA800; "));
         cancelButton.setOnMouseExited(event -> cancelButton.setStyle("-fx-background-color: #DEC20B;  "));
 
-        final HBox noteHBox = new HBox(30, applyToSelection, newNoteColour, addButton, cancelButton);
-
+        final Region gap = new Region();
+        gap.setMinWidth(85);
+        final HBox noteHBox = new HBox(30, applyToSelection, newNoteColour, addButton, gap, cancelButton);
+        HBox.setHgrow(gap, Priority.ALWAYS);
         final VBox addNoteVBox = new VBox(5, titleLabel, titleField, contentField, noteHBox);
         addNoteVBox.setAlignment(Pos.CENTER_LEFT);
         addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
@@ -153,7 +168,7 @@ public class NewNotePane {
      * Instantiate stage for the pop up and set event handler to close it when
      * consty closes
      */
-    public void showPopUp() {
+    public void showPopUp(final Window window) {
         if (isFirstTime) {
             parent.setOnCloseRequest(event -> {
                 addButton.setDisable(true);
@@ -163,12 +178,47 @@ public class NewNotePane {
             stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setTitle("Create new note");
-            stage.setMinHeight(HEIGHT * 2);
+            stage.setMinHeight(HEIGHT * 2.5);
             stage.setMinWidth(WIDTH);
             stage.setResizable(true);
-            stage.setScene(new Scene(dialogPane));
+
+            final Scene s = new Scene(dialogPane);
+
+            /*try {
+                String css = new String(this.getClass().getClassLoader().getResourceAsStream("C:/Projects/constellation/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/resources/notes-view.css").readAllBytes());
+                s.getStylesheets().add(css);
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "IO exception: " + e.getMessage());
+            }*/
+
+ /*FileChooser cssFileChooser = new FileChooser();
+            cssFileChooser.setTitle("Open css file");
+
+            //cssFileChooser.getExtensionFilters().add(new ExtensionFilter("CSS Files", ".css"));
+            File cssFile = cssFileChooser.showOpenDialog(stage);
+            String cssString = "";
+            try (BufferedReader bFileReader = new BufferedReader(new FileReader(cssFile))) {
+                String line = "";
+
+                while ((line = bFileReader.readLine()) != null) {
+                    cssString += line + "\n";
+                }
+            } catch (final Exception e) {
+                LOGGER.log(Level.SEVERE, e.getMessage());
+            }
+
+            s.getStylesheets().add(cssString);*/
+            s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
+
+            stage.setScene(s);
+
             isFirstTime = false;
         }
+
+        List<Screen> screens = Screen.getScreensForRectangle(window.getX(), window.getY(), window.widthProperty().get(), window.heightProperty().get());
+
+        stage.setX(screens.get(0).getVisualBounds().getMinX());
+        stage.setY(screens.get(0).getVisualBounds().getMinY());
 
         if (!stage.isShowing()) {
             stage.show();

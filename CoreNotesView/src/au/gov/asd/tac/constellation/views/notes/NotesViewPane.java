@@ -52,6 +52,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -66,12 +67,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
@@ -104,13 +105,12 @@ public class NotesViewPane extends BorderPane {
     private boolean isSelectedFiltersUpdating = false;
     private boolean isAutoSelectedFiltersUpdating = false;
 
-    private final HBox filterNotesHBox;
     private final VBox addNoteVBox;
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
 
     private static final int DEFAULT_SPACING = 5;
-    private static final int EDIT_SPACING = 110;
+    private static final int EDIT_SPACING = 10;
     private static final String SHOW_MORE = "Show more";
     private static final String SHOW_LESS = "Show less";
     private static final String USER_COLOR = "#942483";
@@ -240,10 +240,12 @@ public class NotesViewPane extends BorderPane {
         // Get rid of the ugly button look so the icon stands alone.
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
-        // VBox to store control items used to filter notes.
-        filterNotesHBox = new HBox(DEFAULT_SPACING, filterCheckComboBox, autoFilterCheckComboBox, dateTimeRangePicker.getTimeRangeAccordian(), helpButton);
-        filterNotesHBox.setAlignment(Pos.TOP_LEFT);
-        filterNotesHBox.setStyle("-fx-padding: 5px;");
+        // FlowPane to store control items used to filter notes.
+        final FlowPane topBar = new FlowPane();
+        topBar.getChildren().add(filterCheckComboBox);
+        topBar.getChildren().add(autoFilterCheckComboBox);
+        topBar.getChildren().add(dateTimeRangePicker.getTimeRangeAccordian());
+        topBar.getChildren().add(helpButton);
 
         // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(userChosenColour);
@@ -257,7 +259,7 @@ public class NotesViewPane extends BorderPane {
                 newNotePane.setParent(this.getScene().getWindow());
                 creatingFirstNote = false;
             }
-            newNotePane.showPopUp();
+            newNotePane.showPopUp(this.getScene().getWindow());
         });
 
         // Event handler to add new note
@@ -268,7 +270,7 @@ public class NotesViewPane extends BorderPane {
                         || newNotePane.getContentField().getText().isBlank()) {
                     newNotePane.closePopUp();
                     JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
-                    newNotePane.showPopUp();
+                    newNotePane.showPopUp(this.getScene().getWindow());
                 } else {
                     synchronized (LOCK) {
                         notesViewEntries.add(new NotesViewEntry(
@@ -353,7 +355,7 @@ public class NotesViewPane extends BorderPane {
         notesListScrollPane.setStyle(fontStyle + "-fx-padding: 5px; -fx-background-color: transparent;");
         notesListScrollPane.setFitToWidth(true);
 
-        setTop(filterNotesHBox);
+        setTop(topBar);
         setCenter(notesListScrollPane);
         setBottom(addNoteVBox);
     }
@@ -578,6 +580,7 @@ public class NotesViewPane extends BorderPane {
             if (CollectionUtils.isNotEmpty(notesToRender)) {
                 notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
                 notesToRender.forEach(note -> createNote(note));
+                LOGGER.log(Level.SEVERE, "Height of latest note: " + notesListVBox.getChildren().get(notesListVBox.getChildren().size() - 1).getBoundsInLocal().getHeight());
             }
             notesListScrollPane.applyCss();
             notesListScrollPane.layout();
@@ -658,8 +661,9 @@ public class NotesViewPane extends BorderPane {
         final Label dateTimeLabel = new Label((new SimpleDateFormat(DATETIME_PATTERN).format(new Date(Long.parseLong(newNote.getDateTime())))));
         dateTimeLabel.setWrapText(true);
         dateTimeLabel.setStyle(BOLD_STYLE + fontStyle);
-        dateTimeLabel.setMinWidth(250);
-        dateTimeLabel.setMaxWidth(250);
+        dateTimeLabel.setMinWidth(185);
+        dateTimeLabel.setMaxWidth(185);
+        dateTimeLabel.setPadding(new Insets(0, 0, 0, 0));
         // Define title text box
         final TextField titleText = new TextField(newNote.getNoteTitle());
         titleText.setStyle(BOLD_STYLE);
@@ -746,31 +750,40 @@ public class NotesViewPane extends BorderPane {
         final HBox editScreenButtons = new HBox(DEFAULT_SPACING, saveTextButton, cancelButton);
         editScreenButtons.setAlignment(Pos.CENTER);
 
+
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
         final HBox noteButtons;
         final Region gap = new Region();
+        final Region gap2 = new Region();
 
         gap.setPrefWidth(615);
+        //gap.setMinWidth(30);
+        //gap2.setPrefWidth(100);
+        gap2.setPrefWidth(50);
 
         if (newNote.getNodeColour().isBlank()) {
             newNote.setNodeColour(USER_COLOR);
         }
         HBox.setHgrow(gap, Priority.ALWAYS);
+        HBox.setHgrow(gap2, Priority.ALWAYS);
         HBox.setHgrow(dateTimeLabel, Priority.NEVER);
         HBox.setHgrow(editScreenButtons, Priority.ALWAYS);
 
         final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
         colourPicker.setMinWidth(100);
-        HBox.setHgrow(colourPicker, Priority.ALWAYS);
+        colourPicker.setMaxWidth(100);
+        HBox.setHgrow(colourPicker, Priority.NEVER);
+
         if (newNote.getEditMode()) {
-            noteButtons = new HBox(EDIT_SPACING, dateTimeLabel, gap, colourPicker, editScreenButtons);
+            noteButtons = new HBox(EDIT_SPACING, dateTimeLabel, gap, colourPicker, gap2, editScreenButtons);
             newNote.setEditMode(true);
         } else {
             newNote.setEditMode(false);
             noteButtons = new HBox(DEFAULT_SPACING, dateTimeLabel, gap, editTextButton, deleteButton);
+
         }
-        noteButtons.setAlignment(Pos.CENTER_RIGHT);
+        noteButtons.setAlignment(Pos.CENTER_LEFT);
         final Button showMoreButton = new Button(SHOW_MORE);
 
         showMoreButton.setOnAction(event -> {
@@ -931,7 +944,7 @@ public class NotesViewPane extends BorderPane {
         editTextButton.setOnAction(event -> {
 
             noteButtons.getChildren().removeAll(editTextButton, deleteButton);
-            noteButtons.getChildren().addAll(colourPicker, editScreenButtons);
+            noteButtons.getChildren().addAll(colourPicker, gap2, editScreenButtons);
             noteButtons.setSpacing(EDIT_SPACING);
 
             noteInformation.getChildren().removeAll(titleLabel, contentLabel, selectionLabel);
@@ -949,7 +962,7 @@ public class NotesViewPane extends BorderPane {
         cancelButton.setOnAction(cancelEvent -> {
             final String currentColour = previouseColourMap.get(newNote.getID());
             colourPicker.setValue(ConstellationColor.fromHtmlColor(currentColour).getJavaFXColor());
-            noteButtons.getChildren().removeAll(colourPicker, editScreenButtons);
+            noteButtons.getChildren().removeAll(colourPicker, gap2, editScreenButtons);
             noteButtons.getChildren().addAll(editTextButton, deleteButton);
             noteButtons.setSpacing(DEFAULT_SPACING);
             noteInformation.getChildren().removeAll(titleText, contentTextArea, selectionLabel);
@@ -981,7 +994,7 @@ public class NotesViewPane extends BorderPane {
                 newNote.setNoteContent(contentTextArea.getText());
                 previouseColourMap.replace(newNote.getID(), newNote.getNodeColour());
 
-                noteButtons.getChildren().removeAll(colourPicker, editScreenButtons);
+                noteButtons.getChildren().removeAll(colourPicker, gap2, editScreenButtons);
                 noteButtons.getChildren().addAll(editTextButton, deleteButton);
                 noteButtons.setSpacing(DEFAULT_SPACING);
 

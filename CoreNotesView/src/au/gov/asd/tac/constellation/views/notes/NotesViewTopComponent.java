@@ -86,7 +86,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
             }
             notesViewPane.updateNotesUI();
         });
-        jfxContainer.setMinimumSize(new Dimension(1000, 500));
     }
 
     @Override
