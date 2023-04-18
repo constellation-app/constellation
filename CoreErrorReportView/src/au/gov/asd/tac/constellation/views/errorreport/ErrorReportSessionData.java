@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.errorreport;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This is a data storage class to maintain the list of errors that have been
@@ -27,17 +28,14 @@ import java.util.Date;
  */
 public class ErrorReportSessionData {
 
-    final private ArrayList<ErrorReportEntry> sessionErrors = new ArrayList<>();
-    final private ArrayList<ErrorReportEntry> displayedErrors = new ArrayList<>();
+    private final List<ErrorReportEntry> sessionErrors = new ArrayList<>();
+    private final List<ErrorReportEntry> displayedErrors = new ArrayList<>();
 
     private static ErrorReportSessionData instance = null;
     private static Double nextEntryId = 0D;
     public static Date lastUpdate = new Date();
 
     public static boolean screenUpdateRequested = false;
-
-    ErrorReportSessionData() {
-    }
 
     public static ErrorReportSessionData getInstance() {
         if (instance == null) {
@@ -118,14 +116,14 @@ public class ErrorReportSessionData {
      * @param filters
      * @return
      */
-    public ArrayList<ErrorReportEntry> refreshDisplayedErrors(final ArrayList<String> filters) {
-        final ArrayList<ErrorReportEntry> refreshedData = new ArrayList<>();
+    public List<ErrorReportEntry> refreshDisplayedErrors(final List<String> filters) {
+        final List<ErrorReportEntry> refreshedData = new ArrayList<>();
         synchronized (sessionErrors) {
             synchronized (displayedErrors) {
                 for (final ErrorReportEntry entry : sessionErrors) {
                     if (filters.contains(entry.getErrorLevel().getName())) {
-                        ErrorReportEntry refreshedEntry = entry.copy();
-                        ErrorReportEntry displayedEntry = findDisplayedEntryWithId(entry.getEntryId());
+                        final ErrorReportEntry refreshedEntry = entry.copy();
+                        final ErrorReportEntry displayedEntry = findDisplayedEntryWithId(entry.getEntryId());
                         if (displayedEntry != null) {
                             refreshedEntry.setExpanded(displayedEntry.getExpanded());
                             refreshedEntry.setBlockRepeatedPopups(displayedEntry.isBlockRepeatedPopups());

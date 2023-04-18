@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportEntry;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportSessionData;
 import java.util.logging.Handler;
@@ -35,23 +36,23 @@ public class ConstellationErrorManager extends Handler {
             final StackTraceElement[] elems = errorRecord.getThrown().getStackTrace();
             final StringBuilder errorMsg = new StringBuilder();
             String recordHeader = errorRecord.getThrown().getLocalizedMessage() != null ? errorRecord.getThrown().getLocalizedMessage() : "<< No Message >>";
-            if (!recordHeader.endsWith("\n")) {
-                recordHeader += "\n";
+            if (!recordHeader.endsWith(SeparatorConstants.NEWLINE)) {
+                recordHeader += SeparatorConstants.NEWLINE;
             }
-            Level errLevel = errorRecord.getLevel();
+            final Level errLevel = errorRecord.getLevel();
             String errorSummary = errorRecord.getThrown().toString();
-            if (!errorSummary.endsWith("\n")) {
-                errorSummary += "\n";
+            if (!errorSummary.endsWith(SeparatorConstants.NEWLINE)) {
+                errorSummary += SeparatorConstants.NEWLINE;
             }
             if (elems == null || elems.length == 0) {
-                errorMsg.append(" >> No stacktrace available for error:\n >> ").append(recordHeader);
+                errorMsg.append(" >> No stacktrace available for error:").append(SeparatorConstants.NEWLINE).append(" >> ").append(recordHeader);
             } else {
                 for (int i = 0; i < elems.length; i++) {
-                    errorMsg.append(elems[i].toString()).append("\n");
+                    errorMsg.append(elems[i].toString()).append(SeparatorConstants.NEWLINE);
                 }
             }
-            final ErrorReportEntry rep4 = new ErrorReportEntry(errLevel, recordHeader, errorSummary, errorMsg.toString(), ErrorReportSessionData.getNextEntryId());
-            ErrorReportSessionData.getInstance().storeSessionError(rep4);
+            final ErrorReportEntry repEntry = new ErrorReportEntry(errLevel, recordHeader, errorSummary, errorMsg.toString(), ErrorReportSessionData.getNextEntryId());
+            ErrorReportSessionData.getInstance().storeSessionError(repEntry);
         }
     }
 

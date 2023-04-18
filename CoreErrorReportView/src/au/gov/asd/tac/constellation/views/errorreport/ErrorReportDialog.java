@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.errorreport;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -47,7 +48,8 @@ import org.openide.DialogDisplayer;
 import org.openide.modules.Places;
 
 /**
- * This defines the dialog that will be displayed when an Unexpected Error occurs
+ * This defines the dialog that will be displayed when an Unexpected Error
+ * occurs
  *
  * @author OrionsGuardian
  */
@@ -73,8 +75,8 @@ public class ErrorReportDialog {
 
     /**
      * Construct the Error Report Dialog for a supplied Error Report Entry
-     * 
-     * @param errorEntry 
+     *
+     * @param errorEntry
      */
     public ErrorReportDialog(final ErrorReportEntry errorEntry) {
         currentError = errorEntry;
@@ -98,42 +100,47 @@ public class ErrorReportDialog {
 
         final Label imageLabel = new Label(" \n ");
         final Color errorIconColor;
-        switch(errorEntry.getErrorLevel().getName()) {
-            case "SEVERE":  errorIconColor = new Color(215, 95, 95);
-                            break;
-            case "WARNING":  errorIconColor = new Color(210, 130, 65);
-                            break;
-            case "INFO" :   errorIconColor = new Color(170, 170, 65);
-                            break;
+        switch (errorEntry.getErrorLevel().getName()) {
+            case "SEVERE":
+                errorIconColor = new Color(215, 95, 95);
+                break;
+            case "WARNING":
+                errorIconColor = new Color(210, 130, 65);
+                break;
+            case "INFO":
+                errorIconColor = new Color(170, 170, 65);
+                break;
             case "FINE":
             case "FINER":
-            case "FINEST":  errorIconColor = new Color(50, 160, 160);
-                            break;
-            default: errorIconColor = new Color(200, 120, 150);
+            case "FINEST":
+                errorIconColor = new Color(50, 160, 160);
+                break;
+            default:
+                errorIconColor = new Color(200, 120, 150);
         }
         final ImageView errorImage = new ImageView(UserInterfaceIconProvider.ERROR.buildImage(36, errorIconColor));
         imageLabel.setGraphic(errorImage);
-        imageLabel.setPadding(new Insets(2 + (showOccs ? 4 : 0),0,0,0));
+        imageLabel.setPadding(new Insets(2 + (showOccs ? 4 : 0), 0, 0, 0));
         detailsBox = new VBox();
         root.setTop(detailsBox);
-        
+
         final BorderPane errorHeadingPane = new BorderPane();
         final TextFlow errorHeadingText = new TextFlow();
         final FlowPane headerSeverityPane = new FlowPane();
         final Label severityDesc = new Label("Error Level: " + errorEntry.getErrorLevel().getName() + " ");
-        severityDesc.setPadding(new Insets(0,0,0,0));
+        severityDesc.setPadding(new Insets(0, 0, 0, 0));
         final Label occurrenceDesc = new Label(" " + errorEntry.getOccurrences() + " Occurrences ");
         headerSeverityPane.getChildren().add(severityDesc);
         final Font outputFont = FontUtilities.getOutputFont();
         final Text messageDesc = new Text(errorEntry.getHeading());
         messageDesc.setStyle("-fx-font-family: " + outputFont.getFamily());
         errorHeadingText.getChildren().add(messageDesc);
-        errorHeadingText.setPadding(new Insets(3,0,0,0));
-        
+        errorHeadingText.setPadding(new Insets(3, 0, 0, 0));
+
         final BorderPane headingSection = new BorderPane();
-        
+
         if (showOccs) {
-            headerSeverityPane.setPadding(new Insets(4,0,0,0));
+            headerSeverityPane.setPadding(new Insets(4, 0, 0, 0));
             occurrenceDesc.setTooltip(new Tooltip("Repeated Occurrences of this Exception"));
             occurrenceDesc.setStyle("-fx-border-color:#808080; -fx-background-color: #e0e0e0");
             occurrenceDesc.setTextAlignment(TextAlignment.CENTER);
@@ -143,14 +150,14 @@ public class ErrorReportDialog {
             occBox.setStyle("-fx-background-color: #bcbcbc");
             detailsBox.getChildren().add(occBox);
         }
-        
-        headingSection.setCenter(headerSeverityPane);        
+
+        headingSection.setCenter(headerSeverityPane);
         headingSection.setBottom(errorHeadingText);
         errorHeadingPane.setLeft(imageLabel);
         errorHeadingPane.setCenter(headingSection);
 
         detailsBox.getChildren().add(errorHeadingPane);
-        errorMsgArea = new TextArea(errorEntry.getSummaryHeading() + "\n" + errorEntry.getErrorData());
+        errorMsgArea = new TextArea(errorEntry.getSummaryHeading() + SeparatorConstants.NEWLINE + errorEntry.getErrorData());
         errorMsgArea.setPrefRowCount(24);
         errorMsgArea.setEditable(false);
 
@@ -164,7 +171,7 @@ public class ErrorReportDialog {
 
         showHideButton.setOnAction((ActionEvent event) -> toggleExceptionDisplay());
         final Button closeButton = new Button("Close");
-        closeButton.setOnAction((ActionEvent event) -> hideDialog());
+        closeButton.setOnAction((final ActionEvent event) -> hideDialog());
         buttonPane.setLeft(showHideButton);
         blockRepeatsCheckbox.setSelected(errorEntry.isBlockRepeatedPopups());
         buttonPane.setCenter(blockRepeatsCheckbox);

@@ -32,20 +32,17 @@ public class ErrorReportDialogManager {
     private int popupDisplayMode = 2;
     private final List<Double> activePopupIds = new ArrayList<>();
     private Date latestPopupDismissDate = null;
-    private final ArrayList<String> popupTypeFilters = new ArrayList<>();
+    private final List<String> popupTypeFilters = new ArrayList<>();
     private boolean isErrorReportRunning = false;
     private Timer refreshTimer = null;
     private Date latestRetrievalDate = null;
     private Date previousRetrievalDate = null;
     private Date backupRetrievalDate = null;
     private Date gracePeriodResumptionDate = null;
-    private ArrayList<ErrorReportEntry> sessionPopupErrors = new ArrayList<>();
+    private List<ErrorReportEntry> sessionPopupErrors = new ArrayList<>();
 
     private static ErrorReportDialogManager instance = null;
     
-    public ErrorReportDialogManager(){
-    }
-
     public static ErrorReportDialogManager getInstance() {
         if (instance == null) {
             instance = new ErrorReportDialogManager();
@@ -73,10 +70,8 @@ public class ErrorReportDialogManager {
                                 latestRetrievalDate = currentDate;
                                 sessionPopupErrors = ErrorReportSessionData.getInstance().refreshDisplayedErrors(popupTypeFilters);
                                 for (final ErrorReportEntry reportEntry : sessionPopupErrors) {
-                                    if (popupTypeFilters.contains(reportEntry.getErrorLevel().getName())) {
-                                        if (previousRetrievalDate == null || reportEntry.getLastPopupDate() == null || reportEntry.getLastDate().after(previousRetrievalDate)) {
-                                            showErrorDialog(reportEntry);
-                                        }
+                                    if (popupTypeFilters.contains(reportEntry.getErrorLevel().getName()) && (previousRetrievalDate == null || reportEntry.getLastPopupDate() == null || reportEntry.getLastDate().after(previousRetrievalDate))) {
+                                        showErrorDialog(reportEntry);
                                     }
                                 }
 
@@ -90,7 +85,7 @@ public class ErrorReportDialogManager {
         refreshTimer.schedule(refreshAction, 175, 475);        
     }
     
-    public void updatePopupSettings(final int popupMode, ArrayList<String> popupFilters) {
+    public void updatePopupSettings(final int popupMode, final List<String> popupFilters) {
         popupDisplayMode = popupMode;
         popupTypeFilters.clear();
         for (final String filterEntry : popupFilters) {
@@ -98,7 +93,7 @@ public class ErrorReportDialogManager {
         }
     }
 
-    public void setErrorReportRunning(boolean isRunning){
+    public void setErrorReportRunning(final boolean isRunning){
         isErrorReportRunning = isRunning;
     }
     
@@ -108,8 +103,7 @@ public class ErrorReportDialogManager {
             return;
         }
         final Date currentDate = new Date();
-        gracePeriodResumptionDate = latestPopupDismissDate == null ? currentDate : new Date(latestPopupDismissDate.getTime() + 5000);
-        if (currentDate.before(gracePeriodResumptionDate)) {
+        if (gracePeriodResumptionDate != null && currentDate.before(gracePeriodResumptionDate)) {
             // prevent popups for 5 seconds ... just in case of an infinite cycle of popups
             // this allows some time to set the popup mode to 0 (disabling any more popups)
             
@@ -124,12 +118,12 @@ public class ErrorReportDialogManager {
         }
         if (popupDisplayMode == 1) {
             // check if there are any current popups being displayed or if this entry has been displayed
-            if (activePopupIds.size() > 0 || entry.getLastPopupDate() != null) {
+            if (!activePopupIds.isEmpty() || entry.getLastPopupDate() != null) {
                 return;
             }
         } else if (popupDisplayMode == 2) {
             // only need to check if something is being displayed
-            if (activePopupIds.size() > 0) {
+            if (!activePopupIds.isEmpty()) {
                 return;
             }
         } else if (popupDisplayMode == 3) {
@@ -154,7 +148,7 @@ public class ErrorReportDialogManager {
      * @param entry 
      * @param review 
      */
-    public void showDialog(final ErrorReportEntry entry, boolean review) {
+    public void showDialog(final ErrorReportEntry entry, final boolean review) {
         Platform.runLater(() -> {
             entry.setLastPopupDate(new Date());
             final ErrorReportDialog errorDlg = new ErrorReportDialog(entry);
@@ -180,14 +174,15 @@ public class ErrorReportDialogManager {
     
     /**
      * set the date/time at which the latest popup was closed.
-     * @param latestPopupDismissDate 
+     * @param latestDismissDate 
      */
-    public void setLatestPopupDismissDate(final Date latestPopupDismissDate) {
-        this.latestPopupDismissDate = latestPopupDismissDate;
+    public void setLatestPopupDismissDate(final Date latestDismissDate) {
+        latestPopupDismissDate = latestDismissDate;
+        gracePeriodResumptionDate = new Date(latestPopupDismissDate.getTime() + 5000);
     }
 
-    public ArrayList<String> getActivePopupErrorLevels(){
-        final ArrayList<String> resultList = new ArrayList<>();
+    public List<String> getActivePopupErrorLevels(){
+        final List<String> resultList = new ArrayList<>();
         for (final Double id : activePopupIds) {
             final String errorLevel = ErrorReportSessionData.getInstance().findDisplayedEntryWithId(id).getErrorLevel().getName();
             resultList.add(errorLevel);

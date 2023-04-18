@@ -49,7 +49,7 @@ public class ErrorReportEntry {
     }
 
     public ErrorReportEntry copy() {
-        ErrorReportEntry dataCopy = new ErrorReportEntry(errorLevel, heading, summaryHeading, errorData, entryId);
+        final ErrorReportEntry dataCopy = new ErrorReportEntry(errorLevel, heading, summaryHeading, errorData, entryId);
         dataCopy.expanded = expanded;
         dataCopy.lastDate = new Date(lastDate.getTime());
         dataCopy.lastPopupDate = (lastPopupDate == null ? null : new Date(lastPopupDate.getTime()));
