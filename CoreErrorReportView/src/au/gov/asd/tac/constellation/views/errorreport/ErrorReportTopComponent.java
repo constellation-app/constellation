@@ -60,7 +60,6 @@ import javax.swing.SwingUtilities;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
@@ -86,7 +85,7 @@ import org.openide.windows.TopComponent;
 )
 @ActionReferences({
     @ActionReference(path = "Menu/Views", position = 475),
-    @ActionReference(path = "Shortcuts", name = "CS-R")
+    @ActionReference(path = "Shortcuts", name = "AS-R")
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_ErrorReportAction",
