@@ -66,11 +66,9 @@ public class NewNotePane {
     private final Pane dialogPane;
     private final static String FONT_SIZE_STRING = "-fx-font-size:%d;";
     private final String fontStyle = String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize());
-    private final String titleFontStyle = String.format(FONT_SIZE_STRING, 20);
     private static final String PROMPT_COLOR = "#909090";
-    private static final double WIDTH = 1000;
-    private static final double HEIGHT = 175;
-    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
+    private static final double WIDTH = 500;
+    private static final double HEIGHT = 140;
 
     private final TextArea contentField;
     private final TextField titleField = new TextField();
@@ -95,10 +93,6 @@ public class NewNotePane {
         dialogPane.setMaxHeight(HEIGHT);
         dialogPane.setMinWidth(WIDTH);
         dialogPane.setMaxWidth(WIDTH);
-
-        Label titleLabel = new Label("Enter note info");
-        titleLabel.setStyle("-fx-text-fill:WHITE; " + titleFontStyle);
-        titleLabel.setFont(Font.font(24));
 
         // TextField to enter new note title.
         titleField.setPromptText("Type a title...");
@@ -151,13 +145,14 @@ public class NewNotePane {
         cancelButton.setOnMouseExited(event -> cancelButton.setStyle("-fx-background-color: #DEC20B;  "));
 
         final Region gap = new Region();
-        gap.setMinWidth(85);
-        final HBox noteHBox = new HBox(30, applyToSelection, newNoteColour, addButton, gap, cancelButton);
+        gap.setMinWidth(15);
+        final HBox noteHBox = new HBox(5, addButton, cancelButton);
         HBox.setHgrow(gap, Priority.ALWAYS);
-        final VBox addNoteVBox = new VBox(5, titleLabel, titleField, contentField, noteHBox);
+        noteHBox.setAlignment(Pos.CENTER_RIGHT);
+        final VBox addNoteVBox = new VBox(5, titleField, contentField, applyToSelection, newNoteColour, noteHBox);
         addNoteVBox.setAlignment(Pos.CENTER_LEFT);
         addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
-        addNoteVBox.setMinHeight(200);
+        addNoteVBox.setMinHeight(220);
 
         dialogPane.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#222222").getJavaFXColor(), null, null)));
 
@@ -183,31 +178,6 @@ public class NewNotePane {
             stage.setResizable(true);
 
             final Scene s = new Scene(dialogPane);
-
-            /*try {
-                String css = new String(this.getClass().getClassLoader().getResourceAsStream("C:/Projects/constellation/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/resources/notes-view.css").readAllBytes());
-                s.getStylesheets().add(css);
-            } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "IO exception: " + e.getMessage());
-            }*/
-
- /*FileChooser cssFileChooser = new FileChooser();
-            cssFileChooser.setTitle("Open css file");
-
-            //cssFileChooser.getExtensionFilters().add(new ExtensionFilter("CSS Files", ".css"));
-            File cssFile = cssFileChooser.showOpenDialog(stage);
-            String cssString = "";
-            try (BufferedReader bFileReader = new BufferedReader(new FileReader(cssFile))) {
-                String line = "";
-
-                while ((line = bFileReader.readLine()) != null) {
-                    cssString += line + "\n";
-                }
-            } catch (final Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage());
-            }
-
-            s.getStylesheets().add(cssString);*/
             s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
 
             stage.setScene(s);

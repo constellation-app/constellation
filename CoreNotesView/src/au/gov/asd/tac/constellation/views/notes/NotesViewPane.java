@@ -209,7 +209,8 @@ public class NotesViewPane extends BorderPane {
                 }
             }
         });
-        autoFilterCheckComboBox.setStyle("visibility: hidden;");
+        autoFilterCheckComboBox.setTitle("Select tag(s)...");
+        autoFilterCheckComboBox.setDisable(true);
 
         // Set whether or not a time filter should even be applied
         dateTimeRangePicker.getClearButton().setOnAction(event -> {
@@ -489,10 +490,10 @@ public class NotesViewPane extends BorderPane {
             });
         }
         if (this.selectedFilters.contains(AUTO_NOTES_FILTER)) {
-            Platform.runLater(() -> autoFilterCheckComboBox.setStyle("visibility: visible;"));
+            Platform.runLater(() -> autoFilterCheckComboBox.setDisable(false));
             updateTagsFiltersAvailable();
         } else {
-            Platform.runLater(() -> autoFilterCheckComboBox.setStyle("visibility: hidden;"));
+            Platform.runLater(() -> autoFilterCheckComboBox.setDisable(true));
         }
         updateFilters();
     }
