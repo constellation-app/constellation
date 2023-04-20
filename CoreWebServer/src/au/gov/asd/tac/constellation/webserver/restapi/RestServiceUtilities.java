@@ -177,8 +177,8 @@ public class RestServiceUtilities {
             while (true) {
                 final Graph newGraph = GraphManager.getDefault().getActiveGraph();
                 if (newGraph != null) {
-                    final String newId = newGraph != null ? newGraph.getId() : null;
-                    if ((existingId == null && newId != null) || (existingId != null && newId != null && !existingId.equals(newId))) {
+                    final String newId = newGraph.getId();
+                    if (existingId == null || (existingId != null && !existingId.equals(newId))) {
                         // - there was no existing graph, and the new graph is active, or
                         // - there was an existing graph, and the active graph is not the existing graph.
                         // - we assume the user hasn't interfered by manually switching to another graph at the same time.

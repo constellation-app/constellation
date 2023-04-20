@@ -134,7 +134,7 @@ public class NewGraph extends RestService {
             }
         } catch (final InterruptedException ex) {
             Thread.currentThread().interrupt();
-            LOGGER.log(Level.SEVERE, "Thread interrupted");
+            LOGGER.log(Level.SEVERE, "Thread interrupted", ex);
         } catch (final ExecutionException | TimeoutException ex) {
             throw new RestServiceException(ex);
         }
