@@ -65,6 +65,8 @@ public class ConstellationGlobalThreadPoolNGTest {
 
     /**
      * Test of getThreadPool method, of class ConstellationGlobalThreadPool.
+     *
+     * Making sure the thread pool object has only one instance being created
      */
     @Test
     public void testGetThreadPool() {
@@ -75,7 +77,11 @@ public class ConstellationGlobalThreadPoolNGTest {
     }
 
     /**
-     * Test of getScheduledExecutorService method, of class ConstellationGlobalThreadPool.
+     * Test of getScheduledExecutorService method, of class
+     * ConstellationGlobalThreadPool.
+     *
+     * Making sure the scheduled executor service object has only one instance
+     * being created
      */
     @Test
     public void testGetScheduledExecutorService() {
@@ -86,7 +92,11 @@ public class ConstellationGlobalThreadPoolNGTest {
     }
 
     /**
-     * Test of getFixedThreadPool method, of class ConstellationGlobalThreadPool.
+     * Test of getFixedThreadPool method, of class
+     * ConstellationGlobalThreadPool.
+     *
+     * The fixed thread pool object also only has one instance which is being
+     * tested here
      */
     @Test
     public void testGetFixedThreadPool() {
@@ -97,7 +107,10 @@ public class ConstellationGlobalThreadPoolNGTest {
     }
 
     /**
-     * Test of getCachedThreadPool method, of class ConstellationGlobalThreadPool.
+     * Test of getCachedThreadPool method, of class
+     * ConstellationGlobalThreadPool.
+     *
+     * Same purpose as the tests above
      */
     @Test
     public void testGetCachedThreadPool() {
@@ -108,7 +121,10 @@ public class ConstellationGlobalThreadPoolNGTest {
     }
 
     /**
-     * Test of getDefaultPluginEnvPool method, of class ConstellationGlobalThreadPool.
+     * Test of getDefaultPluginEnvPool method, of class
+     * ConstellationGlobalThreadPool.
+     *
+     * Same purpose as the tests above
      */
     @Test
     public void testGetDefaultPluginEnvPool() {
