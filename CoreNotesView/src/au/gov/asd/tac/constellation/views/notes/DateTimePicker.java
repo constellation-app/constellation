@@ -27,6 +27,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.StringConverter;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * A DateTime Selector that is in JavaFX instead of Swing.
@@ -65,7 +66,7 @@ public class DateTimePicker {
 
             @Override
             public LocalDate fromString(final String string) {
-                return !string.isBlank() ? LocalDate.parse(string, dateFormatter) : null;
+                return StringUtils.isNotBlank(string) ? LocalDate.parse(string, dateFormatter) : null;
             }
 
         });
