@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
-import au.gov.asd.tac.constellation.utilities.icon.CharacterIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import javafx.scene.layout.BorderPane;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
@@ -32,6 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -50,6 +50,7 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -84,8 +85,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.errorreport.ErrorReportTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 475),
-    @ActionReference(path = "Shortcuts", name = "AS-R")
+    @ActionReference(path = "Menu/Help", position = 945)
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_ErrorReportAction",
@@ -105,20 +105,24 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     private List<ErrorReportEntry> hiddenErrors = new ArrayList<>();
     static VBox sessionErrorsBox = new VBox();
     private MenuButton popupControl;
+    
     public enum SeverityCode {
         SEVERE("SEVERE"),
         WARNING("WARNING"),
         INFO("INFO"),
         FINE("FINE");
         private final String code;
+        
         SeverityCode(final String severityCode){
             code = severityCode;
         }
+        
         public String getCode(){
             return code;
         }
+        
         public static SeverityCode getSeverityCodeEntry(final String severityCode){
-            for (SeverityCode sevCode : SeverityCode.values()) {
+            for (final SeverityCode sevCode : SeverityCode.values()) {
                 if (severityCode.equals(sevCode.getCode())) {
                     return sevCode;
                 }
@@ -126,6 +130,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             return null;
         }
     }
+    
     private final CheckBox severePopCheckBox = new CheckBox("Allow " + SeverityCode.SEVERE.getCode() + " Popups");
     private final CheckBox severeRepCheckBox = new CheckBox("Display " + SeverityCode.SEVERE.getCode() + " Reports");
     private final CheckBox warningPopCheckBox = new CheckBox("Allow " + SeverityCode.WARNING.getCode() + " Popups");
@@ -158,6 +163,8 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
     private AtomicBoolean updateInProgress = new AtomicBoolean(false);
 
+    private Image alertIcon = null;
+    private Image defaultIcon = null;
     private Timer refreshTimer = null;
     private Timer alertTimer = null;
     private Date latestRetrievalDate = null;
@@ -191,29 +198,32 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                                 gracePeriodRefresh = true;
                             }
                         }
-                        if (errorReportRunning && updateInProgress != null && !updateInProgress.get()) {
-                            if (gracePeriodRefresh || latestRetrievalDate == null || latestRetrievalDate.before(ErrorReportSessionData.lastUpdate) || latestRetrievalDate.before(filterUpdateDate) || ErrorReportSessionData.screenUpdateRequested) {
-                                previousRetrievalDate = latestRetrievalDate == null ? null : new Date(latestRetrievalDate.getTime());
-                                latestRetrievalDate = new Date();
-                                boolean flashRequired = true;
-                                if (ErrorReportDialogManager.getInstance().getLatestPopupDismissDate() != null && ErrorReportDialogManager.getInstance().getLatestPopupDismissDate().after(ErrorReportSessionData.lastUpdate)) {
+                        if (errorReportRunning && updateInProgress != null && !updateInProgress.get()
+                                && (gracePeriodRefresh || latestRetrievalDate == null
+                                    || latestRetrievalDate.before(ErrorReportSessionData.lastUpdate)
+                                    || latestRetrievalDate.before(filterUpdateDate) 
+                                    || ErrorReportSessionData.screenUpdateRequested)) {
+                            
+                            previousRetrievalDate = latestRetrievalDate == null ? null : new Date(latestRetrievalDate.getTime());
+                            latestRetrievalDate = new Date();
+                            boolean flashRequired = true;
+                            if (ErrorReportDialogManager.getInstance().getLatestPopupDismissDate() != null && ErrorReportDialogManager.getInstance().getLatestPopupDismissDate().after(ErrorReportSessionData.lastUpdate)) {
+                                flashRequired = false;
+                            }
+                            updateFilterData();
+                            ErrorReportDialogManager.getInstance().updatePopupSettings(getPopupControlValue(), popupFilters);
+                            Date topEntryPrevDate = null;
+                            if (!sessionErrors.isEmpty()) {
+                                topEntryPrevDate = sessionErrors.get(0).getLastDate();
+                            }
+                            updateSessionErrorsBox(-1);
+                            ErrorReportSessionData.screenUpdateRequested = false;
+                            if (!sessionErrors.isEmpty()) {
+                                if (!gracePeriodRefresh && topEntryPrevDate != null && !sessionErrors.get(0).getLastDate().after(topEntryPrevDate)) {
                                     flashRequired = false;
                                 }
-                                updateFilterData();
-                                ErrorReportDialogManager.getInstance().updatePopupSettings(getPopupControlValue(), popupFilters);
-                                Date topEntryPrevDate = null;
-                                if (!sessionErrors.isEmpty()) {
-                                    topEntryPrevDate = sessionErrors.get(0).getLastDate();
-                                }
-                                updateSessionErrorsBox(-1);
-                                ErrorReportSessionData.screenUpdateRequested = false;
-                                if (!sessionErrors.isEmpty()) {
-                                    if (!gracePeriodRefresh && topEntryPrevDate != null && !sessionErrors.get(0).getLastDate().after(topEntryPrevDate)) {
-                                        flashRequired = false;
-                                    }
-                                }
-                                flashErrorIcon(flashRequired);
                             }
+                            flashErrorIcon(flashRequired);                            
                         }
                     }
                 });
@@ -380,31 +390,42 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         clearButton.setTooltip(new Tooltip("Clear all current error reports"));
         clearButton.setOnAction((final ActionEvent event) -> {
             // remove all matching entries in the data class
-            sessionErrors.forEach(entry -> {
+            for (ErrorReportEntry entry : sessionErrors) {
                 ErrorReportSessionData.getInstance().removeEntry(entry.getEntryId());
-            });
+            }
             sessionErrors.clear();
             updateSessionErrorsBox(-1);
         });
 
-        final ImageView expandButtonImage = new ImageView(CharacterIconProvider.CHAR_002B.buildImage(15, Color.WHITE));
-        final Button expandButton = new Button("");
-        expandButton.setGraphic(expandButtonImage);
-        expandButton.setTooltip(new Tooltip("Expand All Error Reports"));
-        expandButton.setOnAction((final ActionEvent event) -> {
+        final WritableImage maximizeImage = new WritableImage(27,18);
+        final WritableImage minimizeImage = new WritableImage(27,18);
+        try {
+            SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/maximize.png")), maximizeImage);
+            SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/minimize.png")), minimizeImage);
+        } catch (final IOException ioex) {
+            LOGGER.log(Level.SEVERE, "Error loading image file", ioex);
+        }                
+        final ImageView maximizeButtonImage = new ImageView(maximizeImage);
+        final ImageView minimizeButtonImage = new ImageView(minimizeImage);
+        
+        final Button maximizeButton = new Button("");
+        maximizeButton.setGraphic(maximizeButtonImage);
+        maximizeButton.setPadding(new Insets(1,2,1,2));
+        maximizeButton.setTooltip(new Tooltip("Maximize All Error Reports"));
+        maximizeButton.setOnAction((final ActionEvent event) -> {
             setReportsExpanded(true);
         });
 
-        final ImageView shrinkButtonImage = new ImageView(CharacterIconProvider.CHAR_002D.buildImage(15, Color.WHITE));
-        final Button shrinkButton = new Button("");
-        shrinkButton.setGraphic(shrinkButtonImage);
-        shrinkButton.setTooltip(new Tooltip("Shrink All Error Reports"));
-        shrinkButton.setOnAction((final ActionEvent event) -> {
+        final Button minimizeButton = new Button("");
+        minimizeButton.setGraphic(minimizeButtonImage);
+        minimizeButton.setPadding(new Insets(1,2,1,2));
+        minimizeButton.setTooltip(new Tooltip("Minimize All Error Reports"));
+        minimizeButton.setOnAction((final ActionEvent event) -> {
             setReportsExpanded(false);
         });
 
         final ToolBar controlToolbar = new ToolBar();
-        controlToolbar.getItems().addAll(settingsBox, filterControl, popupControl, shrinkButton, expandButton, clearButton);
+        controlToolbar.getItems().addAll(settingsBox, filterControl, popupControl, minimizeButton, maximizeButton, clearButton);
         final HBox toolboxContainer = new HBox();
         toolboxContainer.getChildren().add(controlToolbar);
         toolboxContainer.getChildren().add(new Label("  "));
@@ -646,6 +667,9 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 alertTimer.cancel();
                 updateSettings();
             }
+            if (defaultIcon != null) {
+                SwingUtilities.invokeLater(() -> { setIcon(defaultIcon); });
+            }
             alertTimer = null;
             return;
         }
@@ -660,8 +684,12 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                     @Override
                     public void run() {
                         try {
-                            final Image alertIcon = ImageIO.read(ErrorReportTopComponent.class.getResourceAsStream("resources/error-report-alert.png"));
-                            final Image defaultIcon = ImageIO.read(ErrorReportTopComponent.class.getResourceAsStream("resources/error-report-default.png"));
+                            if (alertIcon == null) {
+                                alertIcon = ImageIO.read(ErrorReportTopComponent.class.getResourceAsStream("resources/error-report-alert.png"));
+                            }
+                            if (defaultIcon == null) {
+                                defaultIcon = ImageIO.read(ErrorReportTopComponent.class.getResourceAsStream("resources/error-report-default.png"));
+                            }
                             final List<String> errorReportLevels = new ArrayList<>();
                             final List<String> errorPopupLevels = new ArrayList<>();
                             errorPopupLevels.addAll(ErrorReportDialogManager.getInstance().getActivePopupErrorLevels());
@@ -829,16 +857,25 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
 
         GridPane.setHgrow(label, Priority.ALWAYS);
 
-        final ImageView shieldImageHighlight = new ImageView(UserInterfaceIconProvider.LOCK.buildImage(15, Color.ORANGE.darker()));
-        final ImageView visibleImageHighlight = new ImageView(UserInterfaceIconProvider.UNLOCK.buildImage(15, Color.CYAN.darker()));
+        final WritableImage popupAllowImage = new WritableImage(16,16);
+        final WritableImage popupBlockImage = new WritableImage(16,16);
+        try {
+            SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/popupallow.png")), popupAllowImage);
+            SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/popupblock.png")), popupBlockImage);
+        } catch (final IOException ioex) {
+                LOGGER.log(Level.SEVERE, "Error loading image file", ioex);
+        }                
+        final ImageView allowPopups = new ImageView(popupAllowImage);
+        final ImageView blockPopups = new ImageView(popupBlockImage);
+                        
         final Button blockPopupsButton = new Button("");
         blockPopupsButton.setStyle("-fx-background-color: linear-gradient( " + severityColour + " 1% , " + backgroundColour + " 30%, " + backgroundColour + " 70%, " + severityColour + " 99% ); -fx-border-color: #404040");
-        blockPopupsButton.setGraphic(entry.isBlockRepeatedPopups() ? shieldImageHighlight : visibleImageHighlight);
+        blockPopupsButton.setGraphic(entry.isBlockRepeatedPopups() ? blockPopups : allowPopups);
         blockPopupsButton.setTooltip(entry.isBlockRepeatedPopups() ? new Tooltip("Popups Blocked.\nRight click to review exception") : new Tooltip("Popups Allowed.\nRight click to review exception"));
-        blockPopupsButton.setPadding(new Insets(3, 2, 1, 2));
+        blockPopupsButton.setPadding(new Insets(1, 1, 2, 1));
         blockPopupsButton.setOnAction((final ActionEvent event) -> {
             entry.setBlockRepeatedPopups(!entry.isBlockRepeatedPopups());
-            blockPopupsButton.setGraphic(entry.isBlockRepeatedPopups() ? shieldImageHighlight : visibleImageHighlight);
+            blockPopupsButton.setGraphic(entry.isBlockRepeatedPopups() ? blockPopups : allowPopups);
             blockPopupsButton.setTooltip(entry.isBlockRepeatedPopups() ? new Tooltip("Popups Blocked.\nRight click to review exception") : new Tooltip("Popups Allowed.\nRight click to review exception"));
         });
         final ContextMenu contextMenu = new ContextMenu();
