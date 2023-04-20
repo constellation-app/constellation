@@ -119,6 +119,12 @@ public class MarkdownTree {
                         ++level;
                     } else if (text.charAt(i) == ' ') {
                         int endIndex = text.indexOf("\n", i);
+
+                        if (endIndex == -1) {
+                            endIndex = text.length();
+                        }
+
+                        LOGGER.log(Level.SEVERE, "Index to substring from: " + i + 1 + " length of text: " + text.length());
                         MarkdownNode heading = new MarkdownNode(MarkdownNode.Type.HEADING, i + 1, endIndex, text.substring(i + 1, endIndex), level);
                         currentNode.getChildren().add(heading);
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(i + 1, endIndex));
@@ -129,12 +135,11 @@ public class MarkdownTree {
                         ++currentIndex;
                         break;
                     }
-
                 }
 
             } else if (text.charAt(closestSyntax) == '\n') {
                 currentIndex = closestSyntax;
-                //LOGGER.log(Level.SEVERE, "Found first enter at " + currentIndex);
+                LOGGER.log(Level.SEVERE, "Working on paragraph");
                 if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == '\n') {
                     ++currentIndex;
                     LOGGER.log(Level.SEVERE, "Found second enter at " + currentIndex);
