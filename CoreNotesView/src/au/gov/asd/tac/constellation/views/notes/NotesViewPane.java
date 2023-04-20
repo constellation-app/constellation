@@ -586,8 +586,6 @@ public class NotesViewPane extends BorderPane {
             // Keeps the scroll bar at the bottom?
             notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
         });
-
-        LOGGER.log(Level.SEVERE, "Height of latest note: " + notesListVBox.getChildren().get(notesListVBox.getChildren().size() - 1).getBoundsInLocal().getHeight());
     }
 
     /**
@@ -758,8 +756,6 @@ public class NotesViewPane extends BorderPane {
         final Region gap2 = new Region();
 
         gap.setPrefWidth(615);
-        //gap.setMinWidth(30);
-        //gap2.setPrefWidth(100);
         gap2.setPrefWidth(50);
 
         if (newNote.getNodeColour().isBlank()) {

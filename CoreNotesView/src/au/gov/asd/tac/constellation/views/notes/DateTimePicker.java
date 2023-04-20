@@ -64,7 +64,7 @@ public class DateTimePicker {
 
         datePickerGridPane.add(datePickerLabel, 0, 0);
         datePickerGridPane.add(datePicker, 1, 0);
-
+        datePicker.setMaxWidth(150);
         final GridPane timePickerGrid = new GridPane();
         final Label hourLabel = new Label("Hour");
         final Label minLabel = new Label("Minute");

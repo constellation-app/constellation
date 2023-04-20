@@ -24,7 +24,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import javafx.collections.FXCollections;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -33,6 +35,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
@@ -78,15 +81,15 @@ public class DateTimeRangePicker {
 
         dateTimeGridpane.add(fromDate.getPane(), 0, 0);
         dateTimeGridpane.add(toDate.getPane(), 1, 0);
-        dateTimeGridpane.setHgap(15);
-        dateTimeGridpane.setVgap(10);
+        dateTimeGridpane.setHgap(10);
+        dateTimeGridpane.setVgap(5);
 
         dateTimePane.getChildren().add(dateTimeGridpane);
 
         timeRangePane = new TitledPane("", dateTimePane);
         timeRangeAccordian.getPanes().add(timeRangePane);
-        timeRangeAccordian.setMaxWidth(500);
-        timeRangeAccordian.setMinWidth(500);
+        timeRangeAccordian.setMaxWidth(373);
+        timeRangeAccordian.setMinWidth(373);
         // Get all available time zone ids
         final ArrayList<String> timeZones = new ArrayList<>();
         final ArrayList<String> plusFromGMT = new ArrayList<>();
@@ -130,19 +133,29 @@ public class DateTimeRangePicker {
             fromDate.convertCurrentDateTime(timeZoneMap.get(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
             toDate.convertCurrentDateTime(timeZoneMap.get(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
         });
-
-        dateTimeGridpane.add(timeZoneChoiceBox, 0, 1);
+        timeZoneChoiceBox.setMaxWidth(180);
 
         final Button utcButton = new Button("UTC");
         final Button localButton = new Button("LOCAL");
+        utcButton.setMinWidth(90);
+        localButton.setMinWidth(90);
 
         final GridPane timeZoneButtons = new GridPane();
-        timeZoneButtons.add(utcButton, 0, 0);
-        timeZoneButtons.add(localButton, 1, 0);
-        timeZoneButtons.add(applyButton, 2, 0);
+
+        final HBox timeZoneHBox = new HBox(1, utcButton, localButton);
+
+        GridPane timeZoneGridPane = new GridPane();
+        timeZoneGridPane.add(timeZoneChoiceBox, 0, 0);
+        timeZoneGridPane.add(timeZoneHBox, 0, 1);
+
+        timeZoneButtons.add(timeZoneGridPane, 0, 0);
         timeZoneButtons.setHgap(20);
 
-        dateTimeGridpane.add(timeZoneButtons, 1, 1);
+
+        dateTimeGridpane.add(timeZoneButtons, 0, 1);
+        dateTimeGridpane.add(applyButton, 1, 1);
+        dateTimeGridpane.setHalignment(applyButton, HPos.CENTER);
+        applyButton.setMinWidth(100);
 
         clearButton.setStyle("-fx-background-color: #7FFFD4; ");
         clearButton.setTextFill(Color.BLACK);
@@ -181,7 +194,7 @@ public class DateTimeRangePicker {
         clearButton.setTextAlignment(TextAlignment.JUSTIFY);
         clearButton.setPadding(new Insets(0, 8, 0, 8));
         clearButton.setVisible(false);
-        topBarGridPane.setHgap(290);
+        topBarGridPane.setHgap(160);
         timeRangePane.setGraphic(topBarGridPane);
 
     }
