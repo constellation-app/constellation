@@ -781,7 +781,7 @@ public class NotesViewPane extends BorderPane {
         noteButtons.setAlignment(Pos.CENTER_LEFT);
         final Button showMoreButton = new Button(SHOW_MORE);
 
-        final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteButtons, noteInformation) : new VBox(DEFAULT_SPACING, noteInformation);
+        final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteButtons, noteInformation) : new VBox(DEFAULT_SPACING, dateTimeLabel, noteInformation);
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
         noteBody.setMaxHeight(noteHeight);
