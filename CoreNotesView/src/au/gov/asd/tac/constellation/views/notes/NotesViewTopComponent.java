@@ -92,7 +92,12 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     protected void handleNewGraph(final Graph graph) {
         if (needsUpdate() && graph != null) {
             notesViewPane.clearNotes();
+            notesViewPane.getCreateNewNoteButton().setDisable(false);
             notesViewController.readState(graph);
+        }
+
+        if (graph == null) {
+            notesViewPane.getCreateNewNoteButton().setDisable(true);
         }
     }
 
@@ -104,6 +109,9 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         if (activeGraph != null) {
             notesViewController.readState(activeGraph);
+            notesViewPane.getCreateNewNoteButton().setDisable(false);
+        } else {
+            notesViewPane.getCreateNewNoteButton().setDisable(true);
         }
     }
 

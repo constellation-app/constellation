@@ -136,7 +136,6 @@ public class NotesViewPane extends BorderPane {
     private ObservableList<String> tagsFiltersList;
     private final List<String> tagsSelectedFiltersList = new ArrayList<>();
 
-
     private final DateTimeRangePicker dateTimeRangePicker = new DateTimeRangePicker();
     private final Button createNewNoteButton = new Button();
     private boolean creatingFirstNote = true;
@@ -784,15 +783,20 @@ public class NotesViewPane extends BorderPane {
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteButtons, noteInformation) : new VBox(DEFAULT_SPACING, dateTimeLabel, noteInformation);
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
-        noteBody.setMaxHeight(noteHeight);
+        noteBody.setPrefHeight(noteHeight);
+
+        /*noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.doubleValue() > noteHeight && !noteInformation.getChildren().contains(showMoreButton)) {
+                noteInformation.getChildren().add(showMoreButton);
+            }
+            LOGGER.log(Level.SEVERE, "Note height: " + newVal.doubleValue());
+        });*/
+
         this.setMinWidth(500);
         if (newNote.isUserCreated()) {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
-
-            noteInformation.getChildren().add(showMoreButton);
-
+            //noteInformation.getChildren().add(showMoreButton);
             notesListVBox.getChildren().add(noteBody);
-
         } else {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + AUTO_COLOR + BG_RADIUS_STYLE);
             notesListVBox.getChildren().add(noteBody);
@@ -809,7 +813,6 @@ public class NotesViewPane extends BorderPane {
                 showMoreButton.setText(SHOW_MORE);
             }
         });
-
 
         // Change colour of note to whatever user sleects
         colourPicker.setOnAction(event -> {
@@ -1185,4 +1188,9 @@ public class NotesViewPane extends BorderPane {
     protected List<String> getTagsFilters() {
         return Collections.unmodifiableList(tagsSelectedFiltersList);
     }
+
+    public Button getCreateNewNoteButton() {
+        return createNewNoteButton;
+    }
+
 }
