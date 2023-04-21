@@ -742,10 +742,6 @@ public class NotesViewPane extends BorderPane {
         cancelButton.setMinWidth(92);
         cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
-        final Button heightButton = new Button("Get Height");
-        heightButton.setMinWidth(92);
-        heightButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-
         final HBox editScreenButtons = new HBox(DEFAULT_SPACING, saveTextButton, cancelButton);
         editScreenButtons.setAlignment(Pos.CENTER);
 
