@@ -73,6 +73,8 @@ public class DateTimeRangePicker {
 
     private boolean active = false;
 
+    final GridPane topBarGridPane = new GridPane();
+
     public DateTimeRangePicker() {
 
         // Set up the date time selection pane with to range selection components
@@ -90,6 +92,11 @@ public class DateTimeRangePicker {
         timeRangeAccordian.getPanes().add(timeRangePane);
         timeRangeAccordian.setMaxWidth(373);
         timeRangeAccordian.setMinWidth(373);
+
+        timeRangePane.setOnMouseClicked(event -> {
+            showApplyButton();
+        });
+
         // Get all available time zone ids
         final ArrayList<String> timeZones = new ArrayList<>();
         final ArrayList<String> plusFromGMT = new ArrayList<>();
@@ -153,9 +160,9 @@ public class DateTimeRangePicker {
 
 
         dateTimeGridpane.add(timeZoneButtons, 0, 1);
-        dateTimeGridpane.add(applyButton, 1, 1);
-        dateTimeGridpane.setHalignment(applyButton, HPos.CENTER);
-        applyButton.setMinWidth(100);
+        //dateTimeGridpane.add(applyButton, 1, 1);
+        //dateTimeGridpane.setHalignment(applyButton, HPos.CENTER);
+        //applyButton.setMinWidth(100);
 
         clearButton.setStyle("-fx-background-color: #7FFFD4; ");
         clearButton.setTextFill(Color.BLACK);
@@ -186,15 +193,21 @@ public class DateTimeRangePicker {
         titleText.setTextFill(Color.WHITE);
         titleText.setStyle("-fx-text-fill:WHITE;");
         titleText.setMinWidth(115);
-        final GridPane topBarGridPane = new GridPane();
         topBarGridPane.add(titleText, 0, 0);
-        topBarGridPane.add(clearButton, 1, 0);
+        //topBarGridPane.add(clearButton, 1, 0);
         clearButton.setMinHeight(17);
         clearButton.setMaxHeight(17);
         clearButton.setTextAlignment(TextAlignment.JUSTIFY);
         clearButton.setPadding(new Insets(0, 8, 0, 8));
-        clearButton.setVisible(false);
+
+        applyButton.setMinHeight(17);
+        applyButton.setMaxHeight(17);
+        applyButton.setTextAlignment(TextAlignment.JUSTIFY);
+        applyButton.setPadding(new Insets(0, 8, 0, 8));
+
+        //clearButton.setVisible(false);
         topBarGridPane.setHgap(160);
+
         timeRangePane.setGraphic(topBarGridPane);
 
     }
@@ -205,6 +218,22 @@ public class DateTimeRangePicker {
 
     public Button getApplyButton() {
         return applyButton;
+    }
+
+    public void showApplyButton() {
+        //topBarGridPane.getChildren().contains();
+
+        if (timeRangePane.isExpanded() && !active) {
+            topBarGridPane.getChildren().remove(clearButton);
+            topBarGridPane.add(applyButton, 1, 0);
+        } else {
+            topBarGridPane.getChildren().remove(applyButton);
+        }
+    }
+
+    public void showClearButton() {
+        topBarGridPane.getChildren().remove(applyButton);
+        topBarGridPane.add(clearButton, 1, 0);
     }
 
     /**

@@ -7,8 +7,12 @@
     -fx-background-color: white;
 }
 
-.color-picker{
+.color-picker * {
     -fx-background-color: black;
+}
+
+.color-picker.split-button {
+    -fx-background-color: #ffffff;
 }
 
 .color-picker .color-picker-label .text{

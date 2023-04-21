@@ -215,6 +215,7 @@ public class NotesViewPane extends BorderPane {
         // Set whether or not a time filter should even be applied
         dateTimeRangePicker.getClearButton().setOnAction(event -> {
             dateTimeRangePicker.setActive(false);
+            dateTimeRangePicker.showApplyButton();
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 updateNotesUI();
@@ -226,6 +227,7 @@ public class NotesViewPane extends BorderPane {
         // Hide/show notes based on their entry time
         dateTimeRangePicker.getApplyButton().setOnAction(event -> {
             dateTimeRangePicker.setActive(true);
+            dateTimeRangePicker.showClearButton();
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 updateNotesUI();
@@ -773,7 +775,7 @@ public class NotesViewPane extends BorderPane {
             newNote.setEditMode(true);
         } else {
             newNote.setEditMode(false);
-            noteButtons = new HBox(DEFAULT_SPACING, dateTimeLabel, gap, editTextButton, deleteButton, heightButton);
+            noteButtons = new HBox(DEFAULT_SPACING, dateTimeLabel, gap, editTextButton, deleteButton);
 
         }
         noteButtons.setAlignment(Pos.CENTER_LEFT);
@@ -909,10 +911,6 @@ public class NotesViewPane extends BorderPane {
 
             noteBody.setOnContextMenuRequested(event -> contextMenu.show(this, event.getScreenX(), event.getScreenY()));
         }
-
-        heightButton.setOnAction(event -> {
-            LOGGER.log(Level.SEVERE, "Note height: " + noteBody.getHeight());
-        });
 
         deleteButton.setOnAction(event -> {
             final Alert deleteAlert = new Alert(Alert.AlertType.CONFIRMATION);
