@@ -21,8 +21,15 @@ import java.time.ZonedDateTime;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import org.fusesource.jansi.Ansi;
 
 /**
  * A DateTime Selector that is in JavaFX instead of Swing.
@@ -92,6 +99,8 @@ public class DateTimePicker {
 
         mainGridPane.add(datePickerGridPane, 0, 0);
         mainGridPane.add(timePickerGrid, 0, 1);
+
+        dateTimePane.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(3.0), BorderWidths.DEFAULT)));
     }
 
 

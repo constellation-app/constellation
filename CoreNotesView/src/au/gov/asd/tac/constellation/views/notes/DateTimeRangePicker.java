@@ -83,15 +83,15 @@ public class DateTimeRangePicker {
 
         dateTimeGridpane.add(fromDate.getPane(), 0, 0);
         dateTimeGridpane.add(toDate.getPane(), 1, 0);
-        dateTimeGridpane.setHgap(10);
+        dateTimeGridpane.setHgap(5);
         dateTimeGridpane.setVgap(5);
 
         dateTimePane.getChildren().add(dateTimeGridpane);
 
         timeRangePane = new TitledPane("", dateTimePane);
         timeRangeAccordian.getPanes().add(timeRangePane);
-        timeRangeAccordian.setMaxWidth(373);
-        timeRangeAccordian.setMinWidth(373);
+        timeRangeAccordian.setMaxWidth(375);
+        timeRangeAccordian.setMinWidth(375);
 
         timeRangePane.setOnMouseClicked(event -> {
             showApplyButton();
@@ -147,22 +147,19 @@ public class DateTimeRangePicker {
         utcButton.setMinWidth(90);
         localButton.setMinWidth(90);
 
-        final GridPane timeZoneButtons = new GridPane();
+        final HBox timeZoneButtons;
 
         final HBox timeZoneHBox = new HBox(1, utcButton, localButton);
 
-        GridPane timeZoneGridPane = new GridPane();
-        timeZoneGridPane.add(timeZoneChoiceBox, 0, 0);
-        timeZoneGridPane.add(timeZoneHBox, 0, 1);
+        //GridPane timeZoneGridPane = new GridPane();
+        //timeZoneGridPane.add(timeZoneChoiceBox, 0, 0);
+        //timeZoneGridPane.add(timeZoneHBox, 0, 1);
 
-        timeZoneButtons.add(timeZoneGridPane, 0, 0);
-        timeZoneButtons.setHgap(20);
+        //timeZoneButtons = new HBox(20, timeZoneGridPane, timeZoneHBox);
+        //timeZoneButtons.setHgap(20);
 
-
-        dateTimeGridpane.add(timeZoneButtons, 0, 1);
-        //dateTimeGridpane.add(applyButton, 1, 1);
-        //dateTimeGridpane.setHalignment(applyButton, HPos.CENTER);
-        //applyButton.setMinWidth(100);
+        dateTimeGridpane.add(timeZoneChoiceBox, 0, 1);
+        dateTimeGridpane.add(timeZoneHBox, 1, 1);
 
         clearButton.setStyle("-fx-background-color: #7FFFD4; ");
         clearButton.setTextFill(Color.BLACK);
@@ -194,7 +191,6 @@ public class DateTimeRangePicker {
         titleText.setStyle("-fx-text-fill:WHITE;");
         titleText.setMinWidth(115);
         topBarGridPane.add(titleText, 0, 0);
-        //topBarGridPane.add(clearButton, 1, 0);
         clearButton.setMinHeight(17);
         clearButton.setMaxHeight(17);
         clearButton.setTextAlignment(TextAlignment.JUSTIFY);
@@ -205,8 +201,7 @@ public class DateTimeRangePicker {
         applyButton.setTextAlignment(TextAlignment.JUSTIFY);
         applyButton.setPadding(new Insets(0, 8, 0, 8));
 
-        //clearButton.setVisible(false);
-        topBarGridPane.setHgap(160);
+        topBarGridPane.setHgap(175);
 
         timeRangePane.setGraphic(topBarGridPane);
 
@@ -225,7 +220,9 @@ public class DateTimeRangePicker {
 
         if (timeRangePane.isExpanded() && !active) {
             topBarGridPane.getChildren().remove(clearButton);
-            topBarGridPane.add(applyButton, 1, 0);
+            if (!topBarGridPane.getChildren().contains(applyButton)) {
+                topBarGridPane.add(applyButton, 1, 0);
+            }
         } else {
             topBarGridPane.getChildren().remove(applyButton);
         }
