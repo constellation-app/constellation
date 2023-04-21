@@ -88,10 +88,11 @@ public class DateTimeRangePicker {
 
         dateTimePane.getChildren().add(dateTimeGridpane);
 
+        dateTimePane.setMaxHeight(95);
         timeRangePane = new TitledPane("", dateTimePane);
         timeRangeAccordian.getPanes().add(timeRangePane);
-        timeRangeAccordian.setMaxWidth(375);
-        timeRangeAccordian.setMinWidth(375);
+        timeRangeAccordian.setMaxWidth(377);
+        timeRangeAccordian.setMinWidth(377);
 
         timeRangePane.setOnMouseClicked(event -> {
             showApplyButton();
@@ -140,23 +141,14 @@ public class DateTimeRangePicker {
             fromDate.convertCurrentDateTime(timeZoneMap.get(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
             toDate.convertCurrentDateTime(timeZoneMap.get(timeZoneChoiceBox.getSelectionModel().getSelectedItem()));
         });
-        timeZoneChoiceBox.setMaxWidth(180);
+        timeZoneChoiceBox.setMaxWidth(187);
 
         final Button utcButton = new Button("UTC");
         final Button localButton = new Button("LOCAL");
         utcButton.setMinWidth(90);
         localButton.setMinWidth(90);
 
-        final HBox timeZoneButtons;
-
         final HBox timeZoneHBox = new HBox(1, utcButton, localButton);
-
-        //GridPane timeZoneGridPane = new GridPane();
-        //timeZoneGridPane.add(timeZoneChoiceBox, 0, 0);
-        //timeZoneGridPane.add(timeZoneHBox, 0, 1);
-
-        //timeZoneButtons = new HBox(20, timeZoneGridPane, timeZoneHBox);
-        //timeZoneButtons.setHgap(20);
 
         dateTimeGridpane.add(timeZoneChoiceBox, 0, 1);
         dateTimeGridpane.add(timeZoneHBox, 1, 1);

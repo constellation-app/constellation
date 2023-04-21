@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.notes;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import javafx.geometry.Insets;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
@@ -99,6 +100,7 @@ public class DateTimePicker {
 
         mainGridPane.add(datePickerGridPane, 0, 0);
         mainGridPane.add(timePickerGrid, 0, 1);
+        mainGridPane.setPadding(new Insets(1, 1, 1, 1));
 
         dateTimePane.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(3.0), BorderWidths.DEFAULT)));
     }
