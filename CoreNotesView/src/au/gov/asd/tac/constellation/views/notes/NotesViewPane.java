@@ -105,7 +105,7 @@ public class NotesViewPane extends BorderPane {
     private boolean isSelectedFiltersUpdating = false;
     private boolean isAutoSelectedFiltersUpdating = false;
 
-    private final VBox addNoteVBox;
+    //private final VBox addNoteVBox;
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
     private static final double noteHeight = 157.0;
@@ -248,6 +248,7 @@ public class NotesViewPane extends BorderPane {
         topBar.getChildren().add(autoFilterCheckComboBox);
         topBar.getChildren().add(dateTimeRangePicker.getTimeRangeAccordian());
         topBar.getChildren().add(helpButton);
+        topBar.getChildren().add(createNewNoteButton);
 
         // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(userChosenColour);
@@ -342,12 +343,12 @@ public class NotesViewPane extends BorderPane {
 
 
         // HBox to store the control items at the bottom of the view.
-        final HBox noteHBox = new HBox(createNewNoteButton);
+        //final HBox noteHBox = new HBox(createNewNoteButton);
 
         // VBox to store control items used to add new note.
-        addNoteVBox = new VBox(DEFAULT_SPACING, noteHBox);
-        addNoteVBox.setAlignment(Pos.CENTER_RIGHT);
-        addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
+        //addNoteVBox = new VBox(DEFAULT_SPACING, noteHBox);
+        //addNoteVBox.setAlignment(Pos.CENTER_RIGHT);
+        //addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
 
         // VBox in a ScrollPane for holding expanding list of user and plugin generated notes.
         notesListVBox = new VBox(DEFAULT_SPACING);
@@ -359,7 +360,7 @@ public class NotesViewPane extends BorderPane {
 
         setTop(topBar);
         setCenter(notesListScrollPane);
-        setBottom(addNoteVBox);
+        //setBottom(addNoteVBox);
     }
 
     /**
