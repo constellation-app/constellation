@@ -108,13 +108,13 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         LOGGER.log(Level.SEVERE, "Handling new graph");
     }
 
-    @Override
+    /*@Override
     protected void handleGraphChange(final GraphChangeEvent event) {
         if (GraphManager.getDefault().getActiveGraph() == null) {
             notesViewPane.getCreateNewNoteButton().setDisable(true);
         }
         LOGGER.log(Level.SEVERE, "Handling graph changed");
-    }
+    }*/
 
     @Override
     protected void handleGraphClosed(final Graph graph) {
