@@ -170,7 +170,7 @@ public class NewNotePane {
 
             final Scene s = new Scene(dialogPane);
             s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-            //s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
+            s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
 
             stage.setScene(s);
 
