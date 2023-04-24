@@ -242,12 +242,17 @@ public class NotesViewPane extends BorderPane {
         // Get rid of the ugly button look so the icon stands alone.
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
+        final Region gap = new Region();
+        gap.setMinWidth(300);
+
         // FlowPane to store control items used to filter notes.
         final FlowPane topBar = new FlowPane();
         topBar.getChildren().add(filterCheckComboBox);
         topBar.getChildren().add(autoFilterCheckComboBox);
         topBar.getChildren().add(dateTimeRangePicker.getTimeRangeAccordian());
         topBar.getChildren().add(helpButton);
+        topBar.getChildren().add(gap);
+
         topBar.getChildren().add(createNewNoteButton);
 
         // Create the actual node that allows user to add new notes
@@ -786,12 +791,12 @@ public class NotesViewPane extends BorderPane {
         noteBody.setMinWidth(500);
         noteBody.setPrefHeight(noteHeight);
 
-        /*noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
+        noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal.doubleValue() > noteHeight && !noteInformation.getChildren().contains(showMoreButton)) {
                 noteInformation.getChildren().add(showMoreButton);
             }
             LOGGER.log(Level.SEVERE, "Note height: " + newVal.doubleValue());
-        });*/
+        });
 
         this.setMinWidth(500);
         if (newNote.isUserCreated()) {

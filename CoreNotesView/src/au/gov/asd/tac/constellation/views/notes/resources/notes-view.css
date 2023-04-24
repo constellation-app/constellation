@@ -1,3 +1,6 @@
+
+
+
 .check-box .box {
     -fx-background-color: black;
     -fx-border-color:white;
@@ -7,20 +10,137 @@
     -fx-background-color: white;
 }
 
-.color-picker * {
+.color-picker {
     -fx-background-color: black;
 }
 
-.color-picker.split-button {
-    -fx-background-color: #ffffff;
+.color-palette
+{
+    -fx-background-color: #000000;
 }
+
+.color-picker.split-button > .arrow-button {
+    -fx-background-color: #ffffff;
+    -fx-padding: 0 0 0 0;
+}
+
+.custom-color-dialog {
+    -fx-background-color: #222222;
+}
+
+.color-picker > .label {
+    -fx-text-fill: #ffffff;
+}
+
+
+.custom-color-dialog .controls-pane #buttons-hbox * {
+    -fx-background-color: #000000;
+}
+
+.custom-color-dialog .controls-pane .button .text{
+    -fx-text-fill: #ffffff;
+}
+
 
 .color-picker .color-picker-label .text{
     -fx-fill: #ffffff;
 }
 
-.context-menu{
-    -fx-background-color: black;
+.custom-color-dialog > .color-rect-pane > .color-bar {
+    -fx-min-width: 1.666667em;
+    -fx-min-height: 16.666667em;
+    -fx-max-width: 1.666667em;
+    -fx-border-color: derive(#ececec, -20%);
+}
+
+.custom-color-dialog > .color-rect-pane > .color-bar > #color-bar-indicator {
+    -fx-border-radius: 0.333333em;
+    -fx-border-color: #000000;
+    -fx-effect: dropshadow(three-pass-box, #ffffff, 2, 0.0, 0, 1);
+    -fx-pref-width: 2em;
+    -fx-pref-height: 0.833333em;
+    -fx-translate-x: -0.1666667em;
+    -fx-translate-y: -0.4166667em;
+}
+
+.custom-color-dialog  {
+    -fx-background-color: derive(#ececec,26.4%);
+    -fx-padding: 1.25em;
+    -fx-spacing: 1.25em;
+}
+.custom-color-dialog .controls-pane .current-new-color-grid #current-new-color-border {
+    -fx-border-color: derive(#ececec, -20%);
+    -fx-border-width: 2px;
+}
+
+.custom-color-dialog .controls-pane .current-new-color-grid .color-rect {
+    -fx-min-width: 10.666667em;
+    -fx-min-height: 1.75em;
+    -fx-pref-width: 10.666667em;
+    -fx-pref-height: 1.75em;
+}
+
+.custom-color-dialog .transparent-pattern {
+    -fx-background-image: url("pattern-transparent.png");
+    -fx-background-repeat: repeat;
+    -fx-background-size: auto;
+}
+
+.custom-color-dialog .controls-pane #spacer1 {
+    -fx-min-height: 0.1666667em;
+    -fx-max-height: 0.1666667em;
+    -fx-pref-height: 0.1666667em;
+}
+
+.custom-color-dialog .controls-pane #spacer2 {
+    -fx-min-height: 1em;
+    -fx-max-height: 1em;
+    -fx-pref-height: 1em;
+}
+
+.custom-color-dialog .controls-pane #settings-pane {
+    -fx-hgap: 0.4166667em;
+    -fx-vgap: 0.3333333em;
+}
+
+.custom-color-dialog .controls-pane #settings-pane .settings-label {
+    -fx-min-width: 5.75em;
+}
+
+.custom-color-dialog .controls-pane #settings-pane .settings-unit {
+    -fx-max-width: 1.5em;
+    -fx-min-width: 1.5em;
+    -fx-pref-width: 1.5em;
+}
+
+.custom-color-dialog .controls-pane #settings-pane .slider {
+    -fx-pref-width: 8.25em;
+}
+
+.custom-color-dialog .controls-pane .color-input-field {
+    -fx-pref-column-count: 3;
+    -fx-max-width: 3.25em;
+    -fx-min-width: 3.25em;
+    -fx-pref-width: 3.25em;
+}
+
+.custom-color-dialog .controls-pane .web-field {
+    -fx-pref-column-count: 6;
+    -fx-pref-width: 8.25em;
+}
+
+.custom-color-dialog .controls-pane #spacer-side {
+    -fx-min-width: 0.5em;
+    -fx-pref-width: 0.5em;
+}
+
+.custom-color-dialog .controls-pane #spacer-bottom {
+    -fx-pref-height: 0.833333em;
+    -fx-min-height: 0.833333em;
 }
 
 
+
+.custom-color-dialog .controls-pane .current-new-color-grid .label {
+    -fx-padding: 0 0 0 0.4166667em;
+}

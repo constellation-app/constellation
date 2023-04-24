@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -168,7 +169,8 @@ public class NewNotePane {
             stage.setResizable(true);
 
             final Scene s = new Scene(dialogPane);
-            s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
+            s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+            //s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
 
             stage.setScene(s);
 
