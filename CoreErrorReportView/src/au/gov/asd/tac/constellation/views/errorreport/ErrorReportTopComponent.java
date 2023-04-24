@@ -390,15 +390,15 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         clearButton.setTooltip(new Tooltip("Clear all current error reports"));
         clearButton.setOnAction((final ActionEvent event) -> {
             // remove all matching entries in the data class
-            for (ErrorReportEntry entry : sessionErrors) {
+            for (final ErrorReportEntry entry : sessionErrors) {
                 ErrorReportSessionData.getInstance().removeEntry(entry.getEntryId());
             }
             sessionErrors.clear();
             updateSessionErrorsBox(-1);
         });
 
-        final WritableImage maximizeImage = new WritableImage(27,18);
-        final WritableImage minimizeImage = new WritableImage(27,18);
+        final WritableImage maximizeImage = new WritableImage(24,18);
+        final WritableImage minimizeImage = new WritableImage(24,18);
         try {
             SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/maximize.png")), maximizeImage);
             SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/minimize.png")), minimizeImage);
@@ -863,7 +863,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
             SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/popupallow.png")), popupAllowImage);
             SwingFXUtils.toFXImage(ImageIO.read(ErrorReportTopComponent.class.getResource("resources/popupblock.png")), popupBlockImage);
         } catch (final IOException ioex) {
-                LOGGER.log(Level.SEVERE, "Error loading image file", ioex);
+            LOGGER.log(Level.SEVERE, "Error loading image file", ioex);
         }                
         final ImageView allowPopups = new ImageView(popupAllowImage);
         final ImageView blockPopups = new ImageView(popupBlockImage);
