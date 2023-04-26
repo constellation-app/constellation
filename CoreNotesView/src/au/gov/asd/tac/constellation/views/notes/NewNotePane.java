@@ -87,9 +87,6 @@ public class NewNotePane {
 
         // TextField to enter new note title.
         titleField.setPromptText("Type a title...");
-        titleField.setStyle(fontStyle + "-fx-prompt-text-f\n" +
- "        titleField.setStyle(ill: " + PROMPT_COLOR + ";");
-        titleField.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
         titleField.setStyle("-fx-text-fill: #FFFFFF;");
         titleField.setMinWidth(WIDTH - 5);
 
@@ -177,7 +174,7 @@ public class NewNotePane {
             isFirstTime = false;
         }
 
-        List<Screen> screens = Screen.getScreensForRectangle(window.getX(), window.getY(), window.widthProperty().get(), window.heightProperty().get());
+        final List<Screen> screens = Screen.getScreensForRectangle(window.getX(), window.getY(), window.widthProperty().get(), window.heightProperty().get());
 
         stage.setX(screens.get(0).getVisualBounds().getMinX());
         stage.setY(screens.get(0).getVisualBounds().getMinY());

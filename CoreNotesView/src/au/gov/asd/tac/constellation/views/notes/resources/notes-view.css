@@ -10,3 +10,7 @@
     -fx-padding: 0.583333em;  /* 7 */
     -fx-effect: dropshadow(two-pass-box , rgba(0, 0, 0, 0.1), 5, 0.0 , 0, 2);
 }
+
+.text-field {
+    -fx-prompt-text-fill: #909090;
+}

@@ -801,7 +801,6 @@ public class NotesViewPane extends BorderPane {
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteTop, noteInformation, noteButtons) : new VBox(DEFAULT_SPACING, dateTimeLabel, noteInformation);
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
-        //noteBody.setPrefHeight(noteHeight);
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
 
