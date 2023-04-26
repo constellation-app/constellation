@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.visual;
 
 import au.gov.asd.tac.constellation.utilities.memory.MemoryManager;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import java.awt.Component;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -69,7 +70,7 @@ public final class VisualManager {
     private final VisualAccess access;
     private final VisualProcessor processor;
     private final PriorityBlockingQueue<VisualOperation> operationQueue = new PriorityBlockingQueue<>();
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
     private CompletableFuture<Void> processingFuture;
     private boolean isProcessing = false;
     private boolean rendererIdle = true;
