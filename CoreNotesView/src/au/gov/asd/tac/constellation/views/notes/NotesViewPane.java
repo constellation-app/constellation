@@ -786,7 +786,7 @@ public class NotesViewPane extends BorderPane {
             newNote.setEditMode(true);
         } else {
             newNote.setEditMode(false);
-            noteButtons = new HBox(DEFAULT_SPACING, showMoreButton, gap, editTextButton, deleteButton);
+            noteButtons = new HBox(DEFAULT_SPACING, gap, editTextButton, deleteButton);
         }
 
         HBox.setHgrow(gap, Priority.ALWAYS);
@@ -801,10 +801,19 @@ public class NotesViewPane extends BorderPane {
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteTop, noteInformation, noteButtons) : new VBox(DEFAULT_SPACING, dateTimeLabel, noteInformation);
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
+        noteBody.setMaxHeight(Double.MAX_VALUE);
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
-
-            LOGGER.log(Level.SEVERE, "Note height: " + newVal.doubleValue());
+            LOGGER.log(Level.SEVERE, "Note height in listener: " + obs.getValue().doubleValue());
+            if (obs.getValue().doubleValue() > noteHeight) {
+                if (!newNote.getEditMode() && !noteButtons.getChildren().contains(showMoreButton)) {
+                    noteButtons.getChildren().clear();
+                    noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
+                    noteBody.setMaxHeight(noteHeight);
+                }
+            } else if (noteButtons.getChildren().contains(showMoreButton)) {
+                noteButtons.getChildren().remove(showMoreButton);
+            }
         });
 
         this.setMinWidth(500);
@@ -964,10 +973,6 @@ public class NotesViewPane extends BorderPane {
 
             noteInformation.getChildren().removeAll(titleLabel, contentLabel);
 
-            //if (noteInformation.getChildren().contains(showMoreButton)) {
-            //noteInformation.getChildren().remove(showMoreButton);
-            //}
-
             noteInformation.getChildren().addAll(titleText, contentTextArea);
             newNote.setEditMode(true);
 
@@ -983,8 +988,6 @@ public class NotesViewPane extends BorderPane {
             noteInformation.getChildren().removeAll(titleText, contentTextArea);
 
             noteInformation.getChildren().addAll(titleLabel, contentLabel);
-
-            //noteInformation.getChildren().add(showMoreButton);
 
             newNote.setEditMode(false);
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE
