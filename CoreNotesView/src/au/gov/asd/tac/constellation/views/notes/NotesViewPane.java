@@ -68,6 +68,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -246,14 +247,14 @@ public class NotesViewPane extends BorderPane {
         gap.setPrefWidth(300);
 
         // FlowPane to store control items used to filter notes.
-        final FlowPane topBar = new FlowPane();
-        topBar.getChildren().add(filterCheckComboBox);
-        topBar.getChildren().add(autoFilterCheckComboBox);
-        topBar.getChildren().add(dateTimeRangePicker.getTimeRangeAccordian());
-        topBar.getChildren().add(helpButton);
-        topBar.getChildren().add(gap);
-
-        topBar.getChildren().add(createNewNoteButton);
+        final GridPane topBar = new GridPane();
+        topBar.add(filterCheckComboBox, 0, 0);
+        topBar.add(autoFilterCheckComboBox, 1, 0);
+        topBar.add(helpButton, 2, 0);
+        topBar.add(createNewNoteButton, 3, 0);
+        topBar.add(dateTimeRangePicker.getTimeRangeAccordian(), 0, 1);
+        topBar.setHgap(5);
+        topBar.setVgap(5);
 
         // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(userChosenColour);
