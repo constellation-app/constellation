@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.views.errorreport.ErrorReportDialogManager;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportEntry;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportSessionData;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -51,7 +52,11 @@ public class ConstellationErrorManagerNGTest {
         simulateException(Level.WARNING);
         simulateException(Level.INFO);
         simulateException(Level.FINE);
-        delay(1000);
+
+        LOGGER.log(Level.INFO, "\n ------- start wait for data ... {0}", new Date());
+        boolean dataAvailable = waitForDataToBeAvailable(Level.SEVERE, 1);
+        assertTrue(dataAvailable);
+        LOGGER.log(Level.INFO, "\n ------- finished waiting for data ... {0}", new Date());
         
         // confirm the exceptions have been stored in the SessionData class
         confirmExceptionStored(Level.SEVERE, 1);
@@ -64,8 +69,11 @@ public class ConstellationErrorManagerNGTest {
         // NOTE: the following 2 calls NEED to be on the SAME LINE to generate identical stack traces
         simulateException(Level.SEVERE); simulateException(Level.SEVERE);
         
-        delay(1000);
-        
+        LOGGER.log(Level.INFO, "\n ------- 2.start wait for data ... {0}", new Date());
+        dataAvailable = waitForDataToBeAvailable(Level.SEVERE, 2);
+        assertTrue(dataAvailable);
+        LOGGER.log(Level.INFO, "\n ------- 2.finished waiting for data ... {0}", new Date());
+
         // confirm correct number of entries and occurrences
         confirmExceptionStored(Level.SEVERE, 2);
         confirmEntryOccurrences(Level.SEVERE, 2);
@@ -81,10 +89,24 @@ public class ConstellationErrorManagerNGTest {
     public void delay(final int milliseconds){
         // may need to wait for the error handler to do it's thing
         try {
-            Thread.sleep(milliseconds);
+            Thread.sleep(milliseconds); //NOSONAR
         } catch (final InterruptedException ex) {
             LOGGER.log(Level.INFO, "\n -------- sleep disturbed: {0}", ex.toString());
         }
+    }
+        
+    public boolean waitForDataToBeAvailable(final Level logLevel, final int expectedCount){
+        final List<String> filters = new ArrayList<>();
+        filters.add(logLevel.getName());
+        int counter = 0;
+        List<ErrorReportEntry> errorList = ErrorReportSessionData.getInstance().refreshDisplayedErrors(filters);
+        while(counter < 60 && errorList.size() < expectedCount){
+            errorList = ErrorReportSessionData.getInstance().refreshDisplayedErrors(filters);
+            delay(1000);
+            counter++;
+        }
+        // fails if it takes over 1 minute
+        return counter < 60;
     }
     
     public void confirmExceptionStored(final Level logLevel, final int expectedCount){
