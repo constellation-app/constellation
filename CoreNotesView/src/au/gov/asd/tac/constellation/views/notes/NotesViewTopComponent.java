@@ -148,7 +148,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected String createStyle() {
-        return null;
+        return "resources/TimeFilter.css";
     }
 
     /**

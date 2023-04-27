@@ -23,16 +23,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 
@@ -48,9 +53,10 @@ import javafx.scene.text.TextAlignment;
 public class DateTimeRangePicker {
 
     // Time range selection accordion
-    private final Accordion timeRangeAccordian = new Accordion();
-    private final TitledPane timeRangePane;
+    private final CustomMenuItem timeRangeCustomMenuItem;
     private final Label titleText;
+
+    private final Menu timeFilterMenu = new Menu();
 
     private static final String TITLE = "Select a time range...";
 
@@ -63,32 +69,22 @@ public class DateTimeRangePicker {
 
     private final Map<String, ZoneId> timeZoneMap = new HashMap<>();
 
+    private boolean menuShowing = false;
+
     private boolean active = false;
 
     final GridPane topBarGridPane = new GridPane();
+    private static final Logger LOGGER = Logger.getLogger(DateTimeRangePicker.class.getName());
+
 
     public DateTimeRangePicker() {
 
         // Set up the date time selection pane with to range selection components
-        final Pane dateTimePane = new Pane();
-        final GridPane dateTimeGridpane = new GridPane();
-
-        dateTimeGridpane.add(fromDate.getPane(), 0, 0);
-        dateTimeGridpane.add(toDate.getPane(), 1, 0);
-        dateTimeGridpane.setHgap(5);
-        dateTimeGridpane.setVgap(5);
-
-        dateTimePane.getChildren().add(dateTimeGridpane);
+        final VBox dateTimePane = new VBox(1, fromDate.getPane(), toDate.getPane());
 
         dateTimePane.setMaxHeight(95);
-        timeRangePane = new TitledPane("", dateTimePane);
-        timeRangeAccordian.getPanes().add(timeRangePane);
-        timeRangeAccordian.setMaxWidth(377);
-        timeRangeAccordian.setMinWidth(377);
-
-        timeRangePane.setOnMouseClicked(event -> {
-            showApplyButton();
-        });
+        timeRangeCustomMenuItem = new CustomMenuItem();
+        timeFilterMenu.getStyleClass().add("column-filter");
 
         // Get all available time zone ids
         final ArrayList<String> timeZones = new ArrayList<>();
@@ -135,15 +131,15 @@ public class DateTimeRangePicker {
         });
         timeZoneChoiceBox.setMaxWidth(187);
 
+        dateTimePane.getChildren().add(timeZoneChoiceBox);
+
         final Button utcButton = new Button("UTC");
         final Button localButton = new Button("LOCAL");
-        utcButton.setMinWidth(90);
-        localButton.setMinWidth(90);
+        utcButton.setMinWidth(93);
+        localButton.setMinWidth(93);
 
         final HBox timeZoneHBox = new HBox(1, utcButton, localButton);
-
-        dateTimeGridpane.add(timeZoneChoiceBox, 0, 1);
-        dateTimeGridpane.add(timeZoneHBox, 1, 1);
+        dateTimePane.getChildren().add(timeZoneHBox);
 
         clearButton.setStyle("-fx-background-color: #7FFFD4; ");
         clearButton.setTextFill(Color.BLACK);
@@ -185,10 +181,14 @@ public class DateTimeRangePicker {
         applyButton.setTextAlignment(TextAlignment.JUSTIFY);
         applyButton.setPadding(new Insets(0, 8, 0, 8));
 
-        topBarGridPane.setHgap(175);
+        topBarGridPane.setHgap(10);
 
-        timeRangePane.setGraphic(topBarGridPane);
+        timeRangeCustomMenuItem.setContent(dateTimePane);
+        timeRangeCustomMenuItem.setHideOnClick(false);
 
+        timeFilterMenu.setGraphic(topBarGridPane);
+
+        timeFilterMenu.getItems().add(timeRangeCustomMenuItem);
     }
 
     public Button getClearButton() {
@@ -200,9 +200,7 @@ public class DateTimeRangePicker {
     }
 
     public void showApplyButton() {
-        //topBarGridPane.getChildren().contains();
-
-        if (timeRangePane.isExpanded() && !active) {
+        if (menuShowing && !active) {
             topBarGridPane.getChildren().remove(clearButton);
             if (!topBarGridPane.getChildren().contains(applyButton)) {
                 topBarGridPane.add(applyButton, 1, 0);
@@ -248,22 +246,18 @@ public class DateTimeRangePicker {
     }
 
     /**
-     * Get collapsible of this control
-     *
-     * @return
-     */
-    public Accordion getTimeRangeAccordian() {
-        return timeRangeAccordian;
-    }
-
-    /**
      * Get the actual pane that hold the DateTimePicker objects
      *
      * @return
      */
-    public TitledPane getTimeRangePane() {
-        return timeRangePane;
+    public CustomMenuItem getTimeRangeCustomMenuItem() {
+        return timeRangeCustomMenuItem;
     }
+
+    public Menu getTimeFilterMenu() {
+        return timeFilterMenu;
+    }
+
 
     /**
      * Check if a passed in time is within the time range
@@ -280,5 +274,10 @@ public class DateTimeRangePicker {
 
         return entryTime.isEqual(fromTime) || entryTime.isEqual(toTime) || (entryTime.isAfter(fromTime) && entryTime.isBefore(toTime));
     }
+
+    public void setMenuShowing(boolean menuShowing) {
+        this.menuShowing = menuShowing;
+    }
+
 
 }

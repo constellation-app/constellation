@@ -1,0 +1,25 @@
+.menu-bar{
+    -fx-background-color: #222222;
+}
+
+.menu {
+    -fx-background-color: #313131;
+}
+
+
+.custom-menu-item {
+    -fx-background-color: #313131;
+
+}
+
+.custom-menu-item:focused {
+    -fx-background-color: #313131;
+}
+
+.spinner{
+    -fx-border-color: black;
+}
+
+.spinner:focused{
+    -fx-border-color: black;
+}

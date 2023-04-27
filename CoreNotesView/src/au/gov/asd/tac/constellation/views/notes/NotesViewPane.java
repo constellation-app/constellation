@@ -54,22 +54,31 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.NodeOrientation;
 import javafx.geometry.Pos;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
+import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -223,11 +232,12 @@ public class NotesViewPane extends BorderPane {
                 updateNotesUI();
                 controller.writeState(activeGraph);
             }
-
+            event.consume();
         });
 
         // Hide/show notes based on their entry time
         dateTimeRangePicker.getApplyButton().setOnAction(event -> {
+            LOGGER.log(Level.SEVERE, "Clicked apply");
             dateTimeRangePicker.setActive(true);
             dateTimeRangePicker.showClearButton();
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
@@ -235,7 +245,7 @@ public class NotesViewPane extends BorderPane {
                 updateNotesUI();
                 controller.writeState(activeGraph);
             }
-
+            event.consume();
         });
 
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
@@ -245,15 +255,32 @@ public class NotesViewPane extends BorderPane {
         // Get rid of the ugly button look so the icon stands alone.
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().add(dateTimeRangePicker.getTimeFilterMenu());
+        dateTimeRangePicker.getTimeFilterMenu().setOnShowing(event -> {
+            dateTimeRangePicker.setMenuShowing(true);
+            dateTimeRangePicker.showApplyButton();
+
+        });
+
+        dateTimeRangePicker.getTimeFilterMenu().setOnHiding(event -> {
+            LOGGER.log(Level.SEVERE, "Hiding menu");
+            dateTimeRangePicker.setMenuShowing(false);
+            dateTimeRangePicker.showApplyButton();
+        });
+
         // FlowPane to store control items used to filter notes.
         final GridPane topBar = new GridPane();
         topBar.add(createNewNoteButton, 0, 0);
         topBar.add(filterCheckComboBox, 1, 0);
         topBar.add(autoFilterCheckComboBox, 2, 0);
-        topBar.add(helpButton, 3, 0);
-        topBar.add(dateTimeRangePicker.getTimeRangeAccordian(), 0, 1, 3, 1);
+        topBar.add(menuBar, 3, 0);
+        topBar.add(helpButton, 4, 0);
+        //topBar.add(dateTimeRangePicker.getTimeRangeAccordian(), 0, 1, 3, 1);
         topBar.setHgap(5);
         topBar.setVgap(5);
+
+        //final VBox topVBox = new VBox(topBar);
 
         // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(userChosenColour);
@@ -261,6 +288,7 @@ public class NotesViewPane extends BorderPane {
         // Button to trigger pop-up window to make a new note
         createNewNoteButton.setText("Create Note");
         createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        createNewNoteButton.setStyle("-fx-fill: #00FF00;");
 
         createNewNoteButton.setOnAction(event -> {
             if (creatingFirstNote) {
@@ -772,12 +800,13 @@ public class NotesViewPane extends BorderPane {
         final Button showMoreButton = new Button(SHOW_MORE);
         showMoreButton.setMinWidth(100);
         showMoreButton.setMaxWidth(100);
+        showMoreButton.setVisible(false);
         if (newNote.getEditMode()) {
             noteButtons = new HBox(EDIT_SPACING, colourPicker, gap2, editScreenButtons);
             newNote.setEditMode(true);
         } else {
             newNote.setEditMode(false);
-            noteButtons = new HBox(DEFAULT_SPACING, gap, editTextButton, deleteButton);
+            noteButtons = new HBox(DEFAULT_SPACING, showMoreButton, gap, editTextButton, deleteButton);
         }
 
         HBox.setHgrow(gap, Priority.ALWAYS);
@@ -792,17 +821,17 @@ public class NotesViewPane extends BorderPane {
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteTop, noteInformation, noteButtons) : new VBox(DEFAULT_SPACING, dateTimeLabel, noteInformation);
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
-
+        noteBody.setMaxHeight(Double.MAX_VALUE);
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
             LOGGER.log(Level.SEVERE, "Note height in listener: " + obs.getValue().doubleValue());
             if (obs.getValue().doubleValue() >= noteHeight - 10) {
-                if (!newNote.getEditMode() && !noteButtons.getChildren().contains(showMoreButton)) {
+                if (!newNote.getEditMode() && !showMoreButton.isVisible()) {
                     noteButtons.getChildren().clear();
-                    noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
+                    showMoreButton.setVisible(true);
                     noteBody.setMaxHeight(noteHeight - 5);
                 }
-            } else if (noteButtons.getChildren().contains(showMoreButton)) {
-                noteButtons.getChildren().remove(showMoreButton);
+            } else if (showMoreButton.isVisible()) {
+                showMoreButton.setVisible(false);
             }
         });
 
