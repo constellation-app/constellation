@@ -21,6 +21,10 @@ import au.gov.asd.tac.constellation.views.errorreport.ErrorReportSessionData;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.mockito.Mockito.mock;
@@ -55,7 +59,7 @@ public class ConstellationErrorManagerNGTest {
 
         LOGGER.log(Level.INFO, "\n ------- start wait for data ... {0}", new Date());
         boolean dataAvailable = waitForDataToBeAvailable(Level.SEVERE, 1);
-        assertTrue(dataAvailable);
+        assertTrue(dataAvailable, "Data was not available within a reasonable amount of time");
         LOGGER.log(Level.INFO, "\n ------- finished waiting for data ... {0}", new Date());
         
         // confirm the exceptions have been stored in the SessionData class
@@ -71,7 +75,7 @@ public class ConstellationErrorManagerNGTest {
         
         LOGGER.log(Level.INFO, "\n ------- 2.start wait for data ... {0}", new Date());
         dataAvailable = waitForDataToBeAvailable(Level.SEVERE, 2);
-        assertTrue(dataAvailable);
+        assertTrue(dataAvailable, "Data was not available within a reasonable amount of time");
         LOGGER.log(Level.INFO, "\n ------- 2.finished waiting for data ... {0}", new Date());
 
         // confirm correct number of entries and occurrences
@@ -79,19 +83,22 @@ public class ConstellationErrorManagerNGTest {
         confirmEntryOccurrences(Level.SEVERE, 2);
     }
     
-    public void simulateException(final Level logLevel){
+    private void simulateException(final Level logLevel){
         LOGGER.log(Level.INFO, "\n ------- simulating {0} exception", logLevel.getName());
         final Exception e = new Exception("Something totally not unexpected happened !");
         LOGGER.log(logLevel, "Simulating a " + logLevel.getName() + " exception !", e);
         LOGGER.info("\n ------- simulated.");
     }
     
-    public void delay(final int milliseconds){
+    public void delay(final long milliseconds){
         // may need to wait for the error handler to do it's thing
+        final Executor delayed = CompletableFuture.delayedExecutor(milliseconds, TimeUnit.MILLISECONDS);
+        final CompletableFuture cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
+            .thenAccept(LOGGER::info);
         try {
-            Thread.sleep(milliseconds); //NOSONAR
-        } catch (final InterruptedException ex) {
-            LOGGER.log(Level.INFO, "\n -------- sleep disturbed: {0}", ex.toString());
+            cf.get();
+        } catch (final InterruptedException | ExecutionException ex) {
+            LOGGER.log(Level.INFO, "\n -------- future was not completed ? : {0}", ex.toString());
         }
     }
         
