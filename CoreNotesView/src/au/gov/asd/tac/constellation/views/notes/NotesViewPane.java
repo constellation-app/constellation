@@ -164,7 +164,8 @@ public class NotesViewPane extends BorderPane {
         // CheckComboBox to select and deselect various filters for note rendering.
         filterCheckComboBox = new CheckComboBox(availableFilters);
         filterCheckComboBox.setTitle("Select a filter...");
-        filterCheckComboBox.setMinWidth(200);
+        filterCheckComboBox.setMinWidth(165);
+        filterCheckComboBox.setMaxWidth(165);
         filterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         filterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isSelectedFiltersUpdating) {               
@@ -212,6 +213,7 @@ public class NotesViewPane extends BorderPane {
         autoFilterCheckComboBox.setTitle("Select tag(s)...");
         autoFilterCheckComboBox.setDisable(true);
 
+
         // Set whether or not a time filter should even be applied
         dateTimeRangePicker.getClearButton().setOnAction(event -> {
             dateTimeRangePicker.setActive(false);
@@ -248,7 +250,8 @@ public class NotesViewPane extends BorderPane {
         topBar.add(createNewNoteButton, 0, 0);
         topBar.add(filterCheckComboBox, 1, 0);
         topBar.add(autoFilterCheckComboBox, 2, 0);
-        topBar.add(helpButton, 3, 0);
+        topBar.add(timeFilterDropDown, 3, 0);
+        topBar.add(helpButton, 4, 0);
         topBar.add(dateTimeRangePicker.getTimeRangeAccordian(), 0, 1, 3, 1);
         topBar.setHgap(5);
         topBar.setVgap(5);
@@ -751,10 +754,10 @@ public class NotesViewPane extends BorderPane {
         final Region gap2 = new Region();
         final Region topGap = new Region();
 
-        gap.setPrefWidth(615);
+        gap.setPrefWidth(615); // 615
         gap2.setPrefWidth(650);
         topGap.setPrefWidth(650);
-        topGap.setMinWidth(170);
+        topGap.setMinWidth(170); // 170
 
         if (newNote.getNodeColour().isBlank()) {
             newNote.setNodeColour(USER_COLOR);
