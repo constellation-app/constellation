@@ -249,7 +249,7 @@ public class NotesViewPane extends BorderPane {
         topBar.add(filterCheckComboBox, 1, 0);
         topBar.add(autoFilterCheckComboBox, 2, 0);
         topBar.add(helpButton, 3, 0);
-        topBar.add(dateTimeRangePicker.getTimeRangeAccordian(), 0, 1);
+        topBar.add(dateTimeRangePicker.getTimeRangeAccordian(), 0, 1, 3, 1);
         topBar.setHgap(5);
         topBar.setVgap(5);
 
@@ -790,7 +790,6 @@ public class NotesViewPane extends BorderPane {
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteTop, noteInformation, noteButtons) : new VBox(DEFAULT_SPACING, dateTimeLabel, noteInformation);
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
-        //noteBody.setMaxHeight(Double.MAX_VALUE);
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
             LOGGER.log(Level.SEVERE, "Note height in listener: " + obs.getValue().doubleValue());
