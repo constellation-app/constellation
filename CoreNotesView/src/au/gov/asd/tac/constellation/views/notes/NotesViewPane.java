@@ -243,15 +243,12 @@ public class NotesViewPane extends BorderPane {
         // Get rid of the ugly button look so the icon stands alone.
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
-        final Region gap = new Region();
-        gap.setPrefWidth(300);
-
         // FlowPane to store control items used to filter notes.
         final GridPane topBar = new GridPane();
-        topBar.add(filterCheckComboBox, 0, 0);
-        topBar.add(autoFilterCheckComboBox, 1, 0);
-        topBar.add(helpButton, 2, 0);
-        topBar.add(createNewNoteButton, 3, 0);
+        topBar.add(createNewNoteButton, 0, 0);
+        topBar.add(filterCheckComboBox, 1, 0);
+        topBar.add(autoFilterCheckComboBox, 2, 0);
+        topBar.add(helpButton, 3, 0);
         topBar.add(dateTimeRangePicker.getTimeRangeAccordian(), 0, 1);
         topBar.setHgap(5);
         topBar.setVgap(5);
@@ -346,15 +343,6 @@ public class NotesViewPane extends BorderPane {
                 }
             }
         });
-
-
-        // HBox to store the control items at the bottom of the view.
-        //final HBox noteHBox = new HBox(createNewNoteButton);
-
-        // VBox to store control items used to add new note.
-        //addNoteVBox = new VBox(DEFAULT_SPACING, noteHBox);
-        //addNoteVBox.setAlignment(Pos.CENTER_RIGHT);
-        //addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
 
         // VBox in a ScrollPane for holding expanding list of user and plugin generated notes.
         notesListVBox = new VBox(DEFAULT_SPACING);
@@ -802,15 +790,15 @@ public class NotesViewPane extends BorderPane {
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteTop, noteInformation, noteButtons) : new VBox(DEFAULT_SPACING, dateTimeLabel, noteInformation);
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
-        noteBody.setMaxHeight(Double.MAX_VALUE);
+        //noteBody.setMaxHeight(Double.MAX_VALUE);
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
             LOGGER.log(Level.SEVERE, "Note height in listener: " + obs.getValue().doubleValue());
-            if (obs.getValue().doubleValue() > noteHeight) {
+            if (obs.getValue().doubleValue() >= noteHeight - 10) {
                 if (!newNote.getEditMode() && !noteButtons.getChildren().contains(showMoreButton)) {
                     noteButtons.getChildren().clear();
                     noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
-                    noteBody.setMaxHeight(noteHeight);
+                    noteBody.setMaxHeight(noteHeight - 5);
                 }
             } else if (noteButtons.getChildren().contains(showMoreButton)) {
                 noteButtons.getChildren().remove(showMoreButton);
@@ -833,7 +821,7 @@ public class NotesViewPane extends BorderPane {
                 showMoreButton.setText(SHOW_LESS);
             } else if (showMoreButton.getText().equals(SHOW_LESS)) {
                 contentLabel.setText(newNote.getNoteContent());
-                noteBody.setMaxHeight(noteHeight);
+                noteBody.setMaxHeight(noteHeight - 5);
                 showMoreButton.setText(SHOW_MORE);
             }
         });
