@@ -250,8 +250,7 @@ public class NotesViewPane extends BorderPane {
         topBar.add(createNewNoteButton, 0, 0);
         topBar.add(filterCheckComboBox, 1, 0);
         topBar.add(autoFilterCheckComboBox, 2, 0);
-        topBar.add(timeFilterDropDown, 3, 0);
-        topBar.add(helpButton, 4, 0);
+        topBar.add(helpButton, 3, 0);
         topBar.add(dateTimeRangePicker.getTimeRangeAccordian(), 0, 1, 3, 1);
         topBar.setHgap(5);
         topBar.setVgap(5);
