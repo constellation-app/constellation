@@ -237,7 +237,6 @@ public class NotesViewPane extends BorderPane {
 
         // Hide/show notes based on their entry time
         dateTimeRangePicker.getApplyButton().setOnAction(event -> {
-            LOGGER.log(Level.SEVERE, "Clicked apply");
             dateTimeRangePicker.setActive(true);
             dateTimeRangePicker.disableAll(true);
             dateTimeRangePicker.showClearButton();
@@ -813,7 +812,6 @@ public class NotesViewPane extends BorderPane {
         noteBody.setMinWidth(500);
         noteBody.setMaxHeight(Double.MAX_VALUE);
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
-            LOGGER.log(Level.SEVERE, "Note height in listener: " + obs.getValue().doubleValue());
             if (obs.getValue().doubleValue() >= noteHeight - 10) {
                 if (!newNote.getEditMode() && !showMoreButton.isVisible()) {
                     noteButtons.getChildren().clear();

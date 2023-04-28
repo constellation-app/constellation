@@ -3,7 +3,11 @@
 }
 
 .menu {
-    -fx-background-color: #313131;
+    -fx-background-color: #161616;
+}
+
+.menu:hover {
+    -fx-background-color: #292929;
 }
 
 
@@ -15,6 +19,8 @@
 .custom-menu-item:focused {
     -fx-background-color: #313131;
 }
+
+
 
 .spinner{
     -fx-border-color: black;
