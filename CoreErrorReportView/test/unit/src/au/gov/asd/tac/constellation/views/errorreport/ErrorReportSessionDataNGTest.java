@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.errorreport;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.mockito.MockedStatic;
@@ -31,7 +32,6 @@ import org.testng.annotations.Test;
  */
 public class ErrorReportSessionDataNGTest {
     
-    
     @Test
     public void runSessionDataTest() {
         final MockedStatic<ErrorReportDialogManager> erdmStatic = Mockito.mockStatic(ErrorReportDialogManager.class);
@@ -44,6 +44,11 @@ public class ErrorReportSessionDataNGTest {
         ErrorReportEntry testEntry2 = new ErrorReportEntry(Level.SEVERE, "heading2", "summary2", "message2", ErrorReportSessionData.getNextEntryId());
         ErrorReportEntry testEntry3 = testEntry2.copy();
         testEntry3.setEntryId(ErrorReportSessionData.getNextEntryId());
+        testEntry3.setLastPopupDate(new Date());
+        final String trimmedHeader = testEntry3.getTrimmedHeading(7).substring(0,2);
+        final String entryToString = testEntry3.toString();
+        assertTrue(entryToString.contains(trimmedHeader));
+        
         session.storeSessionError(testEntry);
         session.storeSessionError(testEntry2);
         session.storeSessionError(testEntry3);
