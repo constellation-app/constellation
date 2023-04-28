@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
+import au.gov.asd.tac.constellation.views.notes.utilities.TextHelper;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -73,6 +74,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextFlow;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
@@ -687,6 +689,15 @@ public class NotesViewPane extends BorderPane {
         final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
         contentTextArea.setWrapText(true);
         contentTextArea.positionCaret(contentTextArea.getText() == null ? 0 : contentTextArea.getText().length());
+
+        final TextFlow contentTextFlow = new TextFlow();
+        contentTextFlow.setMinWidth(50);
+        final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
+        md.parse();
+        final List<TextHelper> textNodes = md.getTextNodes();
+
+        textNodes.forEach(textNode -> contentTextFlow.getChildren().add(textNode.getText()));
+
         final VBox noteInformation;
 
         // Define selection label
@@ -717,7 +728,7 @@ public class NotesViewPane extends BorderPane {
             // If the note to be created is in edit mode, ensure it is created
             // with the correct java fx elements
             noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, newNote.getEditMode() ? titleText : titleLabel,
-                    newNote.getEditMode() ? contentTextArea : contentLabel, selectionLabel);
+                    newNote.getEditMode() ? contentTextArea : contentTextFlow, selectionLabel);
 
             HBox.setHgrow(noteInformation, Priority.ALWAYS);
         } else {
@@ -928,7 +939,7 @@ public class NotesViewPane extends BorderPane {
             noteButtons.getChildren().addAll(colourPicker, editScreenButtons);
             noteButtons.setSpacing(EDIT_SPACING);
 
-            noteInformation.getChildren().removeAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+            noteInformation.getChildren().removeAll(dateTimeLabel, titleLabel, contentTextFlow, selectionLabel);
 
             if (noteInformation.getChildren().contains(showMoreButton)) {
                 noteInformation.getChildren().remove(showMoreButton);
@@ -948,7 +959,7 @@ public class NotesViewPane extends BorderPane {
             noteButtons.setSpacing(DEFAULT_SPACING);
             noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
 
-            noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+            noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentTextFlow, selectionLabel);
 
             if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP) {
                 noteInformation.getChildren().add(showMoreButton);
@@ -980,7 +991,7 @@ public class NotesViewPane extends BorderPane {
                 noteButtons.setSpacing(DEFAULT_SPACING);
 
                 noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
-                noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentLabel, selectionLabel);
+                noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentTextFlow, selectionLabel);
 
                 if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP) {
                     noteInformation.getChildren().add(showMoreButton);

@@ -196,6 +196,9 @@ public class MarkdownTree {
                                 break;
                             }
                         }
+                        if (endIndex == -1) {
+                            ++currentIndex;
+                        }
                     } else {
                         LOGGER.log(Level.SEVERE, "No closing italic syntax found");
                         ++currentIndex;
