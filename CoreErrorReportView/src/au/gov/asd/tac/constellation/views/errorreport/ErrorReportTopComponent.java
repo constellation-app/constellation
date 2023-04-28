@@ -104,7 +104,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     private List<ErrorReportEntry> sessionErrors = new ArrayList<>();
     private List<ErrorReportEntry> hiddenErrors = new ArrayList<>();
     static VBox sessionErrorsBox = new VBox();
-    private MenuButton popupControl;
+    
     
     public enum SeverityCode {
         SEVERE("SEVERE"),
@@ -157,7 +157,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
     private final List<String> popupFilters = new ArrayList<>();
     private boolean errorReportRunning = true;
     private boolean waitForGracePeriod = false;
-    private final static String INACTIVE_BACKGROUND = "black";
+    private static final String INACTIVE_BACKGROUND = "black";
 
     private Date flashActivatedDate = null;
     private boolean iconFlashing = false;
@@ -338,6 +338,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         fineReportItem.setHideOnClick(false);
         filterControl.getItems().add(fineReportItem);
 
+        final MenuButton popupControl = new MenuButton("Popup Mode : 2 ");
         final ToggleGroup popupFrequency = new ToggleGroup();
         
         final RadioMenuItem neverItem = new RadioMenuItem("0 : Never Show Popups");
@@ -376,7 +377,6 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         multiRedispItem.setToggleGroup(popupFrequency);
         
         oneRedispItem.setSelected(true);
-        popupControl = new MenuButton("Popup Mode : 2 ");
         popupControl.getItems().add(neverItem);
         popupControl.getItems().add(oneItem);
         popupControl.getItems().add(oneRedispItem);
@@ -561,37 +561,40 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         sessionErrors.clear();
         hiddenErrors.clear();
         for (final ErrorReportEntry entry : combinedErrors) {
-            switch (SeverityCode.getSeverityCodeEntry(entry.getErrorLevel().getName())) {
-                case SEVERE:
-                    if (severeRepCheckBox.isSelected()) {
-                        sessionErrors.add(entry);
-                    } else {
-                        hiddenErrors.add(entry);
-                    }
-                    break;
-                case WARNING:
-                    if (warningRepCheckBox.isSelected()) {
-                        sessionErrors.add(entry);
-                    } else {
-                        hiddenErrors.add(entry);
-                    }
-                    break;
-                case INFO:
-                    if (infoRepCheckBox.isSelected()) {
-                        sessionErrors.add(entry);
-                    } else {
-                        hiddenErrors.add(entry);
-                    }
-                    break;
-                case FINE:
-                    if (fineRepCheckBox.isSelected()) {
-                        sessionErrors.add(entry);
-                    } else {
-                        hiddenErrors.add(entry);
-                    }
-                    break;
-                default:
-                    break;
+            final SeverityCode entryCode = SeverityCode.getSeverityCodeEntry(entry.getErrorLevel().getName());
+            if (entryCode != null) {
+                switch (entryCode) {
+                    case SEVERE:
+                        if (severeRepCheckBox.isSelected()) {
+                            sessionErrors.add(entry);
+                        } else {
+                            hiddenErrors.add(entry);
+                        }
+                        break;
+                    case WARNING:
+                        if (warningRepCheckBox.isSelected()) {
+                            sessionErrors.add(entry);
+                        } else {
+                            hiddenErrors.add(entry);
+                        }
+                        break;
+                    case INFO:
+                        if (infoRepCheckBox.isSelected()) {
+                            sessionErrors.add(entry);
+                        } else {
+                            hiddenErrors.add(entry);
+                        }
+                        break;
+                    case FINE:
+                        if (fineRepCheckBox.isSelected()) {
+                            sessionErrors.add(entry);
+                        } else {
+                            hiddenErrors.add(entry);
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
@@ -688,9 +691,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                             final List<String> errorPopupLevels = new ArrayList<>();
                             errorPopupLevels.addAll(ErrorReportDialogManager.getInstance().getActivePopupErrorLevels());
                             errorReportLevels.addAll(getErrorLevelList(true));
-                            SwingUtilities.invokeLater(() -> {
-                                updateFlashingIcons(errorReportLevels, errorPopupLevels);
-                            });                            
+                            SwingUtilities.invokeLater(() -> updateFlashingIcons(errorReportLevels, errorPopupLevels));                            
                         } catch (IOException ex) {
                             LOGGER.log(Level.WARNING, "Error with alerts" , ex);
                         }

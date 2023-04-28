@@ -34,6 +34,7 @@ public class ErrorReportSessionData {
 
     private static ErrorReportSessionData instance = null;
     private static Double nextEntryId = 0D;
+    private static Object accessControl = new Object();
     private static Date lastUpdate = new Date();
 
     private static boolean screenUpdateRequested = false;
@@ -207,7 +208,7 @@ public class ErrorReportSessionData {
 
     public static double getNextEntryId() {
         double returnVal = -1;
-        synchronized (nextEntryId) {
+        synchronized (accessControl) {
             returnVal = nextEntryId;
             nextEntryId++;
         }
