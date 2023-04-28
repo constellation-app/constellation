@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -83,8 +84,8 @@ public class DateTimeRangePicker {
     public DateTimeRangePicker() {
 
         // Set up the date time selection pane with to range selection components
-        final VBox dateTimePane = new VBox(1, fromDate.getPane(), toDate.getPane());
-
+        final VBox dateTimePane = new VBox(2, fromDate.getPane(), toDate.getPane());
+        dateTimePane.setAlignment(Pos.CENTER);
         dateTimePane.setMaxHeight(95);
         timeRangeCustomMenuItem = new CustomMenuItem();
         timeFilterMenu.getStyleClass().add("column-filter");
@@ -179,10 +180,8 @@ public class DateTimeRangePicker {
         clearButton.setTextAlignment(TextAlignment.JUSTIFY);
         clearButton.setPadding(new Insets(0, 8, 0, 8));
 
-        applyButton.setMinHeight(17);
-        applyButton.setMaxHeight(17);
         applyButton.setTextAlignment(TextAlignment.JUSTIFY);
-        applyButton.setPadding(new Insets(0, 8, 0, 8));
+        //applyButton.setPadding(new Insets(0, 8, 0, 8));
 
         topBarGridPane.setHgap(10);
 
@@ -202,19 +201,8 @@ public class DateTimeRangePicker {
         return applyButton;
     }
 
-    /*public void showApplyButton() {
-        if (menuShowing && !active) {
-            topBarGridPane.getChildren().remove(clearButton);
-            if (!topBarGridPane.getChildren().contains(applyButton)) {
-                topBarGridPane.add(applyButton, 1, 0);
-            }
-        } else {
-            topBarGridPane.getChildren().remove(applyButton);
-        }
-    }*/
 
     public void showClearButton() {
-        //topBarGridPane.getChildren().remove(applyButton);
         topBarGridPane.add(clearButton, 1, 0);
     }
 

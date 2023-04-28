@@ -258,19 +258,6 @@ public class NotesViewPane extends BorderPane {
 
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add(dateTimeRangePicker.getTimeFilterMenu());
-        /*dateTimeRangePicker.getTimeFilterMenu().setOnShown(event -> {
-            LOGGER.log(Level.SEVERE, "Showing menu");
-            dateTimeRangePicker.setMenuShowing(true);
-            //dateTimeRangePicker.showApplyButton();
-            event.consume();
-        });
-
-        dateTimeRangePicker.getTimeFilterMenu().setOnHidden(event -> {
-            LOGGER.log(Level.SEVERE, "Hiding menu");
-            dateTimeRangePicker.setMenuShowing(false);
-            //dateTimeRangePicker.showApplyButton();
-            event.consume();
-        });*/
 
         // FlowPane to store control items used to filter notes.
         final GridPane topBar = new GridPane();
