@@ -30,7 +30,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import org.fusesource.jansi.Ansi;
 
 /**
  * A DateTime Selector that is in JavaFX instead of Swing.

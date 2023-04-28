@@ -176,8 +176,8 @@ public class NewNotePane {
 
         final List<Screen> screens = Screen.getScreensForRectangle(window.getX(), window.getY(), window.widthProperty().get(), window.heightProperty().get());
 
-        stage.setX(screens.get(0).getVisualBounds().getMinX());
-        stage.setY(screens.get(0).getVisualBounds().getMinY());
+        stage.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - WIDTH / 2);
+        stage.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - (HEIGHT * 2.5) / 2);
 
         if (!stage.isShowing()) {
             stage.show();
