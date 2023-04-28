@@ -67,13 +67,16 @@ public class DateTimeRangePicker {
 
     private final Button applyButton = new Button("APPLY");
 
+    private final Button utcButton = new Button("UTC");
+    private final Button localButton = new Button("LOCAL");
+
     private final Map<String, ZoneId> timeZoneMap = new HashMap<>();
 
     private boolean menuShowing = false;
 
     private boolean active = false;
-
-    final GridPane topBarGridPane = new GridPane();
+    private final ComboBox<String> timeZoneChoiceBox;
+    private final GridPane topBarGridPane = new GridPane();
     private static final Logger LOGGER = Logger.getLogger(DateTimeRangePicker.class.getName());
 
 
@@ -115,7 +118,7 @@ public class DateTimeRangePicker {
         timeZones.addAll(minusFromGMT);
         timeZones.addAll(plusFromGMT);
 
-        final ComboBox<String> timeZoneChoiceBox = new ComboBox(FXCollections.observableList(timeZones));
+        timeZoneChoiceBox = new ComboBox(FXCollections.observableList(timeZones));
 
         final String localTimeString = offSet.format(ZoneId.systemDefault().getRules().getOffset(Instant.now())) + " " + ZoneId.systemDefault().getId();
 
@@ -133,8 +136,6 @@ public class DateTimeRangePicker {
 
         dateTimePane.getChildren().add(timeZoneChoiceBox);
 
-        final Button utcButton = new Button("UTC");
-        final Button localButton = new Button("LOCAL");
         utcButton.setMinWidth(93);
         localButton.setMinWidth(93);
 
@@ -164,6 +165,8 @@ public class DateTimeRangePicker {
         clearButton.setOnMouseExited(event -> clearButton.setStyle("-fx-background-color: #7FFFD4;  "));
         applyButton.setOnMouseEntered(event -> applyButton.setStyle("-fx-background-color: #078BC9; "));
         applyButton.setOnMouseExited(event -> applyButton.setStyle("-fx-background-color: #0080FF; "));
+
+        dateTimePane.getChildren().add(applyButton);
 
         // Set up title bar
         titleText = new Label(TITLE);
@@ -199,7 +202,7 @@ public class DateTimeRangePicker {
         return applyButton;
     }
 
-    public void showApplyButton() {
+    /*public void showApplyButton() {
         if (menuShowing && !active) {
             topBarGridPane.getChildren().remove(clearButton);
             if (!topBarGridPane.getChildren().contains(applyButton)) {
@@ -208,11 +211,20 @@ public class DateTimeRangePicker {
         } else {
             topBarGridPane.getChildren().remove(applyButton);
         }
-    }
+    }*/
 
     public void showClearButton() {
-        topBarGridPane.getChildren().remove(applyButton);
+        //topBarGridPane.getChildren().remove(applyButton);
         topBarGridPane.add(clearButton, 1, 0);
+    }
+
+    public void disableAll(final boolean disable) {
+        applyButton.setDisable(disable);
+        timeZoneChoiceBox.setDisable(disable);
+        utcButton.setDisable(disable);
+        localButton.setDisable(disable);
+        toDate.disableControls(disable);
+        fromDate.disableControls(disable);
     }
 
     /**

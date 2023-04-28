@@ -226,7 +226,7 @@ public class NotesViewPane extends BorderPane {
         // Set whether or not a time filter should even be applied
         dateTimeRangePicker.getClearButton().setOnAction(event -> {
             dateTimeRangePicker.setActive(false);
-            dateTimeRangePicker.showApplyButton();
+            dateTimeRangePicker.disableAll(false);
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 updateNotesUI();
@@ -239,6 +239,7 @@ public class NotesViewPane extends BorderPane {
         dateTimeRangePicker.getApplyButton().setOnAction(event -> {
             LOGGER.log(Level.SEVERE, "Clicked apply");
             dateTimeRangePicker.setActive(true);
+            dateTimeRangePicker.disableAll(true);
             dateTimeRangePicker.showClearButton();
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
@@ -257,17 +258,19 @@ public class NotesViewPane extends BorderPane {
 
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add(dateTimeRangePicker.getTimeFilterMenu());
-        dateTimeRangePicker.getTimeFilterMenu().setOnShowing(event -> {
+        /*dateTimeRangePicker.getTimeFilterMenu().setOnShown(event -> {
+            LOGGER.log(Level.SEVERE, "Showing menu");
             dateTimeRangePicker.setMenuShowing(true);
-            dateTimeRangePicker.showApplyButton();
-
+            //dateTimeRangePicker.showApplyButton();
+            event.consume();
         });
 
-        dateTimeRangePicker.getTimeFilterMenu().setOnHiding(event -> {
+        dateTimeRangePicker.getTimeFilterMenu().setOnHidden(event -> {
             LOGGER.log(Level.SEVERE, "Hiding menu");
             dateTimeRangePicker.setMenuShowing(false);
-            dateTimeRangePicker.showApplyButton();
-        });
+            //dateTimeRangePicker.showApplyButton();
+            event.consume();
+        });*/
 
         // FlowPane to store control items used to filter notes.
         final GridPane topBar = new GridPane();
@@ -288,7 +291,7 @@ public class NotesViewPane extends BorderPane {
         // Button to trigger pop-up window to make a new note
         createNewNoteButton.setText("Create Note");
         createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        createNewNoteButton.setStyle("-fx-fill: #00FF00;");
+        createNewNoteButton.setStyle("-fx-text-fill: #00FF00;");
 
         createNewNoteButton.setOnAction(event -> {
             if (creatingFirstNote) {

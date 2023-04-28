@@ -105,6 +105,13 @@ public class DateTimePicker {
         dateTimePane.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(3.0), BorderWidths.DEFAULT)));
     }
 
+    public void disableControls(final boolean disable) {
+        datePicker.setDisable(disable);
+        hourPicker.setDisable(disable);
+        minPicker.setDisable(disable);
+        secPicker.setDisable(disable);
+    }
+
 
     public Pane getPane() {
         return dateTimePane;
