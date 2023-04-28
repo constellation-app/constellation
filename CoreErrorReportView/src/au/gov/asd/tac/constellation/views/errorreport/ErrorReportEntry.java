@@ -54,6 +54,7 @@ public class ErrorReportEntry {
         dataCopy.lastDate = new Date(lastDate.getTime());
         dataCopy.lastPopupDate = (lastPopupDate == null ? null : new Date(lastPopupDate.getTime()));
         dataCopy.occurrences = occurrences;
+        dataCopy.preventRepeatedPopups = preventRepeatedPopups;
         return dataCopy;
     }
 
@@ -99,7 +100,10 @@ public class ErrorReportEntry {
     }
 
     public Date getLastDate() {
-        return lastDate;
+        if (lastDate == null) {
+            return null;
+        }
+        return new Date(lastDate.getTime());
     }
 
     public String getTimeText() {
@@ -107,7 +111,7 @@ public class ErrorReportEntry {
         return sdf.format(lastDate);
     }
 
-    public boolean getExpanded() {
+    public boolean isExpanded() {
         return expanded;
     }
 
@@ -124,11 +128,18 @@ public class ErrorReportEntry {
     }
 
     public Date getLastPopupDate() {
-        return lastPopupDate;
+        if (lastPopupDate == null) {
+            return null;
+        }
+        return new Date(lastPopupDate.getTime());
     }
 
     public void setLastPopupDate(final Date popupDate) {
-        lastPopupDate = popupDate;
+        if (popupDate == null) {
+            lastPopupDate = null;
+        } else {
+            lastPopupDate = new Date(popupDate.getTime());
+        }
     }
 
     public boolean isBlockRepeatedPopups() {

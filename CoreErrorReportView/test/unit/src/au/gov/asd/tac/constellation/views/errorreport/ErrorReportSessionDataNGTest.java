@@ -57,8 +57,8 @@ public class ErrorReportSessionDataNGTest {
         final ErrorReportEntry storedData = session.findDisplayedEntryWithId(testEntry2.getEntryId());
         assertEquals(storedData.getOccurrences(), 2);
         
-        session.requestScreenUpdate(true);
-        assertTrue(ErrorReportSessionData.screenUpdateRequested);
+        ErrorReportSessionData.requestScreenUpdate(true);
+        assertTrue(ErrorReportSessionData.isScreenUpdateRequested());
         
         session.removeEntry(testEntry.getEntryId());
         storedList = session.refreshDisplayedErrors(filters);

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.errorreport;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -33,9 +34,9 @@ public class ErrorReportSessionData {
 
     private static ErrorReportSessionData instance = null;
     private static Double nextEntryId = 0D;
-    public static Date lastUpdate = new Date();
+    private static Date lastUpdate = new Date();
 
-    public static boolean screenUpdateRequested = false;
+    private static boolean screenUpdateRequested = false;
 
     public static ErrorReportSessionData getInstance() {
         if (instance == null) {
@@ -79,7 +80,7 @@ public class ErrorReportSessionData {
                     foundMatch = true;
                     if (i > 0) {
                         // move updated entry to the top
-                        sessionErrors.remove(i);
+                        sessionErrors.remove(i); // NOSONAR
                         sessionErrors.add(0, ere);
                     }
                 }
@@ -116,7 +117,7 @@ public class ErrorReportSessionData {
      * @param filters
      * @return
      */
-    public List<ErrorReportEntry> refreshDisplayedErrors(final List<String> filters) {
+    public List<ErrorReportEntry> refreshDisplayedErrors(final Collection<String> filters) {
         final List<ErrorReportEntry> refreshedData = new ArrayList<>();
         synchronized (sessionErrors) {
             synchronized (displayedErrors) {
@@ -125,9 +126,9 @@ public class ErrorReportSessionData {
                         final ErrorReportEntry refreshedEntry = entry.copy();
                         final ErrorReportEntry displayedEntry = findDisplayedEntryWithId(entry.getEntryId());
                         if (displayedEntry != null) {
-                            refreshedEntry.setExpanded(displayedEntry.getExpanded());
+                            refreshedEntry.setExpanded(displayedEntry.isExpanded());
                             refreshedEntry.setBlockRepeatedPopups(displayedEntry.isBlockRepeatedPopups());
-                            entry.setExpanded(displayedEntry.getExpanded());
+                            entry.setExpanded(displayedEntry.isExpanded());
                             entry.setBlockRepeatedPopups(displayedEntry.isBlockRepeatedPopups());
                             if (displayedEntry.getLastPopupDate() != null) {
                                 refreshedEntry.setLastPopupDate(new Date(displayedEntry.getLastPopupDate().getTime()));
@@ -141,7 +142,9 @@ public class ErrorReportSessionData {
                 displayedErrors.addAll(refreshedData);
             }
         }
-        return displayedErrors;
+        final List<ErrorReportEntry> returnDisplayedErrors = new ArrayList<>();
+        displayedErrors.forEach(entry -> returnDisplayedErrors.add(entry.copy()));
+        return returnDisplayedErrors;
     }
 
     public ErrorReportEntry findDisplayedEntryWithId(final double id) {
@@ -153,10 +156,29 @@ public class ErrorReportSessionData {
         return null;
     }
 
-    public void requestScreenUpdate(final boolean updateRequested) {
+    public static void requestScreenUpdate(final boolean updateRequested) {
         screenUpdateRequested = updateRequested;
     }
 
+    public static boolean isScreenUpdateRequested(){
+        return screenUpdateRequested;
+    }
+    
+    public static Date getLastUpdate() {
+        if (lastUpdate == null) {
+            return null;
+        }
+        return new Date(lastUpdate.getTime());
+    }
+    
+    public static void setLastUpdate(final Date updateDate) {
+        if (updateDate == null) {
+            lastUpdate = null;
+        } else {
+            lastUpdate = new Date(updateDate.getTime());
+        }
+    }
+    
     /**
      * For a specified entry id, this sets the lastPopupDate, blockPopups flag,
      * and if the control is in expanded form.

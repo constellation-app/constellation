@@ -90,7 +90,7 @@ public class ErrorReportDialog {
         final File userDir = Places.getUserDirectory();
         String logFileLocation = "var/log/";
         if (userDir != null) {
-            final File f = new File(userDir, "/var/log");
+            final File f = new File(userDir, "/var/log"); //NOSONAR
             logFileLocation = f.getAbsolutePath();
         }
 
@@ -169,7 +169,7 @@ public class ErrorReportDialog {
         buttonPane.setPadding(BUTTONPANE_PADDING);
         root.setBottom(buttonPane);
 
-        showHideButton.setOnAction((ActionEvent event) -> toggleExceptionDisplay());
+        showHideButton.setOnAction((final ActionEvent event) -> toggleExceptionDisplay());
         final Button closeButton = new Button("Close");
         closeButton.setOnAction((final ActionEvent event) -> hideDialog());
         buttonPane.setLeft(showHideButton);
@@ -224,7 +224,7 @@ public class ErrorReportDialog {
             ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(currentError.getEntryId(), new Date(), blockRepeatsCheckbox.isSelected(), null);
             ErrorReportDialogManager.getInstance().removeActivePopupId(currentError.getEntryId());
             ErrorReportDialogManager.getInstance().setLatestPopupDismissDate(new Date());
-            ErrorReportSessionData.screenUpdateRequested = true;
+            ErrorReportSessionData.requestScreenUpdate(true);
         });
     }
 
