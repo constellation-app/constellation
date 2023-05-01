@@ -32,6 +32,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
+import java.awt.Rectangle;
+import java.awt.Window.Type;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -72,6 +74,9 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
+import javafx.stage.Window;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
@@ -269,7 +274,24 @@ public class NotesViewPane extends BorderPane {
                 if (newNotePane.getTitleField().getText().isBlank()
                         || newNotePane.getContentField().getText().isBlank()) {
                     newNotePane.closePopUp();
-                    JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
+                    final Window w = this.getScene().getWindow();
+                    final List<Screen> screens = Screen.getScreensForRectangle(w.getX(), w.getY(), w.widthProperty().get(), w.heightProperty().get());
+                    final Rectangle r = new Rectangle();
+
+                    final int popUpWidth = 300;
+                    final int popUpHeight = 150;
+
+                    final int xPos = (int) (screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - popUpWidth / 2;
+                    final int yPos = (int) (screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - popUpHeight / 2;
+
+                    r.setBounds(xPos, yPos, popUpWidth, popUpHeight);
+                    //r.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - (JOptionPane.getRootFrame().getHeight() * 2.5) / 2);
+                    final JOptionPane invalidTextPane = new JOptionPane("Type in missing fields.");
+                    final JDialog warningDialog = invalidTextPane.createDialog("Invalid Text");
+                    warningDialog.setBounds(r);
+                    //warningDialog.setType(JOptionPane.WARNING_MESSAGE);
+                    //JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
+                    warningDialog.show();
                     newNotePane.showPopUp(this.getScene().getWindow());
                 } else {
                     synchronized (LOCK) {
