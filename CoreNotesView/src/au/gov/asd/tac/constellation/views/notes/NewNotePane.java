@@ -134,10 +134,10 @@ public class NewNotePane {
 
         final Region gap = new Region();
         gap.setMinWidth(15);
-        final HBox noteHBox = new HBox(5, addButton, cancelButton);
+        final HBox noteHBox = new HBox(5, newNoteColour, gap, addButton, cancelButton);
         HBox.setHgrow(gap, Priority.ALWAYS);
         noteHBox.setAlignment(Pos.CENTER_RIGHT);
-        final VBox addNoteVBox = new VBox(5, titleField, contentField, applyToSelection, newNoteColour, noteHBox);
+        final VBox addNoteVBox = new VBox(5, titleField, contentField, applyToSelection, noteHBox);
         addNoteVBox.setAlignment(Pos.CENTER_LEFT);
         addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
         addNoteVBox.setMinHeight(220);
@@ -161,7 +161,7 @@ public class NewNotePane {
             stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setTitle("Create new note");
-            stage.setMinHeight(HEIGHT * 2.5);
+            stage.setMinHeight(HEIGHT * 2.25);
             stage.setMinWidth(WIDTH);
             stage.setResizable(true);
 

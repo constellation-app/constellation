@@ -261,18 +261,6 @@ public class NotesViewPane extends BorderPane {
         final ToolBar toolBar = new ToolBar();
         toolBar.getItems().addAll(createNewNoteButton, filterCheckComboBox, autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
 
-        /*final GridPane topBar = new GridPane();
-        topBar.add(createNewNoteButton, 0, 0);
-        topBar.add(filterCheckComboBox, 1, 0);
-        topBar.add(autoFilterCheckComboBox, 2, 0);
-        topBar.add(menuBar, 3, 0);
-        topBar.add(helpButton, 4, 0);
-        //topBar.add(dateTimeRangePicker.getTimeRangeAccordian(), 0, 1, 3, 1);
-        topBar.setHgap(5);
-        topBar.setVgap(5);*/
-
-        //final VBox topVBox = new VBox(topBar);
-
         // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(userChosenColour);
 
@@ -816,7 +804,6 @@ public class NotesViewPane extends BorderPane {
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
             if (obs.getValue().doubleValue() >= noteHeight - 10) {
                 if (!newNote.getEditMode() && !showMoreButton.isVisible()) {
-                    noteButtons.getChildren().clear();
                     showMoreButton.setVisible(true);
                     noteBody.setMaxHeight(noteHeight - 5);
                 }
