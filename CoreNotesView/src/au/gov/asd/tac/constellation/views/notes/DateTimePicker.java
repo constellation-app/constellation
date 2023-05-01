@@ -18,6 +18,9 @@ package au.gov.asd.tac.constellation.views.notes;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.chrono.Chronology;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import javafx.geometry.Insets;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -30,6 +33,8 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.util.StringConverter;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
