@@ -246,7 +246,7 @@ public final class ConversationBox extends StackPane {
             foundLabel.setStyle(FOUND_PASS_COLOR);
 
             // If they hit enter iterate through the results
-            searchCount = "\r".equals(e.getCharacter()) ? (searchCount + 1) % foundCount : 0;
+            searchCount = "\r".equals(e.getCharacter()) && foundCount > 0 ? (searchCount + 1) % foundCount : 0;
 
             highlightRegions();
             refreshCountUI(false);

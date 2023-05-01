@@ -122,6 +122,7 @@ public class AttributeList extends VBox {
                 return;
             }
         }
+
         children.add(attributeNode);
     }
 
