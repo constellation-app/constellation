@@ -31,6 +31,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
+
 /**
  * A DateTime Selector that is in JavaFX instead of Swing.
  *
@@ -55,6 +56,24 @@ public class DateTimePicker {
 
     public DateTimePicker(final boolean from) {
         dateTimePane = new Pane();
+        datePicker.setChronology(Chronology.ofLocale(Locale.ENGLISH));
+
+        datePicker.setConverter(new StringConverter<LocalDate>() {
+            final String pattern = "yyyy-MM-dd";
+            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
+
+            @Override
+            public String toString(final LocalDate object) {
+                return object != null ? dateFormatter.format(object) : "";
+            }
+
+            @Override
+            public LocalDate fromString(final String string) {
+                return StringUtils.isNotBlank(string) ? LocalDate.parse(string, dateFormatter) : null;
+            }
+
+        });
+
         this.from = from;
         dateTimePane.getChildren().add(mainGridPane);
 

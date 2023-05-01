@@ -84,3 +84,6 @@ view:
     the User Notes and Auto Notes options are automatically unticked (if
     any of them are ticked). Similarly, if you tick one of the other
     filter options, this option will be automatically unticked.
+-   *Time range filter*: A time range filter that allows the user to only  
+    display notes in a specific time range. Times can be changed to different
+    time zones.
