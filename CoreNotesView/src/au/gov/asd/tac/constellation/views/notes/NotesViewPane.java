@@ -727,8 +727,11 @@ public class NotesViewPane extends BorderPane {
 
             // If the note to be created is in edit mode, ensure it is created
             // with the correct java fx elements
-            noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, newNote.getEditMode() ? titleText : titleLabel,
-                    newNote.getEditMode() ? contentTextArea : contentTextFlow, selectionLabel);
+            if (newNote.getEditMode()) {
+                noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, titleText, contentTextArea, selectionLabel);
+            } else {
+                noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, contentTextFlow, selectionLabel);
+            }
 
             HBox.setHgrow(noteInformation, Priority.ALWAYS);
         } else {
@@ -939,7 +942,7 @@ public class NotesViewPane extends BorderPane {
             noteButtons.getChildren().addAll(colourPicker, editScreenButtons);
             noteButtons.setSpacing(EDIT_SPACING);
 
-            noteInformation.getChildren().removeAll(dateTimeLabel, titleLabel, contentTextFlow, selectionLabel);
+            noteInformation.getChildren().removeAll(dateTimeLabel, contentTextFlow, selectionLabel);
 
             if (noteInformation.getChildren().contains(showMoreButton)) {
                 noteInformation.getChildren().remove(showMoreButton);
@@ -947,8 +950,6 @@ public class NotesViewPane extends BorderPane {
 
             noteInformation.getChildren().addAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
             newNote.setEditMode(true);
-
-
         });
 
         cancelButton.setOnAction(cancelEvent -> {
@@ -959,7 +960,7 @@ public class NotesViewPane extends BorderPane {
             noteButtons.setSpacing(DEFAULT_SPACING);
             noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
 
-            noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentTextFlow, selectionLabel);
+            noteInformation.getChildren().addAll(dateTimeLabel, contentTextFlow, selectionLabel);
 
             if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP) {
                 noteInformation.getChildren().add(showMoreButton);
@@ -982,6 +983,14 @@ public class NotesViewPane extends BorderPane {
                 titleLabel.setText(titleText.getText());
                 contentLabel.setText(contentTextArea.getText());
 
+                contentTextFlow.getChildren().clear();
+
+                final MarkdownTree mdTree = new MarkdownTree(titleText.getText() + "\n\n" + contentTextArea.getText());
+                mdTree.parse();
+                List<TextHelper> editedTexts = mdTree.getTextNodes();
+
+                editedTexts.forEach(editedText -> contentTextFlow.getChildren().addAll(editedText.getText()));
+
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());
                 previouseColourMap.replace(newNote.getID(), newNote.getNodeColour());
@@ -991,7 +1000,7 @@ public class NotesViewPane extends BorderPane {
                 noteButtons.setSpacing(DEFAULT_SPACING);
 
                 noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
-                noteInformation.getChildren().addAll(dateTimeLabel, titleLabel, contentTextFlow, selectionLabel);
+                noteInformation.getChildren().addAll(dateTimeLabel, contentTextFlow, selectionLabel);
 
                 if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP) {
                     noteInformation.getChildren().add(showMoreButton);

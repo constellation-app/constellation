@@ -53,7 +53,7 @@ public class MarkdownTree {
     }
 
     private void parseString(MarkdownNode currentNode, String text) {
-        LOGGER.log(Level.SEVERE, "parseString: " + currentNode.getTypeString());
+        //LOGGER.log(Level.SEVERE, "parseString: " + currentNode.getTypeString());
         if (text.isBlank() || text.isEmpty()) {
             return;
         }
@@ -124,7 +124,7 @@ public class MarkdownTree {
                             endIndex = text.length();
                         }
 
-                        LOGGER.log(Level.SEVERE, "Index to substring from: " + i + 1 + " length of text: " + text.length());
+                        //LOGGER.log(Level.SEVERE, "Index to substring from: " + i + 1 + " length of text: " + text.length());
                         MarkdownNode heading = new MarkdownNode(MarkdownNode.Type.HEADING, i + 1, endIndex, text.substring(i + 1, endIndex), level);
                         currentNode.getChildren().add(heading);
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(i + 1, endIndex));
@@ -139,10 +139,10 @@ public class MarkdownTree {
 
             } else if (text.charAt(closestSyntax) == '\n') {
                 currentIndex = closestSyntax;
-                LOGGER.log(Level.SEVERE, "Working on paragraph");
+                //LOGGER.log(Level.SEVERE, "Working on paragraph");
                 if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == '\n') {
                     ++currentIndex;
-                    LOGGER.log(Level.SEVERE, "Found second enter at " + currentIndex);
+                    //LOGGER.log(Level.SEVERE, "Found second enter at " + currentIndex);
                     int endIndex = text.indexOf("\n\n", currentIndex + 1);
                     if (endIndex == -1) {
                         endIndex = text.length() - 1;
@@ -164,7 +164,7 @@ public class MarkdownTree {
                 }
             } else if (text.charAt(closestSyntax) == boldSyntax) {
                 currentIndex = closestSyntax;
-                LOGGER.log(Level.SEVERE, "Stuck at italic syntax loop");
+                //LOGGER.log(Level.SEVERE, "Stuck at italic syntax loop");
                 // Bold
                 if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == boldSyntax) {
                     ++currentIndex;
@@ -200,7 +200,7 @@ public class MarkdownTree {
                             ++currentIndex;
                         }
                     } else {
-                        LOGGER.log(Level.SEVERE, "No closing italic syntax found");
+                        //LOGGER.log(Level.SEVERE, "No closing italic syntax found");
                         ++currentIndex;
                     }
                 }
@@ -310,7 +310,7 @@ public class MarkdownTree {
                 }
 
             }*/ else {
-                LOGGER.log(Level.SEVERE, "Making text node for: " + text.substring(currentIndex));
+                //LOGGER.log(Level.SEVERE, "Making text node for: " + text.substring(currentIndex));
                 MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, text.length() - 1, text.substring(currentIndex), -99);
                 currentNode.getChildren().add(normal);
                 return;
@@ -359,7 +359,7 @@ public class MarkdownTree {
             //return textNodes;
         }
         else if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
-            LOGGER.log(Level.SEVERE, "Processing list item that has: " + currentNode.getChildren().size() + " children");
+            //LOGGER.log(Level.SEVERE, "Processing list item that has: " + currentNode.getChildren().size() + " children");
             String tabString = "";
             for (int tabs = 0; tabs < currentNode.getTabs(); ++tabs) {
                 //LOGGER.log(Level.SEVERE, "Adding tabs");
@@ -415,4 +415,5 @@ public class MarkdownTree {
 
         return textNodes;
     }
+
 }

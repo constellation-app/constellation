@@ -122,21 +122,13 @@ public class NewNotePane {
         contentField.setPromptText("Type a note...");
         contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
         contentField.setWrapText(true);
-        contentField.setOnKeyPressed(key -> {
-            // If tab is typed and shift isn't being held dowm.
-            /*if (key.getCode() == KeyCode.TAB && !key.isShiftDown()) {
-                // Backspace any tabs typed.
-                contentField.fireEvent(new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.BACK_SPACE, false, false, false, false));
-                // Move focus to the next UI element.
-                contentField.getParent().getChildrenUnmodifiable().get(contentField.getParent().getChildrenUnmodifiable().indexOf(contentField) + 1).requestFocus();
-            }*/
-
-        });
 
         preview = new TextFlow();
         preview.setMaxWidth(WIDTH - 5);
 
         preview.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+
+        final VBox editVBox = new VBox(3, titleField, contentField);
 
         final ScrollPane previewTabScrollPane = new ScrollPane();
         previewTabScrollPane.setContent(preview);
@@ -145,7 +137,7 @@ public class NewNotePane {
         tabPane = new TabPane();
         Tab writeTab = new Tab();
         writeTab.setText("Write");
-        writeTab.setContent(contentField);
+        writeTab.setContent(editVBox);
         writeTab.setClosable(false);
 
         Tab previewTab = new Tab();
@@ -156,7 +148,7 @@ public class NewNotePane {
         previewTab.setOnSelectionChanged(event -> {
             if (previewTab.isSelected()) {
                 preview.getChildren().clear();
-                final MarkdownTree mdTree = new MarkdownTree(contentField.getText());
+                final MarkdownTree mdTree = new MarkdownTree(titleField.getText() + "\n\n" + contentField.getText());
                 mdTree.parse();
                 final List<TextHelper> textNodes = mdTree.getTextNodes();
 
@@ -190,7 +182,7 @@ public class NewNotePane {
 
         final HBox noteHBox = new HBox(30, applyToSelection, newNoteColour, addButton, cancelButton);
 
-        final VBox addNoteVBox = new VBox(5, titleLabel, titleField, tabPane, noteHBox);
+        final VBox addNoteVBox = new VBox(5, titleLabel, tabPane, noteHBox);
         addNoteVBox.setAlignment(Pos.CENTER_LEFT);
         addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
         addNoteVBox.setMinHeight(200);
