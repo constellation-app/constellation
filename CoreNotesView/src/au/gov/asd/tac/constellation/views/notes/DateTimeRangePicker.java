@@ -198,7 +198,9 @@ public class DateTimeRangePicker {
 
 
     public void showClearButton() {
-        topBarGridPane.add(clearButton, 1, 0);
+        if (!topBarGridPane.getChildren().contains(clearButton)) {
+            topBarGridPane.add(clearButton, 1, 0);
+        }
     }
 
     public void disableAll(final boolean disable) {
