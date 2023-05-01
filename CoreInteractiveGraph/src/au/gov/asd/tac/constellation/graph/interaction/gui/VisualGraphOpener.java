@@ -130,7 +130,7 @@ public final class VisualGraphOpener extends GraphOpener {
                                 if (!toRenamed) {
                                     LOGGER.log(Level.WARNING, "Unable to backup file: {0}", toBak);
                                 } else {
-                                AutosaveUtilities.copyFile(autosaved, f);
+                                    AutosaveUtilities.copyFile(autosaved, f);
                                 } 
                             } else {
                                 AutosaveUtilities.copyFile(autosaved, f);
