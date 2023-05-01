@@ -210,7 +210,6 @@ public class NotesViewPane extends BorderPane {
         autoFilterCheckComboBox.setTitle("Select tag(s)...");
         autoFilterCheckComboBox.setDisable(true);
 
-
         // Set whether or not a time filter should even be applied
         dateTimeRangePicker.getClearButton().setOnAction(event -> {
             dateTimeRangePicker.setActive(false);
@@ -349,7 +348,6 @@ public class NotesViewPane extends BorderPane {
 
         setTop(toolBar);
         setCenter(notesListScrollPane);
-        //setBottom(addNoteVBox);
     }
 
     /**
@@ -701,8 +699,8 @@ public class NotesViewPane extends BorderPane {
             selectionLabel.setText(selectionLabelText);
             selectionLabel.setWrapText(true);
             selectionLabel.setStyle("-fx-font-weight: bold; -fx-font-style: italic; " + fontStyle);
-            selectionLabel.setMinWidth(155);
-            selectionLabel.setMaxWidth(155);
+            selectionLabel.setMinWidth(250);
+            selectionLabel.setMaxWidth(250);
             selectionLabel.setAlignment(Pos.CENTER_RIGHT);
 
             // If the note to be created is in edit mode, ensure it is created
