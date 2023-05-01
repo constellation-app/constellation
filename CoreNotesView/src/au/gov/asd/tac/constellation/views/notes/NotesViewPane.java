@@ -152,7 +152,6 @@ public class NotesViewPane extends BorderPane {
     private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
-    private static final int NOTE_DESCRIPTION_CAP = 500;
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
@@ -256,10 +255,13 @@ public class NotesViewPane extends BorderPane {
         helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
         MenuBar menuBar = new MenuBar();
-        menuBar.getMenus().add(dateTimeRangePicker.getTimeFilterMenu());
+        //menuBar.getMenus().add(dateTimeRangePicker.getTimeFilterMenu());
 
         // FlowPane to store control items used to filter notes.
-        final GridPane topBar = new GridPane();
+        final ToolBar toolBar = new ToolBar();
+        toolBar.getItems().addAll(createNewNoteButton, filterCheckComboBox, autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
+
+        /*final GridPane topBar = new GridPane();
         topBar.add(createNewNoteButton, 0, 0);
         topBar.add(filterCheckComboBox, 1, 0);
         topBar.add(autoFilterCheckComboBox, 2, 0);
@@ -267,7 +269,7 @@ public class NotesViewPane extends BorderPane {
         topBar.add(helpButton, 4, 0);
         //topBar.add(dateTimeRangePicker.getTimeRangeAccordian(), 0, 1, 3, 1);
         topBar.setHgap(5);
-        topBar.setVgap(5);
+        topBar.setVgap(5);*/
 
         //final VBox topVBox = new VBox(topBar);
 
@@ -371,7 +373,7 @@ public class NotesViewPane extends BorderPane {
         notesListScrollPane.setStyle(fontStyle + "-fx-padding: 5px; -fx-background-color: transparent;");
         notesListScrollPane.setFitToWidth(true);
 
-        setTop(topBar);
+        setTop(toolBar);
         setCenter(notesListScrollPane);
         //setBottom(addNoteVBox);
     }

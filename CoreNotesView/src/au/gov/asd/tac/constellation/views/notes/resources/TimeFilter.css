@@ -1,12 +1,4 @@
-.menu-bar{
-    -fx-background-color: #222222;
-}
-
-.menu {
-    -fx-background-color: #161616;
-}
-
-.menu:hover {
+.menu-button:hover {
     -fx-background-color: #292929;
 }
 

@@ -34,6 +34,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -57,7 +58,7 @@ public class DateTimeRangePicker {
     private final CustomMenuItem timeRangeCustomMenuItem;
     private final Label titleText;
 
-    private final Menu timeFilterMenu = new Menu();
+    private final MenuButton timeFilterMenu = new MenuButton();
 
     private static final String TITLE = "Select a time range...";
 
@@ -181,7 +182,6 @@ public class DateTimeRangePicker {
         clearButton.setPadding(new Insets(0, 8, 0, 8));
 
         applyButton.setTextAlignment(TextAlignment.JUSTIFY);
-        //applyButton.setPadding(new Insets(0, 8, 0, 8));
 
         topBarGridPane.setHgap(10);
 
@@ -254,7 +254,7 @@ public class DateTimeRangePicker {
         return timeRangeCustomMenuItem;
     }
 
-    public Menu getTimeFilterMenu() {
+    public MenuButton getTimeFilterMenu() {
         return timeFilterMenu;
     }
 
