@@ -112,7 +112,7 @@ public class NotesViewPane extends BorderPane {
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
 
-    private static final int DEFAULT_SPACING = 5;
+    private static final int DEFAULT_SPACING = 10;
     private static final int EDIT_SPACING = 110;
     private final static String SHOW_MORE = "Show more";
     private final static String SHOW_LESS = "Show less";
@@ -806,7 +806,6 @@ public class NotesViewPane extends BorderPane {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + AUTO_COLOR + BG_RADIUS_STYLE);
             notesListVBox.getChildren().add(noteBody);
         }
-
 
         // Change colour of note to whatever user sleects
         colourPicker.setOnAction(event -> {

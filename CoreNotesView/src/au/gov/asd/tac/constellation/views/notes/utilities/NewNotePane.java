@@ -124,7 +124,9 @@ public class NewNotePane {
         contentField.setWrapText(true);
 
         preview = new TextFlow();
+        preview.setMinWidth(WIDTH - 5);
         preview.setMaxWidth(WIDTH - 5);
+        preview.setMinHeight(209);
 
         preview.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
@@ -132,7 +134,9 @@ public class NewNotePane {
 
         final ScrollPane previewTabScrollPane = new ScrollPane();
         previewTabScrollPane.setContent(preview);
+        previewTabScrollPane.setMinWidth(WIDTH - 5);
         previewTabScrollPane.setMaxWidth(WIDTH - 5);
+        previewTabScrollPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         tabPane = new TabPane();
         Tab writeTab = new Tab();
