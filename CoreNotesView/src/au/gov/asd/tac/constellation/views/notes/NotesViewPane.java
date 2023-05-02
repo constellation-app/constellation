@@ -46,6 +46,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -251,7 +252,6 @@ public class NotesViewPane extends BorderPane {
         // FlowPane to store control items used to filter notes.
         final ToolBar toolBar = new ToolBar();
         toolBar.getItems().addAll(createNewNoteButton, filterCheckComboBox, autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
-
         // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(userChosenColour);
 
@@ -283,7 +283,6 @@ public class NotesViewPane extends BorderPane {
 
                     final int xPos = (int) (screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - popUpWidth / 2;
                     final int yPos = (int) (screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - popUpHeight / 2;
-                    
 
                     final Alert warningAlert = new Alert(AlertType.WARNING);
                     warningAlert.setTitle("Invalid Text");
@@ -292,7 +291,7 @@ public class NotesViewPane extends BorderPane {
                     warningAlert.setY(yPos);
                     warningAlert.setWidth(popUpWidth);
                     warningAlert.setHeight(popUpHeight);
-                    warningAlert.showAndWait();
+                    final Optional o = warningAlert.showAndWait();
                     newNotePane.showPopUp(this.getScene().getWindow());
                 } else {
                     synchronized (LOCK) {
@@ -767,10 +766,12 @@ public class NotesViewPane extends BorderPane {
         final Region gap2 = new Region();
         final Region topGap = new Region();
 
-        gap.setPrefWidth(615); // 615
+        gap.setPrefWidth(615);
         gap2.setPrefWidth(650);
         topGap.setPrefWidth(650);
-        topGap.setMinWidth(170); // 170
+        topGap.setMinWidth(10);
+        gap.setMinWidth(10);
+        gap2.setMinWidth(10);
 
         if (newNote.getNodeColour().isBlank()) {
             newNote.setNodeColour(USER_COLOR);
@@ -819,7 +820,7 @@ public class NotesViewPane extends BorderPane {
             }
         });
 
-        this.setMinWidth(500);
+        //this.setMinWidth(500);
         if (newNote.isUserCreated()) {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
             notesListVBox.getChildren().add(noteBody);
@@ -827,6 +828,8 @@ public class NotesViewPane extends BorderPane {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + AUTO_COLOR + BG_RADIUS_STYLE);
             notesListVBox.getChildren().add(noteBody);
         }
+
+        noteBody.prefWidthProperty().bind(this.widthProperty());
 
         showMoreButton.setOnAction(event -> {
             if (showMoreButton.getText().equals(SHOW_MORE)) {

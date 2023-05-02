@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.CustomMenuItem;
@@ -158,8 +159,14 @@ public class DateTimeRangePicker {
         });
 
         // Event handler for when user hovers over active and apply button
-        clearButton.setOnMouseEntered(event -> clearButton.setStyle("-fx-background-color: #23FFB5; "));
-        clearButton.setOnMouseExited(event -> clearButton.setStyle("-fx-background-color: #7FFFD4;  "));
+        clearButton.setOnMouseEntered(event -> {
+            clearButton.setStyle("-fx-background-color: #23FFB5; ");
+            clearButton.setCursor(Cursor.HAND);
+        });
+        clearButton.setOnMouseExited(event -> {
+            clearButton.setStyle("-fx-background-color: #7FFFD4;  ");
+            clearButton.setCursor(Cursor.DEFAULT);
+        });
         applyButton.setOnMouseEntered(event -> applyButton.setStyle("-fx-background-color: #078BC9; "));
         applyButton.setOnMouseExited(event -> applyButton.setStyle("-fx-background-color: #0080FF; "));
 
