@@ -56,6 +56,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ColorPicker;
@@ -276,22 +277,22 @@ public class NotesViewPane extends BorderPane {
                     newNotePane.closePopUp();
                     final Window w = this.getScene().getWindow();
                     final List<Screen> screens = Screen.getScreensForRectangle(w.getX(), w.getY(), w.widthProperty().get(), w.heightProperty().get());
-                    final Rectangle r = new Rectangle();
 
                     final int popUpWidth = 300;
                     final int popUpHeight = 150;
 
                     final int xPos = (int) (screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - popUpWidth / 2;
                     final int yPos = (int) (screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - popUpHeight / 2;
+                    
 
-                    r.setBounds(xPos, yPos, popUpWidth, popUpHeight);
-                    //r.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - (JOptionPane.getRootFrame().getHeight() * 2.5) / 2);
-                    final JOptionPane invalidTextPane = new JOptionPane("Type in missing fields.");
-                    final JDialog warningDialog = invalidTextPane.createDialog("Invalid Text");
-                    warningDialog.setBounds(r);
-                    //warningDialog.setType(JOptionPane.WARNING_MESSAGE);
-                    //JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
-                    warningDialog.show();
+                    final Alert warningAlert = new Alert(AlertType.WARNING);
+                    warningAlert.setTitle("Invalid Text");
+                    warningAlert.setContentText("Type in missing fields.");
+                    warningAlert.setX(xPos);
+                    warningAlert.setY(yPos);
+                    warningAlert.setWidth(popUpWidth);
+                    warningAlert.setHeight(popUpHeight);
+                    warningAlert.showAndWait();
                     newNotePane.showPopUp(this.getScene().getWindow());
                 } else {
                     synchronized (LOCK) {
