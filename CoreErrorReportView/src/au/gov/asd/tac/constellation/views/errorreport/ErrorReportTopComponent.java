@@ -541,7 +541,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         if (!sessionErrorsBox.getChildren().isEmpty()) {
             for (int i = 0; i < errCount; i++) {
                 ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(
-                        sessionErrors.get(i).getEntryId(), null, null, ((TitledPane) sessionErrorsBox.getChildren().get(i)).isExpanded());
+                        sessionErrors.get(i).getEntryId(), null, null, ((TitledPane) sessionErrorsBox.getChildren().get(i)).isExpanded(), null);
             }
         }
         final ArrayList<String> activeFilters = new ArrayList<>();
@@ -874,7 +874,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         blockPopupsButton.setPadding(new Insets(1, 1, 2, 1));
         blockPopupsButton.setOnAction((final ActionEvent event) -> {
             entry.setBlockRepeatedPopups(!entry.isBlockRepeatedPopups());
-            ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(entry.getEntryId(), null, entry.isBlockRepeatedPopups(), null);
+            ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(entry.getEntryId(), null, entry.isBlockRepeatedPopups(), null, null);
             blockPopupsButton.setGraphic(entry.isBlockRepeatedPopups() ? blockPopups : allowPopups);
             blockPopupsButton.setTooltip(entry.isBlockRepeatedPopups() ? new Tooltip("Popups Blocked.\nRight click to review exception") : new Tooltip("Popups Allowed.\nRight click to review exception"));
         });

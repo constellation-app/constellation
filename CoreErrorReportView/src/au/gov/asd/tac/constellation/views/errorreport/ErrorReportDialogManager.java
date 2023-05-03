@@ -148,6 +148,7 @@ public class ErrorReportDialogManager {
         Platform.runLater(() -> {
             entry.setLastPopupDate(new Date());
             final ErrorReportDialog errorDlg = new ErrorReportDialog(entry);
+            entry.setDialog(errorDlg);
             errorDlg.showDialog((review ? "Reviewing: " : "") + "Unexpected Exception ...");
         });
     }

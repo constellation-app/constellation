@@ -80,6 +80,7 @@ public class ErrorReportDialog {
      */
     public ErrorReportDialog(final ErrorReportEntry errorEntry) {
         currentError = errorEntry;
+        currentError.setDialog(this);
         fxPanel = new JFXPanel();
         final BoxLayout layout = new BoxLayout(fxPanel, BoxLayout.Y_AXIS);
         fxPanel.setLayout(layout);
@@ -213,28 +214,45 @@ public class ErrorReportDialog {
         SwingUtilities.invokeLater(() -> {
             final DialogDescriptor dd = new DialogDescriptor(fxPanel, title);
             dd.setOptions(new Object[0]);
-            ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(currentError.getEntryId(), new Date(), null, null);
+            ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(currentError.getEntryId(), null, null, null, this);
             dialog = (JDialog) DialogDisplayer.getDefault().createDialog(dd);
-            dialog.setSize(new Dimension(430, 220));
-            dialog.setEnabled(true);
-            dialog.setModal(true);
-            dialog.setVisible(true);
-
-            // upon closing dialog, update session settings ...
-            ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(currentError.getEntryId(), new Date(), blockRepeatsCheckbox.isSelected(), null);
-            ErrorReportDialogManager.getInstance().removeActivePopupId(currentError.getEntryId());
-            ErrorReportDialogManager.getInstance().setLatestPopupDismissDate(new Date());
-            ErrorReportSessionData.requestScreenUpdate(true);
+            updateDialogSettings(true, false);
+            // upon closing dialog, session settings need updating ...
+            finaliseSessionSettings();
         });
     }
 
+    public void updateDialogSettings(final boolean isModal, final boolean autoClose) {        
+        dialog.setSize(new Dimension(430, 220));
+        dialog.setEnabled(true);
+        dialog.setModal(isModal);
+        dialog.setVisible(true);
+        if (autoClose) {
+            hideDialog();
+        }
+    }
+    
+    public void finaliseSessionSettings() {
+        ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(currentError.getEntryId(), new Date(), blockRepeatsCheckbox.isSelected(), null, this);
+        ErrorReportDialogManager.getInstance().removeActivePopupId(currentError.getEntryId());
+        ErrorReportDialogManager.getInstance().setLatestPopupDismissDate(new Date());
+        ErrorReportSessionData.requestScreenUpdate(true);        
+    }
+    
+    public JDialog getMainDialog() {
+        return dialog;
+    }
+    
     /**
      * Hides this dialog.
      */
     public void hideDialog() {
         SwingUtilities.invokeLater(() -> {
-            dialog.setVisible(false);
-            dialog.dispose();
+            if (dialog != null && dialog.isVisible()) {
+                dialog.setVisible(false);
+                dialog.dispose();
+                ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(currentError.getEntryId(), null, null, null, null);
+            }
         });
     }
 

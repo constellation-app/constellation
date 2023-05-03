@@ -37,6 +37,7 @@ public class ErrorReportEntry {
     private Date lastPopupDate = null;
     private boolean preventRepeatedPopups = false;
     private String summaryHeading = null;
+    private ErrorReportDialog dialog = null;
 
     public ErrorReportEntry(final Level errLevel, final String errorHeading, final String summary, final String errorMessage, final double id) {
         errorLevel = errLevel;
@@ -55,6 +56,7 @@ public class ErrorReportEntry {
         dataCopy.lastPopupDate = (lastPopupDate == null ? null : new Date(lastPopupDate.getTime()));
         dataCopy.occurrences = occurrences;
         dataCopy.preventRepeatedPopups = preventRepeatedPopups;
+        dataCopy.dialog = dialog;
         return dataCopy;
     }
 
@@ -119,6 +121,14 @@ public class ErrorReportEntry {
         return entryId;
     }
 
+    public ErrorReportDialog getDialog() {
+        return dialog;
+    }
+    
+    public void setDialog(final ErrorReportDialog errorDialog) {
+        dialog = errorDialog;
+    }
+    
     public void setEntryId(final double id) {
         entryId = id;
     }
@@ -163,6 +173,7 @@ public class ErrorReportEntry {
                 + ", [lastDate=" + lastDate + "]"
                 + ", [lastPopupDate=" + lastPopupDate + "]"
                 + ", [preventRepeatedPopups=" + preventRepeatedPopups + "]"
+                + ", [dialog=" + dialog + "]"
                 + "]";
     }
 }

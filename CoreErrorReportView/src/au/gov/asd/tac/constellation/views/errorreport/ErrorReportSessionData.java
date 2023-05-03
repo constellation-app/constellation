@@ -28,7 +28,7 @@ import java.util.List;
  * @author OrionsGuardian
  */
 public class ErrorReportSessionData {
-
+    
     private final List<ErrorReportEntry> sessionErrors = new ArrayList<>();
     private final List<ErrorReportEntry> displayedErrors = new ArrayList<>();
 
@@ -129,8 +129,10 @@ public class ErrorReportSessionData {
                         if (displayedEntry != null) {
                             refreshedEntry.setExpanded(displayedEntry.isExpanded());
                             refreshedEntry.setBlockRepeatedPopups(displayedEntry.isBlockRepeatedPopups());
+                            refreshedEntry.setDialog(displayedEntry.getDialog());
                             entry.setExpanded(displayedEntry.isExpanded());
                             entry.setBlockRepeatedPopups(displayedEntry.isBlockRepeatedPopups());
+                            entry.setDialog(displayedEntry.getDialog());
                             if (displayedEntry.getLastPopupDate() != null) {
                                 refreshedEntry.setLastPopupDate(new Date(displayedEntry.getLastPopupDate().getTime()));
                                 entry.setLastPopupDate(new Date(displayedEntry.getLastPopupDate().getTime()));
@@ -189,7 +191,7 @@ public class ErrorReportSessionData {
      * @param blockPopups
      * @param expanded
      */
-    public void updateDisplayedEntryScreenSettings(final double entryId, final Date lastPopupDate, final Boolean blockPopups, final Boolean expanded) {
+    public void updateDisplayedEntryScreenSettings(final double entryId, final Date lastPopupDate, final Boolean blockPopups, final Boolean expanded, final ErrorReportDialog errorDialog) {
         synchronized (displayedErrors) {
             final ErrorReportEntry displayedEntry = findDisplayedEntryWithId(entryId);
             if (displayedEntry != null) {
@@ -202,6 +204,7 @@ public class ErrorReportSessionData {
                 if (expanded != null) {
                     displayedEntry.setExpanded(expanded);
                 }
+                displayedEntry.setDialog(errorDialog);
             }
         }
     }
