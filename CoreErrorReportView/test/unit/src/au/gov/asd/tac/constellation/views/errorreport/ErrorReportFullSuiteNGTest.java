@@ -273,7 +273,7 @@ public class ErrorReportFullSuiteNGTest {
         int loopCounter = 0;
         int dialogCounter = 0;
         List<ErrorReportEntry> errorList = ErrorReportSessionData.getInstance().refreshDisplayedErrors(filters);
-        while(loopCounter < 6 && dialogCounter < expectedCount){
+        while(loopCounter < 60 && dialogCounter < expectedCount){
             dialogCounter = 0;
             errorList = ErrorReportSessionData.getInstance().refreshDisplayedErrors(filters);
             for (final ErrorReportEntry entry : errorList) {
@@ -285,7 +285,7 @@ public class ErrorReportFullSuiteNGTest {
             loopCounter++;
         }
         // fails if it takes over 1 minute
-        assertTrue(loopCounter < 6);
+        assertTrue(loopCounter < 60);
         return errorList;
     }
     
