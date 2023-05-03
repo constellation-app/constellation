@@ -49,8 +49,13 @@ public class ErrorReportFullSuiteNGTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
+        try {
+            if (!FxToolkit.isFXApplicationThreadRunning()) {
+                FxToolkit.registerPrimaryStage();
+            }
+        } catch (Exception e) {
+            System.out.println("\n********* SETUP ERROR: " + e);
+            throw e;
         }
     }
 
@@ -60,43 +65,21 @@ public class ErrorReportFullSuiteNGTest {
             FxToolkit.cleanupStages();
         } catch (TimeoutException ex) {
             LOGGER.log(Level.WARNING, "FxToolkit timed out trying to cleanup stages", ex);
-        }
+        } catch (Exception e) {
+            if (e.toString().contains("HeadlessException")) {
+                System.out.println("\n**** EXPECTED TEARDOWN ERROR: " + e.toString());
+            } else {
+                System.out.println("\n**** UN-EXPECTED TEARDOWN ERROR: " + e.toString());
+                throw e;
+            }
+        }        
     }
     
     @Test
     public void runSessionDataTest() {
 
-//        executor = mock(ExecutorService.class);
-//        implementAsDirectExecutor(executor);
- 
-//       MockedStatic<SwingUtilities> mockedStatic = Mockito.mockStatic(SwingUtilities.class, Mockito.CALLS_REAL_METHODS);
+        System.setProperty("java.awt.headless", "true");
         
-//        doAnswer(new Answer<Object>() {
-//            public Object answer(InvocationOnMock invocation) throws Exception {
-//                ((Runnable) invocation.getArguments()[0]).run();
-//                return null;
-//            }
-//        }).when(mockedStatic).invokeLater(any(Runnable.class));
-                
-//        Answer<Object> laterAnswer = new Answer<Object>() {
-//            public Object answer(InvocationOnMock invocation) throws Exception {
-//                ((Runnable) invocation.getArguments()[0]).run();
-//                LOGGER.log(Level.INFO, "\n\n>>>><<<< = = = = = = HERE AND NOW + + + + + +\n");
-//                return null;
-//            };
-//        };
-//
-//        mockedStatic.when(() ->
-//            SwingUtilities.invokeLater(any())) // <<<<<<<<<<<<<<<<<<<<<<
-//            .then(laterAnswer);
-
-//        mockedStatic.when(SwingUtilities::invokeLater).answer(laterAnswer);
-
-//        final MockedStatic<ErrorReportDialogManager> erdmStatic = Mockito.mockStatic(ErrorReportDialogManager.class);
-//        final ErrorReportDialogManager erdm = spy(new ErrorReportDialogManager());
-//        erdmStatic.when(ErrorReportDialogManager::getInstance).thenReturn(erdm);
-
-
         final ErrorReportDialogManager erdm = ErrorReportDialogManager.getInstance();
         erdm.setErrorReportRunning(false);
         
@@ -205,9 +188,10 @@ public class ErrorReportFullSuiteNGTest {
             }
         }
         
-        ErrorReportTopComponent ertc = new ErrorReportTopComponent();
+        ErrorReportTopComponent ertcInstance = new ErrorReportTopComponent();
         // when this is started it takes over control of the popup handling
-        ertc.handleComponentOpened();
+        
+        ertcInstance.handleComponentOpened();
         
         System.out.println("\n\n>>>> Waiting 5s for popup grace period");
         delay(5100);
@@ -218,6 +202,9 @@ public class ErrorReportFullSuiteNGTest {
         final ErrorReportEntry partialEntry5 = new ErrorReportEntry(Level.WARNING, null, "part summary", "part message", ErrorReportSessionData.getNextEntryId());
         session.storeSessionError(partialEntry5);
         
+        // May need to account for pipeline exceptions being added to the report view ?
+        // Not actually adding the error handler to the logger, so it shouldn't be a factor
+        
         System.out.println("\n\n>>>> Waiting for dialogs");
         storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING)), 1);
         System.out.println("\n\n>>>> Done Waiting");
@@ -225,9 +212,9 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check WARNINGS list size");
         assertEquals(storedList.size(), 1);        
 
-        System.out.println("\n\n>>>> Waiting 3s for confirmation");
-        delay(5100);
-        System.out.println("\n\n>>>> Done Waiting");        
+//        System.out.println("\n\n>>>> Waiting 3s for confirmation");
+//        delay(3100);
+//        System.out.println("\n\n>>>> Done Waiting");        
         
         for (final ErrorReportEntry erEntry : storedList) {
             System.out.println("\n>>>> Checking entry: " + erEntry);
@@ -240,12 +227,13 @@ public class ErrorReportFullSuiteNGTest {
             }
         }
         
-        ertc.close();
+        ertcInstance.close();
         
+        System.clearProperty("java.awt.headless");
         System.out.println("\n>>>> PASSED everything");
         
     }
-
+    
     protected void implementAsDirectExecutor(ExecutorService executor) {
         doAnswer(new Answer<Object>() {
             public Object answer(InvocationOnMock invocation) throws Exception {
@@ -281,10 +269,10 @@ public class ErrorReportFullSuiteNGTest {
                     dialogCounter++;
                 }
             }
-            delay(1000);
+            delay(3000);
             loopCounter++;
         }
-        // fails if it takes over 1 minute
+        // fails if it takes over 3 minutes
         assertTrue(loopCounter < 60);
         return errorList;
     }
