@@ -62,6 +62,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -75,6 +76,9 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -83,6 +87,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -1253,12 +1258,12 @@ public class MapView extends ScrollPane {
      */
     public void generateZoomLocationUI() {
         if (!showingZoomToLocationPane) {
-
-            final double width = 100;
-            final double height = 75;
+            final Stage stage = new Stage();
+            final double width = 750;
+            final double height = 225;
 
             final BorderPane pane = new BorderPane();
-            pane.prefWidth(width);
+            //pane.prefWidth(width);
             pane.prefHeight(height);
             pane.minWidth(width);
             pane.minHeight(height);
@@ -1267,8 +1272,8 @@ public class MapView extends ScrollPane {
 
             pane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
-            pane.setTranslateX((MAP_WIDTH / 2) - 300);
-            pane.setTranslateY(MAP_HEIGHT / 2 - height / 2);
+            //pane.setTranslateX((MAP_WIDTH / 2) - 300);
+            //pane.setTranslateY(MAP_HEIGHT / 2 - height / 2);
 
             final GridPane topGridPane = new GridPane();
             pane.setCenter(topGridPane);
@@ -1337,16 +1342,26 @@ public class MapView extends ScrollPane {
                     coordinateGridPane.add(longitudeInput, 1, 1);
                     coordinateGridPane.add(radiusInput, 2, 1);
 
+                    pane.setMinWidth(width);
+                    pane.setMaxWidth(width);
+                    stage.setWidth(width);
+
                 } else if (selectedItem.equals(GEOHASH)) {
                     geoHashLabel.setFill(Color.AQUA);
                     geoHashInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
                     coordinateGridPane.add(geoHashLabel, 0, 0);
                     coordinateGridPane.add(geoHashInput, 0, 1);
+                    pane.setMinWidth(420);
+                    pane.setMaxWidth(420);
+                    stage.setWidth(420);
                 } else if (selectedItem.equals(MGRS)) {
                     mgrsLabel.setFill(Color.AQUA);
                     mgrsInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
                     coordinateGridPane.add(mgrsLabel, 0, 0);
                     coordinateGridPane.add(mgrsInput, 0, 1);
+                    pane.setMinWidth(420);
+                    pane.setMaxWidth(420);
+                    stage.setWidth(420);
                 }
 
 
@@ -1355,6 +1370,17 @@ public class MapView extends ScrollPane {
 
             final Button okButton = new Button("OK");
             okButton.setTextFill(Color.WHITE);
+            okButton.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+            okButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+
+            okButton.setOnMouseEntered(event -> {
+                okButton.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+                okButton.setTextFill(Color.BLACK);
+            });
+            okButton.setOnMouseExited(event -> {
+                okButton.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+                okButton.setTextFill(Color.WHITE);
+            });
 
             final double zoomCircleMarkerXOffset = 100;
             final double zoomCircleMarkerYOffset = 100;
@@ -1443,26 +1469,36 @@ public class MapView extends ScrollPane {
                         final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
                         marker.setMarkerPosition(0, 0);
 
-
                         addUserDrawnMarker(marker);
-
                         userMarkers.add(marker);
-
                     }
                 }
 
                 showingZoomToLocationPane = false;
                 event.consume();
                 zoomLocationGroup.getChildren().clear();
+                stage.close();
             });
 
             final Button cancelButton = new Button("Cancel");
             cancelButton.setTextFill(Color.WHITE);
+            cancelButton.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+            cancelButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+
+            cancelButton.setOnMouseEntered(event -> {
+                cancelButton.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+                cancelButton.setTextFill(Color.BLACK);
+            });
+            cancelButton.setOnMouseExited(event -> {
+                cancelButton.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+                cancelButton.setTextFill(Color.WHITE);
+            });
 
             cancelButton.setOnAction(event -> {
                 showingZoomToLocationPane = false;
                 event.consume();
                 zoomLocationGroup.getChildren().clear();
+                stage.close();
             });
 
             final GridPane bottomGridPane = new GridPane();
@@ -1485,8 +1521,12 @@ public class MapView extends ScrollPane {
 
 
 
-            zoomLocationGroup.getChildren().add(pane);
-
+            //zoomLocationGroup.getChildren().add(pane);
+            final Scene s = new Scene(pane);
+            stage.setScene(s);
+            stage.setWidth(width);
+            stage.setHeight(height);
+            stage.show();
             showingZoomToLocationPane = true;
         }
     }

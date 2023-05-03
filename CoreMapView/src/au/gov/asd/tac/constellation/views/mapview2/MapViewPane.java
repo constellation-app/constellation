@@ -211,7 +211,7 @@ public class MapViewPane extends BorderPane {
         });
 
         // Add overlays to toolbar
-        overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY, OVERVIEW_OVERLAY));
+        overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY));
         overlaysDropDown.setTitle("Overlays");
         overlaysDropDown.setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
         overlaysDropDown.setMinWidth(95);
@@ -222,7 +222,7 @@ public class MapViewPane extends BorderPane {
             @Override
             public void onChanged(final ListChangeListener.Change<? extends String> c) {
                 overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
-                if (overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
+                if (overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY) && !toolBarGridPane.getChildren().contains(latLabel)) {
                     toolBarGridPane.add(latLabel, 0, 1);
                     toolBarGridPane.add(latField, 1, 1);
                     toolBarGridPane.add(lonLabel, 2, 1);
@@ -484,7 +484,7 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setStroke(Color.TRANSPARENT);
 
         borderRectangle.setFill(Color.TRANSPARENT);
-        borderRectangle.setStroke(Color.RED);
+        borderRectangle.setStroke(Color.TRANSPARENT);
 
         //borderRectangle.setWidth(1600);
         borderRectangle.widthProperty().bind(this.widthProperty().subtract(20));
