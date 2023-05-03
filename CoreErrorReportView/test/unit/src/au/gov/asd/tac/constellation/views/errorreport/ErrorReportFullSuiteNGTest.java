@@ -32,6 +32,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
+import static org.testng.AssertJUnit.assertFalse;
 import static org.testng.AssertJUnit.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -126,6 +127,10 @@ public class ErrorReportFullSuiteNGTest {
             ErrorReportDialog erDialog = erEntry.getDialog();
             if (erDialog != null) {
                 // simulate close
+//                erDialog.toggleExceptionDisplay();
+//                assertEquals(erDialog.getMainDialog().getHeight(), 575);
+//                erDialog.toggleExceptionDisplay();
+//                assertEquals(erDialog.getMainDialog().getHeight(), 230);
                 erDialog.finaliseSessionSettings();
                 erDialog.hideDialog();
                 System.out.println("\n>>>> UPDATE and CLOSE !!");
@@ -147,9 +152,6 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> resumption date: " + erdm.getGracePeriodResumptionDate() +
                                 "\n>>>> latest pop dis data: " + erdm.getLatestPopupDismissDate());
 
-        System.out.println("\n\n>>>> Waiting 5s for popup grace period");
-        delay(5100);
-        System.out.println("\n\n>>>> Done Waiting");
         
         System.out.println("\n\n>>>> Generating WARNING, INFO, and FINE entries");
         
@@ -165,6 +167,11 @@ public class ErrorReportFullSuiteNGTest {
         
         session.storeSessionError(partialEntry);
         session.storeSessionError(partialEntry2);
+
+        System.out.println("\n\n>>>> Waiting 5s for popup grace period");
+        delay(5100);
+        System.out.println("\n\n>>>> Done Waiting");
+
         session.storeSessionError(partialEntry3);
 
         activeLevels = erdm.getActivePopupErrorLevels();
@@ -215,7 +222,14 @@ public class ErrorReportFullSuiteNGTest {
 //        System.out.println("\n\n>>>> Waiting 3s for confirmation");
 //        delay(3100);
 //        System.out.println("\n\n>>>> Done Waiting");        
-        
+
+        final boolean isFlashing = ertcInstance.isIconFlashing();
+        assertTrue(isFlashing);
+        ertcInstance.setReportsExpanded(false);
+        ertcInstance.refreshSessionErrors();
+        final ErrorReportEntry checkEntry = ertcInstance.findActiveEntryWithId(storedList.get(0).getEntryId());
+        assertFalse(checkEntry.isExpanded());                
+
         for (final ErrorReportEntry erEntry : storedList) {
             System.out.println("\n>>>> Checking entry: " + erEntry);
             ErrorReportDialog erDialog = erEntry.getDialog();
@@ -227,6 +241,7 @@ public class ErrorReportFullSuiteNGTest {
             }
         }
         
+        ertcInstance.handleComponentClosed();
         ertcInstance.close();
         
         System.clearProperty("java.awt.headless");

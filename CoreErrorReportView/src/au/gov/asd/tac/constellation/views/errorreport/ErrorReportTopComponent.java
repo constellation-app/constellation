@@ -541,7 +541,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
         if (!sessionErrorsBox.getChildren().isEmpty()) {
             for (int i = 0; i < errCount; i++) {
                 ErrorReportSessionData.getInstance().updateDisplayedEntryScreenSettings(
-                        sessionErrors.get(i).getEntryId(), null, null, ((TitledPane) sessionErrorsBox.getChildren().get(i)).isExpanded(), null);
+                        sessionErrors.get(i).getEntryId(), null, null, ((TitledPane) sessionErrorsBox.getChildren().get(i)).isExpanded(), sessionErrors.get(i).getDialog());
             }
         }
         final ArrayList<String> activeFilters = new ArrayList<>();

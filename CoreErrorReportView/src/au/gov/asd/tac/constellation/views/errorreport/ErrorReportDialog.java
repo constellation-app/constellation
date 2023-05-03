@@ -223,7 +223,7 @@ public class ErrorReportDialog {
     }
 
     public void updateDialogSettings(final boolean isModal, final boolean autoClose) {        
-        dialog.setSize(new Dimension(430, 220));
+        dialog.setSize(new Dimension(430, 230));
         dialog.setEnabled(true);
         dialog.setModal(isModal);
         dialog.setVisible(true);

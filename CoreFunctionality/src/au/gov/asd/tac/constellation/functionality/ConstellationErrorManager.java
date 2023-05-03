@@ -35,7 +35,9 @@ public class ConstellationErrorManager extends Handler {
         if (errorRecord != null && errorRecord.getThrown() != null) {
             final StackTraceElement[] elems = errorRecord.getThrown().getStackTrace();
             final StringBuilder errorMsg = new StringBuilder();
-            String recordHeader = errorRecord.getThrown().getLocalizedMessage() != null ? errorRecord.getThrown().getLocalizedMessage() : "<< No Message >>";
+            String recordHeader = errorRecord.getThrown().getLocalizedMessage() != null ? 
+                    errorRecord.getThrown().getLocalizedMessage() : 
+                    "<< No Message >>";
             if (!recordHeader.endsWith(SeparatorConstants.NEWLINE)) {
                 recordHeader += SeparatorConstants.NEWLINE;
             }
@@ -48,7 +50,8 @@ public class ConstellationErrorManager extends Handler {
                 errorMsg.append(" >> No stacktrace available for error:").append(SeparatorConstants.NEWLINE).append(" >> ").append(recordHeader);
             } else {
                 for (int i = 0; i < elems.length; i++) {
-                    errorMsg.append(elems[i].toString()).append(SeparatorConstants.NEWLINE);
+                    errorMsg.append(elems[i].toString())
+                            .append(SeparatorConstants.NEWLINE);
                 }
             }
             final ErrorReportEntry repEntry = new ErrorReportEntry(errLevel, recordHeader, errorSummary, errorMsg.toString(), ErrorReportSessionData.getNextEntryId());
