@@ -979,8 +979,8 @@ public class NotesViewPane extends BorderPane {
             if (StringUtils.isBlank(titleText.getText()) || StringUtils.isBlank(contentTextArea.getText())) {
                 JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
             } else {
-                titleLabel.setText(titleText.getText());
-                contentLabel.setText(contentTextArea.getText());
+                //titleLabel.setText(titleText.getText());
+                //contentLabel.setText(contentTextArea.getText());
 
                 contentTextFlow.getChildren().clear();
 

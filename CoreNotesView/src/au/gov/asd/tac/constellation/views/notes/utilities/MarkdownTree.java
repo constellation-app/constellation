@@ -68,7 +68,7 @@ public class MarkdownTree {
         while (currentIndex < text.length()) {
             //LOGGER.log(Level.SEVERE, "working on: " + text);
             int closestSyntax = Integer.MAX_VALUE;
-
+            LOGGER.log(Level.SEVERE, "Current Index is: " + currentIndex);
             for (int i = 0; i < 6; ++i) {
                 if (text.indexOf(syntaxList[i], currentIndex) != -1 && text.indexOf(syntaxList[i], currentIndex) < closestSyntax) {
                     closestSyntax = text.indexOf(syntaxList[i], currentIndex);
@@ -83,7 +83,7 @@ public class MarkdownTree {
 
 
             if (closestSyntax == Integer.MAX_VALUE) {
-                //LOGGER.log(Level.SEVERE, "No syntax found");
+                LOGGER.log(Level.SEVERE, "No syntax found");
                 closestSyntax = currentIndex;
             } else if (closestSyntax != currentIndex) {
                 //LOGGER.log(Level.SEVERE, "Making early text for: " + text.substring(currentIndex, closestSyntax));
@@ -100,8 +100,10 @@ public class MarkdownTree {
                         || currentNode.getType() == MarkdownNode.Type.LIST_ITEM)
                         || text.charAt(closestSyntax - 1) == '1')) {
                     normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax - 1), -99);
-                } else
+                } else {
+                    LOGGER.log(Level.SEVERE, "First character of the early text: " + text.charAt(currentIndex));
                     normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
+                }
 
                 //if (!(normal.getValue().isBlank() || normal.getValue().isEmpty())) {
                     LOGGER.log(Level.SEVERE, "Making early text for: " + text.substring(currentIndex, closestSyntax));
@@ -139,7 +141,10 @@ public class MarkdownTree {
 
             } else if (text.charAt(closestSyntax) == '\n') {
                 currentIndex = closestSyntax;
-                //LOGGER.log(Level.SEVERE, "Working on paragraph");
+                if (currentIndex == text.length() - 1) {
+                    return;
+                }
+                LOGGER.log(Level.SEVERE, "Working on paragraph");
                 if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == '\n') {
                     ++currentIndex;
                     //LOGGER.log(Level.SEVERE, "Found second enter at " + currentIndex);
@@ -174,6 +179,7 @@ public class MarkdownTree {
                         currentNode.getChildren().add(bold);
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
                         currentIndex = endIndex + 2;
+                        //LOGGER.log(Level.SEVERE, "Text after end bold syntax: " + text.charAt(currentIndex));
                     } else
                         ++currentIndex;
 
@@ -182,8 +188,8 @@ public class MarkdownTree {
                     int endIndex = text.indexOf(boldSyntax, currentIndex + 1);
                     if (endIndex != -1) {
                         while (endIndex < text.length() && endIndex != -1) {
-
                             if ((endIndex + 1 < text.length() && text.charAt(endIndex + 1) != boldSyntax) || endIndex == text.length() - 1) {
+                                LOGGER.log(Level.SEVERE, "Italic text: " + text.substring(currentIndex + 1, endIndex));
                                 MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, endIndex, text.substring(currentIndex + 1, endIndex), -99);
                                 currentNode.getChildren().add(italic);
                                 parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
@@ -273,11 +279,6 @@ public class MarkdownTree {
                             endIndex = text.length() - 1;
                         }
 
-                        //LOGGER.log(Level.SEVERE, "End index is: " + endIndex);
-
-                        /*if (text.indexOf("", endIndex) == endIndex + 1) {
-                            LOGGER.log(Level.SEVERE, "next line begins with blank");
-                        }*/
 
                         MarkdownNode listItem = new MarkdownNode(MarkdownNode.Type.LIST_ITEM, currentIndex + 1, endIndex, "LIST ITEM", 99);
                         listItem.setLatestListItem(currentNode.getLatestListItem());
@@ -296,28 +297,14 @@ public class MarkdownTree {
                 } else
                     ++currentIndex;
 
-            }/* else if (text.charAt(closestSyntax) == '\t') {
-                currentIndex = closestSyntax;
-                if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM)                {
-                    if(currentIndex + 1 < text.length())
-                    {
-                        int endIndex = text.indexOf("1.", currentIndex+1);
-                        if(endIndex != -1)
-                        {
-
-                        }
-                    }
-                }
-
-            }*/ else {
-                //LOGGER.log(Level.SEVERE, "Making text node for: " + text.substring(currentIndex));
+            } else {
+                LOGGER.log(Level.SEVERE, "Making text node for: " + text.substring(currentIndex));
                 MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, text.length() - 1, text.substring(currentIndex), -99);
                 currentNode.getChildren().add(normal);
                 return;
             }
 
-
-            if (currentIndex >= text.length() - 1 || currentIndex < 0) {
+            if (currentIndex > text.length() - 1 || currentIndex < 0) {
                 return;
             }
         }
