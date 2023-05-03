@@ -59,7 +59,7 @@ public class NewNotePane {
     private final String fontStyle = String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize());
     private static final String PROMPT_COLOR = "#909090";
     private static final double WIDTH = 500;
-    private static final double HEIGHT = 140;
+    private static final double HEIGHT = 285;
 
     private final TextArea contentField;
     private final TextField titleField = new TextField();
@@ -161,7 +161,7 @@ public class NewNotePane {
             stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setTitle("Create new note");
-            stage.setMinHeight(HEIGHT * 2.25);
+            stage.setMinHeight(HEIGHT);
             stage.setMinWidth(WIDTH);
             stage.setResizable(true);
 

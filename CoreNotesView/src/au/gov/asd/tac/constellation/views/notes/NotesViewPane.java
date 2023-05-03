@@ -108,17 +108,16 @@ public class NotesViewPane extends BorderPane {
     private boolean isSelectedFiltersUpdating = false;
     private boolean isAutoSelectedFiltersUpdating = false;
 
-    //private final VBox addNoteVBox;
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
-    private static final double noteHeight = 157.0;
+    private static final double NOTE_HEIGHT = 157.0;
     private static final int DEFAULT_SPACING = 5;
     private static final int EDIT_SPACING = 10;
     private static final String SHOW_MORE = "Show more";
     private static final String SHOW_LESS = "Show less";
     private static final String USER_COLOR = "#942483";
     private static final String AUTO_COLOR = "#1c5aa6";
-    private static String userChosenColour = USER_COLOR;
+    private static String USER_CHOSEN_COLOUR = USER_COLOR;
     private static final String DATETIME_PATTERN = "hh:mm:ss a 'on' dd/MM/yyyy"; // TODO: make this a preference so that we can support their local timestamp format instead.
 
     private static final String AUTO_NOTES_FILTER = "Auto Notes";
@@ -250,7 +249,7 @@ public class NotesViewPane extends BorderPane {
         final ToolBar toolBar = new ToolBar();
         toolBar.getItems().addAll(createNewNoteButton, filterCheckComboBox, autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
         // Create the actual node that allows user to add new notes
-        newNotePane = new NewNotePane(userChosenColour);
+        newNotePane = new NewNotePane(USER_CHOSEN_COLOUR);
 
         // Button to trigger pop-up window to make a new note
         createNewNoteButton.setText("Create Note");
@@ -807,10 +806,10 @@ public class NotesViewPane extends BorderPane {
         noteBody.setMinWidth(500);
         noteBody.setMaxHeight(Double.MAX_VALUE);
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
-            if (obs.getValue().doubleValue() >= noteHeight - 10) {
+            if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10) {
                 if (!newNote.getEditMode() && !showMoreButton.isVisible()) {
                     showMoreButton.setVisible(true);
-                    noteBody.setMaxHeight(noteHeight - 5);
+                    noteBody.setMaxHeight(NOTE_HEIGHT - 5);
                 }
             } else if (showMoreButton.isVisible()) {
                 showMoreButton.setVisible(false);
@@ -834,7 +833,7 @@ public class NotesViewPane extends BorderPane {
                 showMoreButton.setText(SHOW_LESS);
             } else if (showMoreButton.getText().equals(SHOW_LESS)) {
                 contentLabel.setText(newNote.getNoteContent());
-                noteBody.setMaxHeight(noteHeight - 5);
+                noteBody.setMaxHeight(NOTE_HEIGHT - 5);
                 showMoreButton.setText(SHOW_MORE);
             }
         });
@@ -1016,7 +1015,6 @@ public class NotesViewPane extends BorderPane {
 
                 noteInformation.getChildren().removeAll(titleText, contentTextArea);
                 noteInformation.getChildren().addAll(titleLabel, contentLabel);
-                //noteInformation.getChildren().add(showMoreButton);
                 newNote.setEditMode(false);
             }
         });

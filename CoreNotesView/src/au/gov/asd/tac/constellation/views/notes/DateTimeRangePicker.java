@@ -70,13 +70,9 @@ public class DateTimeRangePicker {
 
     private final Map<String, ZoneId> timeZoneMap = new HashMap<>();
 
-    private boolean menuShowing = false;
-
     private boolean active = false;
     private final ComboBox<String> timeZoneChoiceBox;
     private final GridPane topBarGridPane = new GridPane();
-    private static final Logger LOGGER = Logger.getLogger(DateTimeRangePicker.class.getName());
-
 
     public DateTimeRangePicker() {
 
@@ -277,10 +273,6 @@ public class DateTimeRangePicker {
         final ZonedDateTime toTime = toDate.getCurrentDateTime();
 
         return entryTime.isEqual(fromTime) || entryTime.isEqual(toTime) || (entryTime.isAfter(fromTime) && entryTime.isBefore(toTime));
-    }
-
-    public void setMenuShowing(boolean menuShowing) {
-        this.menuShowing = menuShowing;
     }
 
 
