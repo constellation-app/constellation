@@ -58,8 +58,7 @@ import org.openide.windows.TopComponent;
         id = "au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Experimental/Views", position = 4000),
-    @ActionReference(path = "Shortcuts", name = "CA-M")
+    @ActionReference(path = "Menu/Experimental/Views", position = 4000)
 })
 @TopComponent.OpenActionRegistration(
         displayName = "#CTL_MapView2Action",
@@ -73,7 +72,7 @@ import org.openide.windows.TopComponent;
 
 public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
-    private static final Logger LOGGER = Logger.getLogger("MapViewTopComponent");
+    private static final Logger LOGGER = Logger.getLogger(MapViewTopComponent.class.getName());
 
     public static final Object LOCK = new Object();
 
@@ -197,15 +196,14 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                 }).get();
 
             } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, "Exception thrown: " + ex.getMessage());
                 Thread.currentThread().interrupt();
 
             } catch (final ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, "Exception thrown: " + ex.getMessage());
             }
 
             Platform.runLater(() -> mapViewPane.getMap().redrawQueriedMarkers());
-
         }
 
     }

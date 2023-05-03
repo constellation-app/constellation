@@ -50,9 +50,8 @@ public class EntityPathsLayer extends AbstractPathsLayer {
      */
     private void extractQueriedMarkersAndNeighbours(final List<Integer> idList) {
         for (final Object value : queriedMarkers.values()) {
-            final AbstractMarker m = (AbstractMarker) value;
-
-            if (m instanceof PointMarker) {
+            if (value instanceof PointMarker) {
+                final PointMarker m = (PointMarker) value;
                 m.getConnectedNodeIdList().forEach(id -> idList.add(id));
             }
         }
@@ -85,7 +84,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
         for (int i = 0; i < idList.size(); ++i) {
 
             // Get the vertex ID from the graph
-            int vertexID = graph.getVertex(idList.get(i));
+            final int vertexID = graph.getVertex(idList.get(i));
 
             // Get the type attribute of the vertex
             final SchemaVertexType vertexType = graph.getObjectValue(vertexTypeAttributeId, vertexID);
@@ -97,7 +96,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                 final int neighbourCount = graph.getVertexNeighbourCount(vertexID);
 
                 // For every neighbour
-                for (int neighbourPos = 0; neighbourPos < neighbourCount; ++neighbourPos) {
+                for (int neighbourPos = 0; neighbourPos < neighbourCount; neighbourPos++) {
 
                     // Get the neighbour id
                     final int neighbourID = graph.getVertexNeighbour(vertexID, neighbourPos);
@@ -116,7 +115,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                         final int neighbourLinkTransactionCount = graph.getLinkTransactionCount(neighbourLinkID);
 
                         // For every transaction
-                        for (int neighbourLinkTransPos = 0; neighbourLinkTransPos < neighbourLinkTransactionCount; ++neighbourLinkTransPos) {
+                        for (int neighbourLinkTransPos = 0; neighbourLinkTransPos < neighbourLinkTransactionCount; neighbourLinkTransPos++) {
                             final int neighbourLinkTransID = graph.getLinkTransaction(neighbourLinkID, neighbourLinkTransPos);
 
                             // Extract its time and store it
@@ -128,7 +127,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
                         final List<Integer> validSecondNeighbours = new ArrayList<>();
                         final int secondNeighbourCount = graph.getVertexNeighbourCount(neighbourID);
 
-                        for (int secondNeighbourPos = 0; secondNeighbourPos < secondNeighbourCount; ++secondNeighbourPos) {
+                        for (int secondNeighbourPos = 0; secondNeighbourPos < secondNeighbourCount; secondNeighbourPos++) {
                             final int secondNeighbourID = graph.getVertexNeighbour(neighbourID, secondNeighbourPos);
 
                             // Get the type attribute

@@ -87,7 +87,9 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
@@ -335,12 +337,9 @@ public class MapView extends ScrollPane {
         markerColourProperty.addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
             // Loop through all markers on screen
             for (final Object value : markers.values()) {
-                final AbstractMarker m = (AbstractMarker) value;
-
                 // If the marker is a point marker
-                if (m instanceof PointMarker) {
-                    final PointMarker p = (PointMarker) m;
-
+                if (value instanceof PointMarker) {
+                    final PointMarker p = (PointMarker) value;
                     // Change the marker colour
                     p.changeMarkerColour(newValue);
 
@@ -356,14 +355,11 @@ public class MapView extends ScrollPane {
 
             // Loop through all the markers
             for (final Object value : markers.values()) {
-                final AbstractMarker m = (AbstractMarker) value;
-
                 // If its a point marker change its text
-                if (m instanceof PointMarker) {
-                    final PointMarker p = (PointMarker) m;
+                if (value instanceof PointMarker) {
+                    final PointMarker p = (PointMarker) value;
 
                     if (newValue.equals(MapViewPane.USE_LABEL_ATTR)) {
-
                         setPointMarkerText(p.getLabelAttr(), p);
                     } else if (newValue.equals(MapViewPane.USE_IDENT_ATTR)) {
                         setPointMarkerText(p.getIdentAttr(), p);
@@ -378,7 +374,7 @@ public class MapView extends ScrollPane {
         // If the mouse is moved
         mapGroupHolder.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(final MouseEvent event) {
                 final double x = event.getX();
                 final double y = event.getY();
 
@@ -395,7 +391,6 @@ public class MapView extends ScrollPane {
                     // if drawing circle marker then change the circle marker UI's radius to the distance between the original click position and the mouse's
                     // current position
                     if (drawingCircleMarker && circleMarker != null && !drawingPolygonMarker) {
-
                         circleMarker.setRadius(x, y);
                         circleMarker.setLineEnd(x, y);
 
@@ -412,7 +407,6 @@ public class MapView extends ScrollPane {
 
                     // If the user isn't drawing anything but IS measuring distance then update the size of the measurement line
                 } else if (TOOLS_OVERLAY.getMeasureEnabled().get() && !TOOLS_OVERLAY.getDrawingEnabled().get() && measureLine != null) {
-
                     measureLine.setEndX(event.getX());
                     measureLine.setEndY(event.getY());
 
@@ -435,8 +429,8 @@ public class MapView extends ScrollPane {
                     final double x = event.getX();
                     final double y = event.getY();
 
-                    double width = 0;
-                    double height = 0;
+                    final double width;
+                    final double height;
 
                     // Change position and size of rectangle based on where the user moves their mouse
                     if (x >= selectionRectangleX && y <= selectionRectangleY) {
@@ -665,7 +659,7 @@ public class MapView extends ScrollPane {
 
                         // If the user is not drawing any type of marker then generate point marker where they clicked
                     } else {
-                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
+                        final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
                         marker.setMarkerPosition(0, 0);
                         addUserDrawnMarker(marker);
                         userMarkers.add(marker);
@@ -732,7 +726,7 @@ public class MapView extends ScrollPane {
 
                 // Calculate how much the map will have to move
                 final double xAdjust = (newXScale / oldXScale) - 1;
-                double yAdjust = (newYScale / oldYScale) - 1;
+                final double yAdjust = (newYScale / oldYScale) - 1;
 
                 // Calculate how much the map will have to move
                 final double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
@@ -813,11 +807,9 @@ public class MapView extends ScrollPane {
     public void removeUserMarker(final int id) {
         // Loop through all the user drawn markers and if their id matches with the one passed in
         // to this function then remove them
-        for (int i = 0; i < userMarkers.size(); ++i) {
+        for (int i = 0; i < userMarkers.size(); i++) {
             if (userMarkers.get(i).getMarkerId() == id) {
-
                 userMarkers.remove(i);
-
                 break;
             }
         }
@@ -834,7 +826,6 @@ public class MapView extends ScrollPane {
      * @param show - flag
      */
     public void toggleOverlay(final String overlay, final boolean show) {
-
         if (overlayMap.containsKey(overlay) && overlayMap.get(overlay).isShowing() != show) {
             overlayMap.get(overlay).toggleOverlay();
         }
@@ -862,7 +853,6 @@ public class MapView extends ScrollPane {
      * Clears and re-renders all user created markers on screen
      */
     private void redrawUserMarkers() {
-
         drawnMarkerGroup.getChildren().clear();
 
         // Redraw all user created markers
@@ -892,10 +882,10 @@ public class MapView extends ScrollPane {
 
         // Add point markers to the hiddenPointMarker groups
         for (final Object value : markers.values()) {
-            final AbstractMarker m = (AbstractMarker) value;
-            if (m instanceof PointMarker) {
+
+            if (value instanceof PointMarker) {
                 final SVGPath p = new SVGPath();
-                p.setContent(((PointMarker) m).getPath());
+                p.setContent(((PointMarker) value).getPath());
                 hiddenPointMarkerGroup.getChildren().add(p);
             }
         }
@@ -926,10 +916,9 @@ public class MapView extends ScrollPane {
 
     public void removeLayer(final int id) {
         layerGroup.getChildren().clear();
-        for (int i = 0; i < layers.size(); ++i) {
+        for (int i = 0; i < layers.size(); i++) {
             if (layers.get(i).getId() == id) {
                 layers.remove(i);
-
             }
         }
         renderLayers();
@@ -969,14 +958,9 @@ public class MapView extends ScrollPane {
             LOGGER.log(Level.INFO, "Marker map is empty");
         }
 
-        if (markers.values().isEmpty()) {
-            LOGGER.log(Level.INFO, "Marker values is empty");
-        }
-
         // Redraw all queried markers
         for (final Object value : markers.values()) {
-            final AbstractMarker m = (AbstractMarker) value;
-            drawMarker(m);
+            drawMarker((AbstractMarker) value);
         }
     }
 
@@ -992,12 +976,8 @@ public class MapView extends ScrollPane {
             LOGGER.log(Level.INFO, "Marker map is empty");
         }
 
-        if (markers.values().isEmpty()) {
-            LOGGER.log(Level.INFO, "Marker values is empty");
-        }
 
-        for (final Object value : markers.values()) {
-            final AbstractMarker m = (AbstractMarker) value;
+        for (final AbstractMarker m : markers.values()) {
             m.getMarker().setScaleX(m.getMarker().getScaleX() * scale);
             m.getMarker().setScaleY(m.getMarker().getScaleY() * scale);
 
@@ -1007,9 +987,7 @@ public class MapView extends ScrollPane {
             } else {
                 m.getMarker().setLayoutY(m.getMarker().getLayoutY() - (m.getMarker().getScaleY() * 10));
             }
-
             drawMarker(m);
-
         }
     }
 
@@ -1237,16 +1215,16 @@ public class MapView extends ScrollPane {
                 final double x = (m.getX() - 100);
                 final double y = (m.getY() + 80);
 
-                Rectangle r = new Rectangle();
+                final Rectangle r = new Rectangle();
                 r.setWidth(10);
                 r.setHeight(17.5);
                 r.setX(x);
                 r.setY(y);
 
-                if (!(parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y)) && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y)) && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y + r.getHeight())) && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y + r.getHeight())))) {
-                    return false;
-                }
-
+                return (!parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y))
+                        || !parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y))
+                        || !parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y + r.getHeight()))
+                        || !parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y + r.getHeight())));
             }
         }
 
@@ -1263,7 +1241,6 @@ public class MapView extends ScrollPane {
             final double height = 225;
 
             final BorderPane pane = new BorderPane();
-            //pane.prefWidth(width);
             pane.prefHeight(height);
             pane.minWidth(width);
             pane.minHeight(height);
@@ -1271,9 +1248,6 @@ public class MapView extends ScrollPane {
             pane.maxHeight(height);
 
             pane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-
-            //pane.setTranslateX((MAP_WIDTH / 2) - 300);
-            //pane.setTranslateY(MAP_HEIGHT / 2 - height / 2);
 
             final GridPane topGridPane = new GridPane();
             pane.setCenter(topGridPane);
@@ -1405,22 +1379,18 @@ public class MapView extends ScrollPane {
                     final String longitudeText = longitudeInput.getText();
                     final String radiusText = radiusInput.getText();
 
-                    if (!lattitudeText.isBlank() && !lattitudeText.isEmpty() && NumberUtils.isParsable(lattitudeText.strip())) {
+                    if (StringUtils.isNotBlank(lattitudeText) && NumberUtils.isParsable(lattitudeText.strip()) && StringUtils.isNotBlank(longitudeText) && NumberUtils.isParsable(longitudeText.strip())) {
                         lattitude = Double.parseDouble(lattitudeText.strip());
-                    } else {
-                        return;
-                    }
-
-                    if (!longitudeText.isBlank() && !longitudeText.isEmpty() && NumberUtils.isParsable(longitudeText.strip())) {
                         longitude = Double.parseDouble(longitudeText.strip());
                     } else {
+                        stage.close();
                         return;
                     }
 
                     final double x = MarkerUtilities.longToX(longitude, MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
                     final double y = MarkerUtilities.latToY(lattitude, MAP_WIDTH, MAP_HEIGHT) - 149;
 
-                    if (!radiusText.isBlank() && !radiusText.isEmpty() && NumberUtils.isParsable(radiusText.strip())) {
+                    if (StringUtils.isNotBlank(radiusText) && NumberUtils.isParsable(radiusText.strip())) {
                         radius = Double.parseDouble(radiusText.strip());
 
                         // draw circle at entered location
@@ -1442,10 +1412,8 @@ public class MapView extends ScrollPane {
 
                     // Convert mgrs value to x and y
                 } else if (selectedGeoType.equals(MGRS)) {
-                    final String mgrs = mgrsInput.getText().strip();
-
-                    if (!mgrs.isBlank() && !mgrs.isEmpty()) {
-                        final MGRSCoord coordinate = MGRSCoord.fromString(mgrs, null);
+                    if (StringUtils.isNotBlank(mgrsInput.getText())) {
+                        final MGRSCoord coordinate = MGRSCoord.fromString(mgrsInput.getText().strip(), null);
                         double x = MarkerUtilities.longToX(coordinate.getLongitude().degrees, MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
                         double y = MarkerUtilities.latToY(coordinate.getLatitude().degrees, MAP_WIDTH, MAP_HEIGHT) - 149;
 
@@ -1459,10 +1427,8 @@ public class MapView extends ScrollPane {
 
                     // Convert geohash value to x and y
                 } else if (selectedGeoType.equals(GEOHASH)) {
-                    final String location = geoHashInput.getText().strip();
-
-                    if (!location.isBlank() && !location.isEmpty()) {
-                        final double[] geohashCoordinates = Geohash.decode(location, Geohash.Base.B32);
+                    if (StringUtils.isNotBlank(geoHashInput.getText())) {
+                        final double[] geohashCoordinates = Geohash.decode(geoHashInput.getText().strip(), Geohash.Base.B32);
                         final double x = MarkerUtilities.longToX(geohashCoordinates[1] - geohashCoordinates[3], MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
                         final double y = MarkerUtilities.latToY(geohashCoordinates[0] - geohashCoordinates[2], MAP_WIDTH, MAP_HEIGHT) - 149;
 
@@ -1526,8 +1492,16 @@ public class MapView extends ScrollPane {
             stage.setScene(s);
             stage.setWidth(width);
             stage.setHeight(height);
+
+            if (!stage.isShowing()) {
+            final List<Screen> screens = Screen.getScreensForRectangle(this.getScene().getWindow().getX(), this.getScene().getWindow().getY(), this.getScene().getWindow().widthProperty().get(), this.getScene().getWindow().heightProperty().get());
+
+            stage.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - width / 2);
+            stage.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - height / 2);
+
             stage.show();
-            showingZoomToLocationPane = true;
+                showingZoomToLocationPane = true;
+            }
         }
     }
 
@@ -1553,17 +1527,12 @@ public class MapView extends ScrollPane {
      * @param marker - marker to be added to the map
      */
     public void drawMarker(final AbstractMarker marker) {
-
-        if (markersShowing.contains(marker.getType())) {
-
-            if ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED)) {
-                marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
-                if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
-                    graphMarkerGroup.getChildren().add(marker.getMarker());
-                }
+        if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
+            marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+            if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
+                graphMarkerGroup.getChildren().add(marker.getMarker());
             }
         }
-
     }
 
     public Group getGraphMarkerGroup() {
@@ -1592,7 +1561,7 @@ public class MapView extends ScrollPane {
         try {
 
             final File map = ConstellationInstalledFileLocator.locate("modules/ext/data/MercratorMapView4.txt", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain());
-            try (BufferedReader bFileReader = new BufferedReader(new FileReader(map))) {
+            try (final BufferedReader bFileReader = new BufferedReader(new FileReader(map))) {
                 String path = "";
                 String line = "";
 
@@ -1603,9 +1572,9 @@ public class MapView extends ScrollPane {
 
                     // Extract the svg path segment from the line
                     if (line.startsWith("<path")) {
-                        int startIndex = line.indexOf("d=");
+                        final int startIndex = line.indexOf("d=");
 
-                        int endIndex = line.indexOf(">");
+                        final int endIndex = line.indexOf(">");
 
                         path = line.substring(startIndex + 3, endIndex - 2);
 

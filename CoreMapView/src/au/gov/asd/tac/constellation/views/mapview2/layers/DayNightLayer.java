@@ -49,10 +49,7 @@ public class DayNightLayer extends AbstractMapLayer {
 
     public DayNightLayer(final MapView parent, final int id) {
         super(parent, id);
-
         dayNightGroup = new Group();
-
-
     }
 
     /**
@@ -149,10 +146,7 @@ public class DayNightLayer extends AbstractMapLayer {
 
             location.setX(MarkerUtilities.longToX(location.getX(), MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG));
             location.setY(MarkerUtilities.latToY(location.getY(), MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - SHADOW_LOCATION_Y_OFFSET);
-
-
         });
-
     }
 
     /**
@@ -167,23 +161,20 @@ public class DayNightLayer extends AbstractMapLayer {
 
         // Loop through all the locations
         for (int i = 0; i < locations.size(); ++i) {
-            if (Double.isNaN(locations.get(i).getY()) || Double.isNaN(locations.get(i).getX())) {
+            final double y = locations.get(i).getY();
+            final double x = locations.get(i).getX();
+            if (Double.isNaN(y) || Double.isNaN(x)) {
                 continue;
             }
 
             // If is the first location then append a move command if not append a line command
             if (first) {
-                path = "M" + locations.get(i).getX() + "," + locations.get(i).getY();
-
+                path = "M" + x + "," + y;
                 first = false;
             } else {
-
-                path += "L" + locations.get(i).getX() + "," + locations.get(i).getY();
-
+                path += "L" + x + "," + y;
             }
-
         }
-
         return path;
     }
 
@@ -199,8 +190,8 @@ public class DayNightLayer extends AbstractMapLayer {
         sun.setRadius(SUN_RADIUS);
 
         // Calculate x and y from lat and lon
-        double sunX = MarkerUtilities.longToX(sunLocation.getLon(), MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        double sunY = MarkerUtilities.latToY(sunLocation.getLat(), MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - SHADOW_LOCATION_Y_OFFSET;
+        final double sunX = MarkerUtilities.longToX(sunLocation.getLon(), MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        final double sunY = MarkerUtilities.latToY(sunLocation.getLat(), MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - SHADOW_LOCATION_Y_OFFSET;
 
         sun.setTranslateX(sunX);
         sun.setTranslateY(sunY);

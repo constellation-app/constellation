@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer2
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -272,7 +273,6 @@ public class MapViewPane extends BorderPane {
             @Override
             public void onChanged(final ListChangeListener.Change<? extends String> c) {
                 markerDropDown.getItems().forEach(item -> {
-
                     if (markerDropDown.getCheckModel().isChecked(item)) {
                         if (item.equals(MARKER_TYPE_POINT)) {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, true);
@@ -285,8 +285,7 @@ public class MapViewPane extends BorderPane {
                         } else if (item.equals(SELECTED_ONLY)) {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, true);
                         }
-
-                        } else {
+                    } else {
                         if (item.equals(MARKER_TYPE_POINT)) {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, false);
                         } else if (item.equals(MARKER_TYPE_LINE)) {
@@ -299,7 +298,7 @@ public class MapViewPane extends BorderPane {
                             mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, false);
                         }
 
-                        }
+                    }
 
                 });
 
@@ -332,7 +331,7 @@ public class MapViewPane extends BorderPane {
             if (parent.getCurrentGraph() != null) {
                 MapExporterWrapper exporterWrapper = null;
 
-                String selectedItem = exportDropDown.getSelectionModel().getSelectedItem();
+                final String selectedItem = exportDropDown.getSelectionModel().getSelectedItem();
                 if (selectedItem.equals(GEO_JSON)) {
                     exporterWrapper = new MapExporterWrapper(new GeoJsonExporter());
                 } else if (selectedItem.equals(KML)) {
@@ -527,7 +526,7 @@ public class MapViewPane extends BorderPane {
             return mapView.getAllMarkers();
         }
 
-        return new HashMap<>();
+        return Collections.emptyMap();
     }
 
     public Graph getCurrentGraph() {
@@ -552,7 +551,7 @@ public class MapViewPane extends BorderPane {
 
 
     public List<? extends MapProvider> getProviders() {
-        return new ArrayList<>(providers);
+        return providers;
     }
 
     private void setDropDownOptions(final List<?> options) {

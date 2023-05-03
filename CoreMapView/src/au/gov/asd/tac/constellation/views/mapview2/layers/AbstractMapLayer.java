@@ -40,7 +40,6 @@ public abstract class AbstractMapLayer {
 
     // Class to hold a location in lattitude and longitude and its corresponding x and y values
     protected class Location {
-
         private double lat;
         private double lon;
 

@@ -59,8 +59,8 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
                 markerWeight.setText(Integer.toString(getWeight(marker)));
 
                 // Offset the text element so that it lines up with the markers
-                double startingX = marker.getX() - X_OFFSET;
-                double startingY = marker.getY() + Y_OFFSET;
+                final double startingX = marker.getX() - X_OFFSET;
+                final double startingY = marker.getY() + Y_OFFSET;
 
                 markerWeight.setX(startingX);
                 markerWeight.setY(startingY);
