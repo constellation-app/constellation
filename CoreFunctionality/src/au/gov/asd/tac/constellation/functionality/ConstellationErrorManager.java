@@ -24,7 +24,7 @@ import java.util.logging.LogRecord;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Custom Error Manager to replace the Netbeans Error Manager
  * @author OrionsGuardian
  */
 @ServiceProvider(service = Handler.class, supersedes = "org.netbeans.core.NbErrorManager")
@@ -54,7 +54,8 @@ public class ConstellationErrorManager extends Handler {
                             .append(SeparatorConstants.NEWLINE);
                 }
             }
-            final ErrorReportEntry repEntry = new ErrorReportEntry(errLevel, recordHeader, errorSummary, errorMsg.toString(), ErrorReportSessionData.getNextEntryId());
+            final ErrorReportEntry repEntry = new ErrorReportEntry(errLevel, recordHeader, errorSummary, errorMsg.toString(), 
+                                                                   ErrorReportSessionData.getNextEntryId());
             ErrorReportSessionData.getInstance().storeSessionError(repEntry);
         }
     }

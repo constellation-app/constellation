@@ -617,7 +617,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                     }
                     sessionErrorsBox.getChildren().add(generateErrorReportTitledPane(sessionErrors.get(i)));
                     if (allowPopupDisplay && sessionErrors.get(i).getLastDate().after(filterUpdateDate)) {
-                        ErrorReportDialogManager.getInstance().showErrorDialog(sessionErrors.get(i));
+                        ErrorReportDialogManager.getInstance().showErrorDialog(sessionErrors.get(i), false);
                     }
                 }
                 
@@ -625,7 +625,7 @@ public class ErrorReportTopComponent extends JavaFxTopComponent<BorderPane> {
                 if (errorReportRunning) {
                     for (final ErrorReportEntry entry : hiddenErrors) {
                         if (entry.getLastDate().after(filterUpdateDate)) {
-                            ErrorReportDialogManager.getInstance().showErrorDialog(entry);
+                            ErrorReportDialogManager.getInstance().showErrorDialog(entry, false);
                         }
                     }
                 }

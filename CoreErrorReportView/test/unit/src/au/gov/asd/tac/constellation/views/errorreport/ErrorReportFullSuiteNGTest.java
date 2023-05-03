@@ -83,12 +83,21 @@ public class ErrorReportFullSuiteNGTest {
         
         final ErrorReportDialogManager erdm = ErrorReportDialogManager.getInstance();
         erdm.setErrorReportRunning(false);
+        erdm.setLatestPopupDismissDate(null);
+        assertTrue(erdm.getLatestPopupDismissDate() == null);
         
         final ErrorReportSessionData session = ErrorReportSessionData.getInstance();
+        ErrorReportSessionData.setLastUpdate(null);
+        assertTrue(ErrorReportSessionData.getLastUpdate() == null);
+        Date lastUpdateDateTest = new Date();
+        ErrorReportSessionData.setLastUpdate(lastUpdateDateTest);
+        assertTrue(ErrorReportSessionData.getLastUpdate().equals(lastUpdateDateTest));
 
-        final ErrorReportEntry testEntry = new ErrorReportEntry(Level.SEVERE, "heading1", "summary1", "message1", ErrorReportSessionData.getNextEntryId());
+        String nineLineMessage = "Line1\nLine2\nLine3\nLine4\nLine5\nLine6\nLine7\nLine8\nLine9\n";
+        final ErrorReportEntry testEntry = new ErrorReportEntry(Level.SEVERE, "heading1", "summary1", nineLineMessage, ErrorReportSessionData.getNextEntryId());
         final ErrorReportEntry testEntry2 = new ErrorReportEntry(Level.SEVERE, "heading2", "summary2", "message2", ErrorReportSessionData.getNextEntryId());
-        final ErrorReportEntry testEntry3 = testEntry2.copy();
+        final ErrorReportEntry testEntry3 = new ErrorReportEntry(Level.SEVERE, "heading2", "summary2", nineLineMessage+"Line10\n", ErrorReportSessionData.getNextEntryId());
+        final ErrorReportEntry testEntry4 = testEntry2.copy();
         testEntry3.setEntryId(ErrorReportSessionData.getNextEntryId());
         testEntry3.setLastPopupDate(new Date());
         final String trimmedHeader = testEntry3.getTrimmedHeading(7).substring(0,2);
@@ -99,12 +108,13 @@ public class ErrorReportFullSuiteNGTest {
         session.storeSessionError(testEntry);
         session.storeSessionError(testEntry2);
         session.storeSessionError(testEntry3);
+        session.storeSessionError(testEntry4);
         
         final List<String> filters = new ArrayList<>();
         filters.add(Level.SEVERE.getName());
         List<ErrorReportEntry> storedList = session.refreshDisplayedErrors(filters);
         
-        // should contain 2 entries, with the second one having 2 occurences
+        // should contain 2 entries, each having 2 occurences
         System.out.println("\n>>>> Check list size");
         assertEquals(storedList.size(), 2);        
         final ErrorReportEntry storedData = session.findDisplayedEntryWithId(testEntry2.getEntryId());
@@ -112,6 +122,10 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n>>>> Check occs");
         assertEquals(storedData.getOccurrences(), 2);
         
+
+        // try to show dialog in review mode
+        erdm.showErrorDialog(testEntry, true);     
+
         ErrorReportSessionData.requestScreenUpdate(true);
         System.out.println("\n>>>> Check requested");
         assertTrue(ErrorReportSessionData.isScreenUpdateRequested());
@@ -127,10 +141,6 @@ public class ErrorReportFullSuiteNGTest {
             ErrorReportDialog erDialog = erEntry.getDialog();
             if (erDialog != null) {
                 // simulate close
-//                erDialog.toggleExceptionDisplay();
-//                assertEquals(erDialog.getMainDialog().getHeight(), 575);
-//                erDialog.toggleExceptionDisplay();
-//                assertEquals(erDialog.getMainDialog().getHeight(), 230);
                 erDialog.finaliseSessionSettings();
                 erDialog.hideDialog();
                 System.out.println("\n>>>> UPDATE and CLOSE !!");

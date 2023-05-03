@@ -70,7 +70,7 @@ public class ErrorReportDialogManager {
                             sessionPopupErrors = ErrorReportSessionData.getInstance().refreshDisplayedErrors(popupTypeFilters);
                             for (final ErrorReportEntry reportEntry : sessionPopupErrors) {
                                 if (popupTypeFilters.contains(reportEntry.getErrorLevel().getName()) && (previousRetrievalDate == null || reportEntry.getLastPopupDate() == null || reportEntry.getLastDate().after(previousRetrievalDate))) {
-                                    showErrorDialog(reportEntry);
+                                    showErrorDialog(reportEntry, false);
                                 }
                             }
                             
@@ -95,7 +95,7 @@ public class ErrorReportDialogManager {
         isErrorReportRunning = isRunning;
     }
     
-    public void showErrorDialog(final ErrorReportEntry entry) {
+    public void showErrorDialog(final ErrorReportEntry entry, final boolean review) {
         if (activePopupIds.size() >= 5) {
             // limit of 5 popups on screen at a time
             return;
@@ -135,7 +135,7 @@ public class ErrorReportDialogManager {
         }
         // display the popup
         activePopupIds.add(entry.getEntryId());
-        showDialog(entry, false);
+        showDialog(entry, review);
     }
 
     /**
