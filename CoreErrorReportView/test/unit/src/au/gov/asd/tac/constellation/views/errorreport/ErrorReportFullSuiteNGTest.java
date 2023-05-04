@@ -21,15 +21,10 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.testfx.api.FxToolkit;
 import static org.testng.AssertJUnit.assertEquals;
 import static org.testng.AssertJUnit.assertFalse;
@@ -55,7 +50,7 @@ public class ErrorReportFullSuiteNGTest {
                 FxToolkit.registerPrimaryStage();
             }
         } catch (Exception e) {
-            System.out.println("\n********* SETUP ERROR: " + e);
+            System.out.println("\n**** SETUP ERROR: " + e);
             throw e;
         }
     }
@@ -79,12 +74,15 @@ public class ErrorReportFullSuiteNGTest {
     @Test
     public void runSessionDataTest() {
 
+        System.out.println("\n>>>> ERROR REPORT VIEW - TEST SUITE\n");
+        
         System.setProperty("java.awt.headless", "true");
         
         final ErrorReportDialogManager erdm = ErrorReportDialogManager.getInstance();
         erdm.setErrorReportRunning(false);
         erdm.setLatestPopupDismissDate(null);
         assertTrue(erdm.getLatestPopupDismissDate() == null);
+        assertTrue(erdm.getGracePeriodResumptionDate() == null);
         
         final ErrorReportSessionData session = ErrorReportSessionData.getInstance();
         ErrorReportSessionData.setLastUpdate(null);
@@ -100,18 +98,20 @@ public class ErrorReportFullSuiteNGTest {
         final ErrorReportEntry testEntry4 = testEntry2.copy();
         testEntry3.setEntryId(ErrorReportSessionData.getNextEntryId());
         testEntry3.setLastPopupDate(new Date());
+
         final String trimmedHeader = testEntry3.getTrimmedHeading(7).substring(0,2);
         final String entryToString = testEntry3.toString();
         System.out.println("\n>>>> Check header");
         assertTrue(entryToString.contains(trimmedHeader));
         
+        final List<String> filters = new ArrayList<>();
+        filters.add(Level.SEVERE.getName());
+
         session.storeSessionError(testEntry);
         session.storeSessionError(testEntry2);
         session.storeSessionError(testEntry3);
         session.storeSessionError(testEntry4);
         
-        final List<String> filters = new ArrayList<>();
-        filters.add(Level.SEVERE.getName());
         List<ErrorReportEntry> storedList = session.refreshDisplayedErrors(filters);
         
         // should contain 2 entries, each having 2 occurences
@@ -119,49 +119,32 @@ public class ErrorReportFullSuiteNGTest {
         assertEquals(storedList.size(), 2);        
         final ErrorReportEntry storedData = session.findDisplayedEntryWithId(testEntry2.getEntryId());
         
-        System.out.println("\n>>>> Check occs");
+        System.out.println("\n>>>> Check Occurrences");
         assertEquals(storedData.getOccurrences(), 2);
         
-
-//        // try to show dialog in review mode
-//        erdm.showErrorDialog(testEntry, true);     
-
         ErrorReportSessionData.requestScreenUpdate(true);
-        System.out.println("\n>>>> Check requested");
+        System.out.println("\n>>>> Check screen update requested");
         assertTrue(ErrorReportSessionData.isScreenUpdateRequested());
 
         List<String> activeLevels = erdm.getActivePopupErrorLevels();
 
-        System.out.println("\n\n>>>> Waiting for dialog");
+        System.out.println("\n\n>>>> Waiting for SEVERE dialogs");
+        // default popup mode 2 only allows 1 popup
         storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.SEVERE)), 1);
         System.out.println("\n\n>>>> Done Waiting");
         
-        for (final ErrorReportEntry erEntry : storedList) {
-            System.out.println("\n>>>> Checking entry: " + erEntry);
-            ErrorReportDialog erDialog = erEntry.getDialog();
-            if (erDialog != null) {
-                // simulate close
-                erDialog.finaliseSessionSettings();
-                erDialog.hideDialog();
-                System.out.println("\n>>>> UPDATE and CLOSE !!");
-            }
-        }
-        
-        System.out.println("\n>>>> Check active levels: " + activeLevels);
-        System.out.println("\n>>>> resumption date: " + erdm.getGracePeriodResumptionDate() +
-                                "\n>>>> latest pop dis data: " + erdm.getLatestPopupDismissDate());
+        dismissPopups(storedList);
         
         session.removeEntry(testEntry.getEntryId());
         storedList = session.refreshDisplayedErrors(filters);
         System.out.println("\n>>>> Check new list size");
-        assertEquals(storedList.size(), 1);         
+        assertEquals(storedList.size(), 1); 
         
         activeLevels = erdm.getActivePopupErrorLevels();
 
         System.out.println("\n>>>> Check active levels: " + activeLevels);
         System.out.println("\n>>>> resumption date: " + erdm.getGracePeriodResumptionDate() +
-                                "\n>>>> latest pop dis data: " + erdm.getLatestPopupDismissDate());
-
+                           "\n>>>> latest pop dis data: " + erdm.getLatestPopupDismissDate());
         
         System.out.println("\n\n>>>> Generating WARNING, INFO, and FINE entries");
         
@@ -178,95 +161,78 @@ public class ErrorReportFullSuiteNGTest {
         session.storeSessionError(partialEntry);
         session.storeSessionError(partialEntry2);
 
-        System.out.println("\n\n>>>> Waiting 5s for popup grace period");
-        delay(5100);
-        System.out.println("\n\n>>>> Done Waiting");
-
+        erdm.setLatestPopupDismissDate(null);
+        // this also resets the grace period
+        
         session.storeSessionError(partialEntry3);
 
         activeLevels = erdm.getActivePopupErrorLevels();
-
         System.out.println("\n>>>> Check active levels: " + activeLevels);
         
-        System.out.println("\n\n>>>> Waiting for dialogs");
+        System.out.println("\n\n>>>> Waiting for WARN/INFO/FINE dialogs");
         storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING, Level.INFO, Level.FINE)), 3);
         System.out.println("\n\n>>>> Done Waiting");
         System.out.println("\n>>>> Check WARN/INFO/FINE list size");
-        assertEquals(storedList.size(), 3);        
+        assertEquals(storedList.size(), 3);       
+                
+        // clear ALL popups
+        filters.clear();
+        filters.add(Level.SEVERE.getName());
+        filters.add(Level.WARNING.getName());
+        filters.add(Level.INFO.getName());
+        filters.add(Level.FINE.getName());        
+        storedList = session.refreshDisplayedErrors(filters);
+        dismissPopups(storedList);
         
         for (final ErrorReportEntry erEntry : storedList) {
-            System.out.println("\n>>>> Checking entry: " + erEntry);
-            ErrorReportDialog erDialog = erEntry.getDialog();
-            if (erDialog != null) {
-                // simulate close
-                erDialog.finaliseSessionSettings();
-                erDialog.hideDialog();
-                System.out.println("\n>>>> UPDATE and CLOSE !!");
-            }
+            // confirm popups are being blocked correctly
+            erdm.updatePopupSettings(0, filters);
+            erdm.showErrorDialog(erEntry, true); // mode 0, block all popups
+            erdm.updatePopupSettings(1, filters);
+            erdm.showErrorDialog(erEntry, true); // should be blocked - no redisplay
+            erdm.updatePopupSettings(3, filters);
+            erdm.showErrorDialog(erEntry, true); // again should be blocked - no redisplay            
+            erdm.updatePopupSettings(4, filters);
+            erdm.showErrorDialog(erEntry, true); // should redisplay dialog in review mode
         }
         
-        ErrorReportTopComponent ertcInstance = new ErrorReportTopComponent();
-        // when this is started it takes over control of the popup handling
+        storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE)), 4);
+        dismissPopups(storedList);
         
+        ErrorReportTopComponent ertcInstance = new ErrorReportTopComponent();
+        // when this is started it takes over control of the popup handling        
         ertcInstance.handleComponentOpened();
         
         System.out.println("\n\n>>>> Waiting 5s for popup grace period");
         delay(5100);
         System.out.println("\n\n>>>> Done Waiting");        
         
-        // there should be some report entries already available
-
         final ErrorReportEntry partialEntry5 = new ErrorReportEntry(Level.WARNING, null, "part summary", "part message", ErrorReportSessionData.getNextEntryId());
         session.storeSessionError(partialEntry5);
         
-        // May need to account for pipeline exceptions being added to the report view ?
-        // Not actually adding the error handler to the logger, so it shouldn't be a factor
-        
-        System.out.println("\n\n>>>> Waiting for dialogs");
+        System.out.println("\n\n>>>> Waiting for TC dialogs");
         storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING)), 1);
         System.out.println("\n\n>>>> Done Waiting");
         
-        System.out.println("\n>>>> Check (expected = 1) WARNINGS list size : " + storedList.size());
+        System.out.println("\n>>>> Check WARNINGS list size");
         assertEquals(storedList.size(), 1);        
-
-//        System.out.println("\n\n>>>> Waiting 3s for confirmation");
-//        delay(3100);
-//        System.out.println("\n\n>>>> Done Waiting");        
 
         final boolean isFlashing = ertcInstance.isIconFlashing();
         assertTrue(isFlashing);
         ertcInstance.setReportsExpanded(false);
         ertcInstance.refreshSessionErrors();
         final ErrorReportEntry checkEntry = ertcInstance.findActiveEntryWithId(storedList.get(0).getEntryId());
-        assertFalse(checkEntry.isExpanded());                
-
-        for (final ErrorReportEntry erEntry : storedList) {
-            System.out.println("\n>>>> Checking entry: " + erEntry);
-            ErrorReportDialog erDialog = erEntry.getDialog();
-            if (erDialog != null) {
-                // simulate close
-                erDialog.finaliseSessionSettings();
-                erDialog.hideDialog();
-                System.out.println("\n>>>> UPDATE and CLOSE !!");
-            }
-        }
+        assertFalse(checkEntry.isExpanded());
+        
+        dismissPopups(storedList);
         
         ertcInstance.handleComponentClosed();
         ertcInstance.close();
         
         System.clearProperty("java.awt.headless");
-        System.out.println("\n>>>> PASSED everything");
+        System.out.println("\n>>>> PASSED ALL TESTS");
         
     }
-    
-    protected void implementAsDirectExecutor(ExecutorService executor) {
-        doAnswer(new Answer<Object>() {
-            public Object answer(InvocationOnMock invocation) throws Exception {
-                ((Runnable) invocation.getArguments()[0]).run();
-                return null;
-            }
-        }).when(executor).submit(any(Runnable.class));
-    }    
     
     public void delay(final long milliseconds){
         // may need to wait for the error handler to do it's thing
@@ -301,5 +267,19 @@ public class ErrorReportFullSuiteNGTest {
         assertTrue(loopCounter < 60);
         return errorList;
     }
-    
+
+    public int dismissPopups(Iterable<ErrorReportEntry> storedList) {
+        int count = 0;
+        for (final ErrorReportEntry erEntry : storedList) {
+            System.out.println("\n>>>> Checking entry: " + erEntry);
+            ErrorReportDialog erDialog = erEntry.getDialog();
+            if (erDialog != null) {
+                // simulate close
+                erDialog.finaliseSessionSettings();
+                erDialog.hideDialog();
+                System.out.println("\n>>>> UPDATED and CLOSED popup");
+            }
+        }
+        return count;
+    }
 }
