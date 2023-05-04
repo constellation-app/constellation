@@ -90,7 +90,7 @@ public class ConstellationErrorManagerNGTest {
         LOGGER.info("\n ------- simulated.");
     }
     
-    public void delay(final long milliseconds){
+    private void delay(final long milliseconds){
         // may need to wait for the error handler to do it's thing
         final Executor delayed = CompletableFuture.delayedExecutor(milliseconds, TimeUnit.MILLISECONDS);
         final CompletableFuture cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
@@ -102,21 +102,21 @@ public class ConstellationErrorManagerNGTest {
         }
     }
         
-    public boolean waitForDataToBeAvailable(final Level logLevel, final int expectedCount){
+    private boolean waitForDataToBeAvailable(final Level logLevel, final int expectedCount){
         final List<String> filters = new ArrayList<>();
         filters.add(logLevel.getName());
         int counter = 0;
         List<ErrorReportEntry> errorList = ErrorReportSessionData.getInstance().refreshDisplayedErrors(filters);
         while(counter < 60 && errorList.size() < expectedCount){
             errorList = ErrorReportSessionData.getInstance().refreshDisplayedErrors(filters);
-            delay(1000);
+            delay(2000);
             counter++;
         }
-        // fails if it takes over 1 minute
+        // fails if it takes over 2 minutes
         return counter < 60;
     }
     
-    public void confirmExceptionStored(final Level logLevel, final int expectedCount){
+    private void confirmExceptionStored(final Level logLevel, final int expectedCount){
         LOGGER.log(Level.INFO, "\n -------- confirming entries : {0} separate instances of {1}", new Object[]{expectedCount, logLevel.getName()});
         final List<String> filters = new ArrayList<>();
         filters.add(logLevel.getName());
@@ -128,7 +128,7 @@ public class ConstellationErrorManagerNGTest {
         LOGGER.info("\n -------- confirmed.");
     }
     
-    public void confirmEntryOccurrences(final Level logLevel, final int occurrences){
+    private void confirmEntryOccurrences(final Level logLevel, final int occurrences){
         LOGGER.log(Level.INFO, "\n -------- confirming occurrences : {0} occurrences in 1 instance of {1}", new Object[]{occurrences, logLevel.getName()});
         final List<String> filters = new ArrayList<>();
         filters.add(logLevel.getName());

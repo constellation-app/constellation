@@ -34,15 +34,13 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- *
+ * Test Suite for the Error Report View
  * @author OrionsGuardian
  */
 public class ErrorReportFullSuiteNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(ErrorReportFullSuiteNGTest.class.getName());
     
-    //private ExecutorService executor;
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         try {
@@ -91,7 +89,7 @@ public class ErrorReportFullSuiteNGTest {
         ErrorReportSessionData.setLastUpdate(lastUpdateDateTest);
         assertTrue(ErrorReportSessionData.getLastUpdate().equals(lastUpdateDateTest));
 
-        String nineLineMessage = "Line1\nLine2\nLine3\nLine4\nLine5\nLine6\nLine7\nLine8\nLine9\n";
+        final String nineLineMessage = "Line1\nLine2\nLine3\nLine4\nLine5\nLine6\nLine7\nLine8\nLine9\n";
         final ErrorReportEntry testEntry = new ErrorReportEntry(Level.SEVERE, "heading1", "summary1", nineLineMessage, ErrorReportSessionData.getNextEntryId());
         final ErrorReportEntry testEntry2 = new ErrorReportEntry(Level.SEVERE, "heading2", "summary2", "message2", ErrorReportSessionData.getNextEntryId());
         final ErrorReportEntry testEntry3 = new ErrorReportEntry(Level.SEVERE, "heading2", "summary2", nineLineMessage+"Line10\n", ErrorReportSessionData.getNextEntryId());
@@ -199,8 +197,8 @@ public class ErrorReportFullSuiteNGTest {
         storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.SEVERE, Level.WARNING, Level.INFO, Level.FINE)), 4);
         dismissPopups(storedList);
         
-        ErrorReportTopComponent ertcInstance = new ErrorReportTopComponent();
-        // when this is started it takes over control of the popup handling        
+        final ErrorReportTopComponent ertcInstance = new ErrorReportTopComponent();
+        // when the Top Component is started it takes over control of the popup handling        
         ertcInstance.handleComponentOpened();
         
         System.out.println("\n\n>>>> Waiting 5s for popup grace period");
@@ -234,8 +232,8 @@ public class ErrorReportFullSuiteNGTest {
         
     }
     
-    public void delay(final long milliseconds){
-        // may need to wait for the error handler to do it's thing
+    private void delay(final long milliseconds){
+        // may need to wait for timers to trigger and do their thing
         final Executor delayed = CompletableFuture.delayedExecutor(milliseconds, TimeUnit.MILLISECONDS);
         final CompletableFuture cf = CompletableFuture.supplyAsync(() -> (milliseconds) + "ms wait complete", delayed)
             .thenAccept(LOGGER::info);
@@ -246,7 +244,7 @@ public class ErrorReportFullSuiteNGTest {
         }
     }
 
-    public List<ErrorReportEntry> waitForDialogToBeDisplayed(final List<Level> logLevels, final int expectedCount){
+    private List<ErrorReportEntry> waitForDialogToBeDisplayed(final List<Level> logLevels, final int expectedCount){
         final List<String> filters = new ArrayList<>();
         logLevels.forEach(logLevel -> filters.add(logLevel.getName()));        
         int loopCounter = 0;
@@ -268,7 +266,7 @@ public class ErrorReportFullSuiteNGTest {
         return errorList;
     }
 
-    public int dismissPopups(Iterable<ErrorReportEntry> storedList) {
+    private int dismissPopups(final Iterable<ErrorReportEntry> storedList) {
         int count = 0;
         for (final ErrorReportEntry erEntry : storedList) {
             System.out.println("\n>>>> Checking entry: " + erEntry);
