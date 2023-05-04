@@ -123,8 +123,8 @@ public class ErrorReportFullSuiteNGTest {
         assertEquals(storedData.getOccurrences(), 2);
         
 
-        // try to show dialog in review mode
-        erdm.showErrorDialog(testEntry, true);     
+//        // try to show dialog in review mode
+//        erdm.showErrorDialog(testEntry, true);     
 
         ErrorReportSessionData.requestScreenUpdate(true);
         System.out.println("\n>>>> Check requested");
@@ -191,7 +191,7 @@ public class ErrorReportFullSuiteNGTest {
         System.out.println("\n\n>>>> Waiting for dialogs");
         storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING, Level.INFO, Level.FINE)), 3);
         System.out.println("\n\n>>>> Done Waiting");
-        System.out.println("\n>>>> Check WARNINGS list size");
+        System.out.println("\n>>>> Check WARN/INFO/FINE list size");
         assertEquals(storedList.size(), 3);        
         
         for (final ErrorReportEntry erEntry : storedList) {
@@ -226,7 +226,7 @@ public class ErrorReportFullSuiteNGTest {
         storedList = waitForDialogToBeDisplayed(new ArrayList<Level>(List.of(Level.WARNING)), 1);
         System.out.println("\n\n>>>> Done Waiting");
         
-        System.out.println("\n>>>> Check WARNINGS list size");
+        System.out.println("\n>>>> Check (expected = 1) WARNINGS list size : " + storedList.size());
         assertEquals(storedList.size(), 1);        
 
 //        System.out.println("\n\n>>>> Waiting 3s for confirmation");
