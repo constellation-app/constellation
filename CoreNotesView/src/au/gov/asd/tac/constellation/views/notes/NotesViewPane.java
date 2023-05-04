@@ -805,13 +805,17 @@ public class NotesViewPane extends BorderPane {
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
         noteBody.setMaxHeight(Double.MAX_VALUE);
+
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
             if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10) {
+                LOGGER.log(Level.SEVERE, "Note is taller than required size");
                 if (!newNote.getEditMode() && !showMoreButton.isVisible()) {
+                    LOGGER.log(Level.SEVERE, "adding show more button");
                     showMoreButton.setVisible(true);
                     noteBody.setMaxHeight(NOTE_HEIGHT - 5);
                 }
             } else if (showMoreButton.isVisible()) {
+                LOGGER.log(Level.SEVERE, "removing show more button");
                 showMoreButton.setVisible(false);
             }
         });
@@ -967,16 +971,17 @@ public class NotesViewPane extends BorderPane {
 
         // Edit button activates editable text boxs for title and label
         editTextButton.setOnAction(event -> {
-
             noteButtons.getChildren().removeAll(showMoreButton, gap, editTextButton, deleteButton);
             noteButtons.getChildren().addAll(colourPicker, gap2, editScreenButtons);
             noteButtons.setSpacing(EDIT_SPACING);
 
             noteInformation.getChildren().removeAll(titleLabel, contentLabel);
-
+            titleText.setText(titleLabel.getText());
+            contentTextArea.setText(contentLabel.getText());
+            newNote.setNoteTitle(titleLabel.getText());
+            newNote.setNoteContent(contentLabel.getText());
             noteInformation.getChildren().addAll(titleText, contentTextArea);
             newNote.setEditMode(true);
-
 
         });
 
@@ -986,8 +991,11 @@ public class NotesViewPane extends BorderPane {
             noteButtons.getChildren().removeAll(colourPicker, gap2, editScreenButtons);
             noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
             noteButtons.setSpacing(DEFAULT_SPACING);
-            noteInformation.getChildren().removeAll(titleText, contentTextArea);
 
+            titleText.setText(titleLabel.getText());
+            contentTextArea.setText(contentLabel.getText());
+
+            noteInformation.getChildren().removeAll(titleText, contentTextArea);
             noteInformation.getChildren().addAll(titleLabel, contentLabel);
 
             newNote.setEditMode(false);
@@ -1002,6 +1010,7 @@ public class NotesViewPane extends BorderPane {
             if (StringUtils.isBlank(titleText.getText()) || StringUtils.isBlank(contentTextArea.getText())) {
                 JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
             } else {
+                newNote.setEditMode(false);
                 titleLabel.setText(titleText.getText());
                 contentLabel.setText(contentTextArea.getText());
 
@@ -1009,13 +1018,12 @@ public class NotesViewPane extends BorderPane {
                 newNote.setNoteContent(contentTextArea.getText());
                 previouseColourMap.replace(newNote.getID(), newNote.getNodeColour());
 
+                noteInformation.getChildren().removeAll(titleText, contentTextArea);
                 noteButtons.getChildren().removeAll(colourPicker, gap2, editScreenButtons);
+                noteInformation.getChildren().addAll(titleLabel, contentLabel);
                 noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
                 noteButtons.setSpacing(DEFAULT_SPACING);
 
-                noteInformation.getChildren().removeAll(titleText, contentTextArea);
-                noteInformation.getChildren().addAll(titleLabel, contentLabel);
-                newNote.setEditMode(false);
             }
         });
     }
