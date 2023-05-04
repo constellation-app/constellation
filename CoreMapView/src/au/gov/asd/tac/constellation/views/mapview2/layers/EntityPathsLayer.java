@@ -49,7 +49,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
      * @param idList
      */
     private void extractQueriedMarkersAndNeighbours(final List<Integer> idList) {
-        for (final Object value : queriedMarkers.values()) {
+        for (final AbstractMarker value : queriedMarkers.values()) {
             if (value instanceof PointMarker) {
                 final PointMarker m = (PointMarker) value;
                 m.getConnectedNodeIdList().forEach(id -> idList.add(id));
@@ -81,7 +81,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
         extractQueriedMarkersAndNeighbours(idList);
 
         // For all connected neighbours
-        for (int i = 0; i < idList.size(); ++i) {
+        for (int i = 0; i < idList.size(); i++) {
 
             // Get the vertex ID from the graph
             final int vertexID = graph.getVertex(idList.get(i));

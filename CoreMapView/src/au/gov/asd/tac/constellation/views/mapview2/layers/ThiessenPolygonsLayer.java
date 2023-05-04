@@ -50,13 +50,13 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
 
     // All markers on the map
-    private List<AbstractMarker> markers = new ArrayList<>();
+    private final List<AbstractMarker> markers;
 
     // Map to hold the intersection points
     private final Map<String, IntersectionNode> intersectionMap = new HashMap<>();
 
     // Map to hold line and all intersection points on the line
-    private final Map<Line, ArrayList<IntersectionNode>> lineMap = new HashMap<>();
+    private final Map<Line, List<IntersectionNode>> lineMap = new HashMap<>();
 
     // Map to hold the point markers
     private final Map<Integer, AbstractMarker> nodesOnScreen = new HashMap<>();
@@ -140,15 +140,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         nodesOnScreen.clear();
 
         for (final AbstractMarker marker : markers) {
-            if (marker instanceof PointMarker) {
-                PointMarker p = (PointMarker) marker;
-
-                nodesOnScreen.put(nodeID++, p);
-            } else if (marker instanceof UserPointMarker) {
-                UserPointMarker p = (UserPointMarker) marker;
-                nodesOnScreen.put(nodeID++, p);
-            }
-
+            nodesOnScreen.put(nodeID++, marker);
         }
 
     }

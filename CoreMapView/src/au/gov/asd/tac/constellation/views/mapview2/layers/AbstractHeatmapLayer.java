@@ -46,7 +46,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
     @Override
     public void setUp() {
         // Loop through all the markers
-        for (final Object value : parent.getAllMarkers().values()) {
+        for (final AbstractMarker value : parent.getAllMarkers().values()) {
 
             // If marker is a point marker
             if (value instanceof PointMarker) {

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
@@ -190,8 +191,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                 CompletableFuture.runAsync(() -> {
                     try {
                         PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(self)).executeNow(graph);
-                    } catch (final Exception e) {
-                        LOGGER.log(Level.SEVERE, e.getMessage());
+                    } catch (final PluginException | InterruptedException e) {
+                        LOGGER.log(Level.SEVERE, "Exception thrown: {0}", e.getMessage());
+                        Thread.currentThread().interrupt();
                     }
                 }).get();
 

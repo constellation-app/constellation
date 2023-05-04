@@ -204,11 +204,8 @@ public class MapViewPane extends BorderPane {
         layersDropDown.setMaxWidth(85);
 
         // Event handler for selecting different layers to show
-        layersDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(final ListChangeListener.Change<? extends String> c) {
-                layersDropDown.getItems().forEach(item -> addLayer(item, layerId));
-            }
+        layersDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
+            layersDropDown.getItems().forEach(item -> addLayer(item, layerId));
         });
 
         // Add overlays to toolbar
@@ -219,20 +216,16 @@ public class MapViewPane extends BorderPane {
         overlaysDropDown.setMaxWidth(95);
 
         // Overlay event handler
-        overlaysDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(final ListChangeListener.Change<? extends String> c) {
-                overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
-                if (overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY) && !toolBarGridPane.getChildren().contains(latLabel)) {
-                    toolBarGridPane.add(latLabel, 0, 1);
-                    toolBarGridPane.add(latField, 1, 1);
-                    toolBarGridPane.add(lonLabel, 2, 1);
-                    toolBarGridPane.add(lonField, 3, 1);
+        overlaysDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
+            overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
+            if (overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY) && !toolBarGridPane.getChildren().contains(latLabel)) {
+                toolBarGridPane.add(latLabel, 0, 1);
+                toolBarGridPane.add(latField, 1, 1);
+                toolBarGridPane.add(lonLabel, 2, 1);
+                toolBarGridPane.add(lonField, 3, 1);
 
-                } else if (!overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
-                    toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
-                }
-
+            } else if (!overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
+                toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
             }
         });
 
@@ -269,40 +262,36 @@ public class MapViewPane extends BorderPane {
         markerDropDown.setMaxWidth(90);
 
         // Event handler for hiding/showing markers
-        markerDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(final ListChangeListener.Change<? extends String> c) {
-                markerDropDown.getItems().forEach(item -> {
-                    if (markerDropDown.getCheckModel().isChecked(item)) {
-                        if (item.equals(MARKER_TYPE_POINT)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, true);
-                        } else if (item.equals(MARKER_TYPE_LINE)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, true);
-                        } else if (item.equals(MARKER_TYPE_POLYGON)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, true);
-                        } else if (item.equals(MARKER_TYPE_CLUSTER)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, true);
-                        } else if (item.equals(SELECTED_ONLY)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, true);
-                        }
-                    } else {
-                        if (item.equals(MARKER_TYPE_POINT)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, false);
-                        } else if (item.equals(MARKER_TYPE_LINE)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, false);
-                        } else if (item.equals(MARKER_TYPE_POLYGON)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, false);
-                        } else if (item.equals(MARKER_TYPE_CLUSTER)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, false);
-                        } else if (item.equals(SELECTED_ONLY)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, false);
-                        }
-
+        markerDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
+            markerDropDown.getItems().forEach(item -> {
+                if (markerDropDown.getCheckModel().isChecked(item)) {
+                    if (item.equals(MARKER_TYPE_POINT)) {
+                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, true);
+                    } else if (item.equals(MARKER_TYPE_LINE)) {
+                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, true);
+                    } else if (item.equals(MARKER_TYPE_POLYGON)) {
+                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, true);
+                    } else if (item.equals(MARKER_TYPE_CLUSTER)) {
+                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, true);
+                    } else if (item.equals(SELECTED_ONLY)) {
+                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, true);
+                    }
+                } else {
+                    if (item.equals(MARKER_TYPE_POINT)) {
+                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, false);
+                    } else if (item.equals(MARKER_TYPE_LINE)) {
+                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, false);
+                    } else if (item.equals(MARKER_TYPE_POLYGON)) {
+                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, false);
+                    } else if (item.equals(MARKER_TYPE_CLUSTER)) {
+                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, false);
+                    } else if (item.equals(SELECTED_ONLY)) {
+                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, false);
                     }
 
-                });
+                }
 
-            }
+            });
         });
 
         // Marker colour mneu setup and event handling
@@ -522,11 +511,7 @@ public class MapViewPane extends BorderPane {
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
-        if (mapView != null) {
-            return mapView.getAllMarkers();
-        }
-
-        return Collections.emptyMap();
+        return mapView != null ? mapView.getAllMarkers() : Collections.emptyMap();
     }
 
     public Graph getCurrentGraph() {

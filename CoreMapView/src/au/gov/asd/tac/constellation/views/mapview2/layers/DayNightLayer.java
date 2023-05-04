@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import java.util.ArrayList;
@@ -156,9 +157,8 @@ public class DayNightLayer extends AbstractMapLayer {
      * @return the string that containing the raw svg path
      */
     private String generatePath(final List<Location> locations) {
-        String path = "";
         boolean first = true;
-
+        final StringBuilder pathBuilder = new StringBuilder();
         // Loop through all the locations
         for (int i = 0; i < locations.size(); ++i) {
             final double y = locations.get(i).getY();
@@ -169,13 +169,15 @@ public class DayNightLayer extends AbstractMapLayer {
 
             // If is the first location then append a move command if not append a line command
             if (first) {
-                path = "M" + x + "," + y;
+                pathBuilder.append("M").append(x).append(SeparatorConstants.COMMA);
                 first = false;
             } else {
-                path += "L" + x + "," + y;
+                pathBuilder.append("L").append(x).append(SeparatorConstants.COMMA);
             }
+
+            pathBuilder.append(y);
         }
-        return path;
+        return pathBuilder.toString();
     }
 
     /**
