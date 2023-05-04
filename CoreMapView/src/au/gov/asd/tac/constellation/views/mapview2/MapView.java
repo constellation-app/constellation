@@ -1221,10 +1221,10 @@ public class MapView extends ScrollPane {
                 r.setX(x);
                 r.setY(y);
 
-                return (!parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y))
-                        || !parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y))
-                        || !parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y + r.getHeight()))
-                        || !parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y + r.getHeight())));
+                return (parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y))
+                        && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y))
+                        && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y + r.getHeight()))
+                        && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y + r.getHeight())));
             }
         }
 
@@ -1477,15 +1477,11 @@ public class MapView extends ScrollPane {
 
             topGridPane.add(coordinateGridPane, 0, 2);
 
-
-
             bottomGridPane.add(okButton, 0, 0);
             bottomGridPane.add(cancelButton, 1, 0);
             bottomGridPane.setHgap(10);
 
             topGridPane.add(bottomGridPane, 3, 4);
-
-
 
             //zoomLocationGroup.getChildren().add(pane);
             final Scene s = new Scene(pane);
@@ -1593,7 +1589,7 @@ public class MapView extends ScrollPane {
             }
 
         } catch (final Exception e) {
-            LOGGER.log(Level.SEVERE, e.getMessage());
+            LOGGER.log(Level.SEVERE, "Exception thrown: {0}", e.getMessage());
         }
 
     }

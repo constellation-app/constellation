@@ -196,11 +196,11 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                 }).get();
 
             } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "Exception thrown: " + ex.getMessage());
+                LOGGER.log(Level.SEVERE, "Exception thrown: {0}", ex.getMessage());
                 Thread.currentThread().interrupt();
 
             } catch (final ExecutionException ex) {
-                LOGGER.log(Level.SEVERE, "Exception thrown: " + ex.getMessage());
+                LOGGER.log(Level.SEVERE, "Exception thrown: {0}", ex.getMessage());
             }
 
             Platform.runLater(() -> mapViewPane.getMap().redrawQueriedMarkers());

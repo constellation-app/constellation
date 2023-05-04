@@ -58,7 +58,6 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
                             elementCount = readableGraph.getVertexCount();
                             break;
                         case TRANSACTION:
-
                             break;
                         default:
                             break;

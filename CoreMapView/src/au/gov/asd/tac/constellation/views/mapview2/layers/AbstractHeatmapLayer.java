@@ -75,9 +75,6 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
     }
 
-
-
-
     @Override
     public Group getLayer() {
         return layerGroup;
