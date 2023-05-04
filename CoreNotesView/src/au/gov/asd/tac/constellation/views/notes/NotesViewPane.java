@@ -808,14 +808,12 @@ public class NotesViewPane extends BorderPane {
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
             if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10) {
-                LOGGER.log(Level.SEVERE, "Note is taller than required size");
-                if (!newNote.getEditMode() && !showMoreButton.isVisible()) {
-                    LOGGER.log(Level.SEVERE, "adding show more button");
+                if (!showMoreButton.isVisible()) {
                     showMoreButton.setVisible(true);
+                    showMoreButton.setText(SHOW_MORE);
                     noteBody.setMaxHeight(NOTE_HEIGHT - 5);
                 }
             } else if (showMoreButton.isVisible()) {
-                LOGGER.log(Level.SEVERE, "removing show more button");
                 showMoreButton.setVisible(false);
             }
         });
@@ -1020,6 +1018,7 @@ public class NotesViewPane extends BorderPane {
 
                 noteInformation.getChildren().removeAll(titleText, contentTextArea);
                 noteButtons.getChildren().removeAll(colourPicker, gap2, editScreenButtons);
+
                 noteInformation.getChildren().addAll(titleLabel, contentLabel);
                 noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
                 noteButtons.setSpacing(DEFAULT_SPACING);
