@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
@@ -151,91 +152,80 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private void calculateBisectors() {
         bisectorLines.clear();
 
-        // Set to store markers pairs whose bisectors haev already been calculated
-        final Set<String> calculatedPairs = new HashSet<>();
-
         // Loop through markers
-        for (final Integer id : nodesOnScreen.keySet()) {
-
+        for (int i = 0; i < nodesOnScreen.keySet().toArray().length; i++) {
+            final Integer id = (Integer) nodesOnScreen.keySet().toArray()[i];
             // Loop through markers for marker
-            for (final Integer id2 : nodesOnScreen.keySet()) {
-                // If the markers don't have the same ID value
-                if (id.intValue() != id2.intValue()) {
-                    // Create the pair keys
-                    String idPair = id + "," + id2;
-                    String idPair2 = id2 + "," + id;
+            for (int j = i + 1; j < nodesOnScreen.keySet().toArray().length; j++) {
 
-                    // If the bisector hasn't been calculated yet
-                    if (!calculatedPairs.contains(idPair) && !calculatedPairs.contains(idPair2)) {
-                        // Add the keys to the set
-                        calculatedPairs.add(idPair);
-                        calculatedPairs.add(idPair2);
+                final Integer id2 = (Integer) nodesOnScreen.keySet().toArray()[j];
 
-                        // Get the 2 markers we are bisecting
-                        AbstractMarker node1 = nodesOnScreen.get(id);
+                // Create the pair keys
+                String idPair = id + SeparatorConstants.COMMA + id2;
 
-                        AbstractMarker node2 = nodesOnScreen.get(id2);
+                // Get the 2 markers we are bisecting
+                final AbstractMarker node1 = nodesOnScreen.get(id);
 
-                        // Get coordinates from markers
-                        Vec3 coords1 = new Vec3(node1.getX() - NODE_X_OFFSET, node1.getY() + NODE_Y_OFFSET);
-                        Vec3 coords2 = new Vec3(node2.getX() - NODE_X_OFFSET, node2.getY() + NODE_Y_OFFSET);
+                final AbstractMarker node2 = nodesOnScreen.get(id2);
 
-                        // Calculate the midpoint bewteen the 2 points
-                        Vec3 midPoint = new Vec3((coords1.getX() + coords2.getX()) / 2, (coords1.getY() + coords2.getY()) / 2);
+                // Get coordinates from markers
+                final Vec3 coords1 = new Vec3(node1.getX() - NODE_X_OFFSET, node1.getY() + NODE_Y_OFFSET);
+                final Vec3 coords2 = new Vec3(node2.getX() - NODE_X_OFFSET, node2.getY() + NODE_Y_OFFSET);
 
-                        // Calculating slope of line between 2 points
-                        Vec3 slope = new Vec3((coords2.getY() - coords1.getY()), (coords2.getX() - coords1.getX()));
+                // Calculate the midpoint bewteen the 2 points
+                final Vec3 midPoint = new Vec3((coords1.getX() + coords2.getX()) / 2, (coords1.getY() + coords2.getY()) / 2);
 
-                        // Reciprocal of the slope
-                        double reciprocal = -1 * (slope.getY() / slope.getX());
+                // Calculating slope of line between 2 points
+                final Vec3 slope = new Vec3((coords2.getY() - coords1.getY()), (coords2.getX() - coords1.getX()));
+
+                // Reciprocal of the slope
+                final double reciprocal = -1 * (slope.getY() / slope.getX());
 
 
-                        // the b is the y intercept for the formula y = ax + b
-                        double b = midPoint.getY() - (reciprocal * midPoint.getX());
+                // the b is the y intercept for the formula y = ax + b
+                final double b = midPoint.getY() - (reciprocal * midPoint.getX());
 
-                        // Get the start and end of the bisectorline
-                        Vec3 lineStart = new Vec3(0, b);
-                        Vec3 lineEnd = new Vec3(-b / reciprocal, 0);
+                // Get the start and end of the bisectorline
+                final Vec3 lineStart = new Vec3(0, b);
+                final Vec3 lineEnd = new Vec3(-b / reciprocal, 0);
 
-                        // Get length of the line
-                        double distance = Vec3.getDistance(lineStart, lineEnd);
+                // Get length of the line
+                double distance = Vec3.getDistance(lineStart, lineEnd);
 
-                        // Get normalized direction vector of the line
-                        Vec3 directVect = new Vec3((lineEnd.getX() - lineStart.getX()) / distance, (lineEnd.getY() - lineStart.getY()) / distance);
+                // Get normalized direction vector of the line
+                final Vec3 directVect = new Vec3((lineEnd.getX() - lineStart.getX()) / distance, (lineEnd.getY() - lineStart.getY()) / distance);
 
-                        // Extend line in both directions
-                        lineStart.setX(midPoint.getX() + (directVect.getX() * 1500));
-                        lineStart.setY(midPoint.getY() + (directVect.getY() * 1500));
+                // Extend line in both directions
+                lineStart.setX(midPoint.getX() + (directVect.getX() * 1500));
+                lineStart.setY(midPoint.getY() + (directVect.getY() * 1500));
 
-                        lineEnd.setX(midPoint.getX() - (directVect.getX() * 1500));
-                        lineEnd.setY(midPoint.getY() - (directVect.getY() * 1500));
+                lineEnd.setX(midPoint.getX() - (directVect.getX() * 1500));
+                lineEnd.setY(midPoint.getY() - (directVect.getY() * 1500));
 
-                        // If the line is either horizontal or vertical then make the ends and start of the line th edges of the map
-                        if (slope.getX() == 0 && slope.getY() != 0) {
-                            lineStart.setX(midPoint.getX());
-                            lineStart.setY(0);
-                            lineEnd.setX(midPoint.getX());
-                            lineEnd.setY(MapView.MAP_HEIGHT);
-                        } else if (slope.getY() == 0 && slope.getX() != 0) {
-                            lineStart.setX(0);
-                            lineStart.setY(midPoint.getY());
-                            lineEnd.setX(MapView.MAP_WIDTH);
-                            lineEnd.setY(midPoint.getY());
-                        }
-
-                        Line line = new Line();
-                        line.setStartX(lineStart.getX());
-                        line.setStartY(lineStart.getY());
-
-                        line.setEndX(lineEnd.getX());
-                        line.setEndY(lineEnd.getY());
-                        
-                        line.setStroke(Color.RED);
-
-                        // Add bisector lines to the map along with the ids of the markers it bisects as the key
-                        bisectorLines.put(idPair, line);
-                    }
+                // If the line is either horizontal or vertical then make the ends and start of the line th edges of the map
+                if (slope.getX() == 0 && slope.getY() != 0) {
+                    lineStart.setX(midPoint.getX());
+                    lineStart.setY(0);
+                    lineEnd.setX(midPoint.getX());
+                    lineEnd.setY(MapView.MAP_HEIGHT);
+                } else if (slope.getY() == 0 && slope.getX() != 0) {
+                    lineStart.setX(0);
+                    lineStart.setY(midPoint.getY());
+                    lineEnd.setX(MapView.MAP_WIDTH);
+                    lineEnd.setY(midPoint.getY());
                 }
+
+                final Line line = new Line();
+                line.setStartX(lineStart.getX());
+                line.setStartY(lineStart.getY());
+
+                line.setEndX(lineEnd.getX());
+                line.setEndY(lineEnd.getY());
+
+                line.setStroke(Color.RED);
+
+                // Add bisector lines to the map along with the ids of the markers it bisects as the key
+                bisectorLines.put(idPair, line);
             }
         }
     }
@@ -247,31 +237,31 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         // For each bisector key
         for (final String key : bisectorLines.keySet()) {
             // get id os related markers
-            Integer id1 = Integer.parseInt(key.split(",")[0]);
-            Integer id2 = Integer.parseInt(key.split(",")[1]);
+            final Integer id1 = Integer.parseInt(key.split(SeparatorConstants.COMMA)[0]);
+            final Integer id2 = Integer.parseInt(key.split(SeparatorConstants.COMMA)[1]);
 
             // Get the actual line
-            Line bisector = bisectorLines.get(key);
+            final Line bisector = bisectorLines.get(key);
 
             // Get start and end of line
-            Vec3 start = new Vec3(bisector.getStartX(), bisector.getStartY());
-            Vec3 end = new Vec3(bisector.getEndX(), bisector.getEndY());
+            final Vec3 start = new Vec3(bisector.getStartX(), bisector.getStartY());
+            final Vec3 end = new Vec3(bisector.getEndX(), bisector.getEndY());
 
             // Get distance of line and then calculate normalized direction vector
-            double distance = Vec3.getDistance(start, end);
-            Vec3 dirVect = new Vec3((end.getX() - start.getX()) / distance, (end.getY() - start.getY()) / distance);
+            final double distance = Vec3.getDistance(start, end);
+            final Vec3 dirVect = new Vec3((end.getX() - start.getX()) / distance, (end.getY() - start.getY()) / distance);
 
             // Array to hold the start and end points of the shortened line
-            Vec3[] shortLine = {null, null};
+            final Vec3[] shortLine = {null, null};
 
             int index = 0;
 
             // Get the positions of the markers involved.
-            Vec3 marker1 = new Vec3(nodesOnScreen.get(id1).getX() - NODE_X_OFFSET, nodesOnScreen.get(id1).getY() + NODE_Y_OFFSET);
-            Vec3 marker2 = new Vec3(nodesOnScreen.get(id2).getX() - NODE_X_OFFSET, nodesOnScreen.get(id2).getY() + NODE_Y_OFFSET);
+            final Vec3 marker1 = new Vec3(nodesOnScreen.get(id1).getX() - NODE_X_OFFSET, nodesOnScreen.get(id1).getY() + NODE_Y_OFFSET);
+            final Vec3 marker2 = new Vec3(nodesOnScreen.get(id2).getX() - NODE_X_OFFSET, nodesOnScreen.get(id2).getY() + NODE_Y_OFFSET);
 
             // for the distance of the line starting from the "start"
-            for (double i = 0; i < distance; i = i + LINE_EXTEND) {
+            for (double i = 0; i < distance; i += LINE_EXTEND) {
 
                 // If the starting coordinate is outside the map then move the start point in the direction of the end point
                 if (start.getX() > MapView.MAP_WIDTH + 5 || start.getX() < -5 || start.getY() < -2 || start.getY() > MapView.MAP_HEIGHT + 2) {
@@ -286,8 +276,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 for (final Integer id : nodesOnScreen.keySet()) {
                     // If the marker is not one of the 2 markers that the line bisects
                     if (id.intValue() != id1.intValue() && id.intValue() != id2.intValue()) {
-                        // Get the position fo the marker
-                        Vec3 markerPos = new Vec3(nodesOnScreen.get(id).getX() - NODE_X_OFFSET, nodesOnScreen.get(id).getY() + NODE_Y_OFFSET);
+                        // Get the position of the marker
+                        final Vec3 markerPos = new Vec3(nodesOnScreen.get(id).getX() - NODE_X_OFFSET, nodesOnScreen.get(id).getY() + NODE_Y_OFFSET);
 
                         // If the distance bettween this marker and the current strarting position is less than the distance
                         // from start to either of the markers involved
@@ -300,37 +290,32 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                 }
 
-                // If the current start is not closes to anyother marker except the ones being bisected
+                // If the current start is not closest to anyother marker except the ones being bisected
                 // Index represents if we are calculating the start or end of the line
                 if (shortestDistanceID == null && index == 0) {
                     // Record the start position is shortLine array
-                    shortLine[index] = new Vec3(start.getX() - (LINE_EXTEND * dirVect.getX()), start.getY() - (LINE_EXTEND * dirVect.getY())); // shortLie[index] -= start * dis
-                    ++index;
+                    shortLine[index] = new Vec3(start.getX() - (LINE_EXTEND * dirVect.getX()), start.getY() - (LINE_EXTEND * dirVect.getY()));
+                    index++;
                     // If index is 1 it means we are at the end of the line so record the line end
                 } else if (shortestDistanceID != null && index == 1) {
-
                     shortLine[index] = new Vec3(start.getX(), start.getY());
-
                     break;
                 }
 
                 // Move the start point along the direction vector
                 start.setX(start.getX() + LINE_EXTEND * dirVect.getX());
                 start.setY(start.getY() + LINE_EXTEND * dirVect.getY());
-
-
-            }
-
-            // If the end is not on the line then manually set it
-            if (shortLine[1] == null && shortLine[0] != null) {
-                shortLine[1] = end;
             }
 
 
-            if (shortLine[0] != null && shortLine[1] != null) {
+            if (shortLine[0] != null) {
+                // If the end is not on the line then manually set it
+                if (shortLine[1] == null) {
+                    shortLine[1] = end;
+                }
 
                 // Create the new shortened line with the 2 calculated ends
-                Line l = new Line();
+                final Line l = new Line();
 
                 l.setStartX(shortLine[0].getX());
                 l.setStartY(shortLine[0].getY());
@@ -367,49 +352,50 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private void calculateIntersectionCircles() {
 
         // For every bisector
-        for (final String bisectID1 : finalBisectorLines.keySet()) {
+        for (int i = 0; i < finalBisectorLines.keySet().toArray().length; i++) {
+            final String bisectID1 = (String) finalBisectorLines.keySet().toArray()[i];
             // Get the bisector line
-            Line bisect1 = finalBisectorLines.get(bisectID1);
+            final Line bisect1 = finalBisectorLines.get(bisectID1);
             String intersectionPoint;
 
             // Loop through all other bisectors for each bisector
-            for (final String bisectID2 : finalBisectorLines.keySet()) {
+            for (int j = 0; j < finalBisectorLines.keySet().toArray().length; j++) {
+                final String bisectID2 = (String) finalBisectorLines.keySet().toArray()[j];
 
                 // Get second bisector line
-                Line bisect2 = finalBisectorLines.get(bisectID2);
+                final Line bisect2 = finalBisectorLines.get(bisectID2);
 
-                boolean topAndBottomEdges = (bisectID1.equals(TOP_ID) && bisectID2.equals(BOTTOM_ID)) || (bisectID1.equals(BOTTOM_ID) && bisectID2.equals(TOP_ID));
-                boolean leftAndRightEdges = (bisectID1.equals(LEFT_ID) && bisectID2.equals(RIGHT_ID)) || (bisectID1.equals(RIGHT_ID) && bisectID2.equals(LEFT_ID));
+                final boolean topAndBottomEdges = (bisectID1.equals(TOP_ID) && bisectID2.equals(BOTTOM_ID)) || (bisectID1.equals(BOTTOM_ID) && bisectID2.equals(TOP_ID));
+                final boolean leftAndRightEdges = (bisectID1.equals(LEFT_ID) && bisectID2.equals(RIGHT_ID)) || (bisectID1.equals(RIGHT_ID) && bisectID2.equals(LEFT_ID));
 
                 // If the two lines are the left and right edges or the top and bottom edges then continue
                 if (topAndBottomEdges && leftAndRightEdges) {
                     continue;
                 }
 
-
                 // If the lines biset1 and bisect2 are not the same and the lines intersect
                 if (!bisectID1.equals(bisectID2) && doesIntersect(bisect1, bisect2)) {
                     // Calculate the slopes of the two lines
-                    Vec3 slope = new Vec3((bisect1.getEndY() - bisect1.getStartY()), (bisect1.getEndX() - bisect1.getStartX()));
-                    Vec3 slope2 = new Vec3((bisect2.getEndY() - bisect2.getStartY()), (bisect2.getEndX() - bisect2.getStartX()));
+                    final Vec3 slope = new Vec3((bisect1.getEndY() - bisect1.getStartY()), (bisect1.getEndX() - bisect1.getStartX()));
+                    final Vec3 slope2 = new Vec3((bisect2.getEndY() - bisect2.getStartY()), (bisect2.getEndX() - bisect2.getStartX()));
 
                     // For formula y = mx + b, represent both bisectors with this formula
                     // calculate the different variables for the formula
-                    double m1 = slope.getX() / slope.getY();
+                    final double m1 = slope.getX() / slope.getY();
 
-                    double b1 = bisect1.getStartY() - (m1 * bisect1.getStartX());
+                    final double b1 = bisect1.getStartY() - (m1 * bisect1.getStartX());
 
-                    double m2 = slope2.getX() / slope2.getY();
+                    final double m2 = slope2.getX() / slope2.getY();
 
-                    double b2 = bisect2.getStartY() - (m2 * bisect2.getStartX());
+                    final double b2 = bisect2.getStartY() - (m2 * bisect2.getStartX());
 
                     // If lines are completely vertical or horizontal then they don't intersect
                     if (slope.getY() == 0 && slope2.getY() == 0) {
                         continue;
                     }
 
-                    double x;
-                    double y;
+                    final double x;
+                    final double y;
 
                     // If either line is either vertical or horizontal then tweak the formula slightly to calculate intersection point
                     if (slope.getY() == 0) {
@@ -444,31 +430,31 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     // If the intersection map doesn't contain the intersection point
                     if (!intersectionMap.containsKey(intersectionPoint)) {
                         // Create new entry in the intersection node map
-                        IntersectionNode intersectionNode = new IntersectionNode(roundedX, roundedY);
+                        final IntersectionNode intersectionNode = new IntersectionNode(roundedX, roundedY);
 
                         // Put the intersectionNode in the intersectionMap with its coordinate as the key
                         intersectionMap.put(intersectionPoint, intersectionNode);
                     }
 
-                    IntersectionNode intersectionNode = intersectionMap.get(intersectionPoint);
+                    final IntersectionNode intersectionNode = intersectionMap.get(intersectionPoint);
                     // Add the current intersection coordinate to the intersectionNode contained points array
                     intersectionNode.addContainedPoint(x, y);
 
                     // If the bisector is not on the edge then add the id of the markers seperated by the bisector
                     // to the intersectionNode's relevant marker container
                     if (!isEdgeLine(bisectID1)) {
-                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID1.split(",")[0]));
-                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID1.split(",")[1]));
+                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID1.split(SeparatorConstants.COMMA)[0]));
+                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID1.split(SeparatorConstants.COMMA)[1]));
                     }
 
                     // Do the same with the second line
                     if (!isEdgeLine(bisectID2)) {
-                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID2.split(",")[0]));
-                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID2.split(",")[1]));
+                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID2.split(SeparatorConstants.COMMA)[0]));
+                        intersectionNode.addRelevantMarker(Integer.parseInt(bisectID2.split(SeparatorConstants.COMMA)[1]));
                     }
 
                     // Get the relevant marker IDs for this intersection
-                    Integer[] relevantMarkerIDS = {Integer.parseInt(bisectID1.split(",")[0]), Integer.parseInt(bisectID1.split(",")[1]), Integer.parseInt(bisectID2.split(",")[0]), Integer.parseInt(bisectID2.split(",")[1])};
+                    final Integer[] relevantMarkerIDS = {Integer.parseInt(bisectID1.split(SeparatorConstants.COMMA)[0]), Integer.parseInt(bisectID1.split(SeparatorConstants.COMMA)[1]), Integer.parseInt(bisectID2.split(SeparatorConstants.COMMA)[0]), Integer.parseInt(bisectID2.split(SeparatorConstants.COMMA)[1])};
 
                     // Loop through the relevant markers and calculate which intersection is closest to which marker
                     for (final Integer id : relevantMarkerIDS) {
@@ -504,13 +490,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                     // For every intersectionNode in the array in lineMap for key bisect2, add the current intersectionPoint to
                     // their connected points array
-                    for (int i = 0; i < lineMap.get(bisect2).size(); ++i) {
-                        lineMap.get(bisect2).get(i).addConnectedPoint(intersectionMap.get(intersectionPoint));
+                    for (int k = 0; k < lineMap.get(bisect2).size(); k++) {
+                        lineMap.get(bisect2).get(k).addConnectedPoint(intersectionMap.get(intersectionPoint));
                     }
 
                 }
-
-
             }
         }
     }
@@ -530,8 +514,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             boolean neighboursFound = false;
 
             // get its location
-            double x = n.getX();
-            double y = n.getY();
+            final double x = n.getX();
+            final double y = n.getY();
 
             IntersectionNode nearest1 = null;
             IntersectionNode nearest2 = null;
@@ -546,7 +530,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 }
 
                 // Calculate distance between corner and next closet neighbour
-                double distance = Vec3.getDistance(new Vec3(x, y), new Vec3(neighbour.getX(), neighbour.getY()));
+                final double distance = Vec3.getDistance(new Vec3(x, y), new Vec3(neighbour.getX(), neighbour.getY()));
 
                 // Nearest neighbour for horizontal neihgbour
                 if (neighbour.getX() == x && distance < distanceNearest1) {
@@ -586,7 +570,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                             continue;
                         }
 
-                        double distance = Vec3.getDistance(new Vec3(neighbour.getX(), neighbour.getY()), new Vec3(parent1.getX(), parent1.getY()));
+                        final double distance = Vec3.getDistance(new Vec3(neighbour.getX(), neighbour.getY()), new Vec3(parent1.getX(), parent1.getY()));
 
                         // Find nearest distance of neighbour that is not in the direction of parent
                         if ((neighbour.getX() != grandParent1.getX() || neighbour.getY() != grandParent1.getY()) && distance < distanceNearest1) {
@@ -611,7 +595,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                             continue;
                         }
 
-                        double distance = Vec3.getDistance(new Vec3(neighbour.getX(), neighbour.getY()), new Vec3(parent2.getX(), parent2.getY()));
+                        final double distance = Vec3.getDistance(new Vec3(neighbour.getX(), neighbour.getY()), new Vec3(parent2.getX(), parent2.getY()));
 
                         if ((neighbour.getX() != grandParent2.getX() || neighbour.getY() != grandParent2.getY()) && distance < distanceNearest2) {
                             distanceNearest2 = distance;
@@ -632,7 +616,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
             }
 
-            List<Integer> relevantMarkerIds = new ArrayList<>();
+            final List<Integer> relevantMarkerIds = new ArrayList<>();
 
             // Loop through the relevant markers for one of the neighbours
             for (final Integer id : nearest1.getRelevantMarkers()) {
@@ -650,8 +634,8 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
                 // calculate closest marker to conrer
                 for (final Integer markerID : relevantMarkerIds) {
-                    double markerX = nodesOnScreen.get(markerID).getX();
-                    double markerY = nodesOnScreen.get(markerID).getY();
+                    final double markerX = nodesOnScreen.get(markerID).getX();
+                    final double markerY = nodesOnScreen.get(markerID).getY();
 
                     if (Vec3.getDistance(new Vec3(markerX, markerY), new Vec3(n.getX(), n.getY())) < distance) {
                         distance = Vec3.getDistance(new Vec3(markerX, markerY), new Vec3(n.getX(), n.getY()));
@@ -677,7 +661,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
      */
     private void createPolygons() {
         // A visited set to make sure we dont't visit the same vertice twice for 1 shape
-        Set<String> visited = new HashSet<>();
+        final Set<String> visited = new HashSet<>();
 
         final ConstellationColor[] palette = ConstellationColor.createPalette(nodeID);
 
@@ -687,7 +671,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             visited.clear();
 
             // Create the shape graphic
-            Polygon markerZone = new Polygon();
+            final Polygon markerZone = new Polygon();
 
             markerZone.setStroke(palette[markerID].getJavaFXColor());
             markerZone.setFill(palette[markerID].getJavaFXColor());
@@ -706,9 +690,9 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 markerZone.getPoints().addAll(new Double[]{relevantIntersection.getX(), relevantIntersection.getY()});
 
                 // for all the intersectionNode's connected neighbours
-                for (int i = 0; i < relevantIntersection.getConnectedPoints().size(); ++i) {
+                for (int i = 0; i < relevantIntersection.getConnectedPoints().size(); i++) {
 
-                    IntersectionNode neighbor = relevantIntersection.getConnectedPoints().get(i);
+                    final IntersectionNode neighbor = relevantIntersection.getConnectedPoints().get(i);
 
                     // If the neighbour has not ben visited and is relevant to the current marker in the itereaction
                     if (!visited.contains(neighbor.getKey()) && neighbor.getRelevantMarkers().contains(markerID)) {
