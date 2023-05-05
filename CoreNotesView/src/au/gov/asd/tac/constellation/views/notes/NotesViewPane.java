@@ -718,7 +718,7 @@ public class NotesViewPane extends BorderPane {
             selectionLabel.setWrapText(true);
             selectionLabel.setStyle("-fx-font-weight: bold; -fx-font-style: italic; " + fontStyle);
             selectionLabel.setMinWidth(250);
-            selectionLabel.setMaxWidth(250);
+            selectionLabel.setWrapText(false);
             selectionLabel.setAlignment(Pos.CENTER_RIGHT);
 
             // If the note to be created is in edit mode, ensure it is created

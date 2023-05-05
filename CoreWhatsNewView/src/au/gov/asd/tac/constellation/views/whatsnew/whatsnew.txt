@@ -1,6 +1,12 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2023-05-05 Notes View UI Change
+<p>The controls to add a new note are no longer at the bottom and have been moved to a pop-up window which appears when the "Create Note" button is pressed on the top left.</p>
+<p>A colour picker has been added to the note creation window as well as the inidividual notes in the edit mode so now there can be different coloured notes.</p>
+<p>Notes are now a fixed size and a "Show More" button will appear on notes with content that exceeds the minimum height.</p>
+<p>The Time-Ranger filter control is in a drop down menu at the top and takes up less space.</p>
+
 == 2022-11-23 Quality Control Rules
 <p>Quality Control Rules can now be disabled and enabled from the Category Priority menu in the Quality Control View.</p>
 <p>Disabled rules will be ignored when determining the quality rating of a node.</p>
