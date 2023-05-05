@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -37,6 +39,10 @@ public class MarkdownTree {
 
     private String rawString = "";
 
+    private final Pattern boldPattern = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
+    private final Pattern boldPattern2 = Pattern.compile("__([^_]+)__");
+    private final Pattern italicPattern = Pattern.compile("\\*\\s?([^\\n]+)\\*");
+    private final Pattern italicPattern2 = Pattern.compile("_([^_`]+)_");
 
     public MarkdownTree() {
         root = new MarkdownNode();
@@ -169,10 +175,26 @@ public class MarkdownTree {
                 }
             } else if (text.charAt(closestSyntax) == boldSyntax) {
                 currentIndex = closestSyntax;
-                //LOGGER.log(Level.SEVERE, "Stuck at italic syntax loop");
                 // Bold
                 if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == boldSyntax) {
-                    ++currentIndex;
+                    final Matcher boldMatcher;
+
+                    if (text.charAt(currentIndex) == '*') {
+                        boldMatcher = boldPattern.matcher(text.substring(currentIndex));
+                    } else {
+                        boldMatcher = boldPattern2.matcher(text.substring(currentIndex));
+                    }
+
+                    if (boldMatcher.find()) {
+                        final MarkdownNode bold = new MarkdownNode(MarkdownNode.Type.BOLD, currentIndex, boldMatcher.end(1), boldMatcher.group(1), -99);
+                        currentNode.getChildren().add(bold);
+                        parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), boldMatcher.group(1));
+                        currentIndex += boldMatcher.end(1) + 2;
+                    } else {
+                        currentIndex++;
+                    }
+
+                    /*++currentIndex;
                     int endIndex = text.indexOf(Character.toString(boldSyntax) + Character.toString(boldSyntax), currentIndex + 1);
                     if (endIndex != -1) {
                         MarkdownNode bold = new MarkdownNode(MarkdownNode.Type.BOLD, currentIndex, endIndex, text.substring(currentIndex + 1, endIndex), -99);
@@ -181,11 +203,28 @@ public class MarkdownTree {
                         currentIndex = endIndex + 2;
                         //LOGGER.log(Level.SEVERE, "Text after end bold syntax: " + text.charAt(currentIndex));
                     } else
-                        ++currentIndex;
+                        ++currentIndex;*/
 
                     // Italic
                 } else if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) != boldSyntax) {
-                    int endIndex = text.indexOf(boldSyntax, currentIndex + 1);
+                    final Matcher italicMatcher;
+
+                    if (text.charAt(currentIndex) == '*') {
+                        italicMatcher = italicPattern.matcher(text.substring(currentIndex));
+                    } else {
+                        italicMatcher = italicPattern2.matcher(text.substring(currentIndex));
+                    }
+
+                    if (italicMatcher.find()) {
+                        final MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, italicMatcher.end(1), italicMatcher.group(1), -99);
+                        currentNode.getChildren().add(italic);
+                        parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), italicMatcher.group(1));
+                        currentIndex += italicMatcher.end(1) + 1;
+                    } else {
+                        currentIndex++;
+                    }
+
+                    /*int endIndex = text.indexOf(boldSyntax, currentIndex + 1);
                     if (endIndex != -1) {
                         while (endIndex < text.length() && endIndex != -1) {
                             if ((endIndex + 1 < text.length() && text.charAt(endIndex + 1) != boldSyntax) || endIndex == text.length() - 1) {
@@ -208,7 +247,7 @@ public class MarkdownTree {
                     } else {
                         //LOGGER.log(Level.SEVERE, "No closing italic syntax found");
                         ++currentIndex;
-                    }
+                    }*/
                 }
             } else if (text.charAt(closestSyntax) == '~') {
                 currentIndex = closestSyntax;
