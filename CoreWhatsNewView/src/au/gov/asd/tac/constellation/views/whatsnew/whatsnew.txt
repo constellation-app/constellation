@@ -7,6 +7,14 @@
 <p>Notes are now a fixed size and a "Show More" button will appear on notes with content that exceeds the minimum height.</p>
 <p>The Time-Ranger filter control is in a drop down menu at the top and takes up less space.</p>
 
+== 2023-04-18 Error Report View 
+<p>A new Error Report View has been added to Constellation to assist in viewing and managing unexpected errors that might occur during normal usage.</p>
+<p>There are options to control whether or not a popup message is displayed when an error occurs, based on the severity level of the error, or if it is a repeated occurrence of an error.</p>
+<p>There are also filtering options to only show entries of a chosen severity level in the report panel.</p>
+<p>The report panel will show all unique errors that have occurred during the current session, ordered with the most recent entries at the top. Any repeats of an existing error will increment an occurrence counter for that error.</p>
+<p>Individual entries can be cleared from the list by clicking on the X in their heading. A Clear All Reports button has been provided to easily remove all entries at once.</p>
+<p>Even after closing the Error Report View, the current popup settings will still be used to control any new errors that may occur for the remainder of the session.</p>
+
 == 2022-11-23 Quality Control Rules
 <p>Quality Control Rules can now be disabled and enabled from the Category Priority menu in the Quality Control View.</p>
 <p>Disabled rules will be ignored when determining the quality rating of a node.</p>

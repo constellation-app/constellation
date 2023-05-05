@@ -43,7 +43,6 @@ public abstract class JavaFxTopComponent<P extends Pane> extends ListeningTopCom
     protected JFXPanel jfxContainer = new JFXPanel();
     protected Scene scene;
     protected ScrollPane scrollPane;
-
     /**
      * A JavaFxTopComponent will have a ScrollPane by default, as it cannot know
      * the expected layout of the given pane. If you wish to remove the
