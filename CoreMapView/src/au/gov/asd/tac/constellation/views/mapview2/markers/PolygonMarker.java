@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,30 +43,21 @@ public class PolygonMarker extends AbstractMarker {
         markerPath.setOpacity(0.4);
 
         // Event handler for the polygon marker
-        markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
+        markerPath.setOnMouseEntered((final MouseEvent e) -> {
+            markerPath.setFill(Color.YELLOW);
 
-                markerPath.setFill(Color.YELLOW);
-
-                e.consume();
-            }
+            e.consume();
         });
 
-        markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
+        markerPath.setOnMouseExited((final MouseEvent e) -> {
+            markerPath.setFill(Color.ORANGE);
 
-                markerPath.setFill(Color.ORANGE);
-
-                e.consume();
-            }
+            e.consume();
         });
 
-        markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
-
-                parent.removeUserMarker(markerID);
-                e.consume();
-            }
+        markerPath.setOnMouseClicked((final MouseEvent e) -> {
+            parent.removeUserMarker(markerID);
+            e.consume();
         });
     }
 
@@ -83,17 +75,14 @@ public class PolygonMarker extends AbstractMarker {
             currentLine = new Line();
             currentLine.setStartX(prevLineEndX);
             currentLine.setStartY(prevLineEndY);
-            currentLine.setEndX(prevLineEndX);
-            currentLine.setEndY(prevLineEndY);
+            setEnd(prevLineEndX, prevLineEndY);
         } else {
-            currentLine.setEndX(prevLineEndX);
-            currentLine.setEndY(prevLineEndY);
+            setEnd(prevLineEndX, prevLineEndY);
             polygonLineUI.add(currentLine);
             currentLine = new Line();
             currentLine.setStartX(prevLineEndX);
             currentLine.setStartY(prevLineEndY);
-            currentLine.setEndX(prevLineEndX);
-            currentLine.setEndY(prevLineEndY);
+            setEnd(prevLineEndX, prevLineEndY);
         }
         currentLine.setStroke(Color.BLACK);
         return currentLine;
@@ -122,17 +111,17 @@ public class PolygonMarker extends AbstractMarker {
 
         // generate raw path based on vertices
         if (!polygonLineUI.isEmpty()) {
-            for (int i = 0; i < polygonLineUI.size(); ++i) {
+            for (int i = 0; i < polygonLineUI.size(); i++) {
                 if (i == 0) {
-                    path = "M" + polygonLineUI.get(i).getStartX() + "," + polygonLineUI.get(i).getStartY();
-                    path += "L" + polygonLineUI.get(i).getEndX() + "," + polygonLineUI.get(i).getEndY();
+                    path = "M" + polygonLineUI.get(i).getStartX() + SeparatorConstants.COMMA + polygonLineUI.get(i).getStartY();
+                    path += "L" + polygonLineUI.get(i).getEndX() + SeparatorConstants.COMMA + polygonLineUI.get(i).getEndY();
                 } else {
-                    path += "L" + polygonLineUI.get(i).getEndX() + "," + polygonLineUI.get(i).getEndY();
+                    path += "L" + polygonLineUI.get(i).getEndX() + SeparatorConstants.COMMA + polygonLineUI.get(i).getEndY();
                 }
             }
 
             // Connect polygon mmarker back to the start to complete the shape
-            path += "L" + polygonLineUI.get(0).getStartX() + "," + polygonLineUI.get(0).getStartY();
+            path += "L" + polygonLineUI.get(0).getStartX() + SeparatorConstants.COMMA + polygonLineUI.get(0).getStartY();
             if (polygonLineUI.size() == 1) {
                 markerPath.setStroke(Color.RED);
                 this.type = AbstractMarker.MarkerType.LINE_MARKER;

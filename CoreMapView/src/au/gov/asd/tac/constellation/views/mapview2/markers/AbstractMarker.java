@@ -95,6 +95,7 @@ public abstract class AbstractMarker {
         return idList;
     }
 
+    // Do nothing here as this gets overidden in child classes
     public void setMarkerPosition(final double mapWidth, final double mapHeight) {
 
     }

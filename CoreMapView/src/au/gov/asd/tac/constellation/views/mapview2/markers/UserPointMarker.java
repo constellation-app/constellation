@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
@@ -48,31 +49,22 @@ public class UserPointMarker extends AbstractMarker {
         markerPath.setStroke(Color.BLACK);
 
         // Set up event handlers for user draw point marker
-        markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
+        markerPath.setOnMouseEntered((final MouseEvent e) -> {
+            markerPath.setFill(Color.YELLOW);
 
-                markerPath.setFill(Color.YELLOW);
-
-                e.consume();
-            }
+            e.consume();
         });
 
-        markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
+        markerPath.setOnMouseExited((final MouseEvent e) -> {
+            markerPath.setFill(Color.ORANGE);
 
-                markerPath.setFill(Color.ORANGE);
-
-                e.consume();
-            }
+            e.consume();
         });
 
-        markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
+        markerPath.setOnMouseClicked((final MouseEvent e) -> {
+            parent.removeUserMarker(markerID);
 
-                parent.removeUserMarker(markerID);
-
-                e.consume();
-            }
+            e.consume();
         });
     }
 
@@ -91,7 +83,7 @@ public class UserPointMarker extends AbstractMarker {
         super.setX(x);
         super.setY(y);
 
-        path = "M " + x + ", " + y + " Z " + path;
+        path = "M " + x + SeparatorConstants.COMMA + " " + y + " Z " + path;
 
         markerPath.setContent(path);
     }

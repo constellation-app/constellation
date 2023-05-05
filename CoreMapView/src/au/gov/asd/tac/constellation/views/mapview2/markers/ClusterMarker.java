@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -40,9 +41,9 @@ public class ClusterMarker extends AbstractMarker {
 
     // the nodes inside a cluster
     // These are not the marker objects themselves but the graphical marker elements on screen
-    private final ArrayList<Node> nodes;
+    private final List<Node> nodes;
 
-    public ClusterMarker(final MapView parent, final ArrayList<Node> nodes) {
+    public ClusterMarker(final MapView parent, final List<Node> nodes) {
         super(parent, -99, -99, 0, 0, AbstractMarker.MarkerType.CLUSTER_MARKER);
 
         isSelected = false;
@@ -84,69 +85,67 @@ public class ClusterMarker extends AbstractMarker {
         double farthestNode2X = 0;
         double farthestNode2Y = 0;
 
-        if (nodes.size() > 0) {
-            final Vec3 minPosition = new Vec3(
-                    Float.MAX_VALUE, Float.MAX_VALUE);
-            final Vec3 maxPosition = new Vec3(
-                    Float.MIN_VALUE, Float.MIN_VALUE);
+        final Vec3 minPosition = new Vec3(
+                Float.MAX_VALUE, Float.MAX_VALUE);
+        final Vec3 maxPosition = new Vec3(
+                Float.MIN_VALUE, Float.MIN_VALUE);
+
+        // Loop through all nodes
+        for (int i = 0; i < nodes.size(); i++) {
+            final Node node = nodes.get(i);
+
+            // Get its coordinates
+            final double nodeX = node.getBoundsInParent().getCenterX();
+            final double nodeY = node.getBoundsInParent().getCenterY();
+
+            final Vec3 position = new Vec3(nodeX, nodeY);
 
             // Loop through all nodes
-            for (int i = 0; i < nodes.size(); ++i) {
-                final Node node = nodes.get(i);
+            for (int j = 0; j < nodes.size(); j++) {
+                final Node node2 = nodes.get(j);
 
-                // Get its coordinates
-                final double nodeX = node.getBoundsInParent().getCenterX();
-                final double nodeY = node.getBoundsInParent().getCenterY();
+                // If the 2 nodes are not the same
+                if (node != node2) {
 
-                final Vec3 position = new Vec3(nodeX, nodeY);
+                    // Get the distance between the 2 nodes
+                    final double node2X = node2.getBoundsInParent().getCenterX();
+                    final double node2Y = node2.getBoundsInParent().getCenterY();
 
-                // Loop through all nodes
-                for (int j = 0; j < nodes.size(); ++j) {
-                    final Node node2 = nodes.get(j);
+                    final double distance = Math.sqrt(Math.pow(node2X - nodeX, 2) + Math.pow(node2Y - nodeY, 2));
 
-                    // If the 2 nodes are not the same
-                    if (node != node2) {
-
-                        // Get the distance between the 2 nodes
-                        final double node2X = node2.getBoundsInParent().getCenterX();
-                        final double node2Y = node2.getBoundsInParent().getCenterY();
-
-                        final double distance = Math.sqrt(Math.pow(node2X - nodeX, 2) + Math.pow(node2Y - nodeY, 2));
-
-                        // Store the nodes that have the largest distance
-                        if (maxDistance < distance) {
-                            maxDistance = distance;
-                            farthestNode1X = nodeX;
-                            farthestNode1Y = nodeY;
-                            farthestNode2X = node2X;
-                            farthestNode2Y = node2Y;
-                        }
+                    // Store the nodes that have the largest distance
+                    if (maxDistance < distance) {
+                        maxDistance = distance;
+                        farthestNode1X = nodeX;
+                        farthestNode1Y = nodeY;
+                        farthestNode2X = node2X;
+                        farthestNode2Y = node2Y;
                     }
                 }
-
-                // Find center or furthest nodes
-                clusterCenter.setX((farthestNode1X + farthestNode2X) / 2);
-                clusterCenter.setY((farthestNode1Y + farthestNode2Y) / 2);
-
-                // If there is only 1 marker
-                if (clusterCenter.getX() == 0 && clusterCenter.getY() == 0) {
-                    clusterCenter.setX(node.getBoundsInParent().getCenterX());
-                    clusterCenter.setY(node.getBoundsInParent().getCenterY());
-                }
-
-                // Store the min and max position
-                minPosition.setX(Math.min(position.getX(), minPosition.getX()));
-                minPosition.setY(Math.min(position.getY(), minPosition.getY()));
-                maxPosition.setX(Math.max(position.getX(), maxPosition.getX()));
-                maxPosition.setY(Math.max(position.getY(), maxPosition.getY()));
             }
 
-            // Calclate diameter of the circle
-            diameter = Math.sqrt(Math.pow((maxPosition.getX() - minPosition.getX()), 2)
-                    + Math.pow((maxPosition.getY() - minPosition.getY()), 2));
+            // Find center or furthest nodes
+            clusterCenter.setX((farthestNode1X + farthestNode2X) / 2);
+            clusterCenter.setY((farthestNode1Y + farthestNode2Y) / 2);
 
+            // If there is only 1 marker
+            if (clusterCenter.getX() == 0 && clusterCenter.getY() == 0) {
+                clusterCenter.setX(node.getBoundsInParent().getCenterX());
+                clusterCenter.setY(node.getBoundsInParent().getCenterY());
+            }
+
+            // Store the min and max position
+            minPosition.setX(Math.min(position.getX(), minPosition.getX()));
+            minPosition.setY(Math.min(position.getY(), minPosition.getY()));
+            maxPosition.setX(Math.max(position.getX(), maxPosition.getX()));
+            maxPosition.setY(Math.max(position.getY(), maxPosition.getY()));
         }
-        double clusterRadius = Math.max((float) diameter / 2, minRadius);
+
+        // Calclate diameter of the circle
+        diameter = Math.sqrt(Math.pow((maxPosition.getX() - minPosition.getX()), 2)
+                + Math.pow((maxPosition.getY() - minPosition.getY()), 2));
+
+        final double clusterRadius = Math.max((float) diameter / 2, minRadius);
 
         // Generate the cluster circle
         cluster = new Circle();
