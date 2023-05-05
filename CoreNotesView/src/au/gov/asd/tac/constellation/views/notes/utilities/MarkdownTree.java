@@ -40,9 +40,10 @@ public class MarkdownTree {
     private String rawString = "";
 
     private final Pattern boldPattern = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
-    private final Pattern boldPattern2 = Pattern.compile("__([^_]+)__");
+    private final Pattern boldPattern2 = Pattern.compile("__\\s?([^\\n]+)__");
     private final Pattern italicPattern = Pattern.compile("\\*\\s?([^\\n]+)\\*");
-    private final Pattern italicPattern2 = Pattern.compile("_([^_`]+)_");
+    private final Pattern italicPattern2 = Pattern.compile("_\\s?([^\\n`]+)_");
+    private final Pattern strikeThroughPattern = Pattern.compile("~~\\s?([^\\n]+)~~");
 
     public MarkdownTree() {
         root = new MarkdownNode();
@@ -221,6 +222,7 @@ public class MarkdownTree {
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), italicMatcher.group(1));
                         currentIndex += italicMatcher.end(1) + 1;
                     } else {
+                        LOGGER.log(Level.SEVERE, "Italic syntax not found");
                         currentIndex++;
                     }
 
@@ -252,7 +254,20 @@ public class MarkdownTree {
             } else if (text.charAt(closestSyntax) == '~') {
                 currentIndex = closestSyntax;
 
-                if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == '~') {
+                final Matcher strikeThroughMatcher = strikeThroughPattern.matcher(text.substring(currentIndex));
+
+                if (strikeThroughMatcher.find()) {
+                    LOGGER.log(Level.SEVERE, "Strike through text: " + strikeThroughMatcher.group(1));
+                    final MarkdownNode strikeThrough = new MarkdownNode(MarkdownNode.Type.STRIKETHROUGH, currentIndex + 1, strikeThroughMatcher.end(), strikeThroughMatcher.group(1), -99);
+                    currentNode.getChildren().add(strikeThrough);
+                    parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), strikeThroughMatcher.group(1));
+                    currentIndex += strikeThroughMatcher.end() + 2;
+                } else {
+                    LOGGER.log(Level.SEVERE, "Strike through not found");
+                    currentIndex++;
+                }
+
+                /*if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == '~') {
                     ++currentIndex;
                     int endIndex = text.indexOf("~~", currentIndex + 1);
                     if (endIndex != -1) {
@@ -264,7 +279,7 @@ public class MarkdownTree {
                         ++currentIndex;
                     }
 
-                }
+                }*/
 
             } else if (text.charAt(closestSyntax) == '.') {
                 currentIndex = closestSyntax;
