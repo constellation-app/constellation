@@ -386,38 +386,32 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             interaction.setProgress(++currentRow, totalRows, "Importing Vertices: " + source, true);
 
             final String[] row = data.get(i);
+            int vertexId = -1;
             
             try {
+                
                 if (filter == null || filter.passesFilter(i - 1, row)) {
 
-                    final int vertexId = graph.addVertex();
-
-                    try {
-
-                        for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
-                            attributeDefinition.setValue(graph, vertexId, row, (i - 1));
-                        }
-
-                        if (initialiseWithSchema && graph.getSchema() != null) {
-                            graph.getSchema().completeVertex(graph, vertexId);
-                        }
-
-                        // Count the number of processed rows to notify in the status message
-                        ++importedRows;
-
-                    } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
-                        if (skipInvalidRows) {
-                            graph.removeVertex(vertexId);
-                            ++skippedRow;
-                        } else {                            
-                            throw ex;
-                        }
+                    vertexId = graph.addVertex();
+                    for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
+                        attributeDefinition.setValue(graph, vertexId, row, (i - 1));
                     }
+
+                    if (initialiseWithSchema && graph.getSchema() != null) {
+                        graph.getSchema().completeVertex(graph, vertexId);
+                    }
+
+                    // Count the number of processed rows to notify in the status message
+                    ++importedRows;
+
                 }
             } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
-                if (skipInvalidRows) {          
+                if (skipInvalidRows) {
+                    if(vertexId != -1) {
+                        graph.removeVertex(vertexId);
+                    }                    
                     ++skippedRow;
-                } else {                    
+                } else {
                     throw ex;
                 }
             }
@@ -495,7 +489,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                         graph.removeVertex(destinationVertexId);
                         ++skippedRow;
                     } else {
-                        NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Ignore invalid rows", NotifyDescriptor.PLAIN_MESSAGE);                     
+                        NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Ignore invalid rows", NotifyDescriptor.PLAIN_MESSAGE);
                         throw ex;
                     }
                 }
