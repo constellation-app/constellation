@@ -21,13 +21,21 @@ import java.time.ZonedDateTime;
 import java.time.chrono.Chronology;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+import javafx.geometry.Insets;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
+
 
 /**
  * A DateTime Selector that is in JavaFX instead of Swing.
@@ -87,7 +95,7 @@ public class DateTimePicker {
 
         datePickerGridPane.add(datePickerLabel, 0, 0);
         datePickerGridPane.add(datePicker, 1, 0);
-
+        datePicker.setMaxWidth(150);
         final GridPane timePickerGrid = new GridPane();
         final Label hourLabel = new Label("Hour");
         final Label minLabel = new Label("Minute");
@@ -115,12 +123,23 @@ public class DateTimePicker {
 
         mainGridPane.add(datePickerGridPane, 0, 0);
         mainGridPane.add(timePickerGrid, 0, 1);
+        mainGridPane.setPadding(new Insets(1, 1, 1, 1));
+
+        dateTimePane.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(3.0), BorderWidths.DEFAULT)));
+    }
+
+    public void disableControls(final boolean disable) {
+        datePicker.setDisable(disable);
+        hourPicker.setDisable(disable);
+        minPicker.setDisable(disable);
+        secPicker.setDisable(disable);
     }
 
 
     public Pane getPane() {
         return dateTimePane;
     }
+
 
     /**
      * Sets the current date time to whatever the current local time is
