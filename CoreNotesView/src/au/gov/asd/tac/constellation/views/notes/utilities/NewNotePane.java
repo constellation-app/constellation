@@ -32,8 +32,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -46,8 +44,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -157,7 +153,6 @@ public class NewNotePane {
                 final List<TextHelper> textNodes = mdTree.getTextNodes();
 
                 for (int i = 0; i < textNodes.size(); ++i) {
-                    LOGGER.log(Level.SEVERE, "Adding to text flow: " + textNodes.get(i).getText().getText());
                     preview.getChildren().add(textNodes.get(i).getText());
                 }
             }

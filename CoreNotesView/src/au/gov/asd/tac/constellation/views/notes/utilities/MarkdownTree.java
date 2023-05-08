@@ -44,6 +44,7 @@ public class MarkdownTree {
     private final Pattern italicPattern = Pattern.compile("\\*\\s?([^\\n]+)\\*");
     private final Pattern italicPattern2 = Pattern.compile("_\\s?([^\\n`]+)_");
     private final Pattern strikeThroughPattern = Pattern.compile("~~\\s?([^\\n]+)~~");
+    private final Pattern paragraphPattern = Pattern.compile("((?:[^\\n][\\n]?)+)");
 
     public MarkdownTree() {
         root = new MarkdownNode();
@@ -152,7 +153,21 @@ public class MarkdownTree {
                     return;
                 }
                 LOGGER.log(Level.SEVERE, "Working on paragraph");
-                if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == '\n') {
+
+                final Matcher paragraphMatcher = paragraphPattern.matcher(text.substring(currentIndex));
+
+                if (paragraphMatcher.find()) {
+                    LOGGER.log(Level.SEVERE, "Paragraph text: " + paragraphMatcher.group(1));
+                    LOGGER.log(Level.SEVERE, "Text after paragraph: " + text.charAt(paragraphMatcher.end(1)));
+
+                    final MarkdownNode paragraph = new MarkdownNode(MarkdownNode.Type.PARAGRAPH, currentIndex + 1, paragraphMatcher.end(1), paragraphMatcher.group(1), -99);
+                    currentNode.getChildren().add(paragraph);
+                    parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), paragraphMatcher.group(1));
+                    currentIndex += paragraphMatcher.end(1);
+                } else
+                    currentIndex++;
+
+                /*if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == '\n') {
                     ++currentIndex;
                     //LOGGER.log(Level.SEVERE, "Found second enter at " + currentIndex);
                     int endIndex = text.indexOf("\n\n", currentIndex + 1);
@@ -173,7 +188,7 @@ public class MarkdownTree {
                     currentIndex = endIndex;
                 } else {
                     ++currentIndex;
-                }
+                }*/
             } else if (text.charAt(closestSyntax) == boldSyntax) {
                 currentIndex = closestSyntax;
                 // Bold
@@ -194,18 +209,6 @@ public class MarkdownTree {
                     } else {
                         currentIndex++;
                     }
-
-                    /*++currentIndex;
-                    int endIndex = text.indexOf(Character.toString(boldSyntax) + Character.toString(boldSyntax), currentIndex + 1);
-                    if (endIndex != -1) {
-                        MarkdownNode bold = new MarkdownNode(MarkdownNode.Type.BOLD, currentIndex, endIndex, text.substring(currentIndex + 1, endIndex), -99);
-                        currentNode.getChildren().add(bold);
-                        parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
-                        currentIndex = endIndex + 2;
-                        //LOGGER.log(Level.SEVERE, "Text after end bold syntax: " + text.charAt(currentIndex));
-                    } else
-                        ++currentIndex;*/
-
                     // Italic
                 } else if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) != boldSyntax) {
                     final Matcher italicMatcher;
@@ -225,31 +228,6 @@ public class MarkdownTree {
                         LOGGER.log(Level.SEVERE, "Italic syntax not found");
                         currentIndex++;
                     }
-
-                    /*int endIndex = text.indexOf(boldSyntax, currentIndex + 1);
-                    if (endIndex != -1) {
-                        while (endIndex < text.length() && endIndex != -1) {
-                            if ((endIndex + 1 < text.length() && text.charAt(endIndex + 1) != boldSyntax) || endIndex == text.length() - 1) {
-                                LOGGER.log(Level.SEVERE, "Italic text: " + text.substring(currentIndex + 1, endIndex));
-                                MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, endIndex, text.substring(currentIndex + 1, endIndex), -99);
-                                currentNode.getChildren().add(italic);
-                                parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex));
-                                currentIndex = endIndex + 1;
-                                //LOGGER.log(Level.SEVERE, "character after italics: " + text.charAt(currentIndex));
-                                break;
-                            } else if (endIndex + 2 < text.length()) {
-                                endIndex = text.indexOf(boldSyntax, endIndex + 2);
-                            } else {
-                                break;
-                            }
-                        }
-                        if (endIndex == -1) {
-                            ++currentIndex;
-                        }
-                    } else {
-                        //LOGGER.log(Level.SEVERE, "No closing italic syntax found");
-                        ++currentIndex;
-                    }*/
                 }
             } else if (text.charAt(closestSyntax) == '~') {
                 currentIndex = closestSyntax;
