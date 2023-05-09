@@ -133,10 +133,6 @@ public class MarkdownTree {
                 final Matcher hashMatcher = hashPattern.matcher(text.substring(closestSyntax));
 
                 if (headingMatcher.find() && hashMatcher.find()) {
-                    LOGGER.log(Level.SEVERE, "Heading text: " + headingMatcher.group(1));
-                    LOGGER.log(Level.SEVERE, "Hash group count: " + hashMatcher.group().length());
-                    LOGGER.log(Level.SEVERE, "End of group: " + headingMatcher.end());
-
                     final MarkdownNode heading = new MarkdownNode(MarkdownNode.Type.HEADING, closestSyntax, headingMatcher.end(1), headingMatcher.group(1), hashMatcher.group().length());
                     currentNode.getChildren().add(heading);
                     parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), headingMatcher.group(1));
@@ -145,26 +141,7 @@ public class MarkdownTree {
                 else
                     currentIndex++;
 
-            } /*else if (text.charAt(closestSyntax) == '\n') {
-                currentIndex = closestSyntax;
-                if (currentIndex == text.length() - 1) {
-                    return;
-                }
-
-                final Matcher paragraphMatcher = paragraphPattern.matcher(text.substring(currentIndex));
-                LOGGER.log(Level.SEVERE, "working on: " + text.substring(currentIndex));
-
-                if (paragraphMatcher.find()) {
-                    LOGGER.log(Level.SEVERE, "Paragraph text: " + paragraphMatcher.group(1));
-                    LOGGER.log(Level.SEVERE, "Text at end of paragraph: " + text.charAt(paragraphMatcher.end(1) - 1));
-                    final MarkdownNode paragraph = new MarkdownNode(MarkdownNode.Type.PARAGRAPH, currentIndex + 1, paragraphMatcher.end(1), paragraphMatcher.group(1), -99);
-                    currentNode.getChildren().add(paragraph);
-                    parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), paragraphMatcher.group(1));
-                    currentIndex += paragraphMatcher.end(1);
-                } else
-                    currentIndex++;
-
-            }*/ else if (text.charAt(closestSyntax) == boldSyntax) {
+            } else if (text.charAt(closestSyntax) == boldSyntax) {
                 currentIndex = closestSyntax;
                 // Bold
                 if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == boldSyntax) {
