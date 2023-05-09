@@ -40,6 +40,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import java.util.ArrayList;
@@ -211,15 +212,15 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         final int limit = parameters.getParameters().get(LIMIT_PARAMETER_ID).getIntegerValue();
 
         if (mode == null || (!mode.equals(NODE) && !mode.equals(TRANSACTION))) {
-            throw new PluginException(PluginNotificationLevel.ERROR, "Invalid mode value provided");
+            throw new PluginException(PluginNotificationLevel.ERROR, NotifyDisplayer.BLOCK_POPUP_FLAG + "Invalid mode value provided");
         }
 
         if (typeCategory == null) {
-            throw new PluginException(PluginNotificationLevel.ERROR, "Select a type category");
+            throw new PluginException(PluginNotificationLevel.ERROR, NotifyDisplayer.BLOCK_POPUP_FLAG + "Select a type category");
         }
 
         if (subTypes.isEmpty()) {
-            throw new PluginException(PluginNotificationLevel.ERROR, "Select some types to perform the calculation");
+            throw new PluginException(PluginNotificationLevel.ERROR, NotifyDisplayer.BLOCK_POPUP_FLAG + "Select some types to perform the calculation");
         }
 
         final int vertexLabelAttribute = VisualConcept.VertexAttribute.LABEL.get(graph);

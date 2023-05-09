@@ -200,7 +200,9 @@ public final class ImportDelimitedIO {
             } catch (final IOException ex) {
                 NotifyDisplayer.display(String.format("Can't save import definition: %s", ex.getMessage()),
                         NotifyDescriptor.ERROR_MESSAGE);
-                LOGGER.log(Level.WARNING, ex.getMessage(), ex);
+                final Throwable ioex = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + ex.getMessage());
+                ioex.setStackTrace(ex.getStackTrace());
+                LOGGER.log(Level.WARNING, ex.getMessage(), ioex);
             }
         }
     }

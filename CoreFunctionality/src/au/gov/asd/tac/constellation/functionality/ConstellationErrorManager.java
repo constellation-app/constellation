@@ -15,9 +15,11 @@
  */
 package au.gov.asd.tac.constellation.functionality;
 
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportEntry;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportSessionData;
+import java.util.Date;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -35,14 +37,20 @@ public class ConstellationErrorManager extends Handler {
         if (errorRecord != null && errorRecord.getThrown() != null) {
             final StackTraceElement[] elems = errorRecord.getThrown().getStackTrace();
             final StringBuilder errorMsg = new StringBuilder();
-            String recordHeader = errorRecord.getThrown().getLocalizedMessage() != null ? 
-                    errorRecord.getThrown().getLocalizedMessage() : 
-                    "<< No Message >>";
-            if (!recordHeader.endsWith(SeparatorConstants.NEWLINE)) {
-                recordHeader += SeparatorConstants.NEWLINE;
-            }
+//            String recordHeader = errorRecord.getThrown().getLocalizedMessage() != null ? 
+//                    errorRecord.getThrown().getLocalizedMessage() : 
+//                    "";
             final Level errLevel = errorRecord.getLevel();
             String errorSummary = errorRecord.getThrown().toString();
+            final boolean autoBlockPopup = errorSummary.contains(NotifyDisplayer.BLOCK_POPUP_FLAG);
+            errorSummary = errorSummary.replace(NotifyDisplayer.BLOCK_POPUP_FLAG, "");
+            //if (recordHeader.trim().isBlank()) {
+            final int firstColon = errorSummary.indexOf(":");
+            final String extractedMessage = firstColon != -1 ? errorSummary.substring(firstColon + 2) : "";
+            final int prevDotPos = errorSummary.substring(0, (firstColon != -1 ? firstColon : errorSummary.length())).lastIndexOf(".");
+            final String exceptionType = errorSummary.substring(prevDotPos + 1, (firstColon != -1 ? firstColon : errorSummary.length()));
+            String recordHeader = extractedMessage.equals("") ? exceptionType : extractedMessage;
+            //}
             if (!errorSummary.endsWith(SeparatorConstants.NEWLINE)) {
                 errorSummary += SeparatorConstants.NEWLINE;
             }
@@ -54,8 +62,17 @@ public class ConstellationErrorManager extends Handler {
                             .append(SeparatorConstants.NEWLINE);
                 }
             }
+            if (!recordHeader.endsWith(SeparatorConstants.NEWLINE)) {
+                recordHeader += SeparatorConstants.NEWLINE;
+            }
+
             final ErrorReportEntry repEntry = new ErrorReportEntry(errLevel, recordHeader, errorSummary, errorMsg.toString(), 
                                                                    ErrorReportSessionData.getNextEntryId());
+            if (autoBlockPopup) {
+                //repEntry.setHeading(recordHeader.substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length()));
+                repEntry.setBlockRepeatedPopups(true);
+                repEntry.setLastPopupDate(new Date());
+            }
             ErrorReportSessionData.getInstance().storeSessionError(repEntry);
         }
     }
