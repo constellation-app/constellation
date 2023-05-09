@@ -31,10 +31,10 @@ public class IntersectionNode {
     private final String key;
 
 
-    private final List<Vec3> containedPoints = new ArrayList<>();
-    private final List<Integer> relevantMarkers = new ArrayList<>();
-    private final List<IntersectionNode> connectedPoints = new ArrayList<>();
-    private final List<String> connectedPointIds = new ArrayList<>();
+    private List<Vec3> containedPoints = new ArrayList<>();
+    private List<Integer> relevantMarkers = new ArrayList<>();
+    private List<IntersectionNode> connectedPoints = new ArrayList<>();
+    private List<String> connectedPointIds = new ArrayList<>();
 
     public IntersectionNode() {
         this.x = 0;
@@ -46,6 +46,17 @@ public class IntersectionNode {
         this.x = x;
         this.y = y;
         key = x + "," + y;
+    }
+
+    public IntersectionNode(final IntersectionNode other) {
+        x = other.getX();
+        y = other.getY();
+        key = other.getKey();
+
+        containedPoints = other.getContainedPoints();
+        relevantMarkers = other.getRelevantMarkers();
+        connectedPoints = other.getConnectedPoints();
+        connectedPointIds = other.getConnectedPointIds();
     }
 
     public List<Integer> getRelevantMarkers() {
@@ -111,5 +122,9 @@ public class IntersectionNode {
 
     public double getY() {
         return y;
+    }
+
+    public List<String> getConnectedPointIds() {
+        return connectedPointIds;
     }
 }

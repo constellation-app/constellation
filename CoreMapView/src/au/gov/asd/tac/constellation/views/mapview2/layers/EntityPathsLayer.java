@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
@@ -66,7 +67,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
         entityPaths.getChildren().clear();
 
         // Get current readable graph
-        final GraphReadMethods graph = parent.getCurrentGraph().getReadableGraph();
+        final GraphReadMethods graph = GraphManager.getDefault().getActiveGraph().getReadableGraph();
 
         // Get attribute Ids for type and datetime
         final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.get(graph);

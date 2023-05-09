@@ -105,7 +105,7 @@ public class EntityPathsLayerNGTest {
         final PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, 0.05, 0, 0, "#ffffff");
         queriedMarkers.put("5,5", pMarker);
 
-        Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
+        //Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
         Mockito.when(graphMock.getReadableGraph()).thenReturn(graph);
 
         try (MockedStatic<AnalyticConcept> analConcept = Mockito.mockStatic(AnalyticConcept.class)) {

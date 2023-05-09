@@ -558,10 +558,11 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             IntersectionNode parent1 = nearest1;
             IntersectionNode parent2 = nearest2;
 
-            while (!neighboursFound) {
-                distanceNearest1 = Double.MAX_VALUE;
-                distanceNearest2 = Double.MAX_VALUE;
+            distanceNearest1 = Double.MAX_VALUE;
+            distanceNearest2 = Double.MAX_VALUE;
 
+            while (!neighboursFound) {
+                //findCornerNeighbours(nearest1, parent1, grandParent1);
                 // If the first neighbour is empty
                 if (nearest1.getRelevantMarkers().isEmpty()) {
                     // Loop through all its connected points
@@ -587,6 +588,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     }
                 }
 
+                //findCornerNeighbours(nearest2, parent2, grandParent2);
                 // Same logic as above just with the other neighbour if it is a corner
                 if (nearest2.getRelevantMarkers().isEmpty()) {
                     for (final IntersectionNode neighbour : parent2.getConnectedPoints()) {
@@ -650,10 +652,35 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             } else if (!relevantMarkerIds.isEmpty()) {
                 n.addRelevantMarker(relevantMarkerIds.get(0));
             }
-
-
         }
     }
+
+    /*private void findCornerNeighbours(IntersectionNode nearest, IntersectionNode parent, IntersectionNode grandParent) {
+        double distanceNearest = Double.MAX_VALUE;
+        if (nearest.getRelevantMarkers().isEmpty()) {
+            // Loop through all its connected points
+            for (final IntersectionNode neighbour : parent.getConnectedPoints()) {
+                if (neighbour.getKey().equals(parent.getKey())) {
+                    continue;
+                }
+
+                final double distance = Vec3.getDistance(new Vec3(neighbour.getX(), neighbour.getY()), new Vec3(parent.getX(), parent.getY()));
+
+                // Find nearest distance of neighbour that is not in the direction of parent
+                if ((neighbour.getX() != grandParent.getX() || neighbour.getY() != grandParent.getY()) && distance < distanceNearest) {
+                    distanceNearest = distance;
+                    nearest = neighbour;
+                }
+            }
+
+            // If the nearest intersectionNode is STILL empty therefore it is another corner then set up the loop
+            // to run again but with this newly found corner as the parent
+            if (nearest.getRelevantMarkers().isEmpty()) {
+                grandParent = new IntersectionNode(parent);
+                parent = new IntersectionNode(nearest);
+            }
+        }
+    }*/
 
     /**
      * Create the actual shape of the polygon with all the information

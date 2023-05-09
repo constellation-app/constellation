@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
@@ -49,7 +50,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
     @Override
     public void setUp() {
         entityPaths.getChildren().clear();
-        final GraphReadMethods graph = parent.getCurrentGraph().getReadableGraph();
+        final GraphReadMethods graph = GraphManager.getDefault().getActiveGraph().getReadableGraph();
         final List<Integer> idList = new ArrayList<>();
 
         // For every queried markers add all its connected neighbours to the idList

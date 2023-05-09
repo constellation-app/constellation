@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import javafx.scene.Group;
 
@@ -34,58 +35,8 @@ public abstract class AbstractMapLayer {
 
     protected AbstractMapLayer(final MapView parent, final int id) {
         this.parent = parent;
-        currentGraph = parent.getCurrentGraph();
+        currentGraph = GraphManager.getDefault().getActiveGraph();
         this.id = id;
-    }
-
-    // Class to hold a location in lattitude and longitude and its corresponding x and y values
-    protected class Location {
-        private double lat;
-        private double lon;
-
-        private double x = 0;
-        private double y = 0;
-
-        public Location(final double lat, final double lon) {
-            this.lat = lat;
-            this.lon = lon;
-
-            x = lon;
-            y = lat;
-
-        }
-
-        public double getLat() {
-            return lat;
-        }
-
-        public void setLat(final double lat) {
-            this.lat = lat;
-        }
-
-        public double getLon() {
-            return lon;
-        }
-
-        public void setLon(final double lon) {
-            this.lon = lon;
-        }
-
-        public double getX() {
-            return x;
-        }
-
-        public void setX(final double x) {
-            this.x = x;
-        }
-
-        public double getY() {
-            return y;
-        }
-
-        public void setY(final double y) {
-            this.y = y;
-        }
     }
 
     public void setUp() {

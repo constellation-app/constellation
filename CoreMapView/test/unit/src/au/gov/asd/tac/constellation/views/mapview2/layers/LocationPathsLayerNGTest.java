@@ -93,7 +93,7 @@ public class LocationPathsLayerNGTest {
         final int latID2 = 22;
         final int vertexTypeAttributeId = 33;
 
-        Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
+        //Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
         Mockito.when(graphMock.getReadableGraph()).thenReturn(graph);
 
         try (MockedStatic<SpatialConcept> spaceConcept = Mockito.mockStatic(SpatialConcept.class)) {

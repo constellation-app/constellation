@@ -58,7 +58,6 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -70,8 +69,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -955,8 +952,6 @@ public class MapView extends ScrollPane {
             m.getMarker().setScaleY(m.getMarker().getScaleY() * scale);
 
             // Scale markers up and down based on whether or not the map is being zoomed in or out
-            //(scale < 1) ? m.getMarker().setLayoutY(m.getMarker().getLayoutY() + (m.getMarker().getScaleY() * 10)) : m.getMarker().setLayoutY(m.getMarker().getLayoutY() - (m.getMarker().getScaleY() * 10));
-
             if (scale < 1) {
                 m.getMarker().setLayoutY(m.getMarker().getLayoutY() + (m.getMarker().getScaleY() * 10));
             } else {
@@ -1017,10 +1012,6 @@ public class MapView extends ScrollPane {
         overlayGroup.getChildren().clear();
         layerGroup.getChildren().clear();
 
-    }
-
-    public Graph getCurrentGraph() {
-        return GraphManager.getDefault().getActiveGraph();
     }
 
     /**

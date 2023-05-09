@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
@@ -25,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
@@ -78,6 +80,7 @@ public class PopularityHeatmapLayerNGTest {
         System.out.println("getWeight");
         final MapView mapView = Mockito.mock(MapView.class);
 
+        final GraphManager graphManager = Mockito.mock(GraphManager.class);
         final Graph graph = mock(Graph.class);
         final ReadableGraph readableGraph = mock(ReadableGraph.class);
 
@@ -87,23 +90,27 @@ public class PopularityHeatmapLayerNGTest {
         final List<Integer> idList = new ArrayList<>();
         idList.add(vertexID);
 
-        Mockito.when(mapView.getCurrentGraph()).thenReturn(graph);
-        Mockito.when(graph.getReadableGraph()).thenReturn(readableGraph);
-        Mockito.when(readableGraph.getVertexCount()).thenReturn(vertexCount);
-        Mockito.when(readableGraph.getVertex(0)).thenReturn(vertexID);
-        Mockito.when(readableGraph.getVertexNeighbourCount(vertexID)).thenReturn(4);
+        try (MockedStatic<GraphManager> graphManagerMock = Mockito.mockStatic(GraphManager.class)) {
+            graphManagerMock.when(GraphManager::getDefault).thenReturn(graphManager);
+            Mockito.when(graphManager.getActiveGraph()).thenReturn(graph);
 
-        Mockito.doNothing().when(readableGraph).release();
+            Mockito.when(graph.getReadableGraph()).thenReturn(readableGraph);
+            Mockito.when(readableGraph.getVertexCount()).thenReturn(vertexCount);
+            Mockito.when(readableGraph.getVertex(0)).thenReturn(vertexID);
+            Mockito.when(readableGraph.getVertexNeighbourCount(vertexID)).thenReturn(4);
 
-        final AbstractMarker marker = Mockito.mock(PointMarker.class);
-        Mockito.when(marker.getConnectedNodeIdList()).thenReturn(idList);
+            Mockito.doNothing().when(readableGraph).release();
 
-        final PopularityHeatmapLayer instance = new PopularityHeatmapLayer(mapView, 0);
+            final AbstractMarker marker = Mockito.mock(PointMarker.class);
+            Mockito.when(marker.getConnectedNodeIdList()).thenReturn(idList);
 
-        final int expResult = 4;
-        final int result = instance.getWeight(marker);
+            final PopularityHeatmapLayer instance = new PopularityHeatmapLayer(mapView, 0);
 
-        assertEquals(result, expResult);
+            final int expResult = 4;
+            final int result = instance.getWeight(marker);
+
+            assertEquals(result, expResult);
+        }
     }
 
 }
