@@ -207,7 +207,7 @@ public class MapView extends ScrollPane {
 
     public static final ToolsOverlay TOOLS_OVERLAY = new ToolsOverlay(0, 0);
     private static final InfoOverlay INFO_OVERLAY = new InfoOverlay();
-    public static OverviewOverlay OVERVIEW_OVERLAY;
+    private OverviewOverlay overviewOverlay;
 
     private static final String COORDINATE = "Coordinate";
     private static final String GEOHASH = "Geohash";
@@ -297,7 +297,7 @@ public class MapView extends ScrollPane {
         for (int i = 0; i < countrySVGPaths.size(); ++i) {
             countryGroup.getChildren().add(countrySVGPaths.get(i));
         }
-        OVERVIEW_OVERLAY = new OverviewOverlay(0, 0, countrySVGPaths);
+        overviewOverlay = new OverviewOverlay(0, 0, countrySVGPaths);
         enclosingRectangle.setWidth(MAP_WIDTH);
         enclosingRectangle.setHeight(MAP_HEIGHT);
 
@@ -328,11 +328,11 @@ public class MapView extends ScrollPane {
         // Put overlays in map
         overlayMap.put(MapViewPane.TOOLS_OVERLAY, TOOLS_OVERLAY);
         overlayMap.put(MapViewPane.INFO_OVERLAY, INFO_OVERLAY);
-        overlayMap.put(MapViewPane.OVERVIEW_OVERLAY, OVERVIEW_OVERLAY);
+        overlayMap.put(MapViewPane.OVERVIEW_OVERLAY, overviewOverlay);
 
         markerColourProperty.set(parent.DEFAULT_COLOURS);
         // Event listener for what colour point markers should be
-        markerColourProperty.addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+        markerColourProperty.addListener((observable, oldValue, newValue) -> {
             // Loop through all markers on screen
             for (final AbstractMarker value : markers.values()) {
                 // If the marker is a point marker
@@ -347,7 +347,7 @@ public class MapView extends ScrollPane {
         });
 
         // Handler for what type of text to display under the markers
-        markerTextProperty.addListener((final ObservableValue<? extends String> observable, final String oldValue, final String newValue) -> {
+        markerTextProperty.addListener((observable, oldValue, newValue) -> {
             // Clear any existing text
             pointMarkerTextGroup.getChildren().clear();
 
@@ -565,7 +565,7 @@ public class MapView extends ScrollPane {
 
         final double width = screenViewPortTopRight.getX() - screenViewPortTopLeft.getX();
 
-        OVERVIEW_OVERLAY.update(topLeftVect, parent.getBorderRectangle().getWidth());
+        overviewOverlay.update(topLeftVect, parent.getBorderRectangle().getWidth());
     }
 
     /**
@@ -1508,6 +1508,11 @@ public class MapView extends ScrollPane {
     public static InfoOverlay getInfoOverlay() {
         return INFO_OVERLAY;
     }
+
+    public OverviewOverlay getOverviewOverlay() {
+        return overviewOverlay;
+    }
+
 
     public Set<AbstractMarker.MarkerType> getMarkersShowing() {
         return markersShowing;

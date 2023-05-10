@@ -457,10 +457,10 @@ public class MapViewPane extends BorderPane {
         AnchorPane.setTopAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
         AnchorPane.setRightAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
 
-        AnchorPane.setBottomAnchor(mapView.OVERVIEW_OVERLAY.getOverlayPane(), 290.0);
-        AnchorPane.setRightAnchor(mapView.OVERVIEW_OVERLAY.getOverlayPane(), 100.0);
+        AnchorPane.setBottomAnchor(mapView.getOverviewOverlay().getOverlayPane(), 290.0);
+        AnchorPane.setRightAnchor(mapView.getOverviewOverlay().getOverlayPane(), 100.0);
 
-        anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.OVERVIEW_OVERLAY.getOverlayPane());
+        anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.getOverviewOverlay().getOverlayPane());
 
         //parentStackPane.setLayoutX(0);
         //parentStackPane.setLayoutY(0);

@@ -50,7 +50,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
     @Override
     public void setUp() {
         entityPaths.getChildren().clear();
-        final GraphReadMethods graph = GraphManager.getDefault().getActiveGraph().getReadableGraph();
+        final GraphReadMethods graph = currentGraph.getReadableGraph();
         final List<Integer> idList = new ArrayList<>();
 
         // For every queried markers add all its connected neighbours to the idList

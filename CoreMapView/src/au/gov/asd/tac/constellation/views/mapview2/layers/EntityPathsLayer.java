@@ -67,7 +67,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
         entityPaths.getChildren().clear();
 
         // Get current readable graph
-        final GraphReadMethods graph = GraphManager.getDefault().getActiveGraph().getReadableGraph();
+        final GraphReadMethods graph = currentGraph.getReadableGraph();
 
         // Get attribute Ids for type and datetime
         final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.get(graph);
