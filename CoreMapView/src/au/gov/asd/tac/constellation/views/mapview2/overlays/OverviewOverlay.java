@@ -38,8 +38,7 @@ import javafx.scene.shape.SVGPath;
  */
 public class OverviewOverlay extends AbstractOverlay {
 
-    //private static final Pane map = new Pane();
-    private final static double MAP_SCALE = 0.2;
+    private static final double MAP_SCALE = 0.2;
 
     private final Rectangle panningRect = new Rectangle();
     private final Group panRectGroup = new Group();
@@ -67,15 +66,12 @@ public class OverviewOverlay extends AbstractOverlay {
             p.setContent(countrySVGPaths.get(i).getContent());
             p.setStroke(Color.BLACK);
             p.setFill(Color.WHITE);
-            //p.setScaleX(0.5);
-            //p.setScaleY(0.5);
             p.setStrokeWidth(0.025);
             countryGroup.getChildren().add(p);
         }
         overlayPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         countryGroup.setScaleX(MAP_SCALE);
         countryGroup.setScaleY(MAP_SCALE);
-        //overlayPane.getChildren().add(panRectGroup);
 
         final StackPane stackPane = new StackPane();
         stackPane.getChildren().add(countryGroup);

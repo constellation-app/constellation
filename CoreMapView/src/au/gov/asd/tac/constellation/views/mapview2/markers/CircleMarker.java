@@ -18,8 +18,6 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -83,7 +81,7 @@ public class CircleMarker extends AbstractMarker {
 
         // Event handler for removing handler when clicked
         markerPath.setOnMouseClicked(e -> {
-                parent.removeUserMarker(markerID);
+            parent.removeUserMarker(markerID);
             e.consume();
         });
 

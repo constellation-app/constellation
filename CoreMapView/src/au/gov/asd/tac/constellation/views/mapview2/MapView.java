@@ -371,117 +371,114 @@ public class MapView extends ScrollPane {
 
         // If the mouse is moved
         mapGroupHolder.setOnMouseMoved(event -> {
-                final double x = event.getX();
-                final double y = event.getY();
+            final double x = event.getX();
+            final double y = event.getY();
 
-                // Change lattitude and logitude text on info overlay if its showing
-                if (INFO_OVERLAY.isShowing()) {
-                    INFO_OVERLAY.updateLocation(x, y);
-                    parent.setLatFieldText(INFO_OVERLAY.getLatText().getText());
-                    parent.setLonFieldText(INFO_OVERLAY.getLonText().getText());
+            // Change lattitude and logitude text on info overlay if its showing
+            if (INFO_OVERLAY.isShowing()) {
+                INFO_OVERLAY.updateLocation(x, y);
+                parent.setLatFieldText(INFO_OVERLAY.getLatText().getText());
+                parent.setLonFieldText(INFO_OVERLAY.getLonText().getText());
+            }
+
+            // If drawing is enabled
+            if (TOOLS_OVERLAY.getDrawingEnabled().get() && !TOOLS_OVERLAY.getMeasureEnabled().get()) {
+
+                // if drawing circle marker then change the circle marker UI's radius to the distance between the original click position and the mouse's
+                // current position
+                if (drawingCircleMarker && circleMarker != null && !drawingPolygonMarker) {
+                    circleMarker.setRadius(x, y);
+                    circleMarker.setLineEnd(x, y);
+
+                    // Change distance text on tools overlay
+                    TOOLS_OVERLAY.setDistanceText(circleMarker.getCenterX(), circleMarker.getCenterY(), x, y);
+
+                    // If the user is drawing a polygon marker then update the polygon drawing UI
+                } else if (drawingPolygonMarker && polygonMarker != null && !drawingCircleMarker) {
+                    polygonMarker.setEnd(x, y);
+
+                    // Update distance text
+                    TOOLS_OVERLAY.setDistanceText(polygonMarker.getCurrentLine().getStartX(), polygonMarker.getCurrentLine().getStartY(), polygonMarker.getCurrentLine().getEndX(), polygonMarker.getCurrentLine().getEndY());
                 }
 
-                // If drawing is enabled
-                if (TOOLS_OVERLAY.getDrawingEnabled().get() && !TOOLS_OVERLAY.getMeasureEnabled().get()) {
+                // If the user isn't drawing anything but IS measuring distance then update the size of the measurement line
+            } else if (TOOLS_OVERLAY.getMeasureEnabled().get() && !TOOLS_OVERLAY.getDrawingEnabled().get() && measureLine != null) {
+                measureLine.setEndX(event.getX());
+                measureLine.setEndY(event.getY());
 
-                    // if drawing circle marker then change the circle marker UI's radius to the distance between the original click position and the mouse's
-                    // current position
-                    if (drawingCircleMarker && circleMarker != null && !drawingPolygonMarker) {
-                        circleMarker.setRadius(x, y);
-                        circleMarker.setLineEnd(x, y);
+                TOOLS_OVERLAY.setDistanceText(measureLine.getStartX(), measureLine.getStartY(), measureLine.getEndX(), measureLine.getEndY());
+            }
 
-                        // Change distance text on tools overlay
-                        TOOLS_OVERLAY.setDistanceText(circleMarker.getCenterX(), circleMarker.getCenterY(), x, y);
-
-                        // If the user is drawing a polygon marker then update the polygon drawing UI
-                    } else if (drawingPolygonMarker && polygonMarker != null && !drawingCircleMarker) {
-                        polygonMarker.setEnd(x, y);
-
-                        // Update distance text
-                        TOOLS_OVERLAY.setDistanceText(polygonMarker.getCurrentLine().getStartX(), polygonMarker.getCurrentLine().getStartY(), polygonMarker.getCurrentLine().getEndX(), polygonMarker.getCurrentLine().getEndY());
-                    }
-
-                    // If the user isn't drawing anything but IS measuring distance then update the size of the measurement line
-                } else if (TOOLS_OVERLAY.getMeasureEnabled().get() && !TOOLS_OVERLAY.getDrawingEnabled().get() && measureLine != null) {
-                    measureLine.setEndX(event.getX());
-                    measureLine.setEndY(event.getY());
-
-                    TOOLS_OVERLAY.setDistanceText(measureLine.getStartX(), measureLine.getStartY(), measureLine.getEndX(), measureLine.getEndY());
-
-                }
-
-                event.consume();
-
-
+            event.consume();
         });
 
 
         // When mouse is dragged
         mapGroupHolder.setOnMouseDragged(event -> {
-                // If the user is draing a selection rectangle
-                if (isSelectingMultiple) {
-                    final double x = event.getX();
-                    final double y = event.getY();
+            // If the user is draing a selection rectangle
+            if (isSelectingMultiple) {
+                final double x = event.getX();
+                final double y = event.getY();
 
-                    final double width;
-                    final double height;
+                final double width;
+                final double height;
 
-                    // Change position and size of rectangle based on where the user moves their mouse
-                    if (x >= selectionRectangleX && y <= selectionRectangleY) {
-                        width = x - selectionRectangleX;
-                        height = selectionRectangleY - y;
-                        selectionRectangle.setY(y);
-                    } else if (x < selectionRectangleX && y < selectionRectangleY) {
-                        width = selectionRectangleX - x;
-                        height = selectionRectangleY - y;
-                        selectionRectangle.setX(x);
-                        selectionRectangle.setY(y);
-                    } else if (x >= selectionRectangleX) {
-                        width = x - selectionRectangleX;
-                        height = y - selectionRectangleY;
+                // Change position and size of rectangle based on where the user moves their mouse
+                if (x >= selectionRectangleX && y <= selectionRectangleY) {
+                    width = x - selectionRectangleX;
+                    height = selectionRectangleY - y;
+                    selectionRectangle.setY(y);
+                } else if (x < selectionRectangleX && y < selectionRectangleY) {
+                    width = selectionRectangleX - x;
+                    height = selectionRectangleY - y;
+                    selectionRectangle.setX(x);
+                    selectionRectangle.setY(y);
+                } else if (x >= selectionRectangleX) {
+                    width = x - selectionRectangleX;
+                    height = y - selectionRectangleY;
 
-                    } else {
-                        width = selectionRectangleX - x;
-                        height = y - selectionRectangleY;
+                } else {
+                    width = selectionRectangleX - x;
+                    height = y - selectionRectangleY;
 
-                        selectionRectangle.setX(x);
-                    }
+                    selectionRectangle.setX(x);
+                }
 
-                    selectionRectangle.setWidth(width);
-                    selectionRectangle.setHeight(height);
+                selectionRectangle.setWidth(width);
+                selectionRectangle.setHeight(height);
             }
         });
 
         // When mouse is released
         mapGroupHolder.setOnMouseReleased(event -> {
-                // If the user is selecting multiple markers
-                if (isSelectingMultiple) {
-                    selectedNodeList.clear();
+            // If the user is selecting multiple markers
+            if (isSelectingMultiple) {
+                selectedNodeList.clear();
 
-                    final double pointMarkerXOffset = 95.5;
-                    final double pointMarkerYOffset = 95.5;
-                    final List<Integer> idList = new ArrayList<>();
+                final double pointMarkerXOffset = 95.5;
+                final double pointMarkerYOffset = 95.5;
+                final List<Integer> idList = new ArrayList<>();
 
-                    // Loop through all the markers
-                    for (final AbstractMarker m : markers.values()) {
-                        if (m instanceof PointMarker) {
-                            final PointMarker p = (PointMarker) m;
-                            p.deselect();
+                // Loop through all the markers
+                for (final AbstractMarker m : markers.values()) {
+                    if (m instanceof PointMarker) {
+                        final PointMarker p = (PointMarker) m;
+                        p.deselect();
 
-                            // If marker is within the selection rectangle then select the marker
-                            if (selectionRectangle.contains(p.getX() - pointMarkerXOffset, p.getY() + pointMarkerYOffset)) {
-                                p.select();
-                                idList.addAll(p.getConnectedNodeIdList());
-                                selectedNodeList.add(p.getMarkerId());
-                            }
-
+                        // If marker is within the selection rectangle then select the marker
+                        if (selectionRectangle.contains(p.getX() - pointMarkerXOffset, p.getY() + pointMarkerYOffset)) {
+                            p.select();
+                            idList.addAll(p.getConnectedNodeIdList());
+                            selectedNodeList.add(p.getMarkerId());
                         }
-                    }
 
-                    // Select all noded that correspond to selected markers in consty
-                    PluginExecution.withPlugin(new SelectOnGraphPlugin(idList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
-                    isSelectingMultiple = false;
-                    selectionRectangleGroup.getChildren().clear();
+                    }
+                }
+
+                // Select all noded that correspond to selected markers in consty
+                PluginExecution.withPlugin(new SelectOnGraphPlugin(idList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
+                isSelectingMultiple = false;
+                selectionRectangleGroup.getChildren().clear();
             }
         });
 
@@ -530,18 +527,18 @@ public class MapView extends ScrollPane {
 
         // When mouse is pressed instantiate multi-select rectangle
         mapGroupHolder.setOnMousePressed(event -> {
-                // create the selection rectangle
-                if (event.isPrimaryButtonDown()) {
-                    isSelectingMultiple = true;
-                    selectionRectangle = new Rectangle();
-                    selectionRectangle.setX(event.getX());
-                    selectionRectangle.setY(event.getY());
-                    selectionRectangleX = event.getX();
-                    selectionRectangleY = event.getY();
+            // create the selection rectangle
+            if (event.isPrimaryButtonDown()) {
+                isSelectingMultiple = true;
+                selectionRectangle = new Rectangle();
+                selectionRectangle.setX(event.getX());
+                selectionRectangle.setY(event.getY());
+                selectionRectangleX = event.getX();
+                selectionRectangleY = event.getY();
 
-                    selectionRectangle.setFill(Color.GRAY);
-                    selectionRectangle.setOpacity(0.2);
-                    selectionRectangleGroup.getChildren().add(selectionRectangle);
+                selectionRectangle.setFill(Color.GRAY);
+                selectionRectangle.setOpacity(0.2);
+                selectionRectangleGroup.getChildren().add(selectionRectangle);
             }
         });
     }
@@ -574,94 +571,94 @@ public class MapView extends ScrollPane {
     private void setMouseClickesEventHandler() {
 
         mapGroupHolder.setOnMouseClicked(event -> {
-                // If left clicked
-                if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                    // if double clicked desekect all marekers from both the map and the graph in consty
-                    deselectAllMarkers();
-                    selectedNodeList.clear();
-                    PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
-                    event.consume();
-                    return;
+            // If left clicked
+            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+                // if double clicked desekect all marekers from both the map and the graph in consty
+                deselectAllMarkers();
+                selectedNodeList.clear();
+                PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
+                event.consume();
+                return;
 
+            }
+
+            // Record location of mouse click
+            final double x = event.getX();
+            final double y = event.getY();
+
+            // If drawing is enabled and measurment is disabled
+            if (TOOLS_OVERLAY.getDrawingEnabled().get() && !TOOLS_OVERLAY.getMeasureEnabled().get()) {
+
+                // If shift is down then display circle drawing
+                if (event.isShiftDown()) {
+                    drawingCircleMarker = true;
+                    circleMarker = new CircleMarker(self, drawnMarkerId++, x, y, 0, 100, 100);
+                    polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
+                    polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
+
+                    // If user is drawing a circle then add it to the map and clear any UI elements
+                } else if (drawingCircleMarker) {
+                    circleMarker.generateCircle();
+                    drawnMarkerGroup.getChildren().add(circleMarker.getMarker());
+                    userMarkers.add(circleMarker);
+                    circleMarker = null;
+                    polygonMarkerGroup.getChildren().clear();
+                    drawingCircleMarker = false;
+
+                    // Reset the distance shown on the tools ovelay
+                    TOOLS_OVERLAY.resetMeasureText();
+
+                    // If control is down
+                } else if (event.isControlDown()) {
+                    // if user is not current;y drawing a polygon marker or a circle marker then show UI to draw a polygon on screen
+                    if (!drawingPolygonMarker) {
+                        polygonMarker = new PolygonMarker(self, drawnMarkerId++, 0, 0);
+
+                        drawingPolygonMarker = true;
+                    }
+                    polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
+
+                    TOOLS_OVERLAY.resetMeasureText();
+
+                    // If the user is drawing a polygon marker then add the polygon to the screen and clear any UI elements
+                } else if (drawingPolygonMarker) {
+                    drawingPolygonMarker = false;
+                    polygonMarker.generatePath();
+                    addUserDrawnMarker(polygonMarker);
+                    TOOLS_OVERLAY.resetMeasureText();
+                    userMarkers.add(polygonMarker);
+                    polygonMarker.endDrawing();
+                    polygonMarkerGroup.getChildren().clear();
+
+                    // If the user is not drawing any type of marker then generate point marker where they clicked
+                } else {
+                    final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
+                    marker.setMarkerPosition(0, 0);
+                    addUserDrawnMarker(marker);
+                    userMarkers.add(marker);
+                    updateClusterMarkers();
                 }
 
-                // Record location of mouse click
-                final double x = event.getX();
-                final double y = event.getY();
-
-                // If drawing is enabled and measurment is disabled
-                if (TOOLS_OVERLAY.getDrawingEnabled().get() && !TOOLS_OVERLAY.getMeasureEnabled().get()) {
-
-                    // If shift is down then display circle drawing
-                    if (event.isShiftDown()) {
-                        drawingCircleMarker = true;
-                        circleMarker = new CircleMarker(self, drawnMarkerId++, x, y, 0, 100, 100);
-                        polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
-                        polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
-
-                        // If user is drawing a circle then add it to the map and clear any UI elements
-                    } else if (drawingCircleMarker) {
-                        circleMarker.generateCircle();
-                        drawnMarkerGroup.getChildren().add(circleMarker.getMarker());
-                        userMarkers.add(circleMarker);
-                        circleMarker = null;
-                        polygonMarkerGroup.getChildren().clear();
-                        drawingCircleMarker = false;
-
-                        // Reset the distance shown on the tools ovelay
-                        TOOLS_OVERLAY.resetMeasureText();
-
-                        // If control is down
-                    } else if (event.isControlDown()) {
-                        // if user is not current;y drawing a polygon marker or a circle marker then show UI to draw a polygon on screen
-                        if (!drawingPolygonMarker) {
-                            polygonMarker = new PolygonMarker(self, drawnMarkerId++, 0, 0);
-
-                            drawingPolygonMarker = true;
-                        }
-                        polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
-
-                        TOOLS_OVERLAY.resetMeasureText();
-
-                        // If the user is drawing a polygon marker then add the polygon to the screen and clear any UI elements
-                    } else if (drawingPolygonMarker) {
-                        drawingPolygonMarker = false;
-                        polygonMarker.generatePath();
-                        addUserDrawnMarker(polygonMarker);
-                        TOOLS_OVERLAY.resetMeasureText();
-                        userMarkers.add(polygonMarker);
-                        polygonMarker.endDrawing();
-                        polygonMarkerGroup.getChildren().clear();
-
-                        // If the user is not drawing any type of marker then generate point marker where they clicked
-                    } else {
-                        final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
-                        marker.setMarkerPosition(0, 0);
-                        addUserDrawnMarker(marker);
-                        userMarkers.add(marker);
-                        updateClusterMarkers();
-                    }
-
-                    // If drawing is not enabled but measuring is
-                } else if (!TOOLS_OVERLAY.getDrawingEnabled().get() && TOOLS_OVERLAY.getMeasureEnabled().get()) {
-                    if (!drawingMeasureLine) {
-                        measureLine = new Line();
-                        measureLine.setStroke(Color.RED);
-                        measureLine.setStartX(event.getX());
-                        measureLine.setStartY(event.getY());
-                        measureLine.setEndX(event.getX());
-                        measureLine.setEndY(event.getY());
-                        measureLine.setStrokeWidth(1);
-                        polygonMarkerGroup.getChildren().add(measureLine);
-                        drawingMeasureLine = true;
-                    } else {
-                        polygonMarkerGroup.getChildren().clear();
-                        TOOLS_OVERLAY.resetMeasureText();
-                        drawingMeasureLine = false;
-                        measureLine = null;
-                    }
-
+                // If drawing is not enabled but measuring is
+            } else if (!TOOLS_OVERLAY.getDrawingEnabled().get() && TOOLS_OVERLAY.getMeasureEnabled().get()) {
+                if (!drawingMeasureLine) {
+                    measureLine = new Line();
+                    measureLine.setStroke(Color.RED);
+                    measureLine.setStartX(event.getX());
+                    measureLine.setStartY(event.getY());
+                    measureLine.setEndX(event.getX());
+                    measureLine.setEndY(event.getY());
+                    measureLine.setStrokeWidth(1);
+                    polygonMarkerGroup.getChildren().add(measureLine);
+                    drawingMeasureLine = true;
+                } else {
+                    polygonMarkerGroup.getChildren().clear();
+                    TOOLS_OVERLAY.resetMeasureText();
+                    drawingMeasureLine = false;
+                    measureLine = null;
                 }
+
+            }
             event.consume();
         });
     }
@@ -672,51 +669,51 @@ public class MapView extends ScrollPane {
     private void setScrollEventHandler() {
         // Scoll to zoom
         mapStackPane.setOnScroll(e -> {
-                e.consume();
+            e.consume();
 
-                if (e.getDeltaY() == 0) {
-                    return;
-                }
+            if (e.getDeltaY() == 0) {
+                return;
+            }
 
-                final Rectangle viewPortRect = parent.getViewPortRectangle();
+            final Rectangle viewPortRect = parent.getViewPortRectangle();
 
-                clipRectangle.setX(viewPortRect.getX());
-                clipRectangle.setY(viewPortRect.getY());
-                clipRectangle.setWidth(viewPortRect.getWidth());
-                clipRectangle.setHeight(viewPortRect.getHeight());
+            clipRectangle.setX(viewPortRect.getX());
+            clipRectangle.setY(viewPortRect.getY());
+            clipRectangle.setWidth(viewPortRect.getWidth());
+            clipRectangle.setHeight(viewPortRect.getHeight());
 
-                // Scroll factor is more or less than 1 depending on which way the scroll wheele is scrolled
-                final double scaleFactor = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
+            // Scroll factor is more or less than 1 depending on which way the scroll wheele is scrolled
+            final double scaleFactor = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
 
-                // Get the current scale of the map view
-                final double oldXScale = mapStackPane.getScaleX();
-                final double oldYScale = mapStackPane.getScaleY();
+            // Get the current scale of the map view
+            final double oldXScale = mapStackPane.getScaleX();
+            final double oldYScale = mapStackPane.getScaleY();
 
-                // Change the scale based on which way the scroll wheel is turned
-                final double newXScale = oldXScale * scaleFactor;
-                final double newYScale = oldYScale * scaleFactor;
+            // Change the scale based on which way the scroll wheel is turned
+            final double newXScale = oldXScale * scaleFactor;
+            final double newYScale = oldYScale * scaleFactor;
 
-                // Calculate how much the map will have to move
-                final double xAdjust = (newXScale / oldXScale) - 1;
-                final double yAdjust = (newYScale / oldYScale) - 1;
+            // Calculate how much the map will have to move
+            final double xAdjust = (newXScale / oldXScale) - 1;
+            final double yAdjust = (newYScale / oldYScale) - 1;
 
-                // Calculate how much the map will have to move
-                final double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
-                final double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
+            // Calculate how much the map will have to move
+            final double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
+            final double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
 
-                // Move the map
-                mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
-                mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
+            // Move the map
+            mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
+            mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
 
-                // Scale the map
-                mapStackPane.setScaleX(newXScale);
-                mapStackPane.setScaleY(newYScale);
+            // Scale the map
+            mapStackPane.setScaleX(newXScale);
+            mapStackPane.setScaleY(newYScale);
 
-                updateOverviewOverlay();
+            updateOverviewOverlay();
 
-                // If cluster markers are showing then update them based on distance between markers
-                if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
-                    updateClusterMarkers();
+            // If cluster markers are showing then update them based on distance between markers
+            if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
+                updateClusterMarkers();
             }
         });
     }
@@ -1377,33 +1374,32 @@ public class MapView extends ScrollPane {
                     }
 
                     // Convert mgrs value to x and y
-                } else if (selectedGeoType.equals(MGRS)) {
-                    if (StringUtils.isNotBlank(mgrsInput.getText())) {
-                        final MGRSCoord coordinate = MGRSCoord.fromString(mgrsInput.getText().strip(), null);
-                        double x = MarkerUtilities.longToX(coordinate.getLongitude().degrees, MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
-                        double y = MarkerUtilities.latToY(coordinate.getLatitude().degrees, MAP_WIDTH, MAP_HEIGHT) - 149;
+                } else if (selectedGeoType.equals(MGRS) && StringUtils.isNotBlank(mgrsInput.getText())) {
 
-                        UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, mgrsZoomUserMarkerXOffset, mgrsZoomUserMarkerYOffset);
-                        marker.setMarkerPosition(0, 0);
+                    final MGRSCoord coordinate = MGRSCoord.fromString(mgrsInput.getText().strip(), null);
+                    double x = MarkerUtilities.longToX(coordinate.getLongitude().degrees, MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
+                    double y = MarkerUtilities.latToY(coordinate.getLatitude().degrees, MAP_WIDTH, MAP_HEIGHT) - 149;
 
-                        addUserDrawnMarker(marker);
+                    UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, mgrsZoomUserMarkerXOffset, mgrsZoomUserMarkerYOffset);
+                    marker.setMarkerPosition(0, 0);
 
-                        userMarkers.add(marker);
-                    }
+                    addUserDrawnMarker(marker);
+
+                    userMarkers.add(marker);
 
                     // Convert geohash value to x and y
-                } else if (selectedGeoType.equals(GEOHASH)) {
-                    if (StringUtils.isNotBlank(geoHashInput.getText())) {
-                        final double[] geohashCoordinates = Geohash.decode(geoHashInput.getText().strip(), Geohash.Base.B32);
-                        final double x = MarkerUtilities.longToX(geohashCoordinates[1] - geohashCoordinates[3], MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
-                        final double y = MarkerUtilities.latToY(geohashCoordinates[0] - geohashCoordinates[2], MAP_WIDTH, MAP_HEIGHT) - 149;
+                } else if (selectedGeoType.equals(GEOHASH) && StringUtils.isNotBlank(geoHashInput.getText())) {
 
-                        final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
-                        marker.setMarkerPosition(0, 0);
+                    final double[] geohashCoordinates = Geohash.decode(geoHashInput.getText().strip(), Geohash.Base.B32);
+                    final double x = MarkerUtilities.longToX(geohashCoordinates[1] - geohashCoordinates[3], MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
+                    final double y = MarkerUtilities.latToY(geohashCoordinates[0] - geohashCoordinates[2], MAP_WIDTH, MAP_HEIGHT) - 149;
 
-                        addUserDrawnMarker(marker);
-                        userMarkers.add(marker);
-                    }
+                    final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
+                    marker.setMarkerPosition(0, 0);
+
+                    addUserDrawnMarker(marker);
+                    userMarkers.add(marker);
+
                 }
 
                 showingZoomToLocationPane = false;
@@ -1449,7 +1445,6 @@ public class MapView extends ScrollPane {
 
             topGridPane.add(bottomGridPane, 3, 4);
 
-            //zoomLocationGroup.getChildren().add(pane);
             final Scene s = new Scene(pane);
             stage.setScene(s);
             stage.setWidth(width);

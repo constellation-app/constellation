@@ -204,9 +204,7 @@ public class MapViewPane extends BorderPane {
         layersDropDown.setMaxWidth(85);
 
         // Event handler for selecting different layers to show
-        layersDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
-            layersDropDown.getItems().forEach(item -> addLayer(item, layerId));
-        });
+        layersDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> layersDropDown.getItems().forEach(item -> addLayer(item, layerId)));
 
         // Add overlays to toolbar
         overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY));
@@ -262,8 +260,7 @@ public class MapViewPane extends BorderPane {
         markerDropDown.setMaxWidth(90);
 
         // Event handler for hiding/showing markers
-        markerDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
-            markerDropDown.getItems().forEach(item -> {
+        markerDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> markerDropDown.getItems().forEach(item -> {
                 if (markerDropDown.getCheckModel().isChecked(item)) {
                     if (item.equals(MARKER_TYPE_POINT)) {
                         mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, true);
@@ -291,8 +288,8 @@ public class MapViewPane extends BorderPane {
 
                 }
 
-            });
-        });
+        })
+        );
 
         // Marker colour mneu setup and event handling
         colourDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(DEFAULT_COLOURS, USE_COLOUR_ATTR, USE_OVERLAY_COL, USE_BLAZE_COL)));
@@ -462,9 +459,6 @@ public class MapViewPane extends BorderPane {
 
         anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.getOverviewOverlay().getOverlayPane());
 
-        //parentStackPane.setLayoutX(0);
-        //parentStackPane.setLayoutY(0);
-
         viewPortRectangle.setWidth(MapView.MAP_WIDTH);
         viewPortRectangle.setHeight(MapView.MAP_HEIGHT);
 
@@ -474,13 +468,11 @@ public class MapViewPane extends BorderPane {
         borderRectangle.setFill(Color.TRANSPARENT);
         borderRectangle.setStroke(Color.TRANSPARENT);
 
-        //borderRectangle.setWidth(1600);
         borderRectangle.widthProperty().bind(this.widthProperty().subtract(20));
         borderRectangle.setHeight(MapView.MAP_HEIGHT);
         borderRectangle.setStrokeWidth(3);
 
         AnchorPane.setTopAnchor(borderRectangle, 0.0);
-        //AnchorPane.setRightAnchor(borderRectangle, 0.0);
         AnchorPane.setLeftAnchor(borderRectangle, 0.0);
 
         anchorPane.getChildren().add(borderRectangle);
