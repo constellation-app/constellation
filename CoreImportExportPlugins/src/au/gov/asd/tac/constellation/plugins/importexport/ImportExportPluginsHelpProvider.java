@@ -42,7 +42,7 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String importExportModulePath = ".." + sep + "ext" + sep + "docs" + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov"
+        final String importExportModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "importexport" + sep;
 
         map.put("au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane", importExportModulePath + "import-from-file.md");
@@ -60,7 +60,7 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String importExportPath;
-        importExportPath = "ext" + sep + "docs" + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+        importExportPath = "ext" + sep + "docs" + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
                 + sep + CODEBASE_NAME + sep + "plugins" + sep + "importexport" + sep + "importexport-toc.xml";
         return importExportPath;
     }
