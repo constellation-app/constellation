@@ -46,7 +46,7 @@ public class MarkdownNode {
         LINE_BREAK,
         STRIKETHROUGH,
         ORDERED_LIST,
-        UNORDERED_LIST,
+        LIST_END,
         LIST_ITEM,
         NORMAL
     }
@@ -118,10 +118,10 @@ public class MarkdownNode {
                 return "NORMAL";
             case STRIKETHROUGH:
                 return "STRIKETHROUGH";
-            case UNORDERED_LIST:
-                return "UNORDERED LIST";
             case ORDERED_LIST:
                 return "ORDERED LIST";
+            case LIST_END:
+                return "LIST END";
             case LIST_ITEM:
                 return "LIST ITEM";
             case LINE_BREAK:

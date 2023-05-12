@@ -150,11 +150,12 @@ public class NewNotePane {
                 preview.getChildren().clear();
                 final MarkdownTree mdTree = new MarkdownTree(titleField.getText() + "\n\n" + contentField.getText());
                 mdTree.parse();
-                final List<TextHelper> textNodes = mdTree.getTextNodes();
+                //final List<TextHelper> textNodes = mdTree.getTextNodes();
 
-                for (int i = 0; i < textNodes.size(); ++i) {
+                /*for (int i = 0; i < textNodes.size(); ++i) {
                     preview.getChildren().add(textNodes.get(i).getText());
-                }
+                }*/
+                preview.getChildren().add(mdTree.getRenderedText());
             }
         });
         tabPane.getTabs().addAll(writeTab, previewTab);

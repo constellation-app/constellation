@@ -691,14 +691,11 @@ public class NotesViewPane extends BorderPane {
         contentTextArea.setWrapText(true);
         contentTextArea.positionCaret(contentTextArea.getText() == null ? 0 : contentTextArea.getText().length());
 
-        final TextFlow contentTextFlow = new TextFlow();
-        contentTextFlow.setMinWidth(50);
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.parse();
-        final List<TextHelper> textNodes = md.getTextNodes();
-        contentTextFlow.setTextAlignment(TextAlignment.JUSTIFY);
-        textNodes.forEach(textNode -> contentTextFlow.getChildren().add(textNode.getText()));
 
+        final TextFlow contentTextFlow = md.getRenderedText();
+        contentTextFlow.setMinWidth(50);
         final VBox noteInformation;
 
         // Define selection label
@@ -987,9 +984,10 @@ public class NotesViewPane extends BorderPane {
 
                 final MarkdownTree mdTree = new MarkdownTree(titleText.getText() + "\n\n" + contentTextArea.getText());
                 mdTree.parse();
-                List<TextHelper> editedTexts = mdTree.getTextNodes();
+                //final List<TextHelper> textNodes = mdTree.getTextNodes();
 
-                editedTexts.forEach(editedText -> contentTextFlow.getChildren().addAll(editedText.getText()));
+                //textNodes.forEach(textNode -> contentTextFlow.getChildren().add(textNode.getText()));
+                contentTextFlow.getChildren().add(mdTree.getRenderedText());
 
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());

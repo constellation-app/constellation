@@ -21,11 +21,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 
 /**
  *
@@ -110,7 +113,6 @@ public class MarkdownTree {
                         && closestSyntax - 1 >= 0
                         && Character.isDigit(text.charAt(closestSyntax - 1))
                         && ((currentNode.getType() == MarkdownNode.Type.ORDERED_LIST
-                        || currentNode.getType() == MarkdownNode.Type.UNORDERED_LIST
                         || currentNode.getType() == MarkdownNode.Type.LIST_ITEM)
                         || text.charAt(closestSyntax - 1) == '1')) {
                     final Pattern digitPattern = Pattern.compile("\\d+.");
@@ -208,25 +210,13 @@ public class MarkdownTree {
 
             } else if (text.charAt(closestSyntax) == '.') {
                 currentIndex = closestSyntax;
-
-                /*final Pattern listPattern = Pattern.compile("[0-9]+.([^0-9]+)\\n{3,}");
-
-                final Matcher listMatcher = listPattern.matcher(text.substring(currentIndex - 1));
-                final int endListIndex;
-                if (listMatcher.find()) {
-                    LOGGER.log(Level.SEVERE, "List is :" + listMatcher.group());
-                } else {
-                    LOGGER.log(Level.SEVERE, "List not found");
-                }*/
-
                 int numIndex = closestSyntax - 1;
                 int enterIndex = closestSyntax - 2;
 
                 if (numIndex >= 0) {
                     if (text.charAt(numIndex) == '1' && (enterIndex < 0
                             || text.charAt(enterIndex) == '\n'
-                            || text.charAt(enterIndex) == '\t') && (currentNode.getType() != MarkdownNode.Type.UNORDERED_LIST
-                            && currentNode.getType() != MarkdownNode.Type.ORDERED_LIST
+                            || text.charAt(enterIndex) == '\t') && (currentNode.getType() != MarkdownNode.Type.ORDERED_LIST
                             || currentNode.getType() == MarkdownNode.Type.LIST_ITEM)) {
 
                         int endIndex = text.indexOf("\n\n\n", numIndex);
@@ -241,19 +231,17 @@ public class MarkdownTree {
                         currentNode.getChildren().add(orderedList);
 
                         if (endIndex != -1) {
-                            //LOGGER.log(Level.SEVERE, "tripple enter index found");
                             parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(numIndex, endIndex));
                         } else {
-                            //LOGGER.log(Level.SEVERE, "tripple enter index NOT found");
                             parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(numIndex));
                         }
                         MarkdownNode listParent = currentNode.getChildren().get(currentNode.getChildren().size() - 1);
-
+                        final MarkdownNode listEnd = new MarkdownNode(MarkdownNode.Type.LIST_END, endIndex, endIndex, "LIST END", 99);
+                        currentNode.getChildren().add(listEnd);
                         currentIndex = numIndex + listParent.getChildren().get(listParent.getChildren().size() - 1).getEndIndex() + 1;
                         //LOGGER.log(Level.SEVERE, "End index of list: " + currentIndex);
                     } else if (Character.isDigit(text.charAt(numIndex))
-                            && (currentNode.getType() == MarkdownNode.Type.UNORDERED_LIST
-                            || currentNode.getType() == MarkdownNode.Type.ORDERED_LIST)) {
+                            && (currentNode.getType() == MarkdownNode.Type.ORDERED_LIST)) {
 
                         String tabString = "";
 
@@ -312,96 +300,6 @@ public class MarkdownTree {
         }
     }
 
-    private int createOrderedList(final String text, final int listStart, final MarkdownNode currentNode) {
-        String numText = "";
-
-        final int indexOfDot = text.indexOf(".", listStart);
-
-        for (int i = listStart; text.charAt(i) != '.'; i++) {
-            numText += text.charAt(i);
-        }
-
-        final int listNum = Integer.parseInt(numText);
-
-        //final MarkdownNode orderedList = new MarkdownNode();
-        int indexOfNewLine = text.indexOf("\n", listStart);
-
-        int endIndex = indexOfNewLine + 1;
-
-        while (true && indexOfNewLine != text.length() - 1) {
-            int tabCount = 0;
-            for (int i = indexOfNewLine; i < text.length(); i++) {
-                if (text.charAt(i) == '\t') {
-                    ++tabCount;
-                } else
-                    break;
-            }
-
-            if (tabCount == currentNode.getTabs()) {
-                final Pattern digitPattern = Pattern.compile("\\d+.");
-                final Matcher digitMatcher = digitPattern.matcher(text.substring(indexOfNewLine));
-
-                if (digitMatcher.find() && text.substring(indexOfNewLine + tabCount).startsWith(digitMatcher.group())) {
-                    indexOfNewLine = text.indexOf("\n", indexOfNewLine + 1);
-                    continue;
-                } else {
-                    endIndex = indexOfNewLine + 1;
-                    break;
-                }
-            } else if (tabCount < currentNode.getTabs()) {
-                endIndex = indexOfNewLine + 1;
-                break;
-            }
-
-            final MarkdownNode orderedList = new MarkdownNode(MarkdownNode.Type.ORDERED_LIST, listStart, endIndex, "ORDERED LIST", 99);
-            orderedList.setLatestListItem(listNum);
-            orderedList.setTabs(currentNode.getTabs());
-            //LOGGER.log(Level.SEVERE, "Ordered list: " + text.substring(numIndex, text.length() - 1));
-
-            currentNode.getChildren().add(orderedList);
-
-            if (endIndex != -1) {
-                //LOGGER.log(Level.SEVERE, "tripple enter index found");
-                createListItem(currentNode.getChildren().get(currentNode.getChildren().size() - 1), listStart, text.substring(listStart, endIndex));
-            } else {
-                //LOGGER.log(Level.SEVERE, "tripple enter index NOT found");
-                createListItem(currentNode.getChildren().get(currentNode.getChildren().size() - 1), listStart, text.substring(listStart));
-            }
-
-            indexOfNewLine = text.indexOf("\n", indexOfNewLine + 1);
-        }
-
-
-        //final double startListNum
-        return endIndex;
-    }
-
-    private void createListItem(final MarkdownNode currentNode, final int listStart, final String text) {
-        final Pattern digitPattern = Pattern.compile("\\d+.");
-
-        if (currentNode.getType() != MarkdownNode.Type.ORDERED_LIST) {
-            createOrderedList(text, listStart, currentNode);
-        } else {
-
-            String tabString = "";
-
-            for (int i = 0; i < currentNode.getTabs(); ++i) {
-                tabString += "\t";
-            }
-
-            int endOfLine = text.indexOf("\n", listStart);
-
-            while (endOfLine != -1 && true) {
-                if (tabString.isEmpty() && text.indexOf("\t", endOfLine) == endOfLine + 1) {
-                    final Matcher digitMatcher = digitPattern.matcher(text.substring(endOfLine + 1));
-
-                    if (digitMatcher.find() && text.substring(endOfLine + 1).strip().startsWith(digitMatcher.group())) {
-                        endOfLine = createOrderedList(text, listStart, currentNode);
-                    }
-                }
-            }
-        }
-    }
 
     public void print() {
         printContents(root);
@@ -422,7 +320,7 @@ public class MarkdownTree {
         LOGGER.log(Level.SEVERE, currentNode.getTypeString());
     }
 
-    public List<TextHelper> getTextNodes() {
+    private List<TextHelper> getTextNodes() {
         return getText(root);
     }
 
@@ -434,24 +332,21 @@ public class MarkdownTree {
             text.setFill(Color.WHITE);
             textNodes.add(text);
             return textNodes;
-        } else if (currentNode.getType() == MarkdownNode.Type.PARAGRAPH) {
-            textNodes.add(new TextHelper("\n\n"));
-            //return textNodes;
-        }
-        else if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
-            //LOGGER.log(Level.SEVERE, "Processing list item that has: " + currentNode.getChildren().size() + " children");
-            String tabString = "";
-            for (int tabs = 0; tabs < currentNode.getTabs(); ++tabs) {
-                //LOGGER.log(Level.SEVERE, "Adding tabs");
-                tabString += "\t";
-            }
-            final TextHelper listItemNumber = new TextHelper("\n" + tabString + currentNode.getLatestListItem() + ". ");
+        } else if (currentNode.getType() == MarkdownNode.Type.ORDERED_LIST) {
+            final TextHelper startList = new TextHelper("");
+            startList.setIsListStart(true);
+            textNodes.add(startList);
+        } else if (currentNode.getType() == MarkdownNode.Type.LIST_END) {
+            final TextHelper endList = new TextHelper("");
+            endList.setIsListEnd(true);
+            textNodes.add(endList);
+        } else if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
+            final TextHelper listItemNumber = new TextHelper("\n" + currentNode.getLatestListItem() + ". ");
             listItemNumber.setFill(Color.WHITE);
             textNodes.add(listItemNumber);
-
         }
 
-        for (int i = 0; i < currentNode.getChildren().size(); ++i) {
+        for (int i = 0; i < currentNode.getChildren().size(); i++) {
             List<TextHelper> childTextNodes = getText(currentNode.getChildren().get(i));
 
             for (int j = 0; j < childTextNodes.size(); ++j) {
@@ -477,23 +372,47 @@ public class MarkdownTree {
                     currentText.setWeight(FontWeight.BOLD);
                 } else if (currentNode.getType() == MarkdownNode.Type.STRIKETHROUGH) {
                     currentText.setStrikeThrough(true);
-                }/* else if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
+                }
 
-                    if (!(currentText.getText().getText().isBlank() || currentText.getText().getText().isEmpty())) {
-                        //LOGGER.log(Level.SEVERE, "List item text: " + currentText.getText().getText());
-                        currentText.setText(" " + currentText.getText().getText());
-                    }
-                }*/
-
-                //LOGGER.log(Level.SEVERE, "List item text: " + currentText.getText().getText());
-                //if (!(currentText.getText().getText().isBlank() || currentText.getText().getText().isEmpty())) {
                 textNodes.add(currentText);
-                //}
-
             }
         }
 
         return textNodes;
+    }
+
+    public TextFlow getRenderedText() {
+        final TextFlow renderedText = new TextFlow();
+        renderedText.setPadding(new Insets(0, 0, 0, 0));
+        final List<TextFlow> textFlowList = new ArrayList<>();
+        textFlowList.add(renderedText);
+
+        final List<TextHelper> textNodes = getText(root);
+
+        int tabCount = 0;
+
+        for (int i = 0; i < textNodes.size(); i++) {
+            if (textNodes.get(i).isIsListStart()) {
+                tabCount++;
+                final TextFlow listFlow = new TextFlow();
+                listFlow.setPadding(new Insets(0, 0, 0, 0));
+                listFlow.setBorder(Border.EMPTY);
+                textFlowList.get(textFlowList.size() - 1).getChildren().add(listFlow);
+                textFlowList.add(listFlow);
+                listFlow.setTranslateX(tabCount * 10);
+                listFlow.prefWidthProperty().bind(textFlowList.get(textFlowList.size() - 2).widthProperty());
+
+            } else if (textNodes.get(i).isIsListEnd()) {
+                tabCount--;
+                textFlowList.remove(textFlowList.size() - 1);
+            }
+
+
+            textFlowList.get(textFlowList.size() - 1).getChildren().add(textNodes.get(i).getText());
+        }
+
+
+        return renderedText;
     }
 
 }

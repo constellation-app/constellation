@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.notes.utilities;
 
+import javafx.geometry.VPos;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
@@ -33,6 +34,9 @@ public class TextHelper {
     private FontWeight weight = FontWeight.NORMAL;
     private FontPosture posture = FontPosture.REGULAR;
     private double size = 12.28;
+
+    private boolean isListStart = false;
+    private boolean isListEnd = false;
 
     public TextHelper(final String rawText) {
         text = new Text(rawText);
@@ -81,5 +85,22 @@ public class TextHelper {
         text.setStrikethrough(strikeThrough);
         applyFont();
     }
+
+    public boolean isIsListStart() {
+        return isListStart;
+    }
+
+    public void setIsListStart(boolean isListStart) {
+        this.isListStart = isListStart;
+    }
+
+    public boolean isIsListEnd() {
+        return isListEnd;
+    }
+
+    public void setIsListEnd(boolean isListEnd) {
+        this.isListEnd = isListEnd;
+    }
+
 
 }
