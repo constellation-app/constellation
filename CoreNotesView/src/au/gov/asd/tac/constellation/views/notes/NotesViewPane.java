@@ -74,6 +74,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -695,7 +696,7 @@ public class NotesViewPane extends BorderPane {
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.parse();
         final List<TextHelper> textNodes = md.getTextNodes();
-
+        contentTextFlow.setTextAlignment(TextAlignment.JUSTIFY);
         textNodes.forEach(textNode -> contentTextFlow.getChildren().add(textNode.getText()));
 
         final VBox noteInformation;

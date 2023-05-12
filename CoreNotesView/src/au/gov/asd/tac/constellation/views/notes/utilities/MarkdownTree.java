@@ -45,7 +45,6 @@ public class MarkdownTree {
     private final Pattern italicPattern = Pattern.compile("\\*\\s?([^\\n]+)\\*");
     private final Pattern italicPattern2 = Pattern.compile("_\\s?([^\\n`]+)_");
     private final Pattern strikeThroughPattern = Pattern.compile("~~\\s?([^\\n]+)~~");
-    private final Pattern paragraphPattern = Pattern.compile("((?:[^\\n][\\n]?)+)");
 
     public MarkdownTree() {
         root = new MarkdownNode();
@@ -210,7 +209,7 @@ public class MarkdownTree {
             } else if (text.charAt(closestSyntax) == '.') {
                 currentIndex = closestSyntax;
 
-                final Pattern listPattern = Pattern.compile("[0-9]+.([^0-9]+)\\n{3,}");
+                /*final Pattern listPattern = Pattern.compile("[0-9]+.([^0-9]+)\\n{3,}");
 
                 final Matcher listMatcher = listPattern.matcher(text.substring(currentIndex - 1));
                 final int endListIndex;
@@ -218,7 +217,7 @@ public class MarkdownTree {
                     LOGGER.log(Level.SEVERE, "List is :" + listMatcher.group());
                 } else {
                     LOGGER.log(Level.SEVERE, "List not found");
-                }
+                }*/
 
                 int numIndex = closestSyntax - 1;
                 int enterIndex = closestSyntax - 2;
@@ -294,7 +293,7 @@ public class MarkdownTree {
                             return;
                         }
 
-                        currentIndex = endIndex + 1;
+                        currentIndex = endIndex; // +1
                     } else
                         ++currentIndex;
                 } else
@@ -322,7 +321,7 @@ public class MarkdownTree {
             numText += text.charAt(i);
         }
 
-        final double listNum = Double.parseDouble(numText);
+        final int listNum = Integer.parseInt(numText);
 
         //final MarkdownNode orderedList = new MarkdownNode();
         int indexOfNewLine = text.indexOf("\n", listStart);
@@ -354,12 +353,54 @@ public class MarkdownTree {
                 break;
             }
 
+            final MarkdownNode orderedList = new MarkdownNode(MarkdownNode.Type.ORDERED_LIST, listStart, endIndex, "ORDERED LIST", 99);
+            orderedList.setLatestListItem(listNum);
+            orderedList.setTabs(currentNode.getTabs());
+            //LOGGER.log(Level.SEVERE, "Ordered list: " + text.substring(numIndex, text.length() - 1));
+
+            currentNode.getChildren().add(orderedList);
+
+            if (endIndex != -1) {
+                //LOGGER.log(Level.SEVERE, "tripple enter index found");
+                createListItem(currentNode.getChildren().get(currentNode.getChildren().size() - 1), listStart, text.substring(listStart, endIndex));
+            } else {
+                //LOGGER.log(Level.SEVERE, "tripple enter index NOT found");
+                createListItem(currentNode.getChildren().get(currentNode.getChildren().size() - 1), listStart, text.substring(listStart));
+            }
+
             indexOfNewLine = text.indexOf("\n", indexOfNewLine + 1);
         }
 
 
         //final double startListNum
         return endIndex;
+    }
+
+    private void createListItem(final MarkdownNode currentNode, final int listStart, final String text) {
+        final Pattern digitPattern = Pattern.compile("\\d+.");
+
+        if (currentNode.getType() != MarkdownNode.Type.ORDERED_LIST) {
+            createOrderedList(text, listStart, currentNode);
+        } else {
+
+            String tabString = "";
+
+            for (int i = 0; i < currentNode.getTabs(); ++i) {
+                tabString += "\t";
+            }
+
+            int endOfLine = text.indexOf("\n", listStart);
+
+            while (endOfLine != -1 && true) {
+                if (tabString.isEmpty() && text.indexOf("\t", endOfLine) == endOfLine + 1) {
+                    final Matcher digitMatcher = digitPattern.matcher(text.substring(endOfLine + 1));
+
+                    if (digitMatcher.find() && text.substring(endOfLine + 1).strip().startsWith(digitMatcher.group())) {
+                        endOfLine = createOrderedList(text, listStart, currentNode);
+                    }
+                }
+            }
+        }
     }
 
     public void print() {
