@@ -100,7 +100,7 @@ public class NotesViewPane extends BorderPane {
      */
     private final Set<String> notesDateTimeCache;
 
-
+    private TextFlow contentTextFlow;
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
     private final CheckComboBox filterCheckComboBox;
@@ -694,7 +694,7 @@ public class NotesViewPane extends BorderPane {
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.parse();
 
-        final TextFlow contentTextFlow = md.getRenderedText();
+        contentTextFlow = md.getRenderedText();
         contentTextFlow.setMinWidth(50);
         final VBox noteInformation;
 
@@ -793,6 +793,8 @@ public class NotesViewPane extends BorderPane {
         });
 
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteButtons, noteInformation) : new VBox(DEFAULT_SPACING, noteInformation);
+        noteBody.prefWidthProperty().bind(this.widthProperty());
+        //contentTextFlow.prefWidthProperty().bind(noteBody.widthProperty().subtract(15));
         if (newNote.isUserCreated()) {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
             if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP && !newNote.getEditMode()) {
@@ -977,17 +979,11 @@ public class NotesViewPane extends BorderPane {
             if (StringUtils.isBlank(titleText.getText()) || StringUtils.isBlank(contentTextArea.getText())) {
                 JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
             } else {
-                //titleLabel.setText(titleText.getText());
-                //contentLabel.setText(contentTextArea.getText());
-
                 contentTextFlow.getChildren().clear();
 
                 final MarkdownTree mdTree = new MarkdownTree(titleText.getText() + "\n\n" + contentTextArea.getText());
                 mdTree.parse();
-                //final List<TextHelper> textNodes = mdTree.getTextNodes();
-
-                //textNodes.forEach(textNode -> contentTextFlow.getChildren().add(textNode.getText()));
-                contentTextFlow.getChildren().add(mdTree.getRenderedText());
+                contentTextFlow = mdTree.getRenderedText();
 
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());

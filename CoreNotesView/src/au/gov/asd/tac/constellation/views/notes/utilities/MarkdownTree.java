@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.notes.utilities;
 
+import au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,6 +29,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 /**
@@ -41,7 +43,6 @@ public class MarkdownTree {
     private final MarkdownNode root;
 
     private String rawString = "";
-
     private final Pattern headingPattern = Pattern.compile("#{1,6}\\s([^\\n]+)");
     private final Pattern boldPattern = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
     private final Pattern boldPattern2 = Pattern.compile("__\\s?([^\\n]+)__");
@@ -59,6 +60,7 @@ public class MarkdownTree {
         //LOGGER.log(Level.SEVERE, "The raw string: " + rawString);
     }
 
+
     public void parse() {
         parseString(root, rawString);
     }
@@ -68,10 +70,6 @@ public class MarkdownTree {
         if (text.isBlank() || text.isEmpty()) {
             return;
         }
-
-        /*if (currentNode.getType() == MarkdownNode.Type.HEADING && text.charAt(text.length() - 1) != '\n') {
-            text += "\n";
-        }*/
 
 
         char boldSyntax = 'f';
@@ -93,17 +91,12 @@ public class MarkdownTree {
                 boldSyntax = 'f';
             }
 
-            /*if (text.charAt(closestSyntax) == '\n' && closestSyntax + 1 < text.length() && text.charAt(closestSyntax + 1) != '\n') {
-                currentIndex = closestSyntax + 1;
-                continue;
-            }*/
 
 
             if (closestSyntax == Integer.MAX_VALUE) {
                 LOGGER.log(Level.SEVERE, "No syntax found");
                 closestSyntax = currentIndex;
             } else if (closestSyntax != currentIndex) {
-                //LOGGER.log(Level.SEVERE, "Making early text for: " + text.substring(currentIndex, closestSyntax));
 
                 MarkdownNode normal;
 
@@ -125,7 +118,7 @@ public class MarkdownTree {
                         normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
                     }
                 } else {
-                    //LOGGER.log(Level.SEVERE, "First character of the early text: " + text.charAt(currentIndex));
+
                     normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
                 }
 
@@ -383,6 +376,7 @@ public class MarkdownTree {
 
     public TextFlow getRenderedText() {
         final TextFlow renderedText = new TextFlow();
+        renderedText.setTextAlignment(TextAlignment.LEFT);
         renderedText.setPadding(new Insets(0, 0, 0, 0));
         final List<TextFlow> textFlowList = new ArrayList<>();
         textFlowList.add(renderedText);
@@ -395,13 +389,14 @@ public class MarkdownTree {
             if (textNodes.get(i).isIsListStart()) {
                 tabCount++;
                 final TextFlow listFlow = new TextFlow();
+                listFlow.setTextAlignment(TextAlignment.LEFT);
                 listFlow.setPadding(new Insets(0, 0, 0, 0));
                 listFlow.setBorder(Border.EMPTY);
                 textFlowList.get(textFlowList.size() - 1).getChildren().add(listFlow);
                 textFlowList.add(listFlow);
                 listFlow.setTranslateX(tabCount * 10);
-                //listFlow.prefWidthProperty().bind(textFlowList.get(textFlowList.size() - 2).widthProperty());
-                listFlow.setPrefWidth(500);
+
+                listFlow.prefWidthProperty().bind(textFlowList.get(textFlowList.size() - 2).widthProperty().subtract(15 * tabCount));
 
             } else if (textNodes.get(i).isIsListEnd()) {
                 tabCount--;
@@ -417,14 +412,12 @@ public class MarkdownTree {
                         builder.deleteCharAt(indexOfNewLine + 1);
 
                         int tabIndex = indexOfNewLine + 1;
-                        while (tabIndex < builder.length() && tabIndex != -1) {
+                        while (tabIndex < builder.length() && true) {
                             if (builder.charAt(tabIndex) == '\t') {
                                 builder.deleteCharAt(tabIndex);
                             } else {
                                 break;
                             }
-
-                            tabIndex++;
                         }
 
 
