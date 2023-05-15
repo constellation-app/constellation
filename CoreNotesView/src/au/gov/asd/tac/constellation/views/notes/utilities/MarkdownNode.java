@@ -19,10 +19,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class is the MarkdownNode and represents the different types of text
+ * that is processed
  *
  * @author altair1673
  */
 public class MarkdownNode {
+
+    // Can have many children
     private final List<MarkdownNode> children = new ArrayList<MarkdownNode>();
 
     private int startIndex = -99;

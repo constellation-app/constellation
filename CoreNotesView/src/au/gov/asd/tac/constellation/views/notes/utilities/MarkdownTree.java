@@ -33,6 +33,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
 /**
+ * This class makes a tree containing nodes that represent text and their
+ * respective formatting
  *
  * @author altair1673
  */
@@ -40,9 +42,12 @@ public class MarkdownTree {
 
     private static final Logger LOGGER = Logger.getLogger(MarkdownTree.class.getName());
 
+    // Root node that doesn't contain any text and is of no type, it is just an entry point for the tree
     private final MarkdownNode root;
 
     private String rawString = "";
+
+    // The different markdown syntax patterns supported
     private final Pattern headingPattern = Pattern.compile("#{1,6}\\s([^\\n]+)");
     private final Pattern boldPattern = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
     private final Pattern boldPattern2 = Pattern.compile("__\\s?([^\\n]+)__");
@@ -54,194 +59,268 @@ public class MarkdownTree {
         root = new MarkdownNode();
     }
 
+    /**
+     * Pass in the raw markdown string into the class when creating
+     *
+     * @param rawString
+     */
     public MarkdownTree(String rawString) {
         root = new MarkdownNode();
         this.rawString += rawString + "\n";
-        //LOGGER.log(Level.SEVERE, "The raw string: " + rawString);
     }
 
-
+    /**
+     * Processes the markdown text
+     */
     public void parse() {
         parseString(root, rawString);
     }
 
+    /**
+     * Process raw string and record formatting and text inside MarkdownNodes
+     * and add them to the tree
+     *
+     * @param currentNode - The current node the text is under or contained in
+     * @param text - The piece of text that the function is currently processing
+     */
     private void parseString(MarkdownNode currentNode, String text) {
 
         if (text.isBlank() || text.isEmpty()) {
             return;
         }
 
-
+        // Default letter for bold syntax
         char boldSyntax = 'f';
+
+        // Track what part of the string is being parsed
         int currentIndex = 0;
+
+        // The syntax this implementation processes
         final char[] syntaxList = {'#', '*', '_', '~', '.'};
+
+        // Loop through the text
         while (currentIndex < text.length()) {
-            //LOGGER.log(Level.SEVERE, "working on: " + text);
+            // Find the index of the closest syntax
             int closestSyntax = Integer.MAX_VALUE;
-            //LOGGER.log(Level.SEVERE, "Current Index is: " + currentIndex);
             for (int i = 0; i < 5; ++i) {
+                // If a symbol is found and has an index less than closestSyntax then set closestSyntax to that index
                 if (text.indexOf(syntaxList[i], currentIndex) != -1 && text.indexOf(syntaxList[i], currentIndex) < closestSyntax) {
                     closestSyntax = text.indexOf(syntaxList[i], currentIndex);
                 }
             }
 
+            // Since there are two type of symbols for bold and italic, set the boldSyntax variable to the bold/italic symbol used IF that is the closes syntax
             if (closestSyntax != Integer.MAX_VALUE && (text.charAt(closestSyntax) == '*' || text.charAt(closestSyntax) == '_')) {
                 boldSyntax = text.charAt(closestSyntax);
             } else {
                 boldSyntax = 'f';
             }
 
-
-
+            // If no syntax is found then reset closest syntax to currentIndex which should be the start of the string.
             if (closestSyntax == Integer.MAX_VALUE) {
-                LOGGER.log(Level.SEVERE, "No syntax found");
                 closestSyntax = currentIndex;
+
+                // Else if the index of the closest syntax is not the current index it means that the text between currentIneex and closestSyntax is unformatted raw text
+                // so create a MarkdownNode of type normal
             } else if (closestSyntax != currentIndex) {
 
+                // Markdown node to contain raw text
                 MarkdownNode normal;
 
+                // If closest syntax is within the range of th elist size and it points to a new line character then create a MarkdownNode of type NORMAL including the
+                // new line character
                 if (closestSyntax != text.length() - 1 && text.charAt(closestSyntax) == '\n') {
                     normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax + 1), -99);
+
+                    // else if the closestSyntax points to a dot then checl to see if there is anything before the dot and if the character before is a number 1
+                    // Also check that the current node is of type ORDERED_LIST or LIST_ITEM
                 } else if (text.charAt(closestSyntax) == '.'
                         && closestSyntax - 1 >= 0
                         && Character.isDigit(text.charAt(closestSyntax - 1))
                         && ((currentNode.getType() == MarkdownNode.Type.ORDERED_LIST
                         || currentNode.getType() == MarkdownNode.Type.LIST_ITEM)
                         || text.charAt(closestSyntax - 1) == '1')) {
+                    // Check that digits exist before the dot
                     final Pattern digitPattern = Pattern.compile("\\d+.");
                     final Matcher digitMatcher = digitPattern.matcher(text.substring(currentIndex));
 
+                    // If it does create a MarkdownNode of type normal contaning text from the currentIndex to before the list item number
                     if (digitMatcher.find()) {
                         LOGGER.log(Level.SEVERE, "Digit pattern: " + digitMatcher.group());
                         normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax - (digitMatcher.group().length() - 1)), -99);
+
+                        // Else create a normal node with type with text up to the dot
                     } else {
                         normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
                     }
                 } else {
 
+                    // Create normal node with text from currentIndex to closestSyntax
                     normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
                 }
 
-                //if (!(normal.getValue().isBlank() || normal.getValue().isEmpty())) {
-                    //LOGGER.log(Level.SEVERE, "Making early text for: " + text.substring(currentIndex, closestSyntax));
-                    currentNode.getChildren().add(normal);
-                //}
+                // Add normal node to markdown tree
+                currentNode.getChildren().add(normal);
+
             }
 
+            // If the symbol for a heading is found
             if (text.charAt(closestSyntax) == '#') {
                 currentIndex = closestSyntax;
+                // Match the line of text containing the heading
                 final Matcher headingMatcher = headingPattern.matcher(text.substring(closestSyntax));
+
+                // Match the hashes at the start of the heading
                 final Pattern hashPattern = Pattern.compile("#{1,}");
                 final Matcher hashMatcher = hashPattern.matcher(text.substring(closestSyntax));
 
+                // If a heading is found AND a set of hashes is found
                 if (headingMatcher.find() && hashMatcher.find()) {
+                    // Make a MarkdownNode of type HEADING with the heading level set to the length of the string found from the hashMatcher variable
                     final MarkdownNode heading = new MarkdownNode(MarkdownNode.Type.HEADING, closestSyntax, headingMatcher.end(1), headingMatcher.group(1), hashMatcher.group().length());
+                    // Add node as the child of th ecurrentNode
                     currentNode.getChildren().add(heading);
+
+                    // Call this function on the piece of text inside the heading (NOT THE HASHES) and pass in the Heading node created just now
                     parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), headingMatcher.group(1));
+
+                    // Set currentIndex to be after the heading string
                     currentIndex += headingMatcher.end();
                 }
                 else
                     currentIndex++;
 
+                // Else if the clostst syntax is the bold/italic syntax
             } else if (text.charAt(closestSyntax) == boldSyntax) {
                 currentIndex = closestSyntax;
-                // Bold
+
+                // Check to see if syntax is bold
                 if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == boldSyntax) {
                     final Matcher boldMatcher;
 
+                    // Get a matcher object based on which symbol the user has used
                     if (text.charAt(currentIndex) == '*') {
                         boldMatcher = boldPattern.matcher(text.substring(currentIndex));
                     } else {
                         boldMatcher = boldPattern2.matcher(text.substring(currentIndex));
                     }
 
+                    // Find the bolded text
                     if (boldMatcher.find()) {
+                        // Create a MarkdownNode of type bold and add it as a child of current node
                         final MarkdownNode bold = new MarkdownNode(MarkdownNode.Type.BOLD, currentIndex, boldMatcher.end(1), boldMatcher.group(1), -99);
                         currentNode.getChildren().add(bold);
+
+                        // Call this function on the text between the bold syntax
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), boldMatcher.group(1));
                         currentIndex += boldMatcher.end(1) + 2;
                     } else {
                         currentIndex++;
                     }
-                    // Italic
+                    // Else if the user wanted italic text
                 } else if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) != boldSyntax) {
                     final Matcher italicMatcher;
 
+                    // Check for specific italic syntax and get a Matcher out of it
                     if (text.charAt(currentIndex) == '*') {
                         italicMatcher = italicPattern.matcher(text.substring(currentIndex));
                     } else {
                         italicMatcher = italicPattern2.matcher(text.substring(currentIndex));
                     }
 
+                    // If italic text is found
                     if (italicMatcher.find()) {
+                        // Create a MarkdownNode of type ITALIC and add it as a child of the current node
                         final MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, italicMatcher.end(1), italicMatcher.group(1), -99);
                         currentNode.getChildren().add(italic);
+
+                        // Call this funciton on this italic text
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), italicMatcher.group(1));
                         currentIndex += italicMatcher.end(1) + 1;
                     } else {
-                        //LOGGER.log(Level.SEVERE, "Italic syntax not found");
                         currentIndex++;
                     }
                 }
+                // Else if strikethrough syxtax is found
             } else if (text.charAt(closestSyntax) == '~') {
                 currentIndex = closestSyntax;
 
+                // Get a matcher for the striketrhough pattern
                 final Matcher strikeThroughMatcher = strikeThroughPattern.matcher(text.substring(currentIndex));
 
+                // If correct strike through syntax is found
                 if (strikeThroughMatcher.find()) {
-                    //LOGGER.log(Level.SEVERE, "Strike through text: " + strikeThroughMatcher.group(1));
+                    // Create a MarkdownNode of type STRIKETHROUGH and add it to the tree
                     final MarkdownNode strikeThrough = new MarkdownNode(MarkdownNode.Type.STRIKETHROUGH, currentIndex + 1, strikeThroughMatcher.end(), strikeThroughMatcher.group(1), -99);
                     currentNode.getChildren().add(strikeThrough);
+
+                    // Call this funciton on the Strikethrough text
                     parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), strikeThroughMatcher.group(1));
 
-                    // TODO: Test to see what character currentIndex += strikeThroughMatcher.end() + 1 actually is
                     currentIndex += strikeThroughMatcher.end() + 1;
                 } else {
-                    //LOGGER.log(Level.SEVERE, "Strike through not found");
                     currentIndex++;
                 }
 
+                // Else if list syntax is found
             } else if (text.charAt(closestSyntax) == '.') {
                 currentIndex = closestSyntax;
+
+                // The index of where a number should be
                 int numIndex = closestSyntax - 1;
+
+                // The index of where an enter should be
                 int enterIndex = closestSyntax - 2;
 
                 if (numIndex >= 0) {
+                    // If the character at the numIndex is 1 and there is an enter before it and the current node IS NOT a ordered list OR it IS of type LIST_ITEM
                     if (text.charAt(numIndex) == '1' && (enterIndex < 0
                             || text.charAt(enterIndex) == '\n'
                             || text.charAt(enterIndex) == '\t') && (currentNode.getType() != MarkdownNode.Type.ORDERED_LIST
                             || currentNode.getType() == MarkdownNode.Type.LIST_ITEM)) {
 
+                        // The list ends where there is a tripple enter
                         int endIndex = text.indexOf("\n\n\n", numIndex);
 
-
+                        // Make a MarkdownNode of type ORDERED_LIST that starts at the number 1 and ends at the tripple enter
                         MarkdownNode orderedList = new MarkdownNode(MarkdownNode.Type.ORDERED_LIST, numIndex, endIndex, "ORDERED LIST", 99);
-                        //orderedList.setTabs(1);
 
+                        // Set how many tabs the list should have
                         orderedList.setTabs(currentNode.getTabs());
-                        //LOGGER.log(Level.SEVERE, "Ordered list: " + text.substring(numIndex, text.length() - 1));
 
                         currentNode.getChildren().add(orderedList);
 
+                        // If the tripple enter is found then call this function on the text contained within the ordered list
                         if (endIndex != -1) {
                             parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(numIndex, endIndex));
+
+                            // Else call this function on the entire piece of text from the first list number
                         } else {
                             parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(numIndex));
                         }
+
+                        // Get the list parent
                         MarkdownNode listParent = currentNode.getChildren().get(currentNode.getChildren().size() - 1);
+
+                        // Add a MarkdoenNode of type LIST_END
                         final MarkdownNode listEnd = new MarkdownNode(MarkdownNode.Type.LIST_END, endIndex, endIndex, "LIST END", 99);
                         currentNode.getChildren().add(listEnd);
+
+                        // Get the endIndex of the last list item and set curentIndex to that.
                         currentIndex = numIndex + listParent.getChildren().get(listParent.getChildren().size() - 1).getEndIndex() + 1;
-                        //LOGGER.log(Level.SEVERE, "End index of list: " + currentIndex);
+
+                        // Else if the character at num index is a digit and the current node is an Ordered List
                     } else if (Character.isDigit(text.charAt(numIndex))
                             && (currentNode.getType() == MarkdownNode.Type.ORDERED_LIST)) {
 
                         String tabString = "";
 
+                        // Find the ammount of tabs for the currentNode
                         for (int i = 0; i < currentNode.getTabs(); ++i) {
                             tabString += "\t";
                         }
 
+                        // Find the next new line character from the begining of the list item
                         int endIndex = text.indexOf('\n', currentIndex);
 
                         // While a \n character is found check if the tabs on this list item
@@ -262,26 +341,34 @@ public class MarkdownTree {
                             endIndex = text.length() - 1;
                         }
 
-
+                        // Create a list item from the part after the dot to the end of the list item
                         MarkdownNode listItem = new MarkdownNode(MarkdownNode.Type.LIST_ITEM, currentIndex + 1, endIndex, "LIST ITEM", 99);
+
+                        // Set the number that should appear before the list item
                         listItem.setLatestListItem(currentNode.getLatestListItem());
+
+                        // Set the ammount of tabs before the list item
                         listItem.setTabs(currentNode.getTabs() + 1);
                         currentNode.setLatestListItem(currentNode.getLatestListItem() + 1);
 
                         currentNode.getChildren().add(listItem);
+
+                        // Call this function on the text in the actual list item
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), text.substring(currentIndex + 1, endIndex).strip());
+
+                        // If the list item ends up being the final piece of text for the entire text than end the function
                         if (endIndex + 1 < text.length() && text.charAt(endIndex + 1) == '\n') {
                             return;
                         }
 
-                        currentIndex = endIndex; // +1
+                        currentIndex = endIndex;
                     } else
                         ++currentIndex;
                 } else
                     ++currentIndex;
 
+                // If no syntax is found it means that it is just raw text so a normal node can be made
             } else {
-                //LOGGER.log(Level.SEVERE, "Making text node for: " + text.substring(currentIndex));
                 MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, text.length() - 1, text.substring(currentIndex), -99);
                 currentNode.getChildren().add(normal);
                 return;
@@ -298,6 +385,11 @@ public class MarkdownTree {
         printContents(root);
     }
 
+    /**
+     * Logs all the contents of the markdown tree
+     *
+     * @param currentNode
+     */
     private void printContents(MarkdownNode currentNode) {
         if (currentNode.getType() == MarkdownNode.Type.NORMAL) {
             LOGGER.log(Level.SEVERE, currentNode.getValue());
@@ -317,31 +409,46 @@ public class MarkdownTree {
         return getText(root);
     }
 
+    /**
+     * Itterates over MarkdownTreee and returns a list of TextHelper oblects
+     *
+     * @param currentNode
+     * @return List of formatted text
+     */
     private List<TextHelper> getText(MarkdownNode currentNode) {
         List<TextHelper> textNodes = new ArrayList<TextHelper>();
 
+        // Base case, make a TextHelper object with the raw text from the NORMAL markdown node and add no formatting and return that in a list
         if (currentNode.getType() == MarkdownNode.Type.NORMAL) {
             TextHelper text = new TextHelper(currentNode.getValue());
             text.setFill(Color.WHITE);
             textNodes.add(text);
             return textNodes;
-        } else if (currentNode.getType() == MarkdownNode.Type.ORDERED_LIST) {
+        } // If the currentNode is an ordered list then add in a TextHelper signifying the begining of a list
+        else if (currentNode.getType() == MarkdownNode.Type.ORDERED_LIST) {
             final TextHelper startList = new TextHelper("");
             startList.setIsListStart(true);
             textNodes.add(startList);
+
+            // Same for the end of a list add in a TextHelper for list end
         } else if (currentNode.getType() == MarkdownNode.Type.LIST_END) {
             final TextHelper endList = new TextHelper("");
             endList.setIsListEnd(true);
             textNodes.add(endList);
+
+            // If the current node is a list item add in a text helper containing a new line character and the number of that list
         } else if (currentNode.getType() == MarkdownNode.Type.LIST_ITEM) {
             final TextHelper listItemNumber = new TextHelper("\n" + currentNode.getLatestListItem() + ". ");
             listItemNumber.setFill(Color.WHITE);
             textNodes.add(listItemNumber);
         }
 
+        // For each children of the currentNode
         for (int i = 0; i < currentNode.getChildren().size(); i++) {
+            // Call this funciton on all its children
             List<TextHelper> childTextNodes = getText(currentNode.getChildren().get(i));
 
+            // For each children apply formatting to the TextHelper based on the child's type
             for (int j = 0; j < childTextNodes.size(); ++j) {
                 TextHelper currentText = childTextNodes.get(j);
                 if (currentNode.getType() == MarkdownNode.Type.HEADING) {
@@ -367,6 +474,7 @@ public class MarkdownTree {
                     currentText.setStrikeThrough(true);
                 }
 
+                // Add the TextHelper to the list of formatted text to be returned
                 textNodes.add(currentText);
             }
         }
@@ -374,39 +482,61 @@ public class MarkdownTree {
         return textNodes;
     }
 
+    /**
+     * Adds formatted texts to a TextFlow
+     *
+     * @return a TextFlow containing all the formatted text
+     */
     public TextFlow getRenderedText() {
+        // TextFlow to be returned
         final TextFlow renderedText = new TextFlow();
         renderedText.setTextAlignment(TextAlignment.LEFT);
         renderedText.setPadding(new Insets(0, 0, 0, 0));
+
+        // List of text flows
         final List<TextFlow> textFlowList = new ArrayList<>();
         textFlowList.add(renderedText);
 
+        // Get the formatted text
         final List<TextHelper> textNodes = getText(root);
 
         int tabCount = 0;
 
+        // For each piece of formatted text
         for (int i = 0; i < textNodes.size(); i++) {
+            // If the textNode signifies a list starting
             if (textNodes.get(i).isIsListStart()) {
+                // Increase the tabCount
                 tabCount++;
+
+                // Create a new textflow
                 final TextFlow listFlow = new TextFlow();
                 listFlow.setTextAlignment(TextAlignment.LEFT);
                 listFlow.setPadding(new Insets(0, 0, 0, 0));
                 listFlow.setBorder(Border.EMPTY);
+
+                // Add the newly created text flow to the previous text flow and to the list
                 textFlowList.get(textFlowList.size() - 1).getChildren().add(listFlow);
                 textFlowList.add(listFlow);
+
+                // Indent the text flow based on the tab count variable
                 listFlow.setTranslateX(tabCount * 10);
 
                 listFlow.prefWidthProperty().bind(textFlowList.get(textFlowList.size() - 2).widthProperty().subtract(15 * tabCount));
 
+                // Else if the TextNode signifies a list end then remove the latest TextFlow from the list ONLY and reduce the tab count
             } else if (textNodes.get(i).isIsListEnd()) {
                 tabCount--;
                 textFlowList.remove(textFlowList.size() - 1);
             }
 
+            // If the current TextNode is within a list
             if (tabCount > 0) {
+                // Make a StringBuilder containing the raw text
                 final StringBuilder builder = new StringBuilder(textNodes.get(i).getText().getText());
                 int indexOfNewLine = builder.indexOf("\n");
 
+                // Remove all tabs after each new line charcter from witin that list
                 while (indexOfNewLine != -1) {
                     if (indexOfNewLine + 1 < builder.length() && builder.charAt(indexOfNewLine + 1) == '\t') {
                         builder.deleteCharAt(indexOfNewLine + 1);
@@ -425,10 +555,11 @@ public class MarkdownTree {
                     indexOfNewLine = builder.indexOf("\n", indexOfNewLine + 1);
                 }
 
+                // Set the textNodes raw string to be this new one with the appropriate tabs removed
                 textNodes.get(i).setText(builder.toString());
             }
 
-
+            // Add textNode to the last TextFlow in the list
             textFlowList.get(textFlowList.size() - 1).getChildren().add(textNodes.get(i).getText());
         }
 

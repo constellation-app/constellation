@@ -23,6 +23,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 /**
+ * This call represents the formatted text derived from the MarkdownTree
  *
  * @author altair1673
  */
