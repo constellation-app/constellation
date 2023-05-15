@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.notes.utilities;
 
-import javafx.geometry.VPos;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;

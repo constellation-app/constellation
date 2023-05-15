@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.notes.utilities;
 
-import au.gov.asd.tac.constellation.views.notes.NotesViewTopComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -25,10 +24,8 @@ import java.util.regex.Pattern;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
