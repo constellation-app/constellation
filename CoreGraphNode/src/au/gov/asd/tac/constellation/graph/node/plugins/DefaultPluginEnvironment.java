@@ -31,11 +31,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -432,8 +432,11 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             interaction.notify(PluginNotificationLevel.INFO, message);
             LOGGER.log(Level.INFO, message, ex);
         } else if (ex instanceof PluginException) {
-            interaction.notify(level, ex.getLocalizedMessage());
-            LOGGER.log(Level.INFO, String.format("Plugin exception caught in %s", pluginName), ex);
+            final String displayMessage =  ex.getLocalizedMessage().startsWith(NotifyDisplayer.BLOCK_POPUP_FLAG) ? ex.getLocalizedMessage().substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length()): ex.getLocalizedMessage();
+            interaction.notify(level, displayMessage);
+            final PluginException nonPopupEx = new PluginException(PluginNotificationLevel.ERROR, NotifyDisplayer.BLOCK_POPUP_FLAG + displayMessage);
+            nonPopupEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.INFO, String.format("Plugin exception caught in %s", pluginName), nonPopupEx);
         } else {
             final String message = String.format("Unexpected exception caught in %s", pluginName);
             switch (level) {

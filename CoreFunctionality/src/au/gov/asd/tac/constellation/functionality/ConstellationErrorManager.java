@@ -37,22 +37,20 @@ public class ConstellationErrorManager extends Handler {
         if (errorRecord != null && errorRecord.getThrown() != null) {
             final StackTraceElement[] elems = errorRecord.getThrown().getStackTrace();
             final StringBuilder errorMsg = new StringBuilder();
-//            String recordHeader = errorRecord.getThrown().getLocalizedMessage() != null ? 
-//                    errorRecord.getThrown().getLocalizedMessage() : 
-//                    "";
             final Level errLevel = errorRecord.getLevel();
-            String errorSummary = errorRecord.getThrown().toString();
-            final boolean autoBlockPopup = errorSummary.contains(NotifyDisplayer.BLOCK_POPUP_FLAG);
-            errorSummary = errorSummary.replace(NotifyDisplayer.BLOCK_POPUP_FLAG, "");
-            //if (recordHeader.trim().isBlank()) {
+            final String errorSummary = errorRecord.getThrown().toString();
             final int firstColon = errorSummary.indexOf(":");
-            final String extractedMessage = firstColon != -1 ? errorSummary.substring(firstColon + 2) : "";
+            String extractedMessage = firstColon != -1 ? errorSummary.substring(firstColon + 2) : "";
+            final boolean autoBlockPopup = extractedMessage.startsWith(NotifyDisplayer.BLOCK_POPUP_FLAG);
+            if (autoBlockPopup) {
+                extractedMessage = extractedMessage.substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length());
+            }
             final int prevDotPos = errorSummary.substring(0, (firstColon != -1 ? firstColon : errorSummary.length())).lastIndexOf(".");
             final String exceptionType = errorSummary.substring(prevDotPos + 1, (firstColon != -1 ? firstColon : errorSummary.length()));
             String recordHeader = extractedMessage.equals("") ? exceptionType : extractedMessage;
-            //}
-            if (!errorSummary.endsWith(SeparatorConstants.NEWLINE)) {
-                errorSummary += SeparatorConstants.NEWLINE;
+            String revisedSummary = errorSummary.substring(0, firstColon + 1) + errorSummary.substring(firstColon + 1 + (autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG.length() : 0));
+            if (!revisedSummary.endsWith(SeparatorConstants.NEWLINE)) {
+                revisedSummary += SeparatorConstants.NEWLINE;
             }
             if (elems == null || elems.length == 0) {
                 errorMsg.append(" >> No stacktrace available for error:").append(SeparatorConstants.NEWLINE).append(" >> ").append(recordHeader);
@@ -66,10 +64,9 @@ public class ConstellationErrorManager extends Handler {
                 recordHeader += SeparatorConstants.NEWLINE;
             }
 
-            final ErrorReportEntry repEntry = new ErrorReportEntry(errLevel, recordHeader, errorSummary, errorMsg.toString(), 
+            final ErrorReportEntry repEntry = new ErrorReportEntry(errLevel, recordHeader, revisedSummary, errorMsg.toString(), 
                                                                    ErrorReportSessionData.getNextEntryId());
             if (autoBlockPopup) {
-                //repEntry.setHeading(recordHeader.substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length()));
                 repEntry.setBlockRepeatedPopups(true);
                 repEntry.setLastPopupDate(new Date());
             }

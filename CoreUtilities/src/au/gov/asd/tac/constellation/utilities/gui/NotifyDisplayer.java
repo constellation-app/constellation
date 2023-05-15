@@ -40,7 +40,7 @@ public class NotifyDisplayer {
 
     private static final Logger LOGGER = Logger.getLogger(NotifyDisplayer.class.getName());
     
-    public static final String BLOCK_POPUP_FLAG = "## ";
+    public static final String BLOCK_POPUP_FLAG = "!^ ";
 
     /**
      * Utility display method to show a dialog to the user.
