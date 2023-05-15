@@ -400,11 +400,39 @@ public class MarkdownTree {
                 textFlowList.get(textFlowList.size() - 1).getChildren().add(listFlow);
                 textFlowList.add(listFlow);
                 listFlow.setTranslateX(tabCount * 10);
-                listFlow.prefWidthProperty().bind(textFlowList.get(textFlowList.size() - 2).widthProperty());
+                //listFlow.prefWidthProperty().bind(textFlowList.get(textFlowList.size() - 2).widthProperty());
+                listFlow.setPrefWidth(500);
 
             } else if (textNodes.get(i).isIsListEnd()) {
                 tabCount--;
                 textFlowList.remove(textFlowList.size() - 1);
+            }
+
+            if (tabCount > 0) {
+                final StringBuilder builder = new StringBuilder(textNodes.get(i).getText().getText());
+                int indexOfNewLine = builder.indexOf("\n");
+
+                while (indexOfNewLine != -1) {
+                    if (indexOfNewLine + 1 < builder.length() && builder.charAt(indexOfNewLine + 1) == '\t') {
+                        builder.deleteCharAt(indexOfNewLine + 1);
+
+                        int tabIndex = indexOfNewLine + 1;
+                        while (tabIndex < builder.length() && tabIndex != -1) {
+                            if (builder.charAt(tabIndex) == '\t') {
+                                builder.deleteCharAt(tabIndex);
+                            } else {
+                                break;
+                            }
+
+                            tabIndex++;
+                        }
+
+
+                    }
+                    indexOfNewLine = builder.indexOf("\n", indexOfNewLine + 1);
+                }
+
+                textNodes.get(i).setText(builder.toString());
             }
 
 
