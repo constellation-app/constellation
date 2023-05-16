@@ -1,6 +1,9 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2023-05-16
+<p>The Map View has been re-written in JavaFX. This has most of the features of the old one an dcan be found under "Experimental->Views"</p>
+
 == 2022-11-21 Datetime Formatters
 <p>Datetime formatters have been updated in the File and Database importers to allow single digit days and hours to be passed through most default formats.</p>
 <p>A few new formatters, which don't contain seconds, have been added to the default list.</p>
