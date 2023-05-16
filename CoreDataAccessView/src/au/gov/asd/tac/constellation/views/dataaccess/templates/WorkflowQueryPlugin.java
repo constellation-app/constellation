@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
+import au.gov.asd.tac.constellation.graph.node.plugins.ThreadConstraints;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaPluginRegistry;
@@ -38,6 +39,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.dataaccess.GlobalParameters;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,7 +92,8 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
 
         // create a service for executing jobs, limiting concurrent executions to the max concurrent plugins parameter.
         final int maxConcurrentPlugins = parameters.getIntegerValue(MAX_CONCURRENT_PLUGINS_PARAMETER_ID);
-        final ExecutorService workflowExecutor = Executors.newFixedThreadPool(maxConcurrentPlugins);
+
+        final ExecutorService workflowExecutor = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
 
         // schedule a job for each batch, where the job is to execute the defined workflow
         final List<Future<?>> workerPlugins = new ArrayList<>();
@@ -98,7 +101,7 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
         if (queryBatches.isEmpty()) {
             queryBatches.add(new GraphRecordStore());
         }
-
+        final ThreadConstraints callingConstraints = ThreadConstraints.getConstraints();
         // run plugin once for every batch record store
         queryBatches.forEach(batch -> {
             final StoreGraph batchGraph = new StoreGraph(graph.getSchema() != null ? graph.getSchema().getFactory().createSchema() : null);
@@ -127,6 +130,9 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
             GraphRecordStoreUtilities.addRecordStoreToGraph(batchGraph, batch, true, true, null, vertexMap, transactionMap);
             final WorkerQueryPlugin worker = new WorkerQueryPlugin(getWorkflow(), batchGraph, exceptions, getErrorHandlingPlugin(), addPartialResults());
             workerPlugins.add(workflowExecutor.submit(() -> {
+                final ThreadConstraints workerConstraints = ThreadConstraints.getConstraints();
+                workerConstraints.setCurrentReport(callingConstraints.getCurrentReport());
+
                 Thread.currentThread().setName(THREAD_POOL_NAME);
                 try {
                     PluginExecution.withPlugin(worker).withParameters(parameters).executeNow(graph);

@@ -41,8 +41,8 @@ public class CoreHelpHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String helpModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreHelp" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "help" + sep + "docs" + sep;
+        final String helpModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "help" +  sep;
 
         map.put("au.gov.asd.tac.constellation.help.preferences.HelpOptionsPanelController", helpModulePath + "help-options.md");
         return map;
@@ -56,7 +56,7 @@ public class CoreHelpHelpProvider extends HelpPageProvider {
     @Override
     public String getHelpTOC() {
         final String sep = File.separator;
-        return CODEBASE_NAME + sep + "CoreHelp" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + CODEBASE_NAME + sep + "help" + sep + "docs" + sep + "help-toc.xml";
+        return "ext" + sep + "docs" + sep + "CoreHelp" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + CODEBASE_NAME + sep + "help" + sep + "help-toc.xml";
     }
 }

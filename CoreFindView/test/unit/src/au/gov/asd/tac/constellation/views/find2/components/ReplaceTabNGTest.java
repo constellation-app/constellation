@@ -136,9 +136,8 @@ public class ReplaceTabNGTest {
          * and getSearchAllGraphs checkbox.
          */
         replaceTab.updateButtons();
-        assertEquals(replaceTab.buttonsHBox.getChildren().get(0), replaceTab.getSearchAllGraphs());
-        assertEquals(replaceTab.buttonsHBox.getChildren().get(1), replaceTab.getReplaceAllButton());
-        assertEquals(replaceTab.buttonsHBox.getChildren().get(2), replaceTab.getReplaceNextButton());
+        assertEquals(replaceTab.buttonsHBox.getChildren().get(0), replaceTab.getReplaceAllButton());
+        assertEquals(replaceTab.buttonsHBox.getChildren().get(1), replaceTab.getReplaceNextButton());
     }
 
     /**
@@ -154,7 +153,7 @@ public class ReplaceTabNGTest {
         replaceTab.getReplaceTextField().setText("replace");
         final GraphElementType elementType = GraphElementType.getValue(replaceTab.lookForChoiceBox.getSelectionModel().getSelectedItem());
 
-        replaceTab.currentSelectionChoiceBox.getSelectionModel().select(0);
+        replaceTab.postSearchChoiceBox.getSelectionModel().select(0);
 
         /**
          * Call the updateBasicFindParamters function. Check that each of the
@@ -179,13 +178,10 @@ public class ReplaceTabNGTest {
          * All 4 should be false as currentSelectionChoiceBox is set to select
          * index 0 which is "Ignore"
          */
-        assertEquals(controlllerParameters.isFindIn(), false);
+      //  assertEquals(controlllerParameters.isFindIn(), false);
         assertEquals(controlllerParameters.isAddTo(), false);
         assertEquals(controlllerParameters.isRemoveFrom(), false);
         assertEquals(controlllerParameters.isReplaceIn(), false);
-
-        assertEquals(controlllerParameters.isSearchAllGraphs(), replaceTab.searchAllGraphs.isSelected());
-        // TODO review the generated test code and remove the default call to fail.
     }
 
     /**

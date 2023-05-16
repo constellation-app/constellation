@@ -42,8 +42,8 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String scatterModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "scatterplot" + sep + "docs" + sep;
+        final String scatterModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "scatterplot" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.scatterplot", scatterModulePath + "scatter-plot-view.md");
         return map;
@@ -58,8 +58,8 @@ public class ScatterPlotHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String scatterPath;
-        scatterPath = CODEBASE_NAME + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "scatterplot" + sep + "docs" + sep + "scatterplot-toc.xml";
+        scatterPath = "ext" + sep + "docs" + sep + "CoreScatterPlotView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "scatterplot" + sep + "scatterplot-toc.xml";
         return scatterPath;
     }
 }

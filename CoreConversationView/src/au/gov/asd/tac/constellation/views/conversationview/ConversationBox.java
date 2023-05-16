@@ -246,7 +246,7 @@ public final class ConversationBox extends StackPane {
             foundLabel.setStyle(FOUND_PASS_COLOR);
 
             // If they hit enter iterate through the results
-            searchCount = "\r".equals(e.getCharacter()) ? (searchCount + 1) % foundCount : 0;
+            searchCount = "\r".equals(e.getCharacter()) && foundCount > 0 ? (searchCount + 1) % foundCount : 0;
 
             highlightRegions();
             refreshCountUI(false);
@@ -350,15 +350,17 @@ public final class ConversationBox extends StackPane {
             spaceColumn.setMinWidth(50);
             spaceColumn.setPrefWidth(50);
 
+
             final ColumnConstraints contentColumn = new ColumnConstraints();
             contentColumn.setHalignment(message.getConversationSide() == ConversationSide.LEFT ? HPos.LEFT : HPos.RIGHT);
             contentColumn.setFillWidth(false);
             contentColumn.setHgrow(Priority.NEVER);
 
+
             final RowConstraints contentRow = new RowConstraints();
             contentRow.setFillHeight(true);
-            contentRow.setMaxHeight(Double.MAX_VALUE);
             contentRow.setValignment(VPos.TOP);
+            contentRow.setVgrow(Priority.NEVER);
 
             getRowConstraints().addAll(contentRow);
 

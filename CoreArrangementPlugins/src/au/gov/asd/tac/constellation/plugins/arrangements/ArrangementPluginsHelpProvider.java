@@ -42,8 +42,8 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String arrangementModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "arrangements" + sep + "docs" + sep;
+        final String arrangementModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "arrangements" + sep;
 
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.grid", arrangementModulePath + "grid.md");
         map.put("au.gov.asd.tac.constellation.plugins.arrangements.line", arrangementModulePath + "line.md");
@@ -69,8 +69,8 @@ public class ArrangementPluginsHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String arrangementsPath;
-        arrangementsPath = CODEBASE_NAME + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "plugins" + sep + "arrangements" + sep + "docs" + sep + "arrangements-toc.xml";
+        arrangementsPath = "ext" + sep + "docs" + sep + "CoreArrangementPlugins" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + CODEBASE_NAME + sep + "plugins" + sep + "arrangements" + sep + "arrangements-toc.xml";
 
         return arrangementsPath;
     }

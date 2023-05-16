@@ -40,8 +40,8 @@ public class LayersViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String layersModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "layers" + sep + "docs" + sep;
+        final String layersModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "layers" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.layers.LayersViewTopComponent", layersModulePath + "layers-view.md");
         return map;
@@ -56,8 +56,8 @@ public class LayersViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String layersViewPath;
-        layersViewPath = CODEBASE_NAME + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-toc.xml";
+        layersViewPath = "ext" + sep + "docs" + sep + "CoreLayersView" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "layers" + sep + "layers-toc.xml";
 
         return layersViewPath;
     }

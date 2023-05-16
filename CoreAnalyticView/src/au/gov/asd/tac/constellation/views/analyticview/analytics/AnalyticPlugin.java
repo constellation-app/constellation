@@ -64,7 +64,7 @@ public abstract class AnalyticPlugin<R extends AnalyticResult<?>> extends Simple
      * @param parameters the current plugin parameters.
      */
     public void onPrerequisiteAttributeChange(final Graph graph, final PluginParameters parameters) {
-        return;
+        // Do nothing
     }
 
     /**
@@ -76,7 +76,7 @@ public abstract class AnalyticPlugin<R extends AnalyticResult<?>> extends Simple
     public abstract Set<SchemaAttribute> getAnalyticAttributes(final PluginParameters parameters);
 
     public void prepareGraph(final GraphWriteMethods graph, final PluginParameters parameters) throws InterruptedException, PluginException {
-        return;
+        // Do nothing
     }
 
     @Override
@@ -85,7 +85,7 @@ public abstract class AnalyticPlugin<R extends AnalyticResult<?>> extends Simple
     }
 
     public void updateParameters(final PluginParameters parameters) {
-        return;
+        // Do nothing
     }
 
     public String getHelpPath() {

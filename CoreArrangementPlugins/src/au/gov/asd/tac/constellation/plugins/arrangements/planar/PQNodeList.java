@@ -149,8 +149,6 @@ class PQNodeList implements Iterable<PQNode> {
             last = toConcat.last;
             size = toConcat.size;
             return;
-        } else {
-            // Do nothing
         }
 
         link(last, toConcat.first);

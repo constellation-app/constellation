@@ -70,6 +70,7 @@ public class NotesViewController {
         }
 
         PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
+
     }
 
     /**
@@ -85,6 +86,7 @@ public class NotesViewController {
         }
 
         PluginExecution.withPlugin(new NotesViewStateWriter(pane.getNotes(), pane.getFilters(), pane.getTagsFilters())).executeLater(graph);
+
     }
 
     /**

@@ -40,9 +40,9 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("DelimitedFileWelcomePlugin=Delimited File Welcome Plugin")
 public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
 
-    public static final String IMPORT = "resources/welcome_import.png";
-    final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
-    final Button importButton = new Button();
+    private static final String IMPORT = "resources/welcome_import.png";
+    private final ImageView importImage = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(IMPORT)));
+    private final Button importButton = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -71,16 +71,6 @@ public class DelimitedFileWelcomePlugin implements WelcomePluginInterface {
                 stage.requestActive();
             }
         });
-    }
-
-    /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    @Override
-    public boolean isVisible() {
-        return true;
     }
 
     /**

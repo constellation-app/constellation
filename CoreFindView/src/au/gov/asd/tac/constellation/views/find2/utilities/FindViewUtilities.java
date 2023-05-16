@@ -31,7 +31,7 @@ import org.openide.windows.WindowManager;
  * @author Delphinus8821
  */
 public class FindViewUtilities {
-    
+
     private FindViewUtilities() {
         throw new IllegalStateException("Utility class");
     }

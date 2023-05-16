@@ -42,8 +42,8 @@ public class SecurityHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String securityModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "security" + sep + "docs" + sep;
+        final String securityModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "security" + sep;
 
         map.put("au.gov.asd.tac.constellation.security.proxies", securityModulePath + "proxy-preferences.md");
         return map;
@@ -58,8 +58,8 @@ public class SecurityHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String securityPath;
-        securityPath = CODEBASE_NAME + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "security" + sep + "docs" + sep + "security-toc.xml";
+        securityPath = "ext" + sep + "docs" + sep + "CoreSecurity" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "security" + sep + "security-toc.xml";
         return securityPath;
     }
 }

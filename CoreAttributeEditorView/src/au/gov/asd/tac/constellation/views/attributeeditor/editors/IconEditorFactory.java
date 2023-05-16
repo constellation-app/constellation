@@ -171,19 +171,33 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
             refreshIconList(iconFile);
         }
 
-        private List<File> pngWalk(File path) {
+        /**
+         * Search for all valid icons, starting at the supplied path.
+         * @param path Path to search for icons.
+         * @return List of all icon files found.
+         */
+        private List<File> iconWalk(File path) {
             final List<File> files = new ArrayList<>();
-            pngWalk(path, files);
+            iconWalk(path, files);
             return files;
         }
 
-        private List<File> pngWalk(final File path, final List<File> files) {
+        /**
+         * Navigate through all files in path and its subdirectories, adding any
+         * files found to match icon file types to the list of icons returned.
+         * @param path Path to search for icons.
+         * @param files Files already found.
+         * @return Complete list of all icon files found (new + those passed in).
+         */
+        private List<File> iconWalk(final File path, final List<File> files) {
             final List<File> addedFiles = new ArrayList<>();
             for (final File f : path.listFiles()) {
                 if (f.isDirectory()) {
                     addedFiles.add(f);
                 } else {
-                    if (StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
+                    if (StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.JPG) ||
+                        StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.GIF) ||
+                        StringUtils.endsWithIgnoreCase(f.getAbsolutePath(), FileExtensionConstants.PNG)) {
                         addedFiles.add(f);
                     }
                 }
@@ -191,7 +205,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
 
             addedFiles.forEach(file -> {
                 if (file.isDirectory()) {
-                    pngWalk(file, files);
+                    iconWalk(file, files);
                 } else {
                     files.add(file);
                 }
@@ -282,7 +296,7 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
 
             addFilesButton.setOnAction(event -> FileChooser.openMultiDialog(getIconEditorFileChooser()).thenAccept(optionalFiles -> optionalFiles.ifPresent(files -> addIcons(files))));
 
-            addDirButton.setOnAction(event -> FileChooser.openOpenDialog(getIconEditorFolderChooser()).thenAccept(optionalFolder -> optionalFolder.ifPresent(folder -> addIcons(pngWalk(folder)))));
+            addDirButton.setOnAction(event -> FileChooser.openOpenDialog(getIconEditorFolderChooser()).thenAccept(optionalFolder -> optionalFolder.ifPresent(folder -> addIcons(iconWalk(folder)))));
 
             removeButton.setOnAction(event -> {
                 final boolean iconRemoved = IconManager.removeIcon(listView.getSelectionModel().getSelectedItem());
@@ -309,12 +323,16 @@ public class IconEditorFactory extends AttributeValueEditorFactory<Constellation
                         @Override
                         public boolean accept(final File file) {
                             final String name = file.getName();
-                            return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG)) || file.isDirectory();
+                            final boolean imageFilename = (
+                                    StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.JPG) ||
+                                    StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.GIF) ||
+                                    StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.PNG));
+                            return ((file.isFile() && imageFilename) || file.isDirectory());
                         }
 
                         @Override
                         public String getDescription() {
-                            return "Image Files (" + FileExtensionConstants.PNG + ")";
+                            return "Image Files (*" + FileExtensionConstants.JPG + ";*" + FileExtensionConstants.GIF + ";*" + FileExtensionConstants.PNG + ")";
                         }
                     });
         }

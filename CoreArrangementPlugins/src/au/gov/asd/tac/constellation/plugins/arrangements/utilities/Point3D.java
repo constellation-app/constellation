@@ -87,7 +87,7 @@ public abstract class Point3D implements Cloneable {
          */
         @Override
         public double getX() {
-            return (double) x;
+            return x;
         }
 
         public float getFloatX() {
@@ -99,7 +99,7 @@ public abstract class Point3D implements Cloneable {
          */
         @Override
         public double getY() {
-            return (double) y;
+            return y;
         }
 
         public float getFloatY() {
@@ -111,7 +111,7 @@ public abstract class Point3D implements Cloneable {
          */
         @Override
         public double getZ() {
-            return (double) z;
+            return z;
         }
 
         public float getFloatZ() {

@@ -42,8 +42,8 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String scriptingModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "scripting" + sep + "docs" + sep;
+        final String scriptingModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "scripting" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.scripting", scriptingModulePath + "scripting-view.md");
         return map;
@@ -58,8 +58,8 @@ public class ScriptingViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String scriptingViewPath;
-        scriptingViewPath = CODEBASE_NAME + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "scripting" + sep + "docs" + sep + "scripting-toc.xml";
+        scriptingViewPath = "ext" + sep + "docs" + sep + "CoreScriptingView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "scripting" + sep + "scripting-toc.xml";
         return scriptingViewPath;
     }
 }
