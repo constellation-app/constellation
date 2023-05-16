@@ -47,7 +47,7 @@ public class ConstellationErrorManager extends Handler {
             }
             final int prevDotPos = errorSummary.substring(0, (firstColon != -1 ? firstColon : errorSummary.length())).lastIndexOf(".");
             final String exceptionType = errorSummary.substring(prevDotPos + 1, (firstColon != -1 ? firstColon : errorSummary.length()));
-            String recordHeader = extractedMessage.equals("") ? exceptionType : extractedMessage;
+            String recordHeader = "".equals(extractedMessage) ? exceptionType : extractedMessage;
             String revisedSummary = errorSummary.substring(0, firstColon + 1) + errorSummary.substring(firstColon + 1 + (autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG.length() : 0));
             if (!revisedSummary.endsWith(SeparatorConstants.NEWLINE)) {
                 revisedSummary += SeparatorConstants.NEWLINE;

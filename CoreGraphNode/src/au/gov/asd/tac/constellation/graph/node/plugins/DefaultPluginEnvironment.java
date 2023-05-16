@@ -432,7 +432,12 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             interaction.notify(PluginNotificationLevel.INFO, message);
             LOGGER.log(Level.INFO, message, ex);
         } else if (ex instanceof PluginException) {
-            final String displayMessage =  ex.getLocalizedMessage() == null ? "null" : ex.getLocalizedMessage().startsWith(NotifyDisplayer.BLOCK_POPUP_FLAG) ? ex.getLocalizedMessage().substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length()): ex.getLocalizedMessage();
+            final String displayMessage;
+            if (ex.getLocalizedMessage() == null) {
+                displayMessage = "null";
+            } else {
+                displayMessage = ex.getLocalizedMessage().startsWith(NotifyDisplayer.BLOCK_POPUP_FLAG) ? ex.getLocalizedMessage().substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length()): ex.getLocalizedMessage();
+            }
             interaction.notify(level, displayMessage);
             final PluginException nonPopupEx = new PluginException(PluginNotificationLevel.ERROR, NotifyDisplayer.BLOCK_POPUP_FLAG + displayMessage);
             nonPopupEx.setStackTrace(ex.getStackTrace() != null ? ex.getStackTrace() : new StackTraceElement[]{});

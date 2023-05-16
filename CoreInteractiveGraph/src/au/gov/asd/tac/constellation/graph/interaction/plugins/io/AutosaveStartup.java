@@ -47,6 +47,7 @@ import org.openide.windows.OnShowing;
 public final class AutosaveStartup implements Runnable {
 
     private static final String AUTOSAVE_THREAD_NAME = "Autosave Startup";
+    private static final String GRAPH_LOAD_ERROR = "Error Loading Graph";
     private static final Logger LOGGER = Logger.getLogger(AutosaveStartup.class.getName());
     /**
      * The number of milliseconds after which we purge old autosaves.
@@ -93,12 +94,12 @@ public final class AutosaveStartup implements Runnable {
                                         } catch (GraphParseException | IOException ex) {
                                             final Throwable gpioex;
                                             if (ex instanceof IOException) {
-                                                gpioex = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + "Error loading graph");
+                                                gpioex = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR);
                                             } else {
-                                                gpioex = new GraphParseException(NotifyDisplayer.BLOCK_POPUP_FLAG + "Error loading graph");
+                                                gpioex = new GraphParseException(NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR);
                                             }
                                             gpioex.setStackTrace(ex.getStackTrace());
-                                            LOGGER.log(Level.WARNING, "Error loading graph", gpioex);
+                                            LOGGER.log(Level.WARNING, GRAPH_LOAD_ERROR, gpioex);
                                             NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                                         }
                                     }
