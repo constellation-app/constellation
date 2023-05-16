@@ -1,5 +1,7 @@
 # Constellation Changes
-
+## Changes in April 2023
+-   Added global thread pool class called ConstellationGlobalThreadPool has been created and can be called to generate a new thread.
+-   Removed code that created new thread pool every time a new thread was needed.
 ## Changes in February 2023	
 
 -   Removed unused class `NestedIncircleDrawing` from Core Arrangement Plugins.

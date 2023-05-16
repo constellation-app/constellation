@@ -58,6 +58,7 @@ public class PluginReportTimeUpdater {
         @Override
         public void run() {
             setName(PLUGIN_REPORTER_THREAD_NAME);
+
             while (true) {
                 try {
                     Thread.sleep(1000);

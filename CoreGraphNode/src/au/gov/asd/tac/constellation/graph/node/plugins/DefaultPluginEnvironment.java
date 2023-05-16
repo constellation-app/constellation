@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -52,7 +53,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
     private static final String THREAD_POOL_NAME = "Default Plugin Environment";
 
-    private final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
+    private final ExecutorService pluginExecutor = ConstellationGlobalThreadPool.getThreadPool().getDefaultPluginEnvPool();
 
     private static final String GRAPH_NULL_WARNING_MESSAGE = "{0} plugin was executed on a graph which was null";
 
