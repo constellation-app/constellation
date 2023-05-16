@@ -17,21 +17,22 @@ package au.gov.asd.tac.constellation.views.notes.utilities;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ColorPicker;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -41,12 +42,14 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Screen;
 import javafx.stage.Window;
 
 /**
@@ -59,16 +62,16 @@ public class NewNotePane {
     private final Pane dialogPane;
     private final static String FONT_SIZE_STRING = "-fx-font-size:%d;";
     private final String fontStyle = String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize());
-    private final String titleFontStyle = String.format(FONT_SIZE_STRING, 20);
     private static final String PROMPT_COLOR = "#909090";
-    private static final double WIDTH = 1005;
-    private static final double HEIGHT = 190;
+    private static final double WIDTH = 500;
+    private static final double HEIGHT = 300;
 
     private final TextArea contentField;
-    private final TabPane tabPane;
-    private final TextFlow preview;
     private final TextField titleField = new TextField();
     private final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
+
+    private final TabPane tabPane;
+    private final TextFlow previewTextFlow;
 
     private final ColorPicker newNoteColour;
 
@@ -80,8 +83,6 @@ public class NewNotePane {
     private Stage stage = null;
 
     private Window parent = null;
-    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
-
 
     public NewNotePane(final String userChosenColour) {
         this.userChosenColour = userChosenColour;
@@ -92,18 +93,10 @@ public class NewNotePane {
         dialogPane.setMinWidth(WIDTH);
         dialogPane.setMaxWidth(WIDTH);
 
-        Label titleLabel = new Label("Enter note info");
-        titleLabel.setStyle("-fx-text-fill:WHITE; " + titleFontStyle);
-        titleLabel.setFont(Font.font(24));
-
         // TextField to enter new note title.
         titleField.setPromptText("Type a title...");
-        titleField.setStyle(fontStyle + "-fx-prompt-text-f\n" +
- "        titleField.setStyle(ill: " + PROMPT_COLOR + ";");
-        titleField.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
         titleField.setStyle("-fx-text-fill: #FFFFFF;");
         titleField.setMinWidth(WIDTH - 5);
-        //titleField.setPadding(new Insets(5, 5, 5, 5));
 
         // Checkbox to apply note to selection.
         applyToSelection.setSelected(true);
@@ -113,41 +106,44 @@ public class NewNotePane {
 
         // TextArea to enter new note content.
         contentField = new TextArea();
-        contentField.setMinWidth(WIDTH - 5);
-        //contentField.setPadding(new Insets(5, 5, 5, 5));
+        contentField.setMinWidth(WIDTH - 10);
         contentField.setPromptText("Type a note...");
         contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
         contentField.setWrapText(true);
+        contentField.setOnKeyPressed(key -> {
+            // If tab is typed and shift isn't being held dowm.
+            if (key.getCode() == KeyCode.TAB && !key.isShiftDown()) {
+                // Backspace any tabs typed.
+                contentField.fireEvent(new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.BACK_SPACE, false, false, false, false));
+                // Move focus to the next UI element.
+                contentField.getParent().getChildrenUnmodifiable().get(contentField.getParent().getChildrenUnmodifiable().indexOf(contentField) + 1).requestFocus();
+            }
+        });
 
-        preview = new TextFlow();
-        preview.setMinWidth(WIDTH - 5);
-        preview.setMaxWidth(WIDTH - 5);
-        preview.setMinHeight(209);
-
-        preview.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-
-        final VBox editVBox = new VBox(3, titleField, contentField);
+        tabPane = new TabPane();
+        previewTextFlow = new TextFlow();
 
         final ScrollPane previewTabScrollPane = new ScrollPane();
-        previewTabScrollPane.setContent(preview);
+        previewTabScrollPane.setContent(previewTextFlow);
         previewTabScrollPane.setMinWidth(WIDTH - 5);
         previewTabScrollPane.setMaxWidth(WIDTH - 5);
         previewTabScrollPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
-        tabPane = new TabPane();
-        Tab writeTab = new Tab();
+        final VBox editVBox = new VBox(5, titleField, contentField);
+
+        final Tab writeTab = new Tab();
         writeTab.setText("Write");
         writeTab.setContent(editVBox);
         writeTab.setClosable(false);
 
-        Tab previewTab = new Tab();
+        final Tab previewTab = new Tab();
         previewTab.setText("Preview");
         previewTab.setContent(previewTabScrollPane);
         previewTab.setClosable(false);
 
         previewTab.setOnSelectionChanged(event -> {
             if (previewTab.isSelected()) {
-                preview.getChildren().clear();
+                previewTextFlow.getChildren().clear();
                 final MarkdownTree mdTree = new MarkdownTree(titleField.getText() + "\n\n" + contentField.getText());
                 mdTree.parse();
                 //final List<TextHelper> textNodes = mdTree.getTextNodes();
@@ -155,7 +151,7 @@ public class NewNotePane {
                 /*for (int i = 0; i < textNodes.size(); ++i) {
                     preview.getChildren().add(textNodes.get(i).getText());
                 }*/
-                preview.getChildren().add(mdTree.getRenderedText());
+                previewTextFlow.getChildren().add(mdTree.getRenderedText());
             }
         });
         tabPane.getTabs().addAll(writeTab, previewTab);
@@ -180,12 +176,15 @@ public class NewNotePane {
         cancelButton.setOnMouseEntered(event -> cancelButton.setStyle("-fx-background-color: #DBA800; "));
         cancelButton.setOnMouseExited(event -> cancelButton.setStyle("-fx-background-color: #DEC20B;  "));
 
-        final HBox noteHBox = new HBox(30, applyToSelection, newNoteColour, addButton, cancelButton);
-
-        final VBox addNoteVBox = new VBox(5, titleLabel, tabPane, noteHBox);
+        final Region gap = new Region();
+        gap.setMinWidth(15);
+        final HBox noteHBox = new HBox(5, newNoteColour, gap, addButton, cancelButton);
+        HBox.setHgrow(gap, Priority.ALWAYS);
+        noteHBox.setAlignment(Pos.CENTER_RIGHT);
+        final VBox addNoteVBox = new VBox(5, tabPane, applyToSelection, noteHBox);
         addNoteVBox.setAlignment(Pos.CENTER_LEFT);
         addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
-        addNoteVBox.setMinHeight(200);
+        addNoteVBox.setMinHeight(220);
 
         dialogPane.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#222222").getJavaFXColor(), null, null)));
 
@@ -196,7 +195,7 @@ public class NewNotePane {
      * Instantiate stage for the pop up and set event handler to close it when
      * consty closes
      */
-    public void showPopUp() {
+    public void showPopUp(final Window window) {
         if (isFirstTime) {
             parent.setOnCloseRequest(event -> {
                 addButton.setDisable(true);
@@ -206,12 +205,23 @@ public class NewNotePane {
             stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setTitle("Create new note");
-            stage.setMinHeight(HEIGHT * 2);
+            stage.setMinHeight(HEIGHT);
             stage.setMinWidth(WIDTH);
-            stage.setResizable(false);
-            stage.setScene(new Scene(dialogPane));
+            stage.setResizable(true);
+
+            final Scene s = new Scene(dialogPane);
+            s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+            s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
+
+            stage.setScene(s);
+
             isFirstTime = false;
         }
+
+        final List<Screen> screens = Screen.getScreensForRectangle(window.getX(), window.getY(), window.widthProperty().get(), window.heightProperty().get());
+
+        stage.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - WIDTH / 2);
+        stage.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - (HEIGHT * 2.5) / 2);
 
         if (!stage.isShowing()) {
             stage.show();
@@ -244,7 +254,7 @@ public class NewNotePane {
         }
     }
 
-    public void setParent(Window parent) {
+    public void setParent(final Window parent) {
         this.parent = parent;
     }
 

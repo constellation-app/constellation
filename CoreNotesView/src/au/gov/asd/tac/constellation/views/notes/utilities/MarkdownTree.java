@@ -126,12 +126,12 @@ public class MarkdownTree {
 
                 // If closest syntax is within the range of th elist size and it points to a new line character then create a MarkdownNode of type NORMAL including the
                 // new line character
-                if (closestSyntax != text.length() - 1 && text.charAt(closestSyntax) == '\n') {
+                /*if (closestSyntax != text.length() - 1 && text.charAt(closestSyntax) == '\n') {
                     normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax + 1), -99);
 
                     // else if the closestSyntax points to a dot then checl to see if there is anything before the dot and if the character before is a number 1
                     // Also check that the current node is of type ORDERED_LIST or LIST_ITEM
-                } else if (text.charAt(closestSyntax) == '.'
+                } else*/ if (text.charAt(closestSyntax) == '.'
                         && closestSyntax - 1 >= 0
                         && Character.isDigit(text.charAt(closestSyntax - 1))
                         && ((currentNode.getType() == MarkdownNode.Type.ORDERED_LIST
@@ -487,6 +487,9 @@ public class MarkdownTree {
     public TextFlow getRenderedText() {
         // TextFlow to be returned
         final TextFlow renderedText = new TextFlow();
+        //renderedText.setMinHeight(50);
+        //renderedText.setMaxHeight(50);
+        //renderedText.setPrefHeight(50);
         renderedText.setTextAlignment(TextAlignment.LEFT);
         renderedText.setPadding(new Insets(0, 0, 0, 0));
 

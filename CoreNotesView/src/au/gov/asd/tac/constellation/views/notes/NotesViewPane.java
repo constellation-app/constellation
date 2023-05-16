@@ -15,8 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.notes;
 
+import au.gov.asd.tac.constellation.views.notes.utilities.NewNotePane;
 import au.gov.asd.tac.constellation.views.notes.utilities.DateTimeRangePicker;
-import au.gov.asd.tac.constellation.views.notes.NewNotePane;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
@@ -35,7 +35,6 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
-import au.gov.asd.tac.constellation.views.notes.utilities.TextHelper;
 import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -78,7 +77,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Screen;
 import javafx.stage.Window;
@@ -153,8 +151,6 @@ public class NotesViewPane extends BorderPane {
     private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
-
-    private final static int NOTE_DESCRIPTION_CAP = 500;
 
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
@@ -709,10 +705,6 @@ public class NotesViewPane extends BorderPane {
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());
 
-        if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP && !newNote.getEditMode()) {
-            contentLabel.setText(newNote.getNoteContent().substring(0, NOTE_DESCRIPTION_CAP - 1));
-        }
-
         contentLabel.setWrapText(true);
         contentLabel.setMinWidth(50);
         contentLabel.setAlignment(Pos.TOP_LEFT);
@@ -759,9 +751,9 @@ public class NotesViewPane extends BorderPane {
             // If the note to be created is in edit mode, ensure it is created
             // with the correct java fx elements
             if (newNote.getEditMode()) {
-                noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, titleText, contentTextArea, selectionLabel);
+                noteInformation = new VBox(DEFAULT_SPACING, titleText, contentTextArea);
             } else {
-                noteInformation = new VBox(DEFAULT_SPACING, dateTimeLabel, contentTextFlow, selectionLabel);
+                noteInformation = new VBox(DEFAULT_SPACING, contentTextFlow);
             }
 
 
@@ -848,22 +840,24 @@ public class NotesViewPane extends BorderPane {
         noteBody.setMaxHeight(Double.MAX_VALUE);
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
+            LOGGER.log(Level.SEVERE, "Height of note: " + obs.getValue().doubleValue());
             if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10) {
+
                 if (!showMoreButton.isVisible()) {
                     showMoreButton.setVisible(true);
                     showMoreButton.setText(SHOW_MORE);
+                    LOGGER.log(Level.SEVERE, "Resizing note body");
                     noteBody.setMaxHeight(NOTE_HEIGHT - 5);
+                    //noteBody.setMinHeight(NOTE_HEIGHT - 5);
                 }
             } else if (showMoreButton.isVisible()) {
                 showMoreButton.setVisible(false);
             }
+            LOGGER.log(Level.SEVERE, "Height of note after if statement: " + noteBody.getHeight());
         });
 
         if (newNote.isUserCreated()) {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
-            if (newNote.getNoteContent().length() > NOTE_DESCRIPTION_CAP && !newNote.getEditMode()) {
-                noteInformation.getChildren().add(showMoreButton);
-            }
             notesListVBox.getChildren().add(noteBody);
 
         } else {
@@ -1018,7 +1012,7 @@ public class NotesViewPane extends BorderPane {
             noteButtons.getChildren().addAll(colourPicker, gap2, editScreenButtons);
             noteButtons.setSpacing(EDIT_SPACING);
 
-            noteInformation.getChildren().removeAll(titleLabel, contentTextFlow);
+            noteInformation.getChildren().removeAll(contentTextFlow);
             titleText.setText(titleLabel.getText());
             contentTextArea.setText(contentLabel.getText());
             newNote.setNoteTitle(titleLabel.getText());
@@ -1040,7 +1034,7 @@ public class NotesViewPane extends BorderPane {
             contentTextArea.setText(contentLabel.getText());
 
             noteInformation.getChildren().removeAll(titleText, contentTextArea);
-            noteInformation.getChildren().addAll(titleLabel, contentTextFlow);
+            noteInformation.getChildren().addAll(contentTextFlow);
 
             newNote.setEditMode(false);
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE
@@ -1054,12 +1048,11 @@ public class NotesViewPane extends BorderPane {
             if (StringUtils.isBlank(titleText.getText()) || StringUtils.isBlank(contentTextArea.getText())) {
                 JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
             } else {
-                contentTextFlow.getChildren().clear();
+                contentTextFlow = null;
 
                 final MarkdownTree mdTree = new MarkdownTree(titleText.getText() + "\n\n" + contentTextArea.getText());
                 mdTree.parse();
                 contentTextFlow = mdTree.getRenderedText();
-
 
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());
@@ -1068,12 +1061,11 @@ public class NotesViewPane extends BorderPane {
                 noteInformation.getChildren().removeAll(titleText, contentTextArea);
                 noteButtons.getChildren().removeAll(colourPicker, gap2, editScreenButtons);
 
-                noteInformation.getChildren().addAll(titleLabel, contentLabel);
                 noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
                 noteButtons.setSpacing(DEFAULT_SPACING);
 
-                noteInformation.getChildren().removeAll(dateTimeLabel, titleText, contentTextArea, selectionLabel);
-                noteInformation.getChildren().addAll(dateTimeLabel, contentTextFlow, selectionLabel);
+                noteInformation.getChildren().removeAll(titleText, contentTextArea);
+                noteInformation.getChildren().addAll(contentTextFlow);
 
                 newNote.setEditMode(false);
 
