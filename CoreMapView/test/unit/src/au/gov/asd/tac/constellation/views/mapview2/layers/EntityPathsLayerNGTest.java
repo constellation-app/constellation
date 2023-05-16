@@ -47,9 +47,6 @@ public class EntityPathsLayerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(EntityPathsLayerNGTest.class.getName());
 
-    public EntityPathsLayerNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {

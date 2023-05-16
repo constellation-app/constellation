@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import javafx.scene.shape.Line;
 import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -38,11 +38,6 @@ import org.testng.annotations.Test;
 public class CircleMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(CircleMarkerNGTest.class.getName());
-
-
-    public CircleMarkerNGTest() {
-
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {

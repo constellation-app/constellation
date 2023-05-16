@@ -99,7 +99,6 @@ public class MapViewPane extends BorderPane {
     private static final String MARKER_TYPE_POINT = "Point Markers";
     private static final String MARKER_TYPE_LINE = "Line Markers";
     private static final String MARKER_TYPE_POLYGON = "Polygon Markers";
-    private static final String MARKER_TYPE_MULTI = "Multi-Markers";
     private static final String MARKER_TYPE_CLUSTER = "Cluster Markers";
     private static final String SELECTED_ONLY = "Selected Only";
     private static final String ZOOM_ALL = "Zoom to All";
@@ -250,7 +249,7 @@ public class MapViewPane extends BorderPane {
         zoomLocation.setOnAction(event -> mapView.generateZoomLocationUI());
 
         // Menu to show/hide markers
-        markerDropDown = new CheckComboBox<>(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
+        markerDropDown = new CheckComboBox<>(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
         markerDropDown.setTitle("Markers");
         markerDropDown.setTooltip(new Tooltip("Choose which markers are displayed in the Map View"));
         markerDropDown.getCheckModel().check(MARKER_TYPE_POINT);
@@ -261,31 +260,10 @@ public class MapViewPane extends BorderPane {
 
         // Event handler for hiding/showing markers
         markerDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> markerDropDown.getItems().forEach(item -> {
-                if (markerDropDown.getCheckModel().isChecked(item)) {
-                    if (item.equals(MARKER_TYPE_POINT)) {
-                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, true);
-                    } else if (item.equals(MARKER_TYPE_LINE)) {
-                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, true);
-                    } else if (item.equals(MARKER_TYPE_POLYGON)) {
-                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, true);
-                    } else if (item.equals(MARKER_TYPE_CLUSTER)) {
-                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, true);
-                    } else if (item.equals(SELECTED_ONLY)) {
-                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, true);
-                    }
-                } else {
-                    if (item.equals(MARKER_TYPE_POINT)) {
-                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, false);
-                    } else if (item.equals(MARKER_TYPE_LINE)) {
-                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, false);
-                    } else if (item.equals(MARKER_TYPE_POLYGON)) {
-                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, false);
-                    } else if (item.equals(MARKER_TYPE_CLUSTER)) {
-                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, false);
-                    } else if (item.equals(SELECTED_ONLY)) {
-                        mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, false);
-                    }
-
+            if (markerDropDown.getCheckModel().isChecked(item)) {
+                    mapView.updateShowingMarkers(getMarkerTypeFromString(item), true);
+            } else {
+                mapView.updateShowingMarkers(getMarkerTypeFromString(item), false);
                 }
 
         })
@@ -363,6 +341,28 @@ public class MapViewPane extends BorderPane {
      */
     private void toggleOverlay(final String overlay) {
         mapView.toggleOverlay(overlay, overlaysDropDown.getCheckModel().isChecked(overlay));
+    }
+
+    /**
+     *
+     * @param markerTypeString
+     * @return
+     */
+    private AbstractMarker.MarkerType getMarkerTypeFromString(final String markerTypeString) {
+        switch (markerTypeString) {
+            case MARKER_TYPE_POINT:
+                return AbstractMarker.MarkerType.POINT_MARKER;
+            case MARKER_TYPE_POLYGON:
+                return AbstractMarker.MarkerType.POLYGON_MARKER;
+            case MARKER_TYPE_LINE:
+                return AbstractMarker.MarkerType.LINE_MARKER;
+            case MARKER_TYPE_CLUSTER:
+                return AbstractMarker.MarkerType.CLUSTER_MARKER;
+            case SELECTED_ONLY:
+                return AbstractMarker.MarkerType.SELECTED;
+            default:
+                return AbstractMarker.MarkerType.NO_MARKER;
+        }
     }
 
     public void setLonFieldText(final String longitude) {

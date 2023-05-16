@@ -43,7 +43,7 @@ public class OverviewOverlay extends AbstractOverlay {
     private final Rectangle panningRect = new Rectangle();
     private final Group panRectGroup = new Group();
 
-    public OverviewOverlay(double positionX, double positionY, final List<SVGPath> countrySVGPaths) {
+    public OverviewOverlay(final double positionX, final double positionY, final List<SVGPath> countrySVGPaths) {
         super(positionX, positionY);
 
         overlayPane.setMinWidth(MapView.MAP_WIDTH * MAP_SCALE);
@@ -61,8 +61,8 @@ public class OverviewOverlay extends AbstractOverlay {
         overlayPane.getChildren().clear();
         overlayPane.setBackground(new Background(new BackgroundFill(new Color(0.722, 0.871, 0.902, 1), null, null)));
         final Group countryGroup = new Group();
-        for (int i = 0; i < countrySVGPaths.size(); ++i) {
-            SVGPath p = new SVGPath();
+        for (int i = 0; i < countrySVGPaths.size(); i++) {
+            final SVGPath p = new SVGPath();
             p.setContent(countrySVGPaths.get(i).getContent());
             p.setStroke(Color.BLACK);
             p.setFill(Color.WHITE);

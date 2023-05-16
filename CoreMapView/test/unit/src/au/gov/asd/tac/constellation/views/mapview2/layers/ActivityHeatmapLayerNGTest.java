@@ -30,7 +30,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -44,9 +44,6 @@ import org.testng.annotations.Test;
 public class ActivityHeatmapLayerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(ActivityHeatmapLayerNGTest.class.getName());
-
-    public ActivityHeatmapLayerNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {

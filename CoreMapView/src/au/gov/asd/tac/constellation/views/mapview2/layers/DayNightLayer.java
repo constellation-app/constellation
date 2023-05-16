@@ -170,13 +170,13 @@ public class DayNightLayer extends AbstractMapLayer {
 
             // If is the first location then append a move command if not append a line command
             if (first) {
-                pathBuilder.append("M").append(x).append(SeparatorConstants.COMMA);
+                pathBuilder.append("M");
                 first = false;
             } else {
-                pathBuilder.append("L").append(x).append(SeparatorConstants.COMMA);
+                pathBuilder.append("L");
             }
 
-            pathBuilder.append(y);
+            pathBuilder.append(x).append(SeparatorConstants.COMMA).append(y);
         }
         return pathBuilder.toString();
     }

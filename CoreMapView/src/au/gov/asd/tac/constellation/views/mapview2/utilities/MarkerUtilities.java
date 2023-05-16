@@ -24,7 +24,7 @@ package au.gov.asd.tac.constellation.views.mapview2.utilities;
 public class MarkerUtilities {
 
     private MarkerUtilities() {
-
+        throw new IllegalStateException("Utility class");
     }
 
     /**

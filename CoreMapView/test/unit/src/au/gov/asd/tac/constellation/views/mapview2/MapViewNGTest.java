@@ -27,7 +27,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import javafx.beans.property.StringProperty;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -43,13 +43,6 @@ import org.mockito.Mockito;
 public class MapViewNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(MapViewNGTest.class.getName());
-
-
-
-    public MapViewNGTest() {
-
-
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {

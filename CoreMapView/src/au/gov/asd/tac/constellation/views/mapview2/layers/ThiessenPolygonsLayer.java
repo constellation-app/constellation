@@ -19,8 +19,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
-import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
-import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.IntersectionNode;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import java.util.ArrayList;
@@ -152,16 +150,18 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
     private void calculateBisectors() {
         bisectorLines.clear();
 
-        // Loop through markers
-        for (int i = 0; i < nodesOnScreen.keySet().toArray().length; i++) {
-            final Integer id = (Integer) nodesOnScreen.keySet().toArray()[i];
-            // Loop through markers for marker
-            for (int j = i + 1; j < nodesOnScreen.keySet().toArray().length; j++) {
+        final Object[] keyArray = nodesOnScreen.keySet().toArray();
 
-                final Integer id2 = (Integer) nodesOnScreen.keySet().toArray()[j];
+        // Loop through markers
+        for (int i = 0; i < keyArray.length; i++) {
+            final Integer id = (Integer) keyArray[i];
+            // Loop through markers for marker
+            for (int j = i + 1; j < keyArray.length; j++) {
+
+                final Integer id2 = (Integer) keyArray[j];
 
                 // Create the pair keys
-                String idPair = id + SeparatorConstants.COMMA + id2;
+                final String idPair = id + SeparatorConstants.COMMA + id2;
 
                 // Get the 2 markers we are bisecting
                 final AbstractMarker node1 = nodesOnScreen.get(id);
@@ -190,7 +190,7 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 final Vec3 lineEnd = new Vec3(-b / reciprocal, 0);
 
                 // Get length of the line
-                double distance = Vec3.getDistance(lineStart, lineEnd);
+                final double distance = Vec3.getDistance(lineStart, lineEnd);
 
                 // Get normalized direction vector of the line
                 final Vec3 directVect = new Vec3((lineEnd.getX() - lineStart.getX()) / distance, (lineEnd.getY() - lineStart.getY()) / distance);

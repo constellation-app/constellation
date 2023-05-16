@@ -191,7 +191,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                 CompletableFuture.runAsync(() -> {
                     try {
                         PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(self)).executeNow(graph);
-                    } catch (final PluginException | InterruptedException e) {
+                    } catch (final PluginException e) {
+                        LOGGER.log(Level.SEVERE, "Exception thrown: {0}", e.getMessage());
+                    } catch (final InterruptedException e) {
                         LOGGER.log(Level.SEVERE, "Exception thrown: {0}", e.getMessage());
                         Thread.currentThread().interrupt();
                     }

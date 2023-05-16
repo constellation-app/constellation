@@ -57,10 +57,10 @@ public class InfoOverlay extends AbstractOverlay {
      * @param y
      */
     public void updateLocation(final double x, final double y) {
-        double lon = MarkerUtilities.xToLong(x, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        double lat = MarkerUtilities.yToLat(y + LOCATION_Y_OFFSET, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final double lon = MarkerUtilities.xToLong(x, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        final double lat = MarkerUtilities.yToLat(y + LOCATION_Y_OFFSET, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
 
-        DecimalFormat df = new DecimalFormat("#.###");
+        final DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);
 
         lonText.setText(df.format(lon) + "°");

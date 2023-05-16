@@ -71,19 +71,15 @@ public class PolygonMarker extends AbstractMarker {
     public Line addNewLine(final double prevLineEndX, final double prevLineEndY) {
         // If current line is null it mean the first line is being drawn
         // Else finish off the current line and add it to the UI
-        if (currentLine == null) {
-            currentLine = new Line();
-            currentLine.setStartX(prevLineEndX);
-            currentLine.setStartY(prevLineEndY);
-            setEnd(prevLineEndX, prevLineEndY);
-        } else {
+        if (currentLine != null) {
             setEnd(prevLineEndX, prevLineEndY);
             polygonLineUI.add(currentLine);
-            currentLine = new Line();
-            currentLine.setStartX(prevLineEndX);
-            currentLine.setStartY(prevLineEndY);
-            setEnd(prevLineEndX, prevLineEndY);
         }
+
+        currentLine = new Line();
+        currentLine.setStartX(prevLineEndX);
+        currentLine.setStartY(prevLineEndY);
+        setEnd(prevLineEndX, prevLineEndY);
         currentLine.setStroke(Color.BLACK);
         return currentLine;
     }
@@ -114,10 +110,9 @@ public class PolygonMarker extends AbstractMarker {
             for (int i = 0; i < polygonLineUI.size(); i++) {
                 if (i == 0) {
                     path = "M" + polygonLineUI.get(i).getStartX() + SeparatorConstants.COMMA + polygonLineUI.get(i).getStartY();
-                    path += "L" + polygonLineUI.get(i).getEndX() + SeparatorConstants.COMMA + polygonLineUI.get(i).getEndY();
-                } else {
-                    path += "L" + polygonLineUI.get(i).getEndX() + SeparatorConstants.COMMA + polygonLineUI.get(i).getEndY();
                 }
+
+                path += "L" + polygonLineUI.get(i).getEndX() + SeparatorConstants.COMMA + polygonLineUI.get(i).getEndY();
             }
 
             // Connect polygon mmarker back to the start to complete the shape

@@ -47,9 +47,6 @@ public class LocationPathsLayerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(LocationPathsLayerNGTest.class.getName());
 
-    public LocationPathsLayerNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {

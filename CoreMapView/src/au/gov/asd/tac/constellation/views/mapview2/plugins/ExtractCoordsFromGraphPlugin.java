@@ -42,7 +42,7 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
-@NbBundle.Messages("ExtractCoordsFromGraphPlugin=Extracts geographic coordinates from the graph")
+@NbBundle.Messages("ExtractCoordsFromGraphPlugin=Extracts Coordinates from Graph")
 public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
     private static final Logger LOGGER = Logger.getLogger(ExtractCoordsFromGraphPlugin.class.getName());
 
@@ -82,150 +82,132 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
             mapViewTopComponent.getMapViewPane().getMap().clearQueriedMarkers();
 
-            try {
-                for (final GraphElementType elementType : elementTypes) {
-                    // Ids for all attributes needed from a single vertext of a graph
-                    int lonID = GraphConstants.NOT_FOUND;
-                    int latID = GraphConstants.NOT_FOUND;
-                    int colourID = GraphConstants.NOT_FOUND;
-                    int blazeID = GraphConstants.NOT_FOUND;
-                    int overlayID = GraphConstants.NOT_FOUND;
-                    int labelAttrID = GraphConstants.NOT_FOUND;
-                    int identifierID = GraphConstants.NOT_FOUND;
+            for (final GraphElementType elementType : elementTypes) {
+                // Ids for all attributes needed from a single vertext of a graph
+                int lonID = GraphConstants.NOT_FOUND;
+                int latID = GraphConstants.NOT_FOUND;
+                int colourID = GraphConstants.NOT_FOUND;
+                int blazeID = GraphConstants.NOT_FOUND;
+                int overlayID = GraphConstants.NOT_FOUND;
+                int labelAttrID = GraphConstants.NOT_FOUND;
+                int identifierID = GraphConstants.NOT_FOUND;
 
-                    int elementCount;
+                final int elementCount;
 
-                    switch (elementType) {
-                        case VERTEX:
-                            // Get IDs
-                            lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
-                            latID = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
-                            colourID = VisualConcept.VertexAttribute.COLOR.get(graph);
-                            blazeID = VisualConcept.VertexAttribute.BLAZE.get(graph);
-                            overlayID = VisualConcept.VertexAttribute.OVERLAY_COLOR.get(graph);
-                            labelAttrID = VisualConcept.VertexAttribute.LABEL.get(graph);
-                            identifierID = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
-                            elementCount = graph.getVertexCount();
-                            break;
-                        case TRANSACTION:
-                            lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
-                            latID = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
-                            elementCount = graph.getTransactionCount();
-                            break;
-                        default:
-                            continue;
-                    }
+                switch (elementType) {
+                    case VERTEX:
+                        // Get IDs
+                        lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
+                        latID = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
+                        colourID = VisualConcept.VertexAttribute.COLOR.get(graph);
+                        blazeID = VisualConcept.VertexAttribute.BLAZE.get(graph);
+                        overlayID = VisualConcept.VertexAttribute.OVERLAY_COLOR.get(graph);
+                        labelAttrID = VisualConcept.VertexAttribute.LABEL.get(graph);
+                        identifierID = VisualConcept.VertexAttribute.IDENTIFIER.get(graph);
+                        elementCount = graph.getVertexCount();
+                        break;
+                    case TRANSACTION:
+                        lonID = SpatialConcept.TransactionAttribute.LONGITUDE.get(graph);
+                        latID = SpatialConcept.TransactionAttribute.LATITUDE.get(graph);
+                        elementCount = graph.getTransactionCount();
+                        break;
+                    default:
+                        continue;
+                }
 
-                    // Loop though every graph element
-                    for (int elementPos = 0; elementPos < elementCount; ++elementPos) {
-                        int elementID = -99;
+                // Loop though every graph element
+                for (int elementPos = 0; elementPos < elementCount; elementPos++) {
+                    final int elementID = elementType == GraphElementType.VERTEX ? graph.getVertex(elementPos) : graph.getTransaction(elementPos);
 
-                        switch (elementType) {
-                            case VERTEX:
-                                elementID = graph.getVertex(elementPos);
+                    // For all the vertices
+                    if (lonID != GraphConstants.NOT_FOUND && latID != GraphConstants.NOT_FOUND && elementType == GraphElementType.VERTEX) {
+                        // Get lattitude and longitude
+                        final Float elementLat = graph.getObjectValue(latID, elementID);
+                        final Float elementLon = graph.getObjectValue(lonID, elementID);
 
-                                break;
-                            case TRANSACTION:
-                                elementID = graph.getTransaction(elementPos);
-                                break;
-                            default:
-                                break;
+                        // Get the nodes colour
+                        final String elementColour = graph.getStringValue(colourID, elementID);
+
+                        String blazeColour = null;
+                        String overlayColour = null;
+                        String labelAttr = null;
+                        String identAttr = null;
+
+                        // Get other ccolous if they are available
+                        if (blazeID != GraphConstants.NOT_FOUND) {
+                            blazeColour = graph.getStringValue(blazeID, elementID);
                         }
 
-                        // For all the vertices
-                        if (lonID != GraphConstants.NOT_FOUND && latID != GraphConstants.NOT_FOUND && elementType == GraphElementType.VERTEX && elementID != -99) {
-                            // Get lattidue and longitude
-                            final float elementLat = graph.getObjectValue(latID, elementID);
-                            final float elementLon = graph.getObjectValue(lonID, elementID);
+                        if (overlayID != GraphConstants.NOT_FOUND) {
+                            overlayColour = graph.getStringValue(overlayID, elementID);
+                        }
 
-                            // Get the nodes colour
-                            final String elementColour = graph.getStringValue(colourID, elementID);
+                        // Get label text if they are available
+                        if (labelAttrID != GraphConstants.NOT_FOUND) {
+                            labelAttr = graph.getStringValue(labelAttrID, elementID);
+                        }
 
-                            String blazeColour = null;
-                            String overlayColour = null;
-                            String labelAttr = null;
-                            String identAttr = null;
+                        if (identifierID != GraphConstants.NOT_FOUND) {
+                            identAttr = graph.getStringValue(identifierID, elementID);
+                        }
 
-                            // Get other ccolous if they are available
-                            if (blazeID != GraphConstants.NOT_FOUND) {
-                                blazeColour = graph.getStringValue(blazeID, elementID);
+                        // Generate a key from the vertex coordinate
+                        final String coordinateKey = (double) elementLat + "," + (double) elementLon;
+
+                        // If another vertext of the same location hasn't been queried yet
+                        if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
+                            // Create a new point marker and add it to the map
+                            final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour); //244
+                            mapViewTopComponent.addMarker(coordinateKey, p);
+
+                            // Set colours and labels if they are available
+                            if (blazeColour != null) {
+                                p.setBlazeColour(blazeColour);
                             }
 
-                            if (overlayID != GraphConstants.NOT_FOUND) {
-                                overlayColour = graph.getStringValue(overlayID, elementID);
+                            if (overlayColour != null) {
+                                p.setOverlayColour(overlayColour);
                             }
 
-                            // Get label text if they are available
-                            if (labelAttrID != GraphConstants.NOT_FOUND) {
-                                labelAttr = graph.getStringValue(labelAttrID, elementID);
+                            if (labelAttr != null) {
+                                p.setLabelAttr(labelAttr);
                             }
 
-                            if (identifierID != GraphConstants.NOT_FOUND) {
-                                identAttr = graph.getStringValue(identifierID, elementID);
+                            if (identAttr != null) {
+                                p.setIdentAttr(identAttr);
                             }
 
-                            // Generate a key from the vertex coordinate
-                            final String coordinateKey = (double) elementLat + "," + (double) elementLon;
+                        } else {
 
-                            // If another vertext of the same location hasn't been queried yet
-                            if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
-                                // Create a new point marker and add it to the map
-                                final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour); //244
-                                mapViewTopComponent.addMarker(coordinateKey, p);
+                            if (blazeColour != null) {
+                                ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setBlazeColour(blazeColour);
 
-                                // Set colours and labels if they are available
-                                if (blazeColour != null) {
-                                    p.setBlazeColour(blazeColour);
-                                }
+                            }
 
-                                if (overlayColour != null) {
-                                    p.setOverlayColour(overlayColour);
-                                }
+                            if (overlayColour != null) {
 
-                                if (labelAttr != null) {
-                                    p.setLabelAttr(labelAttr);
-                                }
+                                ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setOverlayColour(overlayColour);
 
-                                if (identAttr != null) {
-                                    p.setIdentAttr(identAttr);
-                                }
+                            }
 
+                            if (labelAttr != null) {
+                                ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setLabelAttr(labelAttr);
+                            }
 
-                            } else {
+                            if (identAttr != null) {
+                                ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setIdentAttr(identAttr);
+                            }
 
-                                if (blazeColour != null) {
-                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setBlazeColour(blazeColour);
-
-                                }
-
-                                if (overlayColour != null) {
-
-                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setOverlayColour(overlayColour);
-
-                                }
-
-                                if (labelAttr != null) {
-                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setLabelAttr(labelAttr);
-                                }
-
-                                if (identAttr != null) {
-                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setIdentAttr(identAttr);
-                                }
-
-                                if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getConnectedNodeIdList().get(0) != elementID) {
-                                    mapViewTopComponent.getAllMarkers().get(coordinateKey).addNodeID(elementID);
-                                }
-
+                            if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getConnectedNodeIdList().get(0) != elementID) {
+                                mapViewTopComponent.getAllMarkers().get(coordinateKey).addNodeID(elementID);
                             }
 
                         }
 
                     }
-
 
                 }
-            } catch (final Exception e) {
-                LOGGER.log(Level.SEVERE, e.getMessage());
+
             }
 
         }

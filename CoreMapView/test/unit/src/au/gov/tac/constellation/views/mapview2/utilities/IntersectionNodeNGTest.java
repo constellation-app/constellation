@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.IntersectionNode;
 import java.util.ArrayList;
 import java.util.List;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -31,10 +31,6 @@ import org.testng.annotations.Test;
  * @author altair1673
  */
 public class IntersectionNodeNGTest {
-
-    public IntersectionNodeNGTest() {
-    }
-
     @BeforeClass
     public static void setUpClass() throws Exception {
     }

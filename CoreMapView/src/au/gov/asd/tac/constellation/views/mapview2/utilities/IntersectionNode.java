@@ -81,12 +81,7 @@ public class IntersectionNode {
      * neighbour of
      */
     public void addConnectedPoint(final IntersectionNode otherNode) {
-
-        if (otherNode == null) {
-            return;
-        }
-
-        if (otherNode.getKey().equals(key) || connectedPointIds.contains(key)) {
+        if (otherNode == null || otherNode.getKey().equals(key) || connectedPointIds.contains(key)) {
             return;
         }
 

@@ -200,7 +200,7 @@ public class PointMarker extends AbstractMarker {
      */
     public void setBlazeColour(final String blaze) {
         // Get the blaze colure in the correct format
-        final String blazeCol = blaze.split(";")[1];
+        final String blazeCol = blaze.split(SeparatorConstants.SEMICOLON)[1];
 
         if (blazeColourCount == 0) {
             blazeColour = blazeCol;
