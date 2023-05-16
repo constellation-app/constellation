@@ -38,7 +38,6 @@ public class PointMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(PointMarkerNGTest.class.getName());
 
-
     @BeforeClass
     public static void setUpClass() throws Exception {
         if (!FxToolkit.isFXApplicationThreadRunning()) {

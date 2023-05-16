@@ -77,7 +77,6 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         if (graph != null) {
-
             final GraphElementType[] elementTypes = new GraphElementType[]{GraphElementType.VERTEX, GraphElementType.TRANSACTION};
 
             mapViewTopComponent.getMapViewPane().getMap().clearQueriedMarkers();
@@ -211,7 +210,6 @@ public class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
             }
 
         }
-
     }
 
 }

@@ -107,7 +107,7 @@ public class SelectOnGraphPluginNGTest {
     public void testGetName() {
         System.out.println("getName");
         final SelectOnGraphPlugin instance = new SelectOnGraphPlugin();
-        final String expResult = "SelectOnGraphPlugin2";
+        final String expResult = "Map View: Select on Graph";
         final String result = instance.getName();
         assertEquals(result, expResult);
     }
