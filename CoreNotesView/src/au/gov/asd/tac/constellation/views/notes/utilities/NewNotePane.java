@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -69,6 +71,8 @@ public class NewNotePane {
     private final TextArea contentField;
     private final TextField titleField = new TextField();
     private final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
+    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
+
 
     private final TabPane tabPane;
     private final TextFlow previewTextFlow;
@@ -211,6 +215,16 @@ public class NewNotePane {
 
             final Scene s = new Scene(dialogPane);
             s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+
+            /*if (getClass() == null) {
+                LOGGER.log(Level.INFO, "get class is null");
+            }*/
+            /*.getResource("resources/notes-view.css").toExternalForm()*/
+
+            if (getClass().getResource("resources/notes-view.css") == null) {
+                LOGGER.log(Level.INFO, "get resouc is null");
+            }
+
             s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
 
             stage.setScene(s);

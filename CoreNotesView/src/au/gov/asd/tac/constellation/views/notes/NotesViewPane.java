@@ -52,6 +52,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -604,16 +606,28 @@ public class NotesViewPane extends BorderPane {
         }
         
         Platform.runLater(() -> {
-            notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
+            final BooleanProperty foundNoteInEdit = new SimpleBooleanProperty(false);
 
-            if (CollectionUtils.isNotEmpty(notesToRender)) {
-                notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
-                notesToRender.forEach(note -> createNote(note));
+            for (int i = 0; i < notesToRender.size(); i++) {
+                if (notesToRender.get(i).getEditMode()) {
+                    foundNoteInEdit.set(true);
+                    break;
+                }
             }
-            notesListScrollPane.applyCss();
-            notesListScrollPane.layout();
-            // Keeps the scroll bar at the bottom?
-            notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
+
+
+            if (!foundNoteInEdit.get()) {
+                notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
+
+                if (CollectionUtils.isNotEmpty(notesToRender)) {
+                    notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
+                    notesToRender.forEach(note -> createNote(note));
+                }
+                notesListScrollPane.applyCss();
+                notesListScrollPane.layout();
+                // Keeps the scroll bar at the bottom?
+                notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
+            }
         });
     }
 
@@ -1008,11 +1022,12 @@ public class NotesViewPane extends BorderPane {
 
         // Edit button activates editable text boxs for title and label
         editTextButton.setOnAction(event -> {
+            LOGGER.log(Level.SEVERE, "Removed content text flow");
             noteButtons.getChildren().removeAll(showMoreButton, gap, editTextButton, deleteButton);
             noteButtons.getChildren().addAll(colourPicker, gap2, editScreenButtons);
             noteButtons.setSpacing(EDIT_SPACING);
 
-            noteInformation.getChildren().removeAll(contentTextFlow);
+            noteInformation.getChildren().clear();
             titleText.setText(titleLabel.getText());
             contentTextArea.setText(contentLabel.getText());
             newNote.setNoteTitle(titleLabel.getText());
@@ -1034,7 +1049,8 @@ public class NotesViewPane extends BorderPane {
             contentTextArea.setText(contentLabel.getText());
 
             noteInformation.getChildren().removeAll(titleText, contentTextArea);
-            noteInformation.getChildren().addAll(contentTextFlow);
+
+            noteInformation.getChildren().add(contentTextFlow);
 
             newNote.setEditMode(false);
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE
@@ -1048,14 +1064,14 @@ public class NotesViewPane extends BorderPane {
             if (StringUtils.isBlank(titleText.getText()) || StringUtils.isBlank(contentTextArea.getText())) {
                 JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
             } else {
+                newNote.setNoteTitle(titleText.getText());
+                newNote.setNoteContent(contentTextArea.getText());
                 contentTextFlow = null;
 
                 final MarkdownTree mdTree = new MarkdownTree(titleText.getText() + "\n\n" + contentTextArea.getText());
                 mdTree.parse();
                 contentTextFlow = mdTree.getRenderedText();
 
-                newNote.setNoteTitle(titleText.getText());
-                newNote.setNoteContent(contentTextArea.getText());
                 previouseColourMap.replace(newNote.getID(), newNote.getNodeColour());
 
                 noteInformation.getChildren().removeAll(titleText, contentTextArea);
@@ -1068,7 +1084,7 @@ public class NotesViewPane extends BorderPane {
                 noteInformation.getChildren().addAll(contentTextFlow);
 
                 newNote.setEditMode(false);
-
+                updateNotesUI();
             }
         });
     
