@@ -562,7 +562,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
             distanceNearest2 = Double.MAX_VALUE;
 
             while (!neighboursFound) {
-                //findCornerNeighbours(nearest1, parent1, grandParent1);
                 // If the first neighbour is empty
                 if (nearest1.getRelevantMarkers().isEmpty()) {
                     // Loop through all its connected points
@@ -588,7 +587,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     }
                 }
 
-                //findCornerNeighbours(nearest2, parent2, grandParent2);
                 // Same logic as above just with the other neighbour if it is a corner
                 if (nearest2.getRelevantMarkers().isEmpty()) {
                     for (final IntersectionNode neighbour : parent2.getConnectedPoints()) {

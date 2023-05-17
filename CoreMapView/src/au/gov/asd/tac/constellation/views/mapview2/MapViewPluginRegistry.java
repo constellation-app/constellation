@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2;
 
-import au.gov.asd.tac.constellation.views.mapview2.plugins.ExtractCoordsFromGraphPlugin;
 import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
 
 
@@ -31,6 +30,5 @@ public class MapViewPluginRegistry {
 
     }
 
-    public static final String EXTRACT_COORDS_FROM_GRAPH = ExtractCoordsFromGraphPlugin.class.getName();
     public static final String SELECT_ON_GRAPH = SelectOnGraphPlugin.class.getName();
 }

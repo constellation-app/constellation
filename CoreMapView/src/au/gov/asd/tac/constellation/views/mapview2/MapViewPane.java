@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
@@ -203,7 +204,7 @@ public class MapViewPane extends BorderPane {
         layersDropDown.setMaxWidth(85);
 
         // Event handler for selecting different layers to show
-        layersDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> layersDropDown.getItems().forEach(item -> addLayer(item, layerId)));
+        layersDropDown.getCheckModel().getCheckedItems().addListener((final Observable c) -> layersDropDown.getItems().forEach(item -> addLayer(item, layerId)));
 
         // Add overlays to toolbar
         overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY));
@@ -213,7 +214,7 @@ public class MapViewPane extends BorderPane {
         overlaysDropDown.setMaxWidth(95);
 
         // Overlay event handler
-        overlaysDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
+        overlaysDropDown.getCheckModel().getCheckedItems().addListener((final Observable c) -> {
             overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
             if (overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY) && !toolBarGridPane.getChildren().contains(latLabel)) {
                 toolBarGridPane.add(latLabel, 0, 1);
@@ -259,15 +260,9 @@ public class MapViewPane extends BorderPane {
         markerDropDown.setMaxWidth(90);
 
         // Event handler for hiding/showing markers
-        markerDropDown.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> markerDropDown.getItems().forEach(item -> {
-            if (markerDropDown.getCheckModel().isChecked(item)) {
-                    mapView.updateShowingMarkers(getMarkerTypeFromString(item), true);
-            } else {
-                mapView.updateShowingMarkers(getMarkerTypeFromString(item), false);
-                }
-
-        })
-        );
+        markerDropDown.getCheckModel().getCheckedItems().addListener((final Observable c) -> markerDropDown.getItems().forEach(item
+                -> mapView.updateShowingMarkers(getMarkerTypeFromString(item), markerDropDown.getCheckModel().isChecked(item))
+        ));
 
         // Marker colour mneu setup and event handling
         colourDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(DEFAULT_COLOURS, USE_COLOUR_ATTR, USE_OVERLAY_COL, USE_BLAZE_COL)));

@@ -949,11 +949,7 @@ public class MapView extends ScrollPane {
             m.getMarker().setScaleY(m.getMarker().getScaleY() * scale);
 
             // Scale markers up and down based on whether or not the map is being zoomed in or out
-            if (scale < 1) {
-                m.getMarker().setLayoutY(m.getMarker().getLayoutY() + (m.getMarker().getScaleY() * 10));
-            } else {
-                m.getMarker().setLayoutY(m.getMarker().getLayoutY() - (m.getMarker().getScaleY() * 10));
-            }
+            m.getMarker().setLayoutY(scale < 1 ? (m.getMarker().getLayoutY() + (m.getMarker().getScaleY() * 10)) : (m.getMarker().getLayoutY() - (m.getMarker().getScaleY() * 10)));
             drawMarker(m);
         }
     }
@@ -1451,12 +1447,12 @@ public class MapView extends ScrollPane {
             stage.setHeight(height);
 
             if (!stage.isShowing()) {
-            final List<Screen> screens = Screen.getScreensForRectangle(this.getScene().getWindow().getX(), this.getScene().getWindow().getY(), this.getScene().getWindow().widthProperty().get(), this.getScene().getWindow().heightProperty().get());
+                final List<Screen> screens = Screen.getScreensForRectangle(this.getScene().getWindow().getX(), this.getScene().getWindow().getY(), this.getScene().getWindow().widthProperty().get(), this.getScene().getWindow().heightProperty().get());
 
-            stage.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - width / 2);
-            stage.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - height / 2);
+                stage.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - width / 2);
+                stage.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - height / 2);
 
-            stage.show();
+                stage.show();
                 showingZoomToLocationPane = true;
             }
         }
