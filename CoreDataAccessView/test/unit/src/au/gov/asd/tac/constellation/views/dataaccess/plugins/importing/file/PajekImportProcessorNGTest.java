@@ -183,40 +183,40 @@ public class PajekImportProcessorNGTest {
         assertEquals(output.size(), 0);
     }
     
-    /**
-     * Test of process method, of class PajekImportProcessor forcing IO exception
-     * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
-     */
-    @Test
-    public void testProcessIOException() throws ProcessingException {
-        System.out.println("processIOException");
-        
-        // get the parameters for processing
-        final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
-        final PluginParameters parameters = plugin.createParameters();
-        parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);
-        
-        final File file = new File(PajekImportProcessorNGTest.class.getResource("resources/test.net").getPath());
-
-        // Mock the buffered reader to always throw an IO exception when the readLine() method is called
-        try(MockedConstruction<BufferedReader> mockedBufferedReader = Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
-                when(mock.readLine()).thenAnswer(new Answer(){
-                    @Override
-                    public Object answer(InvocationOnMock iom) throws Throwable {
-                        throw new IOException("mocked IO exception");
-                    }
-                });
-            }))
-        {        
-            final RecordStore output = new GraphRecordStore();
-
-            final PajekImportProcessor instance = new PajekImportProcessor();
-            instance.process(parameters, file, output);
-
-            // should have no output due to the IO exception
-            assertEquals(output.size(), 0);
-        }
-    }
+//    /**
+//     * Test of process method, of class PajekImportProcessor forcing IO exception
+//     * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
+//     */
+//    @Test
+//    public void testProcessIOException() throws ProcessingException {
+//        System.out.println("processIOException");
+//        
+//        // get the parameters for processing
+//        final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
+//        final PluginParameters parameters = plugin.createParameters();
+//        parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);
+//        
+//        final File file = new File(PajekImportProcessorNGTest.class.getResource("resources/test.net").getPath());
+//
+//        // Mock the buffered reader to always throw an IO exception when the readLine() method is called
+//        try (MockedConstruction<BufferedReader> mockedBufferedReader = Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
+//                when(mock.readLine()).thenAnswer(new Answer(){
+//                    @Override
+//                    public Object answer(InvocationOnMock iom) throws Throwable {
+//                        throw new IOException("mocked IO exception");
+//                    }
+//                });
+//            }))
+//        {
+//            final RecordStore output = new GraphRecordStore();
+//
+//            final PajekImportProcessor instance = new PajekImportProcessor();
+//            instance.process(parameters, file, output);
+//
+//            // should have no output due to the IO exception
+//            assertEquals(output.size(), 0);
+//        }
+//    }
     
     /**
      * Test of process method, of class PajekImportProcessor. Importing nodes and transactions

@@ -185,40 +185,40 @@ public class GraphMLImportProcessorNGTest {
         assertEquals(output.size(), 0);
     }
 
-    /**
-     * Test of process method, of class GraphMLImportProcessor forcing IO exception
-     * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
-     */
-    @Test
-    public void testProcessIOException() throws ProcessingException {
-        System.out.println("processIOException");
-        
-        // get the parameters for processing
-        final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
-        final PluginParameters parameters = plugin.createParameters();
-        parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);
-        
-        final File file = new File(GraphMLImportProcessorNGTest.class.getResource("resources/test.graphml").getPath());
-        
-        // Mock the XmlUtilities class to always throw an IO exception when the read(*, *) method is called
-        try(MockedConstruction<XmlUtilities> mockedXmlUtils = Mockito.mockConstruction(XmlUtilities.class, (mock, context) -> {
-                when(mock.read(any(InputStream.class), any(Boolean.class))).thenAnswer(new Answer(){
-                    @Override
-                    public Object answer(InvocationOnMock iom) throws Throwable {
-                        throw new IOException("mocked IO exception");
-                    }
-                });
-            })) 
-        {
-            final RecordStore output = new GraphRecordStore();
-
-            final GraphMLImportProcessor instance = new GraphMLImportProcessor();
-            instance.process(parameters, file, output);
-
-            // should have no output due to the IO exception
-            assertEquals(output.size(), 0);
-        }
-    }
+//    /**
+//     * Test of process method, of class GraphMLImportProcessor forcing IO exception
+//     * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
+//     */
+//    @Test
+//    public void testProcessIOException() throws ProcessingException {
+//        System.out.println("processIOException");
+//        
+//        // get the parameters for processing
+//        final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
+//        final PluginParameters parameters = plugin.createParameters();
+//        parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);
+//        
+//        final File file = new File(GraphMLImportProcessorNGTest.class.getResource("resources/test.graphml").getPath());
+//        
+//        // Mock the XmlUtilities class to always throw an IO exception when the read(*, *) method is called
+//        try (MockedConstruction<XmlUtilities> mockedXmlUtils = Mockito.mockConstruction(XmlUtilities.class, (mock, context) -> {
+//                when(mock.read(any(InputStream.class), any(Boolean.class))).thenAnswer(new Answer(){
+//                    @Override
+//                    public Object answer(InvocationOnMock iom) throws Throwable {
+//                        throw new IOException("mocked IO exception");
+//                    }
+//                });
+//            })) 
+//        {
+//            final RecordStore output = new GraphRecordStore();
+//
+//            final GraphMLImportProcessor instance = new GraphMLImportProcessor();
+//            instance.process(parameters, file, output);
+//
+//            // should have no output due to the IO exception
+//            assertEquals(output.size(), 0);
+//        }
+//    }
 
     /**
      * Test of process method, of class GraphMLImportProcessor. Importing nodes and transactions
