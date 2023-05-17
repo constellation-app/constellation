@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedConstruction;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
@@ -200,22 +201,23 @@ public class GraphMLImportProcessorNGTest {
         final File file = new File(GraphMLImportProcessorNGTest.class.getResource("resources/test.graphml").getPath());
         
         // Mock the XmlUtilities class to always throw an IO exception when the read(*, *) method is called
-        Mockito.mockConstruction(XmlUtilities.class, (mock, context) -> {
-            when(mock.read(any(InputStream.class), any(Boolean.class))).thenAnswer(new Answer(){
-                @Override
-                public Object answer(InvocationOnMock iom) throws Throwable {
-                    throw new IOException("mocked IO exception");
-                }
-            });
-        });
+        try(MockedConstruction<XmlUtilities> mockedXmlUtils = Mockito.mockConstruction(XmlUtilities.class, (mock, context) -> {
+                when(mock.read(any(InputStream.class), any(Boolean.class))).thenAnswer(new Answer(){
+                    @Override
+                    public Object answer(InvocationOnMock iom) throws Throwable {
+                        throw new IOException("mocked IO exception");
+                    }
+                });
+            })) 
+        {
+            final RecordStore output = new GraphRecordStore();
 
-        final RecordStore output = new GraphRecordStore();
-        
-        final GraphMLImportProcessor instance = new GraphMLImportProcessor();
-        instance.process(parameters, file, output);
-        
-        // should have no output due to the IO exception
-        assertEquals(output.size(), 0);
+            final GraphMLImportProcessor instance = new GraphMLImportProcessor();
+            instance.process(parameters, file, output);
+
+            // should have no output due to the IO exception
+            assertEquals(output.size(), 0);
+        }
     }
 
     /**
