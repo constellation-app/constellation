@@ -215,16 +215,6 @@ public class NewNotePane {
 
             final Scene s = new Scene(dialogPane);
             s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-
-            /*if (getClass() == null) {
-                LOGGER.log(Level.INFO, "get class is null");
-            }*/
-            /*.getResource("resources/notes-view.css").toExternalForm()*/
-
-            if (getClass().getResource("resources/notes-view.css") == null) {
-                LOGGER.log(Level.INFO, "get resouc is null");
-            }
-
             s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
 
             stage.setScene(s);

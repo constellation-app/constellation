@@ -615,7 +615,6 @@ public class NotesViewPane extends BorderPane {
                 }
             }
 
-
             if (!foundNoteInEdit.get()) {
                 notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
 
@@ -1049,6 +1048,10 @@ public class NotesViewPane extends BorderPane {
             contentTextArea.setText(contentLabel.getText());
 
             noteInformation.getChildren().removeAll(titleText, contentTextArea);
+
+            final MarkdownTree mdTree = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
+            mdTree.parse();
+            contentTextFlow = mdTree.getRenderedText();
 
             noteInformation.getChildren().add(contentTextFlow);
 
