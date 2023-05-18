@@ -78,6 +78,7 @@ public class ErrorReportSessionData {
                     ere.incrementOccurrences();
                     ere.setExpanded(true);
                     ere.setHeading(entry.getHeading());
+                    ere.setSummaryHeading(entry.getSummaryHeading());
                     foundMatch = true;
                     if (i > 0) {
                         // move updated entry to the top

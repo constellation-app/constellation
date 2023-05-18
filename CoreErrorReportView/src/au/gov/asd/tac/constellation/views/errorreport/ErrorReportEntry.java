@@ -88,6 +88,10 @@ public class ErrorReportEntry {
         return summaryHeading;
     }
 
+    public void setSummaryHeading(final String revisedSummary) {
+        summaryHeading = revisedSummary;
+    }
+    
     public void incrementOccurrences() {
         occurrences++;
         lastDate = new Date();
@@ -168,11 +172,14 @@ public class ErrorReportEntry {
     public String toString() {
         return "[ErrorReportEntry:[id=" + entryId + "]"
                 + ", [header=" + heading + "]"
+                + ", [summaryHeading=" + summaryHeading + "]"
                 + ", [errorLevel=" + errorLevel.getName() + "]"
+                + ", [errorData_length=" + errorData.length() + "]"
                 + ", [occurrences=" + occurrences + "]"
                 + ", [lastDate=" + lastDate + "]"
                 + ", [lastPopupDate=" + lastPopupDate + "]"
                 + ", [preventRepeatedPopups=" + preventRepeatedPopups + "]"
+                + ", [expanded=" + expanded + "]"
                 + ", [dialog=" + dialog + "]"
                 + "]";
     }

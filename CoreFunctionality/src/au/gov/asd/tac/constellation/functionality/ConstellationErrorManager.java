@@ -48,12 +48,15 @@ public class ConstellationErrorManager extends Handler {
             final int prevDotPos = errorSummary.substring(0, (firstColon != -1 ? firstColon : errorSummary.length())).lastIndexOf(".");
             final String exceptionType = errorSummary.substring(prevDotPos + 1, (firstColon != -1 ? firstColon : errorSummary.length()));
             String recordHeader = "".equals(extractedMessage) ? exceptionType : extractedMessage;
-            String revisedSummary = errorSummary.substring(0, firstColon + 1) + errorSummary.substring(firstColon + 1 + (autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG.length() : 0));
+            String revisedSummary = errorSummary.substring(0, firstColon + 1) 
+                                    + errorSummary.substring(firstColon + 1 + (autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG.length() : 0));
             if (!revisedSummary.endsWith(SeparatorConstants.NEWLINE)) {
                 revisedSummary += SeparatorConstants.NEWLINE;
             }
             if (elems == null || elems.length == 0) {
-                errorMsg.append(" >> No stacktrace available for error:").append(SeparatorConstants.NEWLINE).append(" >> ").append(recordHeader);
+                errorMsg.append(" >> No stacktrace available for error:")
+                        .append(SeparatorConstants.NEWLINE).append(" >> ")
+                        .append(recordHeader);
             } else {
                 for (int i = 0; i < elems.length; i++) {
                     errorMsg.append(elems[i].toString())
@@ -64,8 +67,9 @@ public class ConstellationErrorManager extends Handler {
                 recordHeader += SeparatorConstants.NEWLINE;
             }
 
-            final ErrorReportEntry repEntry = new ErrorReportEntry(errLevel, recordHeader, revisedSummary, errorMsg.toString(), 
-                                                                   ErrorReportSessionData.getNextEntryId());
+            final ErrorReportEntry repEntry = new ErrorReportEntry( errLevel, recordHeader, 
+                                                                    revisedSummary, errorMsg.toString(), 
+                                                                    ErrorReportSessionData.getNextEntryId());
             if (autoBlockPopup) {
                 repEntry.setBlockRepeatedPopups(true);
                 repEntry.setLastPopupDate(new Date());
