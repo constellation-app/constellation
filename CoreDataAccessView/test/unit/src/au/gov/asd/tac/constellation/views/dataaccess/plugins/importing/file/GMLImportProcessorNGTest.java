@@ -19,11 +19,13 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.when;
 import org.mockito.invocation.InvocationOnMock;
@@ -166,57 +168,58 @@ public class GMLImportProcessorNGTest {
     public void testProcessFileNotFoundException() throws ProcessingException {
         System.out.println("processFileNotFoundException");
         
-        // get the parameters for processing
-        final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
-        final PluginParameters parameters = plugin.createParameters();
-        parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);
-        
-        // use an invalid file name to generate FileNotFound exception
-        final File file = new File("xYz");
-        
-        final RecordStore output = new GraphRecordStore();
-        
-        final GMLImportProcessor instance = new GMLImportProcessor();
-        instance.process(parameters, file, output);
-        
-        // should have no output due to the File Not Found exception
-        assertEquals(output.size(), 0);
+        // Mock the NotifyDisplayer to prevent dialogs from being displayed on screen
+        try (MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class)) {
+            // get the parameters for processing
+            final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
+            final PluginParameters parameters = plugin.createParameters();
+            parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);
+
+            // use an invalid file name to generate FileNotFound exception
+            final File file = new File("xYz");
+            final RecordStore output = new GraphRecordStore();
+            final GMLImportProcessor instance = new GMLImportProcessor();
+            instance.process(parameters, file, output);
+
+            // should have no output due to the File Not Found exception
+            assertEquals(output.size(), 0);
+        }
     }
     
-//    /**
-//     * Test of process method, of class GMLImportProcessor forcing IO exception
-//     * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
-//     */
-//    @Test
-//    public void testProcessIOException() throws ProcessingException, IOException {
-//        System.out.println("processIOException");
-//        
-//        // get the parameters for processing
-//        final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
-//        final PluginParameters parameters = plugin.createParameters();
-//        parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);
-//        
-//        final File file = new File(GMLImportProcessorNGTest.class.getResource("resources/test.gml").getPath());
-//        
-//        // Mock the buffered reader to always throw an IO exception when the readLine() method is called
-//        try (MockedConstruction<BufferedReader> mockedBufferedReader = Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
-//                when(mock.readLine()).thenAnswer(new Answer(){
-//                    @Override
-//                    public Object answer(InvocationOnMock iom) throws Throwable {
-//                        throw new IOException("mocked IO exception");
-//                    }
-//                });
-//            }))
-//        {
-//            final RecordStore output = new GraphRecordStore();
-//
-//            final GMLImportProcessor instance = new GMLImportProcessor();
-//            instance.process(parameters, file, output);
-//
-//            // should have no output due to the IO exception
-//            assertEquals(output.size(), 0);
-//        }
-//    }
+    /**
+     * Test of process method, of class GMLImportProcessor forcing IO exception
+     * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
+     */
+    @Test
+    public void testProcessIOException() throws ProcessingException, IOException {
+        System.out.println("processIOException");
+        
+        // Mock the NotifyDisplayer to prevent dialogs from being displayed on screen
+        // Mock the buffered reader to always throw an IO exception when the readLine() method is called
+        try (MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class);
+                MockedConstruction<BufferedReader> mockedBufferedReader = Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
+                    when(mock.readLine()).thenAnswer(new Answer(){
+                        @Override
+                        public Object answer(InvocationOnMock iom) throws Throwable {
+                            throw new IOException("mocked IO exception");
+                        }
+                    });
+                })                
+            ) {
+            // get the parameters for processing
+            final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
+            final PluginParameters parameters = plugin.createParameters();
+            parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);
+
+            final File file = new File(GMLImportProcessorNGTest.class.getResource("resources/test.gml").getPath());
+            final RecordStore output = new GraphRecordStore();
+            final GMLImportProcessor instance = new GMLImportProcessor();
+            instance.process(parameters, file, output);
+
+            // should have no output due to the IO exception
+            assertEquals(output.size(), 0);
+        }
+    }
 
     /**
      * Test of process method, of class GMLImportProcessor. Importing nodes and transactions
