@@ -170,17 +170,17 @@ public class ErrorReportEntry {
     
     @Override
     public String toString() {
-        return "[ErrorReportEntry:[id=" + entryId + "]"
-                + ", [header=" + heading + "]"
-                + ", [summaryHeading=" + summaryHeading + "]"
-                + ", [errorLevel=" + errorLevel.getName() + "]"
-                + ", [errorData_length=" + errorData.length() + "]"
-                + ", [occurrences=" + occurrences + "]"
-                + ", [lastDate=" + lastDate + "]"
-                + ", [lastPopupDate=" + lastPopupDate + "]"
-                + ", [preventRepeatedPopups=" + preventRepeatedPopups + "]"
-                + ", [expanded=" + expanded + "]"
-                + ", [dialog=" + dialog + "]"
+        return "[ErrorReportEntry:[id=" + getEntryId() + "]"
+                + ", [header=" + getHeading() + "]"
+                + ", [summaryHeading=" + getSummaryHeading() + "]"
+                + ", [errorLevel=" + getErrorLevel().getName() + "]"
+                + ", [errorData_length=" + getErrorData().length() + "]"
+                + ", [occurrences=" + getOccurrences() + "]"
+                + ", [lastDate=" + getLastDate() + "]"
+                + ", [lastPopupDate=" + getLastPopupDate() + "]"
+                + ", [preventRepeatedPopups=" + isBlockRepeatedPopups() + "]"
+                + ", [expanded=" + isExpanded() + "]"
+                + ", [dialog=" + getDialog() + "]"
                 + "]";
     }
 }

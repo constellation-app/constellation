@@ -134,16 +134,16 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
             final String errorMsg = "File " + filename + " not found";
             NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import Pajek File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            final Throwable fnfex = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
-            fnfex.setStackTrace(ex.getStackTrace());
-            LOGGER.log(Level.SEVERE, errorMsg, fnfex);
+            final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            fnfEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.SEVERE, errorMsg, fnfEx);
         } catch (final IOException ex) {
             final String errorMsg = "Error reading file " + filename;
             NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import Pajek File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            final Throwable ioex = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
-            ioex.setStackTrace(ex.getStackTrace());
-            LOGGER.log(Level.SEVERE, errorMsg, ioex);
+            final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            ioEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.SEVERE, errorMsg, ioEx);
         }
     }
 }

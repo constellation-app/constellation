@@ -169,7 +169,7 @@ public class GMLImportProcessorNGTest {
         System.out.println("processFileNotFoundException");
         
         // Mock the NotifyDisplayer to prevent dialogs from being displayed on screen
-        try (MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class)) {
+        try (final MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class)) {
             // get the parameters for processing
             final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
             final PluginParameters parameters = plugin.createParameters();
@@ -196,11 +196,11 @@ public class GMLImportProcessorNGTest {
         
         // Mock the NotifyDisplayer to prevent dialogs from being displayed on screen
         // Mock the buffered reader to always throw an IO exception when the readLine() method is called
-        try (MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class);
-                MockedConstruction<BufferedReader> mockedBufferedReader = Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
+        try (final MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class);
+                final MockedConstruction<BufferedReader> mockedBufferedReader = Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
                     when(mock.readLine()).thenAnswer(new Answer(){
                         @Override
-                        public Object answer(InvocationOnMock iom) throws Throwable {
+                        public Object answer(final InvocationOnMock iom) throws Throwable {
                             throw new IOException("mocked IO exception");
                         }
                     });

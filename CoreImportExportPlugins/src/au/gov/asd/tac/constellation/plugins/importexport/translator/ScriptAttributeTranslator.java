@@ -101,9 +101,9 @@ public class ScriptAttributeTranslator extends AttributeTranslator {
                 savedLanguage = null;
                 savedScript = null;
                 parameters.getParameters().get(SCRIPT_PARAMETER_ID).setStringValue(DEFAULT_SCRIPT);
-                final Throwable screx = new ScriptException(NotifyDisplayer.BLOCK_POPUP_FLAG + ex.getLocalizedMessage());
-                screx.setStackTrace(ex.getStackTrace());
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), screx);
+                final Throwable scrEx = new ScriptException(NotifyDisplayer.BLOCK_POPUP_FLAG + ex.getLocalizedMessage());
+                scrEx.setStackTrace(ex.getStackTrace());
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), scrEx);
                 NotifyDisplayer.display(ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                 return value;
             }

@@ -92,14 +92,14 @@ public final class AutosaveStartup implements Runnable {
 
                                             AutosaveUtilities.deleteAutosave(f);
                                         } catch (GraphParseException | IOException ex) {
-                                            final Throwable gpioex;
+                                            final Throwable gpioEx;
                                             if (ex instanceof IOException) {
-                                                gpioex = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR);
+                                                gpioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR);
                                             } else {
-                                                gpioex = new GraphParseException(NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR);
+                                                gpioEx = new GraphParseException(NotifyDisplayer.BLOCK_POPUP_FLAG + GRAPH_LOAD_ERROR);
                                             }
-                                            gpioex.setStackTrace(ex.getStackTrace());
-                                            LOGGER.log(Level.WARNING, GRAPH_LOAD_ERROR, gpioex);
+                                            gpioEx.setStackTrace(ex.getStackTrace());
+                                            LOGGER.log(Level.WARNING, GRAPH_LOAD_ERROR, gpioEx);
                                             NotifyDisplayer.display("Error loading graph: " + ex.getMessage(), NotifyDescriptor.ERROR_MESSAGE);
                                         }
                                     }
