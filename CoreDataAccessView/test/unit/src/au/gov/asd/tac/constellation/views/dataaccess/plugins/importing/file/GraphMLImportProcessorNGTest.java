@@ -20,10 +20,12 @@ import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.xml.XmlUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import static org.mockito.ArgumentMatchers.any;
 import org.mockito.MockedConstruction;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -197,14 +199,14 @@ public class GraphMLImportProcessorNGTest {
         // Mock the NotifyDisplayer to prevent dialogs from being displayed on screen
         // Mock the buffered reader to always throw an IO exception when the readLine() method is called
         try (MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class);
-                MockedConstruction<BufferedReader> mockedBufferedReader = Mockito.mockConstruction(BufferedReader.class, (mock, context) -> {
-                    when(mock.readLine()).thenAnswer(new Answer(){
+                MockedConstruction<XmlUtilities> mockedXmlUtils = Mockito.mockConstruction(XmlUtilities.class, (mock, context) -> {
+                    when(mock.read(any(InputStream.class), any(Boolean.class))).thenAnswer(new Answer(){
                         @Override
                         public Object answer(InvocationOnMock iom) throws Throwable {
                             throw new IOException("mocked IO exception");
                         }
                     });
-                })                
+                })
             ) {
             // get the parameters for processing
             final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
