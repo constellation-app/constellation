@@ -131,14 +131,14 @@ public class PajekImportProcessor implements GraphFileImportProcessor {
                 }
             }
         } catch (final FileNotFoundException ex) {
-            final String errorMsg = "File " + filename + " not found";
+            final String errorMsg = "File '" + filename + "' not found";
             NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import Pajek File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
             fnfEx.setStackTrace(ex.getStackTrace());
             LOGGER.log(Level.SEVERE, errorMsg, fnfEx);
         } catch (final IOException ex) {
-            final String errorMsg = "Error reading file " + filename;
+            final String errorMsg = "Error reading file '" + filename + "'";
             NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import Pajek File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
