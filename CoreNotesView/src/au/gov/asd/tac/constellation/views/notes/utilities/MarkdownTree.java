@@ -26,6 +26,7 @@ import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
@@ -143,7 +144,7 @@ public class MarkdownTree {
 
                     // If it does create a MarkdownNode of type normal contaning text from the currentIndex to before the list item number
                     if (digitMatcher.find()) {
-                        LOGGER.log(Level.SEVERE, "Digit pattern: " + digitMatcher.group());
+                        //LOGGER.log(Level.SEVERE, "Digit pattern: " + digitMatcher.group());
                         normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax - (digitMatcher.group().length() - 1)), -99);
 
                         // Else create a normal node with type with text up to the dot
@@ -562,7 +563,6 @@ public class MarkdownTree {
             // Add textNode to the last TextFlow in the list
             textFlowList.get(textFlowList.size() - 1).getChildren().add(textNodes.get(i).getText());
         }
-
 
         return renderedText;
     }

@@ -79,7 +79,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.TextFlow;
+import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Window;
 import javax.swing.JOptionPane;
@@ -106,7 +106,7 @@ public class NotesViewPane extends BorderPane {
      */
     private final Set<String> notesDateTimeCache;
 
-    private TextFlow contentTextFlow;
+    //private TextFlow contentTextFlow;
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
     private final CheckComboBox filterCheckComboBox;
@@ -729,9 +729,12 @@ public class NotesViewPane extends BorderPane {
 
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.parse();
+        newNote.setContentTextFlow(md.getRenderedText());
+        newNote.getContentTextFlow().setMinWidth(50);
 
-        contentTextFlow = md.getRenderedText();
-        contentTextFlow.setMinWidth(50);
+        final VBox textFlowVBox = new VBox(0, newNote.getContentTextFlow());
+
+
         final VBox noteInformation;
 
         // Define selection label
@@ -766,7 +769,7 @@ public class NotesViewPane extends BorderPane {
             if (newNote.getEditMode()) {
                 noteInformation = new VBox(DEFAULT_SPACING, titleText, contentTextArea);
             } else {
-                noteInformation = new VBox(DEFAULT_SPACING, contentTextFlow);
+                noteInformation = new VBox(DEFAULT_SPACING, textFlowVBox);
             }
 
 
@@ -851,22 +854,22 @@ public class NotesViewPane extends BorderPane {
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
         noteBody.setMaxHeight(Double.MAX_VALUE);
+        //contentTextFlow.setClip(noteBody);
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
             LOGGER.log(Level.SEVERE, "Height of note: " + obs.getValue().doubleValue());
-            if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10) {
-
+            if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10 && !showMoreButton.isVisible()) {
                 if (!showMoreButton.isVisible()) {
                     showMoreButton.setVisible(true);
                     showMoreButton.setText(SHOW_MORE);
                     LOGGER.log(Level.SEVERE, "Resizing note body");
                     noteBody.setMaxHeight(NOTE_HEIGHT - 5);
-                    //noteBody.setMinHeight(NOTE_HEIGHT - 5);
+                    resizeTextFlow(newNote, noteBody);
                 }
-            } else if (showMoreButton.isVisible()) {
+            } else if (obs.getValue().doubleValue() < NOTE_HEIGHT - 10 && showMoreButton.isVisible()) {
                 showMoreButton.setVisible(false);
             }
-            LOGGER.log(Level.SEVERE, "Height of note after if statement: " + noteBody.getHeight());
+            //LOGGER.log(Level.SEVERE, "Height of note after if statement: " + noteBody.getHeight());
         });
 
         if (newNote.isUserCreated()) {
@@ -879,16 +882,20 @@ public class NotesViewPane extends BorderPane {
         }
 
         noteBody.prefWidthProperty().bind(this.widthProperty());
+        newNote.getContentTextFlow().prefWidthProperty().bind(noteBody.widthProperty().subtract(10));
+        //contentTextFlow.prefHeightProperty().bind(noteBody.heightProperty());
 
         showMoreButton.setOnAction(event -> {
             if (showMoreButton.getText().equals(SHOW_MORE)) {
                 contentLabel.setText(newNote.getNoteContent());
                 noteBody.setMaxHeight(Double.MAX_VALUE);
                 showMoreButton.setText(SHOW_LESS);
+                showEntireNoteContent(newNote, textFlowVBox);
             } else if (showMoreButton.getText().equals(SHOW_LESS)) {
                 contentLabel.setText(newNote.getNoteContent());
                 noteBody.setMaxHeight(NOTE_HEIGHT - 5);
                 showMoreButton.setText(SHOW_MORE);
+                resizeTextFlow(newNote, noteBody);
             }
         });
 
@@ -1051,9 +1058,9 @@ public class NotesViewPane extends BorderPane {
 
             final MarkdownTree mdTree = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
             mdTree.parse();
-            contentTextFlow = mdTree.getRenderedText();
+            newNote.setContentTextFlow(mdTree.getRenderedText());
 
-            noteInformation.getChildren().add(contentTextFlow);
+            noteInformation.getChildren().add(textFlowVBox);
 
             newNote.setEditMode(false);
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE
@@ -1069,11 +1076,11 @@ public class NotesViewPane extends BorderPane {
             } else {
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());
-                contentTextFlow = null;
+                //contentTextFlow = null;
 
                 final MarkdownTree mdTree = new MarkdownTree(titleText.getText() + "\n\n" + contentTextArea.getText());
                 mdTree.parse();
-                contentTextFlow = mdTree.getRenderedText();
+                newNote.setContentTextFlow(mdTree.getRenderedText());
 
                 previouseColourMap.replace(newNote.getID(), newNote.getNodeColour());
 
@@ -1084,7 +1091,7 @@ public class NotesViewPane extends BorderPane {
                 noteButtons.setSpacing(DEFAULT_SPACING);
 
                 noteInformation.getChildren().removeAll(titleText, contentTextArea);
-                noteInformation.getChildren().addAll(contentTextFlow);
+                noteInformation.getChildren().addAll(textFlowVBox);
 
                 newNote.setEditMode(false);
                 updateNotesUI();
@@ -1092,6 +1099,66 @@ public class NotesViewPane extends BorderPane {
         });
     
     }
+
+    private void resizeTextFlow(final NotesViewEntry note, final VBox noteBody) {
+        if (!note.getEditMode()) {
+            //note.refreshTextFlow();
+            LOGGER.log(Level.SEVERE, "Called resize text flow");
+            while (noteBody.getHeight() > NOTE_HEIGHT) {
+                int size = note.getContentTextFlow().getChildren().size();
+                if (size == 0) {
+                    return;
+                }
+                LOGGER.log(Level.SEVERE, "Size is: " + size);
+
+                if (note.getContentTextFlow().getChildren().get(size - 1) instanceof Text) {
+                    Text t = (Text) note.getContentTextFlow().getChildren().remove(size - 1);
+                    note.getContentTextFlow().autosize();
+                    noteBody.autosize();
+                    int index = 0;
+                    final String lastTextString = t.getText();
+                    LOGGER.log(Level.SEVERE, "Last string: " + lastTextString);
+                    t.setText("");
+                    boolean addInLastText = true;
+                    while (noteBody.getHeight() < NOTE_HEIGHT && !StringUtils.isBlank(lastTextString)) {
+                        if (addInLastText) {
+                            note.getContentTextFlow().getChildren().add(t);
+                            addInLastText = false;
+                        }
+
+                        LOGGER.log(Level.SEVERE, "Size of last string: " + lastTextString.length());
+
+                        t.setText(lastTextString.substring(0, index));
+                        ++index;
+                        LOGGER.log(Level.SEVERE, "At index: " + index);
+                        LOGGER.log(Level.SEVERE, "String being added: " + t.getText());
+
+                        note.getContentTextFlow().autosize();
+                        noteBody.autosize();
+
+                        if (noteBody.getHeight() > NOTE_HEIGHT || index == lastTextString.length() - 1) {
+                            return;
+                        }
+                    }
+
+                } else {
+                    return;
+                }
+
+            }
+        }
+    }
+
+    private void showEntireNoteContent(final NotesViewEntry note, final VBox textFlowVBox) {
+        LOGGER.log(Level.SEVERE, "Trying to show entire note content");
+        note.refreshTextFlow();
+        textFlowVBox.getChildren().clear();
+        textFlowVBox.getChildren().add(note.getContentTextFlow());
+        textFlowVBox.autosize();
+        //note.getContentTextFlow().setMaxHeight(100);
+
+    }
+
     /**
      * Updates the arrays of what nodes and transactions are currently selected.
      */

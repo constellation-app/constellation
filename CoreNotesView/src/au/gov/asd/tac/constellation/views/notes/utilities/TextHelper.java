@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.notes.utilities;
 
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
@@ -41,6 +43,28 @@ public class TextHelper {
     public TextHelper(final String rawText) {
         text = new Text(rawText);
         text.setFont(Font.font(family, weight, posture, size));
+    }
+
+    public TextHelper getTextHelperClone(final String rawText) {
+        final TextHelper th = new TextHelper(rawText);
+
+        th.setFontFamily(family);
+        th.setFill(Color.WHITE);
+        th.setWeight(weight);
+        th.setPosture(posture);
+        th.setSize(size);
+
+        if (isListEnd) {
+            th.setIsListEnd(true);
+        } else if (isListStart) {
+            th.setIsListStart(true);
+        }
+
+        if (text.isStrikethrough()) {
+            th.setStrikeThrough(true);
+        }
+
+        return th;
     }
 
     public Text getText() {

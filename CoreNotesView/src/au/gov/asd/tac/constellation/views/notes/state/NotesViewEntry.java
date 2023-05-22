@@ -17,8 +17,10 @@ package au.gov.asd.tac.constellation.views.notes.state;
 
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
+import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.scene.text.TextFlow;
 
 /**
  * Holds the information for a note in the Notes View.
@@ -42,6 +44,8 @@ public class NotesViewEntry implements PluginReportListener {
     private boolean editMode;
     private boolean isShowing = true;
 
+    private TextFlow contentTextFlow;
+
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
@@ -57,7 +61,17 @@ public class NotesViewEntry implements PluginReportListener {
             this.nodesSelected = new ArrayList<>();
             this.transactionsSelected = new ArrayList<>();
         }
+
     }
+
+    public TextFlow getContentTextFlow() {
+        return contentTextFlow;
+    }
+
+    public void setContentTextFlow(TextFlow contentTextFlow) {
+        this.contentTextFlow = contentTextFlow;
+    }
+
 
     public String getDateTime() {
         return dateTime;
@@ -147,6 +161,13 @@ public class NotesViewEntry implements PluginReportListener {
     public void setID(final int id) {
         this.id = id;
 
+    }
+
+    public void refreshTextFlow() {
+        final MarkdownTree md = new MarkdownTree(noteTitle + "\n\n" + noteContent);
+        md.parse();
+        contentTextFlow = md.getRenderedText();
+        contentTextFlow.autosize();
     }
 
     @Override
