@@ -126,19 +126,30 @@ public class NumberInputPane<T> extends Pane {
         // Just typing doesn't fire value property change events, and doesn't allow us to change the style
         // when the string doesn't validate.
         field.getEditor().textProperty().addListener((final ObservableValue<? extends String> ov, final String oldValue, final String newValue) -> {
-            final String error = parameter.validateString(field.getValueFactory().getValue().toString());
-            if (error != null) {
-                tooltip.setText(error);
-                field.setTooltip(tooltip);
-                field.setId(INVALID_ID);
+            final int dotPos = newValue.indexOf(".");
+            final String intPart = dotPos > -1 ? newValue.substring(0, dotPos) : newValue;
+            final String decPart = dotPos > -1 ? newValue.substring(dotPos + 1) : "";
+            final boolean isIntVal = parameter.getType().getId().equals(IntegerParameterType.ID);
+            // Integers: Max 9 digits.  Floats: Max 8 digits before the decimal, and 2 digits after.
+            if (intPart.matches("[\\-]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?" + (isIntVal ? "[0-9]?" : "")) 
+                                && (decPart.isBlank() || (decPart.matches("[0-9]?[0-9]?") && !isIntVal))) {
+                final String error = parameter.validateString(field.getValueFactory().getValue().toString());
+                if (error != null) {
+                    tooltip.setText(error);
+                    field.setTooltip(tooltip);
+                    field.setId(INVALID_ID);
+                } else {
+                    tooltip.setText("");
+                    field.setTooltip(null);
+                    field.setId("");
+                }
+                currentTextValue = newValue;
+                parameter.fireChangeEvent(ParameterChange.VALUE);
+                
             } else {
-                tooltip.setText("");
-                field.setTooltip(null);
-                field.setId("");
+                // Undo Editing. Revert to previous value.
+                field.getEditor().setText(oldValue);
             }
-            
-            currentTextValue = newValue;
-            parameter.fireChangeEvent(ParameterChange.VALUE);
         });
 
         parameter.addListener((pluginParameter, change) ->
