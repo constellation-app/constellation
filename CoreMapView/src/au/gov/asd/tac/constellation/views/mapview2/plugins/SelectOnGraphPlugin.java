@@ -46,7 +46,7 @@ public class SelectOnGraphPlugin extends SimpleEditPlugin {
     private final boolean isSelectingVertex;
 
     public SelectOnGraphPlugin(final List<Integer> selectedNodeList, final boolean isSelectingVertex) {
-        this.selectedNodeList = new ArrayList<>(selectedNodeList);
+        this.selectedNodeList = selectedNodeList;
         this.isSelectingVertex = isSelectingVertex;
     }
 

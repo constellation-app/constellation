@@ -269,9 +269,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     @PluginInfo(pluginType = PluginType.SEARCH, tags = {PluginTags.SEARCH})
     @NbBundle.Messages("ExtractCoordsFromGraphPlugin=Extracts Coordinates from Graph")
-    public static class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
-
-        private static final Logger LOGGER = Logger.getLogger(ExtractCoordsFromGraphPlugin.class.getName());
+    protected static class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
         private static final double POINT_MARKER_X_OFFSET = 95;
         private static final double POINT_MARKER_Y_OFFSET = 245;

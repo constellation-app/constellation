@@ -2,8 +2,8 @@
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
 
-== 2023-05-16
-<p>The Map View has been re-written in JavaFX. This has most of the features of the old one an dcan be found under "Experimental->Views"</p>
+== 2023-05-16 New Map View
+<p>The Map View has been re-written to look like the other views. This has most of the features of the old one an dcan be found under Experimental-&gtViews</p>
 
 == 2023-05-05 Notes View UI Change
 <p>The controls to add a new note are no longer at the bottom and have been moved to a pop-up window which appears when the "Create Note" button is pressed on the top left.</p>
