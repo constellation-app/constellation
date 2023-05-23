@@ -488,9 +488,6 @@ public class MarkdownTree {
     public TextFlow getRenderedText() {
         // TextFlow to be returned
         final TextFlow renderedText = new TextFlow();
-        //renderedText.setMinHeight(50);
-        //renderedText.setMaxHeight(50);
-        //renderedText.setPrefHeight(50);
         renderedText.setTextAlignment(TextAlignment.LEFT);
         renderedText.setPadding(new Insets(0, 0, 0, 0));
 

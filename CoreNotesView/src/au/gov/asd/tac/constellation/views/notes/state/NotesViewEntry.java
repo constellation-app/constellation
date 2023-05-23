@@ -20,6 +20,9 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 /**
@@ -30,6 +33,7 @@ import javafx.scene.text.TextFlow;
 public class NotesViewEntry implements PluginReportListener {
 
     private int id = -99;
+    private static final Logger LOGGER = Logger.getLogger(NotesViewEntry.class.getName());
 
     private final String dateTime;
     private String noteTitle;
@@ -166,7 +170,17 @@ public class NotesViewEntry implements PluginReportListener {
     public void refreshTextFlow() {
         final MarkdownTree md = new MarkdownTree(noteTitle + "\n\n" + noteContent);
         md.parse();
-        contentTextFlow = md.getRenderedText();
+        final TextFlow t = md.getRenderedText();
+        contentTextFlow.getChildren().clear();
+        LOGGER.log(Level.SEVERE, "Cleared text flow");
+        /*for (int i = 0; i < t.getChildren().size(); i++) {
+            if (t.getChildren().get(i) instanceof Text) {
+                Text tx = (Text) t.getChildren().get(i);
+                LOGGER.log(Level.SEVERE, "re-adding text: " + tx.getText());
+            }
+            contentTextFlow.getChildren().add(t.getChildren().get(i));
+        }*/
+        contentTextFlow = t;
         contentTextFlow.autosize();
     }
 
