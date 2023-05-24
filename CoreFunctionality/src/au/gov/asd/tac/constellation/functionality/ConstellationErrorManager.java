@@ -39,15 +39,15 @@ public class ConstellationErrorManager extends Handler {
             final StringBuilder errorMsg = new StringBuilder();
             final Level errLevel = errorRecord.getLevel();
             final String errorSummary = errorRecord.getThrown().toString();
-            final int firstColon = errorSummary.indexOf(":");
+            final int firstColon = errorSummary.indexOf(SeparatorConstants.COLON);
             String extractedMessage = firstColon != -1 ? errorSummary.substring(firstColon + 2) : "";
             final boolean autoBlockPopup = extractedMessage.startsWith(NotifyDisplayer.BLOCK_POPUP_FLAG);
             if (autoBlockPopup) {
                 extractedMessage = extractedMessage.substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length());
             }
-            final int prevDotPos = errorSummary.substring(0, (firstColon != -1 ? firstColon : errorSummary.length())).lastIndexOf(".");
+            final int prevDotPos = errorSummary.substring(0, (firstColon != -1 ? firstColon : errorSummary.length())).lastIndexOf(SeparatorConstants.PERIOD);
             final String exceptionType = errorSummary.substring(prevDotPos + 1, (firstColon != -1 ? firstColon : errorSummary.length()));
-            String recordHeader = "".equals(extractedMessage) ? exceptionType : extractedMessage;
+            String recordHeader = extractedMessage.isEmpty() ? exceptionType : extractedMessage;
             String revisedSummary = errorSummary.substring(0, firstColon + 1) 
                                     + errorSummary.substring(firstColon + 1 + (autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG.length() : 0));
             if (!revisedSummary.endsWith(SeparatorConstants.NEWLINE)) {
