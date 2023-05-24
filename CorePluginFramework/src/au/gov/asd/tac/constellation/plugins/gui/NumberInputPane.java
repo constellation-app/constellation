@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FloatParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.NumberParameterValue;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -59,6 +60,7 @@ public class NumberInputPane<T> extends Pane {
     private final Spinner<T> field;
 
     private String currentTextValue = null;
+    private int repeatedOccurrences = 0;
 
     private static final int CHAR_SIZE = 8;
     private static final int BASE_WIDTH = 35;
@@ -126,13 +128,27 @@ public class NumberInputPane<T> extends Pane {
         // Just typing doesn't fire value property change events, and doesn't allow us to change the style
         // when the string doesn't validate.
         field.getEditor().textProperty().addListener((final ObservableValue<? extends String> ov, final String oldValue, final String newValue) -> {
-            final int dotPos = newValue.indexOf(".");
+            if (newValue.isEmpty() || "-".equals(newValue)) {
+                // Detected a backspace/overwrite. The resulting value is just a minus sign, or an empty string. Reset to minimum value.
+                field.getEditor().setText(newValue + (pv.getMinimumValue() != null ? Integer.toString(pv.getMinimumValue().intValue()) : "0"));
+                if (field.getEditor().getText().equals(oldValue)) {
+                    repeatedOccurrences++;
+                } else {
+                    repeatedOccurrences = 0;
+                }
+                Platform.runLater(() -> {
+                    // Auto-select the numeric portion of the new text, to allow immediate overwriting of the inserted value.
+                    field.getEditor().selectRange((repeatedOccurrences%2 == 1) ? 0 : newValue.length(), field.getEditor().getText().length());
+                });
+                return;
+            }
+            final int dotPos = newValue.indexOf(SeparatorConstants.PERIOD);
             final String intPart = dotPos > -1 ? newValue.substring(0, dotPos) : newValue;
             final String decPart = dotPos > -1 ? newValue.substring(dotPos + 1) : "";
             final boolean isIntVal = parameter.getType().getId().equals(IntegerParameterType.ID);
             // Integers: Max 9 digits.  Floats: Max 8 digits before the decimal, and 2 digits after.
-            if (intPart.matches("[\\-]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?[0-9]?" + (isIntVal ? "[0-9]?" : "")) 
-                                && (decPart.isBlank() || (decPart.matches("[0-9]?[0-9]?") && !isIntVal))) {
+            if ((intPart.matches("[\\-][0-9]{1," + (isIntVal ? "9}" : "8}")) || intPart.matches("[0-9]{1," + (isIntVal ? "9}" : "8}")))
+                                && (dotPos == -1 || (decPart.matches("[0-9]{0,2}") && !isIntVal))) {
                 final String error = parameter.validateString(field.getValueFactory().getValue().toString());
                 if (error != null) {
                     tooltip.setText(error);
