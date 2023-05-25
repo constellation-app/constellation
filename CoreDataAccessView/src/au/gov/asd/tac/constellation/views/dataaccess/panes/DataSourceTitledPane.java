@@ -129,8 +129,8 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     }
     
     @Override
-    public void validityChanged(boolean isEnabled) {
-        isEnabled = parametersCreated && isEnabled;
+    public void validityChanged(final boolean allowEnabling) {
+        final boolean isEnabled = parametersCreated && allowEnabling && enabled.isSelected();
         enabled.setSelected(isEnabled);
         if (enabled.isSelected()) {
             while (getStyleClass().contains(MATCHED_STYLE)) {
