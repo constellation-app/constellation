@@ -860,54 +860,40 @@ public class NotesViewPane extends BorderPane {
         noteBody.setMinWidth(500);
         noteBody.setMaxHeight(Double.MAX_VALUE);
 
-        /*noteBody.widthProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newNote.getEditMode()) {
-                textFlowVBox.getChildren().clear();
-                newNote.refreshTextFlow();
-                textFlowVBox.getChildren().add(newNote.getContentTextFlow());
-            }
-        });*/
-        sizeChangeListener = new WeakChangeListener((obs, oldVal, newVal) -> {
-            LOGGER.log(Level.SEVERE, "Height of note: " + (Double) obs.getValue());
+        noteBody.widthProperty().addListener((obs, oldVal, newVal) -> {
+            if (newNote.getCalcChangeHeight().get() && showMoreButton.getText().equals(SHOW_MORE)) {
+                if (obs.getValue().doubleValue() > oldVal.doubleValue()) {
+                    newNote.getCalcChangeHeight().set(false);
+                    textFlowVBox.getChildren().clear();
+                    newNote.refreshTextFlow();
+                    //textFlowVBox.getChildren().add(newNote.getContentTextFlow());
 
-            //newNote.refreshTextFlow();
-            //noteBody.heightProperty().removeListener(sizeChangeListener);
-            //refreshTextFlow(noteBody, newNote);
-            if ((Double) obs.getValue() >= NOTE_HEIGHT - 10 && !showMoreButton.isVisible()) {
-                //if (!showMoreButton.isVisible()) {
+                    //resizeTextFlow(newNote, noteBody);
+                    //newNote.getCalcChangeHeight().set(true);
+                    showMoreButton.fire();
+                    showMoreButton.fire();
+                } else
+                    resizeTextFlow(newNote, noteBody);
+            }
+        });
+
+
+        noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
+            LOGGER.log(Level.SEVERE, "Calling resize function");
+            LOGGER.log(Level.SEVERE, "Height of note: " + obs.getValue().doubleValue());
+
+            if (newNote.getCalcChangeHeight().get() && obs.getValue().doubleValue() >= NOTE_HEIGHT - 10 && !showMoreButton.isVisible()) {
                 showMoreButton.setVisible(true);
                 showMoreButton.setText(SHOW_MORE);
                 LOGGER.log(Level.SEVERE, "Resizing note body");
                 noteBody.setMaxHeight(NOTE_HEIGHT - 5);
-                //noteBody.heightProperty().removeListener(sizeChangeListener);
                 resizeTextFlow(newNote, noteBody);
-                //noteBody.heightProperty().addListener(sizeChangeListener);
-                //}
-            } else if ((Double) obs.getValue() < NOTE_HEIGHT - 10 && showMoreButton.isVisible()) {
+
+            } else if (newNote.getCalcChangeHeight().get() && obs.getValue().doubleValue() < NOTE_HEIGHT - 10 && showMoreButton.isVisible()) {
                 showMoreButton.setVisible(false);
             }
 
-            //noteBody.heightProperty().addListener(sizeChangeListener);
-            //LOGGER.log(Level.SEVERE, "Height of note after if statement: " + noteBody.getHeight());
         });
-        noteBody.heightProperty().addListener(sizeChangeListener);
-
-        /*noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
-            LOGGER.log(Level.SEVERE, "Calling resize function");
-            LOGGER.log(Level.SEVERE, "Height of note: " + obs.getValue().doubleValue());
-            //newNote.refreshTextFlow();
-            //noteInformation.getChildren().add(newNote.getContentTextFlow());
-            //newNote.refreshTextFlow();
-            if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10 && !showMoreButton.isVisible()) {
-                    showMoreButton.setVisible(true);
-                    showMoreButton.setText(SHOW_MORE);
-                    LOGGER.log(Level.SEVERE, "Resizing note body");
-                    noteBody.setMaxHeight(NOTE_HEIGHT - 5);
-                    resizeTextFlow(newNote, noteBody);
-            } else if (obs.getValue().doubleValue() < NOTE_HEIGHT - 10 && showMoreButton.isVisible()) {
-                showMoreButton.setVisible(false);
-            }
-        });*/
 
 
         if (newNote.isUserCreated()) {
@@ -928,12 +914,13 @@ public class NotesViewPane extends BorderPane {
                 noteBody.setMaxHeight(Double.MAX_VALUE);
                 showMoreButton.setText(SHOW_LESS);
                 showEntireNoteContent(newNote, textFlowVBox);
-                //refreshTextFlow(textFlowVBox, newNote);
             } else if (showMoreButton.getText().equals(SHOW_LESS)) {
                 contentLabel.setText(newNote.getNoteContent());
                 noteBody.setMaxHeight(NOTE_HEIGHT - 5);
                 showMoreButton.setText(SHOW_MORE);
+                newNote.getCalcChangeHeight().set(false);
                 resizeTextFlow(newNote, noteBody);
+                newNote.getCalcChangeHeight().set(true);
             }
         });
 

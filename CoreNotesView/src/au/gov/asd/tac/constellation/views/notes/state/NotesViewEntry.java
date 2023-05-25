@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
@@ -49,6 +51,8 @@ public class NotesViewEntry implements PluginReportListener {
     private boolean isShowing = true;
 
     private TextFlow contentTextFlow;
+
+    private final BooleanProperty calcChangeHeight = new SimpleBooleanProperty(true);
 
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
         this.dateTime = dateTime;
@@ -183,6 +187,11 @@ public class NotesViewEntry implements PluginReportListener {
         contentTextFlow = t;
         contentTextFlow.autosize();
     }
+
+    public BooleanProperty getCalcChangeHeight() {
+        return calcChangeHeight;
+    }
+
 
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {
