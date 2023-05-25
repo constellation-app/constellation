@@ -225,15 +225,21 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                 }
             }
         } catch (final FileNotFoundException ex) {
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "File " + filename + " not found", "Import GraphML File", DEFAULT_OPTION, 
+            final String errorMsg = "File '" + filename + "' not found";
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GraphML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            LOGGER.log(Level.SEVERE, ex, () -> "File " + filename + " not found");
+            final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            fnfEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.SEVERE, errorMsg, fnfEx);
         } catch (final TransformerException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } catch (final IOException ex) {
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import GraphML File", DEFAULT_OPTION, 
+            final String errorMsg = "Error reading file '" + filename + "'";
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GraphML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
+            final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            ioEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.SEVERE, errorMsg, ioEx);
         }
 
         output.add(nodeRecords);

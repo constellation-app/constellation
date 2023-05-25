@@ -220,6 +220,7 @@ public class ErrorReportFullSuiteNGTest {
         ertcInstance.setReportsExpanded(false);
         ertcInstance.refreshSessionErrors();
         final ErrorReportEntry checkEntry = ertcInstance.findActiveEntryWithId(storedList.get(0).getEntryId());
+        System.out.println("\n>>>> Check ErrorReportEntry : " + checkEntry.toString());
         assertFalse(checkEntry.isExpanded());
         
         dismissPopups(storedList);

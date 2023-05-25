@@ -19,8 +19,19 @@ import au.gov.asd.tac.constellation.graph.processing.GraphRecordStore;
 import au.gov.asd.tac.constellation.graph.processing.ProcessingException;
 import au.gov.asd.tac.constellation.graph.processing.RecordStore;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.xml.XmlUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import static org.mockito.ArgumentMatchers.any;
+import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.when;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -151,6 +162,67 @@ public class GraphMLImportProcessorNGTest {
         assertEquals(output.size(), 4);
     }
     
+    /**
+     * Test of process method, of class GraphMLImportProcessor forcing FileNotFound exception
+     * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
+     */
+    @Test
+    public void testProcessFileNotFoundException() throws ProcessingException {
+        System.out.println("processFileNotFoundException");
+
+        // Mock the NotifyDisplayer to prevent dialogs from being displayed on screen
+        try (final MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class)) {        
+            // get the parameters for processing
+            final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
+            final PluginParameters parameters = plugin.createParameters();
+            parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);
+
+            // use an invalid file name to generate FileNotFound exception
+            final File file = new File("xYz");
+            final RecordStore output = new GraphRecordStore();
+            final GraphMLImportProcessor instance = new GraphMLImportProcessor();
+            instance.process(parameters, file, output);
+
+            // should have no output due to the File Not Found exception
+            assertEquals(output.size(), 0);
+        }
+    }
+
+    /**
+     * Test of process method, of class GraphMLImportProcessor forcing IO exception
+     * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
+     */
+    @Test
+    public void testProcessIOException() throws ProcessingException {
+        System.out.println("processIOException");
+        
+        // Mock the NotifyDisplayer to prevent dialogs from being displayed on screen
+        // Mock the buffered reader to always throw an IO exception when the readLine() method is called
+        try (final MockedStatic<NotifyDisplayer> notiDispMock = Mockito.mockStatic(NotifyDisplayer.class);
+                final MockedConstruction<XmlUtilities> mockedXmlUtils = Mockito.mockConstruction(XmlUtilities.class, (mock, context) -> {
+                    when(mock.read(any(InputStream.class), any(Boolean.class))).thenAnswer(new Answer(){
+                        @Override
+                        public Object answer(final InvocationOnMock iom) throws Throwable {
+                            throw new IOException("mocked IO exception");
+                        }
+                    });
+                })
+            ) {
+            // get the parameters for processing
+            final ImportGraphFilePlugin plugin = new ImportGraphFilePlugin();
+            final PluginParameters parameters = plugin.createParameters();
+            parameters.setBooleanValue("ImportGraphFilePlugin.retrieve_transactions", false);
+
+            final File file = new File(GraphMLImportProcessorNGTest.class.getResource("resources/test.graphml").getPath());
+            final RecordStore output = new GraphRecordStore();
+            final GraphMLImportProcessor instance = new GraphMLImportProcessor();
+            instance.process(parameters, file, output);
+
+            // should have no output due to the IO exception
+            assertEquals(output.size(), 0);
+        }
+    }
+
     /**
      * Test of process method, of class GraphMLImportProcessor. Importing nodes and transactions
      * @throws au.gov.asd.tac.constellation.graph.processing.ProcessingException
