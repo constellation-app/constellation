@@ -3,7 +3,7 @@
 
 
 == 2023-05-16 New Map View
-<p>The Map View has been re-written to look like the other views. This has most of the features of the old one an dcan be found under Experimental-&gtViews</p>
+<p>The Map View has been re-written to look like the other views. This has most of the features of the old one and can be found under Experimental-&gt Views</p>
 
 == 2023-05-05 Notes View UI Change
 <p>The controls to add a new note are no longer at the bottom and have been moved to a pop-up window which appears when the "Create Note" button is pressed on the top left.</p>

@@ -27,8 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -48,7 +46,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
 
     private static final double NODE_X_OFFSET = 97;
     private static final double NODE_Y_OFFSET = 93;
-    private static final Logger LOGGER = Logger.getLogger(ThiessenPolygonsLayer.class.getName());
 
 
     // All markers on the map
@@ -605,7 +602,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         double distanceNearest = Double.MAX_VALUE;
         IntersectionNode grandParent = n;
         IntersectionNode parent1 = nearest;
-        LOGGER.log(Level.SEVERE, "Nearest is: " + nearest.getKey());
         for (int i = 0; i < 3; i++) {
             if (nearest.getRelevantMarkers().isEmpty()) {
                 // Loop through all its connected points
@@ -620,7 +616,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     if ((neighbour.getX() != grandParent.getX() || neighbour.getY() != grandParent.getY()) && distance < distanceNearest) {
                         distanceNearest = distance;
                         nearest = neighbour;
-                        LOGGER.log(Level.SEVERE, "Changing nearest to: " + nearest.getKey());
                     }
                 }
 
@@ -629,7 +624,6 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                 if (nearest.getRelevantMarkers().isEmpty()) {
                     grandParent = parent1;
                     parent1 = nearest;
-                    LOGGER.log(Level.SEVERE, "Valid corners still not found parent1 key: " + parent1.getKey());
                 }
             } else
                 break;
