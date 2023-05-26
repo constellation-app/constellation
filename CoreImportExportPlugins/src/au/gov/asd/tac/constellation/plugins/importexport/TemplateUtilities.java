@@ -72,7 +72,7 @@ public class TemplateUtilities {
             final String message = String.format("Missing field '%s' in the template. Add the missing field"
                     + " manually or use a new template.", fieldName);
             NotifyDisplayer.displayAlert(LOAD_TEMPLATE, "Template Error", message, Alert.AlertType.ERROR);
-            throw new NoSuchElementException(message);
+            throw new NoSuchElementException(NotifyDisplayer.BLOCK_POPUP_FLAG + message);
         }
     }
 

@@ -203,7 +203,9 @@ public class DelimitedImportController extends ImportController {
             } catch (final FileNotFoundException ex) {
                 final String warningMsg = "The following file could not be found "
                         + "and has been excluded from the import set:\n  " + sampleFile.getPath();
-                LOGGER.log(Level.INFO, warningMsg, ex);
+                final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + warningMsg);
+                fnfEx.setStackTrace(ex.getStackTrace());
+                LOGGER.log(Level.INFO, warningMsg, fnfEx);
                 NotifyDisplayer.displayAlert("Delimited File Import", "Invalid file selected",
                         warningMsg, Alert.AlertType.WARNING);
                 files.remove(sampleFile);
@@ -211,7 +213,9 @@ public class DelimitedImportController extends ImportController {
             } catch (final IOException ex) {
                 final String warningMsg = "The following file could not be parsed and has "
                         + "been excluded from the import set:\n  " + sampleFile.getPath();
-                LOGGER.log(Level.INFO, warningMsg, ex);
+                final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + warningMsg);
+                ioEx.setStackTrace(ex.getStackTrace());
+                LOGGER.log(Level.INFO, warningMsg, ioEx);
                 NotifyDisplayer.displayAlert("Delimited File Import", "Invalid file selected", warningMsg,
                         Alert.AlertType.WARNING);
                 files.remove(sampleFile);
