@@ -345,6 +345,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             final Float elementLat = graph.getObjectValue(latID, elementID);
                             final Float elementLon = graph.getObjectValue(lonID, elementID);
 
+                            if (elementLat == null || elementLon == null) {
+                                continue;
+                            }
+
                             // Get the nodes colour
                             final String elementColour = graph.getStringValue(colourID, elementID);
 
