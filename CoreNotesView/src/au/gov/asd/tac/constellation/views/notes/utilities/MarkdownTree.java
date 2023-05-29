@@ -403,7 +403,7 @@ public class MarkdownTree {
         LOGGER.log(Level.SEVERE, currentNode.getTypeString());
     }
 
-    private List<TextHelper> getTextNodes() {
+    public List<TextHelper> getTextNodes() {
         return getText(root);
     }
 

@@ -67,6 +67,11 @@ public class TextHelper {
         return th;
     }
 
+    public TextHelper(final Text text) {
+        this.text = text;
+        family = text.getFont().getFamily();
+    }
+
     public Text getText() {
         return text;
     }

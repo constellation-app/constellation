@@ -20,11 +20,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 /**
@@ -52,13 +48,11 @@ public class NotesViewEntry implements PluginReportListener {
 
     private TextFlow contentTextFlow;
 
-    private final BooleanProperty calcChangeHeight = new SimpleBooleanProperty(true);
-
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
-
+        contentTextFlow = new TextFlow();
         if (nodeColour != null) {
             this.nodeColour = nodeColour;
         }
@@ -76,10 +70,12 @@ public class NotesViewEntry implements PluginReportListener {
         return contentTextFlow;
     }
 
-    public void setContentTextFlow(TextFlow contentTextFlow) {
-        this.contentTextFlow = contentTextFlow;
-    }
+    public void setContentTextFlow(TextFlow renderedTextFlow) {
 
+        contentTextFlow = renderedTextFlow;
+
+
+    }
 
     public String getDateTime() {
         return dateTime;
@@ -172,26 +168,13 @@ public class NotesViewEntry implements PluginReportListener {
     }
 
     public void refreshTextFlow() {
+        contentTextFlow.getChildren().clear();
+
         final MarkdownTree md = new MarkdownTree(noteTitle + "\n\n" + noteContent);
         md.parse();
-        final TextFlow t = md.getRenderedText();
-        contentTextFlow.getChildren().clear();
-        LOGGER.log(Level.SEVERE, "Cleared text flow");
-        /*for (int i = 0; i < t.getChildren().size(); i++) {
-            if (t.getChildren().get(i) instanceof Text) {
-                Text tx = (Text) t.getChildren().get(i);
-                LOGGER.log(Level.SEVERE, "re-adding text: " + tx.getText());
-            }
-            contentTextFlow.getChildren().add(t.getChildren().get(i));
-        }*/
-        contentTextFlow = t;
+        contentTextFlow = md.getRenderedText();
         contentTextFlow.autosize();
     }
-
-    public BooleanProperty getCalcChangeHeight() {
-        return calcChangeHeight;
-    }
-
 
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {
