@@ -24,7 +24,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -68,6 +67,8 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
     private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
     
     private final DataAccessPane dataAccessPane;
+    
+    private static boolean graphLoaded = false;
 
     /**
      * Create a new data access view.
@@ -145,14 +146,19 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     protected void handleNewGraph(final Graph graph) {
+        graphLoaded = false;
         if (needsUpdate() && getDataAccessPane() != null) {
             getDataAccessPane().update(graph);
-            Platform.runLater(() -> 
-                DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph)
-            );
+            Platform.runLater(() -> {
+                DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph);
+                Platform.runLater(() -> graphLoaded = true); // nested runLater so it runs after all the other triggered processes for opening a graph
+            });
         }
     }
 
+    public static boolean isGraphLoaded() {
+        return graphLoaded;
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

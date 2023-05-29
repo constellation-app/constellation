@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
+import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
@@ -32,7 +33,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -130,7 +130,10 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     
     @Override
     public void validityChanged(final boolean allowEnabling) {
-        final boolean isEnabled = parametersCreated && allowEnabling && enabled.isSelected();
+        if (!DataAccessViewTopComponent.isGraphLoaded()) {
+            return;
+        }
+        final boolean isEnabled = parametersCreated && allowEnabling;
         enabled.setSelected(isEnabled);
         if (enabled.isSelected()) {
             while (getStyleClass().contains(MATCHED_STYLE)) {
