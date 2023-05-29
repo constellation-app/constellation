@@ -146,19 +146,27 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        graphLoaded = false;
+        DataAccessViewTopComponent.setGraphLoaded(false);
         if (needsUpdate() && getDataAccessPane() != null) {
             getDataAccessPane().update(graph);
-            Platform.runLater(() -> {
-                DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph);
-                Platform.runLater(() -> graphLoaded = true); // nested runLater so it runs after all the other triggered processes for opening a graph
-            });
+            Platform.runLater(() ->
+                DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph)
+            );
         }
+        Platform.runLater(() ->
+                // nested runLater so it runs after all the other triggered processes for opening a graph
+                Platform.runLater(() -> DataAccessViewTopComponent.setGraphLoaded(true))
+        );
     }
 
     public static boolean isGraphLoaded() {
         return graphLoaded;
     }
+    
+    public static void setGraphLoaded(final boolean isLoaded) {
+        graphLoaded = isLoaded;
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
