@@ -37,29 +37,43 @@ import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer2;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MenuButtonCheckCombobox;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
@@ -71,8 +85,10 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javax.imageio.ImageIO;
 import org.controlsfx.control.CheckComboBox;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
@@ -84,6 +100,8 @@ import org.openide.util.Lookup;
  * @author altair1673
  */
 public class MapViewPane extends BorderPane {
+
+    private static final Logger LOGGER = Logger.getLogger(MapViewPane.class.getName());
 
     private final MapViewTopComponent parent;
     private final GridPane toolBarGridPane;
@@ -107,9 +125,9 @@ public class MapViewPane extends BorderPane {
     private static final String ZOOM_LOCATION = "Zoom to Location";
 
     private static final String DAY_NIGHT = "Day / Night";
-    private static final String HEATMAP_STANDARD = "Heatmap(Standard)";
-    private static final String HEATMAP_POPULARITY = "Heatmap(Popularity)";
-    private static final String HEATMAP_ACTIVITY = "Heatmap(Activity)";
+    private static final String HEATMAP_STANDARD = "Heatmap (Standard)";
+    private static final String HEATMAP_POPULARITY = "Heatmap (Popularity)";
+    private static final String HEATMAP_ACTIVITY = "Heatmap (Activity)";
     private static final String ENTITY_PATHS = "Entity Paths";
     private static final String LOCATION_PATHS = "Location Paths";
     private static final String THIESSEAN_POLYGONS = "Thiessean Polygons";
@@ -140,7 +158,7 @@ public class MapViewPane extends BorderPane {
     // All the toolbar UI elements
     private final ChoiceBox<MapProvider> mapProviderDropDown;
     private final MenuButton zoomDropDown;
-    private final CheckComboBox<String> markerDropDown;
+
     private final CheckComboBox<String> layersDropDown;
     private final CheckComboBox<String> overlaysDropDown;
     private final ChoiceBox<String> colourDropDown;
@@ -197,7 +215,7 @@ public class MapViewPane extends BorderPane {
         setDropDownOptions(layers);
 
         // Add all the layers to the toolbar
-        layersDropDown = new CheckComboBox<>(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS, THIESSEAN_POLYGONS_2));
+        layersDropDown = new CheckComboBox<>(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS));
         layersDropDown.setTitle("Layers");
         layersDropDown.setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
         layersDropDown.setMinWidth(85);
@@ -249,20 +267,19 @@ public class MapViewPane extends BorderPane {
 
         zoomLocation.setOnAction(event -> mapView.generateZoomLocationUI());
 
-        // Menu to show/hide markers
-        markerDropDown = new CheckComboBox<>(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
-        markerDropDown.setTitle("Markers");
-        markerDropDown.setTooltip(new Tooltip("Choose which markers are displayed in the Map View"));
-        markerDropDown.getCheckModel().check(MARKER_TYPE_POINT);
-        markerDropDown.getCheckModel().check(MARKER_TYPE_LINE);
-        markerDropDown.getCheckModel().check(MARKER_TYPE_POLYGON);
-        markerDropDown.setMinWidth(90);
-        markerDropDown.setMaxWidth(90);
+        // Menu to show/hide markers        
+        final MenuButtonCheckCombobox markerMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
+        markerMenuButton.getMenuButton().setGraphic(loadIcon("resources/periscope.png"));
 
+        markerMenuButton.getMenuButton().setTooltip(new Tooltip("Choose which markers are displayed in the Map View"));
+        markerMenuButton.selectItem(MARKER_TYPE_POINT);
+        markerMenuButton.selectItem(MARKER_TYPE_LINE);
+        markerMenuButton.selectItem(MARKER_TYPE_POLYGON);
         // Event handler for hiding/showing markers
-        markerDropDown.getCheckModel().getCheckedItems().addListener((final Observable c) -> markerDropDown.getItems().forEach(item
-                -> mapView.updateShowingMarkers(getMarkerTypeFromString(item), markerDropDown.getCheckModel().isChecked(item))
-        ));
+        markerMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
+            markerMenuButton.getOptionMap().keySet().forEach(key -> mapView.updateShowingMarkers(getMarkerTypeFromString((String) key), markerMenuButton.getOptionMap().get(key).isSelected()));
+        });
+
 
         // Marker colour mneu setup and event handling
         colourDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(DEFAULT_COLOURS, USE_COLOUR_ATTR, USE_OVERLAY_COL, USE_BLAZE_COL)));
@@ -321,12 +338,26 @@ public class MapViewPane extends BorderPane {
         toolBarGridPane.add(layersDropDown, 1, 0);
         toolBarGridPane.add(overlaysDropDown, 2, 0);
         toolBarGridPane.add(zoomDropDown, 3, 0);
-        toolBarGridPane.add(markerDropDown, 4, 0);
+        toolBarGridPane.add(markerMenuButton.getMenuButton(), 4, 0);
         toolBarGridPane.add(colourDropDown, 5, 0);
         toolBarGridPane.add(markerLabelDropDown, 6, 0);
         toolBarGridPane.add(exportDropDown, 7, 0);
         toolBarGridPane.add(helpButton, 8, 0);
         setTop(toolBarGridPane);
+    }
+
+    private ImageView loadIcon(final String path) {
+        //try {
+
+        //final WritableImage img = new WritableImage(16, 16);
+        final Image img = new Image(parent.getClass().getResource(path).toString());
+        final ImageView iconView = new ImageView(img);
+        return iconView;
+        //} catch (final FileNotFoundException ex) {
+        //Exceptions.printStackTrace(ex);
+        //}
+
+        //return null;
     }
 
     /**
