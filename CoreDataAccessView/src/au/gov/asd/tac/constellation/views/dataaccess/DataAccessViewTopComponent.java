@@ -68,8 +68,6 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
     
     private final DataAccessPane dataAccessPane;
     
-    private static boolean graphLoaded = false;
-
     /**
      * Create a new data access view.
      */
@@ -146,7 +144,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     protected void handleNewGraph(final Graph graph) {
-        DataAccessViewTopComponent.setGraphLoaded(false);
+        System.setProperty("dav.graph.ready", Boolean.FALSE.toString());
         if (needsUpdate() && getDataAccessPane() != null) {
             getDataAccessPane().update(graph);
             Platform.runLater(() ->
@@ -154,17 +152,9 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
             );
         }
         Platform.runLater(() ->
-                // nested runLater so it runs after all the other triggered processes for opening a graph
-                Platform.runLater(() -> DataAccessViewTopComponent.setGraphLoaded(true))
+                // nested runLater so it runs after all the other triggered processes for opening a graph have been run
+                Platform.runLater(() -> System.setProperty("dav.graph.ready", Boolean.TRUE.toString()))
         );
-    }
-
-    public static boolean isGraphLoaded() {
-        return graphLoaded;
-    }
-    
-    public static void setGraphLoaded(final boolean isLoaded) {
-        graphLoaded = isLoaded;
     }
     
     /**

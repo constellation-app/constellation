@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ActionParameterType
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
-import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
@@ -130,8 +129,9 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     
     @Override
     public void validityChanged(final boolean allowEnabling) {
-        if (!DataAccessViewTopComponent.isGraphLoaded()) {
-            return;
+        if (System.getProperty("dav.graph.ready") == null || 
+            System.getProperty("dav.graph.ready").equals(Boolean.FALSE.toString())) {
+                return;
         }
         final boolean isEnabled = parametersCreated && allowEnabling;
         enabled.setSelected(isEnabled);
