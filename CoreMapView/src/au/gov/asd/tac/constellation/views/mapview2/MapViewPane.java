@@ -159,9 +159,6 @@ public class MapViewPane extends BorderPane {
     private final ChoiceBox<MapProvider> mapProviderDropDown;
     private final MenuButton zoomDropDown;
 
-    private final CheckComboBox<String> layersDropDown;
-    private final CheckComboBox<String> overlaysDropDown;
-    private final ChoiceBox<String> colourDropDown;
     private final ChoiceBox<String> markerLabelDropDown;
     private final ComboBox<String> exportDropDown;
     private final Button helpButton;
@@ -211,42 +208,36 @@ public class MapViewPane extends BorderPane {
         mapProviderDropDown.getSelectionModel().selectFirst();
         mapProviderDropDown.setTooltip(new Tooltip("Select a basemap for the Map View"));
 
-        final List<? extends MapLayer> layers = new ArrayList<>(Lookup.getDefault().lookupAll(MapLayer.class));
-        setDropDownOptions(layers);
-
-        // Add all the layers to the toolbar
-        layersDropDown = new CheckComboBox<>(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS));
-        layersDropDown.setTitle("Layers");
-        layersDropDown.setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
-        layersDropDown.setMinWidth(85);
-        layersDropDown.setMaxWidth(85);
-
-        // Event handler for selecting different layers to show
-        layersDropDown.getCheckModel().getCheckedItems().addListener((final Observable c) -> layersDropDown.getItems().forEach(item -> addLayer(item, layerId)));
+        final MenuButtonCheckCombobox layersMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS), false, false);
+        layersMenuButton.getMenuButton().setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
+        layersMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
+            layersMenuButton.getOptionMap().keySet().forEach(key -> addLayer(key, layerId, layersMenuButton.getOptionMap().get(key).isSelected()));
+        });
+        layersMenuButton.setIcon(parent.getClass().getResource("resources/layers.png").toString());
 
         // Add overlays to toolbar
-        overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY));
-        overlaysDropDown.setTitle("Overlays");
-        overlaysDropDown.setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
-        overlaysDropDown.setMinWidth(95);
-        overlaysDropDown.setMaxWidth(95);
-
+        final MenuButtonCheckCombobox overlaysMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY), false, false);
+        overlaysMenuButton.getMenuButton().setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
+        overlaysMenuButton.setIcon(parent.getClass().getResource("resources/overlays.png").toString());
         // Overlay event handler
-        overlaysDropDown.getCheckModel().getCheckedItems().addListener((final Observable c) -> {
-            overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
-            if (overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY) && !toolBarGridPane.getChildren().contains(latLabel)) {
-                toolBarGridPane.add(latLabel, 0, 1);
-                toolBarGridPane.add(latField, 1, 1);
-                toolBarGridPane.add(lonLabel, 2, 1);
-                toolBarGridPane.add(lonField, 3, 1);
+        overlaysMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
+            overlaysMenuButton.getOptionMap().keySet().forEach(key -> {
+                toggleOverlay(key, overlaysMenuButton.getOptionMap().get(key).isSelected());
 
-            } else if (!overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
-                toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
-            }
+                if (key.equals(INFO_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected() && !toolBarGridPane.getChildren().contains(latLabel)) {
+                    toolBarGridPane.add(latLabel, 0, 1);
+                    toolBarGridPane.add(latField, 1, 1);
+                    toolBarGridPane.add(lonLabel, 2, 1);
+                    toolBarGridPane.add(lonField, 3, 1);
+                } else if (key.equals(INFO_OVERLAY) && !overlaysMenuButton.getOptionMap().get(key).isSelected()) {
+                    toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
+                }
+            });
         });
 
         // Zoom menu set up and event handling
-        zoomDropDown = new MenuButton("Zoom");
+        zoomDropDown = new MenuButton();
+        zoomDropDown.setGraphic(new ImageView(new Image(parent.getClass().getResource("resources/zoom.png").toString())));
         final MenuItem zoomAll = new MenuItem(ZOOM_ALL);
         final MenuItem zoomSelection = new MenuItem(ZOOM_SELECTION);
         final MenuItem zoomLocation = new MenuItem(ZOOM_LOCATION);
@@ -268,8 +259,8 @@ public class MapViewPane extends BorderPane {
         zoomLocation.setOnAction(event -> mapView.generateZoomLocationUI());
 
         // Menu to show/hide markers        
-        final MenuButtonCheckCombobox markerMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
-        markerMenuButton.getMenuButton().setGraphic(loadIcon("resources/periscope.png"));
+        final MenuButtonCheckCombobox markerMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_CLUSTER, SELECTED_ONLY), false, false);
+        markerMenuButton.setIcon(parent.getClass().getResource("resources/location-pin.png").toString());
 
         markerMenuButton.getMenuButton().setTooltip(new Tooltip("Choose which markers are displayed in the Map View"));
         markerMenuButton.selectItem(MARKER_TYPE_POINT);
@@ -280,15 +271,18 @@ public class MapViewPane extends BorderPane {
             markerMenuButton.getOptionMap().keySet().forEach(key -> mapView.updateShowingMarkers(getMarkerTypeFromString((String) key), markerMenuButton.getOptionMap().get(key).isSelected()));
         });
 
-
         // Marker colour mneu setup and event handling
-        colourDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(DEFAULT_COLOURS, USE_COLOUR_ATTR, USE_OVERLAY_COL, USE_BLAZE_COL)));
-        colourDropDown.getSelectionModel().selectFirst();
-        colourDropDown.setTooltip(new Tooltip("Chose the color scheme for markers displayed in the Map View"));
-
-        colourDropDown.setOnAction(event -> mapView.getMarkerColourProperty().set(colourDropDown.getValue()));
-        colourDropDown.setMinWidth(120);
-        colourDropDown.setMaxWidth(120);
+        final MenuButtonCheckCombobox coloursMenuButton = new MenuButtonCheckCombobox(FXCollections.observableList(Arrays.asList(DEFAULT_COLOURS, USE_COLOUR_ATTR, USE_OVERLAY_COL, USE_BLAZE_COL)), true, false);
+        coloursMenuButton.setIcon(parent.getClass().getResource("resources/paint-roller.png").toString());
+        coloursMenuButton.selectItem(DEFAULT_COLOURS);
+        coloursMenuButton.getMenuButton().setTooltip(new Tooltip("Chose the color scheme for markers displayed in the Map View"));
+        coloursMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
+            coloursMenuButton.getOptionMap().keySet().forEach(key -> {
+                if (coloursMenuButton.getOptionMap().get(key).isSelected()) {
+                    mapView.getMarkerColourProperty().set(key);
+                }
+            });
+        });
 
         // Marker label menu setup and event handling
         markerLabelDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(NO_LABELS, USE_LABEL_ATTR, USE_IDENT_ATTR)));
@@ -335,29 +329,15 @@ public class MapViewPane extends BorderPane {
         helpButton.setTooltip(new Tooltip("Help on using the Map View"));
 
         toolBarGridPane.add(mapProviderDropDown, 0, 0);
-        toolBarGridPane.add(layersDropDown, 1, 0);
-        toolBarGridPane.add(overlaysDropDown, 2, 0);
+        toolBarGridPane.add(layersMenuButton.getMenuButton(), 1, 0);
+        toolBarGridPane.add(overlaysMenuButton.getMenuButton(), 2, 0);
         toolBarGridPane.add(zoomDropDown, 3, 0);
         toolBarGridPane.add(markerMenuButton.getMenuButton(), 4, 0);
-        toolBarGridPane.add(colourDropDown, 5, 0);
+        toolBarGridPane.add(coloursMenuButton.getMenuButton(), 5, 0);
         toolBarGridPane.add(markerLabelDropDown, 6, 0);
         toolBarGridPane.add(exportDropDown, 7, 0);
         toolBarGridPane.add(helpButton, 8, 0);
         setTop(toolBarGridPane);
-    }
-
-    private ImageView loadIcon(final String path) {
-        //try {
-
-        //final WritableImage img = new WritableImage(16, 16);
-        final Image img = new Image(parent.getClass().getResource(path).toString());
-        final ImageView iconView = new ImageView(img);
-        return iconView;
-        //} catch (final FileNotFoundException ex) {
-        //Exceptions.printStackTrace(ex);
-        //}
-
-        //return null;
     }
 
     /**
@@ -365,8 +345,8 @@ public class MapViewPane extends BorderPane {
      *
      * @param overlay - string representing the overlay
      */
-    private void toggleOverlay(final String overlay) {
-        mapView.toggleOverlay(overlay, overlaysDropDown.getCheckModel().isChecked(overlay));
+    private void toggleOverlay(final String overlay, final boolean isChecked) {
+        mapView.toggleOverlay(overlay, isChecked);
     }
 
     /**
@@ -404,12 +384,13 @@ public class MapViewPane extends BorderPane {
      *
      * @param key - key specifying the layer
      * @param id - a new id for the layer if it is going to be working
+     * @param isChecked - is the item is checked or not
      */
-    private void addLayer(final String key, final int id) {
-        if (layersDropDown.getCheckModel().getCheckedItems().contains(key) && !layerMap.containsKey(key)) {
+    private void addLayer(final String key, final int id, final boolean isChecked) {
+        if (isChecked && !layerMap.containsKey(key)) {
             mapView.addLayer(getLayerFromKey(key));
             layerMap.put(key, id);
-        } else if (!layersDropDown.getCheckModel().getCheckedItems().contains(key) && layerMap.containsKey(key)) {
+        } else if (!isChecked && layerMap.containsKey(key)) {
             mapView.removeLayer(layerMap.get(key));
             layerMap.remove(key);
         }

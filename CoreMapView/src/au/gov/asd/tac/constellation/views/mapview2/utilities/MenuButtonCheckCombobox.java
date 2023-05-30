@@ -42,13 +42,28 @@ public class MenuButtonCheckCombobox {
     final Map<String, CheckBox> optionMap = new HashMap<>();
     final BooleanProperty itemClicked = new SimpleBooleanProperty(false);
     private static final Logger LOGGER = Logger.getLogger(MenuButtonCheckCombobox.class.getName());
+    private boolean isSingleChoice = false;
+    private boolean hideOnClick = false;
 
-    public MenuButtonCheckCombobox(final List<String> options) {
+    public MenuButtonCheckCombobox(final List<String> options, final boolean isSingleChoice, final boolean hideOnClick) {
+        this.isSingleChoice = isSingleChoice;
+        this.hideOnClick = hideOnClick;
         options.forEach(option -> {
             
             final CheckBox optionCB = new CheckBox(option);
 
             optionCB.setOnAction(event -> {
+
+                if (this.isSingleChoice) {
+                    optionCB.setSelected(true);
+
+                    optionMap.keySet().forEach(key -> {
+                        if (optionMap.get(key).isSelected() && !key.equals(option)) {
+                            optionMap.get(key).setSelected(false);
+                        }
+                    });
+                }
+
                 itemClicked.set(!itemClicked.get());
             });
 
@@ -59,7 +74,7 @@ public class MenuButtonCheckCombobox {
             }
 
             final CustomMenuItem mi = new CustomMenuItem(optionCB);
-            mi.setHideOnClick(false);
+            mi.setHideOnClick(this.hideOnClick);
             menuButton.getItems().add(mi);
         });
     }
@@ -83,7 +98,6 @@ public class MenuButtonCheckCombobox {
     }
 
     public void setIcon(final String path) {
-        //final File iconImageFile = ConstellationInstalledFileLocator.locate(path, "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain());
         final Image img = new Image(path);
         final ImageView iconView = new ImageView(img);
         menuButton.setGraphic(iconView);
