@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview2;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
 import au.gov.asd.tac.constellation.utilities.geospatial.Geohash;
 
@@ -78,6 +79,7 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -1196,8 +1198,8 @@ public class MapView extends ScrollPane {
     public void generateZoomLocationUI() {
         if (!showingZoomToLocationPane) {
             final Stage stage = new Stage();
-            final double width = 750;
-            final double height = 225;
+            final double width = 650;
+            final double height = 180;
 
             final BorderPane pane = new BorderPane();
             pane.prefHeight(height);
@@ -1206,41 +1208,45 @@ public class MapView extends ScrollPane {
             pane.maxWidth(width);
             pane.maxHeight(height);
 
-            pane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+            pane.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#222222").getJavaFXColor(), null, null)));
 
             final GridPane topGridPane = new GridPane();
             pane.setCenter(topGridPane);
 
-            final Text titleText = new Text("Zoom to Location");
-            titleText.setFill(Color.WHITE);
+            stage.setTitle("Zoom to Location");
 
-
-            final Text geoTypeLabel = new Text("Geo Type");
+            final Text geoTypeLabel = new Text("   Geo Type");
             geoTypeLabel.setFill(Color.WHITE);
 
             final ComboBox<String> geoTypeMenu = new ComboBox<>(FXCollections.observableList(Arrays.asList(COORDINATE, GEOHASH, MGRS)));
             geoTypeMenu.getSelectionModel().selectFirst();
+            //geoTypeMenu.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
+            //geoTypeMenu.setStyle("-fx-text-fill: #FFFFFF;");
+
             final Text lattitudeLabel = new Text("Lattitude");
-            lattitudeLabel.setFill(Color.AQUA);
+            lattitudeLabel.setFill(Color.WHITE);
 
             final Text longitudeLabel = new Text("Longitude");
-            longitudeLabel.setFill(Color.AQUA);
+            longitudeLabel.setFill(Color.WHITE);
 
             final Text radiusLabel = new Text("Radius");
-            radiusLabel.setFill(Color.AQUA);
+            radiusLabel.setFill(Color.WHITE);
 
             final TextField lattitudeInput = new TextField();
-            lattitudeInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
+            lattitudeInput.setBorder(new Border(new BorderStroke(Color.WHITE, null, null, null)));
+            lattitudeInput.setStyle("-fx-text-fill: #FFFFFF;");
 
-            lattitudeInput.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+            lattitudeInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
 
             final TextField longitudeInput = new TextField();
-            longitudeInput.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-            longitudeInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
+            longitudeInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
+            longitudeInput.setBorder(new Border(new BorderStroke(Color.WHITE, null, null, null)));
+            longitudeInput.setStyle("-fx-text-fill: #FFFFFF;");
 
             final TextField radiusInput = new TextField();
-            radiusInput.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-            radiusInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
+            radiusInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
+            radiusInput.setBorder(new Border(new BorderStroke(Color.WHITE, null, null, null)));
+            radiusInput.setStyle("-fx-text-fill: #FFFFFF;");
 
             final GridPane coordinateGridPane = new GridPane();
             coordinateGridPane.setHgap(10);
@@ -1256,9 +1262,13 @@ public class MapView extends ScrollPane {
 
             final Text geoHashLabel = new Text("Base-16 geohash value");
             final TextField geoHashInput = new TextField();
+            geoHashInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
+            geoHashInput.setStyle("-fx-text-fill: #FFFFFF;");
 
             final Text mgrsLabel = new Text("MGRS value");
             final TextField mgrsInput = new TextField();
+            mgrsInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
+            mgrsInput.setStyle("-fx-text-fill: #FFFFFF;");
 
             // Change coordinate UI based on geoType
             geoTypeMenu.setOnAction(event -> {
@@ -1280,16 +1290,16 @@ public class MapView extends ScrollPane {
                     stage.setWidth(width);
 
                 } else if (selectedItem.equals(GEOHASH)) {
-                    geoHashLabel.setFill(Color.AQUA);
-                    geoHashInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
+                    geoHashLabel.setFill(Color.WHITE);
+                    geoHashInput.setBorder(new Border(new BorderStroke(Color.WHITE, null, null, null)));
                     coordinateGridPane.add(geoHashLabel, 0, 0);
                     coordinateGridPane.add(geoHashInput, 0, 1);
                     pane.setMinWidth(420);
                     pane.setMaxWidth(420);
                     stage.setWidth(420);
                 } else if (selectedItem.equals(MGRS)) {
-                    mgrsLabel.setFill(Color.AQUA);
-                    mgrsInput.setBorder(new Border(new BorderStroke(Color.AQUA, null, null, null)));
+                    mgrsLabel.setFill(Color.WHITE);
+                    mgrsInput.setBorder(new Border(new BorderStroke(Color.WHITE, null, null, null)));
                     coordinateGridPane.add(mgrsLabel, 0, 0);
                     coordinateGridPane.add(mgrsInput, 0, 1);
                     pane.setMinWidth(420);
@@ -1302,17 +1312,16 @@ public class MapView extends ScrollPane {
 
 
             final Button okButton = new Button("OK");
-            okButton.setTextFill(Color.WHITE);
-            okButton.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-            okButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+            okButton.setTextFill(Color.BLACK);
+            okButton.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#26ED49").getJavaFXColor(), null, null)));
 
             okButton.setOnMouseEntered(event -> {
-                okButton.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+                okButton.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#86ED26").getJavaFXColor(), null, null)));
                 okButton.setTextFill(Color.BLACK);
             });
             okButton.setOnMouseExited(event -> {
-                okButton.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-                okButton.setTextFill(Color.WHITE);
+                okButton.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#26ED49").getJavaFXColor(), null, null)));
+                okButton.setTextFill(Color.BLACK);
             });
 
             final double zoomCircleMarkerXOffset = 100;
@@ -1405,17 +1414,16 @@ public class MapView extends ScrollPane {
             });
 
             final Button cancelButton = new Button("Cancel");
-            cancelButton.setTextFill(Color.WHITE);
-            cancelButton.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-            cancelButton.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+            cancelButton.setTextFill(Color.BLACK);
+            cancelButton.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#DEC20B").getJavaFXColor(), null, null)));
 
             cancelButton.setOnMouseEntered(event -> {
-                cancelButton.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+                cancelButton.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#DBA800").getJavaFXColor(), null, null)));
                 cancelButton.setTextFill(Color.BLACK);
             });
             cancelButton.setOnMouseExited(event -> {
-                cancelButton.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-                cancelButton.setTextFill(Color.WHITE);
+                cancelButton.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#DEC20B").getJavaFXColor(), null, null)));
+                cancelButton.setTextFill(Color.BLACK);
             });
 
             cancelButton.setOnAction(event -> {
@@ -1425,11 +1433,11 @@ public class MapView extends ScrollPane {
                 stage.close();
             });
 
+            final HBox topHBox = new HBox(5, geoTypeLabel, geoTypeMenu);
+
             final GridPane bottomGridPane = new GridPane();
 
-            topGridPane.add(titleText, 0, 0);
-            topGridPane.add(geoTypeLabel, 0, 1);
-            topGridPane.add(geoTypeMenu, 1, 1);
+            topGridPane.add(topHBox, 0, 1);
             topGridPane.setHgap(10);
             topGridPane.setVgap(10);
 

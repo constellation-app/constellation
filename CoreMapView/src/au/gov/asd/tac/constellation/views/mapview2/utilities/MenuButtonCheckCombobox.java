@@ -15,24 +15,20 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
-import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
-import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
+ * A check combo box component that supports single and multi selections as well
+ * as an icon for the drop down
  *
  * @author altair1673
  */
@@ -41,7 +37,6 @@ public class MenuButtonCheckCombobox {
     final MenuButton menuButton = new MenuButton();
     final Map<String, CheckBox> optionMap = new HashMap<>();
     final BooleanProperty itemClicked = new SimpleBooleanProperty(false);
-    private static final Logger LOGGER = Logger.getLogger(MenuButtonCheckCombobox.class.getName());
     private boolean isSingleChoice = false;
     private boolean hideOnClick = false;
 
