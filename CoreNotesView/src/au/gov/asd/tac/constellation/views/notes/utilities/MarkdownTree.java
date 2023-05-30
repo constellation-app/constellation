@@ -52,7 +52,7 @@ public class MarkdownTree {
     private static final Pattern ITALIC_PATTERN_2 = Pattern.compile("_\\s?([^\\n`]+)_");
     private static final Pattern STRIKE_THROUGH_PATTERN = Pattern.compile("~~\\s?([^\\n]+)~~");
     private static final Pattern HASH_PATTERN = Pattern.compile("#{1,}");
-    private static final Pattern DIGIT_PATTERN = Pattern.compile("\\d+.");
+    private static final Pattern DIGIT_PATTERN = Pattern.compile("\\d{1,5}.");
 
     public MarkdownTree() {
         root = new MarkdownNode();
