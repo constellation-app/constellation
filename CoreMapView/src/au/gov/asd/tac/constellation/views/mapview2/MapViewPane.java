@@ -209,7 +209,12 @@ public class MapViewPane extends BorderPane {
         final MenuButtonCheckCombobox layersMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS), false, false);
         layersMenuButton.getMenuButton().setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
         layersMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
-            layersMenuButton.getOptionMap().keySet().forEach(key -> addLayer(key, layerId, layersMenuButton.getOptionMap().get(key).isSelected()));
+            if (parent.getCurrentGraph() != null) {
+                layersMenuButton.getOptionMap().keySet().forEach(key -> addLayer(key, layerId, layersMenuButton.getOptionMap().get(key).isSelected()));
+            } else {
+                layersMenuButton.revertLastAction();
+                NotifyDisplayer.display("Layer options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
         layersMenuButton.setIcon(parent.getClass().getResource("resources/layers.png").toString());
 
@@ -219,18 +224,23 @@ public class MapViewPane extends BorderPane {
         overlaysMenuButton.setIcon(parent.getClass().getResource("resources/overlays.png").toString());
         // Overlay event handler
         overlaysMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
-            overlaysMenuButton.getOptionMap().keySet().forEach(key -> {
-                toggleOverlay(key, overlaysMenuButton.getOptionMap().get(key).isSelected());
+            if (parent.getCurrentGraph() != null) {
+                overlaysMenuButton.getOptionMap().keySet().forEach(key -> {
+                    toggleOverlay(key, overlaysMenuButton.getOptionMap().get(key).isSelected());
 
-                if (key.equals(INFO_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected() && !toolBarGridPane.getChildren().contains(latLabel)) {
-                    toolBarGridPane.add(latLabel, 0, 1);
-                    toolBarGridPane.add(latField, 1, 1);
-                    toolBarGridPane.add(lonLabel, 2, 1);
-                    toolBarGridPane.add(lonField, 3, 1);
-                } else if (key.equals(INFO_OVERLAY) && !overlaysMenuButton.getOptionMap().get(key).isSelected()) {
-                    toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
-                }
-            });
+                    if (key.equals(INFO_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected() && !toolBarGridPane.getChildren().contains(latLabel)) {
+                        toolBarGridPane.add(latLabel, 0, 1);
+                        toolBarGridPane.add(latField, 1, 1);
+                        toolBarGridPane.add(lonLabel, 2, 1);
+                        toolBarGridPane.add(lonField, 3, 1);
+                    } else if (key.equals(INFO_OVERLAY) && !overlaysMenuButton.getOptionMap().get(key).isSelected()) {
+                        toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
+                    }
+                });
+            } else {
+                overlaysMenuButton.revertLastAction();
+                NotifyDisplayer.display("Overlay options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
 
         // Zoom menu set up and event handling
@@ -245,16 +255,30 @@ public class MapViewPane extends BorderPane {
 
 
         zoomAll.setOnAction(event -> {
-            mapView.panToCenter();
-            mapView.panToAll();
+            if (parent.getCurrentGraph() != null) {
+                mapView.panToCenter();
+                mapView.panToAll();
+            } else {
+                NotifyDisplayer.display("Zoom options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
 
         zoomSelection.setOnAction(event -> {
-            mapView.panToCenter();
-            mapView.panToSelection();
+            if (parent.getCurrentGraph() != null) {
+                mapView.panToCenter();
+                mapView.panToSelection();
+            } else {
+                NotifyDisplayer.display("Zoom options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
 
-        zoomLocation.setOnAction(event -> mapView.generateZoomLocationUI());
+        zoomLocation.setOnAction(event -> {
+            if (parent.getCurrentGraph() != null) {
+                mapView.generateZoomLocationUI();
+            } else {
+                NotifyDisplayer.display("Zoom options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
+        });
 
         // Menu to show/hide markers        
         final MenuButtonCheckCombobox markerMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_CLUSTER, SELECTED_ONLY), false, false);
@@ -266,7 +290,12 @@ public class MapViewPane extends BorderPane {
         markerMenuButton.selectItem(MARKER_TYPE_POLYGON);
         // Event handler for hiding/showing markers
         markerMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
-            markerMenuButton.getOptionMap().keySet().forEach(key -> mapView.updateShowingMarkers(getMarkerTypeFromString((String) key), markerMenuButton.getOptionMap().get(key).isSelected()));
+            if (parent.getCurrentGraph() != null) {
+                markerMenuButton.getOptionMap().keySet().forEach(key -> mapView.updateShowingMarkers(getMarkerTypeFromString((String) key), markerMenuButton.getOptionMap().get(key).isSelected()));
+            } else {
+                markerMenuButton.revertLastAction();
+                NotifyDisplayer.display("Marker options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
 
         // Marker colour mneu setup and event handling
@@ -275,11 +304,17 @@ public class MapViewPane extends BorderPane {
         coloursMenuButton.selectItem(DEFAULT_COLOURS);
         coloursMenuButton.getMenuButton().setTooltip(new Tooltip("Chose the color scheme for markers displayed in the Map View"));
         coloursMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
-            coloursMenuButton.getOptionMap().keySet().forEach(key -> {
-                if (coloursMenuButton.getOptionMap().get(key).isSelected()) {
-                    mapView.getMarkerColourProperty().set(key);
-                }
-            });
+            if (parent.getCurrentGraph() != null) {
+                coloursMenuButton.getOptionMap().keySet().forEach(key -> {
+                    if (coloursMenuButton.getOptionMap().get(key).isSelected()) {
+                        mapView.getMarkerColourProperty().set(key);
+                    }
+                });
+            } else {
+                coloursMenuButton.revertLastAction();
+                coloursMenuButton.selectItem(DEFAULT_COLOURS);
+                NotifyDisplayer.display("Colour options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
 
         // Marker label menu setup and event handling
@@ -288,11 +323,17 @@ public class MapViewPane extends BorderPane {
         labelsMenuButton.selectItem(NO_LABELS);
         labelsMenuButton.getMenuButton().setTooltip(new Tooltip("Chose the label for markers displayed in the Map View"));
         labelsMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
-            labelsMenuButton.getOptionMap().keySet().forEach(key -> {
-                if (labelsMenuButton.getOptionMap().get(key).isSelected()) {
-                    mapView.getMarkerTextProperty().set(key);
-                }
-            });
+            if (parent.getCurrentGraph() != null) {
+                labelsMenuButton.getOptionMap().keySet().forEach(key -> {
+                    if (labelsMenuButton.getOptionMap().get(key).isSelected()) {
+                        mapView.getMarkerTextProperty().set(key);
+                    }
+                });
+            } else {
+                labelsMenuButton.revertLastAction();
+                labelsMenuButton.selectItem(NO_LABELS);
+                NotifyDisplayer.display("Label options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
 
         // Export menu setup and eventer handling
@@ -323,6 +364,7 @@ public class MapViewPane extends BorderPane {
                     }
                 });
             } else {
+                exportMenuButton.revertLastAction();
                 NotifyDisplayer.display("Export options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });

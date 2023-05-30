@@ -39,6 +39,7 @@ public class MenuButtonCheckCombobox {
     final BooleanProperty itemClicked = new SimpleBooleanProperty(false);
     private boolean isSingleChoice = false;
     private boolean hideOnClick = false;
+    private String lastChange = "";
 
     public MenuButtonCheckCombobox(final List<String> options, final boolean isSingleChoice, final boolean hideOnClick) {
         this.isSingleChoice = isSingleChoice;
@@ -48,7 +49,7 @@ public class MenuButtonCheckCombobox {
             final CheckBox optionCB = new CheckBox(option);
 
             optionCB.setOnAction(event -> {
-
+                lastChange = option;
                 if (this.isSingleChoice) {
                     optionCB.setSelected(true);
 
@@ -96,5 +97,15 @@ public class MenuButtonCheckCombobox {
         final Image img = new Image(path);
         final ImageView iconView = new ImageView(img);
         menuButton.setGraphic(iconView);
+    }
+
+    public void revertLastAction() {
+        if (optionMap.containsKey(lastChange)) {
+            if (optionMap.get(lastChange).isSelected()) {
+                optionMap.get(lastChange).setSelected(false);
+            } else {
+                optionMap.get(lastChange).setSelected(true);
+            }
+        }
     }
 }
