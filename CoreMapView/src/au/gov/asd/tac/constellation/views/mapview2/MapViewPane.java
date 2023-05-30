@@ -159,8 +159,6 @@ public class MapViewPane extends BorderPane {
     private final ChoiceBox<MapProvider> mapProviderDropDown;
     private final MenuButton zoomDropDown;
 
-    private final ChoiceBox<String> markerLabelDropDown;
-    private final ComboBox<String> exportDropDown;
     private final Button helpButton;
     private final List<String> dropDownOptions = new ArrayList<>();
     private final Label latLabel = new Label("Latitude: ");
@@ -285,44 +283,49 @@ public class MapViewPane extends BorderPane {
         });
 
         // Marker label menu setup and event handling
-        markerLabelDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(NO_LABELS, USE_LABEL_ATTR, USE_IDENT_ATTR)));
-        markerLabelDropDown.getSelectionModel().selectFirst();
-        markerLabelDropDown.setTooltip(new Tooltip("Chose the label for markers displayed in the Map View"));
-
-        markerLabelDropDown.setOnAction(event -> mapView.getMarkerTextProperty().set(markerLabelDropDown.getValue()));
-        markerLabelDropDown.setMinWidth(95);
-        markerLabelDropDown.setMaxWidth(95);
+        final MenuButtonCheckCombobox labelsMenuButton = new MenuButtonCheckCombobox(FXCollections.observableList(Arrays.asList(NO_LABELS, USE_LABEL_ATTR, USE_IDENT_ATTR)), true, false);
+        labelsMenuButton.setIcon(parent.getClass().getResource("resources/price-label.png").toString());
+        labelsMenuButton.selectItem(NO_LABELS);
+        labelsMenuButton.getMenuButton().setTooltip(new Tooltip("Chose the label for markers displayed in the Map View"));
+        labelsMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
+            labelsMenuButton.getOptionMap().keySet().forEach(key -> {
+                if (labelsMenuButton.getOptionMap().get(key).isSelected()) {
+                    mapView.getMarkerTextProperty().set(key);
+                }
+            });
+        });
 
         // Export menu setup and eventer handling
-        exportDropDown = new ComboBox(FXCollections.observableList(Arrays.asList("Export", GEO_JSON, GEO_PACKAGE, KML, SHAPEFILE)));
-        exportDropDown.getSelectionModel().selectFirst();
-
-        exportDropDown.setOnAction(event -> {
+        final MenuButtonCheckCombobox exportMenuButton = new MenuButtonCheckCombobox(FXCollections.observableList(Arrays.asList(GEO_JSON, GEO_PACKAGE, KML, SHAPEFILE)), true, true);
+        exportMenuButton.getMenuButton().setTooltip(new Tooltip("Export from the Map View"));
+        exportMenuButton.setIcon(parent.getClass().getResource("resources/download.png").toString());
+        exportMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
             if (parent.getCurrentGraph() != null) {
-                MapExporterWrapper exporterWrapper = null;
+                exportMenuButton.getOptionMap().keySet().forEach(key -> {
+                    if (exportMenuButton.getOptionMap().get(key).isSelected()) {
+                        MapExporterWrapper exporterWrapper = null;
+                        if (key.equals(GEO_JSON)) {
+                            exporterWrapper = new MapExporterWrapper(new GeoJsonExporter());
+                        } else if (key.equals(KML)) {
+                            exporterWrapper = new MapExporterWrapper(new KmlExporter());
+                        } else if (key.equals(SHAPEFILE)) {
+                            exporterWrapper = new MapExporterWrapper(new ShapefileExporter());
+                        } else if (key.equals(GEO_PACKAGE)) {
+                            exporterWrapper = new MapExporterWrapper(new GeoPackageExporter());
+                        }
 
-                final String selectedItem = exportDropDown.getSelectionModel().getSelectedItem();
-                if (selectedItem.equals(GEO_JSON)) {
-                    exporterWrapper = new MapExporterWrapper(new GeoJsonExporter());
-                } else if (selectedItem.equals(KML)) {
-                    exporterWrapper = new MapExporterWrapper(new KmlExporter());
-                } else if (selectedItem.equals(SHAPEFILE)) {
-                    exporterWrapper = new MapExporterWrapper(new ShapefileExporter());
-                } else if (selectedItem.equals(GEO_PACKAGE)) {
-                    exporterWrapper = new MapExporterWrapper(new GeoPackageExporter());
-                }
+                        PluginExecution
+                                .withPlugin(exporterWrapper.getExporter().getPluginReference())
+                                .interactively(true)
+                                .executeLater(parent.getCurrentGraph());
 
-                PluginExecution
-                        .withPlugin(exporterWrapper.getExporter().getPluginReference())
-                        .interactively(true)
-                        .executeLater(parent.getCurrentGraph());
+                        exportMenuButton.getOptionMap().get(key).setSelected(false);
+                    }
+                });
             } else {
                 NotifyDisplayer.display("Export options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
-        exportDropDown.setTooltip(new Tooltip("Export from the Map View"));
-        exportDropDown.setMinWidth(110);
-        exportDropDown.setMaxWidth(110);
 
         helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
@@ -334,8 +337,8 @@ public class MapViewPane extends BorderPane {
         toolBarGridPane.add(zoomDropDown, 3, 0);
         toolBarGridPane.add(markerMenuButton.getMenuButton(), 4, 0);
         toolBarGridPane.add(coloursMenuButton.getMenuButton(), 5, 0);
-        toolBarGridPane.add(markerLabelDropDown, 6, 0);
-        toolBarGridPane.add(exportDropDown, 7, 0);
+        toolBarGridPane.add(labelsMenuButton.getMenuButton(), 6, 0);
+        toolBarGridPane.add(exportMenuButton.getMenuButton(), 7, 0);
         toolBarGridPane.add(helpButton, 8, 0);
         setTop(toolBarGridPane);
     }
