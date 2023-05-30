@@ -27,7 +27,7 @@ import java.util.List;
 public class MarkdownNode {
 
     // Can have many children
-    private final List<MarkdownNode> children = new ArrayList<MarkdownNode>();
+    private final List<MarkdownNode> children = new ArrayList<>();
 
     private int startIndex = -99;
     private int endIndex = -99;

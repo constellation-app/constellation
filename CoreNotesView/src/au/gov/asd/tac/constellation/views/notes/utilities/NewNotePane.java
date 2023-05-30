@@ -18,10 +18,7 @@ package au.gov.asd.tac.constellation.views.notes.utilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -62,7 +59,7 @@ import javafx.stage.Window;
 public class NewNotePane {
     private boolean isFirstTime = true;
     private final Pane dialogPane;
-    private final static String FONT_SIZE_STRING = "-fx-font-size:%d;";
+    private static final String FONT_SIZE_STRING = "-fx-font-size:%d;";
     private final String fontStyle = String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize());
     private static final String PROMPT_COLOR = "#909090";
     private static final double WIDTH = 500;
@@ -71,8 +68,6 @@ public class NewNotePane {
     private final TextArea contentField;
     private final TextField titleField = new TextField();
     private final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
-    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
-
 
     private final TabPane tabPane;
     private final TextFlow previewTextFlow;
@@ -150,11 +145,6 @@ public class NewNotePane {
                 previewTextFlow.getChildren().clear();
                 final MarkdownTree mdTree = new MarkdownTree(titleField.getText() + "\n\n" + contentField.getText());
                 mdTree.parse();
-                //final List<TextHelper> textNodes = mdTree.getTextNodes();
-
-                /*for (int i = 0; i < textNodes.size(); ++i) {
-                    preview.getChildren().add(textNodes.get(i).getText());
-                }*/
                 previewTextFlow.getChildren().add(mdTree.getRenderedText());
             }
         });

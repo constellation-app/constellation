@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import javafx.scene.text.TextFlow;
 
 /**
@@ -31,7 +30,6 @@ import javafx.scene.text.TextFlow;
 public class NotesViewEntry implements PluginReportListener {
 
     private int id = -99;
-    private static final Logger LOGGER = Logger.getLogger(NotesViewEntry.class.getName());
 
     private final String dateTime;
     private String noteTitle;

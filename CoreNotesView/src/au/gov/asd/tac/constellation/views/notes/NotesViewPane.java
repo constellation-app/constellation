@@ -108,8 +108,6 @@ public class NotesViewPane extends BorderPane {
      * exists in notesViewEntries. This is a necessary optimisation.
      */
     private final Set<String> notesDateTimeCache;
-
-    //private TextFlow contentTextFlow;
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
     private final CheckComboBox filterCheckComboBox;
@@ -156,8 +154,6 @@ public class NotesViewPane extends BorderPane {
     private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
-
-    private ChangeListener sizeChangeListener;
 
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
@@ -735,7 +731,6 @@ public class NotesViewPane extends BorderPane {
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.parse();
         newNote.setContentTextFlow(md.getRenderedText());
-        //newNote.setTextFlowObjects(newNote.getContentTextFlow().getChildren());
         newNote.getContentTextFlow().setMinWidth(50);
 
         final StackPane containerPane = new StackPane();
@@ -874,14 +869,12 @@ public class NotesViewPane extends BorderPane {
         noteBody.setMaxHeight(Double.MAX_VALUE);
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
-            //LOGGER.log(Level.SEVERE, "Height of note: " + obs.getValue().doubleValue());
 
             if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10 && !showMoreButton.isVisible()) {
                 showMoreButton.setVisible(true);
                 showMoreButton.setText(SHOW_MORE);
                 LOGGER.log(Level.SEVERE, "Resizing note body");
                 noteBody.setMaxHeight(NOTE_HEIGHT - 5);
-                //resizeTextFlow(newNote, noteBody);
 
             } else if (obs.getValue().doubleValue() < NOTE_HEIGHT - 10 && showMoreButton.isVisible()) {
                 showMoreButton.setVisible(false);
@@ -900,7 +893,6 @@ public class NotesViewPane extends BorderPane {
 
         noteBody.prefWidthProperty().bind(this.widthProperty());
         newNote.getContentTextFlow().prefWidthProperty().bind(noteBody.widthProperty().subtract(10));
-        //contentTextFlow.prefHeightProperty().bind(noteBody.heightProperty());
 
         showMoreButton.setOnAction(event -> {
             if (showMoreButton.getText().equals(SHOW_MORE)) {
@@ -1102,7 +1094,6 @@ public class NotesViewPane extends BorderPane {
             } else {
                 newNote.setNoteTitle(titleText.getText());
                 newNote.setNoteContent(contentTextArea.getText());
-                //contentTextFlow = null;
 
                 final MarkdownTree mdTree = new MarkdownTree(titleText.getText() + "\n\n" + contentTextArea.getText());
                 mdTree.parse();

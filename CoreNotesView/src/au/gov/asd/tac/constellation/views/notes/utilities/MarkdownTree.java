@@ -26,7 +26,6 @@ import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
@@ -46,12 +45,14 @@ public class MarkdownTree {
     private String rawString = "";
 
     // The different markdown syntax patterns supported
-    private final Pattern headingPattern = Pattern.compile("#{1,6}\\s([^\\n]+)");
-    private final Pattern boldPattern = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
-    private final Pattern boldPattern2 = Pattern.compile("__\\s?([^\\n]+)__");
-    private final Pattern italicPattern = Pattern.compile("\\*\\s?([^\\n]+)\\*");
-    private final Pattern italicPattern2 = Pattern.compile("_\\s?([^\\n`]+)_");
-    private final Pattern strikeThroughPattern = Pattern.compile("~~\\s?([^\\n]+)~~");
+    private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)");
+    private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
+    private static final Pattern BOLD_PATTERN_2 = Pattern.compile("__\\s?([^\\n]+)__");
+    private static final Pattern ITALIC_PATTERN = Pattern.compile("\\*\\s?([^\\n]+)\\*");
+    private static final Pattern ITALIC_PATTERN_2 = Pattern.compile("_\\s?([^\\n`]+)_");
+    private static final Pattern STRIKE_THROUGH_PATTERN = Pattern.compile("~~\\s?([^\\n]+)~~");
+    private static final Pattern HASH_PATTERN = Pattern.compile("#{1,}");
+    private static final Pattern DIGIT_PATTERN = Pattern.compile("\\d+.");
 
     public MarkdownTree() {
         root = new MarkdownNode();
@@ -88,7 +89,7 @@ public class MarkdownTree {
         }
 
         // Default letter for bold syntax
-        char boldSyntax = 'f';
+        char boldSyntax;
 
         // Track what part of the string is being parsed
         int currentIndex = 0;
@@ -125,26 +126,17 @@ public class MarkdownTree {
                 // Markdown node to contain raw text
                 MarkdownNode normal;
 
-                // If closest syntax is within the range of th elist size and it points to a new line character then create a MarkdownNode of type NORMAL including the
-                // new line character
-                /*if (closestSyntax != text.length() - 1 && text.charAt(closestSyntax) == '\n') {
-                    normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax + 1), -99);
-
-                    // else if the closestSyntax points to a dot then checl to see if there is anything before the dot and if the character before is a number 1
-                    // Also check that the current node is of type ORDERED_LIST or LIST_ITEM
-                } else*/ if (text.charAt(closestSyntax) == '.'
+                if (text.charAt(closestSyntax) == '.'
                         && closestSyntax - 1 >= 0
                         && Character.isDigit(text.charAt(closestSyntax - 1))
                         && ((currentNode.getType() == MarkdownNode.Type.ORDERED_LIST
                         || currentNode.getType() == MarkdownNode.Type.LIST_ITEM)
                         || text.charAt(closestSyntax - 1) == '1')) {
                     // Check that digits exist before the dot
-                    final Pattern digitPattern = Pattern.compile("\\d+.");
-                    final Matcher digitMatcher = digitPattern.matcher(text.substring(currentIndex));
+                    final Matcher digitMatcher = DIGIT_PATTERN.matcher(text.substring(currentIndex));
 
                     // If it does create a MarkdownNode of type normal contaning text from the currentIndex to before the list item number
                     if (digitMatcher.find()) {
-                        //LOGGER.log(Level.SEVERE, "Digit pattern: " + digitMatcher.group());
                         normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax - (digitMatcher.group().length() - 1)), -99);
 
                         // Else create a normal node with type with text up to the dot
@@ -166,11 +158,10 @@ public class MarkdownTree {
             if (text.charAt(closestSyntax) == '#') {
                 currentIndex = closestSyntax;
                 // Match the line of text containing the heading
-                final Matcher headingMatcher = headingPattern.matcher(text.substring(closestSyntax));
+                final Matcher headingMatcher = HEADING_PATTERN.matcher(text.substring(closestSyntax));
 
                 // Match the hashes at the start of the heading
-                final Pattern hashPattern = Pattern.compile("#{1,}");
-                final Matcher hashMatcher = hashPattern.matcher(text.substring(closestSyntax));
+                final Matcher hashMatcher = HASH_PATTERN.matcher(text.substring(closestSyntax));
 
                 // If a heading is found AND a set of hashes is found
                 if (headingMatcher.find() && hashMatcher.find()) {
@@ -184,9 +175,9 @@ public class MarkdownTree {
 
                     // Set currentIndex to be after the heading string
                     currentIndex += headingMatcher.end();
-                }
-                else
+                } else {
                     currentIndex++;
+                }
 
                 // Else if the clostst syntax is the bold/italic syntax
             } else if (text.charAt(closestSyntax) == boldSyntax) {
@@ -198,9 +189,9 @@ public class MarkdownTree {
 
                     // Get a matcher object based on which symbol the user has used
                     if (text.charAt(currentIndex) == '*') {
-                        boldMatcher = boldPattern.matcher(text.substring(currentIndex));
+                        boldMatcher = BOLD_PATTERN.matcher(text.substring(currentIndex));
                     } else {
-                        boldMatcher = boldPattern2.matcher(text.substring(currentIndex));
+                        boldMatcher = BOLD_PATTERN_2.matcher(text.substring(currentIndex));
                     }
 
                     // Find the bolded text
@@ -221,9 +212,9 @@ public class MarkdownTree {
 
                     // Check for specific italic syntax and get a Matcher out of it
                     if (text.charAt(currentIndex) == '*') {
-                        italicMatcher = italicPattern.matcher(text.substring(currentIndex));
+                        italicMatcher = ITALIC_PATTERN.matcher(text.substring(currentIndex));
                     } else {
-                        italicMatcher = italicPattern2.matcher(text.substring(currentIndex));
+                        italicMatcher = ITALIC_PATTERN_2.matcher(text.substring(currentIndex));
                     }
 
                     // If italic text is found
@@ -244,7 +235,7 @@ public class MarkdownTree {
                 currentIndex = closestSyntax;
 
                 // Get a matcher for the striketrhough pattern
-                final Matcher strikeThroughMatcher = strikeThroughPattern.matcher(text.substring(currentIndex));
+                final Matcher strikeThroughMatcher = STRIKE_THROUGH_PATTERN.matcher(text.substring(currentIndex));
 
                 // If correct strike through syntax is found
                 if (strikeThroughMatcher.find()) {
@@ -360,10 +351,12 @@ public class MarkdownTree {
                         }
 
                         currentIndex = endIndex;
-                    } else
+                    } else {
                         ++currentIndex;
-                } else
+                    }
+                } else {
                     ++currentIndex;
+                }
 
                 // If no syntax is found it means that it is just raw text so a normal node can be made
             } else {
@@ -414,7 +407,7 @@ public class MarkdownTree {
      * @return List of formatted text
      */
     private List<TextHelper> getText(MarkdownNode currentNode) {
-        List<TextHelper> textNodes = new ArrayList<TextHelper>();
+        List<TextHelper> textNodes = new ArrayList<>();
 
         // Base case, make a TextHelper object with the raw text from the NORMAL markdown node and add no formatting and return that in a list
         if (currentNode.getType() == MarkdownNode.Type.NORMAL) {
@@ -422,8 +415,8 @@ public class MarkdownTree {
             text.setFill(Color.WHITE);
             textNodes.add(text);
             return textNodes;
-        } // If the currentNode is an ordered list then add in a TextHelper signifying the begining of a list
-        else if (currentNode.getType() == MarkdownNode.Type.ORDERED_LIST) {
+            // If the currentNode is an ordered list then add in a TextHelper signifying the begining of a list
+        } else if (currentNode.getType() == MarkdownNode.Type.ORDERED_LIST) {
             final TextHelper startList = new TextHelper("");
             startList.setIsListStart(true);
             textNodes.add(startList);
@@ -540,7 +533,7 @@ public class MarkdownTree {
                         builder.deleteCharAt(indexOfNewLine + 1);
 
                         int tabIndex = indexOfNewLine + 1;
-                        while (tabIndex < builder.length() && true) {
+                        while (tabIndex < builder.length()) {
                             if (builder.charAt(tabIndex) == '\t') {
                                 builder.deleteCharAt(tabIndex);
                             } else {
