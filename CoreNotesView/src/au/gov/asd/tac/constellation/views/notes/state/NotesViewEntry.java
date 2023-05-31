@@ -44,6 +44,9 @@ public class NotesViewEntry implements PluginReportListener {
     private boolean editMode;
     private boolean isShowing = true;
 
+    private String tempContent = "";
+    private String tempTitle = "";
+
     private TextFlow contentTextFlow;
 
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
@@ -173,6 +176,20 @@ public class NotesViewEntry implements PluginReportListener {
         contentTextFlow = md.getRenderedText();
         contentTextFlow.autosize();
     }
+
+    public void saveTempEdits() {
+        noteTitle = tempTitle;
+        noteContent = tempContent;
+    }
+
+    public void setTempContent(String tempContent) {
+        this.tempContent = tempContent;
+    }
+
+    public void setTempTitle(String tempTitle) {
+        this.tempTitle = tempTitle;
+    }
+
 
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {

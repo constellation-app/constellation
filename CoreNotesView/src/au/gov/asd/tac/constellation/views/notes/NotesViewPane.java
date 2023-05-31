@@ -675,7 +675,12 @@ public class NotesViewPane extends BorderPane {
     protected void clearNotes() {
         Platform.runLater(() -> notesListVBox.getChildren().removeAll(notesListVBox.getChildren()));
         synchronized (LOCK) {
-            notesViewEntries.forEach(note -> note.setEditMode(false));
+            notesViewEntries.forEach(note -> {
+                if (note.getEditMode()) {
+                    note.saveTempEdits();
+                    note.setEditMode(false);
+                }
+            });
             notesViewEntries.clear();
             notesDateTimeCache.clear();
         }
@@ -711,6 +716,7 @@ public class NotesViewPane extends BorderPane {
         // Define title text box
         final TextField titleText = new TextField(newNote.getNoteTitle());
         titleText.setStyle(BOLD_STYLE);
+        titleText.setOnKeyTyped(event -> newNote.setTempTitle(titleText.getText()));
 
         // Define title label
         final Label titleLabel = new Label(newNote.getNoteTitle());
@@ -729,6 +735,7 @@ public class NotesViewPane extends BorderPane {
         final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
         contentTextArea.setWrapText(true);
         contentTextArea.positionCaret(contentTextArea.getText() == null ? 0 : contentTextArea.getText().length());
+        contentTextArea.setOnKeyTyped(event -> newNote.setTempContent(contentTextArea.getText()));
 
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.parse();
