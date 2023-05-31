@@ -161,6 +161,7 @@ public class DataAccessTabPane {
      * @param queryPane the pane that will be added as the content of the new tab
      */
     public void newTab(final QueryPhasePane queryPane, final String userCaption) {
+        LOGGER.log(Level.SEVERE, "Created new tab");
         final Label label = new Label(userCaption);
         final Label defaultLabel = new Label();
         final String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().size() + 1);
