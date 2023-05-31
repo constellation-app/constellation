@@ -57,11 +57,12 @@ public class ErrorReportSessionData {
     public boolean storeSessionError(final ErrorReportEntry entry) {
         boolean foundMatch = false;
         synchronized (sessionErrors) {
-            // check for repeated exception, but compare only the top portion of the stacktrace, 
-            // as there are cases where different threads can generate the same exception, but have a 
-            // different origin (thread number) in their stack trace
+            // check for a repeated exception from the same constellation source, but compare only the top portion
+            // of the stacktrace, as there are cases where different threads can generate the same exception,
+            // but have a different origin (thread number) in their stack trace
             final String[] comparisonLines = entry.getErrorData().split("\n");
             final StringBuilder sb = new StringBuilder();
+            final String[] constyLines = extractMatchingLines(comparisonLines, ".constellation.");
             if (comparisonLines.length > 7) {
                 final int topNlines = 2 + comparisonLines.length / 4;
                 for (int i = 0; i < topNlines; i++) {
@@ -73,7 +74,13 @@ public class ErrorReportSessionData {
             final String comparisonData = sb.toString(); 
             final int errCount = sessionErrors.size();
             for (int i = 0; i < errCount; i++) {
-                if (sessionErrors.get(i).getErrorLevel().equals(entry.getErrorLevel()) && sessionErrors.get(i).getErrorData().startsWith(comparisonData)) {
+                boolean allConstyLinesMatch = true;
+                for (final String constyLine : constyLines) {
+                    if (!sessionErrors.get(i).getErrorData().contains(constyLine)) {
+                        allConstyLinesMatch = false;
+                    }
+                }
+                if (allConstyLinesMatch && sessionErrors.get(i).getErrorLevel().equals(entry.getErrorLevel()) && sessionErrors.get(i).getErrorData().startsWith(comparisonData)) {
                     final ErrorReportEntry ere = sessionErrors.get(i);
                     ere.incrementOccurrences();
                     ere.setExpanded(true);
@@ -96,6 +103,16 @@ public class ErrorReportSessionData {
         return !foundMatch;
     }
 
+    private String[] extractMatchingLines(final String[] sourceLines, final String patternToMatch) {
+        final StringBuilder destination = new StringBuilder();
+        for (int i = 0; i< sourceLines.length; i++) {
+            if (sourceLines[i].contains(patternToMatch)) {
+                destination.append(sourceLines[i]).append("\n");
+            }
+        }
+        return destination.toString().split("\n");
+    }
+    
     public void removeEntry(final double entryId) {
         synchronized (sessionErrors) {
             final int errorCount = sessionErrors.size();

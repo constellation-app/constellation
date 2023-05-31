@@ -39,6 +39,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.xml.transform.TransformerException;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
 import static org.openide.NotifyDescriptor.DEFAULT_OPTION;
 import org.openide.util.lookup.ServiceProvider;
@@ -225,7 +226,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                 }
             }
         } catch (final FileNotFoundException ex) {
-            final String errorMsg = "File '" + filename + "' not found";
+            final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified" : "File not found: " + filename;
             NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GraphML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
@@ -234,7 +235,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
         } catch (final TransformerException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         } catch (final IOException ex) {
-            final String errorMsg = "Error reading file '" + filename + "'";
+            final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified " : "Error reading file: " + filename;
             NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GraphML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
             final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
