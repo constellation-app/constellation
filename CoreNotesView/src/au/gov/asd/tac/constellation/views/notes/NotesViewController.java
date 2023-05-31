@@ -32,6 +32,9 @@ import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewState;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Handles reading and writing to the state to save notes to the graph.
@@ -44,6 +47,7 @@ public class NotesViewController {
 
     private static final String NOTES_READ_STATE = "Notes View: Read State";
     private static final String NOTES_WRITE_STATE = "Notes View: Write State";
+    private static final Logger LOGGER = Logger.getLogger(NotesViewController.class.getName());
 
     public NotesViewController(final NotesViewTopComponent parent) {
         this.parent = parent;
@@ -69,7 +73,13 @@ public class NotesViewController {
             return;
         }
 
-        PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
+        try {
+            PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph).wait();
+        } /*catch (final ExecutionException e) {
+            LOGGER.log(Level.SEVERE, "Execution exception thrown", e);
+        }*/ catch (InterruptedException e) {
+            LOGGER.log(Level.SEVERE, "Execution exception thrown", e);
+        }
 
     }
 

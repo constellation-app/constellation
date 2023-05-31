@@ -154,6 +154,7 @@ public class NotesViewPane extends BorderPane {
     private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
+    private boolean checkForEditNotes = true;
 
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
@@ -280,11 +281,9 @@ public class NotesViewPane extends BorderPane {
         // Event handler to add new note
         newNotePane.getAddButtion().setOnAction(event -> {
 
-            MarkdownTree mdTree = new MarkdownTree(newNotePane.getContentField().getText());
-            mdTree.parse();
-            mdTree.print();
-
-
+            //MarkdownTree mdTree = new MarkdownTree(newNotePane.getContentField().getText());
+            //mdTree.parse();
+            //mdTree.print();
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 if (newNotePane.getTitleField().getText().isBlank()
@@ -534,6 +533,7 @@ public class NotesViewPane extends BorderPane {
      */
     protected synchronized void updateNotesUI() {
         final List<NotesViewEntry> notesToRender = new ArrayList<>();
+
         updateSelectedElements();
         
         synchronized (LOCK) {
@@ -605,14 +605,16 @@ public class NotesViewPane extends BorderPane {
 
             });
         }
-        
+        LOGGER.log(Level.SEVERE, "Size: " + notesToRender.size());
         Platform.runLater(() -> {
             final BooleanProperty foundNoteInEdit = new SimpleBooleanProperty(false);
 
-            for (int i = 0; i < notesToRender.size(); i++) {
-                if (notesToRender.get(i).getEditMode()) {
-                    foundNoteInEdit.set(true);
-                    break;
+            if (checkForEditNotes) {
+                for (int i = 0; i < notesToRender.size(); i++) {
+                    if (notesToRender.get(i).getEditMode()) {
+                        foundNoteInEdit.set(true);
+                        break;
+                    }
                 }
             }
 
@@ -687,6 +689,7 @@ public class NotesViewPane extends BorderPane {
      * View.
      */
     private void createNote(final NotesViewEntry newNote) {
+        LOGGER.log(Level.SEVERE, "Creating note");
         if (!Platform.isFxApplicationThread()) {
             throw new IllegalStateException("Not processing on the JavaFX Application Thread");
         }
@@ -1290,6 +1293,10 @@ public class NotesViewPane extends BorderPane {
             }
         }
         return false;
+    }
+
+    public void setCheckForEditNotes(boolean checkForEditNotes) {
+        this.checkForEditNotes = checkForEditNotes;
     }
 
     /**
