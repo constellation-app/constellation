@@ -154,7 +154,6 @@ public class NotesViewPane extends BorderPane {
     private final NewNotePane newNotePane;
     private int noteID = 0;
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
-    private boolean checkForEditNotes = true;
 
 
     public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
@@ -609,14 +608,13 @@ public class NotesViewPane extends BorderPane {
         Platform.runLater(() -> {
             final BooleanProperty foundNoteInEdit = new SimpleBooleanProperty(false);
 
-            if (checkForEditNotes) {
-                for (int i = 0; i < notesToRender.size(); i++) {
-                    if (notesToRender.get(i).getEditMode()) {
-                        foundNoteInEdit.set(true);
-                        break;
-                    }
+            for (int i = 0; i < notesToRender.size(); i++) {
+                if (notesToRender.get(i).getEditMode()) {
+                    foundNoteInEdit.set(true);
+                    break;
                 }
             }
+
 
             if (!foundNoteInEdit.get()) {
                 notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
@@ -677,6 +675,7 @@ public class NotesViewPane extends BorderPane {
     protected void clearNotes() {
         Platform.runLater(() -> notesListVBox.getChildren().removeAll(notesListVBox.getChildren()));
         synchronized (LOCK) {
+            notesViewEntries.forEach(note -> note.setEditMode(false));
             notesViewEntries.clear();
             notesDateTimeCache.clear();
         }

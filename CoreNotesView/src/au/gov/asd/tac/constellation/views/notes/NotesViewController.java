@@ -32,9 +32,13 @@ import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewState;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Exceptions;
 
 /**
  * Handles reading and writing to the state to save notes to the graph.
@@ -73,14 +77,7 @@ public class NotesViewController {
             return;
         }
 
-        try {
-            PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph).wait();
-        } /*catch (final ExecutionException e) {
-            LOGGER.log(Level.SEVERE, "Execution exception thrown", e);
-        }*/ catch (InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "Execution exception thrown", e);
-        }
-
+        PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
     }
 
     /**
