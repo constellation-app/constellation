@@ -95,7 +95,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     protected void handleNewGraph(final Graph graph) {
         LOGGER.log(Level.SEVERE, "New graph called");
         if (needsUpdate() && graph != null) {
-            //notesViewPane.setCheckForEditNotes(false);
             notesViewPane.clearNotes();
             notesViewPane.getCreateNewNoteButton().setDisable(false);
             notesViewController.readState(graph);
@@ -108,9 +107,6 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         LOGGER.log(Level.SEVERE, "Handling new graph");
     }
 
-    public void checkForEditingNote() {
-        notesViewPane.setCheckForEditNotes(true);
-    }
 
     @Override
     protected void handleGraphClosed(final Graph graph) {

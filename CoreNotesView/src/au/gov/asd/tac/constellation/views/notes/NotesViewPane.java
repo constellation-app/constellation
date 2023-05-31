@@ -1294,10 +1294,6 @@ public class NotesViewPane extends BorderPane {
         return false;
     }
 
-    public void setCheckForEditNotes(boolean checkForEditNotes) {
-        this.checkForEditNotes = checkForEditNotes;
-    }
-
     /**
      * Returns an unmodifiable view backed by tagsSelectedFiltersList.
      *
