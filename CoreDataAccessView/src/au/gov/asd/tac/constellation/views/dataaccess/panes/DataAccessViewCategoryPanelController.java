@@ -56,7 +56,7 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         SwingUtilities.invokeLater(() -> {
             final DataAccessViewCategoryPanel panel = getPanel();
             if (!panelRefreshed) {
-                //panel.setVisibleCategory(panel.getVisibleResultList().toString());
+                panel.setVisibleCategory(panel.getVisibleResultList().toString());
                 panel.setVisibleCategory(prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT));
                 panel.setHiddenCategory(prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT));
             }

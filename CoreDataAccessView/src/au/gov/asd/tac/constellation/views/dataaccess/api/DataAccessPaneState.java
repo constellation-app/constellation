@@ -76,8 +76,6 @@ public class DataAccessPaneState {
         ).thenApply(plugins -> {
             // Sort the DataAccessPlugin lists within each type including the category type
             // so that favourites category is sorted properly.
-            // final DataAccessPluginComparator comparator = new DataAccessPluginComparator();
-            // plugins.values().forEach(pluginList -> Collections.sort(pluginList, comparator));
             return plugins;
         });
     }

@@ -52,6 +52,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     DataAccessViewCategoryPanel(final DataAccessViewCategoryPanelController controller) {
         this.controller = controller;
         initComponents();
+        addUpandDownButtons();
 
         visibleListModel = new DefaultListModel<>();
         hiddenListModel = new DefaultListModel<>();
@@ -241,6 +242,16 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void addUpandDownButtons()
+    {
+        
+        upButton = new javax.swing.JButton();
+        downButton = new javax.swing.JButton();
+
+        OptionPanel.getLayout().addLayoutComponent("Up button", upButton);
+        OptionPanel.getLayout().addLayoutComponent("Down button", downButton);
+    }
+
     private void buttonRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRightActionPerformed
 
         if (visibleList.getSelectedIndex() == -1) {
@@ -289,6 +300,8 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_buttonLeftActionPerformed
 
+    private javax.swing.JButton upButton;
+    private javax.swing.JButton downButton;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel OptionPanel;
     private javax.swing.JButton buttonLeft;
@@ -303,3 +316,4 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private javax.swing.JList<String> visibleList;
     // End of variables declaration//GEN-END:variables
 }
+

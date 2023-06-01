@@ -87,8 +87,6 @@ public class QueryPhasePane extends VBox {
         final Preferences PREFS = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
         final String notVisibleCats = PREFS.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
         final String visibleCats = PREFS.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
-        LOGGER.log(Level.SEVERE, "Not Visible categories: " + notVisibleCats);
-        LOGGER.log(Level.SEVERE, "Visible categories: " + visibleCats);
         final List<Pair<Integer, HeadingPane>> orderedPlugins = new ArrayList<>();
         plugins.entrySet().stream()
                 .filter(pluginsOfType -> !pluginsOfType.getValue().getValue().isEmpty())
@@ -99,7 +97,7 @@ public class QueryPhasePane extends VBox {
                             top,
                             globalParametersPane.getParamLabels()
                     );
-            //LOGGER.log(Level.SEVERE, "Order number: " + pluginsOfType.getValue().getKey() + " heading name: " + pluginsOfType.getKey());
+
             orderedPlugins.add(new Pair<>(pluginsOfType.getValue().getKey(), heading));
                 });
 
