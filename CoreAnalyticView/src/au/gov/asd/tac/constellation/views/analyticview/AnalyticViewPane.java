@@ -29,7 +29,11 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
+import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewStateUpdater;
+import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewStateWriter;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -48,7 +52,7 @@ import org.openide.util.HelpCtx;
  * @author cygnus_x-1
  */
 public class AnalyticViewPane extends BorderPane {
-    
+
     private static final Logger LOGGER = Logger.getLogger(AnalyticViewPane.class.getName());
 
     private static final String RUN_START_TEXT = "Run";
@@ -64,12 +68,13 @@ public class AnalyticViewPane extends BorderPane {
     private final AnalyticConfigurationPane analyticConfigurationPane;
     private final AnalyticResultsPane analyticResultsPane;
 
-    private boolean running = false;
+    private static boolean running = false;
+    private boolean stateChanged = false;
     private Thread questionThread = null;
     private ThreadConstraints parentConstraints = null;
 
     public AnalyticViewPane(final AnalyticController analyticController) {
-        
+
         // the top level analytic view pane
         this.viewPane = new VBox();
         viewPane.prefWidthProperty().bind(this.widthProperty());
@@ -120,7 +125,7 @@ public class AnalyticViewPane extends BorderPane {
                 analyticResultsPane.getInternalVisualisationPane().getTabs().add(progressTab);
                 // answer the current analytic question and display the results
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-                final SimplePlugin virtualAnalytics = new SimplePlugin("Analytic View - Query Runner"){
+                final SimplePlugin virtualAnalytics = new SimplePlugin("Analytic View - Query Runner") {
                     @Override
                     protected void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
                         parentConstraints = ThreadConstraints.getConstraints();
@@ -156,6 +161,9 @@ public class AnalyticViewPane extends BorderPane {
                 } catch (final PluginException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
+                
+                stateChanged = true;
+                saveState();
             }
         });
         analyticOptionButtons.getChildren().addAll(helpButton, runButton);
@@ -171,13 +179,13 @@ public class AnalyticViewPane extends BorderPane {
         this.setCenter(viewPane);
     }
 
-    private void setRunButtonMode(final boolean isRunMode){
+    private void setRunButtonMode(final boolean isRunMode) {
         Platform.runLater(() -> {
             runButton.setText(isRunMode ? RUN_START_TEXT : RUN_STOP_TEXT);
             runButton.setStyle(isRunMode ? RUN_START_STYLE : RUN_STOP_STYLE);
         });
     }
-    
+
     protected final void reset() {
         Platform.runLater(() -> {
             // hide results pane
@@ -197,7 +205,49 @@ public class AnalyticViewPane extends BorderPane {
         return analyticResultsPane;
     }
 
+    public void showResults() {
+        final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
+        analyticResultsPane.displayResults(question);
+
+        if (!viewPane.getChildren().contains(analyticResultsPane)) {
+            viewPane.getChildren().add(1, analyticResultsPane);
+        }
+
+    }
+
     protected final void setIsRunnable(final boolean isRunnable) {
         Platform.runLater(() -> runButton.setDisable(!isRunnable));
+    }
+
+    public void checkState() {
+        
+    }
+
+    /**
+     * Updates the AnalyticViewState by running a plugin to save the graph state
+     *
+     * @param pluginWasSelected true if the triggered update was from a plugin being selected
+     */
+    public void updateState(final boolean pluginWasSelected) {
+        stateChanged = true;
+        PluginExecution.withPlugin(new AnalyticViewStateUpdater(this, analyticConfigurationPane, pluginWasSelected, analyticResultsPane.getResult(), viewPane.getChildren().contains(analyticResultsPane))).executeLater(GraphManager.getDefault().getActiveGraph());
+    }
+
+    /**
+     * Saves the state of the graph by fetching all currently selected plugins and updating the state only when the state has been changed
+     */
+    public void saveState() {
+        if (stateChanged) {
+            stateChanged = false;
+            if (analyticConfigurationPane.isCategoryListPaneExpanded()) {
+                final List<AnalyticConfigurationPane.SelectableAnalyticPlugin> selectedPlugins = new ArrayList<>();
+                analyticConfigurationPane.getPluginList().getItems().forEach(selectablePlugin -> {
+                    if (selectablePlugin.isSelected()) {
+                        selectedPlugins.add(selectablePlugin);
+                    }
+                });
+                PluginExecution.withPlugin(new AnalyticViewStateWriter(analyticConfigurationPane.currentQuestion, selectedPlugins, analyticResultsPane.getResult(), viewPane.getChildren().contains(analyticResultsPane))).executeLater(GraphManager.getDefault().getActiveGraph());
+            }
+        }
     }
 }

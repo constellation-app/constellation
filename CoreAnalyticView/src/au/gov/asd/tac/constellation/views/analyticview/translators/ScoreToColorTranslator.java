@@ -89,7 +89,6 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
             final boolean reset = parameters.getBooleanValue(RESET_PARAMETER_ID);
 
             // ensure attributes
-            final int vertexIconAttribute = VisualConcept.VertexAttribute.FOREGROUND_ICON.ensure(graph);
             final int vertexOverlayColorAttribute = VisualConcept.VertexAttribute.OVERLAY_COLOR.ensure(graph);
             final int vertexColorReferenceAttribute = VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE.ensure(graph);
             final int transactionOverlayColorAttribute = VisualConcept.TransactionAttribute.OVERLAY_COLOR.ensure(graph);
@@ -149,7 +148,6 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                     switch (elementType) {
                         case VERTEX:
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
-                            graph.setObjectValue(vertexIconAttribute, elementId, "transparent");
                             break;
                         case TRANSACTION:
                             graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));

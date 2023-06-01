@@ -94,7 +94,7 @@ public class AnalyticResultsPane extends VBox {
         return graphVisualisationPane;
     }
 
-    protected final AnalyticResult<?> getResult() {
+    public final AnalyticResult<?> getResult() {
         return result;
     }
 
@@ -128,5 +128,7 @@ public class AnalyticResultsPane extends VBox {
                 }
             });
         });
+
+        // add the results to the graph state 
     }
 }

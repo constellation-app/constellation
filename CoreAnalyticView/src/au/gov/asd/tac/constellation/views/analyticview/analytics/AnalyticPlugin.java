@@ -91,8 +91,8 @@ public abstract class AnalyticPlugin<R extends AnalyticResult<?>> extends Simple
     public String getHelpPath() {
         final String codebaseName = "constellation";
         final String sep = File.separator;
-        return Generator.getBaseDirectory() + codebaseName + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + codebaseName + sep + "views" + sep + "analyticview" + sep + "docs" + sep;
+        return Generator.getBaseDirectory() + sep + "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + codebaseName + sep + "views" + sep + "analyticview" +  sep;
     }
 
     /**

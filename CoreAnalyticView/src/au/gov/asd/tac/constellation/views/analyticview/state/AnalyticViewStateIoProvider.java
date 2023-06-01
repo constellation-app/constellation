@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane.SelectableAnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
+import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -88,11 +89,14 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                     }
                 }
 
-                plugins.add(selectablePluginList);
+                plugins.add(selectablePluginList);  
 
             }
 
-            final AnalyticViewState state = new AnalyticViewState(currentIndex, questions, plugins);
+            final AnalyticResult<?> result = null;
+            final boolean resultsVisible = false;
+
+            final AnalyticViewState state = new AnalyticViewState(currentIndex, questions, plugins, result, resultsVisible);
             graph.setObjectValue(attributeId, elementId, state);
         }
     }

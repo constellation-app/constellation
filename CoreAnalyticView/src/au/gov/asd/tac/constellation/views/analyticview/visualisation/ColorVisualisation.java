@@ -58,7 +58,6 @@ public class ColorVisualisation<C> extends GraphVisualisation {
     @Override
     public List<SchemaAttribute> getAffectedAttributes() {
         return Arrays.asList(
-                VisualConcept.VertexAttribute.FOREGROUND_ICON,
                 VisualConcept.VertexAttribute.OVERLAY_COLOR,
                 VisualConcept.TransactionAttribute.OVERLAY_COLOR,
                 VisualConcept.GraphAttribute.NODE_COLOR_REFERENCE,

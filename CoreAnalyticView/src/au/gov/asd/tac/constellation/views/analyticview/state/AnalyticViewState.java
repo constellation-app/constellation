@@ -18,11 +18,12 @@ package au.gov.asd.tac.constellation.views.analyticview.state;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane.SelectableAnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
+import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Stores all AnalyticQuestion currently active in the Analytic View.
+ * Stores all AnalyticQuestion currently active and current results in the Analytic View.
  *
  * @author cygnus_x-1
  */
@@ -31,21 +32,27 @@ public class AnalyticViewState {
     private int currentAnalyticQuestionIndex;
     private final List<AnalyticQuestionDescription<?>> activeAnalyticQuestions;
     private final List<List<SelectableAnalyticPlugin>> activeSelectablePlugins;
+    private AnalyticResult<?> result;
+    private boolean resultsVisible;
 
     public AnalyticViewState() {
-        this(0, new ArrayList<>(), new ArrayList<>());
+        this(0, new ArrayList<>(), new ArrayList<>(), null, false);
     }
 
     public AnalyticViewState(final AnalyticViewState state) {
         this.currentAnalyticQuestionIndex = state.getCurrentAnalyticQuestionIndex();
         this.activeAnalyticQuestions = new ArrayList<>(state.getActiveAnalyticQuestions());
         this.activeSelectablePlugins = new ArrayList<>(state.getActiveSelectablePlugins());
+        this.result = state.getResult();
+        this.resultsVisible = state.isResultsPaneVisible();
     }
 
-    public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions, final List<List<SelectableAnalyticPlugin>> activePlugins) {
+    public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions, final List<List<SelectableAnalyticPlugin>> activePlugins, final AnalyticResult<?> result, final boolean resultsVisible) {
         this.currentAnalyticQuestionIndex = currentQuestionIndex;
         this.activeAnalyticQuestions = activeQuestions;
         this.activeSelectablePlugins = activePlugins;
+        this.result = result;
+        this.resultsVisible = resultsVisible;
     }
 
     public int getCurrentAnalyticQuestionIndex() {
@@ -60,8 +67,16 @@ public class AnalyticViewState {
         return activeAnalyticQuestions;
     }
 
+    public AnalyticResult<?> getResult() {
+        return result;
+    }
+
     public List<List<SelectableAnalyticPlugin>> getActiveSelectablePlugins() {
         return activeSelectablePlugins;
+    }
+
+    public boolean isResultsPaneVisible() {
+        return resultsVisible;
     }
 
     public void addAnalyticQuestion(final AnalyticQuestionDescription<?> question, final List<SelectableAnalyticPlugin> selectablePlugins) {
@@ -90,11 +105,19 @@ public class AnalyticViewState {
     }
 
     /**
-     * Check the currently selected Question index of plugins for other plugins
-     * matching the selected category
+     * Update the results values and record whether the results pane is currently visible
+     * 
+     * @param newResults
+     */
+    public void updateResults(final AnalyticResult<?> newResults) {
+        result = newResults;
+        resultsVisible = result != null;
+    }
+
+    /**
+     * Check the currently selected Question index of plugins for other plugins matching the selected category
      *
-     * @param currentCategory the currently selected plugin category to remove
-     * from
+     * @param currentCategory the currently selected plugin category to remove from
      */
     public void removePluginsMatchingCategory(final String currentCategory) {
         if (!activeSelectablePlugins.isEmpty()) {

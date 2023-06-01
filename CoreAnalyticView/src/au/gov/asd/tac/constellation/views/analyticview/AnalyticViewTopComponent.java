@@ -80,7 +80,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     private final AnalyticController analyticController;
     private boolean suppressed = false;
     private String currentGraphId = StringUtils.EMPTY;
-
+    
     public AnalyticViewTopComponent() {
         super();
         this.analyticController = new AnalyticController();
@@ -93,12 +93,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
             if (needsUpdate() && !suppressed) {
-                analyticViewPane.getConfigurationPane().saveState();
+                analyticViewPane.saveState();
             }
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
             if (needsUpdate() && !suppressed) {
-                analyticViewPane.getConfigurationPane().saveState();
+                analyticViewPane.saveState();
             }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
@@ -184,7 +184,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         manualUpdate();
         suppressed = false;
         if (analyticViewPane != null) {
-            analyticViewPane.getConfigurationPane().updateState(false);
+            analyticViewPane.checkState();
         }
     }
 
@@ -194,7 +194,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             if (graph != null) {
                 currentGraphId = graph.getId();
             }
-            analyticViewPane.getConfigurationPane().updateState(false);
+            analyticViewPane.checkState();
         }
     }
 
@@ -206,7 +206,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             if (current != null) {
                 currentGraphId = current.getId();
             }
-            analyticViewPane.getConfigurationPane().updateState(false);
+            analyticViewPane.checkState();
         }
     }
 
@@ -217,7 +217,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (current != null && !current.getId().equals(currentGraphId)) {
             analyticViewPane.reset();
         }
-        analyticViewPane.getConfigurationPane().updateState(false);
+        analyticViewPane.checkState();
     }
 
     public class AnalyticController {
