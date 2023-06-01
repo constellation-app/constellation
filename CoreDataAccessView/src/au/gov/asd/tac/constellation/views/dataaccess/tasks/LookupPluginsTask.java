@@ -19,12 +19,14 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
+import javafx.util.Pair;
 
 /**
  * Looks up all available data access plugins and populates a map with them
@@ -32,15 +34,18 @@ import org.openide.util.NbPreferences;
  *
  * @author formalhaunt
  */
-public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPlugin>>> {
-
+public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, List<DataAccessPlugin>>>> {
     private static final Preferences PREFS = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
     public static final String DAV_CATS = PREFS.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
+    public static final String VISIBLE_CATS = PREFS.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
 
     @Override
-    public Map<String, List<DataAccessPlugin>> get() {
+    public Map<String, Pair<Integer, List<DataAccessPlugin>>> get() {
         // Creates a map with the key set being every available data access plugin type.
         final Map<String, List<DataAccessPlugin>> plugins = DataAccessUtilities.getAllPlugins();
+
+        final Map<String, Pair<Integer, List<DataAccessPlugin>>> pluginsWithOrder = new HashMap<>();
+
         // Remove hidden data access categories
         if (StringUtils.isNotBlank(DAV_CATS)) {
             final String[] arrayOfcategory = addCategoryToList(DAV_CATS);
@@ -49,8 +54,22 @@ public class LookupPluginsTask implements Supplier<Map<String, List<DataAccessPl
                     plugins.remove(arrayOfcategory[i].trim());
                 }
             }
+
+            final String[] visibleCategoriesArray = addCategoryToList(VISIBLE_CATS);
+
+            if (visibleCategoriesArray.length > 0) {
+                plugins.keySet().forEach(key -> {
+                    for (int i = 0; i < visibleCategoriesArray.length; i++) {
+                        if (key.equals(visibleCategoriesArray[i])) {
+                            final Pair<Integer, List<DataAccessPlugin>> p = new Pair<>(i, plugins.get(key));
+                            pluginsWithOrder.put(key, p);
+                            break;
+                        }
+                    }
+                });
+            }
         }
-        return plugins;
+        return pluginsWithOrder;
     }
 
     public static String[] addCategoryToList(final String categories) {

@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +41,16 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 
 /**
  * A panel for selecting plug-ins to run during a query phase. These panes are
@@ -77,24 +81,35 @@ public class QueryPhasePane extends VBox {
      * @param top 
      * @param presetGlobalParms the current global plugin parameters
      */
-    public QueryPhasePane(final Map<String, List<DataAccessPlugin>> plugins,
-                          final PluginParametersPaneListener top,
+    public QueryPhasePane(final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins,                          final PluginParametersPaneListener top,
                           final PluginParameters presetGlobalParms) {
         globalParametersPane = new GlobalParametersPane(presetGlobalParms);
-
+        final Preferences PREFS = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
+        final String notVisibleCats = PREFS.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
+        final String visibleCats = PREFS.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
+        LOGGER.log(Level.SEVERE, "Not Visible categories: " + notVisibleCats);
+        LOGGER.log(Level.SEVERE, "Visible categories: " + visibleCats);
+        final List<Pair<Integer, HeadingPane>> orderedPlugins = new ArrayList<>();
         plugins.entrySet().stream()
-                .filter(pluginsOfType -> !pluginsOfType.getValue().isEmpty())
+                .filter(pluginsOfType -> !pluginsOfType.getValue().getValue().isEmpty())
                 .forEach(pluginsOfType -> {
                     final HeadingPane heading = new HeadingPane(
                             pluginsOfType.getKey(),
-                            pluginsOfType.getValue(),
+                            pluginsOfType.getValue().getValue(),
                             top,
                             globalParametersPane.getParamLabels()
                     );
-                    
-                    dataSourceList.getChildren().add(heading);
-                    dataSources.addAll(heading.getDataSources());
+            //LOGGER.log(Level.SEVERE, "Order number: " + pluginsOfType.getValue().getKey() + " heading name: " + pluginsOfType.getKey());
+            orderedPlugins.add(new Pair<>(pluginsOfType.getValue().getKey(), heading));
                 });
+
+        orderedPlugins.sort(Comparator.comparingInt(Pair<Integer, HeadingPane>::getKey));
+
+        for (int i = 0; i < orderedPlugins.size(); i++) {
+            dataSourceList.getChildren().add(orderedPlugins.get(i).getValue());
+            dataSources.addAll(orderedPlugins.get(i).getValue().getDataSources());
+        }
+
 
         setFillWidth(true);
         getChildren().addAll(globalParametersPane, dataSourceList);

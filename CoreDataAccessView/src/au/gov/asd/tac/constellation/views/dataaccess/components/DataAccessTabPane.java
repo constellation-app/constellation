@@ -51,6 +51,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -82,7 +83,7 @@ public class DataAccessTabPane {
     };
     
     private final DataAccessPane dataAccessPane;
-    private final Map<String, List<DataAccessPlugin>> plugins;
+    private final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
     private final TabPane tabPane;
     
     /**
@@ -93,7 +94,7 @@ public class DataAccessTabPane {
      * @see DataAccessPaneState#getPlugins() 
      */
     public DataAccessTabPane(final DataAccessPane dataAccessPane,
-                             final Map<String, List<DataAccessPlugin>> plugins) {
+            final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins) {
         this.dataAccessPane = dataAccessPane;
         this.plugins = plugins;
         
@@ -419,7 +420,7 @@ public class DataAccessTabPane {
      * @return the data access plugins
      * @see DataAccessPaneState#getPlugins() 
      */
-    public Map<String, List<DataAccessPlugin>> getPlugins() {
+    public Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins() {
         return plugins;
     }
     

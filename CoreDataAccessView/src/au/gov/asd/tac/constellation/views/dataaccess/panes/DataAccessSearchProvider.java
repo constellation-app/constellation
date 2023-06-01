@@ -19,10 +19,12 @@ import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.ShowDataAccessPluginTask;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.quicksearch.SearchProvider;
 import org.netbeans.spi.quicksearch.SearchRequest;
@@ -46,7 +48,7 @@ public class DataAccessSearchProvider implements SearchProvider {
         }
 
         // Get all the available data access plugins
-        final Map<String, List<DataAccessPlugin>> plugins;
+        final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
         } catch (ExecutionException ex) {
@@ -59,8 +61,12 @@ public class DataAccessSearchProvider implements SearchProvider {
                     + "Data Access View cannot be created.");
         }
 
+        final Map<String, List<DataAccessPlugin>> unorderedPlugins = new HashMap();
+
+        plugins.keySet().forEach(key -> unorderedPlugins.put(key, plugins.get(key).getValue()));
+
         // Find all matching plugin names
-        final List<String> pluginNames = plugins.values().stream()
+        final List<String> pluginNames = unorderedPlugins.values().stream()
                 // Flatten everything to a single stream of plugins
                 .flatMap(Collection::stream)
                 // Filter out plugins whose name do NOT contain the filter text

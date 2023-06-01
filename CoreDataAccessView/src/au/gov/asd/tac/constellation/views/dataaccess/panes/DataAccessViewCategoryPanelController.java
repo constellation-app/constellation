@@ -56,7 +56,8 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         SwingUtilities.invokeLater(() -> {
             final DataAccessViewCategoryPanel panel = getPanel();
             if (!panelRefreshed) {
-                panel.setVisibleCategory(panel.getVisibleResultList().toString());
+                //panel.setVisibleCategory(panel.getVisibleResultList().toString());
+                panel.setVisibleCategory(prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT));
                 panel.setHiddenCategory(prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT));
             }
         });
@@ -73,6 +74,7 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
                 final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
                 final DataAccessViewCategoryPanel panel = getPanel();
                 prefs.put(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, panel.getHiddenCategory().toString().replace("[,", "["));
+                prefs.put(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, panel.getVisibleCategory().toString().replace("[,", "["));
                 panelRefreshed = true;
             }
         }
@@ -97,7 +99,8 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         final DataAccessViewCategoryPanel panel = getPanel();
         final List<String> hiddenCategory = panel.getHiddenCategory();
         return (!hiddenCategory.isEmpty())
-                || (!prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty());
+                || (!prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty()
+                || (!prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty()));
     }
 
     @Override
