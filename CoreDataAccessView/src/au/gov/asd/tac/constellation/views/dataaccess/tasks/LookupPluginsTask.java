@@ -56,6 +56,21 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
             }
         }
 
+        if (StringUtils.isBlank(VISIBLE_CATS) && StringUtils.isBlank(DAV_CATS)) {
+            final StringBuilder pluginsNameBuilder = new StringBuilder();
+            pluginsNameBuilder.append("[");
+
+            plugins.keySet().forEach(key -> {
+                pluginsNameBuilder.append(key);
+                pluginsNameBuilder.append(",");
+            });
+
+            pluginsNameBuilder.deleteCharAt(pluginsNameBuilder.length() - 1);
+            pluginsNameBuilder.append("]");
+            final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
+            prefs.put(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, pluginsNameBuilder.toString());
+        }
+
         if (StringUtils.isNotBlank(VISIBLE_CATS)) {
             final String[] visibleCategoriesArray = addCategoryToList(VISIBLE_CATS);
             if (visibleCategoriesArray.length > 0) {
