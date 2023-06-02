@@ -54,9 +54,10 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                     plugins.remove(arrayOfcategory[i].trim());
                 }
             }
+        }
 
+        if (StringUtils.isNotBlank(VISIBLE_CATS)) {
             final String[] visibleCategoriesArray = addCategoryToList(VISIBLE_CATS);
-
             if (visibleCategoriesArray.length > 0) {
                 plugins.keySet().forEach(key -> {
                     for (int i = 0; i < visibleCategoriesArray.length; i++) {

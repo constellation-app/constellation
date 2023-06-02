@@ -118,7 +118,7 @@ public class LookupPluginsTaskNGTest {
                     "Developer", new Pair(1, List.of(plugin3)),
                     "Utility", new Pair(2, List.of(plugin4)),
                     "Favourites", new Pair(3, List.of(plugin3)));
-            
+
             assertEquals(new LookupPluginsTask().get(), expectedPlugins);
         }
     }
