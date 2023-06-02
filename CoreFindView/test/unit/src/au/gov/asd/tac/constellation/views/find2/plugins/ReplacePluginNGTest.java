@@ -60,13 +60,13 @@ public class ReplacePluginNGTest {
     private int labelV, identifierV, xV, labelT, identiferT, widthT;
     private int vxId1, vxId2, vxId3, vxId4, vxId5UpperCase, vxId6, vxId7, vxId8, txId1, txId2, txId3, txId4;
     private List<Attribute> attributeList = new ArrayList<>();
-    private BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "replaced", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
-    private BasicFindReplaceParameters parametersReplaceNext = new BasicFindReplaceParameters("replaced", "next", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
-    private BasicFindReplaceParameters parametersReplaceRegEx = new BasicFindReplaceParameters("ne*", "test", GraphElementType.GRAPH.VERTEX, attributeList, false, true, false, false, false, false, false, false, false);
-    private BasicFindReplaceParameters parametersReplaceIgnoreCase = new BasicFindReplaceParameters("lowercase", "test", GraphElementType.GRAPH.VERTEX, attributeList, true, false, true, false, false, false, false, false, false);
-    private BasicFindReplaceParameters parametersReplaceInSelected = new BasicFindReplaceParameters("test", "replaced", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parameters = new BasicFindReplaceParameters("label name", "replaced", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersReplaceNext = new BasicFindReplaceParameters("replaced", "next", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersReplaceRegEx = new BasicFindReplaceParameters("ne*", "test", GraphElementType.GRAPH.VERTEX, attributeList, false, true, false, false, true, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersReplaceIgnoreCase = new BasicFindReplaceParameters("lowercase", "test", GraphElementType.GRAPH.VERTEX, attributeList, true, false, true, false, true, false, false, false, false, true, false);
+    private BasicFindReplaceParameters parametersReplaceInSelected = new BasicFindReplaceParameters("test", "replaced", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, true, false, true, false);
 
-    private BasicFindReplaceParameters parametersClearSelections = new BasicFindReplaceParameters("clear", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, false, false, false, false, false);
+    private BasicFindReplaceParameters parametersClearSelections = new BasicFindReplaceParameters("clear", "", GraphElementType.GRAPH.VERTEX, attributeList, true, false, false, false, true, false, false, false, false, true, false);
     private static final Logger LOGGER = Logger.getLogger(ReplacePluginNGTest.class.getName());
 
     public ReplacePluginNGTest() {
@@ -177,7 +177,7 @@ public class ReplacePluginNGTest {
 
         /**
          * Testing replacing the word "test" with the word "replaced" only in
-         * elements that are selected. vxId1 and 2 should change to "replaced"
+         * elements that are selected. 
          */
         wg = graph.getWritableGraph("", true);
         wg.setBooleanValue(selectedV, vxId1, true);
@@ -192,8 +192,8 @@ public class ReplacePluginNGTest {
 
         assertEquals(rg.getStringValue(labelV, vxId1), "replaced");
         assertEquals(rg.getStringValue(labelV, vxId2), "replaced");
-        assertEquals(rg.getStringValue(labelV, vxId3), "test");
-        assertEquals(rg.getStringValue(labelV, vxId4), "test");
+        assertEquals(rg.getStringValue(labelV, vxId3), "replaced");
+        assertEquals(rg.getStringValue(labelV, vxId4), "replaced");
         rg.close();
 
     }

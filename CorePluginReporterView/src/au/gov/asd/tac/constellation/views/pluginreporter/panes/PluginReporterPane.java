@@ -254,4 +254,12 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
             return report.getStartTime() > clearTime;
         }
     };
+
+    public synchronized GraphReport getGraphReport() {
+        return graphReport;
+    }
+
+    public PluginReportFilter getPluginReportFilter() {
+        return pluginReportFilter;
+    }
 }

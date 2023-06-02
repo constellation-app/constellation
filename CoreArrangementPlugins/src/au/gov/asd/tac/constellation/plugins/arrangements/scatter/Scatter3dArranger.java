@@ -206,8 +206,8 @@ public class Scatter3dArranger implements Arranger {
             float multiplier = 1;
             for (int i = 0; i < val.length(); i++) {
                 char ch = val.charAt(i);
-                float chVal = (float) ch;
-                finalVal += ((float) chVal) * multiplier;
+                float chVal = ch;
+                finalVal += chVal * multiplier;
                 multiplier /= 26;
             }
             return scaleValue(finalVal, logarithmic);

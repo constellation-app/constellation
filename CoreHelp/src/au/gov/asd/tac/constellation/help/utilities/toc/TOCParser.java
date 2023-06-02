@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.help.utilities.toc;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -25,6 +26,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
@@ -54,6 +57,13 @@ public class TOCParser {
         TreeNode currentParent = root;
         final DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         final DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        // Ignore DTD validation to avoid unknown host exception when parsing XML
+        dBuilder.setEntityResolver(new EntityResolver() {
+            @Override
+            public InputSource resolveEntity(final String publicId, final String systemId) throws SAXException, IOException {
+                return new InputSource(new StringReader(""));
+            }
+        });
         final Document doc = dBuilder.parse(xmlFromFile);
         doc.getDocumentElement().normalize();
 

@@ -50,6 +50,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -62,6 +63,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -165,7 +167,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 // At least 1 object was successfully imported. List all successful file imports, as well as any files
                 // that there were issues for. If there were any files with issues use a warning dialog.
                 final String fileFiles = (validFilenames.size() == 1) ? "file" : "files";
-                sbMessage.append(String.format("Extracted data from %d rows in %d %s. Skipped rows %d due to import error.",
+                sbMessage.append(String.format("Extracted data from %d row(s) in %d %s. Skipped %d row(s) due to import error.",
                         importedRows, validFilenames.size(), fileFiles, skippedRows));
                 sbMessage.append(" Files with data: ");
                 for (int i = 0; i < validFilenames.size(); i++) {
@@ -356,16 +358,16 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
-    private static Map<String, Integer> processSourceVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, 
+    private static Map<String, Integer> processSourceVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
             final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
         return processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
     }
-    
-    private static Map<String, Integer> processDestinationVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, 
+
+    private static Map<String, Integer> processDestinationVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
             final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
         return processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
     }
-    
+
     private static Map<String, Integer> processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType,
             final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
@@ -384,12 +386,13 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             interaction.setProgress(++currentRow, totalRows, "Importing Vertices: " + source, true);
 
             final String[] row = data.get(i);
-            if (filter == null || filter.passesFilter(i - 1, row)) {
+            int vertexId = -1;
+            
+            try {
+                
+                if (filter == null || filter.passesFilter(i - 1, row)) {
 
-                final int vertexId = graph.addVertex();
-
-                try {
-
+                    vertexId = graph.addVertex();
                     for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
                         attributeDefinition.setValue(graph, vertexId, row, (i - 1));
                     }
@@ -401,13 +404,15 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     // Count the number of processed rows to notify in the status message
                     ++importedRows;
 
-                } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
-                    if (skipInvalidRows) {
+                }
+            } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
+                if (skipInvalidRows) {
+                    if(vertexId != -1) {
                         graph.removeVertex(vertexId);
-                        ++skippedRow;
-                    } else {
-                        throw ex;
-                    }
+                    }                    
+                    ++skippedRow;
+                } else {
+                    throw ex;
                 }
             }
         }
@@ -484,6 +489,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                         graph.removeVertex(destinationVertexId);
                         ++skippedRow;
                     } else {
+                        NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Ignore invalid rows", NotifyDescriptor.ERROR_MESSAGE);
                         throw ex;
                     }
                 }

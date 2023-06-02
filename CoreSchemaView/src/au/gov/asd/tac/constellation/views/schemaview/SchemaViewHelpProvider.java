@@ -42,8 +42,8 @@ public class SchemaViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String schemaModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
-                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "schemaview" + sep + "docs" + sep;
+        final String schemaModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd"
+                + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "schemaview" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.schemaview.SchemaViewTopComponent", schemaModulePath + "schema-view.md");
         return map;
@@ -58,8 +58,8 @@ public class SchemaViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String schemaViewPath;
-        schemaViewPath = CODEBASE_NAME + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
-                + CODEBASE_NAME + sep + "views" + sep + "schemaview" + sep + "docs" + sep + "schemaview-toc.xml";
+        schemaViewPath = "ext" + sep + "docs" + sep + "CoreSchemaView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac" + sep
+                + CODEBASE_NAME + sep + "views" + sep + "schemaview" + sep + "schemaview-toc.xml";
         return schemaViewPath;
     }
 }

@@ -568,7 +568,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                                 performPointSelection(event.isControlDown(), clearSelection, eventState.getCurrentHitType().elementType, eventState.getCurrentHitId());
                             }
                             break;
-                        case CREATING:                            
+                        case CREATING:
                             setCurrentCreationMode(camera, point, wg, event);
                             break;
                         case ROTATING:
@@ -1198,21 +1198,27 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                     }
                 } else {
                     JComponent currentMenu = popup;
-                    for (final String level : menuPath) {
+                    for (final String path : menuPath) {
+                        boolean pathAlreadyExists = false;
                         int childCount = currentMenu.getComponentCount();
+
                         for (int i = 0; i < childCount; i++) {
                             final JComponent childComponent = (JComponent) currentMenu.getComponent(i);
                             if (childComponent instanceof JMenu) {
                                 JMenu childMenu = (JMenu) childComponent;
-                                if (childMenu.getText().equals(level)) {
+                                if (childMenu.getText().equals(path)) {
+                                    pathAlreadyExists = true;
                                     currentMenu = childComponent;
                                     break;
                                 }
                             }
                         }
-                        final JMenu childMenu = new JMenu(level);
-                        currentMenu.add(childMenu);
-                        currentMenu = childMenu;
+
+                        if (!pathAlreadyExists) {
+                            final JMenu childMenu = new JMenu(path);
+                            currentMenu.add(childMenu);
+                            currentMenu = childMenu;
+                        }
                     }
 
                     for (int idx = 0; idx < items.size(); idx++) {

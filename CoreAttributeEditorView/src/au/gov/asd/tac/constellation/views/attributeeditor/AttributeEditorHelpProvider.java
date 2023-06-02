@@ -42,8 +42,8 @@ public class AttributeEditorHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String attributeModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep;
+        final String attributeModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "attributeeditor" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.attributeeditor.AttributeEditorPanel", attributeModulePath + "attribute-editor.md");
         return map;
@@ -58,8 +58,8 @@ public class AttributeEditorHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String attributeEditorViewPath;
-        attributeEditorViewPath = CODEBASE_NAME + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "attributeeditor" + sep + "docs" + sep + "attributeeditor-toc.xml";
+        attributeEditorViewPath = "ext" + sep + "docs" + sep + "CoreAttributeEditorView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "attributeeditor" + sep + "attributeeditor-toc.xml";
 
 
         return attributeEditorViewPath;

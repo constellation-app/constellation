@@ -34,7 +34,6 @@ import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalu
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.FloatCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.IconCriteriaValues;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.criteriavalues.StringCriteriaValues;
-import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedFindGraphSelectionPlugin;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
 import java.time.ZoneId;
@@ -101,19 +100,17 @@ public class AdvancedSearchPluginNGTest {
         GraphElementType elementType = GraphElementType.VERTEX;
         final String all = "All";
         final String any = "Any";
-        final String ignore = "Ignore";
-        final String addTo = "Add To";
-        final String removeFrom = "Remove From";
-        final String findIn = "Find In";
-
-        boolean searchAllGraphs = false;
+        final String replace = "Replace Selection";
+        final String addTo = "Add To Selection";
+        final String removeFrom = "Remove From Selection";
+        final String searchLocation = "Current Graph";
 
         //STRING | VERTEX | MATCH ANY CRITERIA | INGORE CURRENT SELECTION | SEARCH 1 GRAPH
         //Is
         List<FindCriteriaValues> findCriteriaValuesList = new ArrayList<>();
         StringCriteriaValues stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Is", "identifer name", true, false);
         findCriteriaValuesList.add(stringCriteriaValue1);
-        AdvancedSearchParameters parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        AdvancedSearchParameters parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         AdvancedSearchPlugin advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -129,7 +126,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Is Not", "identifer name", true, false);
         findCriteriaValuesList.add(stringCriteriaValue1);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -145,7 +142,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Contains", "identifer", true, false);
         findCriteriaValuesList.add(stringCriteriaValue1);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -161,7 +158,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Doesn't Contain", "identifer", true, false);
         findCriteriaValuesList.add(stringCriteriaValue1);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -177,7 +174,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Begins With", "iden", true, false);
         findCriteriaValuesList.add(stringCriteriaValue1);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -193,7 +190,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Ends With", "name", true, false);
         findCriteriaValuesList.add(stringCriteriaValue1);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -209,7 +206,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Matches (Regex)", "den", true, false);
         findCriteriaValuesList.add(stringCriteriaValue1);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -226,7 +223,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         FloatCriteriaValues floatCriteriaValues = new FloatCriteriaValues("float", "x", "Is", 1);
         findCriteriaValuesList.add(floatCriteriaValues);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -242,7 +239,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         floatCriteriaValues = new FloatCriteriaValues("float", "x", "Is Not", 1);
         findCriteriaValuesList.add(floatCriteriaValues);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -258,7 +255,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         floatCriteriaValues = new FloatCriteriaValues("float", "x", "Is Less Than", 4);
         findCriteriaValuesList.add(floatCriteriaValues);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -274,7 +271,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         floatCriteriaValues = new FloatCriteriaValues("float", "x", "Is Greater Than", 0);
         findCriteriaValuesList.add(floatCriteriaValues);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -290,7 +287,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         floatCriteriaValues = new FloatCriteriaValues("float", "x", "Is Between", 0, 4);
         findCriteriaValuesList.add(floatCriteriaValues);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -307,7 +304,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         BooleanCriteriaValues booleanCriteriaValue = new BooleanCriteriaValues("boolean", "dim", "Is", true);
         findCriteriaValuesList.add(booleanCriteriaValue);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -324,7 +321,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         ColorCriteriaValues colorCriteriaValue = new ColorCriteriaValues("color", "color", "Is", ConstellationColor.BLUE);
         findCriteriaValuesList.add(colorCriteriaValue);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -340,7 +337,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         colorCriteriaValue = new ColorCriteriaValues("color", "color", "Is Not", ConstellationColor.BLUE);
         findCriteriaValuesList.add(colorCriteriaValue);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -357,7 +354,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         IconCriteriaValues iconCriteriaValue = new IconCriteriaValues("icon", "background_icon", "Is", IconManager.getIcon("Flag.Australia"));
         findCriteriaValuesList.add(iconCriteriaValue);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -373,7 +370,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList = new ArrayList<>();
         iconCriteriaValue = new IconCriteriaValues("icon", "background_icon", "Is Not", IconManager.getIcon("Flag.Australia"));
         findCriteriaValuesList.add(iconCriteriaValue);
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -392,7 +389,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList.add(dateTimeCriteriaValue);
 
         elementType = GraphElementType.TRANSACTION;
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -413,7 +410,7 @@ public class AdvancedSearchPluginNGTest {
         dateTimeCriteriaValue = new DateTimeCriteriaValues("datetime", "DateTime", "Didn't Occur On", formatDateTime(testTime));
         findCriteriaValuesList.add(dateTimeCriteriaValue);
 
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -430,7 +427,7 @@ public class AdvancedSearchPluginNGTest {
         dateTimeCriteriaValue = new DateTimeCriteriaValues("datetime", "DateTime", "Occured Before", formatDateTime(plus1YearTestTime));
         findCriteriaValuesList.add(dateTimeCriteriaValue);
 
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -447,7 +444,7 @@ public class AdvancedSearchPluginNGTest {
         dateTimeCriteriaValue = new DateTimeCriteriaValues("datetime", "DateTime", "Occured After", formatDateTime(plus1YearTestTime));
         findCriteriaValuesList.add(dateTimeCriteriaValue);
 
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -464,7 +461,7 @@ public class AdvancedSearchPluginNGTest {
         dateTimeCriteriaValue = new DateTimeCriteriaValues("datetime", "DateTime", "Occured Between", formatDateTime(testTime), formatDateTime(plus2YearTestTime));
         findCriteriaValuesList.add(dateTimeCriteriaValue);
 
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -485,7 +482,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList.add(iconCriteriaValue);
 
         elementType = GraphElementType.VERTEX;
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -508,7 +505,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList.add(iconCriteriaValue);
 
         elementType = GraphElementType.VERTEX;
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, all, ignore, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, all, replace, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -529,7 +526,7 @@ public class AdvancedSearchPluginNGTest {
         findCriteriaValuesList.add(stringCriteriaValue1);
 
         elementType = GraphElementType.VERTEX;
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, true);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -572,7 +569,7 @@ public class AdvancedSearchPluginNGTest {
 
         //Test find prev
         elementType = GraphElementType.VERTEX;
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, false, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -602,7 +599,7 @@ public class AdvancedSearchPluginNGTest {
 
         //Test add to
         elementType = GraphElementType.VERTEX;
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, addTo, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -624,7 +621,7 @@ public class AdvancedSearchPluginNGTest {
 
         //Test Remove From
         elementType = GraphElementType.VERTEX;
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, removeFrom, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, removeFrom, searchLocation);
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -642,7 +639,7 @@ public class AdvancedSearchPluginNGTest {
 
         //Test Find In
         elementType = GraphElementType.VERTEX;
-        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, findIn, searchAllGraphs);
+        parameters = new AdvancedSearchParameters(findCriteriaValuesList, elementType, any, replace, "Current Selection");
 
         advancedSearchPlugin = new AdvancedSearchPlugin(parameters, true, false);
         PluginExecution.withPlugin(advancedSearchPlugin).executeNow(graph);
@@ -654,7 +651,6 @@ public class AdvancedSearchPluginNGTest {
 
         rg = graph.getReadableGraph();
 
-        // vxId3 is not selected so will not be considered in the
         assertEquals(rg.getBooleanValue(selectedV, vxId1), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId2), true);
         assertEquals(rg.getBooleanValue(selectedV, vxId3), false);
@@ -672,7 +668,7 @@ public class AdvancedSearchPluginNGTest {
         List<FindCriteriaValues> findCriteriaValuesList = new ArrayList<>();
         StringCriteriaValues stringCriteriaValue1 = new StringCriteriaValues("string", "Identifier", "Is", "identifer name", true, false);
         findCriteriaValuesList.add(stringCriteriaValue1);
-        AdvancedSearchParameters parameters = new AdvancedSearchParameters(findCriteriaValuesList, GraphElementType.VERTEX, "Any", "Ignore", false);
+        AdvancedSearchParameters parameters = new AdvancedSearchParameters(findCriteriaValuesList, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
 
         AdvancedSearchPlugin instance = new AdvancedSearchPlugin(parameters, true, false);
         String expResult = "Find: Advanced Search";

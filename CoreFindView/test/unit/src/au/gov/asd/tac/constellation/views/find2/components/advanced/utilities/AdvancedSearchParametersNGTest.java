@@ -75,7 +75,7 @@ public class AdvancedSearchParametersNGTest {
     public void testCopyParameters() {
         System.out.println("copyParameters");
         populateCriteriaLists();
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         paramatersTwo = new AdvancedSearchParameters();
         paramatersTwo.copyParameters(paramatersOne);
         assertEquals(paramatersOne, paramatersTwo);
@@ -89,7 +89,7 @@ public class AdvancedSearchParametersNGTest {
     public void testGetCriteriaValuesList() {
         System.out.println("getCriteriaValuesList");
         populateCriteriaLists();
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         assertEquals(criteriaValuesListOne, paramatersOne.getCriteriaValuesList());
     }
 
@@ -100,7 +100,7 @@ public class AdvancedSearchParametersNGTest {
     public void testGetGraphElementType() {
         System.out.println("getGraphElementType");
         populateCriteriaLists();
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         assertEquals(GraphElementType.VERTEX, paramatersOne.getGraphElementType());
     }
 
@@ -111,7 +111,7 @@ public class AdvancedSearchParametersNGTest {
     public void testGetAllOrAny() {
         System.out.println("getAllOrAny");
         populateCriteriaLists();
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         assertEquals("Any", paramatersOne.getAllOrAny());
     }
 
@@ -122,19 +122,8 @@ public class AdvancedSearchParametersNGTest {
     public void testGetCurrentSelection() {
         System.out.println("getCurrentSelection");
         populateCriteriaLists();
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
-        assertEquals("Ignore", paramatersOne.getCurrentSelection());
-    }
-
-    /**
-     * Test of isSearchAllGraphs method, of class AdvancedSearchParameters.
-     */
-    @Test
-    public void testIsSearchAllGraphs() {
-        System.out.println("isSearchAllGraphs");
-        populateCriteriaLists();
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
-        assertEquals(false, paramatersOne.isSearchAllGraphs());
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
+        assertEquals("Replace Selection", paramatersOne.getPostSearchAction());
     }
 
     /**
@@ -145,14 +134,14 @@ public class AdvancedSearchParametersNGTest {
         System.out.println("equals");
 
         populateCriteriaLists();
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         paramatersTwo = new AdvancedSearchParameters();
         paramatersTwo.copyParameters(paramatersOne);
 
         boolean result = paramatersOne.equals(paramatersTwo);
         assertEquals(result, true);
 
-        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "All", "Ignore", true);
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "All", "Replace Selection", "All Open Graphs");
         result = paramatersOne.equals(paramatersTwo);
         assertEquals(result, false);
 
@@ -163,8 +152,8 @@ public class AdvancedSearchParametersNGTest {
         criteriaValuesListTwo.clear();
         criteriaValuesListOne.add(valueOne);
         criteriaValuesListTwo.add(valueTwo);
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
-        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         result = paramatersOne.equals(paramatersTwo);
         assertEquals(result, false);
 
@@ -174,8 +163,8 @@ public class AdvancedSearchParametersNGTest {
         criteriaValuesListTwo.clear();
         criteriaValuesListOne.add(valueOne);
         criteriaValuesListTwo.add(valueTwo);
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
-        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         result = paramatersOne.equals(paramatersTwo);
         assertEquals(result, false);
 
@@ -185,8 +174,8 @@ public class AdvancedSearchParametersNGTest {
         criteriaValuesListTwo.clear();
         criteriaValuesListOne.add(valueOne);
         criteriaValuesListTwo.add(valueTwo);
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
-        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         result = paramatersOne.equals(paramatersTwo);
         assertEquals(result, false);
 
@@ -196,8 +185,8 @@ public class AdvancedSearchParametersNGTest {
         criteriaValuesListTwo.clear();
         criteriaValuesListOne.add(valueOne);
         criteriaValuesListTwo.add(valueTwo);
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Ignore", false);
-        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Ignore", false);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.VERTEX, "Any", "Replace Selection", "Current Graph");
         result = paramatersOne.equals(paramatersTwo);
         assertEquals(result, false);
 
@@ -209,8 +198,8 @@ public class AdvancedSearchParametersNGTest {
         criteriaValuesListTwo.clear();
         criteriaValuesListOne.add(valueOne);
         criteriaValuesListTwo.add(valueTwo);
-        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.TRANSACTION, "Any", "Ignore", false);
-        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.TRANSACTION, "Any", "Ignore", false);
+        paramatersOne = new AdvancedSearchParameters(criteriaValuesListOne, GraphElementType.TRANSACTION, "Any", "Replace Selection", "Current Graph");
+        paramatersTwo = new AdvancedSearchParameters(criteriaValuesListTwo, GraphElementType.TRANSACTION, "Any", "Replace Selection", "Current Graph");
         result = paramatersOne.equals(paramatersTwo);
         assertEquals(result, false);
 

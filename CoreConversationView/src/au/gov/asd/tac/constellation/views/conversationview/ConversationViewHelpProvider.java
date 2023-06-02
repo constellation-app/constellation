@@ -42,8 +42,8 @@ public class ConversationViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String conversationModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "conversationview" + sep + "docs" + sep;
+        final String conversationModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "conversationview" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.conversationview.ConversationBox", conversationModulePath + "conversation-view.md");
         return map;
@@ -58,8 +58,8 @@ public class ConversationViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String conversationViewPath;
-        conversationViewPath = CODEBASE_NAME + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "conversationview" + sep + "docs" + sep + "conversationview-toc.xml";
+        conversationViewPath = "ext" + sep + "docs" + sep + "CoreConversationView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "conversationview" + sep + "conversationview-toc.xml";
         return conversationViewPath;
     }
 }

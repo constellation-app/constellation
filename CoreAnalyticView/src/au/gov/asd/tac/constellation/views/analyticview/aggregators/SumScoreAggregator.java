@@ -45,7 +45,7 @@ public class SumScoreAggregator implements AnalyticAggregator<ScoreResult> {
         aggregateResult.setIgnoreNullResults(results.stream()
                 .anyMatch(result -> result.isIgnoreNullResults()));
 
-        results.forEach(scoreResult -> combinedResults.combine(scoreResult));
+        results.forEach(combinedResults::combine);
         combinedResults.getResult().forEach((key, value) -> {
             final Map<String, Float> aggregateScores = new HashMap<>();
             aggregateScores.put(SCORE_NAME, value.getNamedScores().values().stream().reduce((x, y) -> x + y).orElse(0.0F));

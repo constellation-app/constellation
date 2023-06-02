@@ -143,7 +143,7 @@ public class AdvancedFindTabNGTest {
          * getFindAllButton and getSearchAllGraphs checkbox.
          */
         advancedTab.updateButtons();
-        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getSearchAllGraphs());
+        assertEquals(advancedTab.buttonsHBox.getChildren().get(0), advancedTab.getDeleteResultsButton());
         assertEquals(advancedTab.buttonsHBox.getChildren().get(1), advancedTab.getFindAllButton());
         assertEquals(advancedTab.buttonsHBox.getChildren().get(2), advancedTab.getFindPrevButton());
         assertEquals(advancedTab.buttonsHBox.getChildren().get(3), advancedTab.getFindNextButton());
@@ -179,19 +179,19 @@ public class AdvancedFindTabNGTest {
          * When index 2 or 3 is selected the findNextButton and the
          * FindPreviousButton will be disabled
          */
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(0);
+        advancedTab.getPostSearchChoiceBox().getSelectionModel().select(0);
         assertEquals(false, advancedTab.getFindNextButton().isDisabled());
         assertEquals(false, advancedTab.getFindPrevButton().isDisabled());
 
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(1);
-        assertEquals(false, advancedTab.getFindNextButton().isDisabled());
-        assertEquals(false, advancedTab.getFindPrevButton().isDisabled());
-
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(2);
+        advancedTab.getPostSearchChoiceBox().getSelectionModel().select(1);
         assertEquals(true, advancedTab.getFindNextButton().isDisabled());
         assertEquals(true, advancedTab.getFindPrevButton().isDisabled());
 
-        advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().select(3);
+        advancedTab.getPostSearchChoiceBox().getSelectionModel().select(2);
+        assertEquals(true, advancedTab.getFindNextButton().isDisabled());
+        assertEquals(true, advancedTab.getFindPrevButton().isDisabled());
+
+        advancedTab.getPostSearchChoiceBox().getSelectionModel().select(3);
         assertEquals(true, advancedTab.getFindNextButton().isDisabled());
         assertEquals(true, advancedTab.getFindPrevButton().isDisabled());
 
@@ -354,8 +354,7 @@ public class AdvancedFindTabNGTest {
         assertEquals(controlllerParameters.getCriteriaValuesList().size(), advancedTab.getCorrespondingCriteriaList(elementType).size());
         assertEquals(controlllerParameters.getGraphElementType(), elementType);
         assertEquals(controlllerParameters.getAllOrAny(), advancedTab.getMatchCriteriaChoiceBox().getSelectionModel().getSelectedItem());
-        assertEquals(controlllerParameters.getCurrentSelection(), advancedTab.getCurrentSelectionChoiceBox().getSelectionModel().getSelectedItem());
-        assertEquals(controlllerParameters.isSearchAllGraphs(), advancedTab.getSearchAllGraphs().isPressed());
+        assertEquals(controlllerParameters.getPostSearchAction(), advancedTab.getPostSearchChoiceBox().getSelectionModel().getSelectedItem());
 
     }
 
@@ -372,6 +371,7 @@ public class AdvancedFindTabNGTest {
         FindViewController mockController = mock(FindViewController.class);
         mockController.init(spyTopComponent);
         doNothing().when(mockController).retrieveAdvancedSearch(Mockito.eq(true), Mockito.eq(false));
+        Button mockButton = mock(Button.class);
 
         GraphElementType graphElementType = GraphElementType.VERTEX;
 
@@ -399,6 +399,7 @@ public class AdvancedFindTabNGTest {
         when(advancedFindMock.getCorrespondingCriteriaList(graphElementType)).thenReturn(criteriaPaneList);
         when(advancedFindMock.getCriteriaValues(criteriaPaneList)).thenReturn(findCriteriaValues);
         when(advancedFindMock.getLookForChoiceBox()).thenReturn(lookForChoiceBox);
+        when(advancedFindMock.getDeleteResultsButton()).thenReturn(mockButton);
 
         //Do real call on findAllAction
         doCallRealMethod().when(advancedFindMock).findAllAction();

@@ -31,10 +31,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +53,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
     private static final String THREAD_POOL_NAME = "Default Plugin Environment";
 
-    private final ExecutorService pluginExecutor = Executors.newCachedThreadPool();
+    private final ExecutorService pluginExecutor = ConstellationGlobalThreadPool.getThreadPool().getDefaultPluginEnvPool();
 
     private static final String GRAPH_NULL_WARNING_MESSAGE = "{0} plugin was executed on a graph which was null";
 
@@ -65,6 +66,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             LOGGER.log(Level.INFO, GRAPH_NULL_WARNING_MESSAGE, plugin.getName());
         }
 
+        final ThreadConstraints parentConstraints = ThreadConstraints.getConstraints();
         return getPluginExecutor().submit(() -> {
             Thread.currentThread().setName(THREAD_POOL_NAME);
 
@@ -91,9 +93,18 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
             PluginReport currentReport = null;
             final GraphReport graphReport = graph == null ? null : GraphReportManager.getGraphReport(graph.getId());
-            if (graphReport != null) {
-                currentReport = graphReport.addPluginReport(plugin);
-                callingConstraints.setCurrentReport(currentReport);
+            // a graph report can have multiple plugin reports ... a plugin report can have multiple child plugin reports
+            if (graphReport != null) {     
+                final PluginReport parentThreadReport = parentConstraints.getCurrentReport();
+                final PluginReport existingReport = callingConstraints.getCurrentReport();
+                if (parentThreadReport == null && existingReport == null) {
+                    currentReport = graphReport.addPluginReport(plugin);
+                } else if (existingReport != null) {
+                    currentReport = existingReport.addChildReport(plugin);
+                } else if (parentThreadReport != null) {
+                    currentReport = parentThreadReport.addChildReport(plugin);
+                }
+                callingConstraints.setCurrentReport(currentReport);            
             }
 
             try {
@@ -274,7 +285,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             }
             callingConstraints.setCurrentReport(currentReport);
         }
-
+        
         final PluginManager manager = new PluginManager(DefaultPluginEnvironment.this, plugin, graph, interactive, null);
         final PluginInteraction interaction = new DefaultPluginInteraction(manager, currentReport);
         try {
@@ -421,8 +432,16 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
             interaction.notify(PluginNotificationLevel.INFO, message);
             LOGGER.log(Level.INFO, message, ex);
         } else if (ex instanceof PluginException) {
-            interaction.notify(level, ex.getLocalizedMessage());
-            LOGGER.log(Level.INFO, String.format("Plugin exception caught in %s", pluginName), ex);
+            final String displayMessage;
+            if (ex.getLocalizedMessage() == null) {
+                displayMessage = "null";
+            } else {
+                displayMessage = ex.getLocalizedMessage().startsWith(NotifyDisplayer.BLOCK_POPUP_FLAG) ? ex.getLocalizedMessage().substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length()): ex.getLocalizedMessage();
+            }
+            interaction.notify(level, displayMessage);
+            final PluginException nonPopupEx = new PluginException(PluginNotificationLevel.ERROR, NotifyDisplayer.BLOCK_POPUP_FLAG + displayMessage);
+            nonPopupEx.setStackTrace(ex.getStackTrace() != null ? ex.getStackTrace() : new StackTraceElement[]{});
+            LOGGER.log(Level.INFO, String.format("Plugin exception caught in %s", pluginName), nonPopupEx);
         } else {
             final String message = String.format("Unexpected exception caught in %s", pluginName);
             switch (level) {

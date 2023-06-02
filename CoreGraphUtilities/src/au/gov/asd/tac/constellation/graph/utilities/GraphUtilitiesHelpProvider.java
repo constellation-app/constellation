@@ -42,8 +42,8 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String graphUtilitiesModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "utilities" + sep + "docs" + sep;
+        final String graphUtilitiesModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "utilities" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.utilities.perspectives", graphUtilitiesModulePath + "perspective-bookmarks-view.md");
         return map;
@@ -58,8 +58,8 @@ public class GraphUtilitiesHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String graphUtilitiesPath;
-        graphUtilitiesPath = CODEBASE_NAME + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "graph" + sep + "utilities" + sep + "docs" + sep + "graphutilities-toc.xml";
+        graphUtilitiesPath = "ext" + sep + "docs" + sep + "CoreGraphUtilities" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + CODEBASE_NAME + sep + "graph" + sep + "utilities" + sep + "graphutilities-toc.xml";
         return graphUtilitiesPath;
     }
 }

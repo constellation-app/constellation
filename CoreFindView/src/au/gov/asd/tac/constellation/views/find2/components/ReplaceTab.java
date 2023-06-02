@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -67,10 +66,17 @@ public class ReplaceTab extends BasicFindTab {
         buttonsHBox.getChildren().addAll(replaceNextButton, replaceAllButton);
 
         // remove addTo, findIn, removeFrom
-        currentSelectionChoiceBox.getItems().remove(1, 4);
+        postSearchChoiceBox.getItems().remove(0, 3);
 
         // add replaceIn
-        currentSelectionChoiceBox.getItems().add("Replace In");
+        postSearchChoiceBox.getItems().add("Replace In");
+        postSearchChoiceBox.getSelectionModel().select(0);
+
+        // remove the choice box from the view
+        // the options are still altered in this choicebox to have replace in selected to
+        // ensure the parameters for the search are determined correctly 
+        settingsGrid.getChildren().remove(postSearchChoiceBox);
+        settingsGrid.getChildren().remove(postSearchLabel);
 
         // remove exact match checkBox
         preferencesGrid.getChildren().remove(exactMatchCB);
@@ -83,8 +89,7 @@ public class ReplaceTab extends BasicFindTab {
     @Override
     public void updateButtons() {
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(searchAllGraphs, replaceAllButton, replaceNextButton);
-        searchAllGraphs.setAlignment(Pos.CENTER_LEFT);
+        buttonsHBox.getChildren().addAll(replaceAllButton, replaceNextButton);
         getParentComponent().getParentComponent().setBottom(buttonsVBox);
     }
 
@@ -103,13 +108,31 @@ public class ReplaceTab extends BasicFindTab {
         boolean replaceIn = false;
 
         // determine what currentSelectionChoiceBox option is selected
-        if (currentSelectionChoiceBox.getSelectionModel().getSelectedIndex() == 1) {
+        if (postSearchChoiceBox.getSelectionModel().getSelectedIndex() == 1) {
             replaceIn = true;
+        }
+
+        boolean searchAllGraphs = false;
+        boolean currentGraph = false;
+        boolean currentSelection = false;
+
+        switch (searchInChoiceBox.getSelectionModel().getSelectedIndex()) {
+            case 0:
+                currentGraph = true;
+                break;
+            case 1:
+                currentSelection = true;
+                break;
+            case 2:
+                searchAllGraphs = true;
+                break;
+            default:
+                break;
         }
         // Create the paramters with the current UI selections
         final BasicFindReplaceParameters parameters = new BasicFindReplaceParameters(findTextField.getText(), replaceTextField.getText(),
                 elementType, attributeList, standardRadioBtn.isSelected(), regExBtn.isSelected(),
-                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), false, false, false, replaceIn, searchAllGraphs.isSelected());
+                ignoreCaseCB.isSelected(), exactMatchCB.isSelected(), false, false, false, replaceIn, currentSelection, currentGraph, searchAllGraphs);
 
         // Update the basic replace paramters with the newly created parameter
         FindViewController.getDefault().updateBasicReplaceParameters(parameters);

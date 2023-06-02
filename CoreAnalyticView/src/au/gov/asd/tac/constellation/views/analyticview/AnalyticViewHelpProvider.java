@@ -42,8 +42,8 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String analyticModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
-                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "analyticview" + sep + "docs" + sep;
+        final String analyticModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep
+                + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "analyticview" + sep;
 
         map.put("au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane", analyticModulePath + "analytic-view.md");
         map.put("au.gov.asd.tac.constellation.views.analyticview.questions.BestConnectsNetworkQuestion", analyticModulePath + "question-best-connects-network.md");
@@ -92,8 +92,8 @@ public class AnalyticViewHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String analyticViewPath;
-        analyticViewPath = CODEBASE_NAME + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "analyticview" + sep + "docs" + sep + "analyticview-toc.xml";
+        analyticViewPath = "ext" + sep + "docs" + sep + "CoreAnalyticView" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                + "tac" + sep + CODEBASE_NAME + sep + "views" + sep + "analyticview" + sep + "analyticview-toc.xml";
 
         return analyticViewPath;
     }
