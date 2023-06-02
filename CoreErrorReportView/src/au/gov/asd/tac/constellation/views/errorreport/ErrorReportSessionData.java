@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.errorreport;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -60,13 +61,13 @@ public class ErrorReportSessionData {
             // check for a repeated exception from the same constellation source, but compare only the top portion
             // of the stacktrace, as there are cases where different threads can generate the same exception,
             // but have a different origin (thread number) in their stack trace
-            final String[] comparisonLines = entry.getErrorData().split("\n");
+            final String[] comparisonLines = entry.getErrorData().split(SeparatorConstants.NEWLINE);
             final StringBuilder sb = new StringBuilder();
             final String[] constyLines = extractMatchingLines(comparisonLines, ".constellation.");
             if (comparisonLines.length > 7) {
                 final int topNlines = 2 + comparisonLines.length / 4;
                 for (int i = 0; i < topNlines; i++) {
-                    sb.append(comparisonLines[i]).append("\n");
+                    sb.append(comparisonLines[i]).append(SeparatorConstants.NEWLINE);
                 }
             } else {
                 sb.append(entry.getErrorData());
@@ -78,6 +79,7 @@ public class ErrorReportSessionData {
                 for (final String constyLine : constyLines) {
                     if (!sessionErrors.get(i).getErrorData().contains(constyLine)) {
                         allConstyLinesMatch = false;
+                        break;
                     }
                 }
                 if (allConstyLinesMatch && sessionErrors.get(i).getErrorLevel().equals(entry.getErrorLevel()) && sessionErrors.get(i).getErrorData().startsWith(comparisonData)) {
@@ -107,10 +109,10 @@ public class ErrorReportSessionData {
         final StringBuilder destination = new StringBuilder();
         for (int i = 0; i< sourceLines.length; i++) {
             if (sourceLines[i].contains(patternToMatch)) {
-                destination.append(sourceLines[i]).append("\n");
+                destination.append(sourceLines[i]).append(SeparatorConstants.NEWLINE);
             }
         }
-        return destination.toString().split("\n");
+        return destination.toString().split(SeparatorConstants.NEWLINE);
     }
     
     public void removeEntry(final double entryId) {
