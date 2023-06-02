@@ -146,6 +146,8 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         buttonRight = new javax.swing.JButton();
         buttonLeft = new javax.swing.JButton();
+        buttonUp = new javax.swing.JButton();
+        buttonDown = new javax.swing.JButton();
 
         jScrollPane1.setViewportView(visibleList);
 
@@ -174,6 +176,20 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
             }
         });
 
+        org.openide.awt.Mnemonics.setLocalizedText(buttonUp, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.buttonUp.text")); // NOI18N
+        buttonUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonUpActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(buttonDown, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.buttonDown.text")); // NOI18N
+        buttonDown.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonDownActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout OptionPanelLayout = new javax.swing.GroupLayout(OptionPanel);
         OptionPanel.setLayout(OptionPanelLayout);
         OptionPanelLayout.setHorizontalGroup(
@@ -192,9 +208,12 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(46, 46, 46)
                         .addGroup(OptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(buttonRight)
-                            .addComponent(buttonLeft))
-                        .addGap(46, 46, 46)
+                            .addComponent(buttonUp, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(OptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(buttonRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(buttonLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(buttonDown, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(38, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, OptionPanelLayout.createSequentialGroup()
@@ -212,11 +231,15 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(OptionPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(OptionPanelLayout.createSequentialGroup()
-                        .addGap(53, 53, 53)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, OptionPanelLayout.createSequentialGroup()
+                        .addComponent(buttonUp)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(buttonDown)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonRight)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonLeft))
+                        .addComponent(buttonLeft)
+                        .addGap(9, 9, 9))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
                     .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
@@ -300,12 +323,72 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_buttonLeftActionPerformed
 
+    private void buttonUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUpActionPerformed
+        if (visibleList.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
+        }
+        else
+        {
+            final int[] selectedIndices = visibleList.getSelectedIndices();
+
+            if(selectedIndices[0] != 0)
+            {
+                final int beforeIndex = selectedIndices[0]-1;
+                final List<String> selectedItems = visibleList.getSelectedValuesList();
+
+                visibleListModel.removeRange(selectedIndices[0], selectedIndices[selectedIndices.length - 1]);
+
+                visibleListModel.addAll(beforeIndex, selectedItems);
+
+
+                visibleList.setModel(visibleListModel);
+
+                for (int i = 0; i < selectedIndices.length; i++) {
+                    selectedIndices[i]--;
+                }
+
+                visibleList.setSelectedIndices(selectedIndices);
+            }
+        }
+    }//GEN-LAST:event_buttonUpActionPerformed
+
+    private void buttonDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownActionPerformed
+        if (visibleList.getSelectedIndex() == -1) {
+            JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
+        }
+        else
+        {
+            final int[] selectedIndices = visibleList.getSelectedIndices();
+
+            if(selectedIndices[selectedIndices.length-1] != visibleList.getModel().getSize()-1)
+            {
+                final int afterIndex = selectedIndices[selectedIndices.length-1]+1;
+                final List<String> selectedItems = visibleList.getSelectedValuesList();
+
+                visibleListModel.removeRange(selectedIndices[0], selectedIndices[selectedIndices.length - 1]);
+
+                visibleListModel.addAll(afterIndex-selectedIndices.length, selectedItems);
+
+
+                visibleList.setModel(visibleListModel);
+
+                for (int i = 0; i < selectedIndices.length; i++) {
+                    selectedIndices[i]++;
+                }
+
+                visibleList.setSelectedIndices(selectedIndices);
+            }
+        }
+    }//GEN-LAST:event_buttonDownActionPerformed
+
     private javax.swing.JButton upButton;
     private javax.swing.JButton downButton;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel OptionPanel;
+    private javax.swing.JButton buttonDown;
     private javax.swing.JButton buttonLeft;
     private javax.swing.JButton buttonRight;
+    private javax.swing.JButton buttonUp;
     private javax.swing.JList<String> hiddenList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

@@ -119,6 +119,8 @@ public class LookupPluginsTaskNGTest {
                     "Utility", new Pair(2, List.of(plugin4)),
                     "Favourites", new Pair(3, List.of(plugin3)));
 
+            new LookupPluginsTask().get().keySet().forEach(key -> System.out.println("Returned key: " + key));
+
             assertEquals(new LookupPluginsTask().get(), expectedPlugins);
         }
     }

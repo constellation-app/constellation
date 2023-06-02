@@ -37,7 +37,9 @@ import javafx.util.Pair;
 public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, List<DataAccessPlugin>>>> {
     private static final Preferences PREFS = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
     public static final String DAV_CATS = PREFS.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
-    public static final String VISIBLE_CATS = PREFS.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
+    public static String VISIBLE_CATS = PREFS.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
+
+    private Integer defaultOrderCounter = 1;
 
     @Override
     public Map<String, Pair<Integer, List<DataAccessPlugin>>> get() {
@@ -57,18 +59,9 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
         }
 
         if (StringUtils.isBlank(VISIBLE_CATS) && StringUtils.isBlank(DAV_CATS)) {
-            final StringBuilder pluginsNameBuilder = new StringBuilder();
-            pluginsNameBuilder.append("[");
-
             plugins.keySet().forEach(key -> {
-                pluginsNameBuilder.append(key);
-                pluginsNameBuilder.append(",");
+                pluginsWithOrder.put(key, new Pair(defaultOrderCounter++, plugins.get(key)));
             });
-
-            pluginsNameBuilder.deleteCharAt(pluginsNameBuilder.length() - 1);
-            pluginsNameBuilder.append("]");
-            final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
-            prefs.put(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, pluginsNameBuilder.toString());
         }
 
         if (StringUtils.isNotBlank(VISIBLE_CATS)) {
