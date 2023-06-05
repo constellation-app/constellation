@@ -31,7 +31,6 @@ public class ConstellationGlobalThreadPool {
     private ScheduledExecutorService scheduledExecutorService = null;
     private ExecutorService fixedThreadPool = null;
     private ExecutorService cachedThreadPool = null;
-    private ExecutorService defaultPluginEnvironmentPool = null;
 
     private ConstellationGlobalThreadPool() {
     }
@@ -79,7 +78,7 @@ public class ConstellationGlobalThreadPool {
     /**
      * Creates only 1 CachedThreadPool
      *
-     * @return a CachedThradPool object
+     * @return a CachedThreadPool object
      */
     public ExecutorService getCachedThreadPool() {
         if (cachedThreadPool == null) {
@@ -88,19 +87,4 @@ public class ConstellationGlobalThreadPool {
 
         return cachedThreadPool;
     }
-
-    /**
-     * Also creates a cached thread pool however this is only used by the
-     * default plugin environment
-     *
-     * @return A CachedThreadPool object
-     */
-    public ExecutorService getDefaultPluginEnvPool() {
-        if (defaultPluginEnvironmentPool == null) {
-            defaultPluginEnvironmentPool = Executors.newCachedThreadPool();
-        }
-
-        return defaultPluginEnvironmentPool;
-    }
-
 }

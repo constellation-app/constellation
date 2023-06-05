@@ -53,7 +53,7 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
 
     private static final String THREAD_POOL_NAME = "Default Plugin Environment";
 
-    private final ExecutorService pluginExecutor = ConstellationGlobalThreadPool.getThreadPool().getDefaultPluginEnvPool();
+    private final ExecutorService pluginExecutor = ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool();
 
     private static final String GRAPH_NULL_WARNING_MESSAGE = "{0} plugin was executed on a graph which was null";
 
