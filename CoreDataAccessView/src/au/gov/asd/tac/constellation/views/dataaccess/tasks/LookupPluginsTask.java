@@ -39,7 +39,7 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
     public static final String DAV_CATS = PREFS.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
     public static String VISIBLE_CATS = PREFS.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
 
-    private Integer defaultOrderCounter = 1;
+    private Integer defaultOrderCounter = 0;
 
     @Override
     public Map<String, Pair<Integer, List<DataAccessPlugin>>> get() {
@@ -58,12 +58,6 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
             }
         }
 
-        if (StringUtils.isBlank(VISIBLE_CATS) && StringUtils.isBlank(DAV_CATS)) {
-            plugins.keySet().forEach(key -> {
-                pluginsWithOrder.put(key, new Pair(defaultOrderCounter++, plugins.get(key)));
-            });
-        }
-
         if (StringUtils.isNotBlank(VISIBLE_CATS)) {
             final String[] visibleCategoriesArray = addCategoryToList(VISIBLE_CATS);
             if (visibleCategoriesArray.length > 0) {
@@ -77,6 +71,12 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                     }
                 });
             }
+        }
+
+        if (StringUtils.isBlank(VISIBLE_CATS) && StringUtils.isBlank(DAV_CATS)) {
+            plugins.keySet().forEach(key -> {
+                pluginsWithOrder.put(key, new Pair(++defaultOrderCounter, plugins.get(key)));
+            });
         }
         return pluginsWithOrder;
     }
