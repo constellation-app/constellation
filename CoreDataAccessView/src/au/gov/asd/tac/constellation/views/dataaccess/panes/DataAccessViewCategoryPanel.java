@@ -30,6 +30,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
 import org.apache.commons.collections4.ListUtils;
 
 /**
@@ -57,7 +58,8 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         this.controller = controller;
         initComponents();
         addUpandDownButtons();
-
+        visibleList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        hiddenList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         visibleListModel = new DefaultListModel<>();
         hiddenListModel = new DefaultListModel<>();
 
