@@ -1055,7 +1055,8 @@ public class NotesViewPane extends BorderPane {
 
         // Edit button activates editable text boxs for title and label
         editTextButton.setOnAction(event -> {
-            LOGGER.log(Level.SEVERE, "Removed content text flow");
+            newNote.setTempTitle(newNote.getNoteTitle());
+            newNote.setTempContent(newNote.getNoteContent());
             noteButtons.getChildren().removeAll(showMoreButton, gap, editTextButton, deleteButton);
             noteButtons.getChildren().addAll(colourPicker, gap2, editScreenButtons);
             noteButtons.setSpacing(EDIT_SPACING);
