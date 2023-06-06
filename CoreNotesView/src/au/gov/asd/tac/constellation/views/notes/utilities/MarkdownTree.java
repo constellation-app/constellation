@@ -140,8 +140,16 @@ public class MarkdownTree {
                         normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax - (digitMatcher.group().length() - 1)), -99);
 
                         // Else create a normal node with type with text up to the dot
+                    } else if (closestSyntax + 1 < text.length()) {
+                        normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax + 1, text.substring(currentIndex, closestSyntax + 1), -99);
                     } else {
-                        normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
+                        normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex), -99);
+                    }
+                } else if (text.charAt(closestSyntax) == '.') {
+                    if (closestSyntax + 1 < text.length()) {
+                        normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax + 1, text.substring(currentIndex, closestSyntax + 1), -99);
+                    } else {
+                        normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex), -99);
                     }
                 } else {
 
@@ -204,6 +212,7 @@ public class MarkdownTree {
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), boldMatcher.group(1));
                         currentIndex += boldMatcher.end(1) + 2;
                     } else {
+                        addSyntaxNormalNode(Character.toString(boldSyntax), currentNode);
                         currentIndex++;
                     }
                     // Else if the user wanted italic text
@@ -219,14 +228,18 @@ public class MarkdownTree {
 
                     // If italic text is found
                     if (italicMatcher.find()) {
+                        LOGGER.log(Level.SEVERE, "Detected italic");
                         // Create a MarkdownNode of type ITALIC and add it as a child of the current node
                         final MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, italicMatcher.end(1), italicMatcher.group(1), -99);
                         currentNode.getChildren().add(italic);
 
                         // Call this funciton on this italic text
+                        LOGGER.log(Level.SEVERE, "Text inside italic syntax: " + italicMatcher.group(1));
+                        LOGGER.log(Level.SEVERE, "Current Index is at: " + text.charAt(currentIndex + italicMatcher.end(1) + 1) + " Next character is: " + text.charAt(currentIndex + italicMatcher.end(1) + 2));
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), italicMatcher.group(1));
                         currentIndex += italicMatcher.end(1) + 1;
                     } else {
+                        addSyntaxNormalNode(Character.toString(boldSyntax), currentNode);
                         currentIndex++;
                     }
                 }
@@ -248,6 +261,7 @@ public class MarkdownTree {
 
                     currentIndex += strikeThroughMatcher.end() + 1;
                 } else {
+                    addSyntaxNormalNode("~", currentNode);
                     currentIndex++;
                 }
 
@@ -471,6 +485,11 @@ public class MarkdownTree {
         }
 
         return textNodes;
+    }
+
+    private void addSyntaxNormalNode(final String syntax, final MarkdownNode parent) {
+        final MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, 0, 1, syntax, -99);
+        parent.getChildren().add(normal);
     }
 
     /**
