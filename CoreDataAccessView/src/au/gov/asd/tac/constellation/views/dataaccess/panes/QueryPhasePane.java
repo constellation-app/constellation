@@ -85,8 +85,6 @@ public class QueryPhasePane extends VBox {
                           final PluginParameters presetGlobalParms) {
         globalParametersPane = new GlobalParametersPane(presetGlobalParms);
         final Preferences PREFS = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
-        final String notVisibleCats = PREFS.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
-        final String visibleCats = PREFS.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
         final List<Pair<Integer, HeadingPane>> orderedPlugins = new ArrayList<>();
         plugins.entrySet().stream()
                 .filter(pluginsOfType -> !pluginsOfType.getValue().getValue().isEmpty())

@@ -25,8 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
@@ -39,8 +37,6 @@ import org.apache.commons.collections4.ListUtils;
  * @author mimosa
  */
 final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
-
-    private static final Logger LOGGER = Logger.getLogger(DataAccessViewCategoryPanel.class.getName());
 
     private final DataAccessViewCategoryPanelController controller;
     private static final Map<String, List<DataAccessPlugin>> ALL_PLUGINS = DataAccessUtilities.getAllPlugins();
@@ -368,7 +364,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
             if(selectedIndices[selectedIndices.length-1] != visibleList.getModel().getSize()-1)
             {
-                LOGGER.log(Level.SEVERE, "Moving tiems down");
                 final int afterIndex = selectedIndices[selectedIndices.length-1]+1;
                 final List<String> selectedItems = visibleList.getSelectedValuesList();
 

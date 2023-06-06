@@ -62,8 +62,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author formalhaunt
  */
 public class DataAccessTabPane {
-    private static final Logger LOGGER = Logger.getLogger(DataAccessTabPane.class.getName());
-    
     private static final String TAB_TITLE = "Step %d";
     public static final String LOCAL_DATE_PARAMETER_TYPE = "LocalDateParameterType";
     private static final int DOUBLE_CLICK_COUNT = 2;
@@ -162,7 +160,6 @@ public class DataAccessTabPane {
      * @param queryPane the pane that will be added as the content of the new tab
      */
     public void newTab(final QueryPhasePane queryPane, final String userCaption) {
-        LOGGER.log(Level.SEVERE, "Created new tab");
         final Label label = new Label(userCaption);
         final Label defaultLabel = new Label();
         final String defaultCaption = String.format(TAB_TITLE, getTabPane().getTabs().size() + 1);
@@ -299,9 +296,6 @@ public class DataAccessTabPane {
         List<Future<?>> barrier = null;
         for (int i = firstTab; i <= lastTab; i++) {
             final Tab tab = getTabPane().getTabs().get(i);
-            
-            LOGGER.log(Level.INFO, String.format("Running tab: %s", tab.getText()));
-            
             barrier = getQueryPhasePane(tab).runPlugins(barrier);
         }
 
