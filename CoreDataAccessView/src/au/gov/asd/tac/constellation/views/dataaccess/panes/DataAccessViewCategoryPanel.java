@@ -53,7 +53,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     DataAccessViewCategoryPanel(final DataAccessViewCategoryPanelController controller) {
         this.controller = controller;
         initComponents();
-        addUpandDownButtons();
         visibleList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         hiddenList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         visibleListModel = new DefaultListModel<>();
@@ -267,15 +266,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void addUpandDownButtons()
-    {
-        
-        upButton = new javax.swing.JButton();
-        downButton = new javax.swing.JButton();
-
-        OptionPanel.getLayout().addLayoutComponent("Up button", upButton);
-        OptionPanel.getLayout().addLayoutComponent("Down button", downButton);
-    }
 
     private void buttonRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRightActionPerformed
 
@@ -328,9 +318,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private void buttonUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonUpActionPerformed
         if (visibleList.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
-        }
-        else
-        {
+        } else {
             final int[] selectedIndices = visibleList.getSelectedIndices();
 
             if(selectedIndices[0] != 0)
@@ -357,9 +345,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private void buttonDownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonDownActionPerformed
         if (visibleList.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
-        }
-        else
-        {
+        } else {
             final int[] selectedIndices = visibleList.getSelectedIndices();
 
             if(selectedIndices[selectedIndices.length-1] != visibleList.getModel().getSize()-1)
@@ -383,8 +369,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_buttonDownActionPerformed
 
-    private javax.swing.JButton upButton;
-    private javax.swing.JButton downButton;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel OptionPanel;
     private javax.swing.JButton buttonDown;

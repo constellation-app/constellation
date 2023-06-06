@@ -61,7 +61,7 @@ public class DataAccessSearchProvider implements SearchProvider {
                     + "Data Access View cannot be created.");
         }
 
-        final Map<String, List<DataAccessPlugin>> unorderedPlugins = new HashMap();
+        final Map<String, List<DataAccessPlugin>> unorderedPlugins = new HashMap<>();
 
         plugins.keySet().forEach(key -> unorderedPlugins.put(key, plugins.get(key).getValue()));
 
