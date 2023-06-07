@@ -45,7 +45,7 @@ public class MarkdownTree {
     private String rawString = "";
 
     // The different markdown syntax patterns supported
-    private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)");
+    private static final Pattern HEADING_PATTERN = Pattern.compile("^#{1,6}\\s([^\\n]+)");
     private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
     private static final Pattern BOLD_PATTERN_2 = Pattern.compile("__\\s?([^\\n]+)__");
     private static final Pattern ITALIC_PATTERN = Pattern.compile("\\*\\s?([^\\n]+)\\*");

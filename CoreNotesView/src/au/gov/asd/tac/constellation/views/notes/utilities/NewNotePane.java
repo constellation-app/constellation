@@ -125,13 +125,12 @@ public class NewNotePane {
         previewTextFlow.setMinWidth(WIDTH - 5);
         //previewTextFlow.setMaxWidth(WIDTH - 5);
         previewTextFlow.setPrefWidth(WIDTH - 5);
-
-        final VBox previewTabVbox = new VBox(previewTextFlow);
+        
 
         final ScrollPane previewTabScrollPane = new ScrollPane();
-        previewTabScrollPane.setContent(previewTabVbox);
-        previewTabScrollPane.setMinWidth(WIDTH - 5);
-        //previewTabScrollPane.setMaxWidth(WIDTH - 5);
+        previewTabScrollPane.setContent(previewTextFlow);
+        previewTabScrollPane.setMaxWidth(WIDTH);
+        previewTabScrollPane.setMaxHeight(202);
         previewTabScrollPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
         final VBox editVBox = new VBox(5, titleField, contentField);
