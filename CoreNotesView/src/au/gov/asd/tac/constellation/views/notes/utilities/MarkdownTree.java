@@ -191,6 +191,7 @@ public class MarkdownTree {
                     // Set currentIndex to be after the heading string
                     currentIndex += headingMatcher.end();
                 } else {
+                    addSyntaxNormalNode(Character.toString('#'), currentNode);
                     currentIndex++;
                 }
 
