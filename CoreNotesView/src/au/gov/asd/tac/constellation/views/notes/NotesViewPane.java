@@ -604,7 +604,6 @@ public class NotesViewPane extends BorderPane {
 
             });
         }
-        LOGGER.log(Level.SEVERE, "Size: " + notesToRender.size());
         Platform.runLater(() -> {
             final BooleanProperty foundNoteInEdit = new SimpleBooleanProperty(false);
 
@@ -680,7 +679,6 @@ public class NotesViewPane extends BorderPane {
         synchronized (LOCK) {
             notesViewEntries.forEach(note -> {
                 if (note.getEditMode()) {
-                    note.saveTempEdits();
                     note.setEditMode(false);
                     note.setWasInEditMode(true);
                 } else {
@@ -721,6 +719,8 @@ public class NotesViewPane extends BorderPane {
         dateTimeLabel.setPadding(new Insets(0, 0, 0, 0));
         // Define title text box
         final TextField titleText = new TextField(newNote.getNoteTitle());
+
+
         titleText.setStyle(BOLD_STYLE);
         titleText.setOnKeyTyped(event -> newNote.setTempTitle(titleText.getText()));
 
@@ -738,10 +738,15 @@ public class NotesViewPane extends BorderPane {
         contentLabel.setAlignment(Pos.TOP_LEFT);
 
         // Define content text area
-        final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
+        final TextArea contentTextArea = new TextArea(newNote.getNoteContent());        
         contentTextArea.setWrapText(true);
         contentTextArea.positionCaret(contentTextArea.getText() == null ? 0 : contentTextArea.getText().length());
         contentTextArea.setOnKeyTyped(event -> newNote.setTempContent(contentTextArea.getText()));
+
+        if (newNote.checkIfWasInEditMode()) {
+            titleText.setText(newNote.getTempTitle());
+            contentTextArea.setText(newNote.getTempContent());
+        }
 
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.parse();
