@@ -234,8 +234,8 @@ public class MarkdownTree {
                         currentNode.getChildren().add(italic);
 
                         // Call this funciton on this italic text
-                        LOGGER.log(Level.SEVERE, "Text inside italic syntax: " + italicMatcher.group(1));
-                        LOGGER.log(Level.SEVERE, "Current Index is at: " + text.charAt(currentIndex + italicMatcher.end(1) + 1) + " Next character is: " + text.charAt(currentIndex + italicMatcher.end(1) + 2));
+                        //LOGGER.log(Level.SEVERE, "Text inside italic syntax: " + italicMatcher.group(1));
+                        //LOGGER.log(Level.SEVERE, "Current Index is at: " + text.charAt(currentIndex + italicMatcher.end(1) + 1) + " Next character is: " + text.charAt(currentIndex + italicMatcher.end(1) + 2));
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), italicMatcher.group(1));
                         currentIndex += italicMatcher.end(1) + 1;
                     } else {
