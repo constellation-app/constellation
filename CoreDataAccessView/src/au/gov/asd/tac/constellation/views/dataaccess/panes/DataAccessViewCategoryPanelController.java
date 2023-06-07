@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -44,9 +46,14 @@ import org.openide.util.NbPreferences;
 })
 public final class DataAccessViewCategoryPanelController extends OptionsPanelController {
 
+    private static final Logger LOGGER = Logger.getLogger(DataAccessViewCategoryPanelController.class.getName());
+
     private DataAccessViewCategoryPanel thePanel;
+    private List<String> visibleNow;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private boolean panelRefreshed = false;
+    private boolean reorderButtonPressed = false;
+    private boolean orderChanged = false;
 
     /* This method enables to refresh the lists when the panel is opened */
     @Override
@@ -98,7 +105,19 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
         final DataAccessViewCategoryPanel panel = getPanel();
         final List<String> hiddenCategory = panel.getHiddenCategory();
-        return (!hiddenCategory.isEmpty())
+        final List<String> visibleCategory = panel.getVisibleCategory();
+
+
+        if (reorderButtonPressed) {
+            if (!visibleCategory.equals(visibleNow)) {
+                orderChanged = true;
+                visibleNow = panel.getVisibleCategory();
+            } else
+                orderChanged = false;
+            reorderButtonPressed = false;
+        }
+
+        return (!hiddenCategory.isEmpty() || orderChanged)
                 || (!prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty()
                 || (!prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty()));
     }
@@ -126,7 +145,13 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
     public DataAccessViewCategoryPanel getPanel() {
         if (thePanel == null) {
             thePanel = new DataAccessViewCategoryPanel(this);
+            visibleNow = thePanel.getVisibleCategory();
         }
         return thePanel;
     }
+
+    public void setReorderButtonPressed(boolean reorderButtonPressed) {
+        this.reorderButtonPressed = reorderButtonPressed;
+    }
+
 }

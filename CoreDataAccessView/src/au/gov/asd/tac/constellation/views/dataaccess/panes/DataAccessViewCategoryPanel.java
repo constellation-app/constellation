@@ -330,7 +330,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
                 visibleListModel.addAll(beforeIndex, selectedItems);
 
-
                 visibleList.setModel(visibleListModel);
 
                 for (int i = 0; i < selectedIndices.length; i++) {
@@ -338,6 +337,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                 }
 
                 visibleList.setSelectedIndices(selectedIndices);
+                controller.setReorderButtonPressed(true);
             }
         }
     }//GEN-LAST:event_buttonUpActionPerformed
@@ -357,7 +357,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
                 visibleListModel.addAll(afterIndex - selectedIndices.length + 1, selectedItems);
 
-
                 visibleList.setModel(visibleListModel);
 
                 for (int i = 0; i < selectedIndices.length; i++) {
@@ -365,6 +364,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                 }
 
                 visibleList.setSelectedIndices(selectedIndices);
+                controller.setReorderButtonPressed(true);
             }
         }
     }//GEN-LAST:event_buttonDownActionPerformed
