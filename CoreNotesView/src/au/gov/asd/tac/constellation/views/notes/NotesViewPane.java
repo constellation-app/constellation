@@ -156,7 +156,7 @@ public class NotesViewPane extends BorderPane {
     private final Map<Integer, String> previouseColourMap = new HashMap<>();
 
 
-    public static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(NotesViewPane.class.getName());
 
     /**
      * NotesViewPane constructor.
@@ -279,10 +279,6 @@ public class NotesViewPane extends BorderPane {
 
         // Event handler to add new note
         newNotePane.getAddButtion().setOnAction(event -> {
-
-            //MarkdownTree mdTree = new MarkdownTree(newNotePane.getContentField().getText());
-            //mdTree.parse();
-            //mdTree.print();
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 if (newNotePane.getTitleField().getText().isBlank()
@@ -605,17 +601,16 @@ public class NotesViewPane extends BorderPane {
             });
         }
         Platform.runLater(() -> {
-            final BooleanProperty foundNoteInEdit = new SimpleBooleanProperty(false);
-
+            boolean foundNoteInEdit = false;
             for (int i = 0; i < notesToRender.size(); i++) {
                 if (notesToRender.get(i).getEditMode()) {
-                    foundNoteInEdit.set(true);
+                    foundNoteInEdit = true;
                     break;
                 }
             }
 
 
-            if (!foundNoteInEdit.get()) {
+            if (!foundNoteInEdit) {
                 notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
 
                 if (CollectionUtils.isNotEmpty(notesToRender)) {
@@ -697,7 +692,7 @@ public class NotesViewPane extends BorderPane {
      * View.
      */
     private void createNote(final NotesViewEntry newNote) {
-        LOGGER.log(Level.SEVERE, "Creating note");
+        LOGGER.log(Level.INFO, "Creating note");
         if (!Platform.isFxApplicationThread()) {
             throw new IllegalStateException("Not processing on the JavaFX Application Thread");
         }
@@ -799,12 +794,7 @@ public class NotesViewPane extends BorderPane {
 
             // If the note to be created is in edit mode, ensure it is created
             // with the correct java fx elements
-            if (newNote.getEditMode()) {
-                noteInformation = new VBox(DEFAULT_SPACING, titleText, contentTextArea);
-            } else {
-                noteInformation = new VBox(DEFAULT_SPACING, containerPane);
-            }
-
+            noteInformation = newNote.getEditMode() ? new VBox(DEFAULT_SPACING, titleText, contentTextArea) : new VBox(DEFAULT_SPACING, containerPane);
 
             HBox.setHgrow(noteInformation, Priority.ALWAYS);
         } else {
@@ -893,7 +883,6 @@ public class NotesViewPane extends BorderPane {
             if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10 && !showMoreButton.isVisible()) {
                 showMoreButton.setVisible(true);
                 showMoreButton.setText(SHOW_MORE);
-                LOGGER.log(Level.SEVERE, "Resizing note body");
                 noteBody.setMaxHeight(NOTE_HEIGHT - 5);
 
             } else if (obs.getValue().doubleValue() < NOTE_HEIGHT - 10 && showMoreButton.isVisible()) {

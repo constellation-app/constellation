@@ -28,6 +28,7 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * This class makes a tree containing nodes that represent text and their
@@ -63,7 +64,7 @@ public class MarkdownTree {
      *
      * @param rawString
      */
-    public MarkdownTree(String rawString) {
+    public MarkdownTree(final String rawString) {
         root = new MarkdownNode();
         this.rawString += rawString + "\n";
     }
@@ -82,9 +83,9 @@ public class MarkdownTree {
      * @param currentNode - The current node the text is under or contained in
      * @param text - The piece of text that the function is currently processing
      */
-    private void parseString(MarkdownNode currentNode, String text) {
+    private void parseString(final MarkdownNode currentNode, String text) {
 
-        if (text.isBlank() || text.isEmpty()) {
+        if (StringUtils.isBlank(text)) {
             return;
         }
 

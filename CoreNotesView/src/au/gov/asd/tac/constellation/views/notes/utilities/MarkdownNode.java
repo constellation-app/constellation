@@ -29,17 +29,17 @@ public class MarkdownNode {
     // Can have many children
     private final List<MarkdownNode> children = new ArrayList<>();
 
-    private int startIndex = -99;
-    private int endIndex = -99;
+    private int startIndex;
+    private int endIndex;
 
-    private String value = "";
+    private String value;
 
-    private int tabs = 0;
-    private int latestListItem = 1;
+    private int tabs;
+    private int latestListItem;
 
     private Type type;
 
-    private int headingLevel = -99;
+    private int headingLevel;
 
     public enum Type {
         ROOT,
@@ -56,17 +56,24 @@ public class MarkdownNode {
     }
 
     public MarkdownNode() {
+        startIndex = -99;
+        endIndex = -99;
+        value = "";
+        tabs = 0;
+        latestListItem = 1;
+        headingLevel = -99;
         type = Type.ROOT;
         value = "ROOT";
     }
 
-    public MarkdownNode(Type type, int startIndex, int endIndex, String value, int headingLevel) {
+    public MarkdownNode(final Type type, final int startIndex, final int endIndex, final String value, final int headingLevel) {
         this.type = type;
 
         this.startIndex = startIndex;
         this.endIndex = endIndex;
         this.value = value;
         this.headingLevel = headingLevel;
+        tabs = 0;
     }
 
     public List<MarkdownNode> getChildren() {

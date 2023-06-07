@@ -72,11 +72,8 @@ public class NotesViewEntry implements PluginReportListener {
         return contentTextFlow;
     }
 
-    public void setContentTextFlow(TextFlow renderedTextFlow) {
-
+    public void setContentTextFlow(final TextFlow renderedTextFlow) {
         contentTextFlow = renderedTextFlow;
-
-
     }
 
     public String getDateTime() {
@@ -183,11 +180,11 @@ public class NotesViewEntry implements PluginReportListener {
         noteContent = tempContent;
     }
 
-    public void setTempContent(String tempContent) {
+    public void setTempContent(final String tempContent) {
         this.tempContent = tempContent;
     }
 
-    public void setTempTitle(String tempTitle) {
+    public void setTempTitle(final String tempTitle) {
         this.tempTitle = tempTitle;
     }
 
@@ -203,7 +200,7 @@ public class NotesViewEntry implements PluginReportListener {
         return wasInEditMode;
     }
 
-    public void setWasInEditMode(boolean wasInEditMode) {
+    public void setWasInEditMode(final boolean wasInEditMode) {
         this.wasInEditMode = wasInEditMode;
     }
 
