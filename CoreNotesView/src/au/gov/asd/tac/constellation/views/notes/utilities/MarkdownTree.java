@@ -45,7 +45,7 @@ public class MarkdownTree {
     private String rawString = "";
 
     // The different markdown syntax patterns supported
-    private static final Pattern HEADING_PATTERN = Pattern.compile("^#{1,6}\\s([^\\n]+)");
+    private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)");
     private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
     private static final Pattern BOLD_PATTERN_2 = Pattern.compile("__\\s?([^\\n]+)__");
     private static final Pattern ITALIC_PATTERN = Pattern.compile("\\*\\s?([^\\n]+)\\*");
@@ -165,6 +165,13 @@ public class MarkdownTree {
             // If the symbol for a heading is found
             if (text.charAt(closestSyntax) == '#') {
                 currentIndex = closestSyntax;
+
+                if (closestSyntax != 0 && text.charAt(closestSyntax - 1) != '\n') {
+                    addSyntaxNormalNode(Character.toString('#'), currentNode);
+                    currentIndex++;
+                    continue;
+                }
+
                 // Match the line of text containing the heading
                 final Matcher headingMatcher = HEADING_PATTERN.matcher(text.substring(closestSyntax));
 
