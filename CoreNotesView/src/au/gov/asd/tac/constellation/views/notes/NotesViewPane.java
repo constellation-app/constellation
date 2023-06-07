@@ -621,7 +621,10 @@ public class NotesViewPane extends BorderPane {
 
                 if (CollectionUtils.isNotEmpty(notesToRender)) {
                     notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
-                    notesToRender.forEach(note -> createNote(note));
+                    notesToRender.forEach(note -> {
+                        note.setEditMode(note.checkIfWasInEditMode());
+                        createNote(note);
+                    });
                 }
                 notesListScrollPane.applyCss();
                 notesListScrollPane.layout();
@@ -679,6 +682,9 @@ public class NotesViewPane extends BorderPane {
                 if (note.getEditMode()) {
                     note.saveTempEdits();
                     note.setEditMode(false);
+                    note.setWasInEditMode(true);
+                } else {
+                    note.setWasInEditMode(false);
                 }
             });
             notesViewEntries.clear();
@@ -1091,6 +1097,7 @@ public class NotesViewPane extends BorderPane {
             noteInformation.getChildren().add(containerPane);
 
             newNote.setEditMode(false);
+            newNote.setWasInEditMode(false);
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE
                     + currentColour + BG_RADIUS_STYLE);
             newNote.setNodeColour(currentColour);
@@ -1121,6 +1128,7 @@ public class NotesViewPane extends BorderPane {
                 noteInformation.getChildren().addAll(containerPane);
 
                 newNote.setEditMode(false);
+                newNote.setWasInEditMode(false);
                 updateNotesUI();
             }
         });

@@ -42,6 +42,7 @@ public class NotesViewEntry implements PluginReportListener {
     private List<Integer> transactionsSelected;
     private List<String> tags = new ArrayList<>();
     private boolean editMode;
+    private boolean wasInEditMode = false;
     private boolean isShowing = true;
 
     private String tempContent = "";
@@ -188,6 +189,14 @@ public class NotesViewEntry implements PluginReportListener {
 
     public void setTempTitle(String tempTitle) {
         this.tempTitle = tempTitle;
+    }
+
+    public boolean checkIfWasInEditMode() {
+        return wasInEditMode;
+    }
+
+    public void setWasInEditMode(boolean wasInEditMode) {
+        this.wasInEditMode = wasInEditMode;
     }
 
 

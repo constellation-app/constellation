@@ -198,7 +198,6 @@ public class MarkdownTree {
                 // Else if the clostst syntax is the bold/italic syntax
             } else if (text.charAt(closestSyntax) == boldSyntax) {
                 currentIndex = closestSyntax;
-
                 // Check to see if syntax is bold
                 if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == boldSyntax) {
                     final Matcher boldMatcher;
@@ -236,20 +235,20 @@ public class MarkdownTree {
 
                     // If italic text is found
                     if (italicMatcher.find()) {
-                        LOGGER.log(Level.SEVERE, "Detected italic");
                         // Create a MarkdownNode of type ITALIC and add it as a child of the current node
                         final MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, italicMatcher.end(1), italicMatcher.group(1), -99);
                         currentNode.getChildren().add(italic);
 
-                        // Call this funciton on this italic text
-                        //LOGGER.log(Level.SEVERE, "Text inside italic syntax: " + italicMatcher.group(1));
-                        //LOGGER.log(Level.SEVERE, "Current Index is at: " + text.charAt(currentIndex + italicMatcher.end(1) + 1) + " Next character is: " + text.charAt(currentIndex + italicMatcher.end(1) + 2));
+                        // Call this funciton on this italic text                        
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), italicMatcher.group(1));
                         currentIndex += italicMatcher.end(1) + 1;
                     } else {
                         addSyntaxNormalNode(Character.toString(boldSyntax), currentNode);
                         currentIndex++;
                     }
+                } else {
+                    addSyntaxNormalNode(Character.toString(boldSyntax), currentNode);
+                    currentIndex++;
                 }
                 // Else if strikethrough syxtax is found
             } else if (text.charAt(closestSyntax) == '~') {
