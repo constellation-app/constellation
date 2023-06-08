@@ -1351,6 +1351,7 @@ public class MapView extends ScrollPane {
                         lattitude = Double.parseDouble(lattitudeText.strip());
                         longitude = Double.parseDouble(longitudeText.strip());
                     } else {
+                        showingZoomToLocationPane = false;
                         stage.close();
                         return;
                     }
@@ -1463,7 +1464,8 @@ public class MapView extends ScrollPane {
                 stage.show();
                 showingZoomToLocationPane = true;
             }
-        }
+        } else
+            LOGGER.log(Level.SEVERE, "Not showing zoom to location dialog because I think I am still showing the previouse version");
     }
 
     public List<AbstractMarker> getUserMarkers() {
