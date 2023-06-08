@@ -109,7 +109,7 @@ public class NewNotePane {
         contentField.setPromptText("Type a note...");
         contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
         contentField.setWrapText(true);
-        contentField.setOnKeyPressed(key -> {
+        /*contentField.setOnKeyPressed(key -> {
             // If tab is typed and shift isn't being held dowm.
             if (key.getCode() == KeyCode.TAB && !key.isShiftDown()) {
                 // Backspace any tabs typed.
@@ -117,7 +117,7 @@ public class NewNotePane {
                 // Move focus to the next UI element.
                 contentField.getParent().getChildrenUnmodifiable().get(contentField.getParent().getChildrenUnmodifiable().indexOf(contentField) + 1).requestFocus();
             }
-        });
+        });*/
 
         tabPane = new TabPane();
         previewTextFlow = new TextFlow();

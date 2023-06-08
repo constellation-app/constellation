@@ -73,6 +73,7 @@ public class MarkdownNode {
         this.endIndex = endIndex;
         this.value = value;
         this.headingLevel = headingLevel;
+        latestListItem = 1;
         tabs = 0;
     }
 
