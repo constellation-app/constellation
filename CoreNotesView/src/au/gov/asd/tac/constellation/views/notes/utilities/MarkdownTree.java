@@ -49,7 +49,7 @@ public class MarkdownTree {
     private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)");
     private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
     private static final Pattern BOLD_PATTERN_2 = Pattern.compile("__\\s?([^\\n]+)__");
-    private static final Pattern ITALIC_PATTERN = Pattern.compile("\\*\\s?([^\\n]+)\\*");
+    private static final Pattern ITALIC_PATTERN = Pattern.compile("\\*\\s?([^\\n\\*]+)\\*");
     private static final Pattern ITALIC_PATTERN_2 = Pattern.compile("_\\s?([^\\n`]+)_");
     private static final Pattern STRIKE_THROUGH_PATTERN = Pattern.compile("~~\\s?([^\\n]+)~~");
     private static final Pattern HASH_PATTERN = Pattern.compile("#{1,}");
@@ -125,7 +125,7 @@ public class MarkdownTree {
             } else if (closestSyntax != currentIndex) {
 
                 // Markdown node to contain raw text
-                MarkdownNode normal;
+                final MarkdownNode normal;
 
                 if (text.charAt(closestSyntax) == '.'
                         && closestSyntax - 1 >= 0
@@ -153,7 +153,6 @@ public class MarkdownTree {
                         normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex), -99);
                     }
                 } else {
-
                     // Create normal node with text from currentIndex to closestSyntax
                     normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, closestSyntax, text.substring(currentIndex, closestSyntax), -99);
                 }
@@ -185,7 +184,6 @@ public class MarkdownTree {
                     final MarkdownNode heading = new MarkdownNode(MarkdownNode.Type.HEADING, closestSyntax, headingMatcher.end(1), headingMatcher.group(1), hashMatcher.group().length());
                     // Add node as the child of th ecurrentNode
                     currentNode.getChildren().add(heading);
-
                     // Call this function on the piece of text inside the heading (NOT THE HASHES) and pass in the Heading node created just now
                     parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), headingMatcher.group(1));
 

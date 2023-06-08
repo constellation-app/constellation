@@ -30,8 +30,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -109,15 +107,6 @@ public class NewNotePane {
         contentField.setPromptText("Type a note...");
         contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
         contentField.setWrapText(true);
-        /*contentField.setOnKeyPressed(key -> {
-            // If tab is typed and shift isn't being held dowm.
-            if (key.getCode() == KeyCode.TAB && !key.isShiftDown()) {
-                // Backspace any tabs typed.
-                contentField.fireEvent(new KeyEvent(null, null, KeyEvent.KEY_PRESSED, "", "", KeyCode.BACK_SPACE, false, false, false, false));
-                // Move focus to the next UI element.
-                contentField.getParent().getChildrenUnmodifiable().get(contentField.getParent().getChildrenUnmodifiable().indexOf(contentField) + 1).requestFocus();
-            }
-        });*/
 
         tabPane = new TabPane();
         previewTextFlow = new TextFlow();
