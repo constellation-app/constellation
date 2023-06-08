@@ -1220,8 +1220,6 @@ public class MapView extends ScrollPane {
 
             final ComboBox<String> geoTypeMenu = new ComboBox<>(FXCollections.observableList(Arrays.asList(COORDINATE, GEOHASH, MGRS)));
             geoTypeMenu.getSelectionModel().selectFirst();
-            //geoTypeMenu.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
-            //geoTypeMenu.setStyle("-fx-text-fill: #FFFFFF;");
 
             final Text lattitudeLabel = new Text("Lattitude");
             lattitudeLabel.setFill(Color.WHITE);
