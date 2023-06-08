@@ -267,7 +267,7 @@ public class MarkdownTree {
                     // Call this funciton on the Strikethrough text
                     parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), strikeThroughMatcher.group(1));
 
-                    currentIndex += strikeThroughMatcher.end() + 1;
+                    currentIndex += strikeThroughMatcher.end();
                 } else {
                     addSyntaxNormalNode("~", currentNode);
                     currentIndex++;
@@ -278,10 +278,10 @@ public class MarkdownTree {
                 currentIndex = closestSyntax;
 
                 // The index of where a number should be
-                int numIndex = closestSyntax - 1;
+                final int numIndex = closestSyntax - 1;
 
                 // The index of where an enter should be
-                int enterIndex = closestSyntax - 2;
+                final int enterIndex = closestSyntax - 2;
 
                 if (numIndex >= 0) {
                     // If the character at the numIndex is 1 and there is an enter before it and the current node IS NOT a ordered list OR it IS of type LIST_ITEM
@@ -291,10 +291,10 @@ public class MarkdownTree {
                             || currentNode.getType() == MarkdownNode.Type.LIST_ITEM)) {
 
                         // The list ends where there is a tripple enter
-                        int endIndex = text.indexOf("\n\n\n", numIndex);
+                        final int endIndex = text.indexOf("\n\n\n", numIndex);
 
                         // Make a MarkdownNode of type ORDERED_LIST that starts at the number 1 and ends at the tripple enter
-                        MarkdownNode orderedList = new MarkdownNode(MarkdownNode.Type.ORDERED_LIST, numIndex, endIndex, "ORDERED LIST", 99);
+                        final MarkdownNode orderedList = new MarkdownNode(MarkdownNode.Type.ORDERED_LIST, numIndex, endIndex, "ORDERED LIST", 99);
 
                         // Set how many tabs the list should have
                         orderedList.setTabs(currentNode.getTabs());
@@ -311,7 +311,7 @@ public class MarkdownTree {
                         }
 
                         // Get the list parent
-                        MarkdownNode listParent = currentNode.getChildren().get(currentNode.getChildren().size() - 1);
+                        final MarkdownNode listParent = currentNode.getChildren().get(currentNode.getChildren().size() - 1);
 
                         // Add a MarkdoenNode of type LIST_END
                         final MarkdownNode listEnd = new MarkdownNode(MarkdownNode.Type.LIST_END, endIndex, endIndex, "LIST END", 99);
@@ -353,7 +353,7 @@ public class MarkdownTree {
                         }
 
                         // Create a list item from the part after the dot to the end of the list item
-                        MarkdownNode listItem = new MarkdownNode(MarkdownNode.Type.LIST_ITEM, currentIndex + 1, endIndex, "LIST ITEM", 99);
+                        final MarkdownNode listItem = new MarkdownNode(MarkdownNode.Type.LIST_ITEM, currentIndex + 1, endIndex, "LIST ITEM", 99);
 
                         // Set the number that should appear before the list item
                         listItem.setLatestListItem(currentNode.getLatestListItem());
@@ -382,7 +382,7 @@ public class MarkdownTree {
 
                 // If no syntax is found it means that it is just raw text so a normal node can be made
             } else {
-                MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, text.length() - 1, text.substring(currentIndex), -99);
+                final MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, currentIndex, text.length() - 1, text.substring(currentIndex), -99);
                 currentNode.getChildren().add(normal);
                 return;
             }
@@ -391,31 +391,6 @@ public class MarkdownTree {
                 return;
             }
         }
-    }
-
-
-    public void print() {
-        printContents(root);
-    }
-
-    /**
-     * Logs all the contents of the markdown tree
-     *
-     * @param currentNode
-     */
-    private void printContents(MarkdownNode currentNode) {
-        if (currentNode.getType() == MarkdownNode.Type.NORMAL) {
-            LOGGER.log(Level.SEVERE, currentNode.getValue());
-            return;
-        }
-
-        LOGGER.log(Level.SEVERE, currentNode.getTypeString());
-
-        for (int i = 0; i < currentNode.getChildren().size(); ++i) {
-            printContents(currentNode.getChildren().get(i));
-        }
-
-        LOGGER.log(Level.SEVERE, currentNode.getTypeString());
     }
 
     public List<TextHelper> getTextNodes() {
@@ -582,6 +557,10 @@ public class MarkdownTree {
         }
 
         return renderedText;
+    }
+
+    public MarkdownNode getRoot() {
+        return root;
     }
 
 }

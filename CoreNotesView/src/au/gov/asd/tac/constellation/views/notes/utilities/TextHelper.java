@@ -45,28 +45,6 @@ public class TextHelper {
         text.setFont(Font.font(family, weight, posture, size));
     }
 
-    public TextHelper getTextHelperClone(final String rawText) {
-        final TextHelper th = new TextHelper(rawText);
-
-        th.setFontFamily(family);
-        th.setFill(Color.WHITE);
-        th.setWeight(weight);
-        th.setPosture(posture);
-        th.setSize(size);
-
-        if (isListEnd) {
-            th.setIsListEnd(true);
-        } else if (isListStart) {
-            th.setIsListStart(true);
-        }
-
-        if (text.isStrikethrough()) {
-            th.setStrikeThrough(true);
-        }
-
-        return th;
-    }
-
     public TextHelper(final Text text) {
         this.text = text;
         family = text.getFont().getFamily();
@@ -131,5 +109,11 @@ public class TextHelper {
         this.isListEnd = isListEnd;
     }
 
+    public boolean isBold() {
+        return weight == FontWeight.BOLD || weight == FontWeight.EXTRA_BOLD || weight == FontWeight.SEMI_BOLD;
+    }
 
+    public boolean isItalic() {
+        return posture == FontPosture.ITALIC;
+    }
 }
