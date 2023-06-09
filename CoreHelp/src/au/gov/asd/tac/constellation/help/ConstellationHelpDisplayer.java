@@ -240,11 +240,14 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
 
         final String helpAddress = HelpMapper.getHelpAddress(helpId);
         // use the requested help file, or the About Constellation page if one is not given
-        final String helpLink = StringUtils.isNotEmpty(helpAddress) ? helpAddress.substring(2) : helpDefaultPath;
+        String helpLink = StringUtils.isNotEmpty(helpAddress) ? helpAddress.substring(2) : helpDefaultPath;
 
         try {
             final String url;
             if (isOnline) {
+                if (helpLink.contains("constellation-adaptors") || helpLink.contains("constellation-cyber")) {
+                    helpLink = helpLink.substring(helpLink.indexOf("modules") + 7);
+                }
                 url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink.replace(".md", ".html");
             } else {
                 final File file = new File(Generator.getBaseDirectory() + sep + helpLink);
