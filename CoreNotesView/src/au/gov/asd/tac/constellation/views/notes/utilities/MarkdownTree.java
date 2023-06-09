@@ -49,7 +49,7 @@ public class MarkdownTree {
     private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)");
     private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
     private static final Pattern BOLD_PATTERN_2 = Pattern.compile("__\\s?([^\\n]+)__");
-    private static final Pattern ITALIC_PATTERN = Pattern.compile("\\*\\s?([^\\n]+[^\\*])\\*[^\\*]");
+    private static final Pattern ITALIC_PATTERN = Pattern.compile("(?<!\\*)\\*\\s?([^\\n]+)(?<!\\*)\\*[^\\*]"); // \\*\\s?([^\\n]+)\\*
     private static final Pattern ITALIC_PATTERN_2 = Pattern.compile("_\\s?([^\\n`]+)_");
     private static final Pattern STRIKE_THROUGH_PATTERN = Pattern.compile("~~\\s?([^\\n]+)~~");
     private static final Pattern HASH_PATTERN = Pattern.compile("#{1,}");
