@@ -97,7 +97,7 @@ public class TextHelper {
         return isListStart;
     }
 
-    public void setIsListStart(boolean isListStart) {
+    public void setIsListStart(final boolean isListStart) {
         this.isListStart = isListStart;
     }
 
@@ -105,7 +105,7 @@ public class TextHelper {
         return isListEnd;
     }
 
-    public void setIsListEnd(boolean isListEnd) {
+    public void setIsListEnd(final boolean isListEnd) {
         this.isListEnd = isListEnd;
     }
 

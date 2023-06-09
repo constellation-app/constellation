@@ -101,7 +101,7 @@ public class MarkdownNode {
         return tabs;
     }
 
-    public void setTabs(int tabs) {
+    public void setTabs(final int tabs) {
         this.tabs = tabs;
     }
 
@@ -109,7 +109,7 @@ public class MarkdownNode {
         return latestListItem;
     }
 
-    public void setLatestListItem(int latestListItem) {
+    public void setLatestListItem(final int latestListItem) {
         this.latestListItem = latestListItem;
     }
 

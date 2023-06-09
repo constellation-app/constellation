@@ -113,6 +113,7 @@ public class MarkdownTree {
             if (closestSyntax != Integer.MAX_VALUE && (text.charAt(closestSyntax) == '*' || text.charAt(closestSyntax) == '_')) {
                 boldSyntax = text.charAt(closestSyntax);
             } else {
+                // This 'f' means nothing and is just a default value set to the variable
                 boldSyntax = 'f';
             }
 
