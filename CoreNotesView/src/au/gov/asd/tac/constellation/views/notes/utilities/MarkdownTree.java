@@ -49,7 +49,7 @@ public class MarkdownTree {
     private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)");
     private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
     private static final Pattern BOLD_PATTERN_2 = Pattern.compile("__\\s?([^\\n]+)__");
-    private static final Pattern ITALIC_PATTERN = Pattern.compile("(?<!\\*)\\*\\s?([^\\n]+)(?<!\\*)\\*[^\\*]"); // \\*\\s?([^\\n]+)\\*
+    private static final Pattern ITALIC_PATTERN = Pattern.compile("(?<!\\*)\\*\\s?([^\\n]+)(?<!\\*)\\*(?!\\*)"); // \\*\\s?([^\\n]+)\\*
     private static final Pattern ITALIC_PATTERN_2 = Pattern.compile("_\\s?([^\\n`]+)_");
     private static final Pattern STRIKE_THROUGH_PATTERN = Pattern.compile("~~\\s?([^\\n]+)~~");
     private static final Pattern HASH_PATTERN = Pattern.compile("#{1,}");
@@ -210,6 +210,7 @@ public class MarkdownTree {
 
                     // Find the bolded text
                     if (boldMatcher.find()) {
+                        LOGGER.log(Level.SEVERE, "Bold Matcher: " + boldMatcher.group(1));
                         // Create a MarkdownNode of type bold and add it as a child of current node
                         final MarkdownNode bold = new MarkdownNode(MarkdownNode.Type.BOLD, currentIndex, boldMatcher.end(1), boldMatcher.group(1), -99);
                         currentNode.getChildren().add(bold);
@@ -223,6 +224,7 @@ public class MarkdownTree {
                     }
                     // Else if the user wanted italic text
                 } else if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) != boldSyntax) {
+                    LOGGER.log(Level.SEVERE, "Detected italic syntax");
                     final Matcher italicMatcher;
 
                     // Check for specific italic syntax and get a Matcher out of it
