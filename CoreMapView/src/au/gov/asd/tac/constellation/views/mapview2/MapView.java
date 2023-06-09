@@ -699,6 +699,8 @@ public class MapView extends ScrollPane {
             final double xAdjust = (newXScale / oldXScale) - 1;
             final double yAdjust = (newYScale / oldYScale) - 1;
 
+            resizeMarkers(newXScale, newYScale);
+
             // Calculate how much the map will have to move
             final double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
             final double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
@@ -873,6 +875,11 @@ public class MapView extends ScrollPane {
 
         // Add cluster markers to map
         addClusterMarkers(clusterMarkerBuilder.getClusterMarkers(), clusterMarkerBuilder.getClusterValues());
+    }
+
+    private void resizeMarkers(final double xScale, final double yScale) {
+        //graphMarkerGroup.setScaleX(xScale * -1);
+        //graphMarkerGroup.setScaleY(yScale * -1);
     }
 
     // Sets up and adds a layer to the map

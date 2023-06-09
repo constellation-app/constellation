@@ -486,7 +486,7 @@ public class MapViewPane extends BorderPane {
         AnchorPane.setRightAnchor(mapView.getOverviewOverlay().getOverlayPane(), 100.0);
 
         anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.getOverviewOverlay().getOverlayPane());
-
+        anchorPane.prefWidthProperty().bind(this.widthProperty());
         viewPortRectangle.setWidth(MapView.MAP_WIDTH);
         viewPortRectangle.setHeight(MapView.MAP_HEIGHT);
 
