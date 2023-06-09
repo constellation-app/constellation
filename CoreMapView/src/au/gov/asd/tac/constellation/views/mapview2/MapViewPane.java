@@ -192,7 +192,7 @@ public class MapViewPane extends BorderPane {
                 NotifyDisplayer.display("Layer options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
-        layersMenuButton.setIcon(parent.getClass().getResource("resources/layers.png").toString());
+        layersMenuButton.setIcon(parent.getClass().getResource("resources/layers2.png").toString());
 
         // Add overlays to toolbar
         final MenuButtonCheckCombobox overlaysMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY), false, false);
