@@ -49,7 +49,7 @@ public class MarkdownTree {
     private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)");
     private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
     private static final Pattern BOLD_PATTERN_2 = Pattern.compile("__\\s?([^\\n]+)__");
-    private static final Pattern ITALIC_PATTERN = Pattern.compile("\\*\\s?([^\\n]+)\\*");
+    private static final Pattern ITALIC_PATTERN = Pattern.compile("\\*\\s?([^\\n]+[^\\*])\\*[^\\*]");
     private static final Pattern ITALIC_PATTERN_2 = Pattern.compile("_\\s?([^\\n`]+)_");
     private static final Pattern STRIKE_THROUGH_PATTERN = Pattern.compile("~~\\s?([^\\n]+)~~");
     private static final Pattern HASH_PATTERN = Pattern.compile("#{1,}");
@@ -234,11 +234,12 @@ public class MarkdownTree {
 
                     // If italic text is found
                     if (italicMatcher.find()) {
+                        LOGGER.log(Level.SEVERE, "Italic text is: " + italicMatcher.group(1));
                         // Create a MarkdownNode of type ITALIC and add it as a child of the current node
                         final MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, italicMatcher.end(1), italicMatcher.group(1), -99);
                         currentNode.getChildren().add(italic);
 
-                        // Call this funciton on this italic text                        
+                        // Call this funciton on this italic text
                         parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), italicMatcher.group(1));
                         currentIndex += italicMatcher.end(1) + 1;
                     } else {
