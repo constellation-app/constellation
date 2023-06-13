@@ -583,16 +583,26 @@ public class NotesViewPane extends BorderPane {
         }
         
         Platform.runLater(() -> {
-            notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
-
-            if (CollectionUtils.isNotEmpty(notesToRender)) {
-                notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
-                notesToRender.forEach(note -> createNote(note));
+            boolean foundNoteInEdit = false;
+            for (int i = 0; i < notesToRender.size(); i++) {
+                if (notesToRender.get(i).getEditMode()) {
+                    foundNoteInEdit = true;
+                    break;
+                }
             }
-            notesListScrollPane.applyCss();
-            notesListScrollPane.layout();
-            // Keeps the scroll bar at the bottom?
-            notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
+
+            if (!foundNoteInEdit) {
+                notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
+
+                if (CollectionUtils.isNotEmpty(notesToRender)) {
+                    notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
+                    notesToRender.forEach(note -> createNote(note));
+                }
+                notesListScrollPane.applyCss();
+                notesListScrollPane.layout();
+                // Keeps the scroll bar at the bottom?
+                notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
+            }
         });
     }
 
