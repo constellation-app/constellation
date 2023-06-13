@@ -54,6 +54,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -699,7 +701,11 @@ public class MapView extends ScrollPane {
             final double xAdjust = (newXScale / oldXScale) - 1;
             final double yAdjust = (newYScale / oldYScale) - 1;
 
-            resizeMarkers(newXScale, newYScale);
+            if (scaleFactor > 1.0) {
+                resizeMarkers(true);
+            } else {
+                resizeMarkers(false);
+            }
 
             // Calculate how much the map will have to move
             final double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
@@ -877,9 +883,34 @@ public class MapView extends ScrollPane {
         addClusterMarkers(clusterMarkerBuilder.getClusterMarkers(), clusterMarkerBuilder.getClusterValues());
     }
 
-    private void resizeMarkers(final double xScale, final double yScale) {
-        //graphMarkerGroup.setScaleX(xScale * -1);
-        //graphMarkerGroup.setScaleY(yScale * -1);
+    private void resizeMarkers(boolean zoomIn) {
+        final IntegerProperty i = new SimpleIntegerProperty(0);
+        layerGroup.getChildren().clear();
+        markers.values().forEach(abstractMarker -> {
+            if (abstractMarker instanceof PointMarker) {
+                final PointMarker marker = (PointMarker) abstractMarker;
+                final Rectangle r = new Rectangle();
+                r.setWidth(5);
+                r.setHeight(5);
+                r.setX(marker.getX() - 95);
+                r.setY(marker.getY() + 96.5);
+                r.setFill(Color.BLUE);
+                layerGroup.getChildren().add(r);
+
+                if (zoomIn) {
+                    marker.setScale(marker.getScale() / 1.05);
+                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + 0.01);
+                } else {
+                    marker.setScale(marker.getScale() * 1.05);
+                }
+
+                marker.getMarker().setScaleX(marker.getScale());
+                marker.getMarker().setScaleY(marker.getScale());
+
+                LOGGER.log(Level.SEVERE, "Y difference of marker " + i.get() + ": " + (r.getY() - marker.getMarker().getBoundsInLocal().getCenterY()));
+                i.set(i.get() + 1);
+            }
+        });
     }
 
     // Sets up and adds a layer to the map

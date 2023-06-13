@@ -170,6 +170,10 @@ public class PointMarker extends AbstractMarker {
         return scale;
     }
 
+    public void setScale(double scale) {
+        this.scale = scale;
+    }
+
     public String getPath() {
         return path;
     }
