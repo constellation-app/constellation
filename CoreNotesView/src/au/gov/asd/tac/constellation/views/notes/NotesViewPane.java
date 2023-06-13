@@ -596,7 +596,10 @@ public class NotesViewPane extends BorderPane {
 
                 if (CollectionUtils.isNotEmpty(notesToRender)) {
                     notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
-                    notesToRender.forEach(note -> createNote(note));
+                    notesToRender.forEach(note -> {
+                        note.setEditMode(note.checkIfWasInEditMode());
+                        createNote(note);
+                    });
                 }
                 notesListScrollPane.applyCss();
                 notesListScrollPane.layout();
@@ -650,6 +653,14 @@ public class NotesViewPane extends BorderPane {
     protected void clearNotes() {
         Platform.runLater(() -> notesListVBox.getChildren().removeAll(notesListVBox.getChildren()));
         synchronized (LOCK) {
+            notesViewEntries.forEach(note -> {
+                if (note.getEditMode()) {
+                    note.setEditMode(false);
+                    note.setWasInEditMode(true);
+                } else {
+                    note.setWasInEditMode(false);
+                }
+            });
             notesViewEntries.clear();
             notesDateTimeCache.clear();
         }
@@ -684,6 +695,7 @@ public class NotesViewPane extends BorderPane {
         // Define title text box
         final TextField titleText = new TextField(newNote.getNoteTitle());
         titleText.setStyle(BOLD_STYLE);
+        titleText.setOnKeyTyped(event -> newNote.setTempTitle(titleText.getText()));
 
         // Define title label
         final Label titleLabel = new Label(newNote.getNoteTitle());
@@ -701,6 +713,13 @@ public class NotesViewPane extends BorderPane {
         final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
         contentTextArea.setWrapText(true);
         contentTextArea.positionCaret(contentTextArea.getText() == null ? 0 : contentTextArea.getText().length());
+        contentTextArea.setOnKeyTyped(event -> newNote.setTempContent(contentTextArea.getText()));
+
+        if (newNote.checkIfWasInEditMode()) {
+            titleText.setText(newNote.getTempTitle());
+            contentTextArea.setText(newNote.getTempContent());
+        }
+
         final VBox noteInformation;
 
         // Define selection label
@@ -978,6 +997,8 @@ public class NotesViewPane extends BorderPane {
 
         // Edit button activates editable text boxs for title and label
         editTextButton.setOnAction(event -> {
+            newNote.setTempTitle(newNote.getNoteTitle());
+            newNote.setTempContent(newNote.getNoteContent());
             noteButtons.getChildren().removeAll(showMoreButton, gap, editTextButton, deleteButton);
             noteButtons.getChildren().addAll(colourPicker, gap2, editScreenButtons);
             noteButtons.setSpacing(EDIT_SPACING);
@@ -1006,6 +1027,7 @@ public class NotesViewPane extends BorderPane {
             noteInformation.getChildren().addAll(titleLabel, contentLabel);
 
             newNote.setEditMode(false);
+            newNote.setWasInEditMode(false);
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE
                     + currentColour + BG_RADIUS_STYLE);
             newNote.setNodeColour(currentColour);
@@ -1032,6 +1054,8 @@ public class NotesViewPane extends BorderPane {
                 noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
                 noteButtons.setSpacing(DEFAULT_SPACING);
 
+                newNote.setWasInEditMode(false);
+                updateNotesUI();
             }
         });
     }
