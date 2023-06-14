@@ -164,7 +164,6 @@ public class MapView extends ScrollPane {
     // Group for the rectangle the user drags to select multiple markers
     private final Group selectionRectangleGroup;
     private final Group viewPortRectangleGroup;
-    private final Group zoomLocationGroup;
 
     // Flag for zoom to location menu
     private boolean showingZoomToLocationPane = false;
@@ -245,7 +244,6 @@ public class MapView extends ScrollPane {
         pointMarkerTextGroup = new Group();
         thessianMarkersGroup = new Group();
         selectionRectangleGroup = new Group();
-        zoomLocationGroup = new Group();
         viewPortRectangleGroup = new Group();
         final Group enclosingRectangleGroup = new Group();
 
@@ -497,7 +495,6 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(pointMarkerTextGroup);
         mapGroupHolder.getChildren().add(thessianMarkersGroup);
 
-        mapGroupHolder.getChildren().add(zoomLocationGroup);
         overlayGroup.getChildren().addAll(INFO_OVERLAY.getOverlayPane());
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
         mapGroupHolder.getChildren().addAll(viewPortRectangleGroup);
@@ -885,24 +882,35 @@ public class MapView extends ScrollPane {
 
     private void resizeMarkers(boolean zoomIn) {
         final IntegerProperty i = new SimpleIntegerProperty(0);
-        //layerGroup.getChildren().clear();
+        layerGroup.getChildren().clear();
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
                 final Rectangle r = new Rectangle();
-                r.setWidth(5);
-                r.setHeight(5);
-                r.setX(marker.getX() - 95);
-                r.setY(marker.getY() + 96.5);
-                r.setFill(Color.BLUE);
+                r.setWidth(marker.getMarker().getBoundsInParent().getWidth());
+                r.setHeight(marker.getMarker().getBoundsInParent().getHeight());
+                r.setX(marker.getMarker().getBoundsInParent().getCenterX() - r.getWidth() / 2);
+                r.setY(marker.getMarker().getBoundsInParent().getCenterY() - r.getHeight() / 2);
+                r.setFill(Color.TRANSPARENT);
+                r.setStroke(Color.RED);
+                r.setStrokeWidth(0.01);
+                //r.setVisible(false);
+                //graphMarkerGroup.getChildren().add(r);
                 layerGroup.getChildren().add(r);
 
                 if (zoomIn) {
                     marker.setScale(marker.getScale() / 1.05);
-                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + 0.01);
+
+                    final double heightDifference = (marker.getY() + 96.5) - (r.getY() + r.getHeight());
+
+                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + heightDifference);
+
                 } else {
                     marker.setScale(marker.getScale() * 1.05);
-                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() - 0.01);
+
+                    final double heightDifference = (marker.getY() + 96.5) - (r.getY() + r.getHeight());
+
+                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + heightDifference);
                 }
 
                 marker.getMarker().setScaleX(marker.getScale());
@@ -946,7 +954,6 @@ public class MapView extends ScrollPane {
      * @param adding - flag
      */
     public void updateShowingMarkers(final AbstractMarker.MarkerType type, final boolean adding) {
-
         // Add or remove a type of marker
         if (markersShowing.contains(type) && !adding) {
             markersShowing.remove(type);
@@ -1447,7 +1454,6 @@ public class MapView extends ScrollPane {
 
                 showingZoomToLocationPane = false;
                 event.consume();
-                zoomLocationGroup.getChildren().clear();
                 stage.close();
             });
 
@@ -1467,7 +1473,6 @@ public class MapView extends ScrollPane {
             cancelButton.setOnAction(event -> {
                 showingZoomToLocationPane = false;
                 event.consume();
-                zoomLocationGroup.getChildren().clear();
                 stage.close();
             });
 
@@ -1531,6 +1536,18 @@ public class MapView extends ScrollPane {
             marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 graphMarkerGroup.getChildren().add(marker.getMarker());
+
+                if (marker instanceof PointMarker) {
+                    final Line baseLine = new Line();
+                    baseLine.setFill(Color.RED);
+                    baseLine.setStartX(marker.getX() - 100);
+                    baseLine.setStartY(marker.getY() + 96.5);
+                    baseLine.setEndX(marker.getX() - 90);
+                    baseLine.setEndY(marker.getY() + 96.5);
+                    baseLine.setStrokeWidth(0.01);
+                    //baseLine.setVisible(false);
+                    graphMarkerGroup.getChildren().add(baseLine);
+                }
             }
         }
     }
