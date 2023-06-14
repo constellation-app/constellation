@@ -1,6 +1,11 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2023-06-14 Reorder Plugins in Data Access View
+<p>The Data Access View configuration pane in the settings now has "up" and "down" buttons below the "Visible categories" box.</p>
+<p>The order of the categories within this box can be changed by using the buttons below it.</p>
+<p>The order set in the "Visible categories" box is the order which the plugins on the Data Access View will show up in.</p>
+
 == 2023-05-05 Notes View UI Change
 <p>The controls to add a new note are no longer at the bottom and have been moved to a pop-up window which appears when the "Create Note" button is pressed on the top left.</p>
 <p>You can now change the colour of user notes using a color picker</p>
