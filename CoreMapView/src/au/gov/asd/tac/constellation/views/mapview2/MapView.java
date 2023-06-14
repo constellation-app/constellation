@@ -882,7 +882,7 @@ public class MapView extends ScrollPane {
 
     private void resizeMarkers(boolean zoomIn) {
         final IntegerProperty i = new SimpleIntegerProperty(0);
-        layerGroup.getChildren().clear();
+        //layerGroup.getChildren().clear();
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
@@ -896,22 +896,17 @@ public class MapView extends ScrollPane {
                 r.setStrokeWidth(0.01);
                 //r.setVisible(false);
                 //graphMarkerGroup.getChildren().add(r);
-                layerGroup.getChildren().add(r);
+                //layerGroup.getChildren().add(r);
 
                 if (zoomIn) {
-                    marker.setScale(marker.getScale() / 1.05);
-
-                    final double heightDifference = (marker.getY() + 96.5) - (r.getY() + r.getHeight());
-
-                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + heightDifference);
-
+                    marker.setScale(marker.getScale() / 1.08);
                 } else {
-                    marker.setScale(marker.getScale() * 1.05);
-
-                    final double heightDifference = (marker.getY() + 96.5) - (r.getY() + r.getHeight());
-
-                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + heightDifference);
+                    marker.setScale(marker.getScale() * 1.08);
                 }
+
+                final double heightDifference = (marker.getY() + 96.5) - (r.getY() + r.getHeight());
+
+                marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + heightDifference);
 
                 marker.getMarker().setScaleX(marker.getScale());
                 marker.getMarker().setScaleY(marker.getScale());
@@ -1545,7 +1540,7 @@ public class MapView extends ScrollPane {
                     baseLine.setEndX(marker.getX() - 90);
                     baseLine.setEndY(marker.getY() + 96.5);
                     baseLine.setStrokeWidth(0.01);
-                    //baseLine.setVisible(false);
+                    baseLine.setVisible(false);
                     graphMarkerGroup.getChildren().add(baseLine);
                 }
             }
