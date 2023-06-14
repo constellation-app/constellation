@@ -899,9 +899,10 @@ public class MapView extends ScrollPane {
 
                 if (zoomIn) {
                     marker.setScale(marker.getScale() / 1.05);
-                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + 0.01);
+                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + 0.05);
                 } else {
                     marker.setScale(marker.getScale() * 1.05);
+                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() - 0.05);
                 }
 
                 marker.getMarker().setScaleX(marker.getScale());
