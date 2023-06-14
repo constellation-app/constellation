@@ -885,7 +885,7 @@ public class MapView extends ScrollPane {
 
     private void resizeMarkers(boolean zoomIn) {
         final IntegerProperty i = new SimpleIntegerProperty(0);
-        layerGroup.getChildren().clear();
+        //layerGroup.getChildren().clear();
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
@@ -899,16 +899,16 @@ public class MapView extends ScrollPane {
 
                 if (zoomIn) {
                     marker.setScale(marker.getScale() / 1.05);
-                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + 0.05);
+                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + 0.01);
                 } else {
                     marker.setScale(marker.getScale() * 1.05);
-                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() - 0.05);
+                    marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() - 0.01);
                 }
 
                 marker.getMarker().setScaleX(marker.getScale());
                 marker.getMarker().setScaleY(marker.getScale());
 
-                LOGGER.log(Level.SEVERE, "Y difference of marker " + i.get() + ": " + (r.getY() - marker.getMarker().getBoundsInLocal().getCenterY()));
+                LOGGER.log(Level.SEVERE, "Y of marker " + i.get() + ": " + marker.getMarker().getBoundsInParent().getMaxY());
                 i.set(i.get() + 1);
             }
         });
@@ -918,18 +918,25 @@ public class MapView extends ScrollPane {
     public void addLayer(final AbstractMapLayer layer) {
         layer.setUp();
         layers.add(layer);
-        layerGroup.getChildren().add(layer.getLayer());
+        renderLayers();
         layer.setIsShowing(true);
     }
 
     public void removeLayer(final int id) {
-        layerGroup.getChildren().clear();
         for (int i = 0; i < layers.size(); i++) {
             if (layers.get(i).getId() == id) {
                 layers.remove(i);
             }
         }
         renderLayers();
+    }
+
+    /**
+     * Render layers on the map
+     */
+    private void renderLayers() {
+        layerGroup.getChildren().clear();
+        layers.forEach(layer -> layerGroup.getChildren().add(layer.getLayer()));
     }
 
     /**
@@ -995,13 +1002,6 @@ public class MapView extends ScrollPane {
         }
     }
 
-    /**
-     * Render layers on the map
-     */
-    private void renderLayers() {
-        layerGroup.getChildren().clear();
-        layers.forEach(layer -> layerGroup.getChildren().add(layer.getLayer()));
-    }
 
     public Map<String, AbstractMarker> getAllMarkers() {
         return markers;
