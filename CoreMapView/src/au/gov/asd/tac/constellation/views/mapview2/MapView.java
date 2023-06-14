@@ -831,11 +831,8 @@ public class MapView extends ScrollPane {
 
         // Redraw all user created markers
         userMarkers.forEach(marker -> {
-
             if (markersShowing.contains(marker.getType())) {
-                
                 drawnMarkerGroup.getChildren().add(marker.getMarker());
-
             }
         });
 
@@ -882,7 +879,7 @@ public class MapView extends ScrollPane {
 
     private void resizeMarkers(boolean zoomIn) {
         final IntegerProperty i = new SimpleIntegerProperty(0);
-        //layerGroup.getChildren().clear();
+        layerGroup.getChildren().clear();
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
@@ -913,6 +910,31 @@ public class MapView extends ScrollPane {
 
                 LOGGER.log(Level.SEVERE, "Y of marker " + i.get() + ": " + marker.getMarker().getBoundsInParent().getMaxY());
                 i.set(i.get() + 1);
+            }
+        });
+
+        userMarkers.forEach(abstractMarker -> {
+            if (abstractMarker instanceof UserPointMarker) {
+                final UserPointMarker marker = (UserPointMarker) abstractMarker;
+
+                final Rectangle r = new Rectangle();
+                r.setWidth(marker.getMarker().getBoundsInParent().getWidth());
+                r.setHeight(marker.getMarker().getBoundsInParent().getHeight());
+                r.setX(marker.getMarker().getBoundsInParent().getCenterX() - r.getWidth() / 2);
+                r.setY(marker.getMarker().getBoundsInParent().getCenterY() - r.getHeight() / 2);
+                r.setFill(Color.TRANSPARENT);
+                r.setStroke(Color.RED);
+                r.setStrokeWidth(0.01);
+
+                layerGroup.getChildren().add(r);
+
+                if (zoomIn) {
+                    marker.getMarker().setScaleX(marker.getMarker().getScaleX() / 1.08);
+                    marker.getMarker().setScaleY(marker.getMarker().getScaleX());
+                } else {
+                    marker.getMarker().setScaleX(marker.getMarker().getScaleX() * 1.08);
+                    marker.getMarker().setScaleY(marker.getMarker().getScaleX());
+                }
             }
         });
     }
