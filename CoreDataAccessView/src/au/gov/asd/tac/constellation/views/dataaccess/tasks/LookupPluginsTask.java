@@ -60,21 +60,20 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
         if (StringUtils.isNotBlank(VISIBLE_CATS)) {
             final String[] visibleCategoriesArray = addCategoryToList(VISIBLE_CATS);
             if (visibleCategoriesArray.length > 0) {
-                plugins.keySet().forEach(key -> {
+                plugins.entrySet().forEach(entry -> {
                     for (int i = 0; i < visibleCategoriesArray.length; i++) {
-                        if (key.equals(visibleCategoriesArray[i])) {
-                            final Pair<Integer, List<DataAccessPlugin>> p = new Pair<>(i, plugins.get(key));
-                            pluginsWithOrder.put(key, p);
+                        if (entry.getKey().equals(visibleCategoriesArray[i])) {
+                            final Pair<Integer, List<DataAccessPlugin>> p = new Pair<>(i, entry.getValue());
+                            pluginsWithOrder.put(entry.getKey(), p);
                             break;
                         }
                     }
                 });
             }
+        } else if (StringUtils.isBlank(DAV_CATS)) {
+            plugins.entrySet().forEach(entry -> pluginsWithOrder.put(entry.getKey(), new Pair(0, entry.getValue())));
         }
 
-        if (StringUtils.isBlank(VISIBLE_CATS) && StringUtils.isBlank(DAV_CATS)) {
-            plugins.keySet().forEach(key -> pluginsWithOrder.put(key, new Pair(0, plugins.get(key))));
-        }
         return pluginsWithOrder;
     }
 

@@ -18,8 +18,6 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -45,8 +43,6 @@ import org.openide.util.NbPreferences;
     "AdvancedOption_Keywords_DataAccessView=DataAccessView"
 })
 public final class DataAccessViewCategoryPanelController extends OptionsPanelController {
-
-    private static final Logger LOGGER = Logger.getLogger(DataAccessViewCategoryPanelController.class.getName());
 
     private DataAccessViewCategoryPanel thePanel;
     private List<String> visibleNow;
@@ -112,14 +108,15 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
             if (!visibleCategory.equals(visibleNow)) {
                 orderChanged = true;
                 visibleNow = panel.getVisibleCategory();
-            } else
+            } else {
                 orderChanged = false;
-            reorderButtonPressed = false;
+                reorderButtonPressed = false;
+            }
         }
 
-        return (!hiddenCategory.isEmpty() || orderChanged)
-                || (!prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty()
-                || (!prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty()));
+        return !hiddenCategory.isEmpty() || orderChanged
+                || !prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty()
+                || !prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty();
     }
 
     @Override
@@ -150,7 +147,7 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         return thePanel;
     }
 
-    public void setReorderButtonPressed(boolean reorderButtonPressed) {
+    public void setReorderButtonPressed(final boolean reorderButtonPressed) {
         this.reorderButtonPressed = reorderButtonPressed;
     }
 

@@ -327,7 +327,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
             if(selectedIndices[0] != 0)
             {
-                final int beforeIndex = selectedIndices[0]-1;
+                final int beforeIndex = selectedIndices[0] - 1;
                 final List<String> selectedItems = visibleList.getSelectedValuesList();
 
                 visibleListModel.removeRange(selectedIndices[0], selectedIndices[selectedIndices.length - 1]);
@@ -354,7 +354,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
             if(selectedIndices[selectedIndices.length-1] != visibleList.getModel().getSize()-1)
             {
-                final int afterIndex = selectedIndices[selectedIndices.length-1]+1;
+                final int afterIndex = selectedIndices[selectedIndices.length - 1] + 1;
                 final List<String> selectedItems = visibleList.getSelectedValuesList();
 
                 visibleListModel.removeRange(selectedIndices[0], selectedIndices[selectedIndices.length - 1]);

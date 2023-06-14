@@ -81,8 +81,7 @@ public class QueryPhasePane extends VBox {
      * @param top 
      * @param presetGlobalParms the current global plugin parameters
      */
-    public QueryPhasePane(final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins,                          final PluginParametersPaneListener top,
-                          final PluginParameters presetGlobalParms) {
+    public QueryPhasePane(final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins, final PluginParametersPaneListener top, final PluginParameters presetGlobalParms) {
         globalParametersPane = new GlobalParametersPane(presetGlobalParms);
         final List<Pair<Integer, HeadingPane>> orderedPlugins = new ArrayList<>();
         plugins.entrySet().stream()
@@ -100,11 +99,10 @@ public class QueryPhasePane extends VBox {
 
         orderedPlugins.sort(Comparator.comparingInt(Pair<Integer, HeadingPane>::getKey));
 
-        for (int i = 0; i < orderedPlugins.size(); i++) {
-            dataSourceList.getChildren().add(orderedPlugins.get(i).getValue());
-            dataSources.addAll(orderedPlugins.get(i).getValue().getDataSources());
+        for (final Pair<Integer, HeadingPane> plugin : orderedPlugins) {
+            dataSourceList.getChildren().add(plugin.getValue());
+            dataSources.addAll(plugin.getValue().getDataSources());
         }
-
 
         setFillWidth(true);
         getChildren().addAll(globalParametersPane, dataSourceList);

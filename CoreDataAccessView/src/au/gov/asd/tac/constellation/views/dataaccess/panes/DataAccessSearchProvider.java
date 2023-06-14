@@ -63,7 +63,7 @@ public class DataAccessSearchProvider implements SearchProvider {
 
         final Map<String, List<DataAccessPlugin>> unorderedPlugins = new HashMap<>();
 
-        plugins.keySet().forEach(key -> unorderedPlugins.put(key, plugins.get(key).getValue()));
+        plugins.entrySet().forEach(entry -> unorderedPlugins.put(entry.getKey(), entry.getValue().getValue()));
 
         // Find all matching plugin names
         final List<String> pluginNames = unorderedPlugins.values().stream()

@@ -60,7 +60,6 @@ public class DataAccessPaneState {
      * complete, the plugins can be accessed.
      */
     private static final Future<Map<String, Pair<Integer, List<DataAccessPlugin>>>> PLUGIN_LOAD;
-    
     /**
      * The ID of the currently active graph.
      */
@@ -116,7 +115,7 @@ public class DataAccessPaneState {
      * @throws ExecutionException if there was an error during the plugin lookup
      * @throws TimeoutException if the plugin lookup took longer than the specified timeout
      */
-    public static Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins(final long timeout,                                                                 final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public static Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return PLUGIN_LOAD.get(timeout, unit);
     }
     
