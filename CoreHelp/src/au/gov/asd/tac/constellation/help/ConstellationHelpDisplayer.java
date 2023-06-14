@@ -245,7 +245,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         try {
             final String url;
             if (isOnline) {
-                if (helpLink.contains("constellation-adaptors") || helpLink.contains("constellation-cyber")) {
+                if (helpLink.contains("constellation-")) {
                     helpLink = helpLink.substring(helpLink.indexOf("modules") + 7);
                 }
                 url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink.replace(".md", ".html");
