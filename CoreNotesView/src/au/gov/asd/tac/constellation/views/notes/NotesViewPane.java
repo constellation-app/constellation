@@ -1054,8 +1054,17 @@ public class NotesViewPane extends BorderPane {
                 noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
                 noteButtons.setSpacing(DEFAULT_SPACING);
 
+
                 newNote.setWasInEditMode(false);
-                updateNotesUI();
+
+                synchronized (LOCK) {
+                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                    if (activeGraph != null) {
+                        updateNotesUI();
+                        notesViewController.writeState(activeGraph);
+                    }
+                }
+
             }
         });
     }
