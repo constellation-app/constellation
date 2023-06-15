@@ -1558,6 +1558,18 @@ public class MapView extends ScrollPane {
                     baseLine.setEndY(marker.getY() + 96.5);
                     baseLine.setStrokeWidth(0.01);
                     baseLine.setVisible(false);
+
+                    final PointMarker pMarker = (PointMarker) marker;
+                    if (pMarker.getScale() != pointMarkerGlobalScale) {
+                        pMarker.setScale(pointMarkerGlobalScale);
+
+                        pMarker.getMarker().setScaleX(pMarker.getScale());
+                        pMarker.getMarker().setScaleY(pMarker.getScale());
+
+                        final double heightDifference = (pMarker.getY() + 96.5) - (pMarker.getMarker().getBoundsInParent().getCenterY() + (pMarker.getMarker().getBoundsInParent().getHeight() / 2));
+                        pMarker.getMarker().setTranslateY(pMarker.getMarker().getTranslateY() + heightDifference);
+                    }
+
                     //graphMarkerGroup.getChildren().add(baseLine);
                 }
             }
