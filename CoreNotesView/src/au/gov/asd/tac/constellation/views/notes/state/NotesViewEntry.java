@@ -43,13 +43,16 @@ public class NotesViewEntry implements PluginReportListener {
     private boolean wasInEditMode = false;
     private boolean isShowing = true;
 
-    private String tempContent = "";
-    private String tempTitle = "";
+    private String tempContent;
+    private String tempTitle;
 
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
+
+        tempContent = "";
+        tempTitle = "";
 
         if (nodeColour != null) {
             this.nodeColour = nodeColour;

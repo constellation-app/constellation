@@ -584,8 +584,8 @@ public class NotesViewPane extends BorderPane {
         
         Platform.runLater(() -> {
             boolean foundNoteInEdit = false;
-            for (int i = 0; i < notesToRender.size(); i++) {
-                if (notesToRender.get(i).getEditMode()) {
+            for (final NotesViewEntry entry : notesToRender) {
+                if (entry.getEditMode()) {
                     foundNoteInEdit = true;
                     break;
                 }
