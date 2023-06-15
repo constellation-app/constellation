@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -54,11 +53,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -77,9 +73,6 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -110,6 +103,8 @@ public class MapView extends ScrollPane {
 
     // ID of the next user drawn marker
     private int drawnMarkerId = 0;
+
+    private double pointMarkerGlobalScale = 0.05;
 
     // Flags for the different drawing modes
     private boolean drawingCircleMarker = false;
@@ -707,8 +702,10 @@ public class MapView extends ScrollPane {
             final double yAdjust = (newYScale / oldYScale) - 1;
 
             if (scaleFactor > 1.0) {
+                pointMarkerGlobalScale /= 1.08;
                 resizeMarkers(true);
             } else {
+                pointMarkerGlobalScale *= 1.08;
                 resizeMarkers(false);
             }
 
@@ -777,6 +774,17 @@ public class MapView extends ScrollPane {
                 return;
             }
 
+            if (marker instanceof UserPointMarker) {
+                final UserPointMarker uMarker = (UserPointMarker) marker;
+                if (uMarker.getScale() != pointMarkerGlobalScale) {
+                    uMarker.setScale(pointMarkerGlobalScale);
+                    uMarker.getMarker().setScaleX(pointMarkerGlobalScale);
+                    uMarker.getMarker().setScaleY(pointMarkerGlobalScale);
+                    final double heightDifference = uMarker.getOriginalClickY() - (uMarker.getMarker().getBoundsInParent().getCenterY() + (uMarker.getMarker().getBoundsInParent().getHeight() / 2));
+                    uMarker.getMarker().setTranslateY(uMarker.getMarker().getTranslateY() + heightDifference);
+                }
+            }
+
             drawnMarkerGroup.getChildren().addAll(marker.getMarker());
         }
     }
@@ -839,9 +847,11 @@ public class MapView extends ScrollPane {
 
         // Redraw all user created markers
         userMarkers.forEach(marker -> {
-            if (markersShowing.contains(marker.getType())) {
+            /*if (markersShowing.contains(marker.getType())) {
                 drawnMarkerGroup.getChildren().add(marker.getMarker());
-            }
+            }*/
+
+            addUserDrawnMarker(marker);
         });
 
         // Cluster markers are showing as well as point markers then update the clister markers
@@ -886,15 +896,9 @@ public class MapView extends ScrollPane {
     }
 
     private void resizeMarkers(boolean zoomIn) {
-        final IntegerProperty i = new SimpleIntegerProperty(0);
-        //layerGroup.getChildren().clear();
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
-
-                //r.setVisible(false);
-                //graphMarkerGroup.getChildren().add(r);
-                //layerGroup.getChildren().add(r);
 
                 if (zoomIn) {
                     marker.setScale(marker.getScale() / 1.08);
@@ -1544,6 +1548,7 @@ public class MapView extends ScrollPane {
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 graphMarkerGroup.getChildren().add(marker.getMarker());
 
+                // TODO - Change contents of this if statement
                 if (marker instanceof PointMarker) {
                     final Line baseLine = new Line();
                     baseLine.setFill(Color.RED);
