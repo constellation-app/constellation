@@ -50,6 +50,7 @@ public class MenuButtonCheckCombobox {
 
             optionCB.setOnAction(event -> {
                 lastChange = option;
+                System.out.println("Last option: " + lastChange);
                 if (this.isSingleChoice) {
                     optionCB.setSelected(true);
 
@@ -77,6 +78,7 @@ public class MenuButtonCheckCombobox {
 
     public void selectItem(final String key) {
         if (optionMap.containsKey(key)) {
+            lastChange = key;
             optionMap.get(key).setSelected(true);
         }
     }

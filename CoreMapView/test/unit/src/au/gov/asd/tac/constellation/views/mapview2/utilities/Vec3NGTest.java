@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.tac.constellation.views.mapview2.utilities;
+package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import static org.testng.Assert.assertEquals;
