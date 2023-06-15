@@ -113,4 +113,13 @@ public class UserPointMarker extends AbstractMarker {
     public double getOriginalClickY() {
         return originalClickY;
     }
+
+    public void scaleAndReposition(final double scale) {
+        setScale(scale);
+        markerPath.setScaleX(scale);
+        markerPath.setScaleY(scale);
+
+        final double heightDifference = originalClickY - (markerPath.getBoundsInParent().getCenterY() + (markerPath.getBoundsInParent().getHeight() / 2));
+        markerPath.setTranslateY(markerPath.getTranslateY() + heightDifference);
+    }
 }

@@ -84,6 +84,9 @@ public class MapViewPane extends BorderPane {
     // Stackpane to hold the map
     private final StackPane parentStackPane;
 
+    // Holds various overlays
+    private final AnchorPane anchorPane = new AnchorPane();
+
     // Rectangle to repesent the view port
     private final Rectangle viewPortRectangle;
 
@@ -204,7 +207,9 @@ public class MapViewPane extends BorderPane {
                 overlaysMenuButton.getOptionMap().keySet().forEach(key -> {
                     toggleOverlay(key, overlaysMenuButton.getOptionMap().get(key).isSelected());
 
-                    if (key.equals(INFO_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected() && !toolBarGridPane.getChildren().contains(latLabel)) {
+                    if (key.equals(TOOLS_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected()) {
+                        anchorPane.prefWidthProperty().bind(parent.getScrollPane().widthProperty());
+                    } else if (key.equals(INFO_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected() && !toolBarGridPane.getChildren().contains(latLabel)) {
                         toolBarGridPane.add(latLabel, 0, 1);
                         toolBarGridPane.add(latField, 1, 1);
                         toolBarGridPane.add(lonLabel, 2, 1);
@@ -212,6 +217,7 @@ public class MapViewPane extends BorderPane {
                     } else if (key.equals(INFO_OVERLAY) && !overlaysMenuButton.getOptionMap().get(key).isSelected()) {
                         toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
                     }
+
                 });
             } else {
                 overlaysMenuButton.revertLastAction();
@@ -474,7 +480,6 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setX(0);
         viewPortRectangle.setY(0);
 
-        final AnchorPane anchorPane = new AnchorPane();
         AnchorPane.setTopAnchor(parentStackPane, 0.0);
         AnchorPane.setRightAnchor(parentStackPane, 0.0);
         AnchorPane.setLeftAnchor(parentStackPane, 0.0);
@@ -486,7 +491,7 @@ public class MapViewPane extends BorderPane {
         AnchorPane.setRightAnchor(mapView.getOverviewOverlay().getOverlayPane(), 100.0);
 
         anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.getOverviewOverlay().getOverlayPane());
-        anchorPane.prefWidthProperty().bind(this.widthProperty());
+
         viewPortRectangle.setWidth(MapView.MAP_WIDTH);
         viewPortRectangle.setHeight(MapView.MAP_HEIGHT);
 
