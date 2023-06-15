@@ -103,11 +103,7 @@ public class MenuButtonCheckCombobox {
 
     public void revertLastAction() {
         if (optionMap.containsKey(lastChange)) {
-            if (optionMap.get(lastChange).isSelected()) {
-                optionMap.get(lastChange).setSelected(false);
-            } else {
-                optionMap.get(lastChange).setSelected(true);
-            }
+            optionMap.get(lastChange).setSelected(!optionMap.get(lastChange).isSelected());
         }
     }
 }

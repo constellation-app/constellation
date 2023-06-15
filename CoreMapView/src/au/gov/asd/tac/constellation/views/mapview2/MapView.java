@@ -834,13 +834,7 @@ public class MapView extends ScrollPane {
         drawnMarkerGroup.getChildren().clear();
 
         // Redraw all user created markers
-        userMarkers.forEach(marker -> {
-            /*if (markersShowing.contains(marker.getType())) {
-                drawnMarkerGroup.getChildren().add(marker.getMarker());
-            }*/
-
-            addUserDrawnMarker(marker);
-        });
+        userMarkers.forEach(marker -> addUserDrawnMarker(marker));
 
         // Cluster markers are showing as well as point markers then update the clister markers
         if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER) && markersShowing.contains(AbstractMarker.MarkerType.POINT_MARKER)) {
@@ -1026,7 +1020,6 @@ public class MapView extends ScrollPane {
     public void addMarkerIdToSelectedList(final int markerID, final List<Integer> selectedNodes, final boolean selectingVertex) {
         selectedNodeList.add(markerID);
         PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodes, selectingVertex)).executeLater(GraphManager.getDefault().getActiveGraph());
-
     }
 
     /**
@@ -1207,6 +1200,8 @@ public class MapView extends ScrollPane {
             final Stage stage = new Stage();
             final double width = 650;
             final double height = 180;
+            final String textFillStyle = "-fx-text-fill: #FFFFFF;";
+            final String backgroundFill = "#111111";
 
             final BorderPane pane = new BorderPane();
             pane.prefHeight(height);
@@ -1239,19 +1234,19 @@ public class MapView extends ScrollPane {
 
             final TextField lattitudeInput = new TextField();
             lattitudeInput.setBorder(new Border(new BorderStroke(Color.WHITE, null, null, null)));
-            lattitudeInput.setStyle("-fx-text-fill: #FFFFFF;");
+            lattitudeInput.setStyle(textFillStyle);
 
-            lattitudeInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
+            lattitudeInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor(backgroundFill).getJavaFXColor(), null, null)));
 
             final TextField longitudeInput = new TextField();
-            longitudeInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
+            longitudeInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor(backgroundFill).getJavaFXColor(), null, null)));
             longitudeInput.setBorder(new Border(new BorderStroke(Color.WHITE, null, null, null)));
-            longitudeInput.setStyle("-fx-text-fill: #FFFFFF;");
+            longitudeInput.setStyle(textFillStyle);
 
             final TextField radiusInput = new TextField();
-            radiusInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
+            radiusInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor(backgroundFill).getJavaFXColor(), null, null)));
             radiusInput.setBorder(new Border(new BorderStroke(Color.WHITE, null, null, null)));
-            radiusInput.setStyle("-fx-text-fill: #FFFFFF;");
+            radiusInput.setStyle(textFillStyle);
 
             final GridPane coordinateGridPane = new GridPane();
             coordinateGridPane.setHgap(10);
@@ -1267,13 +1262,13 @@ public class MapView extends ScrollPane {
 
             final Text geoHashLabel = new Text("Base-16 geohash value");
             final TextField geoHashInput = new TextField();
-            geoHashInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
-            geoHashInput.setStyle("-fx-text-fill: #FFFFFF;");
+            geoHashInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor(backgroundFill).getJavaFXColor(), null, null)));
+            geoHashInput.setStyle(textFillStyle);
 
             final Text mgrsLabel = new Text("MGRS value");
             final TextField mgrsInput = new TextField();
-            mgrsInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#111111").getJavaFXColor(), null, null)));
-            mgrsInput.setStyle("-fx-text-fill: #FFFFFF;");
+            mgrsInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor(backgroundFill).getJavaFXColor(), null, null)));
+            mgrsInput.setStyle(textFillStyle);
 
             // Change coordinate UI based on geoType
             geoTypeMenu.setOnAction(event -> {
@@ -1467,8 +1462,9 @@ public class MapView extends ScrollPane {
                 stage.show();
                 showingZoomToLocationPane = true;
             }
-        } else
+        } else {
             LOGGER.log(Level.SEVERE, "Not showing zoom to location dialog because I think I am still showing the previouse version");
+        }
     }
 
     public List<AbstractMarker> getUserMarkers() {
@@ -1498,7 +1494,6 @@ public class MapView extends ScrollPane {
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 graphMarkerGroup.getChildren().add(marker.getMarker());
 
-                // TODO - Change contents of this if statement
                 if (marker instanceof PointMarker) {
                     final PointMarker pMarker = (PointMarker) marker;
                     if (pMarker.getScale() != pointMarkerGlobalScale) {

@@ -43,7 +43,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -76,8 +75,6 @@ import org.openide.util.Lookup;
  * @author altair1673
  */
 public class MapViewPane extends BorderPane {
-
-    private static final Logger LOGGER = Logger.getLogger(MapViewPane.class.getName());
 
     private final MapViewTopComponent parent;
     private final GridPane toolBarGridPane;
@@ -235,13 +232,14 @@ public class MapViewPane extends BorderPane {
         zoomDropDown.getItems().addAll(zoomAll, zoomSelection, zoomLocation);
         zoomDropDown.setTooltip(new Tooltip("Zoom based on markers or locations in the Map View"));
 
+        final String zoomError = "Zoom options require a graph to be open!";
 
         zoomAll.setOnAction(event -> {
             if (parent.getCurrentGraph() != null) {
                 mapView.panToCenter();
                 mapView.panToAll();
             } else {
-                NotifyDisplayer.display("Zoom options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+                NotifyDisplayer.display(zoomError, NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
 
@@ -250,7 +248,7 @@ public class MapViewPane extends BorderPane {
                 mapView.panToCenter();
                 mapView.panToSelection();
             } else {
-                NotifyDisplayer.display("Zoom options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+                NotifyDisplayer.display(zoomError, NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
 
@@ -258,7 +256,7 @@ public class MapViewPane extends BorderPane {
             if (parent.getCurrentGraph() != null) {
                 mapView.generateZoomLocationUI();
             } else {
-                NotifyDisplayer.display("Zoom options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+                NotifyDisplayer.display(zoomError, NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
 
@@ -562,10 +560,5 @@ public class MapViewPane extends BorderPane {
 
     public List<? extends MapProvider> getProviders() {
         return providers;
-    }
-
-    private void setDropDownOptions(final List<?> options) {
-        dropDownOptions.clear();
-        options.forEach(o -> dropDownOptions.add(o.toString()));
     }
 }

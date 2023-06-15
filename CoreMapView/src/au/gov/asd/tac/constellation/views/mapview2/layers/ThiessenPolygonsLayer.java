@@ -625,8 +625,9 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
                     grandParent = parent1;
                     parent1 = nearest;
                 }
-            } else
+            } else {
                 break;
+            }
 
         }
 
