@@ -1553,7 +1553,7 @@ public class MapView extends ScrollPane {
                     baseLine.setEndY(marker.getY() + 96.5);
                     baseLine.setStrokeWidth(0.01);
                     baseLine.setVisible(false);
-                    graphMarkerGroup.getChildren().add(baseLine);
+                    //graphMarkerGroup.getChildren().add(baseLine);
                 }
             }
         }
