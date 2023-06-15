@@ -369,7 +369,7 @@ public class MapView extends ScrollPane {
             }
         });
 
-        setMouseClickesEventHandler();
+        setMouseClickedEventHandler();
 
         // If the mouse is moved
         mapGroupHolder.setOnMouseMoved(event -> {
@@ -569,7 +569,7 @@ public class MapView extends ScrollPane {
     /**
      * Event handler for when mouse is clicked on the map
      */
-    private void setMouseClickesEventHandler() {
+    private void setMouseClickedEventHandler() {
 
         mapGroupHolder.setOnMouseClicked(event -> {
             // If left clicked
@@ -636,6 +636,14 @@ public class MapView extends ScrollPane {
                     final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
                     marker.setMarkerPosition(0, 0);
                     addUserDrawnMarker(marker);
+                    /*final Line l = new Line();
+                    l.setStartX(x - 5);
+                    l.setStartY(y);
+                    l.setEndX(x + 5);
+                    l.setEndY(y);
+                    l.setStrokeWidth(0.01);
+                    l.setFill(Color.RED);
+                    drawnMarkerGroup.getChildren().add(l);*/
                     userMarkers.add(marker);
                     updateClusterMarkers();
                 }
@@ -879,18 +887,11 @@ public class MapView extends ScrollPane {
 
     private void resizeMarkers(boolean zoomIn) {
         final IntegerProperty i = new SimpleIntegerProperty(0);
-        layerGroup.getChildren().clear();
+        //layerGroup.getChildren().clear();
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
-                final Rectangle r = new Rectangle();
-                r.setWidth(marker.getMarker().getBoundsInParent().getWidth());
-                r.setHeight(marker.getMarker().getBoundsInParent().getHeight());
-                r.setX(marker.getMarker().getBoundsInParent().getCenterX() - r.getWidth() / 2);
-                r.setY(marker.getMarker().getBoundsInParent().getCenterY() - r.getHeight() / 2);
-                r.setFill(Color.TRANSPARENT);
-                r.setStroke(Color.RED);
-                r.setStrokeWidth(0.01);
+
                 //r.setVisible(false);
                 //graphMarkerGroup.getChildren().add(r);
                 //layerGroup.getChildren().add(r);
@@ -901,21 +902,8 @@ public class MapView extends ScrollPane {
                     marker.setScale(marker.getScale() * 1.08);
                 }
 
-                final double heightDifference = (marker.getY() + 96.5) - (r.getY() + r.getHeight());
-
-                marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + heightDifference);
-
                 marker.getMarker().setScaleX(marker.getScale());
                 marker.getMarker().setScaleY(marker.getScale());
-
-                LOGGER.log(Level.SEVERE, "Y of marker " + i.get() + ": " + marker.getMarker().getBoundsInParent().getMaxY());
-                i.set(i.get() + 1);
-            }
-        });
-
-        userMarkers.forEach(abstractMarker -> {
-            if (abstractMarker instanceof UserPointMarker) {
-                final UserPointMarker marker = (UserPointMarker) abstractMarker;
 
                 final Rectangle r = new Rectangle();
                 r.setWidth(marker.getMarker().getBoundsInParent().getWidth());
@@ -926,15 +914,41 @@ public class MapView extends ScrollPane {
                 r.setStroke(Color.RED);
                 r.setStrokeWidth(0.01);
 
-                layerGroup.getChildren().add(r);
+                final double heightDifference = (marker.getY() + 96.5) - (r.getY() + r.getHeight());
+
+                marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + heightDifference);
+
+            }
+        });
+
+        userMarkers.forEach(abstractMarker -> {
+            if (abstractMarker instanceof UserPointMarker) {
+                final UserPointMarker marker = (UserPointMarker) abstractMarker;
+
 
                 if (zoomIn) {
-                    marker.getMarker().setScaleX(marker.getMarker().getScaleX() / 1.08);
-                    marker.getMarker().setScaleY(marker.getMarker().getScaleX());
+                    marker.setScale(marker.getScale() / 1.08);
                 } else {
-                    marker.getMarker().setScaleX(marker.getMarker().getScaleX() * 1.08);
-                    marker.getMarker().setScaleY(marker.getMarker().getScaleX());
+                    marker.setScale(marker.getScale() * 1.08);
                 }
+
+                marker.getMarker().setScaleX(marker.getScale());
+                marker.getMarker().setScaleY(marker.getScale());
+
+                final Rectangle r = new Rectangle();
+                r.setWidth(marker.getMarker().getBoundsInParent().getWidth());
+                r.setHeight(marker.getMarker().getBoundsInParent().getHeight());
+                r.setX(marker.getMarker().getBoundsInParent().getCenterX() - r.getWidth() / 2);
+                r.setY(marker.getMarker().getBoundsInParent().getCenterY() - r.getHeight() / 2);
+                r.setFill(Color.TRANSPARENT);
+                r.setStroke(Color.RED);
+                r.setStrokeWidth(0.01);
+
+                //layerGroup.getChildren().add(r);
+
+                final double heightDifference = marker.getOriginalClickY() - (r.getY() + r.getHeight());
+                //LOGGER.log(Level.SEVERE, "Height difference: " + heightDifference);
+                marker.getMarker().setTranslateY(marker.getMarker().getTranslateY() + heightDifference);
             }
         });
     }
@@ -1002,30 +1016,6 @@ public class MapView extends ScrollPane {
             drawMarker(value);
         }
     }
-
-    /**
-     * Scale the size of the markers
-     *
-     * @param scale
-     */
-    public void reScaleQueriedMarkers(final double scale) {
-        graphMarkerGroup.getChildren().clear();
-
-        if (markers.isEmpty()) {
-            LOGGER.log(Level.INFO, "Marker map is empty");
-        }
-
-
-        for (final AbstractMarker m : markers.values()) {
-            m.getMarker().setScaleX(m.getMarker().getScaleX() * scale);
-            m.getMarker().setScaleY(m.getMarker().getScaleY() * scale);
-
-            // Scale markers up and down based on whether or not the map is being zoomed in or out
-            m.getMarker().setLayoutY(scale < 1 ? (m.getMarker().getLayoutY() + (m.getMarker().getScaleY() * 10)) : (m.getMarker().getLayoutY() - (m.getMarker().getScaleY() * 10)));
-            drawMarker(m);
-        }
-    }
-
 
     public Map<String, AbstractMarker> getAllMarkers() {
         return markers;
