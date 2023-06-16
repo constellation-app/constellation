@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public class MarkdownTree {
     // Root node that doesn't contain any text and is of no type, it is just an entry point for the tree
     private final MarkdownNode root;
 
-    private String rawString = "";
+    private String rawString;
 
     // The different markdown syntax patterns supported
     private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)");
@@ -58,6 +58,7 @@ public class MarkdownTree {
     private static final Pattern DIGIT_PATTERN = Pattern.compile("\\d{1,5}.");
 
     public MarkdownTree() {
+        rawString = "";
         root = new MarkdownNode();
     }
 
@@ -68,7 +69,7 @@ public class MarkdownTree {
      */
     public MarkdownTree(final String rawString) {
         root = new MarkdownNode();
-        this.rawString += rawString + "\n";
+        this.rawString = rawString + "\n";
     }
 
     /**
@@ -235,7 +236,7 @@ public class MarkdownTree {
 
                     // Find the bolded text
                     if (boldMatcher.find()) {
-                        LOGGER.log(Level.SEVERE, "Bold Matcher: " + boldMatcher.group(1));
+                        LOGGER.log(Level.INFO, "Bold Matcher: " + boldMatcher.group(1));
                         //LOGGER.log(Level.SEVERE, "text after bold: " + text.charAt(boldMatcher.end(1) + 2));
                         // Create a MarkdownNode of type bold and add it as a child of current node
                         final MarkdownNode bold = new MarkdownNode(MarkdownNode.Type.BOLD, currentIndex, boldMatcher.end(1), boldMatcher.group(1), -99);
@@ -250,7 +251,7 @@ public class MarkdownTree {
                     }
                     // Else if the user wanted italic text
                 } else if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) != boldSyntax) {
-                    LOGGER.log(Level.SEVERE, "Detected italic syntax");
+                    LOGGER.log(Level.INFO, "Detected italic syntax");
                     final Matcher italicMatcher;
 
                     // Check for specific italic syntax and get a Matcher out of it
@@ -262,7 +263,7 @@ public class MarkdownTree {
 
                     // If italic text is found
                     if (italicMatcher.find()) {
-                        LOGGER.log(Level.SEVERE, "Italic text is: " + italicMatcher.group(1));
+                        LOGGER.log(Level.INFO, "Italic text is: " + italicMatcher.group(1));
                         // Create a MarkdownNode of type ITALIC and add it as a child of the current node
                         final MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, italicMatcher.end(1), italicMatcher.group(1), -99);
                         currentNode.getChildren().add(italic);
@@ -430,12 +431,12 @@ public class MarkdownTree {
      * @param currentNode
      * @return List of formatted text
      */
-    private List<TextHelper> getText(MarkdownNode currentNode) {
+    private List<TextHelper> getText(final MarkdownNode currentNode) {
         List<TextHelper> textNodes = new ArrayList<>();
 
         // Base case, make a TextHelper object with the raw text from the NORMAL markdown node and add no formatting and return that in a list
         if (currentNode.getType() == MarkdownNode.Type.NORMAL) {
-            TextHelper text = new TextHelper(currentNode.getValue());
+            final TextHelper text = new TextHelper(currentNode.getValue());
             text.setFill(Color.WHITE);
             textNodes.add(text);
             return textNodes;
@@ -461,25 +462,32 @@ public class MarkdownTree {
         // For each children of the currentNode
         for (int i = 0; i < currentNode.getChildren().size(); i++) {
             // Call this funciton on all its children
-            List<TextHelper> childTextNodes = getText(currentNode.getChildren().get(i));
+            final List<TextHelper> childTextNodes = getText(currentNode.getChildren().get(i));
 
             // For each children apply formatting to the TextHelper based on the child's type
             for (int j = 0; j < childTextNodes.size(); ++j) {
-                TextHelper currentText = childTextNodes.get(j);
+                final TextHelper currentText = childTextNodes.get(j);
                 if (currentNode.getType() == MarkdownNode.Type.HEADING) {
                     int level = currentNode.getHeadingLevel();
-                    if (level == 1) {
-                        currentText.setSize(32.0);
-                    } else if (level == 2) {
-                        currentText.setSize(24.0);
-                    } else if (level == 3) {
-                        currentText.setSize(18.72);
-                    } else if (level == 4) {
-                        currentText.setSize(16.0);
-                    } else if (level == 5) {
-                        currentText.setSize(12.28);
-                    } else {
-                        currentText.setSize(10.72);
+                    switch (level) {
+                        case 1:
+                            currentText.setSize(32.0);
+                            break;
+                        case 2:
+                            currentText.setSize(24.0);
+                            break;
+                        case 3:
+                            currentText.setSize(18.72);
+                            break;
+                        case 4:
+                            currentText.setSize(16.0);
+                            break;
+                        case 5:
+                            currentText.setSize(12.28);
+                            break;
+                        default:
+                            currentText.setSize(10.72);
+                            break;
                     }
                 } else if (currentNode.getType() == MarkdownNode.Type.ITALIC) {
                     currentText.setPosture(FontPosture.ITALIC);

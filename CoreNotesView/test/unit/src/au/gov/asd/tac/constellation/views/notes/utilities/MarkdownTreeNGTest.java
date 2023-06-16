@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;

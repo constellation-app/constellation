@@ -190,6 +190,8 @@ public class NewNotePane {
                 cancelButton.setDisable(true);
                 closePopUp();
             });
+            titleField.clear();
+            contentField.clear();
             stage = new Stage();
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setTitle("Create new note");
