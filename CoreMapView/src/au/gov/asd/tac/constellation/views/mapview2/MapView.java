@@ -1135,6 +1135,12 @@ public class MapView extends ScrollPane {
         // Keep zooming in
         while (true) {
 
+            if (scaleFactor > 1.0) {
+                pointMarkerGlobalScale /= 1.04;
+            } else {
+                pointMarkerGlobalScale *= 1.04;
+            }
+
             final double oldXScale = mapStackPane.getScaleX();
             final double oldYScale = mapStackPane.getScaleY();
 
@@ -1152,7 +1158,7 @@ public class MapView extends ScrollPane {
 
             mapStackPane.setScaleX(newXScale);
             mapStackPane.setScaleY(newYScale);
-
+            redrawQueriedMarkers();
             // When required markers are no longer in view then zoom out untill they are and break
             if (!selectedMarkersInView(allMarkers) && zoomIn) {
                 scaleFactor = 1 / 1.05;
