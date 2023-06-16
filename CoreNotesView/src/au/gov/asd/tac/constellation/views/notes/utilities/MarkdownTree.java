@@ -47,7 +47,9 @@ public class MarkdownTree {
 
     // The different markdown syntax patterns supported
     private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)");
-    private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n]+)\\*\\*");
+    private static final Pattern BOLD_AND_ITALIC_PATTERN = Pattern.compile("\\*\\*\\*([^\\n]+)\\*\\*\\*");
+    private static final Pattern BOLD_AND_ITALIC_PATTERN_2 = Pattern.compile("___([^\\n]+)___");
+    private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n\\*]+.*?)\\*\\*");
     private static final Pattern BOLD_PATTERN_2 = Pattern.compile("__\\s?([^\\n]+)__");
     private static final Pattern ITALIC_PATTERN = Pattern.compile("(?<!\\*)\\*\\s?([^\\n]+)(?<!\\*)\\*(?!\\*)");
     private static final Pattern ITALIC_PATTERN_2 = Pattern.compile("(?<!_)_\\s?([^\\n`]+)(?<!_)_(?!_)");
@@ -198,8 +200,30 @@ public class MarkdownTree {
                 // Else if the clostst syntax is the bold/italic syntax
             } else if (text.charAt(closestSyntax) == boldSyntax) {
                 currentIndex = closestSyntax;
+
                 // Check to see if syntax is bold
-                if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == boldSyntax) {
+                if (currentIndex + 2 < text.length() && text.charAt(currentIndex + 1) == boldSyntax && text.charAt(currentIndex + 2) == boldSyntax) {
+                    final Matcher boldAndItalicMatcher;
+
+                    // Get a matcher object based on which symbol the user has used
+                    if (text.charAt(currentIndex) == '*') {
+                        boldAndItalicMatcher = BOLD_AND_ITALIC_PATTERN.matcher(text.substring(currentIndex));
+                    } else {
+                        boldAndItalicMatcher = BOLD_AND_ITALIC_PATTERN_2.matcher(text.substring(currentIndex));
+                    }
+
+                    if (boldAndItalicMatcher.find()) {
+                        final MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, boldAndItalicMatcher.end(1), "**" + boldAndItalicMatcher.group(1) + "**", -99);
+                        currentNode.getChildren().add(italic);
+
+                        parseString(currentNode.getChildren().get(currentNode.getChildren().size() - 1), "**" + boldAndItalicMatcher.group(1) + "**");
+                        currentIndex += boldAndItalicMatcher.end(1) + 3;
+                    } else {
+                        addSyntaxNormalNode(Character.toString(boldSyntax), currentNode);
+                        currentIndex++;
+                    }
+
+                } else if (currentIndex + 1 < text.length() && text.charAt(currentIndex + 1) == boldSyntax) {
                     final Matcher boldMatcher;
 
                     // Get a matcher object based on which symbol the user has used
@@ -212,6 +236,7 @@ public class MarkdownTree {
                     // Find the bolded text
                     if (boldMatcher.find()) {
                         LOGGER.log(Level.SEVERE, "Bold Matcher: " + boldMatcher.group(1));
+                        //LOGGER.log(Level.SEVERE, "text after bold: " + text.charAt(boldMatcher.end(1) + 2));
                         // Create a MarkdownNode of type bold and add it as a child of current node
                         final MarkdownNode bold = new MarkdownNode(MarkdownNode.Type.BOLD, currentIndex, boldMatcher.end(1), boldMatcher.group(1), -99);
                         currentNode.getChildren().add(bold);
