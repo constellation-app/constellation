@@ -577,8 +577,6 @@ public class MarkdownTree {
                                 break;
                             }
                         }
-
-
                     }
                     indexOfNewLine = builder.indexOf("\n", indexOfNewLine + 1);
                 }

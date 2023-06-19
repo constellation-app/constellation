@@ -41,6 +41,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextFlow;
@@ -114,10 +115,13 @@ public class NewNotePane {
         previewTextFlow.setMinWidth(WIDTH - 5);
         //previewTextFlow.setMaxWidth(WIDTH - 5);
         previewTextFlow.setPrefWidth(WIDTH - 5);
-        
+
+        final Pane previewTabPane = new Pane();
+        final StackPane previewTabStackPane = new StackPane();
+        previewTabStackPane.getChildren().add(previewTabPane);
 
         final ScrollPane previewTabScrollPane = new ScrollPane();
-        previewTabScrollPane.setContent(previewTextFlow);
+        previewTabScrollPane.setContent(previewTabStackPane);
         previewTabScrollPane.setMaxWidth(WIDTH);
         previewTabScrollPane.setMaxHeight(202);
         previewTabScrollPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
@@ -136,10 +140,10 @@ public class NewNotePane {
 
         previewTab.setOnSelectionChanged(event -> {
             if (previewTab.isSelected()) {
-                previewTextFlow.getChildren().clear();
+                previewTabPane.getChildren().clear();
                 final MarkdownTree mdTree = new MarkdownTree(titleField.getText() + "\n\n" + contentField.getText());
                 mdTree.parse();
-                previewTextFlow.getChildren().add(mdTree.getRenderedText());
+                previewTabPane.getChildren().add(mdTree.getRenderedText());
             }
         });
         tabPane.getTabs().addAll(writeTab, previewTab);
