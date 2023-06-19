@@ -602,13 +602,13 @@ public class NotesViewPane extends BorderPane {
         }
         Platform.runLater(() -> {
             boolean foundNoteInEdit = false;
-            for (int i = 0; i < notesToRender.size(); i++) {
-                if (notesToRender.get(i).getEditMode()) {
+
+            for (final NotesViewEntry entry : notesToRender) {
+                if (entry.getEditMode()) {
                     foundNoteInEdit = true;
                     break;
                 }
             }
-
 
             if (!foundNoteInEdit) {
                 notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
@@ -743,6 +743,7 @@ public class NotesViewPane extends BorderPane {
             contentTextArea.setText(newNote.getTempContent());
         }
 
+
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.parse();
         newNote.setContentTextFlow(md.getRenderedText());
@@ -762,6 +763,7 @@ public class NotesViewPane extends BorderPane {
         });
 
         containerPane.getChildren().add(textFlowPane);
+
 
         final VBox noteInformation;
 
@@ -1118,12 +1120,22 @@ public class NotesViewPane extends BorderPane {
                 noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
                 noteButtons.setSpacing(DEFAULT_SPACING);
 
+
                 noteInformation.getChildren().removeAll(titleText, contentTextArea);
                 noteInformation.getChildren().addAll(containerPane);
 
                 newNote.setEditMode(false);
                 newNote.setWasInEditMode(false);
-                updateNotesUI();
+
+                synchronized (LOCK) {
+                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                    if (activeGraph != null) {
+                        updateNotesUI();
+                        notesViewController.writeState(activeGraph);
+                    }
+                }
+
+
             }
         });
     

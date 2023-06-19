@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.functionality;
 
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportDialogManager;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportEntry;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportSessionData;
@@ -52,10 +53,10 @@ public class ConstellationErrorManagerNGTest {
         LOGGER.setLevel(Level.ALL);
         
         // generate exception log messages
-        simulateException(Level.SEVERE);
-        simulateException(Level.WARNING);
-        simulateException(Level.INFO);
-        simulateException(Level.FINE);
+        simulateException(Level.SEVERE, false);
+        simulateException(Level.WARNING, false);
+        simulateException(Level.INFO, false);
+        simulateException(Level.FINE, false);
 
         LOGGER.log(Level.INFO, "\n ------- start wait for data ... {0}", new Date());
         boolean dataAvailable = waitForDataToBeAvailable(Level.SEVERE, 1);
@@ -71,7 +72,7 @@ public class ConstellationErrorManagerNGTest {
         confirmEntryOccurrences(Level.SEVERE, 1);
         
         // NOTE: the following 2 calls NEED to be on the SAME LINE to generate identical stack traces
-        simulateException(Level.SEVERE); simulateException(Level.SEVERE);
+        simulateException(Level.SEVERE, false); simulateException(Level.SEVERE, false);
         
         LOGGER.log(Level.INFO, "\n ------- 2.start wait for data ... {0}", new Date());
         dataAvailable = waitForDataToBeAvailable(Level.SEVERE, 2);
@@ -81,11 +82,14 @@ public class ConstellationErrorManagerNGTest {
         // confirm correct number of entries and occurrences
         confirmExceptionStored(Level.SEVERE, 2);
         confirmEntryOccurrences(Level.SEVERE, 2);
+        
+        simulateException(Level.SEVERE, true);
+        confirmExceptionStored(Level.SEVERE, 3);
     }
     
-    private void simulateException(final Level logLevel){
+    private void simulateException(final Level logLevel, final boolean autoBlockPopup){
         LOGGER.log(Level.INFO, "\n ------- simulating {0} exception", logLevel.getName());
-        final Exception e = new Exception("Something totally not unexpected happened !");
+        final Exception e = new Exception((autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG : "") + "Something totally not unexpected happened !");
         LOGGER.log(logLevel, "Simulating a " + logLevel.getName() + " exception !", e);
         LOGGER.info("\n ------- simulated.");
     }

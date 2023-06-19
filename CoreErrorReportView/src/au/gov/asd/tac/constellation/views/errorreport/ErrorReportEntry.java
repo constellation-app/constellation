@@ -88,6 +88,10 @@ public class ErrorReportEntry {
         return summaryHeading;
     }
 
+    public void setSummaryHeading(final String revisedSummary) {
+        summaryHeading = revisedSummary;
+    }
+    
     public void incrementOccurrences() {
         occurrences++;
         lastDate = new Date();
@@ -166,14 +170,17 @@ public class ErrorReportEntry {
     
     @Override
     public String toString() {
-        return "[ErrorReportEntry:[id=" + entryId + "]"
-                + ", [header=" + heading + "]"
-                + ", [errorLevel=" + errorLevel.getName() + "]"
-                + ", [occurrences=" + occurrences + "]"
-                + ", [lastDate=" + lastDate + "]"
-                + ", [lastPopupDate=" + lastPopupDate + "]"
-                + ", [preventRepeatedPopups=" + preventRepeatedPopups + "]"
-                + ", [dialog=" + dialog + "]"
+        return "[ErrorReportEntry:[id=" + getEntryId() + "]"
+                + ", [header=" + getHeading() + "]"
+                + ", [summaryHeading=" + getSummaryHeading() + "]"
+                + ", [errorLevel=" + getErrorLevel().getName() + "]"
+                + ", [errorData_length=" + getErrorData().length() + "]"
+                + ", [occurrences=" + getOccurrences() + "]"
+                + ", [lastDate=" + getLastDate() + "]"
+                + ", [lastPopupDate=" + getLastPopupDate() + "]"
+                + ", [preventRepeatedPopups=" + isBlockRepeatedPopups() + "]"
+                + ", [expanded=" + isExpanded() + "]"
+                + ", [dialog=" + getDialog() + "]"
                 + "]";
     }
 }
