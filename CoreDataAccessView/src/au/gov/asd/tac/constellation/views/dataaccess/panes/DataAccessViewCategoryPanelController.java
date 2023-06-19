@@ -49,7 +49,9 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private boolean panelRefreshed = false;
     private boolean reorderButtonPressed = false;
+    private boolean moveButtonPressed = false;
     private boolean orderChanged = false;
+    private boolean firstLoad = true;
 
     /* This method enables to refresh the lists when the panel is opened */
     @Override
@@ -76,10 +78,12 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
                 pcs.firePropertyChange(OptionsPanelController.PROP_CHANGED, false, true);
                 final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
                 final DataAccessViewCategoryPanel panel = getPanel();
+                visibleNow = panel.getVisibleCategory();
                 prefs.put(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, panel.getHiddenCategory().toString().replace("[,", "["));
                 prefs.put(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, panel.getVisibleCategory().toString().replace("[,", "["));
                 orderChanged = false;
                 reorderButtonPressed = false;
+                moveButtonPressed = false;
                 panelRefreshed = true;
             }
         }
@@ -105,14 +109,24 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         final List<String> hiddenCategory = panel.getHiddenCategory();
         final List<String> visibleCategory = panel.getVisibleCategory();
 
-
         if (reorderButtonPressed && !visibleCategory.equals(visibleNow)) {
             orderChanged = true;
             visibleNow = panel.getVisibleCategory();
         }
 
-        return !hiddenCategory.isEmpty() || orderChanged
-                || !prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty();
+        if (moveButtonPressed) {
+            firstLoad = false;
+        }
+
+        return visibleEntriesHaveChanged() || orderChanged;
+    }
+
+    private boolean visibleEntriesHaveChanged() {
+        if (firstLoad) {
+            return false;
+        }
+
+        return getPanel().getVisibleCategory().size() != visibleNow.size();
     }
 
     @Override
@@ -146,5 +160,10 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
     public void setReorderButtonPressed(final boolean reorderButtonPressed) {
         this.reorderButtonPressed = reorderButtonPressed;
     }
+
+    public void setMoveButtonPressed(boolean moveButtonPressed) {
+        this.moveButtonPressed = moveButtonPressed;
+    }
+
 
 }

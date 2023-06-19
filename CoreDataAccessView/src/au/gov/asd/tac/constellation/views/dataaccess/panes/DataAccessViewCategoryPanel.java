@@ -292,6 +292,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                 }
             }
             visibleList.setModel(visibleListModel);
+            controller.setMoveButtonPressed(true);
         }
     }//GEN-LAST:event_buttonRightActionPerformed
 
@@ -316,6 +317,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                 }
             }
             hiddenList.setModel(hiddenListModel);
+            controller.setMoveButtonPressed(true);
         }
     }//GEN-LAST:event_buttonLeftActionPerformed
 
