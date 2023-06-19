@@ -41,9 +41,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -69,7 +69,7 @@ public class NewNotePane {
     private final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
 
     private final TabPane tabPane;
-    private final TextFlow previewTextFlow;
+    private TextFlow previewTextFlow;
 
     private final ColorPicker newNoteColour;
 
@@ -112,16 +112,16 @@ public class NewNotePane {
         tabPane = new TabPane();
         previewTextFlow = new TextFlow();
 
-        previewTextFlow.setMinWidth(WIDTH - 5);
-        //previewTextFlow.setMaxWidth(WIDTH - 5);
-        previewTextFlow.setPrefWidth(WIDTH - 5);
+        previewTextFlow.setMinWidth(495);
+        //previewTextFlow.setMaxWidth(500);
+        previewTextFlow.setTextAlignment(TextAlignment.LEFT);
+        //previewTextFlow.setPrefWidth(WIDTH - 5);
 
         final Pane previewTabPane = new Pane();
-        final StackPane previewTabStackPane = new StackPane();
-        previewTabStackPane.getChildren().add(previewTabPane);
+
 
         final ScrollPane previewTabScrollPane = new ScrollPane();
-        previewTabScrollPane.setContent(previewTabStackPane);
+        previewTabScrollPane.setContent(previewTabPane);
         previewTabScrollPane.setMaxWidth(WIDTH);
         previewTabScrollPane.setMaxHeight(202);
         previewTabScrollPane.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
@@ -140,10 +140,25 @@ public class NewNotePane {
 
         previewTab.setOnSelectionChanged(event -> {
             if (previewTab.isSelected()) {
+                previewTextFlow.getChildren().clear();
                 previewTabPane.getChildren().clear();
                 final MarkdownTree mdTree = new MarkdownTree(titleField.getText() + "\n\n" + contentField.getText());
                 mdTree.parse();
-                previewTabPane.getChildren().add(mdTree.getRenderedText());
+                previewTextFlow = mdTree.getRenderedText();
+
+                //final TextFlow childTextFlow = (TextFlow) previewTextFlow.getChildren().get(0);
+
+                previewTextFlow.getChildren().forEach(text -> {
+                    if (text instanceof TextFlow) {
+                        final TextFlow listTextFlow = (TextFlow) text;
+                        listTextFlow.setMinWidth(495);
+                        //listTextFlow.setMaxHeight(500);
+                        //listTextFlow.setMinHeight(500);
+                        //listTextFlow.setPrefHeight(500);
+                    }
+                });
+
+                previewTabPane.getChildren().add(previewTextFlow);
             }
         });
         tabPane.getTabs().addAll(writeTab, previewTab);
