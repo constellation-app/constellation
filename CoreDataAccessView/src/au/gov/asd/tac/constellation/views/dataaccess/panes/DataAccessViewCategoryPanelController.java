@@ -78,6 +78,8 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
                 final DataAccessViewCategoryPanel panel = getPanel();
                 prefs.put(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, panel.getHiddenCategory().toString().replace("[,", "["));
                 prefs.put(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, panel.getVisibleCategory().toString().replace("[,", "["));
+                orderChanged = false;
+                reorderButtonPressed = false;
                 panelRefreshed = true;
             }
         }
@@ -104,19 +106,13 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         final List<String> visibleCategory = panel.getVisibleCategory();
 
 
-        if (reorderButtonPressed) {
-            if (!visibleCategory.equals(visibleNow)) {
-                orderChanged = true;
-                visibleNow = panel.getVisibleCategory();
-            } else {
-                orderChanged = false;
-                reorderButtonPressed = false;
-            }
+        if (reorderButtonPressed && !visibleCategory.equals(visibleNow)) {
+            orderChanged = true;
+            visibleNow = panel.getVisibleCategory();
         }
 
         return !hiddenCategory.isEmpty() || orderChanged
-                || !prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty()
-                || !prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty();
+                || !prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT).isEmpty();
     }
 
     @Override
