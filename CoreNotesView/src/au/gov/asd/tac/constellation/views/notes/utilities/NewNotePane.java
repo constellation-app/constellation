@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -56,6 +58,9 @@ import javafx.stage.Window;
  * @author altair1673
  */
 public class NewNotePane {
+
+    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
+
     private boolean isFirstTime = true;
     private final Pane dialogPane;
     private static final String FONT_SIZE_STRING = "-fx-font-size:%d;";
@@ -152,8 +157,10 @@ public class NewNotePane {
                     if (text instanceof TextFlow) {
                         final TextFlow listTextFlow = (TextFlow) text;
                         listTextFlow.setMinWidth(495);
+                        LOGGER.log(Level.SEVERE, "Colour of back ground is: " + listTextFlow.getBackground().getFills().get(0).toString());
+                        LOGGER.log(Level.SEVERE, "Height of text flow: " + listTextFlow.getHeight());
                         //listTextFlow.setMaxHeight(500);
-                        //listTextFlow.setMinHeight(500);
+                        //listTextFlow.setMinHeight(1500);
                         //listTextFlow.setPrefHeight(500);
                     }
                 });
