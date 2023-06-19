@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.dataaccess;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
@@ -25,7 +26,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtiliti
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.widget.DefaultQualityControlAutoButton;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import javafx.scene.layout.HBox;
 import org.openide.awt.ActionID;
@@ -67,8 +67,7 @@ import org.openide.windows.TopComponent;
 })
 public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAccessPane> {
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
-    
+    private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
     private final DataAccessPane dataAccessPane;
 
     /**
@@ -133,7 +132,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
     @Override
     public void handleComponentOpened() {
         super.handleComponentOpened();
-        ManageQualityControlListeners(true);
+        manageQualityControlListeners(true);
         QualityControlAutoVetter.getInstance().addObserver(getDataAccessPane());
     }
 
@@ -143,7 +142,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
     @Override
     public void handleComponentClosed() {
         super.handleComponentClosed();
-        ManageQualityControlListeners(false);
+        manageQualityControlListeners(false);
         QualityControlAutoVetter.getInstance().removeObserver(getDataAccessPane());
     }
 
@@ -155,12 +154,17 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     protected void handleNewGraph(final Graph graph) {
+        System.setProperty("dav.graph.ready", Boolean.FALSE.toString());
         if (needsUpdate() && getDataAccessPane() != null) {
             getDataAccessPane().update(graph);
             Platform.runLater(() -> 
                 DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph)
             );
         }
+        Platform.runLater(() ->
+                // nested runLater so it runs after all the other triggered processes for opening a graph have been run
+                Platform.runLater(() -> System.setProperty("dav.graph.ready", Boolean.TRUE.toString()))
+        );
     }
 
     /**
@@ -171,7 +175,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
      * @param add Should quality control auto vetter listeners be added (true)
      * or removed (false).
      */
-    private void ManageQualityControlListeners(boolean add) {
+    private void manageQualityControlListeners(boolean add) {
         // Dig down to the button toolbar and find any quality control auto
         // buttons - these subscribe as listeners to the quality control auto
         // vetter and as such these subscriptions need to be modified.
@@ -181,18 +185,18 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         for (final Object button : hboxTop.getChildren()) {
             if (button instanceof DefaultQualityControlAutoButton) {
                 if (add) {
-                    ((DefaultQualityControlAutoButton) button).AddQCListener();
+                    ((DefaultQualityControlAutoButton) button).addQCListener();
                 } else {
-                    ((DefaultQualityControlAutoButton) button).RemoveQCListener();
+                    ((DefaultQualityControlAutoButton) button).removeQCListener();
                 }
             }
         }
         for (final Object button : hboxBottom.getChildren()) {
             if (button instanceof DefaultQualityControlAutoButton) {
                 if (add) {
-                    ((DefaultQualityControlAutoButton) button).AddQCListener();
+                    ((DefaultQualityControlAutoButton) button).addQCListener();
                 } else {
-                    ((DefaultQualityControlAutoButton) button).RemoveQCListener();
+                    ((DefaultQualityControlAutoButton) button).removeQCListener();
                 }
             }
         }

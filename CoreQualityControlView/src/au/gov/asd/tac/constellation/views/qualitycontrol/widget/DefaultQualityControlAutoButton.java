@@ -105,7 +105,7 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
      * allows the containing top component to effectively subscribe/unsubscribe
      * listeners as the components are opened or closed.
      */
-    public void AddQCListener() {
+    public void addQCListener() {
         QualityControlAutoVetter.getInstance().addListener(this);
         QualityControlAutoVetter.getInstance().invokeListener(this);
     }
@@ -115,7 +115,7 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
      * This allows the containing top component to effectively
      * subscribe/unsubscribe listeners as the components are opened or closed.
      */
-    public void RemoveQCListener() {
+    public void removeQCListener() {
         QualityControlAutoVetter.getInstance().removeListener(this);
     }
 }
