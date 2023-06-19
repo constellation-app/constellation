@@ -20,13 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import static au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept.VertexType.IP_ADDRESS;
-import static au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept.VertexType.LOCATION;
-import static au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept.VertexType.ONLINE_IDENTIFIER;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
-import java.util.regex.Pattern;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
@@ -78,29 +72,12 @@ public class AnalyticSchemaV6UpdateProviderNGTest {
         final int vxId4 = graph.addVertex();
         
         final SchemaVertexType ipv4Custom = new SchemaVertexType.Builder("IPv4 Address")
-                .setDescription("A node representing an IP address (in the IPv4 format) on a network, eg. the private ip address 192.168.0.1")
-                .setSuperType(IP_ADDRESS)
-                .setDetectionRegex(Pattern.compile("MadeUpRegex", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("MadeUpRegex", Pattern.CASE_INSENSITIVE))
                 .build();
         final SchemaVertexType ipv6Custom = new SchemaVertexType.Builder("IPv6 Address")
-                .setDescription("A node representing an IP address (in the IPv6 format) on a network, eg. the ip address 1:2:3:4:5:6:7:8")
-                .setSuperType(IP_ADDRESS)
-                .setDetectionRegex(Pattern.compile("MadeUpRegex", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("MadeUpRegex", Pattern.CASE_INSENSITIVE))
                 .build();
         final SchemaVertexType emailCustom = new SchemaVertexType.Builder("Email")
-                .setDescription("A node representing an email address")
-                .setColor(ConstellationColor.MUSK)
-                .setForegroundIcon(AnalyticIconProvider.EMAIL)
-                .setSuperType(ONLINE_IDENTIFIER)
-                .setDetectionRegex(Pattern.compile("MadeUpRegex", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("MadeUpRegex", Pattern.CASE_INSENSITIVE))
                 .build();
         final SchemaVertexType mgrsCustom = new SchemaVertexType.Builder("MGRS")
-                .setDescription("A node representing a Military Grid Reference System coordinate")
-                .setSuperType(LOCATION)
-                .setValidationRegex(Pattern.compile("MadeUpRegex", Pattern.CASE_INSENSITIVE))
                 .build();
         
         graph.setObjectValue(typeAttributeId, vxId1, ipv4Custom);
