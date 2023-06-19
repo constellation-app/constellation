@@ -200,10 +200,6 @@ public class NotesViewEntry implements PluginReportListener {
         this.tempTitle = tempTitle;
     }
 
-    public String getTempContent() {
-        return tempContent;
-    }
-
 
     public String getTempTitle() {
         return tempTitle;
