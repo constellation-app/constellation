@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -57,6 +58,8 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
     private boolean moveButtonPressed = false;
     private boolean orderChanged = false;
     private boolean firstLoad = true;
+    private List<String> visibleOnFirstLoad;
+    private List<String> hiddenOnFirstLoad;
 
     /* This method enables to refresh the lists when the panel is opened */
     @Override
@@ -100,9 +103,15 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
 
         final String visibleItems = prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
-        panel.setVisibleCategory(visibleItems);
-
         final String hiddenItems = prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
+
+        if (StringUtils.isBlank(visibleItems.replace("[", "").replace("]", "")) && StringUtils.isBlank(hiddenItems.replace("[", "").replace("]", ""))) {
+            panel.setVisibleCategory(visibleOnFirstLoad.toString());
+            panel.setHiddenCategory(hiddenOnFirstLoad.toString());
+            return;
+        }
+
+        panel.setVisibleCategory(visibleItems);
         panel.setHiddenCategory(hiddenItems);
     }
 
@@ -133,9 +142,9 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
     private boolean visibleEntriesHaveChanged() {
         if (firstLoad) {
-            final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
-            LOGGER.log(Level.SEVERE, "visible categories: " + prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT));
             visibleNow = getPanel().getVisibleCategory();
+            visibleOnFirstLoad = getPanel().getVisibleCategory();
+            hiddenOnFirstLoad = getPanel().getHiddenCategory();
             return false;
         }
 
