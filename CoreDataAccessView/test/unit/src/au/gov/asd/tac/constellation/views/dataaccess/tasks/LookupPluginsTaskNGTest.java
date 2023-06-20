@@ -116,8 +116,8 @@ public class LookupPluginsTaskNGTest {
             
             final Map<String, Pair<Integer, List<DataAccessPlugin>>> expectedPlugins = Map.of(
                     "Developer", new Pair(0, List.of(plugin3)),
-                    "Utility", new Pair(0, List.of(plugin4)),
-                    "Favourites", new Pair(0, List.of(plugin3)));
+                    "Utility", new Pair(1, List.of(plugin4)),
+                    "Favourites", new Pair(2, List.of(plugin3)));
 
 
             assertEquals(new LookupPluginsTask().get(), expectedPlugins);
