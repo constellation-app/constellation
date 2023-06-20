@@ -104,9 +104,7 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
     @Override
     public boolean isChanged() {
-        final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
         final DataAccessViewCategoryPanel panel = getPanel();
-        final List<String> hiddenCategory = panel.getHiddenCategory();
         final List<String> visibleCategory = panel.getVisibleCategory();
 
         if (reorderButtonPressed && !visibleCategory.equals(visibleNow)) {
@@ -123,10 +121,20 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
     private boolean visibleEntriesHaveChanged() {
         if (firstLoad) {
+            visibleNow = getPanel().getVisibleCategory();
             return false;
         }
 
-        return getPanel().getVisibleCategory().size() != visibleNow.size();
+        if (getPanel().getVisibleCategory().size() == visibleNow.size()) {
+            for (int i = 0; i < visibleNow.size(); ++i) {
+                if (!getPanel().getVisibleCategory().get(i).equals(visibleNow.get(i))) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -161,7 +169,7 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         this.reorderButtonPressed = reorderButtonPressed;
     }
 
-    public void setMoveButtonPressed(boolean moveButtonPressed) {
+    public void setMoveButtonPressed(final boolean moveButtonPressed) {
         this.moveButtonPressed = moveButtonPressed;
     }
 
