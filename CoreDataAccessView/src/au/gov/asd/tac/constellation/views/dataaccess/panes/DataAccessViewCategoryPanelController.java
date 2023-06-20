@@ -15,9 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
+import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -43,6 +46,8 @@ import org.openide.util.NbPreferences;
     "AdvancedOption_Keywords_DataAccessView=DataAccessView"
 })
 public final class DataAccessViewCategoryPanelController extends OptionsPanelController {
+
+    private static final Logger LOGGER = Logger.getLogger(DataAccessViewCategoryPanelController.class.getName());
 
     private DataAccessViewCategoryPanel thePanel;
     private List<String> visibleNow;
@@ -91,7 +96,14 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
     @Override
     public void cancel() {
-        // need not do anything special, if no changes have been persisted yet
+        final DataAccessViewCategoryPanel panel = getPanel();
+        final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
+
+        final String visibleItems = prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
+        panel.setVisibleCategory(visibleItems);
+
+        final String hiddenItems = prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
+        panel.setHiddenCategory(hiddenItems);
     }
 
     @Override
@@ -121,6 +133,8 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
     private boolean visibleEntriesHaveChanged() {
         if (firstLoad) {
+            final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
+            LOGGER.log(Level.SEVERE, "visible categories: " + prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT));
             visibleNow = getPanel().getVisibleCategory();
             return false;
         }
