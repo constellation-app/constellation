@@ -123,7 +123,7 @@ public class NewNotePane {
         //previewTextFlow.setPrefWidth(WIDTH - 5);
 
         final Pane previewTabPane = new Pane();
-
+        previewTabPane.getChildren().add(previewTextFlow);
 
         final ScrollPane previewTabScrollPane = new ScrollPane();
         previewTabScrollPane.setContent(previewTabPane);
@@ -161,9 +161,9 @@ public class NewNotePane {
                         listTextFlow.setMinWidth(495);
                         LOGGER.log(Level.SEVERE, "Colour of back ground is: " + listTextFlow.getBackground().getFills().get(0).toString());
                         LOGGER.log(Level.SEVERE, "Height of text flow: " + listTextFlow.getHeight());
-                        //listTextFlow.setMaxHeight(500);
-                        //listTextFlow.setMinHeight(1500);
-                        //listTextFlow.setPrefHeight(500);
+                        listTextFlow.setMaxHeight(listTextFlow.getMaxHeight() / 1.2);
+                        //listTextFlow.setMinHeight(listTextFlow.getMinHeight() / 1.2);
+                        //listTextFlow.setPrefHeight(listTextFlow.getPrefHeight() / 1.2);
                     }
                 });
 
