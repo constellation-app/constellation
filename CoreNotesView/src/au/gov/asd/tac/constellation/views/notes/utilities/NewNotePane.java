@@ -150,7 +150,9 @@ public class NewNotePane {
                 final MarkdownTree mdTree = new MarkdownTree(titleField.getText() + "\n\n" + contentField.getText());
                 mdTree.parse();
                 previewTextFlow = mdTree.getRenderedText();
-
+                previewTextFlow.setMinWidth(495);
+                previewTextFlow.setPrefWidth(495);
+                previewTextFlow.setMaxWidth(495);
                 //final TextFlow childTextFlow = (TextFlow) previewTextFlow.getChildren().get(0);
 
                 previewTextFlow.getChildren().forEach(text -> {
