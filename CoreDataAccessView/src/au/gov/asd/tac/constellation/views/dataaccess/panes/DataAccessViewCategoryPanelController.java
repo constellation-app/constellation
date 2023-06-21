@@ -48,8 +48,6 @@ import org.openide.util.NbPreferences;
 })
 public final class DataAccessViewCategoryPanelController extends OptionsPanelController {
 
-    private static final Logger LOGGER = Logger.getLogger(DataAccessViewCategoryPanelController.class.getName());
-
     private DataAccessViewCategoryPanel thePanel;
     private List<String> visibleNow;
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
