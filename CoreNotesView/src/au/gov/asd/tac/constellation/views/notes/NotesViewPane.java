@@ -877,7 +877,7 @@ public class NotesViewPane extends BorderPane {
         final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteTop, noteInformation, noteButtons) : new VBox(DEFAULT_SPACING, dateTimeLabel, noteInformation);
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
-        noteBody.setMaxHeight(Double.MAX_VALUE);
+        noteBody.setMaxHeight(NOTE_HEIGHT - 10);
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
 
@@ -909,11 +909,12 @@ public class NotesViewPane extends BorderPane {
                 contentLabel.setText(newNote.getNoteContent());
                 noteBody.setMaxHeight(Double.MAX_VALUE);
                 showMoreButton.setText(SHOW_LESS);
-                noteBody.setMinHeight(newNote.getContentTextFlow().getHeight());
+                //noteBody.setMinHeight(newNote.getContentTextFlow().getHeight());
 
                 containerPane.getChildren().clear();
                 final VBox textFlowVBox = new VBox(newNote.getContentTextFlow());
                 containerPane.getChildren().add(textFlowVBox);
+                LOGGER.log(Level.SEVERE, "Height of note: " + noteBody.getMaxHeight());
 
             } else if (showMoreButton.getText().equals(SHOW_LESS)) {
                 contentLabel.setText(newNote.getNoteContent());

@@ -216,7 +216,6 @@ public class NewNotePane {
                 resizeTextFlows((TextFlow) textFlow.getChildren().get(i), scale + 0.5);
             }
         }
-        textFlow.setPadding(new Insets(0, 0, 0, 0));
         textFlow.setMaxHeight(textFlow.getMaxHeight() / scale);
         textFlow.setMinWidth(495);
     }
