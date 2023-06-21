@@ -544,7 +544,7 @@ public class MarkdownTree {
                 // Create a new textflow
                 final TextFlow listFlow = new TextFlow();
                 listFlow.setTextAlignment(TextAlignment.LEFT);
-                //listFlow.setPadding(new Insets(0, 0, 0, 0));
+                listFlow.setPadding(new Insets(0, 0, 0, 0));
                 listFlow.setBorder(Border.EMPTY);
 
                 /*if (red) {
