@@ -58,6 +58,7 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
     private boolean moveButtonPressed = false;
     private boolean orderChanged = false;
     private boolean firstLoad = true;
+    private boolean noEditsMade = true;
     private List<String> visibleOnFirstLoad;
     private List<String> hiddenOnFirstLoad;
 
@@ -130,10 +131,12 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
 
         if (reorderButtonPressed && !visibleCategory.equals(visibleNow)) {
             orderChanged = true;
+            noEditsMade = false;
             visibleNow = panel.getVisibleCategory();
         }
 
         if (moveButtonPressed) {
+            noEditsMade = false;
             firstLoad = false;
         }
 
@@ -143,9 +146,12 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
     private boolean visibleEntriesHaveChanged() {
         if (firstLoad) {
             visibleNow = getPanel().getVisibleCategory();
+            return false;
+        }
+
+        if (noEditsMade) {
             visibleOnFirstLoad = getPanel().getVisibleCategory();
             hiddenOnFirstLoad = getPanel().getHiddenCategory();
-            return false;
         }
 
         if (getPanel().getVisibleCategory().size() == visibleNow.size()) {
