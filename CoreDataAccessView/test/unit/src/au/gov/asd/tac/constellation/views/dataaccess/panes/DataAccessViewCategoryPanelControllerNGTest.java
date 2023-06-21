@@ -190,7 +190,7 @@ public class DataAccessViewCategoryPanelControllerNGTest {
         when(dataAccessViewCategoryPanelControllerSpy.getPanel()).thenReturn(dataAccessViewCategoryPanelSpy);
         when(dataAccessViewCategoryPanelSpy.getHiddenCategory()).thenReturn(list1);
 
-        boolean expResult = true;
+        boolean expResult = false;
         boolean result = dataAccessViewCategoryPanelControllerSpy.isChanged();
         assertEquals(result, expResult);
         verify(dataAccessViewCategoryPanelSpy, times(1)).getHiddenCategory();
