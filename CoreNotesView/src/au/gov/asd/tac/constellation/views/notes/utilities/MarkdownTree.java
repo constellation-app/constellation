@@ -22,8 +22,6 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.geometry.Insets;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
 import javafx.scene.paint.Color;
 import javafx.scene.text.FontPosture;
@@ -48,15 +46,15 @@ public class MarkdownTree {
     private String rawString;
 
     // The different markdown syntax patterns supported
-    private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)");
+    private static final Pattern HEADING_PATTERN = Pattern.compile("#{1,6}\\s([^\\n]+)", Pattern.UNICODE_CHARACTER_CLASS);
     private static final Pattern BOLD_AND_ITALIC_PATTERN = Pattern.compile("\\*\\*\\*([^\\n]+)\\*\\*\\*");
     private static final Pattern BOLD_AND_ITALIC_PATTERN_2 = Pattern.compile("___([^\\n]+)___");
-    private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n\\*]+.{0,1000000}?)\\*\\*");
-    private static final Pattern BOLD_PATTERN_2 = Pattern.compile("__\\s?([^\\n]+)__");
-    private static final Pattern ITALIC_PATTERN = Pattern.compile("(?<!\\*)\\*\\s?([^\\n]+)(?<!\\*)\\*(?!\\*)");
-    private static final Pattern ITALIC_PATTERN_2 = Pattern.compile("(?<!_)_\\s?([^\\n`]+)(?<!_)_(?!_)");
-    private static final Pattern STRIKE_THROUGH_PATTERN = Pattern.compile("~~\\s?([^\\n]+)~~");
-    private static final Pattern HASH_PATTERN = Pattern.compile("#{1,}");
+    private static final Pattern BOLD_PATTERN = Pattern.compile("\\*\\*\\s?([^\\n\\*]+.{0,1000000}?)\\*\\*", Pattern.UNICODE_CHARACTER_CLASS);
+    private static final Pattern BOLD_PATTERN_2 = Pattern.compile("__\\s?([^\\n]+)__", Pattern.UNICODE_CHARACTER_CLASS);
+    private static final Pattern ITALIC_PATTERN = Pattern.compile("(?<!\\*)\\*\\s?([^\\n]+)(?<!\\*)\\*(?!\\*)", Pattern.UNICODE_CHARACTER_CLASS);
+    private static final Pattern ITALIC_PATTERN_2 = Pattern.compile("(?<!_)_\\s?([^\\n`]+)(?<!_)_(?!_)", Pattern.UNICODE_CHARACTER_CLASS);
+    private static final Pattern STRIKE_THROUGH_PATTERN = Pattern.compile("~~\\s?([^\\n]+)~~", Pattern.UNICODE_CHARACTER_CLASS);
+    private static final Pattern HASH_PATTERN = Pattern.compile("#{1,6}");
     private static final Pattern DIGIT_PATTERN = Pattern.compile("\\d{1,5}.");
 
     public MarkdownTree() {
@@ -238,8 +236,6 @@ public class MarkdownTree {
 
                     // Find the bolded text
                     if (boldMatcher.find()) {
-                        LOGGER.log(Level.INFO, "Bold Matcher: " + boldMatcher.group(1));
-                        //LOGGER.log(Level.SEVERE, "text after bold: " + text.charAt(boldMatcher.end(1) + 2));
                         // Create a MarkdownNode of type bold and add it as a child of current node
                         final MarkdownNode bold = new MarkdownNode(MarkdownNode.Type.BOLD, currentIndex, boldMatcher.end(1), boldMatcher.group(1), -99);
                         currentNode.getChildren().add(bold);
@@ -265,7 +261,6 @@ public class MarkdownTree {
 
                     // If italic text is found
                     if (italicMatcher.find()) {
-                        LOGGER.log(Level.INFO, "Italic text is: " + italicMatcher.group(1));
                         // Create a MarkdownNode of type ITALIC and add it as a child of the current node
                         final MarkdownNode italic = new MarkdownNode(MarkdownNode.Type.ITALIC, currentIndex + 1, italicMatcher.end(1), italicMatcher.group(1), -99);
                         currentNode.getChildren().add(italic);
@@ -354,11 +349,11 @@ public class MarkdownTree {
                     } else if (Character.isDigit(text.charAt(numIndex))
                             && (currentNode.getType() == MarkdownNode.Type.ORDERED_LIST)) {
 
-                        String tabString = "";
+                        final StringBuilder tabString = new StringBuilder();
 
                         // Find the ammount of tabs for the currentNode
                         for (int i = 0; i < currentNode.getTabs(); ++i) {
-                            tabString += "\t";
+                            tabString.append("\t");
                         }
 
                         // Find the next new line character from the begining of the list item
@@ -368,11 +363,11 @@ public class MarkdownTree {
                         // and the next line does not start with the same amount of tabs or it does start with the same amount of tabs
                         // and there is a new tab right after that OR there are no tabs on the list item and the next line contains a tab
                         // then change end index of the \n for this next line
-                        while (endIndex != -1 && ((!tabString.isEmpty()
-                                && (text.indexOf(tabString, endIndex + 1) != endIndex + 1
-                                || (text.indexOf(tabString, endIndex + 1) == endIndex + 1
+                        while (endIndex != -1 && ((!tabString.toString().isEmpty()
+                                && (text.indexOf(tabString.toString(), endIndex + 1) != endIndex + 1
+                                || (text.indexOf(tabString.toString(), endIndex + 1) == endIndex + 1
                                 && text.indexOf("\t", endIndex + currentNode.getTabs() + 1) == endIndex + currentNode.getTabs() + 1)) || text.indexOf("\n", endIndex + 1) == endIndex + 1)
-                                || (tabString.isEmpty()
+                                || (tabString.toString().isEmpty()
                                 && text.indexOf("\t", endIndex + 1) == endIndex + 1 || text.indexOf("\n", endIndex + 1) == endIndex + 1))) {
                             endIndex = text.indexOf("\n", endIndex + 1);
                         }
@@ -519,11 +514,9 @@ public class MarkdownTree {
      */
     public TextFlow getRenderedText() {
         // TextFlow to be returned
-        boolean red = true;
         final TextFlow renderedText = new TextFlow();
         renderedText.setTextAlignment(TextAlignment.LEFT);
         renderedText.setPadding(new Insets(0, 0, 0, 0));
-        //renderedText.setBackground(new Background(new BackgroundFill(Color.BLUE, null, null)));
 
         // List of text flows
         final List<TextFlow> textFlowList = new ArrayList<>();
@@ -546,14 +539,6 @@ public class MarkdownTree {
                 listFlow.setTextAlignment(TextAlignment.LEFT);
                 listFlow.setPadding(new Insets(0, 0, 0, 0));
                 listFlow.setBorder(Border.EMPTY);
-
-                /*if (red) {
-                    listFlow.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-                    red = false;
-                } else {
-                    listFlow.setBackground(new Background(new BackgroundFill(Color.GREEN, null, null)));
-                    red = true;
-                }*/
 
                 // Add the newly created text flow to the previous text flow and to the list
                 textFlowList.get(textFlowList.size() - 1).getChildren().add(listFlow);

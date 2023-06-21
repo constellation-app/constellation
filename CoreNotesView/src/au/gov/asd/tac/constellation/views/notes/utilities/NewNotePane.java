@@ -18,10 +18,7 @@ package au.gov.asd.tac.constellation.views.notes.utilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -59,8 +56,6 @@ import javafx.stage.Window;
  * @author altair1673
  */
 public class NewNotePane {
-
-    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
 
     private boolean isFirstTime = true;
     private final Pane dialogPane;
@@ -119,9 +114,7 @@ public class NewNotePane {
         previewTextFlow = new TextFlow();
 
         previewTextFlow.setMinWidth(495);
-        //previewTextFlow.setMaxWidth(500);
         previewTextFlow.setTextAlignment(TextAlignment.LEFT);
-        //previewTextFlow.setPrefWidth(WIDTH - 5);
 
         final Pane previewTabPane = new Pane();
         previewTabPane.getChildren().add(previewTextFlow);
@@ -154,20 +147,6 @@ public class NewNotePane {
                 previewTextFlow.setMinWidth(495);
                 previewTextFlow.setPrefWidth(495);
                 previewTextFlow.setMaxWidth(495);
-                //final TextFlow childTextFlow = (TextFlow) previewTextFlow.getChildren().get(0);
-                //final List<TextFlow> visibleTextFlows = new ArrayList<>();
-                //visibleTextFlows.add(previewTextFlow);
-                /*previewTextFlow.getChildren().forEach(text -> {
-                    if (text instanceof TextFlow) {
-                        final TextFlow listTextFlow = (TextFlow) text;
-                        listTextFlow.setMinWidth(495);
-                        LOGGER.log(Level.SEVERE, "Colour of back ground is: " + listTextFlow.getBackground().getFills().get(0).toString());
-                        LOGGER.log(Level.SEVERE, "Height of text flow: " + listTextFlow.getHeight());
-                        listTextFlow.setMaxHeight(listTextFlow.getMaxHeight() / 1.2);
-                        //listTextFlow.setMinHeight(listTextFlow.getMinHeight() / 1.2);
-                        //listTextFlow.setPrefHeight(listTextFlow.getPrefHeight() / 1.2);
-                    }
-                });*/
 
                 resizeTextFlows(previewTextFlow, 2.0);
                 previewTabPane.getChildren().add(previewTextFlow);

@@ -52,9 +52,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -909,8 +906,6 @@ public class NotesViewPane extends BorderPane {
                 contentLabel.setText(newNote.getNoteContent());
                 noteBody.setMaxHeight(Double.MAX_VALUE);
                 showMoreButton.setText(SHOW_LESS);
-                //noteBody.setMinHeight(newNote.getContentTextFlow().getHeight());
-                //newNotePane.resizeTextFlows(newNote.getContentTextFlow(), 2.0);
                 containerPane.getChildren().clear();
                 final VBox textFlowVBox = new VBox(newNote.getContentTextFlow());
                 containerPane.getChildren().add(textFlowVBox);
