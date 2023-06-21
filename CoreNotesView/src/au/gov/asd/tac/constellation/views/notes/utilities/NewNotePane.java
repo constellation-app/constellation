@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.notes.utilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -154,8 +155,9 @@ public class NewNotePane {
                 previewTextFlow.setPrefWidth(495);
                 previewTextFlow.setMaxWidth(495);
                 //final TextFlow childTextFlow = (TextFlow) previewTextFlow.getChildren().get(0);
-
-                previewTextFlow.getChildren().forEach(text -> {
+                //final List<TextFlow> visibleTextFlows = new ArrayList<>();
+                //visibleTextFlows.add(previewTextFlow);
+                /*previewTextFlow.getChildren().forEach(text -> {
                     if (text instanceof TextFlow) {
                         final TextFlow listTextFlow = (TextFlow) text;
                         listTextFlow.setMinWidth(495);
@@ -165,8 +167,9 @@ public class NewNotePane {
                         //listTextFlow.setMinHeight(listTextFlow.getMinHeight() / 1.2);
                         //listTextFlow.setPrefHeight(listTextFlow.getPrefHeight() / 1.2);
                     }
-                });
+                });*/
 
+                resizeTextFlows(previewTextFlow, 2.0);
                 previewTabPane.getChildren().add(previewTextFlow);
             }
         });
@@ -205,6 +208,17 @@ public class NewNotePane {
         dialogPane.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#222222").getJavaFXColor(), null, null)));
 
         dialogPane.getChildren().add(addNoteVBox);
+    }
+
+    private void resizeTextFlows(final TextFlow textFlow, final double scale) {
+        for (int i = 0; i < textFlow.getChildren().size(); ++i) {
+            if (textFlow.getChildren().get(i) instanceof TextFlow) {
+                resizeTextFlows((TextFlow) textFlow.getChildren().get(i), scale + 0.5);
+            }
+        }
+        textFlow.setPadding(new Insets(0, 0, 0, 0));
+        textFlow.setMaxHeight(textFlow.getMaxHeight() / scale);
+        textFlow.setMinWidth(495);
     }
 
     /**

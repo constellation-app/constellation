@@ -743,7 +743,6 @@ public class NotesViewPane extends BorderPane {
             contentTextArea.setText(newNote.getTempContent());
         }
 
-
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.parse();
         newNote.setContentTextFlow(md.getRenderedText());
