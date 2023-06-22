@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Blaze;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.schema.visual.utilities.BlazeUtilities.ColourCellFactory;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
@@ -47,13 +48,18 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
+import javafx.util.Callback;
 import javafx.util.Pair;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -155,6 +161,30 @@ public class BlazeUtilities {
         return new Pair<>(isOk, colorResult);
     }
 
+    public static class ColourCellFactory implements Callback<ListView<String>, ListCell<String>> {
+
+        @Override
+        public ListCell<String> call(ListView<String> param) {
+            return new ListCell<>() {
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText("");
+                    } else {
+                        setText(item);
+                        final Rectangle rect = new Rectangle();
+                        rect.setHeight(24);
+                        rect.setWidth(24);
+                        rect.setFill(Paint.valueOf(item));
+                        setGraphic(rect);
+
+                    }
+                }
+            };
+        }
+    }
+
     /**
      * Saves a blaze color as a preset
      *
@@ -179,22 +209,52 @@ public class BlazeUtilities {
                 final Pane pane = new Pane();
 
                 final Label titleText = new Label("Please select a preset colour to replace");
-                final ListView<String> colourListView = new ListView<>(FXCollections.observableList(colorsList));
+                final ListView<String> colourListView = new ListView<>();
+                colourListView.setCellFactory(new ColourCellFactory());
                 colourListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+                colourListView.setItems(FXCollections.observableList(colorsList));
+
+                /*colourListView.setCellFactory(factory -> {
+                    ListCell<String> cell = new ListCell<String>() {
+                        super.updateItem(item, empty);
+                        if (empty || item
+
+
+                            == null) {
+                        setText("");
+                        }
+
+
+                            else {
+                        setText(item);
+                            final Rectangle rect = new Rectangle();
+                            rect.setHeight(24);
+                            rect.setWidth(24);
+                            rect.setFill(Paint.valueOf(item));
+                            setGraphic(rect);
+
+                        }
+                    };
+
+                    return cell;
+                });*/
+
 
                 dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
                 dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
                 final VBox saveColourVPane = new VBox(3, titleText, colourListView);
+                saveColourVPane.setMinWidth(colourListView.getWidth());
+                saveColourVPane.setMaxWidth(colourListView.getWidth());
 
                 pane.getChildren().add(saveColourVPane);
                 pane.setMinWidth(colourListView.getWidth());
-                pane.setPrefWidth(colourListView.getWidth());
                 pane.setMaxWidth(colourListView.getWidth());
+                dialog.setWidth(pane.getMaxWidth());
                 dialog.setGraphic(pane);
                 final Optional<ButtonType> result = dialog.showAndWait();
 
-                if (result.isPresent() && result.get() == ButtonType.OK) {
+                if (result.isPresent() && result.get() == ButtonType.OK && StringUtils.isNotBlank(colourListView.getSelectionModel().getSelectedItem())) {
                     savePreset(newColor, colourListView.getSelectionModel().getSelectedIndex());
                 }
 
@@ -202,6 +262,7 @@ public class BlazeUtilities {
         }
 
     }
+
 
     /**
      * Saves a blaze color as a preset
