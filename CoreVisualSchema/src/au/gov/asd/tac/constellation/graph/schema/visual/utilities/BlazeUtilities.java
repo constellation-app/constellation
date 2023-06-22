@@ -35,8 +35,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.util.Pair;
+import javax.swing.SwingUtilities;
 import org.openide.util.NbPreferences;
 
 /**
@@ -45,6 +62,8 @@ import org.openide.util.NbPreferences;
  * @author sirius
  */
 public class BlazeUtilities {
+
+    private static final Logger LOGGER = Logger.getLogger(BlazeUtilities.class.getName());
 
     public static final Blaze DEFAULT_BLAZE = new Blaze(45, ConstellationColor.LIGHT_BLUE);
 
@@ -142,17 +161,45 @@ public class BlazeUtilities {
      * @param newColor the new selected color to add as a preset
      */
     public static void savePreset(final Color newColor) {
+        LOGGER.log(Level.SEVERE, "Saved the colour as a preset");
         final String colorString = getGraphPreferences().get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
         final List<String> colorsList = Arrays.asList(colorString.split(SeparatorConstants.SEMICOLON));
         final int freePosition;
         if (colorsList.indexOf("null") != -1) {
             freePosition = colorsList.indexOf("null");
+            savePreset(newColor, freePosition);
         } else if (colorsList.size() < MAXIMUM_CUSTOM_BLAZE_COLORS) {
             freePosition = colorsList.size();
+            savePreset(newColor, freePosition);
         } else {
-            freePosition = MAXIMUM_CUSTOM_BLAZE_COLORS - 1;
+            Platform.runLater(() -> {
+                final Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setTitle("Too many presets!");
+
+                final Pane pane = new Pane();
+
+                final Label titleText = new Label("Please select a preset colour to replace");
+                final ListView<String> colourListView = new ListView<>(FXCollections.observableList(colorsList));
+                colourListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+                dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+                dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+
+                final VBox saveColourVPane = new VBox(3, titleText, colourListView);
+
+                pane.getChildren().add(saveColourVPane);
+                dialog.setGraphic(pane);
+                final Optional<ButtonType> result = dialog.showAndWait();
+
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    savePreset(newColor, colourListView.getSelectionModel().getSelectedIndex());
+                } else if (!result.isPresent() || result.get() == ButtonType.CLOSE) {
+                    colorDialog(ConstellationColor.fromJavaColor(newColor));
+                }
+
+            });
         }
-        savePreset(newColor, freePosition);
+
     }
 
     /**
