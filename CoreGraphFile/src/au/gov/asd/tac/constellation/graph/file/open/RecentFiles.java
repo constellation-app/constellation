@@ -44,6 +44,7 @@
 package au.gov.asd.tac.constellation.graph.file.open;
 
 import au.gov.asd.tac.constellation.graph.file.open.RecentFiles.HistoryItem;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import com.google.common.collect.ImmutableList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -52,6 +53,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -103,6 +105,12 @@ public final class RecentFiles {
      * Boundary for items count in history
      */
     private static final int MAX_HISTORY_ITEMS = 10;
+    
+    /**
+     * Flag to indicate if the init process has completed, 
+     * which means the recent files "history" data is now available
+     */
+    private static final CountDownLatch historyReady = new CountDownLatch(1);
 
     private RecentFiles() {
         // Intentionally left blank
@@ -119,6 +127,7 @@ public final class RecentFiles {
             }
             TopComponent.getRegistry().
                     addPropertyChangeListener(RECENT_FILE_SAVED);
+            historyReady.countDown();
         });
     }
 
@@ -153,6 +162,14 @@ public final class RecentFiles {
      * @return list of recent files
      */
     public static List<HistoryItem> getUniqueRecentFiles() {
+        try {
+            if (historyReady.getCount() > 0) {
+                LOGGER.log(Level.WARNING, ">> Timing issue caught: Recent Files not yet initialised <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "Warning: Timing issue caught. Recent Files data had not been initialised."));
+                historyReady.await();
+            }
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.toString(), ex);
+        }
         synchronized (HISTORY_LOCK) {
             return getRecentFiles().stream()
                     .filter(file -> convertPath2File(file.getPath()) != null)
