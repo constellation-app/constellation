@@ -188,13 +188,14 @@ public class BlazeUtilities {
                 final VBox saveColourVPane = new VBox(3, titleText, colourListView);
 
                 pane.getChildren().add(saveColourVPane);
+                pane.setMinWidth(colourListView.getWidth());
+                pane.setPrefWidth(colourListView.getWidth());
+                pane.setMaxWidth(colourListView.getWidth());
                 dialog.setGraphic(pane);
                 final Optional<ButtonType> result = dialog.showAndWait();
 
                 if (result.isPresent() && result.get() == ButtonType.OK) {
                     savePreset(newColor, colourListView.getSelectionModel().getSelectedIndex());
-                } else if (!result.isPresent() || result.get() == ButtonType.CLOSE) {
-                    colorDialog(ConstellationColor.fromJavaColor(newColor));
                 }
 
             });
