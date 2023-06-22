@@ -139,14 +139,14 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
     }
 
     private boolean visibleEntriesHaveChanged() {
-        if (firstLoad) {
-            visibleNow = getPanel().getVisibleCategory();
-            return false;
-        }
-
         if (noEditsMade) {
             visibleOnFirstLoad = getPanel().getVisibleCategory();
             hiddenOnFirstLoad = getPanel().getHiddenCategory();
+        }
+
+        if (firstLoad) {
+            visibleNow = getPanel().getVisibleCategory();
+            return false;
         }
 
         if (getPanel().getVisibleCategory().size() == visibleNow.size()) {
