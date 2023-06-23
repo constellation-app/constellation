@@ -175,7 +175,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
      * @param add Should quality control auto vetter listeners be added (true)
      * or removed (false).
      */
-    private void manageQualityControlListeners(boolean add) {
+    private void manageQualityControlListeners(final boolean add) {
         // Dig down to the button toolbar and find any quality control auto
         // buttons - these subscribe as listeners to the quality control auto
         // vetter and as such these subscriptions need to be modified.
