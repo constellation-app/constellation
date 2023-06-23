@@ -20,7 +20,6 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
-import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import org.apache.commons.lang3.StringUtils;
@@ -170,7 +169,7 @@ public class PointMarker extends AbstractMarker {
         return scale;
     }
 
-    public void setScale(double scale) {
+    public void setScale(final double scale) {
         this.scale = scale;
     }
 

@@ -877,7 +877,7 @@ public class MapView extends ScrollPane {
         addClusterMarkers(clusterMarkerBuilder.getClusterMarkers(), clusterMarkerBuilder.getClusterValues());
     }
 
-    private void resizeMarkers(boolean zoomIn) {
+    private void resizeMarkers(final boolean zoomIn) {
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
@@ -1468,8 +1468,6 @@ public class MapView extends ScrollPane {
                 stage.show();
                 showingZoomToLocationPane = true;
             }
-        } else {
-            LOGGER.log(Level.SEVERE, "Not showing zoom to location dialog because I think I am still showing the previouse version");
         }
     }
 
