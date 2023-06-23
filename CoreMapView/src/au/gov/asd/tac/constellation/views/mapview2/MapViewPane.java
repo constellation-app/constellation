@@ -355,7 +355,7 @@ public class MapViewPane extends BorderPane {
         final Button refreshButton = new Button("", new ImageView(UserInterfaceIconProvider.REFRESH.buildImage(16, ConstellationColor.AZURE.getJavaColor())));
         refreshButton.setTooltip(new Tooltip("Refresh"));
         refreshButton.setOnAction(event -> {
-            mapView.clearQueriedMarkers();
+            clearQuerriesMarkers();
             parent.runExtractCoordsFromGraphPlugin(GraphManager.getDefault().getActiveGraph());
         });
 
@@ -370,6 +370,14 @@ public class MapViewPane extends BorderPane {
         toolBarGridPane.add(refreshButton, 8, 0);
         toolBarGridPane.add(helpButton, 9, 0);
         setTop(toolBarGridPane);
+    }
+
+    /**
+     * Makes sure queried markers in the map are cleared and any markers that
+     * are selected are also destroyed
+     */
+    public void clearQuerriesMarkers() {
+        mapView.clearQueriedMarkers();
     }
 
     /**

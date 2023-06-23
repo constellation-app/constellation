@@ -111,7 +111,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         mapViewPane.setUpMap();
         initContent2();
 
-        updateMarkers = graph -> runExtractCoordsFromGraphPlugin(graph);
+        updateMarkers = graph -> {
+            mapViewPane.clearQuerriesMarkers();
+            runExtractCoordsFromGraphPlugin(graph);
+        };
 
         addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LATITUDE, updateMarkers);
         addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LONGITUDE, updateMarkers);
