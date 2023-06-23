@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2023-06-23 Markdown support in the Notes View
+<p>The notes will now render markdown text. You can now italicise, bold and strikethrough text. Headings can be added to the note as well as lists and sub lists.</p>
+<p>The new note pop-up window will have a preview tab where you can see how your markdown text will be rendered before adding it as a note.</p>
+
 == 2023-05-05 Notes View UI Change
 <p>The controls to add a new note are no longer at the bottom and have been moved to a pop-up window which appears when the "Create Note" button is pressed on the top left.</p>
 <p>You can now change the colour of user notes using a color picker</p>
