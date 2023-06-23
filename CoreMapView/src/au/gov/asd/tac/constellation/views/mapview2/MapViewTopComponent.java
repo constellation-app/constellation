@@ -195,32 +195,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @Override
     protected void handleNewGraph(final Graph graph) {
         super.handleNewGraph(graph);
-
-        /*if (graph != null) {
-            try {
-                CompletableFuture.runAsync(() -> {
-                    try {
-                        PluginExecution.withPlugin(new ExtractCoordsFromGraphPlugin(self)).executeNow(graph);
-                    } catch (final PluginException e) {
-                        LOGGER.log(Level.SEVERE, "Exception thrown: {0}", e.getMessage());
-                    } catch (final InterruptedException e) {
-                        LOGGER.log(Level.SEVERE, "Exception thrown: {0}", e.getMessage());
-                        Thread.currentThread().interrupt();
-                    }
-                }).get();
-
-            } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "Exception thrown: {0}", ex.getMessage());
-                Thread.currentThread().interrupt();
-
-            } catch (final ExecutionException ex) {
-                LOGGER.log(Level.SEVERE, "Exception thrown: {0}", ex.getMessage());
-            }
-
-            Platform.runLater(() -> mapViewPane.getMap().redrawQueriedMarkers());
-        }*/
         runExtractCoordsFromGraphPlugin(graph);
-
     }
 
     public void runExtractCoordsFromGraphPlugin(final Graph graph) {
