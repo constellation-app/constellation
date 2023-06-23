@@ -909,8 +909,6 @@ public class NotesViewPane extends BorderPane {
                 containerPane.getChildren().clear();
                 final VBox textFlowVBox = new VBox(newNote.getContentTextFlow());
                 containerPane.getChildren().add(textFlowVBox);
-                LOGGER.log(Level.SEVERE, "Height of note: " + noteBody.getMaxHeight());
-
             } else if (showMoreButton.getText().equals(SHOW_LESS)) {
                 contentLabel.setText(newNote.getNoteContent());
                 showMoreButton.setText(SHOW_MORE);
