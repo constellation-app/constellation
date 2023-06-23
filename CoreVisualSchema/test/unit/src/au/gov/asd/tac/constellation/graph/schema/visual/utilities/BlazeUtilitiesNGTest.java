@@ -217,9 +217,10 @@ public class BlazeUtilitiesNGTest {
             assertEquals(presetsAfter3, "#FF0000;#0000FF;#FFFF00;#00ffff;#00ff00;#ff00ff;#ff00ff;#ff00ff;#ff00ff;#ff00ff;");
             
             // add a color to after the preset list has been filled
+            // The same list should remain since the behaviour has been changed to not replace the last preset automatically when there are 10
             BlazeUtilities.savePreset(Color.WHITE);
             final String presetsAfter4 = p.get(GraphPreferenceKeys.BLAZE_PRESET_COLORS, GraphPreferenceKeys.BLAZE_PRESET_COLORS_DEFAULT);
-            assertEquals(presetsAfter4, "#FF0000;#0000FF;#FFFF00;#00ffff;#00ff00;#ff00ff;#ff00ff;#ff00ff;#ff00ff;#ffffff;");
+            assertEquals(presetsAfter4, "#FF0000;#0000FF;#FFFF00;#00ffff;#00ff00;#ff00ff;#ff00ff;#ff00ff;#ff00ff;#ff00ff;");
         } finally {
             // clean up, first remove Preferences nodes this test plays with
             p.removeNode();
