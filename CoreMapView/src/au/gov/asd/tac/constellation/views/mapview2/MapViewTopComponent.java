@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -27,6 +28,8 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
@@ -38,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -90,6 +94,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     // The mapview itself
     private final MapViewPane mapViewPane;
 
+    private final Consumer<Graph> updateMarkers;
 
     private int markerID = 0;
 
@@ -100,10 +105,18 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         setName(Bundle.CTL_MapViewTopComponent2());
         setToolTipText(Bundle.HINT_MapViewTopComponent2());
 
+
         initComponents();
         mapViewPane = new MapViewPane(this);
         mapViewPane.setUpMap();
         initContent2();
+
+        updateMarkers = graph -> runExtractCoordsFromGraphPlugin(graph);
+
+        addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LATITUDE, updateMarkers);
+        addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LONGITUDE, updateMarkers);
+        addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LATITUDE, updateMarkers);
+        addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LONGITUDE, updateMarkers);
 
     }
 
@@ -131,7 +144,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     protected String createStyle() {
         return "";
     }
-
 
     /**
      * Handles what occurs when the component is opened. This updates the UI to
