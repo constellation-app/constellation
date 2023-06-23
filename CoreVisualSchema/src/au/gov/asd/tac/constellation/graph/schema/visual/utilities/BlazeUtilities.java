@@ -175,7 +175,7 @@ public class BlazeUtilities {
                 colourListView.setCellFactory((ListView<String> list) -> {
                     final ListCell<String> cell = new ListCell<>() {
                         @Override
-                        public void updateItem(String item, boolean empty) {
+                        public void updateItem(final String item, final boolean empty) {
                             super.updateItem(item, empty);
                             if (empty || item == null) {
                                 setText("");
