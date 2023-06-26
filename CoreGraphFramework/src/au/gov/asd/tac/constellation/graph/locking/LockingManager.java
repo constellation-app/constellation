@@ -235,6 +235,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
 
         @Override
         public void undo() {
+            LOGGER.log(Level.SEVERE, "----******---public undo ----+++++++- - " + getUndoPresentationName() + "=======" + isSignificant());
 
             if (!canUndo() || !executed.compareAndSet(true, false)) {
                 throw new CannotUndoException();
@@ -269,9 +270,19 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                     // Unlock the global write lock so new write requests can begin on the new write context
                     globalWriteLock.unlock();
                 }
+                fireUndoRedoReport("Undo", (GraphWriteMethods) writeContext.target, getUndoPresentationName());
             }).start();
 
             update(null, null);
+        }
+
+        private void fireUndoRedoReport(String actionType, GraphWriteMethods target, String undoPresentationName) {
+            //TODO filter useful events only (Skip zoom, Drag etc.)
+
+            UndoRedoReport undoRedoReport = new UndoRedoReport(target.getId());
+            undoRedoReport.setActionDescription(undoPresentationName);
+            undoRedoReport.setActionType(actionType);
+            UndoRedoReportManager.fireNewUndoRedoReport(undoRedoReport);
         }
 
         @Override
@@ -281,6 +292,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
 
         @Override
         public void redo() {
+            LOGGER.log(Level.SEVERE, "-----**********--public redo --++++++++++++++--- - " + getRedoPresentationName() + "=======" + isSignificant());
 
             if (!canRedo() || !executed.compareAndSet(false, true)) {
                 throw new CannotRedoException();
@@ -315,6 +327,8 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                     // Unlock the global write lock so new write requests can begin on the new write context
                     globalWriteLock.unlock();
                 }
+                //if isSignificant){
+                fireUndoRedoReport("Redo", (GraphWriteMethods) writeContext.target, getRedoPresentationName());
             }).start();
 
             update(null, null);
@@ -372,6 +386,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         }
 
         public void commit(final Object description, final String commitName) throws DuplicateKeyException {
+            LOGGER.log(Level.SEVERE, "-----**********--public COMMIT --++++++++++++++--- - " + getPresentationName() + "--- " + commitName);
             try {
                 writeContext.target.validateKeys();
             } catch (DuplicateKeyException ex) {
@@ -421,6 +436,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
         }
 
         public T flush(final Object description, final boolean announce) {
+            LOGGER.log(Level.SEVERE, "-----**********--public FLUSH --++++++++++++++--- -  " + getPresentationName());
             try {
                 writeContext.target.validateKeys();
             } catch (DuplicateKeyException ex) {
