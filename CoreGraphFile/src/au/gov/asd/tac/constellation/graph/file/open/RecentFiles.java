@@ -127,10 +127,18 @@ public final class RecentFiles {
             }
             TopComponent.getRegistry().
                     addPropertyChangeListener(RECENT_FILE_SAVED);
-            historyReady.countDown();
+            decrementHistoryReadyLatch();
         });
     }
 
+    /**
+     * Will decrement the historyReady CountDownLatch
+     * Placed this code into it's own method so it can be called separately in unit testing.
+     */
+    public static void decrementHistoryReadyLatch(){
+        historyReady.countDown();
+    }
+    
     /**
      * Add the specified path to the recent file list.
      *
