@@ -115,7 +115,7 @@ public class NotesViewPane extends BorderPane {
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
 
-    private static final double NOTE_HEIGHT = 157.0;
+    private static final double NOTE_HEIGHT = 150.0;
     private static final int DEFAULT_SPACING = 15;
     private static final int EDIT_SPACING = 10;
     private static final String SHOW_MORE = "Show more";
@@ -712,7 +712,6 @@ public class NotesViewPane extends BorderPane {
         // Define title text box
         final TextField titleText = new TextField(newNote.getNoteTitle());
 
-
         titleText.setStyle(BOLD_STYLE);
         titleText.setOnKeyTyped(event -> newNote.setTempTitle(titleText.getText()));
 
@@ -856,9 +855,7 @@ public class NotesViewPane extends BorderPane {
         showMoreButton.setVisible(false);
         if (newNote.getEditMode()) {
             noteButtons = new HBox(EDIT_SPACING, colourPicker, gap2, editScreenButtons);
-            newNote.setEditMode(true);
         } else {
-            newNote.setEditMode(false);
             noteButtons = new HBox(DEFAULT_SPACING, showMoreButton, gap, editTextButton, deleteButton);
         }
 

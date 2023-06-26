@@ -362,7 +362,7 @@ public class MarkdownTree {
                         // and the next line does not start with the same amount of tabs or it does start with the same amount of tabs
                         // and there is a new tab right after that OR there are no tabs on the list item and the next line contains a tab
                         // then change end index of the \n for this next line
-                        String tabs = tabString.toString();
+                        final String tabs = tabString.toString();
                         while (endIndex != -1 && ((StringUtils.isEmpty(tabs)
                                 && (text.indexOf(tabs, endIndex + 1) != endIndex + 1
                                 || (text.indexOf(tabs, endIndex + 1) == endIndex + 1
@@ -370,7 +370,6 @@ public class MarkdownTree {
                                 || (StringUtils.isEmpty(tabs)
                                 && text.indexOf("\t", endIndex + 1) == endIndex + 1 || text.indexOf("\n", endIndex + 1) == endIndex + 1))) {
                             endIndex = text.indexOf("\n", endIndex + 1);
-                            tabs = tabString.toString();
                         }
 
                         if (endIndex == -1) {
