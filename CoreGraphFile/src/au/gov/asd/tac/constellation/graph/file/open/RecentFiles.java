@@ -171,13 +171,14 @@ public final class RecentFiles {
      * @return list of recent files
      */
     public static List<HistoryItem> getUniqueRecentFiles() {
-        try {
-            if (historyReady.getCount() > 0) {
-                LOGGER.log(Level.WARNING, ">> Timing issue caught: Recent Files not yet initialised <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "Warning: Timing issue caught. Recent Files data had not been initialised."));
-                historyReady.await(300, TimeUnit.SECONDS);
+        if (!(historyReady.getCount() == 0)) {
+            try {
+                if (!historyReady.await(300, TimeUnit.SECONDS)) {
+                    LOGGER.log(Level.SEVERE, ">> Recent Files did not initialise within 5 minutes <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "ERROR: Recent Files did not initialise within 5 minutes"));
+                }
+            } catch (final InterruptedException ex) { // NOSONAR
+                LOGGER.log(Level.SEVERE, ex.toString(), ex);
             }
-        } catch (final InterruptedException ex) { // NOSONAR
-            LOGGER.log(Level.SEVERE, ex.toString(), ex);
         }
         synchronized (HISTORY_LOCK) {
             return getRecentFiles().stream()
