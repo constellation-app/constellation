@@ -171,10 +171,10 @@ public final class RecentFiles {
      * @return list of recent files
      */
     public static List<HistoryItem> getUniqueRecentFiles() {
-        if (!(historyReady.getCount() == 0)) {
+        if (historyReady.getCount() != 0) {
             try {
                 if (!historyReady.await(300, TimeUnit.SECONDS)) {
-                    LOGGER.log(Level.SEVERE, ">> Recent Files did not initialise within 5 minutes <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "ERROR: Recent Files did not initialise within 5 minutes"));
+                    LOGGER.log(Level.WARNING, ">> Recent Files did not initialise within 5 minutes <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "WARNING: Recent Files data did not initialise within 5 minutes"));
                 }
             } catch (final InterruptedException ex) { // NOSONAR
                 LOGGER.log(Level.SEVERE, ex.toString(), ex);
