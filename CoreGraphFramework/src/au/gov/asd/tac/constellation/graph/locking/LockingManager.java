@@ -269,9 +269,17 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                     // Unlock the global write lock so new write requests can begin on the new write context
                     globalWriteLock.unlock();
                 }
+                fireUndoRedoReport("Undo", (GraphWriteMethods) writeContext.target, getPresentationName());
             }).start();
 
             update(null, null);
+        }
+
+        private void fireUndoRedoReport(String actionType, GraphWriteMethods target, String presentationName) {
+            UndoRedoReport undoRedoReport = new UndoRedoReport(target.getId());
+            undoRedoReport.setActionDescription(presentationName);
+            undoRedoReport.setActionType(actionType);
+            UndoRedoReportManager.fireNewUndoRedoReport(undoRedoReport);
         }
 
         @Override
@@ -315,6 +323,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                     // Unlock the global write lock so new write requests can begin on the new write context
                     globalWriteLock.unlock();
                 }
+                fireUndoRedoReport("Redo", (GraphWriteMethods) writeContext.target, getPresentationName());
             }).start();
 
             update(null, null);

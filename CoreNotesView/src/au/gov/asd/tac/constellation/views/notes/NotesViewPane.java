@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.notes;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.locking.UndoRedoReport;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
@@ -383,19 +384,22 @@ public class NotesViewPane extends BorderPane {
                         addPluginReport(pluginReport);
                     }
                 });
-
-                SwingUtilities.invokeLater(() -> {
-                    final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
-                    if (tc != null && tc.isOpened()) {
-                        // Update the Notes View UI.
-                        updateNotesUI();
-                        updateFilters();
-                    }
-                });
-
-                controller.writeState(graph);
+                updateUI(graph);
             }
         }
+    }
+
+    private void updateUI(final Graph graph) {
+        SwingUtilities.invokeLater(() -> {
+            final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
+            if (tc != null && tc.isOpened()) {
+                // Update the Notes View UI.
+                updateNotesUI();
+                updateFilters();
+            }
+        });
+
+        notesViewController.writeState(graph);
     }
 
     /**
@@ -432,6 +436,38 @@ public class NotesViewPane extends BorderPane {
             }
             updateTagsFiltersAvailable();
         }
+
+    }
+
+    /**
+     * Adds details of the Undo or Redo action to notesViewEntries as a Notes
+     * View Entry object.
+     *
+     * @param undoRedoReport UndoRedoReport report to be added.
+     * @param graph The graph the Undo or Redo action is performed on.
+     */
+    protected void addNewUndoRedoReport(final UndoRedoReport undoRedoReport, final Graph graph) {
+        if (hasMatchingNote(undoRedoReport) && !isExistingNote(undoRedoReport)) {
+            final NotesViewEntry note = new NotesViewEntry(
+                    Long.toString(undoRedoReport.getStartTime()),
+                    undoRedoReport.getActionType() + " " + undoRedoReport.getActionDescription(),
+                    "Finished",
+                    false,
+                    false,
+                    "#ffffff"
+            );
+
+            final List<String> tagsList = new ArrayList<>();
+            tagsList.add("Undo/Redo");
+            note.setTags(tagsList);
+
+            synchronized (LOCK) {
+                addNote(note);
+            }
+            updateTagsFiltersAvailable();
+            updateUI(graph);
+        }
+
     }
 
     /**
@@ -634,6 +670,33 @@ public class NotesViewPane extends BorderPane {
     private boolean isExistingNote(final PluginReport pluginReport) {
         final String startTime = Long.toString(pluginReport.getStartTime());
         return notesDateTimeCache.contains(startTime);
+    }
+
+    /**
+     * Check if the UndoRedoReport is already added.
+     *
+     * @param undoRedoReport The UndoRedoReport to add.
+     *
+     * @return True if UndoRedoReport is already added, False otherwise.
+     */
+    private boolean isExistingNote(final UndoRedoReport undoRedoReport) {
+        final String startTime = Long.toString(undoRedoReport.getStartTime());
+        return notesDateTimeCache.contains(startTime);
+    }
+
+    /**
+     * Check if the action in the UndoRedoReport has a matching note already
+     * added for the original execution. This is to prevent undo redo notes
+     * added for actions that don't have notes of the original executions. E.g.
+     * Activities on the graph that are not run by a plugin such as Drag, Zoom.
+     *
+     * @param undoRedoReport The UndoRedoReport to check.
+     *
+     * @return True if UndoRedoReport has a matching note already added for the
+     * original action.
+     */
+    private boolean hasMatchingNote(final UndoRedoReport undoRedoReport) {
+        return notesViewEntries.stream().anyMatch(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()));
     }
 
     /**

@@ -16,6 +16,9 @@
 package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.locking.UndoRedoReport;
+import au.gov.asd.tac.constellation.graph.locking.UndoRedoReportListener;
+import au.gov.asd.tac.constellation.graph.locking.UndoRedoReportManager;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
@@ -55,8 +58,7 @@ import org.openide.windows.TopComponent;
     "CTL_NotesViewAction=Notes View",
     "CTL_NotesViewTopComponent=Notes View",
     "HINT_NotesViewTopComponent=Notes View"})
-public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener {
-
+public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener, UndoRedoReportListener {
     private final NotesViewController notesViewController;
     private final NotesViewPane notesViewPane;
     private static final Logger LOGGER = Logger.getLogger(NotesViewTopComponent.class.getName());
@@ -130,6 +132,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
          * View is not open will render when it is opened later.
          */
         GraphReportManager.addGraphReportListener(this);
+        UndoRedoReportManager.addUndoRedoReportListener(this);
         LOGGER.log(Level.SEVERE, "Handling Component opened");
     }
 
@@ -159,9 +162,23 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
 
         // update the graph report if the new plugin report isn't a low level plugin (which aren't useful as notes)
-        if (activeGraph != null && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId()) 
-                && !pluginReport.hasLowLevelTag()) {            
+        if (activeGraph != null && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())
+                && !pluginReport.hasLowLevelTag()) {
             notesViewPane.setGraphReport(activeGraph, notesViewController);
+        }
+    }
+
+    /**
+     * Triggers when an UndoRedoReport is added.
+     *
+     * @param undoRedoReport
+     */
+    @Override
+    public void addNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+
+        if (activeGraph != null && undoRedoReport.getGraphId().equals(activeGraph.getId())) {
+            notesViewPane.addNewUndoRedoReport(undoRedoReport, activeGraph);
         }
     }
 
