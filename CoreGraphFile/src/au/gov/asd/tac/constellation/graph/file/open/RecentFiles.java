@@ -173,8 +173,9 @@ public final class RecentFiles {
     public static List<HistoryItem> getUniqueRecentFiles() {
         if (historyReady.getCount() != 0) {
             try {
+                LOGGER.log(Level.WARNING, ">> Timing issue encountered: Recent Files data is being accessed before it has been initialised <<");
                 if (!historyReady.await(300, TimeUnit.SECONDS)) {
-                    LOGGER.log(Level.WARNING, ">> Recent Files did not initialise within 5 minutes <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "WARNING: Recent Files data did not initialise within 5 minutes"));
+                    LOGGER.log(Level.WARNING, ">> Recent Files did not initialise within 5 minutes <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "WARNING: Recent Files data did not initialise within a reasonable time"));
                 }
             } catch (final InterruptedException ex) { // NOSONAR
                 LOGGER.log(Level.SEVERE, ex.toString(), ex);
