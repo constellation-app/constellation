@@ -352,13 +352,6 @@ public class MapViewPane extends BorderPane {
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
         helpButton.setTooltip(new Tooltip("Help on using the Map View"));
 
-        final Button refreshButton = new Button("", new ImageView(UserInterfaceIconProvider.REFRESH.buildImage(16, ConstellationColor.AZURE.getJavaColor())));
-        refreshButton.setTooltip(new Tooltip("Refresh"));
-        refreshButton.setOnAction(event -> {
-            clearQuerriesMarkers();
-            parent.runExtractCoordsFromGraphPlugin(GraphManager.getDefault().getActiveGraph());
-        });
-
         toolBarGridPane.add(mapProviderDropDown, 0, 0);
         toolBarGridPane.add(layersMenuButton.getMenuButton(), 1, 0);
         toolBarGridPane.add(overlaysMenuButton.getMenuButton(), 2, 0);
@@ -367,8 +360,7 @@ public class MapViewPane extends BorderPane {
         toolBarGridPane.add(coloursMenuButton.getMenuButton(), 5, 0);
         toolBarGridPane.add(labelsMenuButton.getMenuButton(), 6, 0);
         toolBarGridPane.add(exportMenuButton.getMenuButton(), 7, 0);
-        toolBarGridPane.add(refreshButton, 8, 0);
-        toolBarGridPane.add(helpButton, 9, 0);
+        toolBarGridPane.add(helpButton, 8, 0);
         setTop(toolBarGridPane);
     }
 
