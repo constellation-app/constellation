@@ -54,6 +54,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
@@ -173,9 +174,9 @@ public final class RecentFiles {
         try {
             if (historyReady.getCount() > 0) {
                 LOGGER.log(Level.WARNING, ">> Timing issue caught: Recent Files not yet initialised <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "Warning: Timing issue caught. Recent Files data had not been initialised."));
-                historyReady.await();
+                historyReady.await(300, TimeUnit.SECONDS);
             }
-        } catch (final InterruptedException ex) {
+        } catch (final InterruptedException ex) { // NOSONAR
             LOGGER.log(Level.SEVERE, ex.toString(), ex);
         }
         synchronized (HISTORY_LOCK) {
