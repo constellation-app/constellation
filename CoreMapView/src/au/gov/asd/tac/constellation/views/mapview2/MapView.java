@@ -284,7 +284,6 @@ public class MapView extends ScrollPane {
                 updateOverviewOverlay();
                 event.consume();
             }
-
         });
 
         // Clear any country grpahics that already exist within group
