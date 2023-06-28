@@ -51,7 +51,7 @@ public class Parabola {
      * object
      */
     public void generateParabola() {
-        for (double x = focusX - 300; x <= focusX + 300; ++x) {
+        for (double x = focusX - 300; x <= focusX + 300; x++) {
             parabolaLine.getPoints().addAll(new Double[]{x, getY(x)});
         }
     }

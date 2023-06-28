@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview2;
 import java.util.concurrent.TimeoutException;
 import org.mockito.Mockito;
 import org.testfx.api.FxToolkit;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -34,11 +34,6 @@ import java.util.logging.Logger;
 public class MapViewPaneNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(MapViewPaneNGTest.class.getName());
-
-
-    public MapViewPaneNGTest() {
-
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {

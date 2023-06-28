@@ -49,13 +49,11 @@ public class LocationPathsLayer extends AbstractPathsLayer {
     @Override
     public void setUp() {
         entityPaths.getChildren().clear();
-        final GraphReadMethods graph = parent.getCurrentGraph().getReadableGraph();
+        final GraphReadMethods graph = currentGraph.getReadableGraph();
         final List<Integer> idList = new ArrayList<>();
 
         // For every queried markers add all its connected neighbours to the idList
-        for (final Object value : queriedMarkers.values()) {
-            final AbstractMarker m = (AbstractMarker) value;
-
+        for (final AbstractMarker m : queriedMarkers.values()) {
             if (m instanceof PointMarker) {
                 m.getConnectedNodeIdList().forEach(id -> idList.add(id));
             }
@@ -67,7 +65,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
         final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.get(graph);
 
         // For every connected vertex
-        for (int i = 0; i < idList.size(); ++i) {
+        for (int i = 0; i < idList.size(); i++) {
 
             final int vertexID = idList.get(i);
 

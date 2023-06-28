@@ -21,9 +21,15 @@ package au.gov.asd.tac.constellation.views.mapview2.utilities;
  * @author altair1673
  */
 public class Vec3 {
-    private double x = 0;
-    private double y = 0;
-    private double z = 0;
+    private double x;
+    private double y;
+    private double z;
+
+    public Vec3() {
+        x = 0;
+        y = 0;
+        z = 0;
+    }
 
     public Vec3(final Vec3 vec3) {
         x = vec3.x;
@@ -67,10 +73,6 @@ public class Vec3 {
             y /= d;
             z /= d;
         }
-    }
-
-    public Vec3() {
-
     }
 
     public static double getDistance(final Vec3 v1, final Vec3 v2) {

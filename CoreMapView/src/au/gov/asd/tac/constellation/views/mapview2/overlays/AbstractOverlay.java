@@ -20,6 +20,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
 /**
@@ -39,20 +40,10 @@ public class AbstractOverlay {
     protected boolean showing = false;
 
     public AbstractOverlay(final double positionX, final double positionY) {
-
         overlayPane = new BorderPane();
         gridPane = new GridPane();
 
         overlayPane.setCenter(gridPane);
-
-        // Set up the ui for main border pane
-        overlayPane.setPrefHeight(height);
-        overlayPane.setPrefWidth(width);
-        overlayPane.setMinWidth(width);
-        overlayPane.setMaxWidth(width);
-        overlayPane.setMinHeight(height);
-        overlayPane.setMaxHeight(height);
-
         overlayPane.setTranslateX(positionX);
         overlayPane.setTranslateY(positionY);
 
@@ -67,7 +58,7 @@ public class AbstractOverlay {
         overlayPane.setVisible(false);
     }
 
-    public BorderPane getOverlayPane() {
+    public Pane getOverlayPane() {
         return overlayPane;
     }
 

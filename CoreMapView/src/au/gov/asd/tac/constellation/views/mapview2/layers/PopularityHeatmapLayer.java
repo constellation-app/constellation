@@ -55,25 +55,19 @@ public class PopularityHeatmapLayer extends AbstractHeatmapLayer {
                     switch (element) {
                         case VERTEX:
                             elementCount = readableGraph.getVertexCount();
+                            // For every element of that type
+                            for (int position = 0; position < elementCount; ++position) {
+                                final int vertexID = readableGraph.getVertex(position);
+
+                                // Get its transaction count and record it as its popularity
+                                if (marker.getConnectedNodeIdList().contains(vertexID)) {
+                                    popularityCount += readableGraph.getVertexNeighbourCount(vertexID);
+                                }
+                            }
                             break;
                         case TRANSACTION:
-                            
-                            break;
                         default:
                             break;
-                    }
-
-                    // If element type is vertex
-                    if (element == GraphElementType.VERTEX) {
-                        // For every element of that type
-                        for (int position = 0; position < elementCount; ++position) {
-                            final int vertexID = readableGraph.getVertex(position);
-
-                            // Get its transaction count and record it as its popularity
-                            if (marker.getConnectedNodeIdList().contains(vertexID)) {
-                                popularityCount += readableGraph.getVertexNeighbourCount(vertexID);
-                            }
-                        }
                     }
                 }
             } finally {

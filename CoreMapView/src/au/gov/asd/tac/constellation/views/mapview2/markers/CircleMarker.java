@@ -15,10 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -70,31 +69,20 @@ public class CircleMarker extends AbstractMarker {
         markerPath.setOpacity(0.4);
 
         // Event handler for changing colours when mouse hovers over the projected circle
-        markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
-
-                markerPath.setFill(Color.YELLOW);
-
-                e.consume();
-            }
+        markerPath.setOnMouseEntered(e -> {
+            markerPath.setFill(Color.YELLOW);
+            e.consume();
         });
 
-        markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
-
-                markerPath.setFill(Color.ORANGE);
-
-                e.consume();
-            }
+        markerPath.setOnMouseExited(e -> {
+            markerPath.setFill(Color.ORANGE);
+            e.consume();
         });
 
         // Event handler for removing handler when clicked
-        markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
-
-                parent.removeUserMarker(markerID);
-                e.consume();
-            }
+        markerPath.setOnMouseClicked(e -> {
+            parent.removeUserMarker(markerID);
+            e.consume();
         });
 
     }
@@ -140,14 +128,14 @@ public class CircleMarker extends AbstractMarker {
             final double angle = spacing * i;
 
             // Edge of circle
-            double vertexX = centerXLon + radius * Math.cos(angle);
-            double vertexY = centerYLat + radius * Math.sin(angle);
+            final double vertexX = centerXLon + radius * Math.cos(angle);
+            final double vertexY = centerYLat + radius * Math.sin(angle);
 
             // Convert edge to x and y from geo coordinates
-            vertexX = MarkerUtilities.longToX(vertexX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-            vertexY = MarkerUtilities.latToY(vertexY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - CENTER_Y_OFFSET;
+            final double convertedVertexX = MarkerUtilities.longToX(vertexX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+            final double convertedVertexY = MarkerUtilities.latToY(vertexY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - CENTER_Y_OFFSET;
 
-            if (Double.isNaN(vertexX) || Double.isNaN(vertexY)) {
+            if (Double.isNaN(convertedVertexX) || Double.isNaN(convertedVertexY)) {
                 continue;
             }
 
@@ -159,9 +147,9 @@ public class CircleMarker extends AbstractMarker {
             } else {
                 pathStringBuilder.append("L");
             }
-            pathStringBuilder.append(vertexX);
-            pathStringBuilder.append(",");
-            pathStringBuilder.append(vertexY);
+            pathStringBuilder.append(convertedVertexX);
+            pathStringBuilder.append(SeparatorConstants.COMMA);
+            pathStringBuilder.append(convertedVertexY);
         }
 
         markerPath.setContent(pathStringBuilder.toString());

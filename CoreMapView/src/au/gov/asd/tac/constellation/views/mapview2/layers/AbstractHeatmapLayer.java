@@ -46,7 +46,7 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
     @Override
     public void setUp() {
         // Loop through all the markers
-        for (final Object value : parent.getAllMarkers().values()) {
+        for (final AbstractMarker value : parent.getAllMarkers().values()) {
 
             // If marker is a point marker
             if (value instanceof PointMarker) {
@@ -59,8 +59,8 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
                 markerWeight.setText(Integer.toString(getWeight(marker)));
 
                 // Offset the text element so that it lines up with the markers
-                double startingX = marker.getX() - X_OFFSET;
-                double startingY = marker.getY() + Y_OFFSET;
+                final double startingX = marker.getX() - X_OFFSET;
+                final double startingY = marker.getY() + Y_OFFSET;
 
                 markerWeight.setX(startingX);
                 markerWeight.setY(startingY);
@@ -74,9 +74,6 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
 
 
     }
-
-
-
 
     @Override
     public Group getLayer() {

@@ -56,25 +56,19 @@ public class ActivityHeatmapLayer extends AbstractHeatmapLayer {
                     switch (element) {
                         case VERTEX:
                             elementCount = readableGraph.getVertexCount();
+                            for (int position = 0; position < elementCount; position++) {
+                                final int vertexID = readableGraph.getVertex(position);
+
+                                // Check if the node represented by the current marker has the current vertext as its neighbour
+                                if (marker.getConnectedNodeIdList().contains(vertexID)) {
+                                    // The activitiy count is the ammount of transactions this neighbour has
+                                    activityCount += readableGraph.getVertexTransactionCount(vertexID);
+                                }
+                            }
                             break;
                         case TRANSACTION:
-
-                            break;
                         default:
                             break;
-                    }
-
-                    // For every vertex
-                    if (element == GraphElementType.VERTEX) {
-                        for (int position = 0; position < elementCount; ++position) {
-                            final int vertexID = readableGraph.getVertex(position);
-
-                            // Check if the node represented by the current marker has the current vertext as its neighbour
-                            if (marker.getConnectedNodeIdList().contains(vertexID)) {
-                                // The activitiy count is the ammount of transactions this neighbour has
-                                activityCount += readableGraph.getVertexTransactionCount(vertexID);
-                            }
-                        }
                     }
                 }
             } finally {

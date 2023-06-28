@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -25,7 +26,6 @@ import au.gov.asd.tac.constellation.views.mapview.exporters.GeoPackageExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.KmlExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
 import au.gov.asd.tac.constellation.views.mapview.exporters.ShapefileExporter;
-import au.gov.asd.tac.constellation.views.mapview.layers.MapLayer;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ActivityHeatmapLayer;
@@ -37,23 +37,23 @@ import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer2;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MenuButtonCheckCombobox;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
@@ -64,7 +64,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import org.controlsfx.control.CheckComboBox;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
@@ -83,13 +82,19 @@ public class MapViewPane extends BorderPane {
     // Stackpane to hold the map
     private final StackPane parentStackPane;
 
+    // Holds various overlays
+    private final AnchorPane anchorPane = new AnchorPane();
+
     // Rectangle to repesent the view port
     private final Rectangle viewPortRectangle;
+
+    // Rectangle to represent border of scene
+    private final Rectangle borderRectangle;
+
     // String for all the menu options
     private static final String MARKER_TYPE_POINT = "Point Markers";
     private static final String MARKER_TYPE_LINE = "Line Markers";
     private static final String MARKER_TYPE_POLYGON = "Polygon Markers";
-    private static final String MARKER_TYPE_MULTI = "Multi-Markers";
     private static final String MARKER_TYPE_CLUSTER = "Cluster Markers";
     private static final String SELECTED_ONLY = "Selected Only";
     private static final String ZOOM_ALL = "Zoom to All";
@@ -97,9 +102,9 @@ public class MapViewPane extends BorderPane {
     private static final String ZOOM_LOCATION = "Zoom to Location";
 
     private static final String DAY_NIGHT = "Day / Night";
-    private static final String HEATMAP_STANDARD = "Heatmap(Standard)";
-    private static final String HEATMAP_POPULARITY = "Heatmap(Popularity)";
-    private static final String HEATMAP_ACTIVITY = "Heatmap(Activity)";
+    private static final String HEATMAP_STANDARD = "Heatmap (Standard)";
+    private static final String HEATMAP_POPULARITY = "Heatmap (Popularity)";
+    private static final String HEATMAP_ACTIVITY = "Heatmap (Activity)";
     private static final String ENTITY_PATHS = "Entity Paths";
     private static final String LOCATION_PATHS = "Location Paths";
     private static final String THIESSEAN_POLYGONS = "Thiessean Polygons";
@@ -130,12 +135,7 @@ public class MapViewPane extends BorderPane {
     // All the toolbar UI elements
     private final ChoiceBox<MapProvider> mapProviderDropDown;
     private final MenuButton zoomDropDown;
-    private final CheckComboBox<String> markerDropDown;
-    private final CheckComboBox<String> layersDropDown;
-    private final CheckComboBox<String> overlaysDropDown;
-    private final ChoiceBox<String> colourDropDown;
-    private final ChoiceBox<String> markerLabelDropDown;
-    private final ComboBox<String> exportDropDown;
+
     private final Button helpButton;
     private final List<String> dropDownOptions = new ArrayList<>();
     private final Label latLabel = new Label("Latitude: ");
@@ -154,8 +154,10 @@ public class MapViewPane extends BorderPane {
 
         parentStackPane = new StackPane();
         viewPortRectangle = new Rectangle();
+        borderRectangle = new Rectangle();
 
         viewPortRectangle.setMouseTransparent(true);
+        borderRectangle.setMouseTransparent(true);
 
         toolBarGridPane = new GridPane();
         toolBarGridPane.setHgap(5);
@@ -181,51 +183,47 @@ public class MapViewPane extends BorderPane {
         mapProviderDropDown.getSelectionModel().selectFirst();
         mapProviderDropDown.setTooltip(new Tooltip("Select a basemap for the Map View"));
 
-        final List<? extends MapLayer> layers = new ArrayList<>(Lookup.getDefault().lookupAll(MapLayer.class));
-        setDropDownOptions(layers);
-
-        // Add all the layers to the toolbar
-        layersDropDown = new CheckComboBox<>(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS, THIESSEAN_POLYGONS_2));
-        layersDropDown.setTitle("Layers");
-        layersDropDown.setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
-        layersDropDown.setMinWidth(85);
-        layersDropDown.setMaxWidth(85);
-
-        // Event handler for selecting different layers to show
-        layersDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(final ListChangeListener.Change<? extends String> c) {
-                layersDropDown.getItems().forEach(item -> addLayer(item, layerId));
+        final MenuButtonCheckCombobox layersMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS), false, false);
+        layersMenuButton.getMenuButton().setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
+        layersMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
+            if (parent.getCurrentGraph() != null) {
+                layersMenuButton.getOptionMap().keySet().forEach(key -> addLayer(key, layerId, layersMenuButton.getOptionMap().get(key).isSelected()));
+            } else {
+                layersMenuButton.revertLastAction();
+                NotifyDisplayer.display("Layer options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
+        layersMenuButton.setIcon(parent.getClass().getResource("resources/layers2.png").toString());
 
         // Add overlays to toolbar
-        overlaysDropDown = new CheckComboBox<>(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY));
-        overlaysDropDown.setTitle("Overlays");
-        overlaysDropDown.setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
-        overlaysDropDown.setMinWidth(95);
-        overlaysDropDown.setMaxWidth(95);
-
+        final MenuButtonCheckCombobox overlaysMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY), false, false);
+        overlaysMenuButton.getMenuButton().setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
+        overlaysMenuButton.setIcon(parent.getClass().getResource("resources/overlays.png").toString());
         // Overlay event handler
-        overlaysDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(final ListChangeListener.Change<? extends String> c) {
-                overlaysDropDown.getItems().forEach(item -> toggleOverlay(item));
-                if (overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
-                    toolBarGridPane.add(latLabel, 0, 1);
-                    toolBarGridPane.add(latField, 1, 1);
-                    toolBarGridPane.add(lonLabel, 2, 1);
-                    toolBarGridPane.add(lonField, 3, 1);
+        overlaysMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
+            if (parent.getCurrentGraph() != null) {
+                overlaysMenuButton.getOptionMap().keySet().forEach(key -> {
+                    toggleOverlay(key, overlaysMenuButton.getOptionMap().get(key).isSelected());
 
-                } else if (!overlaysDropDown.getCheckModel().isChecked(INFO_OVERLAY)) {
-                    toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
-                }
+                    if (key.equals(INFO_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected() && !toolBarGridPane.getChildren().contains(latLabel)) {
+                        toolBarGridPane.add(latLabel, 0, 1);
+                        toolBarGridPane.add(latField, 1, 1);
+                        toolBarGridPane.add(lonLabel, 2, 1);
+                        toolBarGridPane.add(lonField, 3, 1);
+                    } else if (key.equals(INFO_OVERLAY) && !overlaysMenuButton.getOptionMap().get(key).isSelected()) {
+                        toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
+                    }
 
+                });
+            } else {
+                overlaysMenuButton.revertLastAction();
+                NotifyDisplayer.display("Overlay options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
 
         // Zoom menu set up and event handling
-        zoomDropDown = new MenuButton("Zoom");
+        zoomDropDown = new MenuButton();
+        zoomDropDown.setGraphic(new ImageView(new Image(parent.getClass().getResource("resources/zoom.png").toString())));
         final MenuItem zoomAll = new MenuItem(ZOOM_ALL);
         final MenuItem zoomSelection = new MenuItem(ZOOM_SELECTION);
         final MenuItem zoomLocation = new MenuItem(ZOOM_LOCATION);
@@ -233,131 +231,145 @@ public class MapViewPane extends BorderPane {
         zoomDropDown.getItems().addAll(zoomAll, zoomSelection, zoomLocation);
         zoomDropDown.setTooltip(new Tooltip("Zoom based on markers or locations in the Map View"));
 
+        final String zoomError = "Zoom options require a graph to be open!";
 
         zoomAll.setOnAction(event -> {
-            mapView.panToCenter();
-            mapView.panToAll();
+            if (parent.getCurrentGraph() != null) {
+                mapView.panToCenter();
+                mapView.panToAll();
+            } else {
+                NotifyDisplayer.display(zoomError, NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
 
         zoomSelection.setOnAction(event -> {
-            mapView.panToCenter();
-            mapView.panToSelection();
+            if (parent.getCurrentGraph() != null) {
+                mapView.panToCenter();
+                mapView.panToSelection();
+            } else {
+                NotifyDisplayer.display(zoomError, NotifyDescriptor.INFORMATION_MESSAGE);
+            }
         });
 
-        zoomLocation.setOnAction(event -> mapView.generateZoomLocationUI());
+        zoomLocation.setOnAction(event -> {
+            if (parent.getCurrentGraph() != null) {
+                mapView.generateZoomLocationUI();
+            } else {
+                NotifyDisplayer.display(zoomError, NotifyDescriptor.INFORMATION_MESSAGE);
+            }
+        });
 
-        // Menu to show/hide markers
-        markerDropDown = new CheckComboBox<>(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_MULTI, MARKER_TYPE_CLUSTER, SELECTED_ONLY));
-        markerDropDown.setTitle("Markers");
-        markerDropDown.setTooltip(new Tooltip("Choose which markers are displayed in the Map View"));
-        markerDropDown.getCheckModel().check(MARKER_TYPE_POINT);
-        markerDropDown.getCheckModel().check(MARKER_TYPE_LINE);
-        markerDropDown.getCheckModel().check(MARKER_TYPE_POLYGON);
-        markerDropDown.setMinWidth(90);
-        markerDropDown.setMaxWidth(90);
+        // Menu to show/hide markers        
+        final MenuButtonCheckCombobox markerMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(MARKER_TYPE_POINT, MARKER_TYPE_LINE, MARKER_TYPE_POLYGON, MARKER_TYPE_CLUSTER, SELECTED_ONLY), false, false);
+        markerMenuButton.setIcon(parent.getClass().getResource("resources/location-pin.png").toString());
 
+        markerMenuButton.getMenuButton().setTooltip(new Tooltip("Choose which markers are displayed in the Map View"));
+        markerMenuButton.selectItem(MARKER_TYPE_POINT);
+        markerMenuButton.selectItem(MARKER_TYPE_LINE);
+        markerMenuButton.selectItem(MARKER_TYPE_POLYGON);
         // Event handler for hiding/showing markers
-        markerDropDown.getCheckModel().getCheckedItems().addListener(new ListChangeListener<String>() {
-            @Override
-            public void onChanged(final ListChangeListener.Change<? extends String> c) {
-                markerDropDown.getItems().forEach(item -> {
-
-                    if (markerDropDown.getCheckModel().isChecked(item)) {
-                        if (item.equals(MARKER_TYPE_POINT)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, true);
-                        } else if (item.equals(MARKER_TYPE_LINE)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, true);
-                        } else if (item.equals(MARKER_TYPE_POLYGON)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, true);
-                        } else if (item.equals(MARKER_TYPE_CLUSTER)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, true);
-                        } else if (item.equals(SELECTED_ONLY)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, true);
-                        }
-
-                        } else {
-                        if (item.equals(MARKER_TYPE_POINT)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POINT_MARKER, false);
-                        } else if (item.equals(MARKER_TYPE_LINE)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.LINE_MARKER, false);
-                        } else if (item.equals(MARKER_TYPE_POLYGON)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.POLYGON_MARKER, false);
-                        } else if (item.equals(MARKER_TYPE_CLUSTER)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.CLUSTER_MARKER, false);
-                        } else if (item.equals(SELECTED_ONLY)) {
-                            mapView.updateShowingMarkers(AbstractMarker.MarkerType.SELECTED, false);
-                        }
-
-                        }
-
-                });
-
+        markerMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
+            if (parent.getCurrentGraph() != null) {
+                markerMenuButton.getOptionMap().keySet().forEach(key -> mapView.updateShowingMarkers(getMarkerTypeFromString((String) key), markerMenuButton.getOptionMap().get(key).isSelected()));
+            } else {
+                markerMenuButton.revertLastAction();
+                NotifyDisplayer.display("Marker options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
 
         // Marker colour mneu setup and event handling
-        colourDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(DEFAULT_COLOURS, USE_COLOUR_ATTR, USE_OVERLAY_COL, USE_BLAZE_COL)));
-        colourDropDown.getSelectionModel().selectFirst();
-        colourDropDown.setTooltip(new Tooltip("Chose the color scheme for markers displayed in the Map View"));
-
-        colourDropDown.setOnAction(event -> mapView.getMarkerColourProperty().set(colourDropDown.getValue()));
-        colourDropDown.setMinWidth(120);
-        colourDropDown.setMaxWidth(120);
+        final MenuButtonCheckCombobox coloursMenuButton = new MenuButtonCheckCombobox(FXCollections.observableList(Arrays.asList(DEFAULT_COLOURS, USE_COLOUR_ATTR, USE_OVERLAY_COL, USE_BLAZE_COL)), true, false);
+        coloursMenuButton.setIcon(parent.getClass().getResource("resources/paint-roller.png").toString());
+        coloursMenuButton.selectItem(DEFAULT_COLOURS);
+        coloursMenuButton.getMenuButton().setTooltip(new Tooltip("Chose the color scheme for markers displayed in the Map View"));
+        coloursMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
+            if (parent.getCurrentGraph() != null) {
+                coloursMenuButton.getOptionMap().keySet().forEach(key -> {
+                    if (coloursMenuButton.getOptionMap().get(key).isSelected()) {
+                        mapView.getMarkerColourProperty().set(key);
+                    }
+                });
+            } else {
+                coloursMenuButton.revertLastAction();
+                coloursMenuButton.selectItem(DEFAULT_COLOURS);
+                NotifyDisplayer.display("Colour options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
+        });
 
         // Marker label menu setup and event handling
-        markerLabelDropDown = new ChoiceBox<>(FXCollections.observableList(Arrays.asList(NO_LABELS, USE_LABEL_ATTR, USE_IDENT_ATTR)));
-        markerLabelDropDown.getSelectionModel().selectFirst();
-        markerLabelDropDown.setTooltip(new Tooltip("Chose the label for markers displayed in the Map View"));
-
-        markerLabelDropDown.setOnAction(event -> mapView.getMarkerTextProperty().set(markerLabelDropDown.getValue()));
-        markerLabelDropDown.setMinWidth(95);
-        markerLabelDropDown.setMaxWidth(95);
+        final MenuButtonCheckCombobox labelsMenuButton = new MenuButtonCheckCombobox(FXCollections.observableList(Arrays.asList(NO_LABELS, USE_LABEL_ATTR, USE_IDENT_ATTR)), true, false);
+        labelsMenuButton.setIcon(parent.getClass().getResource("resources/price-label.png").toString());
+        labelsMenuButton.selectItem(NO_LABELS);
+        labelsMenuButton.getMenuButton().setTooltip(new Tooltip("Chose the label for markers displayed in the Map View"));
+        labelsMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
+            if (parent.getCurrentGraph() != null) {
+                labelsMenuButton.getOptionMap().keySet().forEach(key -> {
+                    if (labelsMenuButton.getOptionMap().get(key).isSelected()) {
+                        mapView.getMarkerTextProperty().set(key);
+                    }
+                });
+            } else {
+                labelsMenuButton.revertLastAction();
+                labelsMenuButton.selectItem(NO_LABELS);
+                NotifyDisplayer.display("Label options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
+            }
+        });
 
         // Export menu setup and eventer handling
-        exportDropDown = new ComboBox(FXCollections.observableList(Arrays.asList("Export", GEO_JSON, GEO_PACKAGE, KML, SHAPEFILE)));
-        exportDropDown.getSelectionModel().selectFirst();
-
-        exportDropDown.setOnAction(event -> {
+        final MenuButtonCheckCombobox exportMenuButton = new MenuButtonCheckCombobox(FXCollections.observableList(Arrays.asList(GEO_JSON, GEO_PACKAGE, KML, SHAPEFILE)), true, true);
+        exportMenuButton.getMenuButton().setTooltip(new Tooltip("Export from the Map View"));
+        exportMenuButton.setIcon(parent.getClass().getResource("resources/download.png").toString());
+        exportMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
             if (parent.getCurrentGraph() != null) {
-                MapExporterWrapper exporterWrapper = null;
+                exportMenuButton.getOptionMap().keySet().forEach(key -> {
+                    if (exportMenuButton.getOptionMap().get(key).isSelected()) {
+                        MapExporterWrapper exporterWrapper = null;
+                        if (key.equals(GEO_JSON)) {
+                            exporterWrapper = new MapExporterWrapper(new GeoJsonExporter());
+                        } else if (key.equals(KML)) {
+                            exporterWrapper = new MapExporterWrapper(new KmlExporter());
+                        } else if (key.equals(SHAPEFILE)) {
+                            exporterWrapper = new MapExporterWrapper(new ShapefileExporter());
+                        } else if (key.equals(GEO_PACKAGE)) {
+                            exporterWrapper = new MapExporterWrapper(new GeoPackageExporter());
+                        }
 
-                String selectedItem = exportDropDown.getSelectionModel().getSelectedItem();
-                if (selectedItem.equals(GEO_JSON)) {
-                    exporterWrapper = new MapExporterWrapper(new GeoJsonExporter());
-                } else if (selectedItem.equals(KML)) {
-                    exporterWrapper = new MapExporterWrapper(new KmlExporter());
-                } else if (selectedItem.equals(SHAPEFILE)) {
-                    exporterWrapper = new MapExporterWrapper(new ShapefileExporter());
-                } else if (selectedItem.equals(GEO_PACKAGE)) {
-                    exporterWrapper = new MapExporterWrapper(new GeoPackageExporter());
-                }
+                        PluginExecution
+                                .withPlugin(exporterWrapper.getExporter().getPluginReference())
+                                .interactively(true)
+                                .executeLater(parent.getCurrentGraph());
 
-                PluginExecution
-                        .withPlugin(exporterWrapper.getExporter().getPluginReference())
-                        .interactively(true)
-                        .executeLater(parent.getCurrentGraph());
+                        exportMenuButton.getOptionMap().get(key).setSelected(false);
+                    }
+                });
             } else {
+                exportMenuButton.revertLastAction();
                 NotifyDisplayer.display("Export options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
             }
         });
-        exportDropDown.setTooltip(new Tooltip("Export from the Map View"));
-        exportDropDown.setMinWidth(110);
-        exportDropDown.setMaxWidth(110);
 
         helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
         helpButton.setTooltip(new Tooltip("Help on using the Map View"));
 
         toolBarGridPane.add(mapProviderDropDown, 0, 0);
-        toolBarGridPane.add(layersDropDown, 1, 0);
-        toolBarGridPane.add(overlaysDropDown, 2, 0);
+        toolBarGridPane.add(layersMenuButton.getMenuButton(), 1, 0);
+        toolBarGridPane.add(overlaysMenuButton.getMenuButton(), 2, 0);
         toolBarGridPane.add(zoomDropDown, 3, 0);
-        toolBarGridPane.add(markerDropDown, 4, 0);
-        toolBarGridPane.add(colourDropDown, 5, 0);
-        toolBarGridPane.add(markerLabelDropDown, 6, 0);
-        toolBarGridPane.add(exportDropDown, 7, 0);
+        toolBarGridPane.add(markerMenuButton.getMenuButton(), 4, 0);
+        toolBarGridPane.add(coloursMenuButton.getMenuButton(), 5, 0);
+        toolBarGridPane.add(labelsMenuButton.getMenuButton(), 6, 0);
+        toolBarGridPane.add(exportMenuButton.getMenuButton(), 7, 0);
         toolBarGridPane.add(helpButton, 8, 0);
         setTop(toolBarGridPane);
+    }
+
+    /**
+     * Makes sure queried markers in the map are cleared and any markers that
+     * are selected are also destroyed
+     */
+    public void clearQuerriesMarkers() {
+        mapView.clearQueriedMarkers();
     }
 
     /**
@@ -365,8 +377,30 @@ public class MapViewPane extends BorderPane {
      *
      * @param overlay - string representing the overlay
      */
-    private void toggleOverlay(final String overlay) {
-        mapView.toggleOverlay(overlay, overlaysDropDown.getCheckModel().isChecked(overlay));
+    private void toggleOverlay(final String overlay, final boolean isChecked) {
+        mapView.toggleOverlay(overlay, isChecked);
+    }
+
+    /**
+     *
+     * @param markerTypeString
+     * @return
+     */
+    private AbstractMarker.MarkerType getMarkerTypeFromString(final String markerTypeString) {
+        switch (markerTypeString) {
+            case MARKER_TYPE_POINT:
+                return AbstractMarker.MarkerType.POINT_MARKER;
+            case MARKER_TYPE_POLYGON:
+                return AbstractMarker.MarkerType.POLYGON_MARKER;
+            case MARKER_TYPE_LINE:
+                return AbstractMarker.MarkerType.LINE_MARKER;
+            case MARKER_TYPE_CLUSTER:
+                return AbstractMarker.MarkerType.CLUSTER_MARKER;
+            case SELECTED_ONLY:
+                return AbstractMarker.MarkerType.SELECTED;
+            default:
+                return AbstractMarker.MarkerType.NO_MARKER;
+        }
     }
 
     public void setLonFieldText(final String longitude) {
@@ -382,12 +416,13 @@ public class MapViewPane extends BorderPane {
      *
      * @param key - key specifying the layer
      * @param id - a new id for the layer if it is going to be working
+     * @param isChecked - is the item is checked or not
      */
-    private void addLayer(final String key, final int id) {
-        if (layersDropDown.getCheckModel().getCheckedItems().contains(key) && !layerMap.containsKey(key)) {
+    private void addLayer(final String key, final int id, final boolean isChecked) {
+        if (isChecked && !layerMap.containsKey(key)) {
             mapView.addLayer(getLayerFromKey(key));
             layerMap.put(key, id);
-        } else if (!layersDropDown.getCheckModel().getCheckedItems().contains(key) && layerMap.containsKey(key)) {
+        } else if (!isChecked && layerMap.containsKey(key)) {
             mapView.removeLayer(layerMap.get(key));
             layerMap.remove(key);
         }
@@ -450,33 +485,48 @@ public class MapViewPane extends BorderPane {
         viewPortRectangle.setX(0);
         viewPortRectangle.setY(0);
 
-        final AnchorPane anchorPane = new AnchorPane();
-        anchorPane.setTopAnchor(parentStackPane, 0.0);
-        anchorPane.setRightAnchor(parentStackPane, 0.0);
-        anchorPane.setLeftAnchor(parentStackPane, 0.0);
+        AnchorPane.setTopAnchor(parentStackPane, 0.0);
+        AnchorPane.setRightAnchor(parentStackPane, 0.0);
+        AnchorPane.setLeftAnchor(parentStackPane, 0.0);
 
-        anchorPane.setTopAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
-        anchorPane.setRightAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
+        AnchorPane.setTopAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
+        AnchorPane.setLeftAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
 
-        anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane());
+        AnchorPane.setBottomAnchor(mapView.getOverviewOverlay().getOverlayPane(), 290.0);
+        AnchorPane.setRightAnchor(mapView.getOverviewOverlay().getOverlayPane(), 100.0);
 
-        parentStackPane.setLayoutX(0);
-        parentStackPane.setLayoutY(0);
-
+        anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.getOverviewOverlay().getOverlayPane());
+        anchorPane.prefWidthProperty().bind(this.widthProperty());
         viewPortRectangle.setWidth(MapView.MAP_WIDTH);
         viewPortRectangle.setHeight(MapView.MAP_HEIGHT);
 
         viewPortRectangle.setFill(Color.TRANSPARENT);
         viewPortRectangle.setStroke(Color.TRANSPARENT);
 
+        borderRectangle.setFill(Color.TRANSPARENT);
+        borderRectangle.setStroke(Color.TRANSPARENT);
+
+        borderRectangle.widthProperty().bind(this.widthProperty().subtract(20));
+        borderRectangle.setHeight(MapView.MAP_HEIGHT);
+        borderRectangle.setStrokeWidth(3);
+
+        AnchorPane.setTopAnchor(borderRectangle, 0.0);
+        AnchorPane.setLeftAnchor(borderRectangle, 0.0);
+
+        anchorPane.getChildren().add(borderRectangle);
+
         // Adds the mapView and viewport rect underneath the toolbar
         parentStackPane.getChildren().add(viewPortRectangle);
         Platform.runLater(() -> setCenter(anchorPane));
-
     }
+
 
     public StackPane getParentStackPane() {
         return parentStackPane;
+    }
+
+    public Rectangle getBorderRectangle() {
+        return borderRectangle;
     }
 
     public Rectangle getViewPortRectangle() {
@@ -491,11 +541,7 @@ public class MapViewPane extends BorderPane {
     }
 
     public Map<String, AbstractMarker> getAllMarkers() {
-        if (mapView != null) {
-            return mapView.getAllMarkers();
-        }
-
-        return new HashMap<>();
+        return mapView != null ? mapView.getAllMarkers() : Collections.emptyMap();
     }
 
     public Graph getCurrentGraph() {
@@ -520,11 +566,6 @@ public class MapViewPane extends BorderPane {
 
 
     public List<? extends MapProvider> getProviders() {
-        return new ArrayList<>(providers);
-    }
-
-    private void setDropDownOptions(final List<?> options) {
-        dropDownOptions.clear();
-        options.forEach(o -> dropDownOptions.add(o.toString()));
+        return providers;
     }
 }

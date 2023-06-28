@@ -36,6 +36,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
@@ -49,6 +54,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = RestService.class)
 public class OpenGraph extends RestService {
+
+    private static final Logger LOGGER = Logger.getLogger(OpenGraph.class.getName());
 
     private static final String NAME = "open_graph";
     private static final String FILE_PARAMETER_ID = "filename";
@@ -102,7 +109,7 @@ public class OpenGraph extends RestService {
             final Graph g = new GraphJsonReader().readGraphZip(fnam, new HandleIoProgress(String.format("Loading graph %s...", fnam)));
             GraphOpener.getDefault().openGraph(g, name, false);
 
-            final String newId = RestServiceUtilities.waitForGraphChange(existingId);
+            final String newId = RestServiceUtilities.waitForGraphChange(existingId).get(10, TimeUnit.SECONDS);
             final Graph graph = GraphNode.getGraphNode(newId).getGraph();
 
             final ObjectMapper mapper = new ObjectMapper();
@@ -113,6 +120,11 @@ public class OpenGraph extends RestService {
             mapper.writeValue(out, root);
         } catch (final GraphParseException | FileNotFoundException ex) {
             throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, ex.getMessage());
+        } catch (final InterruptedException ex) {
+            Thread.currentThread().interrupt();
+            LOGGER.log(Level.SEVERE, "This thread has been interrupted", ex);
+        } catch (final ExecutionException | TimeoutException ex) {
+            throw new RestServiceException(ex);
         }
     }
 }

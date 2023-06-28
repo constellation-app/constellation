@@ -16,12 +16,13 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
-import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Point marker that represents a geo coordinate on the map
@@ -59,7 +60,7 @@ public class PointMarker extends AbstractMarker {
         this.lattitude = lattitude;
         this.longitude = longitude;
         this.scale = scale;
-        this.attributeColour = (attrColour.isEmpty() || attrColour.isBlank()) ? defaultColour : attrColour;
+        this.attributeColour = StringUtils.isBlank(attrColour) ? defaultColour : attrColour;
 
         markerPath.setScaleX(scale);
         markerPath.setScaleY(scale);
@@ -70,33 +71,25 @@ public class PointMarker extends AbstractMarker {
         markerPath.setStrokeWidth(5);
 
         // Event handlers for the marker
-        markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
-
-                if (!isSelected) {
-                    markerPath.setFill(Color.ORANGE);
-                }
-                e.consume();
+        markerPath.setOnMouseEntered((final MouseEvent e) -> {
+            if (!isSelected) {
+                markerPath.setFill(Color.ORANGE);
             }
+            e.consume();
         });
 
-        markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
-
-                if (!isSelected) {
-                    markerPath.setFill(Color.web(currentColour));
-                }
-                e.consume();
+        markerPath.setOnMouseExited((final MouseEvent e) -> {
+            if (!isSelected) {
+                markerPath.setFill(Color.web(currentColour));
             }
+            e.consume();
         });
 
-        markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
-                parent.deselectAllMarkers();
-                select();
-                parent.addMarkerIdToSelectedList(markerID, idList, true);
-                e.consume();
-            }
+        markerPath.setOnMouseClicked((final MouseEvent e) -> {
+            parent.deselectAllMarkers();
+            select();
+            parent.addMarkerIdToSelectedList(markerID, idList, true);
+            e.consume();
         });
 
     }
@@ -134,8 +127,6 @@ public class PointMarker extends AbstractMarker {
         } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
             if (blazeColour != null) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
-
-
                 if (blazeColourCount == 1) {
                     currentColour = colour.getHtmlColor();
                     markerPath.setFill(Color.web(currentColour));
@@ -166,8 +157,6 @@ public class PointMarker extends AbstractMarker {
 
     }
 
-
-
     public double getLattitude() {
         return lattitude;
     }
@@ -178,6 +167,10 @@ public class PointMarker extends AbstractMarker {
 
     public double getScale() {
         return scale;
+    }
+
+    public void setScale(final double scale) {
+        this.scale = scale;
     }
 
     public String getPath() {
@@ -192,16 +185,13 @@ public class PointMarker extends AbstractMarker {
      */
     @Override
     public void setMarkerPosition(final double mapWidth, final double mapHeight) {
-        x = MarkerUtilities.longToX(longitude, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG);
-        y = MarkerUtilities.latToY(lattitude, mapWidth, mapHeight);
-        x += xOffset;
-        y -= yOffset;
+        x = MarkerUtilities.longToX(longitude, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG) + xOffset;
+        y = MarkerUtilities.latToY(lattitude, mapWidth, mapHeight) - yOffset;
 
         super.setX(x);
         super.setY(y);
 
-
-        path = "M " + x + ", " + y + " Z " + path;
+        path = "M " + x + SeparatorConstants.COMMA + " " + y + " Z " + path;
 
         markerPath.setContent(path);
     }
@@ -212,16 +202,14 @@ public class PointMarker extends AbstractMarker {
      * @param blazeCol
      */
     public void setBlazeColour(final String blaze) {
-        String blazeCol = blaze;
         // Get the blaze colure in the correct format
-        blazeCol = blazeCol.split(";")[1];
-
+        final String blazeCol = blaze.split(SeparatorConstants.SEMICOLON)[1];
 
         if (blazeColourCount == 0) {
             blazeColour = blazeCol;
         }
 
-        ++blazeColourCount;
+        blazeColourCount++;
 
     }
 
@@ -231,7 +219,7 @@ public class PointMarker extends AbstractMarker {
             overlayColour = overlayCol;
         }
 
-        ++overlayColourCount;
+        overlayColourCount++;
     }
 
     public String getBlazeColour() {
@@ -252,7 +240,7 @@ public class PointMarker extends AbstractMarker {
             labelAttr = labelAttribute;
         }
 
-        ++labelAttrCount;
+        labelAttrCount++;
     }
 
     public void setIdentAttr(final String identAttribute) {
@@ -261,7 +249,7 @@ public class PointMarker extends AbstractMarker {
             identifierAttr = identAttribute;
         }
 
-        ++identifierCount;
+        identifierCount++;
     }
 
     public String getLabelAttr() {
@@ -288,6 +276,15 @@ public class PointMarker extends AbstractMarker {
 
     public String getDefaultColour() {
         return defaultColour;
+    }
+
+    public void scaleAndReposition(final double scale) {
+        setScale(scale);
+        markerPath.setScaleX(scale);
+        markerPath.setScaleY(scale);
+
+        final double heightDifference = (getY() + 96.5) - (markerPath.getBoundsInParent().getCenterY() + (markerPath.getBoundsInParent().getHeight() / 2));
+        markerPath.setTranslateY(markerPath.getTranslateY() + heightDifference);
     }
 
 }

@@ -38,20 +38,21 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = Plugin.class)
 @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
-@NbBundle.Messages("SelectOnGraphPlugin=Highlights nodes on their corresponding marker gets selected on the map")
+@NbBundle.Messages("SelectOnGraphPlugin=Select on Graph")
 public class SelectOnGraphPlugin extends SimpleEditPlugin {
 
     // IDs of the selected nodes
-    private List<Integer> selectedNodeList = new ArrayList<>();
-    private boolean isSelectingVertex = true;
+    private final List<Integer> selectedNodeList;
+    private final boolean isSelectingVertex;
 
     public SelectOnGraphPlugin(final List<Integer> selectedNodeList, final boolean isSelectingVertex) {
-        this.selectedNodeList = new ArrayList<>(selectedNodeList);
+        this.selectedNodeList = selectedNodeList;
         this.isSelectingVertex = isSelectingVertex;
     }
 
     public SelectOnGraphPlugin() {
-
+        selectedNodeList = new ArrayList<>();
+        isSelectingVertex = true;
     }
 
     /**
@@ -72,7 +73,7 @@ public class SelectOnGraphPlugin extends SimpleEditPlugin {
                 final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
                 final int vertexCount = graph.getVertexCount();
 
-                for (int i = 0; i < vertexCount; ++i) {
+                for (int i = 0; i < vertexCount; i++) {
                     final int vertexID = graph.getVertex(i);
                     graph.setBooleanValue(vertexSelectedAttribute, vertexID, selectedNodeList.contains(vertexID));
                 }
@@ -82,7 +83,7 @@ public class SelectOnGraphPlugin extends SimpleEditPlugin {
                 final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
                 final int transactionCount = graph.getTransactionCount();
 
-                for (int i = 0; i < transactionCount; ++i) {
+                for (int i = 0; i < transactionCount; i++) {
                     final int transactionID = graph.getTransaction(i);
                     graph.setBooleanValue(transactionSelectedAttribute, transactionID, selectedNodeList.contains(transactionID));
                 }
@@ -92,7 +93,7 @@ public class SelectOnGraphPlugin extends SimpleEditPlugin {
 
     @Override
     public String getName() {
-        return "SelectOnGraphPlugin2";
+        return "Map View: Select on Graph";
     }
 
 }

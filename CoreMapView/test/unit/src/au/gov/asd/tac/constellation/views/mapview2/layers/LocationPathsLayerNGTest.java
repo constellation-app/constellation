@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
@@ -45,9 +46,6 @@ import org.testng.annotations.Test;
 public class LocationPathsLayerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(LocationPathsLayerNGTest.class.getName());
-
-    public LocationPathsLayerNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -86,6 +84,7 @@ public class LocationPathsLayerNGTest {
         final int linkOutgoingTransactionCount = 1;
 
         final MapView parent = Mockito.mock(MapView.class);
+        final GraphManager graphManager = Mockito.mock(GraphManager.class);
         final Graph graphMock = Mockito.mock(Graph.class);
         final ReadableGraph graph = Mockito.mock(ReadableGraph.class);
 
@@ -93,7 +92,7 @@ public class LocationPathsLayerNGTest {
         final int latID2 = 22;
         final int vertexTypeAttributeId = 33;
 
-        Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
+        //Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
         Mockito.when(graphMock.getReadableGraph()).thenReturn(graph);
 
         try (MockedStatic<SpatialConcept> spaceConcept = Mockito.mockStatic(SpatialConcept.class)) {
@@ -129,11 +128,14 @@ public class LocationPathsLayerNGTest {
         final PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, 0.05, 0, 0, "#ffffff");
         queriedMarkers.put("5,5", pMarker);
 
-        final LocationPathsLayer instance = new LocationPathsLayer(parent, 20, queriedMarkers);
-        instance.setUp();
+        try (MockedStatic<GraphManager> graphManagerMock = Mockito.mockStatic(GraphManager.class)) {
+            graphManagerMock.when(GraphManager::getDefault).thenReturn(graphManager);
+            Mockito.when(graphManager.getActiveGraph()).thenReturn(graphMock);
+            final LocationPathsLayer instance = new LocationPathsLayer(parent, 20, queriedMarkers);
+            instance.setUp();
 
-        Mockito.verify(graph).getObjectValue(latID2, vertexID);
-
+            Mockito.verify(graph).getObjectValue(latID2, vertexID);
+        }
     }
 
 }

@@ -61,45 +61,43 @@ public class ToolsOverlay extends AbstractOverlay {
      */
     public ToolsOverlay(final double positionX, final double positionY) {
         super(positionX, positionY);
+
+        // Set up the ui for main border pane
+        overlayPane.setPrefHeight(height);
+        overlayPane.setPrefWidth(width);
+        overlayPane.setMinWidth(width);
+        overlayPane.setMaxWidth(width);
+        overlayPane.setMinHeight(height);
+        overlayPane.setMaxHeight(height);
+
         final Label measureText = new Label("Measure");
         measureText.setTextFill(Color.WHITE);
 
         measureToggleText.setTextFill(Color.WHITE);
         measureToggleText.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
-        measureToggleText.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent event) {
-                if (!drawingEnabled.get()) {
-                    measureEnabled.set(!measureEnabled.get());
-
-                    if (measureEnabled.get()) {
-                        measureToggleText.setText(ENABLED_STRING);
-                    } else {
-                        measureToggleText.setText(DISABLED_STRING);
-                    }
-                }
-
-                event.consume();
+        measureToggleText.setOnMouseClicked((final MouseEvent event) -> {
+            if (!drawingEnabled.get()) {
+                measureEnabled.set(!measureEnabled.get());
+                measureToggleText.setText(measureEnabled.get() ? ENABLED_STRING : DISABLED_STRING);
             }
+
+            event.consume();
         });
 
         measureUnitText.setTextFill(Color.WHITE);
         measureUnitText.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
-        measureUnitText.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent event) {
-                if (!drawingEnabled.get()) {
-                    ++unitSelected;
+        measureUnitText.setOnMouseClicked((final MouseEvent event) -> {
+            if (!drawingEnabled.get()) {
+                ++unitSelected;
 
-                    if (unitSelected > units.length - 1) {
-                        unitSelected = 0;
-                    }
-                    measureUnitText.setText(units[unitSelected]);
+                if (unitSelected > units.length - 1) {
+                    unitSelected = 0;
                 }
-                event.consume();
+                measureUnitText.setText(units[unitSelected]);
             }
+            event.consume();
         });
 
         final Label drawLabelText = new Label("Draw");
@@ -109,21 +107,13 @@ public class ToolsOverlay extends AbstractOverlay {
         drawToggleText.setTextFill(Color.WHITE);
         drawToggleText.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
-        drawToggleText.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(final MouseEvent event) {
-                if (!measureEnabled.get()) {
-                    drawingEnabled.set(!drawingEnabled.get());
-
-                    if (drawingEnabled.get()) {
-                        drawToggleText.setText(ENABLED_STRING);
-                    } else {
-                        drawToggleText.setText(DISABLED_STRING);
-                    }
-                }
-
-                event.consume();
+        drawToggleText.setOnMouseClicked((final MouseEvent event) -> {
+            if (!measureEnabled.get()) {
+                drawingEnabled.set(!drawingEnabled.get());
+                drawToggleText.setText(drawingEnabled.get() ? ENABLED_STRING : DISABLED_STRING);
             }
+
+            event.consume();
         });
 
         final String drawDescription = " > Click on the map to draw a\npoint marker.\n"

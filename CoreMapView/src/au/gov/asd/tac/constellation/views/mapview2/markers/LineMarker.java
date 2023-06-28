@@ -15,9 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
-import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -51,34 +51,26 @@ public class LineMarker extends AbstractMarker {
         markerPath.setStrokeWidth(1);
 
         // Set event handlers for the line marker
-        markerPath.setOnMouseEntered(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
-
-                if (!isSelected) {
-                    markerPath.setStroke(Color.ORANGE);
-                }
-                e.consume();
+        markerPath.setOnMouseEntered(e -> {
+            if (!isSelected) {
+                markerPath.setStroke(Color.ORANGE);
             }
+            e.consume();
         });
 
-        markerPath.setOnMouseExited(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
-
-                if (!isSelected) {
-                    markerPath.setStroke(Color.BLACK);
-                }
-
-                e.consume();
+        markerPath.setOnMouseExited((final MouseEvent e) -> {
+            if (!isSelected) {
+                markerPath.setStroke(Color.BLACK);
             }
+
+            e.consume();
         });
 
-        markerPath.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            public void handle(final MouseEvent e) {
-                isSelected = true;
-                markerPath.setStroke(Color.BLUE);
-                parent.addMarkerIdToSelectedList(markerID, idList, false);
-                e.consume();
-            }
+        markerPath.setOnMouseClicked((final MouseEvent e) -> {
+            isSelected = true;
+            markerPath.setStroke(Color.BLUE);
+            parent.addMarkerIdToSelectedList(markerID, idList, false);
+            e.consume();
         });
 
     }
@@ -91,19 +83,13 @@ public class LineMarker extends AbstractMarker {
      */
     @Override
     public void setMarkerPosition(final double mapWidth, final double mapHeight) {
-        x1 = MarkerUtilities.longToX(lon1, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG);
-        y1 = MarkerUtilities.latToY(lat1, mapWidth, mapHeight);
+        x1 = MarkerUtilities.longToX(lon1, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG) + xOffset;
+        y1 = MarkerUtilities.latToY(lat1, mapWidth, mapHeight) - yOffset;
 
-        x1 += xOffset;
-        y1 -= yOffset;
+        x2 = MarkerUtilities.longToX(lon2, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG) + xOffset;
+        y2 = MarkerUtilities.latToY(lat2, mapWidth, mapHeight) - yOffset;
 
-        x2 = MarkerUtilities.longToX(lon2, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG);
-        y2 = MarkerUtilities.latToY(lat2, mapWidth, mapHeight);
-
-        x2 += xOffset;
-        y2 -= yOffset;
-
-        final String path = "M " + x1 + ", " + y1 + " Z L " + x2 + "," + y2 + " z";
+        final String path = "M " + x1 + SeparatorConstants.COMMA + " " + y1 + " Z L " + x2 + SeparatorConstants.COMMA + y2 + " z";
 
         markerPath.setContent(path);
     }

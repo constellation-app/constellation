@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview2.layers;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
@@ -45,9 +46,6 @@ import org.testng.annotations.Test;
 public class EntityPathsLayerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(EntityPathsLayerNGTest.class.getName());
-
-    public EntityPathsLayerNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -98,6 +96,8 @@ public class EntityPathsLayerNGTest {
         final int secondNeighbourLinkTransactionId = 90;
 
         final MapView parent = Mockito.mock(MapView.class);
+
+        final GraphManager graphManager = Mockito.mock(GraphManager.class);
         final Graph graphMock = Mockito.mock(Graph.class);
         final ReadableGraph graph = Mockito.mock(ReadableGraph.class);
 
@@ -105,7 +105,7 @@ public class EntityPathsLayerNGTest {
         final PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, 0.05, 0, 0, "#ffffff");
         queriedMarkers.put("5,5", pMarker);
 
-        Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
+        //Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);
         Mockito.when(graphMock.getReadableGraph()).thenReturn(graph);
 
         try (MockedStatic<AnalyticConcept> analConcept = Mockito.mockStatic(AnalyticConcept.class)) {
@@ -160,10 +160,14 @@ public class EntityPathsLayerNGTest {
         Mockito.when(graph.getObjectValue(latID2, secondNeighbourID)).thenReturn(10f);
         Mockito.when(graph.getObjectValue(lonID2, secondNeighbourID)).thenReturn(10f);
 
-        final EntityPathsLayer instance = new EntityPathsLayer(parent, 6, queriedMarkers);
-        instance.setUp();
+        try (MockedStatic<GraphManager> graphManagerMock = Mockito.mockStatic(GraphManager.class)) {
+            graphManagerMock.when(GraphManager::getDefault).thenReturn(graphManager);
+            Mockito.when(graphManager.getActiveGraph()).thenReturn(graphMock);
+            final EntityPathsLayer instance = new EntityPathsLayer(parent, 6, queriedMarkers);
+            instance.setUp();
 
-        Mockito.verify(graph, Mockito.atMost(4)).getLongValue(Mockito.eq(transDateTimeAttrId), Mockito.eq(secondNeighbourLinkTransactionId));
+            Mockito.verify(graph, Mockito.atMost(4)).getLongValue(Mockito.eq(transDateTimeAttrId), Mockito.eq(secondNeighbourLinkTransactionId));
+        }
     }
 
 }

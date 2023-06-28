@@ -35,7 +35,7 @@ public class ClusterMarkerBuilder {
     private final List<ClusterMarker> clusterCircles = new ArrayList<>();
     private final List<Text> clusterValues = new ArrayList<>();
 
-    private final ArrayList<ArrayList<Node>> pointMarkerClusters = new ArrayList<>();
+    private final List<List<Node>> pointMarkerClusters = new ArrayList<>();
     private final Set<Node> clusteredPointMarkers = new HashSet<>();
     private MapView parent = null;
 
@@ -59,18 +59,18 @@ public class ClusterMarkerBuilder {
         pointMarkerClusters.clear();
 
         // Loop through all the nodes on screen
-        for (int i = 0; i < pointMarkerGroup.getChildren().size(); ++i) {
+        for (int i = 0; i < pointMarkerGroup.getChildren().size(); i++) {
 
             // If the node hasn't been clustered yet
             if (!clusteredPointMarkers.contains(pointMarkerGroup.getChildren().get(i))) {
                 // Add node to the clusered set
                 clusteredPointMarkers.add(pointMarkerGroup.getChildren().get(i));
-                final ArrayList<Node> clusterArray = new ArrayList<>();
+                final List<Node> clusterArray = new ArrayList<>();
 
                 clusterArray.add(pointMarkerGroup.getChildren().get(i));
 
                 // Loop through all the nodes again
-                for (int j = 0; j < pointMarkerGroup.getChildren().size(); ++j) {
+                for (int j = 0; j < pointMarkerGroup.getChildren().size(); j++) {
                     if (i != j && !clusteredPointMarkers.contains(pointMarkerGroup.getChildren().get(j))) {
 
                         // Get distance bewteen nodes

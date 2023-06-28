@@ -48,7 +48,8 @@ public abstract class AbstractMarker {
         LINE_MARKER,
         POLYGON_MARKER,
         CLUSTER_MARKER,
-        SELECTED
+        SELECTED,
+        NO_MARKER
     }
 
     protected MarkerType type;
@@ -96,7 +97,7 @@ public abstract class AbstractMarker {
     }
 
     public void setMarkerPosition(final double mapWidth, final double mapHeight) {
-
+        // Do nothing here as this gets overidden in child classes
     }
 
     public Shape getMarker() {
