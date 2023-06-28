@@ -177,8 +177,9 @@ public final class RecentFiles {
                 if (!historyReady.await(300, TimeUnit.SECONDS)) {
                     LOGGER.log(Level.WARNING, ">> Recent Files did not initialise within 5 minutes <<", new Exception(NotifyDisplayer.BLOCK_POPUP_FLAG + "WARNING: Recent Files data did not initialise within a reasonable time"));
                 }
-            } catch (final InterruptedException ex) { // NOSONAR
+            } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, ex.toString(), ex);
+                Thread.currentThread().interrupt();
             }
         }
         synchronized (HISTORY_LOCK) {
