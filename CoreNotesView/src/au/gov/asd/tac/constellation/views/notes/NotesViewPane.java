@@ -913,7 +913,7 @@ public class NotesViewPane extends BorderPane {
                 containerPane.getChildren().clear();
                 final VBox textFlowVBox = new VBox(newNote.getContentTextFlow());
                 containerPane.getChildren().add(textFlowVBox);
-                noteInformation.setSpacing(0);
+                noteInformation.setSpacing(3);
             } else if (showMoreButton.getText().equals(SHOW_LESS)) {
                 contentLabel.setText(newNote.getNoteContent());
                 showMoreButton.setText(SHOW_MORE);
