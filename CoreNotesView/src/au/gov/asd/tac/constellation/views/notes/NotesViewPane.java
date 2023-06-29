@@ -115,7 +115,7 @@ public class NotesViewPane extends BorderPane {
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
 
-    private static final double NOTE_HEIGHT = 157.0;
+    private static final double NOTE_HEIGHT = 145.0;
     private static final int DEFAULT_SPACING = 18;
     private static final int EDIT_SPACING = 10;
     private static final String SHOW_MORE = "Show more";
