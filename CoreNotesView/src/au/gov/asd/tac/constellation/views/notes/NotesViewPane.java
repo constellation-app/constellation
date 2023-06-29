@@ -451,12 +451,12 @@ public class NotesViewPane extends BorderPane {
      */
     protected void addNewUndoRedoReport(final UndoRedoReport undoRedoReport, final Graph graph) {
         //if (!pluginReport.hasLowLevelTag()) { TODO add this check based on the filtered out redo undo events
-        LOGGER.log(Level.SEVERE, "-----**********-- addNewUndoRedoReport --++++++++++++++--- - " + undoRedoReport.getUndoRedoPresentationName());
+        LOGGER.log(Level.SEVERE, "-----**********-- addNewUndoRedoReport --++++++++++++++--- - " + undoRedoReport.getActionDescription());
         if (!isExistingNote(undoRedoReport)) {
             final NotesViewEntry note = new NotesViewEntry(
                     Long.toString(undoRedoReport.getStartTime()),
                     undoRedoReport.getActionType(),
-                    undoRedoReport.getUndoRedoPresentationName(),
+                    undoRedoReport.getActionDescription(),
                     false,
                     false,
                     "#ffffff"
