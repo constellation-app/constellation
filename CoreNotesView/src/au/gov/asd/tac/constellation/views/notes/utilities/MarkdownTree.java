@@ -517,6 +517,7 @@ public class MarkdownTree {
         final TextFlow renderedText = new TextFlow();
         renderedText.setTextAlignment(TextAlignment.LEFT);
         renderedText.setPadding(new Insets(0, 0, 0, 0));
+        renderedText.setLineSpacing(-3.5);
 
         // List of text flows
         final List<TextFlow> textFlowList = new ArrayList<>();
@@ -539,6 +540,7 @@ public class MarkdownTree {
                 listFlow.setTextAlignment(TextAlignment.LEFT);
                 listFlow.setPadding(new Insets(0, 0, 0, 0));
                 listFlow.setBorder(Border.EMPTY);
+                listFlow.setLineSpacing(-3.5);
 
                 // Add the newly created text flow to the previous text flow and to the list
                 textFlowList.get(textFlowList.size() - 1).getChildren().add(listFlow);

@@ -115,8 +115,8 @@ public class NotesViewPane extends BorderPane {
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
 
-    private static final double NOTE_HEIGHT = 150.0;
-    private static final int DEFAULT_SPACING = 15;
+    private static final double NOTE_HEIGHT = 157.0;
+    private static final int DEFAULT_SPACING = 18;
     private static final int EDIT_SPACING = 10;
     private static final String SHOW_MORE = "Show more";
     private static final String SHOW_LESS = "Show less";
@@ -754,10 +754,11 @@ public class NotesViewPane extends BorderPane {
 
         textFlowPane.layoutBoundsProperty().addListener((obs, oldValue, newValue) -> {
             clipRect.setWidth(newValue.getWidth());
-            clipRect.setHeight(newValue.getHeight() - 10);
+            clipRect.setHeight(newValue.getHeight() + 13); // newValue.getHeight()
         });
 
-        containerPane.getChildren().add(textFlowPane);
+        final VBox contentPaneVBox = new VBox(newNote.getContentTextFlow());
+        containerPane.getChildren().add(contentPaneVBox);
 
 
         final VBox noteInformation;
@@ -819,7 +820,7 @@ public class NotesViewPane extends BorderPane {
         cancelButton.setMinWidth(92);
         cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
-        final HBox editScreenButtons = new HBox(DEFAULT_SPACING, saveTextButton, cancelButton);
+        final HBox editScreenButtons = new HBox(15, saveTextButton, cancelButton);
         editScreenButtons.setAlignment(Pos.CENTER);
 
         // If the note to be created is in edit mode, ensure it is created with
@@ -856,7 +857,7 @@ public class NotesViewPane extends BorderPane {
         if (newNote.getEditMode()) {
             noteButtons = new HBox(EDIT_SPACING, colourPicker, gap2, editScreenButtons);
         } else {
-            noteButtons = new HBox(DEFAULT_SPACING, showMoreButton, gap, editTextButton, deleteButton);
+            noteButtons = new HBox(15, showMoreButton, gap, editTextButton, deleteButton);
         }
 
         HBox.setHgrow(gap, Priority.ALWAYS);
@@ -874,13 +875,19 @@ public class NotesViewPane extends BorderPane {
         noteBody.setMaxHeight(Double.MAX_VALUE);
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
-
             if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10 && !showMoreButton.isVisible()) {
                 showMoreButton.setVisible(true);
                 showMoreButton.setText(SHOW_MORE);
                 noteBody.setMaxHeight(NOTE_HEIGHT - 5);
 
-            } else if (obs.getValue().doubleValue() < NOTE_HEIGHT - 10 && showMoreButton.isVisible()) {
+                // Run events as if show less button had been clicked
+                containerPane.getChildren().clear();
+                noteBody.setMaxHeight(NOTE_HEIGHT - 5);
+                noteBody.setMinHeight(NOTE_HEIGHT - 5);
+                textFlowPane.getChildren().add(newNote.getContentTextFlow());
+                textFlowPane.setClip(clipRect);
+                containerPane.getChildren().add(textFlowPane);
+            } else if (obs.getValue().doubleValue() < NOTE_HEIGHT - 5 && showMoreButton.isVisible()) {
                 showMoreButton.setVisible(false);
             }
 
@@ -906,6 +913,7 @@ public class NotesViewPane extends BorderPane {
                 containerPane.getChildren().clear();
                 final VBox textFlowVBox = new VBox(newNote.getContentTextFlow());
                 containerPane.getChildren().add(textFlowVBox);
+                noteInformation.setSpacing(0);
             } else if (showMoreButton.getText().equals(SHOW_LESS)) {
                 contentLabel.setText(newNote.getNoteContent());
                 showMoreButton.setText(SHOW_MORE);
