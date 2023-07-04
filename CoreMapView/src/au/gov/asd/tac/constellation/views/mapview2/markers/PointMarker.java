@@ -94,11 +94,13 @@ public class PointMarker extends AbstractMarker {
 
     }
 
+    @Override
     public void deselect() {
         markerPath.setFill(Color.web(currentColour));
         isSelected = false;
     }
 
+    @Override
     public void select() {
         isSelected = true;
         markerPath.setFill(Color.BLUE);

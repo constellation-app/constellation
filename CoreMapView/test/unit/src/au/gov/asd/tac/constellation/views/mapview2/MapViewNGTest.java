@@ -290,24 +290,6 @@ public class MapViewNGTest {
     }
 
     /**
-     * Test of clearAll method, of class MapView.
-     */
-    /*@Test
-    public void testClearAll() {
-        System.out.println("clearAll");
-
-        final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
-        final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        final MapView instance = Mockito.spy(new MapView(mapViewPane));
-
-        instance.clearAll();
-
-        assertEquals(instance.getAllMarkers().isEmpty(), true);
-        assertEquals(instance.getUserMarkers().isEmpty(), true);
-    }*/
-
-
-    /**
      * Test of addMarkerIdToSelectedList method, of class MapView.
      */
     @Test

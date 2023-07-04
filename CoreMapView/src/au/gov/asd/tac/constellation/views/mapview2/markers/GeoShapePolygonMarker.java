@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
@@ -36,6 +37,7 @@ public class GeoShapePolygonMarker extends AbstractMarker {
 
     private static final Logger LOGGER = Logger.getLogger(GeoShapePolygonMarker.class.getName());
     private final double geoShapeYOffset = -148.5;
+    private String currentColour = "#FF0000";
 
     private final Map<String, Pair<Polygon, List<Integer>>> geoShapes = new HashMap<>();
 
@@ -45,7 +47,7 @@ public class GeoShapePolygonMarker extends AbstractMarker {
 
     public void addGeoShape(final String coordinateList, final int elementID) {
         final Polygon geoShape = new Polygon();
-        geoShapes.put(coordinateList, new Pair(geoShape, Collections.emptyList()));
+        geoShapes.put(coordinateList, new Pair(geoShape, new ArrayList<>()));
         geoShapes.get(coordinateList).getValue().add(elementID);
         final String[] longLatValues = coordinateList.replace("[", "").replace("]", "").split(",");
 
@@ -55,9 +57,43 @@ public class GeoShapePolygonMarker extends AbstractMarker {
                     MarkerUtilities.latToY(Double.parseDouble(longLatValues[j + 1]), MapView.MAP_WIDTH, MapView.MAP_HEIGHT) + geoShapeYOffset);
         }
 
-        geoShape.setFill(Color.ORANGE);
+        geoShape.setFill(Color.RED);
+        geoShape.setOpacity(0.5);
 
+        // Event handlers for the marker
+        geoShape.setOnMouseEntered((final MouseEvent e) -> {
+            if (!isSelected) {
+                geoShape.setFill(Color.ORANGE);
+            }
+            e.consume();
+        });
 
+        geoShape.setOnMouseExited((final MouseEvent e) -> {
+            if (!isSelected) {
+                geoShape.setFill(Color.web(currentColour));
+            }
+            e.consume();
+        });
+
+        geoShape.setOnMouseClicked((final MouseEvent e) -> {
+            parent.deselectAllMarkers();
+            select();
+            parent.addMarkerIdToSelectedList(markerID, geoShapes.get(coordinateList).getValue(), true);
+            e.consume();
+        });
+
+    }
+
+    @Override
+    public void deselect() {
+        geoShapes.values().forEach(shapePair -> shapePair.getKey().setFill(Color.web(currentColour)));
+        isSelected = false;
+    }
+
+    @Override
+    public void select() {
+        isSelected = true;
+        geoShapes.values().forEach(shapePair -> shapePair.getKey().setFill(Color.BLUE));
     }
 
     public Map<String, Pair<Polygon, List<Integer>>> getGeoShapes() {

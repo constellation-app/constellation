@@ -124,5 +124,12 @@ public abstract class AbstractMarker {
         return y;
     }
 
+    public void select() {
+
+    }
+
+    public void deselect() {
+
+    }
 
 }

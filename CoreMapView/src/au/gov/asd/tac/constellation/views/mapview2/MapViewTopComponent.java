@@ -125,9 +125,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
         addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LATITUDE, updateMarkers);
         addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LONGITUDE, updateMarkers);
+        addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.SHAPE, updateMarkers);
         addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LATITUDE, updateMarkers);
         addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LONGITUDE, updateMarkers);
-
     }
 
 
@@ -370,7 +370,11 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             // Get lattitude and longitude
                             final Float elementLat = graph.getObjectValue(latID, elementID);
                             final Float elementLon = graph.getObjectValue(lonID, elementID);
-                            final String elementShape = graph.getObjectValue(geoShapeID, elementID);
+                            String elementShape = null;
+
+                            if (geoShapeID != GraphConstants.NOT_FOUND) {
+                                elementShape = graph.getObjectValue(geoShapeID, elementID);
+                            }
 
                             if (elementShape != null) {
                                 processingGeoShape = true;
@@ -411,7 +415,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             final String coordinateKey = (double) elementLat + "," + (double) elementLon;
 
                             if (processingGeoShape) {
-                                //try {
+
                                 final JSONObject json = new JSONObject(elementShape);
                                 final JSONArray featureList = json.getJSONArray("features");
                                 final GeoShapePolygonMarker gsp = new GeoShapePolygonMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET);
@@ -430,9 +434,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                         }
                                     }
                                 }
-                                //} catch (ParseException ex) {
-                                //Exceptions.printStackTrace(ex);
-                                //}
 
                             }
 

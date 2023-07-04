@@ -415,6 +415,7 @@ public class MapView extends ScrollPane {
         // When mouse is dragged
         mapGroupHolder.setOnMouseDragged(event -> {
             // If the user is draing a selection rectangle
+            isSelectingMultiple = true;
             if (isSelectingMultiple) {
                 final double x = event.getX();
                 final double y = event.getY();
@@ -452,6 +453,7 @@ public class MapView extends ScrollPane {
         mapGroupHolder.setOnMouseReleased(event -> {
             // If the user is selecting multiple markers
             if (isSelectingMultiple) {
+                LOGGER.log(Level.SEVERE, "Selecting multiple");
                 selectedNodeList.clear();
 
                 final double pointMarkerXOffset = 95.5;
@@ -527,7 +529,6 @@ public class MapView extends ScrollPane {
         mapGroupHolder.setOnMousePressed(event -> {
             // create the selection rectangle
             if (event.isPrimaryButtonDown()) {
-                isSelectingMultiple = true;
                 selectionRectangle = new Rectangle();
                 selectionRectangle.setX(event.getX());
                 selectionRectangle.setY(event.getY());
@@ -743,10 +744,11 @@ public class MapView extends ScrollPane {
      */
     public void deselectAllMarkers() {
         for (final AbstractMarker value : markers.values()) {
-            if (value instanceof PointMarker) {
+            /*if (value instanceof PointMarker) {
                 final PointMarker p = (PointMarker) value;
                 p.deselect();
-            }
+            }*/
+            value.deselect();
         }
     }
 
@@ -994,23 +996,6 @@ public class MapView extends ScrollPane {
         markers.clear();
         selectedNodeList.clear();
     }
-
-    /*public void clearAll() {
-        clearQueriedMarkers();
-
-        userMarkers.clear();
-
-        countryGroup.getChildren().clear();
-        graphMarkerGroup.getChildren().clear();
-        drawnMarkerGroup.getChildren().clear();
-        polygonMarkerGroup.getChildren().clear();
-        clusterMarkerGroup.getChildren().clear();
-
-        hiddenPointMarkerGroup.getChildren().clear();
-        overlayGroup.getChildren().clear();
-        layerGroup.getChildren().clear();
-
-    }*/
 
     /**
      * Selects one or nodes on the graph
