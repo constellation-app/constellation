@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import java.util.ArrayList;
 import java.util.List;
-import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -59,6 +58,7 @@ public class PolygonMarker extends AbstractMarker {
             parent.removeUserMarker(markerID);
             e.consume();
         });
+
     }
 
     /**
@@ -123,10 +123,8 @@ public class PolygonMarker extends AbstractMarker {
             }
         }
 
-
         rawPath = path;
         markerPath.setContent(path);
-
     }
 
     public Line getCurrentLine() {

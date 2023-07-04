@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.CircleMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.ClusterMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.ClusterMarkerBuilder;
+import au.gov.asd.tac.constellation.views.mapview2.markers.GeoShapePolygonMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PolygonMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
@@ -53,6 +54,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -79,6 +81,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
@@ -992,7 +995,7 @@ public class MapView extends ScrollPane {
         selectedNodeList.clear();
     }
 
-    public void clearAll() {
+    /*public void clearAll() {
         clearQueriedMarkers();
 
         userMarkers.clear();
@@ -1007,7 +1010,7 @@ public class MapView extends ScrollPane {
         overlayGroup.getChildren().clear();
         layerGroup.getChildren().clear();
 
-    }
+    }*/
 
     /**
      * Selects one or nodes on the graph
@@ -1495,7 +1498,12 @@ public class MapView extends ScrollPane {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
             marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
-                graphMarkerGroup.getChildren().add(marker.getMarker());
+                if (marker instanceof GeoShapePolygonMarker) {
+                    final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
+                    gsp.getGeoShapes().values().forEach(shapePair -> graphMarkerGroup.getChildren().add(shapePair.getKey()));
+                } else {
+                    graphMarkerGroup.getChildren().add(marker.getMarker());
+                }
 
                 if (marker instanceof PointMarker) {
                     final PointMarker pMarker = (PointMarker) marker;
@@ -1509,6 +1517,10 @@ public class MapView extends ScrollPane {
 
     public Group getGraphMarkerGroup() {
         return graphMarkerGroup;
+    }
+
+    public void testAddingGeoMarker(final Polygon p) {
+        Platform.runLater(() -> graphMarkerGroup.getChildren().add(p));
     }
 
     public void addMarkerToHashMap(final String key, final AbstractMarker e) {
