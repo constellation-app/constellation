@@ -1485,7 +1485,11 @@ public class MapView extends ScrollPane {
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 if (marker instanceof GeoShapePolygonMarker) {
                     final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
-                    gsp.getGeoShapes().values().forEach(shapePair -> graphMarkerGroup.getChildren().add(shapePair.getKey()));
+                    gsp.getGeoShapes().values().forEach(shapePair -> {
+                        if (!graphMarkerGroup.getChildren().contains(shapePair.getKey())) {
+                            graphMarkerGroup.getChildren().add(shapePair.getKey());
+                        }
+                    });
                 } else {
                     graphMarkerGroup.getChildren().add(marker.getMarker());
                 }
