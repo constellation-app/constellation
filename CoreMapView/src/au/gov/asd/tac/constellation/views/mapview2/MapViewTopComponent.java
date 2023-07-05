@@ -424,28 +424,40 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                     final JSONArray latLongList = latLongObj.getJSONArray("coordinates");
 
                                     for (int j = 0; j < latLongList.length(); ++j) {
+                                        final String keyString = latLongList.getJSONArray(j).toString();
+                                        if (!mapViewTopComponent.getAllMarkers().containsKey(keyString)) {
+                                            gsp.addGeoShape(keyString, elementID);
+                                            mapViewTopComponent.addMarker(keyString, gsp);
+                                            //gsp.setAttributeColour(elementColour, keyString);
 
-                                        if (!mapViewTopComponent.getAllMarkers().containsKey(latLongList.getJSONArray(j).toString())) {
-                                            gsp.addGeoShape(latLongList.getJSONArray(j).toString(), elementID);
-                                            mapViewTopComponent.addMarker(latLongList.getJSONArray(j).toString(), gsp);
+                                            // Set colours and labels if they are available
+                                            /*if (blazeColour != null) {
+                                                gsp.setBlazeColour(blazeColour, keyString);
+                                            }
+
+                                            if (overlayColour != null) {
+                                                gsp.setOverlayColour(overlayColour, keyString);
+                                            }*/
 
                                         } else {
                                             final GeoShapePolygonMarker existing = (GeoShapePolygonMarker) mapViewTopComponent.getAllMarkers().get(latLongList.getJSONArray(j).toString());
                                             existing.getGeoShapes().get(latLongList.getJSONArray(j).toString()).getValue().add(elementID);
+                                            //existing.setAttributeColour(elementColour, keyString);
                                         }
                                     }
 
                                     final GeoShapePolygonMarker addedMarker = (GeoShapePolygonMarker) mapViewTopComponent.getAllMarkers().get(latLongList.getJSONArray(0).toString());
-                                    addedMarker.setAttributeColour(elementColour);
+                                    addedMarker.setAttributeColour(elementColour, latLongList.getJSONArray(0).toString());
 
                                     // Set colours and labels if they are available
                                     if (blazeColour != null) {
-                                        addedMarker.setBlazeColour(blazeColour);
+                                        addedMarker.setBlazeColour(blazeColour, latLongList.getJSONArray(0).toString());
                                     }
 
                                     if (overlayColour != null) {
-                                        addedMarker.setOverlayColour(overlayColour);
+                                        addedMarker.setOverlayColour(overlayColour, latLongList.getJSONArray(0).toString());
                                     }
+
 
                                     if (labelAttr != null) {
                                         //p.setLabelAttr(labelAttr);
