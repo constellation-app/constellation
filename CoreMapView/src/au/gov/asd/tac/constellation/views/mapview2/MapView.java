@@ -156,6 +156,7 @@ public class MapView extends ScrollPane {
 
     // Attribute and Identifier text groups for markers
     private final Group pointMarkerTextGroup;
+    private final List<Text> markerTextLabels = new ArrayList<>();
 
     // Group for thessian polygons
     private final Group thessianMarkersGroup;
@@ -335,16 +336,7 @@ public class MapView extends ScrollPane {
         markerColourProperty.addListener((observable, oldValue, newValue) -> {
             // Loop through all markers on screen
             for (final AbstractMarker value : markers.values()) {
-                // If the marker is a point marker
-                /*if (value instanceof PointMarker) {
-                    final PointMarker p = (PointMarker) value;
-                    // Change the marker colour
-                    p.changeMarkerColour(newValue);
-
-                }*/
-
                 value.changeMarkerColour(newValue);
-
             }
         });
 
@@ -352,7 +344,7 @@ public class MapView extends ScrollPane {
         markerTextProperty.addListener((observable, oldValue, newValue) -> {
             // Clear any existing text
             pointMarkerTextGroup.getChildren().clear();
-
+            markerTextLabels.clear();
             // Loop through all the markers
             for (final AbstractMarker value : markers.values()) {
                 // If its a point marker change its text
@@ -709,9 +701,17 @@ public class MapView extends ScrollPane {
 
             if (scaleFactor > 1.0) {
                 pointMarkerGlobalScale /= 1.08;
+                markerTextLabels.forEach(textLabel -> {
+                    textLabel.setScaleX(textLabel.getScaleX() / 1.08);
+                    textLabel.setScaleY(textLabel.getScaleY() / 1.08);
+                });
                 resizeMarkers(true);
             } else {
                 pointMarkerGlobalScale *= 1.08;
+                markerTextLabels.forEach(textLabel -> {
+                    textLabel.setScaleX(textLabel.getScaleX() * 1.08);
+                    textLabel.setScaleY(textLabel.getScaleY() * 1.08);
+                });
                 resizeMarkers(false);
             }
 
@@ -746,15 +746,17 @@ public class MapView extends ScrollPane {
         final Text t = new Text(markerText);
         t.setX(p.getX() - 125);
         t.setY(p.getY() + 103);
-
+        markerTextLabels.add(t);
+        t.setScaleX(t.getScaleX() / 0.05);
         pointMarkerTextGroup.getChildren().add(t);
     }
 
     private void setPolygonMarkerText(final String markerText, final GeoShape gs) {
         final Text t = new Text(markerText);
-        t.setX(gs.getCenterX() - 50);
+        t.setX(gs.getCenterX() - 37);
         t.setY(gs.getCenterY());
-
+        markerTextLabels.add(t);
+        t.setScaleX(t.getScaleX() / 0.05);
         pointMarkerTextGroup.getChildren().add(t);
     }
 
