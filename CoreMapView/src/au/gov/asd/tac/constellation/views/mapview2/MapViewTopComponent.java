@@ -428,11 +428,33 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                         if (!mapViewTopComponent.getAllMarkers().containsKey(latLongList.getJSONArray(j).toString())) {
                                             gsp.addGeoShape(latLongList.getJSONArray(j).toString(), elementID);
                                             mapViewTopComponent.addMarker(latLongList.getJSONArray(j).toString(), gsp);
+
                                         } else {
                                             final GeoShapePolygonMarker existing = (GeoShapePolygonMarker) mapViewTopComponent.getAllMarkers().get(latLongList.getJSONArray(j).toString());
                                             existing.getGeoShapes().get(latLongList.getJSONArray(j).toString()).getValue().add(elementID);
                                         }
                                     }
+
+                                    final GeoShapePolygonMarker addedMarker = (GeoShapePolygonMarker) mapViewTopComponent.getAllMarkers().get(latLongList.getJSONArray(0).toString());
+                                    addedMarker.setAttributeColour(elementColour);
+
+                                    // Set colours and labels if they are available
+                                    if (blazeColour != null) {
+                                        addedMarker.setBlazeColour(blazeColour);
+                                    }
+
+                                    if (overlayColour != null) {
+                                        addedMarker.setOverlayColour(overlayColour);
+                                    }
+
+                                    if (labelAttr != null) {
+                                        //p.setLabelAttr(labelAttr);
+                                    }
+
+                                    if (identAttr != null) {
+                                        //p.setIdentAttr(identAttr);
+                                    }
+
                                 }
 
                             }

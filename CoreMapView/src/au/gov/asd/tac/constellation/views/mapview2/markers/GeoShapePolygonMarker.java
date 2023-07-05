@@ -15,7 +15,10 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,7 +40,14 @@ public class GeoShapePolygonMarker extends AbstractMarker {
 
     private static final Logger LOGGER = Logger.getLogger(GeoShapePolygonMarker.class.getName());
     private final double geoShapeYOffset = -148.5;
-    private String currentColour = "#FF0000";
+
+    private String defaultColour = "#FF0000";
+    private String multiValCol = "#D3D3D3";
+    private String attributeColour = defaultColour;
+    private List<String> blazeColours = new ArrayList<>();
+    private List<String> overlayColours = new ArrayList<>();
+    //private String overlayColour = null;
+    private String currentColour = defaultColour;
 
     private final Map<String, Pair<Polygon, List<Integer>>> geoShapes = new HashMap<>();
 
@@ -58,6 +68,7 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         }
 
         geoShape.setFill(Color.RED);
+        geoShape.setStroke(Color.BLACK);
         geoShape.setOpacity(0.5);
 
         // Event handlers for the marker
@@ -85,6 +96,62 @@ public class GeoShapePolygonMarker extends AbstractMarker {
     }
 
     @Override
+    public void changeMarkerColour(final String option) {
+        // Depending on the option change the colour of the marker
+        if (option.equals(MapViewPane.DEFAULT_COLOURS)) {
+            currentColour = defaultColour;
+            changeColourOfAllShapes(currentColour);
+        } else if (option.equals(MapViewPane.USE_COLOUR_ATTR)) {
+            geoShapes.values().forEach(shapePair -> {
+                if(shapePair.getValue().size() >= 1)
+                {
+                    currentColour = multiValCol;
+                    shapePair.getKey().setFill(Color.web(currentColour));
+                }
+                else if(shapePair.getValue().size() == 1)
+                {
+                    currentColour = attributeColour;
+                    shapePair.getKey().setFill(Color.web(currentColour));
+                }
+            });
+
+        } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
+            if (blazeColours.size() != 0) {
+                final ConstellationColor colour = ConstellationColor.getColorValue(blazeColours.get(0));
+                if (blazeColours.size() == 1) {
+                    currentColour = colour.getHtmlColor();
+                    markerPath.setFill(Color.web(currentColour));
+                } else {
+                    markerPath.setFill(Color.web(multiValCol));
+                    currentColour = multiValCol;
+                }
+
+            } else {
+                markerPath.setFill(Color.web(defaultColour));
+            }
+        } else if (option.equals(MapViewPane.USE_OVERLAY_COL)) {
+            /*if (overlayColour != null) {
+                final ConstellationColor colour = ConstellationColor.getColorValue(overlayColour);
+
+                if (overlayColourCount == 1) {
+                    currentColour = colour.getHtmlColor();
+                    markerPath.setFill(Color.web(currentColour));
+                } else {
+                    markerPath.setFill(Color.web(multiValCol));
+                    currentColour = multiValCol;
+                }
+
+            } else {
+                markerPath.setFill(Color.web(defaultColour));
+            }*/
+        }
+    }
+
+    private void changeColourOfAllShapes(final String col) {
+        geoShapes.values().forEach(shapePair -> shapePair.getKey().setFill(Color.web(col)));
+    }
+
+    @Override
     public void deselect() {
         geoShapes.values().forEach(shapePair -> shapePair.getKey().setFill(Color.web(currentColour)));
         isSelected = false;
@@ -99,5 +166,28 @@ public class GeoShapePolygonMarker extends AbstractMarker {
     public Map<String, Pair<Polygon, List<Integer>>> getGeoShapes() {
         return geoShapes;
     }
+
+    public void setBlazeColour(final String blaze) {
+        if (blazeColours.size() > 1) {
+            return;
+        }
+
+        final String blazeCol = blaze.split(SeparatorConstants.SEMICOLON)[1];
+
+        blazeColours.add(blazeCol);
+    }
+
+    public void setOverlayColour(final String overlayCol) {
+        if (overlayColours.size() > 1) {
+            return;
+        }
+
+        overlayColours.add(overlayCol);
+    }
+
+    public void setAttributeColour(String attributeColour) {
+        this.attributeColour = attributeColour;
+    }
+
 
 }

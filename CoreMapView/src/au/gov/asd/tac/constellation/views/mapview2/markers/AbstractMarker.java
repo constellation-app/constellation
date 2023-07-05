@@ -132,4 +132,7 @@ public abstract class AbstractMarker {
 
     }
 
+    public void changeMarkerColour(final String option) {
+
+    }
 }

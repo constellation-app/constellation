@@ -111,6 +111,7 @@ public class PointMarker extends AbstractMarker {
      *
      * @param option
      */
+    @Override
     public void changeMarkerColour(final String option) {
         // Depending on the option change the colour of the marker
         if (option.equals(MapViewPane.DEFAULT_COLOURS)) {
@@ -212,7 +213,6 @@ public class PointMarker extends AbstractMarker {
         }
 
         blazeColourCount++;
-
     }
 
     public void setOverlayColour(final String overlayCol) {

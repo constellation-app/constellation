@@ -335,12 +335,14 @@ public class MapView extends ScrollPane {
             // Loop through all markers on screen
             for (final AbstractMarker value : markers.values()) {
                 // If the marker is a point marker
-                if (value instanceof PointMarker) {
+                /*if (value instanceof PointMarker) {
                     final PointMarker p = (PointMarker) value;
                     // Change the marker colour
                     p.changeMarkerColour(newValue);
 
-                }
+                }*/
+
+                value.changeMarkerColour(newValue);
 
             }
         });
@@ -415,8 +417,8 @@ public class MapView extends ScrollPane {
         // When mouse is dragged
         mapGroupHolder.setOnMouseDragged(event -> {
             // If the user is draing a selection rectangle
-            isSelectingMultiple = true;
-            if (isSelectingMultiple) {
+            if (event.isPrimaryButtonDown()) {
+                isSelectingMultiple = true;
                 final double x = event.getX();
                 final double y = event.getY();
 
