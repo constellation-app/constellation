@@ -31,10 +31,15 @@ public class GeoShape extends Polygon {
 
     private String defaultColour = "#FF0000";
     private String multiValCol = "#D3D3D3";
-    private List<String> attributeColours = new ArrayList<>();
-    private List<String> blazeColours = new ArrayList<>();
-    private List<String> overlayColours = new ArrayList<>();
+    private final List<String> attributeColours = new ArrayList<>();
+    private final List<String> blazeColours = new ArrayList<>();
+    private final List<String> overlayColours = new ArrayList<>();
+    private final List<String> labels = new ArrayList<>();
+    private final List<String> identifiers = new ArrayList<>();
     private String currentColour = defaultColour;
+
+    private double centerX;
+    private double centerY;
 
     public GeoShape() {
 
@@ -62,7 +67,7 @@ public class GeoShape extends Polygon {
         overlayColours.add(overlayCol);
     }
 
-    public void setAttributeColour(String attributeColour) {
+    public void setAttributeColour(final String attributeColour) {
         if (attributeColours.size() > 1) {
             return;
         }
@@ -116,4 +121,57 @@ public class GeoShape extends Polygon {
         }
 
     }
+
+    public void setLabelAttr(final String labelAttribute) {
+
+        if (labels.size() > 1) {
+            return;
+        }
+
+        labels.add(labelAttribute);
+    }
+
+    public void setIdentAttr(final String identAttribute) {
+
+        if (identifiers.size() > 1) {
+            return;
+        }
+
+        identifiers.add(identAttribute);
+    }
+
+    public String getLabelAttr() {
+
+        if (labels.size() > 1) {
+            return "<Multiple Values>";
+        }
+
+        return labels.get(0);
+    }
+
+    public String getIdentAttr() {
+
+        if (identifiers.size() > 1) {
+            return "<Multiple Values>";
+        }
+
+        return identifiers.get(0);
+    }
+
+    public double getCenterX() {
+        return centerX;
+    }
+
+    public void setCenterX(final double centerX) {
+        this.centerX = centerX;
+    }
+
+    public double getCenterY() {
+        return centerY;
+    }
+
+    public void setCenterY(final double centerY) {
+        this.centerY = centerY;
+    }
+
 }

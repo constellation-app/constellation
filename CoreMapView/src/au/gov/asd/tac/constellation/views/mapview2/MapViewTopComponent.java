@@ -415,7 +415,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             final String coordinateKey = (double) elementLat + "," + (double) elementLon;
 
                             if (processingGeoShape) {
-
                                 final JSONObject json = new JSONObject(elementShape);
                                 final JSONArray featureList = json.getJSONArray("features");
                                 final GeoShapePolygonMarker gsp = new GeoShapePolygonMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET);
@@ -428,21 +427,10 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                         if (!mapViewTopComponent.getAllMarkers().containsKey(keyString)) {
                                             gsp.addGeoShape(keyString, elementID);
                                             mapViewTopComponent.addMarker(keyString, gsp);
-                                            //gsp.setAttributeColour(elementColour, keyString);
-
-                                            // Set colours and labels if they are available
-                                            /*if (blazeColour != null) {
-                                                gsp.setBlazeColour(blazeColour, keyString);
-                                            }
-
-                                            if (overlayColour != null) {
-                                                gsp.setOverlayColour(overlayColour, keyString);
-                                            }*/
 
                                         } else {
                                             final GeoShapePolygonMarker existing = (GeoShapePolygonMarker) mapViewTopComponent.getAllMarkers().get(latLongList.getJSONArray(j).toString());
                                             existing.getGeoShapes().get(latLongList.getJSONArray(j).toString()).getValue().add(elementID);
-                                            //existing.setAttributeColour(elementColour, keyString);
                                         }
                                     }
 
@@ -460,11 +448,11 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
 
                                     if (labelAttr != null) {
-                                        //p.setLabelAttr(labelAttr);
+                                        addedMarker.setLabelAttr(labelAttr, latLongList.getJSONArray(0).toString());
                                     }
 
                                     if (identAttr != null) {
-                                        //p.setIdentAttr(identAttr);
+                                        addedMarker.setIdentAttr(identAttr, latLongList.getJSONArray(0).toString());
                                     }
 
                                 }

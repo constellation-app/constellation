@@ -54,13 +54,18 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         geoShapes.put(coordinateList, new Pair(geoShape, new ArrayList<>()));
         geoShapes.get(coordinateList).getValue().add(elementID);
         final String[] longLatValues = coordinateList.replace("[", "").replace("]", "").split(",");
-
+        double xTotal = 0;
+        double yTotal = 0;
+        double coordinateCount = 0;
         for (int j = 0; j + 1 < longLatValues.length; j = j + 2) {
-            //LOGGER.log(Level.SEVERE, "Coordinates: " + longLatValues[j] + ", " + longLatValues[j + 1]);
             geoShape.getPoints().addAll(MarkerUtilities.longToX(Double.parseDouble(longLatValues[j]), MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG) - 0.0625,
                     MarkerUtilities.latToY(Double.parseDouble(longLatValues[j + 1]), MapView.MAP_WIDTH, MapView.MAP_HEIGHT) + geoShapeYOffset);
+            xTotal += geoShape.getPoints().get(geoShape.getPoints().size() - 2);
+            yTotal += geoShape.getPoints().get(geoShape.getPoints().size() - 1);
+            ++coordinateCount;
         }
-
+        geoShape.setCenterX(xTotal / coordinateCount);
+        geoShape.setCenterY(yTotal / coordinateCount);
         geoShape.setFill(Color.RED);
         geoShape.setStroke(Color.BLACK);
         geoShape.setOpacity(0.5);
@@ -119,9 +124,23 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         geoShapes.get(coordinateKey).getKey().setOverlayColour(overlayCol);
     }
 
-    public void setAttributeColour(String attributeColour, final String coordinateKey) {
+    public void setAttributeColour(final String attributeColour, final String coordinateKey) {
         geoShapes.get(coordinateKey).getKey().setAttributeColour(attributeColour);
     }
 
+    public String getLabelAttr(final String coordinateKey) {
+        return geoShapes.get(coordinateKey).getKey().getLabelAttr();
+    }
 
+    public String getIdentAttr(final String coordinateKey) {
+        return geoShapes.get(coordinateKey).getKey().getIdentAttr();
+    }
+
+    public void setLabelAttr(final String labelAttribute, final String coordinateKey) {
+        geoShapes.get(coordinateKey).getKey().setLabelAttr(labelAttribute);
+    }
+
+    public void setIdentAttr(final String identAttribute, final String coordinateKey) {
+        geoShapes.get(coordinateKey).getKey().setIdentAttr(identAttribute);
+    }
 }

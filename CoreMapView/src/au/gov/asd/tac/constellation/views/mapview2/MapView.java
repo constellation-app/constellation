@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.views.mapview2.overlays.InfoOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.OverviewOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.GeoShape;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import gov.nasa.worldwind.geom.coords.MGRSCoord;
@@ -362,6 +363,14 @@ public class MapView extends ScrollPane {
                         setPointMarkerText(p.getLabelAttr(), p);
                     } else if (newValue.equals(MapViewPane.USE_IDENT_ATTR)) {
                         setPointMarkerText(p.getIdentAttr(), p);
+                    }
+                } else if (value instanceof GeoShapePolygonMarker) {
+                    final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) value;
+
+                    if (newValue.equals(MapViewPane.USE_LABEL_ATTR)) {
+                        gsp.getGeoShapes().values().forEach(shapePair -> setPolygonMarkerText(shapePair.getKey().getLabelAttr(), shapePair.getKey()));
+                    } else if (newValue.equals(MapViewPane.USE_IDENT_ATTR)) {
+                        gsp.getGeoShapes().values().forEach(shapePair -> setPolygonMarkerText(shapePair.getKey().getIdentAttr(), shapePair.getKey()));
                     }
                 }
 
@@ -737,6 +746,14 @@ public class MapView extends ScrollPane {
         final Text t = new Text(markerText);
         t.setX(p.getX() - 125);
         t.setY(p.getY() + 103);
+
+        pointMarkerTextGroup.getChildren().add(t);
+    }
+
+    private void setPolygonMarkerText(final String markerText, final GeoShape gs) {
+        final Text t = new Text(markerText);
+        t.setX(gs.getCenterX() - 50);
+        t.setY(gs.getCenterY());
 
         pointMarkerTextGroup.getChildren().add(t);
     }
