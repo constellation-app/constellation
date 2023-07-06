@@ -88,6 +88,7 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -156,7 +157,7 @@ public class MapView extends ScrollPane {
 
     // Attribute and Identifier text groups for markers
     private final Group pointMarkerTextGroup;
-    private final List<Text> markerTextLabels = new ArrayList<>();
+    private final List<Pair<Vec3, Text>> markerTextLabels = new ArrayList<>();
 
     // Group for thessian polygons
     private final Group thessianMarkersGroup;
@@ -698,19 +699,50 @@ public class MapView extends ScrollPane {
             // Calculate how much the map will have to move
             final double xAdjust = (newXScale / oldXScale) - 1;
             final double yAdjust = (newYScale / oldYScale) - 1;
-
+            final double markerScalingRate = 1.1;
             if (scaleFactor > 1.0) {
                 pointMarkerGlobalScale /= 1.08;
+
                 markerTextLabels.forEach(textLabel -> {
-                    textLabel.setScaleX(textLabel.getScaleX() / 1.08);
-                    textLabel.setScaleY(textLabel.getScaleY() / 1.08);
+                    textLabel.getValue().setScaleX(textLabel.getValue().getScaleX() / markerScalingRate);
+                    textLabel.getValue().setScaleY(textLabel.getValue().getScaleY() / markerScalingRate);
+
+                    final Rectangle r = new Rectangle();
+                    r.setWidth(3);
+                    r.setHeight(3);
+                    r.setX(textLabel.getKey().getX() + textLabel.getValue().getBoundsInLocal().getWidth() / 2 + 4);
+                    r.setY(textLabel.getKey().getY() - (textLabel.getValue().getBoundsInLocal().getHeight() - 16));
+                    //pointMarkerTextGroup.getChildren().add(r);
+
+                    final double posX = textLabel.getKey().getX() + textLabel.getValue().getBoundsInLocal().getWidth() / 2 + 4;
+                    final double posY = textLabel.getKey().getY() - (textLabel.getValue().getBoundsInLocal().getHeight() - 6);
+
+                    textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() - (textLabel.getValue().getBoundsInParent().getCenterY() - posY));
+                    textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() - (textLabel.getValue().getBoundsInParent().getCenterX() - posX));
+                    //textLabel.getValue().setTranslateY(textLabel.getKey().getY());
+
                 });
                 resizeMarkers(true);
             } else {
                 pointMarkerGlobalScale *= 1.08;
                 markerTextLabels.forEach(textLabel -> {
-                    textLabel.setScaleX(textLabel.getScaleX() * 1.08);
-                    textLabel.setScaleY(textLabel.getScaleY() * 1.08);
+                    textLabel.getValue().setScaleX(textLabel.getValue().getScaleX() * markerScalingRate);
+                    textLabel.getValue().setScaleY(textLabel.getValue().getScaleY() * markerScalingRate);
+                    //textLabel.setTranslateX(textLabel.getTranslateX() + 0.04);
+
+                    final Rectangle r = new Rectangle();
+                    r.setWidth(3);
+                    r.setHeight(3);
+                    r.setX(textLabel.getKey().getX() + textLabel.getValue().getBoundsInLocal().getWidth() / 2 + 4);
+                    r.setY(textLabel.getKey().getY() - (textLabel.getValue().getBoundsInLocal().getHeight() - 16));
+                    //pointMarkerTextGroup.getChildren().add(r);
+
+                    final double posX = textLabel.getKey().getX() + textLabel.getValue().getBoundsInLocal().getWidth() / 2 + 4;
+                    final double posY = textLabel.getKey().getY() - (textLabel.getValue().getBoundsInLocal().getHeight() - 6);
+
+                    textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() - (textLabel.getValue().getBoundsInParent().getCenterY() - posY));
+                    textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() - (textLabel.getValue().getBoundsInParent().getCenterX() - posX));
+
                 });
                 resizeMarkers(false);
             }
@@ -746,8 +778,13 @@ public class MapView extends ScrollPane {
         final Text t = new Text(markerText);
         t.setX(p.getX() - 125);
         t.setY(p.getY() + 103);
-        markerTextLabels.add(t);
-        t.setScaleX(t.getScaleX() / 0.05);
+        markerTextLabels.add(new Pair(new Vec3(t.getX(), t.getY()), t));
+
+        /*if (t.getScaleX() != pointMarkerGlobalScale) {
+            t.setScaleX(pointMarkerGlobalScale);
+            t.setScaleY(pointMarkerGlobalScale);
+        }*/
+
         pointMarkerTextGroup.getChildren().add(t);
     }
 
@@ -755,8 +792,9 @@ public class MapView extends ScrollPane {
         final Text t = new Text(markerText);
         t.setX(gs.getCenterX() - 37);
         t.setY(gs.getCenterY());
-        markerTextLabels.add(t);
-        t.setScaleX(t.getScaleX() / 0.05);
+        markerTextLabels.add(new Pair(new Vec3(t.getX(), t.getY()), t));
+        //t.setScaleX(t.getScaleX() / 2);
+        //t.setScaleX(t.getScaleY() / 1.3);
         pointMarkerTextGroup.getChildren().add(t);
     }
 
@@ -1503,6 +1541,7 @@ public class MapView extends ScrollPane {
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
             marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 if (marker instanceof GeoShapePolygonMarker) {
                     final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
