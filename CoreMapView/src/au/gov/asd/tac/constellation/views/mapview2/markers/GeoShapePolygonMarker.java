@@ -15,22 +15,15 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.GeoShape;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
 
 /**
@@ -38,8 +31,6 @@ import javafx.util.Pair;
  * @author altair1673
  */
 public class GeoShapePolygonMarker extends AbstractMarker {
-
-    private static final Logger LOGGER = Logger.getLogger(GeoShapePolygonMarker.class.getName());
     private final double geoShapeYOffset = -148.5;
 
 
@@ -67,6 +58,7 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         geoShape.setCenterX(xTotal / coordinateCount);
         geoShape.setCenterY(yTotal / coordinateCount);
         geoShape.setFill(Color.RED);
+        geoShape.setStrokeWidth(0.1);
         geoShape.setStroke(Color.BLACK);
         geoShape.setOpacity(0.5);
 
