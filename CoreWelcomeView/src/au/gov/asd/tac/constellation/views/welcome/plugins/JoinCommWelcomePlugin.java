@@ -42,9 +42,9 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("JoinCommWelcomePlugin=Join Comm Welcome Plugin")
 public class JoinCommWelcomePlugin implements WelcomePluginInterface {
 
-    public static final String JOIN = "resources/welcome_join.png";
-    final ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
-    final Button joinBtn = new Button();
+    private static final String JOIN = "resources/welcome_join.png";
+    private final ImageView joinView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(JOIN)));
+    private final Button joinBtn = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -69,16 +69,6 @@ public class JoinCommWelcomePlugin implements WelcomePluginInterface {
                 .withParameter(OpenInBrowserPlugin.APPLICATION_PARAMETER_ID, "Open " + getName())
                 .withParameter(OpenInBrowserPlugin.URL_PARAMETER_ID, url)
                 .executeLater(null);
-    }
-
-    /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    @Override
-    public boolean isVisible() {
-        return true;
     }
 
     /**

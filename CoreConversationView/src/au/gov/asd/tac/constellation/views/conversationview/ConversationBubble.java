@@ -74,7 +74,7 @@ public class ConversationBubble extends VBox {
 
         final VBox bubbleContent = new VBox();
         bubbleContent.setAlignment(Pos.CENTER_LEFT);
-        bubbleContent.setPadding(new Insets(2, 2, 2, 2));
+        bubbleContent.setPadding(new Insets(2, 2, 0, 2));
         bubbleContent.setMaxWidth(USE_PREF_SIZE);
         bubbleContent.setMinWidth(200);
 

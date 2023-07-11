@@ -55,7 +55,7 @@ import org.apache.commons.lang3.StringUtils;
 public class TableVisualisation<C extends AnalyticData> extends InternalVisualisation implements ResultListener<C> {
 
     private final AbstractTableTranslator<? extends AnalyticResult<?>, C> translator;
-    private final VBox tableVisualisation;
+    private final VBox visualisation;
     private final TextField tableFilter;
     private final TableView<C> table;
     private final Map<String, TableColumn<C, Object>> tableColumns = new HashMap<>();
@@ -64,7 +64,7 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
     public TableVisualisation(final AbstractTableTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
         this.table = new TableView<>();
-        this.tableVisualisation = new VBox();
+        this.visualisation = new VBox();
 
         this.tableFilter = new TextField();
         tableFilter.setPromptText("Type here to filter results: ");
@@ -81,7 +81,7 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
         table.setId("table-visualisation");
         table.setPadding(new Insets(5));
 
-        tableVisualisation.getChildren().addAll(optionsPanel, table);
+        visualisation.getChildren().addAll(optionsPanel, table);
     }
 
     public void addColumn(final String columnName, final int percentWidth) {
@@ -149,7 +149,7 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
     @Override
     public Node getVisualisation() {
-        return tableVisualisation;
+        return visualisation;
     }
 
     @Override

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.spectral;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -86,7 +87,7 @@ public class GraphSpectrumEmbedder {
             return matrixFromGraph(rg, includedVertices, excludedLinks, MatrixType.LAPLACIAN_MATRIX);
         }
 
-        public static GraphMatrix matrixFromGraph(final GraphReadMethods rg, final Set<Integer> includedVertices, final Set<Integer> excludedLinks, final MatrixType type) {
+        public static GraphMatrix matrixFromGraph(final GraphReadMethods rg, final Collection<Integer> includedVertices, final Collection<Integer> excludedLinks, final MatrixType type) {
 
             final int numVertices = includedVertices.size();
             final double[][] matrixEntries = new double[numVertices][];
@@ -119,8 +120,6 @@ public class GraphSpectrumEmbedder {
                         continue;
                     } else if (idToMatrixPosition.get(neighbourID) == i) {
                         continue;
-                    } else {
-                        // Do nothing
                     }
                     neighbourCount++;
                     if (type != null) {

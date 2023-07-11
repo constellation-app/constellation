@@ -43,9 +43,9 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("WhatsNewWelcomePlugin=Whats New Welcome Plugin")
 public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
 
-    public static final String WHATS_NEW = "resources/welcome_new.png";
-    final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
-    final Button whatsNewBtn = new Button();
+    private static final String WHATS_NEW = "resources/welcome_new.png";
+    private final ImageView newView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(WHATS_NEW)));
+    private final Button whatsNewBtn = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -74,16 +74,6 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
                 whatsNew.requestActive();
             }
         });
-    }
-
-    /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    @Override
-    public boolean isVisible() {
-        return true;
     }
 
     /**

@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.utilities.CompositeTransactionId;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -259,7 +260,7 @@ public class CompositeUtilities {
      * @param comprisingIds A Set of the comprising node id's to be composited
      * @param leaderId The lead node id to contain the composited nodes
      */
-    public static void makeComposite(final GraphWriteMethods graph, final Set<Integer> comprisingIds, final int leaderId) {
+    public static void makeComposite(final GraphWriteMethods graph, final Collection<Integer> comprisingIds, final int leaderId) {
         final int compositeStateAttr = AnalyticConcept.VertexAttribute.COMPOSITE_STATE.ensure(graph);
         final int uniqueIdAttr = VisualConcept.TransactionAttribute.IDENTIFIER.get(graph);
 

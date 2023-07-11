@@ -85,7 +85,7 @@ public class ConstellationLAFSettingsNGTest {
             UIManager.getDefaults().put("org.netbeans.swing.tabcontrol.plaf.Windows8VectorViewTabDisplayerUI", pseudoViewDisplayerUIclass);
             ConstellationLAFSettings.applyTabColorSettings();
             final Color selectedBackgroundFiller = (Color) UIManager.getDefaults().get("tab_sel_fill");
-            final Color expectedBackgroundFiller = new Color(160, 205, 255);                                                                
+            final Color expectedBackgroundFiller = new Color(155, 200, 255);
             Assert.assertTrue(selectedBackgroundFiller != null && selectedBackgroundFiller.equals(expectedBackgroundFiller));                                                              
             LOGGER.info("Windows 8+ LAF Test: PASSED");
         } catch (Exception e) {

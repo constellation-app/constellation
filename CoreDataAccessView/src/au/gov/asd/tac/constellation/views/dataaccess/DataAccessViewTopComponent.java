@@ -18,12 +18,12 @@ package au.gov.asd.tac.constellation.views.dataaccess;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -64,10 +64,10 @@ import org.openide.windows.TopComponent;
 })
 public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAccessPane> {
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
     
     private final DataAccessPane dataAccessPane;
-
+    
     /**
      * Create a new data access view.
      */
@@ -144,14 +144,19 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
 
     @Override
     protected void handleNewGraph(final Graph graph) {
+        System.setProperty("dav.graph.ready", Boolean.FALSE.toString());
         if (needsUpdate() && getDataAccessPane() != null) {
             getDataAccessPane().update(graph);
-            Platform.runLater(() -> 
+            Platform.runLater(() ->
                 DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph)
             );
         }
+        Platform.runLater(() ->
+                // nested runLater so it runs after all the other triggered processes for opening a graph have been run
+                Platform.runLater(() -> System.setProperty("dav.graph.ready", Boolean.TRUE.toString()))
+        );
     }
-
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

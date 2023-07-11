@@ -169,7 +169,7 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
                 case EXCEL:
                     // "GMT" is used here to avoid it using the user's local time zone.
                     // If the user has selected a time zone, it is applied seperately in `translateFromZonedDateTime`
-                    zonedDateTime = TemporalFormatting.zonedDateTimeFromLong(DateUtil.getJavaDate(Double.parseDouble(value), TimeZone.getTimeZone("GMT")).getTime());
+                    zonedDateTime = TemporalFormatting.zonedDateTimeFromLongMilli(DateUtil.getJavaDate(Double.parseDouble(value), TimeZone.getTimeZone("GMT")).getTime());
                     return translateFromZonedDateTime(zonedDateTime, parameters);
                 case CUSTOM: {
                     format = parameters.getParameters().get(CUSTOM_PARAMETER_ID).getStringValue();

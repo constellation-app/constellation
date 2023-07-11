@@ -154,11 +154,9 @@ public class Octree {
                 } else {
                     index = backQuadrant ? BOT_L_B : -1;
                 }
-            } else {
-                // Do nothing
             }
-        } // Object can completely fit within the right quadrants.
-        else if (orb.getX() - orb.r > midx) {
+        } else if (orb.getX() - orb.r > midx) {
+            // Object can completely fit within the right quadrants.
             if (topQuadrant) {
                 if (frontQuadrant) {
                     index = TOP_R_F;
@@ -171,8 +169,6 @@ public class Octree {
                 } else {
                     index = backQuadrant ? BOT_R_B : -1;
                 }
-            } else {
-                // Do nothing
             }
         } else {
             return index;

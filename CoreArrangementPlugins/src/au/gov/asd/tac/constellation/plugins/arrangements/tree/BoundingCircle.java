@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.arrangements.tree;
 
 import au.gov.asd.tac.constellation.graph.visual.graphics.BBoxf;
-import java.util.List;
 
 /**
  *
@@ -62,7 +61,7 @@ public class BoundingCircle {
         this.radius = radius;
     }
 
-    public static BoundingCircle enclosingCircle(final List<BoundingCircle> circles) {
+    public static BoundingCircle enclosingCircle(final Iterable<BoundingCircle> circles) {
         final BBoxf box = new BBoxf();
         for (final BoundingCircle c : circles) {
             box.add((float) (c.x + c.radius), (float) (c.y + c.radius), 0F);
