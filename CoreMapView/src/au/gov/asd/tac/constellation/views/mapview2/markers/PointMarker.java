@@ -94,11 +94,13 @@ public class PointMarker extends AbstractMarker {
 
     }
 
+    @Override
     public void deselect() {
         markerPath.setFill(Color.web(currentColour));
         isSelected = false;
     }
 
+    @Override
     public void select() {
         isSelected = true;
         markerPath.setFill(Color.BLUE);
@@ -109,6 +111,7 @@ public class PointMarker extends AbstractMarker {
      *
      * @param option
      */
+    @Override
     public void changeMarkerColour(final String option) {
         // Depending on the option change the colour of the marker
         if (option.equals(MapViewPane.DEFAULT_COLOURS)) {
@@ -210,7 +213,6 @@ public class PointMarker extends AbstractMarker {
         }
 
         blazeColourCount++;
-
     }
 
     public void setOverlayColour(final String overlayCol) {

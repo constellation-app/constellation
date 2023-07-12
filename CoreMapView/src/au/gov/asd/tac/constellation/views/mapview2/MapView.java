@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.CircleMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.ClusterMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.ClusterMarkerBuilder;
+import au.gov.asd.tac.constellation.views.mapview2.markers.GeoShapePolygonMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PolygonMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
@@ -36,6 +37,7 @@ import au.gov.asd.tac.constellation.views.mapview2.overlays.InfoOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.OverviewOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.GeoShape;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import gov.nasa.worldwind.geom.coords.MGRSCoord;
@@ -53,6 +55,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -79,11 +82,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -152,6 +157,7 @@ public class MapView extends ScrollPane {
 
     // Attribute and Identifier text groups for markers
     private final Group pointMarkerTextGroup;
+    private final List<Pair<AbstractMarker, Text>> markerTextLabels = new ArrayList<>();
 
     // Group for thessian polygons
     private final Group thessianMarkersGroup;
@@ -284,7 +290,6 @@ public class MapView extends ScrollPane {
                 updateOverviewOverlay();
                 event.consume();
             }
-
         });
 
         // Clear any country grpahics that already exist within group
@@ -332,36 +337,13 @@ public class MapView extends ScrollPane {
         markerColourProperty.addListener((observable, oldValue, newValue) -> {
             // Loop through all markers on screen
             for (final AbstractMarker value : markers.values()) {
-                // If the marker is a point marker
-                if (value instanceof PointMarker) {
-                    final PointMarker p = (PointMarker) value;
-                    // Change the marker colour
-                    p.changeMarkerColour(newValue);
-
-                }
-
+                value.changeMarkerColour(newValue);
             }
         });
 
         // Handler for what type of text to display under the markers
         markerTextProperty.addListener((observable, oldValue, newValue) -> {
-            // Clear any existing text
-            pointMarkerTextGroup.getChildren().clear();
-
-            // Loop through all the markers
-            for (final AbstractMarker value : markers.values()) {
-                // If its a point marker change its text
-                if (value instanceof PointMarker) {
-                    final PointMarker p = (PointMarker) value;
-
-                    if (newValue.equals(MapViewPane.USE_LABEL_ATTR)) {
-                        setPointMarkerText(p.getLabelAttr(), p);
-                    } else if (newValue.equals(MapViewPane.USE_IDENT_ATTR)) {
-                        setPointMarkerText(p.getIdentAttr(), p);
-                    }
-                }
-
-            }
+            renderMarkerText(newValue);
         });
 
         setMouseClickedEventHandler();
@@ -413,7 +395,8 @@ public class MapView extends ScrollPane {
         // When mouse is dragged
         mapGroupHolder.setOnMouseDragged(event -> {
             // If the user is draing a selection rectangle
-            if (isSelectingMultiple) {
+            if (event.isPrimaryButtonDown()) {
+                isSelectingMultiple = true;
                 final double x = event.getX();
                 final double y = event.getY();
 
@@ -450,6 +433,7 @@ public class MapView extends ScrollPane {
         mapGroupHolder.setOnMouseReleased(event -> {
             // If the user is selecting multiple markers
             if (isSelectingMultiple) {
+                LOGGER.log(Level.SEVERE, "Selecting multiple");
                 selectedNodeList.clear();
 
                 final double pointMarkerXOffset = 95.5;
@@ -525,7 +509,6 @@ public class MapView extends ScrollPane {
         mapGroupHolder.setOnMousePressed(event -> {
             // create the selection rectangle
             if (event.isPrimaryButtonDown()) {
-                isSelectingMultiple = true;
                 selectionRectangle = new Rectangle();
                 selectionRectangle.setX(event.getX());
                 selectionRectangle.setY(event.getY());
@@ -659,6 +642,33 @@ public class MapView extends ScrollPane {
         });
     }
 
+    private void renderMarkerText(final String option) {
+        // Clear any existing text
+        pointMarkerTextGroup.getChildren().clear();
+        markerTextLabels.clear();
+        // Loop through all the markers
+        for (final AbstractMarker value : markers.values()) {
+            // If its a point marker change its text
+            if (value instanceof PointMarker) {
+                final PointMarker p = (PointMarker) value;
+                if (option.equals(MapViewPane.USE_LABEL_ATTR)) {
+                    setPointMarkerText(p.getLabelAttr(), p);
+                } else if (option.equals(MapViewPane.USE_IDENT_ATTR)) {
+                    setPointMarkerText(p.getIdentAttr(), p);
+                }
+            } else if (value instanceof GeoShapePolygonMarker) {
+                final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) value;
+
+                if (option.equals(MapViewPane.USE_LABEL_ATTR)) {
+                    gsp.getGeoShapes().values().forEach(shapePair -> setPolygonMarkerText(shapePair.getKey().getLabelAttr(), shapePair.getKey()));
+                } else if (option.equals(MapViewPane.USE_IDENT_ATTR)) {
+                    gsp.getGeoShapes().values().forEach(shapePair -> setPolygonMarkerText(shapePair.getKey().getIdentAttr(), shapePair.getKey()));
+                }
+            }
+
+        }
+    }
+
     /**
      * Set scroll events
      */
@@ -692,12 +702,42 @@ public class MapView extends ScrollPane {
             // Calculate how much the map will have to move
             final double xAdjust = (newXScale / oldXScale) - 1;
             final double yAdjust = (newYScale / oldYScale) - 1;
-
+            final double markerScalingRate = 1.1;
+            final double labelYOffset = 11;
             if (scaleFactor > 1.0) {
                 pointMarkerGlobalScale /= 1.08;
+                markerTextLabels.forEach(textLabel -> {
+                    textLabel.getValue().setScaleX(textLabel.getValue().getScaleX() / markerScalingRate);
+                    textLabel.getValue().setScaleY(textLabel.getValue().getScaleY() / markerScalingRate);
+
+
+                    double posX = textLabel.getValue().getBoundsInParent().getCenterX();
+                    double posY = textLabel.getValue().getBoundsInParent().getCenterY();
+
+                    if (textLabel.getKey() instanceof PointMarker) {
+                        textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterY() + textLabel.getKey().getMarker().getBoundsInParent().getHeight() / 2) - posY)));
+                        textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterX()) - posX)));
+                    }
+
+                });
                 resizeMarkers(true);
             } else {
                 pointMarkerGlobalScale *= 1.08;
+
+                markerTextLabels.forEach(textLabel -> {
+                    textLabel.getValue().setScaleX(textLabel.getValue().getScaleX() * markerScalingRate);
+                    textLabel.getValue().setScaleY(textLabel.getValue().getScaleY() * markerScalingRate);
+
+
+                    double posX = textLabel.getValue().getBoundsInParent().getCenterX();
+                    double posY = textLabel.getValue().getBoundsInParent().getCenterY();
+
+                    if (textLabel.getKey() instanceof PointMarker) {
+                        textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterY() + textLabel.getKey().getMarker().getBoundsInParent().getHeight() / 2) - posY)));
+                        textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterX()) - posX)));
+                    }
+
+                });
                 resizeMarkers(false);
             }
 
@@ -730,9 +770,18 @@ public class MapView extends ScrollPane {
      */
     private void setPointMarkerText(final String markerText, final PointMarker p) {
         final Text t = new Text(markerText);
-        t.setX(p.getX() - 125);
-        t.setY(p.getY() + 103);
+        t.setX(p.getMarker().getBoundsInParent().getCenterX() - 20);
+        t.setY(p.getMarker().getBoundsInParent().getCenterY() + 20);
+        markerTextLabels.add(new Pair(p, t));
+        pointMarkerTextGroup.getChildren().add(t);
+    }
 
+    private void setPolygonMarkerText(final String markerText, final GeoShape gs) {
+        final Text t = new Text(markerText);
+        t.setX(gs.getCenterX() - 37);
+        t.setY(gs.getCenterY());
+        final UserPointMarker tempMarker = new UserPointMarker(this, -99, gs.getCenterX(), gs.getCenterY(), 0.05, 99, 99);
+        markerTextLabels.add(new Pair(tempMarker, t));
         pointMarkerTextGroup.getChildren().add(t);
     }
 
@@ -741,10 +790,7 @@ public class MapView extends ScrollPane {
      */
     public void deselectAllMarkers() {
         for (final AbstractMarker value : markers.values()) {
-            if (value instanceof PointMarker) {
-                final PointMarker p = (PointMarker) value;
-                p.deselect();
-            }
+            value.deselect();
         }
     }
 
@@ -991,23 +1037,6 @@ public class MapView extends ScrollPane {
     public void clearQueriedMarkers() {
         markers.clear();
         selectedNodeList.clear();
-    }
-
-    public void clearAll() {
-        clearQueriedMarkers();
-
-        userMarkers.clear();
-
-        countryGroup.getChildren().clear();
-        graphMarkerGroup.getChildren().clear();
-        drawnMarkerGroup.getChildren().clear();
-        polygonMarkerGroup.getChildren().clear();
-        clusterMarkerGroup.getChildren().clear();
-
-        hiddenPointMarkerGroup.getChildren().clear();
-        overlayGroup.getChildren().clear();
-        layerGroup.getChildren().clear();
-
     }
 
     /**
@@ -1495,8 +1524,18 @@ public class MapView extends ScrollPane {
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
             marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
-                graphMarkerGroup.getChildren().add(marker.getMarker());
+                if (marker instanceof GeoShapePolygonMarker) {
+                    final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
+                    gsp.getGeoShapes().values().forEach(shapePair -> {
+                        if (!graphMarkerGroup.getChildren().contains(shapePair.getKey())) {
+                            graphMarkerGroup.getChildren().add(shapePair.getKey());
+                        }
+                    });
+                } else {
+                    graphMarkerGroup.getChildren().add(marker.getMarker());
+                }
 
                 if (marker instanceof PointMarker) {
                     final PointMarker pMarker = (PointMarker) marker;
@@ -1510,6 +1549,10 @@ public class MapView extends ScrollPane {
 
     public Group getGraphMarkerGroup() {
         return graphMarkerGroup;
+    }
+
+    public void testAddingGeoMarker(final Polygon p) {
+        Platform.runLater(() -> graphMarkerGroup.getChildren().add(p));
     }
 
     public void addMarkerToHashMap(final String key, final AbstractMarker e) {

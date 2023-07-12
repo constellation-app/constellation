@@ -35,6 +35,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
+import au.gov.asd.tac.constellation.views.mapview2.markers.GeoShapePolygonMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import java.awt.Component;
 import java.util.List;
@@ -48,9 +49,15 @@ import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.control.ScrollPane;
 import javax.swing.SwingUtilities;
+import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
@@ -118,9 +125,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
         addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LATITUDE, updateMarkers);
         addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.LONGITUDE, updateMarkers);
+        addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.SHAPE, updateMarkers);
         addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LATITUDE, updateMarkers);
         addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LONGITUDE, updateMarkers);
-
     }
 
 
@@ -323,6 +330,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                     // Ids for all attributes needed from a single vertext of a graph
                     int lonID = GraphConstants.NOT_FOUND;
                     int latID = GraphConstants.NOT_FOUND;
+                    int geoShapeID = GraphConstants.NOT_FOUND;
                     int colourID = GraphConstants.NOT_FOUND;
                     int blazeID = GraphConstants.NOT_FOUND;
                     int overlayID = GraphConstants.NOT_FOUND;
@@ -336,6 +344,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             // Get IDs
                             lonID = SpatialConcept.VertexAttribute.LONGITUDE.get(graph);
                             latID = SpatialConcept.VertexAttribute.LATITUDE.get(graph);
+                            geoShapeID = SpatialConcept.VertexAttribute.SHAPE.get(graph);
                             colourID = VisualConcept.VertexAttribute.COLOR.get(graph);
                             blazeID = VisualConcept.VertexAttribute.BLAZE.get(graph);
                             overlayID = VisualConcept.VertexAttribute.OVERLAY_COLOR.get(graph);
@@ -355,14 +364,24 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                     // Loop though every graph element
                     for (int elementPos = 0; elementPos < elementCount; elementPos++) {
                         final int elementID = elementType == GraphElementType.VERTEX ? graph.getVertex(elementPos) : graph.getTransaction(elementPos);
-
+                        boolean processingGeoShape = false;
                         // For all the vertices
-                        if (lonID != GraphConstants.NOT_FOUND && latID != GraphConstants.NOT_FOUND && elementType == GraphElementType.VERTEX) {
+                        if (((lonID != GraphConstants.NOT_FOUND && latID != GraphConstants.NOT_FOUND) || geoShapeID != GraphConstants.NOT_FOUND) && elementType == GraphElementType.VERTEX) {
                             // Get lattitude and longitude
                             final Float elementLat = graph.getObjectValue(latID, elementID);
                             final Float elementLon = graph.getObjectValue(lonID, elementID);
+                            String elementShape = null;
 
-                            if (elementLat == null || elementLon == null) {
+                            if (geoShapeID != GraphConstants.NOT_FOUND) {
+                                elementShape = graph.getObjectValue(geoShapeID, elementID);
+                            }
+
+                            if (elementShape != null) {
+                                processingGeoShape = true;
+                            }
+
+
+                            if ((elementLat == null || elementLon == null) && StringUtils.isEmpty(elementShape)) {
                                 continue;
                             }
 
@@ -395,8 +414,54 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             // Generate a key from the vertex coordinate
                             final String coordinateKey = (double) elementLat + "," + (double) elementLon;
 
+                            if (processingGeoShape) {
+                                final JSONObject json = new JSONObject(elementShape);
+                                final JSONArray featureList = json.getJSONArray("features");
+                                final GeoShapePolygonMarker gsp = new GeoShapePolygonMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET);
+                                for (int i = 0; i < featureList.length(); ++i) {
+                                    final JSONObject latLongObj = featureList.getJSONObject(i).getJSONObject("geometry");
+                                    final JSONArray latLongList = latLongObj.getJSONArray("coordinates");
+
+                                    for (int j = 0; j < latLongList.length(); ++j) {
+                                        final String keyString = latLongList.getJSONArray(j).toString();
+                                        if (!mapViewTopComponent.getAllMarkers().containsKey(keyString)) {
+                                            gsp.addGeoShape(keyString, elementID);
+                                            mapViewTopComponent.addMarker(keyString, gsp);
+
+                                        } else {
+                                            final GeoShapePolygonMarker existing = (GeoShapePolygonMarker) mapViewTopComponent.getAllMarkers().get(latLongList.getJSONArray(j).toString());
+                                            existing.getGeoShapes().get(latLongList.getJSONArray(j).toString()).getValue().add(elementID);
+                                        }
+                                    }
+
+                                    final GeoShapePolygonMarker addedMarker = (GeoShapePolygonMarker) mapViewTopComponent.getAllMarkers().get(latLongList.getJSONArray(0).toString());
+                                    addedMarker.setAttributeColour(elementColour, latLongList.getJSONArray(0).toString());
+
+                                    // Set colours and labels if they are available
+                                    if (blazeColour != null) {
+                                        addedMarker.setBlazeColour(blazeColour, latLongList.getJSONArray(0).toString());
+                                    }
+
+                                    if (overlayColour != null) {
+                                        addedMarker.setOverlayColour(overlayColour, latLongList.getJSONArray(0).toString());
+                                    }
+
+
+                                    if (labelAttr != null) {
+                                        addedMarker.setLabelAttr(labelAttr, latLongList.getJSONArray(0).toString());
+                                    }
+
+                                    if (identAttr != null) {
+                                        addedMarker.setIdentAttr(identAttr, latLongList.getJSONArray(0).toString());
+                                    }
+
+                                }
+
+                            }
+
                             // If another vertext of the same location hasn't been queried yet
-                            if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
+                            if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey) && !processingGeoShape) {
+
                                 // Create a new point marker and add it to the map
                                 final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour); //244
                                 mapViewTopComponent.addMarker(coordinateKey, p);
@@ -418,7 +483,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                     p.setIdentAttr(identAttr);
                                 }
 
-                            } else {
+
+                            } else if (!processingGeoShape) {
 
                                 if (blazeColour != null) {
                                     ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setBlazeColour(blazeColour);
@@ -446,6 +512,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             }
 
                         }
+                        processingGeoShape = false;
 
                     }
 

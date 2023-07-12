@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
+import au.gov.asd.tac.constellation.views.mapview2.markers.GeoShapePolygonMarker;
+import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.IntersectionNode;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import java.util.ArrayList;
@@ -139,6 +141,14 @@ public class ThiessenPolygonsLayer extends AbstractMapLayer {
         nodesOnScreen.clear();
 
         for (final AbstractMarker marker : markers) {
+
+            if (marker instanceof GeoShapePolygonMarker) {
+                final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
+
+                gsp.getGeoShapes().values().forEach(shapePair -> nodesOnScreen.put(nodeID++, new UserPointMarker(parent, 99, shapePair.getKey().getCenterX(), shapePair.getKey().getCenterY(), 0.05, 99, 99)));
+                continue;
+            }
+
             nodesOnScreen.put(nodeID++, marker);
         }
 
