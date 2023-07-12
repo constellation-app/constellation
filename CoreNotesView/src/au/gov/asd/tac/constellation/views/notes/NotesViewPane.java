@@ -115,9 +115,11 @@ public class NotesViewPane extends BorderPane {
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
 
-    private static final double NOTE_HEIGHT = 145.0;
-    private static final int DEFAULT_SPACING = 18;
-    private static final int EDIT_SPACING = 10;
+    private static final double NOTE_HEIGHT = 160.0;
+    private static final double NOTE_INFO_SPACING = 25;
+    private static final double NOTE_BODY_SPACING = 15;
+    private static final int DEFAULT_BUTTON_SPACING = 18;
+    private static final int EDIT_SPACING = 8;
     private static final String SHOW_MORE = "Show more";
     private static final String SHOW_LESS = "Show less";
 
@@ -370,7 +372,7 @@ public class NotesViewPane extends BorderPane {
 
 
         // VBox in a ScrollPane for holding expanding list of user and plugin generated notes.
-        notesListVBox = new VBox(DEFAULT_SPACING);
+        notesListVBox = new VBox(DEFAULT_BUTTON_SPACING);
         notesListVBox.setAlignment(Pos.BOTTOM_CENTER);
         notesListScrollPane = new ScrollPane();
         notesListScrollPane.setContent(notesListVBox);
@@ -732,6 +734,7 @@ public class NotesViewPane extends BorderPane {
         final TextArea contentTextArea = new TextArea(newNote.getNoteContent());        
         contentTextArea.setWrapText(true);
         contentTextArea.positionCaret(contentTextArea.getText() == null ? 0 : contentTextArea.getText().length());
+        //contentTextArea.setMinHeight(25);
         contentTextArea.setOnKeyTyped(event -> newNote.setTempContent(contentTextArea.getText()));
 
         if (newNote.checkIfWasInEditMode()) {
@@ -754,12 +757,11 @@ public class NotesViewPane extends BorderPane {
 
         textFlowPane.layoutBoundsProperty().addListener((obs, oldValue, newValue) -> {
             clipRect.setWidth(newValue.getWidth());
-            clipRect.setHeight(newValue.getHeight() + 13); // newValue.getHeight()
+            clipRect.setHeight(newValue.getHeight() + 15); // newValue.getHeight(), +13
         });
 
         final VBox contentPaneVBox = new VBox(newNote.getContentTextFlow());
         containerPane.getChildren().add(contentPaneVBox);
-
 
         final VBox noteInformation;
 
@@ -792,13 +794,13 @@ public class NotesViewPane extends BorderPane {
 
             // If the note to be created is in edit mode, ensure it is created
             // with the correct java fx elements
-            noteInformation = newNote.getEditMode() ? new VBox(DEFAULT_SPACING, titleText, contentTextArea) : new VBox(DEFAULT_SPACING, containerPane);
+            noteInformation = newNote.getEditMode() ? new VBox(EDIT_SPACING, titleText, contentTextArea) : new VBox(NOTE_INFO_SPACING, containerPane);
 
             HBox.setHgrow(noteInformation, Priority.ALWAYS);
         } else {
             // If the note to be created is in edit mode, ensure it is created
             // with the correct java fx elements
-            noteInformation = new VBox(DEFAULT_SPACING, newNote.getEditMode() ? titleText : titleLabel,
+            noteInformation = new VBox(DEFAULT_BUTTON_SPACING, newNote.getEditMode() ? titleText : titleLabel,
                     newNote.getEditMode() ? contentTextArea : contentLabel);
             HBox.setHgrow(noteInformation, Priority.ALWAYS);
         }
@@ -830,7 +832,6 @@ public class NotesViewPane extends BorderPane {
         final Region gap = new Region();
         final Region gap2 = new Region();
         final Region topGap = new Region();
-
 
         gap.setPrefWidth(615);
         gap2.setPrefWidth(650);
@@ -869,30 +870,29 @@ public class NotesViewPane extends BorderPane {
         noteTop.setAlignment(Pos.CENTER_RIGHT);
         HBox.setHgrow(topGap, Priority.ALWAYS);
 
-        final VBox noteBody = newNote.isUserCreated() ? new VBox(DEFAULT_SPACING, noteTop, noteInformation, noteButtons) : new VBox(DEFAULT_SPACING, dateTimeLabel, noteInformation);
+        final VBox noteBody = newNote.isUserCreated() ? new VBox(NOTE_BODY_SPACING, noteTop, noteInformation, noteButtons) : new VBox(DEFAULT_BUTTON_SPACING, dateTimeLabel, noteInformation);
         noteBody.prefWidthProperty().bind(this.widthProperty());
         noteBody.setMinWidth(500);
         noteBody.setMaxHeight(Double.MAX_VALUE);
 
         noteBody.heightProperty().addListener((obs, oldVal, newVal) -> {
-            if (obs.getValue().doubleValue() >= NOTE_HEIGHT - 10 && !showMoreButton.isVisible()) {
+            if (obs.getValue().doubleValue() > NOTE_HEIGHT - 3 && !showMoreButton.isVisible()) {
                 showMoreButton.setVisible(true);
                 showMoreButton.setText(SHOW_MORE);
-                noteBody.setMaxHeight(NOTE_HEIGHT - 5);
-
+                noteBody.setMaxHeight(NOTE_HEIGHT - 3);
+                LOGGER.log(Level.SEVERE, "Showing show more button");
                 // Run events as if show less button had been clicked
                 containerPane.getChildren().clear();
-                noteBody.setMaxHeight(NOTE_HEIGHT - 5);
-                noteBody.setMinHeight(NOTE_HEIGHT - 5);
+                noteBody.setMaxHeight(NOTE_HEIGHT - 3);
+                noteBody.setMinHeight(NOTE_HEIGHT - 3);
                 textFlowPane.getChildren().add(newNote.getContentTextFlow());
                 textFlowPane.setClip(clipRect);
                 containerPane.getChildren().add(textFlowPane);
-            } else if (obs.getValue().doubleValue() < NOTE_HEIGHT - 5 && showMoreButton.isVisible()) {
+            } else if (obs.getValue().doubleValue() < NOTE_HEIGHT - 10 && showMoreButton.isVisible()) {
+                LOGGER.log(Level.SEVERE, "NOT Showing show more button");
                 showMoreButton.setVisible(false);
             }
-
         });
-
 
         if (newNote.isUserCreated()) {
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE + newNote.getNodeColour() + BG_RADIUS_STYLE);
@@ -918,13 +918,14 @@ public class NotesViewPane extends BorderPane {
                 contentLabel.setText(newNote.getNoteContent());
                 showMoreButton.setText(SHOW_MORE);
                 containerPane.getChildren().clear();
-                noteBody.setMaxHeight(NOTE_HEIGHT - 5);
-                noteBody.setMinHeight(NOTE_HEIGHT - 5);
+                noteBody.setMaxHeight(NOTE_HEIGHT - 3);
+                noteBody.setMinHeight(NOTE_HEIGHT - 3);
                 textFlowPane.getChildren().add(newNote.getContentTextFlow());
                 textFlowPane.setClip(clipRect);
                 containerPane.getChildren().add(textFlowPane);
             }
         });
+
 
         // Change colour of note to whatever user sleects
         colourPicker.setOnAction(event -> {
@@ -1068,7 +1069,6 @@ public class NotesViewPane extends BorderPane {
             newNote.setNoteContent(contentLabel.getText());
             noteInformation.getChildren().addAll(titleText, contentTextArea);
             newNote.setEditMode(true);
-
         });
 
         cancelButton.setOnAction(cancelEvent -> {
@@ -1076,7 +1076,7 @@ public class NotesViewPane extends BorderPane {
             colourPicker.setValue(ConstellationColor.fromHtmlColor(currentColour).getJavaFXColor());
             noteButtons.getChildren().removeAll(colourPicker, gap2, editScreenButtons);
             noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
-            noteButtons.setSpacing(DEFAULT_SPACING);
+            noteButtons.setSpacing(DEFAULT_BUTTON_SPACING);
 
 
             titleText.setText(titleLabel.getText());
@@ -1089,6 +1089,7 @@ public class NotesViewPane extends BorderPane {
             newNote.setContentTextFlow(mdTree.getRenderedText());
 
             noteInformation.getChildren().add(containerPane);
+            noteInformation.setSpacing(DEFAULT_BUTTON_SPACING);
 
             newNote.setEditMode(false);
             newNote.setWasInEditMode(false);
@@ -1116,8 +1117,7 @@ public class NotesViewPane extends BorderPane {
                 noteButtons.getChildren().removeAll(colourPicker, gap2, editScreenButtons);
 
                 noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
-                noteButtons.setSpacing(DEFAULT_SPACING);
-
+                noteButtons.setSpacing(DEFAULT_BUTTON_SPACING);
 
                 noteInformation.getChildren().removeAll(titleText, contentTextArea);
                 noteInformation.getChildren().addAll(containerPane);
