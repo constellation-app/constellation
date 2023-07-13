@@ -21,10 +21,16 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Parabola;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 
@@ -36,10 +42,14 @@ import javafx.scene.shape.Rectangle;
  */
 public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
+    private static final Logger LOGGER = Logger.getLogger(ThiessenPolygonsLayer2.class.getName());
+
     private final Group layer;
     private final Map<Integer, AbstractMarker> nodesOnScreen = new HashMap<>();
 
     List<AbstractMarker> markers = new ArrayList<>();
+    final List<Vec3> markersYSorted = new ArrayList<>();
+    final List<Vec3> markersXSorted = new ArrayList<>();
 
     public ThiessenPolygonsLayer2(final MapView parent, final int id, final List<AbstractMarker> markers) {
         super(parent, id);
@@ -72,11 +82,42 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
                     double x = m.getX() - 97;
                     double y = m.getY() + 93;
 
-                    Parabola p = new Parabola(x, y, y);
+                    final Parabola p = new Parabola(x, y, y);
                     p.generateParabola();
+
+                    markersYSorted.add(new Vec3(x, y));
+                    markersXSorted.add(new Vec3(x, y));
 
                     layer.getChildren().add(p.getParabola());
                 }
+            }
+
+
+            Collections.sort(markersYSorted, new Comparator<Vec3>() {
+                @Override
+                public int compare(Vec3 o1, Vec3 o2) {
+                    if (o1.getY() > o2.getY()) {
+                        return 1;
+                    }
+                    return -1;
+                }
+            });
+
+            Collections.sort(markersXSorted, new Comparator<Vec3>() {
+                @Override
+                public int compare(Vec3 o1, Vec3 o2) {
+                    if (o1.getX() > o2.getX()) {
+                        return 1;
+                    }
+                    return -1;
+                }
+            });
+
+
+            //markerCoordinates.forEach(coord -> LOGGER.log(Level.SEVERE, "Sorted marker coordinate: " + coord.getX() + ", " + coord.getY()));
+
+            for (int i = 0; i < markersXSorted.size(); ++i) {
+                LOGGER.log(Level.SEVERE, "Sorted marker coordinate: " + markersXSorted.get(i).getX() + ", " + markersXSorted.get(i).getY());
             }
         }
 
