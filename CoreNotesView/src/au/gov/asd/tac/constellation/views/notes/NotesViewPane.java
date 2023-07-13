@@ -116,7 +116,7 @@ public class NotesViewPane extends BorderPane {
     private final ScrollPane notesListScrollPane;
 
     private static final double NOTE_HEIGHT = 160.0;
-    private static final double NOTE_INFO_SPACING = 25;
+    private static final double NOTE_INFO_SPACING = 5;
     private static final double NOTE_BODY_SPACING = 15;
     private static final int DEFAULT_BUTTON_SPACING = 18;
     private static final int EDIT_SPACING = 8;
@@ -886,7 +886,7 @@ public class NotesViewPane extends BorderPane {
                 noteBody.setMaxHeight(NOTE_HEIGHT - 3);
                 noteBody.setMinHeight(NOTE_HEIGHT - 3);
                 textFlowPane.getChildren().add(newNote.getContentTextFlow());
-                textFlowPane.setClip(clipRect);
+                //textFlowPane.setClip(clipRect);
                 containerPane.getChildren().add(textFlowPane);
             } else if (obs.getValue().doubleValue() < NOTE_HEIGHT - 10 && showMoreButton.isVisible()) {
                 LOGGER.log(Level.SEVERE, "NOT Showing show more button");
@@ -921,7 +921,6 @@ public class NotesViewPane extends BorderPane {
                 noteBody.setMaxHeight(NOTE_HEIGHT - 3);
                 noteBody.setMinHeight(NOTE_HEIGHT - 3);
                 textFlowPane.getChildren().add(newNote.getContentTextFlow());
-                textFlowPane.setClip(clipRect);
                 containerPane.getChildren().add(textFlowPane);
             }
         });
@@ -1065,6 +1064,7 @@ public class NotesViewPane extends BorderPane {
             noteInformation.getChildren().clear();
             titleText.setText(titleLabel.getText());
             contentTextArea.setText(contentLabel.getText());
+
             newNote.setNoteTitle(titleLabel.getText());
             newNote.setNoteContent(contentLabel.getText());
             noteInformation.getChildren().addAll(titleText, contentTextArea);
@@ -1089,7 +1089,7 @@ public class NotesViewPane extends BorderPane {
             newNote.setContentTextFlow(mdTree.getRenderedText());
 
             noteInformation.getChildren().add(containerPane);
-            noteInformation.setSpacing(DEFAULT_BUTTON_SPACING);
+            noteInformation.setSpacing(NOTE_INFO_SPACING);
 
             newNote.setEditMode(false);
             newNote.setWasInEditMode(false);
