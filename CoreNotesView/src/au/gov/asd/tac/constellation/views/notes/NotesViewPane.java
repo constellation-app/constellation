@@ -168,9 +168,9 @@ public class NotesViewPane extends BorderPane {
         filterCheckComboBox.setMaxWidth(165);
         filterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         filterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
-            if (!isSelectedFiltersUpdating) {               
+            if (!isSelectedFiltersUpdating) {
                 setFilters(filterCheckComboBox.getCheckModel().getCheckedItems());
-                
+
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (activeGraph != null) {
                     updateNotesUI();
@@ -383,16 +383,16 @@ public class NotesViewPane extends BorderPane {
                         addPluginReport(pluginReport);
                     }
                 });
-                
+
                 SwingUtilities.invokeLater(() -> {
                     final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
                     if (tc != null && tc.isOpened()) {
                         // Update the Notes View UI.
                         updateNotesUI();
                         updateFilters();
-                    }                   
+                    }
                 });
-                
+
                 controller.writeState(graph);
             }
         }
@@ -468,7 +468,7 @@ public class NotesViewPane extends BorderPane {
             final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
             if (tc != null && tc.isOpened()) {
                 updateNotesUI();
-            }                   
+            }
         });
     }
 
@@ -511,7 +511,7 @@ public class NotesViewPane extends BorderPane {
     protected synchronized void updateNotesUI() {
         final List<NotesViewEntry> notesToRender = new ArrayList<>();
         updateSelectedElements();
-        
+
         synchronized (LOCK) {
             notesViewEntries.forEach(entry -> {
                 if (dateTimeRangePicker.isActive()) {
@@ -581,18 +581,31 @@ public class NotesViewPane extends BorderPane {
 
             });
         }
-        
-        Platform.runLater(() -> {
-            notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
 
-            if (CollectionUtils.isNotEmpty(notesToRender)) {
-                notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
-                notesToRender.forEach(note -> createNote(note));
+        Platform.runLater(() -> {
+            boolean foundNoteInEdit = false;
+            for (final NotesViewEntry entry : notesToRender) {
+                if (entry.getEditMode()) {
+                    foundNoteInEdit = true;
+                    break;
+                }
             }
-            notesListScrollPane.applyCss();
-            notesListScrollPane.layout();
-            // Keeps the scroll bar at the bottom?
-            notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
+
+            if (!foundNoteInEdit) {
+                notesListVBox.getChildren().removeAll(notesListVBox.getChildren());
+
+                if (CollectionUtils.isNotEmpty(notesToRender)) {
+                    notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
+                    notesToRender.forEach(note -> {
+                        note.setEditMode(note.checkIfWasInEditMode());
+                        createNote(note);
+                    });
+                }
+                notesListScrollPane.applyCss();
+                notesListScrollPane.layout();
+                // Keeps the scroll bar at the bottom?
+                notesListScrollPane.setVvalue(notesListScrollPane.getVmax());
+            }
         });
     }
 
@@ -640,6 +653,14 @@ public class NotesViewPane extends BorderPane {
     protected void clearNotes() {
         Platform.runLater(() -> notesListVBox.getChildren().removeAll(notesListVBox.getChildren()));
         synchronized (LOCK) {
+            notesViewEntries.forEach(note -> {
+                if (note.getEditMode()) {
+                    note.setEditMode(false);
+                    note.setWasInEditMode(true);
+                } else {
+                    note.setWasInEditMode(false);
+                }
+            });
             notesViewEntries.clear();
             notesDateTimeCache.clear();
         }
@@ -674,6 +695,7 @@ public class NotesViewPane extends BorderPane {
         // Define title text box
         final TextField titleText = new TextField(newNote.getNoteTitle());
         titleText.setStyle(BOLD_STYLE);
+        titleText.setOnKeyTyped(event -> newNote.setTempTitle(titleText.getText()));
 
         // Define title label
         final Label titleLabel = new Label(newNote.getNoteTitle());
@@ -691,6 +713,13 @@ public class NotesViewPane extends BorderPane {
         final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
         contentTextArea.setWrapText(true);
         contentTextArea.positionCaret(contentTextArea.getText() == null ? 0 : contentTextArea.getText().length());
+        contentTextArea.setOnKeyTyped(event -> newNote.setTempContent(contentTextArea.getText()));
+
+        if (newNote.checkIfWasInEditMode()) {
+            titleText.setText(newNote.getTempTitle());
+            contentTextArea.setText(newNote.getTempContent());
+        }
+
         final VBox noteInformation;
 
         // Define selection label
@@ -968,6 +997,8 @@ public class NotesViewPane extends BorderPane {
 
         // Edit button activates editable text boxs for title and label
         editTextButton.setOnAction(event -> {
+            newNote.setTempTitle(newNote.getNoteTitle());
+            newNote.setTempContent(newNote.getNoteContent());
             noteButtons.getChildren().removeAll(showMoreButton, gap, editTextButton, deleteButton);
             noteButtons.getChildren().addAll(colourPicker, gap2, editScreenButtons);
             noteButtons.setSpacing(EDIT_SPACING);
@@ -996,6 +1027,7 @@ public class NotesViewPane extends BorderPane {
             noteInformation.getChildren().addAll(titleLabel, contentLabel);
 
             newNote.setEditMode(false);
+            newNote.setWasInEditMode(false);
             noteBody.setStyle(PADDING_BG_COLOUR_STYLE
                     + currentColour + BG_RADIUS_STYLE);
             newNote.setNodeColour(currentColour);
@@ -1021,6 +1053,17 @@ public class NotesViewPane extends BorderPane {
                 noteInformation.getChildren().addAll(titleLabel, contentLabel);
                 noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
                 noteButtons.setSpacing(DEFAULT_SPACING);
+
+
+                newNote.setWasInEditMode(false);
+
+                synchronized (LOCK) {
+                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                    if (activeGraph != null) {
+                        updateNotesUI();
+                        notesViewController.writeState(activeGraph);
+                    }
+                }
 
             }
         });
@@ -1058,7 +1101,7 @@ public class NotesViewPane extends BorderPane {
                         transactionsSelected.add(txId);
                     }
                 }
-            }            
+            }
         } finally {
             rg.release();
         }
@@ -1160,11 +1203,9 @@ public class NotesViewPane extends BorderPane {
      * @param selectedTagsFilters
      */
     public void updateSelectedTagsCombo(final List<String> selectedTagsFilters) {
-        Platform.runLater(() -> {
-            this.tagsSelectedFiltersList.clear();
-            selectedTagsFilters.forEach(filter -> this.tagsSelectedFiltersList.add(filter));
-            updateTagFilters();
-        });
+        this.tagsSelectedFiltersList.clear();
+        selectedTagsFilters.forEach(filter -> this.tagsSelectedFiltersList.add(filter));
+        updateTagFilters();
     }
 
     /**
@@ -1174,7 +1215,7 @@ public class NotesViewPane extends BorderPane {
         if (!Platform.isFxApplicationThread()) {
             throw new IllegalStateException("Not processing on the JavaFX Application Thread");
         }
-        
+
         isAutoSelectedFiltersUpdating = true;
 
         autoFilterCheckComboBox.getCheckModel().clearChecks();
