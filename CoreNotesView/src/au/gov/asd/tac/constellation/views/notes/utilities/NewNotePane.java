@@ -68,6 +68,7 @@ public class NewNotePane {
     private final TextArea contentField;
     private final TextField titleField = new TextField();
     private final CheckBox applyToSelection = new CheckBox("Link note to graph selection");
+    private final CheckBox enableMarkdown = new CheckBox("Markdown");
 
     private final TabPane tabPane;
     private TextFlow previewTextFlow;
@@ -75,6 +76,7 @@ public class NewNotePane {
     private final ColorPicker newNoteColour;
 
     private boolean applySelected = true;
+    private boolean markdownSelected = false;
     private static String userChosenColour;
 
     private final Button addButton = new Button("Add Note");
@@ -136,12 +138,12 @@ public class NewNotePane {
         previewTab.setText("Preview");
         previewTab.setContent(previewTabScrollPane);
         previewTab.setClosable(false);
-
         previewTab.setOnSelectionChanged(event -> {
             if (previewTab.isSelected()) {
                 previewTextFlow.getChildren().clear();
                 previewTabPane.getChildren().clear();
                 final MarkdownTree mdTree = new MarkdownTree(titleField.getText() + "\n\n" + contentField.getText());
+                mdTree.setMarkdownEnabled(markdownSelected);
                 mdTree.parse();
                 previewTextFlow = mdTree.getRenderedText();
                 previewTextFlow.setMinWidth(495);
@@ -153,6 +155,11 @@ public class NewNotePane {
             }
         });
         tabPane.getTabs().addAll(writeTab, previewTab);
+
+        enableMarkdown.setSelected(false);
+        enableMarkdown.setTextFill(Color.WHITE);
+        enableMarkdown.setStyle("-fx-selected-box-color: #000000");
+        enableMarkdown.selectedProperty().addListener((ov, oldVal, newVal) -> markdownSelected = enableMarkdown.isSelected());
 
         // Colourpicker to set colour of new note
         newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(NewNotePane.userChosenColour).getJavaFXColor());
@@ -179,7 +186,9 @@ public class NewNotePane {
         final HBox noteHBox = new HBox(5, newNoteColour, gap, addButton, cancelButton);
         HBox.setHgrow(gap, Priority.ALWAYS);
         noteHBox.setAlignment(Pos.CENTER_RIGHT);
-        final VBox addNoteVBox = new VBox(5, tabPane, applyToSelection, noteHBox);
+
+        final HBox cbHBox = new HBox(30, applyToSelection, enableMarkdown);
+        final VBox addNoteVBox = new VBox(5, tabPane, cbHBox, noteHBox);
         addNoteVBox.setAlignment(Pos.CENTER_LEFT);
         addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
         addNoteVBox.setMinHeight(220);
@@ -256,6 +265,10 @@ public class NewNotePane {
 
     public boolean isApplySelected() {
         return applySelected;
+    }
+
+    public boolean isMarkdownSelected() {
+        return markdownSelected;
     }
 
     public void closePopUp() {

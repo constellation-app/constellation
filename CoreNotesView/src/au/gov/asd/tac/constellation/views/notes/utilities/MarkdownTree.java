@@ -43,6 +43,8 @@ public class MarkdownTree {
     // Root node that doesn't contain any text and is of no type, it is just an entry point for the tree
     private final MarkdownNode root;
 
+    private boolean markdownEnabled = true;
+
     private String rawString;
 
     // The different markdown syntax patterns supported
@@ -72,11 +74,21 @@ public class MarkdownTree {
         this.rawString = rawString + "\n";
     }
 
+    public void setMarkdownEnabled(final boolean markdownEnabled) {
+        this.markdownEnabled = markdownEnabled;
+    }
+
+
     /**
      * Processes the markdown text
      */
     public void parse() {
-        parseString(root, rawString);
+        if (markdownEnabled) {
+            parseString(root, rawString);
+        } else {
+            final MarkdownNode normal = new MarkdownNode(MarkdownNode.Type.NORMAL, 0, 0, rawString, -99);
+            root.getChildren().add(normal);
+        }
     }
 
     /**

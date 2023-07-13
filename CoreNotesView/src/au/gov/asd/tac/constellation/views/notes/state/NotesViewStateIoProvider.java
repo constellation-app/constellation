@@ -69,11 +69,16 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(2).asText(),
                                 notesArray.get(i).get(3).asBoolean(),
                                 notesArray.get(i).get(4).asBoolean(),
-                                "#942483"
+                                "#942483",
+                                false
                         ));
 
                         if (notesArray.get(i).get(7) != null) {
                             noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(7).asText());
+                        }
+
+                        if (notesArray.get(i).get(8) != null) {
+                            noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(8).asBoolean());
                         }
 
                         if (notesArray.get(i).get(3).asBoolean() == true && notesArray.get(i).get(4).asBoolean() == false) {
@@ -122,7 +127,8 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(2).asText(),
                                 notesArray.get(i).get(3).asBoolean(),
                                 true,
-                                notesArray.get(i).get(7).asText()
+                                notesArray.get(i).get(7).asText(),
+                                notesArray.get(i).get(8).asBoolean()
                         ));
                     }
                 }
@@ -211,6 +217,11 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         } else if (note.isGraphAttribute() && note.isUserCreated()) {
                             jsonGenerator.writeString(note.getNodeColour());
                         }
+
+                        if (note.isUserCreated()) {
+                            jsonGenerator.writeBoolean(note.isInMarkdown());
+                        }
+
                         if (!note.isUserCreated()) {
                             final int tagsLength = note.getTags().size();
                             final String[] tagsArray = new String[tagsLength];

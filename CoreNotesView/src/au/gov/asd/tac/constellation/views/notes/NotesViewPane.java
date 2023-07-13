@@ -310,8 +310,9 @@ public class NotesViewPane extends BorderPane {
                                 newNotePane.getContentField().getText(),
                                 true,
                                 !newNotePane.isApplySelected(),
-                                newNotePane.getUserChosenColour()
-                        ));
+                                newNotePane.getUserChosenColour(),
+                                newNotePane.isMarkdownSelected())
+                        );
                         if (newNotePane.isApplySelected()) {
                             LOGGER.log(Level.SEVERE, "Selecting nodes to link to note");
                             // Get selected nodes from the graph.
@@ -428,7 +429,8 @@ public class NotesViewPane extends BorderPane {
                     pluginReport.getMessage(),
                     false,
                     false,
-                    "#ffffff"
+                    "#ffffff",
+                    false
             );
 
             final String[] tags = pluginReport.getTags();
@@ -744,6 +746,7 @@ public class NotesViewPane extends BorderPane {
         }
 
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
+        md.setMarkdownEnabled(newNote.isInMarkdown());
         md.parse();
         newNote.setContentTextFlow(md.getRenderedText());
         newNote.getContentTextFlow().setMinWidth(50);

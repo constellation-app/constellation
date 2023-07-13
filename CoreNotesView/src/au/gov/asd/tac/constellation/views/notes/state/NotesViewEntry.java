@@ -44,13 +44,14 @@ public class NotesViewEntry implements PluginReportListener {
     private boolean editMode;
     private boolean wasInEditMode = false;
     private boolean isShowing = true;
+    private boolean inMarkdown = false;
     private TextFlow contentTextFlow;
 
     private String tempContent;
     private String tempTitle;
 
 
-    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
+    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour, final boolean inMarkdown) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
@@ -69,7 +70,7 @@ public class NotesViewEntry implements PluginReportListener {
             this.nodesSelected = new ArrayList<>();
             this.transactionsSelected = new ArrayList<>();
         }
-
+        this.inMarkdown = inMarkdown;
     }
 
     public TextFlow getContentTextFlow() {
@@ -205,6 +206,13 @@ public class NotesViewEntry implements PluginReportListener {
         return tempTitle;
     }
 
+    public void setInMarkdown(final boolean inMarkdown) {
+        this.inMarkdown = inMarkdown;
+    }
+
+    public boolean isInMarkdown() {
+        return inMarkdown;
+    }
 
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {
