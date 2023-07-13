@@ -178,9 +178,9 @@ public class NotesViewPane extends BorderPane {
         filterCheckComboBox.setMaxWidth(165);
         filterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         filterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
-            if (!isSelectedFiltersUpdating) {               
+            if (!isSelectedFiltersUpdating) {
                 setFilters(filterCheckComboBox.getCheckModel().getCheckedItems());
-                
+
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (activeGraph != null) {
                     updateNotesUI();
@@ -400,16 +400,16 @@ public class NotesViewPane extends BorderPane {
                         addPluginReport(pluginReport);
                     }
                 });
-                
+
                 SwingUtilities.invokeLater(() -> {
                     final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
                     if (tc != null && tc.isOpened()) {
                         // Update the Notes View UI.
                         updateNotesUI();
                         updateFilters();
-                    }                   
+                    }
                 });
-                
+
                 controller.writeState(graph);
             }
         }
@@ -485,7 +485,7 @@ public class NotesViewPane extends BorderPane {
             final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
             if (tc != null && tc.isOpened()) {
                 updateNotesUI();
-            }                   
+            }
         });
     }
 
@@ -529,7 +529,7 @@ public class NotesViewPane extends BorderPane {
         final List<NotesViewEntry> notesToRender = new ArrayList<>();
 
         updateSelectedElements();
-        
+
         synchronized (LOCK) {
             notesViewEntries.forEach(entry -> {
                 if (dateTimeRangePicker.isActive()) {
@@ -599,6 +599,7 @@ public class NotesViewPane extends BorderPane {
 
             });
         }
+
         Platform.runLater(() -> {
             boolean foundNoteInEdit = false;
 
@@ -1181,7 +1182,7 @@ public class NotesViewPane extends BorderPane {
                         transactionsSelected.add(txId);
                     }
                 }
-            }            
+            }
         } finally {
             rg.release();
         }
@@ -1283,11 +1284,9 @@ public class NotesViewPane extends BorderPane {
      * @param selectedTagsFilters
      */
     public void updateSelectedTagsCombo(final List<String> selectedTagsFilters) {
-        Platform.runLater(() -> {
-            this.tagsSelectedFiltersList.clear();
-            selectedTagsFilters.forEach(filter -> this.tagsSelectedFiltersList.add(filter));
-            updateTagFilters();
-        });
+        this.tagsSelectedFiltersList.clear();
+        selectedTagsFilters.forEach(filter -> this.tagsSelectedFiltersList.add(filter));
+        updateTagFilters();
     }
 
     /**
@@ -1297,7 +1296,7 @@ public class NotesViewPane extends BorderPane {
         if (!Platform.isFxApplicationThread()) {
             throw new IllegalStateException("Not processing on the JavaFX Application Thread");
         }
-        
+
         isAutoSelectedFiltersUpdating = true;
 
         autoFilterCheckComboBox.getCheckModel().clearChecks();
