@@ -115,7 +115,7 @@ public class NotesViewPane extends BorderPane {
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
 
-    private static final double NOTE_HEIGHT = 160.0;
+    private static final double NOTE_HEIGHT = 147.0;
     private static final double NOTE_INFO_SPACING = 5;
     private static final double NOTE_BODY_SPACING = 15;
     private static final int DEFAULT_BUTTON_SPACING = 18;
@@ -757,7 +757,7 @@ public class NotesViewPane extends BorderPane {
 
         textFlowPane.layoutBoundsProperty().addListener((obs, oldValue, newValue) -> {
             clipRect.setWidth(newValue.getWidth());
-            clipRect.setHeight(newValue.getHeight() + 15); // newValue.getHeight(), +13
+            clipRect.setHeight(newValue.getHeight() + 13);
         });
 
         final VBox contentPaneVBox = new VBox(newNote.getContentTextFlow());
@@ -1065,6 +1065,11 @@ public class NotesViewPane extends BorderPane {
             titleText.setText(titleLabel.getText());
             contentTextArea.setText(contentLabel.getText());
 
+            if (showMoreButton.isVisible() && showMoreButton.getText().equals(SHOW_MORE)) {
+                noteBody.setMaxHeight(160);
+                noteBody.setMinHeight(160);
+            }
+
             newNote.setNoteTitle(titleLabel.getText());
             newNote.setNoteContent(contentLabel.getText());
             noteInformation.getChildren().addAll(titleText, contentTextArea);
@@ -1090,6 +1095,11 @@ public class NotesViewPane extends BorderPane {
 
             noteInformation.getChildren().add(containerPane);
             noteInformation.setSpacing(NOTE_INFO_SPACING);
+
+            if (showMoreButton.isVisible() && showMoreButton.getText().equals(SHOW_MORE)) {
+                noteBody.setMaxHeight(NOTE_HEIGHT - 3);
+                noteBody.setMinHeight(NOTE_HEIGHT - 3);
+            }
 
             newNote.setEditMode(false);
             newNote.setWasInEditMode(false);
