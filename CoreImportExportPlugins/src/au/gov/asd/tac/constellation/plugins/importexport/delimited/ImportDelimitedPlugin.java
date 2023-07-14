@@ -167,8 +167,12 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 // At least 1 object was successfully imported. List all successful file imports, as well as any files
                 // that there were issues for. If there were any files with issues use a warning dialog.
                 final String fileFiles = (validFilenames.size() == 1) ? "file" : "files";
-                sbMessage.append(String.format("Extracted data from %d row(s) in %d %s. Skipped %d row(s) due to import error.",
-                        importedRows, validFilenames.size(), fileFiles, skippedRows));
+                final String rowRows = (skippedRows > 1 ) ? "rows" : "row";
+                final String skippedRowsMsg = (skippedRows > 0 ? String.format("Skipped %d %s due to import error.", skippedRows, rowRows) : "");
+                
+                sbMessage.append(String.format("Extracted data from %d row(s) in %d %s. %s",
+                        importedRows, validFilenames.size(), fileFiles, skippedRowsMsg));
+                
                 sbMessage.append(" Files with data: ");
                 for (int i = 0; i < validFilenames.size(); i++) {
                     if (i > 0) {
