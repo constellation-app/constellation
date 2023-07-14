@@ -412,6 +412,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     }                    
                     ++skippedRow;
                 } else {
+                    NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Skip invalid rows checkbox next to the Import button.", NotifyDescriptor.ERROR_MESSAGE);
                     throw ex;
                 }
             }
@@ -489,7 +490,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                         graph.removeVertex(destinationVertexId);
                         ++skippedRow;
                     } else {
-                        NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Ignore invalid rows", NotifyDescriptor.ERROR_MESSAGE);
+                        NotifyDisplayer.display("Unable to complete import due to error with data. The file can be imported if you select Skip invalid rows checkbox next to the Import button.", NotifyDescriptor.ERROR_MESSAGE);
                         throw ex;
                     }
                 }
