@@ -21,8 +21,14 @@ package au.gov.asd.tac.constellation.views.mapview2.utilities;
  */
 public class EdgeEvent extends VoronoiEvent {
 
-    public EdgeEvent(double yOfEvent) {
+    private Edge edge1;
+    private Edge edge2;
+
+    public EdgeEvent(double yOfEvent, final Edge a, final Edge b) {
         super(yOfEvent);
+
+        edge1 = a;
+        edge2 = b;
     }
 
 }

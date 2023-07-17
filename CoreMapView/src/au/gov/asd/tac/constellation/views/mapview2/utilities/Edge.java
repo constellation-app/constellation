@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  *
  * @author altair1673
@@ -23,8 +26,25 @@ public class Edge extends BeachLineElement {
 
     private final Vec3 dirVect = new Vec3();
 
+    private final List<Parabola> relatedPoints = new ArrayList<>();
+
+    private boolean isGrowing = true;
+
     public Edge(Vec3 start, Vec3 end, double spawnX) {
         super(start, end, spawnX);
     }
+
+    public void addPoint(final Parabola point) {
+        relatedPoints.add(point);
+    }
+
+    public boolean isIsGrowing() {
+        return isGrowing;
+    }
+
+    public void setIsGrowing(boolean isGrowing) {
+        this.isGrowing = isGrowing;
+    }
+
 
 }

@@ -26,8 +26,9 @@ public abstract class BeachLineElement {
 
     protected double spawnX;
 
-    private BeachLineElement left;
-    private BeachLineElement right;
+    private BeachLineElement left = null;
+    private BeachLineElement right = null;
+    private BeachLineElement parent = null;
 
     protected BeachLineElement(final Vec3 start, final Vec3 end, final double spawnX) {
         this.start.setX(start.getX());

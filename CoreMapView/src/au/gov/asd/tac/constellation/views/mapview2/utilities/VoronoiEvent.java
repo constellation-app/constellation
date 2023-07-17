@@ -23,13 +23,12 @@ public class VoronoiEvent {
 
     private double yCoord;
 
-    public VoronoiEvent(final double yOfEvent) {
+    protected VoronoiEvent(final double yOfEvent) {
         yCoord = yOfEvent;
     }
 
-    public double getyCoord() {
+    public double getYCoord() {
         return yCoord;
     }
-
 
 }

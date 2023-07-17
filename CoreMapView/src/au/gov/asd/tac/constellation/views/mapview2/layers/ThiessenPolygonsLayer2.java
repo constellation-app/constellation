@@ -20,8 +20,11 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.EdgeEvent;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Parabola;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.SiteEvent;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.VoronoiEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,6 +32,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Group;
@@ -47,15 +51,24 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
     private final Group layer;
     private final Map<Integer, AbstractMarker> nodesOnScreen = new HashMap<>();
 
-    List<AbstractMarker> markers = new ArrayList<>();
-    final List<Vec3> markersYSorted = new ArrayList<>();
-    final List<Vec3> markersXSorted = new ArrayList<>();
+    private List<AbstractMarker> markers = new ArrayList<>();
+    private final List<Vec3> markersYSorted = new ArrayList<>();
+
+    private final PriorityQueue<VoronoiEvent> eventQueue;
 
     public ThiessenPolygonsLayer2(final MapView parent, final int id, final List<AbstractMarker> markers) {
         super(parent, id);
 
         layer = new Group();
         this.markers = markers;
+
+        eventQueue = new PriorityQueue<VoronoiEvent>((v1, v2) -> {
+            if (v1.getYCoord() > v2.getYCoord()) {
+                return 1;
+            }
+
+            return -1;
+        });
     }
 
     @Override
@@ -76,54 +89,35 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             r.setMouseTransparent(true);
             layer.getChildren().add(r);
         } else {
-            /*for (final AbstractMarker m : markers) {
+            for (final AbstractMarker m : markers) {
                 if (m instanceof PointMarker || m instanceof UserPointMarker) {
 
                     double x = m.getX() - 97;
                     double y = m.getY() + 93;
 
-                    final Parabola p = new Parabola(x, y, y);
-                    p.generateParabola();
+                    final SiteEvent siteEvent = new SiteEvent(y, new Vec3(x, y));
 
-                    markersYSorted.add(new Vec3(x, y));
-                    markersXSorted.add(new Vec3(x, y));
-
-                    layer.getChildren().add(p.getParabola());
-
+                    eventQueue.add(siteEvent);
                 }
-            }*/
-
-
-            Collections.sort(markersYSorted, new Comparator<Vec3>() {
-                @Override
-                public int compare(Vec3 o1, Vec3 o2) {
-                    if (o1.getY() > o2.getY()) {
-                        return 1;
-                    }
-                    return -1;
-                }
-            });
-
-            Collections.sort(markersXSorted, new Comparator<Vec3>() {
-                @Override
-                public int compare(Vec3 o1, Vec3 o2) {
-                    if (o1.getX() > o2.getX()) {
-                        return 1;
-                    }
-                    return -1;
-                }
-            });
-
-
-            for (int i = 0; i < markersXSorted.size(); ++i) {
-                LOGGER.log(Level.SEVERE, "Sorted marker coordinate: " + markersXSorted.get(i).getX() + ", " + markersXSorted.get(i).getY());
             }
+
+            calculateVoronoi();
         }
 
     }
 
     private void calculateVoronoi() {
+        while (!eventQueue.isEmpty()) {
+            LOGGER.log(Level.SEVERE, "Y coord: " + eventQueue.poll().getYCoord());
 
+            if (eventQueue.peek() instanceof SiteEvent) {
+                final SiteEvent e = (SiteEvent) eventQueue.poll();
+
+
+            } else if (eventQueue.peek() instanceof EdgeEvent) {
+
+            }
+        }
     }
 
     @Override

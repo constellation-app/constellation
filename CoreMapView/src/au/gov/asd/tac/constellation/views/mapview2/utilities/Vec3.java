@@ -112,5 +112,9 @@ public class Vec3 {
         this.z = z;
     }
 
-
+    public void setVec3(final Vec3 v3) {
+        this.x = v3.getX();
+        this.y = v3.getY();
+        this.z = v3.getZ();
+    }
 }

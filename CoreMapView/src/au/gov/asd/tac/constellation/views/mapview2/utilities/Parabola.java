@@ -22,18 +22,24 @@ package au.gov.asd.tac.constellation.views.mapview2.utilities;
  */
 public class Parabola extends BeachLineElement {
 
-    private final Vec3 focus = new Vec3();
+    private final Vec3 site = new Vec3();
 
     public Parabola(final Vec3 start, final Vec3 end, final double spawnX, final Vec3 focus) {
         super(start, end, spawnX);
 
-        this.focus.setX(focus.getX());
-        this.focus.setY(focus.getY());
+        this.site.setX(focus.getX());
+        this.site.setY(focus.getY());
     }
 
     public double getY(final double x, final double directtrix) {
-        return (Math.pow((x - focus.getX()), 2) / (2 * (focus.getY() - directtrix))) + ((focus.getX() + directtrix) / 2);
+        return (Math.pow((x - site.getX()), 2) / (2 * (site.getY() - directtrix))) + ((site.getX() + directtrix) / 2);
     }
 
+    public double getXIntersection(final Parabola other) {
+        return 0;
+    }
 
+    public Vec3 getSite() {
+        return site;
+    }
 }

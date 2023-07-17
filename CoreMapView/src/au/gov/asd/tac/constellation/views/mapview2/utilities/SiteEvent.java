@@ -21,8 +21,15 @@ package au.gov.asd.tac.constellation.views.mapview2.utilities;
  */
 public class SiteEvent extends VoronoiEvent {
 
-    public SiteEvent(double yOfEvent) {
+    private final Vec3 site = new Vec3();
+
+    public SiteEvent(double yOfEvent, final Vec3 point) {
         super(yOfEvent);
+
+        site.setVec3(point);
     }
 
+    public Vec3 getSite() {
+        return site;
+    }
 }
