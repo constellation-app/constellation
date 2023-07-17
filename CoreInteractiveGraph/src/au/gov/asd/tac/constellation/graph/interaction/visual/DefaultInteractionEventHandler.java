@@ -247,12 +247,11 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         // Add any visual operations that need to occur after a graph flush.
                         final List<VisualOperation> operations = new LinkedList<>();
                         operationQueue.drainTo(operations);
-                        if (announceNextFlush || !operations.isEmpty()) {
+                        if (!operations.isEmpty()) {
                             if (interactionGraph != null) {
                                 interactionGraph = interactionGraph.flush(announceNextFlush);
                             }
                             operations.forEach(op -> manager.addOperation(op));
-                            announceNextFlush = false;
                         }
                         final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION));
                         waitTime = Math.max(nextWaitTime, time + waitTime - System.currentTimeMillis());
@@ -1007,13 +1006,8 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
         parameters.getParameters().get(CreateTransactionPlugin.SOURCE_PARAMETER_ID).setObjectValue(fromVertex);
         parameters.getParameters().get(CreateTransactionPlugin.DESTINATION_PARAMETER_ID).setObjectValue(toVertex);
         parameters.getParameters().get(CreateTransactionPlugin.DIRECTED_PARAMETER_ID).setObjectValue(directed);
-        try {
-            PluginExecution.withPlugin(plugin).withParameters(parameters).interactively(false).executeNow(wg);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        } catch (PluginException ex) {
-        }
-        announceNextFlush = true;
+
+        PluginExecution.withPlugin(plugin).withParameters(parameters).interactively(false).executeLater(graph);
     }
 
     /**
