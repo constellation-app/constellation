@@ -16,24 +16,13 @@
 package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
 /**
- * Class that represents a parabola
  *
  * @author altair1673
  */
-public class Parabola extends BeachLineElement {
+public class EdgeEvent extends VoronoiEvent {
 
-    private final Vec3 focus = new Vec3();
-
-    public Parabola(final Vec3 start, final Vec3 end, final double spawnX, final Vec3 focus) {
-        super(start, end, spawnX);
-
-        this.focus.setX(focus.getX());
-        this.focus.setY(focus.getY());
+    public EdgeEvent(double yOfEvent) {
+        super(yOfEvent);
     }
-
-    public double getY(final double x, final double directtrix) {
-        return (Math.pow((x - focus.getX()), 2) / (2 * (focus.getY() - directtrix))) + ((focus.getX() + directtrix) / 2);
-    }
-
 
 }

@@ -76,7 +76,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             r.setMouseTransparent(true);
             layer.getChildren().add(r);
         } else {
-            for (final AbstractMarker m : markers) {
+            /*for (final AbstractMarker m : markers) {
                 if (m instanceof PointMarker || m instanceof UserPointMarker) {
 
                     double x = m.getX() - 97;
@@ -89,8 +89,9 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
                     markersXSorted.add(new Vec3(x, y));
 
                     layer.getChildren().add(p.getParabola());
+
                 }
-            }
+            }*/
 
 
             Collections.sort(markersYSorted, new Comparator<Vec3>() {
@@ -114,12 +115,14 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             });
 
 
-            //markerCoordinates.forEach(coord -> LOGGER.log(Level.SEVERE, "Sorted marker coordinate: " + coord.getX() + ", " + coord.getY()));
-
             for (int i = 0; i < markersXSorted.size(); ++i) {
                 LOGGER.log(Level.SEVERE, "Sorted marker coordinate: " + markersXSorted.get(i).getX() + ", " + markersXSorted.get(i).getY());
             }
         }
+
+    }
+
+    private void calculateVoronoi() {
 
     }
 
