@@ -417,6 +417,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     ++skippedRow;
                 } else {
                     NotifyDisplayer.display("Unable to complete import due to error with data." + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.", NotifyDescriptor.ERROR_MESSAGE);                    
+                    break;
                 }
             }
         }
@@ -494,6 +495,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                         ++skippedRow;
                     } else {
                         NotifyDisplayer.display("Unable to complete import due to error with data." + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.", NotifyDescriptor.ERROR_MESSAGE);                        
+                        break;
                     }
                 }
             }
