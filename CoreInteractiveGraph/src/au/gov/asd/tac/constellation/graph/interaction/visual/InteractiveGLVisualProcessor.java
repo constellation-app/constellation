@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.graph.interaction.framework.HitState.HitType
 import au.gov.asd.tac.constellation.graph.interaction.framework.InteractionEventHandler;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualAnnotator;
 import au.gov.asd.tac.constellation.graph.interaction.framework.VisualInteraction;
+import au.gov.asd.tac.constellation.graph.interaction.utilities.DrawModeCursorFlag;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTestRequest;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.HitTester;
 import au.gov.asd.tac.constellation.graph.interaction.visual.renderables.NewLineModel;
@@ -174,7 +175,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     @Override
     public VisualOperation hitTestCursor(final int x, final int y, final HitState hitState, final Queue<HitState> notificationQueue) {
         hitTester.queueRequest(new HitTestRequest(x, y, hitState, notificationQueue, resultState -> {
-            if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT)) {
+            if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT) && !DrawModeCursorFlag.DrawModeEnabled.get()) {
                 getCanvas().setCursor(DEFAULT_CURSOR);
             } else {
                 getCanvas().setCursor(CROSSHAIR_CURSOR);
