@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
@@ -50,7 +51,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ObjectParameterType
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -63,7 +63,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import org.openide.NotifyDescriptor;
 import org.openide.awt.NotificationDisplayer;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -363,17 +362,17 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
     }
 
     private static Map<String, Integer> processSourceVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
-            final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
+            final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         return processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
     }
 
     private static Map<String, Integer> processDestinationVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
-            final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
+            final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         return processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
     }
 
     private static Map<String, Integer> processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType,
-            final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
+            final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
 
         addAttributes(graph, GraphElementType.VERTEX, attributeDefinitions);
@@ -416,8 +415,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     }                    
                     ++skippedRow;
                 } else {
-                    NotifyDisplayer.display("Unable to complete import due to error with data." + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.", NotifyDescriptor.ERROR_MESSAGE);                    
-                    break;
+                    PluginException plugEx = new PluginException(PluginNotificationLevel.ERROR, "Unable to complete import due to error with data. " + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.");
+                    plugEx.setStackTrace(ex.getStackTrace());
+                    throw plugEx;
                 }
             }
         }
@@ -426,7 +426,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return results;
     }
 
-    private static Map<String, Integer> processTransactions(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
+    private static Map<String, Integer> processTransactions(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         final List<ImportAttributeDefinition> sourceVertexDefinitions = definition.getDefinitions(AttributeType.SOURCE_VERTEX);
         final List<ImportAttributeDefinition> destinationVertexDefinitions = definition.getDefinitions(AttributeType.DESTINATION_VERTEX);
         final List<ImportAttributeDefinition> transactionDefinitions = definition.getDefinitions(AttributeType.TRANSACTION);
@@ -494,8 +494,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                         graph.removeVertex(destinationVertexId);
                         ++skippedRow;
                     } else {
-                        NotifyDisplayer.display("Unable to complete import due to error with data." + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.", NotifyDescriptor.ERROR_MESSAGE);                        
-                        break;
+                        PluginException plugEx = new PluginException(PluginNotificationLevel.ERROR, "Unable to complete import due to error with data. " + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.");
+                        plugEx.setStackTrace(ex.getStackTrace());
+                        throw plugEx;
                     }
                 }
             }
