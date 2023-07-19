@@ -450,13 +450,12 @@ public class NotesViewPane extends BorderPane {
      * @param pluginReport Plugin report to be added.
      */
     protected void addNewUndoRedoReport(final UndoRedoReport undoRedoReport, final Graph graph) {
-        //if (!pluginReport.hasLowLevelTag()) { TODO add this check based on the filtered out redo undo events
         LOGGER.log(Level.SEVERE, "-----**********-- addNewUndoRedoReport --++++++++++++++--- - " + undoRedoReport.getActionDescription());
-        if (!isExistingNote(undoRedoReport)) {
+        if (hasMatchingNote(undoRedoReport) && !isExistingNote(undoRedoReport)) {
             final NotesViewEntry note = new NotesViewEntry(
                     Long.toString(undoRedoReport.getStartTime()),
-                    undoRedoReport.getActionType(),
-                    undoRedoReport.getActionDescription(),
+                    undoRedoReport.getActionType() + " " + undoRedoReport.getActionDescription(),
+                    "Finished",
                     false,
                     false,
                     "#ffffff"
@@ -470,8 +469,9 @@ public class NotesViewPane extends BorderPane {
                 addNote(note);
             }
             updateTagsFiltersAvailable();
+            updateUI(graph);
         }
-        updateUI(graph);
+
     }
 
     /**
@@ -673,6 +673,21 @@ public class NotesViewPane extends BorderPane {
     private boolean isExistingNote(final UndoRedoReport undoRedoReport) {
         final String startTime = Long.toString(undoRedoReport.getStartTime());
         return notesDateTimeCache.contains(startTime);
+    }
+
+    /**
+     * Check if the action in the UndoRedoReport has a matching note already
+     * added for the original execution. This is to prevent undo redo notes
+     * added for actions that don't have notes of the original executions. E.g.
+     * Activities on the graph that are not run by a plugin such as Drag, Zoom.
+     *
+     * @param undoRedoReport The UndoRedoReport to check.
+     *
+     * @return True if UndoRedoReport has a matching note already added for the
+     * original action.
+     */
+    private boolean hasMatchingNote(final UndoRedoReport undoRedoReport) {
+        return notesViewEntries.stream().anyMatch(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()));
     }
 
     /**
