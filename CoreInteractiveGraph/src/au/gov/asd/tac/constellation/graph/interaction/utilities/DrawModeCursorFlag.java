@@ -26,5 +26,5 @@ public class DrawModeCursorFlag {
     
     private DrawModeCursorFlag() {
         throw new IllegalStateException("Utility class");
-    };
+    }
 }
