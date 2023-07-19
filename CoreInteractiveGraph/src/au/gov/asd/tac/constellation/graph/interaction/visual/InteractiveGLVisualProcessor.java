@@ -55,13 +55,9 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
- * An extension of the {@link GLVisualProcessor} that adds support for user
- * interaction through implementing {@link VisualInteraction} and
- * {@link VisualAnnotator}.
+ * An extension of the {@link GLVisualProcessor} that adds support for user interaction through implementing {@link VisualInteraction} and {@link VisualAnnotator}.
  * <p>
- * This provides the same basic visualisation of a graph as
- * {@link GLVisualProcessor} does, adding renderables for a new line, a
- * selection box, overlay planes, and hit testing.
+ * This provides the same basic visualisation of a graph as {@link GLVisualProcessor} does, adding renderables for a new line, a selection box, overlay planes, and hit testing.
  *
  * @author twilight_sparkle
  */
@@ -89,10 +85,8 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     /**
      * Create a new InteractiveGLVisualProcessor.
      *
-     * @param debugGl Whether or not to utilise a GLContext that includes
-     * debugging.
-     * @param printGlCapabilities Whether or not to print out a list of GL
-     * capabilities upon initialisation.
+     * @param debugGl Whether or not to utilise a GLContext that includes debugging.
+     * @param printGlCapabilities Whether or not to print out a list of GL capabilities upon initialisation.
      */
     public InteractiveGLVisualProcessor(final boolean debugGl, final boolean printGlCapabilities) {
         super(debugGl, printGlCapabilities);
@@ -108,8 +102,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     /**
      * Set the specified {@link InteractionEventHandler} to use this processor.
      * <p>
-     * This method adds the event handler as a listener (of all the relevant
-     * gesture types) to this processor's AWT component.
+     * This method adds the event handler as a listener (of all the relevant gesture types) to this processor's AWT component.
      *
      * @param handler The handler using this processor.
      */
@@ -135,8 +128,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
      * Add the specified {@link GraphRendererDropTarget} to this processor.
      *
      * @param targetListener The dropper using this processor.
-     * @return A {@link DropTarget} wrapping the supplied target and this
-     * processor's AWT component.
+     * @return A {@link DropTarget} wrapping the supplied target and this processor's AWT component.
      */
     public void addDropTargetToCanvas(final DropTargetListener targetListener) {
         this.targetListener = targetListener;
@@ -175,7 +167,7 @@ public class InteractiveGLVisualProcessor extends GLVisualProcessor implements V
     @Override
     public VisualOperation hitTestCursor(final int x, final int y, final HitState hitState, final Queue<HitState> notificationQueue) {
         hitTester.queueRequest(new HitTestRequest(x, y, hitState, notificationQueue, resultState -> {
-            if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT) && !DrawModeCursorFlag.DrawModeEnabled.get()) {
+            if (resultState.getCurrentHitType().equals(HitType.NO_ELEMENT) && !DrawModeCursorFlag.getDrawModeEnabled()) {
                 getCanvas().setCursor(DEFAULT_CURSOR);
             } else {
                 getCanvas().setCursor(CROSSHAIR_CURSOR);

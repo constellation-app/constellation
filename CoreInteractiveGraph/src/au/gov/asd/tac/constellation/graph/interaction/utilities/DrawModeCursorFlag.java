@@ -15,16 +15,24 @@
  */
 package au.gov.asd.tac.constellation.graph.interaction.utilities;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 /**
  * This class sets a Boolean to be called for determining whether Draw Mode has been enabled.
- * @author centauri032001
+ *
+ * @author centauri0320001
  */
 public class DrawModeCursorFlag {
-    public static final BooleanProperty DrawModeEnabled = new SimpleBooleanProperty();
-    
+
+    private static boolean drawModeEnabled = true;
+
     private DrawModeCursorFlag() {
         throw new IllegalStateException("Utility class");
+    }
+
+    public static boolean getDrawModeEnabled() {
+        return drawModeEnabled;
+    }
+
+    public static void setDrawModeEnabled(final boolean drawModeEnabled) {
+        DrawModeCursorFlag.drawModeEnabled = drawModeEnabled;
     }
 }

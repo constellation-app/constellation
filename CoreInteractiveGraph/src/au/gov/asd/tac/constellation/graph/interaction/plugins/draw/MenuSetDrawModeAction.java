@@ -27,8 +27,7 @@ import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle.Messages;
 
 /**
- * This class produces a menu action for the 2D action available on the graph
- * toolbar.
+ * This class produces a menu action for the 2D action available on the graph toolbar.
  *
  * @author altair
  */
@@ -60,6 +59,6 @@ public class MenuSetDrawModeAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         menuButton.setSelected(VisualGraphUtilities.isDrawingMode(getContext().getGraph()));
-        DrawModeCursorFlag.DrawModeEnabled.set(VisualGraphUtilities.isDrawingMode(getContext().getGraph()));
+        DrawModeCursorFlag.setDrawModeEnabled(VisualGraphUtilities.isDrawingMode(getContext().getGraph()));
     }
 }
