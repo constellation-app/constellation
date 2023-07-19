@@ -17,11 +17,9 @@ package au.gov.asd.tac.constellation.graph.interaction.plugins.draw;
 
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.interaction.utilities.DrawModeCursorFlag;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import java.awt.Cursor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
