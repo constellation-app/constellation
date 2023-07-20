@@ -534,6 +534,7 @@ public class AttributeEditorPanel extends BorderPane {
 
         // Value TextField
         final Node attributeValueNode = createAttributeValueNode(values, attribute, attributePane, multiValue);
+        
 
         // Edit Functionality
         final AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
@@ -544,9 +545,9 @@ public class AttributeEditorPanel extends BorderPane {
                 }
             });
         } 
-        // else {
-            // Space for handeling of AttributeNode in deactivated state if needed
-        //}
+        else {
+            attributeValueNode.setDisable(true);
+        }
 
         // If we don't do anything here, right-clicking on the Node will produce two context menus:
         // the one the Node has by default, and the one we added to the AttributeTitledPane.
