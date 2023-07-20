@@ -535,7 +535,6 @@ public class AttributeEditorPanel extends BorderPane {
         // Value TextField
         final Node attributeValueNode = createAttributeValueNode(values, attribute, attributePane, multiValue);
         
-
         // Edit Functionality
         final AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
         if (editorFactory != null && values != null) {
@@ -563,7 +562,6 @@ public class AttributeEditorPanel extends BorderPane {
         valueConstraint.setHalignment(HPos.CENTER);
         valueConstraint.setHgrow(Priority.ALWAYS);
         valueConstraint.setFillWidth(true);
-
 
         gridPane.getColumnConstraints().addAll(titleConstraint, valueConstraint);
         gridPane.add(attributeTitleText, 0, 0);
