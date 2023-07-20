@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.graph.interaction.plugins.draw;
 
 import au.gov.asd.tac.constellation.graph.interaction.InteractiveGraphPluginRegistry;
-import au.gov.asd.tac.constellation.graph.interaction.utilities.DrawModeCursorFlag;
 import au.gov.asd.tac.constellation.graph.node.gui.MenuBaseAction;
 import au.gov.asd.tac.constellation.graph.visual.utilities.VisualGraphUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -59,6 +58,5 @@ public class MenuSetDrawModeAction extends MenuBaseAction {
     @Override
     protected void displayValue() {
         menuButton.setSelected(VisualGraphUtilities.isDrawingMode(getContext().getGraph()));
-        DrawModeCursorFlag.setDrawModeEnabled(VisualGraphUtilities.isDrawingMode(getContext().getGraph()));
     }
 }
