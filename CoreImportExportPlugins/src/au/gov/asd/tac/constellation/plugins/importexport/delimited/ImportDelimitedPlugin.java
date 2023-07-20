@@ -166,11 +166,12 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 // At least 1 object was successfully imported. List all successful file imports, as well as any files
                 // that there were issues for. If there were any files with issues use a warning dialog.
                 final String fileFiles = (validFilenames.size() == 1) ? "file" : "files";
-                final String rowRows = (skippedRows > 1 ) ? "rows" : "row";
+                final String rowRows = skippedRows == 1 ? "row" : "rows";
                 final String skippedRowsMsg = (skippedRows > 0 ? String.format("Skipped %d %s due to import error.", skippedRows, rowRows) : "");
                 
-                sbMessage.append(String.format("Extracted data from %d row(s) in %d %s. %s",
-                        importedRows, validFilenames.size(), fileFiles, skippedRowsMsg));
+                final String importedRowRows = importedRows == 1 ? "row" : "rows";
+                sbMessage.append(String.format("Extracted data from %d %s in %d %s. %s",
+                        importedRows, importedRowRows, validFilenames.size(), fileFiles, skippedRowsMsg));
                 
                 sbMessage.append(" Files with data: ");
                 for (int i = 0; i < validFilenames.size(); i++) {
@@ -415,7 +416,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     }                    
                     ++skippedRow;
                 } else {
-                    PluginException plugEx = new PluginException(PluginNotificationLevel.ERROR, "Unable to complete import due to error with data. " + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.");
+                    final PluginException plugEx = new PluginException(PluginNotificationLevel.ERROR, "Unable to complete import due to error with data. " + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.");
                     plugEx.setStackTrace(ex.getStackTrace());
                     throw plugEx;
                 }
@@ -494,7 +495,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                         graph.removeVertex(destinationVertexId);
                         ++skippedRow;
                     } else {
-                        PluginException plugEx = new PluginException(PluginNotificationLevel.ERROR, "Unable to complete import due to error with data. " + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.");
+                        final PluginException plugEx = new PluginException(PluginNotificationLevel.ERROR, "Unable to complete import due to error with data. " + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.");
                         plugEx.setStackTrace(ex.getStackTrace());
                         throw plugEx;
                     }
