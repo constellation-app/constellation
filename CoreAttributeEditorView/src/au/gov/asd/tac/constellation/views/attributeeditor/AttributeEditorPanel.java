@@ -543,8 +543,7 @@ public class AttributeEditorPanel extends BorderPane {
                     getEditValueHandler(attribute, editorFactory, values);
                 }
             });
-        } 
-        else {
+        } else {
             attributeValueNode.setDisable(true);
         }
 
