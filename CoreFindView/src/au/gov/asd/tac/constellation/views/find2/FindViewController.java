@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.views.find2.components.advanced.utilities.AdvancedSearchParameters;
 import au.gov.asd.tac.constellation.views.find2.plugins.BasicFindGraphSelectionPlugin;
@@ -46,6 +47,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Exceptions;
 
 /**
  * This controller class handles the interaction between the findView2 UI
@@ -308,7 +310,7 @@ public class FindViewController {
                 }
 
                 final Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getGraphId());
-                PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph).get();
+                PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph);
             }
 
             // Update the UI with how many results were found
@@ -320,7 +322,7 @@ public class FindViewController {
             Thread.currentThread().interrupt();
         } catch (final ExecutionException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-        }
+        } 
     }
 
     /**
