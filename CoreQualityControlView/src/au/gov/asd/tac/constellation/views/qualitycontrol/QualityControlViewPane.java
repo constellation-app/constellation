@@ -266,7 +266,7 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 02 && !QualityControlViewTopComponent.isFirstClick() || 
+                    if (value.getClickCount() == 2 && !QualityControlViewTopComponent.isFirstClick() || 
                             value.getClickCount() > 2 && !QualityControlViewTopComponent.isFirstClick()) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
