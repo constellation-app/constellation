@@ -53,6 +53,8 @@ import org.openide.windows.TopComponent;
     "HINT_QualityControlViewTopComponent=Quality Control View"})
 public final class QualityControlViewTopComponent extends JavaFxTopComponent<QualityControlViewPane> implements QualityControlListener {
 
+    private static boolean firstClick = true;
+    
     private final QualityControlViewPane qualityControlViewPane;
 
     public QualityControlViewTopComponent() {
@@ -89,6 +91,20 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
         QualityControlAutoVetter.getInstance().removeListener(this);
     }
 
+    @Override 
+    public void handleNewGraph(final Graph graph) {
+        setFirstClick(true); 
+    }
+    
+    public static boolean isFirstClick() {
+        return firstClick;
+    }
+
+    public static void setFirstClick(final boolean click) {
+        firstClick = click;
+    }
+
+    
     @Override
     public void qualityControlChanged(final QualityControlState state) {
         if (needsUpdate()) {

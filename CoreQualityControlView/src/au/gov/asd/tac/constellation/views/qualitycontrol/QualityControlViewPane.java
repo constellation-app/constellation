@@ -102,7 +102,7 @@ import org.openide.util.NbPreferences;
     "MSG_NoEntries=There are no rules for this identifier."
 })
 public final class QualityControlViewPane extends BorderPane {
-    
+
     private static final Logger LOGGER = Logger.getLogger(QualityControlViewPane.class.getName());
 
     private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
@@ -118,7 +118,7 @@ public final class QualityControlViewPane extends BorderPane {
     private final TableColumn<QualityControlEvent, QualityControlEvent> reasonColumn;
     private final TableView<QualityControlEvent> qualityTable;
     private final FlowPane optionsPane;
-    
+
     private static final String DISABLE = "Disable";
     private static final String ENABLE = "Enable";
 
@@ -222,8 +222,7 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Refresh the data inside QualityControlView with data from the current
-     * graph.
+     * Refresh the data inside QualityControlView with data from the current graph.
      *
      * @param state The new state to display in the view.
      */
@@ -267,11 +266,13 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2) {
+                    if (value.getClickCount() == 02 && !QualityControlViewTopComponent.isFirstClick() || 
+                            value.getClickCount() > 2 && !QualityControlViewTopComponent.isFirstClick()) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
+                    QualityControlViewTopComponent.setFirstClick(false);
                 });
 
                 return cell;
@@ -290,11 +291,13 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2) {
+                    if (value.getClickCount() == 2 && !QualityControlViewTopComponent.isFirstClick() || 
+                            value.getClickCount() > 2 && !QualityControlViewTopComponent.isFirstClick()) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
-                    }
+                    } 
+                    QualityControlViewTopComponent.setFirstClick(false);
                 });
 
                 return cell;
@@ -314,11 +317,13 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2) {
+                    if (value.getClickCount() == 2 && !QualityControlViewTopComponent.isFirstClick() || 
+                            value.getClickCount() > 2 && !QualityControlViewTopComponent.isFirstClick()) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
+                    QualityControlViewTopComponent.setFirstClick(false);
                 });
 
                 return cell;
@@ -337,11 +342,13 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2) {
+                    if (value.getClickCount() == 2 && !QualityControlViewTopComponent.isFirstClick() || 
+                            value.getClickCount() > 2 && !QualityControlViewTopComponent.isFirstClick()) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
+                    QualityControlViewTopComponent.setFirstClick(false);
                 });
 
                 return cell;
@@ -458,7 +465,7 @@ public final class QualityControlViewPane extends BorderPane {
             final RadioButton severeButton = new RadioButton();
             final RadioButton criticalButton = new RadioButton();
             final String resetText = rule.getCategory(0) == getPriorities().get(rule) ? "Reset" : "Reset to " + rule.getCategory(0).name();
-            
+
             final Button resetButton = new Button(resetText);
             resetButton.setOnAction(event -> {
                 switch (rule.getCategory(0)) {
@@ -482,7 +489,7 @@ public final class QualityControlViewPane extends BorderPane {
                 }
                 resetButton.setText("Reset");
             });
-            
+
             final Button enableDisableButton = new Button(Boolean.TRUE.equals(getEnablementStatuses().get(rule)) ? DISABLE : ENABLE);
             enableDisableButton.setOnAction(event -> {
                 if (DISABLE.equals(enableDisableButton.getText())) {
@@ -527,7 +534,7 @@ public final class QualityControlViewPane extends BorderPane {
                 default:
                     break;
             }
-            
+
             if (Boolean.FALSE.equals(getEnablementStatuses().get(rule))) {
                 ruleName.setTextFill(Color.GREY);
                 minorButton.setDisable(true);
@@ -609,8 +616,7 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Display a dialog containing all Rule objects registered with the Quality
-     * Control View and which matched for a given QualityControlEvent.
+     * Display a dialog containing all Rule objects registered with the Quality Control View and which matched for a given QualityControlEvent.
      *
      * @param owner
      * @param qcevent
@@ -639,8 +645,7 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Display a dialog containing all Rule objects registered with the Quality
-     * Control View and which matched for a given identifier.
+     * Display a dialog containing all Rule objects registered with the Quality Control View and which matched for a given identifier.
      *
      * @param owner The owner Node
      * @param identifier The identifier of the graph node being displayed.
@@ -713,7 +718,7 @@ public final class QualityControlViewPane extends BorderPane {
             }
         }
     }
-    
+
     /**
      * Writes the rule enabled statuses to the preferences object.
      */
@@ -739,7 +744,7 @@ public final class QualityControlViewPane extends BorderPane {
             getPriorities().put(QualityControlEvent.getRuleByString(entry.getKey()), QualityControlEvent.getCategoryFromString(entry.getValue()));
         }
     }
-    
+
     /**
      * Reads the preferences object to load the rule enabled statuses.
      */
@@ -757,8 +762,7 @@ public final class QualityControlViewPane extends BorderPane {
     /**
      * Lazily instantiates the rulePriorities Map and loads it via the lookup
      *
-     * @return a Map<QualityControlRule, QualityCategory> of rules mapped to
-     * categories
+     * @return a Map<QualityControlRule, QualityCategory> of rules mapped to categories
      */
     public static Map<QualityControlRule, QualityCategory> getPriorities() {
         if (MapUtils.isEmpty(rulePriorities)) {
@@ -769,7 +773,7 @@ public final class QualityControlViewPane extends BorderPane {
         }
         return rulePriorities;
     }
-    
+
     public static Map<QualityControlRule, Boolean> getEnablementStatuses() {
         if (MapUtils.isEmpty(ruleEnabledStatuses)) {
             ruleEnabledStatuses = new HashMap<>();
@@ -813,8 +817,7 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Selects on the graph only nodes which have a corresponding selected
-     * QualityControlEvent.
+     * Selects on the graph only nodes which have a corresponding selected QualityControlEvent.
      */
     @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     protected static class SelectQualityControlEvents extends SimpleEditPlugin {
@@ -860,8 +863,7 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Selects on the graph only nodes which do not have a corresponding
-     * selected QualityControlEvent.
+     * Selects on the graph only nodes which do not have a corresponding selected QualityControlEvent.
      */
     @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
     protected static class DeselectQualityControlEvents extends SimpleEditPlugin {
@@ -900,8 +902,7 @@ public final class QualityControlViewPane extends BorderPane {
     }
 
     /**
-     * Zoom the camera of the Graph to the extents of nodes corresponding to any
-     * selected QualityControlEvent.
+     * Zoom the camera of the Graph to the extents of nodes corresponding to any selected QualityControlEvent.
      */
     @PluginInfo(pluginType = PluginType.VIEW, tags = {PluginTags.VIEW})
     private static class ZoomToQualityControlEvents extends SimpleEditPlugin {
