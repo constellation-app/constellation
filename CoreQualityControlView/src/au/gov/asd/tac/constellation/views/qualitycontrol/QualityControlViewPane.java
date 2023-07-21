@@ -121,6 +121,7 @@ public final class QualityControlViewPane extends BorderPane {
 
     private static final String DISABLE = "Disable";
     private static final String ENABLE = "Enable";
+    private boolean firstClick = true;
 
     public QualityControlViewPane() {
         readSerializedRulePriorities();
@@ -128,7 +129,7 @@ public final class QualityControlViewPane extends BorderPane {
 
         qualityTable = new TableView<>();
         qualityTable.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            QualityControlViewTopComponent.setFirstClick(true);
+            setFirstClick(true);
         });
 
         identifierColumn = new TableColumn<>("Identifier");
@@ -270,13 +271,13 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2 && !QualityControlViewTopComponent.isFirstClick()
-                            || value.getClickCount() > 2 && !QualityControlViewTopComponent.isFirstClick()) {
+                    if (value.getClickCount() == 2 && !firstClick
+                            || value.getClickCount() > 2 && !firstClick) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
-                    QualityControlViewTopComponent.setFirstClick(false);
+                    setFirstClick(false);
                 });
 
                 return cell;
@@ -295,13 +296,13 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2 && !QualityControlViewTopComponent.isFirstClick()
-                            || value.getClickCount() > 2 && !QualityControlViewTopComponent.isFirstClick()) {
+                    if (value.getClickCount() == 2 && !firstClick
+                            || value.getClickCount() > 2 && !firstClick) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
-                    QualityControlViewTopComponent.setFirstClick(false);
+                    setFirstClick(false);
                 });
 
                 return cell;
@@ -321,13 +322,13 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2 && !QualityControlViewTopComponent.isFirstClick()
-                            || value.getClickCount() > 2 && !QualityControlViewTopComponent.isFirstClick()) {
+                    if (value.getClickCount() == 2 && !firstClick
+                            || value.getClickCount() > 2 && !firstClick) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
-                    QualityControlViewTopComponent.setFirstClick(false);
+                    setFirstClick(false);
                 });
 
                 return cell;
@@ -346,13 +347,13 @@ public final class QualityControlViewPane extends BorderPane {
                 };
 
                 cell.setOnMouseClicked(value -> {
-                    if (value.getClickCount() == 2 && !QualityControlViewTopComponent.isFirstClick()
-                            || value.getClickCount() > 2 && !QualityControlViewTopComponent.isFirstClick()) {
+                    if (value.getClickCount() == 2 && !firstClick
+                            || value.getClickCount() > 2 && !firstClick) {
                         @SuppressWarnings("unchecked") //sourceCell will be a Table cell of quality control events which extends from object type
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
-                    QualityControlViewTopComponent.setFirstClick(false);
+                    setFirstClick(false);
                 });
 
                 return cell;
@@ -369,6 +370,10 @@ public final class QualityControlViewPane extends BorderPane {
 
             setCenter(qualityTable);
         });
+    }
+
+    public void setFirstClick(final boolean click) {
+        firstClick = click;
     }
 
     /**
