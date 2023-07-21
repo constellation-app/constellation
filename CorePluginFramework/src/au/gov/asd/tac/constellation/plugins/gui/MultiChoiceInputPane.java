@@ -30,6 +30,7 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.Button;
 import javafx.scene.control.Skin;
 import javafx.scene.layout.HBox;
 import org.controlsfx.control.CheckComboBox;
@@ -56,7 +57,9 @@ public class MultiChoiceInputPane extends HBox {
     private final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
     private final MultiChoiceComboBox<ParameterValue> field;
     private boolean isAdjusting = false;
-
+    private final Button selectAllButton = new Button("All");
+    private final Button clearAllButton = new Button("Clear");
+    
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
         options.addAll(MultiChoiceParameterType.getOptionsData(parameter));
         field = new MultiChoiceComboBox<>(options);
@@ -127,7 +130,21 @@ public class MultiChoiceInputPane extends HBox {
                         break;
                 }
             }));
-        getChildren().add(field);
+        
+        //Button Actions to controll bulk selection
+        selectAllButton.setOnAction(event -> {
+            field.getCheckModel().checkAll();
+        });
+        
+        clearAllButton.setOnAction(event -> {
+            field.getCheckModel().clearChecks();
+        });
+        
+        final HBox fieldAndButtons = new HBox();
+        fieldAndButtons.setSpacing(2);
+        fieldAndButtons.getChildren().addAll(field, selectAllButton, clearAllButton);
+        
+        getChildren().add(fieldAndButtons);
     }
 
     public class MultiChoiceComboBox<T extends Object> extends CheckComboBox<T> {
