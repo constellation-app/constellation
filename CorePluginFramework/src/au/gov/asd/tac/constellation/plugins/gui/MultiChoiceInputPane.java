@@ -91,8 +91,6 @@ public class MultiChoiceInputPane extends HBox {
             });
         });
 
-        field.setPrefWidth(DEFAULT_WIDTH);
-
         parameter.addListener((pluginParameter, change) -> Platform.runLater(() -> {
                 @SuppressWarnings("unchecked") //mcPluginParameter is a MultiChoiceParameter
                 final PluginParameter<MultiChoiceParameterValue> mcPluginParameter = (PluginParameter<MultiChoiceParameterValue>) pluginParameter;
@@ -139,6 +137,13 @@ public class MultiChoiceInputPane extends HBox {
         clearAllButton.setOnAction(event -> {
             field.getCheckModel().clearChecks();
         });
+        
+        //Button widths set to 48 to factorin ght padding of 2 and maintain a total width of 100
+        selectAllButton.setMinWidth(48);
+        clearAllButton.setMinWidth(48);
+        //field width causes buttons to sit in pane space when available but retract to the same size as buttons if needed.
+        field.setPrefWidth(DEFAULT_WIDTH);
+        field.setMinWidth(50);
         
         final HBox fieldAndButtons = new HBox();
         fieldAndButtons.setSpacing(2);
