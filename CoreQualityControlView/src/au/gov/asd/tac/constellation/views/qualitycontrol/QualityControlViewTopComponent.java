@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.qualitycontrol;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlListener;
@@ -91,9 +92,15 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
         QualityControlAutoVetter.getInstance().removeListener(this);
     }
 
+
     @Override 
     public void handleNewGraph(final Graph graph) {
         setFirstClick(true); 
+    }
+    
+    @Override 
+    protected void handleGraphChange(final GraphChangeEvent event) {
+        setFirstClick(true);
     }
     
     public static boolean isFirstClick() {
