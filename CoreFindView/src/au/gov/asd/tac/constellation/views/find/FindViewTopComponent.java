@@ -43,7 +43,7 @@ import org.openide.windows.WindowManager;
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
-        mode = "output",
+        mode = "properties",
         openAtStartup = false
 )
 @ActionID(
@@ -164,6 +164,7 @@ public final class FindViewTopComponent extends JavaFxTopComponent<FindViewPane>
         for (final Window window : Window.getWindows()) {
             if (this.getTopLevelAncestor() != null && this.getTopLevelAncestor().getName().equals(window.getName())) {
                 window.setMinimumSize(new Dimension(600, 350));
+                window.setSize(new Dimension(600, 350));
             }
         }
     }
