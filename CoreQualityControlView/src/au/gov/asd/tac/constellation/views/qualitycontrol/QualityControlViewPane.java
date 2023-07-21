@@ -80,6 +80,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.util.Callback;
 import javafx.util.Pair;
 import org.apache.commons.collections4.CollectionUtils;
@@ -426,7 +427,7 @@ public final class QualityControlViewPane extends BorderPane {
     /**
      * Shows a dialog to allow the user to select priorities of each rule.
      */
-    private static void showPriorityDialog() {
+    private void showPriorityDialog() {
         final ScrollPane rulesScrollPane = new ScrollPane();
         rulesScrollPane.setPrefHeight(240);
         rulesScrollPane.setPrefWidth(SystemUtils.IS_OS_LINUX ? 820 : 700);
@@ -630,7 +631,7 @@ public final class QualityControlViewPane extends BorderPane {
      * @param owner
      * @param qcevent
      */
-    private static void showRuleDialog(final TableCell<QualityControlEvent, QualityControlEvent> qcevent) {
+    private void showRuleDialog(final TableCell<QualityControlEvent, QualityControlEvent> qcevent) {
         if (qcevent.getItem() != null) {
             final int vxId = qcevent.getItem().getVertex();
             final String identifier = qcevent.getItem().getIdentifier();
@@ -660,7 +661,7 @@ public final class QualityControlViewPane extends BorderPane {
      * @param identifier The identifier of the graph node being displayed.
      * @param rules The list of rules measured against this graph node.
      */
-    private static void showRuleDialog(final String identifier, final List<Pair<QualityCategory, String>> rules) {
+    private void showRuleDialog(final String identifier, final List<Pair<QualityCategory, String>> rules) {
         final ScrollPane sp = new ScrollPane();
         sp.setPrefHeight(512);
         sp.setPrefWidth(512);
@@ -697,6 +698,11 @@ public final class QualityControlViewPane extends BorderPane {
         alert.setHeaderText(String.format(Bundle.MSG_QualtyControlRules(), identifier));
         alert.getDialogPane().setContent(sp);
         alert.setResizable(true);
+        final List<Screen> screens = Screen.getScreensForRectangle(this.getScene().getWindow().getX(), this.getScene().getWindow().getY(),
+                this.getScene().getWindow().widthProperty().get(), this.getScene().getWindow().heightProperty().get());
+
+        alert.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2));
+        alert.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2));
         alert.show();
     }
 
