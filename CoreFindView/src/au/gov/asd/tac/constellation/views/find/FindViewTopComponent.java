@@ -38,7 +38,7 @@ import org.openide.windows.WindowManager;
  * @author Atlas139mkm
  */
 @TopComponent.Description(
-        preferredID = "FindTopComponent",
+        preferredID = "FindViewTopComponent",
         iconBase = "au/gov/asd/tac/constellation/views/find/resources/find.png",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
