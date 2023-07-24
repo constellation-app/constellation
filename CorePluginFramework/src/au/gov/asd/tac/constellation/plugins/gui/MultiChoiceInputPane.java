@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParamete
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,8 +31,11 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Skin;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import org.controlsfx.control.CheckComboBox;
 
@@ -57,8 +61,10 @@ public class MultiChoiceInputPane extends HBox {
     private final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
     private final MultiChoiceComboBox<ParameterValue> field;
     private boolean isAdjusting = false;
-    private final Button selectAllButton = new Button("All");
-    private final Button clearAllButton = new Button("Clear");
+    private final MenuButton menuButton;
+    private final Menu menu;
+    private final MenuItem selectAll;
+    private final MenuItem clearAll;
     
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
         options.addAll(MultiChoiceParameterType.getOptionsData(parameter));
@@ -129,26 +135,36 @@ public class MultiChoiceInputPane extends HBox {
                 }
             }));
         
-        //Button Actions to controll bulk selection
-        selectAllButton.setOnAction(event -> {
-            field.getCheckModel().checkAll();
+        //menu Button to controll bulk selection
+        selectAll = new MenuItem("Select All");
+        selectAll.setOnAction(event -> {
+          field.getCheckModel().checkAll();
         });
-        
-        clearAllButton.setOnAction(event -> {
+        clearAll = new MenuItem("Clear All");
+        clearAll.setOnAction(event -> {
             field.getCheckModel().clearChecks();
         });
         
-        //Button widths set to 48 to factorin ght padding of 2 and maintain a total width of 100
-        selectAllButton.setMinWidth(48);
-        clearAllButton.setMinWidth(48);
+        menu = new Menu();
+        menu.getItems().addAll(selectAll, clearAll);
+        
+        final List<MenuItem> selectOptions = new ArrayList<>();
+        selectOptions.add(selectAll);
+        selectOptions.add(clearAll);
+        
+        menuButton = new MenuButton("...");
+        menuButton.getItems().addAll(FXCollections.observableArrayList(selectOptions));
+        menuButton.setTooltip(new Tooltip("Selection Options"));
+        menuButton.setPrefWidth(50);
+        menuButton.setMinWidth(50);
+        
         //field width causes buttons to sit in pane space when available but retract to the same size as buttons if needed.
         field.setPrefWidth(DEFAULT_WIDTH);
         field.setMinWidth(50);
         
         final HBox fieldAndButtons = new HBox();
         fieldAndButtons.setSpacing(2);
-        fieldAndButtons.getChildren().addAll(field, selectAllButton, clearAllButton);
-        
+        fieldAndButtons.getChildren().addAll(field, menuButton);
         getChildren().add(fieldAndButtons);
     }
 
