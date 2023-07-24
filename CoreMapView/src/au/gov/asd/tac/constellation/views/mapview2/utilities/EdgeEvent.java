@@ -21,14 +21,29 @@ package au.gov.asd.tac.constellation.views.mapview2.utilities;
  */
 public class EdgeEvent extends VoronoiEvent {
 
-    private Edge edge1;
-    private Edge edge2;
+    private final Edge edge1;
+    private final Edge edge2;
+    private final Parabola involvedArc;
+    private final Vec3 intersectionPoint;
 
-    public EdgeEvent(double yOfEvent, final Edge a, final Edge b) {
+    private boolean isValid = true;
+
+    public EdgeEvent(double yOfEvent, final Vec3 intersection, final Edge a, final Edge b, final Parabola arc) {
         super(yOfEvent);
 
+        intersectionPoint = intersection;
+        involvedArc = arc;
         edge1 = a;
         edge2 = b;
     }
+
+    public boolean isValid() {
+        return isValid;
+    }
+
+    public void setValid(boolean isValid) {
+        this.isValid = isValid;
+    }
+
 
 }

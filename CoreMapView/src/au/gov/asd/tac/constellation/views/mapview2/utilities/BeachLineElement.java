@@ -86,4 +86,16 @@ public abstract class BeachLineElement {
         this.parent = parent;
     }
 
+    public void setParentFromItem(final BeachLineElement item) {
+        if (item.getParent() == null) {
+            return;
+        }
+
+        if (item.getParent().getLeft() == item) {
+            item.getParent().setLeft(this);
+        } else if (item.getParent().getRight() == item) {
+            item.getParent().setRight(this);
+        }
+    }
+
 }

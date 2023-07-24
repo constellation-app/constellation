@@ -28,6 +28,7 @@ import javafx.scene.shape.Polyline;
 public class Parabola extends BeachLineElement {
 
     private final Vec3 site = new Vec3();
+    private EdgeEvent currentEdgeEvent = null;
 
     private List<Edge> createdEdges = new ArrayList<>();
 
@@ -73,5 +74,12 @@ public class Parabola extends BeachLineElement {
         return createdEdges;
     }
 
+    public EdgeEvent getCurrentEdgeEvent() {
+        return currentEdgeEvent;
+    }
+
+    public void setCurrentEdgeEvent(EdgeEvent currentEdgeEvent) {
+        this.currentEdgeEvent = currentEdgeEvent;
+    }
 
 }

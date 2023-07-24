@@ -25,6 +25,7 @@ import java.util.List;
 public class Edge extends BeachLineElement {
 
     private Vec3 dirVect = new Vec3();
+    private boolean extendsUp = false;
 
     private final List<Parabola> relatedPoints = new ArrayList<>();
 
@@ -60,6 +61,13 @@ public class Edge extends BeachLineElement {
         this.dirVect = dirVect;
     }
 
+    public boolean isExtendsUp() {
+        return extendsUp;
+    }
+
+    public void setExtendsUp(final boolean extendsUp) {
+        this.extendsUp = extendsUp;
+    }
 
 
 }

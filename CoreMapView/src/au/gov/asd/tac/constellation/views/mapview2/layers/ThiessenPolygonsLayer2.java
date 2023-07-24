@@ -72,7 +72,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             return -1;
         });
 
-        beachLine = new BeachLine();
+        beachLine = new BeachLine(eventQueue);
     }
 
     @Override
@@ -120,7 +120,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
                 beachLine.updateArcIntersections(e.getYCoord());
                 final Parabola newArc = new Parabola(new Vec3(e.getSite().getX(), 0), new Vec3(e.getSite().getX(), 0), e.getSite().getX(), e.getSite());
 
-                beachLine.splitArc(newArc);
+                //beachLine.splitArc(newArc);
+                //beachLine
 
             } else if (eventQueue.peek() instanceof EdgeEvent) {
 
