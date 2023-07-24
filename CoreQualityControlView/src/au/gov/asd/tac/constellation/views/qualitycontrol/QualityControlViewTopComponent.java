@@ -52,7 +52,7 @@ import org.openide.windows.TopComponent;
     "CTL_QualityControlViewTopComponent=Quality Control View",
     "HINT_QualityControlViewTopComponent=Quality Control View"})
 public final class QualityControlViewTopComponent extends JavaFxTopComponent<QualityControlViewPane> implements QualityControlListener {
-    
+
     private final QualityControlViewPane qualityControlViewPane;
 
     public QualityControlViewTopComponent() {
@@ -88,7 +88,7 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
         super.handleComponentClosed();
         QualityControlAutoVetter.getInstance().removeListener(this);
     }
-    
+
     @Override
     public void qualityControlChanged(final QualityControlState state) {
         if (needsUpdate()) {
