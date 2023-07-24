@@ -24,14 +24,20 @@ import java.util.List;
  */
 public class Edge extends BeachLineElement {
 
-    private final Vec3 dirVect = new Vec3();
+    private Vec3 dirVect = new Vec3();
 
     private final List<Parabola> relatedPoints = new ArrayList<>();
 
     private boolean isGrowing = true;
 
-    public Edge(Vec3 start, Vec3 end, double spawnX) {
+    public Edge(final Vec3 start, final Vec3 end, final double spawnX) {
         super(start, end, spawnX);
+    }
+
+    public Edge(final Edge other) {
+        this(other.getStart(), other.getEnd(), other.getSpawnX());
+        super.setLeft(other.getLeft());
+        super.setRight(other.getRight());
     }
 
     public void addPoint(final Parabola point) {
@@ -45,6 +51,15 @@ public class Edge extends BeachLineElement {
     public void setIsGrowing(boolean isGrowing) {
         this.isGrowing = isGrowing;
     }
+
+    public Vec3 getDirVect() {
+        return dirVect;
+    }
+
+    public void setDirVect(Vec3 dirVect) {
+        this.dirVect = dirVect;
+    }
+
 
 
 }

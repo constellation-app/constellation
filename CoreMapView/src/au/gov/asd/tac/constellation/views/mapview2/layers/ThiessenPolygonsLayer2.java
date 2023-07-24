@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.BeachLine;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.EdgeEvent;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Parabola;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.SiteEvent;
@@ -36,6 +37,7 @@ import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Group;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -52,9 +54,9 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
     private final Map<Integer, AbstractMarker> nodesOnScreen = new HashMap<>();
 
     private List<AbstractMarker> markers = new ArrayList<>();
-    private final List<Vec3> markersYSorted = new ArrayList<>();
 
     private final PriorityQueue<VoronoiEvent> eventQueue;
+    private final BeachLine beachLine;
 
     public ThiessenPolygonsLayer2(final MapView parent, final int id, final List<AbstractMarker> markers) {
         super(parent, id);
@@ -69,6 +71,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
             return -1;
         });
+
+        beachLine = new BeachLine();
     }
 
     @Override
@@ -108,16 +112,24 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
     private void calculateVoronoi() {
         while (!eventQueue.isEmpty()) {
-            LOGGER.log(Level.SEVERE, "Y coord: " + eventQueue.poll().getYCoord());
+            LOGGER.log(Level.SEVERE, "Y coord: " + eventQueue.peek().getYCoord());
 
             if (eventQueue.peek() instanceof SiteEvent) {
                 final SiteEvent e = (SiteEvent) eventQueue.poll();
 
+                beachLine.updateArcIntersections(e.getYCoord());
+                final Parabola newArc = new Parabola(new Vec3(e.getSite().getX(), 0), new Vec3(e.getSite().getX(), 0), e.getSite().getX(), e.getSite());
+
+                beachLine.splitArc(newArc);
 
             } else if (eventQueue.peek() instanceof EdgeEvent) {
 
             }
         }
+
+        final List<Polyline> arcs = beachLine.getArcs();
+
+        arcs.forEach(arc -> layer.getChildren().add(arc));
     }
 
     @Override

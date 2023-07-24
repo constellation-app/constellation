@@ -66,7 +66,7 @@ public abstract class BeachLineElement {
         return left;
     }
 
-    public void setLeft(BeachLineElement left) {
+    public void setLeft(final BeachLineElement left) {
         this.left = left;
     }
 
@@ -74,7 +74,16 @@ public abstract class BeachLineElement {
         return right;
     }
 
-    public void setRight(BeachLineElement right) {
+    public void setRight(final BeachLineElement right) {
         this.right = right;
     }
+
+    public BeachLineElement getParent() {
+        return parent;
+    }
+
+    public void setParent(final BeachLineElement parent) {
+        this.parent = parent;
+    }
+
 }
