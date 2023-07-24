@@ -89,17 +89,6 @@ public final class QualityControlViewTopComponent extends JavaFxTopComponent<Qua
         super.handleComponentClosed();
         QualityControlAutoVetter.getInstance().removeListener(this);
     }
-
-
-    @Override 
-    public void handleNewGraph(final Graph graph) {
-        qualityControlViewPane.setFirstClick(true); 
-    }
-    
-    @Override 
-    protected void handleGraphChange(final GraphChangeEvent event) {
-        qualityControlViewPane.setFirstClick(true);
-    }
     
     @Override
     public void qualityControlChanged(final QualityControlState state) {

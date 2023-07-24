@@ -129,7 +129,7 @@ public final class QualityControlViewPane extends BorderPane {
         readSerializedRuleEnabledStatuses();
 
         qualityTable = new TableView<>();
-        qualityTable.focusedProperty().addListener((observable, oldValue, newValue) -> setFirstClick(true));
+        qualityTable.focusedProperty().addListener((observable, oldValue, newValue) -> firstClick = true);
 
         identifierColumn = new TableColumn<>("Identifier");
         identifierColumn.prefWidthProperty().bind(qualityTable.widthProperty().multiply(0.25));
@@ -275,7 +275,7 @@ public final class QualityControlViewPane extends BorderPane {
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
-                    setFirstClick(false);
+                    firstClick = false;
                 });
 
                 return cell;
@@ -299,7 +299,7 @@ public final class QualityControlViewPane extends BorderPane {
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
-                    setFirstClick(false);
+                    firstClick = false;
                 });
 
                 return cell;
@@ -324,7 +324,7 @@ public final class QualityControlViewPane extends BorderPane {
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
-                    setFirstClick(false);
+                    firstClick = false;
                 });
 
                 return cell;
@@ -348,7 +348,7 @@ public final class QualityControlViewPane extends BorderPane {
                         final TableCell<QualityControlEvent, QualityControlEvent> sourceCell = (TableCell<QualityControlEvent, QualityControlEvent>) value.getSource();
                         showRuleDialog(sourceCell);
                     }
-                    setFirstClick(false);
+                    firstClick = false;
                 });
 
                 return cell;
@@ -365,10 +365,6 @@ public final class QualityControlViewPane extends BorderPane {
 
             setCenter(qualityTable);
         });
-    }
-
-    public void setFirstClick(final boolean click) {
-        firstClick = click;
     }
 
     /**
@@ -694,12 +690,12 @@ public final class QualityControlViewPane extends BorderPane {
         alert.setResizable(true);
         final List<Screen> screens = Screen.getScreensForRectangle(this.getScene().getWindow().getX(), this.getScene().getWindow().getY(),
                 this.getScene().getWindow().widthProperty().get(), this.getScene().getWindow().heightProperty().get());
-
-        alert.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2));
-        alert.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2));
+        
+        alert.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - 250); 
+        alert.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - 250);
         alert.show();
     }
-
+    
     /**
      * Wrap the text in a javafx label.
      *
