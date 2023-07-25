@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -129,8 +128,12 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
     }
     
     @Override
-    public void validityChanged(boolean isEnabled) {
-        isEnabled = parametersCreated && isEnabled;
+    public void validityChanged(final boolean allowEnabling) {
+        if (System.getProperty("dav.graph.ready") == null
+                || System.getProperty("dav.graph.ready").equals(Boolean.FALSE.toString())) {
+            return;
+        }
+        final boolean isEnabled = parametersCreated && allowEnabling;
         enabled.setSelected(isEnabled);
         if (enabled.isSelected()) {
             while (getStyleClass().contains(MATCHED_STYLE)) {

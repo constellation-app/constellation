@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+AutoUpdate-Show-In-Client: true
+OpenIDE-Module: au.gov.asd.tac.constellation.views.errorreport
+OpenIDE-Module-Localizing-Bundle: au/gov/asd/tac/constellation/views/errorreport/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

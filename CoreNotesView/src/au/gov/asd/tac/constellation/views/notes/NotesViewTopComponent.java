@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -61,6 +62,8 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     private static final Logger LOGGER = Logger.getLogger(NotesViewTopComponent.class.getName());
     private final NotesViewController notesViewController;
     private final NotesViewPane notesViewPane;
+    private static final Logger LOGGER = Logger.getLogger(NotesViewTopComponent.class.getName());
+
 
     /**
      * NotesViewTopComponent constructor.
@@ -95,8 +98,15 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     protected void handleNewGraph(final Graph graph) {
         if (needsUpdate() && graph != null) {
             notesViewPane.clearNotes();
+            notesViewPane.getCreateNewNoteButton().setDisable(false);
             notesViewController.readState(graph);
         }
+
+        if (graph == null) {
+            notesViewPane.getCreateNewNoteButton().setDisable(true);
+        }
+
+        LOGGER.log(Level.SEVERE, "Handling new graph");
     }
 
     @Override
@@ -107,7 +117,12 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         if (activeGraph != null) {
             notesViewController.readState(activeGraph);
+            notesViewPane.getCreateNewNoteButton().setDisable(false);
+        } else {
+            notesViewPane.getCreateNewNoteButton().setDisable(true);
         }
+
+        LOGGER.log(Level.SEVERE, "Handling graph closed");
     }
 
     @Override
@@ -120,11 +135,13 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         GraphReportManager.addGraphReportListener(this);
         UndoRedoReportManager.addUndoRedoReportListener(this);
 
+        LOGGER.log(Level.SEVERE, "Handling Component opened");
     }
 
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
+        LOGGER.log(Level.SEVERE, "Handling component closed");
     }
 
     @Override
@@ -134,7 +151,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
 
     @Override
     protected String createStyle() {
-        return null;
+        return "resources/TimeFilter.css";
     }
 
     /**

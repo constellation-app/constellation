@@ -40,12 +40,19 @@ public class NotesViewEntry implements PluginReportListener {
     private List<Integer> transactionsSelected;
     private List<String> tags = new ArrayList<>();
     private boolean editMode;
+    private boolean wasInEditMode = false;
     private boolean isShowing = true;
+
+    private String tempContent;
+    private String tempTitle;
 
     public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
+
+        tempContent = "";
+        tempTitle = "";
 
         if (nodeColour != null) {
             this.nodeColour = nodeColour;
@@ -148,6 +155,31 @@ public class NotesViewEntry implements PluginReportListener {
         this.id = id;
 
     }
+
+    public boolean checkIfWasInEditMode() {
+        return wasInEditMode;
+    }
+
+    public void setWasInEditMode(final boolean wasInEditMode) {
+        this.wasInEditMode = wasInEditMode;
+    }
+
+    public String getTempContent() {
+        return tempContent;
+    }
+
+    public void setTempContent(final String tempContent) {
+        this.tempContent = tempContent;
+    }
+
+    public String getTempTitle() {
+        return tempTitle;
+    }
+
+    public void setTempTitle(final String tempTitle) {
+        this.tempTitle = tempTitle;
+    }
+
 
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {
