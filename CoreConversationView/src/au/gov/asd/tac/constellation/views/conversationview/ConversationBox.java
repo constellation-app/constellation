@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.SelectOptionsExtension;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -176,7 +177,11 @@ public final class ConversationBox extends StackPane {
         final Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
         addAttributesButton.setTooltip(aabt);
 
-        optionsPane.getItems().addAll(senderAttributesCombo, showToolTip, addAttributesButton, helpButton);
+        //Enable bulk Selection Options
+        SelectOptionsExtension senderAttributesComboSelectOptions = new SelectOptionsExtension(senderAttributesCombo);
+        senderAttributesComboSelectOptions.enablePopUp();
+        
+        optionsPane.getItems().addAll(senderAttributesCombo, senderAttributesComboSelectOptions.getMenuButton(), showToolTip, addAttributesButton, helpButton);
 
         contributionsPane = new BorderPane();
         contributionsPane.setPadding(new Insets(PADDING));

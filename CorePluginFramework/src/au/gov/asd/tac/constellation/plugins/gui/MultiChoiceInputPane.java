@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
+import au.gov.asd.tac.constellation.plugins.parameters.SelectOptionsExtension;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
@@ -130,11 +131,13 @@ public class MultiChoiceInputPane extends HBox {
                 }
             }));
 
-        SelectOptionsDropDown selectionOptions = new SelectOptionsDropDown(field);
+        SelectOptionsExtension selectionOptions = new SelectOptionsExtension(field);
+        selectionOptions.enablePopUp();
         
         //field width causes buttons to sit in pane space when available but retract to the same size as buttons if needed.
         field.setPrefWidth(DEFAULT_WIDTH);
         field.setMinWidth(50);
+        
         
         final HBox fieldAndButtons = new HBox();
         fieldAndButtons.setSpacing(2);

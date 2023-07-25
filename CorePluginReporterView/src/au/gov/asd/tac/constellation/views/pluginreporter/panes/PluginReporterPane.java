@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.pluginreporter.panes;
 
+import au.gov.asd.tac.constellation.plugins.parameters.SelectOptionsExtension;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportFilter;
@@ -99,8 +100,11 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         Label filterLabel = new Label("Filter: ");
         tagComboBox.setMaxWidth(Double.MAX_VALUE);
         tagComboBox.setMinWidth(50);
+        // Set Bulk Selection options
+        SelectOptionsExtension filterSelectOptions = new SelectOptionsExtension(tagComboBox);
+        filterSelectOptions.enablePopUp();
         // Group these together so the Toolbar treats them as a unit.
-        final HBox filterBox = new HBox(filterLabel, tagComboBox);
+        final HBox filterBox = new HBox(filterLabel, tagComboBox, filterSelectOptions.getMenuButton());
         filterBox.setAlignment(Pos.BASELINE_LEFT);
 
         // The clear button

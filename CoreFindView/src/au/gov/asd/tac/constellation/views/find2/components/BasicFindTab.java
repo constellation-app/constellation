@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.find2.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.plugins.parameters.SelectOptionsExtension;
 import au.gov.asd.tac.constellation.views.find2.FindViewController;
 import au.gov.asd.tac.constellation.views.find2.utilities.ActiveFindResultsList;
 import au.gov.asd.tac.constellation.views.find2.utilities.BasicFindReplaceParameters;
@@ -136,12 +137,9 @@ public class BasicFindTab extends Tab {
             updateSelectedAttributes(getMatchingAttributeList(GraphElementType.getValue(newElement)));
         });
 
-        // Set the actions for selectAll and deselectAll context menu items
-        selectAllMenuItem.setOnAction(event -> inAttributesMenu.getCheckModel().checkAll());
-        deselectAllMenuItem.setOnAction(event -> inAttributesMenu.getCheckModel().clearChecks());
-        // Set the context menu to show when right clicking on the
-        // inAttributesMenu
-        inAttributesMenu.setOnContextMenuRequested(event -> contextMenu.show(inAttributesMenu, event.getScreenX(), event.getScreenY()));
+        //Set Right click SelectionOptions contextMenu
+        SelectOptionsExtension attributeSelectOptions = new SelectOptionsExtension(inAttributesMenu);
+        attributeSelectOptions.enablePopUp();
 
         // set the action for changing the seleciton in the postSearchChoiceBox
         searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {

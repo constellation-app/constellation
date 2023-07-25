@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionP
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.SelectionMode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ElementTypeParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.SelectOptionsExtension;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
@@ -181,6 +182,9 @@ public class NotesViewPane extends BorderPane {
             final String checkedFilters = String.join(", ", filters);
             filterCheckComboBox.setTitle(filters.isEmpty()? "Select a filter..." : checkedFilters);
         });
+        
+        SelectOptionsExtension filterSelectOptions = new SelectOptionsExtension(filterCheckComboBox);
+        filterSelectOptions.enablePopUp();
 
         notesViewEntries.forEach(entry -> {
             if (!entry.isUserCreated()) {
@@ -247,7 +251,7 @@ public class NotesViewPane extends BorderPane {
 
         // FlowPane to store control items used to filter notes.
         final ToolBar toolBar = new ToolBar();
-        toolBar.getItems().addAll(createNewNoteButton, filterCheckComboBox, autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
+        toolBar.getItems().addAll(createNewNoteButton, filterCheckComboBox, filterSelectOptions.getMenuButton(), autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
         // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(USER_CHOSEN_COLOUR);
 
