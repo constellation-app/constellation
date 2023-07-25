@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
@@ -162,7 +161,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     public void addNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        LOGGER.log(Level.SEVERE, "-------new UndoRedoReport in NotesViewTopComponent. ");
+//        LOGGER.log(Level.SEVERE, "-------new UndoRedoReport in NotesViewTopComponent. ");
 
         // update the graph report if the new plugin report isn't a low level plugin (which aren't useful as notes)
         if (activeGraph != null && undoRedoReport.getGraphId().equals(activeGraph.getId())) {

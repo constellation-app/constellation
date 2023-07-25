@@ -46,7 +46,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -380,13 +379,11 @@ public class NotesViewPane extends BorderPane {
             if (currentGraphReport != null) {
                 // Iterates the list of currently executed plugins.
                 currentGraphReport.getPluginReports().forEach(pluginReport -> {
-                    LOGGER.log(Level.SEVERE, "-----**********-- NotesViewPane setGraphReport - Each pluginReport --++++++++++++++--- - " + pluginReport.getPluginDescription());
                     // Omit low level plugins which are not useful as notes.
                     if (!pluginReport.hasLowLevelTag()) {
                         addPluginReport(pluginReport);
                     } else {
                         pluginReport.getPluginDescription();
-                        //LOGGER.log(Level.SEVERE, "-----**********-- hasLowLevelTag --++++++++++++++--- - " + pluginReport.getPluginDescription());
                     }
                 });
                 updateUI(graph);
@@ -450,7 +447,6 @@ public class NotesViewPane extends BorderPane {
      * @param pluginReport Plugin report to be added.
      */
     protected void addNewUndoRedoReport(final UndoRedoReport undoRedoReport, final Graph graph) {
-        LOGGER.log(Level.SEVERE, "-----**********-- addNewUndoRedoReport --++++++++++++++--- - " + undoRedoReport.getActionDescription());
         if (hasMatchingNote(undoRedoReport) && !isExistingNote(undoRedoReport)) {
             final NotesViewEntry note = new NotesViewEntry(
                     Long.toString(undoRedoReport.getStartTime()),
