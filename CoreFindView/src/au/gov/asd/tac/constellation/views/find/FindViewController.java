@@ -308,7 +308,7 @@ public class FindViewController {
                 }
 
                 final Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getGraphId());
-                PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph).get();
+                PluginExecution.withPlugin(findGraphSelectionPlugin).executeLater(graph);
             }
 
             // Update the UI with how many results were found
@@ -320,7 +320,7 @@ public class FindViewController {
             Thread.currentThread().interrupt();
         } catch (final ExecutionException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-        }
+        } 
     }
 
     /**
