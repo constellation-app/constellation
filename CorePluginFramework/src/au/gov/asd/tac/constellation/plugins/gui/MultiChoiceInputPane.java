@@ -136,7 +136,15 @@ public class MultiChoiceInputPane extends HBox {
         field.setMinWidth(50);
         
         final MenuButton menuButton = selectionOptions.getMenuButton();
-        //menuButton.setStyle("-fx-background-color: #353535");
+        
+//        .menu-button {
+//        -fx-background-color: #181818;
+//        -fx-border-color: #444444;
+//        }
+
+//        .menu:hover{
+//        -fx-background-color: #0093FF;
+//}
         
         final HBox fieldAndButtons = new HBox();
         fieldAndButtons.setSpacing(2);

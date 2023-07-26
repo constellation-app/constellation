@@ -161,6 +161,7 @@ public class OptionsMenuBar {
         optionsMenu = new Menu(OPTIONS_MENU_TEXT, SETTINGS_ICON);
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem,
                 deselectPluginsOnExecutionMenuItem);
+        optionsMenu.setStyle("-fx-background-color: #181818; -fx-border-color: #444444");
 
         menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
