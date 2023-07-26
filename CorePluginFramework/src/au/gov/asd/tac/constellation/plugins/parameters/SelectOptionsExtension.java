@@ -32,9 +32,9 @@ import org.controlsfx.control.CheckComboBox;
  */
 public final class SelectOptionsExtension{
     
-    private final CheckComboBox PARENT_INPUT_FIELD;
-    private final ContextMenu CONTEXT_MENU = new ContextMenu();
-    private final MenuButton MENU_BUTTON = new MenuButton("...");
+    private final CheckComboBox parentInputfield;
+    private final ContextMenu contextMenu = new ContextMenu();
+    private final MenuButton menuButton = new MenuButton("...");
     
     /**
      * An extension to input fields that extend a @link{CheckComboBox} to enable default and custom selection options. 
@@ -43,13 +43,13 @@ public final class SelectOptionsExtension{
      * @param parentInputfield
      */
     public <T> SelectOptionsExtension(final CheckComboBox<T> parentInputfield) {
-        PARENT_INPUT_FIELD = parentInputfield;
-        MENU_BUTTON.setTooltip(new Tooltip("Selection Options"));
-        MENU_BUTTON.setPrefWidth(50);
-        MENU_BUTTON.setMinWidth(50);
+        this.parentInputfield = parentInputfield;
+        menuButton.setTooltip(new Tooltip("Selection Options"));
+        menuButton.setPrefWidth(50);
+        menuButton.setMinWidth(50);
         
-        setSelectionOption("Select All", event -> this.PARENT_INPUT_FIELD.getCheckModel().checkAll());
-        setSelectionOption("Clear All", event -> this.PARENT_INPUT_FIELD.getCheckModel().clearChecks());
+        setSelectionOption("Select All", event -> this.parentInputfield.getCheckModel().checkAll());
+        setSelectionOption("Clear All", event -> this.parentInputfield.getCheckModel().clearChecks());
         
     }
     
@@ -58,30 +58,30 @@ public final class SelectOptionsExtension{
      * @param displayText
      * @param event
      */
-    public void setSelectionOption(String displayText, EventHandler<ActionEvent> event) {
-        MenuItem menuItem = new MenuItem(displayText);
-        menuItem.setOnAction(event);
-        MENU_BUTTON.getItems().add(menuItem);
+    public void setSelectionOption(final String displayText, final EventHandler<ActionEvent> event) {
+        // Note: Setting a MenuItem to the MenuButton makes that MenuItem unavailable to the ContentMenu
+        // so the MenuItem must be made seperately for the MenuButton and the ContextMenu
+        final MenuItem menuButtonItem = new MenuItem(displayText);
+        menuButtonItem.setOnAction(event);
+        menuButton.getItems().add(menuButtonItem);
         
-        // Setting a MenuItem to the MenuButton makes the MenuItem unavailable to the ContentMenu
-        // so the MenuItem bust be made twice
-        menuItem = new MenuItem(displayText);
-        menuItem.setOnAction(event);
-        CONTEXT_MENU.getItems().add(menuItem);
+        final MenuItem contextMenuItem = new MenuItem(displayText);
+        contextMenuItem.setOnAction(event);
+        contextMenu.getItems().add(contextMenuItem);
     }
 
     /**
      * Enables menu to be displayed when right clicking the parent input field.
      */
     public void enablePopUp() {
-        this.PARENT_INPUT_FIELD.setOnContextMenuRequested(event -> CONTEXT_MENU.show(this.PARENT_INPUT_FIELD, event.getScreenX(), event.getScreenY()));
+        this.parentInputfield.setOnContextMenuRequested(event -> contextMenu.show(this.parentInputfield, event.getScreenX(), event.getScreenY()));
     }
     
     /**
      * Disables SelectOptions being displayed when right clicking the parent input field.
      */
     public void disablePopUp() {
-        this.PARENT_INPUT_FIELD.setOnContextMenuRequested(null);
+        this.parentInputfield.setOnContextMenuRequested(null);
     }
     
     /**
@@ -89,7 +89,7 @@ public final class SelectOptionsExtension{
      * @return
      */
     public MenuButton getMenuButton() {
-        return MENU_BUTTON;
+        return menuButton;
     }
 }
 

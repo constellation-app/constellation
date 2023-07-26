@@ -138,7 +138,7 @@ public class BasicFindTab extends Tab {
         });
 
         //Set Right click SelectionOptions contextMenu
-        SelectOptionsExtension attributeSelectOptions = new SelectOptionsExtension(inAttributesMenu);
+        final SelectOptionsExtension attributeSelectOptions = new SelectOptionsExtension(inAttributesMenu);
         attributeSelectOptions.enablePopUp();
 
         // set the action for changing the seleciton in the postSearchChoiceBox

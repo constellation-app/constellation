@@ -183,7 +183,7 @@ public class NotesViewPane extends BorderPane {
             filterCheckComboBox.setTitle(filters.isEmpty()? "Select a filter..." : checkedFilters);
         });
         
-        SelectOptionsExtension filterSelectOptions = new SelectOptionsExtension(filterCheckComboBox);
+        final SelectOptionsExtension filterSelectOptions = new SelectOptionsExtension(filterCheckComboBox);
         filterSelectOptions.enablePopUp();
 
         notesViewEntries.forEach(entry -> {

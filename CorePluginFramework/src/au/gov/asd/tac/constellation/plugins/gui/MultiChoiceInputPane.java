@@ -31,11 +31,8 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-//import javafx.scene.control.Menu;
-//import javafx.scene.control.MenuButton;
-//import javafx.scene.control.MenuItem;
+import javafx.scene.control.MenuButton;
 import javafx.scene.control.Skin;
-import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import org.controlsfx.control.CheckComboBox;
 
@@ -131,17 +128,19 @@ public class MultiChoiceInputPane extends HBox {
                 }
             }));
 
-        SelectOptionsExtension selectionOptions = new SelectOptionsExtension(field);
+        final SelectOptionsExtension selectionOptions = new SelectOptionsExtension(field);
         selectionOptions.enablePopUp();
         
         //field width causes buttons to sit in pane space when available but retract to the same size as buttons if needed.
         field.setPrefWidth(DEFAULT_WIDTH);
         field.setMinWidth(50);
         
+        final MenuButton menuButton = selectionOptions.getMenuButton();
+        menuButton.setStyle("-fx-background-color: #353535");
         
         final HBox fieldAndButtons = new HBox();
         fieldAndButtons.setSpacing(2);
-        fieldAndButtons.getChildren().addAll(field, selectionOptions.getMenuButton());
+        fieldAndButtons.getChildren().addAll(field, menuButton);
         getChildren().add(fieldAndButtons);
     }
 

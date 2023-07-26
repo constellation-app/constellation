@@ -101,7 +101,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         tagComboBox.setMaxWidth(Double.MAX_VALUE);
         tagComboBox.setMinWidth(50);
         // Set Bulk Selection options
-        SelectOptionsExtension filterSelectOptions = new SelectOptionsExtension(tagComboBox);
+        final SelectOptionsExtension filterSelectOptions = new SelectOptionsExtension(tagComboBox);
         filterSelectOptions.enablePopUp();
         // Group these together so the Toolbar treats them as a unit.
         final HBox filterBox = new HBox(filterLabel, tagComboBox, filterSelectOptions.getMenuButton());

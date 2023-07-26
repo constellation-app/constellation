@@ -178,7 +178,7 @@ public final class ConversationBox extends StackPane {
         addAttributesButton.setTooltip(aabt);
 
         //Enable bulk Selection Options
-        SelectOptionsExtension senderAttributesComboSelectOptions = new SelectOptionsExtension(senderAttributesCombo);
+        final SelectOptionsExtension senderAttributesComboSelectOptions = new SelectOptionsExtension(senderAttributesCombo);
         senderAttributesComboSelectOptions.enablePopUp();
         
         optionsPane.getItems().addAll(senderAttributesCombo, senderAttributesComboSelectOptions.getMenuButton(), showToolTip, addAttributesButton, helpButton);
