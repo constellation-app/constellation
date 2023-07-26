@@ -26,6 +26,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import javafx.util.Pair;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.doReturn;
@@ -113,12 +114,12 @@ public class LookupPluginsTaskNGTest {
                     plugin6
             )).when(defaultLookup).lookupAll(DataAccessPlugin.class);
             
-            final Map<String, List<DataAccessPlugin>> expectedPlugins = Map.of(
-                    "Developer", List.of(plugin3),
-                    "Utility", List.of(plugin4),
-                    "Favourites", List.of(plugin3)
-            );
-            
+            final Map<String, Pair<Integer, List<DataAccessPlugin>>> expectedPlugins = Map.of(
+                    "Developer", new Pair(0, List.of(plugin3)),
+                    "Utility", new Pair(0, List.of(plugin4)),
+                    "Favourites", new Pair(0, List.of(plugin3)));
+
+
             assertEquals(new LookupPluginsTask().get(), expectedPlugins);
         }
     }

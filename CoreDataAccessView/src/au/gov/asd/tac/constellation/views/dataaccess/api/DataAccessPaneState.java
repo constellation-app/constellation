@@ -33,6 +33,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
+import javafx.util.Pair;
 
 /**
  * Maintains the active state of the Data Access view. It also holds a loaded copy
@@ -58,8 +59,7 @@ public class DataAccessPaneState {
      * This is the {@link Future} tracking the load of the plugins. Once this is
      * complete, the plugins can be accessed.
      */
-    private static final Future<Map<String, List<DataAccessPlugin>>> PLUGIN_LOAD;
-    
+    private static final Future<Map<String, Pair<Integer, List<DataAccessPlugin>>>> PLUGIN_LOAD;
     /**
      * The ID of the currently active graph.
      */
@@ -76,7 +76,7 @@ public class DataAccessPaneState {
             // Sort the DataAccessPlugin lists within each type including the category type
             // so that favourites category is sorted properly.
             final DataAccessPluginComparator comparator = new DataAccessPluginComparator();
-            plugins.values().forEach(pluginList -> Collections.sort(pluginList, comparator));
+            plugins.values().forEach(pluginList -> Collections.sort(pluginList.getValue(), comparator));
             return plugins;
         });
     }
@@ -97,7 +97,7 @@ public class DataAccessPaneState {
      * @throws InterruptedException if the plugin lookup was interrupted
      * @throws ExecutionException if there was an error during the plugin lookup
      */
-    public static Map<String, List<DataAccessPlugin>> getPlugins() throws InterruptedException, ExecutionException {
+    public static Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins() throws InterruptedException, ExecutionException {
         return PLUGIN_LOAD.get();
     }
     
@@ -115,8 +115,7 @@ public class DataAccessPaneState {
      * @throws ExecutionException if there was an error during the plugin lookup
      * @throws TimeoutException if the plugin lookup took longer than the specified timeout
      */
-    public static Map<String, List<DataAccessPlugin>> getPlugins(final long timeout,
-                                                                 final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+    public static Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         return PLUGIN_LOAD.get(timeout, unit);
     }
     
@@ -338,7 +337,7 @@ public class DataAccessPaneState {
         currentGraphId = null;
         DATA_ACCESS_PANE_STATES.clear();
     }
-    
+
     /**
      * Comparator that orders a list of data access plugins based on their type.
      */
