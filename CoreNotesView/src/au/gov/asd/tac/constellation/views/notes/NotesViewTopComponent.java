@@ -59,7 +59,6 @@ import org.openide.windows.TopComponent;
     "CTL_NotesViewTopComponent=Notes View",
     "HINT_NotesViewTopComponent=Notes View"})
 public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> implements GraphReportListener, UndoRedoReportListener {
-    private static final Logger LOGGER = Logger.getLogger(NotesViewTopComponent.class.getName());
     private final NotesViewController notesViewController;
     private final NotesViewPane notesViewPane;
     private static final Logger LOGGER = Logger.getLogger(NotesViewTopComponent.class.getName());
