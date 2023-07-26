@@ -33,6 +33,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -87,6 +89,7 @@ public class ColumnVisibilityContextMenu {
     private CustomMenuItem showDefaultColumnsMenu;
     private CustomMenuItem showPrimaryColumnsMenu;
     private CustomMenuItem hideAllColumnsMenu;
+    private static final Logger LOGGER = Logger.getLogger(ColumnVisibilityContextMenu.class.getName());
 
     /**
      * Creates a new column visibility context menu.
@@ -129,6 +132,7 @@ public class ColumnVisibilityContextMenu {
         });
 
         showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
+            LOGGER.log(Level.SEVERE, "Calling show kwys");
             if (getTableViewTopComponent().getCurrentGraph() != null) {
                 final Set<GraphAttribute> keyAttributes = new HashSet<>();
                 final ReadableGraph readableGraph = getTableViewTopComponent().getCurrentGraph().getReadableGraph();
@@ -144,6 +148,7 @@ public class ColumnVisibilityContextMenu {
                 } finally {
                     readableGraph.release();
                 }
+                //keyAttributes.forEach(attribute -> LOGGER.log(Level.SEVERE, "" + attribute.getId()));
                 getActiveTableReference().updateVisibleColumns(
                         getTableViewTopComponent().getCurrentGraph(),
                         getTableViewTopComponent().getCurrentState(),
