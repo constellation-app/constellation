@@ -67,5 +67,15 @@ public class BlineElement {
         this.rightEdge = rightEdge;
     }
 
+    public void setParentFromItem(BlineElement item) {
+        if (item.getParent() == null) {
+            return;
+        }
 
+        if (item.getParent().getLeft() == item) {
+            item.getParent().setLeft(this);
+        } else {
+            item.getParent().setRight(this);
+        }
+    }
 }

@@ -57,15 +57,49 @@ public class ArcTree {
             splitLeft.setRightEdge(e2);
             splitRight.setLeftEdge(e1);
 
-            return newArc;
-        } else {
+            if (intersectingArc == root) {
+                return newArc;
+            }
 
+            splitRight.setRight(intersectingArc.getRight());
+            splitLeft.setLeft(intersectingArc.getLeft());
+
+            newArc.setParentFromItem(intersectingArc);
+        } else {
+            final Arc newArc = new Arc(focus);
+
+            final Arc splitLeft = new Arc(((Arc) intersectingArc).getFocus());
+            final Arc splitRight = new Arc(((Arc) intersectingArc).getFocus());
+
+            final Vec3 edgeStart = new Vec3(focus.getX(), ((Arc) intersectingArc).getY(focus.getX(), focus.getY()));
+            final Vec3 direction = new Vec3(((Arc) intersectingArc).getFocus().getX() - newArc.getFocus().getX(), ((Arc) intersectingArc).getFocus().getY() - newArc.getFocus().getY());
+            final Vec3 dirVect = new Vec3(direction.getY(), -direction.getX());
+            dirVect.normalizeVec2();
+
+            final HalfEdge e1 = new HalfEdge(newArc, intersectingArc, edgeStart, dirVect);
+            final HalfEdge e2 = new HalfEdge(newArc, intersectingArc, edgeStart, new Vec3(-dirVect.getX(), -dirVect.getY()));
+
+            e1.setParentArc(newArc);
+            e1.setHomeArc(splitRight);
+
+            e2.setParentArc(newArc);
+            e2.setHomeArc(splitLeft);
+
+
+            newArc.setLeft(splitLeft);
+            newArc.setRight(splitRight);
+
+            splitRight.setRight(intersectingArc.getRight());
+            splitLeft.setLeft(intersectingArc.getLeft());
+
+            newArc.setParentFromItem(intersectingArc);
         }
 
-        return null;
+        return current;
     }
 
-    public BlineElement findIntersectingArc(final BlineElement root, final double x, final double directrix) {
+
+    private BlineElement findIntersectingArc(final BlineElement root, final double x, final double directrix) {
         BlineElement current = root;
 
         if (current.getLeft() == null && current.getRight() == null) {
@@ -93,7 +127,21 @@ public class ArcTree {
 
             }
 
-        } else if (current instanceof Arc) {
+            Vec3 leftIntersection = getEdgeBaselineIntersection(leftEdge, (BaseLine) current, directrix);
+            Vec3 rightIntersection = getEdgeBaselineIntersection(rightEdge, (BaseLine) current, directrix);
+
+            final double leftX = leftIntersection == null ? Double.MIN_VALUE : leftIntersection.getX();
+            final double rightX = rightIntersection == null ? Double.MAX_VALUE : rightIntersection.getX();
+
+            if (x > rightX) {
+                return findIntersectingArc(current.getRight(), x, directrix);
+            } else if (x < leftX) {
+                return findIntersectingArc(current.getLeft(), x, directrix);
+            } else {
+                return current;
+            }
+
+        } else {
             HalfEdge leftHalfEdge = current.getLeftEdge();
             HalfEdge rightHalfEdge = current.getRightEdge();
 
@@ -110,15 +158,35 @@ public class ArcTree {
 
             if (leftHalfEdge.getHomeArc() instanceof Arc) {
                 leftIntersection = getEdgeArcIntersection(leftHalfEdge, (Arc) leftHalfEdge.getHomeArc(), directrix);
+            } else {
+                leftIntersection = getEdgeBaselineIntersection(leftHalfEdge, (BaseLine) leftHalfEdge.getHomeArc(), directrix);
             }
 
             if (rightHalfEdge.getHomeArc() instanceof Arc) {
                 rightIntersection = getEdgeArcIntersection(rightHalfEdge, (Arc) rightHalfEdge.getHomeArc(), directrix);
+            } else {
+                rightIntersection = getEdgeBaselineIntersection(rightHalfEdge, (BaseLine) rightHalfEdge.getHomeArc(), directrix);
             }
 
+            final double leftX = leftIntersection == null ? Double.MIN_VALUE : leftIntersection.getX();
+            final double rightX = rightIntersection == null ? Double.MAX_VALUE : rightIntersection.getX();
+
+            if (x > rightX) {
+                return findIntersectingArc(current.getRight(), x, directrix);
+            } else if (x < leftX) {
+                return findIntersectingArc(current.getLeft(), x, directrix);
+            } else {
+                return current;
+            }
         }
 
-        return null;
+    }
+
+    private Vec3 getEdgeBaselineIntersection(HalfEdge edge, BaseLine line, double directrix) {
+        final Arc arc = edge.getParentArc();
+        final HalfEdge e = new HalfEdge(arc, arc, line.getStart(), new Vec3(-edge.getDirVect().getX(), -edge.getDirVect().getY()));
+
+        return getEdgeArcIntersection(e, arc, directrix);
     }
 
     private Vec3 getEdgeArcIntersection(HalfEdge edge, Arc arc, double directrix) {
