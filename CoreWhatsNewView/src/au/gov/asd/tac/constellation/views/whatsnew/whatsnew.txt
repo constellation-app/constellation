@@ -1,6 +1,12 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2023-07-28 replacement of old Find View with new Find View
+<p>The existing find view accessible using the shortcut Ctrl-F has been replaced with the an updated Find View which has been under development and testing.
+<p>The new find view offers an updated interface that opens by default in a separate window. 
+<p>The functionality remains the same with the added option of "find next" and "find previous" execution options. 
+<p>Bulk selection options in attribute selection has also been included by right clicking on the input field. 
+
 == 2023-06-14 Reorder Plugins in Data Access View
 <p>The Data Access View configuration pane in the settings now has "up" and "down" buttons below the "Visible categories" box.</p>
 <p>The order of the categories within this box can be changed by using the buttons below it.</p>
