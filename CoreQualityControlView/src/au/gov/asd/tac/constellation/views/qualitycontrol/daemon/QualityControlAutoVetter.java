@@ -263,6 +263,12 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      */
     public void addListener(final QualityControlListener listener) {
         listeners.add(listener);
+
+        // If we have a list size of 1 then this is the first entry added so
+        // its time to re-add a change listener to currentGraph.
+        if (listeners.size() == 1 && currentGraph != null) {
+            currentGraph.addGraphChangeListener(this);
+        }
     }
 
     /**
@@ -283,6 +289,14 @@ public final class QualityControlAutoVetter implements GraphManagerListener, Gra
      */
     public void removeListener(final QualityControlListener listener) {
         listeners.remove(listener);
+
+        // After removing a listener, check if there are any further listeners
+        // still using the auto vetter - if there are not, stop listening for
+        // currentGraph change. This can be reactivated if listeners are again
+        // added.
+        if (listeners.isEmpty() && currentGraph != null) {
+            currentGraph.removeGraphChangeListener(this);
+        }
     }
 
     public void addObserver(final QualityControlAutoVetterListener buttonListener) {

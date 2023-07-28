@@ -20,11 +20,14 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.security.proxy.ProxyUtilities;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
+import au.gov.asd.tac.constellation.views.dataaccess.components.ButtonToolbar;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import au.gov.asd.tac.constellation.views.qualitycontrol.daemon.QualityControlAutoVetter;
+import au.gov.asd.tac.constellation.views.qualitycontrol.widget.DefaultQualityControlAutoButton;
 import java.util.concurrent.ExecutorService;
 import javafx.application.Platform;
+import javafx.scene.layout.HBox;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
@@ -65,9 +68,8 @@ import org.openide.windows.TopComponent;
 public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAccessPane> {
 
     private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
-    
     private final DataAccessPane dataAccessPane;
-    
+
     /**
      * Create a new data access view.
      */
@@ -124,15 +126,23 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         return "resources/data-access-view.css";
     }
 
+    /**
+     * Handle component opening and hook up listeners and observers.
+     */
     @Override
     public void handleComponentOpened() {
         super.handleComponentOpened();
+        manageQualityControlListeners(true);
         QualityControlAutoVetter.getInstance().addObserver(getDataAccessPane());
     }
 
+    /**
+     * Handle component closing and pull down listeners and observers.
+     */
     @Override
     public void handleComponentClosed() {
         super.handleComponentClosed();
+        manageQualityControlListeners(false);
         QualityControlAutoVetter.getInstance().removeObserver(getDataAccessPane());
     }
 
@@ -147,7 +157,7 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
         System.setProperty("dav.graph.ready", Boolean.FALSE.toString());
         if (needsUpdate() && getDataAccessPane() != null) {
             getDataAccessPane().update(graph);
-            Platform.runLater(() ->
+            Platform.runLater(() -> 
                 DataAccessUtilities.loadDataAccessState(getDataAccessPane(), graph)
             );
         }
@@ -156,7 +166,42 @@ public final class DataAccessViewTopComponent extends JavaFxTopComponent<DataAcc
                 Platform.runLater(() -> System.setProperty("dav.graph.ready", Boolean.TRUE.toString()))
         );
     }
-    
+
+    /**
+     * Add or remove all quality control auto vetter listeners. These listeners
+     * are tied to DefaultQualityControlAutoButton buttons found nested within
+     * the button toolbar.
+     *
+     * @param add Should quality control auto vetter listeners be added (true)
+     * or removed (false).
+     */
+    private void manageQualityControlListeners(final boolean add) {
+        // Dig down to the button toolbar and find any quality control auto
+        // buttons - these subscribe as listeners to the quality control auto
+        // vetter and as such these subscriptions need to be modified.
+        final ButtonToolbar buttonToolbar = dataAccessPane.getButtonToolbar();
+        final HBox hboxTop = buttonToolbar.getRabRegionExectueHBoxTop();
+        final HBox hboxBottom = buttonToolbar.getRabRegionExectueHBoxBottom();
+        for (final Object button : hboxTop.getChildren()) {
+            if (button instanceof DefaultQualityControlAutoButton) {
+                if (add) {
+                    ((DefaultQualityControlAutoButton) button).addQCListener();
+                } else {
+                    ((DefaultQualityControlAutoButton) button).removeQCListener();
+                }
+            }
+        }
+        for (final Object button : hboxBottom.getChildren()) {
+            if (button instanceof DefaultQualityControlAutoButton) {
+                if (add) {
+                    ((DefaultQualityControlAutoButton) button).addQCListener();
+                } else {
+                    ((DefaultQualityControlAutoButton) button).removeQCListener();
+                }
+            }
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
