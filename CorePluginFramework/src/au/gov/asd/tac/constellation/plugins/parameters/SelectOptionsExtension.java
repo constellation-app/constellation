@@ -50,7 +50,6 @@ public final class SelectOptionsExtension{
         
         setSelectionOption("Select All", event -> this.parentInputfield.getCheckModel().checkAll());
         setSelectionOption("Clear All", event -> this.parentInputfield.getCheckModel().clearChecks());
-        
     }
     
     /**
@@ -92,7 +91,7 @@ public final class SelectOptionsExtension{
         return menuButton;
     }
     
-    protected CheckComboBox<? extends Object> getField(){
+    protected CheckComboBox getField(){
         return this.parentInputfield;
     }
 }
