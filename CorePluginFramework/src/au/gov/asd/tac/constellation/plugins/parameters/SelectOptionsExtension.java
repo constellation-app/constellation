@@ -32,7 +32,7 @@ import org.controlsfx.control.CheckComboBox;
  */
 public final class SelectOptionsExtension{
     
-    private final CheckComboBox parentInputfield;
+    private final CheckComboBox<? extends Object> parentInputfield;
     private final ContextMenu contextMenu = new ContextMenu();
     private final MenuButton menuButton = new MenuButton("...");
     
@@ -58,7 +58,7 @@ public final class SelectOptionsExtension{
      * @param displayText
      * @param event
      */
-    public void setSelectionOption(final String displayText, final EventHandler<ActionEvent> event) {
+    public void setSelectionOption(final String displayText, final EventHandler<ActionEvent> event){
         // Note: Setting a MenuItem to the MenuButton makes that MenuItem unavailable to the ContentMenu
         // so the MenuItem must be made seperately for the MenuButton and the ContextMenu
         final MenuItem menuButtonItem = new MenuItem(displayText);
@@ -85,11 +85,15 @@ public final class SelectOptionsExtension{
     }
     
     /**
-     * Returns the MenuButton containing selection options
-     * @return
+     * Returns the MenuButton containing selection options.
+     * @return MenuButton
      */
     public MenuButton getMenuButton() {
         return menuButton;
+    }
+    
+    protected CheckComboBox<? extends Object> getField(){
+        return this.parentInputfield;
     }
 }
 

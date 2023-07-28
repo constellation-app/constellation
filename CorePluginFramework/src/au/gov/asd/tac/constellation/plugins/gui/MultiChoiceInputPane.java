@@ -31,6 +31,8 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.Skin;
 import javafx.scene.layout.HBox;
@@ -136,15 +138,6 @@ public class MultiChoiceInputPane extends HBox {
         field.setMinWidth(50);
         
         final MenuButton menuButton = selectionOptions.getMenuButton();
-        
-//        .menu-button {
-//        -fx-background-color: #181818;
-//        -fx-border-color: #444444;
-//        }
-
-//        .menu:hover{
-//        -fx-background-color: #0093FF;
-//}
         
         final HBox fieldAndButtons = new HBox();
         fieldAndButtons.setSpacing(2);
