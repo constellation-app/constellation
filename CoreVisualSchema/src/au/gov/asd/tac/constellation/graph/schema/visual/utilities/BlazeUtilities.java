@@ -35,7 +35,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.prefs.Preferences;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 import org.openide.util.NbPreferences;
 
@@ -45,7 +58,6 @@ import org.openide.util.NbPreferences;
  * @author sirius
  */
 public class BlazeUtilities {
-
     public static final Blaze DEFAULT_BLAZE = new Blaze(45, ConstellationColor.LIGHT_BLUE);
 
     public static final String VERTEX_ID_PARAMETER_ID = PluginParameter.buildId(BlazeUtilities.class, "vertex_id");
@@ -147,13 +159,60 @@ public class BlazeUtilities {
         final int freePosition;
         if (colorsList.indexOf("null") != -1) {
             freePosition = colorsList.indexOf("null");
+            savePreset(newColor, freePosition);
         } else if (colorsList.size() < MAXIMUM_CUSTOM_BLAZE_COLORS) {
             freePosition = colorsList.size();
+            savePreset(newColor, freePosition);
         } else {
-            freePosition = MAXIMUM_CUSTOM_BLAZE_COLORS - 1;
+            Platform.runLater(() -> {
+                final Dialog<ButtonType> dialog = new Dialog<>();
+                dialog.setTitle("Too many presets!");
+
+                final Label titleText = new Label("Please select a preset colour to replace");
+
+                final ListView<String> colourListView = new ListView<>(FXCollections.observableList(colorsList));
+                colourListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+                colourListView.setCellFactory((ListView<String> list) -> {
+                    final ListCell<String> cell = new ListCell<>() {
+                        @Override
+                        public void updateItem(final String item, final boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty || item == null) {
+                                setText("");
+                                setGraphic(null);
+                            } else {
+                                setText(item);
+                                final Rectangle rect = new Rectangle();
+                                rect.setHeight(24);
+                                rect.setWidth(24);
+                                rect.setFill(Paint.valueOf(item));
+                                setGraphic(rect);
+                            }
+                        }
+                    };
+
+                    return cell;
+                });
+
+                colourListView.getSelectionModel().selectFirst();
+
+                dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
+                dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
+
+                final VBox saveColourVBox = new VBox(3, titleText, colourListView);
+                dialog.setGraphic(saveColourVBox);
+                dialog.getDialogPane().setMaxWidth(269);
+                final Optional<ButtonType> result = dialog.showAndWait();
+
+                if (result.isPresent() && result.get() == ButtonType.OK) {
+                    savePreset(newColor, colourListView.getSelectionModel().getSelectedIndex());
+                }
+
+            });
         }
-        savePreset(newColor, freePosition);
+
     }
+
 
     /**
      * Saves a blaze color as a preset
