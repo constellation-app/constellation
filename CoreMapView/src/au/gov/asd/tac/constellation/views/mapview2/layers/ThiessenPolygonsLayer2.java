@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
+import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.BaseLine;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.BeachLine;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.BeachLineElement;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Edge;
@@ -191,6 +192,9 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
         LOGGER.log(Level.SEVERE, "Size of lines: " + generatedLines.size());
         generatedLines.forEach(line -> layer.getChildren().add(line));
+
+        final BaseLine bLine = new BaseLine(new Vec3(0, 0), new Vec3(MapView.MAP_WIDTH, 0));
+        layer.getChildren().add(bLine.getLine());
     }
 
     @Override
