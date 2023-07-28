@@ -64,7 +64,6 @@ public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlug
 
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
         interaction.setProgress(0, 0, "Selecting all...", true);
 
         final int selectedVertex = VisualConcept.VertexAttribute.SELECTED.get(graph);
@@ -87,6 +86,6 @@ public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlug
             graph.setBooleanValue(selectedTransaction, transaction, true);
         }
 
-        interaction.setProgress(1, 0, "Finished", true);
+        interaction.setProgress(1, 0, "Selected " + vertexCount + " Nodes & " + transactionCount + " Edges.", true);
     }
 }
