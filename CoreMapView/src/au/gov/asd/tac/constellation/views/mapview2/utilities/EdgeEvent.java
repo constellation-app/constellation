@@ -45,5 +45,14 @@ public class EdgeEvent extends VoronoiEvent {
         this.isValid = isValid;
     }
 
+    public Parabola getInvolvedArc() {
+        return involvedArc;
+    }
+
+    public Vec3 getIntersectionPoint() {
+        return intersectionPoint;
+    }
+
+
 
 }

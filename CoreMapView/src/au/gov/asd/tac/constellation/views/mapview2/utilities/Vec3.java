@@ -117,4 +117,10 @@ public class Vec3 {
         this.y = v3.getY();
         this.z = v3.getZ();
     }
+
+    public void normalizeVec2() {
+        final double temp = x;
+        x = x / Math.sqrt(x * x + y * y);
+        y = y / Math.sqrt(temp * temp + y * y);
+    }
 }

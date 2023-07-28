@@ -22,6 +22,7 @@ import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 
 /**
@@ -32,28 +33,28 @@ public class BeachLine {
     private BeachLineElement root;
     private final PriorityQueue<VoronoiEvent> eventQueue;
     private static final Logger LOGGER = Logger.getLogger(BeachLine.class.getName());
-
+    private final List<Line> completedEdges = new ArrayList<>();
 
     public BeachLine(final PriorityQueue<VoronoiEvent> eventQueue) {
-        root = new Parabola(new Vec3(-100, -100), new Vec3(MapView.MAP_WIDTH + 100, -100), MapView.MAP_WIDTH / 2, new Vec3(MapView.MAP_WIDTH / 2, -35));
-        root.setParent(null);
+        //root = new Parabola(new Vec3(-100, -100), new Vec3(MapView.MAP_WIDTH + 100, -100), MapView.MAP_WIDTH / 2, new Vec3(MapView.MAP_WIDTH / 2, -35));
 
         this.eventQueue = eventQueue;
     }
 
-    public void splitArc(final Parabola element) {
-        insertNewArcSequence(root, element);
-    }
-
-    private BeachLineElement searchArcs(final Parabola element, double directrix) {
+    public BeachLineElement searchArcs(final Parabola element, double directrix) {
+        LOGGER.log(Level.SEVERE, "Called search arcs");
         BeachLineElement current = root;
 
-        while (!(current instanceof Parabola)) {
-            BeachLineElement left = findLeftLeaf(current);
-            BeachLineElement right = findRightLeaf(current);
+        if (current instanceof Parabola) {
+            LOGGER.log(Level.SEVERE, "Beachline Element is a parabola so no searching required");
+        }
 
-            BeachLineElement leftParent = findLeftParent(left);
-            BeachLineElement rightParent = findRightParent(right);
+        while (!(current instanceof Parabola)) {
+            final BeachLineElement left = findLeftLeaf(current);
+            final BeachLineElement right = findRightLeaf(current);
+
+            final BeachLineElement leftParent = findLeftParent(left);
+            final BeachLineElement rightParent = findRightParent(right);
 
             final Vec3 leftIntersect = getEdgeArcIntersection((Edge) leftParent, (Parabola) left, directrix);
             final Vec3 rightIntersect = getEdgeArcIntersection((Edge) leftParent, (Parabola) right, directrix);
@@ -84,7 +85,10 @@ public class BeachLine {
     }
 
     private Vec3 getEdgeArcIntersection(final Edge edge, final Parabola arc, final double directrix) {
-
+        LOGGER.log(Level.SEVERE, "Checking for edge to arc intersection");
+        if (edge == null) {
+            LOGGER.log(Level.SEVERE, "Edge is null");
+        }
         if (edge.getDirVect().getX() == 0) {
             if (directrix == arc.getSite().getY()) {
                 if (edge.getStart().getX() == arc.getSite().getX()) {
@@ -165,6 +169,7 @@ public class BeachLine {
     }
 
     private BeachLineElement insertNewArcSequence(BeachLineElement currentNode, final Parabola element) {
+        LOGGER.log(Level.SEVERE, "Trying to insert a new arc");
         if (currentNode == null) {
             return null;
         }
@@ -205,18 +210,23 @@ public class BeachLine {
     }
 
     private void addEdgeIntersectionEvent(final BeachLineElement arc) {
+        LOGGER.log(Level.SEVERE, "Trying to add an edge intersection event");
         final BeachLineElement leftEdge = findLeftParent(arc);
         final BeachLineElement rightEdge = findRightParent(arc);
 
         if (leftEdge == null || rightEdge == null) {
+            LOGGER.log(Level.SEVERE, "edges do not intersect because left or right edge is null");
             return;
         }
 
         final Vec3 intersectionPoint = getEdgeIntersection((Edge) leftEdge, (Edge) rightEdge);
 
         if (intersectionPoint == null) {
+            LOGGER.log(Level.SEVERE, "edges do not have interseciton point");
             return;
         }
+
+        LOGGER.log(Level.SEVERE, "The edges to intersect");
 
         final Vec3 eventOffset = new Vec3(((Parabola) arc).getSite().getX() - intersectionPoint.getX(), ((Parabola) arc).getSite().getY() - intersectionPoint.getY());
 
@@ -240,6 +250,7 @@ public class BeachLine {
     }
 
     private Vec3 getEdgeIntersection(final Edge e1, final Edge e2) {
+        LOGGER.log(Level.SEVERE, "Checking if 2 edges intersect");
         // mx + b = m2x + b2
         // mx + b - m2x - b2 = 0
         // mx - m2x = b2 - b
@@ -278,37 +289,72 @@ public class BeachLine {
     }
 
     private BeachLineElement getNewEdge(final Vec3 start, final Vec3 dirVect) {
+        LOGGER.log(Level.SEVERE, "Creating new edge");
         final Edge newEdge = new Edge(start, start, start.getX());
         newEdge.setDirVect(dirVect);
+
+        final Line line = new Line();
+
+        line.setStartX(start.getX());
+        line.setStartY(start.getY());
+
+        line.setEndX(start.getX() + (dirVect.getX() * 20));
+        line.setEndY(start.getY() + (dirVect.getY() * 20));
+
+        line.setStroke(Color.RED);
+        completedEdges.add(line);
+
         return newEdge;
     }
 
     private BeachLineElement getNewArc(final Vec3 focus) {
+        LOGGER.log(Level.SEVERE, "Checking new arc");
         final BeachLineElement newArc = new Parabola(new Vec3(focus.getX(), 0), new Vec3(focus.getX(), 0), focus.getX(), focus);
+
+        final Line line = new Line();
+
+        line.setStartX(focus.getX() - 5);
+        line.setStartY(focus.getY());
+
+        line.setEndX(focus.getX() + 5);
+        line.setEndY(focus.getY());
+
+        line.setStroke(Color.RED);
+        //completedEdges.add(line);
+
         return newArc;
     }
 
     private BeachLineElement findLeftParent(final BeachLineElement current) {
+        LOGGER.log(Level.SEVERE, "Looking for first left parent");
         BeachLineElement lParent = current;
 
         while (lParent.getParent() != null && lParent.getParent().getLeft() == lParent) {
             lParent = lParent.getParent();
         }
 
+        if (lParent.getParent() == null) {
+            LOGGER.log(Level.SEVERE, "I will return null");
+        }
         return lParent.getParent();
     }
 
     private BeachLineElement findRightParent(final BeachLineElement current) {
+        LOGGER.log(Level.SEVERE, "Looking for first right parent");
         BeachLineElement rParent = current;
 
         while (rParent.getParent() != null && rParent.getParent().getRight() == rParent) {
             rParent = rParent.getParent();
         }
 
-        return rParent;
+        if (rParent.getParent() == null) {
+            LOGGER.log(Level.SEVERE, "I will return null");
+        }
+        return rParent.getParent();
     }
 
     private BeachLineElement findLeftLeaf(final BeachLineElement current) {
+        LOGGER.log(Level.SEVERE, "Looking for first left leaf");
         if (current.getLeft() == null) {
             return null;
         }
@@ -322,6 +368,7 @@ public class BeachLine {
     }
 
     private BeachLineElement findRightLeaf(final BeachLineElement current) {
+        LOGGER.log(Level.SEVERE, "Looking for first right leaf");
         if (current.getRight() == null) {
             return null;
         }
@@ -334,8 +381,104 @@ public class BeachLine {
         return rLeaf;
     }
 
-    private BeachLineElement removeArc() {
-        return null;
+    private BeachLineElement removeArc(final EdgeEvent evt) {
+        LOGGER.log(Level.SEVERE, "Removing arc");
+        final Parabola remArc = evt.getInvolvedArc();
+
+        final BeachLineElement leftEdge = findLeftParent(remArc);
+        final BeachLineElement rightEdge = findRightParent(remArc);
+
+        final BeachLineElement leftArc = findLeftLeaf(leftEdge);
+        final BeachLineElement rightArc = findRightLeaf(rightEdge);
+
+        final Vec3 intersectionPoint = evt.getIntersectionPoint();
+
+        final Line l1 = new Line();
+
+        l1.setStartX(((Edge) leftArc).getStart().getX());
+        l1.setStartY(((Edge) leftArc).getStart().getY());
+        l1.setEndX(intersectionPoint.getX());
+        l1.setEndY(intersectionPoint.getY());
+
+        final Line l2 = new Line();
+
+        l2.setStartX(((Edge) rightArc).getStart().getX());
+        l2.setStartY(((Edge) rightArc).getStart().getY());
+        l2.setEndX(intersectionPoint.getX());
+        l2.setEndY(intersectionPoint.getY());
+
+        if (((Edge) leftEdge).isExtendsUp()) {
+            l1.setEndY(Double.MAX_VALUE);
+        }
+
+        if (((Edge) rightEdge).isExtendsUp()) {
+            l2.setEndY(Double.MAX_VALUE);
+        }
+
+        l1.setStroke(Color.BLUE);
+        l2.setStroke(Color.BLUE);
+
+        completedEdges.add(l1);
+        completedEdges.add(l2);
+
+        LOGGER.log(Level.SEVERE, "Added completed edges");
+
+        final Vec3 directionArcs = new Vec3(((Parabola) leftArc).getStart().getX() - ((Parabola) rightArc).getStart().getX(), ((Parabola) leftArc).getStart().getY() - ((Parabola) rightArc).getStart().getY());
+        final Vec3 dirVect = new Vec3(directionArcs.getY(), -directionArcs.getX());
+        dirVect.normalizeVec2();
+
+        final BeachLineElement newEdge = getNewEdge(intersectionPoint, dirVect);
+
+        BeachLineElement higherEdge = null;
+        BeachLineElement temp = remArc;
+
+        while (temp.getParent() != null) {
+            temp = temp.getParent();
+
+            if (temp == leftEdge) {
+                higherEdge = leftEdge;
+            } else if (temp == rightEdge) {
+                higherEdge = rightEdge;
+            }
+        }
+
+        newEdge.setParentFromItem(higherEdge);
+        newEdge.setLeft(higherEdge.getLeft());
+        newEdge.setRight(higherEdge.getRight());
+
+        BeachLineElement remainingElement = null;
+        BeachLineElement parent = remArc.getParent();
+
+        if (parent.getLeft() == remArc) {
+            remainingElement = parent.getRight();
+        } else {
+            remainingElement = parent.getLeft();
+        }
+
+        remainingElement.setParentFromItem(parent);
+
+        BeachLineElement newRoot = root;
+
+        if (root == leftEdge || root == rightEdge) {
+            newRoot = newEdge;
+        }
+
+        if (((Parabola) newRoot).getCurrentEdgeEvent() != null) {
+            ((Parabola) newRoot).getCurrentEdgeEvent().setValid(false);
+        }
+
+        addEdgeIntersectionEvent(leftArc);
+        addEdgeIntersectionEvent(rightArc);
+
+        return newRoot;
+    }
+
+    public void processSiteEvent(final Parabola p) {
+        root = insertNewArcSequence(root, p);
+    }
+
+    public void processEdgeIntersectionEvent(final EdgeEvent e) {
+        root = removeArc(e);
     }
 
     public List<Polyline> getArcs() {
@@ -367,6 +510,14 @@ public class BeachLine {
         }
 
         return allArcs;
+    }
+
+    public List<Line> getCompletedEdges() {
+        return completedEdges;
+    }
+
+    public void setRoot(BeachLineElement root) {
+        this.root = root;
     }
 
 }

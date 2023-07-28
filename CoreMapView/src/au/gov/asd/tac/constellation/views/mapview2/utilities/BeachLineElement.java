@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author altair1673
@@ -25,6 +28,7 @@ public abstract class BeachLineElement {
     protected final Vec3 end = new Vec3();
 
     protected double spawnX;
+    private static final Logger LOGGER = Logger.getLogger(BeachLineElement.class.getName());
 
     private BeachLineElement left = null;
     private BeachLineElement right = null;
@@ -87,6 +91,7 @@ public abstract class BeachLineElement {
     }
 
     public void setParentFromItem(final BeachLineElement item) {
+        LOGGER.log(Level.SEVERE, "Setting parent from item");
         if (item.getParent() == null) {
             return;
         }
