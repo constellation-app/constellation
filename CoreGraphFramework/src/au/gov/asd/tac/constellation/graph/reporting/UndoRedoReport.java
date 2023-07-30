@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.graph.locking;
+package au.gov.asd.tac.constellation.graph.reporting;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 

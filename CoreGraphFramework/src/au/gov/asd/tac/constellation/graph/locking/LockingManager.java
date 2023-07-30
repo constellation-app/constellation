@@ -18,6 +18,8 @@ package au.gov.asd.tac.constellation.graph.locking;
 import au.gov.asd.tac.constellation.graph.DuplicateKeyException;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.undo.UndoGraphEdit;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReport;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportManager;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
