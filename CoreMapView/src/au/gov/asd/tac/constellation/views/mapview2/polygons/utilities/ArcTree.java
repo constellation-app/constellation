@@ -17,6 +17,11 @@ package au.gov.asd.tac.constellation.views.mapview2.polygons.utilities;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 
 /**
  *
@@ -25,8 +30,11 @@ import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 public class ArcTree {
 
     private BlineElement root;
+    private final List<Line> completedEdges = new ArrayList<>();
+    private final PriorityQueue<VoronoiEvent> eventQueue;
 
-    public ArcTree() {
+    public ArcTree(final PriorityQueue<VoronoiEvent> eventQueue) {
+        this.eventQueue = eventQueue;
         root = new BaseLine(new Vec3(0, 0), new Vec3(MapView.MAP_WIDTH, 0));
     }
 
@@ -38,9 +46,6 @@ public class ArcTree {
 
             final BaseLine splitLeft = new BaseLine(((BaseLine) intersectingArc).getStart(), new Vec3(focus.getX(), ((BaseLine) intersectingArc).getStart().getY()));
             final BaseLine splitRight = new BaseLine(new Vec3(focus.getX(), ((BaseLine) intersectingArc).getStart().getY()), ((BaseLine) intersectingArc).getEnd());
-
-            newArc.setLeft(splitLeft);
-            newArc.setRight(splitRight);
 
             final Vec3 edgeStart = new Vec3(focus.getX(), ((BaseLine) intersectingArc).getStart().getY());
             final Vec3 dirVect = new Vec3(1, 0);
@@ -57,12 +62,18 @@ public class ArcTree {
             splitLeft.setRightEdge(e2);
             splitRight.setLeftEdge(e1);
 
-            if (intersectingArc == root) {
-                return newArc;
-            }
+            newArc.setLeft(splitLeft);
+            newArc.setRight(splitRight);
 
             splitRight.setRight(intersectingArc.getRight());
             splitLeft.setLeft(intersectingArc.getLeft());
+
+            addEdgeIntersectionEvent(splitLeft);
+            addEdgeIntersectionEvent(splitRight);
+
+            if (intersectingArc == root) {
+                return newArc;
+            }
 
             newArc.setParentFromItem(intersectingArc);
         } else {
@@ -85,6 +96,9 @@ public class ArcTree {
             e2.setParentArc(newArc);
             e2.setHomeArc(splitLeft);
 
+            splitLeft.setRightEdge(e2);
+            splitRight.setLeftEdge(e1);
+
 
             newArc.setLeft(splitLeft);
             newArc.setRight(splitRight);
@@ -92,12 +106,104 @@ public class ArcTree {
             splitRight.setRight(intersectingArc.getRight());
             splitLeft.setLeft(intersectingArc.getLeft());
 
+            addEdgeIntersectionEvent(splitLeft);
+            addEdgeIntersectionEvent(splitRight);
+
+            if (intersectingArc == root) {
+                return newArc;
+            }
+
             newArc.setParentFromItem(intersectingArc);
         }
 
         return current;
     }
 
+    private void addEdgeIntersectionEvent(final BlineElement arc) {
+        final HalfEdge left = arc.getLeftEdge();
+        final HalfEdge right = arc.getRightEdge();
+
+        if (left == null || right == null) {
+            return;
+        }
+
+        final Vec3 intersectionPoint = findEdgeIntersectionPoint(left, right);
+
+        if (intersectionPoint == null) {
+            return;
+        }
+
+        final Vec3 eventOffset = new Vec3(left.getParentArc().getFocus().getX() - intersectionPoint.getX(), left.getParentArc().getFocus().getY() - intersectionPoint.getY());
+
+        final double distance = Math.sqrt(eventOffset.getX() * eventOffset.getX() + eventOffset.getY() + eventOffset.getY());
+
+        final double directrixY = intersectionPoint.getY() + distance;
+
+        if (arc.getCurrentEvent() != null) {
+            if (directrixY >= arc.getCurrentEvent().getYCoord()) {
+                return;
+            } else {
+                arc.getCurrentEvent().setValid(false);
+            }
+        }
+
+        final EdgeEvent e = new EdgeEvent(directrixY, left, right, intersectionPoint);
+        arc.setCurrentEvent(e);
+        eventQueue.add(e);
+        
+    }
+
+    private void removeArc(final EdgeEvent e) {
+        final HalfEdge e1 = e.getEdge1();
+        final HalfEdge e2 = e.getEdge2();
+
+        final BlineElement squeezedArc = e1.getHomeArc();
+
+        final BlineElement leftArc = getLeftNeighbour(squeezedArc);
+        final BlineElement rightArc = getRightNeighbour(squeezedArc);
+
+        final Vec3 intersectionPoint = e.getIntersectionPoint();
+
+        final Line line = new Line();
+        line.setStartX(e1.getStart().getX());
+        line.setStartY(e1.getStart().getY());
+        line.setEndX(intersectionPoint.getX());
+        line.setEndY(intersectionPoint.getY());
+        line.setStroke(Color.RED);
+
+        final Line line2 = new Line();
+        line2.setStartX(e2.getStart().getX());
+        line2.setStartY(e2.getStart().getY());
+        line2.setEndX(intersectionPoint.getX());
+        line2.setEndY(intersectionPoint.getY());
+        line2.setStroke(Color.RED);
+
+        completedEdges.add(line);
+        completedEdges.add(line2);
+    }
+
+    private Vec3 findEdgeIntersectionPoint(final HalfEdge h1, final HalfEdge h2) {
+        final double dx = h2.getStart().getX() - h1.getStart().getX();
+        final double dy = h2.getStart().getY() - h1.getStart().getY();
+        final double det = h2.getDirVect().getX() * h1.getDirVect().getY() - h2.getDirVect().getY() * h1.getDirVect().getX();
+
+        final double u = (dy * h2.getDirVect().getX() - dx * h2.getDirVect().getY()) / det;
+        final double v = (dy * h1.getDirVect().getX() - dx * h1.getDirVect().getY()) / det;
+
+        if (u < 0 && !h1.extendsUp()) {
+            return null;
+        }
+
+        if (v < 0 && !h2.extendsUp()) {
+            return null;
+        }
+
+        if (u == 0 && v == 0 && !h1.extendsUp() && !h2.extendsUp()) {
+            return null;
+        }
+
+        return new Vec3(h1.getStart().getX() + h1.getDirVect().getX() * u, h1.getStart().getY() + h1.getDirVect().getY() * u);
+    }
 
     private BlineElement findIntersectingArc(final BlineElement root, final double x, final double directrix) {
         BlineElement current = root;
@@ -108,27 +214,32 @@ public class ArcTree {
 
         if (current instanceof BaseLine) {
             HalfEdge leftEdge = current.getLeftEdge();
-
-            if (leftEdge == null) {
-                final BlineElement leftClosest = getLeftNeighbour(current);
-
-                if (leftClosest != null) {
-                    //((BaseLine) current).setStart(start);
-                }
-            }
-
             HalfEdge rightEdge = current.getRightEdge();
-            if (rightEdge == null) {
-                final BlineElement rightClosest = getRightNeighbour(current);
-
-                if (rightClosest != null) {
-
-                }
-
-            }
 
             Vec3 leftIntersection = getEdgeBaselineIntersection(leftEdge, (BaseLine) current, directrix);
             Vec3 rightIntersection = getEdgeBaselineIntersection(rightEdge, (BaseLine) current, directrix);
+
+            if (leftEdge == null && leftIntersection == null) {
+                final BlineElement leftClosest = getLeftNeighbour(current);
+
+                if (leftClosest != null) {
+                    final HalfEdge h = new HalfEdge(null, null, ((BaseLine) current).getStart(), ((BaseLine) current).getStart());
+                    h.setDirVect(new Vec3(-1, 0));
+                    leftIntersection = getEdgeArcIntersection(h, (Arc) leftClosest, directrix);
+                }
+            }
+
+            if (rightEdge == null && rightIntersection == null) {
+                final BlineElement rightClosest = getRightNeighbour(current);
+
+                if (rightClosest != null) {
+                    final HalfEdge h = new HalfEdge(null, null, ((BaseLine) current).getStart(), ((BaseLine) current).getStart());
+                    h.setDirVect(new Vec3(1, 0));
+                    rightIntersection = getEdgeArcIntersection(h, (Arc) rightClosest, directrix);
+                }
+
+            }
+
 
             final double leftX = leftIntersection == null ? Double.MIN_VALUE : leftIntersection.getX();
             final double rightX = rightIntersection == null ? Double.MAX_VALUE : rightIntersection.getX();
@@ -183,6 +294,10 @@ public class ArcTree {
     }
 
     private Vec3 getEdgeBaselineIntersection(HalfEdge edge, BaseLine line, double directrix) {
+        if (edge == null || line == null) {
+            return null;
+        }
+
         final Arc arc = edge.getParentArc();
         final HalfEdge e = new HalfEdge(arc, arc, line.getStart(), new Vec3(-edge.getDirVect().getX(), -edge.getDirVect().getY()));
 

@@ -27,6 +27,8 @@ public class BlineElement {
     private HalfEdge leftEdge = null;
     private HalfEdge rightEdge = null;
 
+    private EdgeEvent currentEvent = null;
+
     public BlineElement getParent() {
         return parent;
     }
@@ -78,4 +80,13 @@ public class BlineElement {
             item.getParent().setRight(this);
         }
     }
+
+    public EdgeEvent getCurrentEvent() {
+        return currentEvent;
+    }
+
+    public void setCurrentEvent(EdgeEvent currentEvent) {
+        this.currentEvent = currentEvent;
+    }
+
 }
