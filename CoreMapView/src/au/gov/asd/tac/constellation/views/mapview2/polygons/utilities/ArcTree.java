@@ -20,6 +20,8 @@ import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 
@@ -32,13 +34,15 @@ public class ArcTree {
     private BlineElement root;
     private final List<Line> completedEdges = new ArrayList<>();
     private final PriorityQueue<VoronoiEvent> eventQueue;
+    private static final Logger LOGGER = Logger.getLogger(ArcTree.class.getName());
+
 
     public ArcTree(final PriorityQueue<VoronoiEvent> eventQueue) {
         this.eventQueue = eventQueue;
         root = new BaseLine(new Vec3(0, 0), new Vec3(MapView.MAP_WIDTH, 0));
     }
 
-    public BlineElement addArc(final Vec3 focus) {
+    private BlineElement addArc(final Vec3 focus) {
         final BlineElement current = root;
         final BlineElement intersectingArc = findIntersectingArc(current, focus.getX(), focus.getY());
         if (intersectingArc instanceof BaseLine) {
@@ -130,6 +134,7 @@ public class ArcTree {
         final Vec3 intersectionPoint = findEdgeIntersectionPoint(left, right);
 
         if (intersectionPoint == null) {
+            LOGGER.log(Level.SEVERE, "No intersection");
             return;
         }
 
@@ -150,7 +155,22 @@ public class ArcTree {
         final EdgeEvent e = new EdgeEvent(directrixY, left, right, intersectionPoint);
         arc.setCurrentEvent(e);
         eventQueue.add(e);
-        
+
+    }
+
+    private BlineElement removeElement(BlineElement current, final BlineElement remove) {
+        if (current == null) {
+            return current;
+        }
+
+        current = removeElement(current.getLeft(), remove);
+        current = removeElement(current.getRight(), remove);
+
+        if (current == remove) {
+
+        }
+
+        return current;
     }
 
     private void removeArc(final EdgeEvent e) {
@@ -178,8 +198,32 @@ public class ArcTree {
         line2.setEndY(intersectionPoint.getY());
         line2.setStroke(Color.RED);
 
+        if (e1.extendsUp()) {
+            line.setStartY(Double.MAX_VALUE);
+        }
+
+        if (e2.extendsUp()) {
+            line2.setStartY(Double.MAX_VALUE);
+        }
+
         completedEdges.add(line);
         completedEdges.add(line2);
+
+        final Vec3 leftFocus = ((Arc) leftArc).getFocus();
+        final Vec3 rightFocus = ((Arc) rightArc).getFocus();
+
+        final Vec3 direction = new Vec3(rightFocus.getX() - leftFocus.getX(), rightFocus.getY() - leftFocus.getY());
+        final Vec3 dirNewEdge = new Vec3(direction.getY(), -direction.getX());
+        dirNewEdge.normalizeVec2();
+
+        final HalfEdge newEdge = new HalfEdge((Arc) rightArc, leftArc, intersectionPoint, dirNewEdge);
+
+        leftArc.setRightEdge(newEdge);
+        rightArc.setLeftEdge(newEdge);
+
+
+        addEdgeIntersectionEvent(leftArc);
+        addEdgeIntersectionEvent(rightArc);
     }
 
     private Vec3 findEdgeIntersectionPoint(final HalfEdge h1, final HalfEdge h2) {
@@ -442,6 +486,29 @@ public class ArcTree {
         }
 
         return null;
+    }
+
+    public List<Line> getCompletedEdges() {
+        return completedEdges;
+    }
+
+    public void run() {
+        while (!eventQueue.isEmpty()) {
+            LOGGER.log(Level.SEVERE, "Y coord: " + eventQueue.peek().getYCoord());
+
+            if (eventQueue.peek() instanceof SiteEvent) {
+                final SiteEvent e = (SiteEvent) eventQueue.poll();
+
+                root = addArc(e.getSite());
+
+            } else if (eventQueue.peek() instanceof EdgeEvent) {
+                final EdgeEvent e = (EdgeEvent) eventQueue.poll();
+
+                if (e.isValid()) {
+                    removeArc(e);
+                }
+            }
+        }
     }
 
 }

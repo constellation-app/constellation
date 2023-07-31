@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
+import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.VoronoiEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -241,12 +242,12 @@ public class BeachLine {
             }
         }
 
-        final EdgeEvent edgeEvent = new EdgeEvent(directrixY, intersectionPoint, (Edge) leftEdge, (Edge) rightEdge, (Parabola) arc);
+        //final EdgeEvent edgeEvent = new EdgeEvent(directrixY, intersectionPoint, (Edge) leftEdge, (Edge) rightEdge, (Parabola) arc);
 
 
-        eventQueue.add(edgeEvent);
+        //eventQueue.add(edgeEvent);
 
-        ((Parabola) arc).setCurrentEdgeEvent(edgeEvent);
+        //((Parabola) arc).setCurrentEdgeEvent(edgeEvent);
     }
 
     private Vec3 getEdgeIntersection(final Edge e1, final Edge e2) {
@@ -381,8 +382,8 @@ public class BeachLine {
         return rLeaf;
     }
 
-    private BeachLineElement removeArc(final EdgeEvent evt) {
-        LOGGER.log(Level.SEVERE, "Removing arc");
+    private BeachLineElement removeArc(/*final EdgeEvent evt*/) {
+        /*LOGGER.log(Level.SEVERE, "Removing arc");
         final Parabola remArc = evt.getInvolvedArc();
 
         final BeachLineElement leftEdge = findLeftParent(remArc);
@@ -470,15 +471,16 @@ public class BeachLine {
         addEdgeIntersectionEvent(leftArc);
         addEdgeIntersectionEvent(rightArc);
 
-        return newRoot;
+        return newRoot;*/
+        return null;
     }
 
     public void processSiteEvent(final Parabola p) {
         root = insertNewArcSequence(root, p);
     }
 
-    public void processEdgeIntersectionEvent(final EdgeEvent e) {
-        root = removeArc(e);
+    public void processEdgeIntersectionEvent(/*final EdgeEvent e*/) {
+        //root = removeArc(e);
     }
 
     public List<Polyline> getArcs() {

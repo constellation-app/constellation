@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
+import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.EdgeEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.paint.Color;

@@ -20,19 +20,14 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
+import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.ArcTree;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.BaseLine;
+import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.SiteEvent;
+import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.VoronoiEvent;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.BeachLine;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.BeachLineElement;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.Edge;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.EdgeEvent;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.Parabola;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.SiteEvent;
+
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.VoronoiEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +36,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Group;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -60,7 +54,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
     private List<AbstractMarker> markers = new ArrayList<>();
 
     private final PriorityQueue<VoronoiEvent> eventQueue;
-    private final BeachLine beachLine;
+    private final ArcTree beachLine;
 
     public ThiessenPolygonsLayer2(final MapView parent, final int id, final List<AbstractMarker> markers) {
         super(parent, id);
@@ -76,7 +70,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             return -1;
         });
 
-        beachLine = new BeachLine(eventQueue);
+        beachLine = new ArcTree(eventQueue);
     }
 
     @Override
@@ -116,7 +110,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
     private void calculateVoronoi() {
 
-        final SiteEvent firstEvent = (SiteEvent) eventQueue.peek();
+        /*final SiteEvent firstEvent = (SiteEvent) eventQueue.peek();
 
         final BeachLineElement firstArc = new Parabola(firstEvent.getSite(), firstEvent.getSite(), firstEvent.getSite().getX(), firstEvent.getSite());
         ((Parabola) firstArc).setCurrentEdgeEvent(null);
@@ -167,27 +161,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
                 LOGGER.log(Level.SEVERE, "Setting right newArc and left intersectingArc");
                 newEdge.setRight(newArc);
             }
-        }
-
-        while (!eventQueue.isEmpty()) {
-            LOGGER.log(Level.SEVERE, "Y coord: " + eventQueue.peek().getYCoord());
-
-            if (eventQueue.peek() instanceof SiteEvent) {
-                final SiteEvent e = (SiteEvent) eventQueue.poll();
-
-                final Parabola arc = new Parabola(new Vec3(e.getSite().getX(), 0), new Vec3(e.getSite().getX(), 0), e.getSite().getX(), e.getSite());
-                beachLine.processSiteEvent(arc);
-
-
-            } else if (eventQueue.peek() instanceof EdgeEvent) {
-                final EdgeEvent e = (EdgeEvent) eventQueue.poll();
-
-                if (e.isValid()) {
-                    beachLine.processEdgeIntersectionEvent(e);
-                }
-            }
-        }
-
+        }*/
+        beachLine.run();
         final List<Line> generatedLines = beachLine.getCompletedEdges();
 
         LOGGER.log(Level.SEVERE, "Size of lines: " + generatedLines.size());

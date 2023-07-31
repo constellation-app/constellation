@@ -48,7 +48,7 @@ public class EdgeEvent extends VoronoiEvent {
         return edge2;
     }
 
-    public boolean isIsValid() {
+    public boolean isValid() {
         return isValid;
     }
 
