@@ -265,7 +265,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         SchemaVertexType destinationVertexType;
         SchemaTransactionType transactionType;
         final Map<Integer, Integer> occurrences = new HashMap<>();
-
+        int randomNumber = 0;
         for (final Integer vxId : selectedNodes) {
             final String label = graph.getStringValue(vertexLabelAttribute, vxId);
             interaction.setProgress(++step, selectedNodes.size(), String.format("Calculating top %s for %s", limit, label), true);
@@ -315,10 +315,9 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                     ));
 
             sortedMap.keySet().stream().limit(limit).forEach(id -> graph.setBooleanValue(vertexSelectedAttribute, id, true));
-
-            interaction.setProgress(1, 0, "Selected " + sortedMap.size() + " nodes.", true);
+            
+            //Note: This plugin does not factor in currently selected nodes to its Top N selection.
+            interaction.setProgress(1, 0, "Selected " + (sortedMap.size() < limit ? sortedMap.size() : limit) + " nodes.", true);
         }
-
-        interaction.setProgress(1, 0, "Completed successfully", true);
     }
 }
