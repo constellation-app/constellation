@@ -75,6 +75,10 @@ public class Table {
     private final TablePane tablePane;
     private final TableView<ObservableList<String>> tableView;
 
+    private boolean firstTime = true;
+    private boolean vertextFirstTime = true;
+    private boolean edgeFirstTime = true;
+
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
     private final ListChangeListener selectedOnlySelectionListener;
 
@@ -178,18 +182,11 @@ public class Table {
                     final List<Column> source = createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                             GraphRecordStoreUtilities.SOURCE, columnReferenceMap);
 
-                    // Creates "link." columns from vertex attributes
-                    //final List<Column> linkColumn = createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
-                    //    GraphRecordStoreUtilities.LINK, columnReferenceMap);
-                    //final List<Column> link2Column = createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
-                    //      GraphRecordStoreUtilities.LINK2, columnReferenceMap);
-                    //getColumnIndex().addAll(linkColumn);
-                    //getColumnIndex().addAll(link2Column);
                     if (state.getElementType() == GraphElementType.LINK) {
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                                 GraphRecordStoreUtilities.LINK2, columnReferenceMap));
 
-                       getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                                 GraphRecordStoreUtilities.LINK, columnReferenceMap));
 
                     } else if (state.getElementType() == GraphElementType.TRANSACTION) {
@@ -203,31 +200,48 @@ public class Table {
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                                 GraphRecordStoreUtilities.DESTINATION, columnReferenceMap));
 
-                    } //                    else if (state.getElementType() == GraphElementType.EDGE) {
-                    //
-                    //                        // Creates "transaction." columns from transaction attributes
-                    //                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.EDGE,
-                    //                                GraphRecordStoreUtilities.EDGE, columnReferenceMap));
-                    //                        //for edges may need to have destination for the edge and the source...?                        
-                    //                    } 
-                    else {
-                        getColumnIndex().addAll(source);
+                    } else if (state.getElementType() == GraphElementType.EDGE) {
 
+                        // Creates "transaction." columns from transaction attributes
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.EDGE,
+                                GraphRecordStoreUtilities.EDGE, columnReferenceMap));
+                    } else {
+                        getColumnIndex().addAll(source);
                     }
                 } finally {
                     readableGraph.release();
                 }
-                
-                if(state.getElementType() == GraphElementType.LINK)
-                {
-                    //state.getColumnAttributes().clear();
+
+                //Prevents infinite loop of column updating
+                if (state.getElementType() == GraphElementType.LINK && firstTime) {
+                    LOGGER.log(Level.SEVERE, "running once");
                     state.setColumnAttributes(null);
+                    firstTime = false;
+                } else {
+                    firstTime = true;
                 }
-                
+
+                if (state.getElementType() == GraphElementType.VERTEX && vertextFirstTime) {
+                    state.setColumnAttributes(null);
+                    vertextFirstTime = false;
+                } else {
+                    vertextFirstTime = true;
+                }
+
+                if (state.getElementType() == GraphElementType.EDGE && edgeFirstTime) {
+                    state.setColumnAttributes(null);
+                    edgeFirstTime = false;
+                } else {
+                    edgeFirstTime = true;
+                }
+
                 // If there are no visible columns specified, write the key columns to the state
                 if (state.getColumnAttributes() == null) {
+                    LOGGER.log(Level.SEVERE, "running for" + state.getElementType().getLabel());
                     openColumnVisibilityMenu();
                     return;
+                } else {
+                    LOGGER.log(Level.SEVERE, "Column attributes updated therefore no refresh");
                 }
 
                 // Sort columns in columnIndex by state, prefix and attribute name
@@ -341,28 +355,28 @@ public class Table {
                             final int linkId = readableGraph.getLink(linkPosition);
                             boolean isSelected = false;
 
-//                            if (selectedAttributeId != Graph.NOT_FOUND) {
-//                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
-//                            }
-                            // If it is not in selected only mode then just add every row but if it is
-                            // in selected only mode, only add the ones that are selected in the graph
                             if (!state.isSelectedOnly() || isSelected) {
                                 rows.add(getRowDataForLink(readableGraph, linkId));
                             }
                         });
-                    }
+                    } 
 //                    else if (state.getElementType() == GraphElementType.EDGE) {
-//                        IntStream.range(0, readableGraph.getEdgeCount()).forEach(edgePosition -> {
-//                            final int edgeId = readableGraph.getLink(edgePosition);
-//                            boolean isSelected = false; 
 //
-////                            if (selectedAttributeId != Graph.NOT_FOUND) {
-////                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, vertexId);
-////                            }
+//                        final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+//                        final int edgeCount = readableGraph.getEdgeCount();
+//
+//                        IntStream.range(0, edgeCount).forEach(edgePosition -> {
+//                            final int edgeId = readableGraph.getEdge(edgePosition);
+//                            boolean isSelected = false;
+//
+//                            if (edgeId != Graph.NOT_FOUND) {
+//                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, edgeId);
+//                            }
+//
 //                            // If it is not in selected only mode then just add every row but if it is
 //                            // in selected only mode, only add the ones that are selected in the graph
 //                            if (!state.isSelectedOnly() || isSelected) {
-//                                rows.add(getRowDataForLink(readableGraph, edgeId));
+//                                rows.add(getRowDataForTransaction(readableGraph, edgeId));
 //                            }
 //                        });
 //                    }
