@@ -281,6 +281,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             throw new PluginException(PluginNotificationLevel.ERROR, msg);
         }
 
+        Set newNodes = new HashSet();
         final boolean outgoing = OUTGOING.equals(inOrOut);
 
         // Retrieving attribute IDs
@@ -297,6 +298,9 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             return;
         }
 
+        int newTransactionCount = 0;
+        int newNodeCount = 0;
+        
         final int transactionCount = wg.getTransactionCount();
 
         if (regexOnly) {
@@ -373,7 +377,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                         final int destinationVertexId = wg.getTransactionDestinationVertex(transactionId);
                         final ZonedDateTime datetime = wg.getObjectValue(transactionDatetimeAttributeId, transactionId);
 
-                        matched.forEach(word -> {
+                        for (String word : matched ){
                             final int newVertexId = wg.addVertex();
                             wg.setStringValue(vertexIdentifierAttributeId, newVertexId, word);
                             wg.setObjectValue(vertexTypeAttributeId, newVertexId, AnalyticConcept.VertexType.WORD);
@@ -384,9 +388,11 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                             wg.setObjectValue(transactionDatetimeAttributeId, newTransactionId, datetime);
                             wg.setObjectValue(transactionTypeAttributeId, newTransactionId, AnalyticConcept.TransactionType.REFERENCED);
                             wg.setStringValue(transactionContentAttributeId, newTransactionId, content);
-                        });
+                            newTransactionCount++;
+                        }
                     }
                 }
+                newNodeCount = matched.size();
             }
             // End of regexOnly.
         } else { // The original logic.
@@ -479,6 +485,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                     if (types && typesExtracted.contains(word.toLowerCase())) {
                         continue;
                     }
+                    newNodes.add(word);
                     final int newVertexId = wg.addVertex();
                     wg.setStringValue(vertexIdentifierAttributeId, newVertexId, word);
                     wg.setObjectValue(vertexTypeAttributeId, newVertexId, AnalyticConcept.VertexType.WORD);
@@ -489,17 +496,19 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                     wg.setObjectValue(transactionDatetimeAttributeId, newTransactionId, datetime);
                     wg.setObjectValue(transactionTypeAttributeId, newTransactionId, AnalyticConcept.TransactionType.REFERENCED);
                     wg.setStringValue(transactionContentAttributeId, newTransactionId, content);
+                    newTransactionCount++;
                 }
             }
+            newNodeCount = newNodes.size();
         }
 
         PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .executeNow(wg);
+        
 
-        interaction.setProgress(1, 0, "Completed successfully", true);
+            interaction.setProgress(1, 0, newTransactionCount + " new Transactions were created & " + newNodeCount + " new Nodes were created", true);
     }
-
     /**
      * The input words are transformed into pre-determined regular expressions.
      *
