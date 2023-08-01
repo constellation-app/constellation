@@ -359,27 +359,26 @@ public class Table {
                                 rows.add(getRowDataForLink(readableGraph, linkId));
                             }
                         });
-                    } 
-//                    else if (state.getElementType() == GraphElementType.EDGE) {
-//
-//                        final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-//                        final int edgeCount = readableGraph.getEdgeCount();
-//
-//                        IntStream.range(0, edgeCount).forEach(edgePosition -> {
-//                            final int edgeId = readableGraph.getEdge(edgePosition);
-//                            boolean isSelected = false;
-//
-//                            if (edgeId != Graph.NOT_FOUND) {
-//                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, edgeId);
-//                            }
-//
-//                            // If it is not in selected only mode then just add every row but if it is
-//                            // in selected only mode, only add the ones that are selected in the graph
-//                            if (!state.isSelectedOnly() || isSelected) {
-//                                rows.add(getRowDataForTransaction(readableGraph, edgeId));
-//                            }
-//                        });
-//                    }
+                    } else if (state.getElementType() == GraphElementType.EDGE) {
+
+                        final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                        final int edgeCount = readableGraph.getEdgeCount();
+
+                        IntStream.range(0, edgeCount).forEach(edgePosition -> {
+                            final int edgeId = readableGraph.getEdge(edgePosition);
+                            boolean isSelected = false;
+
+                            if (edgeId != Graph.NOT_FOUND) {
+                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, edgeId);
+                            }
+
+                            // If it is not in selected only mode then just add every row but if it is
+                            // in selected only mode, only add the ones that are selected in the graph
+                            if (!state.isSelectedOnly() || isSelected) {
+                                rows.add(getRowDataForTransaction(readableGraph, edgeId));
+                            }
+                        });
+                    }
                 } finally {
                     readableGraph.release();
                 }
@@ -602,44 +601,44 @@ public class Table {
         return rowData;
     }
 
-//        protected ObservableList<String> getRowDataForEdge(final ReadableGraph readableGraph,
-//            final int edgeId) {
-//        final ObservableList<String> rowData = FXCollections.observableArrayList();
-//
-//        getColumnIndex().forEach(column -> {
-//            final int attributeId = readableGraph
-//                    .getAttribute(column.getAttribute().getElementType(),
-//                            column.getAttribute().getName());
-//
-//            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction
-//                    .getInteraction(column.getAttribute().getAttributeType());
-//
-//            Object attributeValue = null;
-//
-//            if (attributeId != Graph.NOT_FOUND) {
-//                switch (column.getAttributeNamePrefix()) {
-//                    case GraphRecordStoreUtilities.EDGE:
-//                        final int sourceVertexId = readableGraph.getLinkLowVertex(edgeId);
-//                        attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
-//                        break;
-//                    default:
-//                        attributeValue = null;
-//                }
-//            } else {
-//                attributeValue = null;
-//            }
-//
-//            final String displayableValue = attributeValue != null ? interaction.getDisplayText(attributeValue) : "No Value";
-//            rowData.add(displayableValue);
-//
-//        });
-//
-//        getActiveTableReference().getElementIdToRowIndex().put(edgeId, rowData);
-//        getActiveTableReference().getRowToElementIdIndex().put(rowData, edgeId);
-//
-//        return rowData;
-//    }
-//    
+    protected ObservableList<String> getRowDataForEdge(final ReadableGraph readableGraph,
+            final int edgeId) {
+        final ObservableList<String> rowData = FXCollections.observableArrayList();
+
+        getColumnIndex().forEach(column -> {
+            final int attributeId = readableGraph
+                    .getAttribute(column.getAttribute().getElementType(),
+                            column.getAttribute().getName());
+
+            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction
+                    .getInteraction(column.getAttribute().getAttributeType());
+
+            Object attributeValue = null;
+
+            if (attributeId != Graph.NOT_FOUND) {
+                switch (column.getAttributeNamePrefix()) {
+                    case GraphRecordStoreUtilities.EDGE:
+                        final int sourceVertexId = readableGraph.getLinkLowVertex(edgeId);
+                        attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
+                        break;
+                    default:
+                        attributeValue = null;
+                }
+            } else {
+                attributeValue = null;
+            }
+
+            final String displayableValue = attributeValue != null ? interaction.getDisplayText(attributeValue) : "No Value";
+            rowData.add(displayableValue);
+
+        });
+
+        getActiveTableReference().getElementIdToRowIndex().put(edgeId, rowData);
+        getActiveTableReference().getRowToElementIdIndex().put(rowData, edgeId);
+
+        return rowData;
+    }
+
     /**
      * For a given transaction on the graph construct a row for the table given the current column settings. In the case of source and destination columns the value entered will be sourced from the source and destination vertices respectively.
      * <p/>
