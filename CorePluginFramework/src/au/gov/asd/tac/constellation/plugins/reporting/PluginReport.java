@@ -47,7 +47,7 @@ public class PluginReport {
     private final long startTime;
     private long stopTime = -1;
 
-    private String message = null;
+    private final List<String> messageLog = new ArrayList<String>();
     private int currentStep = 1;
     private int totalSteps = -1;
 
@@ -166,7 +166,7 @@ public class PluginReport {
      * @return the current message from this plugin.
      */
     public String getMessage() {
-        return message;
+        return this.messageLog.size() == 0 ? "" : this.messageLog.get(this.messageLog.size()-1);
     }
 
     /**
@@ -175,7 +175,7 @@ public class PluginReport {
      * @param message the new message.
      */
     public void setMessage(String message) {
-        this.message = message;
+        this.messageLog.add(message);
     }
 
     /**
@@ -316,7 +316,7 @@ public class PluginReport {
 
     @Override
     public String toString() {
-        return "PluginReport{" + "graphReport=" + graphReport + ", pluginName=" + pluginName + ", pluginDescription=" + pluginDescription + ", startTime=" + startTime + ", stopTime=" + stopTime + ", message=" + message + ", currentStep=" + currentStep + ", totalSteps=" + totalSteps + '}';
+        return "PluginReport{" + "graphReport=" + graphReport + ", pluginName=" + pluginName + ", pluginDescription=" + pluginDescription + ", startTime=" + startTime + ", stopTime=" + stopTime + ", message=" + this.getMessage() + ", currentStep=" + currentStep + ", totalSteps=" + totalSteps + '}';
     }
 
     /**
@@ -346,5 +346,24 @@ public class PluginReport {
      */
     public List<PluginReport> getUChildReports() {
         return uChildReports;
+    }
+    
+    /**
+     * Returns the list messages sent to the plugin report. during its life
+     * Note that this method prints all messages and thus the number of messaged 
+     * sent to the Plugin reporter should be appropriate.
+     *
+     * @return a string representing a list of all the report messages sent to
+     * this report.
+     */
+    public String getMessageLog() {
+        String messageLogString = "";
+        for (int i = 0 ; i < this.messageLog.size() ; i++){
+            if (i != 0){
+                messageLogString += "\n";
+            }
+            messageLogString += this.messageLog.get(i);
+        }
+        return messageLogString;
     }
 }

@@ -145,8 +145,15 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         messageButton.setMaxSize(15, 15);
         messageButton.setMinSize(15, 15);
         messageButton.setOnAction((ActionEvent event) -> {
-            messageLabel.setMaxHeight(messageButton.isSelected() ? Double.MAX_VALUE : 10);
-            messageButton.setGraphic(messageButton.isSelected() ? new ImageView(REPORT_EXPANDED_IMAGE) : new ImageView(REPORT_CONTRACTED_IMAGE));
+            if (messageButton.isSelected()) {
+                messageLabel.setText(pluginReport.getMessageLog());
+                messageLabel.setMaxHeight(Double.MAX_VALUE);
+                messageButton.setGraphic(new ImageView(REPORT_EXPANDED_IMAGE));
+            } else {
+                messageLabel.setText(pluginReport.getMessage());
+                messageLabel.setMaxHeight(10);
+                messageButton.setGraphic(new ImageView(REPORT_CONTRACTED_IMAGE));
+            }
         });
         messageContainer.setLeft(messageButton);
 
