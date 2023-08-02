@@ -40,25 +40,32 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         if (graph.getSchema() != null) {
             int currentProgress = 0;
-            int maxProgress = graph.getVertexCount() + graph.getTransactionCount();
-
+            int vertexCount = graph.getVertexCount();
+            int transactionCount = graph.getTransactionCount();
+            int maxProgress = vertexCount + transactionCount;
+            interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true);
+            
             // vertices
+            interaction.setProgress(currentProgress, maxProgress, "Completing node(s)...", true);
             for (int vertexPosition = 0; vertexPosition < graph.getVertexCount(); vertexPosition++) {
                 final int vertexId = graph.getVertex(vertexPosition);
                 graph.getSchema().completeVertex(graph, vertexId);
                 currentProgress++;
-                interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true);
+                interaction.setProgress(currentProgress, maxProgress, true);
             }
-
+            interaction.setProgress(currentProgress, maxProgress, vertexCount + " node(s) completed...", true);
+            
             // transactions
+            interaction.setProgress(currentProgress, maxProgress, "Completing transaction(s)...", true);
             for (int transactionPosition = 0; transactionPosition < graph.getTransactionCount(); transactionPosition++) {
                 final int transactionId = graph.getTransaction(transactionPosition);
 
                 graph.getSchema().completeTransaction(graph, transactionId);
                 currentProgress++;
-                interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true);
+                interaction.setProgress(currentProgress, maxProgress, true);
             }
-
+            interaction.setProgress(currentProgress, maxProgress, transactionCount + " transaction(s) completed...", true);
+            
             // graph
             graph.getSchema().completeGraph(graph);
         }
