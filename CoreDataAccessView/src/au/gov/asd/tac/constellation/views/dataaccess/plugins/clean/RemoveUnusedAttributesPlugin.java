@@ -68,15 +68,23 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         if (graph.getVertexCount() > 0) {
+            
+            //Setup progress report controll data
+            int currentProgress = 0;
+            int maxProgress = graph.getAttributeCount(GraphElementType.VERTEX) + graph.getAttributeCount(GraphElementType.TRANSACTION);
+            
+            interaction.setProgress(currentProgress, maxProgress, "Removing unused attributes...", true);
             final Set<GraphElementType> graphElements = new HashSet<>();
             graphElements.add(GraphElementType.VERTEX);
             graphElements.add(GraphElementType.TRANSACTION);
             final Set<Integer> nullSet = new HashSet<>();
 
+            //Loop through element types
             for (final GraphElementType element : graphElements) {
                 final int elementCount = (element == GraphElementType.VERTEX) ? graph.getVertexCount() : graph.getTransactionCount();
                 final int elementAttributeCount = graph.getAttributeCount(element);
 
+                //Loop though element attributes
                 for (int i = 0; i < elementAttributeCount; i++) {
                     final int attributeId = graph.getAttribute(element, i);
 
@@ -86,6 +94,7 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
 
                     boolean hasValue = false;
 
+                    //Loop through elements
                     for (int j = 0; j < elementCount; j++) {
                         final int elementId = (element == GraphElementType.VERTEX) ? graph.getVertex(j) : graph.getTransaction(j);
                         if (graph.getStringValue(attributeId, elementId) != null) {
@@ -97,12 +106,17 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
                     if (!hasValue) {
                         nullSet.add(attributeId);
                     }
+                    currentProgress ++;
                 }
+                
+                interaction.setProgress(currentProgress, maxProgress, "Removing " + nullSet.size() + " attribute(s) from " + elementCount + " " + element.getShortLabel().toLowerCase() + "(s).", true);
+                for (final int attribute : nullSet) {
+                    graph.removeAttribute(attribute);
+                }
+                nullSet.clear();
             }
+            
 
-            for (final int attribute : nullSet) {
-                graph.removeAttribute(attribute);
-            }
         }
     }
 }

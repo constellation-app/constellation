@@ -119,7 +119,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                     }
                 }
             } finally {
-                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
+                interaction.setProgress(2, 1, "Finished", true);
             }
 
         } finally {
