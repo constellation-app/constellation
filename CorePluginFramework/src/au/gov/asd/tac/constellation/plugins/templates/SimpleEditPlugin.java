@@ -150,7 +150,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                     inControlOfProgress = false;
                 }
             } finally {
-                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
+                interaction.setProgress(2, 1, "Finished", true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);
