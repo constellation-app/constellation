@@ -126,13 +126,22 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException {
 
         if (pluginReport != null) {
-            pluginReport.setCurrentStep(currentStep);
-            pluginReport.setTotalSteps(totalSteps);
             pluginReport.setMessage(message);
-            pluginReport.firePluginReportChangedEvent();
         }
 
         currentMessage = message;
+        
+        this.setProgress(currentStep, totalSteps, cancellable);
+    }
+
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {
+
+        if (pluginReport != null) {
+            pluginReport.setCurrentStep(currentStep);
+            pluginReport.setTotalSteps(totalSteps);
+            pluginReport.firePluginReportChangedEvent();
+        }
 
         // Allow the plugin to be interrupted
         if (cancellable && Thread.interrupted()) {
@@ -155,11 +164,11 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                 progress = ProgressHandle.createHandle(createProgressTitle(), this);
                 progress.start();
                 timer = new Timer();
-                progress.progress(timer.getTime() + " " + message);
+                progress.progress(timer.getTime() + " " + currentMessage);
                 timer.start();
             } else {
                 progress.switchToIndeterminate();
-                progress.progress(timer.getTime() + " " + message);
+                progress.progress(timer.getTime() + " " + currentMessage);
             }
 
             // If the plugin is determinate...
@@ -170,16 +179,16 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                 progress.start();
                 timer = new Timer();
                 progress.switchToDeterminate(totalSteps);
-                progress.progress(timer.getTime() + " " + message, currentStep);
+                progress.progress(timer.getTime() + " " + currentMessage, currentStep);
                 timer.start();
             } else {
                 progress.switchToDeterminate(totalSteps);
-                progress.progress(timer.getTime() + " " + message, currentStep);
+                progress.progress(timer.getTime() + " " + currentMessage, currentStep);
             }
 
         }
     }
-
+    
     @Override
     public void notify(final PluginNotificationLevel level, final String message) {
         final String title = pluginManager.getPlugin().getName();

@@ -60,6 +60,17 @@ public interface PluginInteraction {
      * @throws InterruptedException if the plugin has been canceled.
      */
     void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException;
+    
+    /**
+     * Signals to the user the current progress of the plugin.
+     *
+     * @param currentStep the current step the plugin is currently performing.
+     * @param totalSteps the total number of steps the plugin must perform
+     * before completion.
+     * @param cancellable is the plugin able to be canceled at this time?
+     * @throws InterruptedException if the plugin has been canceled.
+     */
+    void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException;
 
     /**
      * Sends a notification message to the user. Depending on the notification

@@ -60,6 +60,11 @@ public class TextPluginInteraction implements PluginInteraction {
         currentMessage = message;
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
     }
+    
+    @Override
+    public void setProgress(int currentStep, int totalSteps, boolean cancellable) throws InterruptedException {
+        //LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
+    }
 
     @Override
     public void notify(PluginNotificationLevel level, String message) {
