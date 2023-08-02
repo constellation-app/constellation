@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.find.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.plugins.parameters.SelectOptionsExtension;
+import au.gov.asd.tac.constellation.utilities.gui.SelectOptionsExtension;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
 import au.gov.asd.tac.constellation.views.find.utilities.ActiveFindResultsList;
 import au.gov.asd.tac.constellation.views.find.utilities.BasicFindReplaceParameters;
