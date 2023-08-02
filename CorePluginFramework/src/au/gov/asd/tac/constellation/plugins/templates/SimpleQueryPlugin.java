@@ -172,7 +172,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                     }
                 }
             } finally {
-                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), false);
+                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : "Finished", false);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);
@@ -222,7 +222,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                     inControlOfProgress = false;
                 }
             } finally {
-                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
+                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : "Finished", true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);
