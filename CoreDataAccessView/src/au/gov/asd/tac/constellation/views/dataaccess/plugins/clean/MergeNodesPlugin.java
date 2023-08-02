@@ -221,7 +221,7 @@ public class MergeNodesPlugin extends SimpleQueryPlugin implements DataAccessPlu
             mergedCount += mergeVertices(graph, entry.getValue(), entry.getKey(), merger);
         }
 
-        interaction.setProgress(1, 0, "Merged " + mergedCount + " nodes.", true);
+        interaction.setProgress(1, 0, "Merged " + mergedCount + " node(s).", true);
 
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }

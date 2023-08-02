@@ -234,7 +234,7 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
             mergedCount += mergeTransactions(graph, entry.getValue(), entry.getKey(), merger);
         }
 
-        interaction.setProgress(1, 0, "Merged " + mergedCount + " transactions.", true);
+        interaction.setProgress(1, 0, "Merged " + mergedCount + " transaction(s).", true);
 
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }

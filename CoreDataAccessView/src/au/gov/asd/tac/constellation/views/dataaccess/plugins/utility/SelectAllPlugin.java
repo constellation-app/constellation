@@ -86,6 +86,6 @@ public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlug
             graph.setBooleanValue(selectedTransaction, transaction, true);
         }
 
-        interaction.setProgress(1, 0, "Selected " + vertexCount + " Nodes & " + transactionCount + " Edges.", true);
+        interaction.setProgress(1, 0, "Selected " + vertexCount + " node(s) & " + transactionCount + " transaction(s).", true);
     }
 }

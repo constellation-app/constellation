@@ -507,7 +507,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                 .executeNow(wg);
         
 
-            interaction.setProgress(1, 0, newTransactionCount + " new Transactions were created & " + newNodeCount + " new Nodes were created", true);
+        interaction.setProgress(1, 0, "Created " + newNodeCount + " node(s) & "+ newTransactionCount + " transaction(s)", true);
     }
     /**
      * The input words are transformed into pre-determined regular expressions.

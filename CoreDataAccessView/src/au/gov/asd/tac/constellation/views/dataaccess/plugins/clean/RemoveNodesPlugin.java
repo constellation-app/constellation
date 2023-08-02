@@ -127,7 +127,7 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
             }
         }
 
-        interaction.setProgress(1, 0, "Removed " + removedCount + " nodes.", true);
+        interaction.setProgress(1, 0, "Removed " + removedCount + " nodes(s).", true);
     }
 
     private boolean removeNodesByLength(final GraphWriteMethods wg, final int vertex, final int identifierAttribute, final int threshold) {

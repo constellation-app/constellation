@@ -317,7 +317,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
             sortedMap.keySet().stream().limit(limit).forEach(id -> graph.setBooleanValue(vertexSelectedAttribute, id, true));
             
             //Note: This plugin does not factor in currently selected nodes to its Top N selection.
-            interaction.setProgress(1, 0, "Selected " + (sortedMap.size() < limit ? sortedMap.size() : limit) + " nodes.", true);
+            interaction.setProgress(1, 0, "Selected " + (sortedMap.size() < limit ? sortedMap.size() : limit) + " node(s).", true);
         }
     }
 }
