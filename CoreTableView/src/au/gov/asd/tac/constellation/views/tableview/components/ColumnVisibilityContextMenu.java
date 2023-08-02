@@ -132,7 +132,6 @@ public class ColumnVisibilityContextMenu {
         });
 
         showPrimaryColumnsMenu = createCustomMenu(KEY_COLUMNS, e -> {
-            LOGGER.log(Level.SEVERE, "Calling show kwys");
             if (getTableViewTopComponent().getCurrentGraph() != null) {
                 final Set<GraphAttribute> keyAttributes = new HashSet<>();
                 final ReadableGraph readableGraph = getTableViewTopComponent().getCurrentGraph().getReadableGraph();
