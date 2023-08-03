@@ -58,7 +58,11 @@ import org.openide.util.lookup.ServiceProvider;
 import org.openide.util.lookup.ServiceProviders;
 
 /**
- * Split Nodes Based on Identifier Plugin
+ * The Split Nodes Plugin replaces a node with a set of new replicated nodes 
+ * containing identifier that comprises the originals nodes identifier. 
+ * The Plugin takes a selection of Nodes and a String representing a sub-string contained in the nodes identifier. 
+ * The selected node is then replicated so that the new nodes contain the identifiers resulting from 
+ * splitting the original identifier with the sub-string.
  *
  * @author canis_majoris
  * @author antares
@@ -222,7 +226,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
     }
 
     @Override
-    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+    public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {        
         final Map<String, PluginParameter<?>> splitParameters = parameters.getParameters();
         final String character = splitParameters.get(SPLIT_PARAMETER_ID) != null && splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() != null ? splitParameters.get(SPLIT_PARAMETER_ID).getStringValue() : "";
         final ParameterValue transactionTypeChoice = splitParameters.get(TRANSACTION_TYPE_PARAMETER_ID).getSingleChoice();
@@ -234,14 +238,25 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         final List<Integer> newVertices = new ArrayList<>();
         final int graphVertexCount = graph.getVertexCount();
 
+        interaction.setProgress(graphVertexCount, 0, "Splitting nodes...", true);
+        
+        // Loop through the selected vertex's.
         for (int position = 0; position < graphVertexCount; position++) {
+            
+            interaction.setProgress(graphVertexCount, position + 1, true);
             final int currentVertexId = graph.getVertex(position);
 
             if (graph.getBooleanValue(vertexSelectedAttributeId, currentVertexId)) {
                 final String identifier = graph.getStringValue(vertexIdentifierAttributeId, currentVertexId);
-
+                
+                // The current vertex contains the split string being searched for.
                 if (identifier != null && identifier.contains(character) && identifier.indexOf(character) < identifier.length() - character.length()) {
+                    
+                    // Represents the string to the left of the split. This node will be created last.
                     String leftNodeIdentifier = "";
+                    
+                    // Split the identifier for each time the split string is seen.
+                    interaction.setProgress(graphVertexCount, position + 1, "Splitting node " + identifier, true);
                     if (allOccurrences) {
                         final String[] substrings = Arrays.stream(identifier.split(character))
                                 .filter(value
@@ -256,21 +271,30 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
 
                         for (int i = 1; i < substrings.length; i++) {
                             newVertices.add(createNewNode(graph, position, substrings[i], linkType, splitIntoSameLevel));
+                            interaction.setProgress(graphVertexCount, position + 1, "Created node " + substrings[i], true);
                         }
 
+                    // Split the identifier for the first time the split string is seen.
                     } else {
                         final int i = identifier.indexOf(character);
                         leftNodeIdentifier = identifier.substring(0, i);
+                        
+                        // There was text found on the left side of the split so ignore it and set the node for the right side
                         if (StringUtils.isNotBlank(leftNodeIdentifier)) {
                             newVertices.add(createNewNode(graph, position, identifier.substring(i + 1), linkType, splitIntoSameLevel));
+                            interaction.setProgress(graphVertexCount, position + 1, "Created node " + identifier.substring(i + 1), true);
+                        
+                        // There was no text on the left side of the split so set the leftNodeIdentifier to the right side. 
                         } else {
                             leftNodeIdentifier = identifier.substring(i + 1);
                         }
                     }
-                    // Rename the selected node
+                    
+                    // Lastly rename the leftNodeIdentifier
                     if (StringUtils.isNotBlank(leftNodeIdentifier)) {
                         graph.setStringValue(vertexIdentifierAttributeId, currentVertexId, leftNodeIdentifier);
                         newVertices.add(currentVertexId);
+                        interaction.setProgress(graphVertexCount, position + 1, "Created node " + leftNodeIdentifier, true);
                     }
                 }
             }
@@ -279,19 +303,19 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
             // Reset the view
             graph.validateKey(GraphElementType.VERTEX, true);
             graph.validateKey(GraphElementType.TRANSACTION, true);
-
             final PluginExecutor arrangement = completionArrangement();
+            
             if (arrangement != null) {
                 // run the arrangement
                 final VertexListInclusionGraph vlGraph = new VertexListInclusionGraph(graph, AbstractInclusionGraph.Connections.NONE, newVertices);
                 arrangement.executeNow(vlGraph.getInclusionGraph());
                 vlGraph.retrieveCoords();
             }
-
+            
             if (splitParameters.get(COMPLETE_WITH_SCHEMA_OPTION_ID).getBooleanValue()) {
                 PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
             }
-
+            
             PluginExecutor.startWith(InteractiveGraphPluginRegistry.RESET_VIEW).executeNow(graph);
         }
     }
