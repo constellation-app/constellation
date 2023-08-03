@@ -20,6 +20,8 @@ package au.gov.asd.tac.constellation.views.mapview2.polygons.utilities;
  * @author altair1673
  */
 public class BlineElement {
+
+    public int test = 0;
     private BlineElement parent = null;
     private BlineElement left = null;
     private BlineElement right = null;
@@ -76,8 +78,10 @@ public class BlineElement {
 
         if (item.getParent().getLeft() == item) {
             item.getParent().setLeft(this);
+            setParent(item.getParent());
         } else {
             item.getParent().setRight(this);
+            setParent(item.getParent());
         }
     }
 

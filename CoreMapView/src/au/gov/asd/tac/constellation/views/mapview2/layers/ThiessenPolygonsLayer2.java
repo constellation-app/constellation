@@ -168,8 +168,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         LOGGER.log(Level.SEVERE, "Size of lines: " + generatedLines.size());
         generatedLines.forEach(line -> layer.getChildren().add(line));
 
-        final BaseLine bLine = new BaseLine(new Vec3(0, 0), new Vec3(MapView.MAP_WIDTH, 0));
-        layer.getChildren().add(bLine.getLine());
+        //final BaseLine bLine = new BaseLine(new Vec3(0, 0), new Vec3(MapView.MAP_WIDTH, 0));
+        //layer.getChildren().add(bLine.getLine());
     }
 
     @Override
