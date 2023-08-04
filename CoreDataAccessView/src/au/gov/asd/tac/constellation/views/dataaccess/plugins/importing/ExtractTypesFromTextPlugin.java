@@ -92,21 +92,23 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
     @Override
     protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
         final RecordStore result = new GraphRecordStore();
-
-        interaction.setProgress(0, 0, "Importing...", true);
-
+        
+        interaction.setProgress(0, 0, "Extracting entities...", true);
         final Map<String, PluginParameter<?>> extractEntityParameters = parameters.getParameters();
         final String text = extractEntityParameters.get(TEXT_PARAMETER_ID).getStringValue();
-
+        
         if (text == null) {
             throw new PluginException(PluginNotificationLevel.ERROR, "No text provided from which to extract types.");
         }
-
+        
         final List<ExtractedVertexType> extractedTypes = SchemaVertexTypeUtilities.extractVertexTypes(text);
 
         final Map<String, SchemaVertexType> identifiers = new HashMap<>();
         extractedTypes.forEach(extractedType -> identifiers.put(extractedType.getIdentifier(), extractedType.getType()));
-
+        
+        interaction.setProgress(0, 0, "Extracted " + identifiers.size() + " entity(ies)", true);
+        interaction.setProgress(0, 0, "Importing...", true);
+        
         for (final String identifier : identifiers.keySet()) {
             result.add();
             result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, identifier);
@@ -120,7 +122,7 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
                 ConstellationLoggerHelper.SUCCESS
         );
 
-        interaction.setProgress(1, 0, "Completed successfully - imported " + result.size() + " entities.", true);
+        interaction.setProgress(1, 0, "Created " + result.size() + " node(s).", true);
 
         return result;
     }
