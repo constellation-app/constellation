@@ -20,8 +20,10 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
+import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.Arc;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.ArcTree;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.BaseLine;
+import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.HalfEdge;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.SiteEvent;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.VoronoiEvent;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.BeachLine;
@@ -35,6 +37,7 @@ import java.util.PriorityQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Group;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
@@ -162,8 +165,36 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
                 newEdge.setRight(newArc);
             }
         }*/
-        beachLine.run();
+        //beachLine.run();
         final List<Line> generatedLines = beachLine.getCompletedEdges();
+
+        final Arc arc = new Arc(new Vec3(MapView.MAP_WIDTH / 2, MapView.MAP_HEIGHT / 2));
+        arc.calculateArc(MapView.MAP_HEIGHT * 0.75);
+        layer.getChildren().add(arc.getArc());
+
+        final HalfEdge h = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(0.35, 0.35));
+        final Line l = new Line();
+        l.setStartX(h.getStart().getX());
+        l.setStartY(h.getStart().getY());
+        l.setEndX(h.getStart().getX() + h.getDirVect().getX() * 5000);
+        l.setEndY(h.getStart().getY() + h.getDirVect().getY() * 5000);
+
+        l.setFill(Color.BLUE);
+        layer.getChildren().add(l);
+
+        final Vec3 intersectionPoint = beachLine.getEdgeArcIntersection(h, arc, MapView.MAP_HEIGHT * 0.75);
+
+        if (intersectionPoint != null) {
+            final Rectangle r = new Rectangle();
+            r.setWidth(5);
+            r.setHeight(5);
+            r.setX(intersectionPoint.getX());
+            r.setY(intersectionPoint.getY());
+
+            r.setFill(Color.GREEN);
+
+            layer.getChildren().add(r);
+        }
 
         LOGGER.log(Level.SEVERE, "Size of lines: " + generatedLines.size());
         generatedLines.forEach(line -> layer.getChildren().add(line));

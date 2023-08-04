@@ -535,7 +535,7 @@ public class ArcTree {
         return getEdgeArcIntersection(edge, arc, directrix);
     }
 
-    private Vec3 getEdgeArcIntersection(HalfEdge edge, Arc arc, double directrix) {
+    public Vec3 getEdgeArcIntersection(HalfEdge edge, Arc arc, double directrix) {
         if (edge.getDirVect().getX() == 0.0) {
             if (directrix == arc.getFocus().getY()) {
 
@@ -556,7 +556,7 @@ public class ArcTree {
         if (arc.getFocus().getY() == directrix) {
             double intersectionXOffset = arc.getFocus().getX() - edge.getStart().getX();
 
-            if (intersectionXOffset * edge.getDirVect().getX() < 0) {
+            if (intersectionXOffset * edge.getDirVect().getX() < 0.0) {
                 return null;
             }
             return new Vec3(arc.getFocus().getX(), m * arc.getFocus().getX() + b);
@@ -581,11 +581,11 @@ public class ArcTree {
         double x2Dot = x2Offset * edge.getDirVect().getX();
 
         double x;
-        if ((x1Dot >= 0) && (x2Dot < 0)) {
+        if ((x1Dot >= 0.0) && (x2Dot < 0.0)) {
             x = x1;
-        } else if ((x1Dot < 0) && (x2Dot >= 0)) {
+        } else if ((x1Dot < 0.0) && (x2Dot >= 0.0)) {
             x = x2;
-        } else if ((x1Dot >= 0) && (x2Dot >= 0)) {
+        } else if ((x1Dot >= 0.0) && (x2Dot >= 0.0)) {
             if (x1Dot < x2Dot) {
                 x = x1;
             } else {
@@ -600,6 +600,14 @@ public class ArcTree {
         }
 
         double y = arc.getY(x, directrix);
+
+        // y 
+
+        // y = a(x-h)^2 + k
+        // y = a(x-arc.getFocus().getX())^2 + arc.getY(arc.getFocus().getX(), directrix);
+        // a(arc.getFocus().getX() - 2 - arc.getFocus().getX())^2 = arc.getY(arc.getFocus().getX()-5, directrix) - arc.getY(arc.getFocus().getX(), directrix);
+        // a = (arc.getY(arc.getFocus().getX()-5, directrix) - arc.getY(arc.getFocus().getX(), directrix)) / (arc.getFocus().getX() - 2 - arc.getFocus().getX())^2 = arc.getY(arc.getFocus().getX()-5, directrix);
+
         return new Vec3(x, y);
     }
 

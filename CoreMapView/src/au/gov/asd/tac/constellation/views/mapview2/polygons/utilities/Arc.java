@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.views.mapview2.polygons.utilities;
 
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polyline;
 
 /**
  *
@@ -24,9 +26,12 @@ import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 public class Arc extends BlineElement {
     private final Vec3 focus;
 
+    private final Polyline pl = new Polyline();
+
 
     public Arc(final Vec3 focus) {
         this.focus = focus;
+        pl.setStroke(Color.RED);
     }
 
     public Vec3 getFocus() {
@@ -34,7 +39,23 @@ public class Arc extends BlineElement {
     }
 
     public double getY(final double x, final double directtrix) {
-        return (Math.pow((x - focus.getX()), 2) / (2 * (focus.getY() - directtrix))) + ((focus.getX() + directtrix) / 2);
+        //return (Math.pow((x - focus.getX()), 2) / (2 * (focus.getY() - directtrix))) + ((focus.getX() + directtrix) / 2);
+        final double a = 1.0 / (2.0 * (focus.getY() - directtrix));
+        double c = (focus.getY() + directtrix) * 0.5;
+
+        final double w = x - focus.getX();
+
+        return a * w * w - c;
+    }
+
+    public void calculateArc(final double directrix) {
+        for (double i = focus.getX() - 500; i < focus.getX() + 500; ++i) {
+            pl.getPoints().addAll(new Double[]{i, getY(i, directrix)});
+        }
+    }
+
+    public Polyline getArc() {
+        return pl;
     }
 
 }
