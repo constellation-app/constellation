@@ -153,7 +153,7 @@ public class ImportGraphFilePlugin extends RecordStoreQueryPlugin implements Dat
             LOGGER.log(Level.SEVERE, "Unable to process graph file");
         }
         
-        interaction.setProgress(1, 0, "Completed successfully - added " + result.size() + " entities.", true);
+        interaction.setProgress(1, 0, "Imported " + result.size() + " entity(ies).", true);
         
         return result;
     }
