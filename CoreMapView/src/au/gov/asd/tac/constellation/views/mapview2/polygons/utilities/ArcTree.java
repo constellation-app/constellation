@@ -44,12 +44,12 @@ public class ArcTree {
 
     public ArcTree(final PriorityQueue<VoronoiEvent> eventQueue) {
         this.eventQueue = eventQueue;
-        //root = new BaseLine(new Vec3(Double.MIN_VALUE, 0), new Vec3(Double.MAX_VALUE, 0));
-        root = new Arc(new Vec3(MapView.MAP_WIDTH / 2, -500));
+        root = new BaseLine(new Vec3(Double.MIN_VALUE, 0), new Vec3(Double.MAX_VALUE, 0));
+        /*root = new Arc(new Vec3(MapView.MAP_WIDTH / 2, -500));
         final HalfEdge left = new HalfEdge((Arc) root, null, new Vec3(MapView.MAP_WIDTH / 2, -1000), new Vec3(-1, 0));
         final HalfEdge right = new HalfEdge((Arc) root, null, new Vec3(MapView.MAP_WIDTH / 2, -1000), new Vec3(1, 0));
         root.setLeftEdge(left);
-        root.setRightEdge(right);
+        root.setRightEdge(right);*/
     }
 
     private BlineElement addArc(final Vec3 focus) {
@@ -68,7 +68,7 @@ public class ArcTree {
 
             final Vec3 edgeStart = new Vec3(focus.getX(), baseLine.getStart().getY());
             final Vec3 dirVect = new Vec3(1, 0);
-            LOGGER.log(Level.SEVERE, "Edge start: " + edgeStart.getX() + ", " + edgeStart.getY());
+            //LOGGER.log(Level.SEVERE, "Edge start: " + edgeStart.getX() + ", " + edgeStart.getY());
             final Line l = new Line();
             l.setStartX(edgeStart.getX() - 5);
             l.setStartY(edgeStart.getY());
@@ -116,7 +116,7 @@ public class ArcTree {
 
 
             if (intersectingElement == root) {
-                LOGGER.log(Level.SEVERE, "Intersecting arc is root now");
+                //LOGGER.log(Level.SEVERE, "Intersecting arc is root now");
                 current = newArc;
             }
 
@@ -127,7 +127,7 @@ public class ArcTree {
             addEdgeIntersectionEvent(splitRight, focus.getY());
 
         } else {
-            LOGGER.log(Level.SEVERE, "Arc intersected");
+            //LOGGER.log(Level.SEVERE, "Arc intersected");
             final Arc intersectingArc = (Arc) intersectingElement;
 
             final Arc splitLeft = new Arc(intersectingArc.getFocus());
@@ -192,7 +192,7 @@ public class ArcTree {
             newArc.setParentFromItem(intersectingElement);
 
             if (intersectingElement == root) {
-                LOGGER.log(Level.SEVERE, "Intersecting arc is root now");
+                //LOGGER.log(Level.SEVERE, "Intersecting arc is root now");
                 current = newArc;
             }
             addEdgeIntersectionEvent(splitLeft, focus.getY());
@@ -207,7 +207,7 @@ public class ArcTree {
         if (arc == null) {
             return;
         }
-        LOGGER.log(Level.SEVERE, "Checking for edge intersection event");
+        //LOGGER.log(Level.SEVERE, "Checking for edge intersection event");
         final HalfEdge left = arc.getLeftEdge();
         final HalfEdge right = arc.getRightEdge();
 
@@ -216,7 +216,7 @@ public class ArcTree {
             return;
         }
 
-        LOGGER.log(Level.SEVERE, "Left edge dirvect: " + left.getDirVect().getX() + ", " + left.getDirVect().getY() + " right edge dirvect: " + right.getDirVect().getX() + ", " + right.getDirVect().getY());
+        //LOGGER.log(Level.SEVERE, "Left edge dirvect: " + left.getDirVect().getX() + ", " + left.getDirVect().getY() + " right edge dirvect: " + right.getDirVect().getX() + ", " + right.getDirVect().getY());
 
         final Vec3 intersectionPoint;
 
@@ -238,8 +238,8 @@ public class ArcTree {
             LOGGER.log(Level.SEVERE, "No intersection");
             return;
         }
-        LOGGER.log(Level.SEVERE, "Possible intersection");
-        LOGGER.log(Level.SEVERE, "Intersection point is: " + intersectionPoint.getX() + ", " + intersectionPoint.getY());
+        //LOGGER.log(Level.SEVERE, "Possible intersection");
+        //LOGGER.log(Level.SEVERE, "Intersection point is: " + intersectionPoint.getX() + ", " + intersectionPoint.getY());
 
 
         final Line l = new Line();
@@ -255,7 +255,7 @@ public class ArcTree {
 
         final double distance = Vec3.getDistance(left.getParentArc().getFocus(), intersectionPoint);
 
-        LOGGER.log(Level.SEVERE, "Distance to directrix = " + distance);
+        //LOGGER.log(Level.SEVERE, "Distance to directrix = " + distance);
 
         final double directrixY = intersectionPoint.getY() + distance;
 
@@ -271,7 +271,7 @@ public class ArcTree {
         final EdgeEvent e = new EdgeEvent(directrixY, left, right, arc, intersectionPoint);
         arc.setCurrentEvent(e);
         eventQueue.add(e);
-        LOGGER.log(Level.SEVERE, "Added edge intersection event");
+        //LOGGER.log(Level.SEVERE, "Added edge intersection event");
     }
 
     private BlineElement removeElement(BlineElement current, final BlineElement remove) {
@@ -369,7 +369,7 @@ public class ArcTree {
     }
 
     private void removeArc(final EdgeEvent e) {
-        LOGGER.log(Level.SEVERE, "Called edge event handler");
+        //LOGGER.log(Level.SEVERE, "Called edge event handler");
         final BlineElement removed = e.getSqueezed();
         final HalfEdge e1 = e.getEdge1();
         final HalfEdge e2 = e.getEdge2();
@@ -391,7 +391,7 @@ public class ArcTree {
 
         final Vec3 intersectionPoint = e.getIntersectionPoint();
 
-        LOGGER.log(Level.SEVERE, "Intersection point : " + intersectionPoint.getX() + ", " + intersectionPoint.getY());
+        //LOGGER.log(Level.SEVERE, "Intersection point : " + intersectionPoint.getX() + ", " + intersectionPoint.getY());
 
         final Line line = new Line();
         line.setStartX(e1.getStart().getX());
@@ -495,20 +495,20 @@ public class ArcTree {
     }
 
     private BlineElement findIntersectingArc(final BlineElement root, final double x, final double directrix) {
-        LOGGER.log(Level.SEVERE, "Finding intersecting arc");
+        //LOGGER.log(Level.SEVERE, "Finding intersecting arc");
         BlineElement current = root;
 
         if (current.getLeft() == null && current.getRight() == null) {
             if (current instanceof BaseLine) {
-                LOGGER.log(Level.SEVERE, "returning baseline because left and right is null");
+                //LOGGER.log(Level.SEVERE, "returning baseline because left and right is null");
             } else {
-                LOGGER.log(Level.SEVERE, "returning arc because left and right is null");
+                //LOGGER.log(Level.SEVERE, "returning arc because left and right is null");
             }
             return current;
         }
 
         if (current instanceof BaseLine) {
-            LOGGER.log(Level.SEVERE, "Checking if new site falls within a base line");
+            //LOGGER.log(Level.SEVERE, "Checking if new site falls within a base line");
             final BaseLine baseLine = (BaseLine) current;
             HalfEdge leftEdge = current.getLeftEdge();
             HalfEdge rightEdge = current.getRightEdge();
@@ -526,10 +526,10 @@ public class ArcTree {
             final double leftX = leftIntersection == null ? 0 : leftIntersection.getX();
             final double rightX = rightIntersection == null ? MapView.MAP_WIDTH : rightIntersection.getX();
 
-            LOGGER.log(Level.SEVERE, "Left X: " + leftX);
-            LOGGER.log(Level.SEVERE, "Right X: " + rightX);
+            //LOGGER.log(Level.SEVERE, "Left X: " + leftX);
+            //LOGGER.log(Level.SEVERE, "Right X: " + rightX);
 
-            LOGGER.log(Level.SEVERE, "X: " + x);
+            //LOGGER.log(Level.SEVERE, "X: " + x);
 
             if (x > rightX) {
                 return findIntersectingArc(current.getRight(), x, directrix);
@@ -537,15 +537,15 @@ public class ArcTree {
                 return findIntersectingArc(current.getLeft(), x, directrix);
             } else {
                 if (current instanceof BaseLine) {
-                    LOGGER.log(Level.SEVERE, "returning baseline because intersection point falls within bounds");
+                    //LOGGER.log(Level.SEVERE, "returning baseline because intersection point falls within bounds");
                 } else {
-                    LOGGER.log(Level.SEVERE, "returning arc because intersection point falls within bounds");
+                    //LOGGER.log(Level.SEVERE, "returning arc because intersection point falls within bounds");
                 }
                 return current;
             }
 
         } else {
-            LOGGER.log(Level.SEVERE, "Checking if new site falls within an arc");
+            //LOGGER.log(Level.SEVERE, "Checking if new site falls within an arc");
             final Arc arc = (Arc) current;
             HalfEdge leftHalfEdge = arc.getLeftEdge();
             HalfEdge rightHalfEdge = arc.getRightEdge();
@@ -564,22 +564,22 @@ public class ArcTree {
             final double leftX = leftIntersection == null ? 0 : leftIntersection.getX();
             final double rightX = rightIntersection == null ? MapView.MAP_WIDTH : rightIntersection.getX();
 
-            LOGGER.log(Level.SEVERE, "Left X: " + leftX);
-            LOGGER.log(Level.SEVERE, "Right X: " + rightX);
+            //LOGGER.log(Level.SEVERE, "Left X: " + leftX);
+            //LOGGER.log(Level.SEVERE, "Right X: " + rightX);
 
-            LOGGER.log(Level.SEVERE, "X: " + x);
+            //LOGGER.log(Level.SEVERE, "X: " + x);
 
             if (x > rightX) {
-                LOGGER.log(Level.SEVERE, "Checking if anything on the right is intersecting");
+                //LOGGER.log(Level.SEVERE, "Checking if anything on the right is intersecting");
                 return findIntersectingArc(current.getRight(), x, directrix);
             } else if (x < leftX) {
-                LOGGER.log(Level.SEVERE, "Checking if anything on the left is intersecting");
+                //LOGGER.log(Level.SEVERE, "Checking if anything on the left is intersecting");
                 return findIntersectingArc(current.getLeft(), x, directrix);
             } else {
                 if (current instanceof BaseLine) {
-                    LOGGER.log(Level.SEVERE, "returning baseline because intersection point falls within bounds");
+                    //LOGGER.log(Level.SEVERE, "returning baseline because intersection point falls within bounds");
                 } else {
-                    LOGGER.log(Level.SEVERE, "returning arc because intersection point falls within bounds");
+                    //LOGGER.log(Level.SEVERE, "returning arc because intersection point falls within bounds");
                 }
                 return current;
             }
