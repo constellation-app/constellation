@@ -62,6 +62,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
     private static final String READING_INTERACTION = "Reading...";
     private static final String QUERYING_INTERACTION = "Querying...";
     private static final String EDITING_INTERACTION = "Editing...";
+    private static final String FINISHED = "Finished";
 
     protected SimpleQueryPlugin() {
     }
@@ -172,7 +173,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                     }
                 }
             } finally {
-                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : "Finished", false);
+                interaction.setProgress(2, 1, FINISHED, false);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);
@@ -222,7 +223,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                     inControlOfProgress = false;
                 }
             } finally {
-                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : "Finished", true);
+                interaction.setProgress(2, 1, FINISHED, true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);

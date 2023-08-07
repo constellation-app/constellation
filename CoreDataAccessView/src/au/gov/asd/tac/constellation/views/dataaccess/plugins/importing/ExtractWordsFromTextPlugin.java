@@ -281,7 +281,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             throw new PluginException(PluginNotificationLevel.ERROR, msg);
         }
 
-        Set newNodes = new HashSet();
+        Set<String> newNodes = new HashSet<>();
         final boolean outgoing = OUTGOING.equals(inOrOut);
 
         // Retrieving attribute IDs

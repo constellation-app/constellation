@@ -47,6 +47,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     private static final Logger LOGGER = Logger.getLogger(SimpleEditPlugin.class.getName());
 
     private static final String WAITING_INTERACTION = "Waiting...";
+    private static final String FINISHED = "Finished";
 
     protected SimpleEditPlugin() {
     }
@@ -79,8 +80,6 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     @Override
     public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
 
-        boolean inControlOfProgress = true;
-
         final Graph graph = graphs.getGraph();
         //graph no longer exists
         if (graph == null) {
@@ -104,9 +103,6 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
 
                     try {
                         description = describedEdit(writableGraph, interaction, parameters);
-                        if (!"Editing...".equals(interaction.getCurrentMessage())) {
-                            inControlOfProgress = false;
-                        }
                     } catch (final Exception ex) {
                         cancelled = true;
                         throw ex;
@@ -119,7 +115,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                     }
                 }
             } finally {
-                interaction.setProgress(2, 1, "Finished", true);
+                interaction.setProgress(2, 1, FINISHED, true);
             }
 
         } finally {
@@ -135,8 +131,6 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     @Override
     public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
-        boolean inControlOfProgress = true;
-
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
 
@@ -146,11 +140,8 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
 
             try {
                 edit(graph, interaction, parameters);
-                if (!WAITING_INTERACTION.equals(interaction.getCurrentMessage())) {
-                    inControlOfProgress = false;
-                }
             } finally {
-                interaction.setProgress(2, 1, "Finished", true);
+                interaction.setProgress(2, 1, FINISHED, true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);

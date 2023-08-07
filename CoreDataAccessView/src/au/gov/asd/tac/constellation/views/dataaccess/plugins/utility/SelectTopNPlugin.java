@@ -265,7 +265,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
         SchemaVertexType destinationVertexType;
         SchemaTransactionType transactionType;
         final Map<Integer, Integer> occurrences = new HashMap<>();
-        int randomNumber = 0;
+
         for (final Integer vxId : selectedNodes) {
             final String label = graph.getStringValue(vertexLabelAttribute, vxId);
             interaction.setProgress(++step, selectedNodes.size(), String.format("Calculating top %s for %s", limit, label), true);

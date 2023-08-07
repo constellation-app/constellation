@@ -47,7 +47,7 @@ public class PluginReport {
     private final long startTime;
     private long stopTime = -1;
 
-    private final List<String> messageLog = new ArrayList<String>();
+    private final List<String> messageLog = new ArrayList<>();
     private int currentStep = 1;
     private int totalSteps = -1;
 
@@ -166,7 +166,7 @@ public class PluginReport {
      * @return the current message from this plugin.
      */
     public String getMessage() {
-        return this.messageLog.size() == 0 ? "" : this.messageLog.get(this.messageLog.size()-1);
+        return this.messageLog.isEmpty() ? "" : this.messageLog.get(this.messageLog.size()-1);
     }
 
     /**
