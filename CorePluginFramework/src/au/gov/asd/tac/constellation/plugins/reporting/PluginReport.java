@@ -241,6 +241,7 @@ public class PluginReport {
      */
     public void setError(Throwable error) {
         this.error = error;
+        this.messageLog.add("Error: " + error.getMessage());
     }
 
     /**
