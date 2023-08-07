@@ -28,14 +28,17 @@ public class EdgeEvent extends VoronoiEvent {
     private final HalfEdge edge2;
 
     private final Vec3 intersectionPoint;
+    private final BlineElement squeezed;
 
     private boolean isValid = true;
 
-    public EdgeEvent(final double yOfEvent, final HalfEdge e1, final HalfEdge e2, final Vec3 intersection) {
+    public EdgeEvent(final double yOfEvent, final HalfEdge e1, final HalfEdge e2, final BlineElement squeezed, final Vec3 intersection) {
         super(yOfEvent);
 
         edge1 = e1;
         edge2 = e2;
+
+        this.squeezed = squeezed;
 
         this.intersectionPoint = intersection;
     }
@@ -60,5 +63,8 @@ public class EdgeEvent extends VoronoiEvent {
         return intersectionPoint;
     }
 
+    public BlineElement getSqueezed() {
+        return squeezed;
+    }
 
 }

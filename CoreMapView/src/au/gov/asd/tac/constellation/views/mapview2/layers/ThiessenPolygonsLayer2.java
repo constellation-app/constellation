@@ -165,12 +165,12 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
                 newEdge.setRight(newArc);
             }
         }*/
-        //beachLine.run();
+        beachLine.run();
         final List<Line> generatedLines = beachLine.getCompletedEdges();
 
         final Arc arc = new Arc(new Vec3(MapView.MAP_WIDTH / 2, MapView.MAP_HEIGHT / 2));
         arc.calculateArc(MapView.MAP_HEIGHT * 0.75);
-        layer.getChildren().add(arc.getArc());
+        //layer.getChildren().add(arc.getArc());
 
         final HalfEdge h = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(0.35, 0.35));
         final Line l = new Line();
@@ -180,7 +180,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         l.setEndY(h.getStart().getY() + h.getDirVect().getY() * 5000);
 
         l.setFill(Color.BLUE);
-        layer.getChildren().add(l);
+        //layer.getChildren().add(l);
 
         final Vec3 intersectionPoint = beachLine.getEdgeArcIntersection(h, arc, MapView.MAP_HEIGHT * 0.75);
 
@@ -193,7 +193,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
             r.setFill(Color.GREEN);
 
-            layer.getChildren().add(r);
+            //layer.getChildren().add(r);
         }
 
         LOGGER.log(Level.SEVERE, "Size of lines: " + generatedLines.size());
