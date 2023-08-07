@@ -30,7 +30,6 @@ import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewStateWriter;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import com.github.rjeschke.txtmark.Processor;
@@ -97,7 +96,7 @@ public class AnalyticConfigurationPane extends VBox {
 
     private static boolean selectionSuppressed = false;
     // Only accessed on the FX application thread to remain thread-safe
-    public AnalyticQuestionDescription<?> currentQuestion = null;
+    private AnalyticQuestionDescription<?> currentQuestion = null;
     private final Map<String, List<SelectableAnalyticPlugin>> categoryToPluginsMap;
     private final Map<AnalyticQuestionDescription<?>, List<SelectableAnalyticPlugin>> questionToPluginsMap;
     private final PluginParameters globalAnalyticParameters = new PluginParameters();
@@ -213,6 +212,7 @@ public class AnalyticConfigurationPane extends VBox {
                 currentQuestion = null;
                 populateParameterPane(globalAnalyticParameters);
                 setPluginsFromSelectedCategory();
+                AnalyticViewController.getDefault().setCategoriesVisible(true);
             }
 
         });
@@ -222,6 +222,7 @@ public class AnalyticConfigurationPane extends VBox {
                 currentQuestion = questionList.getSelectionModel().getSelectedItem();
                 populateParameterPane(globalAnalyticParameters);
                 setPluginsFromSelectedQuestion();
+                AnalyticViewController.getDefault().setCategoriesVisible(false);
             }
         });
 
@@ -250,10 +251,7 @@ public class AnalyticConfigurationPane extends VBox {
                 if (newValue != null) {
                     populateDocumentationPane(newValue);
                     populateParameterPane(newValue.getAllParameters());
-                    // only update state when the categories are expanded
-                    if (categoryListPane.isExpanded()) {
-                        //updateState(true);
-                    }
+                    AnalyticViewController.getDefault().updateState(true, pluginList);           
                 } else {
                     populateDocumentationPane(null);
                     populateParameterPane(globalAnalyticParameters);
@@ -336,6 +334,41 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
+     * Update the view pane based on the values saved in the current state
+     * 
+     * @param categoriesVisible
+     * @param activeAnalyticQuestions
+     * @param activeSelectablePlugins
+     */
+    protected final void updatePanes(final boolean categoriesVisible, final List<AnalyticQuestionDescription<?>> activeAnalyticQuestions,
+            final List<List<SelectableAnalyticPlugin>> activeSelectablePlugins) {
+        
+        Platform.runLater(() -> {
+            categoryListPane.setExpanded(categoriesVisible);
+            questionListPane.setExpanded(!categoriesVisible);
+
+            LOGGER.log(Level.SEVERE, categoryList.getItems().toString());
+            LOGGER.log(Level.SEVERE, questionList.getItems().toString());
+
+            if (activeAnalyticQuestions.size() > 0) {
+                for (final AnalyticQuestionDescription question : activeAnalyticQuestions) {
+                    if (question != null && questionList.getItems().contains(question)) {
+                        final int index = questionList.getItems().indexOf(question);
+                        questionList.getSelectionModel().select(index);
+                    }
+                }
+            }
+
+//            if (activeSelectablePlugins.size() > 0) {
+//                for (final )
+//            }
+
+            categoryList.getSelectionModel().select(0);
+            
+        });
+    }
+
+    /**
      * Get the question which is currently selected in this pane.
      *
      * @return the current {@link AnalyticQuestionDescription}.
@@ -344,15 +377,20 @@ public class AnalyticConfigurationPane extends VBox {
         return currentQuestion;
     }
 
+    public void setCurrentQuestion(final AnalyticQuestionDescription<?> currentQuestion) {
+        this.currentQuestion = currentQuestion;
+    }
+
     /**
      * Answer the question which is currently selected in this pane.
      *
      * @return the answered {@link AnalyticQuestion}.
      */
-    protected final AnalyticQuestion<?> answerCurrentQuestion() throws AnalyticException {
+    public final AnalyticQuestion<?> answerCurrentQuestion() throws AnalyticException {
 
         // build question
         final AnalyticQuestion<?> question = new AnalyticQuestion<>(currentQuestion);
+        AnalyticViewController.getDefault().setCurrentQuestion(currentQuestion);
 
         // retrieve and set any global parameters in the question
         final AnalyticAggregatorParameterValue aggregatorParameterValue = (AnalyticAggregatorParameterValue) globalAnalyticParameters.getSingleChoice(AGGREGATOR_PARAMETER_ID);
@@ -367,7 +405,7 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.getItems().forEach(selectablePlugin -> {
             if (selectablePlugin.checkbox.isSelected()) {
                 selectedPlugins.add(selectablePlugin);
-                question.addPlugin(selectablePlugin.plugin, selectablePlugin.getPluginSpecificParameters());
+                question.addPlugin(selectablePlugin.plugin, selectablePlugin.getPluginSpecificParameters());      
             }
         });
         if (selectedPlugins.isEmpty()) {
@@ -376,8 +414,7 @@ public class AnalyticConfigurationPane extends VBox {
         
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
 
-        // update the analytic view state
-        PluginExecution.withPlugin(new AnalyticViewStateWriter(currentQuestion, selectedPlugins, null, false)).executeLater(currentGraph);
+        AnalyticViewController.getDefault().updateState(true, pluginList);
 
         // answer the question
         return question.answer(currentGraph);
@@ -452,7 +489,7 @@ public class AnalyticConfigurationPane extends VBox {
         updateSelectablePluginsParameters();
         updateGlobalParameters();
         setSuppressedFlag(false);
-       // updateState(false);
+        AnalyticViewController.getDefault().updateState(true, pluginList);
     }
 
     private void setPluginsFromSelectedQuestion() {
@@ -473,6 +510,7 @@ public class AnalyticConfigurationPane extends VBox {
         pluginList.getSelectionModel().clearSelection();
         updateSelectablePluginsParameters();
         updateGlobalParameters();
+        AnalyticViewController.getDefault().setCurrentQuestion(selectedQuestion);
     }
 
     public final void updateSelectablePluginsParameters() {

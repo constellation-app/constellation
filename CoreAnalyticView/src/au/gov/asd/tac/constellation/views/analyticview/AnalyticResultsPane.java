@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
-import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
@@ -44,12 +44,12 @@ public class AnalyticResultsPane extends VBox {
     private final TabPane internalVisualisationPane;
     private final ToolBar graphVisualisationPane;
     private AnalyticResult<?> result;
-    private final AnalyticController analyticController;
+    private final AnalyticViewController analyticViewController;
 
-    public AnalyticResultsPane(final AnalyticController analyticController) {
+    public AnalyticResultsPane(final AnalyticViewController analyticViewController) {
 
         // the analytic controller
-        this.analyticController = analyticController;
+        this.analyticViewController = analyticViewController;
 
         // the progress indicator pane
         this.progressIndicatorPane = new BorderPane();
@@ -98,9 +98,13 @@ public class AnalyticResultsPane extends VBox {
         return result;
     }
 
-    protected final void displayResults(final AnalyticQuestion<?> question) {
-        result = question.getResult() == null ? new EmptyResult() : question.getResult();
-        result.setAnalyticController(analyticController);
+    protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results) {
+        if (results == null) {
+            result = question.getResult() == null ? new EmptyResult() : question.getResult();
+        } else
+            result = results;
+        
+        result.setAnalyticViewController(analyticViewController);
 
         Platform.runLater(() -> {
             internalVisualisationPane.getTabs().clear();
@@ -129,6 +133,7 @@ public class AnalyticResultsPane extends VBox {
             });
         });
 
-        // add the results to the graph state 
+        // add the results to the graph state
+        AnalyticViewController.getDefault().updateResults(result);
     }
 }

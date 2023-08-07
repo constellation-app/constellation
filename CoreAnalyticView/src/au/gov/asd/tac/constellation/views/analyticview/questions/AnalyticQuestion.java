@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.analyticview.questions;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.aggregators.AnalyticAggregator;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
@@ -106,6 +107,10 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
         this.exceptions.add(exception);
     }
 
+    public void setResult(final R result) {
+        this.result = result;
+    }
+
     public AnalyticQuestion<R> answer(final Graph graph) {
 
         // run plugins
@@ -141,6 +146,7 @@ public class AnalyticQuestion<R extends AnalyticResult<?>> {
             exceptions.add(ex);
         }
 
+        AnalyticViewController.getDefault().setQuestion(this);
         return this;
     }
 }

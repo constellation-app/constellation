@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.results;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public abstract class AnalyticResult<D extends AnalyticData> {
     protected final Map<IdentificationData, D> result = new LinkedHashMap<>();
     protected final Map<String, String> metadata = new HashMap<>();
     protected boolean ignoreNullResults = false;
-    protected AnalyticController analyticController = null;
+    protected AnalyticViewController analyticViewController = null;
     protected final List<ResultListener<D>> resultListeners = new ArrayList<>();
 
     public void setSelectionOnGraph(final Iterable<D> results) {
@@ -52,8 +52,8 @@ public abstract class AnalyticResult<D extends AnalyticData> {
                 transactionsToSelect.add(analyticResult.getElementId());
             }
         });
-        analyticController.selectOnGraph(GraphElementType.VERTEX, verticesToSelect);
-        analyticController.selectOnGraph(GraphElementType.TRANSACTION, transactionsToSelect);
+        analyticViewController.selectOnGraph(GraphElementType.VERTEX, verticesToSelect);
+        analyticViewController.selectOnGraph(GraphElementType.TRANSACTION, transactionsToSelect);
     }
 
     public void setSelectionOnVisualisation(final GraphElementType elementType, final List<Integer> elementIds) {
@@ -134,8 +134,8 @@ public abstract class AnalyticResult<D extends AnalyticData> {
         this.ignoreNullResults = ignoreNullResults;
     }
 
-    public final void setAnalyticController(final AnalyticController analyticController) {
-        this.analyticController = analyticController;
+    public final void setAnalyticViewController(final AnalyticViewController analyticViewController) {
+        this.analyticViewController = analyticViewController;
     }
 
     public final void addResultListener(final ResultListener<D> listener) {

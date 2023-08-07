@@ -17,22 +17,12 @@ package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginInfo;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
-import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,13 +67,13 @@ import org.openide.windows.TopComponent;
 public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticViewPane> {
 
     private final AnalyticViewPane analyticViewPane;
-    private final AnalyticController analyticController;
+    private final AnalyticViewController analyticController;
     private boolean suppressed = false;
     private String currentGraphId = StringUtils.EMPTY;
     
     public AnalyticViewTopComponent() {
         super();
-        this.analyticController = new AnalyticController();
+        this.analyticController = AnalyticViewController.getDefault().init(this);
         this.analyticViewPane = new AnalyticViewPane(analyticController);
         initComponents();
         setName(Bundle.CTL_AnalyticViewTopComponent());
@@ -93,12 +83,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         // analytic view specific listeners
         addStructureChangeHandler(graph -> {
             if (needsUpdate() && !suppressed) {
-                analyticViewPane.saveState();
+                analyticController.writeState();
             }
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
             if (needsUpdate() && !suppressed) {
-                analyticViewPane.saveState();
+             //   analyticController.writeState();
             }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
@@ -111,7 +101,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                 analyticController.selectOnInternalVisualisations(GraphElementType.TRANSACTION, graph);
             }
         });
-        addIgnoredEvent(AnalyticController.SELECT_ON_GRAPH_PLUGIN_NAME);
+        addIgnoredEvent(AnalyticViewController.SELECT_ON_GRAPH_PLUGIN_NAME);
 
         // plugin specific listeners
         final Map<SchemaAttribute, List<AnalyticPlugin<?>>> prerequisiteAttributes = new HashMap<>();
@@ -158,6 +148,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
+
     @Override
     protected AnalyticViewPane createContent() {
         return analyticViewPane;
@@ -184,7 +175,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         manualUpdate();
         suppressed = false;
         if (analyticViewPane != null) {
-            analyticViewPane.checkState();
+            analyticController.readState();
         }
     }
 
@@ -194,7 +185,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             if (graph != null) {
                 currentGraphId = graph.getId();
             }
-            analyticViewPane.checkState();
+            analyticController.readState();
         }
     }
 
@@ -206,7 +197,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             if (current != null) {
                 currentGraphId = current.getId();
             }
-            analyticViewPane.checkState();
+            analyticController.readState();
         }
     }
 
@@ -217,97 +208,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (current != null && !current.getId().equals(currentGraphId)) {
             analyticViewPane.reset();
         }
-        analyticViewPane.checkState();
+        analyticController.readState();
     }
 
-    public class AnalyticController {
-
-        protected static final String SELECT_ON_GRAPH_PLUGIN_NAME = "Analytic View: Update Selection on Graph";
-
-        public void selectOnGraph(final GraphElementType elementType, final List<Integer> elementIds) {
-            PluginExecution.withPlugin(new SelectOnGraphPlugin(elementType, elementIds)).executeLater(getCurrentGraph());
-        }
-
-        public void selectOnInternalVisualisations(final GraphElementType elementType, final Graph graph) {
-            final AnalyticResult<?> result = analyticViewPane.getResultsPane().getResult();
-
-            if (graph != null && result != null) {
-                final List<Integer> selected = new ArrayList<>();
-                final ReadableGraph readableGraph = graph.getReadableGraph();
-                try {
-                    switch (elementType) {
-                        case VERTEX:
-                            final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
-                            final int vertexCount = readableGraph.getVertexCount();
-                            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                                final int vertexId = readableGraph.getVertex(vertexPosition);
-                                final boolean vertexSelected = readableGraph.getBooleanValue(vertexSelectedAttribute, vertexId);
-                                if (vertexSelected) {
-                                    selected.add(vertexId);
-                                }
-                            }
-                            break;
-                        case TRANSACTION:
-                            final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
-                            final int transactionCount = readableGraph.getTransactionCount();
-                            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                                final int transactionId = readableGraph.getTransaction(transactionPosition);
-                                final boolean transactionSelected = readableGraph.getBooleanValue(transactionSelectedAttribute, transactionId);
-                                if (transactionSelected) {
-                                    selected.add(transactionId);
-                                }
-                            }
-                            break;
-                        default:
-                            break;
-                    }
-                } finally {
-                    readableGraph.release();
-                }
-
-                result.setSelectionOnVisualisation(elementType, selected);
-            }
-        }
-    }
-
-    @PluginInfo(pluginType = PluginType.SELECTION, tags = {PluginTags.SELECT})
-    public static class SelectOnGraphPlugin extends SimpleEditPlugin {
-
-        final GraphElementType elementType;
-        final List<Integer> elementIds;
-
-        public SelectOnGraphPlugin(final GraphElementType elementType, final List<Integer> elementIds) {
-            this.elementType = elementType;
-            this.elementIds = elementIds;
-        }
-
-        @Override
-        public String getName() {
-            return AnalyticViewTopComponent.AnalyticController.SELECT_ON_GRAPH_PLUGIN_NAME;
-        }
-
-        @Override
-        protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-            switch (elementType) {
-                case VERTEX:
-                    final int vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(graph);
-                    final int vertexCount = graph.getVertexCount();
-                    for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                        final int vertexId = graph.getVertex(vertexPosition);
-                        graph.setBooleanValue(vertexSelectedAttribute, vertexId, elementIds.contains(vertexId));
-                    }
-                    break;
-                case TRANSACTION:
-                    final int transactionSelectedAttribute = VisualConcept.TransactionAttribute.SELECTED.get(graph);
-                    final int transactionCount = graph.getTransactionCount();
-                    for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                        final int transactionId = graph.getTransaction(transactionPosition);
-                        graph.setBooleanValue(transactionSelectedAttribute, transactionId, elementIds.contains(transactionId));
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
 }

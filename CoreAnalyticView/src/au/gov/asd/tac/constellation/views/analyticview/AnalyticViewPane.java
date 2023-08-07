@@ -27,12 +27,11 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
-import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewStateUpdater;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewStateWriter;
+import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
+import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
+import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -73,7 +72,7 @@ public class AnalyticViewPane extends BorderPane {
     private Thread questionThread = null;
     private ThreadConstraints parentConstraints = null;
 
-    public AnalyticViewPane(final AnalyticController analyticController) {
+    public AnalyticViewPane(final AnalyticViewController analyticViewController) {
 
         // the top level analytic view pane
         this.viewPane = new VBox();
@@ -84,7 +83,7 @@ public class AnalyticViewPane extends BorderPane {
         analyticOptionsPane.prefWidthProperty().bind(viewPane.widthProperty());
 
         // the pane which displays all visualisations and options relating to the results of an analytic question
-        this.analyticResultsPane = new AnalyticResultsPane(analyticController);
+        this.analyticResultsPane = new AnalyticResultsPane(analyticViewController);
         analyticResultsPane.prefWidthProperty().bind(viewPane.widthProperty());
         analyticResultsPane.minHeightProperty().bind(viewPane.heightProperty().multiply(0.4));
 
@@ -137,12 +136,16 @@ public class AnalyticViewPane extends BorderPane {
                             running = true;
                             try {
                                 final AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
-                                analyticResultsPane.displayResults(question);
+                                analyticResultsPane.displayResults(question, null);
+                                analyticViewController.updateState(true, analyticConfigurationPane.getPluginList());
+                              //  analyticViewController.writeState();
                             } catch (final AnalyticException ex) {
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                                 final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
                                 question.addException(ex);
-                                analyticResultsPane.displayResults(question);
+                                analyticResultsPane.displayResults(question, null);
+                                analyticViewController.updateState(false, analyticConfigurationPane.getPluginList());
+                               // analyticViewController.writeState();
                             } finally {
                                 running = false;
                                 setRunButtonMode(true);
@@ -161,9 +164,6 @@ public class AnalyticViewPane extends BorderPane {
                 } catch (final PluginException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
-                
-                stateChanged = true;
-                saveState();
             }
         });
         analyticOptionButtons.getChildren().addAll(helpButton, runButton);
@@ -197,57 +197,45 @@ public class AnalyticViewPane extends BorderPane {
         });
     }
 
-    protected final AnalyticConfigurationPane getConfigurationPane() {
+    public final AnalyticConfigurationPane getConfigurationPane() {
         return analyticConfigurationPane;
     }
 
-    protected final AnalyticResultsPane getResultsPane() {
+    public final AnalyticResultsPane getResultsPane() {
         return analyticResultsPane;
-    }
-
-    public void showResults() {
-        final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
-        analyticResultsPane.displayResults(question);
-
-        if (!viewPane.getChildren().contains(analyticResultsPane)) {
-            viewPane.getChildren().add(1, analyticResultsPane);
-        }
-
     }
 
     protected final void setIsRunnable(final boolean isRunnable) {
         Platform.runLater(() -> runButton.setDisable(!isRunnable));
     }
 
-    public void checkState() {
-        
-    }
-
     /**
-     * Updates the AnalyticViewState by running a plugin to save the graph state
-     *
-     * @param pluginWasSelected true if the triggered update was from a plugin being selected
+     * Is passed in what should currently be active on the pane according to the state and updates the view to match
      */
-    public void updateState(final boolean pluginWasSelected) {
-        stateChanged = true;
-        PluginExecution.withPlugin(new AnalyticViewStateUpdater(this, analyticConfigurationPane, pluginWasSelected, analyticResultsPane.getResult(), viewPane.getChildren().contains(analyticResultsPane))).executeLater(GraphManager.getDefault().getActiveGraph());
-    }
+    public void updateView(final AnalyticViewState state) {
+        reset();
+        Platform.runLater(() -> {
+            final int activeQuestion = state.getCurrentAnalyticQuestionIndex();
+            if (!state.getActiveAnalyticQuestions().isEmpty()) {
+                final AnalyticQuestionDescription<?> currentQuestion = state.getActiveAnalyticQuestions().get(activeQuestion);
+                analyticConfigurationPane.setCurrentQuestion(currentQuestion);
+                final boolean categoriesVisible = state.isCategoriesPaneVisible();
+                final List<AnalyticQuestionDescription<?>> activeAnalyticQuestions = state.getActiveAnalyticQuestions();
+                final List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> activeSelectablePlugins = state.getActiveSelectablePlugins();
 
-    /**
-     * Saves the state of the graph by fetching all currently selected plugins and updating the state only when the state has been changed
-     */
-    public void saveState() {
-        if (stateChanged) {
-            stateChanged = false;
-            if (analyticConfigurationPane.isCategoryListPaneExpanded()) {
-                final List<AnalyticConfigurationPane.SelectableAnalyticPlugin> selectedPlugins = new ArrayList<>();
-                analyticConfigurationPane.getPluginList().getItems().forEach(selectablePlugin -> {
-                    if (selectablePlugin.isSelected()) {
-                        selectedPlugins.add(selectablePlugin);
-                    }
-                });
-                PluginExecution.withPlugin(new AnalyticViewStateWriter(analyticConfigurationPane.currentQuestion, selectedPlugins, analyticResultsPane.getResult(), viewPane.getChildren().contains(analyticResultsPane))).executeLater(GraphManager.getDefault().getActiveGraph());
-            }
-        }
+                // need to update configuration pane UI
+                analyticConfigurationPane.updatePanes(categoriesVisible, activeAnalyticQuestions, activeSelectablePlugins);
+
+                // show the current results if there are any
+                final AnalyticResult<?> results = state.getResult();
+                final boolean resultsVisible = state.isResultsPaneVisible();
+                final AnalyticQuestion<?> question = state.getQuestion();
+
+                if (results != null && resultsVisible && question != null && !viewPane.getChildren().contains(analyticResultsPane)) {
+                        viewPane.getChildren().add(1, analyticResultsPane);
+                        analyticResultsPane.displayResults(question, results);
+                }
+            }         
+        });
     }
 }
