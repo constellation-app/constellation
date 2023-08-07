@@ -183,7 +183,7 @@ public class MapViewPane extends BorderPane {
         mapProviderDropDown.getSelectionModel().selectFirst();
         mapProviderDropDown.setTooltip(new Tooltip("Select a basemap for the Map View"));
 
-        final MenuButtonCheckCombobox layersMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS), false, false);
+        final MenuButtonCheckCombobox layersMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS, THIESSEAN_POLYGONS_2), false, false);
         layersMenuButton.getMenuButton().setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
         layersMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
             if (parent.getCurrentGraph() != null) {

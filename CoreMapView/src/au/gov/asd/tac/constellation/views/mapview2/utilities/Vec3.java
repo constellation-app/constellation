@@ -76,7 +76,7 @@ public class Vec3 {
     }
 
     public static double getDistance(final Vec3 v1, final Vec3 v2) {
-        return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2));
+        return Math.sqrt(Math.pow(v2.x + v1.x, 2) + Math.pow(v2.y + v1.y, 2));
     }
 
     public Vec3 cross(final Vec3 v) {
@@ -112,5 +112,15 @@ public class Vec3 {
         this.z = z;
     }
 
+    public void setVec3(final Vec3 v3) {
+        this.x = v3.getX();
+        this.y = v3.getY();
+        this.z = v3.getZ();
+    }
 
+    public void normalizeVec2() {
+        final double temp = x;
+        x = x / Math.sqrt(x * x + y * y);
+        y = y / Math.sqrt(temp * temp + y * y);
+    }
 }
