@@ -29,6 +29,7 @@ public class HalfEdge {
     private Vec3 dirVect;
 
     private boolean extendsUp = false;
+    private boolean complete = false;
 
     public HalfEdge(final Arc parentArc, final BlineElement homeArc, final Vec3 start, final Vec3 dirVect) {
         this.parentArc = parentArc;
@@ -76,5 +77,14 @@ public class HalfEdge {
     public void setExtendsUp(boolean extendsUp) {
         this.extendsUp = extendsUp;
     }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
+
 
 }
