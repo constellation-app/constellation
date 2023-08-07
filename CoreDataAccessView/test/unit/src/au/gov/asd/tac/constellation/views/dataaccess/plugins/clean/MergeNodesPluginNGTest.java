@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -245,7 +246,7 @@ public class MergeNodesPluginNGTest {
             mergeNodesPlugin.edit(graph, interaction, parameters);
 
             verify(pluginExecution).executeNow(graph);
-            verify(interaction).setProgress(1, 0, "Merged 2 nodes.", true);
+            verify(interaction, atLeast(2)).setProgress(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean());
 
             // Due to accessibility issues the call to mergeVerticies and its follow
             // on logic cannot be verified without tying this test to the logic of

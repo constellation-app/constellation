@@ -21,7 +21,9 @@ import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.attribute.StringAttributeDescription;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
 import org.testng.annotations.BeforeMethod;
@@ -63,8 +65,10 @@ public class RemoveUnusedAttributesPluginNGTest {
      */
     @Test
     public void testAllNullAttributes() throws Exception {
-        PluginInteraction interaction = null;
-        PluginParameters parameters = null;
+
+        final PluginInteraction interaction = mock(PluginInteraction.class);
+        final PluginParameters parameters = mock(PluginParameters.class);
+        
         RemoveUnusedAttributesPlugin instance = new RemoveUnusedAttributesPlugin();
         instance.edit(graph, interaction, parameters);
         assertEquals(graph.getAttribute(GraphElementType.VERTEX, "test1"), GraphConstants.NOT_FOUND);
@@ -82,8 +86,9 @@ public class RemoveUnusedAttributesPluginNGTest {
         graph.setStringValue(vertexAttribute3, vertex1, "some words");
         graph.setStringValue(transactionAttribute1, transaction1, "some words");
 
-        PluginInteraction interaction = null;
-        PluginParameters parameters = null;
+        final PluginInteraction interaction = mock(PluginInteraction.class);
+        final PluginParameters parameters = mock(PluginParameters.class);
+        
         RemoveUnusedAttributesPlugin instance = new RemoveUnusedAttributesPlugin();
         instance.edit(graph, interaction, parameters);
         assertEquals(graph.getAttribute(GraphElementType.VERTEX, "test1"), GraphConstants.NOT_FOUND);
@@ -102,8 +107,9 @@ public class RemoveUnusedAttributesPluginNGTest {
         graph.setStringValue(vertexAttribute3, vertex1, "some words");
         graph.setStringValue(transactionAttribute1, transaction1, "some words");
 
-        PluginInteraction interaction = null;
-        PluginParameters parameters = null;
+        final PluginInteraction interaction = mock(PluginInteraction.class);
+        final PluginParameters parameters = mock(PluginParameters.class);
+        
         RemoveUnusedAttributesPlugin instance = new RemoveUnusedAttributesPlugin();
         instance.edit(graph, interaction, parameters);
         assertNotEquals(graph.getAttribute(GraphElementType.VERTEX, "test1"), GraphConstants.NOT_FOUND);
