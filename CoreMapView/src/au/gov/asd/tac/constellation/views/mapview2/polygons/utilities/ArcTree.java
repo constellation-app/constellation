@@ -44,6 +44,11 @@ public class ArcTree {
     public ArcTree(final PriorityQueue<VoronoiEvent> eventQueue) {
         this.eventQueue = eventQueue;
         root = new BaseLine(new Vec3(0, 0), new Vec3(MapView.MAP_WIDTH, 0));
+        /*root = new Arc(new Vec3(MapView.MAP_WIDTH / 2, -500));
+        final HalfEdge left = new HalfEdge((Arc) root, null, new Vec3(MapView.MAP_WIDTH / 2, -1000), new Vec3(-1, 0));
+        final HalfEdge right = new HalfEdge((Arc) root, null, new Vec3(MapView.MAP_WIDTH / 2, -1000), new Vec3(1, 0));
+        root.setLeftEdge(left);
+        root.setRightEdge(right);*/
     }
 
     private BlineElement addArc(final Vec3 focus) {
@@ -62,6 +67,16 @@ public class ArcTree {
 
             final Vec3 edgeStart = new Vec3(focus.getX(), baseLine.getStart().getY());
             final Vec3 dirVect = new Vec3(1, 0);
+            LOGGER.log(Level.SEVERE, "Edge start: " + edgeStart.getX() + ", " + edgeStart.getY());
+            final Line l = new Line();
+            l.setStartX(edgeStart.getX() - 5);
+            l.setStartY(edgeStart.getY());
+            l.setEndX(edgeStart.getX() + 5);
+            l.setEndY(edgeStart.getY());
+
+            l.setStroke(Color.GREEN);
+            l.setStrokeWidth(5);
+            completedEdges.add(l);
 
             final HalfEdge e1 = new HalfEdge(newArc, intersectingElement, edgeStart, dirVect);
             final HalfEdge e2 = new HalfEdge(newArc, intersectingElement, edgeStart, new Vec3(-dirVect.getX(), -dirVect.getY()));
@@ -95,14 +110,6 @@ public class ArcTree {
                 baseLine.getCurrentEvent().setValid(false);
             }
 
-            final Line l = new Line();
-            l.setStartX(((BaseLine) intersectingElement).getStart().getX());
-            l.setStartY(((BaseLine) intersectingElement).getStart().getY());
-            l.setEndX(((BaseLine) intersectingElement).getEnd().getX());
-            l.setEndY(((BaseLine) intersectingElement).getEnd().getY());
-
-            l.setStroke(Color.RED);
-            //completedEdges.add(l);
 
             if (intersectingElement == root) {
                 LOGGER.log(Level.SEVERE, "Intersecting arc is root now");
@@ -112,8 +119,8 @@ public class ArcTree {
 
             newArc.setParentFromItem(baseLine);
 
-            addEdgeIntersectionEvent(splitLeft);
-            addEdgeIntersectionEvent(splitRight);
+            addEdgeIntersectionEvent(splitLeft, focus.getY());
+            addEdgeIntersectionEvent(splitRight, focus.getY());
 
         } else {
             LOGGER.log(Level.SEVERE, "Arc intersected");
@@ -125,6 +132,17 @@ public class ArcTree {
             final Vec3 edgeStart = new Vec3(focus.getX(), intersectingArc.getY(focus.getX(), focus.getY()));
             final Vec3 direction = new Vec3(newArc.getFocus().getX() - intersectingArc.getFocus().getX(), newArc.getFocus().getY() - intersectingArc.getFocus().getY());
             //final Vec3 direction = new Vec3(newArc.getFocus().getX() - intersectingArc.getFocus().getX(), newArc.getFocus().getY() - intersectingArc.getFocus().getY());
+            LOGGER.log(Level.SEVERE, "Edge start: " + edgeStart.getX() + ", " + edgeStart.getY());
+            final Line l = new Line();
+            l.setStartX(edgeStart.getX() - 5);
+            l.setStartY(edgeStart.getY());
+            l.setEndX(edgeStart.getX() + 5);
+            l.setEndY(edgeStart.getY());
+
+            l.setStroke(Color.GREEN);
+            l.setStrokeWidth(5);
+            completedEdges.add(l);
+
             final Vec3 dirVect = new Vec3(direction.getY(), -direction.getX());
             dirVect.normalizeVec2();
 
@@ -164,30 +182,24 @@ public class ArcTree {
                 intersectingArc.getCurrentEvent().setValid(false);
             }
 
-
-            final Line l = new Line();
-            l.setStartX(intersectingArc.getFocus().getX() - 5);
-            l.setStartY(intersectingArc.getFocus().getY());
-            l.setEndX(intersectingArc.getFocus().getX() + 5);
-            l.setEndY(intersectingArc.getFocus().getY());
-
-            l.setStroke(Color.RED);
-            //completedEdges.add(l);
             newArc.setParentFromItem(intersectingElement);
 
             if (intersectingElement == root) {
                 LOGGER.log(Level.SEVERE, "Intersecting arc is root now");
                 current = newArc;
             }
-            addEdgeIntersectionEvent(splitLeft);
-            addEdgeIntersectionEvent(splitRight);
+            addEdgeIntersectionEvent(splitLeft, focus.getY());
+            addEdgeIntersectionEvent(splitRight, focus.getY());
 
         }
 
         return current;
     }
 
-    private void addEdgeIntersectionEvent(final BlineElement arc) {
+    private void addEdgeIntersectionEvent(final BlineElement arc, final double directrix) {
+        if (arc == null) {
+            return;
+        }
         LOGGER.log(Level.SEVERE, "Checking for edge intersection event");
         final HalfEdge left = arc.getLeftEdge();
         final HalfEdge right = arc.getRightEdge();
@@ -197,20 +209,39 @@ public class ArcTree {
             return;
         }
 
-        final Vec3 intersectionPoint = findEdgeIntersectionPoint(left, right);
+        LOGGER.log(Level.SEVERE, "Left edge dirvect: " + left.getDirVect().getX() + ", " + left.getDirVect().getY() + " right edge dirvect: " + right.getDirVect().getX() + ", " + right.getDirVect().getY());
+
+        final Vec3 intersectionPoint;
+
+        if (arc instanceof BaseLine) {
+            final Arc leftArc = left.getParentArc();
+            final Arc rightArc = right.getParentArc();
+
+            final Vec3 leftIntersection = getEdgeArcIntersection(left, leftArc, directrix);
+            final Vec3 rightIntersection = getEdgeArcIntersection(right, rightArc, directrix);
+
+            intersectionPoint = new Vec3(leftIntersection.getX() + ((rightIntersection.getX() - leftIntersection.getX()) / 2), leftIntersection.getY());
+
+        } else {
+            intersectionPoint = findEdgeIntersectionPoint(left, right);
+        }
+
 
         if (intersectionPoint == null) {
             LOGGER.log(Level.SEVERE, "No intersection");
             return;
         }
         LOGGER.log(Level.SEVERE, "Possible intersection");
+        LOGGER.log(Level.SEVERE, "Intersection point is: " + intersectionPoint.getX() + ", " + intersectionPoint.getY());
+
 
         final Line l = new Line();
         l.setStartX(intersectionPoint.getX() - 5);
         l.setStartY(intersectionPoint.getY());
         l.setEndX(intersectionPoint.getX() + 5);
         l.setEndY(intersectionPoint.getY());
-        l.setStroke(Color.RED);
+        l.setStroke(Color.PURPLE);
+        l.setStrokeWidth(5);
         completedEdges.add(l);
 
         final Vec3 eventOffset = new Vec3(left.getParentArc().getFocus().getX() - intersectionPoint.getX(), left.getParentArc().getFocus().getY() - intersectionPoint.getY());
@@ -336,8 +367,6 @@ public class ArcTree {
         final HalfEdge e1 = e.getEdge1();
         final HalfEdge e2 = e.getEdge2();
 
-        LOGGER.log(Level.SEVERE, "Test variable of squeezed arc: " + removed.test);
-
         if (removed instanceof Arc) {
             LOGGER.log(Level.SEVERE, "squeezed element is an arc");
         } else if (removed instanceof BaseLine) {
@@ -391,11 +420,13 @@ public class ArcTree {
             final Vec3 leftFocus = leftArc.getFocus();
             final Vec3 rightFocus = rightArc.getFocus();
 
-            direction = new Vec3(rightFocus.getX() - leftFocus.getX(), rightFocus.getY() - leftFocus.getY());
+            direction = new Vec3(leftFocus.getX() - rightFocus.getX(), leftFocus.getY() - rightFocus.getY());
             dirNewEdge = new Vec3(direction.getY(), -direction.getX());
             dirNewEdge.normalizeVec2();
 
             newEdge = new HalfEdge((Arc) rightArc, leftArc, intersectionPoint, dirNewEdge);
+
+            LOGGER.log(Level.SEVERE, "Merged 2 Arcs at edge start: " + newEdge.getStart().getX() + ", " + newEdge.getStart().getY() + " edge direction: " + newEdge.getDirVect().getX() + ", " + newEdge.getDirVect().getY());
 
             left.setRightEdge(newEdge);
             right.setLeftEdge(newEdge);
@@ -404,7 +435,7 @@ public class ArcTree {
             final Arc rightArc = (Arc) right;
             newEdge = new HalfEdge(rightArc, leftLine, intersectionPoint, new Vec3(-1, 0));
             leftLine.setRightEdge(newEdge);
-        } else {
+        } else if (right instanceof BaseLine && left instanceof Arc) {
             final BaseLine rightLine = (BaseLine) right;
             final Arc leftArc = (Arc) left;
             newEdge = new HalfEdge(leftArc, rightLine, intersectionPoint, new Vec3(1, 0));
@@ -417,11 +448,16 @@ public class ArcTree {
 
         root = removeElement(root, removed);
 
-        addEdgeIntersectionEvent(left);
-        addEdgeIntersectionEvent(right);
+        addEdgeIntersectionEvent(left, e.getYCoord());
+        addEdgeIntersectionEvent(right, e.getYCoord());
     }
 
     private Vec3 findEdgeIntersectionPoint(final HalfEdge h1, final HalfEdge h2) {
+
+        if (h1.getDirVect().getX() == 1.0 && h1.getDirVect().getY() == 0.0 && h2.getDirVect().getX() == -1.0 && h2.getDirVect().getY() == 0.0) {
+            return new Vec3(h1.getStart().getX() + ((h2.getStart().getX() - h1.getStart().getX())) / 2, h1.getStart().getY());
+        }
+
         final double dx = h2.getStart().getX() - h1.getStart().getX();
         final double dy = h2.getStart().getY() - h1.getStart().getY();
         final double det = h2.getDirVect().getX() * h1.getDirVect().getY() - h2.getDirVect().getY() * h1.getDirVect().getX();
@@ -740,9 +776,8 @@ public class ArcTree {
 
     public void run() {
         while (!eventQueue.isEmpty()) {
-            LOGGER.log(Level.SEVERE, "Y coord: " + eventQueue.peek().getYCoord());
-
             if (eventQueue.peek() instanceof SiteEvent) {
+                LOGGER.log(Level.SEVERE, "PROCESSING SITE EVENT AT Y: " + eventQueue.peek().getYCoord());
                 final SiteEvent e = (SiteEvent) eventQueue.poll();
 
                 root = addArc(e.getSite());
@@ -751,10 +786,13 @@ public class ArcTree {
                 printBFS(root);
 
             } else if (eventQueue.peek() instanceof EdgeEvent) {
+
                 final EdgeEvent e = (EdgeEvent) eventQueue.poll();
 
                 if (e.isValid()) {
+                    LOGGER.log(Level.SEVERE, "PROCESSING EDGE EVENT AT Y: " + e.getYCoord());
                     removeArc(e);
+                    printBFS(root);
                 }
             }
         }
