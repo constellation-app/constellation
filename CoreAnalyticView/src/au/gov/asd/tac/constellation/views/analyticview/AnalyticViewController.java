@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
@@ -30,7 +29,6 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane.SelectableAnalyticPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
@@ -38,18 +36,13 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateReaderPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateWriterPlugin;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState;
-import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.scene.control.ListView;
-import org.openide.util.Exceptions;
 
 /**
  * Controls UI when changing between graphs
@@ -73,6 +66,7 @@ public class AnalyticViewController {
     private boolean categoriesVisible = false;
     private AnalyticQuestionDescription<?> currentQuestion = null;
     private AnalyticQuestion question;
+    private String activeCategory;
 
     public AnalyticViewController() {
         this.activeAnalyticQuestions = new ArrayList<>();
@@ -101,38 +95,25 @@ public class AnalyticViewController {
         return instance;
     }
 
-    public List<AnalyticQuestionDescription<?>> getActiveAnalyticQuestions() {
-        return activeAnalyticQuestions;
+    public AnalyticViewTopComponent getParent() {
+        return parent;
     }
 
-    public int getCurrentAnalyticQuestionIndex() {
-        return currentAnalyticQuestionIndex;
+    public void setActiveCategory(final String activeCategory) {
+        this.activeCategory = activeCategory;
     }
 
     public void setCurrentQuestion(final AnalyticQuestionDescription<?> currentQuestion) {
         this.currentQuestion = currentQuestion;
     }
 
-    public List<List<SelectableAnalyticPlugin>> getActiveSelectablePlugins() {
-        return activeSelectablePlugins;
-    }
-
-    public AnalyticViewTopComponent getParent() {
-        return parent;
-    }
-
     public void setQuestion(final AnalyticQuestion question) {
         this.question = question;
-    }
-
-    public boolean isCategoriesVisible() {
-        return categoriesVisible;
     }
 
     public void setCategoriesVisible(final boolean categoriesVisible) {
         this.categoriesVisible = categoriesVisible;
     }
-
 
     /**
      * Update the results values and record whether the results pane is currently visible
@@ -152,14 +133,6 @@ public class AnalyticViewController {
     public void removeAnalyticQuestion(final AnalyticQuestionDescription<?> question) {
         activeSelectablePlugins.remove(activeAnalyticQuestions.indexOf(question));
         activeAnalyticQuestions.remove(question);
-    }
-
-    /**
-     * Clear the active questions
-     */
-    public void clearAnalyticQuestions() {
-        activeAnalyticQuestions.clear();
-        activeSelectablePlugins.clear();
     }
 
     /**
@@ -222,7 +195,6 @@ public class AnalyticViewController {
                 addAnalyticQuestion(pane.getConfigurationPane().getCurrentQuestion(), checkedPlugins);
             }
         }
-        
         writeState();
     }
 
@@ -241,27 +213,6 @@ public class AnalyticViewController {
         PluginExecution.withPlugin(new AnalyticStateReaderPlugin(pane)).executeLater(graph);
     }
 
-    public void readStateFuture() {
-        if (parent == null) {
-            return;
-        }
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-        final AnalyticViewPane pane = parent.createContent();
-        if (pane == null || graph == null) {
-            return;
-        }
-        final Future<?> f = PluginExecution.withPlugin(new AnalyticStateReaderPlugin(pane))
-                .executeLater(graph);
-        try {
-            f.get();
-        } catch (final InterruptedException ex) {
-            LOGGER.log(Level.SEVERE, "Analytic View State Reader was interrupted", ex);
-            Thread.currentThread().interrupt();
-        } catch (final ExecutionException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
-        }
-    }
-
     /**
      * Executes a plugin to write the current state to the graph's analytic_view_state Attribute.
      *
@@ -274,7 +225,7 @@ public class AnalyticViewController {
         }
 
         // controller out of sync with graph...
-        return PluginExecution.withPlugin(new AnalyticStateWriterPlugin(currentAnalyticQuestionIndex, activeAnalyticQuestions, activeSelectablePlugins, result, resultsVisible, currentQuestion, question, categoriesVisible)).executeLater(graph);
+        return PluginExecution.withPlugin(new AnalyticStateWriterPlugin(currentAnalyticQuestionIndex, activeAnalyticQuestions, activeSelectablePlugins, result, resultsVisible, currentQuestion, question, categoriesVisible, activeCategory)).executeLater(graph);
     }
 
 

@@ -45,11 +45,12 @@ public final class AnalyticStateWriterPlugin extends SimpleEditPlugin {
     private final boolean categoriesVisible;
     private final AnalyticQuestionDescription<?> currentQuestion;
     private final AnalyticQuestion question;
+    private final String activeCategory;
 
     public AnalyticStateWriterPlugin(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
             final List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> activePlugins, final AnalyticResult<?> result,
             final boolean resultsVisible, final AnalyticQuestionDescription<?> currentQuestion, final AnalyticQuestion question,
-            final boolean categoriesVisible) {
+            final boolean categoriesVisible, final String activeCategory) {
         this.currentAnalyticQuestionIndex = currentQuestionIndex;
         this.activeAnalyticQuestions = activeQuestions;
         this.activeSelectablePlugins = activePlugins;
@@ -58,6 +59,7 @@ public final class AnalyticStateWriterPlugin extends SimpleEditPlugin {
         this.currentQuestion = currentQuestion;
         this.question = question;
         this.categoriesVisible = categoriesVisible;
+        this.activeCategory = activeCategory;
     }
 
     @Override
@@ -84,6 +86,7 @@ public final class AnalyticStateWriterPlugin extends SimpleEditPlugin {
         currentState.setCurrentQuestion(currentQuestion);
         currentState.setQuestion(question);
         currentState.setCategoriesPaneVisible(categoriesVisible);
+        currentState.setActiveCategory(activeCategory);
 
         graph.setObjectValue(stateAttributeId, 0, currentState);
     }

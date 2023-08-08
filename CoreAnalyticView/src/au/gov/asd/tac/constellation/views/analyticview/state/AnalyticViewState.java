@@ -33,16 +33,16 @@ public class AnalyticViewState {
     private List<AnalyticQuestionDescription<?>> activeAnalyticQuestions;
     private List<List<SelectableAnalyticPlugin>> activeSelectablePlugins;
     private AnalyticResult<?> result;
-    private boolean resultsVisible = false;
-    private boolean categoriesVisible = false;
+    private boolean resultsVisible;
+    private boolean categoriesVisible;
     private AnalyticQuestionDescription<?> currentQuestion;
     private AnalyticQuestion question;
-    private String activeCategory = "Global";
+    private String activeCategory;
 
     // boolean variables: color, hide, size
 
     public AnalyticViewState() {
-       // this(0, new ArrayList<>(), new ArrayList<>(), null, null, null, null, null);
+        this(0, new ArrayList<>(), new ArrayList<>(), null, null, null, "", false, false);
     }
 
     public AnalyticViewState(final AnalyticViewState state) {
@@ -57,26 +57,25 @@ public class AnalyticViewState {
         this.activeCategory = state.getActiveCategory();
     }
 
-//    public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
-//            final List<List<SelectableAnalyticPlugin>> activePlugins, final AnalyticResult<?> result, final AnalyticQuestionDescription<?> currentQuestion,
-//            final AnalyticQuestion question, final String activeCategory, final HashMap<String, Boolean> hashmap) {
-//        this.currentAnalyticQuestionIndex = currentQuestionIndex;
-//        this.activeAnalyticQuestions = activeQuestions;
-//        this.activeSelectablePlugins = activePlugins;
-//        this.result = result;
-//        this.resultsVisible = hashmap.getOrDefault("resultsVisible", false);
-//        this.categoriesVisible = hashmap.getOrDefault("categoriesVisible", false);
-//        this.currentQuestion = currentQuestion;
-//        this.question = question;
-//        this.activeCategory = activeCategory;
-//        this.hashmap = hashmap;
-//    }
+    public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
+            final List<List<SelectableAnalyticPlugin>> activePlugins, final AnalyticResult<?> result, final AnalyticQuestionDescription<?> currentQuestion,
+            final AnalyticQuestion question, final String activeCategory, final boolean resultsVisible, final boolean categoriesVisible) {
+        this.currentAnalyticQuestionIndex = currentQuestionIndex;
+        this.activeAnalyticQuestions = activeQuestions;
+        this.activeSelectablePlugins = activePlugins;
+        this.result = result;
+        this.resultsVisible = resultsVisible;
+        this.categoriesVisible = categoriesVisible;
+        this.currentQuestion = currentQuestion;
+        this.question = question;
+        this.activeCategory = activeCategory;
+    }
 
     public String getActiveCategory() {
         return activeCategory;
     }
 
-    public void setActiveCategory(String activeCategory) {
+    public void setActiveCategory(final String activeCategory) {
         this.activeCategory = activeCategory;
     }
 

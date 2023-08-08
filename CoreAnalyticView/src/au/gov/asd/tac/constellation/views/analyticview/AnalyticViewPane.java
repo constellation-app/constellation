@@ -68,7 +68,6 @@ public class AnalyticViewPane extends BorderPane {
     private final AnalyticResultsPane analyticResultsPane;
 
     private static boolean running = false;
-    private boolean stateChanged = false;
     private Thread questionThread = null;
     private ThreadConstraints parentConstraints = null;
 
@@ -138,14 +137,12 @@ public class AnalyticViewPane extends BorderPane {
                                 final AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
                                 analyticResultsPane.displayResults(question, null);
                                 analyticViewController.updateState(true, analyticConfigurationPane.getPluginList());
-                              //  analyticViewController.writeState();
                             } catch (final AnalyticException ex) {
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                                 final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
                                 question.addException(ex);
                                 analyticResultsPane.displayResults(question, null);
                                 analyticViewController.updateState(false, analyticConfigurationPane.getPluginList());
-                               // analyticViewController.writeState();
                             } finally {
                                 running = false;
                                 setRunButtonMode(true);
@@ -222,9 +219,10 @@ public class AnalyticViewPane extends BorderPane {
                 final boolean categoriesVisible = state.isCategoriesPaneVisible();
                 final List<AnalyticQuestionDescription<?>> activeAnalyticQuestions = state.getActiveAnalyticQuestions();
                 final List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> activeSelectablePlugins = state.getActiveSelectablePlugins();
+                final String activeCategory = state.getActiveCategory();
 
                 // need to update configuration pane UI
-                analyticConfigurationPane.updatePanes(categoriesVisible, activeAnalyticQuestions, activeSelectablePlugins);
+                analyticConfigurationPane.updatePanes(categoriesVisible, activeAnalyticQuestions, activeSelectablePlugins, activeCategory);
 
                 // show the current results if there are any
                 final AnalyticResult<?> results = state.getResult();

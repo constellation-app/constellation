@@ -44,7 +44,7 @@ public final class AnalyticStateReaderPlugin extends SimpleReadPlugin {
 
     @Override
     public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        if (graph == null) {
+        if (graph == null || pane == null) {
             return;
         }
 
@@ -53,9 +53,9 @@ public final class AnalyticStateReaderPlugin extends SimpleReadPlugin {
             return;
         }
 
-        final AnalyticViewState currentState = graph.getObjectValue(analyticViewStateAttributeId, 0);
-        if (currentState == null || pane == null) {
-            return;
+        AnalyticViewState currentState = graph.getObjectValue(analyticViewStateAttributeId, 0);
+        if (currentState == null) {
+            currentState = new AnalyticViewState();
         }
 
         // update pane with current question/category/results/effects

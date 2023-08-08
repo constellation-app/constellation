@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.analyticview;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
-import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -320,55 +319,6 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Reset to the initial state for the analytic configuration pane. The
-     * question list will be expanded, the first question selected, and the
-     * analytics list populated based on the selected question.
-     */
-    protected final void reset() {
-        Platform.runLater(() -> {
-            categoryList.getSelectionModel().select(0);
-            questionList.getSelectionModel().select(0);
-            categoryListPane.setExpanded(false);
-            questionListPane.setExpanded(true);
-        });
-    }
-
-    /**
-     * Update the view pane based on the values saved in the current state
-     * 
-     * @param categoriesVisible
-     * @param activeAnalyticQuestions
-     * @param activeSelectablePlugins
-     */
-    protected final void updatePanes(final boolean categoriesVisible, final List<AnalyticQuestionDescription<?>> activeAnalyticQuestions,
-            final List<List<SelectableAnalyticPlugin>> activeSelectablePlugins) {
-        
-        Platform.runLater(() -> {
-            categoryListPane.setExpanded(categoriesVisible);
-            questionListPane.setExpanded(!categoriesVisible);
-
-            LOGGER.log(Level.SEVERE, categoryList.getItems().toString());
-            LOGGER.log(Level.SEVERE, questionList.getItems().toString());
-
-            if (activeAnalyticQuestions.size() > 0) {
-                for (final AnalyticQuestionDescription question : activeAnalyticQuestions) {
-                    if (question != null && questionList.getItems().contains(question)) {
-                        final int index = questionList.getItems().indexOf(question);
-                        questionList.getSelectionModel().select(index);
-                    }
-                }
-            }
-
-//            if (activeSelectablePlugins.size() > 0) {
-//                for (final )
-//            }
-
-            categoryList.getSelectionModel().select(0);
-            
-        });
-    }
-
-    /**
      * Get the question which is currently selected in this pane.
      *
      * @return the current {@link AnalyticQuestionDescription}.
@@ -379,6 +329,49 @@ public class AnalyticConfigurationPane extends VBox {
 
     public void setCurrentQuestion(final AnalyticQuestionDescription<?> currentQuestion) {
         this.currentQuestion = currentQuestion;
+    }
+
+    public final List<SelectableAnalyticPlugin> getAllSelectablePlugins() {
+        return Collections.unmodifiableList(SELECTABLE_PLUGINS);
+    }
+
+    public final SelectableAnalyticPlugin lookupSelectablePlugin(final Plugin plugin) {
+        return PLUGIN_TO_SELECTABLE_PLUGIN_MAP.get(plugin);
+    }
+
+    public static final SelectableAnalyticPlugin lookupSelectablePlugin(final String selectableAnalyticPluginName) {
+        return NAME_TO_SELECTABLE_PLUGIN_MAP.get(selectableAnalyticPluginName);
+    }
+
+    public static void setSuppressedFlag(final boolean newValue) {
+        selectionSuppressed = newValue;
+    }
+
+    public ListView<SelectableAnalyticPlugin> getPluginList() {
+        return pluginList;
+    }
+
+    public ListView<String> getCategoryList() {
+        return categoryList;
+    }
+
+    public boolean isCategoryListPaneExpanded() {
+        return categoryListPane.isExpanded();
+    }
+
+    /**
+     * Reset to the initial state for the analytic configuration pane. The
+     * question list will be expanded, the first question selected, and the
+     * analytics list populated based on the selected question.
+     */
+    protected final void reset() {
+        Platform.runLater(() -> {
+            categoryList.getSelectionModel().select(0);
+            questionList.getSelectionModel().select(0);
+            categoryListPane.setExpanded(false);
+            questionListPane.setExpanded(true);
+            AnalyticViewController.getDefault().setActiveCategory(categoryList.getSelectionModel().getSelectedItem());
+        });
     }
 
     /**
@@ -420,6 +413,11 @@ public class AnalyticConfigurationPane extends VBox {
         return question.answer(currentGraph);
     }
 
+    /**
+     * Populate the documentation pane based on the currently selected plugin
+     * 
+     * @param plugin
+     */
     private void populateDocumentationPane(final SelectableAnalyticPlugin plugin) {
         if (documentationView != null) {
             if (plugin == null || plugin.getPlugin() == null || plugin.getPlugin().getDocumentationUrl() == null) {
@@ -467,6 +465,11 @@ public class AnalyticConfigurationPane extends VBox {
                 -> selectablePlugin.setUpdatedParameter(aggregatorParameter.getId(), aggregatorParameter.getStringValue()));
     }
 
+    /**
+     * Populate the parameter pane based on the selected plugins
+     *
+     * @param pluginParameters
+     */
     private void populateParameterPane(final PluginParameters pluginParameters) {
         final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(pluginParameters, null);
         // The parameters should only be editable if we are looking at a category rather than a question.
@@ -474,8 +477,12 @@ public class AnalyticConfigurationPane extends VBox {
         parametersTab.setContent(pluginParametersPane);
     }
 
+    /**
+     * Updates which plugins are visible in the analytic pane based on which category is selected
+     */
     private void setPluginsFromSelectedCategory() {
         final String selectedCategory = categoryList.getSelectionModel().getSelectedItem();
+        AnalyticViewController.getDefault().setActiveCategory(selectedCategory);
         final List<SelectableAnalyticPlugin> categoryPlugins = selectedCategory == null ? new ArrayList<>() : categoryToPluginsMap.get(selectedCategory);
         final List<SelectableAnalyticPlugin> selectablePlugins = new ArrayList<>();
         setSuppressedFlag(true);
@@ -492,6 +499,9 @@ public class AnalyticConfigurationPane extends VBox {
         AnalyticViewController.getDefault().updateState(true, pluginList);
     }
 
+    /**
+     * Sets which plugins are active depending on which question is selected
+     */
     private void setPluginsFromSelectedQuestion() {
         final List<SelectableAnalyticPlugin> questionPlugins = new ArrayList<>();
         final AnalyticQuestionDescription<?> selectedQuestion = questionList.getSelectionModel().getSelectedItem();
@@ -513,6 +523,9 @@ public class AnalyticConfigurationPane extends VBox {
         AnalyticViewController.getDefault().setCurrentQuestion(selectedQuestion);
     }
 
+    /**
+     * Updates the parameters based on the currently selected plugins
+     */
     public final void updateSelectablePluginsParameters() {
         if (categoryListPane.isExpanded()) {
             LOGGER.log(Level.INFO, "Update selectable plugins parameters in analytic config pane.");
@@ -527,32 +540,48 @@ public class AnalyticConfigurationPane extends VBox {
         updateGlobalParameters();
     }
 
-    public final List<SelectableAnalyticPlugin> getAllSelectablePlugins() {
-        return Collections.unmodifiableList(SELECTABLE_PLUGINS);
-    }
+    /**
+     * Update the view pane based on the values saved in the current state
+     *
+     * @param categoriesVisible
+     * @param activeAnalyticQuestions
+     * @param activeSelectablePlugins
+     */
+    protected final void updatePanes(final boolean categoriesVisible, final List<AnalyticQuestionDescription<?>> activeAnalyticQuestions,
+            final List<List<SelectableAnalyticPlugin>> activeSelectablePlugins, final String activeCategory) {
 
-    public final SelectableAnalyticPlugin lookupSelectablePlugin(final Plugin plugin) {
-        return PLUGIN_TO_SELECTABLE_PLUGIN_MAP.get(plugin);
-    }
+        Platform.runLater(() -> {
+            categoryListPane.setExpanded(categoriesVisible);
+            questionListPane.setExpanded(!categoriesVisible);
 
-    public static final SelectableAnalyticPlugin lookupSelectablePlugin(final String selectableAnalyticPluginName) {
-        return NAME_TO_SELECTABLE_PLUGIN_MAP.get(selectableAnalyticPluginName);
-    }
+            // update the questions pane
+            if (!activeAnalyticQuestions.isEmpty() && !categoriesVisible) {
+                for (final AnalyticQuestionDescription question : activeAnalyticQuestions) {
+                    if (question != null && questionList.getItems().contains(question)) {
+                        final int index = questionList.getItems().indexOf(question);
+                        questionList.getSelectionModel().select(index);
+                    }
+                }
+            }
 
-    public static void setSuppressedFlag(final boolean newValue) {
-        selectionSuppressed = newValue;
-    }
+            // update the categories pane
+            if (!activeSelectablePlugins.isEmpty() && categoriesVisible && !activeCategory.isEmpty()) {
+                categoryList.getSelectionModel().select(activeCategory);
+                
+                LOGGER.log(Level.SEVERE, pluginList.toString());
 
-    public ListView<SelectableAnalyticPlugin> getPluginList() {
-        return pluginList;
-    }
-
-    public ListView<String> getCategoryList() {
-        return categoryList;
-    }
-
-    public boolean isCategoryListPaneExpanded() {
-        return categoryListPane.isExpanded();
+                for (final List<SelectableAnalyticPlugin> plugins : activeSelectablePlugins) {
+                    LOGGER.log(Level.SEVERE, plugins.toString());
+                    for (final SelectableAnalyticPlugin plugin : plugins) {
+                        final int index = pluginList.getItems().indexOf(plugin);
+                        if (index > -1) {
+                            pluginList.getSelectionModel().select(index);
+                            pluginList.getItems().get(index).setSelected(true);
+                        }
+                    }
+                }
+            }
+        });
     }
 
 
