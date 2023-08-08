@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.find.components;
 
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.utilities.gui.SelectOptionsExtension;
+import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.views.find.FindViewController;
 import au.gov.asd.tac.constellation.views.find.utilities.ActiveFindResultsList;
 import au.gov.asd.tac.constellation.views.find.utilities.BasicFindReplaceParameters;
@@ -47,7 +47,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import org.controlsfx.control.CheckComboBox;
 
 /**
  * BasicFindTab contains all the UI elements for the Basic find tab.
@@ -74,7 +73,7 @@ public class BasicFindTab extends Tab {
 
     protected boolean onLoad = true;
     protected final Label inAttributesLabel = new Label("Search Attributes:");
-    protected final CheckComboBox<String> inAttributesMenu = new CheckComboBox<>();
+    protected final MultiChoiceInputField<String> attributeFilterMultiChoiceInput = new MultiChoiceInputField<>();
     protected List<Attribute> attributes = new ArrayList<>();
     protected List<Attribute> selectedNodeAttributes = new ArrayList<>();
     protected List<Attribute> selectedTransAttributes = new ArrayList<>();
@@ -137,9 +136,8 @@ public class BasicFindTab extends Tab {
             updateSelectedAttributes(getMatchingAttributeList(GraphElementType.getValue(newElement)));
         });
 
-        //Set Right click SelectionOptions contextMenu
-        final SelectOptionsExtension attributeSelectOptions = new SelectOptionsExtension(inAttributesMenu);
-        attributeSelectOptions.enablePopUp();
+        //Set Right click bulk selection ContextMenu
+        attributeFilterMultiChoiceInput.enablePopUp();
 
         // set the action for changing the seleciton in the postSearchChoiceBox
         searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
@@ -213,13 +211,13 @@ public class BasicFindTab extends Tab {
         settingsGrid.add(lookForLabel, 0, 0);
         settingsGrid.add(lookForChoiceBox, 1, 0);
 
-        // add the inAttributesMenu and label to the settings grid
+        // add the attributeFilterMultiChoiceInput and label to the settings grid
         settingsGrid.add(inAttributesLabel, 0, 1);
-        settingsGrid.add(inAttributesMenu, 1, 1);
+        settingsGrid.add(attributeFilterMultiChoiceInput, 1, 1);
 
         // set the maxWidth for the in attributes menu a default populate it
         // with vertex elements
-        inAttributesMenu.setMaxWidth(DROP_DOWN_WIDTH);
+        attributeFilterMultiChoiceInput.setMaxWidth(DROP_DOWN_WIDTH);
         populateAttributes(GraphElementType.VERTEX);
 
         // set the min width for the inAttributesLabel
@@ -329,8 +327,8 @@ public class BasicFindTab extends Tab {
          */
         if (Platform.isFxApplicationThread()) {
             // clear all current checks and all items in the inAttributeMenu
-            inAttributesMenu.getCheckModel().clearChecks();
-            inAttributesMenu.getItems().clear();
+            attributeFilterMultiChoiceInput.getCheckModel().clearChecks();
+            attributeFilterMultiChoiceInput.getItems().clear();
 
             // Get the matching selected attribute list
             final List<Attribute> selected = getMatchingAttributeList(type);
@@ -339,27 +337,27 @@ public class BasicFindTab extends Tab {
             for (final String attribute : attributeList) {
 
                 // add all attributes to the inAttributeMenu
-                inAttributesMenu.getItems().add(attribute);
+                attributeFilterMultiChoiceInput.getItems().add(attribute);
 
                 // loop through all selected attributes, reselect them if the
                 // selected attributes name matches the current attribute
                 for (int i = 0; i <= selected.size() - 1; i++) {
                     if (selected.get(i).getName() == attribute) {
-                        inAttributesMenu.getCheckModel().check(attribute);
+                        attributeFilterMultiChoiceInput.getCheckModel().check(attribute);
                     }
                 }
             }
         } else {
             final CountDownLatch cdl = new CountDownLatch(1);
             Platform.runLater(() -> {
-                inAttributesMenu.getCheckModel().clearChecks();
-                inAttributesMenu.getItems().clear();
+                attributeFilterMultiChoiceInput.getCheckModel().clearChecks();
+                attributeFilterMultiChoiceInput.getItems().clear();
                 final List<Attribute> selected = getMatchingAttributeList(type);
                 for (final String attribute : attributeList) {
-                    inAttributesMenu.getItems().add(attribute);
+                    attributeFilterMultiChoiceInput.getItems().add(attribute);
                     for (int i = 0; i <= selected.size() - 1; i++) {
                         if (selected.get(i).getName() == attribute) {
-                            inAttributesMenu.getCheckModel().check(attribute);
+                            attributeFilterMultiChoiceInput.getCheckModel().check(attribute);
                         }
                     }
                 }
@@ -393,7 +391,7 @@ public class BasicFindTab extends Tab {
                 if (checkSelectedContains(selectedAttributes.get(i), attributes)) {
                     // if it is check the matchng attribute in the
                     // inAttribute menu
-                    inAttributesMenu.getCheckModel().check(selectedAttributes.get(i).getName());
+                    attributeFilterMultiChoiceInput.getCheckModel().check(selectedAttributes.get(i).getName());
                 }
             }
             cdl.countDown();
@@ -437,7 +435,7 @@ public class BasicFindTab extends Tab {
             for (final Attribute a : attributes) {
                 // if there is attributes selected in the attributesMenu and
                 // if that attribute is selected
-                if ((!inAttributesMenu.getCheckModel().isEmpty() && inAttributesMenu.getCheckModel().isChecked(a.getName())) || onLoad) {
+                if ((!attributeFilterMultiChoiceInput.getCheckModel().isEmpty() && attributeFilterMultiChoiceInput.getCheckModel().isChecked(a.getName())) || onLoad) {
                     // add it to the selected attributes list
                     selectedAttributes.add(a);
                 }

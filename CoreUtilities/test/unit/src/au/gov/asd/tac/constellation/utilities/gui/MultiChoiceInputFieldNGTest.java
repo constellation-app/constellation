@@ -20,14 +20,17 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Skin;
 import org.controlsfx.control.CheckComboBox;
 import org.testfx.api.FxToolkit;
 import org.testng.Assert;
+import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -38,20 +41,19 @@ import org.testng.annotations.Test;
  *
  * @author capricornunicorn123
  */
-public class SelectOptionsExtensionNGTest {
+public class MultiChoiceInputFieldNGTest {
+    
+    static final Logger LOGGER = Logger.getLogger(MultiChoiceInputFieldNGTest.class.getName());
 
-    static final Logger LOGGER = Logger.getLogger(SelectOptionsExtensionNGTest.class.getName());
-
-    private SelectOptionsExtension BulkSelectionOptions;
+    private MultiChoiceInputField<String> field;
     private List<String> data;
-    CheckComboBox<String> field;
     private String OPTION1;
     private String OPTION2;
     private String OPTION3;
     private String OPTION4;
     private String OPTION5;
-        
-    public SelectOptionsExtensionNGTest() {    
+    
+    public MultiChoiceInputFieldNGTest() {
     }
 
     @BeforeClass
@@ -77,6 +79,7 @@ public class SelectOptionsExtensionNGTest {
         OPTION3 = "Option 3";
         OPTION4 = "Option 4";
         OPTION5 = "Option 5"; 
+        
         data = new ArrayList<String>();
         data.add(OPTION1);
         data.add(OPTION2);
@@ -84,9 +87,8 @@ public class SelectOptionsExtensionNGTest {
         data.add(OPTION4);
         data.add(OPTION5);  
         
-        field = new CheckComboBox<>();      
+        field = new MultiChoiceInputField<>();      
         field.getItems().addAll(data);
-        BulkSelectionOptions = new SelectOptionsExtension(field);
     }
 
     @AfterMethod
@@ -94,7 +96,7 @@ public class SelectOptionsExtensionNGTest {
     }
 
     /**
-     * Test of setSelectionOption method, of class SelectOptionsExtension.
+     * Test of setSelectionOption method, of class MultiChoiceInputField.
      */
     @Test
     public void testSetSelectionOption() {
@@ -105,39 +107,39 @@ public class SelectOptionsExtensionNGTest {
         };
         
         //Test the number of BulkSelectionOtions increased by 1
-        int optionsCountInitial = this.BulkSelectionOptions.getMenuButton().getItems().size();
-        this.BulkSelectionOptions.setSelectionOption("InvertSelection", invertSelectionEvent);
-        int optionsCountFinal = this.BulkSelectionOptions.getMenuButton().getItems().size();
+        int optionsCountInitial = this.field.getMenuButton().getItems().size();
+        this.field.setSelectionOption("InvertSelection", invertSelectionEvent);
+        int optionsCountFinal = this.field.getMenuButton().getItems().size();
         Assert.assertTrue(optionsCountInitial + 1 == optionsCountFinal);
     }
 
     /**
-     * Test of enablePopUp method, of class SelectOptionsExtension.
+     * Test of enablePopUp method, of class MultiChoiceInputField.
      */
     @Test
     public void testEnablePopUp() {
-        Assert.assertNull(this.BulkSelectionOptions.getField().getOnContextMenuRequested());       
-        this.BulkSelectionOptions.enablePopUp();        
-        Assert.assertNotNull(this.BulkSelectionOptions.getField().getOnContextMenuRequested());
+       Assert.assertNull(this.field.getOnContextMenuRequested());       
+        this.field.enablePopUp();        
+        Assert.assertNotNull(this.field.getOnContextMenuRequested());
     }
 
     /**
-     * Test of disablePopUp method, of class SelectOptionsExtension.
+     * Test of disablePopUp method, of class MultiChoiceInputField.
      */
     @Test
     public void testDisablePopUp() {
-        this.BulkSelectionOptions.enablePopUp();  
-        Assert.assertNotNull(this.BulkSelectionOptions.getField().getOnContextMenuRequested());     
-        this.BulkSelectionOptions.disablePopUp();        
-        Assert.assertNull(this.BulkSelectionOptions.getField().getOnContextMenuRequested());
+        this.field.enablePopUp();  
+        Assert.assertNotNull(this.field.getOnContextMenuRequested());     
+        this.field.disablePopUp();        
+        Assert.assertNull(this.field.getOnContextMenuRequested());
     }
 
     /**
-     * Test of getMenuButton method, of class SelectOptionsExtension.
+     * Test of getMenuButton method, of class MultiChoiceInputField.
      */
     @Test
-    public void testGetMenuButton() {    
-        MenuButton menuButton = this.BulkSelectionOptions.getMenuButton();
+    public void testGetMenuButton() {
+        MenuButton menuButton = this.field.getMenuButton();
         
         //Make sure the the a MenuButton is returned
         MenuButton expectedClass = new MenuButton();
@@ -152,4 +154,35 @@ public class SelectOptionsExtensionNGTest {
         Assert.assertTrue(menuItemsNames.contains("Select All"));
         Assert.assertTrue(menuItemsNames.contains("Clear All"));
     }
+
+    /**
+     * Test of promptTextProperty method, of class MultiChoiceInputField.
+     */
+    @Test
+    public void testPromptTextProperty() {
+        final String prompt = "Test Prompt";
+        field.setPromptText(prompt);
+        Assert.assertNotNull(field.promptTextProperty());
+    }
+
+    /**
+     * Test of getPromptText method, of class MultiChoiceInputField.
+     */
+    @Test
+    public void testGetPromptText() {
+        final String prompt = "Test Prompt";
+        field.setPromptText(prompt);
+        Assert.assertEquals(field.promptTextProperty().getValue(), prompt);
+    }
+
+    /**
+     * Test of setPromptText method, of class MultiChoiceInputField.
+     */
+    @Test
+    public void testSetPromptText() {
+        final String prompt = "Test Prompt";
+        field.setPromptText(prompt);
+        Assert.assertEquals(field.promptTextProperty().getValue(), prompt);
+    }
+    
 }

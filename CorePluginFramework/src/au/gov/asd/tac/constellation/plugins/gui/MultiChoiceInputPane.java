@@ -15,28 +15,20 @@
  */
 package au.gov.asd.tac.constellation.plugins.gui;
 
-import au.gov.asd.tac.constellation.utilities.gui.SelectOptionsExtension;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.MultiChoiceParameterType.MultiChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.MenuButton;
-import javafx.scene.control.Skin;
 import javafx.scene.layout.HBox;
-import org.controlsfx.control.CheckComboBox;
 
 /**
  * A drop-down combo box allowing multiple selections, which is the GUI element
@@ -58,12 +50,12 @@ public class MultiChoiceInputPane extends HBox {
     public static final int DEFAULT_WIDTH = 300;
 
     private final ObservableList<ParameterValue> options = FXCollections.observableArrayList();
-    private final MultiChoiceComboBox<ParameterValue> field;
+    private final MultiChoiceInputField<ParameterValue> field;
     private boolean isAdjusting = false;
     
     public MultiChoiceInputPane(final PluginParameter<MultiChoiceParameterValue> parameter) {
         options.addAll(MultiChoiceParameterType.getOptionsData(parameter));
-        field = new MultiChoiceComboBox<>(options);
+        field = new MultiChoiceInputField<>(options);
         field.setPromptText(parameter.getDescription());
         if (parameter.getParameterValue().getGuiInit() != null) {
             parameter.getParameterValue().getGuiInit().init(field);
@@ -130,69 +122,15 @@ public class MultiChoiceInputPane extends HBox {
                 }
             }));
 
-        final SelectOptionsExtension selectionOptions = new SelectOptionsExtension(field);
-        selectionOptions.enablePopUp();
+        field.enablePopUp();
         
         //field width causes buttons to sit in pane space when available but retract to the same size as buttons if needed.
         field.setPrefWidth(DEFAULT_WIDTH);
         field.setMinWidth(50);
         
-        final MenuButton menuButton = selectionOptions.getMenuButton();
-        
         final HBox fieldAndButtons = new HBox();
         fieldAndButtons.setSpacing(2);
-        fieldAndButtons.getChildren().addAll(field, menuButton);
+        fieldAndButtons.getChildren().addAll(field, field.getMenuButton());
         getChildren().add(fieldAndButtons);
-    }
-
-    public class MultiChoiceComboBox<T extends Object> extends CheckComboBox<T> {
-
-        public MultiChoiceComboBox() {
-            super();
-        }
-
-        public MultiChoiceComboBox(final ObservableList<T> items) {
-            super(items);
-        }
-
-        @Override
-        protected Skin<?> createDefaultSkin() {
-            // TODO: extend default skin to use prompt text property
-            return super.createDefaultSkin();
-        }
-
-        // --- prompt text (taken from JavaFX's ComboBoxBase.java)
-        /**
-         * The {@code ComboBox} prompt text to display, or <tt>null</tt> if no
-         * prompt text is displayed. Prompt text is not displayed in all
-         * circumstances, it is dependent upon the subclasses of ComboBoxBase to
-         * clarify when promptText will be shown. For example, in most cases
-         * prompt text will never be shown when a combo box is non-editable
-         * (that is, prompt text is only shown when user input is allowed via
-         * text input). This has been copied from JavaFX's ComboBoxBase.java.
-         */
-        private final StringProperty promptText = new SimpleStringProperty(this, "promptText", "") {
-            @Override
-            protected void invalidated() {
-                // Strip out newlines
-                String txt = get();
-                if (txt != null && txt.contains(SeparatorConstants.NEWLINE)) {
-                    txt = txt.replace(SeparatorConstants.NEWLINE, "");
-                    set(txt);
-                }
-            }
-        };
-
-        public final StringProperty promptTextProperty() {
-            return promptText;
-        }
-
-        public final String getPromptText() {
-            return promptText.get();
-        }
-
-        public final void setPromptText(final String value) {
-            promptText.set(value);
-        }
     }
 }

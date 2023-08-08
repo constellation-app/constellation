@@ -30,7 +30,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
-import au.gov.asd.tac.constellation.utilities.gui.SelectOptionsExtension;
+import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.notes.state.NotesViewEntry;
 import java.text.SimpleDateFormat;
@@ -104,7 +104,7 @@ public class NotesViewPane extends BorderPane {
 
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
-    private final CheckComboBox filterCheckComboBox;
+    private final MultiChoiceInputField filterSelectionMultiChoiceInput;
     private CheckComboBox autoFilterCheckComboBox;
     private boolean isSelectedFiltersUpdating = false;
     private boolean isAutoSelectedFiltersUpdating = false;
@@ -163,14 +163,14 @@ public class NotesViewPane extends BorderPane {
         selectedFilters.add(USER_NOTES_FILTER); // Only user notes are selected by default.
 
         // CheckComboBox to select and deselect various filters for note rendering.
-        filterCheckComboBox = new CheckComboBox(availableFilters);
-        filterCheckComboBox.setTitle("Select a filter...");
-        filterCheckComboBox.setMinWidth(165);
-        filterCheckComboBox.setMaxWidth(165);
-        filterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        filterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
+        filterSelectionMultiChoiceInput = new MultiChoiceInputField(availableFilters);
+        filterSelectionMultiChoiceInput.setTitle("Select a filter...");
+        filterSelectionMultiChoiceInput.setMinWidth(165);
+        filterSelectionMultiChoiceInput.setMaxWidth(165);
+        filterSelectionMultiChoiceInput.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isSelectedFiltersUpdating) {
-                setFilters(filterCheckComboBox.getCheckModel().getCheckedItems());
+                setFilters(filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems());
 
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (activeGraph != null) {
@@ -178,14 +178,11 @@ public class NotesViewPane extends BorderPane {
                     controller.writeState(activeGraph);
                 }
             }
-            final ObservableList<String> filters = filterCheckComboBox.getCheckModel().getCheckedItems();
+            final ObservableList<String> filters = filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems();
             final String checkedFilters = String.join(", ", filters);
-            filterCheckComboBox.setTitle(filters.isEmpty()? "Select a filter..." : checkedFilters);
+            filterSelectionMultiChoiceInput.setTitle(filters.isEmpty()? "Select a filter..." : checkedFilters);
         });
         
-        final SelectOptionsExtension filterSelectOptions = new SelectOptionsExtension(filterCheckComboBox);
-        filterSelectOptions.enablePopUp();
-
         notesViewEntries.forEach(entry -> {
             if (!entry.isUserCreated()) {
 
@@ -251,7 +248,7 @@ public class NotesViewPane extends BorderPane {
 
         // FlowPane to store control items used to filter notes.
         final ToolBar toolBar = new ToolBar();
-        toolBar.getItems().addAll(createNewNoteButton, filterCheckComboBox, filterSelectOptions.getMenuButton(), autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
+        toolBar.getItems().addAll(createNewNoteButton, filterSelectionMultiChoiceInput, filterSelectionMultiChoiceInput.getMenuButton(), autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
         // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(USER_CHOSEN_COLOUR);
 
@@ -620,8 +617,8 @@ public class NotesViewPane extends BorderPane {
         Platform.runLater(() -> {
             isSelectedFiltersUpdating = true;
 
-            filterCheckComboBox.getCheckModel().clearChecks();
-            selectedFilters.forEach(filter -> filterCheckComboBox.getCheckModel().check(filter));
+            filterSelectionMultiChoiceInput.getCheckModel().clearChecks();
+            selectedFilters.forEach(filter -> filterSelectionMultiChoiceInput.getCheckModel().check(filter));
 
             isSelectedFiltersUpdating = false;
             updateTagFilters();

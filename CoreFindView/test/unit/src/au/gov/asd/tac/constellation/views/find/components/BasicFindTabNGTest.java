@@ -199,14 +199,14 @@ public class BasicFindTabNGTest {
              * vertex attribute list. Both should be checked in the
              * inAttributesMenu
              */
-            assertEquals(basicFindTab.inAttributesMenu.getCheckModel().isChecked(labelAttributeV.getName()), true);
-            assertEquals(basicFindTab.inAttributesMenu.getCheckModel().isChecked(identifierAttributeV.getName()), true);
+            assertEquals(basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().isChecked(labelAttributeV.getName()), true);
+            assertEquals(basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().isChecked(identifierAttributeV.getName()), true);
 
             /**
              * Clear the current selections, and calls the populateAttribute
              * function with Transactions
              */
-            basicFindTab.inAttributesMenu.getCheckModel().clearChecks();
+            basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().clearChecks();
             elementType = GraphElementType.TRANSACTION;
             basicFindTab.populateAttributes(elementType);
 
@@ -214,19 +214,19 @@ public class BasicFindTabNGTest {
              * As only the label attribute was selected in the selected
              * transaction attributes list. Only the label should be selected
              */
-            assertEquals(basicFindTab.inAttributesMenu.getCheckModel().isChecked(labelAttributeT.getName()), true);
-            assertEquals(basicFindTab.inAttributesMenu.getCheckModel().isChecked(identifierAttributeT.getName()), false);
+            assertEquals(basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().isChecked(labelAttributeT.getName()), true);
+            assertEquals(basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().isChecked(identifierAttributeT.getName()), false);
 
             /**
              * Repeat the same for vertex again to show the vertex attributes
              * remain selected when calling the populateAttribute function
              */
-            basicFindTab.inAttributesMenu.getCheckModel().clearChecks();
+            basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().clearChecks();
             elementType = GraphElementType.VERTEX;
             basicFindTab.populateAttributes(elementType);
 
-            assertEquals(basicFindTab.inAttributesMenu.getCheckModel().isChecked(labelAttributeV.getName()), true);
-            assertEquals(basicFindTab.inAttributesMenu.getCheckModel().isChecked(identifierAttributeV.getName()), true);
+            assertEquals(basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().isChecked(labelAttributeV.getName()), true);
+            assertEquals(basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().isChecked(identifierAttributeV.getName()), true);
 
         }
     }
@@ -245,8 +245,8 @@ public class BasicFindTabNGTest {
         selectedAttributes.add(basicFindTab.attributes.get(0));
 
         // Add both the label and identifier attribute to inAttributeMenu
-        basicFindTab.inAttributesMenu.getItems().add(basicFindTab.attributes.get(0).getName());
-        basicFindTab.inAttributesMenu.getItems().add(basicFindTab.attributes.get(1).getName());
+        basicFindTab.attributeFilterMultiChoiceInput.getItems().add(basicFindTab.attributes.get(0).getName());
+        basicFindTab.attributeFilterMultiChoiceInput.getItems().add(basicFindTab.attributes.get(1).getName());
 
         /**
          * Call the updateSelectedAttributes method. This should check the check
@@ -275,8 +275,8 @@ public class BasicFindTabNGTest {
          * In the inAttributeMenu the label attribute (index 0) should be
          * checked and the identifier should not
          */
-        assertEquals(basicFindTab.inAttributesMenu.getCheckModel().isChecked(basicFindTab.attributes.get(0).getName()), true);
-        assertEquals(basicFindTab.inAttributesMenu.getCheckModel().isChecked(basicFindTab.attributes.get(1).getName()), false);
+        assertEquals(basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().isChecked(basicFindTab.attributes.get(0).getName()), true);
+        assertEquals(basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().isChecked(basicFindTab.attributes.get(1).getName()), false);
     }
 
     /**
@@ -319,9 +319,9 @@ public class BasicFindTabNGTest {
          * Add the label and identifier attributes to the check box list and
          * check the label attribute in the checkBoxMenu inAttributesMenu
          */
-        basicFindTab.inAttributesMenu.getItems().add(basicFindTab.attributes.get(0).getName());
-        basicFindTab.inAttributesMenu.getItems().add(basicFindTab.attributes.get(1).getName());
-        basicFindTab.inAttributesMenu.getCheckModel().check(basicFindTab.attributes.get(0).getName());
+        basicFindTab.attributeFilterMultiChoiceInput.getItems().add(basicFindTab.attributes.get(0).getName());
+        basicFindTab.attributeFilterMultiChoiceInput.getItems().add(basicFindTab.attributes.get(1).getName());
+        basicFindTab.attributeFilterMultiChoiceInput.getCheckModel().check(basicFindTab.attributes.get(0).getName());
 
         /**
          * Save the selected attributes in the inAttributeMenu to the
