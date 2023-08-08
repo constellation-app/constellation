@@ -107,7 +107,6 @@ public class MultiChoiceInputField<T extends Object> extends CheckComboBox<T> {
     
     @Override
     protected Skin<?> createDefaultSkin() {
-        // TODO: extend default skin to use prompt text property
         return super.createDefaultSkin();
     }
 
