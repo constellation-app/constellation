@@ -57,12 +57,13 @@ Attribute Editor:
 ## Editing An Attribute
 
 To edit an attribute, select the nodes and transactions you want to edit
-and then click on the attribute value or on the <img src="../ext/docs/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/resources/AttributeEditorEdit.png" alt="Edit
-Icon" />
-button. This will bring up a dialog box to change the value. Once you
+and then click on the attribute value. This will bring up a dialog box to change the value. Once you
 have finished changing the value, press "OK" to apply the change. If
 more than one graph element is selected than the new value will be
 applied to all the relevant selected graph elements.
+
+Attributes that are deactivated will not be editable and will express a text field with a grey tint. 
+<img src="../ext/docs/CoreAttributeEditorView/src/au/gov/asd/tac/constellation/views/attributeeditor/resources/AttributeEditorDeactivatedIndicator.png" alt="Deactivated Attribute" />
 
 NOTE: If you want to change the time zone of an attribute, right click
 on the attribute say "DateTime" and select "Update time-zone of
