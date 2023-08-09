@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.Arc;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.ArcTree;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.BaseLine;
+import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.BlineElement;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.HalfEdge;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.SiteEvent;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.VoronoiEvent;
@@ -52,6 +53,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
     private static final Logger LOGGER = Logger.getLogger(ThiessenPolygonsLayer2.class.getName());
 
     private final Group layer;
+    private final Group arcLayer;
     private final Map<Integer, AbstractMarker> nodesOnScreen = new HashMap<>();
 
     private List<AbstractMarker> markers = new ArrayList<>();
@@ -63,6 +65,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         super(parent, id);
 
         layer = new Group();
+        arcLayer = new Group();
+        layer.getChildren().add(arcLayer);
         this.markers = markers;
 
         eventQueue = new PriorityQueue<VoronoiEvent>((v1, v2) -> {
@@ -165,12 +169,22 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
                 newEdge.setRight(newArc);
             }
         }*/
-        beachLine.run();
-        final List<Line> generatedLines = beachLine.getCompletedEdges();
+        MapView.testKeyPressed.addListener((newVal, oldVal, obj) -> {
+            beachLine.run();
+            arcLayer.getChildren().clear();
+            layer.getChildren().clear();
+            layer.getChildren().add(arcLayer);
+            final List<Line> generatedLines = beachLine.getCompletedEdges();
+            generatedLines.forEach(line -> layer.getChildren().add(line));
 
-        final Arc arc = new Arc(new Vec3(MapView.MAP_WIDTH / 2, MapView.MAP_HEIGHT / 2));
+            generateAllArcs(beachLine.root);
+
+        });
+
+
+        /*final Arc arc = new Arc(new Vec3(MapView.MAP_WIDTH / 2, MapView.MAP_HEIGHT / 2));
         arc.calculateArc(MapView.MAP_HEIGHT * 0.75);
-        //layer.getChildren().add(arc.getArc());
+        layer.getChildren().add(arc.getArc());
 
         final HalfEdge h = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(0.35, 0.35));
         final Line l = new Line();
@@ -180,7 +194,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         l.setEndY(h.getStart().getY() + h.getDirVect().getY() * 5000);
 
         l.setFill(Color.BLUE);
-        //layer.getChildren().add(l);
+        layer.getChildren().add(l);
 
         final Vec3 intersectionPoint = beachLine.getEdgeArcIntersection(h, arc, MapView.MAP_HEIGHT * 0.75);
 
@@ -196,11 +210,50 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             //layer.getChildren().add(r);
         }
 
-        LOGGER.log(Level.SEVERE, "Size of lines: " + generatedLines.size());
-        generatedLines.forEach(line -> layer.getChildren().add(line));
+
+        generatedLines.forEach(line -> layer.getChildren().add(line));*/
 
         //final BaseLine bLine = new BaseLine(new Vec3(0, 0), new Vec3(MapView.MAP_WIDTH, 0));
         //layer.getChildren().add(bLine.getLine());
+    }
+
+    private void generateAllArcs(final BlineElement root) {
+        if (root == null) {
+            return;
+        }
+
+        generateAllArcs(root.getLeft());
+        generateAllArcs(root.getRight());
+
+        final HalfEdge left = root.getLeftEdge() != null ? root.getLeftEdge() : beachLine.getLeftNeighbour(root).getRightEdge();
+        final HalfEdge right = root.getRightEdge() != null ? root.getRightEdge() : beachLine.getRightNeighbour(root).getLeftEdge();
+
+        final Vec3 leftIntersection = beachLine.getEdgeArcIntersection(left, (Arc) root, beachLine.directrixPos);
+        final Vec3 rightIntersection = beachLine.getEdgeArcIntersection(right, (Arc) root, beachLine.directrixPos);
+
+        if (leftIntersection != null && rightIntersection != null) {
+            final Arc arc = (Arc) root;
+            arc.calculateArc(leftIntersection.getX(), rightIntersection.getX(), beachLine.directrixPos);
+
+            final Line leftLine = new Line();
+            leftLine.setStartX(left.getStart().getX());
+            leftLine.setStartY(left.getStart().getY());
+            leftLine.setEndX(leftIntersection.getX());
+            leftLine.setEndY(leftIntersection.getY());
+            leftLine.setStroke(Color.GREEN);
+
+            final Line rightLine = new Line();
+            rightLine.setStartX(right.getStart().getX());
+            rightLine.setStartY(right.getStart().getY());
+            rightLine.setEndX(rightIntersection.getX());
+            rightLine.setEndY(rightIntersection.getY());
+            rightLine.setStroke(Color.GREEN);
+
+            arcLayer.getChildren().add(leftLine);
+            arcLayer.getChildren().add(rightLine);
+
+            arcLayer.getChildren().add(arc.getArc());
+        }
     }
 
     @Override

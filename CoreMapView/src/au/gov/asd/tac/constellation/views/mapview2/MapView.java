@@ -56,6 +56,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -125,6 +127,8 @@ public class MapView extends ScrollPane {
 
     public static final double MAP_WIDTH = 1010.33;
     public static final double MAP_HEIGHT = 1224;
+
+    public static BooleanProperty testKeyPressed = new SimpleBooleanProperty(false);
 
     // Two containers that hold queried markers and user drawn markers
     private Map<String, AbstractMarker> markers = new HashMap<>();
@@ -229,6 +233,12 @@ public class MapView extends ScrollPane {
 
     public MapView(final MapViewPane parent) {
         this.parent = parent;
+
+        this.setOnKeyPressed((e) -> {
+            //if (e.getCharacter().equals("k")) {
+                testKeyPressed.setValue(!testKeyPressed.getValue());
+            //}
+        });
 
         clusterMarkerBuilder = new ClusterMarkerBuilder(this);
 

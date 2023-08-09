@@ -31,7 +31,7 @@ public class Arc extends BlineElement {
 
     public Arc(final Vec3 focus) {
         this.focus = focus;
-        pl.setStroke(Color.RED);
+        pl.setStroke(Color.BLACK);
     }
 
     public Vec3 getFocus() {
@@ -48,8 +48,9 @@ public class Arc extends BlineElement {
         return a * w * w - c;*/
     }
 
-    public void calculateArc(final double directrix) {
-        for (double i = focus.getX() - 500; i < focus.getX() + 500; ++i) {
+    public void calculateArc(final double min, final double max, final double directrix) {
+        pl.getPoints().clear();
+        for (double i = min; i <= max; i = i + 0.05) {
             pl.getPoints().addAll(new Double[]{i, getY(i, directrix)});
         }
     }
