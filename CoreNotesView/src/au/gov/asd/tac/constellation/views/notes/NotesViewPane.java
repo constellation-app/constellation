@@ -105,7 +105,7 @@ public class NotesViewPane extends BorderPane {
     private final ObservableList<String> availableFilters;
     private final List<String> selectedFilters;
     private final MultiChoiceInputField filterSelectionMultiChoiceInput;
-    private CheckComboBox autoFilterCheckComboBox;
+    private MultiChoiceInputField autoFilterCheckComboBox;
     private boolean isSelectedFiltersUpdating = false;
     private boolean isAutoSelectedFiltersUpdating = false;
 
@@ -198,7 +198,7 @@ public class NotesViewPane extends BorderPane {
         tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
 
         // CheckComboBox for the Auto Note filters.
-        autoFilterCheckComboBox = new CheckComboBox(tagsFiltersList);
+        autoFilterCheckComboBox = new MultiChoiceInputField(tagsFiltersList);
         autoFilterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isAutoSelectedFiltersUpdating) {

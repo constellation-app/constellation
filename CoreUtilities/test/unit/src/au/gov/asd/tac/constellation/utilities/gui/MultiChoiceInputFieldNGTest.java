@@ -103,9 +103,9 @@ public class MultiChoiceInputFieldNGTest {
         };
         
         //Test the number of BulkSelectionOtions increased by 1
-        int optionsCountInitial = this.field.getBulkSeletionOptionsMenuButton().getItems().size();
+        int optionsCountInitial = this.field.getBulkSelectionOptionsMenuButton().getItems().size();
         this.field.setSelectionOption("InvertSelection", invertSelectionEvent);
-        int optionsCountFinal = this.field.getBulkSeletionOptionsMenuButton().getItems().size();
+        int optionsCountFinal = this.field.getBulkSelectionOptionsMenuButton().getItems().size();
         Assert.assertTrue(optionsCountInitial + 1 == optionsCountFinal);
     }
 
@@ -132,11 +132,11 @@ public class MultiChoiceInputFieldNGTest {
     }
 
     /**
-     * Test of getBulkSeletionOptionsMenuButton method, of class MultiChoiceInputField.
+     * Test of getBulkSelectionOptionsMenuButton method, of class MultiChoiceInputField.
      */
     @Test
     public void testGetMenuButton() {
-        MenuButton menuButton = this.field.getBulkSeletionOptionsMenuButton();
+        MenuButton menuButton = this.field.getBulkSelectionOptionsMenuButton();
         
         //Make sure the the a MenuButton is returned
         MenuButton expectedClass = new MenuButton();

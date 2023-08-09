@@ -34,7 +34,7 @@ import org.controlsfx.control.CheckComboBox;
  * By Default "Select All" and "Clear All" functionality is enabled. Custom menu selection options are also permitted. 
  * Selection options can be displayed in a {@link javafx.scene.control.MenuButton} or in a {@link javafx.scene.control.ContextMenu}. 
  * This class represents an input field node able to be added to a nodes children for screen rendering. 
- * To render the select option {@link javafx.scene.control.MenuButton} the function {@link au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField#getBulkSeletionOptionsMenuButton()} must be called and the returned node added separately. 
+ * To render the select option {@link javafx.scene.control.MenuButton} the function {@link au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField#getBulkSelectionOptionsMenuButton()} must be called and the returned node added separately. 
  * 
  * @author capricornunicorn123
  * @param <T>
@@ -48,7 +48,7 @@ public class MultiChoiceInputField<T extends Object> extends CheckComboBox<T> {
         this(true);
     }
     
-    public MultiChoiceInputField(boolean enableBulkSelectionOptionPopUp) {
+    public MultiChoiceInputField(final boolean enableBulkSelectionOptionPopUp) {
         super();
         initialiseDefaultSelectionOptions();
         if (enableBulkSelectionOptionPopUp){
@@ -109,7 +109,7 @@ public class MultiChoiceInputField<T extends Object> extends CheckComboBox<T> {
      * Retrieve the {@link javafx.scene.control.MenuButton} containing the bulk selection options.
      * @return {@link javafx.scene.control.MenuButton}
      */
-    public MenuButton getBulkSeletionOptionsMenuButton(){
+    public MenuButton getBulkSelectionOptionsMenuButton(){
         return this.bulkSelectionOptionsMenuButton;
     }
     
