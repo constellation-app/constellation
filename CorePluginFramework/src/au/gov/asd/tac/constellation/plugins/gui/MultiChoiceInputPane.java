@@ -122,15 +122,13 @@ public class MultiChoiceInputPane extends HBox {
                 }
             }));
 
-        field.enablePopUp();
-        
         //field width causes buttons to sit in pane space when available but retract to the same size as buttons if needed.
         field.setPrefWidth(DEFAULT_WIDTH);
         field.setMinWidth(50);
         
         final HBox fieldAndButtons = new HBox();
         fieldAndButtons.setSpacing(2);
-        fieldAndButtons.getChildren().addAll(field, field.getMenuButton());
+        fieldAndButtons.getChildren().addAll(field, field.getBulkSeletionOptionsMenuButton());
         getChildren().add(fieldAndButtons);
     }
 }

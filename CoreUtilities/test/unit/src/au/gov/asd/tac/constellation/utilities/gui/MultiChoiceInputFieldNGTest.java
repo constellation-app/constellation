@@ -20,17 +20,13 @@ import java.util.List;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Skin;
-import org.controlsfx.control.CheckComboBox;
 import org.testfx.api.FxToolkit;
 import org.testng.Assert;
-import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -107,9 +103,9 @@ public class MultiChoiceInputFieldNGTest {
         };
         
         //Test the number of BulkSelectionOtions increased by 1
-        int optionsCountInitial = this.field.getMenuButton().getItems().size();
+        int optionsCountInitial = this.field.getBulkSeletionOptionsMenuButton().getItems().size();
         this.field.setSelectionOption("InvertSelection", invertSelectionEvent);
-        int optionsCountFinal = this.field.getMenuButton().getItems().size();
+        int optionsCountFinal = this.field.getBulkSeletionOptionsMenuButton().getItems().size();
         Assert.assertTrue(optionsCountInitial + 1 == optionsCountFinal);
     }
 
@@ -118,7 +114,9 @@ public class MultiChoiceInputFieldNGTest {
      */
     @Test
     public void testEnablePopUp() {
-       Assert.assertNull(this.field.getOnContextMenuRequested());       
+       this.field.disablePopUp();   
+       Assert.assertNull(this.field.getOnContextMenuRequested()); 
+       
         this.field.enablePopUp();        
         Assert.assertNotNull(this.field.getOnContextMenuRequested());
     }
@@ -128,18 +126,17 @@ public class MultiChoiceInputFieldNGTest {
      */
     @Test
     public void testDisablePopUp() {
-        this.field.enablePopUp();  
         Assert.assertNotNull(this.field.getOnContextMenuRequested());     
         this.field.disablePopUp();        
         Assert.assertNull(this.field.getOnContextMenuRequested());
     }
 
     /**
-     * Test of getMenuButton method, of class MultiChoiceInputField.
+     * Test of getBulkSeletionOptionsMenuButton method, of class MultiChoiceInputField.
      */
     @Test
     public void testGetMenuButton() {
-        MenuButton menuButton = this.field.getMenuButton();
+        MenuButton menuButton = this.field.getBulkSeletionOptionsMenuButton();
         
         //Make sure the the a MenuButton is returned
         MenuButton expectedClass = new MenuButton();

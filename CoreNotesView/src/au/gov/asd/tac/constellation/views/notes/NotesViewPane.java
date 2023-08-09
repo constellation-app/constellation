@@ -248,7 +248,7 @@ public class NotesViewPane extends BorderPane {
 
         // FlowPane to store control items used to filter notes.
         final ToolBar toolBar = new ToolBar();
-        toolBar.getItems().addAll(createNewNoteButton, filterSelectionMultiChoiceInput, filterSelectionMultiChoiceInput.getMenuButton(), autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
+        toolBar.getItems().addAll(createNewNoteButton, filterSelectionMultiChoiceInput, autoFilterCheckComboBox, dateTimeRangePicker.getTimeFilterMenu(), helpButton);
         // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(USER_CHOSEN_COLOUR);
 

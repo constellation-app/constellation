@@ -136,9 +136,6 @@ public class BasicFindTab extends Tab {
             updateSelectedAttributes(getMatchingAttributeList(GraphElementType.getValue(newElement)));
         });
 
-        //Set Right click bulk selection ContextMenu
-        attributeFilterMultiChoiceInput.enablePopUp();
-
         // set the action for changing the seleciton in the postSearchChoiceBox
         searchInChoiceBox.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override

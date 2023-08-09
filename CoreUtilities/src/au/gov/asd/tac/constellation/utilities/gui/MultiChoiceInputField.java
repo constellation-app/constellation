@@ -34,7 +34,7 @@ import org.controlsfx.control.CheckComboBox;
  * By Default "Select All" and "Clear All" functionality is enabled. Custom menu selection options are also permitted. 
  * Selection options can be displayed in a {@link javafx.scene.control.MenuButton} or in a {@link javafx.scene.control.ContextMenu}. 
  * This class represents an input field node able to be added to a nodes children for screen rendering. 
- * To render the select option {@link javafx.scene.control.MenuButton} the function {@link au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField#getMenuButton()} must be called and the returned node added separately. 
+ * To render the select option {@link javafx.scene.control.MenuButton} the function {@link au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField#getBulkSeletionOptionsMenuButton()} must be called and the returned node added separately. 
  * 
  * @author capricornunicorn123
  * @param <T>
@@ -42,25 +42,33 @@ import org.controlsfx.control.CheckComboBox;
 public class MultiChoiceInputField<T extends Object> extends CheckComboBox<T> {
     
     private final ContextMenu contextMenu = new ContextMenu();
-    private final MenuButton menuButton = new MenuButton("...");
-     
+    private final MenuButton bulkSelectionOptionsMenuButton = new MenuButton("...");
+    
     public MultiChoiceInputField() {
+        this(true);
+    }
+    
+    public MultiChoiceInputField(boolean enableBulkSelectionOptionPopUp) {
         super();
         initialiseDefaultSelectionOptions();
+        if (enableBulkSelectionOptionPopUp){
+            this.enablePopUp();
+        }
     }
 
     public MultiChoiceInputField(final ObservableList<T> items) {
         super(items);
         initialiseDefaultSelectionOptions();
+        this.enablePopUp();
     }
     
     /**
      * Adds "Select All" and "Clear All" selection options to the input field.
      */
     private void initialiseDefaultSelectionOptions(){
-        menuButton.setTooltip(new Tooltip("Selection Options"));
-        menuButton.setPrefWidth(50);
-        menuButton.setMinWidth(50);
+        bulkSelectionOptionsMenuButton.setTooltip(new Tooltip("Selection Options"));
+        bulkSelectionOptionsMenuButton.setPrefWidth(50);
+        bulkSelectionOptionsMenuButton.setMinWidth(50);
         setSelectionOption("Select All", event -> this.getCheckModel().checkAll());
         setSelectionOption("Clear All", event -> this.getCheckModel().clearChecks());
     }
@@ -76,7 +84,7 @@ public class MultiChoiceInputField<T extends Object> extends CheckComboBox<T> {
         // so the MenuItem must be made seperately for the MenuButton and the ContextMenu
         final MenuItem menuButtonItem = new MenuItem(displayText);
         menuButtonItem.setOnAction(event);
-        menuButton.getItems().add(menuButtonItem);
+        bulkSelectionOptionsMenuButton.getItems().add(menuButtonItem);
         
         final MenuItem contextMenuItem = new MenuItem(displayText);
         contextMenuItem.setOnAction(event);
@@ -101,8 +109,8 @@ public class MultiChoiceInputField<T extends Object> extends CheckComboBox<T> {
      * Retrieve the {@link javafx.scene.control.MenuButton} containing the bulk selection options.
      * @return {@link javafx.scene.control.MenuButton}
      */
-    public MenuButton getMenuButton(){
-        return this.menuButton;
+    public MenuButton getBulkSeletionOptionsMenuButton(){
+        return this.bulkSelectionOptionsMenuButton;
     }
     
     @Override

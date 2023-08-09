@@ -1,9 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
-== 2023-08-08
-<p>A number of input field drop downs that enable the selection of multiple items have had a bulk selection feature enabled.
-<p>Either select the adjacent drop down labeled "..." or right click the input field to access the "Select All" and "Clear All" functionality.
+== 2023-08-08 - Enabled of Multi-Choice Drop-down bulk selection feature
+<p>A number of input field drop-downs that enable the selection of multiple items have had a bulk selection feature enabled.</p>
+<p>Right click the input field to access the "Select All" and "Clear All" functionality.</p>
+<p>Some instances have an adjacent drop-down labeled "..." that can be used to access the same functionality as right clicking.</p>
 
 == 2023-07-28 Attribute Editor View - Edit Buttons
 <p>Edit buttons have been removed from attributes in the Attributes View.</p>

@@ -176,7 +176,7 @@ public final class ConversationBox extends StackPane {
         final Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
         addAttributesButton.setTooltip(aabt);
         
-        optionsPane.getItems().addAll(senderAttributesMultiChoiceInput, senderAttributesMultiChoiceInput.getMenuButton(), showToolTip, addAttributesButton, helpButton);
+        optionsPane.getItems().addAll(senderAttributesMultiChoiceInput, showToolTip, addAttributesButton, helpButton);
 
         contributionsPane = new BorderPane();
         contributionsPane.setPadding(new Insets(PADDING));

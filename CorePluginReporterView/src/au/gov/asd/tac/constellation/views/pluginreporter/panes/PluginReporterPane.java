@@ -101,7 +101,7 @@ public class PluginReporterPane extends BorderPane implements ListChangeListener
         tagFilterMultiChoiceInput.setMinWidth(50);
 
         // Group these together so the Toolbar treats them as a unit.
-        final HBox filterBox = new HBox(filterLabel, tagFilterMultiChoiceInput, tagFilterMultiChoiceInput.getMenuButton());
+        final HBox filterBox = new HBox(filterLabel, tagFilterMultiChoiceInput);
         filterBox.setAlignment(Pos.BASELINE_LEFT);
 
         // The clear button
