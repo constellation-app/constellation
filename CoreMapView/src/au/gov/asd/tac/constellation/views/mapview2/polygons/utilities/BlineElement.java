@@ -59,7 +59,7 @@ public class BlineElement {
         return leftEdge;
     }
 
-    public void setLeftEdge(HalfEdge leftEdge) {
+    public void setLeftEdge(final HalfEdge leftEdge) {
         this.leftEdge = leftEdge;
     }
 
@@ -67,7 +67,7 @@ public class BlineElement {
         return rightEdge;
     }
 
-    public void setRightEdge(HalfEdge rightEdge) {
+    public void setRightEdge(final HalfEdge rightEdge) {
         this.rightEdge = rightEdge;
     }
 

@@ -27,11 +27,14 @@ public class Arc extends BlineElement {
     private final Vec3 focus;
 
     private final Polyline pl = new Polyline();
+    private int id = 0;
 
 
-    public Arc(final Vec3 focus) {
+    public Arc(final Vec3 focus, final int id) {
         this.focus = focus;
         pl.setStroke(Color.BLACK);
+        this.id = id;
+        pl.setId(Integer.toString(id));
     }
 
     public Vec3 getFocus() {
@@ -58,5 +61,11 @@ public class Arc extends BlineElement {
     public Polyline getArc() {
         return pl;
     }
+
+    public int getId() {
+        return id;
+    }
+
+
 
 }

@@ -41,6 +41,7 @@ public class ArcTree {
     private final PriorityQueue<VoronoiEvent> eventQueue;
 
     public double directrixPos = 0;
+    private int id = 0;
 
     private static final Logger LOGGER = Logger.getLogger(ArcTree.class.getName());
 
@@ -50,7 +51,7 @@ public class ArcTree {
     public ArcTree(final PriorityQueue<VoronoiEvent> eventQueue) {
         this.eventQueue = eventQueue;
         //root = new BaseLine(new Vec3(Double.MIN_VALUE, 0), new Vec3(Double.MAX_VALUE, 0));
-        root = new Arc(new Vec3(MapView.MAP_WIDTH / 2, -500));
+        root = new Arc(new Vec3(MapView.MAP_WIDTH / 2, -500), id++);
         final HalfEdge left = new HalfEdge((Arc) root, null, new Vec3(MapView.MAP_WIDTH / 2, -1000), new Vec3(-1, 0));
         final HalfEdge right = new HalfEdge((Arc) root, null, new Vec3(MapView.MAP_WIDTH / 2, -1000), new Vec3(1, 0));
         root.setLeftEdge(left);
@@ -60,7 +61,7 @@ public class ArcTree {
     private BlineElement addArc(final Vec3 focus) {
         BlineElement current = root;
         final BlineElement intersectingElement = findIntersectingArc(current, focus.getX(), focus.getY());
-        final Arc newArc = new Arc(focus);
+        final Arc newArc = new Arc(focus, id++);
         if (intersectingElement instanceof BaseLine) {
             final BaseLine baseLine = (BaseLine) intersectingElement;
             final BaseLine splitLeft = new BaseLine(baseLine.getStart(), new Vec3(focus.getX(), baseLine.getStart().getY()));
@@ -135,8 +136,11 @@ public class ArcTree {
             //LOGGER.log(Level.SEVERE, "Arc intersected");
             final Arc intersectingArc = (Arc) intersectingElement;
 
-            final Arc splitLeft = new Arc(intersectingArc.getFocus());
-            final Arc splitRight = new Arc(intersectingArc.getFocus());
+            final Arc splitLeft = new Arc(intersectingArc.getFocus(), id++);
+            LOGGER.log(Level.SEVERE, "Created left arc with ID: " + id);
+
+            final Arc splitRight = new Arc(intersectingArc.getFocus(), id++);
+            LOGGER.log(Level.SEVERE, "Created right arc with ID: " + id);
 
             final Vec3 edgeStart = new Vec3(focus.getX(), intersectingArc.getY(focus.getX(), focus.getY()));
             final Vec3 direction = new Vec3(newArc.getFocus().getX() - intersectingArc.getFocus().getX(), newArc.getFocus().getY() - intersectingArc.getFocus().getY());
@@ -191,6 +195,7 @@ public class ArcTree {
             }
 
             if (intersectingArc.getCurrentEvent() != null) {
+                LOGGER.log(Level.SEVERE, "Invalidating intersection at: " + intersectingArc.getCurrentEvent().getYCoord());
                 intersectingArc.getCurrentEvent().setValid(false);
             }
 
@@ -266,7 +271,6 @@ public class ArcTree {
 
         final double distance = Vec3.getDistance(left.getParentArc().getFocus(), intersectionPoint);
 
-        LOGGER.log(Level.SEVERE, "Distance to directrix = " + distance);
 
         final double directrixY = intersectionPoint.getY() + distance;
 
@@ -274,10 +278,12 @@ public class ArcTree {
             if (directrixY >= arc.getCurrentEvent().getYCoord()) {
                 LOGGER.log(Level.SEVERE, "Invalid intersection");
                 return;
-            } else {
-                arc.getCurrentEvent().setValid(false);
             }
+            LOGGER.log(Level.SEVERE, "Invalidating intersection at: " + arc.getCurrentEvent().getYCoord());
+            arc.getCurrentEvent().setValid(false);
         }
+
+        LOGGER.log(Level.SEVERE, "Setting edge intersection event at = " + directrixY);
 
         final EdgeEvent e = new EdgeEvent(directrixY, left, right, arc, intersectionPoint);
         arc.setCurrentEvent(e);
@@ -380,7 +386,7 @@ public class ArcTree {
     }
 
     private void removeArc(final EdgeEvent e) {
-        LOGGER.log(Level.SEVERE, "Removing element: " + ((Arc) e.getSqueezed()).getFocus().getX() + ", " + ((Arc) e.getSqueezed()).getFocus().getY());
+        LOGGER.log(Level.SEVERE, "Removing element");
         final BlineElement removed = e.getSqueezed();
         final HalfEdge e1 = e.getEdge1();
         final HalfEdge e2 = e.getEdge2();
@@ -389,7 +395,7 @@ public class ArcTree {
         e2.setComplete(true);
 
         if (removed instanceof Arc) {
-            LOGGER.log(Level.SEVERE, "squeezed element is an arc");
+            LOGGER.log(Level.SEVERE, "squeezed element is an arc with id: " + ((Arc) removed).getId());
         } else if (removed instanceof BaseLine) {
             LOGGER.log(Level.SEVERE, "squeezed element is a baseline");
         } else {
@@ -443,25 +449,52 @@ public class ArcTree {
         HalfEdge newEdge = null;
 
         //if (left instanceof Arc && right instanceof Arc) {
-            final Arc leftArc = (Arc) left;
-            final Arc rightArc = (Arc) right;
+        final Arc leftArc = (Arc) left;
+        final Arc rightArc = (Arc) right;
 
-            final Vec3 leftFocus = leftArc.getFocus();
-            final Vec3 rightFocus = rightArc.getFocus();
+        final Vec3 leftFocus = leftArc.getFocus();
+        final Vec3 rightFocus = rightArc.getFocus();
 
-            direction = new Vec3(leftFocus.getX() - rightFocus.getX(), leftFocus.getY() - rightFocus.getY());
-            dirNewEdge = new Vec3(direction.getY(), -direction.getX());
-            dirNewEdge.normalizeVec2();
+        direction = new Vec3(leftFocus.getX() - rightFocus.getX(), leftFocus.getY() - rightFocus.getY());
+        dirNewEdge = new Vec3(direction.getY(), -direction.getX());
+        dirNewEdge.normalizeVec2();
 
-            newEdge = new HalfEdge((Arc) rightArc, leftArc, intersectionPoint, dirNewEdge);
+        newEdge = new HalfEdge((Arc) rightArc, leftArc, intersectionPoint, dirNewEdge);
 
-            LOGGER.log(Level.SEVERE, "Merged 2 Arcs at edge start: " + newEdge.getStart().getX() + ", " + newEdge.getStart().getY() + " edge direction: " + newEdge.getDirVect().getX() + ", " + newEdge.getDirVect().getY());
+        LOGGER.log(Level.SEVERE, "Merged 2 Arcs at edge start: " + newEdge.getStart().getX() + ", " + newEdge.getStart().getY() + " edge direction: " + newEdge.getDirVect().getX() + ", " + newEdge.getDirVect().getY());
 
-            LOGGER.log(Level.SEVERE, "Focus of left Arc: " + leftArc.getFocus().getX() + ", " + leftArc.getFocus().getY());
-            LOGGER.log(Level.SEVERE, "Focus of right Arc: " + rightArc.getFocus().getX() + ", " + rightArc.getFocus().getY());
+        LOGGER.log(Level.SEVERE, "Focus of left Arc: " + leftArc.getFocus().getX() + ", " + leftArc.getFocus().getY());
+        LOGGER.log(Level.SEVERE, "Focus of right Arc: " + rightArc.getFocus().getX() + ", " + rightArc.getFocus().getY());
 
-            left.setRightEdge(newEdge);
-            right.setLeftEdge(newEdge);
+        left.setRightEdge(newEdge);
+        right.setLeftEdge(newEdge);
+
+        Line l = new Line();
+        l.setStartX(leftFocus.getX());
+        l.setStartY(leftFocus.getY());
+        l.setEndX(intersectionPoint.getX());
+        l.setEndY(intersectionPoint.getY());
+        l.setStroke(Color.PURPLE);
+
+        Line l2 = new Line();
+        l2.setStartX(rightFocus.getX());
+        l2.setStartY(rightFocus.getY());
+        l2.setEndX(intersectionPoint.getX());
+        l2.setEndY(intersectionPoint.getY());
+        l2.setStroke(Color.PURPLE);
+
+        Line l3 = new Line();
+        l3.setStartX(intersectionPoint.getX());
+        l3.setStartY(intersectionPoint.getY());
+        l3.setEndX(intersectionPoint.getX() + dirNewEdge.getX() * 1000);
+        l3.setEndY(intersectionPoint.getY() + dirNewEdge.getY() * 1000);
+        l3.setStroke(Color.LIME);
+
+        completedEdges.add(l);
+        completedEdges.add(l2);
+        completedEdges.add(l3);
+
+        printBFS(root);
 
         /*} else if (left instanceof BaseLine && right instanceof Arc) {
             final BaseLine leftLine = (BaseLine) left;
@@ -479,9 +512,9 @@ public class ArcTree {
             edges.add(newEdge);
         }
 
-        if (removed.getCurrentEvent() != null) {
+        /*if (removed.getCurrentEvent() != null) {
             removed.getCurrentEvent().setValid(false);
-        }
+        }*/
 
         root = removeElement(root, removed);
 
@@ -496,11 +529,24 @@ public class ArcTree {
         }*/
 
         final double dx = h2.getStart().getX() - h1.getStart().getX();
+
+        LOGGER.log(Level.SEVERE, "DX: " + dx);
+
         final double dy = h2.getStart().getY() - h1.getStart().getY();
+
+        LOGGER.log(Level.SEVERE, "DY: " + dy);
+
         final double det = h2.getDirVect().getX() * h1.getDirVect().getY() - h2.getDirVect().getY() * h1.getDirVect().getX();
 
+        LOGGER.log(Level.SEVERE, "DET: " + det);
+
         final double u = (dy * h2.getDirVect().getX() - dx * h2.getDirVect().getY()) / det;
+
+        LOGGER.log(Level.SEVERE, "U: " + u);
+
         final double v = (dy * h1.getDirVect().getX() - dx * h1.getDirVect().getY()) / det;
+
+        LOGGER.log(Level.SEVERE, "V: " + v);
 
         if (u < 0d && !h1.extendsUp()) {
             return null;
@@ -698,10 +744,21 @@ public class ArcTree {
                 right = right.getLeft();
             }
 
+            if (right == item) {
+                LOGGER.log(Level.SEVERE, "Found item and passed in item the same in getRightN");
+                return null;
+            }
+
             return right;
         }
 
         if (current.getParent() != null && current.getParent().getLeft() == current) {
+
+            if (current.getParent() == item) {
+                LOGGER.log(Level.SEVERE, "parent is item in getRightN");
+                return null;
+            }
+
             return current.getParent();
         }
 
@@ -712,6 +769,11 @@ public class ArcTree {
                 if (current.getParent() == null) {
                     return null;
                 }
+            }
+
+            if (current.getParent() == item) {
+                LOGGER.log(Level.SEVERE, "Parent in 2 children loop is equal to item in getLeftN");
+                return null;
             }
 
             return current.getParent();
@@ -734,10 +796,21 @@ public class ArcTree {
                 left = left.getRight();
             }
 
+            if (left == item) {
+                LOGGER.log(Level.SEVERE, "Found item and passed in item the same in getLeftN");
+                return null;
+            }
+
             return left;
         }
 
         if (current.getParent() != null && current.getParent().getRight() == current) {
+
+            if (current.getParent() == item) {
+                LOGGER.log(Level.SEVERE, "parent is item in getLeftN");
+                return null;
+            }
+
             return current.getParent();
         }
 
@@ -748,6 +821,11 @@ public class ArcTree {
                 if (current.getParent() == null) {
                     return null;
                 }
+            }
+
+            if (current.getParent() == item) {
+                LOGGER.log(Level.SEVERE, "Parent in 2 children loop is equal to item in getLeftN");
+                return null;
             }
 
             return current.getParent();
@@ -792,7 +870,7 @@ public class ArcTree {
             if (item == null) {
                 nodeTypeString += " NULL ";
             } else if (item instanceof Arc) {
-                nodeTypeString += " ARC ";
+                nodeTypeString += " ARC " + ((Arc) item).getId();
             } else {
                 nodeTypeString += " BASELINE ";
             }

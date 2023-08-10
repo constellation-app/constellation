@@ -253,6 +253,33 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             arcLayer.getChildren().add(rightLine);
 
             arcLayer.getChildren().add(arc.getArc());
+
+            arc.getArc().setOnMouseEntered((e) -> {
+                leftLine.setStroke(Color.ORANGE);
+                rightLine.setStroke(Color.ORANGE);
+
+                final double leftDirX = (leftLine.getEndX() - leftLine.getStartX()) / Math.sqrt((leftLine.getEndX() - leftLine.getStartX()) * (leftLine.getEndX() - leftLine.getStartX()) + (leftLine.getEndY() - leftLine.getStartY()) * (leftLine.getEndY() - leftLine.getStartY()));
+                final double leftDirY = (leftLine.getEndY() - leftLine.getStartY()) / Math.sqrt((leftLine.getEndX() - leftLine.getStartX()) * (leftLine.getEndX() - leftLine.getStartX()) + (leftLine.getEndY() - leftLine.getStartY()) * (leftLine.getEndY() - leftLine.getStartY()));
+                LOGGER.log(Level.SEVERE, "Left Line start: " + leftLine.getStartX() + ", " + leftLine.getStartY());
+                leftLine.setEndX(leftLine.getStartX() + left.getDirVect().getX() * 1000);
+                leftLine.setEndY(leftLine.getStartY() + left.getDirVect().getY() * 1000);
+
+                rightLine.setEndX(rightLine.getStartX() + right.getDirVect().getX() * 1000);
+                rightLine.setEndY(rightLine.getStartY() + right.getDirVect().getY() * 1000);
+
+                LOGGER.log(Level.SEVERE, "Left line Direction X : " + left.getDirVect().getX() + " Direction Y: " + left.getDirVect().getY());
+                LOGGER.log(Level.SEVERE, "Right line Direction X : " + right.getDirVect().getX() + " Direction Y: " + right.getDirVect().getY());
+
+            });
+
+            arc.getArc().setOnMouseExited((e) -> {
+                leftLine.setEndX(leftIntersection.getX());
+                leftLine.setEndY(leftIntersection.getY());
+                rightLine.setEndX(rightIntersection.getX());
+                rightLine.setEndY(rightIntersection.getY());
+                leftLine.setStroke(Color.GREEN);
+                rightLine.setStroke(Color.GREEN);
+            });
         }
     }
 
