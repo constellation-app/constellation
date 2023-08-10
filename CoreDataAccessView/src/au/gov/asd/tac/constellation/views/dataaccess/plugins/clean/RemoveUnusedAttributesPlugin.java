@@ -71,7 +71,7 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
             
             //Setup progress report controll data
             int currentProgress = 0;
-            int maxProgress = graph.getAttributeCount(GraphElementType.VERTEX) + graph.getAttributeCount(GraphElementType.TRANSACTION);
+            final int maxProgress = graph.getAttributeCount(GraphElementType.VERTEX) + graph.getAttributeCount(GraphElementType.TRANSACTION);
             
             interaction.setProgress(currentProgress, maxProgress, "Removing unused attributes...", true);
             final Set<GraphElementType> graphElements = new HashSet<>();

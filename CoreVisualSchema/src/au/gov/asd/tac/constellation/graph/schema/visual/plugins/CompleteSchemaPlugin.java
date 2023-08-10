@@ -40,9 +40,9 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         if (graph.getSchema() != null) {
             int currentProgress = 0;
-            int vertexCount = graph.getVertexCount();
-            int transactionCount = graph.getTransactionCount();
-            int maxProgress = vertexCount + transactionCount;
+            final int vertexCount = graph.getVertexCount();
+            final int transactionCount = graph.getTransactionCount();
+            final int maxProgress = vertexCount + transactionCount;
             interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true);
             
             // vertices

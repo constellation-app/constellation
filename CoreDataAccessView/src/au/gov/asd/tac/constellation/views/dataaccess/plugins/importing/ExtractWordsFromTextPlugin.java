@@ -281,7 +281,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             throw new PluginException(PluginNotificationLevel.ERROR, msg);
         }
 
-        Set<String> newNodes = new HashSet<>();
+        final Set<String> newNodes = new HashSet<>();
         final boolean outgoing = OUTGOING.equals(inOrOut);
 
         // Retrieving attribute IDs
@@ -377,7 +377,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                         final int destinationVertexId = wg.getTransactionDestinationVertex(transactionId);
                         final ZonedDateTime datetime = wg.getObjectValue(transactionDatetimeAttributeId, transactionId);
 
-                        for (String word : matched ){
+                        for (final String word : matched){
                             final int newVertexId = wg.addVertex();
                             wg.setStringValue(vertexIdentifierAttributeId, newVertexId, word);
                             wg.setObjectValue(vertexTypeAttributeId, newVertexId, AnalyticConcept.VertexType.WORD);
