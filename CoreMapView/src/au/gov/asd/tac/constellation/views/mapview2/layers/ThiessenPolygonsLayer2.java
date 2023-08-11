@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -121,8 +122,9 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         arcLayer.getChildren().clear();
         layer.getChildren().clear();
         layer.getChildren().add(arcLayer);
-        final List<Line> generatedLines = beachLine.getCompletedEdges();
-        generatedLines.forEach(line -> layer.getChildren().add(line));
+        final List<Polygon> generatedShapes = beachLine.getCompletedShapes();
+        generatedShapes.forEach(shape -> layer.getChildren().add(shape));
+
     }
 
     private void generateAllArcs(final BlineElement root) {
