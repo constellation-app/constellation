@@ -117,104 +117,12 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
     private void calculateVoronoi() {
 
-        /*final SiteEvent firstEvent = (SiteEvent) eventQueue.peek();
-
-        final BeachLineElement firstArc = new Parabola(firstEvent.getSite(), firstEvent.getSite(), firstEvent.getSite().getX(), firstEvent.getSite());
-        ((Parabola) firstArc).setCurrentEdgeEvent(null);
-        //final BeachLineElement firstArc = new Parabola(new Vec3(0, 0), new Vec3(0, 0), MapView.MAP_WIDTH / 2, new Vec3(MapView.MAP_WIDTH / 2, -100));
-        beachLine.setRoot(firstArc);
-        eventQueue.poll();
-        final double startCaseY = ((Parabola) firstArc).getSite().getY() + 1;
-
-        while (!eventQueue.isEmpty() && (eventQueue.peek().getYCoord() < startCaseY)) {
-            LOGGER.log(Level.SEVERE, "Running first while loop");
-            if (eventQueue.peek().getYCoord() > MapView.MAP_HEIGHT) {
-                break;
-            }
-
-            final VoronoiEvent event = eventQueue.poll();
-
-            final Vec3 focus = ((SiteEvent) event).getSite();
-
-            final BeachLineElement newArc = new Parabola(new Vec3(focus.getX(), 0), new Vec3(focus.getX(), 0), focus.getX(), focus);
-
-            final BeachLineElement intersectingArc = beachLine.searchArcs((Parabola) newArc, focus.getY());
-            final Vec3 edgeStart = new Vec3((focus.getX() + ((Parabola) intersectingArc).getSite().getX()) / 2, focus.getY() - 200); // + 100
-            final Vec3 edgeDir = new Vec3(0, -1);
-
-            final Edge newEdge = new Edge(edgeStart, edgeStart, edgeStart.getX());
-            newEdge.setDirVect(edgeDir);
-            newEdge.setExtendsUp(true);
-
-            if (intersectingArc.getParent() != null) {
-                if (intersectingArc.getParent().getLeft() == intersectingArc) {
-                    intersectingArc.getParent().setLeft(newEdge);
-                    LOGGER.log(Level.SEVERE, "The intersecting's arcs parent's left child is the new edge");
-                } else {
-                    intersectingArc.getParent().setRight(newEdge);
-                    LOGGER.log(Level.SEVERE, "The intersecting's arcs parent's right child is the new edge");
-                }
-            } else {
-                LOGGER.log(Level.SEVERE, "setting the new root to be an edge inside this first while loop");
-                beachLine.setRoot(newEdge);
-            }
-
-            if (focus.getX() < ((Parabola) intersectingArc).getSite().getX()) {
-                newEdge.setLeft(newArc);
-                LOGGER.log(Level.SEVERE, "Setting Left newArc and right intersectingArc");
-                newEdge.setRight(intersectingArc);
-            } else {
-                newEdge.setLeft(intersectingArc);
-                LOGGER.log(Level.SEVERE, "Setting right newArc and left intersectingArc");
-                newEdge.setRight(newArc);
-            }
-        }*/
-        MapView.testKeyPressed.addListener((newVal, oldVal, obj) -> {
-            beachLine.run();
-            arcLayer.getChildren().clear();
-            layer.getChildren().clear();
-            layer.getChildren().add(arcLayer);
-            final List<Line> generatedLines = beachLine.getCompletedEdges();
-            generatedLines.forEach(line -> layer.getChildren().add(line));
-
-            generateAllArcs(beachLine.root);
-
-        });
-
-
-        /*final Arc arc = new Arc(new Vec3(MapView.MAP_WIDTH / 2, MapView.MAP_HEIGHT / 2));
-        arc.calculateArc(MapView.MAP_HEIGHT * 0.75);
-        layer.getChildren().add(arc.getArc());
-
-        final HalfEdge h = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(0.35, 0.35));
-        final Line l = new Line();
-        l.setStartX(h.getStart().getX());
-        l.setStartY(h.getStart().getY());
-        l.setEndX(h.getStart().getX() + h.getDirVect().getX() * 5000);
-        l.setEndY(h.getStart().getY() + h.getDirVect().getY() * 5000);
-
-        l.setFill(Color.BLUE);
-        layer.getChildren().add(l);
-
-        final Vec3 intersectionPoint = beachLine.getEdgeArcIntersection(h, arc, MapView.MAP_HEIGHT * 0.75);
-
-        if (intersectionPoint != null) {
-            final Rectangle r = new Rectangle();
-            r.setWidth(5);
-            r.setHeight(5);
-            r.setX(intersectionPoint.getX());
-            r.setY(intersectionPoint.getY());
-
-            r.setFill(Color.GREEN);
-
-            //layer.getChildren().add(r);
-        }
-
-
-        generatedLines.forEach(line -> layer.getChildren().add(line));*/
-
-        //final BaseLine bLine = new BaseLine(new Vec3(0, 0), new Vec3(MapView.MAP_WIDTH, 0));
-        //layer.getChildren().add(bLine.getLine());
+        beachLine.run();
+        arcLayer.getChildren().clear();
+        layer.getChildren().clear();
+        layer.getChildren().add(arcLayer);
+        final List<Line> generatedLines = beachLine.getCompletedEdges();
+        generatedLines.forEach(line -> layer.getChildren().add(line));
     }
 
     private void generateAllArcs(final BlineElement root) {
