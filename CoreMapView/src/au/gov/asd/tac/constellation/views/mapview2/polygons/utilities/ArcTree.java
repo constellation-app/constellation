@@ -752,8 +752,6 @@ public class ArcTree {
 
     private void renderIntersectionPoints() {
         siteMap.values().forEach(intersectionSet -> {
-
-            final Line averageLine = new Line();
             double x = 0;
             double y = 0;
             final Iterator<Vec3> pointsIterator = (intersectionSet.iterator());
@@ -761,34 +759,16 @@ public class ArcTree {
                 final Vec3 point = pointsIterator.next();
                 x += point.getX();
                 y += point.getY();
-                final Line l = new Line();
-                l.setStartX(point.getX() - 2);
-                l.setStartY(point.getY());
-                l.setEndX(point.getX() + 2);
-                l.setEndY(point.getY());
-                l.setStroke(Color.PURPLE);
-                l.setStrokeWidth(5);
-
-                completedEdges.add(l);
             }
 
             x = x / intersectionSet.size();
             y = y / intersectionSet.size();
 
-            averageLine.setStartX(x - 5);
-            averageLine.setStartY(y);
-            averageLine.setEndX(x + 5);
-            averageLine.setEndY(y);
-
-            averageLine.setStroke(Color.GREEN);
-
             shapeCorners.add(new Pair<>(new Vec3(x, y), intersectionSet));
-
-            completedEdges.add(averageLine);
         });
     }
 
-    private void generateShapes() {
+    private void calculatePointDegrees() {
 
         shapeCorners.forEach(entry -> {
             final Vec3 avg = entry.getKey();
@@ -824,7 +804,7 @@ public class ArcTree {
         });
     }
 
-    private void renderShapes() {
+    private void generateShapes() {
         final ConstellationColor[] palette = ConstellationColor.createPalette(finalShapeCorners.size());
 
         for (int i = 0; i < finalShapeCorners.size(); i++) {
@@ -962,8 +942,8 @@ public class ArcTree {
 
         finishEdges();
         renderIntersectionPoints();
+        calculatePointDegrees();
         generateShapes();
-        renderShapes();
     }
 
 }
