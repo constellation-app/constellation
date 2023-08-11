@@ -260,15 +260,15 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
                 final double leftDirX = (leftLine.getEndX() - leftLine.getStartX()) / Math.sqrt((leftLine.getEndX() - leftLine.getStartX()) * (leftLine.getEndX() - leftLine.getStartX()) + (leftLine.getEndY() - leftLine.getStartY()) * (leftLine.getEndY() - leftLine.getStartY()));
                 final double leftDirY = (leftLine.getEndY() - leftLine.getStartY()) / Math.sqrt((leftLine.getEndX() - leftLine.getStartX()) * (leftLine.getEndX() - leftLine.getStartX()) + (leftLine.getEndY() - leftLine.getStartY()) * (leftLine.getEndY() - leftLine.getStartY()));
-                LOGGER.log(Level.SEVERE, "Left Line start: " + leftLine.getStartX() + ", " + leftLine.getStartY());
+                //LOGGER.log(Level.SEVERE, "Left Line start: " + leftLine.getStartX() + ", " + leftLine.getStartY());
                 leftLine.setEndX(leftLine.getStartX() + left.getDirVect().getX() * 1000);
                 leftLine.setEndY(leftLine.getStartY() + left.getDirVect().getY() * 1000);
 
                 rightLine.setEndX(rightLine.getStartX() + right.getDirVect().getX() * 1000);
                 rightLine.setEndY(rightLine.getStartY() + right.getDirVect().getY() * 1000);
 
-                LOGGER.log(Level.SEVERE, "Left line Direction X : " + left.getDirVect().getX() + " Direction Y: " + left.getDirVect().getY());
-                LOGGER.log(Level.SEVERE, "Right line Direction X : " + right.getDirVect().getX() + " Direction Y: " + right.getDirVect().getY());
+                //LOGGER.log(Level.SEVERE, "Left line Direction X : " + left.getDirVect().getX() + " Direction Y: " + left.getDirVect().getY());
+                //LOGGER.log(Level.SEVERE, "Right line Direction X : " + right.getDirVect().getX() + " Direction Y: " + right.getDirVect().getY());
 
             });
 
