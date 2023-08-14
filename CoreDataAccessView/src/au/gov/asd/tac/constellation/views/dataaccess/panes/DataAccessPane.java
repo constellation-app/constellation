@@ -103,17 +103,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 .get(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID)
                 .addListener((oldValue, newValue) -> update());
 
-        // Right click anywhere and get the tab's context menu
-        setOnContextMenuRequested(contextMenuEvent -> {
-            getDataAccessTabPane().getCurrentTab().getContextMenu()
-                    .show(
-                            DataAccessPane.this,
-                            contextMenuEvent.getScreenX(),
-                            contextMenuEvent.getScreenY()
-                    );
-            contextMenuEvent.consume();
-        });
-
         // Refresh all the status of menu items, execute buttons etc.
         // based on the current state of the data access view
         update();
