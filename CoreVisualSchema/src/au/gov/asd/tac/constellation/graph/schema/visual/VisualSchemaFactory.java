@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttributeUtilit
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept.ConstellationViewsConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
@@ -35,6 +36,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.prefs.Preferences;
+import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -297,7 +300,44 @@ public class VisualSchemaFactory extends SchemaFactory {
         }
 
         private ConstellationColor randomColor() {
-            return ConstellationColor.getColorValue(random.nextFloat(), random.nextFloat(), random.nextFloat(), 1.0F);
+            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+            //Retrieve colorblind mode selection preference 
+            final String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+
+            final float brightenFloat = 0.10F; //Value to inflate randomly generated low floats 
+            final float lowFloat = 0.10F;
+            float randFloat1 = random.nextFloat();
+            float randFloat2 = random.nextFloat();
+            float randFloat3 = random.nextFloat();
+
+            //Change node color randomiser based on colorblind mode selection
+            switch (colorMode) {
+                case "None":
+                    return ConstellationColor.getColorValue(randFloat1, randFloat2, randFloat3, 1.0F);
+                case "Deuteranopia":
+                    //Ensure randomised color does not generate an RGB value which is too dark for user contrast.
+                    if (randFloat1 <= lowFloat && randFloat3 <= lowFloat) {
+                        randFloat1 += brightenFloat;
+                        randFloat3 += brightenFloat;
+                    }
+
+                    return ConstellationColor.getColorValue(randFloat1, 0F, randFloat3, 1.0F);
+                case "Protanopia":
+                    if (randFloat1 <= lowFloat && randFloat3 <= lowFloat) {
+                        randFloat3 += brightenFloat;
+                        randFloat1 += brightenFloat;
+                    }
+                    return ConstellationColor.getColorValue(randFloat1, 0F, randFloat3, 1.0F);
+
+                case "Tritanopia":
+                    if (randFloat1 <= lowFloat && randFloat2 <= lowFloat) {
+                        randFloat1 += brightenFloat;
+                        randFloat2 += brightenFloat;
+                    }
+                    return ConstellationColor.getColorValue(randFloat1, randFloat2, 0F, 1.0F);
+            }
+
+            return null;
         }
     }
 }

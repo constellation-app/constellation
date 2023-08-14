@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.BrandingUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
@@ -39,7 +40,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.prefs.Preferences;
 import java.util.regex.Pattern;
+import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -140,42 +143,140 @@ public class AnalyticConcept extends SchemaConcept {
 
     public static class VertexType {
 
+        static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        //Retrieve colorblind mode selection preference 
+        static final String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+
+        public static final SchemaVertexType TELEPHONE_IDENTIFIER;
+        public static final SchemaVertexType MACHINE_IDENTIFIER;
+        public static final SchemaVertexType ONLINE_IDENTIFIER;
+        public static final SchemaVertexType LOCATION;
+        public static final SchemaVertexType DOCUMENT;
+        public static final SchemaVertexType EVENT;
+        public static final SchemaVertexType PLACEHOLDER;
+        public static final SchemaVertexType EMAIL_ADDRESS;
+
+        //Change the color scheme of vertexes with poor contrast based on color blind mode selection 
+        static {
+            if (COLORMODE.equals("Deuteranopia") || COLORMODE.equals("Protanopia")) {
+                TELEPHONE_IDENTIFIER = new SchemaVertexType.Builder("Telephone Identifier")
+                        .setDescription("A node representing the identifier of a telephony device or service, eg. the phone number +6101234567")
+                        .setColor(ConstellationColor.BUTTERMILK)
+                        .setForegroundIcon(AnalyticIconProvider.CALL)
+                        .setDetectionRegex(Pattern.compile("\\+?\\d{8,15}", Pattern.CASE_INSENSITIVE))
+                        .setValidationRegex(Pattern.compile("^\\+?\\d{8,15}$", Pattern.CASE_INSENSITIVE))
+                        .build();
+                MACHINE_IDENTIFIER = new SchemaVertexType.Builder("Machine Identifier")
+                        .setDescription("A node representing the identifier of a physical machine, eg. the MAC address A1:B2:C3:D4:E5:F6")
+                        .setColor(ConstellationColor.BLUSH)
+                        .setForegroundIcon(AnalyticIconProvider.MICROPROCESSOR)
+                        .build();
+                ONLINE_IDENTIFIER = new SchemaVertexType.Builder("Online Identifier")
+                        .setDescription("A node representing the identifier of an account on a network, eg. the reddit username reddit_user")
+                        .setColor(ConstellationColor.MIDNIGHT)
+                        .setForegroundIcon(AnalyticIconProvider.PERSON)
+                        .build();
+                LOCATION = new SchemaVertexType.Builder("Location")
+                        .setDescription("A node representing a geographic location, eg. the country Australia")
+                        .setColor(ConstellationColor.BLUE)
+                        .setForegroundIcon(AnalyticIconProvider.GLOBE)
+                        .build();
+                DOCUMENT = new SchemaVertexType.Builder("Document")
+                        .setDescription("A node representing a document, eg. a text file")
+                        .setColor(ConstellationColor.DARK_PURPLE)
+                        .setForegroundIcon(AnalyticIconProvider.PAPERCLIP)
+                        .build();
+                EVENT = new SchemaVertexType.Builder("Event")
+                        .setDescription("A node representing an event, eg. a stage show")
+                        .setColor(ConstellationColor.BROWN)
+                        .setForegroundIcon(AnalyticIconProvider.SIGNAL)
+                        .build();
+                PLACEHOLDER = new SchemaVertexType.Builder("Placeholder")
+                        .setDescription("A node representing a placeholder which can be used for special purposes in CONSTELLATION")
+                        .setColor(ConstellationColor.LIME)
+                        .setForegroundIcon(AnalyticIconProvider.STAR)
+                        .build();
+                EMAIL_ADDRESS = new SchemaVertexType.Builder("Email")
+                        .setDescription("A node representing an email address")
+                        .setColor(ConstellationColor.RED)
+                        .setForegroundIcon(AnalyticIconProvider.EMAIL)
+                        .setSuperType(ONLINE_IDENTIFIER)
+                        .setDetectionRegex(Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
+                                + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d))\\.){3}(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d)|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])", // domain component 
+                                Pattern.CASE_INSENSITIVE))
+                        .setValidationRegex(Pattern.compile("^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
+                                + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d))\\.){3}(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d)|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$", // domain component 
+                                Pattern.CASE_INSENSITIVE))
+                        .build();
+            } //else if (COLORMODE.equals("Tritanopia")) {} 
+            else { //This is the default color scheme
+                TELEPHONE_IDENTIFIER = new SchemaVertexType.Builder("Telephone Identifier")
+                        .setDescription("A node representing the identifier of a telephony device or service, eg. the phone number +6101234567")
+                        .setColor(ConstellationColor.EMERALD)
+                        .setForegroundIcon(AnalyticIconProvider.CALL)
+                        .setDetectionRegex(Pattern.compile("\\+?\\d{8,15}", Pattern.CASE_INSENSITIVE))
+                        .setValidationRegex(Pattern.compile("^\\+?\\d{8,15}$", Pattern.CASE_INSENSITIVE))
+                        .build();
+                MACHINE_IDENTIFIER = new SchemaVertexType.Builder("Machine Identifier")
+                        .setDescription("A node representing the identifier of a physical machine, eg. the MAC address A1:B2:C3:D4:E5:F6")
+                        .setColor(ConstellationColor.CHOCOLATE)
+                        .setForegroundIcon(AnalyticIconProvider.MICROPROCESSOR)
+                        .build();
+                ONLINE_IDENTIFIER = new SchemaVertexType.Builder("Online Identifier")
+                        .setDescription("A node representing the identifier of an account on a network, eg. the reddit username reddit_user")
+                        .setColor(ConstellationColor.AZURE)
+                        .setForegroundIcon(AnalyticIconProvider.PERSON)
+                        .build();
+                LOCATION = new SchemaVertexType.Builder("Location")
+                        .setDescription("A node representing a geographic location, eg. the country Australia")
+                        .setColor(ConstellationColor.CARROT)
+                        .setForegroundIcon(AnalyticIconProvider.GLOBE)
+                        .build();
+                DOCUMENT = new SchemaVertexType.Builder("Document")
+                        .setDescription("A node representing a document, eg. a text file")
+                        .setColor(ConstellationColor.BANANA)
+                        .setForegroundIcon(AnalyticIconProvider.PAPERCLIP)
+                        .build();
+                EVENT = new SchemaVertexType.Builder("Event")
+                        .setDescription("A node representing an event, eg. a stage show")
+                        .setColor(ConstellationColor.PEACH)
+                        .setForegroundIcon(AnalyticIconProvider.SIGNAL)
+                        .build();
+                PLACEHOLDER = new SchemaVertexType.Builder("Placeholder")
+                        .setDescription("A node representing a placeholder which can be used for special purposes in CONSTELLATION")
+                        .setColor(ConstellationColor.TEAL)
+                        .setForegroundIcon(AnalyticIconProvider.STAR)
+                        .build();
+                EMAIL_ADDRESS = new SchemaVertexType.Builder("Email")
+                        .setDescription("A node representing an email address")
+                        .setColor(ConstellationColor.MUSK)
+                        .setForegroundIcon(AnalyticIconProvider.EMAIL)
+                        .setSuperType(ONLINE_IDENTIFIER)
+                        .setDetectionRegex(Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
+                                + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d))\\.){3}(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d)|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])", // domain component 
+                                Pattern.CASE_INSENSITIVE))
+                        .setValidationRegex(Pattern.compile("^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
+                                + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d))\\.){3}(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d)|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$", // domain component 
+                                Pattern.CASE_INSENSITIVE))
+                        .build();
+            }
+        }
+
         public static final SchemaVertexType GRAPH = new SchemaVertexType.Builder(String.format("%s Graph", BrandingUtilities.APPLICATION_NAME))
                 .setDescription(String.format("A node representing a %s Graph", BrandingUtilities.APPLICATION_NAME))
                 .setColor(ConstellationColor.AZURE)
                 .setForegroundIcon(AnalyticIconProvider.STAR)
-                .build();
-        public static final SchemaVertexType TELEPHONE_IDENTIFIER = new SchemaVertexType.Builder("Telephone Identifier")
-                .setDescription("A node representing the identifier of a telephony device or service, eg. the phone number +6101234567")
-                .setColor(ConstellationColor.EMERALD)
-                .setForegroundIcon(AnalyticIconProvider.CALL)
-                .setDetectionRegex(Pattern.compile("\\+?\\d{8,15}", Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("^\\+?\\d{8,15}$", Pattern.CASE_INSENSITIVE))
-                .build();
-        public static final SchemaVertexType MACHINE_IDENTIFIER = new SchemaVertexType.Builder("Machine Identifier")
-                .setDescription("A node representing the identifier of a physical machine, eg. the MAC address A1:B2:C3:D4:E5:F6")
-                .setColor(ConstellationColor.CHOCOLATE)
-                .setForegroundIcon(AnalyticIconProvider.MICROPROCESSOR)
                 .build();
         public static final SchemaVertexType NETWORK_IDENTIFIER = new SchemaVertexType.Builder("Network Identifier")
                 .setDescription("A node representing the identifier of equipment on a network, eg. the ip address 192.168.0.1")
                 .setColor(ConstellationColor.GREY)
                 .setForegroundIcon(AnalyticIconProvider.INTERNET)
                 .build();
-        public static final SchemaVertexType ONLINE_IDENTIFIER = new SchemaVertexType.Builder("Online Identifier")
-                .setDescription("A node representing the identifier of an account on a network, eg. the reddit username reddit_user")
-                .setColor(ConstellationColor.AZURE)
-                .setForegroundIcon(AnalyticIconProvider.PERSON)
-                .build();
+
         public static final SchemaVertexType ONLINE_LOCATION = new SchemaVertexType.Builder("Online Location")
                 .setDescription("A node representing a location on a network, eg. the url https://www.some-domain.com")
                 .setColor(ConstellationColor.BLUEBERRY)
                 .setForegroundIcon(AnalyticIconProvider.UNIFORM_RESOURCE_LOCATOR)
-                .build();
-        public static final SchemaVertexType LOCATION = new SchemaVertexType.Builder("Location")
-                .setDescription("A node representing a geographic location, eg. the country Australia")
-                .setColor(ConstellationColor.CARROT)
-                .setForegroundIcon(AnalyticIconProvider.GLOBE)
                 .build();
         public static final SchemaVertexType PERSON = new SchemaVertexType.Builder("Person")
                 .setDescription("A node representing a person, eg. Joe Bloggs")
@@ -186,11 +287,6 @@ public class AnalyticConcept extends SchemaConcept {
                 .setDescription("An node representing an organisation or company, eg. ACME Corporation")
                 .setColor(ConstellationColor.AMETHYST).setForegroundIcon(AnalyticIconProvider.GROUP)
                 .build();
-        public static final SchemaVertexType DOCUMENT = new SchemaVertexType.Builder("Document")
-                .setDescription("A node representing a document, eg. a text file")
-                .setColor(ConstellationColor.BANANA)
-                .setForegroundIcon(AnalyticIconProvider.PAPERCLIP)
-                .build();
         public static final SchemaVertexType WORD = new SchemaVertexType.Builder("Word")
                 .setDescription("A node representing a word")
                 .setColor(ConstellationColor.CYAN)
@@ -200,16 +296,6 @@ public class AnalyticConcept extends SchemaConcept {
                 .setDescription("A node representing a hash")
                 .setColor(ConstellationColor.CYAN)
                 .setForegroundIcon(CharacterIconProvider.CHAR_0023)
-                .build();
-        public static final SchemaVertexType EVENT = new SchemaVertexType.Builder("Event")
-                .setDescription("A node representing an event, eg. a stage show")
-                .setColor(ConstellationColor.PEACH)
-                .setForegroundIcon(AnalyticIconProvider.SIGNAL)
-                .build();
-        public static final SchemaVertexType PLACEHOLDER = new SchemaVertexType.Builder("Placeholder")
-                .setDescription("A node representing a placeholder which can be used for special purposes in CONSTELLATION")
-                .setColor(ConstellationColor.TEAL)
-                .setForegroundIcon(AnalyticIconProvider.STAR)
                 .build();
         // network identifier derived types
         public static final SchemaVertexType IP_ADDRESS = new SchemaVertexType.Builder("IP Address")
@@ -255,18 +341,6 @@ public class AnalyticConcept extends SchemaConcept {
                         + ")$", Pattern.CASE_INSENSITIVE))
                 .build();
         // online location derived types
-        public static final SchemaVertexType EMAIL_ADDRESS = new SchemaVertexType.Builder("Email")
-                .setDescription("A node representing an email address")
-                .setColor(ConstellationColor.MUSK)
-                .setForegroundIcon(AnalyticIconProvider.EMAIL)
-                .setSuperType(ONLINE_IDENTIFIER)
-                .setDetectionRegex(Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
-                        + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d))\\.){3}(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d)|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])", // domain component 
-                        Pattern.CASE_INSENSITIVE))
-                .setValidationRegex(Pattern.compile("^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
-                        + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d))\\.){3}(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d)|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$", // domain component 
-                        Pattern.CASE_INSENSITIVE))
-                .build();
         public static final SchemaVertexType USER_NAME = new SchemaVertexType.Builder("User Name")
                 .setDescription("A node representing an online user name")
                 .setSuperType(ONLINE_IDENTIFIER)
@@ -397,46 +471,105 @@ public class AnalyticConcept extends SchemaConcept {
 
     public static class TransactionType {
 
-        public static final SchemaTransactionType COMMUNICATION = new SchemaTransactionType.Builder("Communication")
-                .setDescription("A transaction representing a communication between two entities, eg. a phone made a call to another phone")
-                .setColor(ConstellationColor.EMERALD)
-                .build();
-        public static final SchemaTransactionType CORRELATION = new SchemaTransactionType.Builder("Correlation")
-                .setDescription("A transaction representing a two entities which are part of the same larger entity, eg. a person is correlated to their online identifier")
-                .setColor(ConstellationColor.AZURE)
-                .setDirected(false)
-                .build();
-        public static final SchemaTransactionType LOCATION = new SchemaTransactionType.Builder("Location")
-                .setDescription("A transaction representing an entity having a location, eg. a person is located in a country")
-                .setColor(ConstellationColor.CARROT)
-                .build();
-        public static final SchemaTransactionType NETWORK = new SchemaTransactionType.Builder("Network")
-                .setDescription("A transaction representing a network connection, eg. an computer sent a request to a server")
-                .setColor(ConstellationColor.BANANA)
-                .build();
-        public static final SchemaTransactionType RELATIONSHIP = new SchemaTransactionType.Builder("Relationship")
-                .setDescription("A transaction representing a relationship between two entities, eg. a person is the mother of another person")
-                .setColor(ConstellationColor.AMETHYST)
-                .setDirected(false)
-                .build();
-        public static final SchemaTransactionType BEHAVIOUR = new SchemaTransactionType.Builder("Behaviour")
-                .setDescription("A transaction representing an entity exhibiting a behaviour, eg. an online identifier added a friend")
-                .setColor(ConstellationColor.MUSK)
-                .build();
-        public static final SchemaTransactionType SIMILARITY = new SchemaTransactionType.Builder("Similarity")
-                .setDescription("An transaction representing two entities which are similar (often with an associated similarity score), eg. an online identifier has a similar set of friends to another online identifier")
-                .setColor(ConstellationColor.TURQUOISE)
-                .setDirected(false)
-                .build();
-        public static final SchemaTransactionType CREATED = new SchemaTransactionType.Builder("Created")
-                .setDescription("A transaction representing an entity creating another entity, eg. a person created a document")
-                .setColor(ConstellationColor.CHOCOLATE)
-                .build();
-        public static final SchemaTransactionType REFERENCED = new SchemaTransactionType.Builder("Referenced")
-                .setDescription("A transaction representing an entity referencing another entity, eg. a document referenced its author")
-                .setColor(ConstellationColor.CHOCOLATE)
-                .setStyle(LineStyle.DASHED)
-                .build();
+        static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        //Retrieve colorblind mode selection preference 
+        static final String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+
+        public static final SchemaTransactionType COMMUNICATION;
+        public static final SchemaTransactionType CORRELATION;
+        public static final SchemaTransactionType LOCATION;
+        public static final SchemaTransactionType NETWORK;
+        public static final SchemaTransactionType RELATIONSHIP;
+        public static final SchemaTransactionType BEHAVIOUR;
+        public static final SchemaTransactionType SIMILARITY;
+        public static final SchemaTransactionType CREATED;
+        public static final SchemaTransactionType REFERENCED;
+
+        static {
+            if (COLORMODE.equals("Deuteranopia") || COLORMODE.equals("Protanopia") || COLORMODE.equals("Tritanopia")) {
+                COMMUNICATION = new SchemaTransactionType.Builder("Communication")
+                        .setDescription("A transaction representing a communication between two entities, eg. a phone made a call to another phone")
+                        .setColor(ConstellationColor.EMERALD)
+                        .build();
+                CORRELATION = new SchemaTransactionType.Builder("Correlation")
+                        .setDescription("A transaction representing a two entities which are part of the same larger entity, eg. a person is correlated to their online identifier")
+                        .setColor(ConstellationColor.AZURE)
+                        .setDirected(false)
+                        .build();
+                LOCATION = new SchemaTransactionType.Builder("Location")
+                        .setDescription("A transaction representing an entity having a location, eg. a person is located in a country")
+                        .setColor(ConstellationColor.NAVY)
+                        .build();
+                NETWORK = new SchemaTransactionType.Builder("Network")
+                        .setDescription("A transaction representing a network connection, eg. an computer sent a request to a server")
+                        .setColor(ConstellationColor.BANANA)
+                        .build();
+                RELATIONSHIP = new SchemaTransactionType.Builder("Relationship")
+                        .setDescription("A transaction representing a relationship between two entities, eg. a person is the mother of another person")
+                        .setColor(ConstellationColor.AMETHYST)
+                        .setDirected(false)
+                        .build();
+                BEHAVIOUR = new SchemaTransactionType.Builder("Behaviour")
+                        .setDescription("A transaction representing an entity exhibiting a behaviour, eg. an online identifier added a friend")
+                        .setColor(ConstellationColor.MUSK)
+                        .build();
+                SIMILARITY = new SchemaTransactionType.Builder("Similarity")
+                        .setDescription("An transaction representing two entities which are similar (often with an associated similarity score), eg. an online identifier has a similar set of friends to another online identifier")
+                        .setColor(ConstellationColor.TURQUOISE)
+                        .setDirected(false)
+                        .build();
+                CREATED = new SchemaTransactionType.Builder("Created")
+                        .setDescription("A transaction representing an entity creating another entity, eg. a person created a document")
+                        .setColor(ConstellationColor.CHOCOLATE)
+                        .build();
+                REFERENCED = new SchemaTransactionType.Builder("Referenced")
+                        .setDescription("A transaction representing an entity referencing another entity, eg. a document referenced its author")
+                        .setColor(ConstellationColor.CHOCOLATE)
+                        .setStyle(LineStyle.DASHED)
+                        .build();
+            } else {
+                COMMUNICATION = new SchemaTransactionType.Builder("Communication")
+                        .setDescription("A transaction representing a communication between two entities, eg. a phone made a call to another phone")
+                        .setColor(ConstellationColor.EMERALD)
+                        .build();
+                CORRELATION = new SchemaTransactionType.Builder("Correlation")
+                        .setDescription("A transaction representing a two entities which are part of the same larger entity, eg. a person is correlated to their online identifier")
+                        .setColor(ConstellationColor.AZURE)
+                        .setDirected(false)
+                        .build();
+                LOCATION = new SchemaTransactionType.Builder("Location")
+                        .setDescription("A transaction representing an entity having a location, eg. a person is located in a country")
+                        .setColor(ConstellationColor.CARROT)
+                        .build();
+                NETWORK = new SchemaTransactionType.Builder("Network")
+                        .setDescription("A transaction representing a network connection, eg. an computer sent a request to a server")
+                        .setColor(ConstellationColor.BANANA)
+                        .build();
+                RELATIONSHIP = new SchemaTransactionType.Builder("Relationship")
+                        .setDescription("A transaction representing a relationship between two entities, eg. a person is the mother of another person")
+                        .setColor(ConstellationColor.AMETHYST)
+                        .setDirected(false)
+                        .build();
+                BEHAVIOUR = new SchemaTransactionType.Builder("Behaviour")
+                        .setDescription("A transaction representing an entity exhibiting a behaviour, eg. an online identifier added a friend")
+                        .setColor(ConstellationColor.MUSK)
+                        .build();
+                SIMILARITY = new SchemaTransactionType.Builder("Similarity")
+                        .setDescription("An transaction representing two entities which are similar (often with an associated similarity score), eg. an online identifier has a similar set of friends to another online identifier")
+                        .setColor(ConstellationColor.TURQUOISE)
+                        .setDirected(false)
+                        .build();
+                CREATED = new SchemaTransactionType.Builder("Created")
+                        .setDescription("A transaction representing an entity creating another entity, eg. a person created a document")
+                        .setColor(ConstellationColor.BROWN)
+                        .build();
+                REFERENCED = new SchemaTransactionType.Builder("Referenced")
+                        .setDescription("A transaction representing an entity referencing another entity, eg. a document referenced its author")
+                        .setColor(ConstellationColor.BROWN)
+                        .setStyle(LineStyle.DASHED)
+                        .build();
+            }
+        }
     }
 
     @Override
