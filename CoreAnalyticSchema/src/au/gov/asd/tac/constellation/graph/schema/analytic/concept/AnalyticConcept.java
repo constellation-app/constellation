@@ -158,7 +158,7 @@ public class AnalyticConcept extends SchemaConcept {
 
         //Change the color scheme of vertexes with poor contrast based on color blind mode selection 
         static {
-            if (COLORMODE.equals("Deuteranopia") || COLORMODE.equals("Protanopia")) {
+            if (COLORMODE.equals("Deuteranopia") || COLORMODE.equals("Protanopia") || COLORMODE.equals("Tritanopia")) {
                 TELEPHONE_IDENTIFIER = new SchemaVertexType.Builder("Telephone Identifier")
                         .setDescription("A node representing the identifier of a telephony device or service, eg. the phone number +6101234567")
                         .setColor(ConstellationColor.BUTTERMILK)
@@ -208,8 +208,7 @@ public class AnalyticConcept extends SchemaConcept {
                                 + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d))\\.){3}(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d)|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$", // domain component 
                                 Pattern.CASE_INSENSITIVE))
                         .build();
-            } //else if (COLORMODE.equals("Tritanopia")) {} 
-            else { //This is the default color scheme
+            } else { 
                 TELEPHONE_IDENTIFIER = new SchemaVertexType.Builder("Telephone Identifier")
                         .setDescription("A node representing the identifier of a telephony device or service, eg. the phone number +6101234567")
                         .setColor(ConstellationColor.EMERALD)
