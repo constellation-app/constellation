@@ -16,10 +16,14 @@
 package au.gov.asd.tac.constellation.plugins.reporting;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReport;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportListener;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportManager;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -31,7 +35,7 @@ import java.util.TreeSet;
  *
  * @author sirius
  */
-public class GraphReport {
+public class GraphReport implements UndoRedoReportListener {
 
     public final String graphId;
 
@@ -62,6 +66,7 @@ public class GraphReport {
      */
     public GraphReport(String graphId) {
         this.graphId = graphId;
+        UndoRedoReportManager.addUndoRedoReportListener(this);
     }
 
     /**
@@ -123,5 +128,48 @@ public class GraphReport {
      */
     public Set<String> getUTags() {
         return uTags;
+    }
+
+    /**
+     * Triggers when an UndoRedoReport is added. Update the relevant plugin
+     * report.
+     *
+     * @param undoRedoReport
+     */
+    @Override
+    public void addNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
+        PluginReport p;
+
+        if (undoRedoReport.getGraphId().equals(getGraphId())) {
+            //notesViewPane.addNewUndoRedoReport(undoRedoReport, activeGraph);
+            if (undoRedoReport.getActionType() == "Undo") {
+                p = getMatchingPluginReport(undoRedoReport);
+                p.setUndone(true);
+            } else { //if (undoRedoReport.getActionType()=="Redo"){
+                 p = getMatchingUndonePluginReport(undoRedoReport);
+                p.setUndone(false);
+            }
+            //GraphReportManager.fireNewPluginReport(p);
+        }
+    }
+
+    private PluginReport getMatchingPluginReport(final UndoRedoReport undoRedoReport) {
+
+        PluginReport n2 = getPluginReports().stream()
+                .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName()) && !entry.getUndone())
+                .max(Comparator.comparing(PluginReport::getStartTime)).get();
+
+        return n2;
+
+    }
+
+    private PluginReport getMatchingUndonePluginReport(final UndoRedoReport undoRedoReport) {
+
+        PluginReport n2 = getPluginReports().stream()
+                .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName()) && entry.getUndone())
+                .max(Comparator.comparing(PluginReport::getStartTime)).get();
+
+        return n2;
+
     }
 }

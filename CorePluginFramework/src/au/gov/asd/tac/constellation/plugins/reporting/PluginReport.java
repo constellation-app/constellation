@@ -60,6 +60,8 @@ public class PluginReport {
 
     private final int position;
 
+    private boolean isUndone = false;
+
     public PluginReport(GraphReport graphReport, Plugin plugin) {
         this.graphReport = graphReport;
         this.pluginName = plugin.getName();
@@ -346,5 +348,13 @@ public class PluginReport {
      */
     public List<PluginReport> getUChildReports() {
         return uChildReports;
+    }
+
+    public boolean getUndone() {
+        return isUndone;
+    }
+
+    public void setUndone(boolean isUndone) {
+        this.isUndone = isUndone;
     }
 }
