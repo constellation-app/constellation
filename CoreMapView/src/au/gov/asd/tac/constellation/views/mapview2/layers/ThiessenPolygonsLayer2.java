@@ -125,6 +125,9 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         final List<Polygon> generatedShapes = beachLine.getCompletedShapes();
         generatedShapes.forEach(shape -> layer.getChildren().add(shape));
 
+        final List<Line> debugLines = beachLine.getCompletedEdges();
+        debugLines.forEach(line -> layer.getChildren().add(line));
+
     }
 
     private void generateAllArcs(final BlineElement root) {

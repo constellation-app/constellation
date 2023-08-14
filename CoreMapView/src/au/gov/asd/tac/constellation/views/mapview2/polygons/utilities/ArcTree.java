@@ -37,6 +37,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.util.Pair;
+import org.assertj.core.util.Arrays;
 
 /**
  *
@@ -62,6 +63,18 @@ public class ArcTree {
 
     private final Vec3 edgeCaseFocus = new Vec3(MapView.MAP_WIDTH / 2, -1000);
 
+    private final HalfEdge left = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(0, 1));
+    private final HalfEdge right = new HalfEdge(null, null, new Vec3(MapView.MAP_WIDTH, 0), new Vec3(0, 0.95));
+    private final HalfEdge top = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(1, 0));
+    private final HalfEdge bottom = new HalfEdge(null, null, new Vec3(0, MapView.MAP_HEIGHT), new Vec3(1, 0));
+
+    private final Vec3 topLeft = new Vec3(0, 0);
+    private final Vec3 topRight = new Vec3(MapView.MAP_WIDTH, 0);
+    private final Vec3 bottomLeft = new Vec3(0, MapView.MAP_HEIGHT);
+    private final Vec3 bottomRight = new Vec3(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+
+
+    private final Map<Vec3, List<Pair<Double, Vec3>>> cornerMap = new HashMap<>();
 
     public ArcTree(final PriorityQueue<VoronoiEvent> eventQueue) {
         siteMap = new HashMap<>();
@@ -74,6 +87,22 @@ public class ArcTree {
         root.setLeftEdge(left);
         root.setRightEdge(right);
         siteMap.put(((Arc) root).getFocus(), new HashSet<>());
+
+        cornerMap.put(topLeft, new ArrayList<>());
+        cornerMap.get(topLeft).add(new Pair<>(Double.MAX_VALUE, bottomLeft));
+        cornerMap.get(topLeft).add(new Pair<>(Double.MAX_VALUE, topRight));
+
+        cornerMap.put(topRight, new ArrayList<>());
+        cornerMap.get(topRight).add(new Pair<>(Double.MAX_VALUE, bottomRight));
+        cornerMap.get(topRight).add(new Pair<>(Double.MAX_VALUE, topLeft));
+
+        cornerMap.put(bottomLeft, new ArrayList<>());
+        cornerMap.get(bottomLeft).add(new Pair<>(Double.MAX_VALUE, topLeft));
+        cornerMap.get(bottomLeft).add(new Pair<>(Double.MAX_VALUE, bottomRight));
+
+        cornerMap.put(bottomRight, new ArrayList<>());
+        cornerMap.get(bottomRight).add(new Pair<>(Double.MAX_VALUE, topRight));
+        cornerMap.get(bottomRight).add(new Pair<>(Double.MAX_VALUE, bottomLeft));
     }
 
     private BlineElement addArc(final Vec3 focus) {
@@ -98,8 +127,10 @@ public class ArcTree {
             siteMap.put(newArc.getFocus(), new HashSet<>());
         }
 
-        siteMap.get(newArc.getFocus()).add(edgeStart);
-        siteMap.get(intersectingArc.getFocus()).add(edgeStart);
+        final Vec3 relatedIntersection = new Vec3(edgeStart.getX(), edgeStart.getY() < 0 ? 0 : edgeStart.getY());
+
+        siteMap.get(newArc.getFocus()).add(relatedIntersection);
+        siteMap.get(intersectingArc.getFocus()).add(relatedIntersection);
 
         final Line l = new Line();
         l.setStartX(edgeStart.getX() - 5);
@@ -109,13 +140,14 @@ public class ArcTree {
 
         l.setStroke(Color.GREEN);
         l.setStrokeWidth(5);
-        //completedEdges.add(l);
+        completedEdges.add(l);
 
         final Vec3 dirVect = new Vec3(direction.getY(), -direction.getX());
         dirVect.normalizeVec2();
 
         final HalfEdge e1 = new HalfEdge(newArc.getFocus(), intersectingArc.getFocus(), edgeStart, dirVect);
         final HalfEdge e2 = new HalfEdge(newArc.getFocus(), intersectingArc.getFocus(), edgeStart, new Vec3(-dirVect.getX(), -dirVect.getY()));
+
 
         edges.add(e1);
         edges.add(e2);
@@ -172,8 +204,8 @@ public class ArcTree {
             return;
         }
         //LOGGER.log(Level.SEVERE, "Checking for edge intersection event");
-        final HalfEdge left = arc.getLeftEdge() != null ? arc.getLeftEdge() : getLeftNeighbour(arc).getRightEdge();
-        final HalfEdge right = arc.getRightEdge() != null ? arc.getRightEdge() : getRightNeighbour(arc).getLeftEdge();
+        final HalfEdge left = arc.getLeftEdge() != null ? arc.getLeftEdge() : getLeftNeighbour(arc) != null ? getLeftNeighbour(arc).getRightEdge() : null;
+        final HalfEdge right = arc.getRightEdge() != null ? arc.getRightEdge() : getRightNeighbour(arc) != null ? getRightNeighbour(arc).getLeftEdge() : null;
 
         if (left == null || right == null) {
             if (left == null) {
@@ -199,15 +231,6 @@ public class ArcTree {
         LOGGER.log(Level.SEVERE, "Possible intersection");
         LOGGER.log(Level.SEVERE, "Intersection point is: " + intersectionPoint.getX() + ", " + intersectionPoint.getY());
 
-
-        final Line l = new Line();
-        l.setStartX(intersectionPoint.getX() - 5);
-        l.setStartY(intersectionPoint.getY());
-        l.setEndX(intersectionPoint.getX() + 5);
-        l.setEndY(intersectionPoint.getY());
-        l.setStroke(Color.PURPLE);
-        l.setStrokeWidth(5);
-        //completedEdges.add(l);
 
         //final Vec3 eventOffset = new Vec3(left.getParentArc().getFocus().getX() - intersectionPoint.getX(), left.getParentArc().getFocus().getY() - intersectionPoint.getY());
 
@@ -298,14 +321,6 @@ public class ArcTree {
 
             final BlineElement leftChild = remove.getLeft();
 
-
-            /*if (iSucc.getParent() != remove && iSucc.getParent() != null) {
-                if (iSucc.getRight() != null) {
-                    iSucc.getParent().setLeft(iSucc.getRight());
-                    iSucc.getRight().setParent(iSucc.getParent());
-                    iSucc.setRight(null);
-                }
-            }*/
             BlineElement temp = removeElement(root, iSucc);
             final BlineElement rightChild = remove.getRight();
 
@@ -404,19 +419,31 @@ public class ArcTree {
 
         newEdge = new HalfEdge(rightFocus, leftFocus, intersectionPoint, dirNewEdge);
 
-        //LOGGER.log(Level.SEVERE, "Merged 2 Arcs at edge start: " + newEdge.getStart().getX() + ", " + newEdge.getStart().getY() + " edge direction: " + newEdge.getDirVect().getX() + ", " + newEdge.getDirVect().getY());
-        siteMap.get(((Arc) removed).getFocus()).add(intersectionPoint);
-        if (left != null) {
-            LOGGER.log(Level.SEVERE, "id of left Arc: " + leftArc.getId());
-            left.setRightEdge(newEdge);
-            siteMap.get(leftArc.getFocus()).add(intersectionPoint);
+        final Vec3 renderedIntersectionPoint;
 
+        if (intersectionPoint.getX() <= 0 || intersectionPoint.getX() >= MapView.MAP_WIDTH || intersectionPoint.getY() <= 0 || intersectionPoint.getY() >= MapView.MAP_HEIGHT) {
+            renderedIntersectionPoint = getBoundaryIntersection(intersectionPoint, e1, e2, newEdge);
+        } else {
+            renderedIntersectionPoint = intersectionPoint;
         }
 
-        if (right != null) {
-            LOGGER.log(Level.SEVERE, "id of right Arc: " + rightArc.getId());
-            right.setLeftEdge(newEdge);
-            siteMap.get(rightArc.getFocus()).add(intersectionPoint);
+
+        //LOGGER.log(Level.SEVERE, "Merged 2 Arcs at edge start: " + newEdge.getStart().getX() + ", " + newEdge.getStart().getY() + " edge direction: " + newEdge.getDirVect().getX() + ", " + newEdge.getDirVect().getY());
+        if (renderedIntersectionPoint != null) {
+            siteMap.get(((Arc) removed).getFocus()).add(renderedIntersectionPoint);
+
+            if (left != null) {
+                LOGGER.log(Level.SEVERE, "id of left Arc: " + leftArc.getId());
+                left.setRightEdge(newEdge);
+                siteMap.get(leftArc.getFocus()).add(renderedIntersectionPoint);
+
+            }
+
+            if (right != null) {
+                LOGGER.log(Level.SEVERE, "id of right Arc: " + rightArc.getId());
+                right.setLeftEdge(newEdge);
+                siteMap.get(rightArc.getFocus()).add(renderedIntersectionPoint);
+            }
         }
 
 
@@ -441,9 +468,17 @@ public class ArcTree {
         l3.setEndY(intersectionPoint.getY() + dirNewEdge.getY() * 1000);
         l3.setStroke(Color.LIME);
 
+        Line l4 = new Line();
+        l4.setStartX(intersectionPoint.getX() - 5);
+        l4.setStartY(intersectionPoint.getY());
+        l4.setEndX(intersectionPoint.getX() + 5);
+        l4.setEndY(intersectionPoint.getY());
+        l4.setStroke(Color.PURPLE);
+
         //completedEdges.add(l);
         //completedEdges.add(l2);
         //completedEdges.add(l3);
+        completedEdges.add(l4);
 
         //printBFS(root);
         //printInOrder(root);
@@ -470,10 +505,6 @@ public class ArcTree {
     }
 
     private Vec3 findEdgeIntersectionPoint(final HalfEdge h1, final HalfEdge h2) {
-
-        /*if (h1.getDirVect().getX() == 1.0 && h1.getDirVect().getY() == 0.0 && h2.getDirVect().getX() == -1.0 && h2.getDirVect().getY() == 0.0) {
-            return new Vec3(h1.getStart().getX() + ((h2.getStart().getX() - h1.getStart().getX())) / 2, h1.getStart().getY());
-        }*/
 
         final double dx = h2.getStart().getX() - h1.getStart().getX();
 
@@ -539,9 +570,6 @@ public class ArcTree {
         final double leftX = leftIntersection == null ? 0 : leftIntersection.getX();
         final double rightX = rightIntersection == null ? MapView.MAP_WIDTH : rightIntersection.getX();
 
-        final double max = leftX < rightX ? rightX : leftX;
-        final double min = leftX < rightX ? leftX : rightX;
-
         //LOGGER.log(Level.SEVERE, "Left X: " + leftX);
         //LOGGER.log(Level.SEVERE, "Right X: " + rightX);
 
@@ -554,7 +582,6 @@ public class ArcTree {
             //LOGGER.log(Level.SEVERE, "Checking if anything on the left is intersecting");
             return findIntersectingArc(current.getLeft(), x, directrix);
         } else {
-
             return current;
         }
 
@@ -628,6 +655,131 @@ public class ArcTree {
         double y = arc.getY(x, directrix);
 
         return new Vec3(x, y);
+    }
+
+    private Vec3 getBoundaryIntersection(final Vec3 intersectionPoint, final HalfEdge h1, final HalfEdge h2, final HalfEdge resultingEdge) {
+        final Vec3 topLineIntersection = findEdgeIntersectionPoint(resultingEdge, top);
+
+        if (topLineIntersection != null && resultingEdge.getStart().getY() <= 0) {
+            Line l4 = new Line();
+            l4.setStartX(topLineIntersection.getX() - 5);
+            l4.setStartY(topLineIntersection.getY());
+            l4.setEndX(topLineIntersection.getX() + 5);
+            l4.setEndY(topLineIntersection.getY());
+            l4.setStroke(Color.YELLOW);
+
+            completedEdges.add(l4);
+
+            if (Vec3.getDistance(topLeft, topLineIntersection) < cornerMap.get(topLeft).get(1).getKey()) {
+                final Vec3 relatedPoint = getRelatedPointToCorner(topLeft, resultingEdge);
+
+                cornerMap.get(topLeft).set(1, new Pair<>(Vec3.getDistance(topLeft, topLineIntersection), relatedPoint));
+            }
+
+            if (Vec3.getDistance(topRight, topLineIntersection) < cornerMap.get(topRight).get(1).getKey()) {
+                final Vec3 relatedPoint = getRelatedPointToCorner(topRight, resultingEdge);
+                cornerMap.get(topRight).set(1, new Pair<>(Vec3.getDistance(topRight, topLineIntersection), relatedPoint));
+            }
+
+            return topLineIntersection;
+        } else {
+            addBoundaryIntersections(intersectionPoint, h1);
+            addBoundaryIntersections(intersectionPoint, h2);
+
+            return null;
+        }
+    }
+
+    private Vec3 getRelatedPointToCorner(final Vec3 corner, final HalfEdge h) {
+        return Vec3.getDistance(corner, h.getParentArc()) < Vec3.getDistance(corner, h.getHomeArc()) ? h.getParentArc() : h.getHomeArc();
+    }
+
+    private void setRelatedPointToCorner(final HalfEdge edge, final Vec3 intersectionPoint, final Vec3 corner, final int position) {
+        if (Vec3.getDistance(corner, intersectionPoint) < cornerMap.get(corner).get(position).getKey()) {
+            final Vec3 relatedPoint = getRelatedPointToCorner(corner, edge);
+            cornerMap.get(corner).set(position, new Pair<>(Vec3.getDistance(corner, intersectionPoint), relatedPoint));
+        }
+    }
+
+    private void addBoundaryIntersections(final Vec3 intersectionPoint, final HalfEdge h1) {
+        final Vec3 topLineH1 = findEdgeIntersectionPoint(h1, top);
+        final Vec3 bottomLineH1 = findEdgeIntersectionPoint(h1, bottom);
+        final Vec3 leftLineH1 = findEdgeIntersectionPoint(h1, left);
+        final Vec3 rightLineH1 = findEdgeIntersectionPoint(h1, right);
+
+        final List<Vec3> h1IntersectionPoints = new ArrayList<>();
+
+        if (topLineH1 != null) {
+            topLineH1.setZ(Vec3.getDistance(intersectionPoint, topLineH1));
+            h1IntersectionPoints.add(topLineH1);
+        }
+        if (bottomLineH1 != null) {
+            bottomLineH1.setZ(Vec3.getDistance(intersectionPoint, bottomLineH1));
+            h1IntersectionPoints.add(bottomLineH1);
+        }
+        if (leftLineH1 != null) {
+            leftLineH1.setZ(Vec3.getDistance(intersectionPoint, leftLineH1));
+            h1IntersectionPoints.add(leftLineH1);
+        }
+        if (rightLineH1 != null) {
+            rightLineH1.setZ(Vec3.getDistance(intersectionPoint, rightLineH1));
+            h1IntersectionPoints.add(rightLineH1);
+        }
+
+        Collections.sort(h1IntersectionPoints, (v1, v2) -> {
+            if (v1.getZ() > v2.getZ()) {
+                return 1;
+            }
+
+            return -1;
+        });
+
+        if (!h1IntersectionPoints.isEmpty()) {
+
+            if (h1IntersectionPoints.get(0) == topLineH1) {
+                setRelatedPointToCorner(h1, topLineH1, topLeft, 1);
+                setRelatedPointToCorner(h1, topLineH1, topRight, 1);
+            } else if (h1IntersectionPoints.get(0) == leftLineH1) {
+                setRelatedPointToCorner(h1, leftLineH1, topLeft, 0);
+                setRelatedPointToCorner(h1, leftLineH1, bottomLeft, 0);
+            } else if (h1IntersectionPoints.get(0) == bottomLineH1) {
+                setRelatedPointToCorner(h1, bottomLineH1, bottomLeft, 1);
+                setRelatedPointToCorner(h1, bottomLineH1, bottomRight, 1);
+            } else if (h1IntersectionPoints.get(0) == rightLineH1) {
+                setRelatedPointToCorner(h1, rightLineH1, topRight, 0);
+                setRelatedPointToCorner(h1, rightLineH1, bottomRight, 0);
+            }
+
+            Line l4 = new Line();
+            l4.setStartX(h1IntersectionPoints.get(0).getX() - 5);
+            l4.setStartY(h1IntersectionPoints.get(0).getY());
+            l4.setEndX(h1IntersectionPoints.get(0).getX() + 5);
+            l4.setEndY(h1IntersectionPoints.get(0).getY());
+            l4.setStroke(Color.BROWN);
+            l4.setStrokeWidth(5);
+
+            completedEdges.add(l4);
+            siteMap.get(h1.getHomeArc()).add(h1IntersectionPoints.get(0));
+            siteMap.get(h1.getParentArc()).add(h1IntersectionPoints.get(0));
+        }
+    }
+
+    private void renderMapCorners() {
+        cornerMap.entrySet().forEach(entry -> {
+            for (int i = 0; i < entry.getValue().size(); i++) {
+                if (siteMap.containsKey(entry.getValue().get(i).getValue())) {
+                    siteMap.get(entry.getValue().get(i).getValue()).add(entry.getKey());
+                } else if (i == 0) {
+                    if (siteMap.containsKey(entry.getValue().get(1).getValue())) {
+                        siteMap.get(entry.getValue().get(1).getValue()).add(entry.getKey());
+                    }
+                } else if (i == 1) {
+                    if (siteMap.containsKey(entry.getValue().get(0).getValue())) {
+                        siteMap.get(entry.getValue().get(0).getValue()).add(entry.getKey());
+                    }
+                }
+            }
+        });
     }
 
     public BlineElement getRightNeighbour(final BlineElement item) {
@@ -746,6 +898,21 @@ public class ArcTree {
 
                 l.setStroke(Color.RED);
                 completedEdges.add(l);
+
+                final Line l2 = new Line();
+                l2.setStartX(edge.getStart().getX() + 5);
+                l2.setStartY(edge.getStart().getY());
+                l2.setEndX(edge.getStart().getX() - 5);
+                l2.setEndY(edge.getStart().getY());
+
+                l2.setStroke(Color.BLUE);
+                l2.setStrokeWidth(5);
+                completedEdges.add(l2);
+
+                if ((edge.getStart().getX() >= 0 && edge.getStart().getX() <= MapView.MAP_WIDTH) && (edge.getStart().getY() >= 0 && edge.getStart().getY() <= MapView.MAP_HEIGHT)) {
+                    addBoundaryIntersections(edge.getStart(), edge);
+                }
+
             }
         });
     }
@@ -754,6 +921,7 @@ public class ArcTree {
         siteMap.values().forEach(intersectionSet -> {
             double x = 0;
             double y = 0;
+
             final Iterator<Vec3> pointsIterator = (intersectionSet.iterator());
             while (pointsIterator.hasNext()) {
                 final Vec3 point = pointsIterator.next();
@@ -763,6 +931,7 @@ public class ArcTree {
 
             x = x / intersectionSet.size();
             y = y / intersectionSet.size();
+
 
             shapeCorners.add(new Pair<>(new Vec3(x, y), intersectionSet));
         });
@@ -941,6 +1110,7 @@ public class ArcTree {
         }
 
         finishEdges();
+        renderMapCorners();
         renderIntersectionPoints();
         calculatePointDegrees();
         generateShapes();
