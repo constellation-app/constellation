@@ -161,7 +161,7 @@ public final class GraphTaxonomy {
      *
      * @param keys the keys of the taxa to be arranged in a grid.
      */
-    public void setArrangeRectangularly(final Set<Integer> keys) {
+    public void setArrangeRectangularly(final Iterable<Integer> keys) {
         arrangeRectangularly.clear();
         for (final Integer k : keys) {
             arrangeRectangularly.add(k);
@@ -303,7 +303,6 @@ public final class GraphTaxonomy {
         }
 
         // Add the transactions.
-        //        final long t0 = System.currentTimeMillis();
         // We search through all of the taxa to find sources,
         // but only look in the remaining taxa for destinations,
         // otherwise we end up with two transactions between each vertex.

@@ -80,8 +80,8 @@ public class GeneratorNGTest {
 
             try (MockedStatic<Generator> generatorStaticMock = Mockito.mockStatic(Generator.class, Mockito.CALLS_REAL_METHODS)) {
                 final List<File> tocXMLFiles = new ArrayList<>();
-                final String layersTOC = "../constellation/src/au/gov/asd/tac/constellation/views/layers/docs/layers-view-toc.xml";
-                final String notesTOC = "../constellation/src/au/gov/asd/tac/constellation/views/notes/docs/notes-view-toc.xml";
+                final String layersTOC = "../ext/docs/CoreLayersView/src/au/gov/asd/tac/constellation/views/layers/layers-view-toc.xml";
+                final String notesTOC  = "../ext/docs/CoreNotesView/src/au/gov/asd/tac/constellation/views/notes/notes-view-toc.xml";
 
                 tocXMLFiles.add(new File(System.getProperty("user.dir") + layersTOC));
                 tocXMLFiles.add(new File(System.getProperty("user.dir") + notesTOC));
@@ -127,10 +127,10 @@ public class GeneratorNGTest {
             String sep = File.separator;
 
             final String baseDirectory = "c:" + sep + "baseDir" + sep;
-            final String layersTOC = ".." + sep + "constellation" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                    + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "docs" + sep + "layers-view-toc.xml";
-            final String notesTOC = ".." + sep + "constellation" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
-                    + "tac" + sep + "constellation" + sep + "views" + sep + "notes" + sep + "docs" + sep + "notes-view-toc.xml";
+            final String layersTOC = ".." + sep + "ext" + sep + "docs" + sep + "CoreLayersVie" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                    + "tac" + sep + "constellation" + sep + "views" + sep + "layers" + sep + "layers-view-toc.xml";
+            final String notesTOC = ".." + sep + "ext" + sep + "docs" + sep + "CoreNotesVie" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep
+                    + "tac" + sep + "constellation" + sep + "views" + sep + "notes" + sep + "notes-view-toc.xml";
 
             when(layersProvider.getHelpTOC())
                     .thenReturn(layersTOC);
@@ -167,7 +167,7 @@ public class GeneratorNGTest {
             for (final File file : File.listRoots()) {
 
                 // try within base level of help module
-                final String userDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp";
+                final String userDir = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "ext" + sep + "CoreHelp";
 
                 // mock paths.get to return a path which is a mock - then return the user dir on call to toString()
                 final Path pathUserDir = mock(Path.class);
@@ -184,7 +184,7 @@ public class GeneratorNGTest {
                 assertEquals(Generator.getBaseDirectory(), expectedBaseDir);
 
                 // try within help module package at a deeper level
-                final String userDir2 = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp"
+                final String userDir2 = file.getPath() + "Users" + sep + "Username" + sep + "Constellation" + sep + "ext" + sep + "CoreHelp"
                         + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac";
 
                 // mock paths.get to return a path which is a mock - then return the user dir on call to toString()
@@ -202,7 +202,7 @@ public class GeneratorNGTest {
                 assertEquals(Generator.getBaseDirectory(), expectedBaseDir2);
 
                 // try with file struct containing constellation
-                final String userDir3 = file.getPath() + "Users" + sep + "Username" + sep + "constellation" + sep + "Constellation" + sep + "constellation" + sep + "CoreHelp"
+                final String userDir3 = file.getPath() + "Users" + sep + "Username" + sep + "constellation" + sep + "Constellation" + sep + "ext" + sep + "CoreHelp"
                         + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac";
 
                 // mock paths.get to return a path which is a mock - then return the user dir on call to toString()

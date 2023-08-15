@@ -76,7 +76,7 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
     }
 
     protected static InputStream getInputStream(final String filePath) throws FileNotFoundException {
-        final Path path = Paths.get(filePath);
+        final Path path = Paths.get(getPathString(filePath));
         return new FileInputStream(path.toString());
     }
 
@@ -84,6 +84,20 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final File file = new File(baseDirectory + fileSeparator + relativePath);
         final URL url = file.toURI().toURL();
         return url.toString();
+    }
+
+    protected static String getPathString(final String helpFilePath) {
+        final String errorPathIdentifier = "src/au/gov/constellation";
+        final String errorPathEnd = "src/au/gov";
+        if (helpFilePath.contains(errorPathIdentifier)) {
+            final int lastIndex = helpFilePath.indexOf(errorPathEnd) + 11;
+            final String removedFirstHalf = helpFilePath.substring(lastIndex, helpFilePath.length());
+            final String coreRepo = "constellation";
+            final String localPath = Generator.getBaseDirectory().substring(0, Generator.getBaseDirectory().indexOf(coreRepo));
+            return localPath + removedFirstHalf;
+        } else {
+            return helpFilePath;
+        }
     }
 
     /**
@@ -107,18 +121,18 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String stylesheetLink = "<link href=\"\\%s\" rel='stylesheet'></link>";
         final String javascriptText = "<script type=\"text/javascript\" src=\"\\%s\" ></script>";
 
-        final String css = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/css/app.css"));
-        final String noScript = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/css/noscript.css"));
-        final String cssBootstrap = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/css/bootstrap.css"));
-        final String jquery = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.min.js"));
-        final String dropotron = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.dropotron.min.js"));
-        final String scrolly = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.scrolly.min.js"));
-        final String scrollex = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/jquery.scrollex.min.js"));
-        final String browser = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/browser.min.js"));
-        final String breakpoints = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/breakpoints.min.js"));
-        final String appJS = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/assets/js/app.js"));
-        final String boostrapjs = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/js/bootstrap.js"));
-        final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.getBaseDirectory(), "constellation/bootstrap/js/js.cookie.min.js"));
+        final String css = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/assets/css/app.css"));
+        final String noScript = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/assets/css/noscript.css"));
+        final String cssBootstrap = String.format(stylesheetLink, getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/css/bootstrap.css"));
+        final String jquery = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/jquery.min.js"));
+        final String dropotron = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/jquery.dropotron.min.js"));
+        final String scrolly = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/jquery.scrolly.min.js"));
+        final String scrollex = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/jquery.scrollex.min.js"));
+        final String browser = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/browser.min.js"));
+        final String breakpoints = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/breakpoints.min.js"));
+        final String appJS = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/assets/js/app.js"));
+        final String boostrapjs = String.format(javascriptText, getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/js/bootstrap.js"));
+        final String cookiejs = String.format("<script src=\"\\%s\" ></script>", getFileURLString(separator, Generator.getBaseDirectory(), "ext/bootstrap/js/js.cookie.min.js"));
 
         final String scriptTag = "<script>" + NEWLINE
                 + " // when a group is shown, save it as active" + NEWLINE
@@ -221,16 +235,19 @@ public class ConstellationHelpDisplayer implements HelpCtx.Displayer {
         final String helpId = helpCtx.getHelpID();
         LOGGER.log(Level.INFO, "display help for: {0}", helpId);
 
-        final String helpDefaultPath = sep + "constellation" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "docs" + sep + "about-constellation.md";
+        final String helpDefaultPath = sep + "ext" + sep + "docs" + sep + "CoreFunctionality" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + "constellation" + sep + "functionality" + sep + "about-constellation.md";
 
         final String helpAddress = HelpMapper.getHelpAddress(helpId);
         // use the requested help file, or the About Constellation page if one is not given
-        final String helpLink = StringUtils.isNotEmpty(helpAddress) ? helpAddress.substring(2) : helpDefaultPath;
+        String helpLink = StringUtils.isNotEmpty(helpAddress) ? helpAddress.substring(2) : helpDefaultPath;
 
         try {
             final String url;
             if (isOnline) {
+                if (helpLink.contains("constellation-")) {
+                    helpLink = helpLink.substring(helpLink.indexOf("modules") + 7);
+                }
                 url = OFFICIAL_CONSTELLATION_WEBSITE + helpLink.replace(".md", ".html");
             } else {
                 final File file = new File(Generator.getBaseDirectory() + sep + helpLink);

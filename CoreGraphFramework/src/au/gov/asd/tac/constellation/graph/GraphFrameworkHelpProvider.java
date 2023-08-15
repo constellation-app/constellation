@@ -42,8 +42,8 @@ public class GraphFrameworkHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String graphFrameworkModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "docs" + sep;
+        final String graphFrameworkModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.about", graphFrameworkModulePath + "graph-model.md");
         map.put("au.gov.asd.tac.constellation.graph.attributes", graphFrameworkModulePath + "attributes.md");
@@ -64,8 +64,8 @@ public class GraphFrameworkHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String graphFrameworkPath;
-        graphFrameworkPath = CODEBASE_NAME + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep
-                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "docs" + sep + "graph-toc.xml";
+        graphFrameworkPath = "ext" + sep + "docs" + sep + "CoreGraphFramework" + sep + "src" + sep + "au" + sep
+                + "gov" + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "graph-toc.xml";
         return graphFrameworkPath;
     }
 }

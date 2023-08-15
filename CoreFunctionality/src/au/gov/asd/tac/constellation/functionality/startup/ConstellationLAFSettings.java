@@ -77,10 +77,12 @@ public class ConstellationLAFSettings {
         // Fixed set of Blue shade colors
         // appropriate for Windows LAF
         final Color selectedUpperLightBlue = new Color(225, 235, 255);
-        final Color activeMidSectionBlue = new Color(160, 205, 255);
-        final Color selectedLowerDarkBlue = new Color(80, 160, 255);
+        final Color activeMidSectionBlue = new Color(155, 200, 255);
+        final Color selectedLowerDarkBlue = new Color(70, 150, 255);
         final Color unselectedUpperGray = new Color(225, 225, 225);
         final Color unselectedLowerGreyBlue = new Color(175, 185, 195);
+        final Color attentionUpperOrange = new Color(255, 220, 200);
+        final Color attentionLowerOrange = new Color(220, 140, 120);
 
         try {
             // To apply new tab colors to a Windows LAF
@@ -108,8 +110,8 @@ public class ConstellationLAFSettings {
                 UIManager.getDefaults().put("tab_unsel_fill_lower", unselectedLowerGreyBlue);
                 UIManager.getDefaults().put("tab_mouse_over_fill_upper", selectedUpperLightBlue);
                 UIManager.getDefaults().put("tab_mouse_over_fill_lower", activeMidSectionBlue);
-                UIManager.getDefaults().put("tab_attention_fill_upper", activeMidSectionBlue);
-                UIManager.getDefaults().put("tab_attention_fill_lower", selectedLowerDarkBlue);
+                UIManager.getDefaults().put("tab_attention_fill_upper", attentionUpperOrange);
+                UIManager.getDefaults().put("tab_attention_fill_lower", attentionLowerOrange);
                 
                 // reset static field "colorsReady" value to false
                 colsReady.setAccessible(true); //NOSONAR
@@ -179,17 +181,17 @@ public class ConstellationLAFSettings {
             // Fixed set of Blue shade colors
             // appropriate for Nimbus dark LAF
             activeBlue = new Color(125, 170, 225);
-            activeDarkBlue = new Color(65, 100, 155);
+            activeDarkBlue = new Color(60, 95, 150);
             selectedBlue = new Color(110, 155, 200);
-            selectedDarkBlue = new Color(45, 80, 140);
+            selectedDarkBlue = new Color(40, 75, 135);
             unselectedGreyBlue = new Color(140, 150, 155);
             unselectedDarkGreyBlue = new Color(100, 110, 115);
         } else {
             // Fixed set of Blue shade colors
             // appropriate for standard Nimbus LAF
-            activeBlue = new Color(150, 200, 255);
+            activeBlue = new Color(160, 210, 255);
             activeDarkBlue = new Color(90, 125, 180);
-            selectedBlue = new Color(140, 180, 245);
+            selectedBlue = new Color(145, 185, 250);
             selectedDarkBlue = new Color(75, 115, 170);
             unselectedGreyBlue = new Color(190, 205, 215);
             unselectedDarkGreyBlue = new Color(150, 160, 175);
@@ -220,6 +222,7 @@ public class ConstellationLAFSettings {
         final Color inactiveUnderlineBlue;
         final Color selectedBackgroundBlue;
         final Color hoverBackgroundBlue;
+        final Color attentionBackgroundOrange;
 
         if (darkMode) {
             // Fixed set of Blue shade colors
@@ -228,6 +231,7 @@ public class ConstellationLAFSettings {
             inactiveUnderlineBlue = new Color(20, 100, 175);
             selectedBackgroundBlue = new Color(30, 60, 95);
             hoverBackgroundBlue = new Color(45, 75, 115);
+            attentionBackgroundOrange = new Color(138, 42, 30);
         } else {
             // Fixed set of Blue shade colors
             // appropriate for FlatLafLight LAF
@@ -235,6 +239,7 @@ public class ConstellationLAFSettings {
             inactiveUnderlineBlue = new Color(95, 130, 185);
             selectedBackgroundBlue = new Color(200, 220, 255);
             hoverBackgroundBlue = new Color(190, 210, 255);
+            attentionBackgroundOrange = new Color(250, 180, 160);
         }
 
         try {
@@ -251,13 +256,15 @@ public class ConstellationLAFSettings {
                 UIManager.getDefaults().put("ViewTab.hoverBackground", hoverBackgroundBlue);
                 UIManager.getDefaults().put("ViewTab.underlineHeight", 5);
                 UIManager.getDefaults().put("ViewTab.underlineColor", selectedUnderlineBlue);
-                UIManager.getDefaults().put("ViewTab.inactiveUnderlineColor", inactiveUnderlineBlue);
-
+                UIManager.getDefaults().put("ViewTab.inactiveUnderlineColor", inactiveUnderlineBlue); // ViewTab.attentionForeground
+                UIManager.getDefaults().put("ViewTab.attentionBackground", attentionBackgroundOrange);
+                
                 UIManager.getDefaults().put("EditorTab.selectedBackground", selectedBackgroundBlue);
                 UIManager.getDefaults().put("EditorTab.hoverBackground", hoverBackgroundBlue);
                 UIManager.getDefaults().put("EditorTab.underlineHeight", 5);
                 UIManager.getDefaults().put("EditorTab.underlineColor", selectedUnderlineBlue);
                 UIManager.getDefaults().put("EditorTab.inactiveUnderlineColor", inactiveUnderlineBlue);
+                UIManager.getDefaults().put("EditorTab.attentionBackground", attentionBackgroundOrange);
 
                 // reset static field "colorsReady" value to false
                 colready.setAccessible(true); //NOSONAR
@@ -467,7 +474,7 @@ public class ConstellationLAFSettings {
             int newBlueShade;
 
             // The newShade colors will have step by step color adjustments
-            // calculated as the gradient tab background is being painted */ 
+            // calculated as the gradient tab background is being painted
 
             // draw a color gradient background in the middle section of the tab
             for (int heightPosition = startOffset; heightPosition < endOffset; heightPosition++) {

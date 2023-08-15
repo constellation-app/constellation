@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
 import au.gov.asd.tac.constellation.views.tableview.plugins.SelectionToGraphPlugin;
@@ -82,7 +83,7 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     public static final Object TABLE_LOCK = new Object();
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
+    private final ExecutorService executorService = ConstellationGlobalThreadPool.getThreadPool().getFixedThreadPool();
 
     private final TablePane pane;
     private final Set<AttributeValueMonitor> columnAttributeMonitors;

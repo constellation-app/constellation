@@ -360,6 +360,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
 
                         borderPane.setLeft(paddingPane);
                         borderPane.setCenter(childPane);
+                        childPane.updateChildren();
                     }
 
                     sequencePane.getChildren().add(borderPane);
@@ -434,5 +435,13 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
      */
     public void removeListener() {
         this.pluginReport.removePluginReportListener(this);
+    }
+
+    /**
+     * Get the time label for unit tests
+     * @return timeLabel
+     */
+    protected Label getTimeLabel() {
+        return timeLabel;
     }
 }

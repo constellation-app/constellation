@@ -1,4 +1,29 @@
-# Constellation Changes	
+# Constellation Changes
+## Changes in July 2023
+-  Replaced FindView to express the new interface build in JavaFX and removed the old Swing implementation
+
+## Changes in June 2023
+-   Changed LookupPluginsTask to implement Supplier<Map<String, Pair<Integer, List<DataAccessPlugin>>>>.
+-   Updated return type of `LookupPluginsTask.get()` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+-   Updated `plugins` parameter type in `QueryPhasePane.QueryPhasePane()` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+-   Updated `PLUGIN_LOAD` member variable type in `DataAccessPaneState` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+-   Updated return type of `DataAccessPaneState.getPlugins()` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
+
+## Changes in April 2023
+-   Added global thread pool class called ConstellationGlobalThreadPool has been created and can be called to generate a new thread.
+-   Removed code that created new thread pool every time a new thread was needed.
+## Changes in February 2023	
+
+-   Removed unused class `NestedIncircleDrawing` from Core Arrangement Plugins.
+-   Removed several unused methods from `PQTree` in Core Arrangement Plugins.
+-   Updated `comprisingIds` parameter type in `CompositeUtilities.makeComposite()` from List to Collection.
+-   Updated `results` parameter type in `AnalyticResult.setSelectionOnGraph()` from List to Iterable.
+-   Updated `results` parameter type in `AnalyticResult.addAll()` from List to Iterable.
+-   Updated `keys` parameter type in `GraphTaxonomy.setArrangeRectangularly()` from Set to Iterable.
+-   Updated `childNums` parameter type in `PQTree.addLeaves()` from List to Iterable.
+-   Updated `includedVertices` and `excludedLinks` parameters type in `GraphSpectrumEmbedder.matrixFromGraph()` from Set to Collection.
+-   Updated `circles` parameter type in `BoundingCircle.enclosingCircle()` from List to Iterable.
+-   Updated `verticesToConsider` parameter type in `TaxFromNeighbours.getTaxonomy()` from Set to Iterable.
 
 ## Changes in October 2022
 

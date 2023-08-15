@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser.ExtensionFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.NotifyDescriptor;
 import static org.openide.NotifyDescriptor.DEFAULT_OPTION;
 import org.openide.util.lookup.ServiceProvider;
@@ -159,13 +160,19 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
                         nodeIdToType.get(edgeRecords.get(i, GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER)));
             }
         } catch (final FileNotFoundException ex) {
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "File " + filename + " not found", "Import GML File", DEFAULT_OPTION, 
+            final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified" : "File not found: " + filename;
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            LOGGER.log(Level.SEVERE, ex, () -> "File " + filename + " not found");
+            final Throwable fnfEx = new FileNotFoundException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            fnfEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.SEVERE, errorMsg, fnfEx);
         } catch (final IOException ex) {
-            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + "Error reading file " + filename, "Import GML File", DEFAULT_OPTION, 
+            final String errorMsg = StringUtils.isEmpty(filename) ? "File not specified " : "Error reading file: " + filename;
+            NotifyDisplayer.display(new NotifyDescriptor("Error:\n" + errorMsg, "Import GML File", DEFAULT_OPTION, 
                     NotifyDescriptor.ERROR_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            LOGGER.log(Level.SEVERE, ex, () -> "Error reading file: " + filename);
+            final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            ioEx.setStackTrace(ex.getStackTrace());
+            LOGGER.log(Level.SEVERE, errorMsg, ioEx);
         }
 
         output.add(nodeRecords);

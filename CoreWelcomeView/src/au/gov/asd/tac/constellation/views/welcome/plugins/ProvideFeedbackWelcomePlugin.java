@@ -41,9 +41,9 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("ProvideFeedbackWelcomePlugin=Provide Feedback Welcome Plugin")
 public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface {
 
-    public static final String FEEDBACK = "resources/welcome_feedback.png";
-    final ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
-    final Button feedbackButton = new Button();
+    private static final String FEEDBACK = "resources/welcome_feedback.png";
+    private final ImageView feedView = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(FEEDBACK)));
+    private final Button feedbackButton = new Button();
 
     /**
      * Get a unique reference that is used to identify the plugin
@@ -70,15 +70,6 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface {
                 .executeLater(null);
     }
 
-    /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    @Override
-    public boolean isVisible() {
-        return true;
-    }
 
     /**
      * Creates the button object to represent this plugin

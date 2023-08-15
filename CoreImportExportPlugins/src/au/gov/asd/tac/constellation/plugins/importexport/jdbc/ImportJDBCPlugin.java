@@ -320,20 +320,18 @@ public class ImportJDBCPlugin extends SimpleEditPlugin {
      */
     private void displaySummaryAlert(final int importedRows, final int totalRows, final String connectionName) {
         Platform.runLater(() -> {
-            final StringBuilder sbHeader = new StringBuilder();
             final StringBuilder sbMessage = new StringBuilder();
 
             if (importedRows > 0) {
                 // At least 1 row was successfully imported. List all successful file imports, as well as any files that there were
                 // issues for. If there were any files with issues use a warning dialog.
-                sbHeader.append(String.format("Imported %d out of %d rows of data from connection: %s", importedRows, totalRows, connectionName));
+                sbMessage.append(String.format("Imported %d out of %d rows of data from connection: %s", importedRows, totalRows, connectionName));
 
             } else {
-                // No rows were imported list all files that resulted in failures.
-                sbHeader.append("No data found to import");                
-                sbMessage.append(String.format("Please check the connection %s or specified mappings. No data was extracted.", connectionName));
+                // No rows were imported list all files that resulted in failures.              
+                sbMessage.append(String.format("No data found to import%nPlease check the connection %s or specified mappings. No data was extracted.", connectionName));
             }
-            NotificationDisplayer.getDefault().notify(sbHeader.toString(), UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
+            NotificationDisplayer.getDefault().notify("Database Import", UserInterfaceIconProvider.UPLOAD.buildIcon(16, ConstellationColor.BLUE.getJavaColor()), sbMessage.toString(), null, NotificationDisplayer.Priority.HIGH);
         });
     }
 

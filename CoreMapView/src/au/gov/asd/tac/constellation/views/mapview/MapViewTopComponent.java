@@ -46,6 +46,7 @@ import au.gov.asd.tac.constellation.utilities.gui.JSingleChoiceComboBoxMenu;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.AnalyticIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.SwingTopComponent;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
@@ -320,8 +321,6 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
 
         // top component resize listener
         addComponentListener(new ComponentAdapter() {
-            ScheduledExecutorService scheduledExecutorService
-                    = Executors.newScheduledThreadPool(1);
             ScheduledFuture<?> scheduledFuture;
 
             @Override
@@ -330,7 +329,7 @@ public final class MapViewTopComponent extends SwingTopComponent<Component> {
                 if (scheduledFuture != null) {
                     scheduledFuture.cancel(true);
                 }
-                scheduledFuture = scheduledExecutorService.schedule(() -> {
+                scheduledFuture = ConstellationGlobalThreadPool.getThreadPool().getScheduledExecutorService().schedule(() -> {
                     if (event.getComponent().getWidth() != cachedWidth
                             || event.getComponent().getHeight() != cachedHeight) {
                         cachedWidth = event.getComponent().getWidth();

@@ -66,7 +66,7 @@ public class ArrangeInCirclesPlugin extends SimpleEditPlugin {
 
         final int vertexCount = graph.getVertexCount();
         for (int position = 0; position < vertexCount; position++) {
-           final int vertex = graph.getVertex(position);
+            final int vertex = graph.getVertex(position);
 
             if (cycles[vertex] == 0) {
                 final int parent = parents[vertex];

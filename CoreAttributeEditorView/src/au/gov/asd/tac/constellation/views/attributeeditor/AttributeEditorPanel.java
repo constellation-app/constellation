@@ -466,7 +466,6 @@ public class AttributeEditorPanel extends BorderPane {
     public TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
         final String attributeTitle = attribute.getAttributeName();
         final int spacing = 5;
-        final int buttonSize = 45;
         final GridPane gridPane = new GridPane();
         gridPane.setHgap(spacing);
         final double titleWidth = longestTitledWidth + spacing;
@@ -528,30 +527,23 @@ public class AttributeEditorPanel extends BorderPane {
 
         // Value TextField
         final Node attributeValueNode = createAttributeValueNode(values, attribute, attributePane, multiValue);
-
-        // Edit Button
-        final Button editButton = new Button("Edit");
-        editButton.setAlignment(Pos.CENTER);
-        editButton.setMinWidth(buttonSize);
+        
+        // Edit Functionality
         final AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());
-        if (editorFactory == null || values == null) {
-            editButton.setDisable(true);
-        } else {
-            editButton.setOnMouseClicked(event -> getEditValueHandler(attribute, editorFactory, values));
-
+        if (editorFactory != null && values != null) {
             attributeValueNode.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.isStillSincePress()) {
                     getEditValueHandler(attribute, editorFactory, values);
                 }
             });
+        } else {
+            attributeValueNode.setDisable(true);
         }
 
         // If we don't do anything here, right-clicking on the Node will produce two context menus:
         // the one the Node has by default, and the one we added to the AttributeTitledPane.
         // We'll consume the context menu event so it doesn't bubble up to the TitledPane.
-        // Ditto for the button.
         attributeValueNode.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
-        editButton.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, Event::consume);
 
         // Title
         final ColumnConstraints titleConstraint = new ColumnConstraints(titleWidth);
@@ -563,14 +555,9 @@ public class AttributeEditorPanel extends BorderPane {
         valueConstraint.setHgrow(Priority.ALWAYS);
         valueConstraint.setFillWidth(true);
 
-        // EditButton
-        final ColumnConstraints editConstraint = new ColumnConstraints(buttonSize);
-        editConstraint.setHalignment(HPos.RIGHT);
-
-        gridPane.getColumnConstraints().addAll(titleConstraint, valueConstraint, editConstraint);
+        gridPane.getColumnConstraints().addAll(titleConstraint, valueConstraint);
         gridPane.add(attributeTitleText, 0, 0);
         gridPane.add(attributeValueNode, 1, 0);
-        gridPane.add(editButton, 2, 0);
 
         attributePane.setAlignment(Pos.CENTER_RIGHT);
         attributePane.setGraphic(gridPane);

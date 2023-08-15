@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.welcome;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,7 +31,7 @@ public abstract class WelcomePageLayoutProvider {
      * @return ArrayList of plugins
      */
     public List<WelcomePluginInterface> getTopPlugins() {
-        return null;
+        return Collections.emptyList();
     }
 
     /**
@@ -39,6 +40,6 @@ public abstract class WelcomePageLayoutProvider {
      * @return ArrayList of plugins
      */
     public List<WelcomePluginInterface> getSidePlugins() {
-        return null;
+        return Collections.emptyList();
     }
 }

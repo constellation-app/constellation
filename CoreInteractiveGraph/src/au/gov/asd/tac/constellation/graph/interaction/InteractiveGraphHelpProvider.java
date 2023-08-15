@@ -42,8 +42,8 @@ public class InteractiveGraphHelpProvider extends HelpPageProvider {
     public Map<String, String> getHelpMap() {
         final Map<String, String> map = new HashMap<>();
         final String sep = File.separator;
-        final String interactiveModulePath = ".." + sep + CODEBASE_NAME + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov"
-                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "interaction" + sep + "docs" + sep;
+        final String interactiveModulePath =  ".." + sep + "ext" + sep + "docs" + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov"
+                + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "graph" + sep + "interaction" + sep;
 
         map.put("au.gov.asd.tac.constellation.graph.interaction.addselectmode", interactiveModulePath + "add-and-selection-modes.md");
         map.put("au.gov.asd.tac.constellation.graph.interaction.cutcopypaste", interactiveModulePath + "cut-copy-paste.md");
@@ -59,8 +59,8 @@ public class InteractiveGraphHelpProvider extends HelpPageProvider {
     public String getHelpTOC() {
         final String sep = File.separator;
         final String interactiveGraphPath;
-        interactiveGraphPath = CODEBASE_NAME + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
-                + sep + CODEBASE_NAME + sep + "graph" + sep + "interaction" + sep + "docs" + sep + "interactivegraph-toc.xml";
+        interactiveGraphPath = "ext" + sep + "docs" + sep + "CoreInteractiveGraph" + sep + "src" + sep + "au" + sep + "gov" + sep + "asd" + sep + "tac"
+                + sep + CODEBASE_NAME + sep + "graph" + sep + "interaction" + sep + "interactivegraph-toc.xml";
         return interactiveGraphPath;
     }
 }

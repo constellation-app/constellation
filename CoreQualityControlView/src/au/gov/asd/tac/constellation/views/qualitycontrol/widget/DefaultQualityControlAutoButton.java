@@ -49,6 +49,9 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
         getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         setStyle(QUERY_RISK_DEFAULT_STYLE + String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
+        QualityControlViewPane.readSerializedRulePriorities();
+        QualityControlViewPane.readSerializedRuleEnabledStatuses();
+
         setOnAction(value -> SwingUtilities.invokeLater(() -> {
             final TopComponent qualityControlView = WindowManager.getDefault().findTopComponent(QualityControlViewTopComponent.class.getSimpleName());
             if (qualityControlView != null) {
@@ -59,8 +62,6 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
             }
         }));
 
-        QualityControlAutoVetter.getInstance().addListener(this);
-        QualityControlAutoVetter.getInstance().invokeListener(this);
         QualityControlAutoVetter.getInstance().init();
     }
 
@@ -101,4 +102,22 @@ public final class DefaultQualityControlAutoButton extends QualityControlAutoBut
         return new DefaultQualityControlAutoButton();
     }
 
+    /**
+     * Add this button as a listener to the quality control auto vetter. This
+     * allows the containing top component to effectively subscribe/unsubscribe
+     * listeners as the components are opened or closed.
+     */
+    public void addQCListener() {
+        QualityControlAutoVetter.getInstance().addListener(this);
+        QualityControlAutoVetter.getInstance().invokeListener(this);
+    }
+
+    /**
+     * Remove this button as a listener from the quality control auto vetter.
+     * This allows the containing top component to effectively
+     * subscribe/unsubscribe listeners as the components are opened or closed.
+     */
+    public void removeQCListener() {
+        QualityControlAutoVetter.getInstance().removeListener(this);
+    }
 }

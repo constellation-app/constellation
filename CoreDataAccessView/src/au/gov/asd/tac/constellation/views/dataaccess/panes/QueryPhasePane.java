@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +41,16 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.util.Lookup;
+import org.openide.util.NbPreferences;
 
 /**
  * A panel for selecting plug-ins to run during a query phase. These panes are
@@ -77,24 +81,28 @@ public class QueryPhasePane extends VBox {
      * @param top 
      * @param presetGlobalParms the current global plugin parameters
      */
-    public QueryPhasePane(final Map<String, List<DataAccessPlugin>> plugins,
-                          final PluginParametersPaneListener top,
-                          final PluginParameters presetGlobalParms) {
+    public QueryPhasePane(final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins, final PluginParametersPaneListener top, final PluginParameters presetGlobalParms) {
         globalParametersPane = new GlobalParametersPane(presetGlobalParms);
-
+        final List<Pair<Integer, HeadingPane>> orderedPlugins = new ArrayList<>();
         plugins.entrySet().stream()
-                .filter(pluginsOfType -> !pluginsOfType.getValue().isEmpty())
+                .filter(pluginsOfType -> !pluginsOfType.getValue().getValue().isEmpty())
                 .forEach(pluginsOfType -> {
                     final HeadingPane heading = new HeadingPane(
                             pluginsOfType.getKey(),
-                            pluginsOfType.getValue(),
+                            pluginsOfType.getValue().getValue(),
                             top,
                             globalParametersPane.getParamLabels()
                     );
-                    
-                    dataSourceList.getChildren().add(heading);
-                    dataSources.addAll(heading.getDataSources());
+
+            orderedPlugins.add(new Pair<>(pluginsOfType.getValue().getKey(), heading));
                 });
+
+        orderedPlugins.sort(Comparator.comparingInt(Pair<Integer, HeadingPane>::getKey));
+
+        for (final Pair<Integer, HeadingPane> plugin : orderedPlugins) {
+            dataSourceList.getChildren().add(plugin.getValue());
+            dataSources.addAll(plugin.getValue().getDataSources());
+        }
 
         setFillWidth(true);
         getChildren().addAll(globalParametersPane, dataSourceList);

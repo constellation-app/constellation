@@ -162,12 +162,14 @@ public class DatetimeAttributeTranslator extends AttributeTranslator {
             final ZonedDateTime zonedDateTime;
             switch (format) {
                 case EPOCH:
-                    zonedDateTime = TemporalFormatting.zonedDateTimeFromLong(Long.parseLong(value));
+                    // using Double.valueOf(value).longValue() rather than Long.parseLong(value)
+                    // allows Epoch times in scietific notation to be parsed through successfully
+                    zonedDateTime = TemporalFormatting.zonedDateTimeFromLong(Double.valueOf(value).longValue());
                     return translateFromZonedDateTime(zonedDateTime, parameters);
                 case EXCEL:
                     // "GMT" is used here to avoid it using the user's local time zone.
                     // If the user has selected a time zone, it is applied seperately in `translateFromZonedDateTime`
-                    zonedDateTime = TemporalFormatting.zonedDateTimeFromLong(DateUtil.getJavaDate(Double.parseDouble(value), TimeZone.getTimeZone("GMT")).getTime());
+                    zonedDateTime = TemporalFormatting.zonedDateTimeFromLongMilli(DateUtil.getJavaDate(Double.parseDouble(value), TimeZone.getTimeZone("GMT")).getTime());
                     return translateFromZonedDateTime(zonedDateTime, parameters);
                 case CUSTOM: {
                     format = parameters.getParameters().get(CUSTOM_PARAMETER_ID).getStringValue();

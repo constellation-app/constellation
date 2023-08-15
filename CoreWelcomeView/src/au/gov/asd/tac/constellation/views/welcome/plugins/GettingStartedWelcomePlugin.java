@@ -38,9 +38,9 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("GettingStartedWelcomePlugin=Getting Started Welcome Plugin")
 public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
 
-    public static final String GETTING_STARTED = "resources/welcome_getting_started.png";
-    final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
-    final Button startedBtn = new Button();
+    private static final String GETTING_STARTED = "resources/welcome_getting_started.png";
+    private final ImageView started = new ImageView(new Image(WelcomeTopComponent.class.getResourceAsStream(GETTING_STARTED)));
+    private final Button startedBtn = new Button();
 
     private static final String GETTING_STARTED_HELP_PAGE = "au.gov.asd.tac.constellation.functionality.gettingstarted";
 
@@ -61,16 +61,6 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
     @Override
     public void run() {
         new HelpCtx(GETTING_STARTED_HELP_PAGE).display();
-    }
-
-    /**
-     * Determines whether this analytic appear on the Welcome Page
-     *
-     * @return true is this analytic should be visible, false otherwise.
-     */
-    @Override
-    public boolean isVisible() {
-        return true;
     }
 
     /**
