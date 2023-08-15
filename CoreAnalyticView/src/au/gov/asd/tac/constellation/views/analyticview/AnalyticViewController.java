@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.analyticview;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.LayersConcept;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
@@ -34,9 +35,13 @@ import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
+import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateReaderPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateWriterPlugin;
+import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -58,6 +63,7 @@ public class AnalyticViewController {
     // Analytic view controller instance
     private static AnalyticViewController instance = null;
     private AnalyticViewTopComponent parent;
+
     private int currentAnalyticQuestionIndex = 0;
     private final List<AnalyticQuestionDescription<?>> activeAnalyticQuestions;
     private final List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> activeSelectablePlugins;
@@ -67,6 +73,7 @@ public class AnalyticViewController {
     private AnalyticQuestionDescription<?> currentQuestion = null;
     private AnalyticQuestion question;
     private String activeCategory;
+    private HashMap<GraphVisualisation, Boolean> visualisations = new HashMap<>();
 
     public AnalyticViewController() {
         this.activeAnalyticQuestions = new ArrayList<>();
@@ -113,6 +120,38 @@ public class AnalyticViewController {
 
     public void setCategoriesVisible(final boolean categoriesVisible) {
         this.categoriesVisible = categoriesVisible;
+    }
+
+    public HashMap<GraphVisualisation, Boolean> getVisualisations() {
+        return visualisations;
+    }
+
+    public void setVisualisations(final HashMap<GraphVisualisation, Boolean> visualisations) {
+        this.visualisations = visualisations;
+
+    }
+
+    /**
+     * Update which graph visualisations are on the graph and what state they are in
+     * 
+     * @param visualisationName
+     * @param activated
+     */
+    public void updateVisualisations(final GraphVisualisation visualisationName, final boolean activated) {
+        visualisations.entrySet().forEach(node -> {
+            if (node.getKey().getName().equals(visualisationName.getName())) {
+                visualisations.remove(node.getKey());
+                visualisations.put(visualisationName, activated);
+            } else {
+                visualisations.put(visualisationName, activated);
+            }
+        });
+    }
+
+    public void deactivateResultUpdates() {
+        final AnalyticViewPane pane = parent.createContent();
+        pane.deactivateResultChanges();
+        writeState();
     }
 
     /**
@@ -171,6 +210,16 @@ public class AnalyticViewController {
     }
 
     /**
+     * Add attributes required by the Analytic View for it to function
+     */
+    public void addAttributes() {
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null) {
+            PluginExecution.withPlugin(new AddAttributesPlugin()).executeLater(activeGraph);
+        }
+    }
+
+    /**
      * Updates the AnalyticViewState by running a plugin to save the graph state
      *
      * @param pluginWasSelected true if the triggered update was from a plugin
@@ -225,7 +274,7 @@ public class AnalyticViewController {
         }
 
         // controller out of sync with graph...
-        return PluginExecution.withPlugin(new AnalyticStateWriterPlugin(currentAnalyticQuestionIndex, activeAnalyticQuestions, activeSelectablePlugins, result, resultsVisible, currentQuestion, question, categoriesVisible, activeCategory)).executeLater(graph);
+        return PluginExecution.withPlugin(new AnalyticStateWriterPlugin(currentAnalyticQuestionIndex, activeAnalyticQuestions, activeSelectablePlugins, result, resultsVisible, currentQuestion, question, categoriesVisible, activeCategory, visualisations)).executeLater(graph);
     }
 
 
@@ -314,5 +363,22 @@ public class AnalyticViewController {
                     break;
             }
         }
-    } 
+    }
+
+    /**
+     * Plugin to add the required Analytic View attributes.
+     */
+    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
+    protected class AddAttributesPlugin extends SimpleEditPlugin {
+
+        @Override
+        public String getName() {
+            return "Analytic View: Add Required Attributes";
+        }
+
+        @Override
+        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
+            AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
+        }
+    }
 }

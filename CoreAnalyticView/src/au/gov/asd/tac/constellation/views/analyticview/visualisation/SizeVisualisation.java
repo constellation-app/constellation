@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ public class SizeVisualisation<C> extends GraphVisualisation {
 
     private final AbstractSizeTranslator<? extends AnalyticResult<?>, C> translator;
     private final ToggleButton sizeButton;
+    private boolean activated = false;
 
     public SizeVisualisation(final AbstractSizeTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
@@ -40,9 +41,14 @@ public class SizeVisualisation<C> extends GraphVisualisation {
         this.sizeButton = new ToggleButton("Size");
         sizeButton.setId("size-visualisation-button");
         sizeButton.setOnAction(event -> {
-            final boolean reset = !sizeButton.isSelected();
-            translator.executePlugin(reset);
+            activated = sizeButton.isSelected();
+            translator.executePlugin(!activated);
         });
+    }
+
+    @Override
+    public void deactivate() {
+        translator.executePlugin(true);
     }
 
     @Override
@@ -60,5 +66,15 @@ public class SizeVisualisation<C> extends GraphVisualisation {
         return Arrays.asList(
                 VisualConcept.VertexAttribute.NODE_RADIUS,
                 VisualConcept.TransactionAttribute.WIDTH);
+    }
+
+    @Override
+    public boolean isActive() {
+        return activated;
+    }
+
+    @Override
+    public void setSelected(final boolean selected) {
+        sizeButton.setSelected(selected);
     }
 }

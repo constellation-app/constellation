@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.ColorVisualisation;
+import java.util.HashMap;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -43,6 +44,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult, ElementScore> {
+
+    // Maps of the colors of the vertices and transactions before the plugin is run
+    private final HashMap<Integer, ConstellationColor> vertexColors = new HashMap<>();
+    private final HashMap<Integer, ConstellationColor> transactionColors = new HashMap<>();
 
     @Override
     public String getName() {
@@ -106,14 +111,12 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                     final int elementId = scoreResult.getElementId();
                     switch (elementType) {
                         case VERTEX:
-                            if (graph.getSchema() != null) {
-                                graph.getSchema().completeVertex(graph, elementId);
-                            }
+                            final ConstellationColor vertexColor = vertexColors.get(elementId);
+                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, vertexColor);
                             break;
                         case TRANSACTION:
-                            if (graph.getSchema() != null) {
-                                graph.getSchema().completeTransaction(graph, elementId);
-                            }
+                            final ConstellationColor transactionColor = transactionColors.get(elementId);
+                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, transactionColor);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Color Elements' is not supported "
@@ -147,9 +150,13 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                     final float colorIntensity = meanScoreRange != 0 ? (elementMeanScore + lowestMeanScore) / meanScoreRange : elementMeanScore + lowestMeanScore;
                     switch (elementType) {
                         case VERTEX:
+                            final ConstellationColor vertexColor = graph.getObjectValue(vertexOverlayColorAttribute, elementId);
+                            vertexColors.put(elementId, vertexColor);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
                             break;
                         case TRANSACTION:
+                            final ConstellationColor transactionColor = graph.getObjectValue(transactionOverlayColorAttribute, elementId);
+                            transactionColors.put(elementId, transactionColor);
                             graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
                             break;
                         default:

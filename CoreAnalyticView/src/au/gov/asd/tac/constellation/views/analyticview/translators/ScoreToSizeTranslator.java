@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
+import java.util.HashMap;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -42,6 +43,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, ElementScore> {
+
+    // Maps of the colors of the vertices and transactions before the plugin is run
+    private final HashMap<Integer, Float> vertexSizes = new HashMap<>();
+    private final HashMap<Integer, Float> transactionSizes = new HashMap<>();
 
     @Override
     public String getName() {
@@ -103,10 +108,12 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                     final int elementId = scoreResult.getElementId();
                     switch (elementType) {
                         case VERTEX:
-                            graph.setFloatValue(vertexSizeAttribute, elementId, 1.0F);
+                            final float vertexSize = vertexSizes.get(elementId);
+                            graph.setFloatValue(vertexSizeAttribute, elementId, vertexSize);
                             break;
                         case TRANSACTION:
-                            graph.setFloatValue(transactionSizeAttribute, elementId, 1.0F);
+                            final float transactionSize = transactionSizes.get(elementId);
+                            graph.setFloatValue(transactionSizeAttribute, elementId, transactionSize);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Size Elements' is not supported "
@@ -145,9 +152,13 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                     final float sizeIntensity = (float) Math.log((double) (elementMeanScore * (graphEstimatedDiameter / meanScoreRange)));
                     switch (elementType) {
                         case VERTEX:
+                            final float vertexSize = graph.getFloatValue(vertexSizeAttribute, elementId);
+                            vertexSizes.put(elementId, vertexSize);
                             graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
                             break;
                         case TRANSACTION:
+                            final float transactionSize = graph.getFloatValue(transactionSizeAttribute, elementId);
+                            transactionSizes.put(elementId, transactionSize);
                             graph.setFloatValue(transactionSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
                             break;
                         default:

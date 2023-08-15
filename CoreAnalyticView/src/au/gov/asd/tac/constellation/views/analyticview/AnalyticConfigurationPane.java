@@ -250,7 +250,7 @@ public class AnalyticConfigurationPane extends VBox {
                 if (newValue != null) {
                     populateDocumentationPane(newValue);
                     populateParameterPane(newValue.getAllParameters());
-                    AnalyticViewController.getDefault().updateState(true, pluginList);           
+                    AnalyticViewController.getDefault().updateState(true, pluginList);
                 } else {
                     populateDocumentationPane(null);
                     populateParameterPane(globalAnalyticParameters);
@@ -567,11 +567,8 @@ public class AnalyticConfigurationPane extends VBox {
             // update the categories pane
             if (!activeSelectablePlugins.isEmpty() && categoriesVisible && !activeCategory.isEmpty()) {
                 categoryList.getSelectionModel().select(activeCategory);
-                
-                LOGGER.log(Level.SEVERE, pluginList.toString());
 
-                for (final List<SelectableAnalyticPlugin> plugins : activeSelectablePlugins) {
-                    LOGGER.log(Level.SEVERE, plugins.toString());
+                activeSelectablePlugins.forEach(plugins -> {
                     for (final SelectableAnalyticPlugin plugin : plugins) {
                         final int index = pluginList.getItems().indexOf(plugin);
                         if (index > -1) {
@@ -579,7 +576,7 @@ public class AnalyticConfigurationPane extends VBox {
                             pluginList.getItems().get(index).setSelected(true);
                         }
                     }
-                }
+                });
             }
         });
     }

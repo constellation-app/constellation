@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,6 +46,10 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterResult, ClusterData> {
+
+    // Maps of the colors of the vertices and transactions before the plugin is run
+    private final HashMap<Integer, String> vertexColors = new HashMap<>();
+    private final HashMap<Integer, String> transactionColors = new HashMap<>();
 
     @Override
     public String getName() {
@@ -109,14 +113,12 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                     final int elementId = clusterData.getElementId();
                     switch (elementType) {
                         case VERTEX:
-                            if (graph.getSchema() != null) {
-                                graph.getSchema().completeVertex(graph, elementId);
-                            }
+                            final String vertexColor = vertexColors.get(elementId);
+                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, vertexColor);
                             break;
                         case TRANSACTION:
-                            if (graph.getSchema() != null) {
-                                graph.getSchema().completeTransaction(graph, elementId);
-                            }
+                            final String transactionColor = transactionColors.get(elementId);
+                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, transactionColor);
                             break;
                         default:
                             throw new InvalidElementTypeException("'Color Elements' is not supported "
@@ -149,9 +151,13 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                     final int clusterNumber = clusterData.getClusterNumber();
                     switch (elementType) {
                         case VERTEX:
+                            final String vertexColor = graph.getObjectValue(vertexOverlayColorAttribute, elementId);
+                            vertexColors.put(elementId, vertexColor);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, colorMap.get(clusterNumber));
                             break;
                         case TRANSACTION:
+                            final String transactionColor = graph.getObjectValue(transactionOverlayColorAttribute, elementId);
+                            transactionColors.put(elementId, transactionColor);
                             graph.setObjectValue(transactionOverlayColorAttribute, elementId, colorMap.get(clusterNumber));
                             break;
                         default:

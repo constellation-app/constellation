@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane;
-import java.util.logging.Logger;
 
 /**
  * Read the current state from the graph.
@@ -36,7 +35,6 @@ import java.util.logging.Logger;
 public final class AnalyticStateReaderPlugin extends SimpleReadPlugin {
 
     private final AnalyticViewPane pane;
-    private static final Logger LOGGER = Logger.getLogger(AnalyticStateReaderPlugin.class.getName());
 
     public AnalyticStateReaderPlugin(final AnalyticViewPane pane) {
         this.pane = pane;
@@ -55,7 +53,7 @@ public final class AnalyticStateReaderPlugin extends SimpleReadPlugin {
 
         AnalyticViewState currentState = graph.getObjectValue(analyticViewStateAttributeId, 0);
         if (currentState == null) {
-            currentState = new AnalyticViewState();
+            return;
         }
 
         // update pane with current question/category/results/effects

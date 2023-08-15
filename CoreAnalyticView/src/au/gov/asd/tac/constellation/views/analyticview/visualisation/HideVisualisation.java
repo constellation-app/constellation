@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@ public class HideVisualisation<C> extends GraphVisualisation {
     private final HBox hidePanel;
     private final Slider hideSlider;
     private final ToggleButton hideButton;
+    private boolean activated = false;
 
     public HideVisualisation(final AbstractHideTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
@@ -49,13 +50,19 @@ public class HideVisualisation<C> extends GraphVisualisation {
         this.hideButton = new ToggleButton("Hide");
         hideButton.setId("hide-visualisation-button");
         hideButton.setOnAction(event -> {
-            final boolean reset = !hideButton.isSelected();
+            activated = hideButton.isSelected();
             final float threshold = (float) hideSlider.getValue();
-            translator.executePlugin(reset, threshold);
-            hideSlider.setDisable(reset);
+            translator.executePlugin(!activated, threshold);
+            hideSlider.setDisable(!activated);
+
         });
 
         this.hidePanel = new HBox(5.0, hideButton, hideSlider);
+    }
+
+    @Override
+    public void deactivate() {
+        translator.executePlugin(true, 0);
     }
 
     @Override
@@ -73,5 +80,16 @@ public class HideVisualisation<C> extends GraphVisualisation {
         return Arrays.asList(
                 VisualConcept.VertexAttribute.VISIBILITY,
                 VisualConcept.TransactionAttribute.VISIBILITY);
+    }
+
+    @Override
+    public boolean isActive() {
+        return activated;
+    }
+
+    @Override
+    public void setSelected(final boolean selected) {
+        hideButton.setSelected(selected);
+        hideSlider.setDisable(selected);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,15 @@
 package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
-import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -98,8 +100,8 @@ public class AnalyticResultsPane extends VBox {
         return result;
     }
 
-    protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results) {
-        if (results == null) {
+    protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results, HashMap<GraphVisualisation, Boolean> currentVisualisations) {
+        if (results.getClass().equals(EmptyResult.class)) {
             result = question.getResult() == null ? new EmptyResult() : question.getResult();
         } else
             result = results;
@@ -122,15 +124,28 @@ public class AnalyticResultsPane extends VBox {
             graphVisualisationPane.getItems().clear();
             final Label applyResults = new Label("Apply to Results: ");
             graphVisualisationPane.getItems().add(applyResults);
-            AnalyticUtilities.getGraphVisualisationTranslators().forEach(translator -> {
-                if (translator.getResultType().isAssignableFrom(result.getClass())) {
-                    translator.setQuestion(question);
-                    translator.setResult(result);
-                    final GraphVisualisation graphVisualisation = translator.buildControl();
-                    final Node visualisationNode = graphVisualisation.getVisualisation();
+            if (currentVisualisations == null || currentVisualisations.isEmpty()) {
+                AnalyticUtilities.getGraphVisualisationTranslators().forEach(translator -> {
+                    if (translator.getResultType().isAssignableFrom(result.getClass())) {
+                        translator.setQuestion(question);
+                        translator.setResult(result);
+                        final GraphVisualisation graphVisualisation = translator.buildControl();
+                        final Node visualisationNode = graphVisualisation.getVisualisation();
+                        graphVisualisationPane.getItems().add(visualisationNode);
+
+                        AnalyticViewController.getDefault().updateVisualisations(graphVisualisation, graphVisualisation.isActive());
+                    }
+                });
+            } else {
+                currentVisualisations.entrySet().forEach(node -> {
+                    final Node visualisationNode = node.getKey().getVisualisation();
                     graphVisualisationPane.getItems().add(visualisationNode);
-                }
-            });
+                    final boolean active = node.getValue();
+                    node.getKey().setSelected(active);
+
+                    AnalyticViewController.getDefault().updateVisualisations(node.getKey(), node.getValue());
+                });
+            }
         });
 
         // add the results to the graph state

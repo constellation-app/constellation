@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,9 @@ import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -38,11 +40,10 @@ public class AnalyticViewState {
     private AnalyticQuestionDescription<?> currentQuestion;
     private AnalyticQuestion question;
     private String activeCategory;
-
-    // boolean variables: color, hide, size
+    private HashMap<GraphVisualisation, Boolean> visualisations;
 
     public AnalyticViewState() {
-        this(0, new ArrayList<>(), new ArrayList<>(), null, null, null, "", false, false);
+        this(0, new ArrayList<>(), new ArrayList<>(), null, null, null, "", false, false, new HashMap<>());
     }
 
     public AnalyticViewState(final AnalyticViewState state) {
@@ -55,11 +56,12 @@ public class AnalyticViewState {
         this.currentQuestion = state.getCurrentQuestion();
         this.question = state.getQuestion();
         this.activeCategory = state.getActiveCategory();
+        this.visualisations = state.getVisualisations();
     }
 
     public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
             final List<List<SelectableAnalyticPlugin>> activePlugins, final AnalyticResult<?> result, final AnalyticQuestionDescription<?> currentQuestion,
-            final AnalyticQuestion question, final String activeCategory, final boolean resultsVisible, final boolean categoriesVisible) {
+            final AnalyticQuestion question, final String activeCategory, final boolean resultsVisible, final boolean categoriesVisible, final HashMap<GraphVisualisation, Boolean> visualisations) {
         this.currentAnalyticQuestionIndex = currentQuestionIndex;
         this.activeAnalyticQuestions = activeQuestions;
         this.activeSelectablePlugins = activePlugins;
@@ -69,6 +71,15 @@ public class AnalyticViewState {
         this.currentQuestion = currentQuestion;
         this.question = question;
         this.activeCategory = activeCategory;
+        this.visualisations = visualisations;
+    }
+
+    public HashMap<GraphVisualisation, Boolean> getVisualisations() {
+        return visualisations;
+    }
+
+    public void setVisualisations(final HashMap<GraphVisualisation, Boolean> visualisations) {
+        this.visualisations = visualisations;
     }
 
     public String getActiveCategory() {

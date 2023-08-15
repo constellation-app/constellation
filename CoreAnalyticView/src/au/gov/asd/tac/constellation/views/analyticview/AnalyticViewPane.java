@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,14 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
+import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -66,6 +71,8 @@ public class AnalyticViewPane extends BorderPane {
 
     private final AnalyticConfigurationPane analyticConfigurationPane;
     private final AnalyticResultsPane analyticResultsPane;
+    private final AnalyticResult<?> emptyResult = new EmptyResult();
+    private HashMap<GraphVisualisation, Boolean> visualisations = new HashMap<>();
 
     private static boolean running = false;
     private Thread questionThread = null;
@@ -98,6 +105,8 @@ public class AnalyticViewPane extends BorderPane {
         runButton.setStyle(RUN_START_STYLE);
         runButton.setOnAction(event -> {
             if (running) {
+                deactivateResultChanges();
+
                 // hide results pane
                 if (viewPane.getChildren().contains(analyticResultsPane)) {
                     viewPane.getChildren().remove(analyticResultsPane);
@@ -108,7 +117,7 @@ public class AnalyticViewPane extends BorderPane {
                     questionThread.interrupt();
                 }
                 running = false;
-                setRunButtonMode(true);
+                setRunButtonMode(true);          
             } else {
                 setRunButtonMode(false);
                 // display results pane
@@ -135,13 +144,15 @@ public class AnalyticViewPane extends BorderPane {
                             running = true;
                             try {
                                 final AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
-                                analyticResultsPane.displayResults(question, null);
+
+                                analyticResultsPane.displayResults(question, emptyResult, visualisations);
                                 analyticViewController.updateState(true, analyticConfigurationPane.getPluginList());
+                                
                             } catch (final AnalyticException ex) {
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                                 final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
                                 question.addException(ex);
-                                analyticResultsPane.displayResults(question, null);
+                                analyticResultsPane.displayResults(question, emptyResult, visualisations);
                                 analyticViewController.updateState(false, analyticConfigurationPane.getPluginList());
                             } finally {
                                 running = false;
@@ -174,6 +185,16 @@ public class AnalyticViewPane extends BorderPane {
 
         // initialise the top level pane
         this.setCenter(viewPane);
+    }
+
+    /**
+     * Deactivate any changes made by the color, hide and size buttons
+     */
+    public void deactivateResultChanges() {
+        visualisations = AnalyticViewController.getDefault().getVisualisations();
+        if (!visualisations.isEmpty()) {
+            visualisations.entrySet().forEach(node -> node.getKey().deactivate());
+        }
     }
 
     private void setRunButtonMode(final boolean isRunMode) {
@@ -231,7 +252,8 @@ public class AnalyticViewPane extends BorderPane {
 
                 if (results != null && resultsVisible && question != null && !viewPane.getChildren().contains(analyticResultsPane)) {
                         viewPane.getChildren().add(1, analyticResultsPane);
-                        analyticResultsPane.displayResults(question, results);
+                        visualisations = state.getVisualisations();
+                        analyticResultsPane.displayResults(question, results, visualisations); 
                 }
             }         
         });

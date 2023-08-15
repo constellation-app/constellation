@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,7 +88,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         });
         addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
             if (needsUpdate() && !suppressed) {
-             //   analyticController.writeState();
+                
             }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
@@ -170,21 +170,19 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (analyticViewPane != null) {
             analyticViewPane.setIsRunnable(graph != null);
             analyticViewPane.reset();
-        }
-        suppressed = true;
-        manualUpdate();
-        suppressed = false;
-        if (analyticViewPane != null) {
+            analyticController.addAttributes();
             analyticController.readState();
         }
     }
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        if (needsUpdate()) {
-            if (graph != null) {
-                currentGraphId = graph.getId();
-            }
+        if (needsUpdate() && graph != null) {
+            currentGraphId = graph.getId();  
+        }
+        if (analyticViewPane != null) {
+            analyticViewPane.reset();
+            analyticController.addAttributes();
             analyticController.readState();
         }
     }
@@ -197,6 +195,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             if (current != null) {
                 currentGraphId = current.getId();
             }
+            analyticController.addAttributes();
             analyticController.readState();
         }
     }
@@ -208,7 +207,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (current != null && !current.getId().equals(currentGraphId)) {
             analyticViewPane.reset();
         }
+        analyticController.addAttributes();
         analyticController.readState();
     }
-
 }
