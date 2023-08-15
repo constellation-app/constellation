@@ -660,7 +660,7 @@ public class ArcTree {
     private Vec3 getBoundaryIntersection(final Vec3 intersectionPoint, final HalfEdge h1, final HalfEdge h2, final HalfEdge resultingEdge) {
         final Vec3 topLineIntersection = findEdgeIntersectionPoint(resultingEdge, top);
 
-        if (topLineIntersection != null && resultingEdge.getStart().getY() <= 0) {
+        if (topLineIntersection != null && resultingEdge.getStart().getY() <= 0 && resultingEdge.getStart().getX() >= 0 && resultingEdge.getStart().getX() <= MapView.MAP_WIDTH) {
             Line l4 = new Line();
             l4.setStartX(topLineIntersection.getX() - 5);
             l4.setStartY(topLineIntersection.getY());
@@ -688,6 +688,7 @@ public class ArcTree {
 
             return null;
         }
+
     }
 
     private Vec3 getRelatedPointToCorner(final Vec3 corner, final HalfEdge h) {
@@ -710,19 +711,19 @@ public class ArcTree {
         final List<Vec3> h1IntersectionPoints = new ArrayList<>();
 
         if (topLineH1 != null) {
-            topLineH1.setZ(Vec3.getDistance(intersectionPoint, topLineH1));
+            topLineH1.setZ(Vec3.getDistance(h1.getStart(), topLineH1));
             h1IntersectionPoints.add(topLineH1);
         }
         if (bottomLineH1 != null) {
-            bottomLineH1.setZ(Vec3.getDistance(intersectionPoint, bottomLineH1));
+            bottomLineH1.setZ(Vec3.getDistance(h1.getStart(), bottomLineH1));
             h1IntersectionPoints.add(bottomLineH1);
         }
         if (leftLineH1 != null) {
-            leftLineH1.setZ(Vec3.getDistance(intersectionPoint, leftLineH1));
+            leftLineH1.setZ(Vec3.getDistance(h1.getStart(), leftLineH1));
             h1IntersectionPoints.add(leftLineH1);
         }
         if (rightLineH1 != null) {
-            rightLineH1.setZ(Vec3.getDistance(intersectionPoint, rightLineH1));
+            rightLineH1.setZ(Vec3.getDistance(h1.getStart(), rightLineH1));
             h1IntersectionPoints.add(rightLineH1);
         }
 
