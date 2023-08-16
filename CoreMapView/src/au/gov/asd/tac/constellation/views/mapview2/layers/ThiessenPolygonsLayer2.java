@@ -118,15 +118,20 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
     private void calculateVoronoi() {
 
-        beachLine.run();
-        arcLayer.getChildren().clear();
-        layer.getChildren().clear();
-        layer.getChildren().add(arcLayer);
+        //MapView.testKeyPressed.addListener((oldVal, newVal, changed) -> {
+            beachLine.run();
+            arcLayer.getChildren().clear();
+            layer.getChildren().clear();
+            layer.getChildren().add(arcLayer);
         final List<Polygon> generatedShapes = beachLine.getCompletedShapes();
         generatedShapes.forEach(shape -> layer.getChildren().add(shape));
 
-        final List<Line> debugLines = beachLine.getCompletedEdges();
-        debugLines.forEach(line -> layer.getChildren().add(line));
+        //generateAllArcs(beachLine.root);
+
+        //final List<Line> debugLines = beachLine.getCompletedEdges();
+        //debugLines.forEach(line -> layer.getChildren().add(line));
+        //});
+
 
     }
 
@@ -138,8 +143,12 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         generateAllArcs(root.getLeft());
         generateAllArcs(root.getRight());
 
-        final HalfEdge left = root.getLeftEdge() != null ? root.getLeftEdge() : beachLine.getLeftNeighbour(root).getRightEdge();
-        final HalfEdge right = root.getRightEdge() != null ? root.getRightEdge() : beachLine.getRightNeighbour(root).getLeftEdge();
+        final HalfEdge left = root.getLeftEdge() != null ? root.getLeftEdge() : beachLine.getLeftNeighbour(root) != null ? beachLine.getLeftNeighbour(root).getRightEdge() : null;
+        final HalfEdge right = root.getRightEdge() != null ? root.getRightEdge() : beachLine.getRightNeighbour(root) != null ? beachLine.getRightNeighbour(root).getLeftEdge() : null;
+
+        if (left == null || right == null) {
+            return;
+        }
 
         final Vec3 leftIntersection = beachLine.getEdgeArcIntersection(left, (Arc) root, beachLine.directrixPos);
         final Vec3 rightIntersection = beachLine.getEdgeArcIntersection(right, (Arc) root, beachLine.directrixPos);
