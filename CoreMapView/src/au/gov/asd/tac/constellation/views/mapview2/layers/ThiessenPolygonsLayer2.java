@@ -59,7 +59,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
     private List<AbstractMarker> markers = new ArrayList<>();
 
     private final PriorityQueue<VoronoiEvent> eventQueue;
-    private final ArcTree arcTree;
+    private ArcTree arcTree;
 
     public ThiessenPolygonsLayer2(final MapView parent, final int id, final List<AbstractMarker> markers) {
         super(parent, id);
@@ -77,14 +77,13 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             return -1;
         });
 
-        arcTree = new ArcTree(eventQueue);
     }
 
     @Override
     public void setUp() {
         layer.getChildren().clear();
 
-        if (nodesOnScreen.size() == 1) {
+        if (markers.size() == 1) {
             final ConstellationColor[] palette = ConstellationColor.createPalette(1);
 
             Rectangle r = new Rectangle();
@@ -97,7 +96,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             r.setOpacity(0.5);
             r.setMouseTransparent(true);
             layer.getChildren().add(r);
-        } else {
+        } else if (markers.size() > 1) {
             for (final AbstractMarker m : markers) {
                 if (m instanceof PointMarker || m instanceof UserPointMarker) {
 
@@ -118,6 +117,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
     private void calculateVoronoi() {
 
         //MapView.testKeyPressed.addListener((oldVal, newVal, changed) -> {
+        arcTree = new ArcTree(eventQueue);
         arcTree.run();
         arcLayer.getChildren().clear();
         layer.getChildren().clear();
@@ -127,8 +127,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
         //generateAllArcs(arcTree.root);
 
-        //final List<Line> debugLines = arcTree.getCompletedEdges();
-        //debugLines.forEach(line -> layer.getChildren().add(line));
+        final List<Line> debugLines = arcTree.getCompletedEdges();
+        debugLines.forEach(line -> layer.getChildren().add(line));
         //});
 
 

@@ -75,7 +75,7 @@ public class ArcTree {
 
     private boolean finishedEdges = false;
 
-    private final Vec3 edgeCaseFocus = new Vec3(MapView.MAP_WIDTH / 2, -1000);
+    private final Vec3 edgeCaseFocus;
 
     // The boundaries of the map used to cut shapes that go over the edge
     private final HalfEdge left = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(0, 1));
@@ -96,13 +96,16 @@ public class ArcTree {
         siteMap = new HashMap<>();
         this.eventQueue = eventQueue;
 
+        final double distance = this.eventQueue.peek().getYCoord();
+        final Vec3 rootFocus = new Vec3(MapView.MAP_WIDTH / 2, -500 - distance);
+        edgeCaseFocus = new Vec3(rootFocus.getX(), rootFocus.getY() * 2);
         // Create a default arc way above the map so that the arcs beloging to the markers at the top have something to intersect
-        root = new Arc(new Vec3(MapView.MAP_WIDTH / 2, -500), id++);
+        root = new Arc(new Vec3(rootFocus.getX(), rootFocus.getY()), id++);
 
         // Set up the edges belonging to the arc and assign them to it. Even though a new arc being created is not assigned an edge we need to make an exception
         // for this initial default arc
-        final HalfEdge left = new HalfEdge(((Arc) root).getFocus(), ((Arc) root).getFocus(), new Vec3(MapView.MAP_WIDTH / 2, -1000), new Vec3(-1, 0));
-        final HalfEdge right = new HalfEdge(((Arc) root).getFocus(), ((Arc) root).getFocus(), new Vec3(MapView.MAP_WIDTH / 2, -1000), new Vec3(1, 0));
+        final HalfEdge left = new HalfEdge(((Arc) root).getFocus(), ((Arc) root).getFocus(), new Vec3(rootFocus.getX(), rootFocus.getY() * 2), new Vec3(-1, 0));
+        final HalfEdge right = new HalfEdge(((Arc) root).getFocus(), ((Arc) root).getFocus(), new Vec3(rootFocus.getX(), rootFocus.getY() * 2), new Vec3(1, 0));
         root.setLeftEdge(left);
         root.setRightEdge(right);
         siteMap.put(((Arc) root).getFocus(), new HashSet<>());
@@ -920,9 +923,16 @@ public class ArcTree {
 
                     // Else if the 1st related coordinate is not in the key
                 } else if (i == 0) {
-
                     if (siteMap.containsKey(entry.getValue().get(1).getValue())) {
                         siteMap.get(entry.getValue().get(1).getValue()).add(entry.getKey());
+                    } else {
+                        final Vec3 corner = entry.getValue().get(1).getValue();
+
+                        final Vec3 relatedMarker = Vec3.getDistance(entry.getKey(), cornerMap.get(corner).get(0).getValue()) < Vec3.getDistance(entry.getKey(), cornerMap.get(corner).get(1).getValue()) ? cornerMap.get(corner).get(0).getValue() : cornerMap.get(corner).get(1).getValue();
+
+                        if (siteMap.containsKey(relatedMarker)) {
+                            siteMap.get(relatedMarker).add(entry.getKey());
+                        }
                     }
                 } else if (i == 1) {
                     if (siteMap.containsKey(entry.getValue().get(0).getValue())) {
@@ -1267,6 +1277,14 @@ public class ArcTree {
             // then remove the arc
             if (eventQueue.peek() instanceof SiteEvent) {
                 final SiteEvent e = (SiteEvent) eventQueue.poll();
+
+                final Line l = new Line();
+                l.setStartX(e.getSite().getX() - 2);
+                l.setStartY(e.getSite().getY());
+                l.setEndX(e.getSite().getX() + 2);
+                l.setEndY(e.getSite().getY());
+                l.setStroke(Color.BLUE);
+                completedEdges.add(l);
 
                 root = addArc(e.getSite());
             } else if (eventQueue.peek() instanceof EdgeEvent) {
