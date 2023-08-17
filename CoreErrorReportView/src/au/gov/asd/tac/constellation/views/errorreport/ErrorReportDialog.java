@@ -187,14 +187,17 @@ public class ErrorReportDialog {
     public void toggleExceptionDisplay() {
         showingDetails = !showingDetails;
         showHideButton.setText(showingDetails ? "Hide Details" : "Show Details");
+        final int headerLen = currentError.getHeading().length();
         if (showingDetails) {
             detailsBox.getChildren().remove(summaryLabel);
             detailsBox.getChildren().add(errorMsgArea);
-            dialog.setSize(new Dimension(575, 575));
+            final int prefHeight = 575 + Math.min(75, 25 * (headerLen / 125));
+            dialog.setSize(new Dimension(575, prefHeight));
         } else {
             detailsBox.getChildren().remove(errorMsgArea);
             detailsBox.getChildren().add(summaryLabel);
-            dialog.setSize(new Dimension(430, 230));
+            final int prefHeight = 225 + Math.min(75, 25 * (headerLen / 75));
+            dialog.setSize(new Dimension(430, prefHeight));
         }
     }
 
@@ -222,8 +225,10 @@ public class ErrorReportDialog {
         });
     }
 
-    public void updateDialogSettings(final boolean isModal, final boolean autoClose) {        
-        dialog.setSize(new Dimension(430, 230));
+    public void updateDialogSettings(final boolean isModal, final boolean autoClose) {
+        final int headerLen = currentError.getHeading().length();
+        final int prefHeight = 225 + Math.min(75, 25 * (headerLen / 75));
+        dialog.setSize(new Dimension(430, prefHeight));
         dialog.setEnabled(true);
         dialog.setModal(isModal);
         dialog.setVisible(true);

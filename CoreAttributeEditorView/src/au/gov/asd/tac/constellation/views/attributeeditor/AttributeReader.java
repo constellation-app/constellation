@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import org.apache.commons.collections4.ListUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -259,7 +260,7 @@ public class AttributeReader {
             elementAttributeValues.clear();
         }
         for (final GraphElementType type : ACCEPTED_ELEMENT_TYPES) { // for graphElement Type (graph,vertex,transaction)
-            final List<AttributeData> attributes = elementAttributeData.get(type);
+            final List<AttributeData> attributes = ListUtils.emptyIfNull(elementAttributeData.get(type));
             final IntArray selectedElement;
             if (type.equals(GraphElementType.VERTEX)) {
                 selectedElement = selectedNodes;

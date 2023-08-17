@@ -15,9 +15,11 @@
  */
 package au.gov.asd.tac.constellation.functionality;
 
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportEntry;
 import au.gov.asd.tac.constellation.views.errorreport.ErrorReportSessionData;
+import java.util.Date;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -35,27 +37,43 @@ public class ConstellationErrorManager extends Handler {
         if (errorRecord != null && errorRecord.getThrown() != null) {
             final StackTraceElement[] elems = errorRecord.getThrown().getStackTrace();
             final StringBuilder errorMsg = new StringBuilder();
-            String recordHeader = errorRecord.getThrown().getLocalizedMessage() != null ? 
-                    errorRecord.getThrown().getLocalizedMessage() : 
-                    "<< No Message >>";
-            if (!recordHeader.endsWith(SeparatorConstants.NEWLINE)) {
-                recordHeader += SeparatorConstants.NEWLINE;
-            }
             final Level errLevel = errorRecord.getLevel();
-            String errorSummary = errorRecord.getThrown().toString();
-            if (!errorSummary.endsWith(SeparatorConstants.NEWLINE)) {
-                errorSummary += SeparatorConstants.NEWLINE;
+            final String errorSummary = errorRecord.getThrown().toString();
+            final int firstColon = errorSummary.indexOf(SeparatorConstants.COLON);
+            String extractedMessage = firstColon != -1 ? errorSummary.substring(firstColon + 2) : "";
+            final boolean autoBlockPopup = extractedMessage.startsWith(NotifyDisplayer.BLOCK_POPUP_FLAG);
+            if (autoBlockPopup) {
+                extractedMessage = extractedMessage.substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length());
+            }
+            final int prevDotPos = errorSummary.substring(0, (firstColon != -1 ? firstColon : errorSummary.length())).lastIndexOf(SeparatorConstants.PERIOD);
+            final String exceptionType = errorSummary.substring(prevDotPos + 1, (firstColon != -1 ? firstColon : errorSummary.length()));
+            String recordHeader = extractedMessage.isEmpty() ? exceptionType : extractedMessage;
+            String revisedSummary = errorSummary.substring(0, firstColon + 1) 
+                                    + errorSummary.substring(firstColon + 1 + (autoBlockPopup ? NotifyDisplayer.BLOCK_POPUP_FLAG.length() : 0));
+            if (!revisedSummary.endsWith(SeparatorConstants.NEWLINE)) {
+                revisedSummary += SeparatorConstants.NEWLINE;
             }
             if (elems == null || elems.length == 0) {
-                errorMsg.append(" >> No stacktrace available for error:").append(SeparatorConstants.NEWLINE).append(" >> ").append(recordHeader);
+                errorMsg.append(" >> No stacktrace available for error:")
+                        .append(SeparatorConstants.NEWLINE).append(" >> ")
+                        .append(recordHeader);
             } else {
                 for (int i = 0; i < elems.length; i++) {
                     errorMsg.append(elems[i].toString())
                             .append(SeparatorConstants.NEWLINE);
                 }
             }
-            final ErrorReportEntry repEntry = new ErrorReportEntry(errLevel, recordHeader, errorSummary, errorMsg.toString(), 
-                                                                   ErrorReportSessionData.getNextEntryId());
+            if (!recordHeader.endsWith(SeparatorConstants.NEWLINE)) {
+                recordHeader += SeparatorConstants.NEWLINE;
+            }
+
+            final ErrorReportEntry repEntry = new ErrorReportEntry( errLevel, recordHeader, 
+                                                                    revisedSummary, errorMsg.toString(), 
+                                                                    ErrorReportSessionData.getNextEntryId());
+            if (autoBlockPopup) {
+                repEntry.setBlockRepeatedPopups(true);
+                repEntry.setLastPopupDate(new Date());
+            }
             ErrorReportSessionData.getInstance().storeSessionError(repEntry);
         }
     }

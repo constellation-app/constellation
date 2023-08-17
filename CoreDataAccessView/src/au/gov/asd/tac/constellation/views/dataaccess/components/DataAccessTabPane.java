@@ -35,8 +35,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.function.Function;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -51,6 +49,7 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -61,8 +60,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author formalhaunt
  */
 public class DataAccessTabPane {
-    private static final Logger LOGGER = Logger.getLogger(DataAccessTabPane.class.getName());
-    
     private static final String TAB_TITLE = "Step %d";
     public static final String LOCAL_DATE_PARAMETER_TYPE = "LocalDateParameterType";
     private static final int DOUBLE_CLICK_COUNT = 2;
@@ -82,7 +79,7 @@ public class DataAccessTabPane {
     };
     
     private final DataAccessPane dataAccessPane;
-    private final Map<String, List<DataAccessPlugin>> plugins;
+    private final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
     private final TabPane tabPane;
     
     /**
@@ -93,7 +90,7 @@ public class DataAccessTabPane {
      * @see DataAccessPaneState#getPlugins() 
      */
     public DataAccessTabPane(final DataAccessPane dataAccessPane,
-                             final Map<String, List<DataAccessPlugin>> plugins) {
+            final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins) {
         this.dataAccessPane = dataAccessPane;
         this.plugins = plugins;
         
@@ -297,9 +294,6 @@ public class DataAccessTabPane {
         List<Future<?>> barrier = null;
         for (int i = firstTab; i <= lastTab; i++) {
             final Tab tab = getTabPane().getTabs().get(i);
-            
-            LOGGER.log(Level.INFO, String.format("Running tab: %s", tab.getText()));
-            
             barrier = getQueryPhasePane(tab).runPlugins(barrier);
         }
 
@@ -418,7 +412,7 @@ public class DataAccessTabPane {
      * @return the data access plugins
      * @see DataAccessPaneState#getPlugins() 
      */
-    public Map<String, List<DataAccessPlugin>> getPlugins() {
+    public Map<String, Pair<Integer, List<DataAccessPlugin>>> getPlugins() {
         return plugins;
     }
     

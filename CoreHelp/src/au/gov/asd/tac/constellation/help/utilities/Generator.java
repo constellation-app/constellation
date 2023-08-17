@@ -136,9 +136,9 @@ public class Generator implements Runnable {
         final URL url = new URL(pathLoc);
         final URI uri = url.toURI();
         final Path path = Paths.get(uri);
-        final int jarIx = path.toString().lastIndexOf('\\');
+        final int jarIx = path.toString().lastIndexOf(File.separator);
         final String newPath = jarIx > -1 ? path.toString().substring(0, jarIx) : "";
-        return newPath != null ? newPath + "\\ext" : "";
+        return newPath != null ? newPath + File.separator + "ext" : "";
     }
 
 }
