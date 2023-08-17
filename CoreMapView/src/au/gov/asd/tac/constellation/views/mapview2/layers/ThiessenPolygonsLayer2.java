@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.Arc;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.ArcTree;
-import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.BaseLine;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.BlineElement;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.HalfEdge;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.SiteEvent;
@@ -60,7 +59,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
     private List<AbstractMarker> markers = new ArrayList<>();
 
     private final PriorityQueue<VoronoiEvent> eventQueue;
-    private final ArcTree beachLine;
+    private final ArcTree arcTree;
 
     public ThiessenPolygonsLayer2(final MapView parent, final int id, final List<AbstractMarker> markers) {
         super(parent, id);
@@ -78,7 +77,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             return -1;
         });
 
-        beachLine = new ArcTree(eventQueue);
+        arcTree = new ArcTree(eventQueue);
     }
 
     @Override
@@ -119,16 +118,16 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
     private void calculateVoronoi() {
 
         //MapView.testKeyPressed.addListener((oldVal, newVal, changed) -> {
-            beachLine.run();
-            arcLayer.getChildren().clear();
-            layer.getChildren().clear();
-            layer.getChildren().add(arcLayer);
-        final List<Polygon> generatedShapes = beachLine.getCompletedShapes();
+        arcTree.run();
+        arcLayer.getChildren().clear();
+        layer.getChildren().clear();
+        layer.getChildren().add(arcLayer);
+        final List<Polygon> generatedShapes = arcTree.getCompletedShapes();
         generatedShapes.forEach(shape -> layer.getChildren().add(shape));
 
-        //generateAllArcs(beachLine.root);
+        //generateAllArcs(arcTree.root);
 
-        //final List<Line> debugLines = beachLine.getCompletedEdges();
+        //final List<Line> debugLines = arcTree.getCompletedEdges();
         //debugLines.forEach(line -> layer.getChildren().add(line));
         //});
 
@@ -143,19 +142,19 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         generateAllArcs(root.getLeft());
         generateAllArcs(root.getRight());
 
-        final HalfEdge left = root.getLeftEdge() != null ? root.getLeftEdge() : beachLine.getLeftNeighbour(root) != null ? beachLine.getLeftNeighbour(root).getRightEdge() : null;
-        final HalfEdge right = root.getRightEdge() != null ? root.getRightEdge() : beachLine.getRightNeighbour(root) != null ? beachLine.getRightNeighbour(root).getLeftEdge() : null;
+        final HalfEdge left = root.getLeftEdge() != null ? root.getLeftEdge() : arcTree.getLeftNeighbour(root) != null ? arcTree.getLeftNeighbour(root).getRightEdge() : null;
+        final HalfEdge right = root.getRightEdge() != null ? root.getRightEdge() : arcTree.getRightNeighbour(root) != null ? arcTree.getRightNeighbour(root).getLeftEdge() : null;
 
         if (left == null || right == null) {
             return;
         }
 
-        final Vec3 leftIntersection = beachLine.getEdgeArcIntersection(left, (Arc) root, beachLine.directrixPos);
-        final Vec3 rightIntersection = beachLine.getEdgeArcIntersection(right, (Arc) root, beachLine.directrixPos);
+        final Vec3 leftIntersection = arcTree.getEdgeArcIntersection(left, (Arc) root, arcTree.directrixPos);
+        final Vec3 rightIntersection = arcTree.getEdgeArcIntersection(right, (Arc) root, arcTree.directrixPos);
 
         if (leftIntersection != null && rightIntersection != null) {
             final Arc arc = (Arc) root;
-            arc.calculateArc(leftIntersection.getX(), rightIntersection.getX(), beachLine.directrixPos);
+            arc.calculateArc(leftIntersection.getX(), rightIntersection.getX(), arcTree.directrixPos);
 
             final Line leftLine = new Line();
             leftLine.setStartX(left.getStart().getX());

@@ -22,8 +22,8 @@ import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
  * @author altair1673
  */
 public class HalfEdge {
-    private Vec3 parentArc = null;
-    private Vec3 homeArc = null;
+    private Vec3 parentFocus = null;
+    private Vec3 homeFocus = null;
 
     private Vec3 start;
     private Vec3 dirVect;
@@ -32,8 +32,8 @@ public class HalfEdge {
     private boolean complete = false;
 
     public HalfEdge(final Vec3 parentArc, final Vec3 homeArc, final Vec3 start, final Vec3 dirVect) {
-        this.parentArc = parentArc;
-        this.homeArc = homeArc;
+        this.parentFocus = parentArc;
+        this.homeFocus = homeArc;
         this.start = start;
         this.dirVect = dirVect;
     }
@@ -54,20 +54,20 @@ public class HalfEdge {
         this.dirVect = dirVect;
     }
 
-    public Vec3 getParentArc() {
-        return parentArc;
+    public Vec3 getParentFocus() {
+        return parentFocus;
     }
 
-    public void setParentArc(final Vec3 parentArc) {
-        this.parentArc = parentArc;
+    public void setParentFocus(final Vec3 parentFocus) {
+        this.parentFocus = parentFocus;
     }
 
-    public Vec3 getHomeArc() {
-        return homeArc;
+    public Vec3 getHomeFocus() {
+        return homeFocus;
     }
 
-    public void setHomeArc(final Vec3 homeArc) {
-        this.homeArc = homeArc;
+    public void setHomeFocus(final Vec3 homeFocus) {
+        this.homeFocus = homeFocus;
     }
 
     public boolean extendsUp() {
