@@ -4,7 +4,7 @@
 
 .accordion .titled-pane-heading .title, .titled-pane-heading > .title {
     -fx-font-weight:bold;
-    -fx-background-color: #1c5aa6;
+    -fx-background-color: linear-gradient(to bottom, derive(#1c5aa6,100%), derive(#1c5aa6,0%) 5%, derive(#1c5aa6,-25%) 95%, derive(#1c5aa6,50%) 100%);
     -fx-padding: 3;
     -fx-color: white;
 }
@@ -13,11 +13,11 @@
     -fx-base: #333333;
 }
 .titled-pane-selected > .title {
-    -fx-background-color: #5E9656;
+    -fx-background-color: linear-gradient(to bottom, derive(#5E9656,100%), derive(#5E9656,0%) 5%, derive(#5E9656,-25%) 95%, derive(#5E9656,50%) 100%);
 }
 
 .titled-pane-matched > .title {
-    -fx-background-color: #5E96EE;
+    -fx-background-color: #5E96EE; 
 }
 
 .titled-pane-heading > .title {

@@ -172,7 +172,7 @@
 }
 
 .menu:hover{
-    -fx-background-color: #0093FF;
+    -fx-background-color: #2560a8;
 }
 
 /*******************************************************************************
@@ -181,14 +181,14 @@
  *                                                                             *
  ******************************************************************************/
 .button{
-    -fx-base: #1f6fba;
+    -fx-base: #1c5aa6; 
     -fx-text-fill: #ffffff;
 }
 
 .button:hover {
     -fx-color: -fx-hover-base;
     -fx-text-fill: #ffffff;
-    -fx-background-color: #0093ff;
+    -fx-background-color: #3369ab;
 }
 
 .button:focused {

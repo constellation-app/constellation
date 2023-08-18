@@ -96,7 +96,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected String createStyle() {
-        return null;
+        return "resources/layers-view.css";
     }
 
     @Override

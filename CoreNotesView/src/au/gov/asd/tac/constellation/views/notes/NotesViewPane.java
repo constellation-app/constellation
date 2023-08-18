@@ -258,7 +258,7 @@ public class NotesViewPane extends BorderPane {
         // Button to trigger pop-up window to make a new note
         createNewNoteButton.setText("Create Note");
         createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        createNewNoteButton.setStyle("-fx-text-fill: #00FF00;");
+        createNewNoteButton.setStyle("-fx-text-fill: #FFFFFF;");
 
         createNewNoteButton.setOnAction(event -> {
             if (creatingFirstNote) {

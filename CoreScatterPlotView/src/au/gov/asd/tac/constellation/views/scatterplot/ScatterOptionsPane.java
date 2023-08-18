@@ -235,6 +235,7 @@ public class ScatterOptionsPane extends BorderPane {
         helpButton = new Button("", helpImage);
         helpButton.setOnAction(event
                 -> new HelpCtx(this.getClass().getPackage().getName()).display());
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
 
         this.optionsToolBar = new ToolBar();
         optionsToolBar.getItems().addAll(elementTypeComboBox, xAttributeComboBox, yAttributeComboBox, selectedOnlyButton, logarithmicAxisX, logarithmicAxisY, helpButton);
