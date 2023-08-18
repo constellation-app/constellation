@@ -50,7 +50,7 @@ import org.assertj.core.util.Arrays;
 public class ArcTree {
 
     // The root node of the tree
-    public BlineElement root;
+    private BlineElement root;
     private final List<Line> completedEdges = new ArrayList<>();
 
     // The shapes that will be shown on screen
@@ -68,21 +68,18 @@ public class ArcTree {
     // The corners of all the shapes ordered clockwise
     private final List<List<Vec3>> finalShapeCorners = new ArrayList<>();
 
-    public double directrixPos = 0;
     private int id = 0;
 
     private static final Logger LOGGER = Logger.getLogger(ArcTree.class.getName());
-
-    private boolean finishedEdges = false;
 
     private final Vec3 rootFocus = new Vec3(MapView.MAP_WIDTH / 2, -MapView.MAP_HEIGHT - 200);
     private final Vec3 edgeCaseFocus;
 
     // The boundaries of the map used to cut shapes that go over the edge
-    private final HalfEdge left = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(0, 1));
-    private final HalfEdge right = new HalfEdge(null, null, new Vec3(MapView.MAP_WIDTH, 0), new Vec3(0, 0.95));
-    private final HalfEdge top = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(1, 0));
-    private final HalfEdge bottom = new HalfEdge(null, null, new Vec3(0, MapView.MAP_HEIGHT), new Vec3(1, 0));
+    private final HalfEdge leftBorder = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(0, 1));
+    private final HalfEdge rightBorder = new HalfEdge(null, null, new Vec3(MapView.MAP_WIDTH, 0), new Vec3(0, 0.95));
+    private final HalfEdge topBorder = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(1, 0));
+    private final HalfEdge bottomBorder = new HalfEdge(null, null, new Vec3(0, MapView.MAP_HEIGHT), new Vec3(1, 0));
 
     // The corners of the map that are manually assigned to shapes since they are eisting and do not form naturally
     private final Vec3 topLeft = new Vec3(0, 0);
@@ -97,17 +94,16 @@ public class ArcTree {
         siteMap = new HashMap<>();
         this.eventQueue = eventQueue;
 
-        final double distance = this.eventQueue.peek().getYCoord();
         edgeCaseFocus = new Vec3(rootFocus.getX(), rootFocus.getY() * 2);
-        // Create a default arc way above the map so that the arcs beloging to the markers at the top have something to intersect
+        // Create a default arc way above the map so that the arcs beloging to the markers at the topBorder have something to intersect
         root = new Arc(new Vec3(rootFocus.getX(), rootFocus.getY()), id++);
 
         // Set up the edges belonging to the arc and assign them to it. Even though a new arc being created is not assigned an edge we need to make an exception
         // for this initial default arc
-        final HalfEdge left = new HalfEdge(((Arc) root).getFocus(), ((Arc) root).getFocus(), new Vec3(rootFocus.getX(), rootFocus.getY() * 2), new Vec3(-1, 0));
-        final HalfEdge right = new HalfEdge(((Arc) root).getFocus(), ((Arc) root).getFocus(), new Vec3(rootFocus.getX(), rootFocus.getY() * 2), new Vec3(1, 0));
-        root.setLeftEdge(left);
-        root.setRightEdge(right);
+        final HalfEdge rootLeftEdge = new HalfEdge(((Arc) root).getFocus(), ((Arc) root).getFocus(), new Vec3(rootFocus.getX(), rootFocus.getY() * 2), new Vec3(-1, 0));
+        final HalfEdge rootRightEdge = new HalfEdge(((Arc) root).getFocus(), ((Arc) root).getFocus(), new Vec3(rootFocus.getX(), rootFocus.getY() * 2), new Vec3(1, 0));
+        root.setLeftEdge(rootLeftEdge);
+        root.setRightEdge(rootRightEdge);
         siteMap.put(((Arc) root).getFocus(), new HashSet<>());
 
         // Put the corners in the corner map
@@ -163,7 +159,7 @@ public class ArcTree {
             siteMap.put(newArc.getFocus(), new HashSet<>());
         }
 
-        // Since the initial intersection eill lie outside the map, move it back to the top edge of the map
+        // Since the initial intersection eill lie outside the map, move it back to the topBorder edge of the map
         final Vec3 relatedIntersection = new Vec3(edgeStart.getX(), edgeStart.getY() < 0 ? 0 : edgeStart.getY());
 
         // Add the intersection point to both the newArc's focus and the intersecting arc's focus in the site map
@@ -194,24 +190,24 @@ public class ArcTree {
         edges.add(e1);
         edges.add(e2);
 
-        // Set the left and right child if the new arc to the split up intersection arcs
+        // Set the rootLeftEdge and rootRightEdge child if the new arc to the split up intersection arcs
         newArc.setLeft(splitLeft);
         newArc.setRight(splitRight);
         splitLeft.setParent(newArc);
         splitRight.setParent(newArc);
 
-        // Set the right edge of the left split to be the new edge going left
+        // Set the rootRightEdge edge of the rootLeftEdge split to be the new edge going rootLeftEdge
         splitLeft.setRightEdge(e2);
 
-        // Set the left edge of the right split to be the other new edge going right
+        // Set the rootLeftEdge edge of the rootRightEdge split to be the other new edge going rootRightEdge
         splitRight.setLeftEdge(e1);
 
-        // Set the left edge of the left split to be the existing left edge of the intersecting arc and vice versa for the the right split
+        // Set the rootLeftEdge edge of the rootLeftEdge split to be the existing rootLeftEdge edge of the intersecting arc and vice versa for the the rootRightEdge split
         splitLeft.setLeftEdge(intersectingArc.getLeftEdge() != null ? intersectingArc.getLeftEdge() : getLeftNeighbour(intersectingArc).getRightEdge());
         splitRight.setRightEdge(intersectingArc.getRightEdge() != null ? intersectingArc.getRightEdge() : getRightNeighbour(intersectingArc).getLeftEdge());
 
-        // Set any existing left or right children to either the splitRight and splitLeft arcs
-        // The left child of the intersecting arc will be the left child of the left split and the same foes for the right child and right split
+        // Set any existing rootLeftEdge or rootRightEdge children to either the splitRight and splitLeft arcs
+        // The rootLeftEdge child of the intersecting arc will be the rootLeftEdge child of the rootLeftEdge split and the same foes for the rootRightEdge child and rootRightEdge split
         // Also make sure to set the existing childrens parent to either leftSplit or rightSplit
         if (intersectingArc.getRight() != null) {
             splitRight.setRight(intersectingArc.getRight());
@@ -235,9 +231,9 @@ public class ArcTree {
             current = newArc;
         }
 
-        // Add new edge intersection event to the right and left split of the intersected arc
-        addEdgeIntersectionEvent(splitLeft, focus.getY());
-        addEdgeIntersectionEvent(splitRight, focus.getY());
+        // Add new edge intersection event to the rootRightEdge and rootLeftEdge split of the intersected arc
+        addEdgeIntersectionEvent(splitLeft);
+        addEdgeIntersectionEvent(splitRight);
 
 
         return current;
@@ -252,30 +248,30 @@ public class ArcTree {
      * intersection
      * @param directrix
      */
-    private void addEdgeIntersectionEvent(final BlineElement arc, final double directrix) {
+    private void addEdgeIntersectionEvent(final BlineElement arc) {
         if (arc == null) {
             return;
         }
 
-        // Get the left and right edge of an arc
-        final HalfEdge left = arc.getLeftEdge() != null ? arc.getLeftEdge() : getLeftNeighbour(arc) != null ? getLeftNeighbour(arc).getRightEdge() : null;
-        final HalfEdge right = arc.getRightEdge() != null ? arc.getRightEdge() : getRightNeighbour(arc) != null ? getRightNeighbour(arc).getLeftEdge() : null;
+        // Get the rootLeftEdge and rootRightEdge edge of an arc
+        final HalfEdge edgeLeft = arc.getLeftEdge() != null ? arc.getLeftEdge() : getLeftNeighbour(arc) != null ? getLeftNeighbour(arc).getRightEdge() : null;
+        final HalfEdge edgeRight = arc.getRightEdge() != null ? arc.getRightEdge() : getRightNeighbour(arc) != null ? getRightNeighbour(arc).getLeftEdge() : null;
 
         // If either of those edges do not exist it means to intersection event will occur on this arc
-        if (left == null || right == null) {
+        if (edgeLeft == null || edgeRight == null) {
 
             return;
         }
 
         // Find out where the 2 edges will intersect
-        final Vec3 intersectionPoint = findEdgeIntersectionPoint(left, right);
+        final Vec3 intersectionPoint = findEdgeIntersectionPoint(edgeLeft, edgeRight);
 
         if (intersectionPoint == null) {
             return;
         }
 
         // Calculate the distance from the intersection point to an arc focus
-        final double distance = Vec3.getDistance(left.getParentFocus(), intersectionPoint);
+        final double distance = Vec3.getDistance(edgeLeft.getParentFocus(), intersectionPoint);
 
         // Calculate the position of the directrix line when this interseciton occurs. This will be used to prioritize the event in the event queue.
         final double directrixY = intersectionPoint.getY() + distance;
@@ -292,7 +288,7 @@ public class ArcTree {
         }
 
         // Create an edge event containing its position, the edges involved, the arc to be removed and the intersection point
-        final EdgeEvent e = new EdgeEvent(directrixY, left, right, arc, intersectionPoint);
+        final EdgeEvent e = new EdgeEvent(directrixY, edgeLeft, edgeRight, arc, intersectionPoint);
         arc.setCurrentEvent(e);
         eventQueue.add(e);
     }
@@ -324,24 +320,25 @@ public class ArcTree {
             } else {
                 return null;
             }
-            // Case 2: When it only has a left child
+            // Case 2: When it only has a rootLeftEdge child
         } else if (remove.getLeft() != null && remove.getRight() == null) {
-            final BlineElement left = remove.getLeft();
-            left.setParent(null);
+            final BlineElement leftChild = remove.getLeft();
+            leftChild.setParent(null);
 
             if (remove.getParent() != null) {
-                    if (remove.getParent().getLeft() == remove) {
-                        remove.getParent().setLeft(left);
-                    } else {
-                        remove.getParent().setRight(left);
-                    }
+                if (remove.getParent().getLeft() == remove) {
+                    remove.getParent().setLeft(leftChild);
+                } else {
+                    remove.getParent().setRight(leftChild);
+                }
 
-                    left.setParent(remove.getParent());
-                    return current;
+                leftChild.setParent(remove.getParent());
+                return current;
 
-            } else
-                return left;
-            // Case 3: When it only has a right child
+            } else {
+                return leftChild;
+            }
+            // Case 3: When it only has a rootRightEdge child
         } else if (remove.getRight() != null && remove.getLeft() == null) {
             final BlineElement right = remove.getRight();
             right.setParent(null);
@@ -370,7 +367,7 @@ public class ArcTree {
             final BlineElement leftChild = remove.getLeft();
 
             // Remove successor
-            BlineElement temp = removeElement(root, iSucc);
+            removeElement(root, iSucc);
             final BlineElement rightChild = remove.getRight();
 
             // Set the successor as the replacement of the removed arc
@@ -414,10 +411,10 @@ public class ArcTree {
         e1.setComplete(true);
         e2.setComplete(true);
 
-        // Get the left arc of the removed arc
+        // Get the rootLeftEdge arc of the removed arc
         final BlineElement left = getLeftNeighbour(removed);
 
-        // Get the right arc of the removed arc
+        // Get the rootRightEdge arc of the removed arc
         final BlineElement right = getRightNeighbour(removed);
 
         final Vec3 intersectionPoint = e.getIntersectionPoint();
@@ -452,11 +449,11 @@ public class ArcTree {
         final Arc leftArc = (Arc) left;
         final Arc rightArc = (Arc) right;
 
-        // Get focuses of the left and eight arc
+        // Get focuses of the rootLeftEdge and eight arc
         final Vec3 leftFocus = leftArc != null ? leftArc.getFocus() : edgeCaseFocus;
         final Vec3 rightFocus = rightArc != null ? rightArc.getFocus() : edgeCaseFocus;
 
-        // Calculate the direction of the resulting edge to be perpendicular to the dirVect betweent he left and right arcs
+        // Calculate the direction of the resulting edge to be perpendicular to the dirVect betweent he rootLeftEdge and rootRightEdge arcs
         final Vec3 direction = new Vec3(leftFocus.getX() - rightFocus.getX(), leftFocus.getY() - rightFocus.getY());
         final Vec3 dirNewEdge = new Vec3(direction.getY(), -direction.getX());
         dirNewEdge.normalizeVec2();
@@ -473,11 +470,11 @@ public class ArcTree {
         }
 
         // These 2 chunky ifs set the appropriate intersection point to the involved focuses of the intersection event
-        // The intersection point in the event will belong to the shape of the focus of the arc being removed as well as its left and right arcs
+        // The intersection point in the event will belong to the shape of the focus of the arc being removed as well as its rootLeftEdge and rootRightEdge arcs
         // If the intersection point is outside of the map and the edges starting point is inside the map
         if ((isOutsideMap(intersectionPoint) && !isOutsideMap(e1.getStart()))) {
             // Move the intersection point to be on one of the map edges
-            addBoundaryIntersections(((Arc) removed).getFocus(), e1);
+            addBoundaryIntersections(e1);
 
             // If the intersection point is within the map and the start of the edge is outside the map
         } else if ((!isOutsideMap(intersectionPoint) && isOutsideMap(e1.getStart()))) {
@@ -485,10 +482,10 @@ public class ArcTree {
             addShapeVertex(e1.getHomeFocus(), intersectionPoint);
 
             // Calculate which boundary the edge intersects with and set a corner of the shapes belonging to the 2 focuses belonging to the edge
-            addBoundaryIntersections(((Arc) removed).getFocus(), e1);
+            addBoundaryIntersections(e1);
 
             // If the both the edge start and intersection point is withing the map then assign the intersection point to the sets of the removed arc and
-            // left arc in the site map
+            // rootLeftEdge arc in the site map
         } else if (left != null && !isOutsideMap(intersectionPoint) && !isOutsideMap(e1.getStart())) {
             addShapeVertex(((Arc) removed).getFocus(), intersectionPoint);
             addShapeVertex(leftArc.getFocus(), intersectionPoint);
@@ -496,11 +493,11 @@ public class ArcTree {
 
         // Same logic as above but for the second edge
         if ((isOutsideMap(intersectionPoint) && !isOutsideMap(e2.getStart()))) {
-            addBoundaryIntersections(((Arc) removed).getFocus(), e2);
+            addBoundaryIntersections(e2);
         } else if ((!isOutsideMap(intersectionPoint) && isOutsideMap(e2.getStart()))) {
             addShapeVertex(e2.getParentFocus(), intersectionPoint);
             addShapeVertex(e2.getHomeFocus(), intersectionPoint);
-            addBoundaryIntersections(((Arc) removed).getFocus(), e2);
+            addBoundaryIntersections(e2);
         } else if (right != null && !isOutsideMap(intersectionPoint) && !isOutsideMap(e2.getStart())) {
             addShapeVertex(((Arc) removed).getFocus(), intersectionPoint);
             addShapeVertex(rightArc.getFocus(), intersectionPoint);
@@ -535,14 +532,10 @@ public class ArcTree {
         l4.setEndY(intersectionPoint.getY());
         l4.setStroke(Color.PURPLE);
 
-        //completedEdges.add(l);
-        //completedEdges.add(l2);
-        //completedEdges.add(l3);
+        completedEdges.add(l);
+        completedEdges.add(l2);
+        completedEdges.add(l3);
         completedEdges.add(l4);
-
-        //printBFS(root);
-        //printInOrder(root);
-
 
         if (newEdge != null) {
             edges.add(newEdge);
@@ -555,13 +548,9 @@ public class ArcTree {
 
         root = removeElement(root, removed);
 
-        //LOGGER.log(Level.SEVERE, "After removal");
-        //printBFS(root);
-        //exists(root, ((Arc) removed).getId());
-        //printInOrder(root);
-        // Find and add edge intersection events for the left and right arc of the removed arc since a new edge has been created between them
-        addEdgeIntersectionEvent(left, e.getYCoord());
-        addEdgeIntersectionEvent(right, e.getYCoord());
+        // Find and add edge intersection events for the rootLeftEdge and rootRightEdge arc of the removed arc since a new edge has been created between them
+        addEdgeIntersectionEvent(left);
+        addEdgeIntersectionEvent(right);
     }
 
     /**
@@ -607,15 +596,15 @@ public class ArcTree {
         final double v = (dy * h1.getDirVect().getX() - dx * h1.getDirVect().getY()) / det;
 
 
-        if (u < 0d && !h1.extendsUp()) {
+        if (u < 0D && !h1.extendsUp()) {
             return null;
         }
 
-        if (v < 0d && !h2.extendsUp()) {
+        if (v < 0D && !h2.extendsUp()) {
             return null;
         }
 
-        if (u == 0d && v == 0d && !h1.extendsUp() && !h2.extendsUp()) {
+        if (u == 0D && v == 0D && !h1.extendsUp() && !h2.extendsUp()) {
             return null;
         }
 
@@ -642,7 +631,7 @@ public class ArcTree {
 
         final Arc arc = (Arc) current;
 
-        // Get left and right edge of arc
+        // Get rootLeftEdge and rootRightEdge edge of arc
         HalfEdge leftHalfEdge = arc.getLeftEdge();
         HalfEdge rightHalfEdge = arc.getRightEdge();
 
@@ -654,7 +643,7 @@ public class ArcTree {
             rightHalfEdge = getRightNeighbour(current).getLeftEdge();
         }
 
-        // Find out where those edges intersect with the arc to figure out the left and right boundaries
+        // Find out where those edges intersect with the arc to figure out the rootLeftEdge and rootRightEdge boundaries
         Vec3 leftIntersection = getEdgeArcIntersection(leftHalfEdge, arc, directrix);
         Vec3 rightIntersection = getEdgeArcIntersection(rightHalfEdge, arc, directrix);
 
@@ -663,10 +652,10 @@ public class ArcTree {
 
 
         if (x > rightX) {
-            // If the x coordinated is greater than the right x boundary of the arc then the intersecting arc exists on the right
+            // If the x coordinated is greater than the rootRightEdge x boundary of the arc then the intersecting arc exists on the rootRightEdge
             return findIntersectingArc(current.getRight(), x, directrix);
         } else if (x < leftX) {
-            /// If the x coordinated is less than the left x boundary of the arc then the intersecting arc exists on the left
+            /// If the x coordinated is less than the rootLeftEdge x boundary of the arc then the intersecting arc exists on the rootLeftEdge
             return findIntersectingArc(current.getLeft(), x, directrix);
         } else {
             return current;
@@ -771,11 +760,11 @@ public class ArcTree {
      * @param intersectionPoint - The intersection point to a map edge
      * @param corner - The corner a marker will be assigned to
      * @param position - The position variable indicates which direction the
-     * intersection point is in. 0 means the intersection point is either above
-     * or below the corner. 1 Means that the intersection is either to the left
-     * or right of the corner
+ intersection point is in. 0 means the intersection point is either above
+     * or below the corner. 1 Means that the intersection is either to the
+     * rootLeftEdge or rootRightEdge of the corner
      */
-    private void setRelatedPointToCorner(final HalfEdge edge, final Vec3 intersectionPoint, final double distance, final Vec3 corner, final int position) {
+    private void setRelatedPointToCorner(final HalfEdge edge, final double distance, final Vec3 corner, final int position) {
         // If the distance to the intersection point is less than the distance to another point on the edge dictaded by the position
         if (distance < cornerMap.get(corner).get(position).getKey()) {
             // Get the marker coordinate related to the corner
@@ -793,11 +782,11 @@ public class ArcTree {
      * @param squeezedArcFocus
      * @param edge - The edge we are checking intersections for
      */
-    private void addBoundaryIntersections(final Vec3 squeezedArcFocus, final HalfEdge edge) {
-        final Vec3 topLineIntersection = findEdgeIntersectionPoint(edge, top);
-        final Vec3 bottomLineInteraction = findEdgeIntersectionPoint(edge, bottom);
-        final Vec3 leftLineInteraction = findEdgeIntersectionPoint(edge, left);
-        final Vec3 rightLineInteraction = findEdgeIntersectionPoint(edge, right);
+    private void addBoundaryIntersections(final HalfEdge edge) {
+        final Vec3 topLineIntersection = findEdgeIntersectionPoint(edge, topBorder);
+        final Vec3 bottomLineInteraction = findEdgeIntersectionPoint(edge, bottomBorder);
+        final Vec3 leftLineInteraction = findEdgeIntersectionPoint(edge, leftBorder);
+        final Vec3 rightLineInteraction = findEdgeIntersectionPoint(edge, rightBorder);
 
         // An edge can intersect multiple boundaries so have a list of intersection points
         final List<Vec3> boundaryIntersectionPoints = new ArrayList<>();
@@ -849,10 +838,10 @@ public class ArcTree {
                     final double distanceToBottomLeft = distanceToTopLeft + MapView.MAP_HEIGHT;
                     final double distanceToBottomRight = distanceToTopRight + MapView.MAP_HEIGHT;
 
-                    setRelatedPointToCorner(edge, topLineIntersection, distanceToTopLeft, topLeft, 1);
-                    setRelatedPointToCorner(edge, topLineIntersection, distanceToTopRight, topRight, 1);
-                    setRelatedPointToCorner(edge, topLineIntersection, distanceToBottomLeft, bottomLeft, 0);
-                    setRelatedPointToCorner(edge, topLineIntersection, distanceToBottomRight, bottomRight, 0);
+                    setRelatedPointToCorner(edge, distanceToTopLeft, topLeft, 1);
+                    setRelatedPointToCorner(edge, distanceToTopRight, topRight, 1);
+                    setRelatedPointToCorner(edge, distanceToBottomLeft, bottomLeft, 0);
+                    setRelatedPointToCorner(edge, distanceToBottomRight, bottomRight, 0);
                 } else if (boundaryIntersectionPoints.get(i) == leftLineInteraction) {
                     final double distanceToTopLeft = Vec3.getDistance(topLeft, leftLineInteraction);
                     final double distanceToBottomLeft = Vec3.getDistance(bottomLeft, leftLineInteraction);
@@ -860,10 +849,10 @@ public class ArcTree {
                     final double distanceToTopRight = distanceToTopLeft + MapView.MAP_WIDTH;
                     final double distanceToBottomRight = distanceToBottomLeft + MapView.MAP_WIDTH;
 
-                    setRelatedPointToCorner(edge, leftLineInteraction, distanceToTopLeft, topLeft, 0);
-                    setRelatedPointToCorner(edge, leftLineInteraction, distanceToBottomLeft, bottomLeft, 0);
-                    setRelatedPointToCorner(edge, leftLineInteraction, distanceToTopRight, topRight, 1);
-                    setRelatedPointToCorner(edge, leftLineInteraction, distanceToBottomRight, bottomRight, 1);
+                    setRelatedPointToCorner(edge, distanceToTopLeft, topLeft, 0);
+                    setRelatedPointToCorner(edge, distanceToBottomLeft, bottomLeft, 0);
+                    setRelatedPointToCorner(edge, distanceToTopRight, topRight, 1);
+                    setRelatedPointToCorner(edge, distanceToBottomRight, bottomRight, 1);
                 } else if (boundaryIntersectionPoints.get(i) == bottomLineInteraction) {
                     final double distanceToBottomRight = Vec3.getDistance(bottomRight, bottomLineInteraction);
                     final double distanceToBottomLeft = Vec3.getDistance(bottomLeft, bottomLineInteraction);
@@ -871,10 +860,10 @@ public class ArcTree {
                     final double distanceToTopLeft = distanceToBottomLeft + MapView.MAP_HEIGHT;
                     final double distanceToTopRight = distanceToBottomLeft + MapView.MAP_HEIGHT;
 
-                    setRelatedPointToCorner(edge, bottomLineInteraction, distanceToBottomLeft, bottomLeft, 1);
-                    setRelatedPointToCorner(edge, bottomLineInteraction, distanceToBottomRight, bottomRight, 1);
-                    setRelatedPointToCorner(edge, bottomLineInteraction, distanceToTopLeft, topLeft, 0);
-                    setRelatedPointToCorner(edge, bottomLineInteraction, distanceToTopRight, topRight, 0);
+                    setRelatedPointToCorner(edge, distanceToBottomLeft, bottomLeft, 1);
+                    setRelatedPointToCorner(edge, distanceToBottomRight, bottomRight, 1);
+                    setRelatedPointToCorner(edge, distanceToTopLeft, topLeft, 0);
+                    setRelatedPointToCorner(edge, distanceToTopRight, topRight, 0);
                 } else if (boundaryIntersectionPoints.get(i) == rightLineInteraction) {
                     final double distanceToTopRight = Vec3.getDistance(topRight, rightLineInteraction);
                     final double distanceToBottomRight = Vec3.getDistance(bottomRight, rightLineInteraction);
@@ -882,10 +871,10 @@ public class ArcTree {
                     final double distanceToTopLeft = distanceToTopRight + MapView.MAP_WIDTH;
                     final double distanceToBottomLeft = distanceToBottomRight + MapView.MAP_WIDTH;
 
-                    setRelatedPointToCorner(edge, rightLineInteraction, distanceToTopRight, topRight, 0);
-                    setRelatedPointToCorner(edge, rightLineInteraction, distanceToBottomRight, bottomRight, 0);
-                    setRelatedPointToCorner(edge, rightLineInteraction, distanceToTopLeft, topLeft, 1);
-                    setRelatedPointToCorner(edge, rightLineInteraction, distanceToBottomLeft, bottomLeft, 1);
+                    setRelatedPointToCorner(edge, distanceToTopRight, topRight, 0);
+                    setRelatedPointToCorner(edge, distanceToBottomRight, bottomRight, 0);
+                    setRelatedPointToCorner(edge, distanceToTopLeft, topLeft, 1);
+                    setRelatedPointToCorner(edge, distanceToBottomLeft, bottomLeft, 1);
                 }
 
                 Line l4 = new Line();
@@ -916,25 +905,14 @@ public class ArcTree {
                 l2.setVisible(false);
                 completedEdges.add(l2);
 
-                /* final Line l3 = new Line();
-                l3.setStartX(boundaryIntersectionPoints.get(0).getX());
-                l3.setStartY(boundaryIntersectionPoints.get(0).getY());
-                l3.setEndX(squeezedArcFocus.getX());
-                l3.setEndY(squeezedArcFocus.getY());
-                l3.setStroke(Color.PINK);
-                l3.setVisible(false);
-                completedEdges.add(l3);*/
-
                 l4.setOnMouseEntered(event -> {
                     l1.setVisible(true);
                     l2.setVisible(true);
-                    //l3.setVisible(true);
                 });
 
                 l4.setOnMouseExited(event -> {
                     l1.setVisible(false);
                     l2.setVisible(false);
-                    //l3.setVisible(false);
                 });
 
                 // Add intersection point as shape corner of the 2 markers focuses seperated by the line
@@ -1106,10 +1084,9 @@ public class ArcTree {
                 l2.setStrokeWidth(5);
                 completedEdges.add(l2);
 
-                //if ((edge.getStart().getX() >= 0 && edge.getStart().getX() <= MapView.MAP_WIDTH) && (edge.getStart().getY() >= 0 && edge.getStart().getY() <= MapView.MAP_HEIGHT)) {
-                    addBoundaryIntersections(edge.getParentFocus(), edge);
-                //}
-                                edge.setComplete(true);
+                addBoundaryIntersections(edge);
+
+                edge.setComplete(true);
             }
         });
     }
@@ -1210,45 +1187,6 @@ public class ArcTree {
         return completedShapes;
     }
 
-    private void printBFS(BlineElement current) {
-        final Deque<BlineElement> bfs = new LinkedList<>();
-
-        bfs.push(current);
-
-        String nodeTypeString = "";
-
-        int nodesOnLevel = 1;
-        int nodeCounter = 0;
-        int validNodes = 0;
-        while (!bfs.isEmpty()) {
-            final BlineElement item = bfs.poll();
-
-            if (item == null) {
-                nodeTypeString += " NULL ";
-            } else if (item instanceof Arc) {
-                nodeTypeString += " ARC " + ((Arc) item).getId();
-            } else {
-                nodeTypeString += " BASELINE ";
-            }
-
-            ++nodeCounter;
-
-            if (item != null) {
-                bfs.addLast(item.getLeft());
-                bfs.addLast(item.getRight());
-                ++validNodes;
-            }
-
-
-            if (nodeCounter == nodesOnLevel) {
-                nodeCounter = 0;
-                nodesOnLevel = validNodes * 2;
-                validNodes = 0;
-                LOGGER.log(Level.SEVERE, "Nodes on this level: " + nodeTypeString);
-                nodeTypeString = "";
-            }
-        }
-    }
 
     /**
      * Check to see if a point lies outside the map or not
@@ -1260,45 +1198,10 @@ public class ArcTree {
         return point.getX() < 0 || point.getX() > MapView.MAP_WIDTH || point.getY() < 0 || point.getY() > MapView.MAP_HEIGHT;
     }
 
-    private void exists(final BlineElement current, final int id) {
-        if (current == null) {
-            return;
-        }
-
-        exists(current.getLeft(), id);
-        exists(current.getRight(), id);
-
-        if (current.getParent() != null && ((Arc) current.getParent()).getId() == id) {
-            LOGGER.log(Level.SEVERE, "Node with id: " + id + " is still parent of node with id: " + ((Arc) current).getId());
-        }
-
-        if (((Arc) current).getId() == id) {
-            LOGGER.log(Level.SEVERE, "Node with id: " + id + " still exists");
-        }
-    }
-
-    private void printInOrder(BlineElement current) {
-        if (current == null) {
-            return;
-        }
-
-        printInOrder(current.getLeft());
-        printInOrder(current.getRight());
-
-        if (current instanceof Arc) {
-            LOGGER.log(Level.SEVERE, "Node is an arc");
-        } else {
-            LOGGER.log(Level.SEVERE, "Node is a baseline");
-        }
-        LOGGER.log(Level.SEVERE, "-----------------------");
-    }
-
     /**
      * This function runs fortune's algorithm
      */
     public void run() {
-        final Line directrixLine = new Line();
-
         while (!eventQueue.isEmpty()) {
             // If the event is a site event then add an arc, else if it is an edge event
             // then remove the arc
@@ -1320,17 +1223,15 @@ public class ArcTree {
                 if (e.isValid()) {
                     removeArc(e);
                 }
-                directrixPos = e.getYCoord();
+
             }
         }
-        //else if (!finishedEdges) {
+
         finishEdges();
         addMapCornersToShapes();
         sortIntersectionPoints();
         generateShapes();
-        finishedEdges = true;
 
-        //}
 
     }
 

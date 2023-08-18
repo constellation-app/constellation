@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.BlineEleme
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.HalfEdge;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.SiteEvent;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.VoronoiEvent;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.BeachLine;
 
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         layer.getChildren().add(arcLayer);
         this.markers = markers;
 
-        eventQueue = new PriorityQueue<VoronoiEvent>((v1, v2) -> {
+        eventQueue = new PriorityQueue<>((v1, v2) -> {
             if (v1.getYCoord() > v2.getYCoord()) {
                 return 1;
             }
@@ -149,12 +148,12 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             return;
         }
 
-        final Vec3 leftIntersection = arcTree.getEdgeArcIntersection(left, (Arc) root, arcTree.directrixPos);
-        final Vec3 rightIntersection = arcTree.getEdgeArcIntersection(right, (Arc) root, arcTree.directrixPos);
+        final Vec3 leftIntersection = arcTree.getEdgeArcIntersection(left, (Arc) root, 0);
+        final Vec3 rightIntersection = arcTree.getEdgeArcIntersection(right, (Arc) root, 0);
 
         if (leftIntersection != null && rightIntersection != null) {
             final Arc arc = (Arc) root;
-            arc.calculateArc(leftIntersection.getX(), rightIntersection.getX(), arcTree.directrixPos);
+            arc.calculateArc(leftIntersection.getX(), rightIntersection.getX(), 0);
 
             final Line leftLine = new Line();
             leftLine.setStartX(left.getStart().getX());

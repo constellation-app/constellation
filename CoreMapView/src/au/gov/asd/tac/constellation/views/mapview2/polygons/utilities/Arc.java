@@ -43,12 +43,6 @@ public class Arc extends BlineElement {
 
     public double getY(final double x, final double directtrix) {
         return (Math.pow((x - focus.getX()), 2) / (2 * (focus.getY() - directtrix))) + ((focus.getY() + directtrix) / 2);
-        /*final double a = 1.0 / (2.0 * (focus.getY() - directtrix));
-        double c = (focus.getY() + directtrix) * 0.5;
-
-        final double w = x - focus.getX();
-
-        return a * w * w - c;*/
     }
 
     public void calculateArc(final double min, final double max, final double directrix) {

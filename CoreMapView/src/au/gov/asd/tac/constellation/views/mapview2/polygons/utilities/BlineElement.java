@@ -21,7 +21,6 @@ package au.gov.asd.tac.constellation.views.mapview2.polygons.utilities;
  */
 public class BlineElement {
 
-    public int test = 0;
     private BlineElement parent = null;
     private BlineElement left = null;
     private BlineElement right = null;
