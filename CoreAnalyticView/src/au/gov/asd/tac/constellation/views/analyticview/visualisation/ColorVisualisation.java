@@ -52,6 +52,7 @@ public class ColorVisualisation<C> extends GraphVisualisation {
     @Override
     public void deactivate() {
         translator.executePlugin(activated);
+        activated = !activated;
     }
 
     @Override
@@ -81,5 +82,6 @@ public class ColorVisualisation<C> extends GraphVisualisation {
     @Override
     public void setSelected(final boolean selected) {
         colorButton.setSelected(selected);
+        activated = selected;
     }
 }

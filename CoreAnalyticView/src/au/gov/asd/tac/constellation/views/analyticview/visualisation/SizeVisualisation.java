@@ -48,7 +48,8 @@ public class SizeVisualisation<C> extends GraphVisualisation {
 
     @Override
     public void deactivate() {
-        translator.executePlugin(true);
+        translator.executePlugin(activated);
+        activated = !activated;
     }
 
     @Override
@@ -76,5 +77,6 @@ public class SizeVisualisation<C> extends GraphVisualisation {
     @Override
     public void setSelected(final boolean selected) {
         sizeButton.setSelected(selected);
+        activated = selected;
     }
 }

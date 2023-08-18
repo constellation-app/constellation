@@ -22,9 +22,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -138,10 +136,10 @@ public class AnalyticResultsPane extends VBox {
                 });
             } else {
                 currentVisualisations.entrySet().forEach(node -> {
+                    final boolean selected = node.getValue();
+                    node.getKey().setSelected(selected);
                     final Node visualisationNode = node.getKey().getVisualisation();
                     graphVisualisationPane.getItems().add(visualisationNode);
-                    final boolean active = node.getValue();
-                    node.getKey().setSelected(active);
 
                     AnalyticViewController.getDefault().updateVisualisations(node.getKey(), node.getValue());
                 });

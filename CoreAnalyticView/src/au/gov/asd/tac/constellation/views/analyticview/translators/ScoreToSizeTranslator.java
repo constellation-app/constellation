@@ -44,7 +44,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, ElementScore> {
 
-    // Maps of the colors of the vertices and transactions before the plugin is run
+    // Maps of the sizes of the vertices and transactions before the plugin is run
     private final HashMap<Integer, Float> vertexSizes = new HashMap<>();
     private final HashMap<Integer, Float> transactionSizes = new HashMap<>();
 
@@ -149,7 +149,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                     final int elementId = scoreResult.getElementId();
                     final float elementMeanScore = scoreResult.getNamedScores().values().stream()
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
-                    final float sizeIntensity = (float) Math.log((double) (elementMeanScore * (graphEstimatedDiameter / meanScoreRange)));
+                    final float sizeIntensity = (float) Math.log((elementMeanScore * (graphEstimatedDiameter / meanScoreRange)));
                     switch (elementType) {
                         case VERTEX:
                             final float vertexSize = graph.getFloatValue(vertexSizeAttribute, elementId);

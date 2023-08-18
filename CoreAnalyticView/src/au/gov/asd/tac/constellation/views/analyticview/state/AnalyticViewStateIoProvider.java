@@ -102,14 +102,12 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
             }
 
             final ObjectMapper mapper = new ObjectMapper();
-
             final AnalyticResult<?> result = mapper.readValue(jnode.get("result").asText(), AnalyticResult.class);
             final boolean resultsVisible = jnode.get("resultVisible").asBoolean();
             final boolean categoriesVisible = jnode.get("categoriesVisible").asBoolean();
             final AnalyticQuestionDescription<?> currentQuestion = mapper.readValue(jnode.get("currentQuestion").asText(), AnalyticQuestionDescription.class);
             final AnalyticQuestion question = mapper.readValue(jnode.get("question").asText(), AnalyticQuestion.class);
             final String activeCategory = jnode.get("category").asText();
-
 
             final HashMap<GraphVisualisation, Boolean> visualisations = new HashMap<>();
             final Iterator<JsonNode> visualisationsList = jnode.get("visualisations").iterator();

@@ -54,7 +54,6 @@ public class HideVisualisation<C> extends GraphVisualisation {
             final float threshold = (float) hideSlider.getValue();
             translator.executePlugin(!activated, threshold);
             hideSlider.setDisable(!activated);
-
         });
 
         this.hidePanel = new HBox(5.0, hideButton, hideSlider);
@@ -62,7 +61,8 @@ public class HideVisualisation<C> extends GraphVisualisation {
 
     @Override
     public void deactivate() {
-        translator.executePlugin(true, 0);
+        translator.executePlugin(activated, 0);
+        activated = !activated;
     }
 
     @Override
@@ -91,5 +91,6 @@ public class HideVisualisation<C> extends GraphVisualisation {
     public void setSelected(final boolean selected) {
         hideButton.setSelected(selected);
         hideSlider.setDisable(selected);
+        activated = selected;
     }
 }

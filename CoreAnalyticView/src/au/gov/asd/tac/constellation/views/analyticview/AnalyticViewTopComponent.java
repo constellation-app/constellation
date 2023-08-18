@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -84,11 +83,6 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         addStructureChangeHandler(graph -> {
             if (needsUpdate() && !suppressed) {
                 analyticController.writeState();
-            }
-        });
-        addAttributeValueChangeHandler(AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE, graph -> {
-            if (needsUpdate() && !suppressed) {
-                
             }
         });
         addAttributeValueChangeHandler(VisualConcept.VertexAttribute.SELECTED, graph -> {
@@ -209,5 +203,11 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         }
         analyticController.addAttributes();
         analyticController.readState();
+    }
+
+    @Override
+    protected void handleComponentClosed() {
+        super.handleComponentClosed();
+        analyticController.deactivateResultUpdates();
     }
 }
