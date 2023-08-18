@@ -97,7 +97,7 @@ public class ArcTree {
         this.eventQueue = eventQueue;
 
         final double distance = this.eventQueue.peek().getYCoord();
-        final Vec3 rootFocus = new Vec3(MapView.MAP_WIDTH / 2, -500 - distance);
+        final Vec3 rootFocus = new Vec3(MapView.MAP_WIDTH / 2, -500);
         edgeCaseFocus = new Vec3(rootFocus.getX(), rootFocus.getY() * 2);
         // Create a default arc way above the map so that the arcs beloging to the markers at the top have something to intersect
         root = new Arc(new Vec3(rootFocus.getX(), rootFocus.getY()), id++);
@@ -774,15 +774,15 @@ public class ArcTree {
      * or below the corner. 1 Means that the intersection is either to the left
      * or right of the corner
      */
-    private void setRelatedPointToCorner(final HalfEdge edge, final Vec3 intersectionPoint, final Vec3 corner, final int position) {
+    private void setRelatedPointToCorner(final HalfEdge edge, final Vec3 intersectionPoint, final double distance, final Vec3 corner, final int position) {
         // If the distance to the intersection point is less than the distance to another point on the edge dictaded by the position
-        if (Vec3.getDistance(corner, intersectionPoint) < cornerMap.get(corner).get(position).getKey()) {
+        if (distance < cornerMap.get(corner).get(position).getKey()) {
             // Get the marker coordinate related to the corner
             final Vec3 relatedPoint = getRelatedPointToCorner(corner, edge);
 
             // Put the marker coordinate in the appropriate position in the list which belongs to the specific corner we are tyring to set it to
             // Also make sure to store the new distance
-            cornerMap.get(corner).set(position, new Pair<>(Vec3.getDistance(corner, intersectionPoint), relatedPoint));
+            cornerMap.get(corner).set(position, new Pair<>(distance, relatedPoint));
         }
     }
 
@@ -839,19 +839,51 @@ public class ArcTree {
             }
 
             // Based on which map edge the intersection point lies on
-            // try to set the markers seperated by the edge to the two map corners that lie on the map boundary
+            // try to set the markers seperated by the edge to the four map corners that lie on the map boundary
             if (boundaryIntersectionPoints.get(0) == topLineIntersection) {
-                setRelatedPointToCorner(edge, topLineIntersection, topLeft, 1);
-                setRelatedPointToCorner(edge, topLineIntersection, topRight, 1);
+                final double distanceToTopLeft = Vec3.getDistance(topLeft, topLineIntersection);
+                final double distanceToTopRight = Vec3.getDistance(topRight, topLineIntersection);
+
+                final double distanceToBottomLeft = distanceToTopLeft + MapView.MAP_HEIGHT;
+                final double distanceToBottomRight = distanceToTopRight + MapView.MAP_HEIGHT;
+
+                setRelatedPointToCorner(edge, topLineIntersection, distanceToTopLeft, topLeft, 1);
+                setRelatedPointToCorner(edge, topLineIntersection, distanceToTopRight, topRight, 1);
+                setRelatedPointToCorner(edge, topLineIntersection, distanceToBottomLeft, bottomLeft, 0);
+                setRelatedPointToCorner(edge, topLineIntersection, distanceToBottomRight, bottomRight, 0);
             } else if (boundaryIntersectionPoints.get(0) == leftLineInteraction) {
-                setRelatedPointToCorner(edge, leftLineInteraction, topLeft, 0);
-                setRelatedPointToCorner(edge, leftLineInteraction, bottomLeft, 0);
+                final double distanceToTopLeft = Vec3.getDistance(topLeft, leftLineInteraction);
+                final double distanceToBottomLeft = Vec3.getDistance(bottomLeft, leftLineInteraction);
+
+                final double distanceToTopRight = distanceToTopLeft + MapView.MAP_WIDTH;
+                final double distanceToBottomRight = distanceToBottomLeft + MapView.MAP_WIDTH;
+
+                setRelatedPointToCorner(edge, leftLineInteraction, distanceToTopLeft, topLeft, 0);
+                setRelatedPointToCorner(edge, leftLineInteraction, distanceToBottomLeft, bottomLeft, 0);
+                setRelatedPointToCorner(edge, leftLineInteraction, distanceToTopRight, topRight, 1);
+                setRelatedPointToCorner(edge, leftLineInteraction, distanceToBottomRight, bottomRight, 1);
             } else if (boundaryIntersectionPoints.get(0) == bottomLineInteraction) {
-                setRelatedPointToCorner(edge, bottomLineInteraction, bottomLeft, 1);
-                setRelatedPointToCorner(edge, bottomLineInteraction, bottomRight, 1);
+                final double distanceToBottomRight = Vec3.getDistance(bottomRight, bottomLineInteraction);
+                final double distanceToBottomLeft = Vec3.getDistance(bottomLeft, bottomLineInteraction);
+
+                final double distanceToTopLeft = distanceToBottomLeft + MapView.MAP_HEIGHT;
+                final double distanceToTopRight = distanceToBottomLeft + MapView.MAP_HEIGHT;
+
+                setRelatedPointToCorner(edge, bottomLineInteraction, distanceToBottomLeft, bottomLeft, 1);
+                setRelatedPointToCorner(edge, bottomLineInteraction, distanceToBottomRight, bottomRight, 1);
+                setRelatedPointToCorner(edge, bottomLineInteraction, distanceToTopLeft, topLeft, 0);
+                setRelatedPointToCorner(edge, bottomLineInteraction, distanceToTopRight, topRight, 0);
             } else if (boundaryIntersectionPoints.get(0) == rightLineInteraction) {
-                setRelatedPointToCorner(edge, rightLineInteraction, topRight, 0);
-                setRelatedPointToCorner(edge, rightLineInteraction, bottomRight, 0);
+                final double distanceToTopRight = Vec3.getDistance(topRight, rightLineInteraction);
+                final double distanceToBottomRight = Vec3.getDistance(bottomRight, rightLineInteraction);
+
+                final double distanceToTopLeft = distanceToTopRight + MapView.MAP_WIDTH;
+                final double distanceToBottomLeft = distanceToBottomRight + MapView.MAP_WIDTH;
+
+                setRelatedPointToCorner(edge, rightLineInteraction, distanceToTopRight, topRight, 0);
+                setRelatedPointToCorner(edge, rightLineInteraction, distanceToBottomRight, bottomRight, 0);
+                setRelatedPointToCorner(edge, rightLineInteraction, distanceToTopLeft, topLeft, 1);
+                setRelatedPointToCorner(edge, rightLineInteraction, distanceToBottomLeft, bottomLeft, 1);
             }
 
             Line l4 = new Line();
@@ -922,7 +954,8 @@ public class ArcTree {
                     siteMap.get(entry.getValue().get(i).getValue()).add(entry.getKey());
 
                     // Else if the 1st related coordinate is not in the key
-                } else if (i == 0) {
+                }
+                /*else if (i == 0) {
                     if (siteMap.containsKey(entry.getValue().get(1).getValue())) {
                         siteMap.get(entry.getValue().get(1).getValue()).add(entry.getKey());
                     } else {
@@ -938,7 +971,7 @@ public class ArcTree {
                     if (siteMap.containsKey(entry.getValue().get(0).getValue())) {
                         siteMap.get(entry.getValue().get(0).getValue()).add(entry.getKey());
                     }
-                }
+                }*/
             }
         });
     }
