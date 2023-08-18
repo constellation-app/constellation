@@ -127,8 +127,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
         //generateAllArcs(arcTree.root);
 
-        final List<Line> debugLines = arcTree.getCompletedEdges();
-        debugLines.forEach(line -> layer.getChildren().add(line));
+        //final List<Line> debugLines = arcTree.getCompletedEdges();
+        //debugLines.forEach(line -> layer.getChildren().add(line));
         //});
 
 

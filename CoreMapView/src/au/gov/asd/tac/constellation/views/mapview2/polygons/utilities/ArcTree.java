@@ -75,6 +75,7 @@ public class ArcTree {
 
     private boolean finishedEdges = false;
 
+    private final Vec3 rootFocus = new Vec3(MapView.MAP_WIDTH / 2, -MapView.MAP_HEIGHT - 200);
     private final Vec3 edgeCaseFocus;
 
     // The boundaries of the map used to cut shapes that go over the edge
@@ -97,7 +98,6 @@ public class ArcTree {
         this.eventQueue = eventQueue;
 
         final double distance = this.eventQueue.peek().getYCoord();
-        final Vec3 rootFocus = new Vec3(MapView.MAP_WIDTH / 2, -500);
         edgeCaseFocus = new Vec3(rootFocus.getX(), rootFocus.getY() * 2);
         // Create a default arc way above the map so that the arcs beloging to the markers at the top have something to intersect
         root = new Arc(new Vec3(rootFocus.getX(), rootFocus.getY()), id++);
@@ -169,7 +169,8 @@ public class ArcTree {
         // Add the intersection point to both the newArc's focus and the intersecting arc's focus in the site map
         siteMap.get(newArc.getFocus()).add(relatedIntersection);
         if (edgeStart.getY() >= 0) {
-            siteMap.get(intersectingArc.getFocus()).add(relatedIntersection);
+            //siteMap.get(intersectingArc.getFocus()).add(relatedIntersection);
+            addShapeVertex(intersectingArc.getFocus(), relatedIntersection);
         }
 
         final Line l = new Line();
@@ -480,8 +481,8 @@ public class ArcTree {
 
             // If the intersection point is within the map and the start of the edge is outside the map
         } else if ((!isOutsideMap(intersectionPoint) && isOutsideMap(e1.getStart()))) {
-            siteMap.get(e1.getParentFocus()).add(intersectionPoint);
-            siteMap.get(e1.getHomeFocus()).add(intersectionPoint);
+            addShapeVertex(e1.getParentFocus(), intersectionPoint);
+            addShapeVertex(e1.getHomeFocus(), intersectionPoint);
 
             // Calculate which boundary the edge intersects with and set a corner of the shapes belonging to the 2 focuses belonging to the edge
             addBoundaryIntersections(((Arc) removed).getFocus(), e1);
@@ -489,20 +490,20 @@ public class ArcTree {
             // If the both the edge start and intersection point is withing the map then assign the intersection point to the sets of the removed arc and
             // left arc in the site map
         } else if (left != null && !isOutsideMap(intersectionPoint) && !isOutsideMap(e1.getStart())) {
-            siteMap.get(((Arc) removed).getFocus()).add(intersectionPoint);
-            siteMap.get(leftArc.getFocus()).add(intersectionPoint);
+            addShapeVertex(((Arc) removed).getFocus(), intersectionPoint);
+            addShapeVertex(leftArc.getFocus(), intersectionPoint);
         }
 
         // Same logic as above but for the second edge
         if ((isOutsideMap(intersectionPoint) && !isOutsideMap(e2.getStart()))) {
             addBoundaryIntersections(((Arc) removed).getFocus(), e2);
         } else if ((!isOutsideMap(intersectionPoint) && isOutsideMap(e2.getStart()))) {
-            siteMap.get(e2.getParentFocus()).add(intersectionPoint);
-            siteMap.get(e2.getParentFocus()).add(intersectionPoint);
+            addShapeVertex(e2.getParentFocus(), intersectionPoint);
+            addShapeVertex(e2.getHomeFocus(), intersectionPoint);
             addBoundaryIntersections(((Arc) removed).getFocus(), e2);
         } else if (right != null && !isOutsideMap(intersectionPoint) && !isOutsideMap(e2.getStart())) {
-            siteMap.get(((Arc) removed).getFocus()).add(intersectionPoint);
-            siteMap.get(rightArc.getFocus()).add(intersectionPoint);
+            addShapeVertex(((Arc) removed).getFocus(), intersectionPoint);
+            addShapeVertex(rightArc.getFocus(), intersectionPoint);
         }
 
 
@@ -834,110 +835,116 @@ public class ArcTree {
 
         // If intersections exist
         if (!boundaryIntersectionPoints.isEmpty()) {
-            if ((boundaryIntersectionPoints.get(0).getX() > MapView.MAP_WIDTH || boundaryIntersectionPoints.get(0).getX() < 0) || (boundaryIntersectionPoints.get(0).getY() < 0 || boundaryIntersectionPoints.get(0).getY() > MapView.MAP_HEIGHT)) {
-                return;
-            }
+            for (int i = 0; i < boundaryIntersectionPoints.size(); i++) {
+                if (isOutsideMap(boundaryIntersectionPoints.get(i))) {
+                    return;
+                }
 
-            // Based on which map edge the intersection point lies on
-            // try to set the markers seperated by the edge to the four map corners that lie on the map boundary
-            if (boundaryIntersectionPoints.get(0) == topLineIntersection) {
-                final double distanceToTopLeft = Vec3.getDistance(topLeft, topLineIntersection);
-                final double distanceToTopRight = Vec3.getDistance(topRight, topLineIntersection);
+                // Based on which map edge the intersection point lies on
+                // try to set the markers seperated by the edge to the four map corners that lie on the map boundary
+                if (boundaryIntersectionPoints.get(i) == topLineIntersection) {
+                    final double distanceToTopLeft = Vec3.getDistance(topLeft, topLineIntersection);
+                    final double distanceToTopRight = Vec3.getDistance(topRight, topLineIntersection);
 
-                final double distanceToBottomLeft = distanceToTopLeft + MapView.MAP_HEIGHT;
-                final double distanceToBottomRight = distanceToTopRight + MapView.MAP_HEIGHT;
+                    final double distanceToBottomLeft = distanceToTopLeft + MapView.MAP_HEIGHT;
+                    final double distanceToBottomRight = distanceToTopRight + MapView.MAP_HEIGHT;
 
-                setRelatedPointToCorner(edge, topLineIntersection, distanceToTopLeft, topLeft, 1);
-                setRelatedPointToCorner(edge, topLineIntersection, distanceToTopRight, topRight, 1);
-                setRelatedPointToCorner(edge, topLineIntersection, distanceToBottomLeft, bottomLeft, 0);
-                setRelatedPointToCorner(edge, topLineIntersection, distanceToBottomRight, bottomRight, 0);
-            } else if (boundaryIntersectionPoints.get(0) == leftLineInteraction) {
-                final double distanceToTopLeft = Vec3.getDistance(topLeft, leftLineInteraction);
-                final double distanceToBottomLeft = Vec3.getDistance(bottomLeft, leftLineInteraction);
+                    setRelatedPointToCorner(edge, topLineIntersection, distanceToTopLeft, topLeft, 1);
+                    setRelatedPointToCorner(edge, topLineIntersection, distanceToTopRight, topRight, 1);
+                    setRelatedPointToCorner(edge, topLineIntersection, distanceToBottomLeft, bottomLeft, 0);
+                    setRelatedPointToCorner(edge, topLineIntersection, distanceToBottomRight, bottomRight, 0);
+                } else if (boundaryIntersectionPoints.get(i) == leftLineInteraction) {
+                    final double distanceToTopLeft = Vec3.getDistance(topLeft, leftLineInteraction);
+                    final double distanceToBottomLeft = Vec3.getDistance(bottomLeft, leftLineInteraction);
 
-                final double distanceToTopRight = distanceToTopLeft + MapView.MAP_WIDTH;
-                final double distanceToBottomRight = distanceToBottomLeft + MapView.MAP_WIDTH;
+                    final double distanceToTopRight = distanceToTopLeft + MapView.MAP_WIDTH;
+                    final double distanceToBottomRight = distanceToBottomLeft + MapView.MAP_WIDTH;
 
-                setRelatedPointToCorner(edge, leftLineInteraction, distanceToTopLeft, topLeft, 0);
-                setRelatedPointToCorner(edge, leftLineInteraction, distanceToBottomLeft, bottomLeft, 0);
-                setRelatedPointToCorner(edge, leftLineInteraction, distanceToTopRight, topRight, 1);
-                setRelatedPointToCorner(edge, leftLineInteraction, distanceToBottomRight, bottomRight, 1);
-            } else if (boundaryIntersectionPoints.get(0) == bottomLineInteraction) {
-                final double distanceToBottomRight = Vec3.getDistance(bottomRight, bottomLineInteraction);
-                final double distanceToBottomLeft = Vec3.getDistance(bottomLeft, bottomLineInteraction);
+                    setRelatedPointToCorner(edge, leftLineInteraction, distanceToTopLeft, topLeft, 0);
+                    setRelatedPointToCorner(edge, leftLineInteraction, distanceToBottomLeft, bottomLeft, 0);
+                    setRelatedPointToCorner(edge, leftLineInteraction, distanceToTopRight, topRight, 1);
+                    setRelatedPointToCorner(edge, leftLineInteraction, distanceToBottomRight, bottomRight, 1);
+                } else if (boundaryIntersectionPoints.get(i) == bottomLineInteraction) {
+                    final double distanceToBottomRight = Vec3.getDistance(bottomRight, bottomLineInteraction);
+                    final double distanceToBottomLeft = Vec3.getDistance(bottomLeft, bottomLineInteraction);
 
-                final double distanceToTopLeft = distanceToBottomLeft + MapView.MAP_HEIGHT;
-                final double distanceToTopRight = distanceToBottomLeft + MapView.MAP_HEIGHT;
+                    final double distanceToTopLeft = distanceToBottomLeft + MapView.MAP_HEIGHT;
+                    final double distanceToTopRight = distanceToBottomLeft + MapView.MAP_HEIGHT;
 
-                setRelatedPointToCorner(edge, bottomLineInteraction, distanceToBottomLeft, bottomLeft, 1);
-                setRelatedPointToCorner(edge, bottomLineInteraction, distanceToBottomRight, bottomRight, 1);
-                setRelatedPointToCorner(edge, bottomLineInteraction, distanceToTopLeft, topLeft, 0);
-                setRelatedPointToCorner(edge, bottomLineInteraction, distanceToTopRight, topRight, 0);
-            } else if (boundaryIntersectionPoints.get(0) == rightLineInteraction) {
-                final double distanceToTopRight = Vec3.getDistance(topRight, rightLineInteraction);
-                final double distanceToBottomRight = Vec3.getDistance(bottomRight, rightLineInteraction);
+                    setRelatedPointToCorner(edge, bottomLineInteraction, distanceToBottomLeft, bottomLeft, 1);
+                    setRelatedPointToCorner(edge, bottomLineInteraction, distanceToBottomRight, bottomRight, 1);
+                    setRelatedPointToCorner(edge, bottomLineInteraction, distanceToTopLeft, topLeft, 0);
+                    setRelatedPointToCorner(edge, bottomLineInteraction, distanceToTopRight, topRight, 0);
+                } else if (boundaryIntersectionPoints.get(i) == rightLineInteraction) {
+                    final double distanceToTopRight = Vec3.getDistance(topRight, rightLineInteraction);
+                    final double distanceToBottomRight = Vec3.getDistance(bottomRight, rightLineInteraction);
 
-                final double distanceToTopLeft = distanceToTopRight + MapView.MAP_WIDTH;
-                final double distanceToBottomLeft = distanceToBottomRight + MapView.MAP_WIDTH;
+                    final double distanceToTopLeft = distanceToTopRight + MapView.MAP_WIDTH;
+                    final double distanceToBottomLeft = distanceToBottomRight + MapView.MAP_WIDTH;
 
-                setRelatedPointToCorner(edge, rightLineInteraction, distanceToTopRight, topRight, 0);
-                setRelatedPointToCorner(edge, rightLineInteraction, distanceToBottomRight, bottomRight, 0);
-                setRelatedPointToCorner(edge, rightLineInteraction, distanceToTopLeft, topLeft, 1);
-                setRelatedPointToCorner(edge, rightLineInteraction, distanceToBottomLeft, bottomLeft, 1);
-            }
+                    setRelatedPointToCorner(edge, rightLineInteraction, distanceToTopRight, topRight, 0);
+                    setRelatedPointToCorner(edge, rightLineInteraction, distanceToBottomRight, bottomRight, 0);
+                    setRelatedPointToCorner(edge, rightLineInteraction, distanceToTopLeft, topLeft, 1);
+                    setRelatedPointToCorner(edge, rightLineInteraction, distanceToBottomLeft, bottomLeft, 1);
+                }
 
-            Line l4 = new Line();
-            l4.setStartX(boundaryIntersectionPoints.get(0).getX() - 1);
-            l4.setStartY(boundaryIntersectionPoints.get(0).getY());
-            l4.setEndX(boundaryIntersectionPoints.get(0).getX() + 1);
-            l4.setEndY(boundaryIntersectionPoints.get(0).getY());
-            l4.setStroke(Color.BROWN);
-            l4.setStrokeWidth(5);
+                Line l4 = new Line();
+                l4.setStartX(boundaryIntersectionPoints.get(i).getX() - 1);
+                l4.setStartY(boundaryIntersectionPoints.get(i).getY());
+                l4.setEndX(boundaryIntersectionPoints.get(i).getX() + 1);
+                l4.setEndY(boundaryIntersectionPoints.get(i).getY());
+                l4.setStroke(Color.BROWN);
+                l4.setStrokeWidth(5);
 
-            completedEdges.add(l4);
+                completedEdges.add(l4);
 
-            final Line l1 = new Line();
-            l1.setStartX(boundaryIntersectionPoints.get(0).getX());
-            l1.setStartY(boundaryIntersectionPoints.get(0).getY());
-            l1.setEndX(edge.getHomeFocus().getX());
-            l1.setEndY(edge.getHomeFocus().getY());
-            l1.setStroke(Color.PINK);
-            l1.setVisible(false);
-            completedEdges.add(l1);
-
-            final Line l2 = new Line();
-            l2.setStartX(boundaryIntersectionPoints.get(0).getX());
-            l2.setStartY(boundaryIntersectionPoints.get(0).getY());
-            l2.setEndX(edge.getParentFocus().getX());
-            l2.setEndY(edge.getParentFocus().getY());
-            l2.setStroke(Color.PINK);
-            l2.setVisible(false);
-            completedEdges.add(l2);
-
-            /* final Line l3 = new Line();
-            l3.setStartX(boundaryIntersectionPoints.get(0).getX());
-            l3.setStartY(boundaryIntersectionPoints.get(0).getY());
-            l3.setEndX(squeezedArcFocus.getX());
-            l3.setEndY(squeezedArcFocus.getY());
-            l3.setStroke(Color.PINK);
-            l3.setVisible(false);
-            completedEdges.add(l3);*/
-
-            l4.setOnMouseEntered(event -> {
-                l1.setVisible(true);
-                l2.setVisible(true);
-                //l3.setVisible(true);
-            });
-
-            l4.setOnMouseExited(event -> {
+                final Line l1 = new Line();
+                l1.setStartX(boundaryIntersectionPoints.get(i).getX());
+                l1.setStartY(boundaryIntersectionPoints.get(i).getY());
+                l1.setEndX(edge.getHomeFocus().getX());
+                l1.setEndY(edge.getHomeFocus().getY());
+                l1.setStroke(Color.PINK);
                 l1.setVisible(false);
-                l2.setVisible(false);
-                //l3.setVisible(false);
-            });
+                completedEdges.add(l1);
 
-            // Add intersection point as shape corner of the 2 markers focuses seperated by the line
-            siteMap.get(edge.getHomeFocus()).add(boundaryIntersectionPoints.get(0));
-            siteMap.get(edge.getParentFocus()).add(boundaryIntersectionPoints.get(0));
+                final Line l2 = new Line();
+                l2.setStartX(boundaryIntersectionPoints.get(i).getX());
+                l2.setStartY(boundaryIntersectionPoints.get(i).getY());
+                l2.setEndX(edge.getParentFocus().getX());
+                l2.setEndY(edge.getParentFocus().getY());
+                l2.setStroke(Color.PINK);
+                l2.setVisible(false);
+                completedEdges.add(l2);
+
+                /* final Line l3 = new Line();
+                l3.setStartX(boundaryIntersectionPoints.get(0).getX());
+                l3.setStartY(boundaryIntersectionPoints.get(0).getY());
+                l3.setEndX(squeezedArcFocus.getX());
+                l3.setEndY(squeezedArcFocus.getY());
+                l3.setStroke(Color.PINK);
+                l3.setVisible(false);
+                completedEdges.add(l3);*/
+
+                l4.setOnMouseEntered(event -> {
+                    l1.setVisible(true);
+                    l2.setVisible(true);
+                    //l3.setVisible(true);
+                });
+
+                l4.setOnMouseExited(event -> {
+                    l1.setVisible(false);
+                    l2.setVisible(false);
+                    //l3.setVisible(false);
+                });
+
+                // Add intersection point as shape corner of the 2 markers focuses seperated by the line
+                addShapeVertex(edge.getHomeFocus(), boundaryIntersectionPoints.get(i));
+                addShapeVertex(edge.getParentFocus(), boundaryIntersectionPoints.get(i));
+
+                if (edge.isComplete()) {
+                    break;
+                }
+            }
         }
     }
 
@@ -952,28 +959,15 @@ public class ArcTree {
                 // If the site map contains the marker related to the corner then add the corner to its set
                 if (siteMap.containsKey(entry.getValue().get(i).getValue())) {
                     siteMap.get(entry.getValue().get(i).getValue()).add(entry.getKey());
-
-                    // Else if the 1st related coordinate is not in the key
                 }
-                /*else if (i == 0) {
-                    if (siteMap.containsKey(entry.getValue().get(1).getValue())) {
-                        siteMap.get(entry.getValue().get(1).getValue()).add(entry.getKey());
-                    } else {
-                        final Vec3 corner = entry.getValue().get(1).getValue();
-
-                        final Vec3 relatedMarker = Vec3.getDistance(entry.getKey(), cornerMap.get(corner).get(0).getValue()) < Vec3.getDistance(entry.getKey(), cornerMap.get(corner).get(1).getValue()) ? cornerMap.get(corner).get(0).getValue() : cornerMap.get(corner).get(1).getValue();
-
-                        if (siteMap.containsKey(relatedMarker)) {
-                            siteMap.get(relatedMarker).add(entry.getKey());
-                        }
-                    }
-                } else if (i == 1) {
-                    if (siteMap.containsKey(entry.getValue().get(0).getValue())) {
-                        siteMap.get(entry.getValue().get(0).getValue()).add(entry.getKey());
-                    }
-                }*/
             }
         });
+    }
+
+    private void addShapeVertex(final Vec3 siteCoordinate, final Vec3 vertex) {
+        if (siteCoordinate.getX() != rootFocus.getX() && siteCoordinate.getY() != rootFocus.getY()) {
+            siteMap.get(siteCoordinate).add(vertex);
+        }
     }
 
     /**
@@ -1092,7 +1086,7 @@ public class ArcTree {
     private void finishEdges() {
         edges.forEach(edge -> {
             if (!edge.isComplete()) {
-                edge.setComplete(true);
+
                 final Line l = new Line();
                 l.setStartX(edge.getStart().getX());
                 l.setStartY(edge.getStart().getY());
@@ -1112,10 +1106,10 @@ public class ArcTree {
                 l2.setStrokeWidth(5);
                 completedEdges.add(l2);
 
-                if ((edge.getStart().getX() >= 0 && edge.getStart().getX() <= MapView.MAP_WIDTH) && (edge.getStart().getY() >= 0 && edge.getStart().getY() <= MapView.MAP_HEIGHT)) {
+                //if ((edge.getStart().getX() >= 0 && edge.getStart().getX() <= MapView.MAP_WIDTH) && (edge.getStart().getY() >= 0 && edge.getStart().getY() <= MapView.MAP_HEIGHT)) {
                     addBoundaryIntersections(edge.getParentFocus(), edge);
-                }
-
+                //}
+                                edge.setComplete(true);
             }
         });
     }
