@@ -92,6 +92,7 @@ public class AnalyticViewPane extends BorderPane {
         this.analyticOptionButtons.setSpacing(6);
         final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
         this.runButton = new Button(RUN_START_TEXT);
         runButton.setStyle(RUN_START_STYLE);
         runButton.setOnAction(event -> {

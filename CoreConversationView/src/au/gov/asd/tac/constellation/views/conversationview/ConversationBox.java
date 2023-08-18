@@ -168,6 +168,7 @@ public final class ConversationBox extends StackPane {
 
         final ImageView helpImage = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
         final Button helpButton = new Button("", helpImage);
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
         helpButton.setOnAction(event
                 -> new HelpCtx(this.getClass().getName()).display());
 
