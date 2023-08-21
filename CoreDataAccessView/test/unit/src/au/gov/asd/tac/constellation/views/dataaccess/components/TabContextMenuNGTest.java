@@ -61,18 +61,18 @@ public class TabContextMenuNGTest {
 
     @BeforeClass
     public void setUpClass() throws Exception {
-        if (!FxToolkit.isFXApplicationThreadRunning()) {
-            FxToolkit.registerPrimaryStage();
-        }
+//        if (!FxToolkit.isFXApplicationThreadRunning()) {
+//            FxToolkit.registerPrimaryStage();
+//        }
     }
 
     @AfterClass
     public void tearDownClass() throws Exception {
-        try {
-            FxToolkit.cleanupStages();
-        } catch (TimeoutException ex) {
-            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-        }
+//        try {
+//            FxToolkit.cleanupStages();
+//        } catch (TimeoutException ex) {
+//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+//        }
     }
     
     @BeforeMethod

@@ -146,7 +146,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 //        } catch (Exception ex){
 //            
 //        }
-//        
+        
         if (pluginReport != null) {
             pluginReport.setCurrentStep(currentStep);
             pluginReport.setTotalSteps(totalSteps);
