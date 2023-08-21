@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.reporting;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -168,7 +169,7 @@ public class PluginReport {
      * @return the current message from this plugin.
      */
     public String getLastMessage() {
-        if (executionStage.equals(PluginRunningStateConstants.COMPLETE) || executionStage.equals(PluginRunningStateConstants.STOPPED) || this.messageLog.isEmpty()){
+        if ((executionStage.equals(PluginRunningStateConstants.COMPLETE) || executionStage.equals(PluginRunningStateConstants.STOPPED)) && !this.messageLog.isEmpty()){
             return this.messageLog.isEmpty() ? "" : this.messageLog.get(this.messageLog.size()-1);
         } else {
             return this.runningStateLog.isEmpty() ? "" : this.runningStateLog.get(this.runningStateLog.size()-1);
@@ -374,7 +375,7 @@ public class PluginReport {
         }
     }
     
-    public String logToString(List<String> log){
+    public String logToString(Collection<String> log){
         StringBuilder bld = new StringBuilder();
         
         for (int i = 0; i < log.size(); ++i) {

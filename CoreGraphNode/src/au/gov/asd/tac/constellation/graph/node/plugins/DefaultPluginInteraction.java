@@ -141,11 +141,11 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         
 //        Uncomment this block to delay the progress of plugins and better review the changes made within this PR.
 //        Delete this block before merging to master.
-//        try{
-//            TimeUnit.MILLISECONDS.sleep(500);
-//        } catch (Exception ex){
-//            
-//        }
+        try{
+            TimeUnit.MILLISECONDS.sleep(50);
+        } catch (Exception ex){
+            
+        }
         
         if (pluginReport != null) {
             pluginReport.setCurrentStep(currentStep);
