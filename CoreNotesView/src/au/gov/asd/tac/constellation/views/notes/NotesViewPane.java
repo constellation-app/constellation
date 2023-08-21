@@ -1055,7 +1055,6 @@ public class NotesViewPane extends BorderPane {
                 noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
                 noteButtons.setSpacing(DEFAULT_SPACING);
 
-
                 newNote.setWasInEditMode(false);
 
                 synchronized (LOCK) {
