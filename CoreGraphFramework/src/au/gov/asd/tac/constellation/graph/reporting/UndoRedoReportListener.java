@@ -30,6 +30,6 @@ public interface UndoRedoReportListener {
      *
      * @param undoRedoReport the newly created {@link UndoRedoReport}.
      */
-    public void addNewUndoRedoReport(UndoRedoReport undoRedoReport);
+    public void fireNewUndoRedoReport(UndoRedoReport undoRedoReport);
 
 }

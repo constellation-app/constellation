@@ -113,13 +113,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         if (needsUpdate() && graph != null) {
             notesViewPane.clearNotes();
         }
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        if (activeGraph != null) {
-            notesViewController.readState(activeGraph);
-            notesViewPane.getCreateNewNoteButton().setDisable(false);
-        } else {
-            notesViewPane.getCreateNewNoteButton().setDisable(true);
-        }
+        populateNotes();
 
         LOGGER.log(Level.SEVERE, "Handling graph closed");
     }
@@ -134,6 +128,16 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         GraphReportManager.addGraphReportListener(this);
         UndoRedoReportManager.addUndoRedoReportListener(this);
         LOGGER.log(Level.SEVERE, "Handling Component opened");
+    }
+
+    private void populateNotes() {
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+        if (activeGraph != null) {
+            notesViewController.readState(activeGraph);
+            notesViewPane.getCreateNewNoteButton().setDisable(false);
+        } else {
+            notesViewPane.getCreateNewNoteButton().setDisable(true);
+        }
     }
 
     @Override
@@ -164,7 +168,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         // update the graph report if the new plugin report isn't a low level plugin (which aren't useful as notes)
         if (activeGraph != null && pluginReport.getGraphReport().getGraphId().equals(activeGraph.getId())
                 && !pluginReport.hasLowLevelTag()) {
-            notesViewPane.setGraphReport(activeGraph, notesViewController);
+            notesViewPane.setGraphReport();
         }
     }
 
@@ -174,11 +178,11 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
      * @param undoRedoReport
      */
     @Override
-    public void addNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
+    public void fireNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
 
         if (activeGraph != null && undoRedoReport.getGraphId().equals(activeGraph.getId())) {
-            notesViewPane.addNewUndoRedoReport(undoRedoReport, activeGraph);
+            notesViewPane.processNewUndoRedoReport(undoRedoReport, activeGraph);
         }
     }
 

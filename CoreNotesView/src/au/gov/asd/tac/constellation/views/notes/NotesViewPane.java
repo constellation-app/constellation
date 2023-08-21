@@ -18,8 +18,9 @@ package au.gov.asd.tac.constellation.views.notes;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReport;
+import static au.gov.asd.tac.constellation.graph.locking.LockingManager.UNDO;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReport;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.VisualGraphPluginRegistry;
 import au.gov.asd.tac.constellation.graph.visual.plugins.select.ChangeSelectionPlugin;
@@ -372,7 +373,9 @@ public class NotesViewPane extends BorderPane {
     /**
      * Set the plugin reports that have executed on the current graph report.
      */
-    protected void setGraphReport(final Graph graph, final NotesViewController controller) {
+    protected void setGraphReport() {
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
+
         if (graph != null) {
             final GraphReport currentGraphReport = GraphReportManager.getGraphReport(graph.getId());
 
@@ -384,12 +387,13 @@ public class NotesViewPane extends BorderPane {
                         addPluginReport(pluginReport);
                     }
                 });
-                updateUI(graph);
+                updateNotesAndFiltersUI(graph);
+                notesViewController.writeState(graph);
             }
         }
     }
 
-    private void updateUI(final Graph graph) {
+    private void updateNotesAndFiltersUI(final Graph graph) {
         SwingUtilities.invokeLater(() -> {
             final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
             if (tc != null && tc.isOpened()) {
@@ -398,8 +402,6 @@ public class NotesViewPane extends BorderPane {
                 updateFilters();
             }
         });
-
-        notesViewController.writeState(graph);
     }
 
     /**
@@ -418,6 +420,7 @@ public class NotesViewPane extends BorderPane {
                     "#ffffff"
             );
 
+            note.setUndone(pluginReport.getUndone());
             final String[] tags = pluginReport.getTags();
             final List<String> tagsList = new ArrayList<>();
             for (final String tag : tags) {
@@ -440,32 +443,17 @@ public class NotesViewPane extends BorderPane {
     }
 
     /**
-     * Adds details of the Undo or Redo action to notesViewEntries as a Notes
-     * View Entry object.
+     * Adds details of the Undo or Redo action to the Notes
+     * View Entry object in notesViewEntries
      *
      * @param undoRedoReport UndoRedoReport report to be added.
      * @param graph The graph the Undo or Redo action is performed on.
      */
-    protected void addNewUndoRedoReport(final UndoRedoReport undoRedoReport, final Graph graph) {
-        if (hasMatchingNote(undoRedoReport) && !isExistingNote(undoRedoReport)) {
-            final NotesViewEntry note = new NotesViewEntry(
-                    Long.toString(undoRedoReport.getStartTime()),
-                    undoRedoReport.getActionType() + " " + undoRedoReport.getActionDescription(),
-                    "Finished",
-                    false,
-                    false,
-                    "#ffffff"
-            );
-
-            final List<String> tagsList = new ArrayList<>();
-            tagsList.add("Undo/Redo");
-            note.setTags(tagsList);
-
-            synchronized (LOCK) {
-                addNote(note);
-            }
+    protected void processNewUndoRedoReport(final UndoRedoReport undoRedoReport, final Graph graph) {
+        if (hasMatchingNote(undoRedoReport)) {
+            getMatchingNoteOfUndoRedoReport(undoRedoReport).setUndone(undoRedoReport.getActionType() == UNDO);
             updateTagsFiltersAvailable();
-            updateUI(graph);
+            updateNotesAndFiltersUI(graph);
         }
 
     }
@@ -591,7 +579,7 @@ public class NotesViewPane extends BorderPane {
                     notesToRender.add(entry);
 
                 } else if (selectedFilters.contains(AUTO_NOTES_FILTER) && !entry.isUserCreated() && entry.getShowing()) {
-                    if (updateAutoNotesDisplayed(entry)) {
+                    if (updateAutoNotesDisplayed(entry) && !entry.getUndone()) {
                         notesToRender.add(entry);
                     }
 
@@ -672,17 +660,17 @@ public class NotesViewPane extends BorderPane {
         return notesDateTimeCache.contains(startTime);
     }
 
-    /**
-     * Check if the UndoRedoReport is already added.
-     *
-     * @param undoRedoReport The UndoRedoReport to add.
-     *
-     * @return True if UndoRedoReport is already added, False otherwise.
-     */
-    private boolean isExistingNote(final UndoRedoReport undoRedoReport) {
-        final String startTime = Long.toString(undoRedoReport.getStartTime());
-        return notesDateTimeCache.contains(startTime);
+    private NotesViewEntry getMatchingNoteOfPluginReport(final PluginReport pluginReport) {
+
+        NotesViewEntry n2 = notesViewEntries.stream()
+                .filter(entry -> entry.getDateTime().equals(Long.toString(pluginReport.getStartTime())))
+                .findFirst()
+                .get();
+
+
+        return n2;
     }
+
 
     /**
      * Check if the action in the UndoRedoReport has a matching note already
@@ -698,6 +686,21 @@ public class NotesViewPane extends BorderPane {
     private boolean hasMatchingNote(final UndoRedoReport undoRedoReport) {
         return notesViewEntries.stream().anyMatch(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()));
     }
+
+    private NotesViewEntry getMatchingNoteOfUndoRedoReport(final UndoRedoReport undoRedoReport) {
+        switch (undoRedoReport.getActionType()) {
+            case UNDO:
+                return notesViewEntries.stream()
+                .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()) && !entry.getUndone())
+                .max(Comparator.comparing(NotesViewEntry::getDateTime)).get();
+
+            default:
+                return notesViewEntries.stream()
+                .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()) && entry.getUndone())
+                .min(Comparator.comparing(NotesViewEntry::getDateTime)).get();
+        }
+    }
+
 
     /**
      * A convenient method to add a note to the various lists that are used to
@@ -1242,8 +1245,9 @@ public class NotesViewPane extends BorderPane {
      * Updates the tags filters array with what tags are currently available.
      */
     public void updateTagsFiltersAvailable() {
+        tagsUpdater.clear();
         notesViewEntries.forEach(entry -> {
-            if (!entry.isUserCreated()) {
+            if (!entry.isUserCreated() && !entry.getUndone()) {
                 final List<String> tags = entry.getTags();
                 for (final String tag : tags) {
                     if (!tagsUpdater.contains(tag)) {
@@ -1257,6 +1261,8 @@ public class NotesViewPane extends BorderPane {
         Platform.runLater(() -> {
             autoFilterCheckComboBox.getItems().clear();
             autoFilterCheckComboBox.getItems().addAll(tagsFiltersList);
+            autoFilterCheckComboBox.autosize();
+
         });
     }
 

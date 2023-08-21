@@ -39,6 +39,6 @@ public class UndoRedoReportManager {
     }
 
     public static synchronized void fireNewUndoRedoReport(UndoRedoReport undoRedoReport) {
-        LISTENERS.stream().forEach(listener -> listener.addNewUndoRedoReport(undoRedoReport));
+        LISTENERS.stream().forEach(listener -> listener.fireNewUndoRedoReport(undoRedoReport));
     }
 }
