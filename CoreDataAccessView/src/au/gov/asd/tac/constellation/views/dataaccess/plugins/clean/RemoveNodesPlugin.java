@@ -150,7 +150,7 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
         totalProcessSteps = 0;
         interaction.setProgress(removedCount, 
                 totalProcessSteps, 
-                String.format("Merged %s.", 
+                String.format("Removed %s.", 
                         PluginReportUtilities.getNodeCountString(removedCount)
                 ), 
                 true
