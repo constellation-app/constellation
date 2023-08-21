@@ -81,6 +81,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
 import javafx.stage.Window;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -272,14 +273,15 @@ public class NotesViewPane extends BorderPane {
                 creatingFirstNote = false;
             }
 
+            newNotePane.setEditMode(false);
             newNotePane.showPopUp(this.getScene().getWindow());
-
         });
 
         // Event handler to add new note
         newNotePane.getAddButtion().setOnAction(event -> {
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
+                newNotePane.getColourPicker().setValue(ConstellationColor.fromHtmlColor(USER_COLOR).getJavaFXColor());
                 if (newNotePane.getTitleField().getText().isBlank()
                         || newNotePane.getContentField().getText().isBlank()) {
                     newNotePane.closePopUp();
@@ -300,6 +302,7 @@ public class NotesViewPane extends BorderPane {
                     warningAlert.setWidth(popUpWidth);
                     warningAlert.setHeight(popUpHeight);
                     final Optional o = warningAlert.showAndWait();
+                    newNotePane.setEditMode(false);
                     newNotePane.showPopUp(this.getScene().getWindow());
 
                 } else {
@@ -369,6 +372,42 @@ public class NotesViewPane extends BorderPane {
                     event.consume();
                 }
             }
+        });
+
+        newNotePane.getSaveButton().setOnAction(e -> {
+            final int edited = newNotePane.getCurrentlyEditedNoteId();
+
+            notesViewEntries.forEach(note -> {
+                if (note.getID() == edited) {
+                    // Check if either the title or content text boxs are empty
+                    if (StringUtils.isBlank(newNotePane.getTitleField().getText()) || StringUtils.isBlank(newNotePane.getContentField().getText())) {
+                        JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
+                    } else {
+                        newNotePane.closePopUp();
+                        note.setNoteTitle(newNotePane.getTitleField().getText());
+                        note.setNoteContent(newNotePane.getContentField().getText());
+                        note.setNodeColour(ConstellationColor.fromFXColor(newNotePane.getColourPicker().getValue()).getHtmlColor());
+
+                        final MarkdownTree mdTree = new MarkdownTree(newNotePane.getTitleField().getText() + "\n\n" + newNotePane.getContentField().getText());
+                        mdTree.parse();
+                        note.setContentTextFlow(mdTree.getRenderedText());
+
+                        previouseColourMap.replace(note.getID(), note.getNodeColour());
+
+                        note.setEditMode(false);
+                        note.setWasInEditMode(false);
+
+                        synchronized (LOCK) {
+                            final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
+                            if (activeGraph != null) {
+                                updateNotesUI();
+                                notesViewController.writeState(activeGraph);
+                            }
+                        }
+                    }
+                    return;
+                }
+            });
         });
 
 
@@ -929,14 +968,6 @@ public class NotesViewPane extends BorderPane {
             }
         });
 
-
-        // Change colour of note to whatever user sleects
-        colourPicker.setOnAction(event -> {
-            final Color col = colourPicker.getValue();
-            noteBody.setStyle(PADDING_BG_COLOUR_STYLE + ConstellationColor.fromFXColor(col).getHtmlColor() + BG_RADIUS_STYLE);
-            newNote.setNodeColour(ConstellationColor.fromFXColor(col).getHtmlColor());
-        });
-
         if (newNote.isUserCreated()) {
             // Add a right click context menu to user notes.
             final MenuItem selectOnGraphMenuItem = new MenuItem("Select on Graph");
@@ -1059,96 +1090,12 @@ public class NotesViewPane extends BorderPane {
 
         // Edit button activates editable text boxs for title and label
         editTextButton.setOnAction(event -> {
-            newNote.setTempTitle(newNote.getNoteTitle());
-            newNote.setTempContent(newNote.getNoteContent());
-            noteButtons.getChildren().removeAll(showMoreButton, gap, editTextButton, deleteButton);
-            noteButtons.getChildren().addAll(colourPicker, gap2, editScreenButtons);
-            noteButtons.setSpacing(EDIT_SPACING);
-
-            noteInformation.getChildren().clear();
-            titleText.setText(titleLabel.getText());
-            contentTextArea.setText(contentLabel.getText());
-
-            if (showMoreButton.isVisible() && showMoreButton.getText().equals(SHOW_MORE)) {
-                noteBody.setMaxHeight(160);
-                noteBody.setMinHeight(160);
-            }
-
-            newNote.setNoteTitle(titleLabel.getText());
-            newNote.setNoteContent(contentLabel.getText());
-            noteInformation.getChildren().addAll(titleText, contentTextArea);
-            newNote.setEditMode(true);
-        });
-
-        cancelButton.setOnAction(cancelEvent -> {
-            final String currentColour = previouseColourMap.get(newNote.getID());
-            colourPicker.setValue(ConstellationColor.fromHtmlColor(currentColour).getJavaFXColor());
-            noteButtons.getChildren().removeAll(colourPicker, gap2, editScreenButtons);
-            noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
-            noteButtons.setSpacing(DEFAULT_BUTTON_SPACING);
-
-
-            titleText.setText(titleLabel.getText());
-            contentTextArea.setText(contentLabel.getText());
-
-            noteInformation.getChildren().removeAll(titleText, contentTextArea);
-
-            final MarkdownTree mdTree = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
-            mdTree.parse();
-            newNote.setContentTextFlow(mdTree.getRenderedText());
-
-            noteInformation.getChildren().add(containerPane);
-            noteInformation.setSpacing(NOTE_INFO_SPACING);
-
-            if (showMoreButton.isVisible() && showMoreButton.getText().equals(SHOW_MORE)) {
-                noteBody.setMaxHeight(NOTE_HEIGHT - 3);
-                noteBody.setMinHeight(NOTE_HEIGHT - 3);
-            }
-
-            newNote.setEditMode(false);
-            newNote.setWasInEditMode(false);
-            noteBody.setStyle(PADDING_BG_COLOUR_STYLE
-                    + currentColour + BG_RADIUS_STYLE);
-            newNote.setNodeColour(currentColour);
-        });
-
-        // Save button deactivates editable text boxs for title and label
-        saveTextButton.setOnAction(event -> {
-            // Check if either the title or content text boxs are empty
-            if (StringUtils.isBlank(titleText.getText()) || StringUtils.isBlank(contentTextArea.getText())) {
-                JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
-            } else {
-                newNote.setNoteTitle(titleText.getText());
-                newNote.setNoteContent(contentTextArea.getText());
-
-                final MarkdownTree mdTree = new MarkdownTree(titleText.getText() + "\n\n" + contentTextArea.getText());
-                mdTree.parse();
-                newNote.setContentTextFlow(mdTree.getRenderedText());
-
-                previouseColourMap.replace(newNote.getID(), newNote.getNodeColour());
-
-                noteInformation.getChildren().removeAll(titleText, contentTextArea);
-                noteButtons.getChildren().removeAll(colourPicker, gap2, editScreenButtons);
-
-                noteButtons.getChildren().addAll(showMoreButton, gap, editTextButton, deleteButton);
-                noteButtons.setSpacing(DEFAULT_BUTTON_SPACING);
-
-                noteInformation.getChildren().removeAll(titleText, contentTextArea);
-                noteInformation.getChildren().addAll(containerPane);
-
-                newNote.setEditMode(false);
-                newNote.setWasInEditMode(false);
-
-                synchronized (LOCK) {
-                    final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-                    if (activeGraph != null) {
-                        updateNotesUI();
-                        notesViewController.writeState(activeGraph);
-                    }
-                }
-
-
-            }
+            newNotePane.getTitleField().setText(newNote.getNoteTitle());
+            newNotePane.getContentField().setText(newNote.getNoteContent());
+            newNotePane.setCurrentlyEditedNoteId(newNote.getID());
+            newNotePane.getColourPicker().setValue(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
+            newNotePane.setEditMode(true);
+            newNotePane.showPopUp(this.getScene().getWindow());
         });
     
     }

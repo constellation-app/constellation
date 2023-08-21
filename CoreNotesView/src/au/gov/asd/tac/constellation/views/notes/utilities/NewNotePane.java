@@ -19,6 +19,10 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -46,6 +50,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.stage.Window;
@@ -57,6 +62,8 @@ import javafx.stage.Window;
  */
 public class NewNotePane {
 
+    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
+
     private boolean isFirstTime = true;
     private final Pane dialogPane;
     private static final String FONT_SIZE_STRING = "-fx-font-size:%d;";
@@ -64,6 +71,8 @@ public class NewNotePane {
     private static final String PROMPT_COLOR = "#909090";
     private static final double WIDTH = 500;
     private static final double HEIGHT = 300;
+
+    private int currentlyEditedNoteId = 0;
 
     private final TextArea contentField;
     private final TextField titleField = new TextField();
@@ -79,8 +88,11 @@ public class NewNotePane {
     private boolean markdownSelected = false;
     private static String userChosenColour;
 
+    private BooleanProperty inEditMode = new SimpleBooleanProperty(false);
+
     private final Button addButton = new Button("Add Note");
     private final Button cancelButton = new Button("Cancel");
+    private final Button saveButton = new Button("Save");
     private Stage stage = null;
 
     private Window parent = null;
@@ -172,6 +184,13 @@ public class NewNotePane {
         addButton.setOnMouseEntered(event -> addButton.setStyle("-fx-background-color: #86ED26; "));
         addButton.setOnMouseExited(event -> addButton.setStyle("-fx-background-color: #26ED49;  "));
 
+        saveButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()) + "-fx-background-color: #26ED49;");
+        saveButton.setPadding(new Insets(0, 15, 0, 15));
+        saveButton.setMinHeight(25);
+        saveButton.setTextFill(Color.BLACK);
+        saveButton.setOnMouseEntered(event -> saveButton.setStyle("-fx-background-color: #86ED26; "));
+        saveButton.setOnMouseExited(event -> saveButton.setStyle("-fx-background-color: #26ED49;  "));
+
         // Cancel button to stop creating a new note
         cancelButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()) + "-fx-background-color: #DEC20B;");
         cancelButton.setPadding(new Insets(0, 15, 0, 15));
@@ -180,7 +199,6 @@ public class NewNotePane {
         cancelButton.setOnAction(event -> closePopUp());
         cancelButton.setOnMouseEntered(event -> cancelButton.setStyle("-fx-background-color: #DBA800; "));
         cancelButton.setOnMouseExited(event -> cancelButton.setStyle("-fx-background-color: #DEC20B;  "));
-
         final Region gap = new Region();
         gap.setMinWidth(15);
         final HBox noteHBox = new HBox(5, newNoteColour, gap, addButton, cancelButton);
@@ -196,6 +214,16 @@ public class NewNotePane {
         dialogPane.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#222222").getJavaFXColor(), null, null)));
 
         dialogPane.getChildren().add(addNoteVBox);
+
+        inEditMode.addListener((obj, old, newVal) -> {
+            noteHBox.getChildren().clear();
+            if (newVal) {
+                noteHBox.getChildren().addAll(newNoteColour, gap, saveButton, cancelButton);
+            } else {
+                noteHBox.getChildren().addAll(newNoteColour, gap, addButton, cancelButton);
+            }
+        });
+
     }
 
     private void resizeTextFlows(final TextFlow textFlow, final double scale) {
@@ -222,7 +250,8 @@ public class NewNotePane {
             titleField.clear();
             contentField.clear();
             stage = new Stage();
-            stage.initModality(Modality.WINDOW_MODAL);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setAlwaysOnTop(true);
             stage.setTitle("Create new note");
             stage.setMinHeight(HEIGHT);
             stage.setMinWidth(WIDTH);
@@ -239,11 +268,17 @@ public class NewNotePane {
 
         final List<Screen> screens = Screen.getScreensForRectangle(window.getX(), window.getY(), window.widthProperty().get(), window.heightProperty().get());
 
+        if (inEditMode.get()) {
+            stage.setTitle("Edit note");
+        } else {
+            stage.setTitle("Create new note");
+        }
+
         stage.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - WIDTH / 2);
         stage.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - (HEIGHT * 2.5) / 2);
 
         if (!stage.isShowing()) {
-            stage.show();
+            stage.showAndWait();
         }
     }
 
@@ -258,6 +293,11 @@ public class NewNotePane {
     public Button getAddButtion() {
         return addButton;
     }
+
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
 
     public String getUserChosenColour() {
         return userChosenColour;
@@ -285,5 +325,22 @@ public class NewNotePane {
         titleField.clear();
         contentField.clear();
     }
+
+    public void setEditMode(final boolean edit) {
+        inEditMode.set(edit);
+    }
+
+    public int getCurrentlyEditedNoteId() {
+        return currentlyEditedNoteId;
+    }
+
+    public void setCurrentlyEditedNoteId(int currentlyEditedNoteId) {
+        this.currentlyEditedNoteId = currentlyEditedNoteId;
+    }
+
+    public ColorPicker getColourPicker() {
+        return newNoteColour;
+    }
+
 
 }
