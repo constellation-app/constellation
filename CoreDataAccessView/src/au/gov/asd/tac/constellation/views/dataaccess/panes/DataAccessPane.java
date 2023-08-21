@@ -34,6 +34,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.util.Pair;
 
 /**
  * JavaFX Data Access View. The main pane containing the tab pane, button tool
@@ -80,7 +81,7 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
         );
 
         // Plugins are now needed, so wait until the load is complete
-        final Map<String, List<DataAccessPlugin>> plugins;
+        final Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
         try {
             plugins = DataAccessPaneState.getPlugins();
         } catch (ExecutionException ex) {
@@ -101,17 +102,6 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
                 .getGlobalParametersPane().getParams().getParameters()
                 .get(CoreGlobalParameters.DATETIME_RANGE_PARAMETER_ID)
                 .addListener((oldValue, newValue) -> update());
-
-        // Right click anywhere and get the tab's context menu
-        setOnContextMenuRequested(contextMenuEvent -> {
-            getDataAccessTabPane().getCurrentTab().getContextMenu()
-                    .show(
-                            DataAccessPane.this,
-                            contextMenuEvent.getScreenX(),
-                            contextMenuEvent.getScreenY()
-                    );
-            contextMenuEvent.consume();
-        });
 
         // Refresh all the status of menu items, execute buttons etc.
         // based on the current state of the data access view
