@@ -217,10 +217,13 @@ public class NewNotePane {
 
         inEditMode.addListener((obj, old, newVal) -> {
             noteHBox.getChildren().clear();
+            cbHBox.getChildren().clear();
             if (newVal) {
                 noteHBox.getChildren().addAll(newNoteColour, gap, saveButton, cancelButton);
+                cbHBox.getChildren().add(enableMarkdown);
             } else {
                 noteHBox.getChildren().addAll(newNoteColour, gap, addButton, cancelButton);
+                cbHBox.getChildren().addAll(applyToSelection, enableMarkdown);
             }
         });
 
@@ -342,5 +345,8 @@ public class NewNotePane {
         return newNoteColour;
     }
 
+    public CheckBox getMarkdownCheckbox() {
+        return enableMarkdown;
+    }
 
 }

@@ -387,6 +387,7 @@ public class NotesViewPane extends BorderPane {
                         note.setNoteTitle(newNotePane.getTitleField().getText());
                         note.setNoteContent(newNotePane.getContentField().getText());
                         note.setNodeColour(ConstellationColor.fromFXColor(newNotePane.getColourPicker().getValue()).getHtmlColor());
+                        note.setInMarkdown(newNotePane.isMarkdownSelected());
 
                         final MarkdownTree mdTree = new MarkdownTree(newNotePane.getTitleField().getText() + "\n\n" + newNotePane.getContentField().getText());
                         mdTree.parse();
@@ -753,11 +754,7 @@ public class NotesViewPane extends BorderPane {
         dateTimeLabel.setMinWidth(185);
         dateTimeLabel.setMaxWidth(185);
         dateTimeLabel.setPadding(new Insets(0, 0, 0, 0));
-        // Define title text box
-        final TextField titleText = new TextField(newNote.getNoteTitle());
 
-        titleText.setStyle(BOLD_STYLE);
-        titleText.setOnKeyTyped(event -> newNote.setTempTitle(titleText.getText()));
 
         // Define title label
         final Label titleLabel = new Label(newNote.getNoteTitle());
@@ -773,16 +770,7 @@ public class NotesViewPane extends BorderPane {
         contentLabel.setAlignment(Pos.TOP_LEFT);
 
         // Define content text area
-        final TextArea contentTextArea = new TextArea(newNote.getNoteContent());        
-        contentTextArea.setWrapText(true);
-        contentTextArea.positionCaret(contentTextArea.getText() == null ? 0 : contentTextArea.getText().length());
-        //contentTextArea.setMinHeight(25);
-        contentTextArea.setOnKeyTyped(event -> newNote.setTempContent(contentTextArea.getText()));
-
-        if (newNote.checkIfWasInEditMode()) {
-            titleText.setText(newNote.getTempTitle());
-            contentTextArea.setText(newNote.getTempContent());
-        }
+        //final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
 
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.setMarkdownEnabled(newNote.isInMarkdown());
@@ -837,14 +825,13 @@ public class NotesViewPane extends BorderPane {
 
             // If the note to be created is in edit mode, ensure it is created
             // with the correct java fx elements
-            noteInformation = newNote.getEditMode() ? new VBox(EDIT_SPACING, titleText, contentTextArea) : new VBox(NOTE_INFO_SPACING, containerPane);
+            noteInformation = new VBox(NOTE_INFO_SPACING, containerPane);
 
             HBox.setHgrow(noteInformation, Priority.ALWAYS);
         } else {
             // If the note to be created is in edit mode, ensure it is created
             // with the correct java fx elements
-            noteInformation = new VBox(DEFAULT_BUTTON_SPACING, newNote.getEditMode() ? titleText : titleLabel,
-                    newNote.getEditMode() ? contentTextArea : contentLabel);
+            noteInformation = new VBox(DEFAULT_BUTTON_SPACING, titleLabel, contentLabel);
             HBox.setHgrow(noteInformation, Priority.ALWAYS);
         }
 
@@ -1024,10 +1011,6 @@ public class NotesViewPane extends BorderPane {
             });
             final MenuItem addOnGraphMenuItem = new MenuItem("Add Selected");
             addOnGraphMenuItem.setOnAction(event -> {
-                // Save the current text in the text fields so they are not reset on updateNotesUI
-                newNote.setNoteTitle(titleText.getText());
-                newNote.setNoteContent(contentTextArea.getText());
-
                 addToSelectedElements(newNote);
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (activeGraph != null) {
@@ -1038,10 +1021,6 @@ public class NotesViewPane extends BorderPane {
 
             final MenuItem removeOnGraphMenuItem = new MenuItem("Remove Selected");
             removeOnGraphMenuItem.setOnAction(event -> {
-                // Save the current text in the text fields so they are not reset on updateNotesUI
-                newNote.setNoteTitle(titleText.getText());
-                newNote.setNoteContent(contentTextArea.getText());
-
                 removeFromSelectedElements(newNote);
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (activeGraph != null) {
@@ -1094,6 +1073,7 @@ public class NotesViewPane extends BorderPane {
             newNotePane.getContentField().setText(newNote.getNoteContent());
             newNotePane.setCurrentlyEditedNoteId(newNote.getID());
             newNotePane.getColourPicker().setValue(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
+            newNotePane.getMarkdownCheckbox().setSelected(newNote.isInMarkdown());
             newNotePane.setEditMode(true);
             newNotePane.showPopUp(this.getScene().getWindow());
         });
