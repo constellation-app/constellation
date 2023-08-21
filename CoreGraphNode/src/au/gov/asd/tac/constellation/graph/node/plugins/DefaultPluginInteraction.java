@@ -138,7 +138,15 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
     @Override
     public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {
-        TimeUnit.SECONDS.sleep(1);
+        
+//        Uncomment this black to delay the progress of plugins and better review the changes made within this PR.
+//        Delete this block before merging to master.
+//        try{
+//            TimeUnit.MILLISECONDS.sleep(500);
+//        } catch (Exception ex){
+//            
+//        }
+//        
         if (pluginReport != null) {
             pluginReport.setCurrentStep(currentStep);
             pluginReport.setTotalSteps(totalSteps);
