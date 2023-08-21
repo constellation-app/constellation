@@ -39,6 +39,7 @@ public class MarkerUtilities {
      */
     public static double longToX(final double longitude, final double minLong, final double mapWidth, final double lonDelta) {
         return (longitude - minLong) * (mapWidth / lonDelta);
+        //return (longitude + 180) * (mapWidth / 360);
     }
 
     /**
@@ -53,6 +54,9 @@ public class MarkerUtilities {
         final double lattitude = lat * (Math.PI / 180);
         final double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
         return (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
+        /*final double latRad = (lattitude * Math.PI) / 180;
+        final double mercN = Math.log(Math.tan((Math.PI / 4) + (latRad / 2)));
+        return (mapHeight / 2) - (mapWidth * mercN / (2 * Math.PI));*/
     }
 
     /**

@@ -117,11 +117,11 @@ public class MapView extends ScrollPane {
     private boolean drawingCircleMarker = false;
     private boolean drawingPolygonMarker = false;
 
-    // Furthest lattiude to the east and west
+    // Furthest longitude to the east and west
     public static final double MIN_LONG = -169.1110266;
     public static final double MAX_LONG = 190.48712;
 
-    // Furthest longitude to the north and south
+    // Furthest lattitude to the north and south
     public static final double MIN_LAT = -58.488473;
     public static final double MAX_LAT = 83.63001;
 
@@ -1544,6 +1544,14 @@ public class MapView extends ScrollPane {
                         }
                     });
                 } else {
+                    final Rectangle test = new Rectangle();
+                    test.setWidth(5);
+                    test.setHeight(5);
+                    test.setFill(Color.GREEN);
+                    test.setX(marker.getMarker().getLayoutX());
+                    test.setY(marker.getMarker().getLayoutY());
+
+                    graphMarkerGroup.getChildren().add(test);
                     graphMarkerGroup.getChildren().add(marker.getMarker());
                 }
 
