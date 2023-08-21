@@ -40,6 +40,7 @@ import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -82,6 +83,22 @@ public class MergeNodesPluginNGTest {
                 "MergeNodesPlugin.selected", selectedParameter
         );
         mergeNodesPlugin = new MergeNodesPlugin();
+    }
+    
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+        graph = null;
+        interaction = null;
+        parameters = null;
+        
+        mergeTypeParameter = null;
+        thresholdParameter = null;
+        mergerParameter = null;
+        leadParameter = null;
+        selectedParameter = null;
+
+        pluginParameters = null;
+        mergeNodesPlugin = null;
     }
 
     @Test
