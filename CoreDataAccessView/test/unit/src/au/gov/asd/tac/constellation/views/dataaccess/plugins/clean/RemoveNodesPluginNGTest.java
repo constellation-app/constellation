@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin.REMOVE_TYPE_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin.THRESHOLD_PARAMETER_ID;
-import org.junit.Assert;
+import static org.testng.Assert.fail;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
@@ -96,7 +96,7 @@ public class RemoveNodesPluginNGTest {
         //Method should throw exception as Selected attribute is not enabled on vertex
         try {
             PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-            Assert.fail("Edit attributes threw an exception");
+            fail("Edit attributes threw an exception");
         } catch (PluginException ex) {
         }
         
@@ -105,7 +105,7 @@ public class RemoveNodesPluginNGTest {
         //Method should throw exception as Identifier attribute is not enabled on vertex
         try {
             PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-            Assert.fail("Edit attributes threw an exception");
+            fail("Edit attributes threw an exception");
         } catch (PluginException ex) {
         }
         
@@ -115,7 +115,7 @@ public class RemoveNodesPluginNGTest {
         try {
             PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
         } catch (PluginException ex) {
-            Assert.fail("Edit attributes threw an exception");
+            fail("Edit attributes threw an exception");
         }
     }
 
