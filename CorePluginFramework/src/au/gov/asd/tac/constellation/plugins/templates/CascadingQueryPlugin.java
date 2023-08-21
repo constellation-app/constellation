@@ -172,7 +172,6 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
     @Override
     public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
-        boolean inControlOfProgress = true;
         final int totalSteps = -1;
 
         // Make the graph appear busy

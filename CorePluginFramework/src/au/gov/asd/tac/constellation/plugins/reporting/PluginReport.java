@@ -168,10 +168,10 @@ public class PluginReport {
      * @return the current message from this plugin.
      */
     public String getLastMessage() {
-        if (executionStage.equals(PluginRunningStateConstants.COMPLETE) || executionStage.equals(PluginRunningStateConstants.STOPPED)){
-             return this.messageLog.isEmpty() ? this.runningStateLog.isEmpty() ? "" : this.runningStateLog.get(this.runningStateLog.size()-1) : this.messageLog.get(this.messageLog.size()-1);
+        if (executionStage.equals(PluginRunningStateConstants.COMPLETE) || executionStage.equals(PluginRunningStateConstants.STOPPED) || this.messageLog.isEmpty()){
+            return this.messageLog.isEmpty() ? "" : this.messageLog.get(this.messageLog.size()-1);
         } else {
-           return this.runningStateLog.isEmpty() ? "" : this.runningStateLog.get(this.runningStateLog.size()-1);
+            return this.runningStateLog.isEmpty() ? "" : this.runningStateLog.get(this.runningStateLog.size()-1);
         }
     }
 
@@ -369,21 +369,22 @@ public class PluginReport {
             return this.messageLog.isEmpty() ? this.getLastMessage() : logToString(this.messageLog);
         } else if (!executionStage.equals(PluginRunningStateConstants.STOPPED)){
             return logToString(this.runningStateLog);
-        }
-        else {
+        } else {
             return this.getLastMessage();
         }
     }
     
     public String logToString(List<String> log){
-        String logString = "";
-        for (int i = 0 ; i < log.size() ; i++){
+        StringBuilder bld = new StringBuilder();
+        
+        for (int i = 0; i < log.size(); ++i) {
             if (i != 0){
-                logString += "\n";
+                bld.append("\n");
             }
-            logString += log.get(i);
+            bld.append(log.toArray()[i]);
         }
-        return logString;
+        
+        return bld.toString();
     }
     
     /**

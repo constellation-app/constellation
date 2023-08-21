@@ -104,8 +104,13 @@ public class SelectAllPlugin extends SimpleQueryPlugin implements DataAccessPlug
         
         // Set process to complete
         totalProcessSteps = 0;
-        final String vertexReportString = PluginReportUtilities.toString(vertexCount, "node", "nodes");
-        final String transactionReportString = PluginReportUtilities.toString(transactionCount, "transaction", "transactions");  
-        interaction.setProgress(1, 1, "Selected " + vertexReportString + " & " + transactionReportString + ".", true);
+        interaction.setProgress(
+                currentProcessStep, 
+                totalProcessSteps, 
+                String.format("Selected %s & %s.", 
+                        PluginReportUtilities.getNodeCountString(vertexCount),
+                        PluginReportUtilities.getTransactionCountString(transactionCount)
+                ),
+                true);
     }
 }

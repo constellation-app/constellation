@@ -261,13 +261,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
                 pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
                 messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
             }
-
-            if (pluginReport.getLastMessage() == null) {
-                messageLabel.setVisible(false);
-            } else {
-                messageLabel.setVisible(true);
-            }
-
+                
+            messageLabel.setVisible(pluginReport.getLastMessage() != null);
         } else {
 
             // If the plugin has been cancelled
@@ -310,17 +305,17 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         }
 
         updateTime();
-        pluginNameLabel.setText(pluginReport.getPluginName() + " (" + pluginReport.getRunningState() + ")");  ;  
+        pluginNameLabel.setText(pluginReport.getPluginName() + " (" + pluginReport.getRunningState() + ")");
         
         if (messageButton.isSelected()) {
-                messageLabel.setText(pluginReport.getReportLog());
-                messageLabel.setMaxHeight(Double.MAX_VALUE);
-                messageButton.setGraphic(new ImageView(REPORT_EXPANDED_IMAGE));
-            } else {
-                messageLabel.setText(pluginReport.getLastMessage());
-                messageLabel.setMaxHeight(10);
-                messageButton.setGraphic(new ImageView(REPORT_CONTRACTED_IMAGE));
-            }
+            messageLabel.setText(pluginReport.getReportLog());
+            messageLabel.setMaxHeight(Double.MAX_VALUE);
+            messageButton.setGraphic(new ImageView(REPORT_EXPANDED_IMAGE));
+        } else {
+            messageLabel.setText(pluginReport.getLastMessage());
+            messageLabel.setMaxHeight(10);
+            messageButton.setGraphic(new ImageView(REPORT_CONTRACTED_IMAGE));
+        }
     }
 
     /**

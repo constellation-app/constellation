@@ -56,7 +56,6 @@ public abstract class SimplePlugin extends AbstractPlugin {
     public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         final Graph graph = graphs.getGraph();
-        final int totalSteps = -1;
         
         // Make the graph appear busy
         if (graph != null) {

@@ -64,13 +64,12 @@ public class TextPluginInteraction implements PluginInteraction {
     
     @Override
     public void setProgress(int currentStep, int totalSteps, boolean cancellable) throws InterruptedException {
-        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps});
+        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1}", new Object[]{currentStep, totalSteps});
     }
     
     @Override
     public void setExecutionStage(final int currentStep, final int totalSteps, final String runningState, final String message, final boolean cancellable) throws InterruptedException {
-        currentMessage = message;
-        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
+        setProgress(currentStep, totalSteps, message, cancellable);
     }
 
     @Override

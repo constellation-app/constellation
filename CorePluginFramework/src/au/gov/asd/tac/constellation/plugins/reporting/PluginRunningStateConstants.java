@@ -21,6 +21,10 @@ package au.gov.asd.tac.constellation.plugins.reporting;
  */
 public class PluginRunningStateConstants {
     
+    private  PluginRunningStateConstants() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     public static final String RUNNING = "Running";
     public static final String WAITING = "Waiting";
     public static final String STOPPED = "Stopped";
