@@ -48,9 +48,6 @@ import javafx.scene.shape.Rectangle;
  * @author altair1673
  */
 public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
-
-    private static final Logger LOGGER = Logger.getLogger(ThiessenPolygonsLayer2.class.getName());
-
     private final Group layer;
     private final Group arcLayer;
     private final Map<Integer, AbstractMarker> nodesOnScreen = new HashMap<>();

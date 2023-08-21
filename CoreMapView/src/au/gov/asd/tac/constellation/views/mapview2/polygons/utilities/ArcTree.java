@@ -165,7 +165,6 @@ public class ArcTree {
         // Add the intersection point to both the newArc's focus and the intersecting arc's focus in the site map
         siteMap.get(newArc.getFocus()).add(relatedIntersection);
         if (edgeStart.getY() >= 0) {
-            //siteMap.get(intersectingArc.getFocus()).add(relatedIntersection);
             addShapeVertex(intersectingArc.getFocus(), relatedIntersection);
         }
 

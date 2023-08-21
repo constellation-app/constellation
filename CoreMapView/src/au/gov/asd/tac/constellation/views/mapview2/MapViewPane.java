@@ -34,7 +34,6 @@ import au.gov.asd.tac.constellation.views.mapview2.layers.EntityPathsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.LocationPathsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.PopularityHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.StandardHeatmapLayer;
-import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ThiessenPolygonsLayer2;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MenuButtonCheckCombobox;
@@ -108,7 +107,6 @@ public class MapViewPane extends BorderPane {
     private static final String ENTITY_PATHS = "Entity Paths";
     private static final String LOCATION_PATHS = "Location Paths";
     private static final String THIESSEAN_POLYGONS = "Thiessean Polygons";
-    private static final String THIESSEAN_POLYGONS_2 = "Thiessean Polygons 2";
 
     public static final String INFO_OVERLAY = "Info Overlay";
     public static final String TOOLS_OVERLAY = "Tools Overlay";
@@ -183,7 +181,7 @@ public class MapViewPane extends BorderPane {
         mapProviderDropDown.getSelectionModel().selectFirst();
         mapProviderDropDown.setTooltip(new Tooltip("Select a basemap for the Map View"));
 
-        final MenuButtonCheckCombobox layersMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS, THIESSEAN_POLYGONS_2), false, false);
+        final MenuButtonCheckCombobox layersMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS), false, false);
         layersMenuButton.getMenuButton().setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
         layersMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
             if (parent.getCurrentGraph() != null) {
@@ -449,8 +447,6 @@ public class MapViewPane extends BorderPane {
             case LOCATION_PATHS:
                 return new LocationPathsLayer(mapView, layerId++, mapView.getAllMarkers());
             case THIESSEAN_POLYGONS:
-                return new ThiessenPolygonsLayer(mapView, layerId++, mapView.getAllMarkersAsList());
-            case THIESSEAN_POLYGONS_2:
                 return new ThiessenPolygonsLayer2(mapView, layerId++, mapView.getAllMarkersAsList());
             default:
                 break;
