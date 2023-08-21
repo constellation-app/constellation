@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginRunningStateConstants;
 
 /**
  * Implementations of the PluginInteraction interface provide a
@@ -71,7 +72,24 @@ public interface PluginInteraction {
      * @throws InterruptedException if the plugin has been canceled.
      */
     void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException;
-
+    
+    /**
+     * Signals to the user the current execution stage of the plugin
+     * providing a message that does not persist after the plugin has completed.
+     * Should be used to represent the high level execution of the plugin.
+     * i.e. Navigation through methods, of read(), query(), edit() and execute().
+     * 
+     * @param currentStep the current step the plugin is currently performing.
+     * @param totalSteps the total number of steps the plugin must perform
+     * before completion.
+     * @param executionStage current executionStrate of the plugin
+     * @param message a message describing the step the plugin is currently
+     * performing.
+     * @param cancellable is the plugin able to be canceled at this time?
+     * @throws InterruptedException if the plugin has been canceled.
+     */
+    void setExecutionStage(final int currentStep, final int totalSteps, final String executionStage, final String message, final boolean cancellable) throws InterruptedException;
+    
     /**
      * Sends a notification message to the user. Depending on the notification
      * level, the framework may choose to notify the user in a different way,

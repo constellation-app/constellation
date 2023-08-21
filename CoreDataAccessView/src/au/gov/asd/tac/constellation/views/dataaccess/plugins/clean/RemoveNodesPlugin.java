@@ -20,8 +20,10 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -29,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -52,6 +55,8 @@ import org.openide.util.lookup.ServiceProviders;
 public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPlugin {
 
     private static final String REMOVE_TYPE_LENGTH = "Identifier Length";
+    
+    private static final String ATTRIBUTE_ERROR = "Remove Nodes could not successfully complete because it does not contain the %s.";
 
     public static final String THRESHOLD_PARAMETER_ID = PluginParameter.buildId(RemoveNodesPlugin.class, "threshold");
     public static final String REMOVE_TYPE_PARAMETER_ID = PluginParameter.buildId(RemoveNodesPlugin.class, "remove_type");
@@ -96,38 +101,60 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
     }
 
     @Override
-    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-        int removedCount = 0;
-
-        interaction.setProgress(0, 0, "Removing nodes...", true);
-
+    public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+                       
+        // Retrieve PluginParameter values
         final String removeType = parameters.getParameters().get(REMOVE_TYPE_PARAMETER_ID).getStringValue();
         final int threshold = parameters.getParameters().get(THRESHOLD_PARAMETER_ID).getIntegerValue();
+        
+        // Retrieve Attribute id's
+        final int selectedAttribute = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
+        final int identifierAttribute = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.IDENTIFIER.getName());
+        
+        // Throw an error if the relevant attributs Id's could not be found.
+        if (selectedAttribute == Graph.NOT_FOUND){
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(ATTRIBUTE_ERROR, "Vertex Attribute: 'Selected'"));
+        }
+        if (identifierAttribute == Graph.NOT_FOUND){
+            throw new PluginException(PluginNotificationLevel.ERROR, String.format(ATTRIBUTE_ERROR, "Vertex Attribute: 'Identifier'"));
+        }
+        
+        // Local process-tracking varables (Process is indeteminate until quantity of nodes to be removed is known)
+        int removedCount = 0;
+        int totalProcessSteps = -1;
+        interaction.setProgress(removedCount, totalProcessSteps, "Removing nodes...", true);
 
-        final int selectedId = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-        if (selectedId != Graph.NOT_FOUND) {
-            final List<Integer> verticesToRemove = new ArrayList<>();
-            if (removeType.equals(REMOVE_TYPE_LENGTH)) {
-                final int identifierAttribute = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.IDENTIFIER.getName());
-                if (identifierAttribute != Graph.NOT_FOUND) {
-                    final int vertexCount = wg.getVertexCount();
-                    for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
-                        final int vxId = wg.getVertex(vertexPosition);
+        if (removeType.equals(REMOVE_TYPE_LENGTH)) {   
+            
+            //Determine which nodes need to be removed
+            final int vertexCount = wg.getVertexCount();
+            final List<Integer> verticesToRemove = new ArrayList<>();       
+            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
+                final int vxId = wg.getVertex(vertexPosition);
+                if (wg.getBooleanValue(selectedAttribute, vxId)) {
+                    verticesToRemove.add(vxId);
+                }
+            }
+            
+            totalProcessSteps = verticesToRemove.size();
 
-                        if (wg.getBooleanValue(selectedId, vxId)) {
-                            verticesToRemove.add(vxId);
-                        }
-                    }
-                    for (final int vertex : verticesToRemove) {
-                        if (removeNodesByLength(wg, vertex, identifierAttribute, threshold)) {
-                            removedCount++;
-                        }
-                    }
+            //Remove identified vertices
+            for (final int vertex : verticesToRemove) {
+                if (removeNodesByLength(wg, vertex, identifierAttribute, threshold)) {
+                    interaction.setProgress(++removedCount, totalProcessSteps, true);
                 }
             }
         }
-
-        interaction.setProgress(1, 0, "Removed " + removedCount + " nodes(s).", true);
+           
+        // Set process to complete
+        totalProcessSteps = 0;
+        interaction.setProgress(removedCount, 
+                totalProcessSteps, 
+                String.format("Merged %s.", 
+                        PluginReportUtilities.getNodeCountString(removedCount)
+                ), 
+                true
+        );
     }
 
     private boolean removeNodesByLength(final GraphWriteMethods wg, final int vertex, final int identifierAttribute, final int threshold) {

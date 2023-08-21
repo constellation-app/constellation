@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin.REMOVE_TYPE_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin.THRESHOLD_PARAMETER_ID;
+import org.junit.Assert;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
@@ -89,13 +90,33 @@ public class RemoveNodesPluginNGTest {
     @Test
     public void testEditAttributesNotFound() throws InterruptedException, PluginException {
         System.out.println("editAttributesNotFound");
-
         final RemoveNodesPlugin instance = new RemoveNodesPlugin();
-        final PluginParameters parameters = instance.createParameters();
-        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-
-        assertEquals(graph.getVertexCount(), 4);
-        assertEquals(graph.getTransactionCount(), 4);
+        final PluginParameters parameters = instance.createParameters(); 
+        
+        //Method should throw exception as Selected attribute is not enabled on vertex
+        try {
+            PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+            Assert.fail("Edit attributes threw an exception");
+        } catch (PluginException ex) {
+        }
+        
+        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        
+        //Method should throw exception as Identifier attribute is not enabled on vertex
+        try {
+            PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+            Assert.fail("Edit attributes threw an exception");
+        } catch (PluginException ex) {
+        }
+        
+        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);    
+        
+        //Method should not throw an exception
+        try {
+            PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+        } catch (PluginException ex) {
+            Assert.fail("Edit attributes threw an exception");
+        }
     }
 
     /**

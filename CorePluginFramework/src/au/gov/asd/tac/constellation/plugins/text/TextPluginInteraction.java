@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.text;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginRunningStateConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -63,7 +64,13 @@ public class TextPluginInteraction implements PluginInteraction {
     
     @Override
     public void setProgress(int currentStep, int totalSteps, boolean cancellable) throws InterruptedException {
-        //LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
+        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps});
+    }
+    
+    @Override
+    public void setExecutionStage(final int currentStep, final int totalSteps, final String runningState, final String message, final boolean cancellable) throws InterruptedException {
+        currentMessage = message;
+        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
     }
 
     @Override

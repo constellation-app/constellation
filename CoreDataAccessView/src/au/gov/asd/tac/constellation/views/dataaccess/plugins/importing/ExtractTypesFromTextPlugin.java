@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -91,29 +92,35 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
 
     @Override
     protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        final RecordStore result = new GraphRecordStore();
         
-        interaction.setProgress(0, 0, "Extracting entities...", true);
-        final Map<String, PluginParameter<?>> extractEntityParameters = parameters.getParameters();
-        final String text = extractEntityParameters.get(TEXT_PARAMETER_ID).getStringValue();
+        // Retrieve PluginParameter values 
+        final String text = parameters.getParameters().get(TEXT_PARAMETER_ID).getStringValue();
         
+        // Throw errors if a merge type was not selected or does not exist
         if (text == null) {
             throw new PluginException(PluginNotificationLevel.ERROR, "No text provided from which to extract types.");
         }
         
-        final List<ExtractedVertexType> extractedTypes = SchemaVertexTypeUtilities.extractVertexTypes(text);
-
+        // Local process-tracking varables (Process is indeteminate until quantity of entities is known)
+        int currentProcessStep = 0;
+        int totalProcessSteps = -1; 
+        interaction.setProgress(currentProcessStep, totalProcessSteps, "Extracting entities...", true);
+ 
+        // Determine number of entity types 
+        final List<ExtractedVertexType> extractedTypes = SchemaVertexTypeUtilities.extractVertexTypes(text);  
         final Map<String, SchemaVertexType> identifiers = new HashMap<>();
         extractedTypes.forEach(extractedType -> identifiers.put(extractedType.getIdentifier(), extractedType.getType()));
         
-        interaction.setProgress(0, 0, "Extracted " + identifiers.size() + " entity(ies)", true);
-        interaction.setProgress(0, 0, "Importing...", true);
+        totalProcessSteps = extractedTypes.size();
         
+        // Generate nodes
+        final RecordStore result = new GraphRecordStore();
         for (final String identifier : identifiers.keySet()) {
             result.add();
             result.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, identifier);
             result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, identifiers.get(identifier));
             result.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SEED, "true");
+            interaction.setProgress(++currentProcessStep, totalProcessSteps, String.format("Imported %s: %s.", identifiers.get(identifier), identifier), true);
         }
 
         ConstellationLoggerHelper.createPropertyBuilder(
@@ -121,8 +128,15 @@ public class ExtractTypesFromTextPlugin extends RecordStoreQueryPlugin implement
                 result.getAll(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER),
                 ConstellationLoggerHelper.SUCCESS
         );
-
-        interaction.setProgress(1, 0, "Created " + result.size() + " node(s).", true);
+        
+        // Set process to complete
+        totalProcessSteps = 0;
+        interaction.setProgress(currentProcessStep, 
+                totalProcessSteps, 
+                        String.format("Created %s.",
+                        PluginReportUtilities.getNodeCountString(identifiers.size())
+                ), 
+                true);
 
         return result;
     }

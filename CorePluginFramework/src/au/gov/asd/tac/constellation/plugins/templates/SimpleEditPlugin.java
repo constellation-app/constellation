@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginRunningStateConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -81,6 +82,8 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
 
         final Graph graph = graphs.getGraph();
+        final int totalSteps = -1;
+        
         //graph no longer exists
         if (graph == null) {
             LOGGER.log(Level.WARNING, "Null graph not allowed in a {0}", SimpleEditPlugin.class.getSimpleName());
@@ -91,7 +94,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
         interaction.setBusy(graph.getId(), true);
         try {
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+            interaction.setExecutionStage(0, totalSteps, PluginRunningStateConstants.WAITING, WAITING_INTERACTION, true);
 
             try {
                 boolean cancelled = false;
@@ -99,7 +102,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                 WritableGraph writableGraph = graph.getWritableGraph(getName(), isSignificant(), this);
 
                 try {
-                    interaction.setProgress(0, 0, "Editing...", true);
+                    interaction.setExecutionStage(1, totalSteps, PluginRunningStateConstants.RUNNING, "Editing...", true);
 
                     try {
                         description = describedEdit(writableGraph, interaction, parameters);
@@ -115,7 +118,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                     }
                 }
             } finally {
-                interaction.setProgress(2, 1, FINISHED, true);
+                interaction.setExecutionStage(2, 1, PluginRunningStateConstants.COMPLETE, FINISHED, true);
             }
 
         } finally {
@@ -136,12 +139,12 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
 
         try {
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+            interaction.setExecutionStage(0, -1, PluginRunningStateConstants.WAITING, WAITING_INTERACTION, true);
 
             try {
                 edit(graph, interaction, parameters);
             } finally {
-                interaction.setProgress(2, 1, FINISHED, true);
+                interaction.setExecutionStage(2, 0, PluginRunningStateConstants.COMPLETE, FINISHED, true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);

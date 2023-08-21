@@ -39,6 +39,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
@@ -202,26 +203,30 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
 
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        int mergedCount = 0;
-
-        interaction.setProgress(0, 0, "Merging transactions...", true);
-
+      
+        // Retrieve PluginParameter values       
         final String mergeTransactionTypeName = parameters.getParameters().get(MERGE_TYPE_PARAMETER_ID).getStringValue();
-
+        final int threshold = parameters.getParameters().get(THRESHOLD_PARAMETER_ID).getIntegerValue();
+        final boolean selectedOnly = parameters.getParameters().get(SELECTED_PARAMETER_ID).getBooleanValue();
+        final String mergerName = parameters.getParameters().get(MERGER_PARAMETER_ID).getStringValue();
+        final String leadTransactionChooserName = parameters.getParameters().get(LEAD_PARAMETER_ID).getStringValue();
+        
+        // Throw errors if a merge type was not selected or does not exist
         if (mergeTransactionTypeName == null) {
             throw new PluginException(PluginNotificationLevel.ERROR, "Select a Merge By option.");
         }
-
         if (!MERGE_TYPES.containsKey(mergeTransactionTypeName)) {
-            throw new PluginException(PluginNotificationLevel.FATAL, String.format("Merge node type %s not found.", mergeTransactionTypeName));
+            throw new PluginException(PluginNotificationLevel.FATAL, String.format("Merge transaction type %s not found.", mergeTransactionTypeName));
         }
-
-        final int threshold = parameters.getParameters().get(THRESHOLD_PARAMETER_ID).getIntegerValue();
-        final GraphElementMerger merger = MERGERS.get(parameters.getParameters().get(MERGER_PARAMETER_ID).getStringValue());
-        final String leadTransactionChooserName = parameters.getParameters().get(LEAD_PARAMETER_ID).getStringValue();
+        
+        // Local process-tracking varables (Process is indeteminate until quantity of merged transactions is known)
+        int mergedTransactionsCount = 0;
+        int currentProcessStep = 0;
+        int totalProcessSteps = -1;
+        interaction.setProgress(currentProcessStep, totalProcessSteps, "Merging transactions...", true);
+        
+        //Determine which nodes need to be merged    
         final Comparator<Long> leadTransactionChooser = LEAD_TRANSACTION_CHOOSERS.get(leadTransactionChooserName);
-        final boolean selectedOnly = parameters.getParameters().get(SELECTED_PARAMETER_ID).getBooleanValue();
-
         final MergeTransactionType mergeTransactionType = MERGE_TYPES.get(mergeTransactionTypeName);
         final Map<Integer, Set<Integer>> transactionsToMerge;
         try {
@@ -229,13 +234,26 @@ public class MergeTransactionsPlugin extends SimpleQueryPlugin implements DataAc
         } catch (final MergeException ex) {
             throw new PluginException(PluginNotificationLevel.ERROR, ex);
         }
-
+        
+        totalProcessSteps = transactionsToMerge.size();
+        
+        // Perform the merge
+        final GraphElementMerger merger = MERGERS.get(mergerName);
         for (final Map.Entry<Integer, Set<Integer>> entry : transactionsToMerge.entrySet()) {
-            mergedCount += mergeTransactions(graph, entry.getValue(), entry.getKey(), merger);
+            mergedTransactionsCount += mergeTransactions(graph, entry.getValue(), entry.getKey(), merger);
+            interaction.setProgress(++currentProcessStep, totalProcessSteps, true);
         }
-
-        interaction.setProgress(1, 0, "Merged " + mergedCount + " transaction(s).", true);
-
+               
+        //Set process to complete
+        totalProcessSteps = 0;
+        interaction.setProgress(currentProcessStep, 
+                totalProcessSteps, 
+                String.format("Merged %s.", 
+                        PluginReportUtilities.getTransactionCountString(mergedTransactionsCount)
+                ), 
+                true
+        );
+          
         PluginExecution.withPlugin(VisualSchemaPluginRegistry.COMPLETE_SCHEMA).executeNow(graph);
     }
 

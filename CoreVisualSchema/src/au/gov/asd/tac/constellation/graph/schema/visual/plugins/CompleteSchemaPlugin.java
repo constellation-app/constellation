@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import org.openide.util.NbBundle;
@@ -39,34 +40,59 @@ public class CompleteSchemaPlugin extends SimpleEditPlugin {
     @Override
     public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
         if (graph.getSchema() != null) {
-            int currentProgress = 0;
+            
+            // Retrieve graph details
             final int vertexCount = graph.getVertexCount();
             final int transactionCount = graph.getTransactionCount();
-            final int maxProgress = vertexCount + transactionCount;
+            
+            // Local process-tracking varables (Process is indeteminate until node and transaction quantity is needed.)
+            int currentProgress = 0;
+            int maxProgress = -1;
             interaction.setProgress(currentProgress, maxProgress, "Completing schema...", true);
             
-            // vertices
-            interaction.setProgress(currentProgress, maxProgress, "Completing node(s)...", true);
-            for (int vertexPosition = 0; vertexPosition < graph.getVertexCount(); vertexPosition++) {
+            // Process Vertices
+            maxProgress = vertexCount;
+            interaction.setProgress(currentProgress, 
+                    maxProgress, 
+                    String.format("Completing %s.",
+                            PluginReportUtilities.getNodeCountString(vertexCount)
+                    ),
+                    true
+            );
+            for (int vertexPosition = 0; vertexPosition < vertexCount; vertexPosition++) {
                 final int vertexId = graph.getVertex(vertexPosition);
                 graph.getSchema().completeVertex(graph, vertexId);
-                currentProgress++;
-                interaction.setProgress(currentProgress, maxProgress, true);
+                interaction.setProgress(++currentProgress, maxProgress, true);
             }
-            interaction.setProgress(currentProgress, maxProgress, vertexCount + " node(s) completed...", true);
             
-            // transactions
+            // Process Transactions
+            maxProgress = transactionCount;
+            currentProgress = 0;
+            interaction.setProgress(currentProgress, 
+                    maxProgress, 
+                    String.format("Completing %s.",
+                            PluginReportUtilities.getTransactionCountString(transactionCount)
+                    ),
+                    true
+            );
             interaction.setProgress(currentProgress, maxProgress, "Completing transaction(s)...", true);
-            for (int transactionPosition = 0; transactionPosition < graph.getTransactionCount(); transactionPosition++) {
+            for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
                 final int transactionId = graph.getTransaction(transactionPosition);
-
                 graph.getSchema().completeTransaction(graph, transactionId);
-                currentProgress++;
-                interaction.setProgress(currentProgress, maxProgress, true);
+                interaction.setProgress(++currentProgress, maxProgress, true);
             }
-            interaction.setProgress(currentProgress, maxProgress, transactionCount + " transaction(s) completed...", true);
             
-            // graph
+            // Set process to complete
+            maxProgress = 0;
+            interaction.setProgress(currentProgress, 
+                    maxProgress, 
+                    String.format("Completed %s & %s.",
+                            PluginReportUtilities.getNodeCountString(vertexCount),
+                            PluginReportUtilities.getTransactionCountString(transactionCount)
+                    ),
+                    true
+            );
+
             graph.getSchema().completeGraph(graph);
         }
     }

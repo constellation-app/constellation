@@ -22,11 +22,13 @@ import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginRunningStateConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -126,7 +128,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException {
 
         if (pluginReport != null) {
-            pluginReport.setMessage(message);
+            pluginReport.addMessage(message);
         }
 
         currentMessage = message;
@@ -136,7 +138,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
     @Override
     public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {
-
+        TimeUnit.SECONDS.sleep(1);
         if (pluginReport != null) {
             pluginReport.setCurrentStep(currentStep);
             pluginReport.setTotalSteps(totalSteps);
@@ -147,18 +149,8 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         if (cancellable && Thread.interrupted()) {
             throw new InterruptedException();
         }
-
-        // If the plugin has finished....
-        if (currentStep > totalSteps) {
-
-            if (progress != null) {
-                timer.interrupt();
-                progress.finish();
-                progress = null;
-            }
-
-            // If the plugin is indeterminate...
-        } else if (totalSteps <= 0) {
+        // If the plugin is indeterminate...
+        if (totalSteps < 0) {
 
             if (progress == null) {
                 progress = ProgressHandle.createHandle(createProgressTitle(), this);
@@ -170,8 +162,17 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                 progress.switchToIndeterminate();
                 progress.progress(timer.getTime() + " " + currentMessage);
             }
+            
+        // If the plugin has finished....    
+        } else if (currentStep > totalSteps) {
 
-            // If the plugin is determinate...
+            if (progress != null) {
+                timer.interrupt();
+                progress.finish();
+                progress = null;
+            }
+            
+        // If the plugin is determinate...
         } else {
 
             if (progress == null) {
@@ -187,6 +188,16 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             }
 
         }
+    }
+    
+    @Override
+    public void setExecutionStage(final int currentStep, final int totalSteps, final String executionStage, final String message, final boolean cancellable) throws InterruptedException {
+        if (pluginReport != null) {
+            pluginReport.setExecutionStage(executionStage);
+            pluginReport.setExecutionStageMessage(message);
+        }
+        currentMessage = message;
+        this.setProgress(currentStep, totalSteps, cancellable);
     }
     
     @Override
@@ -207,7 +218,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
             case ERROR:
                 NotifyDisplayer.display(new NotifyDescriptor(
-                        "Error:\n" + message,
+                        "Error :\n" + message,
                         title,
                         DEFAULT_OPTION,
                         NotifyDescriptor.ERROR_MESSAGE,

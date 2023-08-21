@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginRunningStateConstants;
 
 /**
  * A plugin template for a plugin that naturally works within a read-query-write
@@ -107,7 +108,9 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
         try {
-            // Make the progress bar appear nondeterminent
+            
+            //Set the status bar for this method to nondetemenant.
+            final int totalSteps = -1;
 
             try {
                 boolean cancelled = false;
@@ -115,7 +118,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                 final ReadableGraph readableGraph = graph.getReadableGraph();
 
                 try {
-                    interaction.setProgress(0, 0, READING_INTERACTION, true);
+                    interaction.setExecutionStage(1, totalSteps, PluginRunningStateConstants.RUNNING, READING_INTERACTION, true);
                     read(readableGraph, interaction, parameters);
 
                     if (!READING_INTERACTION.equals(interaction.getCurrentMessage())) {
@@ -127,14 +130,14 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
 
                 // Wait for all plugins to finish reading and querying
                 if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, "Waiting For Other Plugins...", true);
+                    interaction.setExecutionStage(2, totalSteps, PluginRunningStateConstants.WAITING, "Waiting For Other Plugins...", true);
                 }
 
                 // Wait at gate 1 for any CascadingQueryPlugins to finish reading
                 graphs.waitAtGate(1);
 
                 if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, QUERYING_INTERACTION, true);
+                    interaction.setExecutionStage(3, totalSteps, PluginRunningStateConstants.RUNNING, QUERYING_INTERACTION, true);
                 }
 
                 query(interaction, parameters);
@@ -144,19 +147,18 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                 }
 
                 if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, "Waiting to Edit Graph...", true);
+                    interaction.setExecutionStage(4, totalSteps, PluginRunningStateConstants.WAITING, "Waiting to Edit Graph...", true);
                 }
 
                 WritableGraph writableGraph = graph.getWritableGraph(getName(), isSignificant(), this);
 
                 try {
                     if (inControlOfProgress) {
-                        interaction.setProgress(0, 0, EDITING_INTERACTION, true);
+                        interaction.setExecutionStage(5, totalSteps, PluginRunningStateConstants.RUNNING, EDITING_INTERACTION, true);
                     }
 
                     try {
                         description = describedEdit(writableGraph, interaction, parameters);
-
                         if (inControlOfProgress && !EDITING_INTERACTION.equals(interaction.getCurrentMessage())) {
                             inControlOfProgress = false;
                         }
@@ -173,7 +175,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                     }
                 }
             } finally {
-                interaction.setProgress(2, 1, FINISHED, false);
+                interaction.setExecutionStage(6, 5, PluginRunningStateConstants.COMPLETE, FINISHED, false);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);
@@ -189,6 +191,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
     public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
         boolean inControlOfProgress = true;
+        final int totalSteps = -1;
 
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
@@ -196,7 +199,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
 
             // Make the progress bar appear nondeterminent
             try {
-                interaction.setProgress(0, 0, READING_INTERACTION, true);
+                interaction.setExecutionStage(1, totalSteps, PluginRunningStateConstants.RUNNING, READING_INTERACTION, true);
                 read(graph, interaction, parameters);
 
                 if (!READING_INTERACTION.equals(interaction.getCurrentMessage())) {
@@ -204,7 +207,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                 }
 
                 if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, QUERYING_INTERACTION, true);
+                    interaction.setExecutionStage(2, totalSteps, PluginRunningStateConstants.RUNNING, QUERYING_INTERACTION, true);
                 }
 
                 query(interaction, parameters);
@@ -214,7 +217,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                 }
 
                 if (inControlOfProgress) {
-                    interaction.setProgress(0, 0, EDITING_INTERACTION, true);
+                    interaction.setExecutionStage(3, totalSteps, PluginRunningStateConstants.RUNNING, EDITING_INTERACTION, true);
                 }
 
                 edit(graph, interaction, parameters);
@@ -223,7 +226,7 @@ public abstract class SimpleQueryPlugin extends AbstractPlugin {
                     inControlOfProgress = false;
                 }
             } finally {
-                interaction.setProgress(2, 1, FINISHED, true);
+                interaction.setExecutionStage(4, 3, PluginRunningStateConstants.COMPLETE, FINISHED, true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);
