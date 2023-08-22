@@ -282,12 +282,12 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
             
             //Itterate through Selected Nodes
             for (int position = 0; position < transactionCount; position++) {
-                int txId = graph.getVertexTransaction(vxId, position);
-                int sourceVxId = graph.getTransactionSourceVertex(txId);
-                int destinationVxId = graph.getTransactionDestinationVertex(txId);
-                int targetVxId = vxId == sourceVxId ? destinationVxId : sourceVxId;
+                final int txId = graph.getVertexTransaction(vxId, position);
+                final int sourceVxId = graph.getTransactionSourceVertex(txId);
+                final int destinationVxId = graph.getTransactionDestinationVertex(txId);
+                final int targetVxId = vxId == sourceVxId ? destinationVxId : sourceVxId;
 
-                //Tally the number of transactions between the current Node and nodes sharing a transaction
+                //Tally the number of transactions between the current node and nodes sharing a transaction
                 switch (mode) {
                     case NODE:
                         SchemaVertexType destinationVertexType = graph.getObjectValue(vertexTypeAttribute, targetVxId);
@@ -328,9 +328,15 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
             sortedMap.keySet().stream().limit(limit).forEach(id -> graph.setBooleanValue(vertexSelectedAttribute, id, true));
             
             // Track the progress and report the number of nodes found 
-            final int newSelections = sortedMap.size() < limit ? sortedMap.size() : limit;
-            final String nodesReportString = PluginReportUtilities.toString(newSelections, "node", "nodes");   
-            interaction.setProgress(currentProcessStep, totalProcessSteps, "Found " + nodesReportString + ".", true);
+            final int newSelections = sortedMap.size() < limit ? sortedMap.size() : limit; 
+            interaction.setProgress(
+                    currentProcessStep, 
+                    totalProcessSteps, 
+                    String.format("Found %s.",
+                            PluginReportUtilities.getNodeCountString(newSelections)
+                    ), 
+                    true
+            );
             
             selectedNodesCount += newSelections;
         }

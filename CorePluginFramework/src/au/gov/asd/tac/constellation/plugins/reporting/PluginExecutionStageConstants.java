@@ -19,9 +19,9 @@ package au.gov.asd.tac.constellation.plugins.reporting;
  *
  * @author capricornunicorn123
  */
-public class PluginRunningStateConstants {
+public class PluginExecutionStageConstants {
     
-    private  PluginRunningStateConstants() {
+    private  PluginExecutionStageConstants() {
         throw new IllegalStateException("Utility class");
     }
     

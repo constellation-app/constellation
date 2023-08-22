@@ -383,7 +383,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         
         // No Errors thrown as parameters values are checked before being used
         
-        // Local process-tracking varables (Process is indeteminate due to the nature of plugin reporting htrough the logger)
+        // Local process-tracking variables (Process is indeteminate due to the nature of plugin reporting through the logger)
         final int currentProcessStep = 0;
         final int totalProcessSteps = -1; 
         interaction.setProgress(currentProcessStep, totalProcessSteps, "Testing parameters...", true);

@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.plugins.text;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.reporting.PluginRunningStateConstants;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginExecutionStageConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 

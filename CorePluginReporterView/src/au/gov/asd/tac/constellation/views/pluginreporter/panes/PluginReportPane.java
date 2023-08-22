@@ -305,7 +305,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         }
 
         updateTime();
-        pluginNameLabel.setText(pluginReport.getPluginName() + " (" + pluginReport.getRunningState() + ")");
+        pluginNameLabel.setText(pluginReport.getPluginName() + " (" + pluginReport.getExecutionStage() + ")");
         
         if (messageButton.isSelected()) {
             messageLabel.setText(pluginReport.getReportLog());

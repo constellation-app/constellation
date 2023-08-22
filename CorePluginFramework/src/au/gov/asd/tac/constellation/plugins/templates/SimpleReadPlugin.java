@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.reporting.PluginRunningStateConstants;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginExecutionStageConstants;
 import java.util.logging.Logger;
 
 /**
@@ -60,19 +60,19 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
         interaction.setBusy(graph.getId(), true);
         try {
             // Make the progress bar appear nondeterminent
-            interaction.setExecutionStage(0, totalSteps, PluginRunningStateConstants.WAITING, "Waiting...", true);
+            interaction.setExecutionStage(0, totalSteps, PluginExecutionStageConstants.WAITING, "Waiting...", true);
 
             try {
                 ReadableGraph readableGraph = graph.getReadableGraph();
 
                 try {
-                    interaction.setExecutionStage(1, totalSteps, PluginRunningStateConstants.RUNNING, "Working...", true);
+                    interaction.setExecutionStage(1, totalSteps, PluginExecutionStageConstants.RUNNING, "Working...", true);
                     read(readableGraph, interaction, parameters);
                 } finally {
                     readableGraph.release();
                 }
             } finally {
-                interaction.setExecutionStage(2, 1, PluginRunningStateConstants.COMPLETE, "Finished", true);
+                interaction.setExecutionStage(2, 1, PluginExecutionStageConstants.COMPLETE, "Finished", true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);
@@ -85,12 +85,12 @@ public abstract class SimpleReadPlugin extends AbstractPlugin {
         interaction.setBusy(graph.getId(), true);
         try {
             // Make the progress bar appear nondeterminent
-            interaction.setExecutionStage(0, -1, PluginRunningStateConstants.RUNNING, "Working...", true);
+            interaction.setExecutionStage(0, -1, PluginExecutionStageConstants.RUNNING, "Working...", true);
 
             try {
                 read(graph, interaction, parameters);
             } finally {
-                interaction.setExecutionStage(1, 0, PluginRunningStateConstants.COMPLETE, "Finished", true);
+                interaction.setExecutionStage(1, 0, PluginExecutionStageConstants.COMPLETE, "Finished", true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);

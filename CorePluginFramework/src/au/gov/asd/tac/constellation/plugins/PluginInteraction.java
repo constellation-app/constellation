@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.reporting.PluginRunningStateConstants;
 
 /**
  * Implementations of the PluginInteraction interface provide a

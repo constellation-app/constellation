@@ -22,7 +22,7 @@ import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
-import au.gov.asd.tac.constellation.plugins.reporting.PluginRunningStateConstants;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginExecutionStageConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -202,7 +202,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public void setExecutionStage(final int currentStep, final int totalSteps, final String executionStage, final String message, final boolean cancellable) throws InterruptedException {
         if (pluginReport != null) {
             pluginReport.setExecutionStage(executionStage);
-            pluginReport.setExecutionStageMessage(message);
+            pluginReport.setRunningStateMessage(message);
         }
         currentMessage = message;
         this.setProgress(currentStep, totalSteps, cancellable);
@@ -226,7 +226,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
 
             case ERROR:
                 NotifyDisplayer.display(new NotifyDescriptor(
-                        "Error :\n" + message,
+                        "Error:\n" + message,
                         title,
                         DEFAULT_OPTION,
                         NotifyDescriptor.ERROR_MESSAGE,

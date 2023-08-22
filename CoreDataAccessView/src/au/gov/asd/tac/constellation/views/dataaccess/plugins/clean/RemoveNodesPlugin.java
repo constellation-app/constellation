@@ -111,7 +111,7 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
         final int selectedAttribute = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
         final int identifierAttribute = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.IDENTIFIER.getName());
         
-        // Throw an error if the relevant attributs Id's could not be found.
+        // Throw an error if the relevant attribute Id's could not be found.
         if (selectedAttribute == Graph.NOT_FOUND){
             throw new PluginException(PluginNotificationLevel.ERROR, String.format(ATTRIBUTE_ERROR, "Vertex Attribute: 'Selected'"));
         }

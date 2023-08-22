@@ -201,7 +201,7 @@ public class SplitNodesPlugin extends SimpleEditPlugin implements DataAccessPlug
         
         totalProcessSteps = selectedVerticies.size();
         
-        // Loop through the selected vertex's and determine how many new verticies need to be added to the graph
+        // Loop through the selected vertices and determine how many new verticies need to be added to the graph
         final List<Integer> newVertices = new ArrayList<>();
         for (final int position : selectedVerticies) {
             interaction.setProgress(
