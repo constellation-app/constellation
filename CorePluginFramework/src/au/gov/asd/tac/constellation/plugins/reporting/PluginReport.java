@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.lang.InterruptedException;
 
 /**
  * A PluginReport is created each time a plugin is executed. It stores
@@ -382,8 +381,7 @@ public class PluginReport {
         } else if (!executionStage.equals(PluginExecutionStageConstants.STOPPED)){
             return logToString(this.runningStateLog);
         } else {
-            //return this.getLastMessage();
-            return logToString(this.runningStateLog);
+            return this.getLastMessage();
         }
     }
     
