@@ -33,8 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -111,8 +109,6 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
     }
 
     private void calculateVoronoi() {
-
-        //MapView.testKeyPressed.addListener((oldVal, newVal, changed) -> {
         arcTree = new ArcTree(eventQueue);
         arcTree.run();
         arcLayer.getChildren().clear();
@@ -120,84 +116,6 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         layer.getChildren().add(arcLayer);
         final List<Polygon> generatedShapes = arcTree.getCompletedShapes();
         generatedShapes.forEach(shape -> layer.getChildren().add(shape));
-
-        //generateAllArcs(arcTree.root);
-
-        //final List<Line> debugLines = arcTree.getCompletedEdges();
-        //debugLines.forEach(line -> layer.getChildren().add(line));
-        //});
-
-
-    }
-
-    private void generateAllArcs(final BlineElement root) {
-        if (root == null) {
-            return;
-        }
-
-        generateAllArcs(root.getLeft());
-        generateAllArcs(root.getRight());
-
-        final HalfEdge left = root.getLeftEdge() != null ? root.getLeftEdge() : arcTree.getLeftNeighbour(root) != null ? arcTree.getLeftNeighbour(root).getRightEdge() : null;
-        final HalfEdge right = root.getRightEdge() != null ? root.getRightEdge() : arcTree.getRightNeighbour(root) != null ? arcTree.getRightNeighbour(root).getLeftEdge() : null;
-
-        if (left == null || right == null) {
-            return;
-        }
-
-        final Vec3 leftIntersection = arcTree.getEdgeArcIntersection(left, (Arc) root, 0);
-        final Vec3 rightIntersection = arcTree.getEdgeArcIntersection(right, (Arc) root, 0);
-
-        if (leftIntersection != null && rightIntersection != null) {
-            final Arc arc = (Arc) root;
-            arc.calculateArc(leftIntersection.getX(), rightIntersection.getX(), 0);
-
-            final Line leftLine = new Line();
-            leftLine.setStartX(left.getStart().getX());
-            leftLine.setStartY(left.getStart().getY());
-            leftLine.setEndX(leftIntersection.getX());
-            leftLine.setEndY(leftIntersection.getY());
-            leftLine.setStroke(Color.GREEN);
-
-            final Line rightLine = new Line();
-            rightLine.setStartX(right.getStart().getX());
-            rightLine.setStartY(right.getStart().getY());
-            rightLine.setEndX(rightIntersection.getX());
-            rightLine.setEndY(rightIntersection.getY());
-            rightLine.setStroke(Color.GREEN);
-
-            arcLayer.getChildren().add(leftLine);
-            arcLayer.getChildren().add(rightLine);
-
-            arcLayer.getChildren().add(arc.getArc());
-
-            arc.getArc().setOnMouseEntered((e) -> {
-                leftLine.setStroke(Color.ORANGE);
-                rightLine.setStroke(Color.ORANGE);
-
-                final double leftDirX = (leftLine.getEndX() - leftLine.getStartX()) / Math.sqrt((leftLine.getEndX() - leftLine.getStartX()) * (leftLine.getEndX() - leftLine.getStartX()) + (leftLine.getEndY() - leftLine.getStartY()) * (leftLine.getEndY() - leftLine.getStartY()));
-                final double leftDirY = (leftLine.getEndY() - leftLine.getStartY()) / Math.sqrt((leftLine.getEndX() - leftLine.getStartX()) * (leftLine.getEndX() - leftLine.getStartX()) + (leftLine.getEndY() - leftLine.getStartY()) * (leftLine.getEndY() - leftLine.getStartY()));
-                //LOGGER.log(Level.SEVERE, "Left Line start: " + leftLine.getStartX() + ", " + leftLine.getStartY());
-                leftLine.setEndX(leftLine.getStartX() + left.getDirVect().getX() * 1000);
-                leftLine.setEndY(leftLine.getStartY() + left.getDirVect().getY() * 1000);
-
-                rightLine.setEndX(rightLine.getStartX() + right.getDirVect().getX() * 1000);
-                rightLine.setEndY(rightLine.getStartY() + right.getDirVect().getY() * 1000);
-
-                //LOGGER.log(Level.SEVERE, "Left line Direction X : " + left.getDirVect().getX() + " Direction Y: " + left.getDirVect().getY());
-                //LOGGER.log(Level.SEVERE, "Right line Direction X : " + right.getDirVect().getX() + " Direction Y: " + right.getDirVect().getY());
-
-            });
-
-            arc.getArc().setOnMouseExited((e) -> {
-                leftLine.setEndX(leftIntersection.getX());
-                leftLine.setEndY(leftIntersection.getY());
-                rightLine.setEndX(rightIntersection.getX());
-                rightLine.setEndY(rightIntersection.getY());
-                leftLine.setStroke(Color.GREEN);
-                rightLine.setStroke(Color.GREEN);
-            });
-        }
     }
 
     @Override

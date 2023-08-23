@@ -108,6 +108,10 @@ public class MapView extends ScrollPane {
 
     private final StackPane mapStackPane;
 
+    public StackPane getMapStackPane() {
+        return mapStackPane;
+    }
+
     // ID of the next user drawn marker
     private int drawnMarkerId = 0;
 
@@ -126,9 +130,7 @@ public class MapView extends ScrollPane {
     public static final double MAX_LAT = 83.63001;
 
     public static final double MAP_WIDTH = 1010.33;
-    public static final double MAP_HEIGHT = 1224;
-
-    public static BooleanProperty testKeyPressed = new SimpleBooleanProperty(false);
+    public static final double MAP_HEIGHT = 1224; //1224
 
     // Two containers that hold queried markers and user drawn markers
     private Map<String, AbstractMarker> markers = new HashMap<>();
@@ -147,7 +149,6 @@ public class MapView extends ScrollPane {
 
     // The two groups that hold the queried and user marker groups
     private final Group graphMarkerGroup;
-
     private final Group drawnMarkerGroup;
 
     // Groups for user drawn polygons, cluster markers and "hidden" point markers used for cluster calculations
@@ -180,7 +181,6 @@ public class MapView extends ScrollPane {
     // Factor to scale map by when zooming
     private static final double MAP_SCALE_FACTOR = 1.1;
 
-
     // The paths for the edges of all the countries
     private final List<SVGPath> countrySVGPaths = new ArrayList<>();
 
@@ -203,7 +203,6 @@ public class MapView extends ScrollPane {
     private double mouseAnchorY;
     private double transalateX;
     private double transalateY;
-
 
     // Pane that hold all the groups for all the different graphical outputs
     private final Pane mapGroupHolder = new Pane();
@@ -233,12 +232,6 @@ public class MapView extends ScrollPane {
 
     public MapView(final MapViewPane parent) {
         this.parent = parent;
-
-        this.setOnKeyPressed((e) -> {
-            //if (e.getCharacter().equals("k")) {
-                testKeyPressed.setValue(!testKeyPressed.getValue());
-            //}
-        });
 
         clusterMarkerBuilder = new ClusterMarkerBuilder(this);
 
@@ -1161,8 +1154,6 @@ public class MapView extends ScrollPane {
         averageX /= markerCounter;
         averageY /= markerCounter;
 
-
-
         pan(averageX, averageY);
         zoom(averageX, averageY, false);
     }
@@ -1533,8 +1524,9 @@ public class MapView extends ScrollPane {
      */
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
-            marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
-
+            marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), 923.75); // 893.6783733826248 939.9363395860635 923.75
+            LOGGER.log(Level.SEVERE, "Map width: " + mapGroupHolder.getPrefWidth() + " map height: " + mapGroupHolder.getPrefHeight());
+            //marker.setMarkerPosition(mapStackPane.getWidth(), mapStackPane.getHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 if (marker instanceof GeoShapePolygonMarker) {
                     final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
@@ -1545,18 +1537,21 @@ public class MapView extends ScrollPane {
                     });
                 } else {
                     final Rectangle test = new Rectangle();
-                    test.setWidth(5);
-                    test.setHeight(5);
+                    test.setWidth(1);
+                    test.setHeight(1);
                     test.setFill(Color.GREEN);
-                    test.setX(marker.getMarker().getLayoutX());
-                    test.setY(marker.getMarker().getLayoutY());
+                    test.setX(marker.getX());
+                    test.setY(marker.getY());
 
-                    graphMarkerGroup.getChildren().add(test);
+                    LOGGER.log(Level.SEVERE, "Marker x: " + marker.getX() + " Marker Y: " + marker.getY());
+
+                    //((PointMarker) marker).applyOffsets(30, -30);
                     graphMarkerGroup.getChildren().add(marker.getMarker());
                 }
 
                 if (marker instanceof PointMarker) {
                     final PointMarker pMarker = (PointMarker) marker;
+                    graphMarkerGroup.getChildren().add(pMarker.getPosRect());
                     if (pMarker.getScale() != pointMarkerGlobalScale) {
                         pMarker.scaleAndReposition(pointMarkerGlobalScale);
                     }
