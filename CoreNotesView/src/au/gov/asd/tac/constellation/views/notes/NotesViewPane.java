@@ -275,7 +275,7 @@ public class NotesViewPane extends BorderPane {
             }
 
             newNotePane.setEditMode(false);
-            newNotePane.showPopUp(this.getScene().getWindow());
+            newNotePane.showPopUp();
         });
 
         // Event handler to add new note
@@ -304,7 +304,7 @@ public class NotesViewPane extends BorderPane {
                     warningAlert.setHeight(popUpHeight);
                     final Optional o = warningAlert.showAndWait();
                     newNotePane.setEditMode(false);
-                    newNotePane.showPopUp(this.getScene().getWindow());
+                    newNotePane.showPopUp();
 
                 } else {
                     synchronized (LOCK) {
@@ -378,12 +378,12 @@ public class NotesViewPane extends BorderPane {
         newNotePane.getSaveButton().setOnAction(e -> {
             final int edited = newNotePane.getCurrentlyEditedNoteId();
 
-            notesViewEntries.forEach(note -> {
-                if (note.getID() == edited) {
-                    // Check if either the title or content text boxs are empty
-                    if (StringUtils.isBlank(newNotePane.getTitleField().getText()) || StringUtils.isBlank(newNotePane.getContentField().getText())) {
-                        JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
-                    } else {
+            // Check if either the title or content text boxs are empty
+            if (StringUtils.isBlank(newNotePane.getTitleField().getText()) || StringUtils.isBlank(newNotePane.getContentField().getText())) {
+                JOptionPane.showMessageDialog(null, "Type in missing fields.", "Invalid Text", JOptionPane.WARNING_MESSAGE);
+            } else {
+                notesViewEntries.forEach(note -> {
+                    if (note.getID() == edited) {
                         newNotePane.closePopUp();
                         note.setNoteTitle(newNotePane.getTitleField().getText());
                         note.setNoteContent(newNotePane.getContentField().getText());
@@ -398,7 +398,8 @@ public class NotesViewPane extends BorderPane {
 
                         note.setEditMode(false);
                         note.setWasInEditMode(false);
-
+                        newNotePane.clearTextFields();
+                        newNotePane.closePopUp();
                         synchronized (LOCK) {
                             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                             if (activeGraph != null) {
@@ -406,10 +407,11 @@ public class NotesViewPane extends BorderPane {
                                 notesViewController.writeState(activeGraph);
                             }
                         }
+                        return;
                     }
-                    return;
-                }
-            });
+                });
+            }
+
         });
 
 
@@ -1076,7 +1078,8 @@ public class NotesViewPane extends BorderPane {
             newNotePane.getColourPicker().setValue(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
             newNotePane.getMarkdownCheckbox().setSelected(newNote.isInMarkdown());
             newNotePane.setEditMode(true);
-            newNotePane.showPopUp(this.getScene().getWindow());
+            newNotePane.setParent(this.getScene().getWindow());
+            newNotePane.showPopUp();
         });
     
     }

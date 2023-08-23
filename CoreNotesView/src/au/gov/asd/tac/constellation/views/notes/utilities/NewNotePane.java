@@ -196,7 +196,10 @@ public class NewNotePane {
         cancelButton.setPadding(new Insets(0, 15, 0, 15));
         cancelButton.setMinHeight(25);
         cancelButton.setTextFill(Color.BLACK);
-        cancelButton.setOnAction(event -> closePopUp());
+        cancelButton.setOnAction(event -> {
+            clearTextFields();
+            closePopUp();
+        });
         cancelButton.setOnMouseEntered(event -> cancelButton.setStyle("-fx-background-color: #DBA800; "));
         cancelButton.setOnMouseExited(event -> cancelButton.setStyle("-fx-background-color: #DEC20B;  "));
         final Region gap = new Region();
@@ -243,16 +246,18 @@ public class NewNotePane {
      * Instantiate stage for the pop up and set event handler to close it when
      * consty closes
      */
-    public void showPopUp(final Window window) {
+    public void showPopUp() {
         if (isFirstTime) {
             parent.setOnCloseRequest(event -> {
+                clearTextFields();
                 addButton.setDisable(true);
                 cancelButton.setDisable(true);
                 closePopUp();
             });
-            titleField.clear();
-            contentField.clear();
             stage = new Stage();
+
+            stage.setOnCloseRequest(event -> clearTextFields());
+
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setAlwaysOnTop(true);
             stage.setTitle("Create new note");
@@ -269,7 +274,7 @@ public class NewNotePane {
             isFirstTime = false;
         }
 
-        final List<Screen> screens = Screen.getScreensForRectangle(window.getX(), window.getY(), window.widthProperty().get(), window.heightProperty().get());
+        final List<Screen> screens = Screen.getScreensForRectangle(parent.getX(), parent.getY(), parent.widthProperty().get(), parent.heightProperty().get());
 
         if (inEditMode.get()) {
             stage.setTitle("Edit note");
