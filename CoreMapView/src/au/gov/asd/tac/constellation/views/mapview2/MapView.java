@@ -1524,7 +1524,7 @@ public class MapView extends ScrollPane {
      */
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
-            marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), 923.75); // 893.6783733826248 939.9363395860635 923.75
+            marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), 1224); // 893.6783733826248 939.9363395860635 923.75
             LOGGER.log(Level.SEVERE, "Map width: " + mapGroupHolder.getPrefWidth() + " map height: " + mapGroupHolder.getPrefHeight());
             //marker.setMarkerPosition(mapStackPane.getWidth(), mapStackPane.getHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
@@ -1545,7 +1545,6 @@ public class MapView extends ScrollPane {
 
                     LOGGER.log(Level.SEVERE, "Marker x: " + marker.getX() + " Marker Y: " + marker.getY());
 
-                    //((PointMarker) marker).applyOffsets(30, -30);
                     graphMarkerGroup.getChildren().add(marker.getMarker());
                 }
 

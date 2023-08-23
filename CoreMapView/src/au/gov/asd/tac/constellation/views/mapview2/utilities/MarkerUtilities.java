@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapView;
+
 /**
  * Class that has functions to convert x and y coordinates to latitude and
  * longitude and vise versa
@@ -41,6 +43,10 @@ public class MarkerUtilities {
         return (longitude - minLong) * (mapWidth / lonDelta);
     }
 
+    private static double latToY(final double lat) {
+        return Math.log(Math.tan((lat / 360 * Math.PI) + (Math.PI / 4)));
+    }
+
     /**
      * Convert latitude to y coordinate
      *
@@ -52,7 +58,12 @@ public class MarkerUtilities {
     public static double latToY(final double lat, final double mapWidth, final double mapHeight) {
         final double lattitude = lat * (Math.PI / 180);
         final double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
-        return (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
+        //return (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
+
+        final double minY = latToY(MapView.MAX_LAT);
+        final double maxY = latToY(MapView.MIN_LAT);
+
+        return mapHeight * (latToY(lat) - minY) / (maxY - minY);
     }
 
     /**
