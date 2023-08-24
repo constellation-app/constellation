@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.reporting;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -65,7 +66,7 @@ public class PluginReport {
 
     private final int position;
 
-    public PluginReport(GraphReport graphReport, Plugin plugin) {
+    public PluginReport(final GraphReport graphReport, final Plugin plugin) {
         this.graphReport = graphReport;
         this.pluginName = plugin.getName();
         this.pluginDescription = plugin.getDescription();
@@ -84,7 +85,7 @@ public class PluginReport {
      *
      * @param listener the listener to add.
      */
-    public synchronized void addPluginReportListener(PluginReportListener listener) {
+    public synchronized void addPluginReportListener(final PluginReportListener listener) {
         if (listener != null && !listeners.contains(listener)) {
             listeners.add(listener);
         }
@@ -95,7 +96,7 @@ public class PluginReport {
      *
      * @param listener the listener to remove.
      */
-    public synchronized void removePluginReportListener(PluginReportListener listener) {
+    public synchronized void removePluginReportListener(final PluginReportListener listener) {
         listeners.remove(listener);
     }
 
@@ -172,7 +173,7 @@ public class PluginReport {
      */
     public String getLastMessage() {
         if ((executionStage.equals(PluginExecutionStageConstants.COMPLETE) || executionStage.equals(PluginExecutionStageConstants.STOPPED)) && !this.messageLog.isEmpty()){
-            return this.messageLog.isEmpty() ? "" : this.messageLog.get(this.messageLog.size()-1);
+            return this.messageLog.get(this.messageLog.size()-1);
         } else {
             return this.runningStateLog.isEmpty() ? "" : this.runningStateLog.get(this.runningStateLog.size()-1);
         }
@@ -183,7 +184,7 @@ public class PluginReport {
      *
      * @param message the new message.
      */
-    public void addMessage(String message) {
+    public void addMessage(final String message) {
         this.messageLog.add(message);
         this.runningStateLog.add(message);
     }
@@ -204,7 +205,7 @@ public class PluginReport {
      *
      * @param currentStep the new current step.
      */
-    public void setCurrentStep(int currentStep) {
+    public void setCurrentStep(final int currentStep) {
         this.currentStep = currentStep;
     }
 
@@ -228,7 +229,7 @@ public class PluginReport {
      *
      * @param totalSteps the new total steps.
      */
-    public void setTotalSteps(int totalSteps) {
+    public void setTotalSteps(final int totalSteps) {
         this.totalSteps = totalSteps;
     }
 
@@ -249,7 +250,7 @@ public class PluginReport {
      *
      * @param error the new error.
      */
-    public void setError(Throwable error) {
+    public void setError(final Throwable error) {
         
         this.error = error;
         if (error instanceof InterruptedException){
@@ -306,7 +307,7 @@ public class PluginReport {
      * @return true if the specified collection of tags contains all tags of
      * this plugin.
      */
-    public boolean containsAllTags(Set<String> filteredTags) {
+    public boolean containsAllTags(final Set<String> filteredTags) {
         for (String tag : tags) {
             if (!filteredTags.contains(tag)) {
                 return false;
@@ -324,7 +325,7 @@ public class PluginReport {
      * @return true if the specified collection of tags contains at least one of
      * the tags of this plugin.
      */
-    public boolean containsAnyTag(Set<String> allowedTags) {
+    public boolean containsAnyTag(final Set<String> allowedTags) {
         for (String tag : tags) {
             if (allowedTags.contains(tag)) {
                 return true;
@@ -347,7 +348,7 @@ public class PluginReport {
      *
      * @return the newly created PluginReport that represents the plugin.
      */
-    public PluginReport addChildReport(Plugin plugin) {
+    public PluginReport addChildReport(final Plugin plugin) {
         PluginReport childReport = new PluginReport(graphReport, plugin);
         childReports.add(childReport);
         listeners.stream().forEach(listener -> listener.addedChildReport(this, childReport));
@@ -393,12 +394,12 @@ public class PluginReport {
      *
      * @return a string representing a list of all the messages in the log.
      */
-    public String logToString(Collection<String> log){
-        StringBuilder bld = new StringBuilder();
+    public String logToString(final Collection<String> log){
+        final StringBuilder bld = new StringBuilder();
         
         for (int i = 0; i < log.size(); ++i) {
             if (i != 0){
-                bld.append("\n");
+                bld.append(SeparatorConstants.NEWLINE);
             }
             bld.append(log.toArray()[i]);
         }

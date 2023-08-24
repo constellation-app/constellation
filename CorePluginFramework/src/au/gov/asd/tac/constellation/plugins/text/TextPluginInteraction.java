@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.plugins.text;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.reporting.PluginExecutionStageConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,7 +46,7 @@ public class TextPluginInteraction implements PluginInteraction {
     }
 
     @Override
-    public void setBusy(String graphId, boolean busy) {
+    public void setBusy(final String graphId, final boolean busy) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -57,13 +56,13 @@ public class TextPluginInteraction implements PluginInteraction {
     }
 
     @Override
-    public void setProgress(int currentStep, int totalSteps, String message, boolean cancellable) throws InterruptedException {
+    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException {
         currentMessage = message;
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
     }
     
     @Override
-    public void setProgress(int currentStep, int totalSteps, boolean cancellable) throws InterruptedException {
+    public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1}", new Object[]{currentStep, totalSteps});
     }
     
@@ -73,18 +72,18 @@ public class TextPluginInteraction implements PluginInteraction {
     }
 
     @Override
-    public void notify(PluginNotificationLevel level, String message) {
+    public void notify(final PluginNotificationLevel level, final String message) {
         currentMessage = message;
         LOGGER.log(Level.INFO, "level={0} message={1}", new Object[]{level, message});
     }
 
     @Override
-    public boolean confirm(String message) {
+    public boolean confirm(final String message) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean prompt(String promptName, PluginParameters parameters) {
+    public boolean prompt(final String promptName, final PluginParameters parameters) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 

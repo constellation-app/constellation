@@ -20,14 +20,13 @@ package au.gov.asd.tac.constellation.plugins.reporting;
  * @author capricornunicorn123
  */
 public class PluginExecutionStageConstants {
-    
-    private  PluginExecutionStageConstants() {
-        throw new IllegalStateException("Utility class");
-    }
-    
+
     public static final String RUNNING = "Running";
     public static final String WAITING = "Waiting";
     public static final String STOPPED = "Stopped";
     public static final String COMPLETE = "Complete";
-
+    
+    private  PluginExecutionStageConstants() {
+        throw new IllegalStateException("Utility class");
+    }
 }

@@ -30,13 +30,10 @@ public class PluginReportUtilities {
      * @param count
      * @param singularForm
      * @param pluralForm
+     * 
      */
     public static final String toString(final int count, final String singularForm, final String pluralForm) {
-        if (count == 1) {
-            return count + " " + singularForm;
-        } else {
-            return count + " " + pluralForm;
-        }
+        return String.format("%s %s", count, count == 1 ? singularForm : pluralForm);
     }
     
     /**
@@ -44,7 +41,7 @@ public class PluginReportUtilities {
      * @param count
      */
     public static final String getNodeCountString(final int count){
-        return PluginReportUtilities.toString(count, "node", "Nodes");
+        return PluginReportUtilities.toString(count, "node", "nodes");
     }
     
     /**

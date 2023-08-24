@@ -98,7 +98,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
      * @param pluginReportFilter the filter that is currently applied to the
      * PluginReporterPane.
      */
-    public PluginReportPane(PluginReporterPane reporterPane, PluginReport pluginReport, Set<String> filteredTags, PluginReportFilter pluginReportFilter) {
+    public PluginReportPane(final PluginReporterPane reporterPane, final PluginReport pluginReport, final Set<String> filteredTags, final PluginReportFilter pluginReportFilter) {
         this.reporterPane = reporterPane;
         this.pluginReport = pluginReport;
         this.filteredTags = filteredTags;
@@ -204,8 +204,8 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
      * Saves a text representation of this PluginReport to the clipboard.
      */
     private void saveToClipboard() {
-        CharArrayWriter writer = new CharArrayWriter();
-        try (PrintWriter out = new PrintWriter(writer)) {
+        final CharArrayWriter writer = new CharArrayWriter();
+        try (final PrintWriter out = new PrintWriter(writer)) {
             out.append("Name: " + pluginReport.getPluginName() + SeparatorConstants.NEWLINE);
             out.append("Description: " + pluginReport.getPluginDescription() + SeparatorConstants.NEWLINE);
             out.append("Last Message: " + pluginReport.getLastMessage() + SeparatorConstants.NEWLINE);
@@ -220,7 +220,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         }
 
         final Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
+        final ClipboardContent content = new ClipboardContent();
         content.putString(writer.toString());
         clipboard.setContent(content);
 
@@ -410,12 +410,12 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     }
 
     @Override
-    public void pluginReportChanged(PluginReport pluginReport) {
+    public void pluginReportChanged(final PluginReport pluginReport) {
         Platform.runLater(this::update);
     }
 
     @Override
-    public void addedChildReport(PluginReport parentReport, PluginReport childReport) {
+    public void addedChildReport(final PluginReport parentReport, final PluginReport childReport) {
         Platform.runLater(() -> {
             synchronized (reporterPane) {
                 reporterPane.updateTags();

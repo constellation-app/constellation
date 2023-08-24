@@ -290,7 +290,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                 //Tally the number of transactions between the current node and nodes sharing a transaction
                 switch (mode) {
                     case NODE:
-                        SchemaVertexType destinationVertexType = graph.getObjectValue(vertexTypeAttribute, targetVxId);
+                        final SchemaVertexType destinationVertexType = graph.getObjectValue(vertexTypeAttribute, targetVxId);
                         if (destinationVertexType != null && subTypes.contains(destinationVertexType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
                                 occurrences.put(targetVxId, 0);
@@ -300,7 +300,7 @@ public class SelectTopNPlugin extends SimpleQueryPlugin implements DataAccessPlu
                         }
                         break;
                     case TRANSACTION:
-                        SchemaTransactionType transactionType = graph.getObjectValue(transactionTypeAttribute, txId);
+                        final SchemaTransactionType transactionType = graph.getObjectValue(transactionTypeAttribute, txId);
                         if (transactionType != null && subTypes.contains(transactionType.getName())) {
                             if (!occurrences.containsKey(targetVxId)) {
                                 occurrences.put(targetVxId, 0);

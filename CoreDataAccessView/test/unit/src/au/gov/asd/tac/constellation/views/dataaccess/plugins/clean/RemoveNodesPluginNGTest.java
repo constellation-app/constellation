@@ -87,36 +87,33 @@ public class RemoveNodesPluginNGTest {
      * @throws InterruptedException
      * @throws PluginException
      */
-    @Test
-    public void testEditAttributesNotFound() throws InterruptedException, PluginException {
-        System.out.println("editAttributesNotFound");
+    @Test(expectedExceptions=PluginException.class)
+    public void testIdentifierAttributesNotFound() throws InterruptedException, PluginException {
+        System.out.println("identifierAttributesNotFound");
         final RemoveNodesPlugin instance = new RemoveNodesPlugin();
         final PluginParameters parameters = instance.createParameters(); 
-        
-        //Method should throw exception as Selected attribute is not enabled on vertex
-        try {
-            PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-            fail("Edit attributes threw an exception");
-        } catch (PluginException ex) {
-        }
-        
-        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+                
+        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         
         //Method should throw exception as Identifier attribute is not enabled on vertex
-        try {
-            PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-            fail("Edit attributes threw an exception");
-        } catch (PluginException ex) {
-        }
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
+    }
+    
+        /**
+     * Test of edit method, of class RemoveNodesPlugin. selected and identifier
+     * attributes not found
+     *
+     * @throws InterruptedException
+     */
+    @Test(expectedExceptions=PluginException.class)
+    public void testSelectedAttributesNotFound() throws InterruptedException, PluginException {
+        System.out.println("selectedAttributesNotFound");
+        final RemoveNodesPlugin instance = new RemoveNodesPlugin();
+        final PluginParameters parameters = instance.createParameters(); 
+        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         
-        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);    
-        
-        //Method should not throw an exception
-        try {
-            PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
-        } catch (PluginException ex) {
-            fail("Edit attributes threw an exception");
-        }
+        //Method should throw exception as Selected attribute is not enabled on vertex
+        PluginExecution.withPlugin(instance).withParameters(parameters).executeNow(graph);
     }
 
     /**

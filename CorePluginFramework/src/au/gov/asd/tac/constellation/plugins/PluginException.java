@@ -70,10 +70,6 @@ public class PluginException extends Exception {
         this.notificationLevel = notificationLevel;
     }
 
-    public PluginException() {	
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-    
     /**
      * Retrieves the notification level (severity) of the exception.
      *

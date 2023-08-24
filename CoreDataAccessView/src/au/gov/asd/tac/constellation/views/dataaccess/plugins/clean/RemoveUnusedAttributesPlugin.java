@@ -128,7 +128,7 @@ public class RemoveUnusedAttributesPlugin extends SimpleEditPlugin implements Da
         // Set process to complete
         interaction.setProgress(currentProcessStep, 
                 totalProcessSteps, 
-                String.format("Removd %s .", 
+                String.format("Removed %s.", 
                         PluginReportUtilities.getAttributeCountString(removedAttributeCount)
                 ),
                 true

@@ -108,8 +108,8 @@ public class RemoveNodesPlugin extends SimpleQueryPlugin implements DataAccessPl
         final int threshold = parameters.getParameters().get(THRESHOLD_PARAMETER_ID).getIntegerValue();
         
         // Retrieve Attribute id's
-        final int selectedAttribute = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.SELECTED.getName());
-        final int identifierAttribute = wg.getAttribute(GraphElementType.VERTEX, VisualConcept.VertexAttribute.IDENTIFIER.getName());
+        final int selectedAttribute = VisualConcept.VertexAttribute.SELECTED.get(wg);
+        final int identifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.get(wg);
         
         // Throw an error if the relevant attribute Id's could not be found.
         if (selectedAttribute == Graph.NOT_FOUND){

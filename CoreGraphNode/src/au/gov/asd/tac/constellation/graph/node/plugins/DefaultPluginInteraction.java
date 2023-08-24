@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.plugins.gui.PluginParametersDialog;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersSwingDialog;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
-import au.gov.asd.tac.constellation.plugins.reporting.PluginExecutionStageConstants;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
@@ -137,16 +136,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     }
 
     @Override
-    public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {
-        
-//        Uncomment this block to delay the progress of plugins and better review the changes made within this PR.
-//        Delete this block before merging to master.
-        try{
-            TimeUnit.MILLISECONDS.sleep(50);
-        } catch (Exception ex){
-            
-        }
-        
+    public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {     
         if (pluginReport != null) {
             pluginReport.setCurrentStep(currentStep);
             pluginReport.setTotalSteps(totalSteps);
