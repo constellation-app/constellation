@@ -140,9 +140,8 @@ public class AnalyticResultsPane extends VBox {
                     node.getKey().setSelected(selected);
                     final Node visualisationNode = node.getKey().getVisualisation();
                     graphVisualisationPane.getItems().add(visualisationNode);
-
-                    AnalyticViewController.getDefault().updateVisualisations(node.getKey(), node.getValue());
                 });
+                AnalyticViewController.getDefault().setVisualisations(currentVisualisations);
             }
         });
 

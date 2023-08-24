@@ -171,9 +171,6 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     @Override
     protected void handleGraphOpened(final Graph graph) {
-        if (needsUpdate() && graph != null) {
-            currentGraphId = graph.getId();  
-        }
         if (analyticViewPane != null) {
             analyticViewPane.reset();
             analyticController.addAttributes();
@@ -184,14 +181,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void handleComponentOpened() {
         super.handleComponentOpened();
-        if (needsUpdate()) {
-            final Graph current = GraphManager.getDefault().getActiveGraph();
-            if (current != null) {
-                currentGraphId = current.getId();
-            }
-            analyticController.addAttributes();
-            analyticController.readState();
+        final Graph current = GraphManager.getDefault().getActiveGraph();
+        if (current != null) {
+            currentGraphId = current.getId();
         }
+        analyticController.addAttributes();
+        analyticController.readState();
     }
 
     @Override
@@ -208,6 +203,11 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
+        analyticController.deactivateResultUpdates();
+    }
+    
+    @Override
+    protected void handleGraphClosed(final Graph graph) {
         analyticController.deactivateResultUpdates();
     }
 }

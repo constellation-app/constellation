@@ -130,14 +130,11 @@ public class AnalyticViewController {
      * @param activated
      */
     public void updateVisualisations(final GraphVisualisation visualisationName, final boolean activated) {
-        visualisations.entrySet().forEach(node -> {
-            if (node.getKey().getName().equals(visualisationName.getName())) {
-                visualisations.remove(node.getKey());
-                visualisations.put(visualisationName, activated);
-            } else {
-                visualisations.put(visualisationName, activated);
-            }
-        });
+        if (!visualisations.containsKey(visualisationName)) {
+            visualisations.put(visualisationName, activated);
+        } else {
+            visualisations.replace(visualisationName, activated);
+        }
     }
 
     public void deactivateResultUpdates() {

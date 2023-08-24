@@ -78,20 +78,20 @@ public final class AnalyticStateWriterPlugin extends SimpleEditPlugin {
             currentState = new AnalyticViewState();
         } else {
             currentState = new AnalyticViewState(currentState);
-        }
-
-        // set all of the values into the state now
-        currentState.setCategoriesPaneVisible(categoriesVisible);
-        currentState.setResultsPaneVisible(resultsVisible);
-        currentState.setCurrentAnalyticQuestionIndex(currentAnalyticQuestionIndex);
-        currentState.setActiveAnalyticQuestions(activeAnalyticQuestions);
-        currentState.setActiveSelectablePlugins(activeSelectablePlugins);
-        currentState.updateResults(result);
-        currentState.setCurrentQuestion(currentQuestion);
-        currentState.setQuestion(question);
-        currentState.setCategoriesPaneVisible(categoriesVisible);
-        currentState.setActiveCategory(activeCategory);
-        currentState.setVisualisations(visualisations);
+            
+            // set all of the values into the state now
+            currentState.setCategoriesPaneVisible(categoriesVisible);
+            currentState.setResultsPaneVisible(resultsVisible);
+            currentState.setCurrentAnalyticQuestionIndex(currentAnalyticQuestionIndex);
+            currentState.setActiveAnalyticQuestions(activeAnalyticQuestions);
+            currentState.setActiveSelectablePlugins(activeSelectablePlugins);
+            currentState.updateResults(result);
+            currentState.setCurrentQuestion(currentQuestion);
+            currentState.setQuestion(question);
+            currentState.setCategoriesPaneVisible(categoriesVisible);
+            currentState.setActiveCategory(activeCategory);
+            currentState.setVisualisations(visualisations);
+        }       
 
         graph.setObjectValue(stateAttributeId, 0, currentState);
     }

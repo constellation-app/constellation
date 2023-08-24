@@ -191,7 +191,10 @@ public class AnalyticViewPane extends BorderPane {
     public void deactivateResultChanges() {
         visualisations = AnalyticViewController.getDefault().getVisualisations();
         if (!visualisations.isEmpty()) {
-            visualisations.entrySet().forEach(node -> node.getKey().deactivate());
+            visualisations.entrySet().forEach(node -> {
+                node.getKey().deactivate();
+                AnalyticViewController.getDefault().updateVisualisations(node.getKey(), false);
+            });
         }
     }
 

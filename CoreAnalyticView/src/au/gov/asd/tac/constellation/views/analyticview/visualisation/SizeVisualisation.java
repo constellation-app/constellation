@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractSizeTranslator;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
 
@@ -48,8 +49,10 @@ public class SizeVisualisation<C> extends GraphVisualisation {
 
     @Override
     public void deactivate() {
-        translator.executePlugin(activated);
-        activated = !activated;
+        if (activated) {
+            translator.executePlugin(activated);
+            activated = !activated;
+        }
     }
 
     @Override
@@ -78,5 +81,22 @@ public class SizeVisualisation<C> extends GraphVisualisation {
     public void setSelected(final boolean selected) {
         sizeButton.setSelected(selected);
         activated = selected;
+    }
+    
+    @Override 
+    public boolean equals(final Object object) {
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        } else if (this == object || getClass() == object.getClass()) {
+            return true;
+        }
+        
+        final SizeVisualisation newObject = (SizeVisualisation) object;
+        return translator == newObject.translator && sizeButton == newObject.sizeButton && activated == newObject.activated;
+    }
+    
+    @Override 
+    public int hashCode() {
+        return Objects.hash(sizeButton.getClass());
     }
 }

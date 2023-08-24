@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractHideTranslator;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
@@ -61,8 +62,10 @@ public class HideVisualisation<C> extends GraphVisualisation {
 
     @Override
     public void deactivate() {
-        translator.executePlugin(activated, 0);
-        activated = !activated;
+        if (activated) {
+            translator.executePlugin(activated, 0);
+            activated = !activated;
+        }
     }
 
     @Override
@@ -92,5 +95,22 @@ public class HideVisualisation<C> extends GraphVisualisation {
         hideButton.setSelected(selected);
         hideSlider.setDisable(selected);
         activated = selected;
+    }
+    
+    @Override 
+    public boolean equals(final Object object) {
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        } else if (this == object || getClass() == object.getClass()) {
+            return true;
+        }
+        
+        final HideVisualisation newObject = (HideVisualisation) object;
+        return translator == newObject.translator && hideButton == newObject.hideButton && activated == newObject.activated;
+    }
+    
+    @Override 
+    public int hashCode() {
+        return Objects.hash(hideButton.getClass());
     }
 }
