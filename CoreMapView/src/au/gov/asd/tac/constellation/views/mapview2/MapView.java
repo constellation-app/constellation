@@ -611,6 +611,7 @@ public class MapView extends ScrollPane {
                     // If the user is not drawing any type of marker then generate point marker where they clicked
                 } else {
                     final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
+                    LOGGER.log(Level.SEVERE, "User point marker x: " + x + " User point marker y: " + y);
                     marker.setMarkerPosition(0, 0);
                     addUserDrawnMarker(marker);
                     userMarkers.add(marker);
@@ -1520,7 +1521,7 @@ public class MapView extends ScrollPane {
      */
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
-            marker.setMarkerPosition(mapGroupHolder.getBoundsInParent().getWidth(), mapGroupHolder.getBoundsInParent().getHeight()); // 893.6783733826248 939.9363395860635 923.75
+            marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), 923.75); // 893.6783733826248 939.9363395860635 923.75
             LOGGER.log(Level.SEVERE, "Map width: " + mapGroupHolder.getPrefWidth() + " map height: " + mapGroupHolder.getPrefHeight());
             //marker.setMarkerPosition(mapStackPane.getWidth(), mapStackPane.getHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
@@ -1538,6 +1539,7 @@ public class MapView extends ScrollPane {
                     test.setFill(Color.GREEN);
                     test.setX(marker.getX());
                     test.setY(marker.getY());
+                    test.setOpacity(0.5);
 
                     LOGGER.log(Level.SEVERE, "Marker x: " + marker.getX() + " Marker Y: " + marker.getY());
 

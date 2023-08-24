@@ -202,6 +202,7 @@ public class PointMarker extends AbstractMarker {
         posRect.setWidth(1);
         posRect.setHeight(1);
         posRect.setFill(Color.GREEN);
+        posRect.setOpacity(0.5);
 
         //x += xOffset;
         //y += yOffset;
