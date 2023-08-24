@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class UndoRedoReport {
      *
      * @param graph the graph
      */
-    public UndoRedoReport(Graph graph) {
+    public UndoRedoReport(final Graph graph) {
         this(graph.getId());
     }
 
@@ -43,7 +43,7 @@ public class UndoRedoReport {
      *
      * @param graphId the graphId.
      */
-    public UndoRedoReport(String graphId) {
+    public UndoRedoReport(final String graphId) {
         this.graphId = graphId;
         this.startTime = System.currentTimeMillis();
     }
@@ -72,7 +72,7 @@ public class UndoRedoReport {
     /**
      * Sets the action type, whether it's undo or redo
      */
-    public void setActionType(String actionType) {
+    public void setActionType(final String actionType) {
         this.actionType = actionType;
     }
 
@@ -86,7 +86,7 @@ public class UndoRedoReport {
     /**
      * Sets the action description of this undo or redo event
      */
-    public void setActionDescription(String actionDescription) {
+    public void setActionDescription(final String actionDescription) {
         this.actionDescription = actionDescription;
     }
 }

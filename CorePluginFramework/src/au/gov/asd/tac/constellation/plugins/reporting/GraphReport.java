@@ -56,7 +56,7 @@ public class GraphReport implements UndoRedoReportListener {
      *
      * @param graph the graph
      */
-    public GraphReport(Graph graph) {
+    public GraphReport(final Graph graph) {
         this(graph.getId());
     }
 
@@ -65,7 +65,7 @@ public class GraphReport implements UndoRedoReportListener {
      *
      * @param graphId the graphId.
      */
-    public GraphReport(String graphId) {
+    public GraphReport(final String graphId) {
         this.graphId = graphId;
         UndoRedoReportManager.addUndoRedoReportListener(this);
     }
@@ -145,18 +145,17 @@ public class GraphReport implements UndoRedoReportListener {
     }
 
     private PluginReport getMatchingPluginReport(final UndoRedoReport undoRedoReport) {
-        switch (undoRedoReport.getActionType()) {
-            case UNDO:
-                return getPluginReports().stream()
-                        .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
-                        && !entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
-                        .max(Comparator.comparing(PluginReport::getStartTime)).get();
+        if (undoRedoReport.getActionType() == UNDO) {
+            return getPluginReports().stream()
+                    .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
+                    && !entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
+                    .max(Comparator.comparing(PluginReport::getStartTime)).get();
 
-            default:
-                return getPluginReports().stream()
-                        .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
-                        && entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
-                        .min(Comparator.comparing(PluginReport::getStartTime)).get();
+        } else {
+            return getPluginReports().stream()
+                    .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
+                    && entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
+                    .min(Comparator.comparing(PluginReport::getStartTime)).get();
         }
     }
 

@@ -279,7 +279,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
             update(null, null);
         }
 
-        private void fireUndoRedoReport(String actionType, GraphWriteMethods target, String presentationName) {
+        private void fireUndoRedoReport(final String actionType, final GraphWriteMethods target, final String presentationName) {
             UndoRedoReport undoRedoReport = new UndoRedoReport(target.getId());
             undoRedoReport.setActionDescription(presentationName);
             undoRedoReport.setActionType(actionType);

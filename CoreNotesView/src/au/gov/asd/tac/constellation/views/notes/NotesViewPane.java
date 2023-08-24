@@ -374,8 +374,10 @@ public class NotesViewPane extends BorderPane {
      * Set the plugin reports that have executed on the current graph report.
      */
     protected void setGraphReport() {
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
+        setGraphReport(GraphManager.getDefault().getActiveGraph());
+    }
 
+    protected void setGraphReport(final Graph graph) {
         if (graph != null) {
             final GraphReport currentGraphReport = GraphReportManager.getGraphReport(graph.getId());
 
@@ -675,16 +677,15 @@ public class NotesViewPane extends BorderPane {
     }
 
     private NotesViewEntry getMatchingNoteOfUndoRedoReport(final UndoRedoReport undoRedoReport) {
-        switch (undoRedoReport.getActionType()) {
-            case UNDO:
-                return notesViewEntries.stream()
-                .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()) && !entry.getUndone())
-                .max(Comparator.comparing(NotesViewEntry::getDateTime)).get();
+        if (undoRedoReport.getActionType() == UNDO) {
+            return notesViewEntries.stream()
+                    .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()) && !entry.getUndone())
+                    .max(Comparator.comparing(NotesViewEntry::getDateTime)).get();
 
-            default:
-                return notesViewEntries.stream()
-                .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()) && entry.getUndone())
-                .min(Comparator.comparing(NotesViewEntry::getDateTime)).get();
+        } else {
+            return notesViewEntries.stream()
+                    .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getNoteTitle()) && entry.getUndone())
+                    .min(Comparator.comparing(NotesViewEntry::getDateTime)).get();
         }
     }
 

@@ -185,7 +185,7 @@ public class NotesViewEntry implements PluginReportListener {
         return isUndone;
     }
 
-    public void setUndone(boolean isUndone) {
+    public void setUndone(final boolean isUndone) {
         this.isUndone = isUndone;
     }
 
