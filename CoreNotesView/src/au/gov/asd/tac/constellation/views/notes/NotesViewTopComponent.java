@@ -17,10 +17,10 @@ package au.gov.asd.tac.constellation.views.notes;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReport;
 import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportListener;
 import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportManager;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
@@ -182,7 +182,7 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
         final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
 
         if (activeGraph != null && undoRedoReport.getGraphId().equals(activeGraph.getId())) {
-            notesViewPane.processNewUndoRedoReport(undoRedoReport, activeGraph);
+            notesViewPane.processNewUndoRedoReport(undoRedoReport);
         }
     }
 

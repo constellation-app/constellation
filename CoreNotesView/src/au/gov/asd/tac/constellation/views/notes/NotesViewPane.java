@@ -387,13 +387,13 @@ public class NotesViewPane extends BorderPane {
                         addPluginReport(pluginReport);
                     }
                 });
-                updateNotesAndFiltersUI(graph);
+                updateNotesAndFiltersUI();
                 notesViewController.writeState(graph);
             }
         }
     }
 
-    private void updateNotesAndFiltersUI(final Graph graph) {
+    private void updateNotesAndFiltersUI() {
         SwingUtilities.invokeLater(() -> {
             final TopComponent tc = WindowManager.getDefault().findTopComponent(NotesViewTopComponent.class.getSimpleName());
             if (tc != null && tc.isOpened()) {
@@ -420,7 +420,7 @@ public class NotesViewPane extends BorderPane {
                     "#ffffff"
             );
 
-            note.setUndone(pluginReport.getUndone());
+            note.setUndone(pluginReport.isUndone());
             final String[] tags = pluginReport.getTags();
             final List<String> tagsList = new ArrayList<>();
             for (final String tag : tags) {
@@ -447,13 +447,12 @@ public class NotesViewPane extends BorderPane {
      * View Entry object in notesViewEntries
      *
      * @param undoRedoReport UndoRedoReport report to be added.
-     * @param graph The graph the Undo or Redo action is performed on.
      */
-    protected void processNewUndoRedoReport(final UndoRedoReport undoRedoReport, final Graph graph) {
+    protected void processNewUndoRedoReport(final UndoRedoReport undoRedoReport) {
         if (hasMatchingNote(undoRedoReport)) {
             getMatchingNoteOfUndoRedoReport(undoRedoReport).setUndone(undoRedoReport.getActionType() == UNDO);
             updateTagsFiltersAvailable();
-            updateNotesAndFiltersUI(graph);
+            updateNotesAndFiltersUI();
         }
 
     }
@@ -659,18 +658,6 @@ public class NotesViewPane extends BorderPane {
         final String startTime = Long.toString(pluginReport.getStartTime());
         return notesDateTimeCache.contains(startTime);
     }
-
-    private NotesViewEntry getMatchingNoteOfPluginReport(final PluginReport pluginReport) {
-
-        NotesViewEntry n2 = notesViewEntries.stream()
-                .filter(entry -> entry.getDateTime().equals(Long.toString(pluginReport.getStartTime())))
-                .findFirst()
-                .get();
-
-
-        return n2;
-    }
-
 
     /**
      * Check if the action in the UndoRedoReport has a matching note already

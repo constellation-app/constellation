@@ -350,7 +350,7 @@ public class PluginReport {
         return uChildReports;
     }
 
-    public boolean getUndone() {
+    public boolean isUndone() {
         return isUndone;
     }
 

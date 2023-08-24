@@ -149,13 +149,13 @@ public class GraphReport implements UndoRedoReportListener {
             case UNDO:
                 return getPluginReports().stream()
                         .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
-                        && !entry.getUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
+                        && !entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
                         .max(Comparator.comparing(PluginReport::getStartTime)).get();
 
             default:
                 return getPluginReports().stream()
                         .filter(entry -> undoRedoReport.getActionDescription().equals(entry.getPluginName())
-                        && entry.getUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
+                        && entry.isUndone() && entry.getGraphReport().getGraphId().equals(undoRedoReport.getGraphId()))
                         .min(Comparator.comparing(PluginReport::getStartTime)).get();
         }
     }
