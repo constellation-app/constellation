@@ -103,8 +103,16 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 }
                                 noteViewEntries.get(i).setTransactionsSelected(selectedTransactions);
                             }
-                        } else if (notesArray.get(i).get(3).asBoolean() && notesArray.get(i).get(4).asBoolean() && notesArray.get(i).get(5) != null) {
-                            noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(5).asText());
+                        } else if (notesArray.get(i).get(3).asBoolean() && notesArray.get(i).get(4).asBoolean()) {
+
+                            if (notesArray.get(i).get(5) != null) {
+                                noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(5).asText());
+                            }
+
+                            if (notesArray.get(i).get(6) != null) {
+                                noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(6).asBoolean());
+                            }
+
                         } else if (notesArray.get(i).get(3).asBoolean() == false) {
                             // Create auto notes with the tags they have assigned to them
                             final JsonNode tagsArrayNode = notesArray.get(i).get(5);
@@ -116,10 +124,6 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 noteViewEntries.get(i).setTags(tagsArray);
                             }
 
-                        }
-
-                        if (notesArray.get(i).get(3).asBoolean() && notesArray.get(i).get(4).asBoolean() && notesArray.get(i).get(6) != null) {
-                            noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(6).asBoolean());
                         }
 
                     } else {
