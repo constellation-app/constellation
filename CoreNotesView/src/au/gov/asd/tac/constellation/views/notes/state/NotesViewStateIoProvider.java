@@ -118,6 +118,10 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
                         }
 
+                        if (notesArray.get(i).get(3).asBoolean() && notesArray.get(i).get(4).asBoolean() && notesArray.get(i).get(6) != null) {
+                            noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(6).asBoolean());
+                        }
+
                     } else {
                         // If a note was created without a graphAttribute boolean variable, it will now be recreated with the variable
                         // This variable will be true by default, meaning it is applied to the entire graph
