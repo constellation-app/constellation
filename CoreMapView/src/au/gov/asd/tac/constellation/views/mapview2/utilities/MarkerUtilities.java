@@ -40,6 +40,13 @@ public class MarkerUtilities {
      * @return x coordinate
      */
     public static double longToX(final double longitude, final double minLong, final double mapWidth, final double lonDelta) {
+        final double radius = mapWidth / (2 * Math.PI);
+        final double fEasting = MapView.MAX_LONG;
+
+        final double lonRad = ((longitude + fEasting) * Math.PI) / 180;
+
+        //return lonRad * radius;
+
         return (longitude - minLong) * (mapWidth / lonDelta);
     }
 
@@ -56,14 +63,17 @@ public class MarkerUtilities {
      * @return y coordinate
      */
     public static double latToY(final double lat, final double mapWidth, final double mapHeight) {
+        final double radius = mapWidth / (2 * Math.PI);
         final double lattitude = lat * (Math.PI / 180);
         final double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
-        //return (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
+        return (mapHeight / 2) - (mapWidth * y / (2 * Math.PI));
+        //return Math.log(Math.tan((Math.PI / 4))) - (mapWidth * y / (2 * Math.PI));
+        //return (mapHeight / 2) - (radius * y);
 
-        final double minY = latToY(MapView.MAX_LAT);
+        /*final double minY = latToY(MapView.MAX_LAT);
         final double maxY = latToY(MapView.MIN_LAT);
 
-        return mapHeight * (latToY(lat) - minY) / (maxY - minY);
+        return mapHeight * (latToY(lat) - minY) / (maxY - minY);*/
     }
 
     /**

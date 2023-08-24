@@ -108,10 +108,6 @@ public class MapView extends ScrollPane {
 
     private final StackPane mapStackPane;
 
-    public StackPane getMapStackPane() {
-        return mapStackPane;
-    }
-
     // ID of the next user drawn marker
     private int drawnMarkerId = 0;
 
@@ -1524,7 +1520,7 @@ public class MapView extends ScrollPane {
      */
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
-            marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), 1224); // 893.6783733826248 939.9363395860635 923.75
+            marker.setMarkerPosition(mapGroupHolder.getBoundsInParent().getWidth(), mapGroupHolder.getBoundsInParent().getHeight()); // 893.6783733826248 939.9363395860635 923.75
             LOGGER.log(Level.SEVERE, "Map width: " + mapGroupHolder.getPrefWidth() + " map height: " + mapGroupHolder.getPrefHeight());
             //marker.setMarkerPosition(mapStackPane.getWidth(), mapStackPane.getHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
