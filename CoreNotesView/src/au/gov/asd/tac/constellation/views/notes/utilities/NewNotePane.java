@@ -19,8 +19,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
@@ -50,10 +48,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.stage.Window;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 /**
  * A Pane that has all the controls that lets user create a new Note
@@ -61,9 +61,6 @@ import javafx.stage.Window;
  * @author altair1673
  */
 public class NewNotePane {
-
-    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
-
     private boolean isFirstTime = true;
     private final Pane dialogPane;
     private static final String FONT_SIZE_STRING = "-fx-font-size:%d;";
@@ -259,6 +256,7 @@ public class NewNotePane {
             stage.setOnCloseRequest(event -> clearTextFields());
 
             stage.initModality(Modality.APPLICATION_MODAL);
+            stage.initOwner(parent);
             stage.setAlwaysOnTop(true);
             stage.setTitle("Create new note");
             stage.setMinHeight(HEIGHT);
@@ -274,13 +272,15 @@ public class NewNotePane {
             isFirstTime = false;
         }
 
+        final JDialog hiddenDialog = new JDialog();
+        hiddenDialog.setModal(true);
+        hiddenDialog.setUndecorated(true);
+        hiddenDialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        SwingUtilities.invokeLater(() -> hiddenDialog.setVisible(true));
+
         final List<Screen> screens = Screen.getScreensForRectangle(parent.getX(), parent.getY(), parent.widthProperty().get(), parent.heightProperty().get());
 
-        if (inEditMode.get()) {
-            stage.setTitle("Edit note");
-        } else {
-            stage.setTitle("Create new note");
-        }
+        stage.setTitle(inEditMode.get() ? "Edit note" : "Create new note");
 
         stage.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - WIDTH / 2);
         stage.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - (HEIGHT * 2.5) / 2);
@@ -288,6 +288,8 @@ public class NewNotePane {
         if (!stage.isShowing()) {
             stage.showAndWait();
         }
+
+        hiddenDialog.dispose();
     }
 
     public TextField getTitleField() {
@@ -342,7 +344,7 @@ public class NewNotePane {
         return currentlyEditedNoteId;
     }
 
-    public void setCurrentlyEditedNoteId(int currentlyEditedNoteId) {
+    public void setCurrentlyEditedNoteId(final int currentlyEditedNoteId) {
         this.currentlyEditedNoteId = currentlyEditedNoteId;
     }
 

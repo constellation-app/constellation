@@ -180,14 +180,6 @@ public class NotesViewEntry implements PluginReportListener {
         contentTextFlow.autosize();
     }
 
-    public boolean checkIfWasInEditMode() {
-        return wasInEditMode;
-    }
-
-    public void setWasInEditMode(final boolean wasInEditMode) {
-        this.wasInEditMode = wasInEditMode;
-    }
-
     public String getTempContent() {
         return tempContent;
 

@@ -67,8 +67,6 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
@@ -79,16 +77,13 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Screen;
-import javafx.stage.Stage;
 import javafx.stage.Window;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.controlsfx.control.CheckComboBox;
 import org.openide.util.HelpCtx;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -118,10 +113,9 @@ public class NotesViewPane extends BorderPane {
     private final ScrollPane notesListScrollPane;
 
     private static final double NOTE_HEIGHT = 147.0;
-    private static final double NOTE_INFO_SPACING = 5;
-    private static final double NOTE_BODY_SPACING = 15;
-    private static final int DEFAULT_BUTTON_SPACING = 18;
-    private static final int EDIT_SPACING = 8;
+    private static final double NOTE_INFO_SPACING = 1;
+    private static final double NOTE_BODY_SPACING = 5;
+    private static final int DEFAULT_BUTTON_SPACING = 10;
     private static final String SHOW_MORE = "Show more";
     private static final String SHOW_LESS = "Show less";
 
@@ -397,7 +391,6 @@ public class NotesViewPane extends BorderPane {
                         previouseColourMap.replace(note.getID(), note.getNodeColour());
 
                         note.setEditMode(false);
-                        note.setWasInEditMode(false);
                         newNotePane.clearTextFields();
                         newNotePane.closePopUp();
                         synchronized (LOCK) {
@@ -661,7 +654,6 @@ public class NotesViewPane extends BorderPane {
                 if (CollectionUtils.isNotEmpty(notesToRender)) {
                     notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
                     notesToRender.forEach(note -> {
-                        note.setEditMode(note.checkIfWasInEditMode());
                         createNote(note);
                     });
                 }
@@ -717,14 +709,14 @@ public class NotesViewPane extends BorderPane {
     protected void clearNotes() {
         Platform.runLater(() -> notesListVBox.getChildren().removeAll(notesListVBox.getChildren()));
         synchronized (LOCK) {
-            notesViewEntries.forEach(note -> {
+            /*notesViewEntries.forEach(note -> {
                 if (note.getEditMode()) {
                     note.setEditMode(false);
                     note.setWasInEditMode(true);
                 } else {
                     note.setWasInEditMode(false);
                 }
-            });
+            });*/
             notesViewEntries.clear();
             notesDateTimeCache.clear();
         }
@@ -772,8 +764,6 @@ public class NotesViewPane extends BorderPane {
         contentLabel.setMinWidth(50);
         contentLabel.setAlignment(Pos.TOP_LEFT);
 
-        // Define content text area
-        //final TextArea contentTextArea = new TextArea(newNote.getNoteContent());
 
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.setMarkdownEnabled(newNote.isInMarkdown());
@@ -843,20 +833,10 @@ public class NotesViewPane extends BorderPane {
         editTextButton.setMinWidth(92);
         editTextButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
-        final Button saveTextButton = new Button("Save");
-        saveTextButton.setMinWidth(92);
-        saveTextButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-
         final Button deleteButton = new Button("Delete Note");
         deleteButton.setMinWidth(92);
         deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
 
-        final Button cancelButton = new Button("Cancel");
-        cancelButton.setMinWidth(92);
-        cancelButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-
-        final HBox editScreenButtons = new HBox(15, saveTextButton, cancelButton);
-        editScreenButtons.setAlignment(Pos.CENTER);
 
         // If the note to be created is in edit mode, ensure it is created with
         // the correct java fx elements
@@ -878,7 +858,6 @@ public class NotesViewPane extends BorderPane {
         }
 
         HBox.setHgrow(dateTimeLabel, Priority.NEVER);
-        HBox.setHgrow(editScreenButtons, Priority.ALWAYS);
 
         final ColorPicker colourPicker = new ColorPicker(ConstellationColor.fromHtmlColor(newNote.getNodeColour()).getJavaFXColor());
         colourPicker.setMinWidth(100);
@@ -888,11 +867,8 @@ public class NotesViewPane extends BorderPane {
         showMoreButton.setMinWidth(100);
         showMoreButton.setMaxWidth(100);
         showMoreButton.setVisible(false);
-        if (newNote.getEditMode()) {
-            noteButtons = new HBox(EDIT_SPACING, colourPicker, gap2, editScreenButtons);
-        } else {
-            noteButtons = new HBox(15, showMoreButton, gap, editTextButton, deleteButton);
-        }
+
+        noteButtons = new HBox(15, showMoreButton, gap, editTextButton, deleteButton);
 
         HBox.setHgrow(gap, Priority.ALWAYS);
         HBox.setHgrow(gap2, Priority.ALWAYS);
@@ -913,16 +889,13 @@ public class NotesViewPane extends BorderPane {
                 showMoreButton.setVisible(true);
                 showMoreButton.setText(SHOW_MORE);
                 noteBody.setMaxHeight(NOTE_HEIGHT - 3);
-                LOGGER.log(Level.SEVERE, "Showing show more button");
                 // Run events as if show less button had been clicked
                 containerPane.getChildren().clear();
                 noteBody.setMaxHeight(NOTE_HEIGHT - 3);
                 noteBody.setMinHeight(NOTE_HEIGHT - 3);
                 textFlowPane.getChildren().add(newNote.getContentTextFlow());
-                //textFlowPane.setClip(clipRect);
                 containerPane.getChildren().add(textFlowPane);
             } else if (obs.getValue().doubleValue() < NOTE_HEIGHT - 10 && showMoreButton.isVisible()) {
-                LOGGER.log(Level.SEVERE, "NOT Showing show more button");
                 showMoreButton.setVisible(false);
             }
         });
