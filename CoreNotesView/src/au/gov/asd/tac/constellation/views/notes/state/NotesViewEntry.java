@@ -42,6 +42,7 @@ public class NotesViewEntry implements PluginReportListener {
     private boolean editMode;
     private boolean wasInEditMode = false;
     private boolean isShowing = true;
+    private boolean isUndone = false;
 
     private String tempContent;
     private String tempTitle;
@@ -180,6 +181,13 @@ public class NotesViewEntry implements PluginReportListener {
         this.tempTitle = tempTitle;
     }
 
+    public boolean getUndone() {
+        return isUndone;
+    }
+
+    public void setUndone(final boolean isUndone) {
+        this.isUndone = isUndone;
+    }
 
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {
