@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
 import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.geometry.Insets;
 import javafx.scene.text.TextFlow;
 
 /**
@@ -78,6 +79,7 @@ public class NotesViewEntry implements PluginReportListener {
     }
 
     public void setContentTextFlow(final TextFlow renderedTextFlow) {
+        contentTextFlow.setPadding(new Insets(0, 0, 0, 0));
         contentTextFlow = renderedTextFlow;
     }
 

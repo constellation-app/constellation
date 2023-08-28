@@ -268,6 +268,7 @@ public class NotesViewPane extends BorderPane {
                 creatingFirstNote = false;
             }
 
+            newNotePane.getColourPicker().setValue(ConstellationColor.fromHtmlColor(newNotePane.getPreviousColour()).getJavaFXColor());
             newNotePane.setEditMode(false);
             newNotePane.showPopUp();
         });
@@ -311,6 +312,7 @@ public class NotesViewPane extends BorderPane {
                                 newNotePane.getUserChosenColour(),
                                 newNotePane.isMarkdownSelected())
                         );
+                        newNotePane.setPreviousColour(newNotePane.getUserChosenColour());
                         if (newNotePane.isApplySelected()) {
                             LOGGER.log(Level.SEVERE, "Selecting nodes to link to note");
                             // Get selected nodes from the graph.
@@ -709,14 +711,6 @@ public class NotesViewPane extends BorderPane {
     protected void clearNotes() {
         Platform.runLater(() -> notesListVBox.getChildren().removeAll(notesListVBox.getChildren()));
         synchronized (LOCK) {
-            /*notesViewEntries.forEach(note -> {
-                if (note.getEditMode()) {
-                    note.setEditMode(false);
-                    note.setWasInEditMode(true);
-                } else {
-                    note.setWasInEditMode(false);
-                }
-            });*/
             notesViewEntries.clear();
             notesDateTimeCache.clear();
         }

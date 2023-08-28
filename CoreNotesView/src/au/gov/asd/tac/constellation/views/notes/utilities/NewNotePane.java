@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Insets;
@@ -69,6 +71,8 @@ public class NewNotePane {
     private static final double WIDTH = 500;
     private static final double HEIGHT = 300;
 
+    private static final Logger LOGGER = Logger.getLogger(NewNotePane.class.getName());
+
     private int currentlyEditedNoteId = 0;
 
     private final TextArea contentField;
@@ -80,6 +84,7 @@ public class NewNotePane {
     private TextFlow previewTextFlow;
 
     private final ColorPicker newNoteColour;
+    private String previousColour = "#942483";
 
     private boolean applySelected = true;
     private boolean markdownSelected = false;
@@ -285,11 +290,16 @@ public class NewNotePane {
         stage.setX((screens.get(0).getVisualBounds().getMinX() + screens.get(0).getVisualBounds().getWidth() / 2) - WIDTH / 2);
         stage.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - (HEIGHT * 2.5) / 2);
 
+        try {
         if (!stage.isShowing()) {
             stage.showAndWait();
+            }
+        } catch (final Exception e) {
+            LOGGER.log(Level.SEVERE, "Error opening popup", e);
+        } finally {
+            hiddenDialog.dispose();
         }
 
-        hiddenDialog.dispose();
     }
 
     public TextField getTitleField() {
@@ -355,5 +365,14 @@ public class NewNotePane {
     public CheckBox getMarkdownCheckbox() {
         return enableMarkdown;
     }
+
+    public String getPreviousColour() {
+        return previousColour;
+    }
+
+    public void setPreviousColour(final String previousColour) {
+        this.previousColour = previousColour;
+    }
+
 
 }
