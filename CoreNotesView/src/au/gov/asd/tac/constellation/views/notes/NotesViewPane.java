@@ -744,7 +744,6 @@ public class NotesViewPane extends BorderPane {
         dateTimeLabel.setMaxWidth(185);
         dateTimeLabel.setPadding(new Insets(0, 0, 0, 0));
 
-
         // Define title label
         final Label titleLabel = new Label(newNote.getNoteTitle());
         titleLabel.setWrapText(true);
@@ -757,7 +756,6 @@ public class NotesViewPane extends BorderPane {
         contentLabel.setWrapText(true);
         contentLabel.setMinWidth(50);
         contentLabel.setAlignment(Pos.TOP_LEFT);
-
 
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.setMarkdownEnabled(newNote.isInMarkdown());
@@ -913,7 +911,7 @@ public class NotesViewPane extends BorderPane {
                 containerPane.getChildren().clear();
                 final VBox textFlowVBox = new VBox(newNote.getContentTextFlow());
                 containerPane.getChildren().add(textFlowVBox);
-                noteInformation.setSpacing(3);
+                noteInformation.setSpacing(1);
             } else if (showMoreButton.getText().equals(SHOW_LESS)) {
                 contentLabel.setText(newNote.getNoteContent());
                 showMoreButton.setText(SHOW_MORE);
