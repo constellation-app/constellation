@@ -59,13 +59,13 @@ public class MarkerUtilities {
         final double radius = mapWidth / (2 * Math.PI);
         final double lattitude = lat * (Math.PI / 180);
         final double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
-        return (mapHeight / 2) - ((mapWidth + 20) * y / (2 * Math.PI)); // 461
+        return (mapHeight / 2) - (mapWidth * y / (2 * Math.PI)); // 461
         //return (mapHeight / 2) - (lattitude * mapHeight) / 180;
         //return mapHeight * Math.log(Math.tan((Math.PI / 4))) - (mapWidth * y / (2 * Math.PI));
         //return (mapHeight / 2) - (radius * y);
 
-        /*final double minY = latToY(MapView.MAX_LAT);
-        final double maxY = latToY(MapView.MIN_LAT);
+        /*final double minY = latToY(MapView.MIN_LAT);
+        final double maxY = latToY(MapView.MAX_LAT);
 
         return mapHeight * (latToY(lat) - minY) / (maxY - minY);*/
     }

@@ -122,7 +122,7 @@ public class MapView extends ScrollPane {
     public static final double MAX_LONG = 190.48712;
 
     // Furthest lattitude to the north and south
-    public static final double MIN_LAT = -58.488473;
+    public static final double MIN_LAT = -89.000389; // -89.000389 -58.488473
     public static final double MAX_LAT = 83.63001;
 
     public static final double MAP_WIDTH = 1010.33;
@@ -1521,9 +1521,9 @@ public class MapView extends ScrollPane {
      */
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
-            marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), 932); // 893.6783733826248 939.9363395860635 923.75
+            marker.setMarkerPosition(1010.33, 923.75); // 893.6783733826248 939.9363395860635 923.75
             LOGGER.log(Level.SEVERE, "Map width: " + mapGroupHolder.getPrefWidth() + " map height: " + mapGroupHolder.getPrefHeight());
-            //marker.setMarkerPosition(mapStackPane.getWidth(), mapStackPane.getHeight());
+            //marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 if (marker instanceof GeoShapePolygonMarker) {
                     final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
