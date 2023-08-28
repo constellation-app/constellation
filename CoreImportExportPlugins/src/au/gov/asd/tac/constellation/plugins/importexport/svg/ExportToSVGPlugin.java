@@ -16,32 +16,21 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.processing.GraphRecordStoreUtilities;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
-import au.gov.asd.tac.constellation.plugins.logging.ConstellationLoggerHelper;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
-import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
-import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -78,25 +67,44 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final File imageFile = new File(fnam);
 
+        final SVGObject node = new SVGObject("SVG");
+        node.setAttribute("id", "Node");
+        node.setAttribute("width", "60");
+        node.setAttribute("height", "60");
+        
+        final SVGObject square = new SVGObject("rect");
+        square.setAttribute("width", "50");
+        square.setAttribute("height", "50");
+        square.setAttribute("x", "5");
+        square.setAttribute("y", "5");
+        square.setAttribute("rx", "5");
+        square.setAttribute("ry", "5");
+        square.setAttribute("style","fill:red;stroke:black;stroke-width:5");
+        
+        node.setChild(square);
+        
         try {
-            exportToSVG(imageFile);
+            exportToSVG(imageFile, node.toString());
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
-        
         }
-
+       
     }   
     
-    private void exportToSVG(File file) throws IOException{
+    /**
+     * Exports a graph to an SVG format.
+     * @param file
+     * @param data
+     * @throws IOException 
+     */
+    private void exportToSVG(File file, final String data) throws IOException{
         file.createNewFile();
-      
         // Writes the content to the file
         try ( // creates a FileWriter Object
                 FileWriter writer = new FileWriter(file)) {
             // Writes the content to the file
-            writer.write("This\n is\n an\n example\n");
+            writer.write(data);
             writer.flush();
         }
     }
-    
 }
