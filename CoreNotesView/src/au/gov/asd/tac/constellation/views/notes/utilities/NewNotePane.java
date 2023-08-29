@@ -281,7 +281,7 @@ public class NewNotePane {
         hiddenDialog.setModal(true);
         hiddenDialog.setUndecorated(true);
         hiddenDialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        SwingUtilities.invokeLater(() -> hiddenDialog.setVisible(true));
+
 
         final List<Screen> screens = Screen.getScreensForRectangle(parent.getX(), parent.getY(), parent.widthProperty().get(), parent.heightProperty().get());
 
@@ -291,10 +291,11 @@ public class NewNotePane {
         stage.setY((screens.get(0).getVisualBounds().getMinY() + screens.get(0).getVisualBounds().getHeight() / 2) - (HEIGHT * 2.5) / 2);
 
         try {
-        if (!stage.isShowing()) {
-            stage.showAndWait();
+            SwingUtilities.invokeLater(() -> hiddenDialog.setVisible(true));
+            if (!stage.isShowing()) {
+                stage.showAndWait();
             }
-        } catch (final Exception e) {
+        } catch (final IllegalStateException e) {
             LOGGER.log(Level.SEVERE, "Error opening popup", e);
         } finally {
             hiddenDialog.dispose();
