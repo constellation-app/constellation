@@ -17,8 +17,6 @@ package au.gov.asd.tac.constellation.views.notes.utilities;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javafx.geometry.Insets;
@@ -37,9 +35,6 @@ import org.apache.commons.lang3.StringUtils;
  * @author altair1673
  */
 public class MarkdownTree {
-
-    private static final Logger LOGGER = Logger.getLogger(MarkdownTree.class.getName());
-
     // Root node that doesn't contain any text and is of no type, it is just an entry point for the tree
     private final MarkdownNode root;
 

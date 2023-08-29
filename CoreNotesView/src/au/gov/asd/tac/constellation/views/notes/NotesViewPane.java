@@ -655,9 +655,7 @@ public class NotesViewPane extends BorderPane {
 
                 if (CollectionUtils.isNotEmpty(notesToRender)) {
                     notesToRender.sort(Comparator.comparing(NotesViewEntry::getDateTime));
-                    notesToRender.forEach(note -> {
-                        createNote(note);
-                    });
+                    notesToRender.forEach(note -> createNote(note));
                 }
                 notesListScrollPane.applyCss();
                 notesListScrollPane.layout();

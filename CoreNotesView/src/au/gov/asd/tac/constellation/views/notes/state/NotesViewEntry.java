@@ -43,7 +43,6 @@ public class NotesViewEntry implements PluginReportListener {
     private List<Integer> transactionsSelected;
     private List<String> tags = new ArrayList<>();
     private boolean editMode;
-    private boolean wasInEditMode = false;
     private boolean isShowing = true;
     private boolean inMarkdown = false;
     private TextFlow contentTextFlow;

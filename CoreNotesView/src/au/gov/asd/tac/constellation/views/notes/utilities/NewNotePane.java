@@ -54,8 +54,8 @@ import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.stage.Window;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import javax.swing.WindowConstants;
 
 /**
  * A Pane that has all the controls that lets user create a new Note
@@ -280,8 +280,7 @@ public class NewNotePane {
         final JDialog hiddenDialog = new JDialog();
         hiddenDialog.setModal(true);
         hiddenDialog.setUndecorated(true);
-        hiddenDialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
+        hiddenDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
         final List<Screen> screens = Screen.getScreensForRectangle(parent.getX(), parent.getY(), parent.widthProperty().get(), parent.heightProperty().get());
 
