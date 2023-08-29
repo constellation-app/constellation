@@ -1521,7 +1521,7 @@ public class MapView extends ScrollPane {
      */
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
-            marker.setMarkerPosition(1010.33, 923.75); // 893.6783733826248 939.9363395860635 923.75
+            marker.setMarkerPosition(1010.33, 924.75); // 893.6783733826248 939.9363395860635 923.75
             LOGGER.log(Level.SEVERE, "Map width: " + mapGroupHolder.getPrefWidth() + " map height: " + mapGroupHolder.getPrefHeight());
             //marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
@@ -1591,7 +1591,7 @@ public class MapView extends ScrollPane {
         // Read map from file
         try {
 
-            final File map = ConstellationInstalledFileLocator.locate("modules/ext/data/MercratorMapView4.txt", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain());
+            final File map = ConstellationInstalledFileLocator.locate("modules/ext/data/MercratorMapView5.txt", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain());
             try (final BufferedReader bFileReader = new BufferedReader(new FileReader(map))) {
                 String path = "";
                 String line = "";
