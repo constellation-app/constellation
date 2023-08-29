@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
@@ -66,25 +67,17 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException { 
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final File imageFile = new File(fnam);
+        SVGResourceConstants resourceClass = new SVGResourceConstants();
 
-        final SVGObject node = new SVGObject("SVG");
-        node.setAttribute("id", "Node");
-        node.setAttribute("width", "60");
-        node.setAttribute("height", "60");
-        
-        final SVGObject square = new SVGObject("rect");
-        square.setAttribute("width", "50");
-        square.setAttribute("height", "50");
-        square.setAttribute("x", "5");
-        square.setAttribute("y", "5");
-        square.setAttribute("rx", "5");
-        square.setAttribute("ry", "5");
-        square.setAttribute("style","fill:red;stroke:black;stroke-width:5");
-        
-        node.setChild(square);
-        
+        InputStream inputStream = resourceClass.getClass().getResourceAsStream(SVGResourceConstants.NODE);
+        SVGObject node;
         try {
-            exportToSVG(imageFile, node.toString());
+            node = SVGParser.parse(inputStream);
+            try {
+                exportToSVG(imageFile, node.toString());
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }

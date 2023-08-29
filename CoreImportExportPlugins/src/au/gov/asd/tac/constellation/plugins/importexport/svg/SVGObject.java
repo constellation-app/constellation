@@ -32,11 +32,16 @@ public class SVGObject {
     private final String type;
     private final Map<String, String> attributes;
     private final Collection<SVGObject> children;
+    private final SVGObject parent;
     
-    public SVGObject(String type){
+    public SVGObject(String type, SVGObject parent){
         this.type = type;
         this.attributes = new HashMap<>();
         this.children = new ArrayList<>();
+        this.parent = parent;
+        if (this.parent != null){
+            this.parent.setChild(this);
+        }
     }
     
     /**
@@ -50,6 +55,19 @@ public class SVGObject {
      */
     public void setAttribute(String attributeKey, String attributeValue){
         this.attributes.put(attributeKey, attributeValue);
+    }
+    
+        /**
+     * Adds an attribute to the current SVG element. 
+     * Only one attribute value can be provided per key.
+     * Attempting to add a value to an existing key 
+     * will override the last value provided.
+     * 
+     * @param attributeKey such as "height", "width", "style"
+     * @param attributeValue such as "100", "stroke-width:3", "fill:rgb(0,0,255)".
+     */
+    public void setAttributes(Map<String , String> attributeMap){
+        this.attributes.putAll(attributeMap);
     }
     
     /**
@@ -162,5 +180,9 @@ public class SVGObject {
             childSVGString.append(child.toString(childPrefix));
         }
         return childSVGString.toString();
+    }
+    
+    public final SVGObject getParent(){
+        return this.parent;
     }
 }
