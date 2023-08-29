@@ -44,8 +44,11 @@ public class NotesViewEntry implements PluginReportListener {
     private List<String> tags = new ArrayList<>();
     private boolean editMode;
     private boolean isShowing = true;
+
     private boolean inMarkdown = false;
     private TextFlow contentTextFlow;
+
+    private boolean isUndone = false;
 
     private String tempContent;
     private String tempTitle;
@@ -205,6 +208,14 @@ public class NotesViewEntry implements PluginReportListener {
 
     public boolean isInMarkdown() {
         return inMarkdown;
+    }
+  
+    public boolean getUndone() {
+        return isUndone;
+    }
+
+    public void setUndone(final boolean isUndone) {
+        this.isUndone = isUndone;
     }
 
     @Override

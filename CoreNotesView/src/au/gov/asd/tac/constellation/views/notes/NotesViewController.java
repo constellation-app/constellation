@@ -109,6 +109,8 @@ public class NotesViewController {
 
             final int notesViewStateAttributeId = NotesViewConcept.MetaAttribute.NOTES_VIEW_STATE.get(graph);
             if (notesViewStateAttributeId == Graph.NOT_FOUND) {
+                //Try to populate autonotes from the graph report for new graphs where the state is not saved yet
+                pane.setGraphReport();
                 return;
             }
 
