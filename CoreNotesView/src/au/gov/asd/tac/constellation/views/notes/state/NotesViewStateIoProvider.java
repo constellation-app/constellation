@@ -188,6 +188,10 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                     if (note == null) {
                         jsonGenerator.writeNull();
                     } else {
+                        if (note.getUndone()) {
+                            continue;
+                        }
+
                         jsonGenerator.writeStartArray();
                         jsonGenerator.writeString(note.getDateTime());
                         jsonGenerator.writeString(note.getNoteTitle());
