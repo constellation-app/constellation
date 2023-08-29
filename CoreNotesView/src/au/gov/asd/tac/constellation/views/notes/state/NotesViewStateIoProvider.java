@@ -72,20 +72,19 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 "#942483",
                                 false
                         ));
-                        noteViewEntries.get(i).setUndone(notesArray.get(i).get(5).asBoolean());
 
-                        if (notesArray.get(i).get(8) != null) {
-                            noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(8).asText());
+                        if (notesArray.get(i).get(7) != null) {
+                            noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(7).asText());
                         }
 
-                        if (notesArray.get(i).get(9) != null) {
-                            noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(9).asBoolean());
+                        if (notesArray.get(i).get(8) != null) {
+                            noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(8).asBoolean());
                         }
 
                         if (notesArray.get(i).get(3).asBoolean() == true && notesArray.get(i).get(4).asBoolean() == false) {
 
-                            final JsonNode nodesArrayNode = notesArray.get(i).get(6);
-                            final JsonNode transactionsArrayNode = notesArray.get(i).get(7);
+                            final JsonNode nodesArrayNode = notesArray.get(i).get(5);
+                            final JsonNode transactionsArrayNode = notesArray.get(i).get(6);
 
                             // Add the selected nodes
                             if (nodesArrayNode != null) {
@@ -107,12 +106,12 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
 
                         } else if (notesArray.get(i).get(3).asBoolean() && notesArray.get(i).get(4).asBoolean()) {
 
-                            if (notesArray.get(i).get(6) != null) {
-                                noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(6).asText());
+                            if (notesArray.get(i).get(5) != null) {
+                                noteViewEntries.get(i).setNodeColour(notesArray.get(i).get(5).asText());
                             }
 
-                            if (notesArray.get(i).get(7) != null) {
-                                noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(7).asBoolean());
+                            if (notesArray.get(i).get(6) != null) {
+                                noteViewEntries.get(i).setInMarkdown(notesArray.get(i).get(6).asBoolean());
                             }
 
                         } else if (notesArray.get(i).get(3).asBoolean() == false) {
@@ -140,7 +139,6 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                                 notesArray.get(i).get(7).asText(),
                                 notesArray.get(i).get(8).asBoolean()
                         ));
-                        noteViewEntries.get(i).setUndone(notesArray.get(i).get(5).asBoolean());
                     }
                 }
             }
@@ -196,8 +194,6 @@ public class NotesViewStateIoProvider extends AbstractGraphIOProvider {
                         jsonGenerator.writeString(note.getNoteContent());
                         jsonGenerator.writeBoolean(note.isUserCreated());
                         jsonGenerator.writeBoolean(note.isGraphAttribute());
-
-                        jsonGenerator.writeBoolean(note.getUndone());
 
                         if (!note.isGraphAttribute() && note.isUserCreated()) {
 
