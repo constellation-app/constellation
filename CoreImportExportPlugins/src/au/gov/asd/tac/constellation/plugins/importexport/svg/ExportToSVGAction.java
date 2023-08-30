@@ -23,8 +23,6 @@ import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
@@ -46,7 +44,6 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("CTL_ExportToSVG=To SVG")
 public final class ExportToSVGAction implements ActionListener {
 
-    private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     private static final String TITLE = "Export to SVG";
     
     private final GraphNode context; 

@@ -34,7 +34,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -47,12 +46,7 @@ import org.openide.util.lookup.ServiceProvider;
 @PluginInfo(pluginType = PluginType.EXPORT, tags = {PluginTags.EXPORT})
 @NbBundle.Messages("ExportToSVGPlugin=Export to SVG")
 public class ExportToSVGPlugin extends SimpleReadPlugin {
-    private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "filename");
-    
-    public ExportToSVGPlugin(){
-        
-    }
     
     @Override
     public PluginParameters createParameters() {
@@ -92,13 +86,13 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
      * @throws IOException 
      */
     private void exportToSVG(final File file, final SVGObject data) throws IOException{
-        file.createNewFile();
-        data.setAttribute("xmlns", "http://www.w3.org/2000/svg"); // Makes SVG Object Valid
-
-        final FileWriter writer = new FileWriter(file);
-        writer.write(data.toString());
-        writer.flush();
-        
+        if (file.createNewFile()) {
+            data.setAttribute("xmlns", "http://www.w3.org/2000/svg"); // Makes SVG Object Valid
+            try (final FileWriter writer = new FileWriter(file)){
+                writer.write(data.toString());
+                writer.flush();        
+            }
+        }
     }
     
     /**
@@ -110,7 +104,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
      * @return 
      */
     private ArrayList<SVGObject> extractNodeElements(final GraphReadMethods graph) {
-    ArrayList<SVGObject> nodes = new ArrayList<>();
+        ArrayList<SVGObject> nodes = new ArrayList<>();
         Float[][] bounds = getBounds(graph);
         
         int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
@@ -191,6 +185,6 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                 } 
             }
         }
-    return bounds;
+        return bounds;
     }
 }

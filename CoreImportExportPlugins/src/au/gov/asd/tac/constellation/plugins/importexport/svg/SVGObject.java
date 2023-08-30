@@ -173,7 +173,7 @@ public class SVGObject {
      */
     private String elementFooterToSVG(final String prefix){
         String linePrefix = SeparatorConstants.NEWLINE;
-         if (prefix != null){
+        if (prefix != null){
             linePrefix += prefix;
         }
         return String.format("%s</%s>", linePrefix, this.type);

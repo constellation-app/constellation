@@ -24,8 +24,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The SVGParser facilitates the translation of SVGfiles into
@@ -36,8 +34,6 @@ import java.util.logging.Logger;
  * @author capricornunicorn123
  */
 public class SVGParser {
-
-    private static final Logger LOG = Logger.getLogger(SVGParser.class.getName());
     
     private SVGParser() {
         throw new IllegalStateException("Utility class");
@@ -79,10 +75,8 @@ public class SVGParser {
                     throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", svgElement));
                 }
                 
-                if (currentElement != null) {
-                    if (currentElement.getParent() == null){
-                        roots.add(currentElement);
-                    }
+                if (currentElement != null && currentElement.getParent() == null){
+                    roots.add(currentElement);
                 }
             }
         }
