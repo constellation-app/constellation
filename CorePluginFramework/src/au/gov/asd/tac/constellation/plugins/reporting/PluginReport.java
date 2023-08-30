@@ -60,7 +60,9 @@ public class PluginReport {
 
     private final int position;
 
-    public PluginReport(GraphReport graphReport, Plugin plugin) {
+    private boolean isUndone = false;
+
+    public PluginReport(final GraphReport graphReport, final Plugin plugin) {
         this.graphReport = graphReport;
         this.pluginName = plugin.getName();
         this.pluginDescription = plugin.getDescription();
@@ -79,7 +81,7 @@ public class PluginReport {
      *
      * @param listener the listener to add.
      */
-    public synchronized void addPluginReportListener(PluginReportListener listener) {
+    public synchronized void addPluginReportListener(final PluginReportListener listener) {
         if (listener != null && !listeners.contains(listener)) {
             listeners.add(listener);
         }
@@ -90,7 +92,7 @@ public class PluginReport {
      *
      * @param listener the listener to remove.
      */
-    public synchronized void removePluginReportListener(PluginReportListener listener) {
+    public synchronized void removePluginReportListener(final PluginReportListener listener) {
         listeners.remove(listener);
     }
 
@@ -174,7 +176,7 @@ public class PluginReport {
      *
      * @param message the new message.
      */
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         this.message = message;
     }
 
@@ -194,7 +196,7 @@ public class PluginReport {
      *
      * @param currentStep the new current step.
      */
-    public void setCurrentStep(int currentStep) {
+    public void setCurrentStep(final int currentStep) {
         this.currentStep = currentStep;
     }
 
@@ -218,7 +220,7 @@ public class PluginReport {
      *
      * @param totalSteps the new total steps.
      */
-    public void setTotalSteps(int totalSteps) {
+    public void setTotalSteps(final int totalSteps) {
         this.totalSteps = totalSteps;
     }
 
@@ -239,7 +241,7 @@ public class PluginReport {
      *
      * @param error the new error.
      */
-    public void setError(Throwable error) {
+    public void setError(final Throwable error) {
         this.error = error;
     }
 
@@ -287,7 +289,7 @@ public class PluginReport {
      * @return true if the specified collection of tags contains all tags of
      * this plugin.
      */
-    public boolean containsAllTags(Set<String> filteredTags) {
+    public boolean containsAllTags(final Set<String> filteredTags) {
         for (String tag : tags) {
             if (!filteredTags.contains(tag)) {
                 return false;
@@ -305,7 +307,7 @@ public class PluginReport {
      * @return true if the specified collection of tags contains at least one of
      * the tags of this plugin.
      */
-    public boolean containsAnyTag(Set<String> allowedTags) {
+    public boolean containsAnyTag(final Set<String> allowedTags) {
         for (String tag : tags) {
             if (allowedTags.contains(tag)) {
                 return true;
@@ -328,7 +330,7 @@ public class PluginReport {
      *
      * @return the newly created PluginReport that represents the plugin.
      */
-    public PluginReport addChildReport(Plugin plugin) {
+    public PluginReport addChildReport(final Plugin plugin) {
         PluginReport childReport = new PluginReport(graphReport, plugin);
         childReports.add(childReport);
         listeners.stream().forEach(listener -> listener.addedChildReport(this, childReport));
@@ -346,5 +348,13 @@ public class PluginReport {
      */
     public List<PluginReport> getUChildReports() {
         return uChildReports;
+    }
+
+    public boolean isUndone() {
+        return isUndone;
+    }
+
+    public void setUndone(final boolean isUndone) {
+        this.isUndone = isUndone;
     }
 }

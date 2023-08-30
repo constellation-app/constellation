@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.help;
 
 import au.gov.asd.tac.constellation.help.utilities.Generator;
+import au.gov.asd.tac.constellation.help.utilities.HelpMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -27,9 +28,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.SystemUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -145,26 +148,45 @@ public class HelpServlet extends HttpServlet {
         try {
             if (referer != null && !(referer.contains("toc.md") || requestPath.contains(".css") || requestPath.contains(".js")
                     || requestPath.contains(".ico"))) {
-                final String repeatedText = "src/au/gov/asd";
-                final int firstIndex = requestPath.indexOf(repeatedText);
-                if (firstIndex != -1) {
-                    final int secondIndex = requestPath.indexOf(repeatedText, firstIndex + repeatedText.length());
-                    if (secondIndex != -1) {
-                        // If the request path is duplicated then change it to be the last half
-                        final File file = new File(Generator.getBaseDirectory());
-                        final URL fileUrl = file.toURI().toURL();
-                        String requestfrontHalfRemoved = requestPath.replace(fileUrl.toString(), ""); // remove first bit
-                        String refererfrontHalfRemoved = referer.replace(fileUrl.toString(), ""); // remove first bit
-                        refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove filename.md
-                        refererfrontHalfRemoved = refererfrontHalfRemoved.substring(0, refererfrontHalfRemoved.lastIndexOf("/")); // remove up one level
-                        refererfrontHalfRemoved = refererfrontHalfRemoved.replace("http://localhost:" + HelpWebServer.getPort(), "");
-                        requestfrontHalfRemoved = requestfrontHalfRemoved.replaceFirst(refererfrontHalfRemoved, "");
-
-                        final String redirectURL = Generator.getBaseDirectory() + requestfrontHalfRemoved;
-                        final File file2 = new File(redirectURL);
-                        final URL fileUrl2 = file2.toURI().toURL();
-                        HelpServlet.redirect = true;
-                        return fileUrl2;
+                if (requestPath.contains(".png")) {
+                    // get image referred by page itself
+                    final String extText = "/ext/";
+                    final int firstIndex = requestPath.indexOf(extText);
+                    if (firstIndex != -1) {
+                        final int secondIndex = requestPath.indexOf(extText, firstIndex + extText.length());
+                        if (secondIndex != -1) {
+                            // cut-off the duplicate section in the request path
+                            final String duplicateSubstring = requestPath.substring(firstIndex, secondIndex);
+                            final String fileString = new StringBuilder("/file:").append(SystemUtils.IS_OS_WINDOWS ? "/" : "").toString();
+                            final String newPath = requestPath.replaceFirst(duplicateSubstring, "").replace(fileString, "");
+                            final File imageFile = new File(newPath);
+                            final URL imageUrl = imageFile.toURI().toURL();
+                            HelpServlet.redirect = true;
+                            return imageUrl;
+                        }
+                    }
+                } else if (requestPath.contains(".md")) {
+                    // find correct help page
+                    final String srcText = "/src/";
+                    final int firstIndex = requestPath.indexOf(srcText);
+                    if (firstIndex != -1) {
+                        final int secondIndex = requestPath.indexOf(srcText, firstIndex + srcText.length());
+                        if (secondIndex != -1) {
+                            final String pathSubstring = requestPath.substring(secondIndex + srcText.length()).replace("/", File.separator);
+                            final Collection<String> helpAddresses = HelpMapper.getMappings().values();
+                            
+                            for (final String helpAddress : helpAddresses) {
+                                // if helpAddress contains the substring, this should be the correct path
+                                // note that due to the way help page paths are constructed,
+                                // there is an assumption that the collections values (not just keys) are also unique
+                                if (helpAddress.contains(pathSubstring)) {
+                                    final File pageFile = new File(Generator.getBaseDirectory() + File.separator + helpAddress.substring(2));
+                                    final URL fileUrl = pageFile.toURI().toURL();
+                                    HelpServlet.redirect = true;
+                                    return fileUrl;
+                                }
+                            }
+                        }
                     }
                 }
             } else if (HelpServlet.redirect) {

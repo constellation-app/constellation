@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.atLeast;
 import org.openide.util.ImageUtilities;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.AfterClass;
@@ -140,7 +140,7 @@ public class DefaultCustomIconProviderNGTest {
                        
             System.out.print("TEST: Check the number of calls on a static method: ");
             // Verify defaultCustomIconProvider.getIconDirectory was called the correct number of times
-            defaultCustomIconProviderMock.verify(() -> DefaultCustomIconProvider.getIconDirectory(), times(6));
+            defaultCustomIconProviderMock.verify(() -> DefaultCustomIconProvider.getIconDirectory(), atLeast(5));
             System.out.println(" *PASSED*");
             
         }

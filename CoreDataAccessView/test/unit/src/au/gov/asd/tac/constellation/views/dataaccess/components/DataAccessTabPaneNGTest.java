@@ -57,6 +57,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
+import javafx.util.Pair;
 import org.mockito.ArgumentCaptor;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
@@ -95,7 +96,7 @@ public class DataAccessTabPaneNGTest {
     
     private DataAccessViewTopComponent topComponent;
     private DataAccessPane dataAccessPane;
-    private Map<String, List<DataAccessPlugin>> plugins;
+    private Map<String, Pair<Integer, List<DataAccessPlugin>>> plugins;
     
     private DataAccessTabPane dataAccessTabPane;
     

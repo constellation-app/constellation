@@ -17,8 +17,11 @@ package au.gov.asd.tac.constellation.views.notes.state;
 
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReportListener;
+import au.gov.asd.tac.constellation.views.notes.utilities.MarkdownTree;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.geometry.Insets;
+import javafx.scene.text.TextFlow;
 
 /**
  * Holds the information for a note in the Notes View.
@@ -42,10 +45,23 @@ public class NotesViewEntry implements PluginReportListener {
     private boolean editMode;
     private boolean isShowing = true;
 
-    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour) {
+    private boolean inMarkdown = false;
+    private TextFlow contentTextFlow;
+
+    private boolean isUndone = false;
+
+    private String tempContent;
+    private String tempTitle;
+
+
+    public NotesViewEntry(final String dateTime, final String noteTitle, final String noteContent, final boolean userCreated, final boolean graphAttribute, final String nodeColour, final boolean inMarkdown) {
         this.dateTime = dateTime;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
+        contentTextFlow = new TextFlow();
+      
+        tempContent = "";
+        tempTitle = "";
 
         if (nodeColour != null) {
             this.nodeColour = nodeColour;
@@ -57,6 +73,16 @@ public class NotesViewEntry implements PluginReportListener {
             this.nodesSelected = new ArrayList<>();
             this.transactionsSelected = new ArrayList<>();
         }
+        this.inMarkdown = inMarkdown;
+    }
+
+    public TextFlow getContentTextFlow() {
+        return contentTextFlow;
+    }
+
+    public void setContentTextFlow(final TextFlow renderedTextFlow) {
+        contentTextFlow.setPadding(new Insets(0, 0, 0, 0));
+        contentTextFlow = renderedTextFlow;
     }
 
     public String getDateTime() {
@@ -147,6 +173,49 @@ public class NotesViewEntry implements PluginReportListener {
     public void setID(final int id) {
         this.id = id;
 
+    }
+
+    public void refreshTextFlow() {
+        contentTextFlow.getChildren().clear();
+
+        final MarkdownTree md = new MarkdownTree(noteTitle + "\n\n" + noteContent);
+        md.parse();
+        contentTextFlow = md.getRenderedText();
+        contentTextFlow.autosize();
+    }
+
+    public String getTempContent() {
+        return tempContent;
+
+    }
+
+    public void setTempContent(final String tempContent) {
+        this.tempContent = tempContent;
+    }
+
+    public void setTempTitle(final String tempTitle) {
+        this.tempTitle = tempTitle;
+    }
+
+
+    public String getTempTitle() {
+        return tempTitle;
+    }
+
+    public void setInMarkdown(final boolean inMarkdown) {
+        this.inMarkdown = inMarkdown;
+    }
+
+    public boolean isInMarkdown() {
+        return inMarkdown;
+    }
+  
+    public boolean getUndone() {
+        return isUndone;
+    }
+
+    public void setUndone(final boolean isUndone) {
+        this.isUndone = isUndone;
     }
 
     @Override

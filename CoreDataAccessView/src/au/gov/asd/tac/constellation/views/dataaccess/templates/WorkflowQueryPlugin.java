@@ -91,6 +91,9 @@ public abstract class WorkflowQueryPlugin extends SimplePlugin {
 
         // create a service for executing jobs, limiting concurrent executions to the max concurrent plugins parameter.
         final int maxConcurrentPlugins = parameters.getIntegerValue(MAX_CONCURRENT_PLUGINS_PARAMETER_ID);
+
+        // Note that we are not using the global thread pool here so that we can further limit the number of concurrent plugins we can run at once
+        // via the max concurrent plugins parameter
         final ExecutorService workflowExecutor = Executors.newFixedThreadPool(maxConcurrentPlugins);
 
         // schedule a job for each batch, where the job is to execute the defined workflow

@@ -24,9 +24,8 @@ import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -103,8 +102,6 @@ import org.openide.windows.TopComponent;
     "HINT_AttributeEditorTopComponent=Attribute Editor"
 })
 public final class AttributeEditorTopComponent extends JavaFxTopComponent<AttributeEditorPanel> implements GraphManagerListener, GraphChangeListener, UndoRedo.Provider, PreferenceChangeListener {
-    
-    private static final Logger LOGGER = Logger.getLogger(AttributeEditorTopComponent.class.getName());
 
     private static final String ATTRIBUTE_EDITOR_GRAPH_CHANGED_THREAD_NAME = "Attribute Editor Graph Changed Updater";
     private final AttributeEditorPanel attributePanel;
@@ -123,20 +120,19 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         setToolTipText(Bundle.HINT_AttributeEditorTopComponent());
 
         refreshRunnable = () -> {
-            try {
-                final ArrayList<Object> devNull = new ArrayList<>();
-                while (queue.drainTo(devNull) > 0) {
-                    Thread.sleep(50);
-                }
 
-                if (reader != null) {
-                    attributePanel.updateEditorPanel(reader.refreshAttributes());
-                }
-            } catch (final InterruptedException ex) {
-                LOGGER.log(Level.SEVERE, "Thread was interrupted");
-                Thread.currentThread().interrupt();
+            final List<Object> devNull = new ArrayList<>();
+
+            while (!queue.isEmpty()) {
+                queue.drainTo(devNull);
             }
+
+            if (reader != null) {
+                attributePanel.updateEditorPanel(reader.refreshAttributes());
+            }
+
         };
+
 
         GraphManager.getDefault().addGraphManagerListener(AttributeEditorTopComponent.this);
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
@@ -221,7 +217,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     protected void handleGraphChange(GraphChangeEvent event) {
-        if (!needsUpdate() || event == null) { // can be null at this point in time
+        if (event == null) { // can be null at this point in time
             return;
         }
         event = event.getLatest();

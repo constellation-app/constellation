@@ -123,6 +123,8 @@ public class RecentFilesNGTest {
                     .thenReturn(fo2);
             
             recentFilesMockedStatic.when(RecentFiles::getUniqueRecentFiles).thenCallRealMethod();
+            recentFilesMockedStatic.when(RecentFiles::decrementHistoryReadyLatch).thenCallRealMethod();
+            RecentFiles.decrementHistoryReadyLatch();
 
             final List<HistoryItem> result = RecentFiles.getUniqueRecentFiles();
             assertTrue(result.contains(h1));

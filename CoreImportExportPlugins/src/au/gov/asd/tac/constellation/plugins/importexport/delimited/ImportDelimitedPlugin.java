@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecutor;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.arrangements.AbstractInclusionGraph;
 import au.gov.asd.tac.constellation.plugins.arrangements.ArrangementPluginRegistry;
@@ -165,8 +166,13 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                 // At least 1 object was successfully imported. List all successful file imports, as well as any files
                 // that there were issues for. If there were any files with issues use a warning dialog.
                 final String fileFiles = (validFilenames.size() == 1) ? "file" : "files";
-                sbMessage.append(String.format("Extracted data from %d rows in %d %s. Skipped rows %d due to import error.",
-                        importedRows, validFilenames.size(), fileFiles, skippedRows));
+                final String rowRows = skippedRows == 1 ? "row" : "rows";
+                final String skippedRowsMsg = (skippedRows > 0 ? String.format("Skipped %d %s due to import error.", skippedRows, rowRows) : "");
+                
+                final String importedRowRows = importedRows == 1 ? "row" : "rows";
+                sbMessage.append(String.format("Extracted data from %d %s in %d %s. %s",
+                        importedRows, importedRowRows, validFilenames.size(), fileFiles, skippedRowsMsg));
+                
                 sbMessage.append(" Files with data: ");
                 for (int i = 0; i < validFilenames.size(); i++) {
                     if (i > 0) {
@@ -356,18 +362,18 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return destAttributeDefinitions.stream().map(attribute -> attribute.getAttribute().getName()).anyMatch(name -> (VisualConcept.VertexAttribute.X.getName().equals(name) || VisualConcept.VertexAttribute.Y.getName().equals(name) || VisualConcept.VertexAttribute.Z.getName().equals(name)));
     }
 
-    private static Map<String, Integer> processSourceVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, 
-            final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
+    private static Map<String, Integer> processSourceVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
+            final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         return processVertices(definition, graph, data, AttributeType.SOURCE_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
     }
-    
-    private static Map<String, Integer> processDestinationVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, 
-            final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
+
+    private static Map<String, Integer> processDestinationVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema,
+            final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         return processVertices(definition, graph, data, AttributeType.DESTINATION_VERTEX, initialiseWithSchema, skipInvalidRows, interaction, source);
     }
-    
+
     private static Map<String, Integer> processVertices(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final AttributeType attributeType,
-            final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
+            final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         final List<ImportAttributeDefinition> attributeDefinitions = definition.getDefinitions(attributeType);
 
         addAttributes(graph, GraphElementType.VERTEX, attributeDefinitions);
@@ -384,12 +390,13 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
             interaction.setProgress(++currentRow, totalRows, "Importing Vertices: " + source, true);
 
             final String[] row = data.get(i);
-            if (filter == null || filter.passesFilter(i - 1, row)) {
+            int vertexId = -1;
+            
+            try {
+                
+                if (filter == null || filter.passesFilter(i - 1, row)) {
 
-                final int vertexId = graph.addVertex();
-
-                try {
-
+                    vertexId = graph.addVertex();
                     for (final ImportAttributeDefinition attributeDefinition : attributeDefinitions) {
                         attributeDefinition.setValue(graph, vertexId, row, (i - 1));
                     }
@@ -401,13 +408,17 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                     // Count the number of processed rows to notify in the status message
                     ++importedRows;
 
-                } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
-                    if (skipInvalidRows) {
+                }
+            } catch (final DateTimeException | IllegalArgumentException | SecurityException ex) {
+                if (skipInvalidRows) {
+                    if(vertexId != -1) {
                         graph.removeVertex(vertexId);
-                        ++skippedRow;
-                    } else {
-                        throw ex;
-                    }
+                    }                    
+                    ++skippedRow;
+                } else {
+                    final PluginException plugEx = new PluginException(PluginNotificationLevel.ERROR, "Unable to complete import due to error with data. " + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.");
+                    plugEx.setStackTrace(ex.getStackTrace());
+                    throw plugEx;
                 }
             }
         }
@@ -416,7 +427,7 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
         return results;
     }
 
-    private static Map<String, Integer> processTransactions(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException {
+    private static Map<String, Integer> processTransactions(final ImportDefinition definition, final GraphWriteMethods graph, final List<String[]> data, final boolean initialiseWithSchema, final boolean skipInvalidRows, final PluginInteraction interaction, final String source) throws InterruptedException, PluginException {
         final List<ImportAttributeDefinition> sourceVertexDefinitions = definition.getDefinitions(AttributeType.SOURCE_VERTEX);
         final List<ImportAttributeDefinition> destinationVertexDefinitions = definition.getDefinitions(AttributeType.DESTINATION_VERTEX);
         final List<ImportAttributeDefinition> transactionDefinitions = definition.getDefinitions(AttributeType.TRANSACTION);
@@ -484,7 +495,9 @@ public class ImportDelimitedPlugin extends SimpleEditPlugin {
                         graph.removeVertex(destinationVertexId);
                         ++skippedRow;
                     } else {
-                        throw ex;
+                        final PluginException plugEx = new PluginException(PluginNotificationLevel.ERROR, "Unable to complete import due to error with data. " + ex.getMessage() +" The file can be imported if you select Skip invalid rows checkbox next to the Import button.");
+                        plugEx.setStackTrace(ex.getStackTrace());
+                        throw plugEx;
                     }
                 }
             }

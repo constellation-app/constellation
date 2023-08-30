@@ -289,5 +289,7 @@ public class DelimitedSourcePane extends SourcePane {
         importFileParserComboBox.getSelectionModel().select(((DelimitedImportController) importController).getImportFileParser());
         schemaCheckBox.setSelected(importController.isSchemaInitialised());
         filesIncludeHeadersCheckBox.setSelected(((DelimitedImportController) importController).isFilesIncludeHeadersEnabled());
+
+        importController.updateDisplayedAttributes();
     }
 }
