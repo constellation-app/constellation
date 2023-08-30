@@ -70,7 +70,6 @@ public class NotesViewController {
         }
 
         PluginExecution.withPlugin(new NotesViewStateReader(pane)).executeLater(graph);
-
     }
 
     /**
@@ -179,4 +178,9 @@ public class NotesViewController {
             return NOTES_WRITE_STATE;
         }
     }
+
+    public NotesViewTopComponent getParent() {
+        return parent;
+    }
+
 }
