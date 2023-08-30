@@ -99,7 +99,8 @@ public class SVGParser {
    
     private static Map<String,String> getElementAttributes(final String svgString) {
         Map<String,String> attributes = new HashMap<>();
-        String[] components = svgString.split(SeparatorConstants.BLANKSPACE);
+        String stripped = stripAngleBrackets(svgString);
+        String[] components = stripped.split(SeparatorConstants.BLANKSPACE);
         for (String component : components) {
             if (component.contains("=")) {
                 String[] attribute = component.split("=");
@@ -124,6 +125,22 @@ public class SVGParser {
      */
     private static String isolateSVGElement(final String line) {
         String svgElement = line.substring(line.indexOf("<"), line.indexOf(">") + 1);
+        if (svgElement.length() < 2){
+            throw new UnsupportedOperationException("SVG Element wrong");
+        }
+        return svgElement;
+    }
+    
+    /**
+     * Takes a String and returns the SVG element contents of that string.
+     * White spaces and foreign characters external to the tag are removed.
+     * Tag brackets are also removed.
+     * 
+     * @param line
+     * @return 
+     */
+    private static String stripAngleBrackets(final String line) {
+        String svgElement = line.substring(line.indexOf("<") + 1, line.indexOf(">"));
         if (svgElement.length() < 2){
             throw new UnsupportedOperationException("SVG Element wrong");
         }
