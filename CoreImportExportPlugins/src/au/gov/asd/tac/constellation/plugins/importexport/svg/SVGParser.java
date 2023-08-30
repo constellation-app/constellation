@@ -24,7 +24,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -56,35 +55,39 @@ public class SVGParser {
     public static SVGObject parse(InputStream inputStream) throws IOException {
         
         SVGObject currentElement = null; 
-        Collection<SVGObject> roots = new HashSet<>();
+        final Collection<SVGObject> roots = new HashSet<>();
         
-        //read the lines of the file
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = br.readLine()) != null) {
-                line = SVGParser.isolateSVGElement(line);
-                boolean openTag = SVGParser.isOpenTag(line);
-                boolean closeTag = SVGParser.isCloseTag(line);
+                final String svgElement = SVGParser.isolateSVGElement(line);
+                boolean openTag = SVGParser.isOpenTag(svgElement);
+                boolean closeTag = SVGParser.isCloseTag(svgElement);
                 
+                // Create a new SVGObject with the current SVGObject as the parent 
                 if (openTag){
-                    SVGObject newObject = new SVGObject(SVGParser.getElementType(line), currentElement);
-                    newObject.setAttributes(SVGParser.getElementAttributes(line));
+                    SVGObject newObject = new SVGObject(SVGParser.getElementType(svgElement), currentElement);
+                    newObject.setAttributes(SVGParser.getElementAttributes(svgElement));
                     currentElement = newObject;
                 }
-
+                // Move back up one level to the curren objects parent
                 if (closeTag){
                     currentElement = currentElement.getParent();
-                } if (!openTag && !closeTag){
-                    throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", line));
+                } 
+                // This parser curently requires all lines with be an SVG tag as it does not support multi line tags.
+                if (!openTag && !closeTag){
+                    throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", svgElement));
                 }
                 
-                if (currentElement != null && currentElement.getParent() == null){
-                    roots.add(currentElement);
+                if (currentElement != null) {
+                    if (currentElement.getParent() == null){
+                        roots.add(currentElement);
+                    }
                 }
             }
         }
         if (roots.size() != 1){
-            throw new UnsupportedOperationException(String.format("The SVG file has more than one outer element: %s", roots.toArray()));
+            throw new UnsupportedOperationException(String.format("The SVG file has %s outer elements.", roots.size()));
         } else{
             return (SVGObject) roots.toArray()[0];
         }
@@ -103,15 +106,15 @@ public class SVGParser {
     private static Map<String,String> getElementAttributes(final String svgString) {
         Map<String,String> attributes = new HashMap<>();
         String[] components = svgString.split(SeparatorConstants.BLANKSPACE);
-        for (int i = 0 ; i < components.length ; i++){
-            if (components[i].contains("=")){
-                String[] attribute = components[i].split("=");
+        for (String component : components) {
+            if (component.contains("=")) {
+                String[] attribute = component.split("=");
                 if (attribute.length == 2){
                     String key = attribute[0];
                     String value = attribute[1].replaceAll(SeparatorConstants.QUOTE, "");
                     attributes.put(key, value);
                 } else {
-                    throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", attribute.toString()));
+                    throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", component));
                 }
             }
         }

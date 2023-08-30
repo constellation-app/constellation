@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Object to store SVG data for ease of translation and modification between
- * code and SVG files
+ * Tree-like DataStructure to store SVG data for ease of translation and modification between
+ * code and SVG files.
  * 
  * @author capricornunicorn123
  */
@@ -32,16 +32,13 @@ public class SVGObject {
     private final String type;
     private final Map<String, String> attributes;
     private final Collection<SVGObject> children;
-    private final SVGObject parent;
+    private SVGObject parent;
     
-    public SVGObject(String type, SVGObject parent){
+    public SVGObject(final String type, final SVGObject parent){
         this.type = type;
         this.attributes = new HashMap<>();
         this.children = new ArrayList<>();
-        this.parent = parent;
-        if (this.parent != null){
-            this.parent.setChild(this);
-        }
+        this.setParent(parent);
     }
     
     /**
@@ -50,10 +47,10 @@ public class SVGObject {
      * Attempting to add a value to an existing key 
      * will override the last value provided.
      * 
-     * @param attributeKey such as "height", "width", "style"
-     * @param attributeValue such as "100", "stroke-width:3", "fill:rgb(0,0,255)".
+     * @param attributeKey such as "height", "width", "fill"
+     * @param attributeValue such as "100", "stroke-width:3", "rgb(0,0,255)".
      */
-    public void setAttribute(String attributeKey, String attributeValue){
+    public final void setAttribute(final String attributeKey, final String attributeValue){
         this.attributes.put(attributeKey, attributeValue);
     }
     
@@ -66,7 +63,7 @@ public class SVGObject {
      * @param attributeKey such as "height", "width", "style"
      * @param attributeValue such as "100", "stroke-width:3", "fill:rgb(0,0,255)".
      */
-    public void setAttributes(Map<String , String> attributeMap){
+    public final void setAttributes(final Map<String , String> attributeMap){
         this.attributes.putAll(attributeMap);
     }
     
@@ -75,8 +72,29 @@ public class SVGObject {
      * 
      * @param child 
      */
-    public void setChild(SVGObject child){
+    public void setChild(final SVGObject child){
         this.children.add(child);
+    }
+    
+    /**
+     * Associates an SVGObject as the child element of this SVGObject parent element.
+     * 
+     * @param child 
+     */
+    public final void setParent(final SVGObject parent){
+        this.parent = parent;
+        if (this.parent != null){
+            this.parent.setChild(this);
+        }
+    }
+    
+    /**
+     * Gets the parent SVGObject.
+     * 
+     * @return 
+     */
+    public final SVGObject getParent(){
+        return this.parent;
     }
     
     /**
@@ -87,7 +105,7 @@ public class SVGObject {
      * @return String in an SVG format.
      */
     @Override
-    public String toString(){
+    public final String toString(){
         return toString(null);
     }
     
@@ -116,8 +134,8 @@ public class SVGObject {
      * @return String representation of the current element
      */
     private String elementToSVG(final String prefix){
-        StringBuilder attributeBuilder = new StringBuilder();
-        String linePrefix = SeparatorConstants.NEWLINE + prefix;
+        final StringBuilder attributeBuilder = new StringBuilder();
+        final String linePrefix = SeparatorConstants.NEWLINE + prefix;
         Set<String> keys = attributes.keySet();
         keys.forEach(key -> attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key))));
         
@@ -169,7 +187,7 @@ public class SVGObject {
      * @param prefix
      * @return 
      */
-    private String elementChildrenToSVG (String prefix){
+    private String elementChildrenToSVG (final String prefix){
         String childPrefix = SeparatorConstants.TAB;
         if (prefix != null){
             childPrefix += prefix;
@@ -180,9 +198,5 @@ public class SVGObject {
             childSVGString.append(child.toString(childPrefix));
         }
         return childSVGString.toString();
-    }
-    
-    public final SVGObject getParent(){
-        return this.parent;
     }
 }
