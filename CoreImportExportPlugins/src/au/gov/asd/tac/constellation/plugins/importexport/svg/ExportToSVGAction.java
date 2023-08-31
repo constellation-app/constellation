@@ -23,12 +23,17 @@ import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
 import org.openide.filesystems.FileChooserBuilder;
+import org.openide.filesystems.FileChooserBuilder.SelectionApprover;
 import org.openide.util.NbBundle;
 
 /**
@@ -87,6 +92,28 @@ public final class ExportToSVGAction implements ActionListener {
                     @Override
                     public String getDescription() {
                         return "SVG Files (" + FileExtensionConstants.SVG + ")";
+                    }
+                })
+                .setSelectionApprover(new SelectionApprover() {
+                    @Override
+                    public boolean approve(File[] files) {
+
+                        for (File file : files){
+                            if (file.isFile()){
+                                
+                                final String message = String.format("%s already exists.\n Do you want to replace it?", file.getName());
+                                final Object[] options = new Object[]{
+                                    "Yes", "No"
+                                };
+                                final NotifyDescriptor d = new NotifyDescriptor(message, "Confirm Save", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, "Save");
+                                final Object o = DialogDisplayer.getDefault().notify(d);
+
+                                if (o.equals("No")) {
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
                     }
                 });
     }

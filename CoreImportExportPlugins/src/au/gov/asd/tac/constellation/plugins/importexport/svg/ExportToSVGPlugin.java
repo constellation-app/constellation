@@ -86,12 +86,12 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
      * @throws IOException 
      */
     private void exportToSVG(final File file, final SVGObject data) throws IOException{
-        if (file.createNewFile()) {
+        final boolean fileOverwritten = file.createNewFile();
             data.setAttribute("xmlns", "http://www.w3.org/2000/svg"); // Makes SVG Object Valid
             try (final FileWriter writer = new FileWriter(file)){
                 writer.write(data.toString());
                 writer.flush();        
-            }
+ 
         }
     }
     
