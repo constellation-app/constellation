@@ -87,30 +87,30 @@ public class TabContextMenuNGTest {
         tabContextMenu = spy(new TabContextMenu(dataAccessTabPane, tab));
     }
     
-//    @Test
-//    public void init() {
-//        tabContextMenu.init();
-//        
-//        // Deactivate All Plugins
-//        
-//        assertEquals(tabContextMenu.getDeactivateAllPluginsMenuItem().getText(), "Deactivate all plugins");
-//        verifyDeactivateAllPluginsMenuItemAction(tabContextMenu.getDeactivateAllPluginsMenuItem());
-//        
-//        // Find Plugin
-//        
-//        assertEquals(tabContextMenu.getFindPluginMenuItem().getText(), "Find plugin...");
-//        verifyFindPluginMenuItemAction(tabContextMenu.getFindPluginMenuItem());
-//        
-//        // Open All Sections
-//        
-//        assertEquals(tabContextMenu.getOpenAllSectionsMenuItem().getText(), "Open all sections");
-//        verifyExpansionActions(tabContextMenu.getOpenAllSectionsMenuItem(), true, false);
-//        
-//        // Close All Sections
-//        
-//        assertEquals(tabContextMenu.getCloseAllSectionsMenuItem().getText(), "Close all sections");
-//        verifyExpansionActions(tabContextMenu.getCloseAllSectionsMenuItem(), false, false);
-//        
+    @Test
+    public void init() {
+        tabContextMenu.init();
+        
+        // Deactivate All Plugins
+        
+        assertEquals(tabContextMenu.getDeactivateAllPluginsMenuItem().getText(), "Deactivate all plugins");
+        verifyDeactivateAllPluginsMenuItemAction(tabContextMenu.getDeactivateAllPluginsMenuItem());
+        
+        // Find Plugin
+        
+        assertEquals(tabContextMenu.getFindPluginMenuItem().getText(), "Find plugin...");
+        verifyFindPluginMenuItemAction(tabContextMenu.getFindPluginMenuItem());
+        
+        // Open All Sections
+        
+        assertEquals(tabContextMenu.getOpenAllSectionsMenuItem().getText(), "Open all sections");
+        verifyExpansionActions(tabContextMenu.getOpenAllSectionsMenuItem(), true, false);
+        
+        // Close All Sections
+        
+        assertEquals(tabContextMenu.getCloseAllSectionsMenuItem().getText(), "Close all sections");
+        verifyExpansionActions(tabContextMenu.getCloseAllSectionsMenuItem(), false, false);
+        
 //        // Run Menu Items
 //        
 //        final ObservableList<Tab> tabs = FXCollections.observableArrayList(
@@ -140,7 +140,7 @@ public class TabContextMenuNGTest {
 //        assertEquals(tabContextMenu.getContextMenu().getItems().get(6), tabContextMenu.getRunMenuItem());
 //        assertEquals(tabContextMenu.getContextMenu().getItems().get(7), tabContextMenu.getRunFromHereMenuItem());
 //        assertEquals(tabContextMenu.getContextMenu().getItems().get(8), tabContextMenu.getRunToHereMenuItem());
-//    }
+    }
     
     /**
      * Verifies that the deactivate all plugins menu item will set the validity of all
