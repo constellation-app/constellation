@@ -53,7 +53,7 @@ public final class ExportToSVGAction implements ActionListener {
     }
    
     @Override
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(final ActionEvent e) {
         FileChooser.openSaveDialog(getExportToSVGFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
             String fnam = file.getAbsolutePath();
 

@@ -53,12 +53,12 @@ public class SVGParser {
         SVGObject currentElement = null; 
         final Collection<SVGObject> roots = new HashSet<>();
         
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+        try (final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = br.readLine()) != null) {
                 final String svgElement = SVGParser.isolateSVGElement(line);
-                boolean openTag = SVGParser.isOpenTag(svgElement);
-                boolean closeTag = SVGParser.isCloseTag(svgElement);
+                final boolean openTag = SVGParser.isOpenTag(svgElement);
+                final boolean closeTag = SVGParser.isCloseTag(svgElement);
                 
                 // Create a new SVGObject with the current SVGObject as the parent 
                 if (openTag){
@@ -98,22 +98,21 @@ public class SVGParser {
     }
    
     private static Map<String,String> getElementAttributes(final String svgString) {
-        Map<String,String> attributes = new HashMap<>();
-        String stripped = stripAngleBrackets(svgString);
-        String[] components = stripped.split(SeparatorConstants.BLANKSPACE);
-        for (String component : components) {
-            if (component.contains("=")) {
-                String[] attribute = component.split("=");
+        final Map<String,String> extractedAttributes = new HashMap<>();
+        final String[] potentialAttributes = stripAngleBrackets(svgString).split(SeparatorConstants.BLANKSPACE);
+        for (final String potentialAttribute : potentialAttributes) {
+            if (potentialAttribute.contains("=")) {
+                final String[] attribute = potentialAttribute.split("=");
                 if (attribute.length == 2){
-                    String key = attribute[0];
-                    String value = attribute[1].replaceAll(SeparatorConstants.QUOTE, "");
-                    attributes.put(key, value);
+                    final String foundKey = attribute[0];
+                    final String foundValue = attribute[1].replaceAll(SeparatorConstants.QUOTE, "");
+                    extractedAttributes.put(foundKey, foundValue);
                 } else {
-                    throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", component));
+                    throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", potentialAttribute));
                 }
             }
         }
-        return attributes;
+        return extractedAttributes;
     }
 
     /**
@@ -124,7 +123,7 @@ public class SVGParser {
      * @return 
      */
     private static String isolateSVGElement(final String line) {
-        String svgElement = line.substring(line.indexOf("<"), line.indexOf(">") + 1);
+        final String svgElement = line.substring(line.indexOf("<"), line.indexOf(">") + 1);
         if (svgElement.length() < 2){
             throw new UnsupportedOperationException("SVG Element wrong");
         }
@@ -140,7 +139,7 @@ public class SVGParser {
      * @return 
      */
     private static String stripAngleBrackets(final String line) {
-        String svgElement = line.substring(line.indexOf("<") + 1, line.indexOf(">"));
+        final String svgElement = line.substring(line.indexOf("<") + 1, line.indexOf(">"));
         if (svgElement.length() < 2){
             throw new UnsupportedOperationException("SVG Element wrong");
         }

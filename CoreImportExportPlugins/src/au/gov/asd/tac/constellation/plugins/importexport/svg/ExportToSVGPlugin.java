@@ -61,7 +61,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     }
     
     @Override
-    protected void read(GraphReadMethods graph, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException { 
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException { 
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final File imageFile = new File(fnam);     
         final Float[][] bounds = getBounds(graph);
@@ -107,20 +107,20 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         ArrayList<SVGObject> nodes = new ArrayList<>();
         Float[][] bounds = getBounds(graph);
         
-        int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
-        int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
+        final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
+        final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
 
-        int vertexCount = graph.getVertexCount();
+        final int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0 ; vertexPosition < vertexCount ; vertexPosition++) {
             
             final int vertexID = graph.getVertex(vertexPosition);
             
-            Float xVal = (graph.getFloatValue(xAttributeID, vertexID) * 128) - bounds[0][0];
-            Float yVal = (bounds[1][1] - bounds[1][0]) - ((graph.getFloatValue(yAttributeID, vertexID) * 128) - bounds[1][0]);
+            final Float xVal = (graph.getFloatValue(xAttributeID, vertexID) * 128) - bounds[0][0];
+            final Float yVal = (bounds[1][1] - bounds[1][0]) - ((graph.getFloatValue(yAttributeID, vertexID) * 128) - bounds[1][0]);
             
             final Float[] coordinates = {xVal, yVal};
             
-            SVGObject node = generateNode(null);
+            final SVGObject node = generateNode(null);
             node.setAttribute("x", coordinates[0].toString());
             node.setAttribute("y", coordinates[1].toString());
             
@@ -137,12 +137,12 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
      * @return 
      */
     private SVGObject generateNode(final SVGObject parent) { 
-        SVGResourceConstants resourceClass = new SVGResourceConstants();
-        InputStream inputStream = resourceClass.getClass().getResourceAsStream(SVGResourceConstants.NODE);
+        final SVGResourceConstants resourceClass = new SVGResourceConstants();
+        final InputStream inputStream = resourceClass.getClass().getResourceAsStream(SVGResourceConstants.NODE);
         SVGObject node = null;
         try {
             node = SVGParser.parse(inputStream);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             Exceptions.printStackTrace(ex);
         }
         node.setParent(parent);
@@ -162,7 +162,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     private Float[][] getBounds(final GraphReadMethods graph) {
         final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
         final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
-        Float[][] bounds = {{null,null},{null,null}};
+        final Float[][] bounds = {{null,null},{null,null}};
         int vertexCount = graph.getVertexCount();
         for (int vertexPosition = 0 ; vertexPosition < vertexCount ; vertexPosition++) {
             

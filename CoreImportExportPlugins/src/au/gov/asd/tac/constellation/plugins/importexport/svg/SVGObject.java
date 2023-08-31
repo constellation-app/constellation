@@ -136,7 +136,7 @@ public class SVGObject {
     private String elementToSVG(final String prefix){
         final StringBuilder attributeBuilder = new StringBuilder();
         final String linePrefix = SeparatorConstants.NEWLINE + prefix;
-        Set<String> keys = attributes.keySet();
+        final Set<String> keys = attributes.keySet();
         keys.forEach(key -> attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key))));
         
         return String.format("%s<%s%s />", linePrefix, this.type, attributeBuilder.toString());
@@ -156,9 +156,9 @@ public class SVGObject {
             linePrefix += prefix;
         }
         
-        StringBuilder attributeBuilder = new StringBuilder();
+        final StringBuilder attributeBuilder = new StringBuilder();
         
-        Set<String> keys = attributes.keySet();
+        final Set<String> keys = attributes.keySet();
         keys.forEach(key -> attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key))));
         
         return String.format("%s<%s%s>", linePrefix, this.type, attributeBuilder.toString());
