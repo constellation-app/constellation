@@ -65,7 +65,8 @@ public class PluginReport {
     private final String[] tags;
 
     private final int position;
-
+    private boolean isUndone = false;
+    
     public PluginReport(final GraphReport graphReport, final Plugin plugin) {
         this.graphReport = graphReport;
         this.pluginName = plugin.getName();
@@ -251,7 +252,6 @@ public class PluginReport {
      * @param error the new error.
      */
     public void setError(final Throwable error) {
-        
         this.error = error;
         if (error instanceof InterruptedException){
             this.messageLog.add("Error: Plugin was interrupted.");
@@ -451,6 +451,13 @@ public class PluginReport {
         return this.executionStage;
     }
 
+    public boolean isUndone() {
+        return isUndone;
+    }
+
+    public void setUndone(final boolean isUndone) {
+        this.isUndone = isUndone;
+    }
 }
 
 

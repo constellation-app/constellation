@@ -1,6 +1,31 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2023-08-28 Markdown support in the Notes View
+<p>The notes can now optionally render markdown text. You can now italicise, bold and strikethrough text. Headings can be added to the note as well as lists and sub lists.</p>
+<p>The new note pop-up window will have a preview tab where you can see how your markdown text will be rendered before adding it as a note.</p>
+<p>Editing notes will also be done through a popup window.</p>
+<p>Markdown can be toggled on and off with a checkbox which appears in the create/edit note popup.</p>
+
+== 2023-08-08 - Enabled of Multi-Choice Drop-down bulk selection feature
+<p>A number of input field drop-downs that enable the selection of multiple items have had a bulk selection feature enabled.</p>
+<p>Right click the input field to access the "Select All" and "Clear All" functionality.</p>
+<p>Some instances have an adjacent drop-down labeled "..." that can be used to access the same functionality as right clicking.</p>
+
+== 2023-07-28 Attribute Editor View - Edit Buttons
+<p>Edit buttons have been removed from attributes in the Attributes View.</p>
+<p>Edit functionality can be achieved by clicking on the field of the attribute.</p>
+
+== 2023-07-28 Replacement of old Find View with new Find View
+<p>The existing Find View accessible using the shortcut Ctrl-F has been replaced with the an updated Find View which has been under development and testing.</p> 
+<p>The new Find View offers an updated interface that opens by default in a separate window.</p> 
+<p>The functionality remains the same with the added option of "Find Next" and "Find Previous" execution options.</p> 
+
+== 2023-06-14 Reorder Plugins in Data Access View
+<p>The Data Access View configuration pane in the settings now has "up" and "down" buttons below the "Visible categories" box.</p>
+<p>The order of the categories within this box can be changed by using the buttons below it.</p>
+<p>The order set in the "Visible categories" box is the order which the plugins on the Data Access View will show up in.</p>
+
 == 2023-05-05 Notes View UI Change
 <p>The controls to add a new note are no longer at the bottom and have been moved to a pop-up window which appears when the "Create Note" button is pressed on the top left.</p>
 <p>You can now change the colour of user notes using a color picker</p>

@@ -247,12 +247,11 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                         // Add any visual operations that need to occur after a graph flush.
                         final List<VisualOperation> operations = new LinkedList<>();
                         operationQueue.drainTo(operations);
-                        if (announceNextFlush || !operations.isEmpty()) {
+                        if (!operations.isEmpty()) {
                             if (interactionGraph != null) {
                                 interactionGraph = interactionGraph.flush(announceNextFlush);
                             }
                             operations.forEach(op -> manager.addOperation(op));
-                            announceNextFlush = false;
                         }
                         final boolean waitForever = eventState.isMousePressed() || (eventState.getCurrentAction().equals(SceneAction.CREATING) && eventState.getCurrentCreationMode().equals(CreationMode.CREATING_TRANSACTION));
                         waitTime = Math.max(nextWaitTime, time + waitTime - System.currentTimeMillis());
@@ -622,7 +621,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
                 eventState.setCurrentCreationMode(CreationMode.NONE);
                 break;
             case FINISHING_TRANSACTION:
-                createTransaction(wg, eventState.getAddTransactionSourceVertex(), eventState.getAddTransactionDestinationVertex(), VisualGraphUtilities.isDrawingDirectedTransactions(wg));
+                createTransaction(eventState.getAddTransactionSourceVertex(), eventState.getAddTransactionDestinationVertex(), VisualGraphUtilities.isDrawingDirectedTransactions(wg));
                 if (event.isShiftDown()) {
                     eventState.setCurrentCreationMode(CreationMode.CREATING_TRANSACTION);
                 } else if (event.isControlDown()) {
@@ -989,7 +988,7 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
     /**
      * Creates a transaction on the graph between the specified vertices.
      * <p>
-     * The vertex will be created via a plugin which will synchronously, holding
+     * The transaction will be created via a plugin which will synchronously, holding
      * up the event handler until it is finished. The reason for this is that
      * otherwise the new transaction will not be visible until the event handler
      * gives up its current lock (which if we are creating multiple transactions
@@ -998,22 +997,15 @@ public class DefaultInteractionEventHandler implements InteractionEventHandler {
      * @param fromVertex The graph id of the source vertex
      * @param toVertex The graph id of the destination vertex
      * @param directed Whether or not the transaction should be directed.
-     * @param wg Write access to the graph, corresponding to the lock on which
-     * gestures are currently being processed.
      */
-    private void createTransaction(final GraphWriteMethods wg, final int fromVertex, final int toVertex, final boolean directed) {
+    private void createTransaction(final int fromVertex, final int toVertex, final boolean directed) {
         Plugin plugin = PluginRegistry.get(InteractiveGraphPluginRegistry.CREATE_TRANSACTION);
         PluginParameters parameters = DefaultPluginParameters.getDefaultParameters(plugin);
         parameters.getParameters().get(CreateTransactionPlugin.SOURCE_PARAMETER_ID).setObjectValue(fromVertex);
         parameters.getParameters().get(CreateTransactionPlugin.DESTINATION_PARAMETER_ID).setObjectValue(toVertex);
         parameters.getParameters().get(CreateTransactionPlugin.DIRECTED_PARAMETER_ID).setObjectValue(directed);
-        try {
-            PluginExecution.withPlugin(plugin).withParameters(parameters).interactively(false).executeNow(wg);
-        } catch (InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        } catch (PluginException ex) {
-        }
-        announceNextFlush = true;
+
+        PluginExecution.withPlugin(plugin).withParameters(parameters).interactively(false).executeLater(graph);
     }
 
     /**
