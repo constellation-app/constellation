@@ -59,9 +59,20 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         hiddenListModel = new DefaultListModel<>();
 
         final String davHiddenString = LookupPluginsTask.DAV_CATS;
+        final String davVisibleString = LookupPluginsTask.VISIBLE_CATS;
         final List<String> davHiddenList = Arrays.asList(LookupPluginsTask.addCategoryToList(davHiddenString));
+        final List<String> davVisibleList = Arrays.asList(LookupPluginsTask.addCategoryToList(davVisibleString));
 
         visibleResultList = (davHiddenList == null || davHiddenList.isEmpty()) ? DAV_CATEGORIES : ListUtils.subtract(DAV_CATEGORIES, davHiddenList);
+        
+        if (davVisibleList.isEmpty() && davHiddenList.isEmpty()) {
+            visibleResultList.clear();
+            LookupPluginsTask.getDefaultOrder().forEach(keyWithPos -> {
+                if (CATEGORIES.keySet().contains(keyWithPos.getValue())) {
+                    visibleResultList.add(keyWithPos.getValue());
+                }
+            });
+        }
     }
 
     public List<String> getVisibleCategory() {
@@ -327,8 +338,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         } else {
             final int[] selectedIndices = visibleList.getSelectedIndices();
 
-            if(selectedIndices[0] != 0)
-            {
+            if (selectedIndices[0] != 0) {
                 final int beforeIndex = selectedIndices[0] - 1;
                 final List<String> selectedItems = visibleList.getSelectedValuesList();
 
@@ -354,8 +364,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         } else {
             final int[] selectedIndices = visibleList.getSelectedIndices();
 
-            if(selectedIndices[selectedIndices.length-1] != visibleList.getModel().getSize()-1)
-            {
+            if (selectedIndices[selectedIndices.length - 1] != visibleList.getModel().getSize() - 1) {
                 final int afterIndex = selectedIndices[selectedIndices.length - 1] + 1;
                 final List<String> selectedItems = visibleList.getSelectedValuesList();
 
