@@ -67,9 +67,9 @@ public class TabContextMenuNGTest {
             FxToolkit.registerPrimaryStage();
         }
     }
-
+    
+// Causing issues with headless tests 
 //    @AfterClass
-//    //Causing issues with headless tests 
 //    public void tearDownClass() throws Exception {
 //        try {
 //            FxToolkit.cleanupStages();
@@ -85,13 +85,6 @@ public class TabContextMenuNGTest {
         
         tabContextMenu = spy(new TabContextMenu(dataAccessTabPane, tab));
     }
-    
-//    @AfterMethod
-//    public void tearDownMethod() throws Exception {
-//        dataAccessTabPane = null;
-//        tab = null;
-//        tabContextMenu = null;
-//    }
     
     @Test
     public void init() {
