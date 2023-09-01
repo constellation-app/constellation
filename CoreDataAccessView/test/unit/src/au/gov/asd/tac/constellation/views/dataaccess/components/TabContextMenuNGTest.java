@@ -69,14 +69,14 @@ public class TabContextMenuNGTest {
     }
     
 // Causing issues with headless tests 
-//    @AfterClass
-//    public void tearDownClass() throws Exception {
-//        try {
-//            FxToolkit.cleanupStages();
-//        } catch (TimeoutException ex) {
-//            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
-//        }
-//    }
+    @AfterClass
+    public void tearDownClass() throws Exception {
+        try {
+            FxToolkit.cleanupStages();
+        } catch (TimeoutException ex) {
+            LOGGER.log(Level.WARNING, "FxToolkit timedout trying to cleanup stages", ex);
+        }
+    }
     
     @BeforeMethod
     public void setUpMethod() throws Exception {
