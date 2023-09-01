@@ -279,7 +279,8 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.ensure(wg);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(wg);
         final int transactionDatetimeAttributeId = TemporalConcept.TransactionAttribute.DATETIME.ensure(wg);
-        final int transactionContentAttributeId = wg.getAttribute(GraphElementType.TRANSACTION, contentAttribute);
+        final int transactionContentAttributeId = ContentConcept.TransactionAttribute.CONTENT.ensure(wg);
+        //final int transactionContentAttributeId = wg.getAttribute(GraphElementType.TRANSACTION, contentAttribute);
         final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
         
         // Throw Errors
