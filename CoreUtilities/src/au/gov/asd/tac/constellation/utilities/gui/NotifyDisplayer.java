@@ -86,20 +86,20 @@ public class NotifyDisplayer {
      * @param descriptor the descriptor to display in a dialog
      */
     public static void display(final NotifyDescriptor descriptor) {
-        //if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
-        if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
-            // If this was called from one of the UI threads we don't want to
-            // display the dialog and block beacasue some OS's (macos) will go into deadlock
-            // I think what happens is, instead of running the display dialog in this
-            // "task" it creates a new one to display the dialog, puts it on the event
-            // queue then blocks in this task waiting for input from the user closing the dialog.
-            // Now because this thread (the UI thread) is blocked waiting for user input
-            // the dialog is never rendered and a deadlock happens.
-            CompletableFuture.runAsync(() -> display(descriptor));
-        } else {
-            EventQueue.invokeLater(() -> DialogDisplayer.getDefault().notify(descriptor));
-        } 
-        //}
+        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
+            if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
+                // If this was called from one of the UI threads we don't want to
+                // display the dialog and block beacasue some OS's (macos) will go into deadlock
+                // I think what happens is, instead of running the display dialog in this
+                // "task" it creates a new one to display the dialog, puts it on the event
+                // queue then blocks in this task waiting for input from the user closing the dialog.
+                // Now because this thread (the UI thread) is blocked waiting for user input
+                // the dialog is never rendered and a deadlock happens.
+                CompletableFuture.runAsync(() -> display(descriptor));
+            } else {
+                EventQueue.invokeLater(() -> DialogDisplayer.getDefault().notify(descriptor));
+            } 
+        }
     }
 
     /**
