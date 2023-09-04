@@ -23,8 +23,6 @@ import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
 import javax.swing.filechooser.FileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
@@ -101,7 +99,7 @@ public final class ExportToSVGAction implements ActionListener {
                         for (File file : files){
                             if (file.isFile()){
                                 
-                                final String message = String.format("%s already exists.\n Do you want to replace it?", file.getName());
+                                final String message = String.format("%s already exists.\nDo you want to replace it?", file.getName());
                                 final Object[] options = new Object[]{
                                     "Yes", "No"
                                 };

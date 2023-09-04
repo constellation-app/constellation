@@ -64,13 +64,19 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException { 
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final File imageFile = new File(fnam);     
+        
         final Float[][] bounds = getBounds(graph);
+        
         final SVGObject svg = new SVGObject("svg", null);     
         svg.setAttribute("width", String.format("%s", bounds[0][1] - bounds[0][0] + 256));
         svg.setAttribute("height", String.format("%s", bounds[1][1] - bounds[1][0] + 256));
         
+        final List<SVGObject> links = extractLinkElements(graph);
         final List<SVGObject> nodes = extractNodeElements(graph);
+        
+        links.forEach(link -> link.setParent(svg));
         nodes.forEach(node -> node.setParent(svg));
+        
         try {
             exportToSVG(imageFile, svg);
         } catch (IOException ex) {
@@ -91,13 +97,12 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
             try (final FileWriter writer = new FileWriter(file)){
                 writer.write(data.toString());
                 writer.flush();        
- 
         }
     }
     
     /**
      * Creates a list of SVGObjects representing nodes from a graph.
-     * these nodes contain positioning data relative to the external boundaries 
+     * These nodes contain positioning data relative to the external boundaries 
      * created by render-able objects in the graph.
      * 
      * @param graph
@@ -128,6 +133,50 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         }
 
         return nodes;
+    }
+        
+    /**
+     * Creates a list of SVGObjects representing links from a graph.
+     * These links contain positioning data relative to the external boundaries 
+     * created by transactions in the graph.
+     * 
+     * @param graph
+     * @return 
+     */
+    private List<SVGObject> extractLinkElements(GraphReadMethods graph) {
+        ArrayList<SVGObject> links = new ArrayList<>();
+        Float[][] bounds = getBounds(graph);
+
+        int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
+        int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
+
+        int linkCount = graph.getLinkCount();
+        for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
+
+            final int linkID = graph.getLink(linkPosition);
+            
+            final int sourceVxId = graph.getLinkHighVertex(linkID);
+            final int destinationVxId = graph.getLinkLowVertex(linkID);
+            
+            int[] points = {sourceVxId, destinationVxId};
+            Float[][] coords = {{0.0f,0.0f},{0.0f,0.0f}};
+            for (int i = 0 ; i < 2; i++){
+                Float xVal = (graph.getFloatValue(xAttributeID, points[i]) * 128) - bounds[0][0] + 128;
+                Float yVal = (bounds[1][1] - bounds[1][0]) - ((graph.getFloatValue(yAttributeID, points[i]) * 128) - bounds[1][0]) + 128;
+                coords[i][0] = xVal;
+                coords[i][1] = yVal;
+            }
+
+            SVGObject link = generateLink(null);
+            link.setAttribute("x1", coords[0][0].toString());
+            link.setAttribute("y1", coords[0][1].toString());
+            link.setAttribute("x2", coords[1][0].toString());
+            link.setAttribute("y2", coords[1][1].toString());
+            
+            links.add(link);
+        }
+
+        return links;
     }
      
     /**
@@ -186,5 +235,18 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
             }
         }
         return bounds;
+    }
+    
+    private SVGObject generateLink(SVGObject parent) {
+        SVGResourceConstants resourceClass = new SVGResourceConstants();
+        InputStream inputStream = resourceClass.getClass().getResourceAsStream(SVGResourceConstants.LINK);
+        SVGObject link = null;
+        try {
+            link = SVGParser.parse(inputStream);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        link.setParent(parent);
+        return link;
     }
 }

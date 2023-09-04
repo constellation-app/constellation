@@ -22,6 +22,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg;
 public class SVGResourceConstants {
     
     public static final String NODE = "Node.svg";
+    public static final String LINK = "Link.svg";
         
     public SVGResourceConstants(){
         //This constructor is empty as it is required to generate a classpath to SVG resources
