@@ -86,6 +86,9 @@ public class NotifyDisplayer {
      * @param descriptor the descriptor to display in a dialog
      */
     public static void display(final NotifyDescriptor descriptor) {
+    
+        LOGGER.log(Level.SEVERE, String.format("@@@ NotifyDisplayer.Display() called\n%s", Thread.currentThread().getStackTrace()));
+
         // Method blocks in headless ?
         if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
             if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
