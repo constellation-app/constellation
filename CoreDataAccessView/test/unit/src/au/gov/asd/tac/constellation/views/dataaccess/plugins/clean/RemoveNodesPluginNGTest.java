@@ -96,36 +96,42 @@ public class RemoveNodesPluginNGTest {
      * @throws InterruptedException
      * @throws PluginException
      */
-//    @Test(expectedExceptions=PluginException.class)
-//    public void testIdentifierAttributesNotFound() throws InterruptedException, PluginException {
-//        System.out.println("identifierAttributesNotFound");
-//        final RemoveNodesPlugin instance = new RemoveNodesPlugin();
-//        final PluginParameters parameters = instance.createParameters();
-//                
-//        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-//        DefaultPluginEnvironment env = spy(DefaultPluginEnvironment.class);
-//        doNothing().when(env).reportException(anyString(), any(PluginInteraction.class), any(PluginReport.class), any(PluginNotificationLevel.class), any(Exception.class));
-//        //Method should throw exception as Identifier attribute is not enabled on vertex
-//        PluginExecution.withPlugin(instance).inEnvironment(env).withParameters(parameters).executeNow(graph);
-//    }
-//    
-//    /**
-//     * Test of edit method, of class RemoveNodesPlugin. selected and identifier
-//     * attributes not found
-//     *
-//     * @throws InterruptedException
-//     */
-//    @Test(expectedExceptions=PluginException.class)
-//    public void testSelectedAttributesNotFound() throws InterruptedException, PluginException {
-//        System.out.println("selectedAttributesNotFound");
-//        final RemoveNodesPlugin instance = new RemoveNodesPlugin();
-//        final PluginParameters parameters = instance.createParameters(); 
-//        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
-//        DefaultPluginEnvironment env = spy(DefaultPluginEnvironment.class);
-//        doNothing().when(env).reportException(anyString(), any(PluginInteraction.class), any(PluginReport.class), any(PluginNotificationLevel.class), any(Exception.class));
-//        //Method should throw exception as Selected attribute is not enabled on vertex
-//        PluginExecution.withPlugin(instance).inEnvironment(env).withParameters(parameters).executeNow(graph);
-//    }
+    @Test(expectedExceptions=PluginException.class)
+    public void testIdentifierAttributesNotFound() throws InterruptedException, PluginException {
+        System.out.println("identifierAttributesNotFound");
+        final RemoveNodesPlugin instance = new RemoveNodesPlugin();
+        final PluginParameters parameters = instance.createParameters();
+                
+        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
+        DefaultPluginEnvironment env = new DefaultPluginEnvironment(){
+            private void reportException(final String pluginName,
+            final PluginInteraction interaction, final PluginReport currentReport,
+            final PluginNotificationLevel level, final Exception ex){
+            }
+        };
+        PluginExecution.withPlugin(instance).inEnvironment(env).withParameters(parameters).executeNow(graph);
+    }
+    
+    /**
+     * Test of edit method, of class RemoveNodesPlugin. selected and identifier
+     * attributes not found
+     *
+     * @throws InterruptedException
+     */
+    @Test(expectedExceptions=PluginException.class)
+    public void testSelectedAttributesNotFound() throws InterruptedException, PluginException {
+        System.out.println("selectedAttributesNotFound");
+        final RemoveNodesPlugin instance = new RemoveNodesPlugin();
+        final PluginParameters parameters = instance.createParameters(); 
+        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        DefaultPluginEnvironment env = new DefaultPluginEnvironment(){
+            private void reportException(final String pluginName,
+            final PluginInteraction interaction, final PluginReport currentReport,
+            final PluginNotificationLevel level, final Exception ex){
+            }
+        };
+        PluginExecution.withPlugin(instance).inEnvironment(env).withParameters(parameters).executeNow(graph);
+    }
 
     /**
      * Test of edit method, of class RemoveNodesPlugin. Default plugin parameter
