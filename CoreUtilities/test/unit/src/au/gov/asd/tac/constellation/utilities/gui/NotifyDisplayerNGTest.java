@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.gui;
 
 import java.awt.EventQueue;
+import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -72,13 +73,13 @@ public class NotifyDisplayerNGTest {
         }
     }
 
-//    @Test
-//    public void display() {
-//        display(true, true, true);
-//        display(true, false, true);
-//        display(false, true, true);
-//        display(false, false, false);
-//    }
+    @Test
+    public void display() {
+        display(true, true, true);
+        display(true, false, true);
+        display(false, true, true);
+        display(false, false, false);
+    }
 
     @Test
     public void displayWithIcon() {
@@ -224,8 +225,15 @@ public class NotifyDisplayerNGTest {
             final boolean isFxApplicationThread,
             final boolean runThroughThread) {
         try (
-                final MockedStatic<EventQueue> eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class); final MockedStatic<CompletableFuture> completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class); final MockedStatic<NotificationDisplayer> notificationDisplayerMockedStatic = Mockito.mockStatic(NotificationDisplayer.class); final MockedStatic<SwingUtilities> swingUtilitiesMockedStatic = Mockito.mockStatic(SwingUtilities.class); final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class);) {
-            setupThreadingMocks(eventQueueMockedStatic, completableFutureMockedStatic, swingUtilitiesMockedStatic, platformMockedStatic);
+                final MockedStatic<EventQueue> eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class); 
+                final MockedStatic<CompletableFuture> completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class); 
+                final MockedStatic<NotificationDisplayer> notificationDisplayerMockedStatic = Mockito.mockStatic(NotificationDisplayer.class); 
+                final MockedStatic<SwingUtilities> swingUtilitiesMockedStatic = Mockito.mockStatic(SwingUtilities.class); 
+                final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class);
+                ) {
+            
+            final ArrayList<Thread> threads = new ArrayList<>();
+            setupThreadingMocks(eventQueueMockedStatic, completableFutureMockedStatic, swingUtilitiesMockedStatic, platformMockedStatic, threads);
 
             final NotificationDisplayer notificationDisplayer = mock(NotificationDisplayer.class);
             notificationDisplayerMockedStatic.when(NotificationDisplayer::getDefault).thenReturn(notificationDisplayer);
@@ -246,6 +254,17 @@ public class NotifyDisplayerNGTest {
             } else {
                 completableFutureMockedStatic.verifyNoInteractions();
             }
+            
+            for (Thread thread : threads){
+                thread.interrupt();
+            }
+            
+            eventQueueMockedStatic.reset();
+            completableFutureMockedStatic.reset();
+            notificationDisplayerMockedStatic.reset();
+            swingUtilitiesMockedStatic.reset(); 
+            platformMockedStatic.reset();
+                        
         }
     }
 
@@ -270,7 +289,8 @@ public class NotifyDisplayerNGTest {
                 final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class);
                 ) {
             
-            setupThreadingMocks(eventQueueMockedStatic, completableFutureMockedStatic, swingUtilitiesMockedStatic, platformMockedStatic);
+            final ArrayList<Thread> threads = new ArrayList<>();
+            setupThreadingMocks(eventQueueMockedStatic, completableFutureMockedStatic, swingUtilitiesMockedStatic, platformMockedStatic, threads);
 
             final DialogDisplayer dialogDisplayer = mock(DialogDisplayer.class);
             dialogDisplayerMockedStatic.when(DialogDisplayer::getDefault).thenReturn(dialogDisplayer);
@@ -288,6 +308,10 @@ public class NotifyDisplayerNGTest {
                 completableFutureMockedStatic.verify(() -> CompletableFuture.runAsync(any(Runnable.class)));
             } else {
                 completableFutureMockedStatic.verifyNoInteractions();
+            }
+            
+            for (Thread thread : threads){
+                thread.interrupt();
             }
             
             eventQueueMockedStatic.reset();
@@ -311,7 +335,8 @@ public class NotifyDisplayerNGTest {
     private void setupThreadingMocks(final MockedStatic<EventQueue> eventQueueMockedStatic,
             final MockedStatic<CompletableFuture> completableFutureMockedStatic,
             final MockedStatic<SwingUtilities> swingUtilitiesMockedStatic,
-            final MockedStatic<Platform> platformMockedStatic) {
+            final MockedStatic<Platform> platformMockedStatic, 
+            final ArrayList<Thread> threads) {
         completableFutureMockedStatic.when(() -> CompletableFuture.runAsync(any(Runnable.class))).thenAnswer(
                 iom -> {
                     final Runnable runnable = iom.getArgument(0);
@@ -319,8 +344,11 @@ public class NotifyDisplayerNGTest {
                     // We are running technically in another thread now so set the UI thread check stubs to false
                     swingUtilitiesMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(false);
                     platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(false);
-
-                    runnable.run();
+                    
+                    Thread thread = new Thread(runnable);
+                    threads.add(thread);
+                    
+                    thread.run();
 
                     return CompletableFuture.completedFuture(null);
                 });
@@ -329,7 +357,10 @@ public class NotifyDisplayerNGTest {
                 iom -> {
                     final Runnable runnable = iom.getArgument(0);
 
-                    runnable.run();
+                    Thread thread = new Thread(runnable);
+                    threads.add(thread);
+                    
+                    thread.run();
 
                     return null;
                 });
