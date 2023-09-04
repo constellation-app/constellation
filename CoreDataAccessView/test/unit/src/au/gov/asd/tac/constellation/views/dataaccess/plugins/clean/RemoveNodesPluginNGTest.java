@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
 import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginEnvironment;
+import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginInteraction;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
@@ -96,20 +97,15 @@ public class RemoveNodesPluginNGTest {
      * @throws InterruptedException
      * @throws PluginException
      */
-    @Test(expectedExceptions=PluginException.class)
+    @Test(expectedExceptions = PluginException.class)
     public void testIdentifierAttributesNotFound() throws InterruptedException, PluginException {
         System.out.println("identifierAttributesNotFound");
         final RemoveNodesPlugin instance = new RemoveNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
                 
-        VisualConcept.VertexAttribute.SELECTED.ensure(graph);
-        DefaultPluginEnvironment env = new DefaultPluginEnvironment(){
-            private void reportException(final String pluginName,
-            final PluginInteraction interaction, final PluginReport currentReport,
-            final PluginNotificationLevel level, final Exception ex){
-            }
-        };
-        PluginExecution.withPlugin(instance).inEnvironment(env).withParameters(parameters).executeNow(graph);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        instance.edit(graph, interaction, parameters); 
     }
     
     /**
@@ -118,19 +114,15 @@ public class RemoveNodesPluginNGTest {
      *
      * @throws InterruptedException
      */
-    @Test(expectedExceptions=PluginException.class)
+    @Test(expectedExceptions = PluginException.class)
     public void testSelectedAttributesNotFound() throws InterruptedException, PluginException {
         System.out.println("selectedAttributesNotFound");
         final RemoveNodesPlugin instance = new RemoveNodesPlugin();
         final PluginParameters parameters = instance.createParameters(); 
+        
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
         vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
-        DefaultPluginEnvironment env = new DefaultPluginEnvironment(){
-            private void reportException(final String pluginName,
-            final PluginInteraction interaction, final PluginReport currentReport,
-            final PluginNotificationLevel level, final Exception ex){
-            }
-        };
-        PluginExecution.withPlugin(instance).inEnvironment(env).withParameters(parameters).executeNow(graph);
+        instance.edit(graph, interaction, parameters); 
     }
 
     /**
