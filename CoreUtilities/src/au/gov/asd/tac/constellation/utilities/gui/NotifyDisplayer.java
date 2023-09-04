@@ -87,10 +87,10 @@ public class NotifyDisplayer {
      */
     public static void display(final NotifyDescriptor descriptor) {
     
-        LOGGER.log(Level.SEVERE, String.format("@@@ NotifyDisplayer.Display() called\n%s", Thread.currentThread().getStackTrace()));
+        //LOGGER.log(Level.SEVERE, String.format("@@@ NotifyDisplayer.Display() called\n%s", Thread.currentThread().getStackTrace()));
 
         // Method blocks in headless ?
-        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
+        //if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
             if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
                 // If this was called from one of the UI threads we don't want to
                 // display the dialog and block beacasue some OS's (macos) will go into deadlock
@@ -103,7 +103,7 @@ public class NotifyDisplayer {
             } else {
                 EventQueue.invokeLater(() -> DialogDisplayer.getDefault().notify(descriptor));
             }
-        }
+        //}
     }
 
     /**

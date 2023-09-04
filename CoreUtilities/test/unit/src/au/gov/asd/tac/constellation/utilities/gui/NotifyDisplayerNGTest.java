@@ -249,42 +249,55 @@ public class NotifyDisplayerNGTest {
         }
     }
 
-//    /**
-//     * Configurable test for the display notification method.
-//     *
-//     * @param isEventDispatchThread true if the test is meant to be running in
-//     * the event dispatch thread, false otherwise
-//     * @param isFxApplicationThread true if the test is meant to be running in
-//     * the fx application thread, false otherwise
-//     * @param runThroughThread true if the call is meant to run through a
-//     * separate thread first, false otherwise
-//     */
-//    private void display(final boolean isEventDispatchThread,
-//            final boolean isFxApplicationThread,
-//            final boolean runThroughThread) {
-//        try (
-//                final MockedStatic<EventQueue> eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class); final MockedStatic<CompletableFuture> completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class); final MockedStatic<DialogDisplayer> dialogDisplayerMockedStatic = Mockito.mockStatic(DialogDisplayer.class); final MockedStatic<SwingUtilities> swingUtilitiesMockedStatic = Mockito.mockStatic(SwingUtilities.class); final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class);) {
-//            setupThreadingMocks(eventQueueMockedStatic, completableFutureMockedStatic, swingUtilitiesMockedStatic, platformMockedStatic);
-//
-//            final DialogDisplayer dialogDisplayer = mock(DialogDisplayer.class);
-//            dialogDisplayerMockedStatic.when(DialogDisplayer::getDefault).thenReturn(dialogDisplayer);
-//
-//            swingUtilitiesMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(isEventDispatchThread);
-//            platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(isFxApplicationThread);
-//
-//            final NotifyDescriptor descriptor = mock(NotifyDescriptor.class);
-//
-//            NotifyDisplayer.display(descriptor);
-//
-//            verify(dialogDisplayer).notify(descriptor);
-//
-//            if (runThroughThread) {
-//                completableFutureMockedStatic.verify(() -> CompletableFuture.runAsync(any(Runnable.class)));
-//            } else {
-//                completableFutureMockedStatic.verifyNoInteractions();
-//            }
-//        }
-//    }
+    /**
+     * Configurable test for the display notification method.
+     *
+     * @param isEventDispatchThread true if the test is meant to be running in
+     * the event dispatch thread, false otherwise
+     * @param isFxApplicationThread true if the test is meant to be running in
+     * the fx application thread, false otherwise
+     * @param runThroughThread true if the call is meant to run through a
+     * separate thread first, false otherwise
+     */
+    private void display(final boolean isEventDispatchThread,
+            final boolean isFxApplicationThread,
+            final boolean runThroughThread) {
+        try (
+                final MockedStatic<EventQueue> eventQueueMockedStatic = Mockito.mockStatic(EventQueue.class); 
+                final MockedStatic<CompletableFuture> completableFutureMockedStatic = Mockito.mockStatic(CompletableFuture.class); 
+                final MockedStatic<DialogDisplayer> dialogDisplayerMockedStatic = Mockito.mockStatic(DialogDisplayer.class); 
+                final MockedStatic<SwingUtilities> swingUtilitiesMockedStatic = Mockito.mockStatic(SwingUtilities.class); 
+                final MockedStatic<Platform> platformMockedStatic = Mockito.mockStatic(Platform.class);
+                ) {
+            
+            setupThreadingMocks(eventQueueMockedStatic, completableFutureMockedStatic, swingUtilitiesMockedStatic, platformMockedStatic);
+
+            final DialogDisplayer dialogDisplayer = mock(DialogDisplayer.class);
+            dialogDisplayerMockedStatic.when(DialogDisplayer::getDefault).thenReturn(dialogDisplayer);
+
+            swingUtilitiesMockedStatic.when(SwingUtilities::isEventDispatchThread).thenReturn(isEventDispatchThread);
+            platformMockedStatic.when(Platform::isFxApplicationThread).thenReturn(isFxApplicationThread);
+
+            final NotifyDescriptor descriptor = mock(NotifyDescriptor.class);
+
+            NotifyDisplayer.display(descriptor);
+
+            verify(dialogDisplayer).notify(descriptor);
+
+            if (runThroughThread) {
+                completableFutureMockedStatic.verify(() -> CompletableFuture.runAsync(any(Runnable.class)));
+            } else {
+                completableFutureMockedStatic.verifyNoInteractions();
+            }
+            
+            eventQueueMockedStatic.reset();
+            completableFutureMockedStatic.reset();
+            dialogDisplayerMockedStatic.reset();
+            swingUtilitiesMockedStatic.reset(); 
+            platformMockedStatic.reset();
+            
+        } 
+    }
 
     /**
      * Sets up common mocks to prevent a multi-threaded test from happening.
