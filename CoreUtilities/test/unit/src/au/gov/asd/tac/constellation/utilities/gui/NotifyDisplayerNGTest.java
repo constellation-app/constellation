@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.utilities.gui;
 
 import java.awt.EventQueue;
-import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -75,12 +74,10 @@ public class NotifyDisplayerNGTest {
 
     @Test
     public void display() {
-        if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
-            display(true, true, true);
-            display(true, false, true);
-            display(false, true, true);
-            display(false, false, false);
-        }
+        display(true, true, true);
+        display(true, false, true);
+        display(false, true, true);
+        display(false, false, false);
     }
 
     @Test
