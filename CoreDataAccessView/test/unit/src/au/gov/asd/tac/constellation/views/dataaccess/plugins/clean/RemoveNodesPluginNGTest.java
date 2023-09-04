@@ -16,23 +16,14 @@
 package au.gov.asd.tac.constellation.views.dataaccess.plugins.clean;
 
 import au.gov.asd.tac.constellation.graph.StoreGraph;
-import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginEnvironment;
 import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginInteraction;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin.REMOVE_TYPE_PARAMETER_ID;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.clean.RemoveNodesPlugin.THRESHOLD_PARAMETER_ID;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import org.mockito.MockedStatic;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.BeforeMethod;
@@ -102,8 +93,8 @@ public class RemoveNodesPluginNGTest {
         System.out.println("identifierAttributesNotFound");
         final RemoveNodesPlugin instance = new RemoveNodesPlugin();
         final PluginParameters parameters = instance.createParameters();
-                
         final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        
         vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         instance.edit(graph, interaction, parameters); 
     }
@@ -119,8 +110,8 @@ public class RemoveNodesPluginNGTest {
         System.out.println("selectedAttributesNotFound");
         final RemoveNodesPlugin instance = new RemoveNodesPlugin();
         final PluginParameters parameters = instance.createParameters(); 
-        
         final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        
         vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
         instance.edit(graph, interaction, parameters); 
     }

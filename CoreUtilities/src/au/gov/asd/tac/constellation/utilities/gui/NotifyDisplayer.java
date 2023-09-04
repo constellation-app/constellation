@@ -66,7 +66,6 @@ public class NotifyDisplayer {
      * @param message the notification message
      */
     public static void display(final String title, final Icon icon, final String message) {
-        LOGGER.log(Level.SEVERE, String.format("@@@ - %s", Arrays.toString(Thread.currentThread().getStackTrace()).replace( ',', '\n' )));
         if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
             // If this was called from one of the UI threads we don't want to
             // display the dialog and block beacasue some OS's (macos) will go into deadlock
@@ -87,9 +86,7 @@ public class NotifyDisplayer {
      *
      * @param descriptor the descriptor to display in a dialog
      */
-    public static void display(final NotifyDescriptor descriptor) {
-        LOGGER.log(Level.SEVERE, String.format("@@@ - %s", Arrays.toString(Thread.currentThread().getStackTrace()).replace( ',', '\n' )));
-        
+    public static void display(final NotifyDescriptor descriptor) {  
         if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
             // If this was called from one of the UI threads we don't want to
             // display the dialog and block beacasue some OS's (macos) will go into deadlock

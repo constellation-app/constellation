@@ -73,8 +73,9 @@ public class NotifyDisplayerNGTest {
     }
 
     @Test
-    public void display() {
+    public void display() {    
         if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
+            //Tests throw errors in headless
             display(true, true, true);
             display(true, false, true);
             display(false, true, true);
@@ -85,6 +86,7 @@ public class NotifyDisplayerNGTest {
     @Test
     public void displayWithIcon() {
         if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
+            //Tests throw errors in headless
             displayWithIcon(true, true, true);
             displayWithIcon(true, false, true);
             displayWithIcon(false, true, true);
