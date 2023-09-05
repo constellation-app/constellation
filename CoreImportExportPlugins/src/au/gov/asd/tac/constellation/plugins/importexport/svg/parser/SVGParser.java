@@ -13,8 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.svg;
+package au.gov.asd.tac.constellation.plugins.importexport.svg.parser;
 
+import au.gov.asd.tac.constellation.plugins.importexport.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.IOException;

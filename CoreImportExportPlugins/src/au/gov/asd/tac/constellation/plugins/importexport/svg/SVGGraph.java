@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGResourceConstant;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import java.io.IOException;
