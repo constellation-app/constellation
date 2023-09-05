@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * UI panel for the Data Access View categories.
@@ -60,18 +62,20 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
         final String davHiddenString = LookupPluginsTask.DAV_CATS;
         final String davVisibleString = LookupPluginsTask.VISIBLE_CATS;
-        final List<String> davHiddenList = Arrays.asList(LookupPluginsTask.addCategoryToList(davHiddenString));
-        final List<String> davVisibleList = Arrays.asList(LookupPluginsTask.addCategoryToList(davVisibleString));
-
-        visibleResultList = (davHiddenList == null || davHiddenList.isEmpty()) ? DAV_CATEGORIES : ListUtils.subtract(DAV_CATEGORIES, davHiddenList);
         
-        if (davVisibleList.isEmpty() && davHiddenList.isEmpty()) {
-            visibleResultList.clear();
-            LookupPluginsTask.getDefaultOrder().forEach(keyWithPos -> {
-                if (CATEGORIES.keySet().contains(keyWithPos.getValue())) {
-                    visibleResultList.add(keyWithPos.getValue());
+        if (StringUtils.isBlank(davVisibleString) && StringUtils.isBlank(davHiddenString)) {
+            visibleResultList = new ArrayList<>();
+            
+            for (final String pluginType : DataAccessPluginType.getTypes()) {
+                if (DAV_CATEGORIES.indexOf(pluginType) != -1) {
+                    visibleResultList.add(pluginType);
                 }
-            });
+            }
+        } else if (StringUtils.isBlank(davHiddenString)) {
+            visibleResultList = DAV_CATEGORIES;
+        } else {
+            final List<String> davHiddenList = Arrays.asList(LookupPluginsTask.addCategoryToList(davHiddenString));
+            visibleResultList = ListUtils.subtract(DAV_CATEGORIES, davHiddenList);
         }
     }
 

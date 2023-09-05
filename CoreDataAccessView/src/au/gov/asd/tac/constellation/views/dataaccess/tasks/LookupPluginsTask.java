@@ -20,8 +20,6 @@ import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewPrefere
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,11 +39,6 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
     private static final Preferences PREFS = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
     public static final String DAV_CATS = PREFS.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
     public static final String VISIBLE_CATS = PREFS.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
-    private static final List<Pair<Integer, String>> DEFAULT_ORDER = new ArrayList<>();
-
-    public static List<Pair<Integer, String>> getDefaultOrder() {
-        return Collections.unmodifiableList(DEFAULT_ORDER);
-    }
     
     @Override
     public Map<String, Pair<Integer, List<DataAccessPlugin>>> get() {
@@ -87,9 +80,7 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                 }
 
                 pluginsWithOrder.put(entry.getKey(), new Pair(position, entry.getValue()));
-                DEFAULT_ORDER.add(new Pair<>(position, entry.getKey()));
             });
-            sortDefaultOrder();
         }
 
         return pluginsWithOrder;
@@ -102,9 +93,5 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
             return hiddenCategoryFinal.split(SeparatorConstants.COMMA);
         }
         return new String[0];
-    }
-
-    private void sortDefaultOrder() {
-        Collections.sort(DEFAULT_ORDER, (p1, p2) -> p1.getKey() > p2.getKey() ? 1 : -1);
     }
 }
