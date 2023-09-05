@@ -19,12 +19,13 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg;
  *
  * @author capricornunicorn123
  */
-public class SVGResourceConstants {
+public enum SVGResourceConstant {
+    NODE("Node.svg"),
+    LINK("Link.svg");
     
-    public static final String NODE = "Node.svg";
-    public static final String LINK = "Link.svg";
+    public final String resourceName;
         
-    public SVGResourceConstants(){
-        //This constructor is empty as it is required to generate a classpath to SVG resources
+    private SVGResourceConstant(String resourceName){
+        this.resourceName = resourceName;
     }
 }

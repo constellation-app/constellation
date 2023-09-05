@@ -44,7 +44,6 @@ public class SVGGraph extends SVGObject{
      * <pre>
      * Example Usage: {@code new SVGGraph.SVGGraphBuilder().withGraph(graph).build();}
      * </pre>
-     * 
      */
     public static class SVGGraphBuilder {
 
@@ -96,7 +95,7 @@ public class SVGGraph extends SVGObject{
 
                 final Float[] coordinates = {xVal, yVal};
 
-                final SVGObject node = buildFromTemplate(SVGResourceConstants.NODE);
+                final SVGObject node = buildFromTemplate(SVGResourceConstant.NODE);
                 node.setAttribute("x", coordinates[0].toString());
                 node.setAttribute("y", coordinates[1].toString());
 
@@ -133,7 +132,7 @@ public class SVGGraph extends SVGObject{
                     coords[i][1] = yVal;
                 }
 
-                SVGObject link = buildFromTemplate(SVGResourceConstants.LINK);
+                SVGObject link = buildFromTemplate(SVGResourceConstant.LINK);
                 link.setAttribute("x1", coords[0][0].toString());
                 link.setAttribute("y1", coords[0][1].toString());
                 link.setAttribute("x2", coords[1][0].toString());
@@ -149,9 +148,8 @@ public class SVGGraph extends SVGObject{
          * @param templateResource the filename of the template file.
          * @return 
          */
-        private SVGObject buildFromTemplate(String templateResource){
-            SVGResourceConstants resourceClass = new SVGResourceConstants();
-            InputStream inputStream = resourceClass.getClass().getResourceAsStream(templateResource);
+        private SVGObject buildFromTemplate(SVGResourceConstant templateResource){
+            InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.resourceName);
             SVGObject templateSVG = null;
             try {
                 templateSVG = SVGParser.parse(inputStream);
