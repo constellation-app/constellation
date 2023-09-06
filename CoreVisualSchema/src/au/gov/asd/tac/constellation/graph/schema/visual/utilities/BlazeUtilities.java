@@ -45,7 +45,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -58,6 +57,7 @@ import org.openide.util.NbPreferences;
  * @author sirius
  */
 public class BlazeUtilities {
+
     public static final Blaze DEFAULT_BLAZE = new Blaze(45, ConstellationColor.LIGHT_BLUE);
 
     public static final String VERTEX_ID_PARAMETER_ID = PluginParameter.buildId(BlazeUtilities.class, "vertex_id");
@@ -70,7 +70,7 @@ public class BlazeUtilities {
     private BlazeUtilities() {
         throw new IllegalStateException("Utility class");
     }
-    
+
     /**
      * Selected vertices, and the color of the blaze of the first selected
      * vertex with a blaze.
@@ -126,7 +126,7 @@ public class BlazeUtilities {
         final PluginParameters dlgParams = new PluginParameters();
         final PluginParameter<ColorParameterValue> colorParam = ColorParameterType.build(COLOR_PARAMETER_ID);
         colorParam.setName("Color");
-        colorParam.setDescription(BLAZE_COLOR_PARAMETER_ID);
+        colorParam.setDescription("Set color for Custom Blazes");
         dlgParams.addParameter(colorParam);
 
         final PluginParameter<BooleanParameterValue> presetParam = BooleanParameterType.build(PRESET_PARAMETER_ID);
@@ -135,7 +135,7 @@ public class BlazeUtilities {
         presetParam.setBooleanValue(false);
         dlgParams.addParameter(presetParam);
 
-        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(BLAZE_COLOR_PARAMETER_ID, dlgParams);
+        final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog("Add Custom Blazes", dlgParams);
         dialog.showAndWait();
         final boolean isOk = PluginParametersDialog.OK.equals(dialog.getResult());
         ConstellationColor colorResult = blazeColor;
@@ -213,7 +213,6 @@ public class BlazeUtilities {
 
     }
 
-
     /**
      * Saves a blaze color as a preset
      *
@@ -258,7 +257,7 @@ public class BlazeUtilities {
         final int b = color.getBlue();
         return String.format("#%02x%02x%02x", r, g, b);
     }
-    
+
     protected static Preferences getGraphPreferences() {
         return NbPreferences.forModule(GraphPreferenceKeys.class);
     }
