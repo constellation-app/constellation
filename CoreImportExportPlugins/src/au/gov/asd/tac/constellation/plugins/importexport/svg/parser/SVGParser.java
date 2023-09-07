@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * The SVGParser facilitates the translation of SVGfiles into
@@ -35,6 +37,8 @@ import java.util.Map;
  * @author capricornunicorn123
  */
 public class SVGParser {
+    
+    private static final Logger LOG = Logger.getLogger(SVGParser.class.getName());
     
     private SVGParser() {
         throw new IllegalStateException("Utility class");
@@ -63,8 +67,12 @@ public class SVGParser {
                 
                 // Create a new SVGObject with the current SVGObject as the parent 
                 if (openTag){
-                    SVGObject newObject = new SVGObject(SVGParser.getElementType(svgElement), currentElement);
-                    newObject.setAttributes(SVGParser.getElementAttributes(svgElement));
+                        
+                    SVGObject newObject = new SVGObject(
+                            SVGParser.getElementType(svgElement), 
+                            currentElement, 
+                            SVGParser.getElementAttributes(svgElement)
+                    );
                     currentElement = newObject;
                 }
                 // Move back up one level to the curren objects parent
@@ -87,6 +95,7 @@ public class SVGParser {
             return (SVGObject) roots.toArray()[0];
         }
     }
+
         
     /**
      * Takes an SVG element and returns the tag type of the element.

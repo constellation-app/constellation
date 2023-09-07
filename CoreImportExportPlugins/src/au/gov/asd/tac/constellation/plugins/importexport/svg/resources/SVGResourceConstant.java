@@ -21,7 +21,8 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
  */
 public enum SVGResourceConstant {
     NODE("Node.svg"),
-    LINK("Link.svg");
+    LINK("Link.svg"),
+    LAYOUT("Layout.svg");
     
     public final String resourceName;
         

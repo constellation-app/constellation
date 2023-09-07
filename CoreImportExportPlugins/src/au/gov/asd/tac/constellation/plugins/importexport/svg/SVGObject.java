@@ -17,28 +17,36 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
 /**
- * Tree-like DataStructure to store SVG data for ease of translation and modification between
- * code and SVG files.
+ * Data structure to store SVG information and associations.
+ * Tree-like data structure capable of storing SVG types, attributes and children
+ * for ease of translation and modification between code and SVG files.
  * 
  * @author capricornunicorn123
  */
 public class SVGObject {
     private final String type;
     private final Map<String, String> attributes;
-    private final Collection<SVGObject> children;
+    private final Map<String, ArrayList<SVGObject>> children;
     private SVGObject parent;
-    
-    public SVGObject(final String type, final SVGObject parent){
+
+    public SVGObject(String type, SVGObject parent, Map<String, String> attributes) {
         this.type = type;
-        this.attributes = new HashMap<>();
-        this.children = new ArrayList<>();
+        this.attributes = attributes;
+        this.children = new HashMap<>();
         this.setParent(parent);
+    }
+    
+    /**
+     * Returns the SVG type.
+     * @return 
+     */
+    public final String getType(){
+        return this.type;
     }
     
     /**
@@ -46,39 +54,53 @@ public class SVGObject {
      * Only one attribute value can be provided per key.
      * Attempting to add a value to an existing key 
      * will override the last value provided.
-     * 
      * @param attributeKey such as "height", "width", "fill"
      * @param attributeValue such as "100", "stroke-width:3", "rgb(0,0,255)".
      */
     public final void setAttribute(final String attributeKey, final String attributeValue){
         this.attributes.put(attributeKey, attributeValue);
     }
-    
-        /**
-     * Adds an attribute to the current SVG element. 
-     * Only one attribute value can be provided per key.
-     * Attempting to add a value to an existing key 
-     * will override the last value provided.
-     * 
-     * @param attributeKey such as "height", "width", "style"
-     * @param attributeValue such as "100", "stroke-width:3", "fill:rgb(0,0,255)".
-     */
-    public final void setAttributes(final Map<String , String> attributeMap){
-        this.attributes.putAll(attributeMap);
-    }
-    
+        
     /**
-     * Associates an SVGObject as the child element of this SVGObject parent element.
-     * 
+     * Adds a child SVGObject to the current SVG element.
+     * To avoid duplication, this method should only be called by the setParent() method.
+     * Child SVGObjects are stored in HashMap based on their class attribute.
+     * To enable multiple child SVGObjects to be stored in the one map the map value is an ArayList.
      * @param child 
      */
-    public void setChild(final SVGObject child){
-        this.children.add(child);
+    private void setChild(final SVGObject child) {
+        ArrayList<SVGObject> currentChildren = this.children.get(child.getAttributeValue("class"));
+        if (currentChildren == null) {
+            currentChildren = new ArrayList<>();
+        }
+        currentChildren.add(child);
+        this.children.put(child.getAttributeValue("class"), currentChildren);
     }
     
     /**
-     * Associates an SVGObject as the child element of this SVGObject parent element.
-     * 
+     * Returns an ArrayList of SVGObjects containing a common class attribute value.
+     * @param classValue 
+     * @return ArrayList
+     */
+    public ArrayList<SVGObject> getChildren(final String classValue){
+        return this.children.get(classValue);
+    }
+    
+    /**
+     * Returns an ArrayList of SVGObjects containing all child SVGObject elements.
+     * @return ArrayList
+     */
+    public ArrayList<SVGObject> getAllChildren(){
+        final ArrayList<SVGObject> allChildren = new ArrayList<>();
+        children.keySet().forEach(key -> {
+            allChildren.addAll(this.children.get(key));
+        });
+        return allChildren;
+    }
+    
+    /**
+     * Associates a SVGObject as parent of this current SVGObject.
+     * by extension the parent sets this object as its child. 
      * @param child 
      */
     public final void setParent(final SVGObject parent){
@@ -89,8 +111,7 @@ public class SVGObject {
     }
     
     /**
-     * Gets the parent SVGObject.
-     * 
+     * Gets the parent of this SVGObject.
      * @return 
      */
     public final SVGObject getParent(){
@@ -98,10 +119,18 @@ public class SVGObject {
     }
     
     /**
-     * Generate a string representation of SVG data captured within this object.
+     * Returns the value of an attribute based on a provided attribute key.
+     * @param attributeKey
+     * @return 
+     */
+    public final String getAttributeValue(final String attributeKey){
+        return this.attributes.get(attributeKey);
+    }
+    
+    /**
+     * Generates a string representation of SVG data captured within this object.
      * will be formatted with indentations and line breaks to be written 
      * directly to an output file.
-     * 
      * @return String in an SVG format.
      */
     @Override
@@ -110,9 +139,8 @@ public class SVGObject {
     }
     
     /**
-     * Recursive function to generate a string equivalent of 
-     * complex SVG data captured within this object.
-     * 
+     * Recursive function to generate a string equivalent of complex SVG data 
+     * captured within this object.
      * @param prefix
      * @return String representation of the current element and all of it's child elements.
      */
@@ -129,7 +157,6 @@ public class SVGObject {
     }
     /**
      * Generates an "inline" SVG element.
-     * 
      * @param prefix represents indentation prefixes for the element.
      * @return String representation of the current element
      */
@@ -146,7 +173,6 @@ public class SVGObject {
      * Generates the header or opening portion of an SVG element. 
      * The header will contain the element type and 
      * all of the attributes associated with the element.
-     * 
      * @param prefix
      * @return String representation of element header.
      */
@@ -167,7 +193,6 @@ public class SVGObject {
     /**
      * Generates the footer or closing portion of an SVG element. 
      * The footer will contain the element type.
-     * 
      * @param prefix
      * @return String representation of element footer.
      */
@@ -188,13 +213,12 @@ public class SVGObject {
      * @return 
      */
     private String elementChildrenToSVG (final String prefix){
+        final StringBuilder childSVGString = new StringBuilder();
         String childPrefix = SeparatorConstants.TAB;
         if (prefix != null){
             childPrefix += prefix;
         }
-        
-        final StringBuilder childSVGString = new StringBuilder();
-        for (SVGObject child : this.children){
+        for (SVGObject child : this.getAllChildren()){
             childSVGString.append(child.toString(childPrefix));
         }
         return childSVGString.toString();

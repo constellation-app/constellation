@@ -1,3 +1,3 @@
-<svg id="Node" width="256" height="256">
-	<rect height="250" width="250" x="3" y="3" rx="20" ry="20" fill="red" stroke="black" stroke-width="6" />
+<svg class="Node" width="256" height="256">
+	<rect height="250" width="250" x="3" y="3" rx="20" ry="20" stroke="white" stroke-width="1" fill="white" />
 </svg>

@@ -1,0 +1,10 @@
+<svg class="graph" xmlns="http://www.w3.org/2000/svg">
+    <svg class="header" />
+    <svg class="footer" /> 
+    <rect class="background" fill="#1B1E24" />
+    <rect class="border" stroke="#1B1E24" stroke-width="6" fill-opacity="0" />
+    <svg class="content">
+        <svg class="nodes" />
+        <svg class="links" />
+    </svg>
+</svg>
