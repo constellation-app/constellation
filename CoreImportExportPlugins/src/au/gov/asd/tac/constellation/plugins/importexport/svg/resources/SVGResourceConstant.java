@@ -16,7 +16,10 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
 
 /**
- *
+ * This class serves to provide references to resource file names as constants. 
+ * the class also serves to provide the class path to the resources 
+ * as it is located within the same package. 
+ * 
  * @author capricornunicorn123
  */
 public enum SVGResourceConstant {

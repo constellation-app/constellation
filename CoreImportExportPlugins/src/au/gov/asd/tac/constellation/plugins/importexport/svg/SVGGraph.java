@@ -34,10 +34,15 @@ import org.openide.util.Exceptions;
  * 
  * @author capricornunicorn123
  */
-public class SVGGraph{
+public class SVGGraph {
     
     private final SVGContainer svgContainerReference;
     
+    /**
+     * Wrapper class for a SVGContainer. 
+     * Represents the outer most element of a SVG file.
+     * @param svg 
+     */
     private SVGGraph(final SVGContainer svg) {
         this.svgContainerReference = svg;
     }
@@ -59,7 +64,7 @@ public class SVGGraph{
      * @param width
      * @param height 
      */
-    public void setDimensions(final Float width, final Float height){
+    public void setDimensions(final Float width, final Float height) {
         svgContainerReference.setDimension(width, height);
     }
 
@@ -194,7 +199,7 @@ public class SVGGraph{
          * @param templateResource the filename of the template file.
          * @return 
          */
-        private SVGGraph buildSVGGraphFromTemplate(final SVGResourceConstant templateResource){
+        private SVGGraph buildSVGGraphFromTemplate(final SVGResourceConstant templateResource) {
             return new SVGGraph(new SVGContainer(buildSVGObjectFromTemplate(templateResource)));
         }
  
@@ -218,16 +223,16 @@ public class SVGGraph{
                     yBoundMin = yCoordinate;
                     yBoundMax = yCoordinate;
                 } else {
-                    if (xBoundMin > xCoordinate){
+                    if (xBoundMin > xCoordinate) {
                         xBoundMin = xCoordinate;
                     }
-                    if (xBoundMax < xCoordinate){
+                    if (xBoundMax < xCoordinate) {
                         xBoundMax = xCoordinate;
                     }
-                    if (yBoundMin > yCoordinate){
+                    if (yBoundMin > yCoordinate) {
                         yBoundMin = yCoordinate;
                     }
-                    if (yBoundMax < yCoordinate){
+                    if (yBoundMax < yCoordinate) {
                         yBoundMax = yCoordinate;
                     }
                 }

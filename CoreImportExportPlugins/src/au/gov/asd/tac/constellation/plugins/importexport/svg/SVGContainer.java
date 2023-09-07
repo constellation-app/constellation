@@ -30,6 +30,11 @@ public class SVGContainer {
     
     private final SVGObject svgObjectReference;
     
+    /**
+     * Wrapper class for SVGObjects. 
+     * Represents a non renderable element that contains other elements.
+     * @param svg 
+     */
     public SVGContainer(final SVGObject svg) {
         this.svgObjectReference = svg;
     }
