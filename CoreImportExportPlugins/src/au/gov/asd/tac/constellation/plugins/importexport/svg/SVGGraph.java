@@ -15,10 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
-import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGResourceConstant;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import java.io.IOException;
 import java.io.InputStream;
 import org.openide.util.Exceptions;
@@ -108,7 +110,7 @@ public class SVGGraph {
          * @return SVGObject
          */
         public SVGObject build() {
-            final SVGGraph svgGraphLayout = buildSVGGraphFromTemplate(SVGResourceConstant.LAYOUT);
+            final SVGGraph svgGraphLayout = buildSVGGraphFromTemplate(SVGFileNameConstant.LAYOUT);
             defineBoundary(graph);
             buildLinks(svgGraphLayout);
             buildNodes(svgGraphLayout);
@@ -122,7 +124,7 @@ public class SVGGraph {
          * @param svgGraph
          */
         private void buildNodes(final SVGGraph svgGraph) {
-            final SVGContainer nodesContainer = svgGraph.getContainer("content").getContainer("nodes");
+            final SVGContainer nodesContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.name).getContainer(SVGLayoutConstant.NODES.name);
             
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
             final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
@@ -134,9 +136,9 @@ public class SVGGraph {
                 final Float xVal = (graph.getFloatValue(xAttributeID, vertexID) * 128) - xBoundMin;
                 final Float yVal = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, vertexID) * 128) - yBoundMin);
 
-                final SVGObject node = buildSVGObjectFromTemplate(SVGResourceConstant.NODE);
-                node.setAttribute("x", xVal.toString());
-                node.setAttribute("y", yVal.toString());
+                final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
+                node.setAttribute(SVGAttributeConstant.X.getKey(), xVal.toString());
+                node.setAttribute(SVGAttributeConstant.Y.getKey(), yVal.toString());
                 node.setParent(nodesContainer.toSVGObject());
             }
         }
@@ -148,7 +150,7 @@ public class SVGGraph {
          * @param svgGraph
          */
         private void buildLinks(final SVGGraph svgGraph) {
-            final SVGContainer linksContainer = svgGraph.getContainer("content").getContainer("links");
+            final SVGContainer linksContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.name).getContainer(SVGLayoutConstant.LINKS.name);
             
             int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
             int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
@@ -164,11 +166,11 @@ public class SVGGraph {
                 final Float x2Val = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
                 final Float y2Val = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
 
-                final SVGObject link = buildSVGObjectFromTemplate(SVGResourceConstant.LINK);
-                link.setAttribute("x1", x1Val.toString());
-                link.setAttribute("y1", y1Val.toString());
-                link.setAttribute("x2", x2Val.toString());
-                link.setAttribute("y2", y2Val.toString());
+                final SVGObject link = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK);
+                link.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), x1Val.toString());
+                link.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), y1Val.toString());
+                link.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), x2Val.toString());
+                link.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), y2Val.toString());
                 link.setParent(linksContainer.toSVGObject());
             }
         }
@@ -180,7 +182,7 @@ public class SVGGraph {
          * @param templateResource the filename of the template file.
          * @return 
          */
-        private SVGObject buildSVGObjectFromTemplate(final SVGResourceConstant templateResource) {
+        private SVGObject buildSVGObjectFromTemplate(final SVGFileNameConstant templateResource) {
             final InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.resourceName);
             SVGObject templateSVG = null;
             try {
@@ -199,7 +201,7 @@ public class SVGGraph {
          * @param templateResource the filename of the template file.
          * @return 
          */
-        private SVGGraph buildSVGGraphFromTemplate(final SVGResourceConstant templateResource) {
+        private SVGGraph buildSVGGraphFromTemplate(final SVGFileNameConstant templateResource) {
             return new SVGGraph(new SVGContainer(buildSVGObjectFromTemplate(templateResource)));
         }
  
@@ -264,18 +266,18 @@ public class SVGGraph {
             
             svg.setDimensions(fullWidth, fullHeight);
 
-            svg.getContainer("header").setDimension(fullWidth, yMargin);
+            svg.getContainer(SVGLayoutConstant.HEADER.name).setDimension(fullWidth, yMargin);
 
-            svg.getContainer("footer").setDimension(fullWidth, yMargin);
-            svg.getContainer("footer").setposition(0F, footerYOffset);
+            svg.getContainer(SVGLayoutConstant.FOOTER.name).setDimension(fullWidth, yMargin);
+            svg.getContainer(SVGLayoutConstant.FOOTER.name).setposition(0F, footerYOffset);
 
-            svg.getContainer("content").setDimension(contentWidth, contentHeight);
-            svg.getContainer("content").setposition(contentXOffset, contentYOffset);
+            svg.getContainer(SVGLayoutConstant.CONTENT.name).setDimension(contentWidth, contentHeight);
+            svg.getContainer(SVGLayoutConstant.CONTENT.name).setposition(contentXOffset, contentYOffset);
 
-            svg.getContainer("background").setDimension(backgroundWidth, backgroundHeight);
-            svg.getContainer("background").setposition(xMargin, yMargin);
+            svg.getContainer(SVGLayoutConstant.BACKGROUND.name).setDimension(backgroundWidth, backgroundHeight);
+            svg.getContainer(SVGLayoutConstant.BACKGROUND.name).setposition(xMargin, yMargin);
             
-            svg.getContainer("border").setDimension(fullWidth, fullHeight);
+            svg.getContainer(SVGLayoutConstant.BORDER.name).setDimension(fullWidth, fullHeight);
         }
     }
 }

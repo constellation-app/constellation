@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,12 +71,12 @@ public class SVGObject {
      * @param child 
      */
     private void setChild(final SVGObject child) {
-        ArrayList<SVGObject> currentChildren = this.children.get(child.getAttributeValue("class"));
+        ArrayList<SVGObject> currentChildren = this.children.get(child.getAttributeValue(SVGAttributeConstant.CLASS.getKey()));
         if (currentChildren == null) {
             currentChildren = new ArrayList<>();
         }
         currentChildren.add(child);
-        this.children.put(child.getAttributeValue("class"), currentChildren);
+        this.children.put(child.getAttributeValue(SVGAttributeConstant.CLASS.getKey()), currentChildren);
     }
     
     /**

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import java.util.List;
 
 /**
@@ -44,7 +45,7 @@ public class SVGContainer {
      * @param height
      */
     private void setHeight(final Float height) {
-        svgObjectReference.setAttribute("height", height.toString());
+        svgObjectReference.setAttribute(SVGAttributeConstant.HEIGHT.getKey(), height.toString());
     }
     
     /**
@@ -52,7 +53,7 @@ public class SVGContainer {
      * @param width 
      */
     private void setWidh(final Float width) {
-        svgObjectReference.setAttribute("width", width.toString());
+        svgObjectReference.setAttribute(SVGAttributeConstant.WIDTH.getKey(), width.toString());
     }
     
     /**
@@ -61,7 +62,7 @@ public class SVGContainer {
      * @param x 
      */
     private void setXPosition(final Float x) {
-        svgObjectReference.setAttribute("x", x.toString());
+        svgObjectReference.setAttribute(SVGAttributeConstant.X.getKey(), x.toString());
     }
     
     /**
@@ -70,7 +71,7 @@ public class SVGContainer {
      * @param y
      */
     private void setYPosition(final Float y) {
-        svgObjectReference.setAttribute("y", y.toString());
+        svgObjectReference.setAttribute(SVGAttributeConstant.Y.getKey(), y.toString());
     }
     
     /**

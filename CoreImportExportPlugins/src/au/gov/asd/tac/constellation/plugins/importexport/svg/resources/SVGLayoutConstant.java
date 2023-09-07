@@ -16,20 +16,24 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
 
 /**
- * This class serves to provide references to resource file names as constants. 
- * the class also serves to provide the class path to the resources 
- * as it is located within the same package. 
+ * Class to capture constant values for stings that indicate a svgContainer element.
+ * these element names are tightly coupled to the Layout.svg file and reduce 
+ * the repetitive use of string literals.
  * 
  * @author capricornunicorn123
  */
-public enum SVGResourceConstant {
-    NODE("Node.svg"),
-    LINK("Link.svg"),
-    LAYOUT("Layout.svg");
+public enum SVGLayoutConstant {
+    NODES("nodes"),
+    LINKS("links"),
+    CONTENT("content"),
+    HEADER("header"),
+    FOOTER("footer"),
+    BACKGROUND("background"),
+    BORDER("border");
     
-    public final String resourceName;
+    public final String name;
         
-    private SVGResourceConstant(String resourceName){
-        this.resourceName = resourceName;
+    private SVGLayoutConstant(String name){
+        this.name = name;
     }
 }
