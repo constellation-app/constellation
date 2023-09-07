@@ -112,8 +112,8 @@ public class SVGGraph {
         public SVGObject build() {
             final SVGGraph svgGraphLayout = buildSVGGraphFromTemplate(SVGFileNameConstant.LAYOUT);
             defineBoundary(graph);
-            buildLinks(svgGraphLayout);
             buildNodes(svgGraphLayout);
+            buildLinks(svgGraphLayout);
             setLayoutDimensions(svgGraphLayout);
             return svgGraphLayout.toSVGObject();
         }       
@@ -128,17 +128,20 @@ public class SVGGraph {
             
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
             final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
-
+            final int fillColorAttributeID = VisualConcept.VertexAttribute.COLOR.get(graph);
+            
             final int vertexCount = graph.getVertexCount();
             for (int vertexPosition = 0 ; vertexPosition < vertexCount ; vertexPosition++) {
                 final int vertexID = graph.getVertex(vertexPosition);
 
                 final Float xVal = (graph.getFloatValue(xAttributeID, vertexID) * 128) - xBoundMin;
                 final Float yVal = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, vertexID) * 128) - yBoundMin);
+                final String fillColor = graph.getStringValue(fillColorAttributeID, vertexID);
 
                 final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
                 node.setAttribute(SVGAttributeConstant.X.getKey(), xVal.toString());
                 node.setAttribute(SVGAttributeConstant.Y.getKey(), yVal.toString());
+                node.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), fillColor);
                 node.setParent(nodesContainer.toSVGObject());
             }
         }
