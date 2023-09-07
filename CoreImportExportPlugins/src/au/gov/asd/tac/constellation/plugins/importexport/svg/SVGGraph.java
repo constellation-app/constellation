@@ -155,20 +155,19 @@ public class SVGGraph {
         private void buildLinks(final SVGGraph svgGraph) {
             final SVGContainer linksContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.name).getContainer(SVGLayoutConstant.LINKS.name);
             
-            int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
-            int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
+            final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
+            final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
 
             int linkCount = graph.getLinkCount();
             for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
                 final int linkID = graph.getLink(linkPosition);
                 final int sourceVxId = graph.getLinkHighVertex(linkID);
                 final int destinationVxId = graph.getLinkLowVertex(linkID); 
-                
+
                 final Float x1Val = (graph.getFloatValue(xAttributeID, sourceVxId) * 128) - xBoundMin + 128;
                 final Float y1Val = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, sourceVxId) * 128) - yBoundMin) + 128;
                 final Float x2Val = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
                 final Float y2Val = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
-
                 final SVGObject link = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK);
                 link.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), x1Val.toString());
                 link.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), y1Val.toString());
