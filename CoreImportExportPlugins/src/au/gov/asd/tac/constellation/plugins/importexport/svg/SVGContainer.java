@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A wrapper class for SVGObjects.
@@ -28,7 +28,7 @@ import java.util.ArrayList;
  */
 public class SVGContainer {
     
-    final private SVGObject svgObjectReference;
+    private final SVGObject svgObjectReference;
     
     public SVGContainer(final SVGObject svg) {
         this.svgObjectReference = svg;
@@ -38,7 +38,7 @@ public class SVGContainer {
      * Sets the height of the container element.
      * @param height
      */
-    private void setHeight(final Float height){
+    private void setHeight(final Float height) {
         svgObjectReference.setAttribute("height", height.toString());
     }
     
@@ -46,7 +46,7 @@ public class SVGContainer {
      * Sets the width of the container element.
      * @param width 
      */
-    private void setWidh(final Float width){
+    private void setWidh(final Float width) {
         svgObjectReference.setAttribute("width", width.toString());
     }
     
@@ -55,7 +55,7 @@ public class SVGContainer {
      * With respect to the element it is contained within.
      * @param x 
      */
-    private void setXPosition(final Float x){
+    private void setXPosition(final Float x) {
         svgObjectReference.setAttribute("x", x.toString());
     }
     
@@ -64,7 +64,7 @@ public class SVGContainer {
      * With respect to the element it is contained within.
      * @param y
      */
-    private void setYPosition(final Float y){
+    private void setYPosition(final Float y) {
         svgObjectReference.setAttribute("y", y.toString());
     }
     
@@ -77,7 +77,7 @@ public class SVGContainer {
      * @param width
      * @param height
      */
-    public void setDimension(final Float width, final Float height){
+    public void setDimension(final Float width, final Float height) {
         this.setWidh(width);
         this.setHeight(height);
     }
@@ -88,7 +88,7 @@ public class SVGContainer {
      * @param x
      * @param y 
      */
-    public void setposition(final Float x, final Float y){
+    public void setposition(final Float x, final Float y) {
         this.setXPosition(x);
         this.setYPosition(y);
     }
@@ -101,11 +101,10 @@ public class SVGContainer {
      * @return 
      */
     public final SVGContainer getContainer(final String classValue) {
-        final ArrayList<SVGObject> children = this.svgObjectReference.getChildren(classValue);
+        final List<SVGObject> children = this.svgObjectReference.getChildren(classValue);
         if (children != null && children.size() == 1){
-           return new SVGContainer(children.get(0)); 
-        }
-        else {
+            return new SVGContainer(children.get(0)); 
+        } else {
             return null;
         }
     }

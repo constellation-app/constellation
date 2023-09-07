@@ -25,8 +25,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * The SVGParser facilitates the translation of SVGfiles into
@@ -37,8 +35,6 @@ import java.util.logging.Logger;
  * @author capricornunicorn123
  */
 public class SVGParser {
-    
-    private static final Logger LOG = Logger.getLogger(SVGParser.class.getName());
     
     private SVGParser() {
         throw new IllegalStateException("Utility class");
@@ -66,7 +62,7 @@ public class SVGParser {
                 final boolean closeTag = SVGParser.isCloseTag(svgElement);
                 
                 // Create a new SVGObject with the current SVGObject as the parent 
-                if (openTag){
+                if (openTag) {
                         
                     SVGObject newObject = new SVGObject(
                             SVGParser.getElementType(svgElement), 
@@ -76,11 +72,11 @@ public class SVGParser {
                     currentElement = newObject;
                 }
                 // Move back up one level to the curren objects parent
-                if (closeTag){
+                if (closeTag) {
                     currentElement = currentElement.getParent();
                 } 
                 // This parser curently requires all lines with be an SVG tag as it does not support multi line tags.
-                if (!openTag && !closeTag){
+                if (!openTag && !closeTag) {
                     throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", svgElement));
                 }
                 
@@ -89,7 +85,7 @@ public class SVGParser {
                 }
             }
         }
-        if (roots.size() != 1){
+        if (roots.size() != 1) {
             throw new UnsupportedOperationException(String.format("The SVG file has %s outer elements.", roots.size()));
         } else{
             return (SVGObject) roots.toArray()[0];
@@ -103,7 +99,7 @@ public class SVGParser {
      * @param svgString
      * @return 
      */
-    private static String getElementType(final String svgString){
+    private static String getElementType(final String svgString) {
         return svgString.split(SeparatorConstants.BLANKSPACE)[0].replaceAll("<", "").replaceAll(">", "");
     }
    
@@ -113,7 +109,7 @@ public class SVGParser {
         for (final String potentialAttribute : potentialAttributes) {
             if (potentialAttribute.contains("=")) {
                 final String[] attribute = potentialAttribute.split("=");
-                if (attribute.length == 2){
+                if (attribute.length == 2) {
                     final String foundKey = attribute[0];
                     final String foundValue = attribute[1].replaceAll(SeparatorConstants.QUOTE, "");
                     extractedAttributes.put(foundKey, foundValue);
@@ -134,7 +130,7 @@ public class SVGParser {
      */
     private static String isolateSVGElement(final String line) {
         final String svgElement = line.substring(line.indexOf("<"), line.indexOf(">") + 1);
-        if (svgElement.length() < 2){
+        if (svgElement.length() < 2) {
             throw new UnsupportedOperationException("SVG Element wrong");
         }
         return svgElement;
@@ -150,7 +146,7 @@ public class SVGParser {
      */
     private static String stripAngleBrackets(final String line) {
         final String svgElement = line.substring(line.indexOf("<") + 1, line.indexOf(">"));
-        if (svgElement.length() < 2){
+        if (svgElement.length() < 2) {
             throw new UnsupportedOperationException("SVG Element wrong");
         }
         return svgElement;

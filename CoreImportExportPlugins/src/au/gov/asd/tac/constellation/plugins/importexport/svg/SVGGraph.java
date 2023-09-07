@@ -36,9 +36,9 @@ import org.openide.util.Exceptions;
  */
 public class SVGGraph{
     
-    final private SVGContainer svgContainerReference;
+    private final SVGContainer svgContainerReference;
     
-    private SVGGraph(SVGContainer svg) {
+    private SVGGraph(final SVGContainer svg) {
         this.svgContainerReference = svg;
     }
 
@@ -50,7 +50,7 @@ public class SVGGraph{
      * @param classValue
      * @return 
      */
-    private SVGContainer getContainer(String classValue) {
+    private SVGContainer getContainer(final String classValue) {
         return svgContainerReference.getContainer(classValue);
     }
     
@@ -59,7 +59,7 @@ public class SVGGraph{
      * @param width
      * @param height 
      */
-    public void setDimensions(Float width, Float height){
+    public void setDimensions(final Float width, final Float height){
         svgContainerReference.setDimension(width, height);
     }
 
@@ -83,7 +83,6 @@ public class SVGGraph{
     public static class SVGGraphBuilder {
 
         private GraphReadMethods graph;
-        private String title = null;
         private Float xBoundMin = null;
         private Float xBoundMax = null;
         private Float yBoundMin = null;
@@ -94,13 +93,8 @@ public class SVGGraph{
          * @param graph The graph to be exported.
          * @return SVGGraphBuilder
          */
-        public SVGGraphBuilder withGraph(GraphReadMethods graph){
+        public SVGGraphBuilder withGraph(final GraphReadMethods graph) {
             this.graph = graph;
-            return this;
-        }
-        
-        public SVGGraphBuilder withTitle(String title){
-            this.title=title;
             return this;
         }
       
@@ -108,8 +102,8 @@ public class SVGGraph{
          * Builds an SVGGraphObject representing the provided graph.
          * @return SVGObject
          */
-        public SVGObject build(){
-            SVGGraph svgGraphLayout = buildSVGGraphFromTemplate(SVGResourceConstant.LAYOUT);
+        public SVGObject build() {
+            final SVGGraph svgGraphLayout = buildSVGGraphFromTemplate(SVGResourceConstant.LAYOUT);
             defineBoundary(graph);
             buildLinks(svgGraphLayout);
             buildNodes(svgGraphLayout);
@@ -122,7 +116,7 @@ public class SVGGraph{
          * The template file Node.svg is used to build the node.
          * @param svgGraph
          */
-        private void buildNodes(final SVGGraph svgGraph){
+        private void buildNodes(final SVGGraph svgGraph) {
             final SVGContainer nodesContainer = svgGraph.getContainer("content").getContainer("nodes");
             
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
@@ -148,7 +142,7 @@ public class SVGGraph{
          * 
          * @param svgGraph
          */
-        private void buildLinks(final SVGGraph svgGraph){
+        private void buildLinks(final SVGGraph svgGraph) {
             final SVGContainer linksContainer = svgGraph.getContainer("content").getContainer("links");
             
             int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
@@ -181,7 +175,7 @@ public class SVGGraph{
          * @param templateResource the filename of the template file.
          * @return 
          */
-        private SVGObject buildSVGObjectFromTemplate(final SVGResourceConstant templateResource){
+        private SVGObject buildSVGObjectFromTemplate(final SVGResourceConstant templateResource) {
             final InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.resourceName);
             SVGObject templateSVG = null;
             try {
@@ -210,7 +204,7 @@ public class SVGGraph{
          * @param graph
          * @return 
          */
-        private void defineBoundary(GraphReadMethods graph) {
+        private void defineBoundary(final GraphReadMethods graph) {
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
             final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
             final int vertexCount = graph.getVertexCount();
@@ -218,7 +212,7 @@ public class SVGGraph{
                 final int vertexID = graph.getVertex(vertexPosition);
                 final Float xCoordinate = graph.getFloatValue(xAttributeID, vertexID) * 128; 
                 final Float yCoordinate = graph.getFloatValue(yAttributeID, vertexID) * 128;
-                if (vertexPosition == 0){
+                if (vertexPosition == 0) {
                     xBoundMin = xCoordinate;
                     xBoundMax = xCoordinate;
                     yBoundMin = yCoordinate;
@@ -230,7 +224,6 @@ public class SVGGraph{
                     if (xBoundMax < xCoordinate){
                         xBoundMax = xCoordinate;
                     }
-                    
                     if (yBoundMin > yCoordinate){
                         yBoundMin = yCoordinate;
                     }
@@ -249,13 +242,13 @@ public class SVGGraph{
          * based on it's own content.
          * @param svg 
          */
-        private void setLayoutDimensions(SVGGraph svg) {
+        private void setLayoutDimensions(final SVGGraph svg) {
             final Float contentWidth = xBoundMax - xBoundMin + 256;
             final Float contentHeight = yBoundMax - yBoundMin + 256;
-            final Float xMargin = 50.0f;
-            final Float yMargin = 50.0f;
-            final Float xPadding = 50.0f;
-            final Float yPadding = 50.0f;
+            final Float xMargin = 50.0F;
+            final Float yMargin = 50.0F;
+            final Float xPadding = 50.0F;
+            final Float yPadding = 50.0F;
             final Float footerYOffset = yMargin + contentHeight + (yPadding * 2);            
             final Float fullWidth = (xMargin * 2) + contentWidth + (xPadding * 2);            
             final Float fullHeight = (yMargin * 2) + contentHeight + (yPadding * 2);            
@@ -269,7 +262,7 @@ public class SVGGraph{
             svg.getContainer("header").setDimension(fullWidth, yMargin);
 
             svg.getContainer("footer").setDimension(fullWidth, yMargin);
-            svg.getContainer("footer").setposition(0f, footerYOffset);
+            svg.getContainer("footer").setposition(0F, footerYOffset);
 
             svg.getContainer("content").setDimension(contentWidth, contentHeight);
             svg.getContainer("content").setposition(contentXOffset, contentYOffset);

@@ -99,14 +99,14 @@ public final class ExportToSVGAction implements ActionListener {
                         for (File file : files){
                             if (file.isFile()){
                                 
-                                final String message = String.format("%s already exists.\nDo you want to replace it?", file.getName());
+                                final String message = String.format("%s already exists.%nDo you want to replace it?", file.getName());
                                 final Object[] options = new Object[]{
                                     "Yes", "No"
                                 };
                                 final NotifyDescriptor d = new NotifyDescriptor(message, "Confirm Save", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, "Save");
                                 final Object o = DialogDisplayer.getDefault().notify(d);
 
-                                if (o.equals("No")) {
+                                if ("NO".equals(o)) {
                                     return false;
                                 }
                             }

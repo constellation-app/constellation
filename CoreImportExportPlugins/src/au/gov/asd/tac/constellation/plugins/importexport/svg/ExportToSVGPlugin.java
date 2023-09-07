@@ -75,11 +75,11 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
      * @param data
      * @throws IOException 
      */
-    private void exportToSVG(final File file, final SVGObject data) throws IOException{
+    private void exportToSVG(final File file, final SVGObject data) throws IOException {
         final boolean fileOverwritten = file.createNewFile();
-            try (final FileWriter writer = new FileWriter(file)){
-                writer.write(data.toString());
-                writer.flush();        
+        try (final FileWriter writer = new FileWriter(file)) {
+            writer.write(data.toString());
+            writer.flush();        
         }
     }
 }

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,7 +46,7 @@ public class SVGObject {
      * Returns the SVG type.
      * @return 
      */
-    public final String getType(){
+    public final String getType() {
         return this.type;
     }
     
@@ -57,7 +58,7 @@ public class SVGObject {
      * @param attributeKey such as "height", "width", "fill"
      * @param attributeValue such as "100", "stroke-width:3", "rgb(0,0,255)".
      */
-    public final void setAttribute(final String attributeKey, final String attributeValue){
+    public final void setAttribute(final String attributeKey, final String attributeValue) {
         this.attributes.put(attributeKey, attributeValue);
     }
         
@@ -82,7 +83,7 @@ public class SVGObject {
      * @param classValue 
      * @return ArrayList
      */
-    public ArrayList<SVGObject> getChildren(final String classValue){
+    public List<SVGObject> getChildren(final String classValue) {
         return this.children.get(classValue);
     }
     
@@ -90,11 +91,9 @@ public class SVGObject {
      * Returns an ArrayList of SVGObjects containing all child SVGObject elements.
      * @return ArrayList
      */
-    public ArrayList<SVGObject> getAllChildren(){
+    public List<SVGObject> getAllChildren() {
         final ArrayList<SVGObject> allChildren = new ArrayList<>();
-        children.keySet().forEach(key -> {
-            allChildren.addAll(this.children.get(key));
-        });
+        children.keySet().forEach(key -> allChildren.addAll(this.children.get(key)));
         return allChildren;
     }
     
@@ -103,7 +102,7 @@ public class SVGObject {
      * by extension the parent sets this object as its child. 
      * @param child 
      */
-    public final void setParent(final SVGObject parent){
+    public final void setParent(final SVGObject parent) {
         this.parent = parent;
         if (this.parent != null){
             this.parent.setChild(this);
@@ -114,7 +113,7 @@ public class SVGObject {
      * Gets the parent of this SVGObject.
      * @return 
      */
-    public final SVGObject getParent(){
+    public final SVGObject getParent() {
         return this.parent;
     }
     
@@ -123,7 +122,7 @@ public class SVGObject {
      * @param attributeKey
      * @return 
      */
-    public final String getAttributeValue(final String attributeKey){
+    public final String getAttributeValue(final String attributeKey) {
         return this.attributes.get(attributeKey);
     }
     
@@ -134,7 +133,7 @@ public class SVGObject {
      * @return String in an SVG format.
      */
     @Override
-    public final String toString(){
+    public final String toString() {
         return toString(null);
     }
     
@@ -144,7 +143,7 @@ public class SVGObject {
      * @param prefix
      * @return String representation of the current element and all of it's child elements.
      */
-    private String toString(final String prefix){
+    private String toString(final String prefix) {
         final StringBuilder svgString = new StringBuilder();
         if (this.children.isEmpty()){
             svgString.append(elementToSVG(prefix));
@@ -160,7 +159,7 @@ public class SVGObject {
      * @param prefix represents indentation prefixes for the element.
      * @return String representation of the current element
      */
-    private String elementToSVG(final String prefix){
+    private String elementToSVG(final String prefix) {
         final StringBuilder attributeBuilder = new StringBuilder();
         final String linePrefix = SeparatorConstants.NEWLINE + prefix;
         final Set<String> keys = attributes.keySet();
@@ -176,7 +175,7 @@ public class SVGObject {
      * @param prefix
      * @return String representation of element header.
      */
-    private String elementHeaderToSVG(final String prefix){
+    private String elementHeaderToSVG(final String prefix) {
         String linePrefix = SeparatorConstants.NEWLINE;
         if (prefix != null){
             linePrefix += prefix;
@@ -196,7 +195,7 @@ public class SVGObject {
      * @param prefix
      * @return String representation of element footer.
      */
-    private String elementFooterToSVG(final String prefix){
+    private String elementFooterToSVG(final String prefix) {
         String linePrefix = SeparatorConstants.NEWLINE;
         if (prefix != null){
             linePrefix += prefix;
@@ -212,7 +211,7 @@ public class SVGObject {
      * @param prefix
      * @return 
      */
-    private String elementChildrenToSVG (final String prefix){
+    private String elementChildrenToSVG (final String prefix) {
         final StringBuilder childSVGString = new StringBuilder();
         String childPrefix = SeparatorConstants.TAB;
         if (prefix != null){
