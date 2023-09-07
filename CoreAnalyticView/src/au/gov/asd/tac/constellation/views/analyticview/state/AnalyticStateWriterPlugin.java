@@ -79,7 +79,7 @@ public final class AnalyticStateWriterPlugin extends SimpleEditPlugin {
         } else {
             currentState = new AnalyticViewState(currentState);
             
-            // set all of the values into the state now
+            // set all of the values into the current state 
             currentState.setCategoriesPaneVisible(categoriesVisible);
             currentState.setResultsPaneVisible(resultsVisible);
             currentState.setCurrentAnalyticQuestionIndex(currentAnalyticQuestionIndex);

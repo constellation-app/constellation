@@ -51,7 +51,7 @@ public final class AnalyticStateReaderPlugin extends SimpleReadPlugin {
             return;
         }
 
-        AnalyticViewState currentState = graph.getObjectValue(analyticViewStateAttributeId, 0);
+        final AnalyticViewState currentState = graph.getObjectValue(analyticViewStateAttributeId, 0);
         if (currentState == null) {
             return;
         }

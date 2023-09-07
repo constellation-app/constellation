@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractSizeTranslator;
 import java.util.Arrays;
@@ -44,6 +45,7 @@ public class SizeVisualisation<C> extends GraphVisualisation {
         sizeButton.setOnAction(event -> {
             activated = sizeButton.isSelected();
             translator.executePlugin(!activated);
+            AnalyticViewController.getDefault().updateVisualisations(this, activated);
         });
     }
 

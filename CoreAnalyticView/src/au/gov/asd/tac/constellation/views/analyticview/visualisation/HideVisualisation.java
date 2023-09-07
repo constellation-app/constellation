@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractHideTranslator;
 import java.util.Arrays;
@@ -55,6 +56,7 @@ public class HideVisualisation<C> extends GraphVisualisation {
             final float threshold = (float) hideSlider.getValue();
             translator.executePlugin(!activated, threshold);
             hideSlider.setDisable(!activated);
+            AnalyticViewController.getDefault().updateVisualisations(this, activated);
         });
 
         this.hidePanel = new HBox(5.0, hideButton, hideSlider);

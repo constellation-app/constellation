@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.views.analyticview.AnalyticConfigurationPane
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
+import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +58,20 @@ public class AnalyticViewState {
         this.question = state.getQuestion();
         this.activeCategory = state.getActiveCategory();
         this.visualisations = state.getVisualisations();
+    }
+    
+    public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
+            final List<List<SelectableAnalyticPlugin>> activePlugins) {
+        this.currentAnalyticQuestionIndex = currentQuestionIndex;
+        this.activeAnalyticQuestions = activeQuestions;
+        this.activeSelectablePlugins = activePlugins;
+        this.categoriesVisible = false;
+        this.activeCategory = "";
+        this.visualisations = new HashMap<>();
+        this.resultsVisible = false;
+        this.result = new EmptyResult();
+        this.question = null;
+        this.currentQuestion = null;
     }
 
     public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,

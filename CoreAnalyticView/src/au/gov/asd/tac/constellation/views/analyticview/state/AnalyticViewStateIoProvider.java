@@ -101,23 +101,7 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                 plugins.add(selectablePluginList);
             }
 
-            final ObjectMapper mapper = new ObjectMapper();
-            final AnalyticResult<?> result = mapper.readValue(jnode.get("result").asText(), AnalyticResult.class);
-            final boolean resultsVisible = jnode.get("resultVisible").asBoolean();
-            final boolean categoriesVisible = jnode.get("categoriesVisible").asBoolean();
-            final AnalyticQuestionDescription<?> currentQuestion = mapper.readValue(jnode.get("currentQuestion").asText(), AnalyticQuestionDescription.class);
-            final AnalyticQuestion question = mapper.readValue(jnode.get("question").asText(), AnalyticQuestion.class);
-            final String activeCategory = jnode.get("category").asText();
-
-            final HashMap<GraphVisualisation, Boolean> visualisations = new HashMap<>();
-            final Iterator<JsonNode> visualisationsList = jnode.get("visualisations").iterator();
-            while (visualisationsList.hasNext()) {
-                final JsonNode visualisationNode = visualisationsList.next();
-                final GraphVisualisation visualisation = mapper.readValue(visualisationNode.textValue(), GraphVisualisation.class);
-                visualisations.put(visualisation, visualisation.isActive());
-            }
-
-            final AnalyticViewState state = new AnalyticViewState(currentIndex, questions, plugins, result, currentQuestion, question, activeCategory, resultsVisible, categoriesVisible, visualisations);
+            final AnalyticViewState state = new AnalyticViewState(currentIndex, questions, plugins);
             graph.setObjectValue(attributeId, elementId, state);
         }
     }
@@ -160,32 +144,6 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                     jsonGenerator.writeEndArray();
                     jsonGenerator.writeEndObject();
                 }
-                jsonGenerator.writeEndArray();
-
-                // write new attributes to the state
-                final ObjectMapper mapper = new ObjectMapper();
-
-                jsonGenerator.writeStringField("result", mapper.writeValueAsString(state.getResult()));
-                jsonGenerator.writeStringField("currentQuestion", mapper.writeValueAsString(state.getCurrentQuestion()));
-                jsonGenerator.writeStringField("question", mapper.writeValueAsString(state.getQuestion()));
-                jsonGenerator.writeStringField("category", state.getActiveCategory());
-                jsonGenerator.writeBooleanField("resultsVisible", state.isResultsPaneVisible());
-                jsonGenerator.writeBooleanField("categoriesVisible", state.isCategoriesPaneVisible());
-
-                jsonGenerator.writeArrayFieldStart("visualisations");
-                jsonGenerator.writeStartObject();
-
-                state.getVisualisations().entrySet().forEach(node -> {
-                    try {
-                        jsonGenerator.writeString(mapper.writeValueAsString(node.getKey()));
-                    } catch (final JsonProcessingException ex) {
-                        LOGGER.log(Level.SEVERE, ex.getMessage());
-                    } catch (final IOException ex) {
-                        LOGGER.log(Level.SEVERE, ex.getMessage());
-                    }
-                });
-
-                jsonGenerator.writeEndObject();
                 jsonGenerator.writeEndArray();
                 jsonGenerator.writeEndObject();
             }

@@ -142,15 +142,15 @@ public class AnalyticViewPane extends BorderPane {
                             running = true;
                             try {
                                 final AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
-
-                                analyticResultsPane.displayResults(question, emptyResult, visualisations);
+                                
+                                analyticResultsPane.displayResults(question, emptyResult, new HashMap<>());
                                 analyticViewController.updateState(true, analyticConfigurationPane.getPluginList());
                                 
                             } catch (final AnalyticException ex) {
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                                 final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
                                 question.addException(ex);
-                                analyticResultsPane.displayResults(question, emptyResult, visualisations);
+                                analyticResultsPane.displayResults(question, emptyResult, new HashMap<>());
                                 analyticViewController.updateState(false, analyticConfigurationPane.getPluginList());
                             } finally {
                                 running = false;

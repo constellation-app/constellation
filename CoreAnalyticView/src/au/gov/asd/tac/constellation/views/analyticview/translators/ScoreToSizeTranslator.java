@@ -120,6 +120,8 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                                     + "for the element type associated with this analytic question.");
                     }
                 }
+                vertexSizes.clear();
+                transactionSizes.clear();
             } else {
                 // estimate size of graph
                 final BBoxf graphBoundingBox = BBoxf.getGraphBoundingBox(graph);
