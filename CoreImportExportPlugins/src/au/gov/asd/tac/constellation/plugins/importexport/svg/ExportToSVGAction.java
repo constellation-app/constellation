@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
@@ -57,8 +58,10 @@ public final class ExportToSVGAction implements ActionListener {
    
     @Override
     public void actionPerformed(final ActionEvent e) {
+        ReadableGraph graph = context.getGraph().getReadableGraph();
         
-        if (context.getGraph().getReadableGraph().getVertexCount() != 0){        
+        //The graph has data on it so it can be exported
+        if (graph.getVertexCount() != 0){        
             FileChooser.openSaveDialog(getExportToSVGFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
                 String fnam = file.getAbsolutePath();
 
@@ -70,12 +73,15 @@ public final class ExportToSVGAction implements ActionListener {
                         .withParameter(ExportToSVGPlugin.FILE_NAME_PARAMETER_ID, fnam)
                         .executeLater(context.getGraph());
             }));
+        
+        //The graph has no data on it so prevent the user from exporting
         } else {
             final String message = "Unable to export empty graph.";
             final Object[] options = new Object[]{NotifyDescriptor.OK_OPTION};
             final NotifyDescriptor d = new NotifyDescriptor(message, "Unable To Perform Action", NotifyDescriptor.DEFAULT_OPTION, NotifyDescriptor.INFORMATION_MESSAGE, options, NotifyDescriptor.OK_OPTION);
             final Object o = DialogDisplayer.getDefault().notify(d);
         }
+        graph.release();
     }
     
     /**
