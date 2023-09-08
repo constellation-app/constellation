@@ -53,7 +53,7 @@ public final class ConstellationColor implements Comparable<ConstellationColor>,
     public static final ConstellationColor DARK_GREEN = new ConstellationColor("DarkGreen", 0.0F, 0.5F, 0.0F, 1.0F);
     public static final ConstellationColor DARK_GREY = new ConstellationColor("DarkGrey", Color.DARK_GRAY);
     public static final ConstellationColor DARK_ORANGE = new ConstellationColor("DarkOrange", 1.0F, 0.5F, 0.25F, 1.0F);
-    public static final ConstellationColor DARK_PURPLE = new ConstellationColor("Darkpurple", 51, 26, 128, 255);
+    public static final ConstellationColor DARK_PURPLE = new ConstellationColor("DarkPurple", 51, 26, 128, 255);
     public static final ConstellationColor EMERALD = new ConstellationColor("Emerald", 46, 204, 79, 255);
     public static final ConstellationColor GOLDEN_ROD = new ConstellationColor("GoldenRod", 1.0F, 0.75F, 0.0F, 1.0F);
     public static final ConstellationColor GREEN = new ConstellationColor("Green", Color.GREEN);

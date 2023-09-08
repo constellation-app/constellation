@@ -48,6 +48,14 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = SchemaFactory.class, position = Integer.MAX_VALUE - 1)
 public class VisualSchemaFactory extends SchemaFactory {
 
+    private static final String DEUTERANOPIA = "Deuteranopia";
+    private static final String PROTANOPIA = "Protanopia";
+    private static final String TRITANOPIA = "Tritanopia";
+    private static final String NONE = "None";
+    private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    //Retrieve colorblind mode selection preference 
+    private static String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+
     // Note: changing this value will break backwards compatibility!
     public static final String VISUAL_SCHEMA_ID = "au.gov.asd.tac.constellation.graph.schema.VisualSchemaFactory";
 
@@ -300,9 +308,6 @@ public class VisualSchemaFactory extends SchemaFactory {
         }
 
         private ConstellationColor randomColor() {
-            final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-            //Retrieve colorblind mode selection preference 
-            final String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
             final float brightenFloat = 0.10F; //Value to inflate randomly generated low floats 
             final float lowFloat = 0.10F;
@@ -311,32 +316,26 @@ public class VisualSchemaFactory extends SchemaFactory {
             float randFloat3 = random.nextFloat();
 
             //Change node color randomiser based on colorblind mode selection
-            switch (colorMode) {
-                case "None":
-                    return ConstellationColor.getColorValue(randFloat1, randFloat2, randFloat3, 1.0F);
-                case "Deuteranopia":
+            switch (COLORMODE) {
+//                case NONE:
+//                    return ConstellationColor.getColorValue(randFloat1, randFloat2, randFloat3, 1.0F);
+
+                case DEUTERANOPIA:
+                case PROTANOPIA:
                     //Ensure randomised color does not generate an RGB value which is too dark for user contrast.
                     if (randFloat1 <= lowFloat && randFloat3 <= lowFloat) {
                         randFloat1 += brightenFloat;
                         randFloat3 += brightenFloat;
                     }
-
-                    return ConstellationColor.getColorValue(randFloat1, 0F, randFloat3, 1.0F);
-                case "Protanopia":
-                    if (randFloat1 <= lowFloat && randFloat3 <= lowFloat) {
-                        randFloat3 += brightenFloat;
-                        randFloat1 += brightenFloat;
-                    }
                     return ConstellationColor.getColorValue(randFloat1, 0F, randFloat3, 1.0F);
 
-                case "Tritanopia":
+                case TRITANOPIA:
                     if (randFloat1 <= lowFloat && randFloat2 <= lowFloat) {
                         randFloat1 += brightenFloat;
                         randFloat2 += brightenFloat;
                     }
                     return ConstellationColor.getColorValue(randFloat1, randFloat2, 0F, 1.0F);
             }
-
             return null;
         }
     }

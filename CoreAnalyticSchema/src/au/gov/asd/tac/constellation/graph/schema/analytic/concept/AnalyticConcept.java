@@ -53,6 +53,13 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = SchemaConcept.class, position = 500)
 public class AnalyticConcept extends SchemaConcept {
 
+    private static final String DEUTERANOPIA = "Deuteranopia";
+    private static final String PROTANOPIA = "Protanopia";
+    private static final String TRITANOPIA = "Tritanopia";
+    private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    //Retrieve colorblind mode selection preference 
+    private static String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+
     @Override
     public String getName() {
         return "Analysis";
@@ -158,7 +165,7 @@ public class AnalyticConcept extends SchemaConcept {
 
         //Change the color scheme of vertexes with poor contrast based on color blind mode selection 
         static {
-            if (COLORMODE.equals("Deuteranopia") || COLORMODE.equals("Protanopia") || COLORMODE.equals("Tritanopia")) {
+            if (COLORMODE.equals(DEUTERANOPIA) || COLORMODE.equals(PROTANOPIA) || COLORMODE.equals(TRITANOPIA)) {
                 TELEPHONE_IDENTIFIER = new SchemaVertexType.Builder("Telephone Identifier")
                         .setDescription("A node representing the identifier of a telephony device or service, eg. the phone number +6101234567")
                         .setColor(ConstellationColor.BUTTERMILK)
@@ -208,7 +215,7 @@ public class AnalyticConcept extends SchemaConcept {
                                 + "@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d))\\.){3}(?:(2(5[0-5]|[0-4]\\d)|1\\d\\d|[1-9]?\\d)|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$", // domain component 
                                 Pattern.CASE_INSENSITIVE))
                         .build();
-            } else { 
+            } else {
                 TELEPHONE_IDENTIFIER = new SchemaVertexType.Builder("Telephone Identifier")
                         .setDescription("A node representing the identifier of a telephony device or service, eg. the phone number +6101234567")
                         .setColor(ConstellationColor.EMERALD)
@@ -470,10 +477,6 @@ public class AnalyticConcept extends SchemaConcept {
 
     public static class TransactionType {
 
-        static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        //Retrieve colorblind mode selection preference 
-        static final String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
-
         public static final SchemaTransactionType COMMUNICATION;
         public static final SchemaTransactionType CORRELATION;
         public static final SchemaTransactionType LOCATION;
@@ -485,7 +488,7 @@ public class AnalyticConcept extends SchemaConcept {
         public static final SchemaTransactionType REFERENCED;
 
         static {
-            if (COLORMODE.equals("Deuteranopia") || COLORMODE.equals("Protanopia") || COLORMODE.equals("Tritanopia")) {
+            if (COLORMODE.equals(DEUTERANOPIA) || COLORMODE.equals(PROTANOPIA) || COLORMODE.equals(TRITANOPIA)) {
                 COMMUNICATION = new SchemaTransactionType.Builder("Communication")
                         .setDescription("A transaction representing a communication between two entities, eg. a phone made a call to another phone")
                         .setColor(ConstellationColor.EMERALD)
