@@ -74,6 +74,9 @@ public class NotifyDisplayerNGTest {
 
     @Test
     public void display() {    
+        // TODO: This test throws errors in headless due to 
+        // the implementation of the NotifyDisplayer.display(NotifyDescriptor).
+        // See the NotifyDisplayer.display(NotifyDescriptor) method for information on OS compatability issues.
         if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
             //Tests throw errors in headless
             display(true, true, true);
@@ -85,8 +88,10 @@ public class NotifyDisplayerNGTest {
 
     @Test
     public void displayWithIcon() {
+        // TODO: This test throws errors in headless due to 
+        // the implementation of the NotifyDisplayer.display(String, Icon, String).
+        // See the NotifyDisplayer.display(String, Icon, String) method for information on OS compatability issues.
         if (!Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
-            //Tests throw errors in headless
             displayWithIcon(true, true, true);
             displayWithIcon(true, false, true);
             displayWithIcon(false, true, true);

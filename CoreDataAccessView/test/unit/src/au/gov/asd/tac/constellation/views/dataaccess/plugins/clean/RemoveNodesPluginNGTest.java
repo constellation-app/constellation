@@ -82,8 +82,8 @@ public class RemoveNodesPluginNGTest {
     }
 
     /**
-     * Test of edit method, of class RemoveNodesPlugin. selected and identifier
-     * attributes not found
+     * Test of edit method, of class RemoveNodesPlugin. 
+     * Identifier attribute not found
      *
      * @throws InterruptedException
      * @throws PluginException
@@ -95,13 +95,13 @@ public class RemoveNodesPluginNGTest {
         final PluginParameters parameters = instance.createParameters();
         final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
         
-        vertexIdentifierAttribute = VisualConcept.VertexAttribute.IDENTIFIER.ensure(graph);
+        vertexSelectedAttribute = VisualConcept.VertexAttribute.SELECTED.ensure(graph);
         instance.edit(graph, interaction, parameters); 
     }
     
     /**
-     * Test of edit method, of class RemoveNodesPlugin. selected and identifier
-     * attributes not found
+     * Test of edit method, of class RemoveNodesPlugin.
+     * Selected attribute not found
      *
      * @throws InterruptedException
      */
