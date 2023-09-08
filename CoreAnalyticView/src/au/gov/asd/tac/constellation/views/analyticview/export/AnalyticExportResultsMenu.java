@@ -127,6 +127,7 @@ public class AnalyticExportResultsMenu {
     private MenuButton createMenuButton(final ImageView icon) {
         final MenuButton button = new MenuButton();
         button.setText("Export");
+        button.setStyle("-fx-label-fill: #FFFFFF; ");
         button.setGraphic(icon);
         button.setMaxWidth(WIDTH);
         button.setPopupSide(Side.RIGHT);

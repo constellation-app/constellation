@@ -709,7 +709,7 @@ public final class PluginParametersPane extends GridPane {
     }
 
     private static Button buildHelpButton(final String helpId, final String helpForLabel) {
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.paddingProperty().set(HELP_INSETS);
         helpButton.setTooltip(new Tooltip(String.format("Display help for %s", helpForLabel)));
         helpButton.setOnAction(event -> {
@@ -719,7 +719,7 @@ public final class PluginParametersPane extends GridPane {
         });
 
         // Get rid of the ugly button look so the icon stands alone.
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
         return helpButton;
     }
 

@@ -81,8 +81,9 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface {
         feedView.setFitHeight(25);
         feedView.setFitWidth(25);
         final Label title = new Label("Provide Feedback");
+        title.setId("label");
         final Label subtitle = new Label("Let us know your thoughts");
-        subtitle.setId("smallInfoText");
+        subtitle.setId("infoText");
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(feedView, layoutVBox);

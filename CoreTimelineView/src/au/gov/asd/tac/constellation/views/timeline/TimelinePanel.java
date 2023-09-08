@@ -512,7 +512,7 @@ public class TimelinePanel extends Region {
             coordinator.setIsShowingSelectedOnly(newValue);
         });
 
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.setTooltip(new Tooltip("Display help for Timeline"));
         helpButton.setOnAction(event -> {
             new HelpCtx(TimelineTopComponent.class.getName()).display();

@@ -80,9 +80,9 @@ public class ButtonToolbar {
     private static final String STOP_STYLE = "-fx-background-color: rgb(180,64,64);";
     private static final String CONTINUE_STYLE = "-fx-background-color: rgb(255,180,0);";
     private static final String CALCULATING_STYLE = "-fx-background-color: rgb(0,100,255);";
-    private static final String HELP_STYLE = "-fx-border-color: transparent;-fx-background-color: transparent;";
+    private static final String HELP_STYLE = "-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect: null; ";
 
-    private static final ImageView HELP_ICON = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
+    private static final ImageView HELP_ICON = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
     private static final ImageView ADD_ICON = new ImageView(UserInterfaceIconProvider.ADD.buildImage(16));
     private static final ImageView FAVOURITE_ICON = new ImageView(AnalyticIconProvider.STAR.buildImage(16));
 

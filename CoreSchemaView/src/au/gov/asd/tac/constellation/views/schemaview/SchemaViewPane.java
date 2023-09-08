@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThre
 import au.gov.asd.tac.constellation.views.schemaview.providers.SchemaViewNodeProvider;
 import java.util.Collection;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -39,6 +38,7 @@ public class SchemaViewPane extends BorderPane {
         schemaViewProviders = null;
 
         schemaViewTabPane = new TabPane();
+        schemaViewTabPane.setStyle("-fx-background-color: #333333;");
         schemaViewTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         setCenter(schemaViewTabPane);
     }

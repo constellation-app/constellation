@@ -123,6 +123,7 @@ public final class QualityControlViewPane extends BorderPane {
 
     private static final String DISABLE = "Disable";
     private static final String ENABLE = "Enable";
+    private static String enableTextColor;
 
     /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
     to be registered upon the user's first click within the view pane when calling value.getClickCount()*/
@@ -211,12 +212,12 @@ public final class QualityControlViewPane extends BorderPane {
         priorityButton.setOnAction(event -> showPriorityDialog());
 
         // create help button
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Quality Control View"));
         helpButton.setOnAction(event -> new HelpCtx(QualityControlViewTopComponent.class.getName()).display());
         // Get rid of the ugly button look so the icon stands alone.
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect:null; ");
 
         optionsPane.getChildren().addAll(deleteButton, selectButton, removeButton, zoomButton, priorityButton, helpButton);
 
@@ -392,28 +393,30 @@ public final class QualityControlViewPane extends BorderPane {
     public static String qualityStyle(final QualityCategory category, final float alpha) {
         final int intensity;
         final String style;
+        String textColor = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : "-fx-text-fill: black;";
+
         switch (category) {
             case MINOR:
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(90,150,255,%f);", alpha);
+                style = String.format("%s -fx-background-color: rgba(90,150,255,%f);", textColor, alpha);
                 break;
             case MEDIUM:
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,215,0,%f);", alpha);
+                style = String.format("%s -fx-background-color: rgba(255,215,0,%f);", textColor, alpha);
                 break;
             case MAJOR:
                 intensity = 255 - (255 * QualityControlEvent.MAJOR_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(255,%d,0,%f);", intensity, alpha);
+                style = String.format("%s -fx-background-color: rgba(255,%d,0,%f);", textColor, intensity, alpha);
                 break;
             case SEVERE:
                 intensity = 255 - (255 * QualityControlEvent.SEVERE_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(255,%d,%d,%f);", intensity, intensity, alpha);
+                style = String.format("%s -fx-background-color: rgba(255,%d,%d,%f);", textColor, intensity, intensity, alpha);
                 break;
             case CRITICAL:
                 intensity = 255 - (255 * QualityControlEvent.CRITICAL_VALUE) / 100;
-                style = String.format("-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(150,%d,%d,%f);", intensity, intensity, alpha);
+                style = String.format("-fx-text-fill: rgb(255,255,0); -fx-background-color: rgba(150,%d,%d,%f);", intensity, intensity, alpha);
                 break;
             default:
                 // DEFAULT case
-                style = String.format("-fx-text-fill: rgb(0,0,0);-fx-background-color: rgba(0,200,0,%f);", alpha);
+                style = String.format("%s -fx-background-color: rgba(0,200,0,%f);", textColor, alpha);
                 break;
         }
         return style;
@@ -424,7 +427,6 @@ public final class QualityControlViewPane extends BorderPane {
      */
     private void showPriorityDialog() {
         final ScrollPane rulesScrollPane = new ScrollPane();
-        rulesScrollPane.setPrefHeight(240);
         rulesScrollPane.setPrefWidth(SystemUtils.IS_OS_LINUX ? 820 : 700);
         rulesScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         rulesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -495,11 +497,13 @@ public final class QualityControlViewPane extends BorderPane {
                 resetButton.setText("Reset");
             });
 
+            enableTextColor = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : "-fx-text-fill: black; ";
+
             final Button enableDisableButton = new Button(Boolean.TRUE.equals(getEnablementStatuses().get(rule)) ? DISABLE : ENABLE);
             enableDisableButton.setOnAction(event -> {
                 if (DISABLE.equals(enableDisableButton.getText())) {
                     enableDisableButton.setText(ENABLE);
-                    ruleName.setTextFill(Color.GREY);
+                    ruleName.setStyle("-fx-text-fill: #808080; ");
                     minorButton.setDisable(true);
                     mediumButton.setDisable(true);
                     majorButton.setDisable(true);
@@ -508,7 +512,7 @@ public final class QualityControlViewPane extends BorderPane {
                     resetButton.setDisable(true);
                 } else {
                     enableDisableButton.setText(DISABLE);
-                    ruleName.setTextFill(Color.color(0.196, 0.196, 0.196));
+                    ruleName.setStyle(enableTextColor);
                     minorButton.setDisable(false);
                     mediumButton.setDisable(false);
                     majorButton.setDisable(false);
@@ -601,10 +605,18 @@ public final class QualityControlViewPane extends BorderPane {
 
         final Alert alert = new Alert(Alert.AlertType.INFORMATION, "Select Rule Priorities", ButtonType.OK, ButtonType.CANCEL);
         alert.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+
+        if (JavafxStyleManager.isDarkTheme()) {
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("resources/rule-pane-dark.css").toExternalForm());
+
+        } else {
+            alert.getDialogPane().getStylesheets().add(getClass().getResource("resources/rule-pane-light.css").toExternalForm());
+        }
+
         alert.setTitle("Select Rule Priorities");
         alert.setHeaderText("Customise the priority of rules");
         alert.getDialogPane().setContent(rulesScrollPane);
-        alert.setResizable(true);
+        alert.setResizable(false);
 
         final List<Screen> screens = Screen.getScreensForRectangle(this.getScene().getWindow().getX(), this.getScene().getWindow().getY(),
                 this.getScene().getWindow().widthProperty().get(), this.getScene().getWindow().heightProperty().get());

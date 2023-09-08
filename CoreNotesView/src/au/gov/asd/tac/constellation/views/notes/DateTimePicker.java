@@ -25,14 +25,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.util.StringConverter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -78,7 +72,9 @@ public class DateTimePicker {
             }
 
         });
-
+        
+        datePicker.setStyle("-fx-text-fill: black;");
+            
         this.from = from;
         dateTimePane.getChildren().add(mainGridPane);
 
@@ -88,8 +84,10 @@ public class DateTimePicker {
 
         if (from) {
             datePickerLabel.setText(FROM_TEXT);
+            datePickerLabel.setId("picker-label");
         } else {
             datePickerLabel.setText(TO_TEXT);
+            datePickerLabel.setId("picker-label");
         }
 
 
@@ -100,6 +98,9 @@ public class DateTimePicker {
         final Label hourLabel = new Label("Hour");
         final Label minLabel = new Label("Minute");
         final Label secLabel = new Label("Second");
+        hourLabel.setId("picker-label");
+        minLabel.setId("picker-label");
+        secLabel.setId("picker-label");
 
         timePickerGrid.add(hourLabel, 0, 0);
         timePickerGrid.add(minLabel, 1, 0);
@@ -125,7 +126,6 @@ public class DateTimePicker {
         mainGridPane.add(timePickerGrid, 0, 1);
         mainGridPane.setPadding(new Insets(1, 1, 1, 1));
 
-        dateTimePane.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, new CornerRadii(3.0), BorderWidths.DEFAULT)));
     }
 
     public void disableControls(final boolean disable) {

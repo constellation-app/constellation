@@ -73,8 +73,9 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
         started.setFitHeight(25);
         started.setFitWidth(25);
         final Label title = new Label("Getting Started");
+        title.setId("label");
         final Label subtitle = new Label("Quick Start Guide");
-        subtitle.setId("smallInfoText");
+        subtitle.setId("infoText");
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(started, layoutVBox);

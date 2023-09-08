@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
@@ -90,9 +91,9 @@ public class AnalyticViewPane extends BorderPane {
         // the pane holding the analytic option buttons
         this.analyticOptionButtons = new HBox();
         this.analyticOptionButtons.setSpacing(6);
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        helpButton.setStyle("-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null; ");
         this.runButton = new Button(RUN_START_TEXT);
         runButton.setStyle(RUN_START_STYLE);
         runButton.setOnAction(event -> {

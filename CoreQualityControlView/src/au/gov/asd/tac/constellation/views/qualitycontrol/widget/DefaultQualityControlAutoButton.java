@@ -41,7 +41,7 @@ import org.openide.windows.WindowManager;
 @NbBundle.Messages("MSG_NoRisk=N/A")
 public final class DefaultQualityControlAutoButton extends QualityControlAutoButton implements QualityControlListener {
 
-    protected static final String DEFAULT_TEXT_STYLE = "-fx-text-fill: rgb(0,0,0); -fx-background-color: rgb(0,200,0);";
+    protected static final String DEFAULT_TEXT_STYLE = "-fx-text-fill: rgb(255,255,255); -fx-background-color: rgb(64,180,64);";
     public static final String QUERY_RISK_DEFAULT_STYLE = "-fx-text-fill: rgb(0,0,0);";
     public static final String QUALITY_CONTROL_WIDGET_TEXT = "Quality Category: %s";
 

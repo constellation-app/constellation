@@ -25,12 +25,16 @@
  *                                                                             *
  ******************************************************************************/
 .menu-button {
-    -fx-background-color: #1f6fba;
-    -fx-border-color: #1f6fba;
+    -fx-background-color: #0093FF;
+    -fx-border-color: #0093FF;
 }
 
 .menu-bar .label {
     -fx-text-fill: #ffffff;
+}
+
+.menu-item .label {
+    -fx-text-fill: white;
 }
 
 .menu:hover {
@@ -47,8 +51,14 @@
  *                                                                             *
  ******************************************************************************/
 .button {
-    -fx-base: #1f6fba;
+    -fx-base: #0093FF;
     -fx-text-fill: #ffffff;
+}
+
+.button:hover {
+    -fx-color: -fx-hover-base;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #3369ab;
 }
 
 .toggle-button {
@@ -62,11 +72,11 @@
 
 
 .toggle-button:selected {
-    -fx-background-color: #1f6fba;
+    -fx-background-color: #0093FF;
 }
 
 .toggle-button:selected:focused {
-    -fx-background-color: #1f6fba;
+    -fx-background-color: #0093FF;
 }
 
 /* Uncategorised */

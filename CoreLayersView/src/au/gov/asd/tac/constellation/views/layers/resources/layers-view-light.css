@@ -1,9 +1,7 @@
-/* Layers View */
-
 .root {
-    -fx-control-inner-background: #111111;
-    -fx-background: #222222;
-    -fx-base: #111111;
+    -fx-control-inner-background: #FFFFFF;
+    -fx-background: #f0f0f0;
+    -fx-base: #f0f0f0;
     -fx-cell-hover-color: -fx-shadow-highlight-color;
 }
 
@@ -21,26 +19,30 @@
     -fx-font-size: smaller;
 }
 
-.accordion .titled-pane-heading .title, .titled-pane-heading > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#1f6fba,100%), derive(#1f6fba,0%) 5%, derive(#1f6fba,-25%) 95%, derive(#1f6fba,50%) 100%);
+.title {
     -fx-text-fill: white;
+}
+
+#title-style {
+    -fx-text-fill: white;
+}
+
+.accordion .titled-pane-heading .title, .titled-pane-heading > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#0093FF,100%), derive(#0093FF,0%) 5%, derive(#0093FF,-25%) 95%, derive(#0093FF,50%) 100%);
     -fx-padding: 3;
 }
 
-.titled-pane > .title {
-    -fx-base: #333333;
-}
-
 .titled-pane-selected > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#5E9656,100%), derive(#5E9656,0%) 5%, derive(#5E9656,-25%) 95%, derive(#5E9656,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#2adb48,100%), derive(#2adb48,0%) 5%, derive(#2adb48,-25%) 95%, derive(#2adb48,50%) 100%);
 }
 
 .titled-pane-selected-invalid > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#5E9656,0%), derive(#5E9656,0%) 60%, derive(#B31D2F,0%) 85%, derive(#B31D2F,0%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#2adb48,0%), derive(#2adb48,0%) 60%, derive(#2adb48,0%) 85%, derive(#2adb48,0%) 100%);
+    
 }
 
 .titled-pane-matched > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#1c5aa6,100%), derive(#1c5aa6,0%) 5%, derive(#1c5aa6,-25%) 95%, derive(#1c5aa6,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#0093FF,100%), derive(#0093FF,0%) 5%, derive(#0093FF,-25%) 95%, derive(#0093FF,50%) 100%);
 }
 
 .titled-pane-invalid > .title {
@@ -65,6 +67,22 @@
 }
 
 #invalid {
-    -fx-background-color: #8a1d1d;
-    -fx-control-inner-background: #8a1d1d;
+    -fx-background-color: #B31D2F;
+    -fx-control-inner-background: #B31D2F;
 }
+
+#titled-pane-label {
+    -fx-text-fill: #111111;
+}
+
+.combo-box 
+{
+    -fx-background-color: white;
+    -fx-border-color: #999999
+}
+
+.scroll-bar:vertical .track{
+    -fx-background-color: white;
+    -fx-border-color: white;
+}
+

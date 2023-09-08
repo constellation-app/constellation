@@ -168,7 +168,7 @@ public class NotesViewPane extends BorderPane {
         filterSelectionMultiChoiceInput = new MultiChoiceInputField(availableFilters);
         filterSelectionMultiChoiceInput.setTitle("Select a filter...");
         filterSelectionMultiChoiceInput.setMinWidth(165);
-        filterSelectionMultiChoiceInput.setMaxWidth(165);
+
         filterSelectionMultiChoiceInput.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
         filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isSelectedFiltersUpdating) {
@@ -241,12 +241,12 @@ public class NotesViewPane extends BorderPane {
             event.consume();
         });
 
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Notes View"));
         helpButton.setOnAction(event -> new HelpCtx(NotesViewTopComponent.class.getName()).display());
         // Get rid of the ugly button look so the icon stands alone.
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect: null; ");
 
         // FlowPane to store control items used to filter notes.
         final ToolBar toolBar = new ToolBar();

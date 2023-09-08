@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.util.List;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -53,6 +52,7 @@ import javafx.stage.Window;
  * @author altair1673
  */
 public class NewNotePane {
+
     private boolean isFirstTime = true;
     private final Pane dialogPane;
     private final static String FONT_SIZE_STRING = "-fx-font-size:%d;";
@@ -85,14 +85,19 @@ public class NewNotePane {
         dialogPane.setMinWidth(WIDTH);
         dialogPane.setMaxWidth(WIDTH);
 
+        if (!JavafxStyleManager.isDarkTheme()) {
+            dialogPane.setStyle("-fx-background-color: #f4f4f4");
+        } else {
+            dialogPane.setStyle("-fx-background-color: #111111");
+        }
+
         // TextField to enter new note title.
         titleField.setPromptText("Type a title...");
-        titleField.setStyle("-fx-text-fill: #FFFFFF;");
+        titleField.setId("title-field");
         titleField.setMinWidth(WIDTH - 5);
 
         // Checkbox to apply note to selection.
         applyToSelection.setSelected(true);
-        applyToSelection.setTextFill(Color.WHITE);
         applyToSelection.setStyle("-fx-selected-box-color: #000000");
         applyToSelection.selectedProperty().addListener((ov, oldVal, newVal) -> applySelected = applyToSelection.isSelected());
 
@@ -100,7 +105,8 @@ public class NewNotePane {
         contentField = new TextArea();
         contentField.setMinWidth(WIDTH - 10);
         contentField.setPromptText("Type a note...");
-        contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";" + " -fx-control-inner-background:#000000;");
+        contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";");
+
         contentField.setWrapText(true);
         contentField.setOnKeyPressed(key -> {
             // If tab is typed and shift isn't being held dowm.
@@ -116,21 +122,13 @@ public class NewNotePane {
         newNoteColour = new ColorPicker(ConstellationColor.fromHtmlColor(NewNotePane.userChosenColour).getJavaFXColor());
         newNoteColour.setOnAction(event -> NewNotePane.userChosenColour = ConstellationColor.fromFXColor(newNoteColour.getValue()).getHtmlColor());
         newNoteColour.setBorder(new Border(new BorderStroke(Color.WHITE, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(1))));
-        addButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()) + "-fx-background-color: #26ED49;");
-        addButton.setPadding(new Insets(0, 15, 0, 15));
-        addButton.setMinHeight(25);
-        addButton.setTextFill(Color.BLACK);
-        addButton.setOnMouseEntered(event -> addButton.setStyle("-fx-background-color: #86ED26; "));
-        addButton.setOnMouseExited(event -> addButton.setStyle("-fx-background-color: #26ED49;  "));
+        addButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()));
+        addButton.setId("add-button");
 
         // Cancel button to stop creating a new note
-        cancelButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()) + "-fx-background-color: #DEC20B;");
-        cancelButton.setPadding(new Insets(0, 15, 0, 15));
-        cancelButton.setMinHeight(25);
-        cancelButton.setTextFill(Color.BLACK);
+        cancelButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()));
+        cancelButton.setId("add-button");
         cancelButton.setOnAction(event -> closePopUp());
-        cancelButton.setOnMouseEntered(event -> cancelButton.setStyle("-fx-background-color: #DBA800; "));
-        cancelButton.setOnMouseExited(event -> cancelButton.setStyle("-fx-background-color: #DEC20B;  "));
 
         final Region gap = new Region();
         gap.setMinWidth(15);
@@ -148,8 +146,7 @@ public class NewNotePane {
     }
 
     /**
-     * Instantiate stage for the pop up and set event handler to close it when
-     * consty closes
+     * Instantiate stage for the pop up and set event handler to close it when consty closes
      */
     public void showPopUp(final Window window) {
         if (isFirstTime) {
@@ -163,11 +160,15 @@ public class NewNotePane {
             stage.setTitle("Create new note");
             stage.setMinHeight(HEIGHT);
             stage.setMinWidth(WIDTH);
-            stage.setResizable(true);
+            stage.setResizable(false);
 
             final Scene s = new Scene(dialogPane);
             s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-            s.getStylesheets().add(getClass().getResource("resources/notes-view.css").toExternalForm());
+            if (JavafxStyleManager.isDarkTheme()) {
+                s.getStylesheets().add(getClass().getResource("resources/TimeFilterDark.css").toExternalForm());
+            } else {
+                s.getStylesheets().add(getClass().getResource("resources/TimeFilterLight.css").toExternalForm());
+            }
 
             stage.setScene(s);
 

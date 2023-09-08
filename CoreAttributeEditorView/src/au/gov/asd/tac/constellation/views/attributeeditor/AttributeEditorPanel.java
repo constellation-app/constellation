@@ -115,8 +115,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -519,6 +517,11 @@ public class AttributeEditorPanel extends BorderPane {
 
         if (!multiValue) {
             attributePane.setCollapsible(false);
+            
+            if (!JavafxStyleManager.isDarkTheme()) {
+                 attributePane.setStyle("-fx-background-color: #FFFFFF; ");
+            } 
+            
         } else {
             createMultiValuePane(attribute, attributePane, values);
         }
@@ -528,7 +531,12 @@ public class AttributeEditorPanel extends BorderPane {
 
         // Value TextField
         final Node attributeValueNode = createAttributeValueNode(values, attribute, attributePane, multiValue);
-        attributeValueNode.setStyle("-fx-control-inner-background: #111111;");
+        if (JavafxStyleManager.isDarkTheme()) {
+            attributeValueNode.setStyle("-fx-background-color: #111111; ");
+        } else {
+            attributeValueNode.setStyle("-fx-background-color: #757575; -fx-text-fill: #FFFFFF; ");
+            //FAFAFA
+        }
 
         // Edit Functionality
         final AttributeValueEditorFactory<?> editorFactory = AttributeValueEditorFactory.getEditFactory(attribute.getDataType());

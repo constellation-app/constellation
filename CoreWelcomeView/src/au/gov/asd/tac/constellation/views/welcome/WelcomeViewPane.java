@@ -278,7 +278,7 @@ public class WelcomeViewPane extends BorderPane {
     public void createRecentButtons(final Button button) {
         button.setPrefSize(160, 160);
         button.setMaxSize(175, 175);
-        button.setStyle("-fx-background-color: #333333; -fx-background-radius: 10px; -fx-text-fill: white;");
+        button.getStyleClass().add("recent-button");
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
     }

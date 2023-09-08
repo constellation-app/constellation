@@ -13,8 +13,12 @@
     -fx-background-color: #6bd65c;
 }
 
+#go-style {
+    -fx-background-color: #6bd65c;
+}
+
 .titled-pane-matched > .title {
-    -fx-background-color: #5E96EE;
+    -fx-background-color: #b0e7fe;
 }
 
 .titled-pane-heading > .title {

@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.layers.components.LayersViewPane;
 import au.gov.asd.tac.constellation.views.layers.state.LayersViewConcept;
@@ -96,7 +97,12 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected String createStyle() {
-        return "resources/layers-view.css";
+        if (JavafxStyleManager.isDarkTheme()) {
+            return "resources/layers-view-dark.css";
+        } else {
+            return "resources/layers-view-light.css";
+        }
+ 
     }
 
     @Override

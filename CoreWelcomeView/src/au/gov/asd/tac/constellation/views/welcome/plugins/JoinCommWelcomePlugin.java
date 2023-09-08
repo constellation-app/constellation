@@ -80,8 +80,9 @@ public class JoinCommWelcomePlugin implements WelcomePluginInterface {
         joinView.setFitHeight(25);
         joinView.setFitWidth(25);
         final Label title = new Label("Join our Community");
+        title.setId("label");
         final Label subtitle = new Label("Become a member");
-        subtitle.setId("smallInfoText");
+        subtitle.setId("infoText");
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(joinView, layoutVBox);

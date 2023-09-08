@@ -208,13 +208,12 @@
     -fx-background-color: #666666;
 }
 
-
 .toggle-button:selected {
-    -fx-background-color: #1f6fba;
+    -fx-background-color: #1c5aa6;
 }
 
 .toggle-button:selected:focused {
-    -fx-background-color: #1f6fba;
+    -fx-background-color: #1c5aa6;
 }
 
 /* Uncategorised */

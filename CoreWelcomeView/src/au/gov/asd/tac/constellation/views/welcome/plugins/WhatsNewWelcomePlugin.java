@@ -85,8 +85,9 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
         newView.setFitHeight(25);
         newView.setFitWidth(25);
         final Label title = new Label("What's New?");
+        title.setId("label");
         final Label subtitle = new Label("Features in the latest version");
-        subtitle.setId("smallInfoText");
+        subtitle.setId("infoText");
         final VBox layoutVBox = new VBox(title, subtitle);
         layoutVBox.setAlignment(Pos.CENTER_LEFT);
         final HBox layoutHBox = new HBox(newView, layoutVBox);

@@ -1,0 +1,105 @@
+.menu-button {
+    -fx-background-color: linear-gradient(to top, #dbdbdb 0%, #f1f1f1 100%);
+    -fx-border-radius: 2px; 
+    -fx-border-color: #c8c8c8;
+}
+
+.custom-menu-item {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #111111;
+}
+
+.custom-menu-item:focused {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #111111;
+}
+
+.spinner{
+    -fx-border-color: black;
+}
+
+.spinner:focused{
+    -fx-border-color: black;
+}
+
+.label {
+    -fx-text-fill: black;
+}
+
+#picker-label {
+    -fx-text-fill: black;
+}
+
+#title-field {
+    -fx-text-fill: black;
+}
+
+.contentField {
+    -fx-control-inner-background:#FFFFFF;
+    -fx-text-fill: black;
+}
+
+.dialog-pane {
+    -fx-background-color: #c8c8c8;
+}
+
+.applyToSelection {
+    -fx-text-fill: black;
+}
+
+.menu-button:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+.button:hover {
+    -fx-background-color: #0093FF;
+}
+
+#add-button {
+    -fx-text-fill: white; 
+    -fx-padding: 0px 17px;
+    -fx-min-height: 25px;
+}
+
+.calendar-grid {
+    -fx-background-color: #0093FF;
+}
+
+
+.date-picker > .text-field {
+    -fx-text-fill: black;
+}
+
+.date-picker-popup > .month-year-pane {
+    /*-fx-base: #c8c8c8 ;*/
+    -fx-background-color: linear-gradient(to top, #dbdbdb 0%, #f1f1f1 100%);
+    -fx-mark-highlight-color: -fx-light-text-color ;
+}
+
+.date-picker .spinner-label {
+    -fx-text-fill: black;
+
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover 
+{
+    -fx-background: -fx-accent;
+    -fx-background-color: #0093FF;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover 
+{
+    -fx-background-color: #0093FF;
+    -fx-text-fill: white;
+}
+
+.combo-box-base:hover
+{
+    -fx-color: -fx-hover-base;
+}
+
+.combo-box-base:showing 
+{
+    -fx-color: -fx-pressed-base;
+}
