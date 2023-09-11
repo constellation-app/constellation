@@ -136,8 +136,8 @@ public class SVGGraph {
             
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
             final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
-            final int fillColorAttributeID = VisualConcept.VertexAttribute.COLOR.get(graph);            
-            
+            final int fillColorAttributeID = VisualConcept.VertexAttribute.COLOR.get(graph);    
+           
             final int vertexCount = graph.getVertexCount();
             for (int vertexPosition = 0 ; vertexPosition < vertexCount ; vertexPosition++) {
                 final int vertexID = graph.getVertex(vertexPosition);
@@ -145,8 +145,7 @@ public class SVGGraph {
                 final Float xVal = (graph.getFloatValue(xAttributeID, vertexID) * 128) - xBoundMin;
                 final Float yVal = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, vertexID) * 128) - yBoundMin);
                 final String fillColor = graph.getStringValue(fillColorAttributeID, vertexID);
-                
-                
+
                 final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
                 node.setAttribute(SVGAttributeConstant.X.getKey(), xVal.toString());
                 node.setAttribute(SVGAttributeConstant.Y.getKey(), yVal.toString());
@@ -352,8 +351,8 @@ public class SVGGraph {
             final Float contentHeight = yBoundMax - yBoundMin + 256;
             final Float xMargin = 50.0F;
             final Float yMargin = 50.0F;
-            final Float xPadding = 50.0F;
-            final Float yPadding = 50.0F;
+            final Float xPadding = 500.0F;
+            final Float yPadding = 500.0F;
             final Float footerYOffset = yMargin + contentHeight + (yPadding * 2);            
             final Float fullWidth = (xMargin * 2) + contentWidth + (xPadding * 2);            
             final Float fullHeight = (yMargin * 2) + contentHeight + (yPadding * 2);            
