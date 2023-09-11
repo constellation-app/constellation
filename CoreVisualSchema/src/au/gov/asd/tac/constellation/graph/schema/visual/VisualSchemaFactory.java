@@ -309,7 +309,7 @@ public class VisualSchemaFactory extends SchemaFactory {
 
         private ConstellationColor randomColor() {
 
-            final float brightenFloat = 0.10F; //Value to inflate randomly generated low floats 
+            final float brightenFloat = 0.10F; //Value to inflate low floats, prevents shades which are too dark from generating
             final float lowFloat = 0.10F;
             float randFloat1 = random.nextFloat();
             float randFloat2 = random.nextFloat();
@@ -317,12 +317,12 @@ public class VisualSchemaFactory extends SchemaFactory {
 
             //Change node color randomiser based on colorblind mode selection
             switch (COLORMODE) {
-//                case NONE:
-//                    return ConstellationColor.getColorValue(randFloat1, randFloat2, randFloat3, 1.0F);
-
+                case NONE:
+                    return ConstellationColor.getColorValue(randFloat1, randFloat2, randFloat3, 1.0F);
+                    
                 case DEUTERANOPIA:
                 case PROTANOPIA:
-                    //Ensure randomised color does not generate an RGB value which is too dark for user contrast.
+                    //Ensure randomised color does not generate an RGB value which is too dark 
                     if (randFloat1 <= lowFloat && randFloat3 <= lowFloat) {
                         randFloat1 += brightenFloat;
                         randFloat3 += brightenFloat;

@@ -59,7 +59,7 @@ public class AnalyticConcept extends SchemaConcept {
     private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     //Retrieve colorblind mode selection preference 
     private static String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
-
+    
     @Override
     public String getName() {
         return "Analysis";
@@ -149,10 +149,6 @@ public class AnalyticConcept extends SchemaConcept {
     }
 
     public static class VertexType {
-
-        static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        //Retrieve colorblind mode selection preference 
-        static final String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
         public static final SchemaVertexType TELEPHONE_IDENTIFIER;
         public static final SchemaVertexType MACHINE_IDENTIFIER;
