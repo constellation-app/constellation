@@ -35,11 +35,12 @@ import java.util.Map;
  * @author capricornunicorn123
  */
 public class SVGParser {
-    
+
     private SVGParser() {
         throw new IllegalStateException("Utility class");
     }
     /**
+     * 
      * Takes an input stream and translates it to an SVG object. 
      * Will only translate to an SVG object if the file data is valid.
      * 
@@ -92,6 +93,14 @@ public class SVGParser {
         }
     }
 
+    public static String removeIllegalCharacters(String labelString) {
+        labelString = labelString.replaceAll("&", "&amp;");
+        labelString = labelString.replaceAll(">", "&gt;");
+        labelString = labelString.replaceAll("<", "&lt;");
+        labelString = labelString.replaceAll("\"", "&quot;");
+        labelString = labelString.replaceAll("'", "&apos;");
+        return labelString;
+    }
         
     /**
      * Takes an SVG element and returns the tag type of the element.
@@ -171,5 +180,5 @@ public class SVGParser {
      */
     private static boolean isOpenTag(final String line) {
         return line.contains("<") && !line.contains("</");
-    }
+    }    
 }

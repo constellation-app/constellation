@@ -224,8 +224,7 @@ public class SVGGraph {
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
                     offset = offset + intSize;
                     
-                    // TODO: Special chatacter set in this way will thrrow a SVG Error. the folowing characters need to be encoded: < > & " '
-                    text.setContent(labelString);
+                    text.setContent(SVGParser.removeIllegalCharacters(labelString));
                     
                     text.setParent(bottomLabelContainer.toSVGObject());
                 }
@@ -263,9 +262,7 @@ public class SVGGraph {
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
                     offset = offset - intSize;
                     
-                    // TODO: Special chatacters set in this way will thrrow a SVG Error. the folowing characters need to be encoded: < > & " '
-                    // TODO: some special characters will export to ????????? 
-                    text.setContent(labelString);
+                    text.setContent(SVGParser.removeIllegalCharacters(labelString));
                     
                     text.setParent(topLabelContainer.toSVGObject());
                 }
