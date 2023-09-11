@@ -33,7 +33,7 @@ public enum SVGLayoutConstant {
     
     public final String name;
         
-    private SVGLayoutConstant(String name){
+    private SVGLayoutConstant(final String name){
         this.name = name;
     }
 }

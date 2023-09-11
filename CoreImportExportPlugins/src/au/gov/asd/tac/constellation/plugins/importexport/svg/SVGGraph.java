@@ -23,7 +23,11 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttrib
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import java.io.IOException;
 import java.io.InputStream;
-import org.openide.util.Exceptions;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 
 /**
  * A Wrapper class for the outer most SVGElement of the output file.
@@ -37,6 +41,8 @@ import org.openide.util.Exceptions;
  * @author capricornunicorn123
  */
 public class SVGGraph {
+
+    private static final Logger LOGGER = Logger.getLogger(SVGGraph.class.getName());
     
     private final SVGContainer svgContainerReference;
     
@@ -189,8 +195,8 @@ public class SVGGraph {
             SVGObject templateSVG = null;
             try {
                 templateSVG = SVGParser.parse(inputStream);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.INFO, Arrays.toString(ex.getStackTrace()));
             }
             return templateSVG;
         }

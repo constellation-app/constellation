@@ -36,7 +36,7 @@ public class SVGObject {
     private final Map<String, ArrayList<SVGObject>> children;
     private SVGObject parent;
 
-    public SVGObject(String type, SVGObject parent, Map<String, String> attributes) {
+    public SVGObject(final String type, final SVGObject parent, final Map<String, String> attributes) {
         this.type = type;
         this.attributes = attributes;
         this.children = new HashMap<>();
@@ -218,7 +218,7 @@ public class SVGObject {
         if (prefix != null){
             childPrefix += prefix;
         }
-        for (SVGObject child : this.getAllChildren()){
+        for (final SVGObject child : this.getAllChildren()){
             childSVGString.append(child.toString(childPrefix));
         }
         return childSVGString.toString();

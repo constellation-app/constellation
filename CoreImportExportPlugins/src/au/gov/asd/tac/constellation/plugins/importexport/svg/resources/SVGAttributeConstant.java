@@ -36,7 +36,7 @@ public enum SVGAttributeConstant {
     
     private final String key;
     
-    private SVGAttributeConstant(String attributeKey){
+    private SVGAttributeConstant(final String attributeKey){
         this.key = attributeKey;
     }
     

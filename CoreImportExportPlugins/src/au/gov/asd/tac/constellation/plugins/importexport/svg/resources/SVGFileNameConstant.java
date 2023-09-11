@@ -29,7 +29,7 @@ public enum SVGFileNameConstant {
     
     public final String resourceName;
         
-    private SVGFileNameConstant(String resourceName){
+    private SVGFileNameConstant(final String resourceName){
         this.resourceName = resourceName;
     }
 }

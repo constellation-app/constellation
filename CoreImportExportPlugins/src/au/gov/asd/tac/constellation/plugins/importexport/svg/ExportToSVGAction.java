@@ -108,9 +108,9 @@ public final class ExportToSVGAction implements ActionListener {
                 })
                 .setSelectionApprover(new SelectionApprover() {
                     @Override
-                    public boolean approve(File[] files) {
+                    public boolean approve(final File[] files) {
 
-                        for (File file : files){
+                        for (final File file : files){
                             if (file.isFile()){
                                 
                                 final String message = String.format("%s already exists.%nDo you want to replace it?", file.getName());

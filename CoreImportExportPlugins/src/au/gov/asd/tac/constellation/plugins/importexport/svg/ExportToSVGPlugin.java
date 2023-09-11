@@ -60,10 +60,10 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException { 
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final File imageFile = new File(fnam);     
-        SVGObject svg = new SVGGraph.SVGGraphBuilder().withGraph(graph).build();
+        final SVGObject svg = new SVGGraph.SVGGraphBuilder().withGraph(graph).build();
         try {
             exportToSVG(imageFile, svg);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             Exceptions.printStackTrace(ex);
         }
     }   
