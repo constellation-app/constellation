@@ -15,9 +15,12 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
@@ -26,8 +29,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-
+import java.util.List;
 
 /**
  * A Wrapper class for the outer most SVGElement of the output file.
@@ -57,7 +59,7 @@ public class SVGGraph {
 
     /**
      * Returns an SVGContainer that represents a primary layout component.
-     * the intent of this method is tightly couplesd to the structure of the
+     * the intent of this method is tightly coupled to the structure of the
      * Layout.svg file and has no current logical differences from the 
      * SVGContainer.getContainer() method.
      * @param classValue
@@ -134,7 +136,7 @@ public class SVGGraph {
             
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
             final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
-            final int fillColorAttributeID = VisualConcept.VertexAttribute.COLOR.get(graph);
+            final int fillColorAttributeID = VisualConcept.VertexAttribute.COLOR.get(graph);            
             
             final int vertexCount = graph.getVertexCount();
             for (int vertexPosition = 0 ; vertexPosition < vertexCount ; vertexPosition++) {
@@ -143,12 +145,21 @@ public class SVGGraph {
                 final Float xVal = (graph.getFloatValue(xAttributeID, vertexID) * 128) - xBoundMin;
                 final Float yVal = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, vertexID) * 128) - yBoundMin);
                 final String fillColor = graph.getStringValue(fillColorAttributeID, vertexID);
-
+                
+                
                 final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
                 node.setAttribute(SVGAttributeConstant.X.getKey(), xVal.toString());
                 node.setAttribute(SVGAttributeConstant.Y.getKey(), yVal.toString());
                 node.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), fillColor);
                 node.setParent(nodesContainer.toSVGObject());
+                
+                final SVGContainer nodeContainer = new SVGContainer(node);
+                final SVGContainer bottomLabelContainer = nodeContainer.getContainer("bottom-labels");
+                buildBottomLabel(vertexID, bottomLabelContainer);
+                
+                final SVGContainer topLabelContainer = nodeContainer.getContainer("top-labels");
+                buildTopLabel(vertexID, topLabelContainer);
+                
             }
         }
         
@@ -180,6 +191,85 @@ public class SVGGraph {
                 link.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), x2Val.toString());
                 link.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), y2Val.toString());
                 link.setParent(linksContainer.toSVGObject());
+            }
+        }
+        
+        /**
+         * Constructs bottom label SVG elements for a given vertex id in a given SVGContainer.
+         * This method only considers the bottom label requirements for nodes.
+         * This element of the output graph currently relies heavily on content overflow of parent elements
+         * due to inabilities for parents to set their width and height based off of the width and height requirements of their children.
+         * @param vertexID
+         * @param bottomLabelContainer 
+         */
+        private void buildBottomLabel(final int vertexID, final SVGContainer bottomLabelContainer){
+            final int bottomLabelsAttributeID = VisualConcept.GraphAttribute.BOTTOM_LABELS.get(graph);
+            final GraphLabels bottomLabelsContainer = graph.getObjectValue(bottomLabelsAttributeID, 0);
+            final List<GraphLabel> labels = bottomLabelsContainer.getLabels();
+            
+            Integer offset = 16;
+            for (int i = 0; i < bottomLabelsContainer.getNumberOfLabels(); i++) {
+                GraphLabel label = labels.get(i);
+                String labelAttributeNameReference = label.getAttributeName();
+                int labelAttribnuteID = graph.getAttribute(GraphElementType.VERTEX, labelAttributeNameReference);
+
+                String labelString = graph.getStringValue(labelAttribnuteID, vertexID);
+
+                if (labelString != null){
+                    SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.BOTTOM_LABEL);
+                    //Note: size scale of 1 is 128 px
+                    Float size = label.getSize() * 64;
+                    Integer intSize = size.intValue();
+                    text.setAttribute("font-size", intSize.toString());
+                    text.setAttribute("y", String.format("%spx", offset.toString()));
+                    text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
+                    offset = offset + intSize;
+                    
+                    // TODO: Special chatacter set in this way will thrrow a SVG Error. the folowing characters need to be encoded: < > & " '
+                    text.setContent(labelString);
+                    
+                    text.setParent(bottomLabelContainer.toSVGObject());
+                }
+            }
+        }
+        
+        /**
+         * Constructs the top label SVG elements for a given vertex id in a given SVGContainer.
+         * This method only considers the top label requirements for nodes.
+         * This element of the output graph currently relies heavily on content overflow of parent elements
+         * due to inabilities for parents to set their width and height based off of the width and height requirements of their children.
+         * @param vertexID
+         * @param bottomLabelContainer 
+         */
+        private void buildTopLabel(final int vertexID, final SVGContainer topLabelContainer){
+            final int topLabelsAttributeID = VisualConcept.GraphAttribute.TOP_LABELS.get(graph);
+            final GraphLabels topLabelsContainer = graph.getObjectValue(topLabelsAttributeID, 0);
+            final List<GraphLabel> labels = topLabelsContainer.getLabels();
+            
+            Integer offset = -16;
+            for (int i = 0; i < topLabelsContainer.getNumberOfLabels(); i++) {
+                GraphLabel label = labels.get(i);
+                String labelAttributeNameReference = label.getAttributeName();
+                int labelAttribnuteID = graph.getAttribute(GraphElementType.VERTEX, labelAttributeNameReference);
+
+                String labelString = graph.getStringValue(labelAttribnuteID, vertexID);
+
+                if (labelString != null){
+                    SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.TOP_LABEL);
+                    //Note: size scale of 1 is 128 px
+                    Float size = label.getSize() * 64;
+                    Integer intSize = size.intValue();
+                    text.setAttribute("font-size", intSize.toString());
+                    text.setAttribute("y", String.format("%spx", offset.toString()));
+                    text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
+                    offset = offset - intSize;
+                    
+                    // TODO: Special chatacters set in this way will thrrow a SVG Error. the folowing characters need to be encoded: < > & " '
+                    // TODO: some special characters will export to ????????? 
+                    text.setContent(labelString);
+                    
+                    text.setParent(topLabelContainer.toSVGObject());
+                }
             }
         }
         

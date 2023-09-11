@@ -31,9 +31,11 @@ import java.util.Set;
  * @author capricornunicorn123
  */
 public class SVGObject {
+    
     private final String type;
     private final Map<String, String> attributes;
     private final Map<String, ArrayList<SVGObject>> children;
+    private String content;
     private SVGObject parent;
 
     public SVGObject(final String type, final SVGObject parent, final Map<String, String> attributes) {
@@ -41,6 +43,7 @@ public class SVGObject {
         this.attributes = attributes;
         this.children = new HashMap<>();
         this.setParent(parent);
+        this.content = null;
     }
     
     /**
@@ -128,6 +131,24 @@ public class SVGObject {
     }
     
     /**
+     * Sets the value of an SVG elements content.
+     * Content is considered plain text that lies within a SVG element 
+     * such as is the case with text elmenets.
+     * @param content
+     */
+    public void setContent(final String content) {
+       this.content = content;
+    }
+    
+    /**
+     * Returns the value of the content.
+     * @return 
+     */
+    public final String getContent(){
+        return this.content;
+    }
+    
+    /**
      * Generates a string representation of SVG data captured within this object.
      * will be formatted with indentations and line breaks to be written 
      * directly to an output file.
@@ -146,11 +167,15 @@ public class SVGObject {
      */
     private String toString(final String prefix) {
         final StringBuilder svgString = new StringBuilder();
-        if (this.children.isEmpty()){
+        if (this.children.isEmpty() && this.content == null){
             svgString.append(elementToSVG(prefix));
         } else {
             svgString.append(elementHeaderToSVG(prefix));
-            svgString.append(elementChildrenToSVG(prefix));
+            if (this.children.isEmpty()){
+                svgString.append(content);
+            } else {
+                svgString.append(elementChildrenToSVG(prefix));
+            }
             svgString.append(elementFooterToSVG(prefix));
         }
         return svgString.toString();
@@ -165,7 +190,7 @@ public class SVGObject {
         final String linePrefix = SeparatorConstants.NEWLINE + prefix;
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key))));
-        
+
         return String.format("%s<%s%s />", linePrefix, this.type, attributeBuilder.toString());
     }
     
