@@ -220,7 +220,7 @@ public class NotesViewEntry implements PluginReportListener {
 
     @Override
     public void pluginReportChanged(final PluginReport pluginReport) {
-        this.noteContent = pluginReport.getMessage();
+        this.noteContent = pluginReport.getLastMessage();
     }
 
     @Override

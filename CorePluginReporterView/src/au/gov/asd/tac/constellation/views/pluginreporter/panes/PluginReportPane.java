@@ -77,6 +77,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
 
     private final VBox sequencePane = new VBox(2);
     private final GridPane contentPane = new GridPane();
+    private final ToggleButton messageButton = new ToggleButton();
     private final Label pluginNameLabel = new Label();
     private final ProgressBar pluginProgressBar = new ProgressBar();
     private final Label timeLabel = new Label("3:00");
@@ -97,7 +98,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
      * @param pluginReportFilter the filter that is currently applied to the
      * PluginReporterPane.
      */
-    public PluginReportPane(PluginReporterPane reporterPane, PluginReport pluginReport, Set<String> filteredTags, PluginReportFilter pluginReportFilter) {
+    public PluginReportPane(final PluginReporterPane reporterPane, final PluginReport pluginReport, final Set<String> filteredTags, final PluginReportFilter pluginReportFilter) {
         this.reporterPane = reporterPane;
         this.pluginReport = pluginReport;
         this.filteredTags = filteredTags;
@@ -126,7 +127,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         pluginNameLabel.setId("plugin-name");
         contentPane.add(pluginNameLabel, 0, 0);
 
-        pluginProgressBar.setMaxHeight(1);
+        pluginProgressBar.setMinHeight(15);
         GridPane.setHalignment(pluginProgressBar, HPos.RIGHT);
         GridPane.setFillWidth(pluginProgressBar, true);
         contentPane.add(pluginProgressBar, 1, 0);
@@ -139,14 +140,20 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         BorderPane messageContainer = new BorderPane();
         contentPane.add(messageContainer, 0, 1, 3, 1);
 
-        ToggleButton messageButton = new ToggleButton();
-        messageButton.setGraphic(new ImageView(REPORT_CONTRACTED_IMAGE));
         messageButton.setPadding(Insets.EMPTY);
         messageButton.setMaxSize(15, 15);
         messageButton.setMinSize(15, 15);
+        messageButton.setGraphic(new ImageView(REPORT_CONTRACTED_IMAGE));
         messageButton.setOnAction((ActionEvent event) -> {
-            messageLabel.setMaxHeight(messageButton.isSelected() ? Double.MAX_VALUE : 10);
-            messageButton.setGraphic(messageButton.isSelected() ? new ImageView(REPORT_EXPANDED_IMAGE) : new ImageView(REPORT_CONTRACTED_IMAGE));
+            if (messageButton.isSelected()) {
+                messageLabel.setText(pluginReport.getReportLog());
+                messageLabel.setMaxHeight(Double.MAX_VALUE);
+                messageButton.setGraphic(new ImageView(REPORT_EXPANDED_IMAGE));
+            } else {
+                messageLabel.setText(pluginReport.getLastMessage());
+                messageLabel.setMaxHeight(10);
+                messageButton.setGraphic(new ImageView(REPORT_CONTRACTED_IMAGE));
+            }
         });
         messageContainer.setLeft(messageButton);
 
@@ -197,11 +204,11 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
      * Saves a text representation of this PluginReport to the clipboard.
      */
     private void saveToClipboard() {
-        CharArrayWriter writer = new CharArrayWriter();
-        try (PrintWriter out = new PrintWriter(writer)) {
+        final CharArrayWriter writer = new CharArrayWriter();
+        try (final PrintWriter out = new PrintWriter(writer)) {
             out.append("Name: " + pluginReport.getPluginName() + SeparatorConstants.NEWLINE);
             out.append("Description: " + pluginReport.getPluginDescription() + SeparatorConstants.NEWLINE);
-            out.append("Message: " + pluginReport.getMessage() + SeparatorConstants.NEWLINE);
+            out.append("Last Message: " + pluginReport.getLastMessage() + SeparatorConstants.NEWLINE);
             out.append("Tags: " + Arrays.toString(pluginReport.getTags()) + SeparatorConstants.NEWLINE);
             out.append("Start: " + dateFormat.format(new Date(pluginReport.getStartTime())) + SeparatorConstants.NEWLINE);
             out.append("Stop: " + dateFormat.format(new Date(pluginReport.getStopTime())) + SeparatorConstants.NEWLINE);
@@ -213,7 +220,7 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
         }
 
         final Clipboard clipboard = Clipboard.getSystemClipboard();
-        ClipboardContent content = new ClipboardContent();
+        final ClipboardContent content = new ClipboardContent();
         content.putString(writer.toString());
         clipboard.setContent(content);
 
@@ -248,20 +255,14 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
                 pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
                 messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
 
-                // If the plugin has finished
+            // If the plugin has finished
             } else {
                 sequencePane.getStyleClass().add("finished");
                 pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
                 messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
             }
-
-            if (pluginReport.getMessage() == null) {
-                messageLabel.setVisible(false);
-            } else {
-                messageLabel.setVisible(true);
-                messageLabel.setText(pluginReport.getMessage());
-            }
-
+                
+            messageLabel.setVisible(pluginReport.getLastMessage() != null);
         } else {
 
             // If the plugin has been cancelled
@@ -269,53 +270,52 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
                 sequencePane.getStyleClass().add("interrupted");
                 pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
                 messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
-                messageLabel.setText("Cancelled");
 
-                // If the plugin failed in an expected way
+            // If the plugin failed in an expected way
             } else if (error instanceof PluginException) {
                 sequencePane.getStyleClass().add("failed");
                 pluginNameLabel.getStyleClass().add("darkNameText");
                 messageLabel.getStyleClass().add("darkMessageText");
 
-                Writer errorWriter = new CharArrayWriter();
-                try (PrintWriter out = new PrintWriter(errorWriter)) {
-                    out.append(error.getMessage());
-                    out.append("\n\n");
-                    error.printStackTrace(out);
-                }
-                messageLabel.setText(errorWriter.toString());
-
-                // If the plugin failed in an unexpected way
+            // If the plugin failed in an unexpected way
             } else {
                 sequencePane.getStyleClass().add("errored");
                 pluginNameLabel.getStyleClass().add(JavafxStyleManager.LIGHT_NAME_TEXT);
                 messageLabel.getStyleClass().add(JavafxStyleManager.LIGHT_MESSAGE_TEXT);
-
-                Writer errorWriter = new CharArrayWriter();
-                try (PrintWriter out = new PrintWriter(errorWriter)) {
-                    out.append(error.getMessage());
-                    out.append("\n\n");
-                    error.printStackTrace(out);
-                }
-                messageLabel.setText(errorWriter.toString());
             }
         }
 
+        //Status Bar display otions
         int currentStep = pluginReport.getCurrentStep();
         int totalSteps = pluginReport.getTotalSteps();
-        if (currentStep > totalSteps) {
+        
+        //The process time does not exist - hide bar from view
+        if (totalSteps == 0) {
             pluginProgressBar.setVisible(false);
-        } else if (totalSteps <= 0) {
+            
+        //The process time is indetemrinent - set the status bar to continualy load
+        } else if (totalSteps < 0) {
             pluginProgressBar.setVisible(true);
             pluginProgressBar.setProgress(-1);
+   
+        //The process tiem is known and the process is underway - updated the status of the loading bar.
         } else {
             pluginProgressBar.setVisible(true);
             pluginProgressBar.setProgress((double) currentStep / (double) totalSteps);
         }
 
         updateTime();
-
-        pluginNameLabel.setText(pluginReport.getPluginName());
+        pluginNameLabel.setText(pluginReport.getPluginName() + " (" + pluginReport.getExecutionStage() + ")");
+        
+        if (messageButton.isSelected()) {
+            messageLabel.setText(pluginReport.getReportLog());
+            messageLabel.setMaxHeight(Double.MAX_VALUE);
+            messageButton.setGraphic(new ImageView(REPORT_EXPANDED_IMAGE));
+        } else {
+            messageLabel.setText(pluginReport.getLastMessage());
+            messageLabel.setMaxHeight(10);
+            messageButton.setGraphic(new ImageView(REPORT_CONTRACTED_IMAGE));
+        }
     }
 
     /**
@@ -410,12 +410,12 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
     }
 
     @Override
-    public void pluginReportChanged(PluginReport pluginReport) {
+    public void pluginReportChanged(final PluginReport pluginReport) {
         Platform.runLater(this::update);
     }
 
     @Override
-    public void addedChildReport(PluginReport parentReport, PluginReport childReport) {
+    public void addedChildReport(final PluginReport parentReport, final PluginReport childReport) {
         Platform.runLater(() -> {
             synchronized (reporterPane) {
                 reporterPane.updateTags();

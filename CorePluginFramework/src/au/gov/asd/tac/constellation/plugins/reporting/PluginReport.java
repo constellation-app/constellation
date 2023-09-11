@@ -16,8 +16,11 @@
 package au.gov.asd.tac.constellation.plugins.reporting;
 
 import au.gov.asd.tac.constellation.plugins.Plugin;
+import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -47,7 +50,10 @@ public class PluginReport {
     private final long startTime;
     private long stopTime = -1;
 
-    private String message = null;
+    private String executionStage = PluginExecutionStageConstants.WAITING;
+    private final List<String> runningStateLog = new ArrayList<>();
+    private final List<String> messageLog = new ArrayList<>();
+    
     private int currentStep = 1;
     private int totalSteps = -1;
 
@@ -59,9 +65,8 @@ public class PluginReport {
     private final String[] tags;
 
     private final int position;
-
     private boolean isUndone = false;
-
+    
     public PluginReport(final GraphReport graphReport, final Plugin plugin) {
         this.graphReport = graphReport;
         this.pluginName = plugin.getName();
@@ -167,8 +172,12 @@ public class PluginReport {
      *
      * @return the current message from this plugin.
      */
-    public String getMessage() {
-        return message;
+    public String getLastMessage() {
+        if ((executionStage.equals(PluginExecutionStageConstants.COMPLETE) || executionStage.equals(PluginExecutionStageConstants.STOPPED)) && !this.messageLog.isEmpty()){
+            return this.messageLog.get(this.messageLog.size()-1);
+        } else {
+            return this.runningStateLog.isEmpty() ? "" : this.runningStateLog.get(this.runningStateLog.size()-1);
+        }
     }
 
     /**
@@ -176,8 +185,9 @@ public class PluginReport {
      *
      * @param message the new message.
      */
-    public void setMessage(final String message) {
-        this.message = message;
+    public void addMessage(final String message) {
+        this.messageLog.add(message);
+        this.runningStateLog.add(message);
     }
 
     /**
@@ -243,6 +253,14 @@ public class PluginReport {
      */
     public void setError(final Throwable error) {
         this.error = error;
+        if (error instanceof InterruptedException){
+            this.messageLog.add("Error: Plugin was interrupted.");
+        } else if (error instanceof PluginException){
+            this.messageLog.add("Error: " + error.getMessage());
+        } else {
+            this.messageLog.add("Error: An unkown error occcured.");
+        }
+        this.setExecutionStage(PluginExecutionStageConstants.STOPPED);
     }
 
     /**
@@ -318,7 +336,7 @@ public class PluginReport {
 
     @Override
     public String toString() {
-        return "PluginReport{" + "graphReport=" + graphReport + ", pluginName=" + pluginName + ", pluginDescription=" + pluginDescription + ", startTime=" + startTime + ", stopTime=" + stopTime + ", message=" + message + ", currentStep=" + currentStep + ", totalSteps=" + totalSteps + '}';
+        return "PluginReport{" + "graphReport=" + graphReport + ", pluginName=" + pluginName + ", pluginDescription=" + pluginDescription + ", startTime=" + startTime + ", stopTime=" + stopTime + ", message=" + this.getLastMessage() + ", currentStep=" + currentStep + ", totalSteps=" + totalSteps + '}';
     }
 
     /**
@@ -349,6 +367,89 @@ public class PluginReport {
     public List<PluginReport> getUChildReports() {
         return uChildReports;
     }
+    
+    /**
+     * Returns the list messages sent to the plugin report. during its life
+     * Note that this method prints all messages and thus the number of messaged 
+     * sent to the Plugin reporter should be appropriate.
+     *
+     * @return a string representing a list of all the report messages sent to
+     * this report.
+     */
+    public String getReportLog() {
+        if (executionStage.equals(PluginExecutionStageConstants.COMPLETE)){
+            return this.messageLog.isEmpty() ? this.getLastMessage() : logToString(this.messageLog);
+        } else if (!executionStage.equals(PluginExecutionStageConstants.STOPPED)){
+            return logToString(this.runningStateLog);
+        } else {
+            return this.getLastMessage();
+        }
+    }
+    
+    /**
+     * Converts a Collection of Strings to a single string with new line separators
+     * between each string in the collection. 
+     * 
+     * @param log a collection of strings
+     *
+     * @return a string representing a list of all the messages in the log.
+     */
+    public String logToString(final Collection<String> log){
+        final StringBuilder bld = new StringBuilder();
+        
+        for (int i = 0; i < log.size(); ++i) {
+            if (i != 0){
+                bld.append(SeparatorConstants.NEWLINE);
+            }
+            bld.append(log.toArray()[i]);
+        }
+        
+        return bld.toString();
+    }
+    
+    /**
+     * Sets the message to be displayed to the user
+     * to indicate the execution stage of the plugin.
+     * These messages do not persist after plugin execution.
+     * 
+     * @param message 
+     */
+    public void setRunningStateMessage(final String message) {
+        this.runningStateLog.add(message);
+    }
+    
+    /**
+     * Gets the most recent message indicating the execution stage of the plugin.
+     * These messages will persist after plugin execution.
+     * 
+     * @return A string indicating the stage of execution
+     */
+    public String getRunningStateMessage() {
+        return this.runningStateLog.isEmpty() ? "" : this.runningStateLog.get(this.runningStateLog.size()-1);
+    }
+    
+    /**
+     * Set the stage of execution as a string using PluginExecutionStageContants.
+     * This attribute controls the messages displayed in the plugin reporter.
+     * Setting an execution stage of waiting or running will cause runningState Logs to be shown.
+     * Setting an execution stage of finished, stopped will cause messageLogs to be shown.
+     * 
+     * @param  executionStage representing the stage of execution of the plugin.
+     */       
+    public void setExecutionStage(final String executionStage) {
+        if (!PluginExecutionStageConstants.STOPPED.equals(this.executionStage)) {
+            this.executionStage = executionStage;
+        } 
+    }
+    
+    /**
+     * Gets the current execution stage of the plugin as a string. 
+     * 
+     * @return Current execution stage of the plugin
+     */  
+    public final String getExecutionStage() {
+        return this.executionStage;
+    }
 
     public boolean isUndone() {
         return isUndone;
@@ -358,3 +459,5 @@ public class PluginReport {
         this.isUndone = isUndone;
     }
 }
+
+
