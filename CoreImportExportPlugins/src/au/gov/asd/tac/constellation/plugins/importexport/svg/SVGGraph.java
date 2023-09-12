@@ -24,9 +24,12 @@ import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
+import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
@@ -132,33 +135,46 @@ public class SVGGraph {
          * @param svgGraph
          */
         private void buildNodes(final SVGGraph svgGraph) {
+            //Retrieve the svg element that holds the nodes as a SVGContainer
             final SVGContainer nodesContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.name).getContainer(SVGLayoutConstant.NODES.name);
             
+            //Specify attribute ID's for the node vertex's'
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
             final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
-            final int fillColorAttributeID = VisualConcept.VertexAttribute.COLOR.get(graph);    
-           
+            final int fillColorAttributeID = VisualConcept.VertexAttribute.COLOR.get(graph); 
+            final int backgroundIconID = VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph);
+            final int foregroundIconID = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
+            
             final int vertexCount = graph.getVertexCount();
             for (int vertexPosition = 0 ; vertexPosition < vertexCount ; vertexPosition++) {
                 final int vertexID = graph.getVertex(vertexPosition);
 
+                //Get the values of the attributes relevent to the current node
                 final Float xVal = (graph.getFloatValue(xAttributeID, vertexID) * 128) - xBoundMin;
                 final Float yVal = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, vertexID) * 128) - yBoundMin);
                 final String fillColor = graph.getStringValue(fillColorAttributeID, vertexID);
+                final Color color = Color.decode(fillColor);
+                final ConstellationIcon backgroundIcon = graph.getObjectValue(backgroundIconID, vertexID);
+                final ConstellationIcon foregroundIcon = graph.getObjectValue(foregroundIconID, vertexID);
 
+                //build the SVGobject representing the node
                 final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
                 node.setAttribute(SVGAttributeConstant.X.getKey(), xVal.toString());
                 node.setAttribute(SVGAttributeConstant.Y.getKey(), yVal.toString());
-                node.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), fillColor);
                 node.setParent(nodesContainer.toSVGObject());
                 
+                //Add labels to the Node
                 final SVGContainer nodeContainer = new SVGContainer(node);
                 final SVGContainer bottomLabelContainer = nodeContainer.getContainer("bottom-labels");
-                buildBottomLabel(vertexID, bottomLabelContainer);
-                
                 final SVGContainer topLabelContainer = nodeContainer.getContainer("top-labels");
+                buildBottomLabel(vertexID, bottomLabelContainer);
                 buildTopLabel(vertexID, topLabelContainer);
-                
+  
+                //Add images to the node
+                final byte[] backgroundData = backgroundIcon.getIconData().getData(0, color);
+                final byte[] foregroundData = foregroundIcon.getIconData().getData();
+                this.buildSVGImageFromRasterImageData(nodeContainer.toSVGObject(), backgroundData);
+                this.buildSVGImageFromRasterImageData(nodeContainer.toSVGObject(), foregroundData);
             }
         }
         
@@ -206,7 +222,7 @@ public class SVGGraph {
             final GraphLabels bottomLabelsContainer = graph.getObjectValue(bottomLabelsAttributeID, 0);
             final List<GraphLabel> labels = bottomLabelsContainer.getLabels();
             
-            Integer offset = 16;
+            Integer offset = 0;
             for (int i = 0; i < bottomLabelsContainer.getNumberOfLabels(); i++) {
                 GraphLabel label = labels.get(i);
                 String labelAttributeNameReference = label.getAttributeName();
@@ -224,7 +240,7 @@ public class SVGGraph {
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
                     offset = offset + intSize;
                     
-                    text.setContent(SVGParser.removeIllegalCharacters(labelString));
+                    text.setContent(SVGParser.sanitisePlanText(labelString));
                     
                     text.setParent(bottomLabelContainer.toSVGObject());
                 }
@@ -244,7 +260,7 @@ public class SVGGraph {
             final GraphLabels topLabelsContainer = graph.getObjectValue(topLabelsAttributeID, 0);
             final List<GraphLabel> labels = topLabelsContainer.getLabels();
             
-            Integer offset = -16;
+            Integer offset = 0;
             for (int i = 0; i < topLabelsContainer.getNumberOfLabels(); i++) {
                 GraphLabel label = labels.get(i);
                 String labelAttributeNameReference = label.getAttributeName();
@@ -262,11 +278,23 @@ public class SVGGraph {
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
                     offset = offset - intSize;
                     
-                    text.setContent(SVGParser.removeIllegalCharacters(labelString));
+                    text.setContent(SVGParser.sanitisePlanText(labelString));
                     
                     text.setParent(topLabelContainer.toSVGObject());
                 }
             }
+        }
+        
+        /**
+         * Builds an SVG image element within an SVG element.
+         * @param parent
+         * @param data 
+         */
+        private void buildSVGImageFromRasterImageData(final SVGObject parent, final byte[] data) {
+            String encodedString = Base64.getEncoder().encodeToString(data);
+            SVGObject image = buildSVGObjectFromTemplate(SVGFileNameConstant.IMAGE);
+            image.setAttribute("xlink:href", String.format("data:image/png;base64,%s", encodedString));
+            image.setParent(parent);
         }
         
         /**
@@ -348,8 +376,8 @@ public class SVGGraph {
             final Float contentHeight = yBoundMax - yBoundMin + 256;
             final Float xMargin = 50.0F;
             final Float yMargin = 50.0F;
-            final Float xPadding = 500.0F;
-            final Float yPadding = 500.0F;
+            final Float xPadding = 250.0F;
+            final Float yPadding = 250.0F;
             final Float footerYOffset = yMargin + contentHeight + (yPadding * 2);            
             final Float fullWidth = (xMargin * 2) + contentWidth + (xPadding * 2);            
             final Float fullHeight = (yMargin * 2) + contentHeight + (yPadding * 2);            

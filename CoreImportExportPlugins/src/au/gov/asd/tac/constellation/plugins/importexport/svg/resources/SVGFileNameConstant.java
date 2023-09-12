@@ -27,7 +27,8 @@ public enum SVGFileNameConstant {
     LINK("Link.svg"),
     LAYOUT("Layout.svg"),
     BOTTOM_LABEL("BottomLabel.svg"),
-    TOP_LABEL("TopLabel.svg");
+    TOP_LABEL("TopLabel.svg"),
+    IMAGE("Image.svg");
     
     public final String resourceName;
         
