@@ -64,7 +64,6 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
     public class BlazeEditor extends AbstractEditor<Blaze> {
 
-        private CheckBox noValueCheckBox;
         private TextField angleTextField;
         private ColorPicker picker;
 

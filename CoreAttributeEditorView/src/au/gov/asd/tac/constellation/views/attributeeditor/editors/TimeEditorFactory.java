@@ -58,7 +58,6 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
 
         private static final String LABEL = "label";
 
-        private CheckBox noValueCheckBox;
         private Spinner<Integer> hourSpinner;
         private Spinner<Integer> minSpinner;
         private Spinner<Integer> secSpinner;

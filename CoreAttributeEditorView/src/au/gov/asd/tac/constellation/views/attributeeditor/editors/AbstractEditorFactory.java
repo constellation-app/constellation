@@ -28,6 +28,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 
 /**
@@ -67,6 +68,7 @@ public abstract class AbstractEditorFactory<V> {
         protected V currentValue;
         protected Node editorHeading = null;
         protected Node editorControls = null;
+        protected CheckBox noValueCheckBox = null;
 
         protected boolean updateInProgress = false;
 
@@ -122,6 +124,12 @@ public abstract class AbstractEditorFactory<V> {
          */
         protected boolean canSet(final V value) {
             return true;
+        }
+
+        public void untickEditCB() {
+            if (noValueCheckBox != null) {
+                noValueCheckBox.setSelected(false);
+            }
         }
 
         protected final void setCurrentValue(final V value) {

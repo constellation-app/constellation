@@ -66,7 +66,6 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private static final String LABEL_ID = "label";
 
         private DatePicker datePicker;
-        private CheckBox noValueCheckBox;
         private Spinner<Integer> hourSpinner;
         private Spinner<Integer> minSpinner;
         private Spinner<Integer> secSpinner;

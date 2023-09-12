@@ -48,7 +48,6 @@ public class ShortObjectEditorFactory extends AttributeValueEditorFactory<Short>
     public class ShortObjectEditor extends AbstractEditor<Short> {
 
         private TextField numberField;
-        private CheckBox noValueCheckBox;
 
         protected ShortObjectEditor(final EditOperation editOperation, final DefaultGetter<Short> defaultGetter, final ValueValidator<Short> validator, final String editedItemName, final Short initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

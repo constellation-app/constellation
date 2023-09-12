@@ -46,7 +46,6 @@ public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
     public class LongObjectEditor extends AbstractEditor<Long> {
 
         private TextField numberField;
-        private CheckBox noValueCheckBox;
 
         protected LongObjectEditor(final EditOperation editOperation, final DefaultGetter<Long> defaultGetter, final ValueValidator<Long> validator, final String editedItemName, final Long initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

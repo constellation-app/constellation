@@ -46,7 +46,6 @@ public class FloatObjectEditorFactory extends AttributeValueEditorFactory<Float>
     public class FloatObjectEditor extends AbstractEditor<Float> {
 
         private TextField numberField;
-        private CheckBox noValueCheckBox;
 
         protected FloatObjectEditor(final EditOperation editOperation, final DefaultGetter<Float> defaultGetter, final ValueValidator<Float> validator, final String editedItemName, final Float initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

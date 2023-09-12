@@ -47,7 +47,6 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
     public class HyperlinkEditor extends AbstractEditor<URI> {
 
-        private CheckBox noValueCheckBox;
         private TextField textField;
 
         protected HyperlinkEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {

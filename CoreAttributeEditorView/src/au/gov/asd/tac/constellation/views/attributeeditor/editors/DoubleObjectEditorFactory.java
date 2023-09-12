@@ -48,7 +48,6 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
     public class DoubleObjectEditor extends AbstractEditor<Double> {
 
         private TextField numberField;
-        private CheckBox noValueCheckBox;
 
         protected DoubleObjectEditor(final EditOperation editOperation, final DefaultGetter<Double> defaultGetter, final ValueValidator<Double> validator, final String editedItemName, final Double initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

@@ -55,7 +55,6 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
     public class ColorEditor extends AbstractEditor<ConstellationColor> {
 
-        private CheckBox noValueCheckBox;
         private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
 
