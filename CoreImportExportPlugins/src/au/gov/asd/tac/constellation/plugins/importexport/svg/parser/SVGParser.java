@@ -43,9 +43,7 @@ public class SVGParser {
      * 
      * Takes an input stream and translates it to an SVG object. 
      * Will only translate to an SVG object if the file data is valid.
-     * 
      * Does not support multi-line tags.
-     * 
      * @param inputStream
      * @return
      * @throws IOException 
@@ -93,18 +91,54 @@ public class SVGParser {
         }
     }
 
-    public static String removeIllegalCharacters(String labelString) {
-        labelString = labelString.replaceAll("&", "&amp;");
-        labelString = labelString.replaceAll(">", "&gt;");
-        labelString = labelString.replaceAll("<", "&lt;");
-        labelString = labelString.replaceAll("\"", "&quot;");
-        labelString = labelString.replaceAll("'", "&apos;");
-        return labelString;
+    /**
+     * Ensures plan text string can be rendered by browsers.
+     * @param labelString
+     * @return 
+     */
+    public static String sanitisePlanText(final String text) {
+        final String validString = replaceInvalidCharacters(text);
+        final String sanitisedString = removeNonLatinCharacters(validString);
+        return sanitisedString;
     }
-        
+    
+    /**
+     * Replaces <&amp;>, <&gt;>, <&lt;>, " and ' with XML entity reference.
+     * @param text
+     * @return 
+     */
+    private static String replaceInvalidCharacters(final String text){
+        String returnString = text;
+        returnString = returnString.replaceAll("&", "&amp;");
+        returnString = returnString.replaceAll(">", "&gt;");
+        returnString = returnString.replaceAll("<", "&lt;");
+        returnString = returnString.replaceAll("\"", "&quot;");
+        returnString = returnString.replaceAll("'", "&apos;");
+        return returnString;
+    }
+    
+    /**
+     * Removes ASCII characters above 126.
+     * Appends a disclaimer that non-Latin characters have been omitted.
+     * @param text
+     * @return 
+     */
+    private static String removeNonLatinCharacters(final String text){
+        StringBuilder builder = new StringBuilder();
+        char[] charArray = text.toCharArray();
+        for (int i = 0 ; i < charArray.length ; i++){
+            if (charArray[i] < 127){
+                builder.append(charArray[i]);
+            }
+        }
+        if (builder.length() < text.length()){
+            builder.append(" (omitted non-latin characters)");
+        }
+        return builder.toString();
+    }
+          
     /**
      * Takes an SVG element and returns the tag type of the element.
-     * 
      * @param svgString
      * @return 
      */
@@ -133,7 +167,6 @@ public class SVGParser {
     /**
      * Takes a String and returns the SVG element contained in that string.
      * White spaces and foreign characters external to the tag are removed.
-     * 
      * @param line
      * @return 
      */
@@ -149,7 +182,6 @@ public class SVGParser {
      * Takes a String and returns the SVG element contents of that string.
      * White spaces and foreign characters external to the tag are removed.
      * Tag brackets are also removed.
-     * 
      * @param line
      * @return 
      */
@@ -164,7 +196,6 @@ public class SVGParser {
     /**
      * checks if the current element is a close tag.
      * A close tag will contain the characters "&lt/" or "/&gt"
-     * 
      * @param line
      * @return 
      */
