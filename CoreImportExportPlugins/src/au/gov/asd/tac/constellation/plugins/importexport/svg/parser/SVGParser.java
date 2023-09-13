@@ -127,7 +127,7 @@ public class SVGParser {
         StringBuilder builder = new StringBuilder();
         char[] charArray = text.toCharArray();
         for (int i = 0 ; i < charArray.length ; i++){
-            if (charArray[i] < 127){
+            if (charArray[i] < 127 && charArray[i] > 0 && charArray[i] != 12){
                 builder.append(charArray[i]);
             }
         }

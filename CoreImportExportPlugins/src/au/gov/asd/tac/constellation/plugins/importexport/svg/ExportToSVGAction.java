@@ -71,6 +71,7 @@ public final class ExportToSVGAction implements ActionListener {
 
                 PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
                         .withParameter(ExportToSVGPlugin.FILE_NAME_PARAMETER_ID, fnam)
+                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Test Title")
                         .executeLater(context.getGraph());
             }));
         

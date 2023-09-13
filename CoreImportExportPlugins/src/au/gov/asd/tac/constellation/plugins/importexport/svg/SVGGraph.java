@@ -25,14 +25,20 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
+import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Date;
+import java.time.ZonedDateTime;
+import java.time.format.TextStyle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * A Wrapper class for the outer most SVGElement of the output file.
@@ -105,6 +111,7 @@ public class SVGGraph {
         private Float xBoundMax = null;
         private Float yBoundMin = null;
         private Float yBoundMax = null;
+        private String graphTitle = null;
       
         /**
          * Specifies the graph to build the SVG from.
@@ -115,6 +122,16 @@ public class SVGGraph {
             this.graph = graph;
             return this;
         }
+        
+        /**
+         * Specifies the title of the graph being exported.
+         * @param title The title of the graph.
+         * @return SVGGraphBuilder
+         */
+        public SVGGraphBuilder withTitle(final String title) {
+            this.graphTitle = title;
+            return this;
+        }
       
         /**
          * Builds an SVGGraphObject representing the provided graph.
@@ -123,11 +140,34 @@ public class SVGGraph {
         public SVGObject build() {
             final SVGGraph svgGraphLayout = buildSVGGraphFromTemplate(SVGFileNameConstant.LAYOUT);
             defineBoundary(graph);
+            buildHeader(svgGraphLayout);
+            buildFooter(svgGraphLayout);
             buildNodes(svgGraphLayout);
             buildLinks(svgGraphLayout);
             setLayoutDimensions(svgGraphLayout);
             return svgGraphLayout.toSVGObject();
         }       
+        
+        private void buildHeader(SVGGraph svg){
+            SVGContainer titleContainer = svg.getContainer("header").getContainer("title");
+            titleContainer.toSVGObject().setContent(graphTitle);
+            
+            SVGContainer subtitleContainer = svg.getContainer("header").getContainer("subtitle");
+            ZonedDateTime date = ZonedDateTime.now();
+            subtitleContainer.toSVGObject().setContent(
+                    String.format("Exported: %s %s, %s (%s)",
+                            StringUtilities.camelCase(date.getMonth().toString()), 
+                            date.getDayOfMonth(), 
+                            date.getYear(), 
+                            date.getZone().toString()
+                    )
+            );
+        }
+        
+        private void buildFooter(SVGGraph svg){
+            SVGContainer titleContainer = svg.getContainer("footer").getContainer("footnote");
+            titleContainer.toSVGObject().setContent("The Constellation community. All rights reserved.");
+        }
         
         /**
          * Generates SVG Nodes from the graph and assigns them as children to the Nodes container.
@@ -375,29 +415,30 @@ public class SVGGraph {
             final Float contentWidth = xBoundMax - xBoundMin + 256;
             final Float contentHeight = yBoundMax - yBoundMin + 256;
             final Float xMargin = 50.0F;
-            final Float yMargin = 50.0F;
+            final Float topMargin = 288.0F;
+            final Float bottomMargin = 128.0F;
             final Float xPadding = 250.0F;
             final Float yPadding = 250.0F;
-            final Float footerYOffset = yMargin + contentHeight + (yPadding * 2);            
+            final Float footerYOffset = topMargin + contentHeight + (yPadding * 2);            
             final Float fullWidth = (xMargin * 2) + contentWidth + (xPadding * 2);            
-            final Float fullHeight = (yMargin * 2) + contentHeight + (yPadding * 2);            
+            final Float fullHeight = (topMargin + bottomMargin) + contentHeight + (yPadding * 2);            
             final Float backgroundWidth = contentWidth + (xPadding * 2);
             final Float backgroundHeight = contentHeight + (yPadding * 2);
-            final Float contentYOffset = yMargin + yPadding;
+            final Float contentYOffset = topMargin + yPadding;
             final Float contentXOffset = xMargin + xPadding;
             
             svg.setDimensions(fullWidth, fullHeight);
 
-            svg.getContainer(SVGLayoutConstant.HEADER.name).setDimension(fullWidth, yMargin);
+            svg.getContainer(SVGLayoutConstant.HEADER.name).setDimension(fullWidth, topMargin);
 
-            svg.getContainer(SVGLayoutConstant.FOOTER.name).setDimension(fullWidth, yMargin);
+            svg.getContainer(SVGLayoutConstant.FOOTER.name).setDimension(fullWidth, bottomMargin);
             svg.getContainer(SVGLayoutConstant.FOOTER.name).setposition(0F, footerYOffset);
 
             svg.getContainer(SVGLayoutConstant.CONTENT.name).setDimension(contentWidth, contentHeight);
             svg.getContainer(SVGLayoutConstant.CONTENT.name).setposition(contentXOffset, contentYOffset);
 
             svg.getContainer(SVGLayoutConstant.BACKGROUND.name).setDimension(backgroundWidth, backgroundHeight);
-            svg.getContainer(SVGLayoutConstant.BACKGROUND.name).setposition(xMargin, yMargin);
+            svg.getContainer(SVGLayoutConstant.BACKGROUND.name).setposition(xMargin, topMargin);
             
             svg.getContainer(SVGLayoutConstant.BORDER.name).setDimension(fullWidth, fullHeight);
         }

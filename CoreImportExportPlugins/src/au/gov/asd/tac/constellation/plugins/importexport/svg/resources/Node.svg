@@ -1,6 +1,6 @@
 <svg class="Node" width="256" height="256" overflow="visible">
-        <svg y="256" width="256" height="256" class="bottom-labels" overflow="visible">
-        </svg>
-        <svg width="256" height="256" class="top-labels" overflow="visible">
-        </svg>
+        <svg class="top-labels" width="256" height="256" overflow="visible" />
+        <svg class="backgroundImage" />
+        <svg class="foregroundImage" />
+        <svg class="bottom-labels" width="256" height="256" y="256" overflow="visible" />
 </svg>

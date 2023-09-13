@@ -29,7 +29,10 @@ public enum SVGLayoutConstant {
     HEADER("header"),
     FOOTER("footer"),
     BACKGROUND("background"),
-    BORDER("border");
+    BORDER("border"),
+    HEADING("heading"),
+    SUBHEADING("subheading"),
+    FOOTNOTE("footnote");
     
     public final String name;
         
