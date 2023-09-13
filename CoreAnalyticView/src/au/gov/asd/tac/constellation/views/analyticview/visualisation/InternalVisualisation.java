@@ -15,10 +15,14 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
+import javafx.scene.Node;
+
 /**
  *
  * @author cygnus_x-1
  */
 public abstract class InternalVisualisation extends AnalyticVisualisation {
+    
+    public abstract void setVisualisation(final Node visualisation);
 
 }

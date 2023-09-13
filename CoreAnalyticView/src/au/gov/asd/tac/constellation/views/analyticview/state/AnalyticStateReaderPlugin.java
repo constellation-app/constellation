@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Read the current state from the graph.
@@ -35,6 +37,7 @@ import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane;
 public final class AnalyticStateReaderPlugin extends SimpleReadPlugin {
 
     private final AnalyticViewPane pane;
+    private static final Logger LOGGER = Logger.getLogger(AnalyticStateReaderPlugin.class.getName());
 
     public AnalyticStateReaderPlugin(final AnalyticViewPane pane) {
         this.pane = pane;
@@ -42,6 +45,7 @@ public final class AnalyticStateReaderPlugin extends SimpleReadPlugin {
 
     @Override
     public void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
+        LOGGER.log(Level.SEVERE, "in read state");
         if (graph == null || pane == null) {
             return;
         }
@@ -55,7 +59,10 @@ public final class AnalyticStateReaderPlugin extends SimpleReadPlugin {
         if (currentState == null) {
             return;
         }
-
+        
+        LOGGER.log(Level.SEVERE, graph.getId());       
+        LOGGER.log(Level.SEVERE, "about to update pane");
+        LOGGER.log(Level.SEVERE, "attribute" + currentState.toString());
         // update pane with current question/category/results/effects
         pane.updateView(currentState);
     }

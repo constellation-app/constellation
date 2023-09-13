@@ -48,8 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterResult, ClusterData> {
 
     // Maps of the colors of the vertices and transactions before the plugin is run
-    private final HashMap<Integer, String> vertexColors = new HashMap<>();
-    private final HashMap<Integer, String> transactionColors = new HashMap<>();
+    private HashMap<Integer, ConstellationColor> vertexColors = new HashMap<>();
+    private HashMap<Integer, ConstellationColor> transactionColors = new HashMap<>();
 
     @Override
     public String getName() {
@@ -71,6 +71,26 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
         PluginExecution.withPlugin(new ColorElementsPlugin())
                 .withParameter(ColorElementsPlugin.RESET_PARAMETER_ID, reset)
                 .executeLater(GraphManager.getDefault().getActiveGraph());
+    }
+
+    @Override
+    public HashMap<Integer, ConstellationColor> getVertexColors() {
+        return (HashMap<Integer, ConstellationColor>) vertexColors.clone();
+    }
+
+    @Override
+    public void setVertexColors(final HashMap<Integer, ConstellationColor> colors) {
+        vertexColors = colors;
+    }
+
+    @Override
+    public HashMap<Integer, ConstellationColor> getTransactionColors() {
+        return (HashMap<Integer, ConstellationColor>) transactionColors.clone();
+    }
+
+    @Override
+    public void setTransactionColors(final HashMap<Integer, ConstellationColor> colors) {
+        transactionColors = colors;
     }
 
     @PluginInfo(tags = {PluginTags.MODIFY})
@@ -113,11 +133,11 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                     final int elementId = clusterData.getElementId();
                     switch (elementType) {
                         case VERTEX:
-                            final String vertexColor = vertexColors.get(elementId);
+                            final ConstellationColor vertexColor = vertexColors.get(elementId);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, vertexColor);
                             break;
                         case TRANSACTION:
-                            final String transactionColor = transactionColors.get(elementId);
+                            final ConstellationColor transactionColor = transactionColors.get(elementId);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, transactionColor);
                             break;
                         default:
@@ -127,6 +147,8 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                 }
                 graph.setObjectValue(vertexColorReferenceAttribute, 0, null);
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
+                vertexColors.clear();
+                transactionColors.clear();
             } else {
                 // find highest and lowest cluster numbers among available cluster data
                 final Set<Integer> clusterNumbers = new HashSet<>();
@@ -151,12 +173,12 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                     final int clusterNumber = clusterData.getClusterNumber();
                     switch (elementType) {
                         case VERTEX:
-                            final String vertexColor = graph.getObjectValue(vertexOverlayColorAttribute, elementId);
+                            final ConstellationColor vertexColor = graph.getObjectValue(vertexOverlayColorAttribute, elementId);
                             vertexColors.put(elementId, vertexColor);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, colorMap.get(clusterNumber));
                             break;
                         case TRANSACTION:
-                            final String transactionColor = graph.getObjectValue(transactionOverlayColorAttribute, elementId);
+                            final ConstellationColor transactionColor = graph.getObjectValue(transactionOverlayColorAttribute, elementId);
                             transactionColors.put(elementId, transactionColor);
                             graph.setObjectValue(transactionOverlayColorAttribute, elementId, colorMap.get(clusterNumber));
                             break;

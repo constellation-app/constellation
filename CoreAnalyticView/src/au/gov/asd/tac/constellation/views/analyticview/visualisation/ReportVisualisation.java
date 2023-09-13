@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import java.util.List;
+import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -30,7 +31,7 @@ import javafx.scene.layout.VBox;
  */
 public class ReportVisualisation extends InternalVisualisation {
 
-    private final VBox report;
+    private VBox report;
     private final Label pluginsRunValue;
     private final Label numberOfResultsValue;
     private final Label aggregationMethodValue;
@@ -112,5 +113,25 @@ public class ReportVisualisation extends InternalVisualisation {
     @Override
     public Node getVisualisation() {
         return report;
+    }
+    
+    @Override
+    public void setVisualisation(final Node report) {
+        this.report = (VBox) report;
+    }
+    
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        } else if (this == object || getClass() == object.getClass()) {
+            return true;
+        }
+        return false;
+    }
+    
+    @Override 
+    public int hashCode() {
+        return Objects.hash(this.getClass());
     }
 }

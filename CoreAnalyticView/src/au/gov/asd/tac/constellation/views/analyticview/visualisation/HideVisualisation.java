@@ -56,7 +56,7 @@ public class HideVisualisation<C> extends GraphVisualisation {
             final float threshold = (float) hideSlider.getValue();
             translator.executePlugin(!activated, threshold);
             hideSlider.setDisable(!activated);
-            AnalyticViewController.getDefault().updateVisualisations(this, activated);
+            AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
         });
 
         this.hidePanel = new HBox(5.0, hideButton, hideSlider);

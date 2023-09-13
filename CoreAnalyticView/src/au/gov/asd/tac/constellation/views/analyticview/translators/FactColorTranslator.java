@@ -44,8 +44,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class FactColorTranslator extends AbstractColorTranslator<FactResult, ElementFact> {
 
     // Maps of the colors of the vertices and transactions before the plugin is run
-    private final HashMap<Integer, String> vertexColors = new HashMap<>();
-    private final HashMap<Integer, String> transactionColors = new HashMap<>();
+    private HashMap<Integer, ConstellationColor> vertexColors = new HashMap<>();
+    private HashMap<Integer, ConstellationColor> transactionColors = new HashMap<>();
 
     @Override
     public String getName() {
@@ -67,6 +67,26 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
         PluginExecution.withPlugin(new ColorElementsPlugin())
                 .withParameter(ColorElementsPlugin.RESET_PARAMETER_ID, reset)
                 .executeLater(GraphManager.getDefault().getActiveGraph());
+    }
+    
+    @Override
+    public HashMap<Integer, ConstellationColor> getVertexColors() {
+        return (HashMap<Integer, ConstellationColor>) vertexColors.clone();
+    }
+
+    @Override
+    public void setVertexColors(final HashMap<Integer, ConstellationColor> colors) {
+        vertexColors = colors;
+    }
+
+    @Override
+    public HashMap<Integer, ConstellationColor> getTransactionColors() {
+        return (HashMap<Integer, ConstellationColor>) transactionColors.clone();
+    }
+
+    @Override
+    public void setTransactionColors(final HashMap<Integer, ConstellationColor> colors) {
+        transactionColors = colors;
     }
 
     @PluginInfo(tags = {PluginTags.MODIFY})
@@ -109,11 +129,11 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
                     final int elementId = factResult.getElementId();
                     switch (elementType) {
                         case VERTEX:
-                            final String vertexColor = vertexColors.get(elementId);
+                            final ConstellationColor vertexColor = vertexColors.get(elementId);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, vertexColor);
                             break;
                         case TRANSACTION:
-                            final String transactionColor = transactionColors.get(elementId);
+                            final ConstellationColor transactionColor = transactionColors.get(elementId);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, transactionColor);
                             break;
                         default:
@@ -123,6 +143,8 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
                 }
                 graph.setObjectValue(vertexColorReferenceAttribute, 0, null);
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
+                vertexColors.clear();
+                transactionColors.clear();
             } else {
                 // color graph elements based on their value
                 for (final ElementFact scoreResult : factResults.get()) {
@@ -131,12 +153,12 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
                     final float colorIntensity = scoreResult.getFactValue() ? 1F : 0F;
                     switch (elementType) {
                         case VERTEX:
-                            final String vertexColor = graph.getObjectValue(vertexOverlayColorAttribute, elementId);
+                            final ConstellationColor vertexColor = graph.getObjectValue(vertexOverlayColorAttribute, elementId);
                             vertexColors.put(elementId, vertexColor);
                             graph.setObjectValue(vertexOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
                             break;
                         case TRANSACTION:
-                            final String transactionColor = graph.getObjectValue(transactionOverlayColorAttribute, elementId);
+                            final ConstellationColor transactionColor = graph.getObjectValue(transactionOverlayColorAttribute, elementId);
                             transactionColors.put(elementId, transactionColor);
                             graph.setObjectValue(transactionOverlayColorAttribute, elementId, ConstellationColor.getColorValue((float) 1.0 - colorIntensity, (float) 1.0 - colorIntensity, 1F, 1F));
                             break;

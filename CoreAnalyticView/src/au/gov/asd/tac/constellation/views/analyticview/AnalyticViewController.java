@@ -37,11 +37,16 @@ import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateReader
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateWriterPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.scene.Node;
 import javafx.scene.control.ListView;
+import org.openide.util.Exceptions;
 
 /**
  * Controls UI when changing between graphs
@@ -57,15 +62,18 @@ public class AnalyticViewController {
     private AnalyticViewTopComponent parent;
 
     private int currentAnalyticQuestionIndex = 0;
-    private final List<AnalyticQuestionDescription<?>> activeAnalyticQuestions;
-    private final List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> activeSelectablePlugins;
+    private List<AnalyticQuestionDescription<?>> activeAnalyticQuestions;
+    private List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> activeSelectablePlugins;
     private AnalyticResult<?> result;
     private boolean resultsVisible = false;
     private boolean categoriesVisible = false;
     private AnalyticQuestionDescription<?> currentQuestion = null;
     private AnalyticQuestion question;
     private String activeCategory;
-    private HashMap<GraphVisualisation, Boolean> visualisations = new HashMap<>();
+    private HashMap<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
+    private HashMap<InternalVisualisation, Node> internalVisualisations = new HashMap<>();
+    
+    private static final Logger LOGGER = Logger.getLogger(AnalyticViewController.class.getName());
 
     public AnalyticViewController() {
         this.activeAnalyticQuestions = new ArrayList<>();
@@ -114,26 +122,48 @@ public class AnalyticViewController {
         this.categoriesVisible = categoriesVisible;
     }
 
-    public HashMap<GraphVisualisation, Boolean> getVisualisations() {
-        return visualisations;
+    public HashMap<GraphVisualisation, Boolean> getGraphVisualisations() {
+        return graphVisualisations;
     }
 
-    public void setVisualisations(final HashMap<GraphVisualisation, Boolean> visualisations) {
-        this.visualisations = visualisations;
-
+    public void setGraphVisualisations(final HashMap<GraphVisualisation, Boolean> graphVisualisations) {
+        this.graphVisualisations = graphVisualisations;
     }
-
+    
+    public HashMap<InternalVisualisation, Node> getInternalVisualisations() {
+        return internalVisualisations;
+    }
+    
+    public void setInternalVisualisations(final HashMap<InternalVisualisation, Node> internalVisualisations) {
+        this.internalVisualisations = internalVisualisations;
+    }
+    
     /**
      * Update which graph visualisations are on the graph and what state they are in
      * 
      * @param visualisationName
      * @param activated
      */
-    public void updateVisualisations(final GraphVisualisation visualisationName, final boolean activated) {
-        if (!visualisations.containsKey(visualisationName)) {
-            visualisations.put(visualisationName, activated);
+    public void updateGraphVisualisations(final GraphVisualisation visualisationName, final boolean activated) {
+        if (!graphVisualisations.containsKey(visualisationName)) {
+            graphVisualisations.put(visualisationName, activated);
         } else {
-            visualisations.replace(visualisationName, activated);
+            graphVisualisations.replace(visualisationName, activated);
+        }
+    }
+    
+    
+    /**
+     * Update which internal visualisations are on the graph and the data they are currently storing
+     * 
+     * @param visualisation
+     * @param visualisationNode
+     */
+    public void updateInternalVisualisations(final InternalVisualisation visualisation, final Node visualisationNode) {
+        if (!internalVisualisations.containsKey(visualisation)) {
+            internalVisualisations.put(visualisation, visualisationNode);
+        } else {
+            internalVisualisations.replace(visualisation, visualisationNode);
         }
     }
 
@@ -248,7 +278,9 @@ public class AnalyticViewController {
         if (pane == null || graph == null) {
             return;
         }
+        LOGGER.log(Level.SEVERE, graph.getId());
         PluginExecution.withPlugin(new AnalyticStateReaderPlugin(pane)).executeLater(graph);
+
     }
 
     /**
@@ -263,7 +295,7 @@ public class AnalyticViewController {
         }
 
         // controller out of sync with graph...
-        return PluginExecution.withPlugin(new AnalyticStateWriterPlugin(currentAnalyticQuestionIndex, activeAnalyticQuestions, activeSelectablePlugins, result, resultsVisible, currentQuestion, question, categoriesVisible, activeCategory, visualisations)).executeLater(graph);
+        return PluginExecution.withPlugin(new AnalyticStateWriterPlugin(currentAnalyticQuestionIndex, activeAnalyticQuestions, activeSelectablePlugins, result, resultsVisible, currentQuestion, question, categoriesVisible, activeCategory, graphVisualisations, internalVisualisations)).executeLater(graph);
     }
 
 

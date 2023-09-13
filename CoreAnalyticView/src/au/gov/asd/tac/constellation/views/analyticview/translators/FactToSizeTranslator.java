@@ -44,8 +44,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, ElementFact> {
 
     // Maps of the sizes of the vertices and transactions before the plugin is run
-    private final HashMap<Integer, Float> vertexSizes = new HashMap<>();
-    private final HashMap<Integer, Float> transactionSizes = new HashMap<>();
+    private HashMap<Integer, Float> vertexSizes = new HashMap<>();
+    private HashMap<Integer, Float> transactionSizes = new HashMap<>();
 
     @Override
     public String getName() {
@@ -67,6 +67,26 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
         PluginExecution.withPlugin(new SizeElementsPlugin())
                 .withParameter(SizeElementsPlugin.RESET_PARAMETER_ID, reset)
                 .executeLater(GraphManager.getDefault().getActiveGraph());
+    }
+    
+    @Override
+    public HashMap<Integer, Float> getVertexSizes() {
+        return (HashMap<Integer, Float>) vertexSizes.clone();
+    }
+
+    @Override
+    public void setVertexSizes(final HashMap<Integer, Float> sizes) {
+        vertexSizes = sizes;
+    }
+
+    @Override
+    public HashMap<Integer, Float> getTransactionSizes() {
+        return (HashMap<Integer, Float>) transactionSizes.clone();
+    }
+
+    @Override
+    public void setTransactionSizes(final HashMap<Integer, Float> sizes) {
+        transactionSizes = sizes;
     }
 
     @PluginInfo(tags = {PluginTags.MODIFY})

@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractSizeTranslator;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import javafx.scene.Node;
@@ -36,6 +37,10 @@ public class SizeVisualisation<C> extends GraphVisualisation {
     private final AbstractSizeTranslator<? extends AnalyticResult<?>, C> translator;
     private final ToggleButton sizeButton;
     private boolean activated = false;
+    
+    // Maps of the sizes of the vertices and transactions before the plugin is run
+    private HashMap<Integer, Float> vertexSizes = new HashMap<>();
+    private HashMap<Integer, Float> transactionSizes = new HashMap<>();
 
     public SizeVisualisation(final AbstractSizeTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
@@ -43,17 +48,25 @@ public class SizeVisualisation<C> extends GraphVisualisation {
         this.sizeButton = new ToggleButton("Size");
         sizeButton.setId("size-visualisation-button");
         sizeButton.setOnAction(event -> {
-            activated = sizeButton.isSelected();
-            translator.executePlugin(!activated);
-            AnalyticViewController.getDefault().updateVisualisations(this, activated);
+            activated = sizeButton.isSelected(); 
+            this.translator.setVertexSizes(vertexSizes);
+            this.translator.setTransactionSizes(transactionSizes);
+            this.translator.executePlugin(!activated);
+            vertexSizes = this.translator.getVertexSizes();
+            transactionSizes = this.translator.getVertexSizes();
+            AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
         });
     }
 
     @Override
     public void deactivate() {
         if (activated) {
+            translator.setVertexSizes(vertexSizes);
+            translator.setTransactionSizes(transactionSizes);
             translator.executePlugin(activated);
             activated = !activated;
+            vertexSizes = translator.getVertexSizes();
+            transactionSizes = translator.getVertexSizes();
         }
     }
 
@@ -94,7 +107,8 @@ public class SizeVisualisation<C> extends GraphVisualisation {
         }
         
         final SizeVisualisation newObject = (SizeVisualisation) object;
-        return translator == newObject.translator && sizeButton == newObject.sizeButton && activated == newObject.activated;
+        return translator == newObject.translator && sizeButton == newObject.sizeButton && activated == newObject.activated
+                && vertexSizes == newObject.vertexSizes && transactionSizes == newObject.transactionSizes;
     }
     
     @Override 

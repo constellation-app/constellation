@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtiliti
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.HashMap;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -98,31 +99,49 @@ public class AnalyticResultsPane extends VBox {
         return result;
     }
 
-    protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results, HashMap<GraphVisualisation, Boolean> currentVisualisations) {
-        if (results.getClass().equals(EmptyResult.class)) {
+    protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results, 
+            final HashMap<GraphVisualisation, Boolean> graphVisualisations, final HashMap<InternalVisualisation, Node> internalVisualisations) {
+        if (results.getClass().equals(EmptyResult.class) && question != null) {
             result = question.getResult() == null ? new EmptyResult() : question.getResult();
-        } else
+        } else {
             result = results;
-        
+        }   
         result.setAnalyticViewController(analyticViewController);
 
         Platform.runLater(() -> {
             internalVisualisationPane.getTabs().clear();
-            AnalyticUtilities.getInternalVisualisationTranslators().forEach(translator -> {
-                if (translator.getResultType().isAssignableFrom(result.getClass())) {
-                    translator.setQuestion(question);
-                    translator.setResult(result);
-                    final InternalVisualisation internalVisualisation = translator.buildVisualisation();
-                    final Tab visualisationTab = new Tab(internalVisualisation.getName());
+            
+            if (internalVisualisations == null || internalVisualisations.isEmpty()) {
+                AnalyticUtilities.getInternalVisualisationTranslators().forEach(translator -> {
+                    if (translator.getResultType().isAssignableFrom(result.getClass())) {
+                        translator.setQuestion(question);
+                        translator.setResult(result);
+                        final InternalVisualisation internalVisualisation = translator.buildVisualisation();
+                        final Tab visualisationTab = new Tab(internalVisualisation.getName());
+                        visualisationTab.setClosable(false);
+                        visualisationTab.setContent(internalVisualisation.getVisualisation());
+                        internalVisualisationPane.getTabs().add(visualisationTab);
+                        
+                        AnalyticViewController.getDefault().updateInternalVisualisations(internalVisualisation, internalVisualisation.getVisualisation());
+                    }
+                });
+            } else {
+                internalVisualisations.entrySet().forEach(visualisation -> {
+                    final Tab visualisationTab = new Tab(visualisation.getKey().getName());
                     visualisationTab.setClosable(false);
-                    visualisationTab.setContent(internalVisualisation.getVisualisation());
+                    visualisation.getKey().setVisualisation(visualisation.getValue());
+                    visualisationTab.setContent(visualisation.getValue());
                     internalVisualisationPane.getTabs().add(visualisationTab);
-                }
-            });
+                });    
+                AnalyticViewController.getDefault().setInternalVisualisations(internalVisualisations);
+                
+            }
+            
             graphVisualisationPane.getItems().clear();
             final Label applyResults = new Label("Apply to Results: ");
             graphVisualisationPane.getItems().add(applyResults);
-            if (currentVisualisations == null || currentVisualisations.isEmpty()) {
+            
+            if (graphVisualisations == null || graphVisualisations.isEmpty()) {
                 AnalyticUtilities.getGraphVisualisationTranslators().forEach(translator -> {
                     if (translator.getResultType().isAssignableFrom(result.getClass())) {
                         translator.setQuestion(question);
@@ -131,17 +150,17 @@ public class AnalyticResultsPane extends VBox {
                         final Node visualisationNode = graphVisualisation.getVisualisation();
                         graphVisualisationPane.getItems().add(visualisationNode);
 
-                        AnalyticViewController.getDefault().updateVisualisations(graphVisualisation, graphVisualisation.isActive());
+                        AnalyticViewController.getDefault().updateGraphVisualisations(graphVisualisation, graphVisualisation.isActive());
                     }
                 });
             } else {
-                currentVisualisations.entrySet().forEach(node -> {
+                graphVisualisations.entrySet().forEach(node -> {
                     final boolean selected = node.getValue();
                     node.getKey().setSelected(selected);
                     final Node visualisationNode = node.getKey().getVisualisation();
                     graphVisualisationPane.getItems().add(visualisationNode);
                 });
-                AnalyticViewController.getDefault().setVisualisations(currentVisualisations);
+                AnalyticViewController.getDefault().setGraphVisualisations(graphVisualisations);
             }
         });
 

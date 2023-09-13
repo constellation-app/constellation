@@ -46,8 +46,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult, ElementScore> {
 
     // Maps of the colors of the vertices and transactions before the plugin is run
-    private final HashMap<Integer, ConstellationColor> vertexColors = new HashMap<>();
-    private final HashMap<Integer, ConstellationColor> transactionColors = new HashMap<>();
+    private HashMap<Integer, ConstellationColor> vertexColors = new HashMap<>();
+    private HashMap<Integer, ConstellationColor> transactionColors = new HashMap<>();
 
     @Override
     public String getName() {
@@ -71,6 +71,26 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
 
+    @Override
+    public HashMap<Integer, ConstellationColor> getVertexColors() {
+        return (HashMap<Integer, ConstellationColor>) vertexColors.clone();
+    }
+
+    @Override
+    public void setVertexColors(final HashMap<Integer, ConstellationColor> colors) {
+        vertexColors = colors;
+    }
+
+    @Override
+    public HashMap<Integer, ConstellationColor> getTransactionColors() {
+        return (HashMap<Integer, ConstellationColor>) transactionColors.clone();
+    }
+
+    @Override
+    public void setTransactionColors(final HashMap<Integer, ConstellationColor> colors) {
+        transactionColors = colors;
+    }
+    
     @PluginInfo(tags = {PluginTags.MODIFY})
     private class ColorElementsPlugin extends SimpleEditPlugin {
 
@@ -125,6 +145,8 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 }
                 graph.setObjectValue(vertexColorReferenceAttribute, 0, null);
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
+                vertexColors.clear();
+                transactionColors.clear();
             } else {
                 // find highest and lowest mean scores among available analytic events
                 float highestMeanScore = 0.0F;

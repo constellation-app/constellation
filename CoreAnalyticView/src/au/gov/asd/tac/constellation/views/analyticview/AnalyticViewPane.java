@@ -34,11 +34,14 @@ import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.image.ImageView;
@@ -46,6 +49,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 
 /**
@@ -70,7 +74,7 @@ public class AnalyticViewPane extends BorderPane {
     private final AnalyticConfigurationPane analyticConfigurationPane;
     private final AnalyticResultsPane analyticResultsPane;
     private final AnalyticResult<?> emptyResult = new EmptyResult();
-    private HashMap<GraphVisualisation, Boolean> visualisations = new HashMap<>();
+    private HashMap<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
 
     private static boolean running = false;
     private Thread questionThread = null;
@@ -143,14 +147,14 @@ public class AnalyticViewPane extends BorderPane {
                             try {
                                 final AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
                                 
-                                analyticResultsPane.displayResults(question, emptyResult, new HashMap<>());
+                                analyticResultsPane.displayResults(question, emptyResult, new HashMap<>(), new HashMap<>());
                                 analyticViewController.updateState(true, analyticConfigurationPane.getPluginList());
                                 
                             } catch (final AnalyticException ex) {
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                                 final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
                                 question.addException(ex);
-                                analyticResultsPane.displayResults(question, emptyResult, new HashMap<>());
+                                analyticResultsPane.displayResults(question, emptyResult, new HashMap<>(), new HashMap<>());
                                 analyticViewController.updateState(false, analyticConfigurationPane.getPluginList());
                             } finally {
                                 running = false;
@@ -189,11 +193,11 @@ public class AnalyticViewPane extends BorderPane {
      * Deactivate any changes made by the color, hide and size buttons
      */
     public void deactivateResultChanges() {
-        visualisations = AnalyticViewController.getDefault().getVisualisations();
-        if (!visualisations.isEmpty()) {
-            visualisations.entrySet().forEach(node -> {
+        graphVisualisations = AnalyticViewController.getDefault().getGraphVisualisations();
+        if (!graphVisualisations.isEmpty()) {
+            graphVisualisations.entrySet().forEach(node -> {
                 node.getKey().deactivate();
-                AnalyticViewController.getDefault().updateVisualisations(node.getKey(), false);
+                AnalyticViewController.getDefault().updateGraphVisualisations(node.getKey(), false);
             });
         }
     }
@@ -233,7 +237,11 @@ public class AnalyticViewPane extends BorderPane {
      */
     public void updateView(final AnalyticViewState state) {
         reset();
+        
+        
         Platform.runLater(() -> {
+            final AnalyticViewController controller = AnalyticViewController.getDefault();
+            
             final int activeQuestion = state.getCurrentAnalyticQuestionIndex();
             if (!state.getActiveAnalyticQuestions().isEmpty()) {
                 final AnalyticQuestionDescription<?> currentQuestion = state.getActiveAnalyticQuestions().get(activeQuestion);
@@ -245,18 +253,30 @@ public class AnalyticViewPane extends BorderPane {
 
                 // need to update configuration pane UI
                 analyticConfigurationPane.updatePanes(categoriesVisible, activeAnalyticQuestions, activeSelectablePlugins, activeCategory);
+                
+                controller.setActiveCategory(activeCategory);
+                controller.setCategoriesVisible(categoriesVisible);
+                controller.setCurrentQuestion(currentQuestion);
 
                 // show the current results if there are any
                 final AnalyticResult<?> results = state.getResult();
                 final boolean resultsVisible = state.isResultsPaneVisible();
                 final AnalyticQuestion<?> question = state.getQuestion();
 
-                if (results != null && resultsVisible && question != null && !viewPane.getChildren().contains(analyticResultsPane)) {
+                if (results != null && resultsVisible && !viewPane.getChildren().contains(analyticResultsPane)) {
                         viewPane.getChildren().add(1, analyticResultsPane);
-                        visualisations = state.getVisualisations();
-                        analyticResultsPane.displayResults(question, results, visualisations); 
+                        graphVisualisations = state.getGraphVisualisations();
+                        final HashMap<InternalVisualisation, Node> internalVisualisations = state.getInternalVisualisations();
+                        analyticResultsPane.displayResults(question, results, graphVisualisations, internalVisualisations);   
+                        
+                        LOGGER.log(Level.SEVERE, "results size: " + Integer.toString(results.getResult().size()));
                 }
-            }         
+                
+                controller.setQuestion(question);
+                controller.updateResults(results);
+                controller.setGraphVisualisations(graphVisualisations);
+            }  
         });
+        
     }
 }

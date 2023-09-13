@@ -28,8 +28,10 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.HashMap;
 import java.util.List;
+import javafx.scene.Node;
 
 /**
  * Write the current state to the graph.
@@ -48,12 +50,14 @@ public final class AnalyticStateWriterPlugin extends SimpleEditPlugin {
     private final AnalyticQuestionDescription<?> currentQuestion;
     private final AnalyticQuestion question;
     private final String activeCategory;
-    private final HashMap<GraphVisualisation, Boolean> visualisations;
+    private final HashMap<GraphVisualisation, Boolean> graphVisualisations;
+    private final HashMap<InternalVisualisation, Node> internalVisualisations;
 
     public AnalyticStateWriterPlugin(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
             final List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> activePlugins, final AnalyticResult<?> result,
             final boolean resultsVisible, final AnalyticQuestionDescription<?> currentQuestion, final AnalyticQuestion question,
-            final boolean categoriesVisible, final String activeCategory, final HashMap<GraphVisualisation, Boolean> visualisations) {
+            final boolean categoriesVisible, final String activeCategory, final HashMap<GraphVisualisation, Boolean> graphVisualisations,
+            final HashMap<InternalVisualisation, Node> internalVisualisations) {
         this.currentAnalyticQuestionIndex = currentQuestionIndex;
         this.activeAnalyticQuestions = activeQuestions;
         this.activeSelectablePlugins = activePlugins;
@@ -63,7 +67,8 @@ public final class AnalyticStateWriterPlugin extends SimpleEditPlugin {
         this.question = question;
         this.categoriesVisible = categoriesVisible;
         this.activeCategory = activeCategory;
-        this.visualisations = visualisations;
+        this.graphVisualisations = graphVisualisations;
+        this.internalVisualisations = internalVisualisations;
     }
 
     @Override
@@ -78,20 +83,21 @@ public final class AnalyticStateWriterPlugin extends SimpleEditPlugin {
             currentState = new AnalyticViewState();
         } else {
             currentState = new AnalyticViewState(currentState);
-            
-            // set all of the values into the current state 
-            currentState.setCategoriesPaneVisible(categoriesVisible);
-            currentState.setResultsPaneVisible(resultsVisible);
-            currentState.setCurrentAnalyticQuestionIndex(currentAnalyticQuestionIndex);
-            currentState.setActiveAnalyticQuestions(activeAnalyticQuestions);
-            currentState.setActiveSelectablePlugins(activeSelectablePlugins);
-            currentState.updateResults(result);
-            currentState.setCurrentQuestion(currentQuestion);
-            currentState.setQuestion(question);
-            currentState.setCategoriesPaneVisible(categoriesVisible);
-            currentState.setActiveCategory(activeCategory);
-            currentState.setVisualisations(visualisations);
-        }       
+        }
+        
+        // set all of the values into the current state 
+        currentState.setCategoriesPaneVisible(categoriesVisible);
+        currentState.setResultsPaneVisible(resultsVisible);
+        currentState.setCurrentAnalyticQuestionIndex(currentAnalyticQuestionIndex);
+        currentState.setActiveAnalyticQuestions(activeAnalyticQuestions);
+        currentState.setActiveSelectablePlugins(activeSelectablePlugins);
+        currentState.updateResults(result);
+        currentState.setCurrentQuestion(currentQuestion);
+        currentState.setQuestion(question);
+        currentState.setCategoriesPaneVisible(categoriesVisible);
+        currentState.setActiveCategory(activeCategory);
+        currentState.setGraphVisualisations(graphVisualisations);
+        currentState.setInternalVisualisations(internalVisualisations);
 
         graph.setObjectValue(stateAttributeId, 0, currentState);
     }
