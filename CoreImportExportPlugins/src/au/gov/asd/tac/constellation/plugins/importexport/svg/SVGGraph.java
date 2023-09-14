@@ -15,16 +15,19 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
+import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.Color;
 import java.io.IOException;
@@ -182,7 +185,13 @@ public class SVGGraph {
             final int fillColorAttributeID = VisualConcept.VertexAttribute.COLOR.get(graph); 
             final int backgroundIconID = VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph);
             final int foregroundIconID = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
-            
+            final int decoratorIconsID = VisualConcept.GraphAttribute.DECORATORS.get(graph);
+            final VertexDecorators vertexDecorators = graph.getObjectValue(decoratorIconsID, 0);
+            String northEastDecoratorAttributeString = vertexDecorators.getNorthEastDecoratorAttribute();
+            String northWestDecoratorAttributeString = vertexDecorators.getNorthWestDecoratorAttribute();
+            String southEastDecoratorAttributeString = vertexDecorators.getSouthEastDecoratorAttribute();
+            String southWestDecoratorAttributeString = vertexDecorators.getSouthWestDecoratorAttribute();
+                    
             final int vertexCount = graph.getVertexCount();
             for (int vertexPosition = 0 ; vertexPosition < vertexCount ; vertexPosition++) {
                 final int vertexID = graph.getVertex(vertexPosition);
@@ -194,6 +203,7 @@ public class SVGGraph {
                 final Color color = Color.decode(fillColor);
                 final ConstellationIcon backgroundIcon = graph.getObjectValue(backgroundIconID, vertexID);
                 final ConstellationIcon foregroundIcon = graph.getObjectValue(foregroundIconID, vertexID);
+                
 
                 //build the SVGobject representing the node
                 final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
@@ -209,10 +219,24 @@ public class SVGGraph {
                 buildTopLabel(vertexID, topLabelContainer);
   
                 //Add images to the node
+                final SVGContainer backgroundContainer = nodeContainer.getContainer("backgroundImage");
+                final SVGContainer foregroundContainer = nodeContainer.getContainer("foregroundImage");
                 final byte[] backgroundData = backgroundIcon.getIconData().getData(0, color);
                 final byte[] foregroundData = foregroundIcon.getIconData().getData();
-                this.buildSVGImageFromRasterImageData(nodeContainer.toSVGObject(), backgroundData);
-                this.buildSVGImageFromRasterImageData(nodeContainer.toSVGObject(), foregroundData);
+                this.buildSVGImageFromRasterImageData(backgroundContainer.toSVGObject(), backgroundData);
+                this.buildSVGImageFromRasterImageData(foregroundContainer.toSVGObject(), foregroundData);
+                
+                //Add decorators to the node                
+                SVGContainer northWestDecoratorContainer = nodeContainer.getContainer("north-west-decorator");
+                SVGContainer northEastDecoratorContainer = nodeContainer.getContainer("north-east-decorator");
+                SVGContainer southWestDecoratorContainer = nodeContainer.getContainer("south-west-decorator");
+                SVGContainer southEastDecoratorContainer = nodeContainer.getContainer("south-east-decorator");
+                
+                this.buildDecorator(northWestDecoratorAttributeString, vertexID, northWestDecoratorContainer);
+                this.buildDecorator(northEastDecoratorAttributeString, vertexID, northEastDecoratorContainer);
+                this.buildDecorator(southWestDecoratorAttributeString, vertexID, southWestDecoratorContainer);
+                this.buildDecorator(southEastDecoratorAttributeString, vertexID, southEastDecoratorContainer);
+                
             }
         }
         
@@ -439,6 +463,31 @@ public class SVGGraph {
             svg.getContainer(SVGLayoutConstant.BACKGROUND.name).setposition(xMargin, topMargin);
             
             svg.getContainer(SVGLayoutConstant.BORDER.name).setDimension(fullWidth, fullHeight);
+        }
+
+        private void buildDecorator(String vertexAttributeReference, int vertexID, SVGContainer decoratorContainer) {
+            if (vertexAttributeReference != null){
+                int attributeID = graph.getAttribute(GraphElementType.VERTEX, vertexAttributeReference);
+                if (attributeID != Graph.NOT_FOUND){
+                    final String attributeValue;
+                    if ("pinned".equals(vertexAttributeReference)){
+                        if ("true".equals(graph.getStringValue(attributeID, vertexID))){
+                           attributeValue = "Pin";
+                        } else {
+                            return;
+                        }
+                    } else {
+                        attributeValue = graph.getStringValue(attributeID, vertexID);
+                    }
+                    if (attributeValue != null){
+                        ConstellationIcon icon = IconManager.getIcon(attributeValue);
+                        LOGGER.log(Level.SEVERE, icon.getName());
+                        
+                        byte[] decoratorIconData = icon.getIconData().getData();
+                        this.buildSVGImageFromRasterImageData(decoratorContainer.toSVGObject(), decoratorIconData );
+                    }
+                }
+            }
         }
     }
 }
