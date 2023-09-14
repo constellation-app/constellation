@@ -58,7 +58,7 @@ public final class ExportToSVGAction implements ActionListener {
    
     @Override
     public void actionPerformed(final ActionEvent e) {
-        ReadableGraph graph = context.getGraph().getReadableGraph();
+        final ReadableGraph graph = context.getGraph().getReadableGraph();
         
         //The graph has data on it so it can be exported
         if (graph.getVertexCount() != 0){        

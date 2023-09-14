@@ -49,7 +49,6 @@ public class SVGParser {
      * @throws IOException 
      */
     public static SVGObject parse(InputStream inputStream) throws IOException {
-        
         SVGObject currentElement = null; 
         final Collection<SVGObject> roots = new HashSet<>();
         
@@ -107,13 +106,7 @@ public class SVGParser {
      * @return 
      */
     private static String replaceInvalidCharacters(final String text){
-        String returnString = text;
-        returnString = returnString.replace("&", "&amp;");
-        returnString = returnString.replace(">", "&gt;");
-        returnString = returnString.replace("<", "&lt;");
-        returnString = returnString.replace("\"", "&quot;");
-        returnString = returnString.replace("'", "&apos;");
-        return returnString;
+        return text.replace("&", "&amp;").replace(">", "&gt;").replace("<", "&lt;").replace("\"", "&quot;").replace("'", "&apos;");
     }
     
     /**
