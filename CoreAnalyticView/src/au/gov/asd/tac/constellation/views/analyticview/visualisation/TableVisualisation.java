@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.export.AnalyticExportResultsMenu;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticData;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
@@ -127,6 +128,8 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
         sortedData.comparatorProperty().bind(table.comparatorProperty());
 
         table.setItems(sortedData);
+        
+        AnalyticViewController.getDefault().updateInternalVisualisations(this, visualisation);
     }
 
     public List<C> getSelectedItems() {
@@ -188,6 +191,8 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
 
         // add the selection change listener back
         setSelectionModelListener(listener);
+        
+        AnalyticViewController.getDefault().updateInternalVisualisations(this, visualisation);
     }
     
     @Override

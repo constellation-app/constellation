@@ -23,7 +23,6 @@ import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtiliti
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.HashMap;
-import java.util.List;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -129,12 +128,14 @@ public class AnalyticResultsPane extends VBox {
                 internalVisualisations.entrySet().forEach(visualisation -> {
                     final Tab visualisationTab = new Tab(visualisation.getKey().getName());
                     visualisationTab.setClosable(false);
-                    visualisation.getKey().setVisualisation(visualisation.getValue());
+                    visualisation.getKey().setVisualisation(visualisation.getValue()); 
                     visualisationTab.setContent(visualisation.getValue());
                     internalVisualisationPane.getTabs().add(visualisationTab);
+                    if (visualisationTab.getText().equals("Table")) {
+                        internalVisualisationPane.getSelectionModel().select(visualisationTab);
+                    }
                 });    
-                AnalyticViewController.getDefault().setInternalVisualisations(internalVisualisations);
-                
+                AnalyticViewController.getDefault().setInternalVisualisations(internalVisualisations);                                
             }
             
             graphVisualisationPane.getItems().clear();

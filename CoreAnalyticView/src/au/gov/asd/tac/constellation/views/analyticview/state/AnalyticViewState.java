@@ -75,6 +75,7 @@ public class AnalyticViewState {
         this.result = new EmptyResult();
         this.question = null;
         this.currentQuestion = null;
+        this.internalVisualisations = new HashMap<>();
     }
 
     public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,

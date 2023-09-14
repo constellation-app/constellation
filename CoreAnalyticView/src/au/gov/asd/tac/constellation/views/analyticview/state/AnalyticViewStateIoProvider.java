@@ -235,15 +235,17 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeArrayFieldStart(GRAPH_VISUALISATIONS);
 
-                state.getGraphVisualisations().entrySet().forEach(node -> {
-                    try {
-                        jsonGenerator.writeString(mapper.writeValueAsString(node.getKey()));
-                    } catch (final JsonProcessingException ex) {
-                        LOGGER.log(Level.SEVERE, ex.getMessage());
-                    } catch (final IOException ex) {
-                        LOGGER.log(Level.SEVERE, ex.getMessage());
-                    }
-                });
+                if (!state.getGraphVisualisations().isEmpty()) {
+                    state.getGraphVisualisations().entrySet().forEach(node -> {
+                        try {
+                            jsonGenerator.writeString(mapper.writeValueAsString(node.getKey()));
+                        } catch (final JsonProcessingException ex) {
+                            LOGGER.log(Level.SEVERE, ex.getMessage());
+                        } catch (final IOException ex) {
+                            LOGGER.log(Level.SEVERE, ex.getMessage());
+                        }
+                    });
+                }
                
                 jsonGenerator.writeEndArray();
                 jsonGenerator.writeEndObject();
@@ -251,16 +253,18 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeArrayFieldStart(INTERNAL_VISUALISATIONS);
                 
-                state.getInternalVisualisations().entrySet().forEach(node -> {
-                    try {
-                        jsonGenerator.writeString(mapper.writeValueAsString(node.getKey()));
-                    } catch (final JsonProcessingException ex) {
-                        LOGGER.log(Level.SEVERE, ex.getMessage());
-                    } catch (final IOException ex) {
-                        LOGGER.log(Level.SEVERE, ex.getMessage());
-                    }
-                });
-                
+                if (!state.getInternalVisualisations().isEmpty()) {
+                    state.getInternalVisualisations().entrySet().forEach(node -> {
+                        try {
+                            jsonGenerator.writeString(mapper.writeValueAsString(node.getKey()));
+                        } catch (final JsonProcessingException ex) {
+                            LOGGER.log(Level.SEVERE, ex.getMessage());
+                        } catch (final IOException ex) {
+                            LOGGER.log(Level.SEVERE, ex.getMessage());
+                        }
+                    });
+                }
+
                 jsonGenerator.writeEndArray();
                 jsonGenerator.writeEndObject();
                 jsonGenerator.writeEndArray();
