@@ -34,9 +34,9 @@ public enum SVGLayoutConstant {
     SUBHEADING("subheading"),
     FOOTNOTE("footnote");
     
-    public final String name;
+    public final String id;
         
-    private SVGLayoutConstant(final String name){
-        this.name = name;
+    private SVGLayoutConstant(final String id){
+        this.id = id;
     }
 }

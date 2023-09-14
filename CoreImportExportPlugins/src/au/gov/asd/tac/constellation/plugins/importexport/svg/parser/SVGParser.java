@@ -22,8 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -98,8 +98,7 @@ public class SVGParser {
      */
     public static String sanitisePlanText(final String text) {
         final String validString = replaceInvalidCharacters(text);
-        final String sanitisedString = removeNonLatinCharacters(validString);
-        return sanitisedString;
+        return removeNonLatinCharacters(validString);
     }
     
     /**
@@ -109,11 +108,11 @@ public class SVGParser {
      */
     private static String replaceInvalidCharacters(final String text){
         String returnString = text;
-        returnString = returnString.replaceAll("&", "&amp;");
-        returnString = returnString.replaceAll(">", "&gt;");
-        returnString = returnString.replaceAll("<", "&lt;");
-        returnString = returnString.replaceAll("\"", "&quot;");
-        returnString = returnString.replaceAll("'", "&apos;");
+        returnString = returnString.replace("&", "&amp;");
+        returnString = returnString.replace(">", "&gt;");
+        returnString = returnString.replace("<", "&lt;");
+        returnString = returnString.replace("\"", "&quot;");
+        returnString = returnString.replace("'", "&apos;");
         return returnString;
     }
     
@@ -147,7 +146,7 @@ public class SVGParser {
     }
    
     private static Map<String,String> getElementAttributes(final String svgString) {
-        final Map<String,String> extractedAttributes = new HashMap<>();
+        final Map<String,String> extractedAttributes = new LinkedHashMap<>();
         final String[] potentialAttributes = stripAngleBrackets(svgString).split(SeparatorConstants.BLANKSPACE);
         for (final String potentialAttribute : potentialAttributes) {
             if (potentialAttribute.contains("=")) {

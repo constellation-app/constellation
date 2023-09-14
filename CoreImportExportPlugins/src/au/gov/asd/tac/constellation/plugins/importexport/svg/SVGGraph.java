@@ -156,11 +156,10 @@ public class SVGGraph {
             SVGContainer subtitleContainer = svg.getContainer("header").getContainer("subtitle");
             ZonedDateTime date = ZonedDateTime.now();
             subtitleContainer.toSVGObject().setContent(
-                    String.format("Exported: %s %s, %s (%s)",
+                    String.format("Exported: %s %s, %s",
                             StringUtilities.camelCase(date.getMonth().toString()), 
                             date.getDayOfMonth(), 
-                            date.getYear(), 
-                            date.getZone().toString()
+                            date.getYear()
                     )
             );
         }
@@ -177,7 +176,7 @@ public class SVGGraph {
          */
         private void buildNodes(final SVGGraph svgGraph) {
             //Retrieve the svg element that holds the nodes as a SVGContainer
-            final SVGContainer nodesContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.name).getContainer(SVGLayoutConstant.NODES.name);
+            final SVGContainer nodesContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.NODES.id);
             
             //Specify attribute ID's for the node vertex's'
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
@@ -231,12 +230,10 @@ public class SVGGraph {
                 SVGContainer northEastDecoratorContainer = nodeContainer.getContainer("north-east-decorator");
                 SVGContainer southWestDecoratorContainer = nodeContainer.getContainer("south-west-decorator");
                 SVGContainer southEastDecoratorContainer = nodeContainer.getContainer("south-east-decorator");
-                
                 this.buildDecorator(northWestDecoratorAttributeString, vertexID, northWestDecoratorContainer);
                 this.buildDecorator(northEastDecoratorAttributeString, vertexID, northEastDecoratorContainer);
                 this.buildDecorator(southWestDecoratorAttributeString, vertexID, southWestDecoratorContainer);
                 this.buildDecorator(southEastDecoratorAttributeString, vertexID, southEastDecoratorContainer);
-                
             }
         }
         
@@ -247,7 +244,7 @@ public class SVGGraph {
          * @param svgGraph
          */
         private void buildLinks(final SVGGraph svgGraph) {
-            final SVGContainer linksContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.name).getContainer(SVGLayoutConstant.LINKS.name);
+            final SVGContainer linksContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.LINKS.id);
             
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
             final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
@@ -451,20 +448,26 @@ public class SVGGraph {
             
             svg.setDimensions(fullWidth, fullHeight);
 
-            svg.getContainer(SVGLayoutConstant.HEADER.name).setDimension(fullWidth, topMargin);
+            svg.getContainer(SVGLayoutConstant.HEADER.id).setDimension(fullWidth, topMargin);
 
-            svg.getContainer(SVGLayoutConstant.FOOTER.name).setDimension(fullWidth, bottomMargin);
-            svg.getContainer(SVGLayoutConstant.FOOTER.name).setposition(0F, footerYOffset);
+            svg.getContainer(SVGLayoutConstant.FOOTER.id).setDimension(fullWidth, bottomMargin);
+            svg.getContainer(SVGLayoutConstant.FOOTER.id).setposition(0F, footerYOffset);
 
-            svg.getContainer(SVGLayoutConstant.CONTENT.name).setDimension(contentWidth, contentHeight);
-            svg.getContainer(SVGLayoutConstant.CONTENT.name).setposition(contentXOffset, contentYOffset);
+            svg.getContainer(SVGLayoutConstant.CONTENT.id).setDimension(contentWidth, contentHeight);
+            svg.getContainer(SVGLayoutConstant.CONTENT.id).setposition(contentXOffset, contentYOffset);
 
-            svg.getContainer(SVGLayoutConstant.BACKGROUND.name).setDimension(backgroundWidth, backgroundHeight);
-            svg.getContainer(SVGLayoutConstant.BACKGROUND.name).setposition(xMargin, topMargin);
+            svg.getContainer(SVGLayoutConstant.BACKGROUND.id).setDimension(backgroundWidth, backgroundHeight);
+            svg.getContainer(SVGLayoutConstant.BACKGROUND.id).setposition(xMargin, topMargin);
             
-            svg.getContainer(SVGLayoutConstant.BORDER.name).setDimension(fullWidth, fullHeight);
+            svg.getContainer(SVGLayoutConstant.BORDER.id).setDimension(fullWidth, fullHeight);
         }
 
+        /**
+         * Generates decorator images for nodes.
+         * @param vertexAttributeReference
+         * @param vertexID
+         * @param decoratorContainer 
+         */
         private void buildDecorator(String vertexAttributeReference, int vertexID, SVGContainer decoratorContainer) {
             if (vertexAttributeReference != null){
                 int attributeID = graph.getAttribute(GraphElementType.VERTEX, vertexAttributeReference);
@@ -472,7 +475,7 @@ public class SVGGraph {
                     final String attributeValue;
                     if ("pinned".equals(vertexAttributeReference)){
                         if ("true".equals(graph.getStringValue(attributeID, vertexID))){
-                           attributeValue = "Pin";
+                            attributeValue = "Pin";
                         } else {
                             return;
                         }
@@ -481,8 +484,6 @@ public class SVGGraph {
                     }
                     if (attributeValue != null){
                         ConstellationIcon icon = IconManager.getIcon(attributeValue);
-                        LOGGER.log(Level.SEVERE, icon.getName());
-                        
                         byte[] decoratorIconData = icon.getIconData().getData();
                         this.buildSVGImageFromRasterImageData(decoratorContainer.toSVGObject(), decoratorIconData );
                     }

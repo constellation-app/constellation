@@ -71,7 +71,7 @@ public final class ExportToSVGAction implements ActionListener {
 
                 PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
                         .withParameter(ExportToSVGPlugin.FILE_NAME_PARAMETER_ID, fnam)
-                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Test Title")
+                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 3")
                         .executeLater(context.getGraph());
             }));
         
@@ -80,7 +80,7 @@ public final class ExportToSVGAction implements ActionListener {
             final String message = "Unable to export empty graph.";
             final Object[] options = new Object[]{NotifyDescriptor.OK_OPTION};
             final NotifyDescriptor d = new NotifyDescriptor(message, "Unable To Perform Action", NotifyDescriptor.DEFAULT_OPTION, NotifyDescriptor.INFORMATION_MESSAGE, options, NotifyDescriptor.OK_OPTION);
-            final Object o = DialogDisplayer.getDefault().notify(d);
+            DialogDisplayer.getDefault().notify(d);
         }
         graph.release();
     }
