@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttrib
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,7 +42,7 @@ public class SVGObject {
     public SVGObject(final String type, final SVGObject parent, final Map<String, String> attributes) {
         this.type = type;
         this.attributes = attributes;
-        this.children = new HashMap<>();
+        this.children = new LinkedHashMap<>();
         this.setParent(parent);
         this.content = null;
     }

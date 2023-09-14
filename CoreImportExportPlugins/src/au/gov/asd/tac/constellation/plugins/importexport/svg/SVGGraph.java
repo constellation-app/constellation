@@ -25,20 +25,16 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
-import au.gov.asd.tac.constellation.utilities.temporal.TemporalFormatting;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Base64;
-import java.util.Date;
 import java.time.ZonedDateTime;
-import java.time.format.TextStyle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * A Wrapper class for the outer most SVGElement of the output file.
@@ -142,8 +138,10 @@ public class SVGGraph {
             defineBoundary(graph);
             buildHeader(svgGraphLayout);
             buildFooter(svgGraphLayout);
-            buildNodes(svgGraphLayout);
+            
             buildLinks(svgGraphLayout);
+            buildNodes(svgGraphLayout);
+            
             setLayoutDimensions(svgGraphLayout);
             return svgGraphLayout.toSVGObject();
         }       
