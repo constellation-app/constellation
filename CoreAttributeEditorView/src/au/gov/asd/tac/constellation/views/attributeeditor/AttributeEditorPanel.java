@@ -755,21 +755,18 @@ public class AttributeEditorPanel extends BorderPane {
                 final Set<String> hiddenAttrSet = new HashSet<>(hiddenAttrList);
 
                 currentAttributeNames.put(type, new ArrayList<>());
-                final List<String> attrNameList = currentAttributeNames.get(type);
-
                 for (final AttributeData data : attributeDataList) {
                     final boolean hidden = hiddenAttrSet.contains(data.getElementType().toString() + data.getAttributeName());
                     final Object[] values = state.getAttributeValues().get(type.getLabel() + data.getAttributeName());
                     final boolean noValue = ((values == null) || (values[0] == null)); // does attribute have a null value
-                    attrNameList.add(data.getAttributeName());
-                    final TitledPane attribute = createAttributeTitlePane(data, values, longestTitleWidth, hidden);
-                    attribute.setMinWidth(0);
-                    attribute.maxWidthProperty().bind(header.widthProperty());
-                    
+
                     // If we are NOT showing all attributes and this attribute
                     // is null, don't add it to the list of children, this will
                     // have the effect of hiding it
                     if (showAll || !noValue) {
+                        final TitledPane attribute = createAttributeTitlePane(data, values, longestTitleWidth, hidden);
+                        attribute.setMinWidth(0);
+                        attribute.maxWidthProperty().bind(header.widthProperty());
                         header.getChildren().add(attribute); 
                     }
                 }
