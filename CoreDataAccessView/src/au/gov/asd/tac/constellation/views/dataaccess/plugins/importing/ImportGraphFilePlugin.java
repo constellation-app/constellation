@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.file.GraphFileImportProcessor;
@@ -142,20 +143,24 @@ public class ImportGraphFilePlugin extends RecordStoreQueryPlugin implements Dat
     
     @Override
     protected RecordStore query(final RecordStore query, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        final RecordStore result = new GraphRecordStore();
         
-        interaction.setProgress(0, 0, "Importing...", true);
+        // Retrieve PluginParameter values 
+        final String filename = parameters.getParameters().get(FILE_NAME_PARAMETER_ID).getStringValue();    
         
-        final String filename = parameters.getParameters().get(FILE_NAME_PARAMETER_ID).getStringValue();       
+        // Local process-tracking varables (Process is indeteminate)
+        interaction.setProgress(0, -1, "Importing...", true);
+        
+        // Import the file
+        final RecordStore result = new GraphRecordStore();  
         try {
             importProcessor.process(parameters, new File(filename), result);
         } catch (final ProcessingException ex) {
             LOGGER.log(Level.SEVERE, "Unable to process graph file");
         }
         
-        interaction.setProgress(1, 0, "Completed successfully - added " + result.size() + " entities.", true);
+        // Set process to complete
+        interaction.setProgress(1, 0, String.format("Imported %s.", PluginReportUtilities.getFileCountString(result.size())), true);
         
         return result;
     }
-
 }
