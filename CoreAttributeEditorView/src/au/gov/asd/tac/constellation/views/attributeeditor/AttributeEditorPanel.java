@@ -144,7 +144,7 @@ public class AttributeEditorPanel extends BorderPane {
     private static final double CELL_ITEM_SPACING = 5;
     private static final int VISIBLE_ROWS = 10;
     private static final String[] HEADING_TITLES = {"Graph  (%d attributes%s)", "Node  (%d attributes%s)", "Transaction  (%d attributes%s)"};
-    private static final String HIDDEN_ATTRIBUTES_INFORMATION = ", %d hidden";
+    private static final String HIDDEN_ATTRIBUTES_INFORMATION = ", %d hidden/empty";
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String NO_VALUE_TEXT = "<No Value>";
 
@@ -310,7 +310,7 @@ public class AttributeEditorPanel extends BorderPane {
         showAllToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
         showAllToggle.setPrefSize(60, 12);
         showAllToggle.setPadding(new Insets(5));
-        showAllToggle.setTooltip(new Tooltip("Show hidden attributes"));
+        showAllToggle.setTooltip(new Tooltip("Show hidden and empty attributes"));
         final String key;
         final GraphElementType elementType;
         switch (headingType) {
@@ -469,8 +469,9 @@ public class AttributeEditorPanel extends BorderPane {
      * @param hidden is the pane currently hidden.
      * @return a new TitledPane.
      */
-    public TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
+    private TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
         final String attributeTitle = attribute.getAttributeName();
+        final boolean noValue = ((values == null) || (values[0] == null)); // does attribute have a null value
         final int spacing = 5;
         final GridPane gridPane = new GridPane();
         gridPane.setHgap(spacing);
@@ -496,7 +497,7 @@ public class AttributeEditorPanel extends BorderPane {
 
         if (attribute.isKey()) {
             final String color;
-            if (hidden) {
+            if (hidden || noValue) {
                 final ConstellationColor hiddenColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR));
                 final ConstellationColor keyColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOR, PRIMARY_KEY_ATTRIBUTE_COLOR));
                 color = (ConstellationColor.getColorValue(hiddenColor.getRed() * 0.5F + keyColor.getRed() * 0.5F, hiddenColor.getGreen() * 0.5F + keyColor.getGreen() * 0.5F, hiddenColor.getBlue() * 0.5F + keyColor.getBlue() * 0.5F, 1F)).getHtmlColor();
@@ -506,7 +507,7 @@ public class AttributeEditorPanel extends BorderPane {
             attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + color + SeparatorConstants.SEMICOLON);
         } else if (!attribute.isSchema()) {
             final String color;
-            if (hidden) {
+            if (hidden || noValue) {
                 final ConstellationColor hiddenColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR));
                 final ConstellationColor customColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOR, CUSTOM_ATTRIBUTE_COLOR));
                 color = (ConstellationColor.getColorValue(hiddenColor.getRed() * 0.5F + customColor.getRed() * 0.5F, hiddenColor.getGreen() * 0.5F + customColor.getGreen() * 0.5F, hiddenColor.getBlue() * 0.5F + customColor.getBlue() * 0.5F, 1F)).getHtmlColor();
@@ -514,7 +515,7 @@ public class AttributeEditorPanel extends BorderPane {
                 color = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOR, CUSTOM_ATTRIBUTE_COLOR);
             }
             attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + color + SeparatorConstants.SEMICOLON);
-        } else if (hidden) {
+        } else if (hidden || noValue) {
             final String hiddenColor = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR);
             attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + hiddenColor + SeparatorConstants.SEMICOLON);
         } else {
@@ -723,20 +724,28 @@ public class AttributeEditorPanel extends BorderPane {
     private void populateContentContainer(final AttributeState state, final GraphElementType type, final double longestTitleWidth) {
         final int elementTypeIndex;
 
+        String showAllKey = "";  //Key used to indicate state of "Show All" key 
         switch (type) {
             case GRAPH:
+                showAllKey = AttributePreferenceKey.GRAPH_SHOW_ALL;
                 elementTypeIndex = 0;
                 break;
             case VERTEX:
+                showAllKey = AttributePreferenceKey.NODE_SHOW_ALL;
                 elementTypeIndex = 1;
                 break;
             case TRANSACTION:
+                showAllKey = AttributePreferenceKey.TRANSACTION_SHOW_ALL;
                 elementTypeIndex = 2;
                 break;
             default:
                 elementTypeIndex = -1;
                 break;
         }
+
+        // Check if we are showing all attributes regardless of hidden state
+        final boolean showAll = prefs.getBoolean(showAllKey, false);
+      
         if (elementTypeIndex > -1 && state != null) {
             final List<AttributeData> attributeDataList = state.getAttributeNames().get(type);
             if (attributeDataList != null) {
@@ -751,12 +760,18 @@ public class AttributeEditorPanel extends BorderPane {
                 for (final AttributeData data : attributeDataList) {
                     final boolean hidden = hiddenAttrSet.contains(data.getElementType().toString() + data.getAttributeName());
                     final Object[] values = state.getAttributeValues().get(type.getLabel() + data.getAttributeName());
+                    final boolean noValue = ((values == null) || (values[0] == null)); // does attribute have a null value
                     attrNameList.add(data.getAttributeName());
                     final TitledPane attribute = createAttributeTitlePane(data, values, longestTitleWidth, hidden);
                     attribute.setMinWidth(0);
                     attribute.maxWidthProperty().bind(header.widthProperty());
-
-                    header.getChildren().add(attribute);
+                    
+                    // If we are NOT showing all attributes and this attribute
+                    // is null, don't add it to the list of children, this will
+                    // have the effect of hiding it
+                    if (showAll || !noValue) {
+                        header.getChildren().add(attribute); 
+                    }
                 }
             }
         }

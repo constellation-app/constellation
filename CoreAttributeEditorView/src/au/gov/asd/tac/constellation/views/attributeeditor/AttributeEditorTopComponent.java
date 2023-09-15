@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -257,5 +258,12 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
     @Override
     protected AttributeEditorPanel createContent() {
         return attributePanel;
+    }
+    
+    @Override
+    protected void handlePreferenceChange(final PreferenceChangeEvent event) {
+        if (reader != null) {
+            attributePanel.updateEditorPanel(reader.refreshAttributes(true));
+        }
     }
 }
