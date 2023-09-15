@@ -51,10 +51,10 @@ public class VisualSchemaFactory extends SchemaFactory {
     private static final String DEUTERANOPIA = "Deuteranopia";
     private static final String PROTANOPIA = "Protanopia";
     private static final String TRITANOPIA = "Tritanopia";
-    private static final String NONE = "None";
+    public static final String NONE = "None";
     private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     //Retrieve colorblind mode selection preference 
-    private static String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+    public static String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
     // Note: changing this value will break backwards compatibility!
     public static final String VISUAL_SCHEMA_ID = "au.gov.asd.tac.constellation.graph.schema.VisualSchemaFactory";
