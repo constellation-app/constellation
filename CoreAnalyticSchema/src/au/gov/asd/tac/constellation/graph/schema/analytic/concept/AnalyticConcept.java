@@ -156,7 +156,7 @@ public class AnalyticConcept extends SchemaConcept {
                 .build();
         public static final SchemaVertexType MACHINE_IDENTIFIER = new SchemaVertexType.Builder("Machine Identifier")
                 .setDescription("A node representing the identifier of a physical machine, eg. the MAC address A1:B2:C3:D4:E5:F6")
-                .setColor(COLORMODE.equals(NONE) ? ConstellationColor.BLUSH : ConstellationColor.CHOCOLATE)
+                .setColor(COLORMODE.equals(NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BLUSH)
                 .setForegroundIcon(AnalyticIconProvider.MICROPROCESSOR)
                 .build();
         public static final SchemaVertexType ONLINE_IDENTIFIER = new SchemaVertexType.Builder("Online Identifier")
@@ -414,7 +414,7 @@ public class AnalyticConcept extends SchemaConcept {
                 .build();
         public static final SchemaTransactionType LOCATION = new SchemaTransactionType.Builder("Location")
                 .setDescription("A transaction representing an entity having a location, eg. a person is located in a country")
-                .setColor(COLORMODE.equals(NONE) ? ConstellationColor.BLUE : ConstellationColor.CARROT)
+                .setColor(COLORMODE.equals(NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE)
                 .build();
         public static final SchemaTransactionType NETWORK = new SchemaTransactionType.Builder("Network")
                 .setDescription("A transaction representing a network connection, eg. an computer sent a request to a server")
@@ -436,11 +436,11 @@ public class AnalyticConcept extends SchemaConcept {
                 .build();
         public static final SchemaTransactionType CREATED = new SchemaTransactionType.Builder("Created")
                 .setDescription("A transaction representing an entity creating another entity, eg. a person created a document")
-                .setColor(COLORMODE.equals(NONE) ? ConstellationColor.BROWN : ConstellationColor.CHOCOLATE)
+                .setColor(COLORMODE.equals(NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BROWN)
                 .build();
         public static final SchemaTransactionType REFERENCED = new SchemaTransactionType.Builder("Referenced")
                 .setDescription("A transaction representing an entity referencing another entity, eg. a document referenced its author")
-                .setColor(COLORMODE.equals(NONE) ? ConstellationColor.BROWN : ConstellationColor.CHOCOLATE)
+                .setColor(COLORMODE.equals(NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BROWN)
                 .setStyle(LineStyle.DASHED)
                 .build();
     }

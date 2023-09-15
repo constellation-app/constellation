@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2023-09-15 Colorblind Mode in Options
+<p>Colorblind mode options have been added and can be found through Setup -&gt; Options -&gt; CONSTELLATION -&gt; Application.</p>
+<p>The random generation of node colors has been adjusted based on the selected colorblind mode. Additionally, the color scheme of specific vertex and transaction types has been adjusted for greater contrast.</p>
+
 == 2023-06-14 Reorder Plugins in Data Access View
 <p>The Data Access View configuration pane in the settings now has "up" and "down" buttons below the "Visible categories" box.</p>
 <p>The order of the categories within this box can be changed by using the buttons below it.</p>
