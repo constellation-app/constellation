@@ -38,7 +38,6 @@ public class SchemaViewPane extends BorderPane {
         schemaViewProviders = null;
 
         schemaViewTabPane = new TabPane();
-        schemaViewTabPane.setStyle("-fx-background-color: #333333;");
         schemaViewTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         setCenter(schemaViewTabPane);
     }

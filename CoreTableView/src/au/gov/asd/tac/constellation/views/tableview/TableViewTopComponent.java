@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.graph.monitor.AttributeValueMonitor;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.tableview.panes.TablePane;
@@ -37,7 +38,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
@@ -343,7 +343,9 @@ public final class TableViewTopComponent extends JavaFxTopComponent<TablePane> {
 
     @Override
     protected String createStyle() {
-        return "resources/table-view.css";
+        return JavafxStyleManager.isDarkTheme() 
+            ? "resources/table-view-dark.css" 
+            : "resources/table-view-light.css";
     }
 
     @Override

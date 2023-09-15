@@ -21,12 +21,23 @@
 
 /*******************************************************************************
  *                                                                             *
- * Menu                                                                  *
+ * Menu                                                                        *
  *                                                                             *
  ******************************************************************************/
 .menu-button {
     -fx-background-color: #0093FF;
-    -fx-border-color: #0093FF;
+    -fx-border-color: #999999;
+    -fx-border-radius: 4px;
+    -fx-mark-color: white;
+}
+
+.menu-button .label {
+    -fx-text-fill: white;
+}
+
+.menu-button:hover {
+    -fx-color: -fx-hover-base;
+    -fx-background-color: #009eff;
 }
 
 .menu-bar .label {
@@ -34,15 +45,24 @@
 }
 
 .menu-item .label {
+    -fx-text-fill: black;
+}
+
+.menu-item:hover .label {
     -fx-text-fill: white;
 }
 
 .menu:hover {
-    -fx-background-color: #0093FF;
+    -fx-background-color: #009eff;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: white;
 }
 
 .context-menu {
-    -fx-background-color: #999999;
+    -fx-background-color: white;
+    -fx-mark-color: black;
 }
 
 /*******************************************************************************
@@ -58,7 +78,7 @@
 .button:hover {
     -fx-color: -fx-hover-base;
     -fx-text-fill: #ffffff;
-    -fx-background-color: #3369ab;
+    -fx-background-color: #009eff;
 }
 
 .toggle-button {
@@ -72,11 +92,11 @@
 
 
 .toggle-button:selected {
-    -fx-background-color: #0093FF;
+    -fx-background-color: #009eff;
 }
 
 .toggle-button:selected:focused {
-    -fx-background-color: #0093FF;
+    -fx-background-color: #009eff;
 }
 
 /* Uncategorised */

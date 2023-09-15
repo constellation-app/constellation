@@ -1,0 +1,15 @@
+#hide-visualisation-slider .track{
+    -fx-background-color: #d6d6d6;
+}
+
+#hide-visualisation-slider .thumb{
+    -fx-background-color: #333333;
+    -fx-border-color: #999999;
+    -fx-border-radius: 20px;
+}
+
+.text-input {
+    -fx-background-color: #d3d3d3;
+    -fx-text-fill: black;
+}
+

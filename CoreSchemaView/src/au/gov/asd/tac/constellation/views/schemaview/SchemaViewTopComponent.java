@@ -64,7 +64,9 @@ public final class SchemaViewTopComponent extends JavaFxTopComponent<SchemaViewP
 
     @Override
     protected String createStyle() {
-        return JavafxStyleManager.isDarkTheme() ? "resources/schema-view.css" : null;
+        return JavafxStyleManager.isDarkTheme() 
+            ? "resources/schema-view-dark.css" 
+            : "resources/schema-view-light.css";
     }
 
     @Override

@@ -707,7 +707,7 @@ public class NotesViewPane extends BorderPane {
         final Label titleLabel = new Label(newNote.getNoteTitle());
         titleLabel.setWrapText(true);
         titleLabel.setStyle(BOLD_STYLE + fontStyle);
-        titleLabel.setStyle("-fx-font-color: #FFFFFF;");
+        titleLabel.setStyle("-fx-text-fill: #FFFFFF;");
 
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());

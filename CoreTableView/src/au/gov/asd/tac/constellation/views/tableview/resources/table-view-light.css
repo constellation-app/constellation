@@ -1,0 +1,61 @@
+.null-value {
+    -fx-font-style:italic;
+    -fx-text-fill: #666666;
+}
+
+.element-source {
+    -fx-background-color: rgba(153, 179, 255, 0.25);
+}
+
+.element-transaction{
+    -fx-background-color: rgba(255, 230, 153, 0.25);
+}
+
+.element-destination {
+    -fx-background-color: rgba(179, 230, 179, 0.25);
+}
+
+.pagination {
+    -fx-page-information-visible: false;
+}
+
+.text-field {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-border-color: #444444;
+    -fx-border-radius: 3px;
+}
+
+.combo-box .list-cell{
+    -fx-background-color: #444444;
+}
+
+.combo-box {
+    -fx-background-color: white; 
+}
+
+#filter-label {
+    -fx-text-fill: black;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Column Visibility Menu                                                      *
+ *                                                                             *
+ ******************************************************************************/
+.button .context-menu { 
+    -fx-background-color: white;
+}
+
+.button .menu-item > .label {
+    -fx-text-fill: black; 
+}
+
+.button .menu-item:focused > .label { 
+    -fx-text-fill: white;
+}
+
+.check-box .box {
+    -fx-background-color: white;
+    -fx-border-color: #444444;
+}

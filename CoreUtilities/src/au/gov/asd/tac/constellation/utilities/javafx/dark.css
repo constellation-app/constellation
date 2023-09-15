@@ -167,12 +167,47 @@
  *                                                                             *
  ******************************************************************************/
 .menu-button {
-    -fx-background-color: #181818;
+    -fx-base: #1c5aa6;
     -fx-border-color: #444444;
+    -fx-border-radius: 4px;
+    -fx-mark-color: white;
 }
 
-.menu:hover{
-    -fx-background-color: #2560a8;
+.menu-button:hover {
+    -fx-color: -fx-hover-base;
+    -fx-background-color: #3369ab;
+}
+
+.menu-bar .label {
+    -fx-text-fill: white;
+}
+
+.menu-item .label {
+    -fx-text-fill: white;
+}
+
+.menu-item:hover .label {
+    -fx-text-fill: white;
+}
+
+.menu:hover {
+    -fx-background-color: #0093FF;
+}
+
+.menu-item:focused .label {
+    -fx-text-fill: white;
+}
+
+.context-menu {
+    -fx-background-color: #444444;
+}
+
+.radio-menu-item {
+    -fx-mark-color: #0093FF;
+}
+
+.radio-menu-item:hover {
+    -fx-mark-color: blue;
 }
 
 /*******************************************************************************
