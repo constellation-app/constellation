@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.utilities.gui;
 
 import java.awt.EventQueue;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
@@ -85,7 +86,7 @@ public class NotifyDisplayer {
      *
      * @param descriptor the descriptor to display in a dialog
      */
-    public static void display(final NotifyDescriptor descriptor) {
+    public static void display(final NotifyDescriptor descriptor) {  
         if (SwingUtilities.isEventDispatchThread() || Platform.isFxApplicationThread()) {
             // If this was called from one of the UI threads we don't want to
             // display the dialog and block beacasue some OS's (macos) will go into deadlock

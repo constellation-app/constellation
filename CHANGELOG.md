@@ -1,4 +1,7 @@
 # Constellation Changes
+## Changes in July 2023
+-  Replaced FindView to express the new interface build in JavaFX and removed the old Swing implementation
+
 ## Changes in June 2023
 -   Changed LookupPluginsTask to implement Supplier<Map<String, Pair<Integer, List<DataAccessPlugin>>>>.
 -   Updated return type of `LookupPluginsTask.get()` from Map<String, List<DataAccessPlugin>> to Map<String, Pair<Integer, List<DataAccessPlugin>>>.
