@@ -1,20 +1,20 @@
-<svg class="graph" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <rect class="border" stroke="#1B1E24" stroke-width="6" fill-opacity="0" />
-    <rect class="background" fill="#1B1E24" />
-    <svg class="header">
-        <text class="title" x="50%" y="64px" font-size="128px" font-family="sans-serif" fill="black" text-anchor="middle" alignment-baseline="hanging">
+<svg id="graph" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <rect id="border" stroke="#1B1E24" stroke-width="6" fill-opacity="0" />
+    <rect id="background" fill="#1B1E24" />
+    <svg id="header">
+        <text id="title" x="50%" y="64px" font-size="128px" font-family="sans-serif" fill="black" text-anchor="middle" alignment-baseline="hanging">
         </text>
-        <text class="subtitle" x="50%" y="192px" font-size="32px" font-family="sans-serif" fill="black" text-anchor="middle" alignment-baseline="hanging">
+        <text id="subtitle" x="50%" y="192px" font-size="32px" font-family="sans-serif" fill="black" text-anchor="middle" alignment-baseline="hanging">
         </text>
     </svg>
-    <svg class="content" overflow="visible">
-        <svg class="links" >
+    <svg id="content" overflow="visible">
+        <svg id="links" >
         </svg>
-        <svg class="nodes" overflow="visible" >
+        <svg id="nodes" overflow="visible" >
         </svg>
     </svg>
-        <svg class="footer">
-            <text class="footnote" x="50%" y="48px" font-size="32px" font-family="sans-serif" fill="black" text-anchor="middle" alignment-baseline="hanging">
+        <svg id="footer">
+            <text id="footnote" x="50%" y="48px" font-size="32px" font-family="sans-serif" fill="black" text-anchor="middle" alignment-baseline="hanging">
             </text>
         </svg> 
 </svg>

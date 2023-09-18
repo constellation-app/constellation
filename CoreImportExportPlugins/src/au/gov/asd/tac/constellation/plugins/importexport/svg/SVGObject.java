@@ -22,6 +22,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Data structure to store SVG information and associations.
@@ -31,10 +33,11 @@ import java.util.Set;
  * @author capricornunicorn123
  */
 public class SVGObject {
-    
+
+    private static final Logger LOGGER = Logger.getLogger(SVGObject.class.getName());
     private final String type;
     private final Map<String, String> attributes;
-    private final Map<String, ArrayList<SVGObject>> children;
+    private final Map<String, SVGObject> children;
     private String content;
     private SVGObject parent;
 
@@ -69,26 +72,24 @@ public class SVGObject {
     /**
      * Adds a child SVGObject to the current SVG element.
      * To avoid duplication, this method should only be called by the setParent() method.
-     * Child SVGObjects are stored in HashMap based on their class attribute.
-     * To enable multiple child SVGObjects to be stored in the one map the map value is an ArayList.
+     * Child SVGObjects are stored in HashMap based on their id attribute.
      * @param child 
      */
     private void setChild(final SVGObject child) {
-        ArrayList<SVGObject> currentChildren = this.children.get(child.getAttributeValue(SVGAttributeConstant.CLASS.getKey()));
-        if (currentChildren == null) {
-            currentChildren = new ArrayList<>();
+        final String childID = child.getAttributeValue(SVGAttributeConstant.ID.getKey());
+        if (children.get(childID) != null) {
+            LOGGER.log(Level.INFO, String.format("SVG object id %s overwritten", childID));
         }
-        currentChildren.add(child);
-        this.children.put(child.getAttributeValue(SVGAttributeConstant.CLASS.getKey()), currentChildren);
+        this.children.put(childID, child);
     }
     
     /**
-     * Returns an ArrayList of SVGObjects containing a common class attribute value.
-     * @param classValue 
+     * Returns an SVGObject with a specified id attribute value.
+     * @param idValue 
      * @return ArrayList
      */
-    public List<SVGObject> getChildren(final String classValue) {
-        return this.children.get(classValue);
+    public SVGObject getChild(final String idValue) {
+        return this.children.get(idValue);
     }
     
     /**
@@ -97,7 +98,7 @@ public class SVGObject {
      */
     public List<SVGObject> getAllChildren() {
         final ArrayList<SVGObject> allChildren = new ArrayList<>();
-        children.keySet().forEach(key -> allChildren.addAll(this.children.get(key)));
+        children.keySet().forEach(key -> allChildren.add(this.children.get(key)));
         return allChildren;
     }
     

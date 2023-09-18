@@ -71,11 +71,11 @@ public class SVGGraph {
      * the intent of this method is tightly coupled to the structure of the
      * Layout.svg file and has no current logical differences from the 
      * SVGContainer.getContainer() method.
-     * @param classValue
+     * @param idValue
      * @return 
      */
-    private SVGContainer getContainer(final String classValue) {
-        return svgContainerReference.getContainer(classValue);
+    private SVGContainer getContainer(final String idValue) {
+        return svgContainerReference.getContainer(idValue);
     }
     
     /**
@@ -207,6 +207,7 @@ public class SVGGraph {
                 final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
                 node.setAttribute(SVGAttributeConstant.X.getKey(), xVal.toString());
                 node.setAttribute(SVGAttributeConstant.Y.getKey(), yVal.toString());
+                node.setAttribute(SVGAttributeConstant.ID.getKey(), ((Integer) vertexID).toString());
                 node.setParent(nodesContainer.toSVGObject());
                 
                 //Add labels to the Node
@@ -259,6 +260,7 @@ public class SVGGraph {
                 link.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), y1Val.toString());
                 link.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), x2Val.toString());
                 link.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), y2Val.toString());
+                link.setAttribute(SVGAttributeConstant.ID.getKey(), ((Integer) linkID).toString());
                 link.setParent(linksContainer.toSVGObject());
             }
         }
@@ -292,11 +294,10 @@ public class SVGGraph {
                     text.setAttribute("font-size", intSize.toString());
                     text.setAttribute("y", String.format("%spx", offset.toString()));
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
-                    offset = offset + intSize;
-                    
+                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("bottom-label-%s", ((Integer) i).toString()));
                     text.setContent(SVGParser.sanitisePlanText(labelString));
-                    
                     text.setParent(bottomLabelContainer.toSVGObject());
+                    offset = offset + intSize;
                 }
             }
         }
@@ -327,6 +328,7 @@ public class SVGGraph {
                     text.setAttribute("font-size", intSize.toString());
                     text.setAttribute("y", String.format("%spx", offset.toString()));
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
+                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("top-label-%s", ((Integer) i).toString()));
                     text.setContent(SVGParser.sanitisePlanText(labelString));
                     text.setParent(topLabelContainer.toSVGObject());
                     offset = offset - intSize;

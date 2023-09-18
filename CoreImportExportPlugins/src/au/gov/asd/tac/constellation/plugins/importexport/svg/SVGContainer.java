@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
-import java.util.List;
 
 /**
  * A wrapper class for SVGObjects.
@@ -102,14 +101,14 @@ public class SVGContainer {
     /**
      * Returns an SVGContainer nested one level down from the current SVGContainer.
      * To be considered a container the element must be nested, be of type svg 
-     * and must contain a unique class name.
+     * and must contain a unique id.
      * @param classValue
      * @return 
      */
-    public final SVGContainer getContainer(final String classValue) {
-        final List<SVGObject> children = this.svgObjectReference.getChildren(classValue);
-        if (children != null && children.size() == 1){
-            return new SVGContainer(children.get(0)); 
+    public final SVGContainer getContainer(final String idValue) {
+        final SVGObject child = this.svgObjectReference.getChild(idValue);
+        if (child != null){
+            return new SVGContainer(child); 
         } else {
             return null;
         }
