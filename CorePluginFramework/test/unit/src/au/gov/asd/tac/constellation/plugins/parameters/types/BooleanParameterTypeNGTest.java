@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -88,6 +88,7 @@ public class BooleanParameterTypeNGTest {
     // Start of testing BooleanParameterValue
     @Test
     public void testConstruction() {
+        System.out.println("construction");
         BooleanParameterValue result = new BooleanParameterValue();
         assertNotNull(result);
         assertFalse(result.get());
@@ -95,6 +96,7 @@ public class BooleanParameterTypeNGTest {
 
     @Test
     public void testGetSet() {
+        System.out.println("getSet");
         BooleanParameterValue instance = new BooleanParameterValue();
 
         boolean expected = instance.get();
@@ -122,6 +124,7 @@ public class BooleanParameterTypeNGTest {
      */
     @Test
     public void testValidateString() {
+        System.out.println("validateString");
         BooleanParameterValue instance = new BooleanParameterValue();
         assertNull(instance.validateString("standard string"));
 
@@ -133,6 +136,7 @@ public class BooleanParameterTypeNGTest {
 
     @Test
     public void testSetStringValue() {
+        System.out.println("setStringValue");
         BooleanParameterValue instance = new BooleanParameterValue();
 
         // test empty string
@@ -171,6 +175,7 @@ public class BooleanParameterTypeNGTest {
 
     @Test
     public void testGetSetObjectValue() {
+        System.out.println("getSetObjectValue");
         BooleanParameterValue instance = new BooleanParameterValue();
 
         // get current value as object and verify that it is correct.
@@ -212,6 +217,7 @@ public class BooleanParameterTypeNGTest {
      */
     @Test(expectedExceptions = {IllegalArgumentException.class})
     public void testSetObjectValueException() {
+        System.out.println("setObjectValueException");
 
         // Ensure initial setup is correct
         BooleanParameterValue instance = new BooleanParameterValue();
@@ -221,8 +227,12 @@ public class BooleanParameterTypeNGTest {
         assertFalse(instance.setObjectValue(1));
     }
 
+    /**
+     * Test of createCopy method, of class BooleanParameterValue.
+     */
     @Test
     public void testCreateCopy() {
+        System.out.println("createCopy");
         // Ensure initial setup is correct
         BooleanParameterValue instance = new BooleanParameterValue();
         instance.set(true);
@@ -236,5 +246,37 @@ public class BooleanParameterTypeNGTest {
         assertTrue(instance.set(false));
         assertTrue(instanceCopy.get());
     }
-
+    
+    /**
+     * Test of equals method, of class BooleanParameterValue.
+     */
+    @Test
+    public void testEquals() {
+        System.out.println("equals");
+        
+        final BooleanParameterValue bool = new BooleanParameterValue();
+        final BooleanParameterValue comp1 = new BooleanParameterValue(true);
+        final BooleanParameterValue comp2 = new BooleanParameterValue(false);
+        
+        assertFalse(bool.equals(null));
+        assertFalse(bool.equals(false));
+        assertFalse(bool.equals(comp1));
+        assertTrue(bool.equals(comp2));
+    }
+    
+    /**
+     * Test of toString method, of class BooleanParameterValue.
+     */
+    @Test
+    public void testToString() {
+        System.out.println("toString");
+        
+        final BooleanParameterValue bool1 = new BooleanParameterValue();
+        final BooleanParameterValue bool2 = new BooleanParameterValue(true);
+        final BooleanParameterValue bool3 = new BooleanParameterValue(false);
+        
+        assertEquals(bool1.toString(), "false");
+        assertEquals(bool2.toString(), "true");
+        assertEquals(bool3.toString(), "false");
+    }
 }
