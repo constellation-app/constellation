@@ -461,6 +461,22 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     /**
+     * Determine if the values list is null or all values in the supplied values
+     * list are empty (null).
+     * @param values List of values to check.
+     * @return True if values is null or all values in the supplied values list
+     * are empty (null) or false otherwise.
+     */
+    private boolean attributeValuesEmpty(final Object[] values)
+    {
+        if (values == null) return true;
+        for (Object value : values) {
+            if (value != null) return false;
+        }
+        return true;
+    }
+    
+    /**
      * Creates individual TitledPane within header title panes.
      *
      * @param attribute the attribute to display.
@@ -471,7 +487,7 @@ public class AttributeEditorPanel extends BorderPane {
      */
     private TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
         final String attributeTitle = attribute.getAttributeName();
-        final boolean noValue = ((values == null) || (values[0] == null)); // does attribute have a null value
+        final boolean noValue = attributeValuesEmpty(values); // does attribute have a null value
         final int spacing = 5;
         final GridPane gridPane = new GridPane();
         gridPane.setHgap(spacing);
@@ -497,7 +513,7 @@ public class AttributeEditorPanel extends BorderPane {
 
         if (attribute.isKey()) {
             final String color;
-            if (hidden || noValue) {
+            if (hidden) {
                 final ConstellationColor hiddenColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR));
                 final ConstellationColor keyColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.PRIMARY_KEY_ATTRIBUTE_COLOR, PRIMARY_KEY_ATTRIBUTE_COLOR));
                 color = (ConstellationColor.getColorValue(hiddenColor.getRed() * 0.5F + keyColor.getRed() * 0.5F, hiddenColor.getGreen() * 0.5F + keyColor.getGreen() * 0.5F, hiddenColor.getBlue() * 0.5F + keyColor.getBlue() * 0.5F, 1F)).getHtmlColor();
@@ -507,7 +523,7 @@ public class AttributeEditorPanel extends BorderPane {
             attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + color + SeparatorConstants.SEMICOLON);
         } else if (!attribute.isSchema()) {
             final String color;
-            if (hidden || noValue) {
+            if (hidden) {
                 final ConstellationColor hiddenColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR));
                 final ConstellationColor customColor = ConstellationColor.fromHtmlColor(prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOR, CUSTOM_ATTRIBUTE_COLOR));
                 color = (ConstellationColor.getColorValue(hiddenColor.getRed() * 0.5F + customColor.getRed() * 0.5F, hiddenColor.getGreen() * 0.5F + customColor.getGreen() * 0.5F, hiddenColor.getBlue() * 0.5F + customColor.getBlue() * 0.5F, 1F)).getHtmlColor();
@@ -515,7 +531,7 @@ public class AttributeEditorPanel extends BorderPane {
                 color = prefs.get(AttributePreferenceKey.CUSTOM_ATTRIBUTE_COLOR, CUSTOM_ATTRIBUTE_COLOR);
             }
             attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + color + SeparatorConstants.SEMICOLON);
-        } else if (hidden || noValue) {
+        } else if (hidden) {
             final String hiddenColor = prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTE_COLOR, HIDDEN_ATTRIBUTE_COLOR);
             attributePane.setStyle(JavafxStyleManager.CSS_BASE_STYLE_PREFIX + hiddenColor + SeparatorConstants.SEMICOLON);
         } else {
@@ -758,7 +774,7 @@ public class AttributeEditorPanel extends BorderPane {
                 for (final AttributeData data : attributeDataList) {
                     final boolean hidden = hiddenAttrSet.contains(data.getElementType().toString() + data.getAttributeName());
                     final Object[] values = state.getAttributeValues().get(type.getLabel() + data.getAttributeName());
-                    final boolean noValue = ((values == null) || (values[0] == null)); // does attribute have a null value
+                    final boolean noValue = attributeValuesEmpty(values); // does attribute have a null value
 
                     // If we are NOT showing all attributes and this attribute
                     // is null, don't add it to the list of children, this will
