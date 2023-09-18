@@ -533,7 +533,7 @@ public class AttributeEditorPanel extends BorderPane {
     private boolean attributeValuesEmpty(final Object[] values)
     {
         if (values == null) return true;
-        for (Object value : values) {
+        for (final Object value : values) {
             if (value != null) return false;
         }
         return true;
