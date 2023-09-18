@@ -8,9 +8,9 @@
         </text>
     </svg>
     <svg id="content" overflow="visible">
-        <svg id="links" >
-        </svg>
         <svg id="nodes" overflow="visible" >
+        </svg>
+        <svg id="links" >
         </svg>
     </svg>
         <svg id="footer">

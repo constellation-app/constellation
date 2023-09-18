@@ -1,2 +1,3 @@
-<line fill="white" stroke="white" stroke-miterlimit="10" stroke-width="1px">
-</line>
+<svg class="link" overflow="visible">
+    <line id="connection" fill="white" stroke="white" stroke-miterlimit="10" stroke-width="8px" />
+</svg>

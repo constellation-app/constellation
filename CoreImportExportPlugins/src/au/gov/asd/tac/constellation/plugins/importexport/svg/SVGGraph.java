@@ -251,15 +251,25 @@ public class SVGGraph {
                 final int sourceVxId = graph.getLinkHighVertex(linkID);
                 final int destinationVxId = graph.getLinkLowVertex(linkID); 
 
-                final Float x1Val = (graph.getFloatValue(xAttributeID, sourceVxId) * 128) - xBoundMin + 128;
-                final Float y1Val = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, sourceVxId) * 128) - yBoundMin) + 128;
-                final Float x2Val = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
-                final Float y2Val = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
+                final Float sourceX = (graph.getFloatValue(xAttributeID, sourceVxId) * 128) - xBoundMin + 128;
+                final Float sourceY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, sourceVxId) * 128) - yBoundMin) + 128;
+                final Float destinationX = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
+                final Float destinationY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
+                
+                final Double sourceConnectionAngle = calculateConnectionAngle(sourceX, sourceY, destinationX, destinationY);
+                final Double destinationConnectionAngle = calculateConnectionAngle(destinationX, destinationY, sourceX, sourceY);
+                
+                final Double adjustedSourceX = sourceX - (128 * Math.cos(sourceConnectionAngle));
+                final Double adjustedSourceY = sourceY - (128 * Math.sin(sourceConnectionAngle));
+                final Double adjustedDestinationX = destinationX - (128 * Math.cos(destinationConnectionAngle));
+                final Double adjustedDestinationY = destinationY - (128 * Math.sin(destinationConnectionAngle));
+                
                 final SVGObject link = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK);
-                link.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), x1Val.toString());
-                link.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), y1Val.toString());
-                link.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), x2Val.toString());
-                link.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), y2Val.toString());
+                SVGObject connection = link.getChild("connection");
+                connection.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), adjustedSourceX.toString());
+                connection.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), adjustedSourceY.toString());
+                connection.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), adjustedDestinationX.toString());
+                connection.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), adjustedDestinationY.toString());
                 link.setAttribute(SVGAttributeConstant.ID.getKey(), ((Integer) linkID).toString());
                 link.setParent(linksContainer.toSVGObject());
             }
@@ -478,6 +488,21 @@ public class SVGGraph {
                     }
                 }
             }
+        }
+        
+        /**
+         * Calculates the angle at which a connection touches a node.
+         * Return value is clockwise from a horizontal x axis.
+         * @param sourceX
+         * @param sourceY
+         * @param destinationX
+         * @param destinationY
+         * @return 
+         */
+        private Double calculateConnectionAngle(Float sourceX, Float sourceY, Float destinationX, Float destinationY) {
+            Float xdv = sourceX - destinationX;
+            Float ydv = sourceY - destinationY;
+            return Math.atan2(ydv, xdv);
         }
     }
 }
