@@ -173,6 +173,12 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
         newActiveGraph(GraphManager.getDefault().getActiveGraph());
 
         PreferenceUtilities.addPreferenceChangeListener(prefs.absolutePath(), this);
+        
+        // Ensure that all the 'Show Empty' buttons are toggled on when panel
+        // is re-displayed
+        if (attributePanel != null) {
+            attributePanel.refreshShowEmpty();
+        }
     }
 
     @Override
