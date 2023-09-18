@@ -30,9 +30,17 @@ public enum SVGLayoutConstant {
     FOOTER("footer"),
     BACKGROUND("background"),
     BORDER("border"),
-    HEADING("heading"),
-    SUBHEADING("subheading"),
-    FOOTNOTE("footnote");
+    FOOTNOTE("footnote"),
+    BOTTOM_LABELS("bottom-labels"),
+    TOP_LABELS("top-labels"),
+    BACKGROUND_IMAGE("background-image"),
+    FOREGROUND_IMAGE("foreground-image"),
+    NORTH_WEST_DECORATOR("north-west-decorator"),
+    NORTH_EAST_DECORATOR("north-east-decorator"),
+    SOUTH_WEST_DECORATOR("south-west-decorator"),
+    SOUTH_EAST_DECORATOR("south-east-decorator"),
+    TITLE("title"),
+    SUBTITLE("subtitle");
     
     public final String id;
         

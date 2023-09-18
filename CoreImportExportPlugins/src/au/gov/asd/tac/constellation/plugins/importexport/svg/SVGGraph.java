@@ -149,9 +149,9 @@ public class SVGGraph {
         }       
         
         private void buildHeader(final SVGGraph svg){
-            final SVGContainer titleContainer = svg.getContainer("header").getContainer("title");
+            final SVGContainer titleContainer = svg.getContainer(SVGLayoutConstant.HEADER.id).getContainer(SVGLayoutConstant.TITLE.id);
             titleContainer.toSVGObject().setContent(graphTitle);
-            final SVGContainer subtitleContainer = svg.getContainer("header").getContainer("subtitle");
+            final SVGContainer subtitleContainer = svg.getContainer(SVGLayoutConstant.HEADER.id).getContainer(SVGLayoutConstant.SUBTITLE.id);
             final ZonedDateTime date = ZonedDateTime.now();
             subtitleContainer.toSVGObject().setContent(
                     String.format("Exported: %s %s, %s",
@@ -163,7 +163,7 @@ public class SVGGraph {
         }
         
         private void buildFooter(final SVGGraph svg){
-            final SVGContainer titleContainer = svg.getContainer("footer").getContainer("footnote");
+            final SVGContainer titleContainer = svg.getContainer(SVGLayoutConstant.FOOTER.id).getContainer(SVGLayoutConstant.FOOTNOTE.id);
             titleContainer.toSVGObject().setContent("The Constellation community. All rights reserved.");
         }
         
@@ -212,24 +212,24 @@ public class SVGGraph {
                 
                 //Add labels to the Node
                 final SVGContainer nodeContainer = new SVGContainer(node);
-                final SVGContainer bottomLabelContainer = nodeContainer.getContainer("bottom-labels");
-                final SVGContainer topLabelContainer = nodeContainer.getContainer("top-labels");
+                final SVGContainer bottomLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.BOTTOM_LABELS.id);
+                final SVGContainer topLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.TOP_LABELS.id);
                 buildBottomLabel(vertexID, bottomLabelContainer);
                 buildTopLabel(vertexID, topLabelContainer);
   
                 //Add images to the node
-                final SVGContainer backgroundContainer = nodeContainer.getContainer("backgroundImage");
-                final SVGContainer foregroundContainer = nodeContainer.getContainer("foregroundImage");
+                final SVGContainer backgroundContainer = nodeContainer.getContainer(SVGLayoutConstant.BACKGROUND_IMAGE.id);
+                final SVGContainer foregroundContainer = nodeContainer.getContainer(SVGLayoutConstant.FOREGROUND_IMAGE.id);
                 final byte[] backgroundData = backgroundIcon.getIconData().getData(0, color);
                 final byte[] foregroundData = foregroundIcon.getIconData().getData();
                 this.buildSVGImageFromRasterImageData(backgroundContainer.toSVGObject(), backgroundData);
                 this.buildSVGImageFromRasterImageData(foregroundContainer.toSVGObject(), foregroundData);
                 
                 //Add decorators to the node                
-                this.buildDecorator(northWestDecoratorAttributeName, vertexID, nodeContainer.getContainer("north-west-decorator"));
-                this.buildDecorator(northEastDecoratorAttributeName, vertexID, nodeContainer.getContainer("north-east-decorator"));
-                this.buildDecorator(southWestDecoratorAttributeName, vertexID, nodeContainer.getContainer("south-west-decorator"));
-                this.buildDecorator(southEastDecoratorAttributeName, vertexID, nodeContainer.getContainer("south-east-decorator"));
+                this.buildDecorator(northWestDecoratorAttributeName, vertexID, nodeContainer.getContainer(SVGLayoutConstant.NORTH_WEST_DECORATOR.id));
+                this.buildDecorator(northEastDecoratorAttributeName, vertexID, nodeContainer.getContainer(SVGLayoutConstant.NORTH_EAST_DECORATOR.id));
+                this.buildDecorator(southWestDecoratorAttributeName, vertexID, nodeContainer.getContainer(SVGLayoutConstant.SOUTH_WEST_DECORATOR.id));
+                this.buildDecorator(southEastDecoratorAttributeName, vertexID, nodeContainer.getContainer(SVGLayoutConstant.SOUTH_EAST_DECORATOR.id));
             }
         }
         
@@ -291,8 +291,8 @@ public class SVGGraph {
                     //Note: size scale of 1 is 128 px
                     Float size = label.getSize() * 64;
                     Integer intSize = size.intValue();
-                    text.setAttribute("font-size", intSize.toString());
-                    text.setAttribute("y", String.format("%spx", offset.toString()));
+                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(), intSize.toString());
+                    text.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%spx", offset.toString()));
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
                     text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("bottom-label-%s", ((Integer) i).toString()));
                     text.setContent(SVGParser.sanitisePlanText(labelString));
@@ -325,8 +325,8 @@ public class SVGGraph {
                     final SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.TOP_LABEL);
                     final Float size = label.getSize() * 64;
                     final Integer intSize = size.intValue();
-                    text.setAttribute("font-size", intSize.toString());
-                    text.setAttribute("y", String.format("%spx", offset.toString()));
+                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(), intSize.toString());
+                    text.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%spx", offset.toString()));
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
                     text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("top-label-%s", ((Integer) i).toString()));
                     text.setContent(SVGParser.sanitisePlanText(labelString));

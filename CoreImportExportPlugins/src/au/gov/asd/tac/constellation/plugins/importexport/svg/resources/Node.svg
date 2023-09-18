@@ -1,8 +1,8 @@
 <svg class="Node" width="256" height="256" overflow="visible">
         <svg id="top-labels" width="256" height="256" overflow="visible" />
-        <svg id="backgroundImage">
+        <svg id="background-image">
         </svg>
-        <svg id="foregroundImage">
+        <svg id="foreground-image">
         </svg>
         <svg id="bottom-labels" width="256" height="256" y="256" overflow="visible" />
         <svg id="north-west-decorator" width="85" height="85" x="0" y="0" />
