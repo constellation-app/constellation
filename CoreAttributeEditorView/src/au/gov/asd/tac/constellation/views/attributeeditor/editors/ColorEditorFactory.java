@@ -64,7 +64,7 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
         @Override
         public void updateControlsWithValue(final ConstellationColor value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 picker.setValue(value.getJavaFXColor());
             }

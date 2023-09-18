@@ -73,7 +73,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         @Override
         public void updateControlsWithValue(final Blaze value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 angleTextField.setText(String.valueOf(value.getAngle()));
                 picker.setValue(value.getColor().getJavaFXColor());

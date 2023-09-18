@@ -77,7 +77,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
 
         @Override
         public void updateControlsWithValue(final LocalDateTime value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 datePicker.setValue(value.toLocalDate());
                 hourSpinner.getValueFactory().setValue(value.get(ChronoField.HOUR_OF_DAY));

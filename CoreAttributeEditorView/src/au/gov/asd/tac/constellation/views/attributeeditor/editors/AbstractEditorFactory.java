@@ -126,12 +126,6 @@ public abstract class AbstractEditorFactory<V> {
             return true;
         }
 
-        public void untickEditCB() {
-            if (noValueCheckBox != null) {
-                noValueCheckBox.setSelected(false);
-            }
-        }
-
         protected final void setCurrentValue(final V value) {
             if (canSet(value)) {
                 this.currentValue = value;

@@ -55,7 +55,7 @@ public class ShortObjectEditorFactory extends AttributeValueEditorFactory<Short>
 
         @Override
         public void updateControlsWithValue(final Short value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 numberField.setText(String.valueOf(value));
             }

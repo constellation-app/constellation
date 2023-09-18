@@ -55,7 +55,7 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         @Override
         public void updateControlsWithValue(final URI value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 textField.setText(String.valueOf(value));
             }

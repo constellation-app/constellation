@@ -58,7 +58,7 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
 
         @Override
         public void updateControlsWithValue(final LocalDate value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 datePicker.setValue(value);
             }

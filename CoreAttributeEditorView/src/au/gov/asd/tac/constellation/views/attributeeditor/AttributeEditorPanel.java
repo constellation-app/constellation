@@ -837,7 +837,6 @@ public class AttributeEditorPanel extends BorderPane {
             final DefaultGetter<List<String>> defaultGetter = new PrimaryKeyDefaultGetter(elementType);
             final AbstractEditor<List<String>> editor = LIST_SELECTION_EDITOR_FACTORY.createEditor(editOperation, defaultGetter, String.format("Edit primary key for %ss", elementType.getShortLabel()), currentKeyAttributes);
             ((ListSelectionEditor) editor).setPossibleItems(allAttributes);
-            editor.untickEditCB();
             final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
             dialog.showDialog();
         }
@@ -854,7 +853,6 @@ public class AttributeEditorPanel extends BorderPane {
         final DefaultGetter<?> defaultGetter = attributeData::getDefaultValue;
         final AbstractEditor<?> editor = editorFactory.createEditor(editOperation, defaultGetter, validator, attributeData.getAttributeName(), toTranslator.translate(value));
         final AttributeEditorDialog dialog = new AttributeEditorDialog(true, editor);
-        editor.untickEditCB();
         dialog.showDialog();
     }
 

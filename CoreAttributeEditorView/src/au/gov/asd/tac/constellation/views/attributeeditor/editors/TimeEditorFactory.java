@@ -69,7 +69,7 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
 
         @Override
         public void updateControlsWithValue(final LocalTime value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 hourSpinner.getValueFactory().setValue(value.getHour());
                 minSpinner.getValueFactory().setValue(value.getMinute());
