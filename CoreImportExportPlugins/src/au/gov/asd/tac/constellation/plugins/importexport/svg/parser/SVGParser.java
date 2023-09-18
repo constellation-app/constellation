@@ -59,9 +59,12 @@ public class SVGParser {
             String line;
             while ((line = br.readLine()) != null) {
                 final String svgElement = SVGParser.isolateSVGElement(line);
+                if (svgElement == null){
+                    continue;
+                }
                 final boolean openTag = SVGParser.isOpenTag(svgElement);
                 final boolean closeTag = SVGParser.isCloseTag(svgElement);
-                
+
                 // Create a new SVGObject with the current SVGObject as the parent 
                 if (openTag) {
                         
@@ -170,7 +173,6 @@ public class SVGParser {
      * @return 
      */
     private static String isolateSVGElement(final String line) {
-        
         final ArrayList<String> svgElements = new ArrayList<>();
         final String regex = "<.*>";
         final Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
@@ -184,16 +186,13 @@ public class SVGParser {
             svgElements.add(potentialElement);
             foundElements++;
         }
-        
         if (foundElements > 1){
             throw new UnsupportedOperationException("Found multiple SVG Elements");
-        } 
-        
-        if (foundElements < 1){
-            throw new UnsupportedOperationException("No SVG Element found");
+        } else if (foundElements < 1){
+            return null;
+        } else {
+            return svgElements.get(0);
         }
-        
-        return svgElements.get(0);
     }
     
     /**
