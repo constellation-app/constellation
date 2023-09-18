@@ -21,10 +21,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The SVGParser facilitates the translation of SVGfiles into
@@ -85,7 +88,7 @@ public class SVGParser {
         }
         if (roots.size() != 1) {
             throw new UnsupportedOperationException(String.format("The SVG file has %s outer elements.", roots.size()));
-        } else{
+        } else {
             return (SVGObject) roots.toArray()[0];
         }
     }
@@ -138,21 +141,25 @@ public class SVGParser {
         return svgString.split(SeparatorConstants.BLANKSPACE)[0].replaceAll("<", "").replaceAll(">", "");
     }
    
+    /**
+     * Retrieves a map of SVG attribute key value pairs.
+     * uses regular expressions to interpret potential attributes from the SVG string.
+     * Cases may exist where this regular expression does not satisfy attribute requirements.
+     * @param svgString
+     * @return 
+     */
     private static Map<String,String> getElementAttributes(final String svgString) {
         final Map<String,String> extractedAttributes = new LinkedHashMap<>();
-        final String[] potentialAttributes = stripAngleBrackets(svgString).split(SeparatorConstants.BLANKSPACE);
-        for (final String potentialAttribute : potentialAttributes) {
-            if (potentialAttribute.contains("=")) {
+        String regex = "[-:a-z0-9]*=\"[-/:%#\\s.a-zA-Z0-9]*\"";
+        Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
+        Matcher svgMatcher = svgAttributeAssignmentRegex.matcher(svgString);
+        while (svgMatcher.find()){
+            final String potentialAttribute = svgMatcher.group();
                 final String[] attribute = potentialAttribute.split("=");
-                if (attribute.length == 2) {
-                    final String foundKey = attribute[0];
-                    final String foundValue = attribute[1].replaceAll(SeparatorConstants.QUOTE, "");
-                    extractedAttributes.put(foundKey, foundValue);
-                } else {
-                    throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", potentialAttribute));
-                }
-            }
-        }
+                final String foundKey = attribute[0];
+                final String foundValue = attribute[1].replaceAll(SeparatorConstants.QUOTE, "");
+                extractedAttributes.put(foundKey, foundValue);
+        }        
         return extractedAttributes;
     }
 
@@ -163,11 +170,30 @@ public class SVGParser {
      * @return 
      */
     private static String isolateSVGElement(final String line) {
-        final String svgElement = line.substring(line.indexOf("<"), line.indexOf(">") + 1);
-        if (svgElement.length() < 2) {
-            throw new UnsupportedOperationException("SVG Element wrong");
+        
+        final ArrayList<String> svgElements = new ArrayList<>();
+        final String regex = "<.*>";
+        final Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
+        final Matcher svgMatcher = svgAttributeAssignmentRegex.matcher(line);
+        int foundElements = 0;
+        while (svgMatcher.find()){
+            final String potentialElement = svgMatcher.group();
+            if (potentialElement.length() < 2) {
+                throw new UnsupportedOperationException("SVG Element wrong");
+            }
+            svgElements.add(potentialElement);
+            foundElements++;
         }
-        return svgElement;
+        
+        if (foundElements > 1){
+            throw new UnsupportedOperationException("Found multiple SVG Elements");
+        } 
+        
+        if (foundElements < 1){
+            throw new UnsupportedOperationException("No SVG Element found");
+        }
+        
+        return svgElements.get(0);
     }
     
     /**
