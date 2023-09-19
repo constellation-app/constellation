@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.graph.Graph;
+import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
@@ -36,6 +37,7 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Base64;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
@@ -232,19 +234,47 @@ public class SVGGraph {
             }
         }
         
+        /**
+         * Builds SVG connections between Nodes.
+         * Generates transactions, links and edges depending on connection mode.
+         * This function currently assumes link connection mode is enabled
+         * @param svgGraph 
+         */
         private void buildConnections(SVGGraph svgGraph) {
             final SVGContainer linksContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.LINKS.id);
-             final int linkCount = graph.getLinkCount();
-             for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
-                 buildLink(linksContainer, graph.getLink(linkPosition));
-             }
+            
+            //Itterate over all links in the gaph
+            final int linkCount = graph.getLinkCount();
+            for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
+                final int linkID = graph.getLink(linkPosition);
+                
+                //Determine the number of directed edges in the current link
+                int directedEdgeCount = 0;
+                
+                //Itterate ofver all edges in the link
+                final int linkEdgeCount = graph.getLinkEdgeCount(linkID);
+                for (int position = 0; position < linkEdgeCount; position++){
+                    int edgeID = graph.getLinkEdge(linkID, position);
+
+                    //Cound the edge if its is not undirected
+                    if (graph.getEdgeDirection(edgeID) != Graph.FLAT){
+                        directedEdgeCount++;
+                    }
+                }
+                
+                //Render link if two directed edges are found 
+                if (directedEdgeCount == 2){
+                   buildLink(linksContainer, graph.getLink(linkID));
+                }
+            }
         }
-     
+
         /**
          * Creates a SVGObject representing a Link.
          * In this context, a link is a connection between nodes 
          * that contains two or more edges.
-         * The template file Link.svg is used to build the node.
+         * The template file Link.svg is used to build the connection.
+         * The template file LinkArrowHead.svg will be used to build the arrow head(s).
          * @param svgGraph
          */
         private void buildLink(final SVGContainer linksContainer, int linkID) {
