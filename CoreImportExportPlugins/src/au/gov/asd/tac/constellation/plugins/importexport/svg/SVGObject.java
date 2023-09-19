@@ -104,7 +104,8 @@ public class SVGObject {
     
     /**
      * Associates a SVGObject as parent of this current SVGObject.
-     * by extension the parent sets this object as its child. 
+     * By extension the parent sets this object as its child. 
+     * Warning: Child object must have a unique ID.
      * @param child 
      */
     public final void setParent(final SVGObject parent) {

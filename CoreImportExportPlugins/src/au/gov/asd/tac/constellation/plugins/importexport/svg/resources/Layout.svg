@@ -1,20 +1,23 @@
 <svg id="graph" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <rect id="border" stroke="#1B1E24" stroke-width="6" fill-opacity="0" />
     <rect id="background" fill="#1B1E24" />
+    
     <svg id="header">
         <text id="title" x="50%" y="64px" font-size="128px" font-family="sans-serif" fill="black" text-anchor="middle" alignment-baseline="hanging">
         </text>
         <text id="subtitle" x="50%" y="192px" font-size="32px" font-family="sans-serif" fill="black" text-anchor="middle" alignment-baseline="hanging">
         </text>
     </svg>
+    
     <svg id="content" overflow="visible">
         <svg id="nodes" overflow="visible" >
         </svg>
         <svg id="links" >
         </svg>
     </svg>
-        <svg id="footer">
-            <text id="footnote" x="50%" y="48px" font-size="32px" font-family="sans-serif" fill="black" text-anchor="middle" alignment-baseline="hanging">
-            </text>
-        </svg> 
+    
+    <svg id="footer">
+        <text id="footnote" x="50%" y="48px" font-size="32px" font-family="sans-serif" fill="black" text-anchor="middle" alignment-baseline="hanging">
+        </text>
+    </svg> 
 </svg>

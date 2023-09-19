@@ -33,7 +33,8 @@ public enum SVGAttributeConstant {
     STROKE_COLOR("stroke"),
     CLASS("class"),
     ID("id"),
-    FONT_SIZE("font-size");
+    FONT_SIZE("font-size"),
+    TRANSFORM("transform");
     
     private final String key;
     

@@ -197,11 +197,10 @@ public class SVGGraph {
                 final Float xVal = (graph.getFloatValue(xAttributeID, vertexID) * 128) - xBoundMin;
                 final Float yVal = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, vertexID) * 128) - yBoundMin);
                 final String fillColor = graph.getStringValue(fillColorAttributeID, vertexID);
-                String htmlColor = ConstellationColor.getColorValue(fillColor).getHtmlColor();
+                final String htmlColor = ConstellationColor.getColorValue(fillColor).getHtmlColor();
                 final Color color = Color.decode(htmlColor);
                 final ConstellationIcon backgroundIcon = graph.getObjectValue(backgroundIconID, vertexID);
                 final ConstellationIcon foregroundIcon = graph.getObjectValue(foregroundIconID, vertexID);
-                
 
                 //build the SVGobject representing the node
                 final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
@@ -232,16 +231,17 @@ public class SVGGraph {
                 this.buildDecorator(southEastDecoratorAttributeName, vertexID, nodeContainer.getContainer(SVGLayoutConstant.SOUTH_EAST_DECORATOR.id));
             }
         }
-        
+     
         /**
          * Creates a SVGObject representing a Link.
+         * In this context, a link is a connection between nodes 
+         * that contains two or more edges.
          * The template file Link.svg is used to build the node.
-         * 
          * @param svgGraph
          */
         private void buildLinks(final SVGGraph svgGraph) {
             final SVGContainer linksContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.LINKS.id);
-            
+
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
             final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
 
@@ -259,21 +259,58 @@ public class SVGGraph {
                 final Double sourceConnectionAngle = calculateConnectionAngle(sourceX, sourceY, destinationX, destinationY);
                 final Double destinationConnectionAngle = calculateConnectionAngle(destinationX, destinationY, sourceX, sourceY);
                 
-                final Double adjustedSourceX = sourceX - (128 * Math.cos(sourceConnectionAngle));
-                final Double adjustedSourceY = sourceY - (128 * Math.sin(sourceConnectionAngle));
-                final Double adjustedDestinationX = destinationX - (128 * Math.cos(destinationConnectionAngle));
-                final Double adjustedDestinationY = destinationY - (128 * Math.sin(destinationConnectionAngle));
+                final Double adjustedSourceX = sourceX - (192 * Math.cos(sourceConnectionAngle));
+                final Double adjustedSourceY = sourceY - (192 * Math.sin(sourceConnectionAngle));
+                final Double adjustedDestinationX = destinationX - (192 * Math.cos(destinationConnectionAngle));
+                final Double adjustedDestinationY = destinationY - (192 * Math.sin(destinationConnectionAngle));
                 
                 final SVGObject link = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK);
-                SVGObject connection = link.getChild("connection");
-                connection.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), adjustedSourceX.toString());
-                connection.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), adjustedSourceY.toString());
-                connection.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), adjustedDestinationX.toString());
-                connection.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), adjustedDestinationY.toString());
-                link.setAttribute(SVGAttributeConstant.ID.getKey(), ((Integer) linkID).toString());
+                final SVGObject connection = link.getChild("connection");
+                connection.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", adjustedSourceX));
+                connection.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", adjustedSourceY));
+                connection.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", adjustedDestinationX));
+                connection.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", adjustedDestinationY));
+
+                link.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("%s", linkID));
                 link.setParent(linksContainer.toSVGObject());
+                
+                final SVGObject sourceLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
+                buildArrowHead(sourceLinkArrowHeadContainer, sourceX, sourceY, sourceConnectionAngle);
+                sourceLinkArrowHeadContainer.setParent(link);
+                
+                final SVGObject destinationLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
+                buildArrowHead(destinationLinkArrowHeadContainer, destinationX, destinationY, destinationConnectionAngle);
+                destinationLinkArrowHeadContainer.setParent(link);
             }
+        } 
+        
+        /**
+         * Manipulates an arrow head container to adjust it's position and rotation.
+         * @param arrowHeadContainer
+         * @param x
+         * @param y
+         * @param connectionAngle 
+         */
+        private void buildArrowHead(SVGObject arrowHeadContainer, Float x, Float y, Double connectionAngle) {
+            //The size of the svg element containing the arrow head polygon asset
+            final int arrowHeadWidth = 128;
+            final int arrowHeadheight = 32;
+            
+            //Redefine the tip of the arrow head as 128px from the center point of the relevent node.
+            final Double offsetX = x - (128 * Math.cos(connectionAngle));
+            final Double offsetY = y - (128 * Math.sin(connectionAngle));
+            
+            //Set arrow head svg attributes
+            arrowHeadContainer.setAttribute(SVGAttributeConstant.X.getKey(), String.format("%s", offsetX - arrowHeadWidth));
+            arrowHeadContainer.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%s", offsetY - arrowHeadheight /2 ));
+            arrowHeadContainer.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("arrow-head-%s-%s", offsetX.intValue(), offsetY.intValue()));
+            
+            //Rotate the arrow head polygon around the tip to align it with the angle of the connection
+            final SVGObject arrowHead = arrowHeadContainer.getChild("arrow-head");
+            arrowHead.setAttribute(SVGAttributeConstant.TRANSFORM.getKey(), String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), arrowHeadWidth, arrowHeadheight/2));
         }
+    
+
         
         /**
          * Constructs bottom label SVG elements for a given vertex id in a given SVGContainer.
@@ -294,17 +331,17 @@ public class SVGGraph {
                 final String labelAttributeNameReference = label.getAttributeName();
                 int labelAttribnuteID = graph.getAttribute(GraphElementType.VERTEX, labelAttributeNameReference);
 
-                String labelString = graph.getStringValue(labelAttribnuteID, vertexID);
+                final String labelString = graph.getStringValue(labelAttribnuteID, vertexID);
 
                 if (labelString != null){
                     SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.BOTTOM_LABEL);
                     //Note: size scale of 1 is 128 px
-                    Float size = label.getSize() * 64;
-                    Integer intSize = size.intValue();
-                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(), intSize.toString());
-                    text.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%spx", offset.toString()));
+                    final Float size = label.getSize() * 64;
+                    final Integer intSize = size.intValue();
+                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(),  String.format("%s", intSize));
+                    text.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%spx", offset));
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
-                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("bottom-label-%s", ((Integer) i).toString()));
+                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("bottom-label-%s", i));
                     text.setContent(SVGParser.sanitisePlanText(labelString));
                     text.setParent(bottomLabelContainer.toSVGObject());
                     offset = offset + intSize;
@@ -327,7 +364,7 @@ public class SVGGraph {
             
             Integer offset = 0;
             for (int i = 0; i < topLabelsContainer.getNumberOfLabels(); i++) {
-                GraphLabel label = labels.get(i);
+                final GraphLabel label = labels.get(i);
                 final String labelAttributeName = label.getAttributeName();
                 final int labelAttribnuteID = graph.getAttribute(GraphElementType.VERTEX, labelAttributeName);
                 final String labelString = graph.getStringValue(labelAttribnuteID, vertexID);
@@ -335,10 +372,10 @@ public class SVGGraph {
                     final SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.TOP_LABEL);
                     final Float size = label.getSize() * 64;
                     final Integer intSize = size.intValue();
-                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(), intSize.toString());
+                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(), String.format("%s", intSize));
                     text.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%spx", offset.toString()));
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
-                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("top-label-%s", ((Integer) i).toString()));
+                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("top-label-%s", i));
                     text.setContent(SVGParser.sanitisePlanText(labelString));
                     text.setParent(topLabelContainer.toSVGObject());
                     offset = offset - intSize;
@@ -492,7 +529,7 @@ public class SVGGraph {
         
         /**
          * Calculates the angle at which a connection touches a node.
-         * Return value is clockwise from a horizontal x axis.
+         * Return value is clockwise from a horizontal x axis with positive values to the right.
          * @param sourceX
          * @param sourceY
          * @param destinationX
@@ -500,9 +537,9 @@ public class SVGGraph {
          * @return 
          */
         private Double calculateConnectionAngle(Float sourceX, Float sourceY, Float destinationX, Float destinationY) {
-            Float xdv = sourceX - destinationX;
-            Float ydv = sourceY - destinationY;
-            return Math.atan2(ydv, xdv);
+            final Float xDirectionVector = sourceX - destinationX;
+            final Float yDirectionVector = sourceY - destinationY;
+            return Math.atan2(yDirectionVector, xDirectionVector);
         }
     }
 }
