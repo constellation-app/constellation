@@ -142,7 +142,7 @@ public class SVGGraph {
             defineBoundary(graph);
             buildHeader(svgGraphLayout);
             buildFooter(svgGraphLayout);
-            buildLinks(svgGraphLayout);
+            buildConnections(svgGraphLayout);
             buildNodes(svgGraphLayout);
             setLayoutDimensions(svgGraphLayout);
             return svgGraphLayout.toSVGObject();
@@ -231,6 +231,14 @@ public class SVGGraph {
                 this.buildDecorator(southEastDecoratorAttributeName, vertexID, nodeContainer.getContainer(SVGLayoutConstant.SOUTH_EAST_DECORATOR.id));
             }
         }
+        
+        private void buildConnections(SVGGraph svgGraph) {
+            final SVGContainer linksContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.LINKS.id);
+             final int linkCount = graph.getLinkCount();
+             for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
+                 buildLink(linksContainer, graph.getLink(linkPosition));
+             }
+        }
      
         /**
          * Creates a SVGObject representing a Link.
@@ -239,49 +247,42 @@ public class SVGGraph {
          * The template file Link.svg is used to build the node.
          * @param svgGraph
          */
-        private void buildLinks(final SVGGraph svgGraph) {
-            final SVGContainer linksContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.LINKS.id);
-
+        private void buildLink(final SVGContainer linksContainer, int linkID) {
             final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
             final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
+            final int sourceVxId = graph.getLinkHighVertex(linkID);
+            final int destinationVxId = graph.getLinkLowVertex(linkID); 
 
-            final int linkCount = graph.getLinkCount();
-            for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
-                final int linkID = graph.getLink(linkPosition);
-                final int sourceVxId = graph.getLinkHighVertex(linkID);
-                final int destinationVxId = graph.getLinkLowVertex(linkID); 
+            final Float sourceX = (graph.getFloatValue(xAttributeID, sourceVxId) * 128) - xBoundMin + 128;
+            final Float sourceY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, sourceVxId) * 128) - yBoundMin) + 128;
+            final Float destinationX = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
+            final Float destinationY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
 
-                final Float sourceX = (graph.getFloatValue(xAttributeID, sourceVxId) * 128) - xBoundMin + 128;
-                final Float sourceY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, sourceVxId) * 128) - yBoundMin) + 128;
-                final Float destinationX = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
-                final Float destinationY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
-                
-                final Double sourceConnectionAngle = calculateConnectionAngle(sourceX, sourceY, destinationX, destinationY);
-                final Double destinationConnectionAngle = calculateConnectionAngle(destinationX, destinationY, sourceX, sourceY);
-                
-                final Double adjustedSourceX = sourceX - (192 * Math.cos(sourceConnectionAngle));
-                final Double adjustedSourceY = sourceY - (192 * Math.sin(sourceConnectionAngle));
-                final Double adjustedDestinationX = destinationX - (192 * Math.cos(destinationConnectionAngle));
-                final Double adjustedDestinationY = destinationY - (192 * Math.sin(destinationConnectionAngle));
-                
-                final SVGObject link = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK);
-                final SVGObject connection = link.getChild("connection");
-                connection.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", adjustedSourceX));
-                connection.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", adjustedSourceY));
-                connection.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", adjustedDestinationX));
-                connection.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", adjustedDestinationY));
+            final Double sourceConnectionAngle = calculateConnectionAngle(sourceX, sourceY, destinationX, destinationY);
+            final Double destinationConnectionAngle = calculateConnectionAngle(destinationX, destinationY, sourceX, sourceY);
 
-                link.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("%s", linkID));
-                link.setParent(linksContainer.toSVGObject());
-                
-                final SVGObject sourceLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
-                buildArrowHead(sourceLinkArrowHeadContainer, sourceX, sourceY, sourceConnectionAngle);
-                sourceLinkArrowHeadContainer.setParent(link);
-                
-                final SVGObject destinationLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
-                buildArrowHead(destinationLinkArrowHeadContainer, destinationX, destinationY, destinationConnectionAngle);
-                destinationLinkArrowHeadContainer.setParent(link);
-            }
+            final Double adjustedSourceX = sourceX - (192 * Math.cos(sourceConnectionAngle));
+            final Double adjustedSourceY = sourceY - (192 * Math.sin(sourceConnectionAngle));
+            final Double adjustedDestinationX = destinationX - (192 * Math.cos(destinationConnectionAngle));
+            final Double adjustedDestinationY = destinationY - (192 * Math.sin(destinationConnectionAngle));
+
+            final SVGObject link = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK);
+            final SVGObject connection = link.getChild("connection");
+            connection.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", adjustedSourceX));
+            connection.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", adjustedSourceY));
+            connection.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", adjustedDestinationX));
+            connection.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", adjustedDestinationY));
+
+            link.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("%s", linkID));
+            link.setParent(linksContainer.toSVGObject());
+
+            final SVGObject sourceLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
+            buildArrowHead(sourceLinkArrowHeadContainer, sourceX, sourceY, sourceConnectionAngle);
+            sourceLinkArrowHeadContainer.setParent(link);
+
+            final SVGObject destinationLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
+            buildArrowHead(destinationLinkArrowHeadContainer, destinationX, destinationY, destinationConnectionAngle);
+            destinationLinkArrowHeadContainer.setParent(link);
         } 
         
         /**
@@ -309,8 +310,6 @@ public class SVGGraph {
             final SVGObject arrowHead = arrowHeadContainer.getChild("arrow-head");
             arrowHead.setAttribute(SVGAttributeConstant.TRANSFORM.getKey(), String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), arrowHeadWidth, arrowHeadheight/2));
         }
-    
-
         
         /**
          * Constructs bottom label SVG elements for a given vertex id in a given SVGContainer.
