@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import org.apache.commons.collections4.ListUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * UI panel for the Data Access View categories.
@@ -59,9 +61,22 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         hiddenListModel = new DefaultListModel<>();
 
         final String davHiddenString = LookupPluginsTask.DAV_CATS;
-        final List<String> davHiddenList = Arrays.asList(LookupPluginsTask.addCategoryToList(davHiddenString));
-
-        visibleResultList = (davHiddenList == null || davHiddenList.isEmpty()) ? DAV_CATEGORIES : ListUtils.subtract(DAV_CATEGORIES, davHiddenList);
+        final String davVisibleString = LookupPluginsTask.VISIBLE_CATS;
+        
+        if (StringUtils.isBlank(davVisibleString) && StringUtils.isBlank(davHiddenString)) {
+            visibleResultList = new ArrayList<>();
+            
+            for (final String pluginType : DataAccessPluginType.getTypes()) {
+                if (DAV_CATEGORIES.indexOf(pluginType) != -1) {
+                    visibleResultList.add(pluginType);
+                }
+            }
+        } else if (StringUtils.isBlank(davHiddenString)) {
+            visibleResultList = DAV_CATEGORIES;
+        } else {
+            final List<String> davHiddenList = Arrays.asList(LookupPluginsTask.addCategoryToList(davHiddenString));
+            visibleResultList = ListUtils.subtract(DAV_CATEGORIES, davHiddenList);
+        }
     }
 
     public List<String> getVisibleCategory() {
@@ -327,8 +342,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         } else {
             final int[] selectedIndices = visibleList.getSelectedIndices();
 
-            if(selectedIndices[0] != 0)
-            {
+            if (selectedIndices[0] != 0) {
                 final int beforeIndex = selectedIndices[0] - 1;
                 final List<String> selectedItems = visibleList.getSelectedValuesList();
 
@@ -354,8 +368,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         } else {
             final int[] selectedIndices = visibleList.getSelectedIndices();
 
-            if(selectedIndices[selectedIndices.length-1] != visibleList.getModel().getSize()-1)
-            {
+            if (selectedIndices[selectedIndices.length - 1] != visibleList.getModel().getSize() - 1) {
                 final int afterIndex = selectedIndices[selectedIndices.length - 1] + 1;
                 final List<String> selectedItems = visibleList.getSelectedValuesList();
 

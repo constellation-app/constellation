@@ -124,7 +124,7 @@ public class DefaultPluginInteractionNGTest {
 
         assertEquals(interaction.getPluginReport().getCurrentStep(), 1);
         assertEquals(interaction.getPluginReport().getTotalSteps(), 2);
-        assertEquals(interaction.getPluginReport().getMessage(), message);
+        assertEquals(interaction.getPluginReport().getLastMessage(), message);
 
         interaction.setProgress(1, 1, message, false);
 

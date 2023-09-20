@@ -79,6 +79,7 @@
                 <package>au.gov.asd.tac.constellation.graph.monitor</package>
                 <package>au.gov.asd.tac.constellation.graph.operations</package>
                 <package>au.gov.asd.tac.constellation.graph.processing</package>
+                <package>au.gov.asd.tac.constellation.graph.reporting</package>
                 <package>au.gov.asd.tac.constellation.graph.schema</package>
                 <package>au.gov.asd.tac.constellation.graph.schema.attribute</package>
                 <package>au.gov.asd.tac.constellation.graph.schema.concept</package>

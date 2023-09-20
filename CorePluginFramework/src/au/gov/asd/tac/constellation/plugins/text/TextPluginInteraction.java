@@ -46,7 +46,7 @@ public class TextPluginInteraction implements PluginInteraction {
     }
 
     @Override
-    public void setBusy(String graphId, boolean busy) {
+    public void setBusy(final String graphId, final boolean busy) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -56,24 +56,34 @@ public class TextPluginInteraction implements PluginInteraction {
     }
 
     @Override
-    public void setProgress(int currentStep, int totalSteps, String message, boolean cancellable) throws InterruptedException {
+    public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException {
         currentMessage = message;
         LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1} message={2}", new Object[]{currentStep, totalSteps, message});
     }
+    
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {
+        LOGGER.log(Level.INFO, "currentStep={0} totalSteps={1}", new Object[]{currentStep, totalSteps});
+    }
+    
+    @Override
+    public void setExecutionStage(final int currentStep, final int totalSteps, final String runningState, final String message, final boolean cancellable) throws InterruptedException {
+        setProgress(currentStep, totalSteps, message, cancellable);
+    }
 
     @Override
-    public void notify(PluginNotificationLevel level, String message) {
+    public void notify(final PluginNotificationLevel level, final String message) {
         currentMessage = message;
         LOGGER.log(Level.INFO, "level={0} message={1}", new Object[]{level, message});
     }
 
     @Override
-    public boolean confirm(String message) {
+    public boolean confirm(final String message) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public boolean prompt(String promptName, PluginParameters parameters) {
+    public boolean prompt(final String promptName, final PluginParameters parameters) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 

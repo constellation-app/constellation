@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.logging.Logger;
 import java.util.prefs.PreferenceChangeListener;
 import java.util.prefs.Preferences;
 import org.netbeans.api.settings.ConvertAsProperties;
@@ -218,7 +217,7 @@ public final class AttributeEditorTopComponent extends JavaFxTopComponent<Attrib
 
     @Override
     protected void handleGraphChange(GraphChangeEvent event) {
-        if (!needsUpdate() || event == null) { // can be null at this point in time
+        if (event == null) { // can be null at this point in time
             return;
         }
         event = event.getLatest();

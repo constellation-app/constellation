@@ -28,6 +28,7 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginSynchronizer;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginExecutionStageConstants;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -89,8 +90,10 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
 
     @Override
     public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-
+        
+        // Make the progress bar appear indeterminent
         final Graph graph = graphs.getGraph();
+        final int totalSteps = -1;
 
         // If the graph no longer exists
         if (graph == null) {
@@ -101,9 +104,9 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
         interaction.setBusy(graph.getId(), true);
         try {
 
-            // Make the progress bar appear nondeterminent
+            
             try {
-                interaction.setProgress(0, 0, "Executing child plugins", true);
+                interaction.setExecutionStage(1, totalSteps, PluginExecutionStageConstants.RUNNING, "Executing child plugins", true);
 
                 final Map<Plugin, PluginParameters> childPlugins = getChildPlugins(parameters);
 
@@ -120,7 +123,7 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
                 pluginSynchronizer.waitForGate(1);
 
                 // Wait for all plugins to finish reading and querying
-                interaction.setProgress(0, 0, "Waiting For Other Plugins...", true);
+                interaction.setExecutionStage(2, totalSteps, PluginExecutionStageConstants.WAITING,  "Waiting For Other Plugins...", true);
 
                 // Wait at gate 1 for any SimpleQueryPlugins to finish reading
                 graphs.waitAtGate(1);
@@ -128,7 +131,7 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
             } catch (DuplicateKeyException ex) {
                 interaction.notify(PluginNotificationLevel.ERROR, ex.getMessage());
             } finally {
-                interaction.setProgress(2, 1, "Finished", true);
+                interaction.setExecutionStage(3, 2, PluginExecutionStageConstants.COMPLETE, "Finished", true);
             }
 
         } finally {
@@ -169,7 +172,7 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
     @Override
     public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
-        boolean inControlOfProgress = true;
+        final int totalSteps = -1;
 
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
@@ -177,7 +180,7 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
 
             // Make the progress bar appear nondeterminent
             try {
-                interaction.setProgress(0, 0, "Executing child plugins", true);
+                interaction.setExecutionStage(1, totalSteps, PluginExecutionStageConstants.RUNNING, "Executing child plugins", true);
 
                 final Map<Plugin, PluginParameters> childPlugins = getChildPlugins(parameters);
 
@@ -185,7 +188,7 @@ public abstract class CascadingQueryPlugin extends AbstractPlugin {
                     PluginExecution.withPlugin(entry.getKey()).withParameters(entry.getValue()).executeNow(graph);
                 }
             } finally {
-                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
+                interaction.setExecutionStage(2, 1, PluginExecutionStageConstants.COMPLETE, "Finished", true);
             }
 
         } finally {
