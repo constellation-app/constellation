@@ -305,12 +305,12 @@ public class PointMarker extends AbstractMarker {
     }
 
     public void scaleAndReposition(final double scale) {
-        setScale(scale);
+        /*setScale(scale);
         markerPath.setScaleX(scale);
         markerPath.setScaleY(scale);
 
         final double heightDifference = (getY() + 96.5) - (markerPath.getBoundsInParent().getCenterY() + (markerPath.getBoundsInParent().getHeight() / 2));
-        markerPath.setTranslateY(markerPath.getTranslateY() + heightDifference);
+        markerPath.setTranslateY(markerPath.getTranslateY() + heightDifference);*/
     }
 
 }
