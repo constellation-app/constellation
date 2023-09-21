@@ -68,7 +68,6 @@ public abstract class AbstractEditorFactory<V> {
         protected V currentValue;
         protected Node editorHeading = null;
         protected Node editorControls = null;
-        protected CheckBox noValueCheckBox = null;
 
         protected boolean updateInProgress = false;
 

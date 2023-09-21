@@ -46,6 +46,7 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
     public class IntegerObjectEditor extends AbstractEditor<Integer> {
 
         private TextField numberField;
+        private CheckBox noValueCheckBox;
 
         protected IntegerObjectEditor(final EditOperation editOperation, final DefaultGetter<Integer> defaultGetter, final ValueValidator<Integer> validator, final String editedItemName, final Integer initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

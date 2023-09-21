@@ -54,6 +54,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
         private static final int CONTROLS_SPACING = 10;
 
         private TextArea textArea;
+        private CheckBox noValueCheckBox;
 
         protected StringEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

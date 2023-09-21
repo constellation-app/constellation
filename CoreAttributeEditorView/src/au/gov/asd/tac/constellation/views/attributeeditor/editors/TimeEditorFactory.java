@@ -62,6 +62,7 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
         private Spinner<Integer> minSpinner;
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
+        private CheckBox noValueCheckBox;
 
         protected TimeEditor(final EditOperation editOperation, final DefaultGetter<LocalTime> defaultGetter, final ValueValidator<LocalTime> validator, final String editedItemName, final LocalTime initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

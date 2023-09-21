@@ -57,6 +57,7 @@ public class ColorEditorFactory extends AttributeValueEditorFactory<Constellatio
 
         private ComboBox<ConstellationColor> colorCombo;
         private ColorPicker picker;
+        protected CheckBox noValueCheckBox;
 
         protected ColorEditor(final EditOperation editOperation, final DefaultGetter<ConstellationColor> defaultGetter, final ValueValidator<ConstellationColor> validator, final String editedItemName, final ConstellationColor initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

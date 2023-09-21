@@ -70,6 +70,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private Spinner<Integer> minSpinner;
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
+        private CheckBox noValueCheckBox;
 
         protected LocalDateTimeEditor(final EditOperation editOperation, final DefaultGetter<LocalDateTime> defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

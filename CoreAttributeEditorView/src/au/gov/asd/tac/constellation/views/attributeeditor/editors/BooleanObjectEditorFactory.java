@@ -45,6 +45,7 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
     public class BooleanObjectEditor extends AbstractEditor<Boolean> {
 
         private CheckBox checkBox;
+        protected CheckBox noValueCheckBox;
 
         protected BooleanObjectEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

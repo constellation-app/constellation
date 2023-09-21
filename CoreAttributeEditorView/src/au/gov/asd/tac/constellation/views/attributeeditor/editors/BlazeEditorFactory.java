@@ -66,6 +66,7 @@ public class BlazeEditorFactory extends AttributeValueEditorFactory<Blaze> {
 
         private TextField angleTextField;
         private ColorPicker picker;
+        private CheckBox noValueCheckBox;
 
         protected BlazeEditor(final EditOperation editOperation, final DefaultGetter<Blaze> defaultGetter, final ValueValidator<Blaze> validator, final String editedItemName, final Blaze initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
