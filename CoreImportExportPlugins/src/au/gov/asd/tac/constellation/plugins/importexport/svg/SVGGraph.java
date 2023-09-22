@@ -209,9 +209,9 @@ public class SVGGraph {
 
                 //build the SVGobject representing the node
                 final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
-                node.setAttribute(SVGAttributeConstant.X.getKey(), String.format("%s", position.getFirst() - 128));
-                node.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%s", position.getSecond() - 128));
-                node.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("%s", vertexID));
+                node.setAttribute(SVGAttributeConstant.X.getKey(), position.getFirst() - 128);
+                node.setAttribute(SVGAttributeConstant.Y.getKey(), position.getSecond() - 128);
+                node.setAttribute(SVGAttributeConstant.ID.getKey(), vertexID);
                 node.setParent(nodesContainer.toSVGObject());
                 
                 //Add labels to the Node
@@ -331,12 +331,12 @@ public class SVGGraph {
             //Construct the connection
             final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
             final SVGObject arrowShaft = connection.getChild("arrow-shaft");
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourcePosition.getFirst()));
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourcePosition.getSecond()));
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationPosition.getFirst()));
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationPosition.getSecond()));
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), shaftDestinationPosition.getSecond());
 
-            connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("%s", linkID));
+            connection.setAttribute(SVGAttributeConstant.ID.getKey(), linkID);
             connection.setParent(connectionsContainer.toSVGObject());
 
             final SVGObject sourceLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
@@ -438,10 +438,10 @@ public class SVGGraph {
             //Construct the connection
             final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
             final SVGObject arrowShaft = connection.getChild("arrow-shaft");
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourcePosition.getFirst()));
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourcePosition.getSecond()));
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationPosition.getFirst()));
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationPosition.getSecond()));
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), shaftDestinationPosition.getSecond());
             arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
             connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s", linkID));
             connection.setParent(ConnectionsContainer.toSVGObject());
@@ -534,10 +534,10 @@ public class SVGGraph {
                 //Construct the connection
                 final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
                 final SVGObject arrowShaft = connection.getChild("arrow-shaft");
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourcePosition.getFirst()));
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourcePosition.getSecond()));
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationPosition.getFirst()));
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationPosition.getSecond()));
+                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
+                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
+                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
+                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), shaftDestinationPosition.getSecond());
                 arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
                 connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s-edge-%s", linkID, edgePosition));
                 connection.setParent(connectionsContainer.toSVGObject());
@@ -623,10 +623,10 @@ public class SVGGraph {
                 //Construct the connection
                 final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
                 final SVGObject arrowShaft = connection.getChild("arrow-shaft");
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourcePosition.getFirst()));
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourcePosition.getSecond()));
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationPosition.getFirst()));
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationPosition.getSecond()));
+                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
+                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
+                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
+                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), shaftDestinationPosition.getSecond());
                 arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
                 connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s-transaction-%s", linkID, transactionPosition));
                 connection.setParent(connectionsContainer.toSVGObject());
@@ -656,8 +656,8 @@ public class SVGGraph {
             final Double x = position.getFirst();
             final Double y = position.getSecond();
             //Set arrow head svg attributes
-            arrowHeadContainer.setAttribute(SVGAttributeConstant.X.getKey(), String.format("%s", x - arrowHeadWidth));
-            arrowHeadContainer.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%s", y - arrowHeadheight /2 ));
+            arrowHeadContainer.setAttribute(SVGAttributeConstant.X.getKey(), x - arrowHeadWidth);
+            arrowHeadContainer.setAttribute(SVGAttributeConstant.Y.getKey(), y - arrowHeadheight /2 );
             arrowHeadContainer.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("arrow-head-%s-%s", x.intValue(), y.intValue()));
             
             //Rotate the arrow head polygon around the tip to align it with the angle of the connection
@@ -691,8 +691,8 @@ public class SVGGraph {
                     //Note: size scale of 1 is 128 px
                     final Float size = label.getSize() * 64;
                     final Integer intSize = size.intValue();
-                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(),  String.format("%s", intSize));
-                    text.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%spx", offset));
+                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(),  intSize);
+                    text.setAttribute(SVGAttributeConstant.Y.getKey(), offset);
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
                     text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("bottom-label-%s", i));
                     text.setContent(SVGParser.sanitisePlanText(labelString));
@@ -725,8 +725,8 @@ public class SVGGraph {
                     final SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.TOP_LABEL);
                     final Float size = label.getSize() * 64;
                     final Integer intSize = size.intValue();
-                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(), String.format("%s", intSize));
-                    text.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%spx", offset.toString()));
+                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(), intSize);
+                    text.setAttribute(SVGAttributeConstant.Y.getKey(), offset);
                     text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
                     text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("top-label-%s", i));
                     text.setContent(SVGParser.sanitisePlanText(labelString));

@@ -68,6 +68,42 @@ public class SVGObject {
     public final void setAttribute(final String attributeKey, final String attributeValue) {
         this.attributes.put(attributeKey, attributeValue);
     }
+    
+    /**
+     * Adds an attribute to the current SVG element. 
+     * Only one attribute value can be provided per key.
+     * Attempting to add a value to an existing key 
+     * will override the last value provided.
+     * @param attributeKey 
+     * @param attributeValue 
+     */
+    public final void setAttribute(final String attributeKey, final float attributeValue) {
+        setAttribute(attributeKey, String.format("%s", attributeValue));
+    }
+    
+    /**
+     * Adds an attribute to the current SVG element. 
+     * Only one attribute value can be provided per key.
+     * Attempting to add a value to an existing key 
+     * will override the last value provided.
+     * @param attributeKey 
+     * @param attributeValue 
+     */
+    public final void setAttribute(final String attributeKey, final int attributeValue) {
+        setAttribute(attributeKey, String.format("%s", attributeValue));
+    }
+    
+    /**
+     * Adds an attribute to the current SVG element. 
+     * Only one attribute value can be provided per key.
+     * Attempting to add a value to an existing key 
+     * will override the last value provided.
+     * @param attributeKey 
+     * @param attributeValue 
+     */
+    public final void setAttribute(final String attributeKey, final double attributeValue) {
+        setAttribute(attributeKey, String.format("%s", attributeValue));
+    }
         
     /**
      * Adds a child SVGObject to the current SVG element.
