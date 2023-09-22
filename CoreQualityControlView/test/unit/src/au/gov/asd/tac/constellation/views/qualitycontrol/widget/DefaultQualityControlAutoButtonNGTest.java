@@ -150,7 +150,7 @@ public class DefaultQualityControlAutoButtonNGTest {
         DefaultQualityControlAutoButton instance = new DefaultQualityControlAutoButton();
 
         final String expRiskText = "Quality Category: CRITICAL";
-        final String expStyleText = "-fx-text-fill: rgb(255,255,255);-fx-background-color: rgba(150,13,13,1.000000);";
+        final String expStyleText = "-fx-text-fill: rgb(255,255,0); -fx-background-color: rgba(150,13,13,1.000000);";
         final String expTooltipText = "Reason 1, Reason2";
 
         instance.qualityControlChanged(state);

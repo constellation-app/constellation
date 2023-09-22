@@ -145,9 +145,9 @@ public class ButtonToolbarNGTest {
         verifyButton(
                 buttonToolbar.getHelpButton(),
                 "",
-                "-fx-border-color: transparent;-fx-background-color: transparent;",
+                "-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null;",
                 "Display help for Data Access",
-                UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())
+                UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())
         );
         assertEquals(buttonToolbar.getHelpButton().getPadding(), new Insets(0, 8, 0, 0));
 
@@ -168,7 +168,7 @@ public class ButtonToolbarNGTest {
                 "",
                 "",
                 "Manage your favourites",
-                AnalyticIconProvider.STAR.buildImage(16, ConstellationColor.YELLOW.getJavaColor())
+                AnalyticIconProvider.STAR.buildImage(16)
         );
 
         doNothing().when(buttonToolbar).manageFavourites();
