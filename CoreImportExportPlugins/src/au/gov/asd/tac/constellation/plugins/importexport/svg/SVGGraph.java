@@ -377,7 +377,6 @@ public class SVGGraph {
             //Extract needed information from edges.
             int edgeDirection = Graph.NOT_FOUND;
             final String htmlColor;
-            int processedEdgeCount = 0;
             final int edgeCount = graph.getLinkEdgeCount(linkID);
             
             //Only one edge exists to the color and direction can be determined from that edge
@@ -402,17 +401,12 @@ public class SVGGraph {
                 }
                 htmlColor = ConstellationColor.WHITE.getHtmlColor();
             }
-            
-            //Determine offset controlls
-            int paralellOffsetDistance = (processedEdgeCount / 2 + ((processedEdgeCount % 2 == 0) ? 0 : 1)) * 16;
-            double offsetDirection = Math.pow(-1, processedEdgeCount);
-            double offsetAngle = Math.toRadians(90) * offsetDirection;
 
             //Determine arrow components connection angles and positions
             final Tuple<Double, Double> arrowHeadPosition;
             final Double arrowHeadConnectionAngle;
-            Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceCircumferencePosition, paralellOffsetDistance, sourceConnectionAngle - offsetAngle);
-            Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + offsetAngle);
+            Tuple<Double, Double> shaftSourcePosition = sourceCircumferencePosition;
+            Tuple<Double, Double> shaftDestinationPosition = destinationCircumferencePosition;
             
             switch (edgeDirection) {
                 case Graph.UPHILL:
@@ -451,9 +445,6 @@ public class SVGGraph {
                 edgeArrowHeadContainer.setParent(connection);
                 edgeArrowHeadContainer.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), htmlColor);
             }
-
-            processedEdgeCount++;
-
         }
         
         /**
@@ -501,14 +492,14 @@ public class SVGGraph {
                 
                 //Determine offset controlls
                 int paralellOffsetDistance = (processedEdgeCount / 2 + ((processedEdgeCount % 2 == 0) ? 0 : 1)) * 16;
-                double offsetDirection = Math.pow(-1, processedEdgeCount);
-                double offsetAngle = Math.toRadians(90) * offsetDirection;
+                double paralellOffsetDirection = Math.pow(-1, processedEdgeCount);
+                double paralellOffsetAngle = Math.toRadians(90) * paralellOffsetDirection;
 
                 //Determine arrow components connection angles and positions
                 final Tuple<Double, Double> arrowHeadPosition;
                 final Double arrowHeadConnectionAngle;
-                Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceCircumferencePosition, paralellOffsetDistance, sourceConnectionAngle - offsetAngle);
-                Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + offsetAngle);
+                Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceCircumferencePosition, paralellOffsetDistance, sourceConnectionAngle - paralellOffsetAngle);
+                Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + paralellOffsetAngle);
 
                 switch (edgeDirection) {
                 case Graph.UPHILL:
@@ -591,14 +582,14 @@ public class SVGGraph {
                 
                 //Determine offset controlls
                 int paralellOffsetDistance = (processedTransactionCount / 2 + ((processedTransactionCount % 2 == 0) ? 0 : 1)) * 16;
-                double offsetDirection = Math.pow(-1, processedTransactionCount);
-                double offsetAngle = Math.toRadians(90) * offsetDirection;
+                double paralellOffsetDirection = Math.pow(-1, processedTransactionCount);
+                double paralellOffsetAngle = Math.toRadians(90) * paralellOffsetDirection;
                 
                 //Determine arrow components connection angles and positions
                 final Tuple<Double, Double> arrowHeadPosition;
                 final Double arrowHeadConnectionAngle;
-                Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceCircumferencePosition, paralellOffsetDistance, sourceConnectionAngle - offsetAngle);
-                Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + offsetAngle);
+                Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceCircumferencePosition, paralellOffsetDistance, sourceConnectionAngle - paralellOffsetAngle);
+                Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + paralellOffsetAngle);
                 switch (transactionDirection) {
                     case Graph.UPHILL:
                         //Source node has the arrow head
