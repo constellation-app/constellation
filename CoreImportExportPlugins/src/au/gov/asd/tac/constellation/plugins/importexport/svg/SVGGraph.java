@@ -25,11 +25,15 @@ import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
+import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
+import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
@@ -108,12 +112,10 @@ public class SVGGraph {
      * </pre>
      */
     public static class SVGGraphBuilder {
-
+        private GraphVisualAccess access;
         private GraphReadMethods graph;
-        private Float xBoundMin = null;
-        private Float xBoundMax = null;
-        private Float yBoundMin = null;
-        private Float yBoundMax = null;
+        private Vector3f maxBound = null;
+        private Vector3f minBound = null;
         private String graphTitle = null;
         private ConnectionMode connectionMode = VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
       
@@ -776,33 +778,12 @@ public class SVGGraph {
          * @return 
          */
         private void defineBoundary(final GraphReadMethods graph) {
-            final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
-            final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
-            final int vertexCount = graph.getVertexCount();
-            for (int vertexPosition = 0 ; vertexPosition < vertexCount ; vertexPosition++) {
-                final int vertexID = graph.getVertex(vertexPosition);
-                final Float xCoordinate = graph.getFloatValue(xAttributeID, vertexID) * 128; 
-                final Float yCoordinate = graph.getFloatValue(yAttributeID, vertexID) * 128;
-                if (vertexPosition == 0) {
-                    xBoundMin = xCoordinate;
-                    xBoundMax = xCoordinate;
-                    yBoundMin = yCoordinate;
-                    yBoundMax = yCoordinate;
-                } else {
-                    if (xBoundMin > xCoordinate) {
-                        xBoundMin = xCoordinate;
-                    }
-                    if (xBoundMax < xCoordinate) {
-                        xBoundMax = xCoordinate;
-                    }
-                    if (yBoundMin > yCoordinate) {
-                        yBoundMin = yCoordinate;
-                    }
-                    if (yBoundMax < yCoordinate) {
-                        yBoundMax = yCoordinate;
-                    }
-                }
-            }
+            final BoundingBox box = new BoundingBox();
+            BoundingBoxUtilities.recalculateFromGraph(box, graph, false);
+            maxBound = box.getMax();
+            minBound = box.getMin();
+            maxBound.scale(128);
+            minBound.scale(128);
         }
 
         /**
@@ -814,8 +795,8 @@ public class SVGGraph {
          * @param svg 
          */
         private void setLayoutDimensions(final SVGGraph svg) {
-            final Float contentWidth = xBoundMax - xBoundMin + 256;
-            final Float contentHeight = yBoundMax - yBoundMin + 256;
+            final Float contentWidth = maxBound.getX() - minBound.getX() + 256;
+            final Float contentHeight = maxBound.getY() - minBound.getY() + 256;
             final Float xMargin = 50.0F;
             final Float topMargin = 288.0F;
             final Float bottomMargin = 128.0F;
@@ -887,8 +868,8 @@ public class SVGGraph {
             final Double constelationGraphX = graph.getDoubleValue(xAttributeID, vertexID);
             final Double constelationGraphY = graph.getDoubleValue(yAttributeID, vertexID);
             
-            final Double svgGraphX = (constelationGraphX * halfVertexSize) - xBoundMin + halfVertexSize;
-            final Double svgGraphY = (yBoundMax - yBoundMin) - ((constelationGraphY * halfVertexSize) - yBoundMin) + halfVertexSize;
+            final Double svgGraphX = (constelationGraphX * halfVertexSize) - minBound.getX() + halfVertexSize;
+            final Double svgGraphY = (maxBound.getY() - minBound.getY()) - ((constelationGraphY * halfVertexSize) - minBound.getY()) + halfVertexSize;
             
             return new Tuple<>(svgGraphX, svgGraphY);
         }
