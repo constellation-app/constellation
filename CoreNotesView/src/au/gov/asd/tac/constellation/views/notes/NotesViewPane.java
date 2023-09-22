@@ -137,7 +137,7 @@ public class NotesViewPane extends BorderPane {
 
     private final String fontStyle = String.format("-fx-text-fill: #fff; -fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String BOLD_STYLE = "-fx-font-weight: bold;";
-    private static String FONT_SIZE = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private static String fontSize = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
 
     private final List<Integer> nodesSelected = new ArrayList<>();
     private final List<Integer> transactionsSelected = new ArrayList<>();
@@ -176,7 +176,7 @@ public class NotesViewPane extends BorderPane {
         filterSelectionMultiChoiceInput.setTitle("Select a filter...");
         filterSelectionMultiChoiceInput.setMinWidth(165);
 
-        filterSelectionMultiChoiceInput.setStyle(FONT_SIZE);
+        filterSelectionMultiChoiceInput.setStyle(fontSize);
         filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isSelectedFiltersUpdating) {
                 setFilters(filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems());
@@ -208,7 +208,7 @@ public class NotesViewPane extends BorderPane {
         // CheckComboBox for the Auto Note filters.
 
         autoFilterCheckComboBox = new MultiChoiceInputField(tagsFiltersList);
-        autoFilterCheckComboBox.setStyle(FONT_SIZE);
+        autoFilterCheckComboBox.setStyle(fontSize);
         autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isAutoSelectedFiltersUpdating) {
                 updateSelectedTagsCombo(autoFilterCheckComboBox.getCheckModel().getCheckedItems());
