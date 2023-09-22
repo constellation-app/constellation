@@ -24,7 +24,9 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -114,6 +116,7 @@ public class SVGGraph {
         private Float yBoundMin = null;
         private Float yBoundMax = null;
         private String graphTitle = null;
+        private ConnectionMode connectionMode = VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
       
         /**
          * Specifies the graph to build the SVG from.
@@ -122,6 +125,10 @@ public class SVGGraph {
          */
         public SVGGraphBuilder withGraph(final GraphReadMethods graph) {
             this.graph = graph;
+            return this;
+        }
+        public SVGGraphBuilder withConnectionMode(final ConnectionMode connectionMode){
+            this.connectionMode = connectionMode;
             return this;
         }
         
@@ -248,23 +255,32 @@ public class SVGGraph {
             for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
                 final int linkID = graph.getLink(linkPosition);
                 
-                //Determine the number of directed edges in the current link
-                int directedEdgeCount = 0;
                 
-                //Itterate ofver all edges in the link
-                final int linkEdgeCount = graph.getLinkEdgeCount(linkID);
-                for (int position = 0; position < linkEdgeCount; position++){
-                    int edgeID = graph.getLinkEdge(linkID, position);
+                
+                switch (connectionMode){
+                    case TRANSACTION:
+                        break;
+                    case EDGE:
+                        break;
+                    case LINK:
+                        //Determine the number of directed edges in the current link
+                        int directedEdgeCount = 0;
+                        //Itterate ofver all edges in the link
+                        final int linkEdgeCount = graph.getLinkEdgeCount(linkID);
+                        for (int position = 0; position < linkEdgeCount; position++){
+                            int edgeID = graph.getLinkEdge(linkID, position);
 
-                    //Cound the edge if its is not undirected
-                    if (graph.getEdgeDirection(edgeID) != Graph.FLAT){
-                        directedEdgeCount++;
-                    }
-                }
-                
-                //Render link if two directed edges are found 
-                if (directedEdgeCount == 2){
-                   buildLink(linksContainer, graph.getLink(linkID));
+                            //Cound the edge if its is not undirected
+                            if (graph.getEdgeDirection(edgeID) != Graph.FLAT){
+                                directedEdgeCount++;
+                            }
+                        }
+                        
+                        //Render link if two directed edges are found 
+                        if (directedEdgeCount == 2){
+                           buildLink(linksContainer, graph.getLink(linkID));
+                        }      
+                        break;
                 }
             }
         }

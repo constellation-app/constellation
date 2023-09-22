@@ -79,12 +79,13 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException { 
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
-        final ConnectionMode currentConnectionMode = (ConnectionMode) parameters.getObjectValue(GRAPH_CONNECTION_MODE_PARAMETER_ID);
+        final ConnectionMode connectionMode = (ConnectionMode) parameters.getObjectValue(GRAPH_CONNECTION_MODE_PARAMETER_ID);
 
         final File imageFile = new File(fnam);     
         final SVGObject svg = new SVGGraph.SVGGraphBuilder()
                 .withTitle(title)
                 .withGraph(graph)
+                .withConnectionMode(connectionMode)
                 .build();
         try {
             exportToSVG(imageFile, svg);
