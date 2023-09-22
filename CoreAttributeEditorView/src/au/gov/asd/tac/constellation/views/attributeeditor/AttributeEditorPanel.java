@@ -148,10 +148,10 @@ public class AttributeEditorPanel extends BorderPane {
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String NO_VALUE_TEXT = "<No Value>";
 
-    private static final String SCHEMA_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#333333" : "#999999";
     private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "#8a1d1d";
     private static final String CUSTOM_ATTRIBUTE_COLOR = "#1f4f8a";
     private static final String HIDDEN_ATTRIBUTE_COLOR = "#999999";
+    private static final String SCHEMA_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#333333" : HIDDEN_ATTRIBUTE_COLOR;
 
     private StackPane root;
     private ArrayList<VBox> valueTitledPaneContainers = new ArrayList<>();
@@ -517,11 +517,11 @@ public class AttributeEditorPanel extends BorderPane {
 
         if (!multiValue) {
             attributePane.setCollapsible(false);
-            
+
             if (!JavafxStyleManager.isDarkTheme()) {
-                 attributePane.setStyle("-fx-background-color: #FFFFFF; ");
-            } 
-            
+                attributePane.setStyle("-fx-background-color: #FFFFFF; ");
+            }
+
         } else {
             createMultiValuePane(attribute, attributePane, values);
         }

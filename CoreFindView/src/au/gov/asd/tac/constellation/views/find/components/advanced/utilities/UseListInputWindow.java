@@ -66,9 +66,6 @@ public class UseListInputWindow extends Stage {
     private static final String SEMI_COLON = "Semi-colon";
     private static final String STRING_STRING = "String";
 
-    //"Comma", "Tab", "Semi-colon", "String"
-    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/find/resources/editor-dark.css";
-
     public UseListInputWindow(StringCriteriaPanel parentComponent, String text) {
         this.parentComponent = parentComponent;
         this.textArea.setText(text);

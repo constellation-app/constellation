@@ -69,9 +69,6 @@ public class DateTimeSelector extends Stage {
     private static final int NUMBER_SPINNER_WIDTH = 55;
     private static final int MILLIS_SPINNER_WIDTH = 60;
 
-    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/find/resources/editor-dark.css";
-
-
     private final DateTimeCriteriaPanel parentComponent;
 
     public DateTimeSelector(final DateTimeCriteriaPanel parentComponent, final String date, final String time, final String timeZone) {

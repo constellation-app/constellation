@@ -58,8 +58,6 @@ public class IconSelector extends Stage {
     private final Button selectButton = new Button("Select");
     private final Button cancelButton = new Button("Cancel");
 
-    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/find/resources/editor-dark.css";
-
     public IconSelector(final IconCriteriaPanel parentComponent, final ConstellationIcon icon) {
         this.parentComponent = parentComponent;
         this.icon = icon;

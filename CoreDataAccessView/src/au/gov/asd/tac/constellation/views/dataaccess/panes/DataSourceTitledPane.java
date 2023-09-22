@@ -90,9 +90,6 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
      */
     private boolean isLoaded;
 
-    private static final Image HELP_ICON = UserInterfaceIconProvider.HELP
-            .buildImage(16, ConstellationColor.SKY.getJavaColor());
-
     /**
      * Creates a new titled pane for the give plugin.
      *
