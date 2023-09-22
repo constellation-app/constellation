@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
@@ -184,8 +185,6 @@ public class SVGGraph {
             final SVGContainer nodesContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.NODES.id);
             
             //Specify attribute ID's for the node vertex's'
-            final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
-            final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
             final int fillColorAttributeID = VisualConcept.VertexAttribute.COLOR.get(graph); 
             final int backgroundIconID = VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph);
             final int foregroundIconID = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
@@ -201,8 +200,7 @@ public class SVGGraph {
                 final int vertexID = graph.getVertex(vertexPosition);
 
                 //Get the values of the attributes relevent to the current node
-                final Float xVal = (graph.getFloatValue(xAttributeID, vertexID) * 128) - xBoundMin;
-                final Float yVal = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, vertexID) * 128) - yBoundMin);
+                final Tuple<Double, Double> position = getVertexPosition(vertexID);
                 final String fillColor = graph.getStringValue(fillColorAttributeID, vertexID);
                 final String htmlColor = ConstellationColor.getColorValue(fillColor).getHtmlColor();
                 final Color color = Color.decode(htmlColor);
@@ -211,9 +209,9 @@ public class SVGGraph {
 
                 //build the SVGobject representing the node
                 final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
-                node.setAttribute(SVGAttributeConstant.X.getKey(), xVal.toString());
-                node.setAttribute(SVGAttributeConstant.Y.getKey(), yVal.toString());
-                node.setAttribute(SVGAttributeConstant.ID.getKey(), ((Integer) vertexID).toString());
+                node.setAttribute(SVGAttributeConstant.X.getKey(), String.format("%s", position.getFirst() - 128));
+                node.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%s", position.getSecond() - 128));
+                node.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("%s", vertexID));
                 node.setParent(nodesContainer.toSVGObject());
                 
                 //Add labels to the Node
@@ -307,56 +305,46 @@ public class SVGGraph {
          * @param linkID
          */
         private void buildDoubleLink(final SVGContainer connectionsContainer, int linkID) {
-            final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
-            final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
             final int sourceVxId = graph.getLinkHighVertex(linkID);
             final int destinationVxId = graph.getLinkLowVertex(linkID); 
 
             //Get the coordinates of the source and destination node.
-            final Float sourceX = (graph.getFloatValue(xAttributeID, sourceVxId) * 128) - xBoundMin + 128;
-            final Float sourceY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, sourceVxId) * 128) - yBoundMin) + 128;
-            final Float destinationX = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
-            final Float destinationY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
+            final Tuple<Double, Double> sourcePosition = getVertexPosition(sourceVxId);
+            final Tuple<Double, Double> destinationPosition = getVertexPosition(destinationVxId);
 
             //get the connection angles of the transactions
-            final Double sourceConnectionAngle = calculateConnectionAngle(sourceX, sourceY, destinationX, destinationY);
-            final Double destinationConnectionAngle = calculateConnectionAngle(destinationX, destinationY, sourceX, sourceY);
+            final Double sourceConnectionAngle = calculateConnectionAngle(sourcePosition, destinationPosition);
+            final Double destinationConnectionAngle = calculateConnectionAngle(destinationPosition, sourcePosition);
 
             //get the coordinates of the points where the transactions intersect the radius around the node that equal to half it's size.
-            final Double sourceNodeCircumferenceX = sourceX - (128 * Math.cos(sourceConnectionAngle));
-            final Double sourceNodeCircumferenceY = sourceY - (128 * Math.sin(sourceConnectionAngle));
-            final Double destinationNodeCircumferenceX = destinationX - (128 * Math.cos(destinationConnectionAngle));
-            final Double destinationNodeCircumferenceY = destinationY - (128 * Math.sin(destinationConnectionAngle));
+            final Tuple<Double, Double> sourceCircumferencePosition = offSetPosition(sourcePosition, 128, sourceConnectionAngle);
+            final Tuple<Double, Double> destinationCircumferencePosition = offSetPosition(destinationPosition, 128, destinationConnectionAngle);
             
             //Set the arrow head position to the circumference point
-            final Double arrowHeadSourceX = sourceNodeCircumferenceX;
-            final Double arrowHeadSourceY = sourceNodeCircumferenceY;
-            final Double arrowHeadDestinationX = destinationNodeCircumferenceX;
-            final Double arrowHeadDestinationY = destinationNodeCircumferenceY;
+            final Tuple<Double, Double> sourceArrowHeadPosition = sourceCircumferencePosition;
+            final Tuple<Double, Double> destinationArrowHeadPosition = destinationCircumferencePosition;
             
             //Set the shaft estremeties to 64px behind the arrow position.
-            final Double shaftSourceX = arrowHeadSourceX - (64 * Math.cos(sourceConnectionAngle));
-            final Double shaftSourceY = arrowHeadSourceY - (64 * Math.sin(sourceConnectionAngle));
-            final Double shaftDestinationX = arrowHeadDestinationX - (64 * Math.cos(destinationConnectionAngle));
-            final Double shaftDestinationY = arrowHeadDestinationY - (64 * Math.sin(destinationConnectionAngle));
+            final Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceArrowHeadPosition, 64, sourceConnectionAngle);
+            final Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationArrowHeadPosition, 64, destinationConnectionAngle);
 
             //Construct the connection
             final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
             final SVGObject arrowShaft = connection.getChild("arrow-shaft");
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourceX));
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourceY));
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationX));
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationY));
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourcePosition.getFirst()));
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourcePosition.getSecond()));
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationPosition.getFirst()));
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationPosition.getSecond()));
 
             connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("%s", linkID));
             connection.setParent(connectionsContainer.toSVGObject());
 
             final SVGObject sourceLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
-            buildArrowHead(sourceLinkArrowHeadContainer, arrowHeadSourceX , arrowHeadSourceY, sourceConnectionAngle);
+            buildArrowHead(sourceLinkArrowHeadContainer, sourceArrowHeadPosition, sourceConnectionAngle);
             sourceLinkArrowHeadContainer.setParent(connection);
 
             final SVGObject destinationLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
-            buildArrowHead(destinationLinkArrowHeadContainer, arrowHeadDestinationX, arrowHeadDestinationY, destinationConnectionAngle);
+            buildArrowHead(destinationLinkArrowHeadContainer, destinationArrowHeadPosition, destinationConnectionAngle);
             destinationLinkArrowHeadContainer.setParent(connection);
         } 
         
@@ -370,27 +358,21 @@ public class SVGGraph {
          * @param linkID
          */
         private void buildSingleLink(final SVGContainer ConnectionsContainer, int linkID) {
-            final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
-            final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
             final int sourceVxId = graph.getLinkHighVertex(linkID);
             final int destinationVxId = graph.getLinkLowVertex(linkID); 
             final int colorAttributeID = VisualConcept.TransactionAttribute.COLOR.get(graph);
 
             //Get the coordinates of the source and destination node.
-            final Float sourceX = (graph.getFloatValue(xAttributeID, sourceVxId) * 128) - xBoundMin + 128;
-            final Float sourceY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, sourceVxId) * 128) - yBoundMin) + 128;
-            final Float destinationX = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
-            final Float destinationY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
+            final Tuple<Double, Double> sourcePosition = getVertexPosition(sourceVxId);
+            final Tuple<Double, Double> destinationPosition = getVertexPosition(destinationVxId);
 
-            //Get the connection angles of the transactions
-            final Double sourceConnectionAngle = calculateConnectionAngle(sourceX, sourceY, destinationX, destinationY);
-            final Double destinationConnectionAngle = calculateConnectionAngle(destinationX, destinationY, sourceX, sourceY);
+            //get the connection angles of the transactions
+            final Double sourceConnectionAngle = calculateConnectionAngle(sourcePosition, destinationPosition);
+            final Double destinationConnectionAngle = calculateConnectionAngle(destinationPosition, sourcePosition);
 
-            //Get the coordinates of the points wehre the transactions intersect the radius around the node that equal to half it's size.
-            final Double sourceNodeCircumferenceX = sourceX - (128 * Math.cos(sourceConnectionAngle));
-            final Double sourceNodeCircumferenceY = sourceY - (128 * Math.sin(sourceConnectionAngle));
-            final Double destinationNodeCircumferenceX = destinationX - (128 * Math.cos(destinationConnectionAngle));
-            final Double destinationNodeCircumferenceY = destinationY - (128 * Math.sin(destinationConnectionAngle));
+            //get the coordinates of the points where the transactions intersect the radius around the node that equal to half it's size.
+            final Tuple<Double, Double> sourceCircumferencePosition = offSetPosition(sourcePosition, 128, sourceConnectionAngle);
+            final Tuple<Double, Double> destinationCircumferencePosition = offSetPosition(destinationPosition, 128, destinationConnectionAngle);
             
             //Extract needed information from edges.
             int edgeDirection = Graph.NOT_FOUND;
@@ -427,35 +409,28 @@ public class SVGGraph {
             double offsetAngle = Math.toRadians(90) * offsetDirection;
 
             //Determine arrow components connection angles and positions
-            final Double arrowHeadX;
-            final Double arrowHeadY;
+            final Tuple<Double, Double> arrowHeadPosition;
             final Double arrowHeadConnectionAngle;
-            Double shaftSourceX = sourceNodeCircumferenceX - (paralellOffsetDistance * Math.cos(sourceConnectionAngle - offsetAngle));
-            Double shaftSourceY = sourceNodeCircumferenceY - (paralellOffsetDistance * Math.sin(sourceConnectionAngle - offsetAngle));
-            Double shaftDestinationX = destinationNodeCircumferenceX - (paralellOffsetDistance * Math.cos(destinationConnectionAngle + offsetAngle));
-            Double shaftDestinationY = destinationNodeCircumferenceY - (paralellOffsetDistance * Math.sin(destinationConnectionAngle + offsetAngle));               
+            Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceCircumferencePosition, paralellOffsetDistance, sourceConnectionAngle - offsetAngle);
+            Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + offsetAngle);
+            
             switch (edgeDirection) {
                 case Graph.UPHILL:
                     //Source node has the arrow head
-                    arrowHeadX = shaftSourceX;
-                    arrowHeadY = shaftSourceY;
+                    arrowHeadPosition = shaftSourcePosition;
                     arrowHeadConnectionAngle = sourceConnectionAngle;
-                    shaftSourceX = shaftSourceX - (64 * Math.cos(sourceConnectionAngle));
-                    shaftSourceY = shaftSourceY - (64 * Math.sin(sourceConnectionAngle));
+                    shaftSourcePosition = offSetPosition(arrowHeadPosition, 64, sourceConnectionAngle);
                     break;
                 case Graph.DOWNHILL:
                     //Destination node has the arrow head
-                    arrowHeadX = shaftDestinationX;
-                    arrowHeadY = shaftDestinationY;
+                    arrowHeadPosition = shaftDestinationPosition;
                     arrowHeadConnectionAngle = destinationConnectionAngle;
-                    shaftDestinationX = shaftDestinationX - (64 * Math.cos(destinationConnectionAngle));
-                    shaftDestinationY = shaftDestinationY - (64 * Math.sin(destinationConnectionAngle));
+                    shaftDestinationPosition = offSetPosition(arrowHeadPosition, 64, destinationConnectionAngle);
                     break;
                 default:
                     //Undirected graphs have no arrow head
                     //Values set to 0 to avoid errors, however arrow heads are not rendered to the screen in this case.
-                    arrowHeadX = 0D;
-                    arrowHeadY = 0D;
+                    arrowHeadPosition = new Tuple(0D, 0D);
                     arrowHeadConnectionAngle = 0D;
                     break;
             }
@@ -463,16 +438,16 @@ public class SVGGraph {
             //Construct the connection
             final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
             final SVGObject arrowShaft = connection.getChild("arrow-shaft");
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourceX));
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourceY));
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationX));
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationY));
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourcePosition.getFirst()));
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourcePosition.getSecond()));
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationPosition.getFirst()));
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationPosition.getSecond()));
             arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
             connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s", linkID));
             connection.setParent(ConnectionsContainer.toSVGObject());
             if (edgeDirection != Graph.FLAT){
                 final SVGObject edgeArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
-                buildArrowHead(edgeArrowHeadContainer, arrowHeadX, arrowHeadY, arrowHeadConnectionAngle);
+                buildArrowHead(edgeArrowHeadContainer, arrowHeadPosition, arrowHeadConnectionAngle);
                 edgeArrowHeadContainer.setParent(connection);
                 edgeArrowHeadContainer.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), htmlColor);
             }
@@ -490,28 +465,22 @@ public class SVGGraph {
          * @param linkID 
          */
         private void buildEdges(final SVGContainer connectionsContainer, int linkID) {
-            final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
-            final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
             final int sourceVxId = graph.getLinkHighVertex(linkID);
             final int destinationVxId = graph.getLinkLowVertex(linkID); 
             final int colorAttributeID = VisualConcept.TransactionAttribute.COLOR.get(graph);
 
             //Get the coordinates of the source and destination node.
-            final Float sourceX = (graph.getFloatValue(xAttributeID, sourceVxId) * 128) - xBoundMin + 128;
-            final Float sourceY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, sourceVxId) * 128) - yBoundMin) + 128;
-            final Float destinationX = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
-            final Float destinationY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
+            final Tuple<Double, Double> sourcePosition = getVertexPosition(sourceVxId);
+            final Tuple<Double, Double> destinationPosition = getVertexPosition(destinationVxId);
 
             //get the connection angles of the transactions
-            final Double sourceConnectionAngle = calculateConnectionAngle(sourceX, sourceY, destinationX, destinationY);
-            final Double destinationConnectionAngle = calculateConnectionAngle(destinationX, destinationY, sourceX, sourceY);
+            final Double sourceConnectionAngle = calculateConnectionAngle(sourcePosition, destinationPosition);
+            final Double destinationConnectionAngle = calculateConnectionAngle(destinationPosition, sourcePosition);
 
             //get the coordinates of the points where the transactions intersect the radius around the node that equal to half it's size.
-            final Double sourceNodeCircumferenceX = sourceX - (128 * Math.cos(sourceConnectionAngle));
-            final Double sourceNodeCircumferenceY = sourceY - (128 * Math.sin(sourceConnectionAngle));
-            final Double destinationNodeCircumferenceX = destinationX - (128 * Math.cos(destinationConnectionAngle));
-            final Double destinationNodeCircumferenceY = destinationY - (128 * Math.sin(destinationConnectionAngle));
-
+            final Tuple<Double, Double> sourceCircumferencePosition = offSetPosition(sourcePosition, 128, sourceConnectionAngle);
+            final Tuple<Double, Double> destinationCircumferencePosition = offSetPosition(destinationPosition, 128, destinationConnectionAngle);
+            
             //Loop through all eges in the link
             int processedEdgeCount = 0;
             final int edgeCount = graph.getLinkEdgeCount(linkID);
@@ -536,52 +505,45 @@ public class SVGGraph {
                 double offsetAngle = Math.toRadians(90) * offsetDirection;
 
                 //Determine arrow components connection angles and positions
-                final Double arrowHeadX;
-                final Double arrowHeadY;
+                final Tuple<Double, Double> arrowHeadPosition;
                 final Double arrowHeadConnectionAngle;
-                Double shaftSourceX = sourceNodeCircumferenceX - (paralellOffsetDistance * Math.cos(sourceConnectionAngle - offsetAngle));
-                Double shaftSourceY = sourceNodeCircumferenceY - (paralellOffsetDistance * Math.sin(sourceConnectionAngle - offsetAngle));
-                Double shaftDestinationX = destinationNodeCircumferenceX - (paralellOffsetDistance * Math.cos(destinationConnectionAngle + offsetAngle));
-                Double shaftDestinationY = destinationNodeCircumferenceY - (paralellOffsetDistance * Math.sin(destinationConnectionAngle + offsetAngle));               
+                Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceCircumferencePosition, paralellOffsetDistance, sourceConnectionAngle - offsetAngle);
+                Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + offsetAngle);
+
                 switch (edgeDirection) {
-                    case Graph.UPHILL:
-                        //Source node has the arrow head
-                        arrowHeadX = shaftSourceX;
-                        arrowHeadY = shaftSourceY;
-                        arrowHeadConnectionAngle = sourceConnectionAngle;
-                        shaftSourceX = shaftSourceX - (64 * Math.cos(sourceConnectionAngle));
-                        shaftSourceY = shaftSourceY - (64 * Math.sin(sourceConnectionAngle));
-                        break;
-                    case Graph.DOWNHILL:
-                        //Destination node has the arrow head
-                        arrowHeadX = shaftDestinationX;
-                        arrowHeadY = shaftDestinationY;
-                        arrowHeadConnectionAngle = destinationConnectionAngle;
-                        shaftDestinationX = shaftDestinationX - (64 * Math.cos(destinationConnectionAngle));
-                        shaftDestinationY = shaftDestinationY - (64 * Math.sin(destinationConnectionAngle));
-                        break;
-                    default:
-                        //Undirected graphs have no arrow head
-                        //Values set to 0 to avoid errors, however arrow heads are not rendered to the screen in this case.
-                        arrowHeadX = 0D;
-                        arrowHeadY = 0D;
-                        arrowHeadConnectionAngle = 0D;
-                        break;
+                case Graph.UPHILL:
+                    //Source node has the arrow head
+                    arrowHeadPosition = shaftSourcePosition;
+                    arrowHeadConnectionAngle = sourceConnectionAngle;
+                    shaftSourcePosition = offSetPosition(arrowHeadPosition, 64, sourceConnectionAngle);
+                    break;
+                case Graph.DOWNHILL:
+                    //Destination node has the arrow head
+                    arrowHeadPosition = shaftDestinationPosition;
+                    arrowHeadConnectionAngle = destinationConnectionAngle;
+                    shaftDestinationPosition = offSetPosition(arrowHeadPosition, 64, destinationConnectionAngle);
+                    break;
+                default:
+                    //Undirected graphs have no arrow head
+                    //Values set to 0 to avoid errors, however arrow heads are not rendered to the screen in this case.
+                    arrowHeadPosition = new Tuple(0D, 0D);
+                    arrowHeadConnectionAngle = 0D;
+                    break;
                 }
 
                 //Construct the connection
                 final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
                 final SVGObject arrowShaft = connection.getChild("arrow-shaft");
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourceX));
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourceY));
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationX));
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationY));
+                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourcePosition.getFirst()));
+                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourcePosition.getSecond()));
+                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationPosition.getFirst()));
+                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationPosition.getSecond()));
                 arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
                 connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s-edge-%s", linkID, edgePosition));
                 connection.setParent(connectionsContainer.toSVGObject());
                 if (edgeDirection != Graph.FLAT){
                     final SVGObject edgeArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
-                    buildArrowHead(edgeArrowHeadContainer, arrowHeadX, arrowHeadY, arrowHeadConnectionAngle);
+                    buildArrowHead(edgeArrowHeadContainer, arrowHeadPosition, arrowHeadConnectionAngle);
                     edgeArrowHeadContainer.setParent(connection);
                     edgeArrowHeadContainer.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), htmlColor);
                 }
@@ -600,28 +562,22 @@ public class SVGGraph {
          * @param linkID
          */
         private void buildTransactions(final SVGContainer connectionsContainer, int linkID) {
-            final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
-            final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
             final int sourceVxId = graph.getLinkHighVertex(linkID);
             final int destinationVxId = graph.getLinkLowVertex(linkID); 
             final int colorAttributeID = VisualConcept.TransactionAttribute.COLOR.get(graph);
 
             //Get the coordinates of the source and destination node.
-            final Float sourceX = (graph.getFloatValue(xAttributeID, sourceVxId) * 128) - xBoundMin + 128;
-            final Float sourceY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, sourceVxId) * 128) - yBoundMin) + 128;
-            final Float destinationX = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
-            final Float destinationY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
+            final Tuple<Double, Double> sourcePosition = getVertexPosition(sourceVxId);
+            final Tuple<Double, Double> destinationPosition = getVertexPosition(destinationVxId);
 
             //get the connection angles of the transactions
-            final Double sourceConnectionAngle = calculateConnectionAngle(sourceX, sourceY, destinationX, destinationY);
-            final Double destinationConnectionAngle = calculateConnectionAngle(destinationX, destinationY, sourceX, sourceY);
+            final Double sourceConnectionAngle = calculateConnectionAngle(sourcePosition, destinationPosition);
+            final Double destinationConnectionAngle = calculateConnectionAngle(destinationPosition, sourcePosition);
 
-            //get the coordinates of the points wehre the transactions intersect the raduis around the node that equal to half it's size.
-            final Double sourceNodeCircumferenceX = sourceX - (128 * Math.cos(sourceConnectionAngle));
-            final Double sourceNodeCircumferenceY = sourceY - (128 * Math.sin(sourceConnectionAngle));
-            final Double destinationNodeCircumferenceX = destinationX - (128 * Math.cos(destinationConnectionAngle));
-            final Double destinationNodeCircumferenceY = destinationY - (128 * Math.sin(destinationConnectionAngle));
-
+            //get the coordinates of the points where the transactions intersect the radius around the node that equal to half it's size.
+            final Tuple<Double, Double> sourceCircumferencePosition = offSetPosition(sourcePosition, 128, sourceConnectionAngle);
+            final Tuple<Double, Double> destinationCircumferencePosition = offSetPosition(destinationPosition, 128, destinationConnectionAngle);
+            
             //Loop through all eges in the link
             int processedTransactionCount = 0;
             final int transactionCount = graph.getLinkTransactionCount(linkID);
@@ -637,37 +593,29 @@ public class SVGGraph {
                 int paralellOffsetDistance = (processedTransactionCount / 2 + ((processedTransactionCount % 2 == 0) ? 0 : 1)) * 16;
                 double offsetDirection = Math.pow(-1, processedTransactionCount);
                 double offsetAngle = Math.toRadians(90) * offsetDirection;
-
+                
                 //Determine arrow components connection angles and positions
-                final Double arrowHeadX;
-                final Double arrowHeadY;
+                final Tuple<Double, Double> arrowHeadPosition;
                 final Double arrowHeadConnectionAngle;
-                Double shaftSourceX = sourceNodeCircumferenceX - (paralellOffsetDistance * Math.cos(sourceConnectionAngle - offsetAngle));
-                Double shaftSourceY = sourceNodeCircumferenceY - (paralellOffsetDistance * Math.sin(sourceConnectionAngle - offsetAngle));
-                Double shaftDestinationX = destinationNodeCircumferenceX - (paralellOffsetDistance * Math.cos(destinationConnectionAngle + offsetAngle));
-                Double shaftDestinationY = destinationNodeCircumferenceY - (paralellOffsetDistance * Math.sin(destinationConnectionAngle + offsetAngle));               
+                Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceCircumferencePosition, paralellOffsetDistance, sourceConnectionAngle - offsetAngle);
+                Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + offsetAngle);
                 switch (transactionDirection) {
                     case Graph.UPHILL:
                         //Source node has the arrow head
-                        arrowHeadX = shaftSourceX;
-                        arrowHeadY = shaftSourceY;
+                        arrowHeadPosition = shaftSourcePosition;
                         arrowHeadConnectionAngle = sourceConnectionAngle;
-                        shaftSourceX = shaftSourceX - (64 * Math.cos(sourceConnectionAngle));
-                        shaftSourceY = shaftSourceY - (64 * Math.sin(sourceConnectionAngle));
+                        shaftSourcePosition = offSetPosition(arrowHeadPosition, 64, sourceConnectionAngle);
                         break;
                     case Graph.DOWNHILL:
                         //Destination node has the arrow head
-                        arrowHeadX = shaftDestinationX;
-                        arrowHeadY = shaftDestinationY;
+                        arrowHeadPosition = shaftDestinationPosition;
                         arrowHeadConnectionAngle = destinationConnectionAngle;
-                        shaftDestinationX = shaftDestinationX - (64 * Math.cos(destinationConnectionAngle));
-                        shaftDestinationY = shaftDestinationY - (64 * Math.sin(destinationConnectionAngle));
+                        shaftDestinationPosition = offSetPosition(arrowHeadPosition, 64, destinationConnectionAngle);
                         break;
                     default:
                         //Undirected graphs have no arrow head
                         //Values set to 0 to avoid errors, however arrow heads are not rendered to the screen in this case.
-                        arrowHeadX = 0D;
-                        arrowHeadY = 0D;
+                        arrowHeadPosition = new Tuple(0D, 0D);
                         arrowHeadConnectionAngle = 0D;
                         break;
                 }
@@ -675,16 +623,16 @@ public class SVGGraph {
                 //Construct the connection
                 final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
                 final SVGObject arrowShaft = connection.getChild("arrow-shaft");
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourceX));
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourceY));
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationX));
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationY));
+                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourcePosition.getFirst()));
+                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourcePosition.getSecond()));
+                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationPosition.getFirst()));
+                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationPosition.getSecond()));
                 arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
                 connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s-transaction-%s", linkID, transactionPosition));
                 connection.setParent(connectionsContainer.toSVGObject());
                 if (transactionDirection != Graph.FLAT){
                     final SVGObject transactionArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
-                    buildArrowHead(transactionArrowHeadContainer, arrowHeadX, arrowHeadY, arrowHeadConnectionAngle);
+                    buildArrowHead(transactionArrowHeadContainer, arrowHeadPosition, arrowHeadConnectionAngle);
                     transactionArrowHeadContainer.setParent(connection);
                     transactionArrowHeadContainer.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), htmlColor);
                 }
@@ -700,11 +648,13 @@ public class SVGGraph {
          * @param y
          * @param connectionAngle 
          */
-        private void buildArrowHead(SVGObject arrowHeadContainer, Double x, Double y, Double connectionAngle) {
+        private void buildArrowHead(SVGObject arrowHeadContainer, Tuple<Double,Double> position, Double connectionAngle) {
             //The size of the svg element containing the arrow head polygon asset
             final int arrowHeadWidth = 128;
             final int arrowHeadheight = 32;
             
+            final Double x = position.getFirst();
+            final Double y = position.getSecond();
             //Set arrow head svg attributes
             arrowHeadContainer.setAttribute(SVGAttributeConstant.X.getKey(), String.format("%s", x - arrowHeadWidth));
             arrowHeadContainer.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%s", y - arrowHeadheight /2 ));
@@ -929,20 +879,46 @@ public class SVGGraph {
                 }
             }
         }
+
+        /**
+         * Gets the position of the vertex.
+         * Position is normalised with respect to the position of the top-left most vertex.
+         * Position is with respect to the center of the vertex.
+         * @param vertexID
+         * @return 
+         */
+        private Tuple<Double, Double> getVertexPosition(final int vertexID) {
+            final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
+            final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);            
+            
+            final int halfVertexSize = 128;
+            
+            final Double constelationGraphX = graph.getDoubleValue(xAttributeID, vertexID);
+            final Double constelationGraphY = graph.getDoubleValue(yAttributeID, vertexID);
+            
+            final Double svgGraphX = (constelationGraphX * halfVertexSize) - xBoundMin + halfVertexSize;
+            final Double svgGraphY = (yBoundMax - yBoundMin) - ((constelationGraphY * halfVertexSize) - yBoundMin) + halfVertexSize;
+            
+            return new Tuple<>(svgGraphX, svgGraphY);
+        }
         
         /**
          * Calculates the angle at which a connection touches a node.
          * Return value is clockwise from a horizontal x axis with positive values to the right.
-         * @param sourceX
-         * @param sourceY
-         * @param destinationX
-         * @param destinationY
+         * @param sourcePosition
+         * @param destinationPosition
          * @return 
          */
-        private Double calculateConnectionAngle(Float sourceX, Float sourceY, Float destinationX, Float destinationY) {
-            final Float xDirectionVector = sourceX - destinationX;
-            final Float yDirectionVector = sourceY - destinationY;
+        private Double calculateConnectionAngle(final Tuple<Double, Double> sourcePosition, final Tuple<Double, Double> destinationPosition) {
+            final Double xDirectionVector = sourcePosition.getFirst() - destinationPosition.getFirst();
+            final Double yDirectionVector = sourcePosition.getSecond() - destinationPosition.getSecond();
             return Math.atan2(yDirectionVector, xDirectionVector);
+        }
+
+        private Tuple<Double, Double> offSetPosition(final Tuple<Double, Double> origin, final int distance, final Double angle) {
+            final Double x = origin.getFirst() - (distance * Math.cos(angle));
+            final Double y = origin.getSecond() - (distance * Math.sin(angle));
+            return new Tuple<>(x,y);
         }
     }
 }
