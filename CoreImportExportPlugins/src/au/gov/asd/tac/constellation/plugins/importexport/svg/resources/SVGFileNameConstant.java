@@ -24,8 +24,9 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
  */
 public enum SVGFileNameConstant {
     NODE("Node.svg"),
-    LINK("Link.svg"),
+    CONNECTION("Connection.svg"),
     LINK_ARROW_HEAD("LinkArrowHead.svg"),
+    TRANSACTION_ARROW_HEAD("TransactionArrowHead.svg"),
     LAYOUT("Layout.svg"),
     BOTTOM_LABEL("BottomLabel.svg"),
     TOP_LABEL("TopLabel.svg"),

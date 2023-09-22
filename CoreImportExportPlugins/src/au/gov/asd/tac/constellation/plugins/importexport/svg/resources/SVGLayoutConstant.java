@@ -16,15 +16,15 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
 
 /**
- * Class to capture constant values for stings that indicate a svgContainer element.
- * these element names are tightly coupled to the Layout.svg file and reduce 
- * the repetitive use of string literals.
- * 
+ * Class to capture constant values for stings that indicate a svgContainer
+ * element. these element names are tightly coupled to the Layout.svg file and
+ * reduce the repetitive use of string literals.
+ *
  * @author capricornunicorn123
  */
 public enum SVGLayoutConstant {
     NODES("nodes"),
-    LINKS("links"),
+    CONNECTIONS("connections"),
     CONTENT("content"),
     HEADER("header"),
     FOOTER("footer"),
@@ -41,10 +41,10 @@ public enum SVGLayoutConstant {
     SOUTH_EAST_DECORATOR("south-east-decorator"),
     TITLE("title"),
     SUBTITLE("subtitle");
-    
+
     public final String id;
-        
-    private SVGLayoutConstant(final String id){
+
+    private SVGLayoutConstant(final String id) {
         this.id = id;
     }
 }

@@ -10,9 +10,10 @@
     </svg>
     
     <svg id="content" overflow="visible">
-        <svg id="nodes" overflow="visible" >
+
+        <svg id="connections" >
         </svg>
-        <svg id="links" >
+        <svg id="nodes" overflow="visible" >
         </svg>
     </svg>
     

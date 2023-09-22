@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
@@ -39,7 +38,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Base64;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
@@ -248,20 +246,21 @@ public class SVGGraph {
          * @param svgGraph 
          */
         private void buildConnections(SVGGraph svgGraph) {
-            final SVGContainer linksContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.LINKS.id);
+            final SVGContainer connectionsContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.CONNECTIONS.id);
             
             //Itterate over all links in the gaph
             final int linkCount = graph.getLinkCount();
             for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
                 final int linkID = graph.getLink(linkPosition);
-                
-                
-                
+              
                 switch (connectionMode){
                     case TRANSACTION:
                         break;
+                        
                     case EDGE:
+                        buildEdges(connectionsContainer, linkID);
                         break;
+                        
                     case LINK:
                         //Determine the number of directed edges in the current link
                         int directedEdgeCount = 0;
@@ -278,7 +277,7 @@ public class SVGGraph {
                         
                         //Render link if two directed edges are found 
                         if (directedEdgeCount == 2){
-                           buildLink(linksContainer, graph.getLink(linkID));
+                           buildLink(connectionsContainer, graph.getLink(linkID));
                         }      
                         break;
                 }
@@ -307,29 +306,139 @@ public class SVGGraph {
             final Double sourceConnectionAngle = calculateConnectionAngle(sourceX, sourceY, destinationX, destinationY);
             final Double destinationConnectionAngle = calculateConnectionAngle(destinationX, destinationY, sourceX, sourceY);
 
-            final Double adjustedSourceX = sourceX - (192 * Math.cos(sourceConnectionAngle));
-            final Double adjustedSourceY = sourceY - (192 * Math.sin(sourceConnectionAngle));
-            final Double adjustedDestinationX = destinationX - (192 * Math.cos(destinationConnectionAngle));
-            final Double adjustedDestinationY = destinationY - (192 * Math.sin(destinationConnectionAngle));
+            final Double arrowHeadSourceX = sourceX - (128 * Math.cos(sourceConnectionAngle));
+            final Double arrowHeadSourceY = sourceY - (128 * Math.sin(sourceConnectionAngle));
+            final Double arrowHeadDestinationX = destinationX - (128 * Math.cos(destinationConnectionAngle));
+            final Double arrowHeadDestinationY = destinationY - (128 * Math.sin(destinationConnectionAngle));
+            
+            final Double shaftSourceX = arrowHeadSourceX - (64 * Math.cos(sourceConnectionAngle));
+            final Double shaftSourceY = arrowHeadSourceY - (64 * Math.sin(sourceConnectionAngle));
+            final Double shaftDestinationX = arrowHeadDestinationX - (64 * Math.cos(destinationConnectionAngle));
+            final Double shaftDestinationY = arrowHeadDestinationY - (64 * Math.sin(destinationConnectionAngle));
 
-            final SVGObject link = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK);
-            final SVGObject connection = link.getChild("connection");
-            connection.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", adjustedSourceX));
-            connection.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", adjustedSourceY));
-            connection.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", adjustedDestinationX));
-            connection.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", adjustedDestinationY));
+            final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
+            final SVGObject arrowShaft = connection.getChild("arrow-shaft");
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourceX));
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourceY));
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationX));
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationY));
 
-            link.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("%s", linkID));
-            link.setParent(linksContainer.toSVGObject());
+            connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("%s", linkID));
+            connection.setParent(linksContainer.toSVGObject());
 
             final SVGObject sourceLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
-            buildArrowHead(sourceLinkArrowHeadContainer, sourceX, sourceY, sourceConnectionAngle);
-            sourceLinkArrowHeadContainer.setParent(link);
+            buildArrowHead(sourceLinkArrowHeadContainer, arrowHeadSourceX , arrowHeadSourceY, sourceConnectionAngle);
+            sourceLinkArrowHeadContainer.setParent(connection);
 
             final SVGObject destinationLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
-            buildArrowHead(destinationLinkArrowHeadContainer, destinationX, destinationY, destinationConnectionAngle);
-            destinationLinkArrowHeadContainer.setParent(link);
+            buildArrowHead(destinationLinkArrowHeadContainer, arrowHeadDestinationX, arrowHeadDestinationY, destinationConnectionAngle);
+            destinationLinkArrowHeadContainer.setParent(connection);
         } 
+        
+        /**
+         * 
+         * @param svgGraph 
+         */
+        private void buildEdges(final SVGContainer linksContainer, int linkID) {
+            final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
+            final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);
+            final int sourceVxId = graph.getLinkHighVertex(linkID);
+            final int destinationVxId = graph.getLinkLowVertex(linkID); 
+            final int colorAttributeID = VisualConcept.TransactionAttribute.COLOR.get(graph);
+
+            //Get the coordinates of the source and destination node.
+            final Float sourceX = (graph.getFloatValue(xAttributeID, sourceVxId) * 128) - xBoundMin + 128;
+            final Float sourceY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, sourceVxId) * 128) - yBoundMin) + 128;
+            final Float destinationX = (graph.getFloatValue(xAttributeID, destinationVxId) * 128) - xBoundMin + 128;
+            final Float destinationY = (yBoundMax - yBoundMin) - ((graph.getFloatValue(yAttributeID, destinationVxId) * 128) - yBoundMin) + 128;
+
+            //get the connection angles of the transactions
+            final Double sourceConnectionAngle = calculateConnectionAngle(sourceX, sourceY, destinationX, destinationY);
+            final Double destinationConnectionAngle = calculateConnectionAngle(destinationX, destinationY, sourceX, sourceY);
+
+            //get the coordinates of the points wehre the transactions intersect the raduis around the node that equal to half it's size.
+            final Double sourceNodeCircumferenceX = sourceX - (128 * Math.cos(sourceConnectionAngle));
+            final Double sourceNodeCircumferenceY = sourceY - (128 * Math.sin(sourceConnectionAngle));
+            final Double destinationNodeCircumferenceX = destinationX - (128 * Math.cos(destinationConnectionAngle));
+            final Double destinationNodeCircumferenceY = destinationY - (128 * Math.sin(destinationConnectionAngle));
+
+            //Loop through all eges in the link
+            int processedEdgeCount = 0;
+            final int edgeCount = graph.getLinkEdgeCount(linkID);
+            for (int edgePosition = 0 ; edgePosition < edgeCount; edgePosition++) {
+                final int edgeID = graph.getLinkEdge(linkID, edgePosition); 
+                int edgeDirection = graph.getEdgeDirection(edgeID);
+                
+                final String htmlColor;
+                //if the edge has only one transaction set the color to that of the transaction
+                if (graph.getEdgeTransactionCount(edgeID) == 1) {
+                    final int transactionID = graph.getEdgeTransaction(edgeID, 0);
+                    final String fillColor = graph.getStringValue(colorAttributeID, transactionID);
+                    htmlColor = ConstellationColor.getColorValue(fillColor).getHtmlColor();
+                //if the edge has more than 1 transaction set the color to white
+                } else {
+                    htmlColor = ConstellationColor.WHITE.getHtmlColor();
+                }
+                
+                //Determine offset controlls
+                int paralellOffsetDistance = (processedEdgeCount / 2 + ((processedEdgeCount % 2 == 0) ? 0 : 1)) * 16;
+                double offsetDirection = Math.pow(-1, processedEdgeCount);
+                double offsetAngle = Math.toRadians(90) * offsetDirection;
+
+                //Determine arrow components connection angles and positions
+                final Double arrowHeadX;
+                final Double arrowHeadY;
+                final Double arrowHeadConnectionAngle;
+                Double shaftSourceX = sourceNodeCircumferenceX - (paralellOffsetDistance * Math.cos(sourceConnectionAngle - offsetAngle));
+                Double shaftSourceY = sourceNodeCircumferenceY - (paralellOffsetDistance * Math.sin(sourceConnectionAngle - offsetAngle));
+                Double shaftDestinationX = destinationNodeCircumferenceX - (paralellOffsetDistance * Math.cos(destinationConnectionAngle + offsetAngle));
+                Double shaftDestinationY = destinationNodeCircumferenceY - (paralellOffsetDistance * Math.sin(destinationConnectionAngle + offsetAngle));               
+                switch (edgeDirection) {
+                    case Graph.UPHILL:
+                        //Source node has the arrow head
+                        arrowHeadX = shaftSourceX;
+                        arrowHeadY = shaftSourceY;
+                        arrowHeadConnectionAngle = sourceConnectionAngle;
+                        shaftSourceX = shaftSourceX - (64 * Math.cos(sourceConnectionAngle));
+                        shaftSourceY = shaftSourceY - (64 * Math.sin(sourceConnectionAngle));
+                        break;
+                    case Graph.DOWNHILL:
+                        //Destination node has the arrow head
+                        arrowHeadX = shaftDestinationX;
+                        arrowHeadY = shaftDestinationY;
+                        arrowHeadConnectionAngle = destinationConnectionAngle;
+                        shaftDestinationX = shaftDestinationX - (64 * Math.cos(destinationConnectionAngle));
+                        shaftDestinationY = shaftDestinationY - (64 * Math.sin(destinationConnectionAngle));
+                        break;
+                    default:
+                        //Undirected graphs have no arrow head
+                        //Values set to 0 to avoid errors, however arrow heads are not rendered to the screen in this case.
+                        arrowHeadX = 0D;
+                        arrowHeadY = 0D;
+                        arrowHeadConnectionAngle = 0D;
+                        break;
+                }
+
+                //Construct the connection
+                final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
+                final SVGObject arrowShaft = connection.getChild("arrow-shaft");
+                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), String.format("%s", shaftSourceX));
+                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), String.format("%s", shaftSourceY));
+                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), String.format("%s", shaftDestinationX));
+                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), String.format("%s", shaftDestinationY));
+                arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
+                connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s-edge-%s", linkID, edgePosition));
+                connection.setParent(linksContainer.toSVGObject());
+                if (edgeDirection != Graph.FLAT){
+                    final SVGObject edgeArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
+                    buildArrowHead(edgeArrowHeadContainer, arrowHeadX, arrowHeadY, arrowHeadConnectionAngle);
+                    edgeArrowHeadContainer.setParent(connection);
+                    edgeArrowHeadContainer.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), htmlColor);
+                }
+
+                processedEdgeCount++;
+            }
+        }
         
         /**
          * Manipulates an arrow head container to adjust it's position and rotation.
@@ -338,19 +447,15 @@ public class SVGGraph {
          * @param y
          * @param connectionAngle 
          */
-        private void buildArrowHead(SVGObject arrowHeadContainer, Float x, Float y, Double connectionAngle) {
+        private void buildArrowHead(SVGObject arrowHeadContainer, Double x, Double y, Double connectionAngle) {
             //The size of the svg element containing the arrow head polygon asset
             final int arrowHeadWidth = 128;
             final int arrowHeadheight = 32;
             
-            //Redefine the tip of the arrow head as 128px from the center point of the relevent node.
-            final Double offsetX = x - (128 * Math.cos(connectionAngle));
-            final Double offsetY = y - (128 * Math.sin(connectionAngle));
-            
             //Set arrow head svg attributes
-            arrowHeadContainer.setAttribute(SVGAttributeConstant.X.getKey(), String.format("%s", offsetX - arrowHeadWidth));
-            arrowHeadContainer.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%s", offsetY - arrowHeadheight /2 ));
-            arrowHeadContainer.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("arrow-head-%s-%s", offsetX.intValue(), offsetY.intValue()));
+            arrowHeadContainer.setAttribute(SVGAttributeConstant.X.getKey(), String.format("%s", x - arrowHeadWidth));
+            arrowHeadContainer.setAttribute(SVGAttributeConstant.Y.getKey(), String.format("%s", y - arrowHeadheight /2 ));
+            arrowHeadContainer.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("arrow-head-%s-%s", x.intValue(), y.intValue()));
             
             //Rotate the arrow head polygon around the tip to align it with the angle of the connection
             final SVGObject arrowHead = arrowHeadContainer.getChild("arrow-head");
