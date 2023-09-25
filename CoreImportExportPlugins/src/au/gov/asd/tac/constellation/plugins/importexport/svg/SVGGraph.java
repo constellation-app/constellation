@@ -543,7 +543,7 @@ public class SVGGraph {
             }
         }
         
-/**
+        /**
          * Creates a SVGObjects representing an Link.
          * In this context, a link is a connection between nodes 
          * that does not contain two directed edges.
@@ -605,7 +605,7 @@ public class SVGGraph {
                         break;
                     default:
                         //Undirected graphs have no arrow head
-                        //Values set to 0 to avoid errors, however arrow heads are not rendered to the screen in this case.
+                        //Values set to 0 to avoid errors, however arrow heads are not drawn in this case.
                         arrowHeadPosition = new Tuple(0D, 0D);
                         arrowHeadConnectionAngle = 0D;
                         break;

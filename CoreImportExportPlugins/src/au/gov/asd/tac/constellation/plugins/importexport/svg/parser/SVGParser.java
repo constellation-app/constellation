@@ -153,7 +153,7 @@ public class SVGParser {
      */
     private static Map<String,String> getElementAttributes(final String svgString) {
         final Map<String,String> extractedAttributes = new LinkedHashMap<>();
-        String regex = "[-:a-z0-9]*=\"[,\\-/:%#\\s.a-zA-Z0-9]*\"";
+        String regex = "[-:a-zA-Z0-9]*=\"[,\\-/:%#\\s.a-zA-Z0-9]*\"";
         Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
         Matcher svgMatcher = svgAttributeAssignmentRegex.matcher(svgString);
         while (svgMatcher.find()){
