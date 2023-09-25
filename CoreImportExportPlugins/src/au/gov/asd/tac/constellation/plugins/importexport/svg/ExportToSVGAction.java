@@ -71,12 +71,12 @@ public final class ExportToSVGAction implements ActionListener {
                     fnam += FileExtensionConstants.SVG;
                 }
 
-            int connectionModeID = VisualConcept.GraphAttribute.CONNECTION_MODE.get(graph);
-            ConnectionMode currentConnectionmode = graph.getObjectValue(connectionModeID, 0);
+                int connectionModeID = VisualConcept.GraphAttribute.CONNECTION_MODE.get(graph);
+                ConnectionMode currentConnectionmode = graph.getObjectValue(connectionModeID, 0);
                 
                 PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
                         .withParameter(ExportToSVGPlugin.FILE_NAME_PARAMETER_ID, fnam)
-                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 3")
+                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 4")
                         .withParameter(ExportToSVGPlugin.GRAPH_CONNECTION_MODE_PARAMETER_ID, currentConnectionmode)
                         .executeLater(context.getGraph());
             }));

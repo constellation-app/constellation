@@ -35,7 +35,6 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.logging.Logger;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -51,7 +50,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "filename");
     public static final String GRAPH_TITLE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "graphtitle");
     public static final String GRAPH_CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connectionmode");
-    private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
+
     
     @Override
     public PluginParameters createParameters() {

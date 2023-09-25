@@ -40,7 +40,8 @@ public enum SVGLayoutConstant {
     SOUTH_WEST_DECORATOR("south-west-decorator"),
     SOUTH_EAST_DECORATOR("south-east-decorator"),
     TITLE("title"),
-    SUBTITLE("subtitle");
+    SUBTITLE("subtitle"),
+    ARROW_SHAFT("arrow-shaft");
 
     public final String id;
 

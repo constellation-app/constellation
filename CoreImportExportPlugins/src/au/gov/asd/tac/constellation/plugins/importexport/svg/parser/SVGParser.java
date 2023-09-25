@@ -85,7 +85,9 @@ public class SVGParser {
                 }
                 
                 if (currentElement != null && currentElement.getParent() == null){
-                    roots.add(currentElement);
+                    if (!roots.contains(currentElement) ){
+                        roots.add(currentElement);
+                    }
                 }
             }
         }
@@ -153,15 +155,15 @@ public class SVGParser {
      */
     private static Map<String,String> getElementAttributes(final String svgString) {
         final Map<String,String> extractedAttributes = new LinkedHashMap<>();
-        String regex = "[-:a-z0-9]*=\"[,-/:%#\\s.a-zA-Z0-9]*\"";
+        String regex = "[-:a-z0-9]*=\"[,\\-/:%#\\s.a-zA-Z0-9]*\"";
         Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
         Matcher svgMatcher = svgAttributeAssignmentRegex.matcher(svgString);
         while (svgMatcher.find()){
             final String potentialAttribute = svgMatcher.group();
-                final String[] attribute = potentialAttribute.split("=");
-                final String foundKey = attribute[0];
-                final String foundValue = attribute[1].replaceAll(SeparatorConstants.QUOTE, "");
-                extractedAttributes.put(foundKey, foundValue);
+            final String[] attribute = potentialAttribute.split("=");
+            final String foundKey = attribute[0];
+            final String foundValue = attribute[1].replaceAll(SeparatorConstants.QUOTE, "");
+            extractedAttributes.put(foundKey, foundValue);
         }        
         return extractedAttributes;
     }
@@ -193,21 +195,6 @@ public class SVGParser {
         } else {
             return svgElements.get(0);
         }
-    }
-    
-    /**
-     * Takes a String and returns the SVG element contents of that string.
-     * White spaces and foreign characters external to the tag are removed.
-     * Tag brackets are also removed.
-     * @param line
-     * @return 
-     */
-    private static String stripAngleBrackets(final String line) {
-        final String svgElement = line.substring(line.indexOf("<") + 1, line.indexOf(">"));
-        if (svgElement.length() < 2) {
-            throw new UnsupportedOperationException("SVG Element wrong");
-        }
-        return svgElement;
     }
 
     /**

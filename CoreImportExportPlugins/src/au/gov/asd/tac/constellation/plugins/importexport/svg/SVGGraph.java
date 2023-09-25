@@ -25,7 +25,6 @@ import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
@@ -112,7 +111,6 @@ public class SVGGraph {
      * </pre>
      */
     public static class SVGGraphBuilder {
-        private GraphVisualAccess access;
         private GraphReadMethods graph;
         private Vector3f maxBound = null;
         private Vector3f minBound = null;
@@ -286,8 +284,8 @@ public class SVGGraph {
                         }
                         
                         if (directedEdgeCount == 2){
-                           // Two directed edges were found so render as a double link 
-                           buildDoubleLink(connectionsContainer, linkID);
+                            // Two directed edges were found so render as a double link 
+                            buildDoubleLink(connectionsContainer, linkID);
                         } else {
                             // less than two directed edges were found so render as a single link 
                             buildSingleLink(connectionsContainer, linkID);
@@ -332,7 +330,7 @@ public class SVGGraph {
 
             //Construct the connection
             final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
-            final SVGObject arrowShaft = connection.getChild("arrow-shaft");
+            final SVGObject arrowShaft = connection.getChild(SVGLayoutConstant.ARROW_SHAFT.id);
             arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
             arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
             arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
@@ -359,7 +357,7 @@ public class SVGGraph {
          * @param connectionsContainer
          * @param linkID
          */
-        private void buildSingleLink(final SVGContainer ConnectionsContainer, int linkID) {
+        private void buildSingleLink(final SVGContainer connectionsContainer, int linkID) {
             final int sourceVxId = graph.getLinkHighVertex(linkID);
             final int destinationVxId = graph.getLinkLowVertex(linkID); 
             final int colorAttributeID = VisualConcept.TransactionAttribute.COLOR.get(graph);
@@ -433,14 +431,14 @@ public class SVGGraph {
 
             //Construct the connection
             final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
-            final SVGObject arrowShaft = connection.getChild("arrow-shaft");
+            final SVGObject arrowShaft = connection.getChild(SVGLayoutConstant.ARROW_SHAFT.id);
             arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
             arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
             arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
             arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), shaftDestinationPosition.getSecond());
             arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
             connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s", linkID));
-            connection.setParent(ConnectionsContainer.toSVGObject());
+            connection.setParent(connectionsContainer.toSVGObject());
             if (edgeDirection != Graph.FLAT){
                 final SVGObject edgeArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
                 buildArrowHead(edgeArrowHeadContainer, arrowHeadPosition, arrowHeadConnectionAngle);
@@ -504,29 +502,29 @@ public class SVGGraph {
                 Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + paralellOffsetAngle);
 
                 switch (edgeDirection) {
-                case Graph.UPHILL:
-                    //Source node has the arrow head
-                    arrowHeadPosition = shaftSourcePosition;
-                    arrowHeadConnectionAngle = sourceConnectionAngle;
-                    shaftSourcePosition = offSetPosition(arrowHeadPosition, 64, sourceConnectionAngle);
-                    break;
-                case Graph.DOWNHILL:
-                    //Destination node has the arrow head
-                    arrowHeadPosition = shaftDestinationPosition;
-                    arrowHeadConnectionAngle = destinationConnectionAngle;
-                    shaftDestinationPosition = offSetPosition(arrowHeadPosition, 64, destinationConnectionAngle);
-                    break;
-                default:
-                    //Undirected graphs have no arrow head
-                    //Values set to 0 to avoid errors, however arrow heads are not rendered to the screen in this case.
-                    arrowHeadPosition = new Tuple(0D, 0D);
-                    arrowHeadConnectionAngle = 0D;
-                    break;
+                    case Graph.UPHILL:
+                        //Source node has the arrow head
+                        arrowHeadPosition = shaftSourcePosition;
+                        arrowHeadConnectionAngle = sourceConnectionAngle;
+                        shaftSourcePosition = offSetPosition(arrowHeadPosition, 64, sourceConnectionAngle);
+                        break;
+                    case Graph.DOWNHILL:
+                        //Destination node has the arrow head
+                        arrowHeadPosition = shaftDestinationPosition;
+                        arrowHeadConnectionAngle = destinationConnectionAngle;
+                        shaftDestinationPosition = offSetPosition(arrowHeadPosition, 64, destinationConnectionAngle);
+                        break;
+                    default:
+                        //Undirected graphs have no arrow head
+                        //Values set to 0 to avoid errors, however arrow heads are not rendered to the screen in this case.
+                        arrowHeadPosition = new Tuple(0D, 0D);
+                        arrowHeadConnectionAngle = 0D;
+                        break;
                 }
 
                 //Construct the connection
                 final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
-                final SVGObject arrowShaft = connection.getChild("arrow-shaft");
+                final SVGObject arrowShaft = connection.getChild(SVGLayoutConstant.ARROW_SHAFT.id);
                 arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
                 arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
                 arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
@@ -615,7 +613,7 @@ public class SVGGraph {
 
                 //Construct the connection
                 final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
-                final SVGObject arrowShaft = connection.getChild("arrow-shaft");
+                final SVGObject arrowShaft = connection.getChild(SVGLayoutConstant.ARROW_SHAFT.id);
                 arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
                 arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
                 arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
