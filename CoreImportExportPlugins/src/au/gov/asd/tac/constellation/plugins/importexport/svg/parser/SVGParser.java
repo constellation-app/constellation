@@ -84,10 +84,8 @@ public class SVGParser {
                     throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", svgElement));
                 }
                 
-                if (currentElement != null && currentElement.getParent() == null){
-                    if (!roots.contains(currentElement) ){
-                        roots.add(currentElement);
-                    }
+                if (currentElement != null && currentElement.getParent() == null && !roots.contains(currentElement)){
+                    roots.add(currentElement);
                 }
             }
         }

@@ -113,9 +113,6 @@ public class SVGObject {
      */
     private void setChild(final SVGObject child) {
         final String childID = child.getAttributeValue(SVGAttributeConstant.ID.getKey());
-        if (children.get(childID) != null) {
-            LOGGER.log(Level.INFO, String.format("SVG object id %s overwritten", childID));        
-        }
         this.children.put(childID, child);
     }
     
