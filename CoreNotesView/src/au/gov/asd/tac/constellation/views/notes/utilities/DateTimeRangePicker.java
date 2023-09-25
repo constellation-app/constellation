@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.notes.utilities;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -160,6 +161,7 @@ public class DateTimeRangePicker {
         // Set up title bar
         titleText = new Label(TITLE);
         titleText.setMinWidth(115);
+        titleText.setId("filter-label");
         topBarGridPane.add(titleText, 0, 0);
         clearButton.setMinHeight(17);
         clearButton.setMaxHeight(17);

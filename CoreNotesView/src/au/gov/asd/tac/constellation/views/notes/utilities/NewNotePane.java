@@ -68,7 +68,6 @@ public class NewNotePane {
     private final Pane dialogPane;
     private static final String FONT_SIZE_STRING = "-fx-font-size:%d;";
     private final String fontStyle = String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize());
-    private static final String PROMPT_COLOR = "#909090";
     private static final double WIDTH = 500;
     private static final double HEIGHT = 300;
 
@@ -109,12 +108,6 @@ public class NewNotePane {
         dialogPane.setMinWidth(WIDTH);
         dialogPane.setMaxWidth(WIDTH);
 
-        if (!JavafxStyleManager.isDarkTheme()) {
-            dialogPane.setStyle("-fx-background-color: #f4f4f4");
-        } else {
-            dialogPane.setStyle("-fx-background-color: #111111");
-        }
-
         // TextField to enter new note title.
         titleField.setPromptText("Type a title...");
         titleField.setId("title-field");
@@ -122,14 +115,13 @@ public class NewNotePane {
 
         // Checkbox to apply note to selection.
         applyToSelection.setSelected(true);
-        applyToSelection.setStyle("-fx-selected-box-color: #000000");
         applyToSelection.selectedProperty().addListener((ov, oldVal, newVal) -> applySelected = applyToSelection.isSelected());
 
         // TextArea to enter new note content.
         contentField = new TextArea();
         contentField.setMinWidth(WIDTH - 10);
         contentField.setPromptText("Type a note...");
-        contentField.setStyle(fontStyle + "-fx-prompt-text-fill: " + PROMPT_COLOR + ";");
+        contentField.setStyle(fontStyle);
 
         contentField.setWrapText(true);
 
@@ -178,8 +170,6 @@ public class NewNotePane {
         tabPane.getTabs().addAll(writeTab, previewTab);
 
         enableMarkdown.setSelected(false);
-        enableMarkdown.setTextFill(Color.WHITE);
-        enableMarkdown.setStyle("-fx-selected-box-color: #000000");
         enableMarkdown.selectedProperty().addListener((ov, oldVal, newVal) -> markdownSelected = enableMarkdown.isSelected());
 
         // Colourpicker to set colour of new note
@@ -189,12 +179,9 @@ public class NewNotePane {
         addButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()));
         addButton.setId("add-button");
 
-        saveButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()) + "-fx-background-color: #26ED49;");
+        saveButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()));
         saveButton.setPadding(new Insets(0, 15, 0, 15));
         saveButton.setMinHeight(25);
-        saveButton.setTextFill(Color.BLACK);
-        saveButton.setOnMouseEntered(event -> saveButton.setStyle("-fx-background-color: #86ED26; "));
-        saveButton.setOnMouseExited(event -> saveButton.setStyle("-fx-background-color: #26ED49;  "));
 
         // Cancel button to stop creating a new note
         cancelButton.setStyle(String.format(FONT_SIZE_STRING, FontUtilities.getApplicationFontSize()));
@@ -215,8 +202,6 @@ public class NewNotePane {
         addNoteVBox.setAlignment(Pos.CENTER_LEFT);
         addNoteVBox.setStyle(fontStyle + "-fx-padding: 5px;");
         addNoteVBox.setMinHeight(220);
-
-        dialogPane.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor("#222222").getJavaFXColor(), null, null)));
 
         dialogPane.getChildren().add(addNoteVBox);
 
@@ -269,12 +254,13 @@ public class NewNotePane {
 
             final Scene s = new Scene(dialogPane);
             s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-            if (JavafxStyleManager.isDarkTheme()) {
-                s.getStylesheets().add(getClass().getResource("resources/TimeFilterDark.css").toExternalForm());
-            } else {
-                s.getStylesheets().add(getClass().getResource("resources/TimeFilterLight.css").toExternalForm());
-            }
-
+//            
+//            if (JavafxStyleManager.isDarkTheme()) {
+//                s.getStylesheets().add(getClass().getResource("resources/TimeFilterDark.css").toExternalForm());
+//            } else {
+//                s.getStylesheets().add(getClass().getResource("resources/TimeFilterLight.css").toExternalForm());
+//            }
+            
             stage.setScene(s);
 
             isFirstTime = false;
@@ -320,7 +306,6 @@ public class NewNotePane {
     public Button getSaveButton() {
         return saveButton;
     }
-
 
     public String getUserChosenColour() {
         return userChosenColour;
@@ -376,6 +361,5 @@ public class NewNotePane {
     public void setPreviousColour(final String previousColour) {
         this.previousColour = previousColour;
     }
-
 
 }
