@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.notes.utilities;
 
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

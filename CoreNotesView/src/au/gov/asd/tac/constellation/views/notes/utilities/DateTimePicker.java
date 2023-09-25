@@ -38,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DateTimePicker {
 
-    private final String PICKER_LABEL = "picker-label";
+    private static final String pickerLabel = "picker-label";
     private final Pane dateTimePane;
     private final DatePicker datePicker = new DatePicker();
     private final Spinner<Integer> hourPicker = new Spinner<>(0, 23, 0);
@@ -85,10 +85,10 @@ public class DateTimePicker {
 
         if (from) {
             datePickerLabel.setText(FROM_TEXT);
-            datePickerLabel.setId(PICKER_LABEL);
+            datePickerLabel.setId(pickerLabel);
         } else {
             datePickerLabel.setText(TO_TEXT);
-            datePickerLabel.setId(PICKER_LABEL);
+            datePickerLabel.setId(pickerLabel);
         }
 
 
@@ -99,9 +99,9 @@ public class DateTimePicker {
         final Label hourLabel = new Label("Hour");
         final Label minLabel = new Label("Minute");
         final Label secLabel = new Label("Second");
-        hourLabel.setId(PICKER_LABEL);
-        minLabel.setId(PICKER_LABEL);
-        secLabel.setId(PICKER_LABEL);
+        hourLabel.setId(pickerLabel);
+        minLabel.setId(pickerLabel);
+        secLabel.setId(pickerLabel);
 
         timePickerGrid.add(hourLabel, 0, 0);
         timePickerGrid.add(minLabel, 1, 0);

@@ -254,13 +254,6 @@ public class NewNotePane {
 
             final Scene s = new Scene(dialogPane);
             s.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
-//            
-//            if (JavafxStyleManager.isDarkTheme()) {
-//                s.getStylesheets().add(getClass().getResource("resources/TimeFilterDark.css").toExternalForm());
-//            } else {
-//                s.getStylesheets().add(getClass().getResource("resources/TimeFilterLight.css").toExternalForm());
-//            }
-            
             stage.setScene(s);
 
             isFirstTime = false;
