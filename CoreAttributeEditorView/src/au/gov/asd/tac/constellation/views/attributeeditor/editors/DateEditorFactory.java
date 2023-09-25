@@ -49,9 +49,8 @@ public class DateEditorFactory extends AttributeValueEditorFactory<LocalDate> {
     }
 
     public class DateEditor extends AbstractEditor<LocalDate> {
-
         private DatePicker datePicker;
-        protected CheckBox noValueCheckBox;
+        private CheckBox noValueCheckBox;
 
         protected DateEditor(final EditOperation editOperation, final DefaultGetter<LocalDate> defaultGetter, final ValueValidator<LocalDate> validator, final String editedItemName, final LocalDate initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);

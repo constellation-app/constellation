@@ -46,9 +46,8 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
     }
 
     public class ByteObjectEditor extends AbstractEditor<Byte> {
-
         private TextField numberField;
-        protected CheckBox noValueCheckBox;
+        private CheckBox noValueCheckBox;
 
         protected ByteObjectEditor(final EditOperation editOperation, final DefaultGetter<Byte> defaultGetter, final ValueValidator<Byte> validator, final String editedItemName, final Byte initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
