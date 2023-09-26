@@ -230,9 +230,10 @@ public class SVGGraph {
          * @param decoratorContainer 
          */
         private void buildDecorator(final SVGContainer decoratorContainer, final String decoratorValue) {
-            if (decoratorValue != null){
+            if (decoratorValue != null && !"false_pinned".equals(decoratorValue)){
                 final byte[] decoratorIconData = IconManager.getIcon(decoratorValue).getIconData().getData();
                 this.buildSVGImageFromRasterImageData(decoratorContainer.toSVGObject(), decoratorIconData);
+                decoratorContainer.toSVGObject().setContent(decoratorValue);
             }
         }
         
