@@ -20,11 +20,13 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
 import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
 import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
@@ -112,6 +114,7 @@ public class SVGGraph {
      * </pre>
      */
     public static class SVGGraphBuilder {
+        private GraphVisualAccess access;
         private GraphReadMethods graph;
         private Vector3f maxBound = null;
         private Vector3f minBound = null;
@@ -149,12 +152,19 @@ public class SVGGraph {
          */
         public SVGObject build() {
             final SVGGraph svgGraphLayout = buildSVGGraphFromTemplate(SVGFileNameConstant.LAYOUT);
+            
+            final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
+            access = new GraphVisualAccess(currentGraph);
+            access.beginUpdate();
+            access.updateInternally();;
+
             defineBoundary(graph);
             buildHeader(svgGraphLayout);
             buildFooter(svgGraphLayout);
             buildConnections(svgGraphLayout);
             buildNodes(svgGraphLayout);
             setLayoutDimensions(svgGraphLayout);
+            access.endUpdate();
             return svgGraphLayout.toSVGObject();
         }       
         
