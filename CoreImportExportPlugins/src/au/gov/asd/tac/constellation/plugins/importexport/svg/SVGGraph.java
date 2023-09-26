@@ -30,6 +30,7 @@ import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
+import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
@@ -126,6 +127,7 @@ public class SVGGraph {
             this.graph = graph;
             return this;
         }
+        
         public SVGGraphBuilder withConnectionMode(final ConnectionMode connectionMode){
             this.connectionMode = connectionMode;
             return this;
@@ -776,7 +778,10 @@ public class SVGGraph {
          * @return 
          */
         private void defineBoundary(final GraphReadMethods graph) {
-            final BoundingBox box = new BoundingBox();
+            int graphCameraAttributeID = VisualConcept.GraphAttribute.CAMERA.get(graph);
+            Camera camera = graph.getObjectValue(graphCameraAttributeID, 0);
+            
+            final BoundingBox box = camera.boundingBox;
             BoundingBoxUtilities.recalculateFromGraph(box, graph, false);
             maxBound = box.getMax();
             minBound = box.getMin();
