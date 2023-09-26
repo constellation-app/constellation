@@ -49,8 +49,6 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "filename");
     public static final String GRAPH_TITLE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "graphtitle");
-    public static final String GRAPH_CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connectionmode");
-
     
     @Override
     public PluginParameters createParameters() {
@@ -65,12 +63,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         graphTitleParam.setName(GRAPH_TITLE_PARAMETER_ID);
         graphTitleParam.setDescription("Title of the graph");
         parameters.addParameter(graphTitleParam);
-        
-        final PluginParameter<ObjectParameterValue> graphConnectionModeParam = ObjectParameterType.build(GRAPH_CONNECTION_MODE_PARAMETER_ID);
-        graphConnectionModeParam.setName(GRAPH_CONNECTION_MODE_PARAMETER_ID);
-        graphConnectionModeParam.setDescription("Connection mode of the graph");
-        parameters.addParameter(graphConnectionModeParam);
-        
+         
         return parameters;
     }
     
@@ -78,13 +71,10 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException { 
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
-        final ConnectionMode connectionMode = (ConnectionMode) parameters.getObjectValue(GRAPH_CONNECTION_MODE_PARAMETER_ID);
-
         final File imageFile = new File(fnam);     
         final SVGObject svg = new SVGGraph.SVGGraphBuilder()
                 .withTitle(title)
                 .withGraph(graph)
-                .withConnectionMode(connectionMode)
                 .build();
         try {
             exportToSVG(imageFile, svg);

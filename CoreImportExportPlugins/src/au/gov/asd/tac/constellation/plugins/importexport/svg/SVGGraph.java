@@ -16,21 +16,15 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
-import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
-import au.gov.asd.tac.constellation.graph.schema.visual.VertexDecorators;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -39,7 +33,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
-import java.awt.Color;
+import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -47,7 +41,6 @@ import java.util.Base64;
 import java.time.ZonedDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.List;
 
 /**
  * A Wrapper class for the outer most SVGElement of the output file.
@@ -63,7 +56,6 @@ import java.util.List;
 public class SVGGraph {
 
     private static final Logger LOGGER = Logger.getLogger(SVGGraph.class.getName());
-    
     private final SVGContainer svgContainerReference;
     
     /**
@@ -119,7 +111,6 @@ public class SVGGraph {
         private Vector3f maxBound = null;
         private Vector3f minBound = null;
         private String graphTitle = null;
-        private ConnectionMode connectionMode = VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
       
         /**
          * Specifies the graph to build the SVG from.
@@ -128,11 +119,6 @@ public class SVGGraph {
          */
         public SVGGraphBuilder withGraph(final GraphReadMethods graph) {
             this.graph = graph;
-            return this;
-        }
-        
-        public SVGGraphBuilder withConnectionMode(final ConnectionMode connectionMode){
-            this.connectionMode = connectionMode;
             return this;
         }
         
@@ -156,9 +142,9 @@ public class SVGGraph {
             final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
             access = new GraphVisualAccess(currentGraph);
             access.beginUpdate();
-            access.updateInternally();;
+            access.updateInternally();
 
-            defineBoundary(graph);
+            defineBoundary();
             buildHeader(svgGraphLayout);
             buildFooter(svgGraphLayout);
             buildConnections(svgGraphLayout);
@@ -194,453 +180,235 @@ public class SVGGraph {
          */
         private void buildNodes(final SVGGraph svgGraph) {
             //Retrieve the svg element that holds the nodes as a SVGContainer
-            final SVGContainer nodesContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.NODES.id);
-            
-            //Specify attribute ID's for the node vertex's'
-            final int fillColorAttributeID = VisualConcept.VertexAttribute.COLOR.get(graph); 
-            final int backgroundIconID = VisualConcept.VertexAttribute.BACKGROUND_ICON.get(graph);
-            final int foregroundIconID = VisualConcept.VertexAttribute.FOREGROUND_ICON.get(graph);
-            final int decoratorIconsID = VisualConcept.GraphAttribute.DECORATORS.get(graph);
-            final VertexDecorators vertexDecorators = graph.getObjectValue(decoratorIconsID, 0);
-            final String northEastDecoratorAttributeName=  vertexDecorators.getNorthEastDecoratorAttribute();
-            final String northWestDecoratorAttributeName = vertexDecorators.getNorthWestDecoratorAttribute();
-            final String southEastDecoratorAttributeName = vertexDecorators.getSouthEastDecoratorAttribute();
-            final String southWestDecoratorAttributeName = vertexDecorators.getSouthWestDecoratorAttribute();
-                    
-            final int vertexCount = graph.getVertexCount();
-            for (int vertexPosition = 0 ; vertexPosition < vertexCount ; vertexPosition++) {
-                final int vertexID = graph.getVertex(vertexPosition);
+            final SVGContainer nodesContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.NODES.id); 
 
+            for (int vertexPosition = 0 ; vertexPosition < access.getVertexCount() ; vertexPosition++) {
                 //Get the values of the attributes relevent to the current node
-                final Tuple<Double, Double> position = getVertexPosition(vertexID);
-                final String fillColor = graph.getStringValue(fillColorAttributeID, vertexID);
-                final String htmlColor = ConstellationColor.getColorValue(fillColor).getHtmlColor();
-                final Color color = Color.decode(htmlColor);
-                final ConstellationIcon backgroundIcon = graph.getObjectValue(backgroundIconID, vertexID);
-                final ConstellationIcon foregroundIcon = graph.getObjectValue(foregroundIconID, vertexID);
-
+                final Tuple<Double, Double> position = getVertexPosition(vertexPosition);
+                final ConstellationColor color = access.getVertexColor(vertexPosition);
+                final String bgi = access.getBackgroundIcon(vertexPosition);
+                final String fgi = access.getForegroundIcon(vertexPosition);
+                final ConstellationIcon backgroundIcon = IconManager.getIcon(bgi);
+                final ConstellationIcon foregroundIcon = IconManager.getIcon(fgi);
+                access.getBackgroundIcon(vertexPosition);
+                
                 //build the SVGobject representing the node
                 final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
                 node.setAttribute(SVGAttributeConstant.X.getKey(), position.getFirst() - 128);
                 node.setAttribute(SVGAttributeConstant.Y.getKey(), position.getSecond() - 128);
-                node.setAttribute(SVGAttributeConstant.ID.getKey(), vertexID);
+                node.setAttribute(SVGAttributeConstant.ID.getKey(), access.getVertexId(vertexPosition));
                 node.setParent(nodesContainer.toSVGObject());
                 
                 //Add labels to the Node
                 final SVGContainer nodeContainer = new SVGContainer(node);
                 final SVGContainer bottomLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.BOTTOM_LABELS.id);
                 final SVGContainer topLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.TOP_LABELS.id);
-                buildBottomLabel(vertexID, bottomLabelContainer);
-                buildTopLabel(vertexID, topLabelContainer);
+                buildBottomLabel(vertexPosition, bottomLabelContainer);
+                buildTopLabel(vertexPosition, topLabelContainer);
   
                 //Add images to the node
                 final SVGContainer backgroundContainer = nodeContainer.getContainer(SVGLayoutConstant.BACKGROUND_IMAGE.id);
                 final SVGContainer foregroundContainer = nodeContainer.getContainer(SVGLayoutConstant.FOREGROUND_IMAGE.id);
-                final byte[] backgroundData = backgroundIcon.getIconData().getData(0, color);
+                final byte[] backgroundData = backgroundIcon.getIconData().getData(0, color.getJavaColor());
                 final byte[] foregroundData = foregroundIcon.getIconData().getData();
                 this.buildSVGImageFromRasterImageData(backgroundContainer.toSVGObject(), backgroundData);
                 this.buildSVGImageFromRasterImageData(foregroundContainer.toSVGObject(), foregroundData);
                 
-                //Add decorators to the node                
-                this.buildDecorator(northWestDecoratorAttributeName, vertexID, nodeContainer.getContainer(SVGLayoutConstant.NORTH_WEST_DECORATOR.id));
-                this.buildDecorator(northEastDecoratorAttributeName, vertexID, nodeContainer.getContainer(SVGLayoutConstant.NORTH_EAST_DECORATOR.id));
-                this.buildDecorator(southWestDecoratorAttributeName, vertexID, nodeContainer.getContainer(SVGLayoutConstant.SOUTH_WEST_DECORATOR.id));
-                this.buildDecorator(southEastDecoratorAttributeName, vertexID, nodeContainer.getContainer(SVGLayoutConstant.SOUTH_EAST_DECORATOR.id));
+                //Add decorators to the node       
+                
+                this.buildDecorator(nodeContainer.getContainer(SVGLayoutConstant.NORTH_WEST_DECORATOR.id), access.getNWDecorator(vertexPosition));
+                this.buildDecorator(nodeContainer.getContainer(SVGLayoutConstant.NORTH_EAST_DECORATOR.id), access.getNEDecorator(vertexPosition));
+                this.buildDecorator(nodeContainer.getContainer(SVGLayoutConstant.SOUTH_WEST_DECORATOR.id), access.getSWDecorator(vertexPosition));
+                this.buildDecorator(nodeContainer.getContainer(SVGLayoutConstant.SOUTH_EAST_DECORATOR.id), access.getSEDecorator(vertexPosition));
+            }
+        }
+        
+        /**
+         * Generates decorator images for nodes.
+         * @param vertexAttributeReference
+         * @param vertex
+         * @param decoratorContainer 
+         */
+        private void buildDecorator(final SVGContainer decoratorContainer, final String decoratorValue) {
+            if (decoratorValue != null){
+                final byte[] decoratorIconData = IconManager.getIcon(decoratorValue).getIconData().getData();
+                this.buildSVGImageFromRasterImageData(decoratorContainer.toSVGObject(), decoratorIconData);
+            }
+        }
+        
+        /**
+         * Constructs bottom label SVG elements for a given vertex id in a given SVGContainer.
+         * This method only considers the bottom label requirements for nodes.
+         * This element of the output graph currently relies heavily on content overflow of parent elements
+         * due to inabilities for parents to set their width and height based off of the width and height requirements of their children.
+         * @param vertex
+         * @param bottomLabelContainer 
+         */
+        private void buildBottomLabel(final int vertex, final SVGContainer bottomLabelContainer){    
+            float offset = 0;
+            for (int labelPosition = 0; labelPosition < access.getBottomLabelCount(); labelPosition++) {
+                final String labelString = access.getVertexBottomLabelText(vertex, labelPosition);
+                if (labelString != null){
+                    SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.BOTTOM_LABEL);
+                    final Float size = access.getBottomLabelSize(labelPosition) * 64;
+                    final ConstellationColor color = access.getBottomLabelColor(labelPosition);
+                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(),  size);
+                    text.setAttribute(SVGAttributeConstant.Y.getKey(), offset);
+                    text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), color.getHtmlColor());
+                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("bottom-label-%s", labelPosition));
+                    text.setContent(SVGParser.sanitisePlanText(labelString));
+                    text.setParent(bottomLabelContainer.toSVGObject());
+                    offset = offset + size;
+                }
+            }
+        }
+        
+        /**
+         * Constructs the top label SVG elements for a given vertex id in a given SVGContainer.
+         * This method only considers the top label requirements for nodes.
+         * This element of the output graph currently relies heavily on content overflow of parent elements
+         * due to inabilities for parents to set their width and height based off of the width and height requirements of their children.
+         * @param vertex
+         * @param bottomLabelContainer 
+         */
+        private void buildTopLabel(final int vertex, final SVGContainer topLabelContainer){
+            float offset = 0;
+            for (int labelPosition = 0; labelPosition < access.getTopLabelCount(); labelPosition++) {
+                final String labelString = access.getVertexTopLabelText(vertex, labelPosition);
+                if (labelString != null){
+                    SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.TOP_LABEL);
+                    final Float size = access.getTopLabelSize(labelPosition) * 64;
+                    final ConstellationColor color = access.getTopLabelColor(labelPosition);
+                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(),  size);
+                    text.setAttribute(SVGAttributeConstant.Y.getKey(), offset);
+                    text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), color.getHtmlColor());
+                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("top-label-%s", labelPosition));
+                    text.setContent(SVGParser.sanitisePlanText(labelString));
+                    text.setParent(topLabelContainer.toSVGObject());
+                    offset = offset - size;
+                }
             }
         }
         
         /**
          * Builds SVG connections between Nodes.
-         * Generates transactions, links and edges depending on connection mode.
+         * Generates transactions, links and edges depending on connectionMode.
          * Other graph state factors including maxTransactions and drawFlags are considered.
          * @param svgGraph 
          */
         private void buildConnections(SVGGraph svgGraph) {
             // Get the SVG element that will contain all connections
             final SVGContainer connectionsContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.CONNECTIONS.id);
-
+            
             //Itterate over all links in the gaph
-            final int linkCount = graph.getLinkCount();
-            for (int linkPosition = 0; linkPosition < linkCount; linkPosition++) {
-                final int linkID = graph.getLink(linkPosition);
+            for (int linkPosition = 0; linkPosition < access.getLinkCount(); linkPosition++) {
+                final int source =  access.getLinkHighVertex(linkPosition);
+                final int destination = access.getLinkLowVertex(linkPosition);
                 
-                // Build the relevent connection depending on the connection mode and applicalbel edge cases.
-                switch (connectionMode){
-                    case TRANSACTION:
-                        final int maxTransactionsAttributeID = VisualConcept.GraphAttribute.MAX_TRANSACTIONS.get(graph);
-                        final int maxTransactions = graph.getIntValue(maxTransactionsAttributeID, 0);
-                        if (graph.getLinkTransactionCount(linkID) > maxTransactions){
-                            // The connection mode is in TRANSACTION mode but there are more transactions than the maximum transactions
-                            // so render as a an edge connection.
-                            buildEdges(connectionsContainer, linkID);
-                        } else {
-                            // The connection mode is in TRANSACTION mode and there are less transactions than the maximum transactions.
-                            buildTransactions(connectionsContainer, linkID);
-                        }
-                        break;
-                        
-                    case EDGE:
-                        buildEdges(connectionsContainer, linkID);
-                        break;
-                        
-                    case LINK:
-                        //Determine the number of directed edges in the current link
-                        int directedEdgeCount = 0;
-                        final int linkEdgeCount = graph.getLinkEdgeCount(linkID);
-                        for (int position = 0; position < linkEdgeCount; position++){
-                            int edgeID = graph.getLinkEdge(linkID, position);
-                            //Count the edge if its is not undirected
-                            if (graph.getEdgeDirection(edgeID) != Graph.FLAT){
-                                directedEdgeCount++;
-                            }
-                        }
-                        
-                        if (directedEdgeCount == 2){
-                            // Two directed edges were found so render as a double link 
-                            buildDoubleLink(connectionsContainer, linkID);
-                        } else {
-                            // less than two directed edges were found so render as a single link 
-                            buildSingleLink(connectionsContainer, linkID);
-                        }      
-                        break;
-                }
+                final Tuple<Double, Double> high = getVertexPosition(source);
+                final Tuple<Double, Double> low = getVertexPosition(destination);
+                
+                //get the connection angles of the transactions
+                final Double highConnectionAngle = calculateConnectionAngle(high, low);
+                final Double lowConnectionAngle = calculateConnectionAngle(low, high);
+
+                //get the coordinates of the points where the transactions intersect the radius around the node that equal to half it's size.
+                final Tuple<Double, Double> highCircumferencePosition = offSetPosition(high, 128, highConnectionAngle);
+                final Tuple<Double, Double> lowCircumferencePosition = offSetPosition(low, 128, lowConnectionAngle);
+                
+                for (int connectionPosition = 0; connectionPosition < access.getLinkConnectionCount(linkPosition); connectionPosition++){
+                    int connection = access.getLinkConnection(linkPosition, connectionPosition);
+
+                    //Determine offset controlls
+                    int paralellOffsetDistance = (connectionPosition / 2 + ((connectionPosition % 2 == 0) ? 0 : 1)) * 16;
+                    double paralellOffsetDirection = Math.pow(-1, connectionPosition);
+                    double paralellOffsetAngle = Math.toRadians(90) * paralellOffsetDirection;
+
+                    //Determine arrow components connection angles and positions
+                    Tuple<Double, Double> highPosition = offSetPosition(highCircumferencePosition, paralellOffsetDistance, highConnectionAngle - paralellOffsetAngle);
+                    Tuple<Double, Double> lowPosition = offSetPosition(lowCircumferencePosition, paralellOffsetDistance, lowConnectionAngle + paralellOffsetAngle);
+                    buildConnection(connectionsContainer, highPosition, lowPosition, connection);  
+                } 
             }
         }
-
-        /**
-         * Creates a SVGObject representing a Link.
-         * In this context, a link is a connection between nodes 
-         * that contains two directed edges.
-         * The template file Connection.svg is used to build the connection.
-         * The template file LinkArrowHead.svg will be used to build the arrow heads.
-         * @param connectionsContainer
-         * @param linkID
-         */
-        private void buildDoubleLink(final SVGContainer connectionsContainer, int linkID) {
-            final int sourceVxId = graph.getLinkHighVertex(linkID);
-            final int destinationVxId = graph.getLinkLowVertex(linkID); 
-
-            //Get the coordinates of the source and destination node.
-            final Tuple<Double, Double> sourcePosition = getVertexPosition(sourceVxId);
-            final Tuple<Double, Double> destinationPosition = getVertexPosition(destinationVxId);
-
-            //get the connection angles of the transactions
-            final Double sourceConnectionAngle = calculateConnectionAngle(sourcePosition, destinationPosition);
-            final Double destinationConnectionAngle = calculateConnectionAngle(destinationPosition, sourcePosition);
-
-            //get the coordinates of the points where the transactions intersect the radius around the node that equal to half it's size.
-            final Tuple<Double, Double> sourceCircumferencePosition = offSetPosition(sourcePosition, 128, sourceConnectionAngle);
-            final Tuple<Double, Double> destinationCircumferencePosition = offSetPosition(destinationPosition, 128, destinationConnectionAngle);
-            
-            //Set the arrow head position to the circumference point
-            final Tuple<Double, Double> sourceArrowHeadPosition = sourceCircumferencePosition;
-            final Tuple<Double, Double> destinationArrowHeadPosition = destinationCircumferencePosition;
-            
-            //Set the shaft estremeties to 64px behind the arrow position.
-            final Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceArrowHeadPosition, 64, sourceConnectionAngle);
-            final Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationArrowHeadPosition, 64, destinationConnectionAngle);
-
-            //Construct the connection
-            final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
-            final SVGObject arrowShaft = connection.getChild(SVGLayoutConstant.ARROW_SHAFT.id);
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), shaftDestinationPosition.getSecond());
-
-            connection.setAttribute(SVGAttributeConstant.ID.getKey(), linkID);
-            connection.setParent(connectionsContainer.toSVGObject());
-
-            final SVGObject sourceLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
-            buildArrowHead(sourceLinkArrowHeadContainer, sourceArrowHeadPosition, sourceConnectionAngle);
-            sourceLinkArrowHeadContainer.setParent(connection);
-
-            final SVGObject destinationLinkArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
-            buildArrowHead(destinationLinkArrowHeadContainer, destinationArrowHeadPosition, destinationConnectionAngle);
-            destinationLinkArrowHeadContainer.setParent(connection);
-        } 
         
-        /**
-         * Creates a SVGObjects representing an Link.
-         * In this context, a link is a connection between nodes 
-         * that does not contain two directed edges.
-         * The template file Connection.svg is used to build the edge.
-         * The template file TransactionArrowHead.svg will be used to build the arrow head.
-         * @param connectionsContainer
-         * @param linkID
-         */
-        private void buildSingleLink(final SVGContainer connectionsContainer, int linkID) {
-            final int sourceVxId = graph.getLinkHighVertex(linkID);
-            final int destinationVxId = graph.getLinkLowVertex(linkID); 
-            final int colorAttributeID = VisualConcept.TransactionAttribute.COLOR.get(graph);
-
-            //Get the coordinates of the source and destination node.
-            final Tuple<Double, Double> sourcePosition = getVertexPosition(sourceVxId);
-            final Tuple<Double, Double> destinationPosition = getVertexPosition(destinationVxId);
+        private void buildConnection(final SVGContainer connectionsContainer, Tuple<Double, Double> highPosition, Tuple<Double, Double> lowPosition, int connection){
+            String color = getConnectionColor(connection);
+            ConnectionDirection direction = access.getConnectionDirection(connection);
 
             //get the connection angles of the transactions
-            final Double sourceConnectionAngle = calculateConnectionAngle(sourcePosition, destinationPosition);
-            final Double destinationConnectionAngle = calculateConnectionAngle(destinationPosition, sourcePosition);
-
-            //get the coordinates of the points where the transactions intersect the radius around the node that equal to half it's size.
-            final Tuple<Double, Double> sourceCircumferencePosition = offSetPosition(sourcePosition, 128, sourceConnectionAngle);
-            final Tuple<Double, Double> destinationCircumferencePosition = offSetPosition(destinationPosition, 128, destinationConnectionAngle);
+            final Double highConnectionAngle = calculateConnectionAngle(highPosition, lowPosition);
+            final Double lowConnectionAngle = calculateConnectionAngle(lowPosition, highPosition);
             
-            //Extract needed information from edges.
-            int edgeDirection = Graph.NOT_FOUND;
-            final String htmlColor;
-            final int edgeCount = graph.getLinkEdgeCount(linkID);
+            //get the Coordinates of the Set the shaft estremeties to 64px behind the arrow position.
+            final Tuple<Double, Double> highPositionRecessed = offSetPosition(highPosition, 64, highConnectionAngle);
+            final Tuple<Double, Double> lowPositionRecessed = offSetPosition(lowPosition, 64, lowConnectionAngle);
             
-            //Only one edge exists to the color and direction can be determined from that edge
-            if (edgeCount == 1){
-                final int edgeID = graph.getLinkEdge(linkID, 0);
-                edgeDirection = graph.getEdgeDirection(edgeID); 
-                if (graph.getEdgeTransactionCount(edgeID) != 1){
-                    htmlColor = ConstellationColor.WHITE.getHtmlColor();
-                } else {
-                    final int transactionID = graph.getEdgeTransaction(edgeID, 0);
-                    final String fillColor = graph.getStringValue(colorAttributeID, transactionID);
-                    htmlColor = ConstellationColor.getColorValue(fillColor).getHtmlColor();
-                }
+            final Tuple<Double, Double> shaftHighPosition;
+            final Tuple<Double, Double> shaftLowPosition;
             
-            //More than one edge exists to color and direction must factor both
-            } else {
-                for (int edgePosition = 0 ; edgePosition < edgeCount; edgePosition++) {
-                    final int edgeID = graph.getLinkEdge(linkID, edgePosition); 
-                    if (graph.getEdgeDirection(edgeID)!= Graph.FLAT){
-                        edgeDirection = graph.getEdgeDirection(edgeID);
-                    }
-                }
-                htmlColor = ConstellationColor.WHITE.getHtmlColor();
-            }
-
-            //Determine arrow components connection angles and positions
-            final Tuple<Double, Double> arrowHeadPosition;
-            final Double arrowHeadConnectionAngle;
-            Tuple<Double, Double> shaftSourcePosition = sourceCircumferencePosition;
-            Tuple<Double, Double> shaftDestinationPosition = destinationCircumferencePosition;
-            
-            switch (edgeDirection) {
-                case Graph.UPHILL:
-                    //Source node has the arrow head
-                    arrowHeadPosition = shaftSourcePosition;
-                    arrowHeadConnectionAngle = sourceConnectionAngle;
-                    shaftSourcePosition = offSetPosition(arrowHeadPosition, 64, sourceConnectionAngle);
+            final SVGObject connectionSVG = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
+            final SVGObject arrowShaft = connectionSVG.getChild(SVGLayoutConstant.ARROW_SHAFT.id);
+            final SVGObject highArrowHeadContainer;
+            final SVGObject lowArrowHeadContainer;
+                               
+            switch (direction){
+                case BIDIRECTED:
+                    shaftHighPosition = highPositionRecessed;
+                    shaftLowPosition = lowPositionRecessed;
+                    
+                    highArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
+                    highArrowHeadContainer.setParent(connectionSVG);
+                    
+                    lowArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
+                    lowArrowHeadContainer.setParent(connectionSVG);
                     break;
-                case Graph.DOWNHILL:
-                    //Destination node has the arrow head
-                    arrowHeadPosition = shaftDestinationPosition;
-                    arrowHeadConnectionAngle = destinationConnectionAngle;
-                    shaftDestinationPosition = offSetPosition(arrowHeadPosition, 64, destinationConnectionAngle);
+                    
+                case LOW_TO_HIGH:
+                    shaftHighPosition = highPositionRecessed;
+                    shaftLowPosition = lowPosition;
+                    
+                    highArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
+                    highArrowHeadContainer.setParent(connectionSVG);
+                    
+                    lowArrowHeadContainer = null;
                     break;
+                    
+                case HIGH_TO_LOW:
+                    shaftHighPosition = highPosition;
+                    shaftLowPosition = lowPositionRecessed;
+                    
+                    highArrowHeadContainer = null;
+                    
+                    lowArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
+                    lowArrowHeadContainer.setParent(connectionSVG);
+                    break;
+                    
                 default:
-                    //Undirected graphs have no arrow head
-                    //Values set to 0 to avoid errors, however arrow heads are not rendered to the screen in this case.
-                    arrowHeadPosition = new Tuple(0D, 0D);
-                    arrowHeadConnectionAngle = 0D;
+                    shaftHighPosition = highPosition;
+                    shaftLowPosition = lowPosition;
+                    
+                    highArrowHeadContainer = null;
+                    lowArrowHeadContainer = null;
                     break;
             }
-
-            //Construct the connection
-            final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
-            final SVGObject arrowShaft = connection.getChild(SVGLayoutConstant.ARROW_SHAFT.id);
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), shaftDestinationPosition.getSecond());
-            arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
-            connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s", linkID));
-            connection.setParent(connectionsContainer.toSVGObject());
-            if (edgeDirection != Graph.FLAT){
-                final SVGObject edgeArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
-                buildArrowHead(edgeArrowHeadContainer, arrowHeadPosition, arrowHeadConnectionAngle);
-                edgeArrowHeadContainer.setParent(connection);
-                edgeArrowHeadContainer.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), htmlColor);
-            }
-        }
-        
-        /**
-         * Creates 1 to 3 SVGObjects representing an Edge.
-         * In this context, an edge is a group of similarly directed transactions between nodes.
-         * The template file Connection.svg is used to build the edge.
-         * The template file TransactionArrowHead.svg will be used to build the arrow head.
-         * @param connectionsContainer
-         * @param linkID 
-         */
-        private void buildEdges(final SVGContainer connectionsContainer, int linkID) {
-            final int sourceVxId = graph.getLinkHighVertex(linkID);
-            final int destinationVxId = graph.getLinkLowVertex(linkID); 
-            final int colorAttributeID = VisualConcept.TransactionAttribute.COLOR.get(graph);
-
-            //Get the coordinates of the source and destination node.
-            final Tuple<Double, Double> sourcePosition = getVertexPosition(sourceVxId);
-            final Tuple<Double, Double> destinationPosition = getVertexPosition(destinationVxId);
-
-            //get the connection angles of the transactions
-            final Double sourceConnectionAngle = calculateConnectionAngle(sourcePosition, destinationPosition);
-            final Double destinationConnectionAngle = calculateConnectionAngle(destinationPosition, sourcePosition);
-
-            //get the coordinates of the points where the transactions intersect the radius around the node that equal to half it's size.
-            final Tuple<Double, Double> sourceCircumferencePosition = offSetPosition(sourcePosition, 128, sourceConnectionAngle);
-            final Tuple<Double, Double> destinationCircumferencePosition = offSetPosition(destinationPosition, 128, destinationConnectionAngle);
             
-            //Loop through all eges in the link
-            int processedEdgeCount = 0;
-            final int edgeCount = graph.getLinkEdgeCount(linkID);
-            for (int edgePosition = 0 ; edgePosition < edgeCount; edgePosition++) {
-                final int edgeID = graph.getLinkEdge(linkID, edgePosition); 
-                int edgeDirection = graph.getEdgeDirection(edgeID);
-                
-                final String htmlColor;
-                //if the edge has only one transaction set the color to that of the transaction
-                if (graph.getEdgeTransactionCount(edgeID) == 1) {
-                    final int transactionID = graph.getEdgeTransaction(edgeID, 0);
-                    final String fillColor = graph.getStringValue(colorAttributeID, transactionID);
-                    htmlColor = ConstellationColor.getColorValue(fillColor).getHtmlColor();
-                //if the edge has more than 1 transaction set the color to white
-                } else {
-                    htmlColor = ConstellationColor.WHITE.getHtmlColor();
-                }
-                
-                //Determine offset controlls
-                int paralellOffsetDistance = (processedEdgeCount / 2 + ((processedEdgeCount % 2 == 0) ? 0 : 1)) * 16;
-                double paralellOffsetDirection = Math.pow(-1, processedEdgeCount);
-                double paralellOffsetAngle = Math.toRadians(90) * paralellOffsetDirection;
-
-                //Determine arrow components connection angles and positions
-                final Tuple<Double, Double> arrowHeadPosition;
-                final Double arrowHeadConnectionAngle;
-                Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceCircumferencePosition, paralellOffsetDistance, sourceConnectionAngle - paralellOffsetAngle);
-                Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + paralellOffsetAngle);
-
-                switch (edgeDirection) {
-                    case Graph.UPHILL:
-                        //Source node has the arrow head
-                        arrowHeadPosition = shaftSourcePosition;
-                        arrowHeadConnectionAngle = sourceConnectionAngle;
-                        shaftSourcePosition = offSetPosition(arrowHeadPosition, 64, sourceConnectionAngle);
-                        break;
-                    case Graph.DOWNHILL:
-                        //Destination node has the arrow head
-                        arrowHeadPosition = shaftDestinationPosition;
-                        arrowHeadConnectionAngle = destinationConnectionAngle;
-                        shaftDestinationPosition = offSetPosition(arrowHeadPosition, 64, destinationConnectionAngle);
-                        break;
-                    default:
-                        //Undirected graphs have no arrow head
-                        //Values set to 0 to avoid errors, however arrow heads are not rendered to the screen in this case.
-                        arrowHeadPosition = new Tuple(0D, 0D);
-                        arrowHeadConnectionAngle = 0D;
-                        break;
-                }
-
-                //Construct the connection
-                final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
-                final SVGObject arrowShaft = connection.getChild(SVGLayoutConstant.ARROW_SHAFT.id);
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), shaftDestinationPosition.getSecond());
-                arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
-                connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s-edge-%s", linkID, edgePosition));
-                connection.setParent(connectionsContainer.toSVGObject());
-                if (edgeDirection != Graph.FLAT){
-                    final SVGObject edgeArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
-                    buildArrowHead(edgeArrowHeadContainer, arrowHeadPosition, arrowHeadConnectionAngle);
-                    edgeArrowHeadContainer.setParent(connection);
-                    edgeArrowHeadContainer.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), htmlColor);
-                }
-
-                processedEdgeCount++;
-            }
-        }
-        
-        /**
-         * Creates a SVGObjects representing an Link.
-         * In this context, a link is a connection between nodes 
-         * that does not contain two directed edges.
-         * The template file Connection.svg is used to build the edge.
-         * The template file TransactionArrowHead.svg will be used to build the arrow head.
-         * @param connectionsContainer
-         * @param linkID
-         */
-        private void buildTransactions(final SVGContainer connectionsContainer, int linkID) {
-            final int sourceVxId = graph.getLinkHighVertex(linkID);
-            final int destinationVxId = graph.getLinkLowVertex(linkID); 
-            final int colorAttributeID = VisualConcept.TransactionAttribute.COLOR.get(graph);
-
-            //Get the coordinates of the source and destination node.
-            final Tuple<Double, Double> sourcePosition = getVertexPosition(sourceVxId);
-            final Tuple<Double, Double> destinationPosition = getVertexPosition(destinationVxId);
-
-            //get the connection angles of the transactions
-            final Double sourceConnectionAngle = calculateConnectionAngle(sourcePosition, destinationPosition);
-            final Double destinationConnectionAngle = calculateConnectionAngle(destinationPosition, sourcePosition);
-
-            //get the coordinates of the points where the transactions intersect the radius around the node that equal to half it's size.
-            final Tuple<Double, Double> sourceCircumferencePosition = offSetPosition(sourcePosition, 128, sourceConnectionAngle);
-            final Tuple<Double, Double> destinationCircumferencePosition = offSetPosition(destinationPosition, 128, destinationConnectionAngle);
+            buildArrowShaft(arrowShaft, shaftHighPosition, shaftLowPosition);           
+            arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), color);
             
-            //Loop through all eges in the link
-            int processedTransactionCount = 0;
-            final int transactionCount = graph.getLinkTransactionCount(linkID);
-            for (int transactionPosition = 0 ; transactionPosition < transactionCount; transactionPosition++) {
-                final int transactionID = graph.getLinkTransaction(linkID, transactionPosition); 
-                int transactionDirection = graph.getTransactionDirection(transactionID);
-                
-                final String htmlColor;
-                final String fillColor = graph.getStringValue(colorAttributeID, transactionID);
-                htmlColor = ConstellationColor.getColorValue(fillColor).getHtmlColor();
-                
-                //Determine offset controlls
-                int paralellOffsetDistance = (processedTransactionCount / 2 + ((processedTransactionCount % 2 == 0) ? 0 : 1)) * 16;
-                double paralellOffsetDirection = Math.pow(-1, processedTransactionCount);
-                double paralellOffsetAngle = Math.toRadians(90) * paralellOffsetDirection;
-                
-                //Determine arrow components connection angles and positions
-                final Tuple<Double, Double> arrowHeadPosition;
-                final Double arrowHeadConnectionAngle;
-                Tuple<Double, Double> shaftSourcePosition = offSetPosition(sourceCircumferencePosition, paralellOffsetDistance, sourceConnectionAngle - paralellOffsetAngle);
-                Tuple<Double, Double> shaftDestinationPosition = offSetPosition(destinationCircumferencePosition, paralellOffsetDistance, destinationConnectionAngle + paralellOffsetAngle);
-                switch (transactionDirection) {
-                    case Graph.UPHILL:
-                        //Source node has the arrow head
-                        arrowHeadPosition = shaftSourcePosition;
-                        arrowHeadConnectionAngle = sourceConnectionAngle;
-                        shaftSourcePosition = offSetPosition(arrowHeadPosition, 64, sourceConnectionAngle);
-                        break;
-                    case Graph.DOWNHILL:
-                        //Destination node has the arrow head
-                        arrowHeadPosition = shaftDestinationPosition;
-                        arrowHeadConnectionAngle = destinationConnectionAngle;
-                        shaftDestinationPosition = offSetPosition(arrowHeadPosition, 64, destinationConnectionAngle);
-                        break;
-                    default:
-                        //Undirected graphs have no arrow head
-                        //Values set to 0 to avoid errors, however arrow heads are not drawn in this case.
-                        arrowHeadPosition = new Tuple(0D, 0D);
-                        arrowHeadConnectionAngle = 0D;
-                        break;
-                }
-
-                //Construct the connection
-                final SVGObject connection = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
-                final SVGObject arrowShaft = connection.getChild(SVGLayoutConstant.ARROW_SHAFT.id);
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), shaftSourcePosition.getFirst());
-                arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), shaftSourcePosition.getSecond());
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), shaftDestinationPosition.getFirst());
-                arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), shaftDestinationPosition.getSecond());
-                arrowShaft.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), htmlColor);
-                connection.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("link-%s-transaction-%s", linkID, transactionPosition));
-                connection.setParent(connectionsContainer.toSVGObject());
-                if (transactionDirection != Graph.FLAT){
-                    final SVGObject transactionArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
-                    buildArrowHead(transactionArrowHeadContainer, arrowHeadPosition, arrowHeadConnectionAngle);
-                    transactionArrowHeadContainer.setParent(connection);
-                    transactionArrowHeadContainer.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), htmlColor);
-                }
-
-                processedTransactionCount++;
+            connectionSVG.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("%s, %s", shaftHighPosition, shaftLowPosition));
+            connectionSVG.setParent(connectionsContainer.toSVGObject());
+            
+            if (highArrowHeadContainer != null){
+                buildArrowHead(highArrowHeadContainer, highPosition, highConnectionAngle);
+                highArrowHeadContainer.setParent(connectionSVG);
+                highArrowHeadContainer.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), color);
+            }
+            
+            if (lowArrowHeadContainer != null){
+                buildArrowHead(lowArrowHeadContainer, lowPosition, lowConnectionAngle);
+                lowArrowHeadContainer.setParent(connectionSVG);
+                lowArrowHeadContainer.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), color);
             }
         }
         
@@ -668,75 +436,11 @@ public class SVGGraph {
             arrowHead.setAttribute(SVGAttributeConstant.TRANSFORM.getKey(), String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), arrowHeadWidth, arrowHeadheight/2));
         }
         
-        /**
-         * Constructs bottom label SVG elements for a given vertex id in a given SVGContainer.
-         * This method only considers the bottom label requirements for nodes.
-         * This element of the output graph currently relies heavily on content overflow of parent elements
-         * due to inabilities for parents to set their width and height based off of the width and height requirements of their children.
-         * @param vertexID
-         * @param bottomLabelContainer 
-         */
-        private void buildBottomLabel(final int vertexID, final SVGContainer bottomLabelContainer){
-            final int bottomLabelsAttributeID = VisualConcept.GraphAttribute.BOTTOM_LABELS.get(graph);
-            final GraphLabels bottomLabelsContainer = graph.getObjectValue(bottomLabelsAttributeID, 0);
-            final List<GraphLabel> labels = bottomLabelsContainer.getLabels();
-            
-            Integer offset = 0;
-            for (int i = 0; i < bottomLabelsContainer.getNumberOfLabels(); i++) {
-                final GraphLabel label = labels.get(i);
-                final String labelAttributeNameReference = label.getAttributeName();
-                int labelAttribnuteID = graph.getAttribute(GraphElementType.VERTEX, labelAttributeNameReference);
-
-                final String labelString = graph.getStringValue(labelAttribnuteID, vertexID);
-
-                if (labelString != null){
-                    SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.BOTTOM_LABEL);
-                    //Note: size scale of 1 is 128 px
-                    final Float size = label.getSize() * 64;
-                    final Integer intSize = size.intValue();
-                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(),  intSize);
-                    text.setAttribute(SVGAttributeConstant.Y.getKey(), offset);
-                    text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
-                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("bottom-label-%s", i));
-                    text.setContent(SVGParser.sanitisePlanText(labelString));
-                    text.setParent(bottomLabelContainer.toSVGObject());
-                    offset = offset + intSize;
-                }
-            }
-        }
-        
-        /**
-         * Constructs the top label SVG elements for a given vertex id in a given SVGContainer.
-         * This method only considers the top label requirements for nodes.
-         * This element of the output graph currently relies heavily on content overflow of parent elements
-         * due to inabilities for parents to set their width and height based off of the width and height requirements of their children.
-         * @param vertexID
-         * @param bottomLabelContainer 
-         */
-        private void buildTopLabel(final int vertexID, final SVGContainer topLabelContainer){
-            final int topLabelsAttributeID = VisualConcept.GraphAttribute.TOP_LABELS.get(graph);
-            final GraphLabels topLabelsContainer = graph.getObjectValue(topLabelsAttributeID, 0);
-            final List<GraphLabel> labels = topLabelsContainer.getLabels();
-            
-            Integer offset = 0;
-            for (int i = 0; i < topLabelsContainer.getNumberOfLabels(); i++) {
-                final GraphLabel label = labels.get(i);
-                final String labelAttributeName = label.getAttributeName();
-                final int labelAttribnuteID = graph.getAttribute(GraphElementType.VERTEX, labelAttributeName);
-                final String labelString = graph.getStringValue(labelAttribnuteID, vertexID);
-                if (labelString != null){
-                    final SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.TOP_LABEL);
-                    final Float size = label.getSize() * 64;
-                    final Integer intSize = size.intValue();
-                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(), intSize);
-                    text.setAttribute(SVGAttributeConstant.Y.getKey(), offset);
-                    text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(),label.getColor().getHtmlColor());
-                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("top-label-%s", i));
-                    text.setContent(SVGParser.sanitisePlanText(labelString));
-                    text.setParent(topLabelContainer.toSVGObject());
-                    offset = offset - intSize;
-                }
-            }
+        private void buildArrowShaft(SVGObject arrowShaft, Tuple<Double,Double> sourcePosition, Tuple<Double,Double> destinationPosition) {
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), sourcePosition.getFirst());
+            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), sourcePosition.getSecond());
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), destinationPosition.getFirst());
+            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), destinationPosition.getSecond());
         }
         
         /**
@@ -787,10 +491,8 @@ public class SVGGraph {
          * @param graph
          * @return 
          */
-        private void defineBoundary(final GraphReadMethods graph) {
-            int graphCameraAttributeID = VisualConcept.GraphAttribute.CAMERA.get(graph);
-            Camera camera = graph.getObjectValue(graphCameraAttributeID, 0);
-            
+        private void defineBoundary() {
+            Camera camera = access.getCamera();
             final BoundingBox box = camera.boundingBox;
             BoundingBoxUtilities.recalculateFromGraph(box, graph, false);
             maxBound = box.getMax();
@@ -838,53 +540,22 @@ public class SVGGraph {
         }
 
         /**
-         * Generates decorator images for nodes.
-         * @param vertexAttributeReference
-         * @param vertexID
-         * @param decoratorContainer 
-         */
-        private void buildDecorator(final String vertexAttributeReference, final int vertexID, final SVGContainer decoratorContainer) {
-            if (vertexAttributeReference != null){
-                final int attributeID = graph.getAttribute(GraphElementType.VERTEX, vertexAttributeReference);
-                if (attributeID != Graph.NOT_FOUND){
-                    final String attributeValue;
-                    if ("pinned".equals(vertexAttributeReference)){
-                        if ("true".equals(graph.getStringValue(attributeID, vertexID))){
-                            attributeValue = "Pin";
-                        } else {
-                            return;
-                        }
-                    } else {
-                        attributeValue = graph.getStringValue(attributeID, vertexID);
-                    }
-                    if (attributeValue != null){
-                        final byte[] decoratorIconData = IconManager.getIcon(attributeValue).getIconData().getData();
-                        this.buildSVGImageFromRasterImageData(decoratorContainer.toSVGObject(), decoratorIconData);
-                    }
-                }
-            }
-        }
-
-        /**
          * Gets the position of the vertex.
          * Position is normalised with respect to the position of the top-left most vertex.
          * Position is with respect to the center of the vertex.
-         * @param vertexID
+         * @param vertex
          * @return 
          */
-        private Tuple<Double, Double> getVertexPosition(final int vertexID) {
-            final int xAttributeID = VisualConcept.VertexAttribute.X.get(graph);
-            final int yAttributeID = VisualConcept.VertexAttribute.Y.get(graph);            
+        private Tuple<Double, Double> getVertexPosition(final int vertex) {           
+            final Float constelationGraphX = access.getX(vertex);
+            final Float constelationGraphY = access.getY(vertex);
             
             final int halfVertexSize = 128;
             
-            final Double constelationGraphX = graph.getDoubleValue(xAttributeID, vertexID);
-            final Double constelationGraphY = graph.getDoubleValue(yAttributeID, vertexID);
+            final Float svgGraphX = (constelationGraphX * halfVertexSize) - minBound.getX() + halfVertexSize;
+            final Float svgGraphY = (maxBound.getY() - minBound.getY()) - ((constelationGraphY * halfVertexSize) - minBound.getY()) + halfVertexSize;
             
-            final Double svgGraphX = (constelationGraphX * halfVertexSize) - minBound.getX() + halfVertexSize;
-            final Double svgGraphY = (maxBound.getY() - minBound.getY()) - ((constelationGraphY * halfVertexSize) - minBound.getY()) + halfVertexSize;
-            
-            return new Tuple<>(svgGraphX, svgGraphY);
+            return new Tuple<>(svgGraphX.doubleValue(), svgGraphY.doubleValue());
         }
         
         /**
@@ -904,6 +575,16 @@ public class SVGGraph {
             final Double x = origin.getFirst() - (distance * Math.cos(angle));
             final Double y = origin.getSecond() - (distance * Math.sin(angle));
             return new Tuple<>(x,y);
+        }
+
+        private String getConnectionColor(final int connection) {
+            final ConstellationColor color;
+            if (access.isConnectionDimmed(connection)){
+                color = VisualGraphDefaults.DEFAULT_TRANSACTION_COLOR;
+            } else {
+                color = access.getConnectionColor(connection);
+            }
+            return color.getHtmlColor();
         }
     }
 }
