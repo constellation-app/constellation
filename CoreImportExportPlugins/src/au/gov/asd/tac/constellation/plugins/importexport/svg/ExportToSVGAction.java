@@ -17,8 +17,6 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
@@ -63,20 +61,17 @@ public final class ExportToSVGAction implements ActionListener {
         final ReadableGraph graph = context.getGraph().getReadableGraph();
         
         //The graph has data on it so it can be exported
-        if (graph.getVertexCount() != 0){        
+        if (graph.getVertexCount() > 0){        
             FileChooser.openSaveDialog(getExportToSVGFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
                 String fnam = file.getAbsolutePath();
 
                 if (!fnam.toLowerCase().endsWith(FileExtensionConstants.SVG)) {
                     fnam += FileExtensionConstants.SVG;
                 }
-
-                int connectionModeID = VisualConcept.GraphAttribute.CONNECTION_MODE.get(graph);
-                ConnectionMode currentConnectionmode = graph.getObjectValue(connectionModeID, 0);
                 
                 PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
                         .withParameter(ExportToSVGPlugin.FILE_NAME_PARAMETER_ID, fnam)
-                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 4")
+                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 5")
                         .executeLater(context.getGraph());
             }));
         

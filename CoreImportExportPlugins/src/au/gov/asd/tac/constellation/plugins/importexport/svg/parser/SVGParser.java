@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -51,7 +52,7 @@ public class SVGParser {
      * @return
      * @throws IOException 
      */
-    public static SVGObject parse(InputStream inputStream) throws IOException {
+    public static SVGObject parse(final InputStream inputStream) throws IOException {
         SVGObject currentElement = null; 
         final Collection<SVGObject> roots = new HashSet<>();
         
@@ -81,7 +82,7 @@ public class SVGParser {
                 } 
                 // This parser curently requires all lines with be an SVG tag as it does not support multi line tags.
                 if (!openTag && !closeTag) {
-                    throw new UnsupportedOperationException(String.format("This line could not be interpreted: %s", svgElement));
+                    throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
                 }
                 
                 if (currentElement != null && currentElement.getParent() == null && !roots.contains(currentElement)){
@@ -90,7 +91,7 @@ public class SVGParser {
             }
         }
         if (roots.size() != 1) {
-            throw new UnsupportedOperationException(String.format("The SVG file has %s outer elements.", roots.size()));
+            throw new IllegalStateException(String.format("The SVG file has %s outer elements.", roots.size()));
         } else {
             return (SVGObject) roots.toArray()[0];
         }
@@ -122,7 +123,7 @@ public class SVGParser {
      * @return 
      */
     private static String removeNonLatinCharacters(final String text){
-        StringBuilder builder = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         char[] charArray = text.toCharArray();
         for (int i = 0 ; i < charArray.length ; i++){
             if (charArray[i] < 127 && charArray[i] > 0 && charArray[i] != 12){
@@ -173,7 +174,7 @@ public class SVGParser {
      * @return 
      */
     private static String isolateSVGElement(final String line) {
-        final ArrayList<String> svgElements = new ArrayList<>();
+        final List<String> svgElements = new ArrayList<>();
         final String regex = "<.*>";
         final Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
         final Matcher svgMatcher = svgAttributeAssignmentRegex.matcher(line);
@@ -181,7 +182,7 @@ public class SVGParser {
         while (svgMatcher.find()){
             final String potentialElement = svgMatcher.group();
             if (potentialElement.length() < 2) {
-                throw new UnsupportedOperationException("SVG Element wrong");
+                throw new IllegalStateException("SVG Element wrong");
             }
             svgElements.add(potentialElement);
             foundElements++;

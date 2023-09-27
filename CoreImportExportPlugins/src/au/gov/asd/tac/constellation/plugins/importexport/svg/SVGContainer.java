@@ -43,16 +43,16 @@ public class SVGContainer {
      * Sets the height of the container element.
      * @param height
      */
-    private void setHeight(final Float height) {
-        svgObjectReference.setAttribute(SVGAttributeConstant.HEIGHT.getKey(), height.toString());
+    private void setHeight(final float height) {
+        svgObjectReference.setAttribute(SVGAttributeConstant.HEIGHT.getKey(), height);
     }
     
     /**
      * Sets the width of the container element.
      * @param width 
      */
-    private void setWidh(final Float width) {
-        svgObjectReference.setAttribute(SVGAttributeConstant.WIDTH.getKey(), width.toString());
+    private void setWidth(final float width) {
+        svgObjectReference.setAttribute(SVGAttributeConstant.WIDTH.getKey(), width);
     }
     
     /**
@@ -60,8 +60,8 @@ public class SVGContainer {
      * With respect to the element it is contained within.
      * @param x 
      */
-    private void setXPosition(final Float x) {
-        svgObjectReference.setAttribute(SVGAttributeConstant.X.getKey(), x.toString());
+    private void setXPosition(final float x) {
+        svgObjectReference.setAttribute(SVGAttributeConstant.X.getKey(), x);
     }
     
     /**
@@ -69,8 +69,8 @@ public class SVGContainer {
      * With respect to the element it is contained within.
      * @param y
      */
-    private void setYPosition(final Float y) {
-        svgObjectReference.setAttribute(SVGAttributeConstant.Y.getKey(), y.toString());
+    private void setYPosition(final float y) {
+        svgObjectReference.setAttribute(SVGAttributeConstant.Y.getKey(), y);
     }
     
     /**
@@ -82,8 +82,8 @@ public class SVGContainer {
      * @param width
      * @param height
      */
-    public void setDimension(final Float width, final Float height) {
-        this.setWidh(width);
+    public void setDimension(final float width, final float height) {
+        this.setWidth(width);
         this.setHeight(height);
     }
     
@@ -93,7 +93,7 @@ public class SVGContainer {
      * @param x
      * @param y 
      */
-    public void setposition(final Float x, final Float y) {
+    public void setPosition(final float x, final float y) {
         this.setXPosition(x);
         this.setYPosition(y);
     }

@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -130,7 +129,7 @@ public class SVGObject {
      * @return ArrayList
      */
     public List<SVGObject> getAllChildren() {
-        final ArrayList<SVGObject> allChildren = new ArrayList<>();
+        final List<SVGObject> allChildren = new ArrayList<>();
         children.keySet().forEach(key -> allChildren.add(this.children.get(key)));
         return allChildren;
     }
