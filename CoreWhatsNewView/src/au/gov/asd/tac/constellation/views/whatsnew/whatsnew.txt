@@ -1,6 +1,11 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2023-09-28 Hide empty attributes in the Attribute Editor View
+<p>The Attribute Editor view now allows for empty (null) attributes to be hidden to de-clutter the view.</p>
+<p>The heading of each attribute category has replaced the "Show all" toggle with a "Show Hidden" toggle and a new "Show Empty" toggle has been added. The "Show Empty" toggle is enabled each time Constellation is restarted to ensure users make a conscious decision to hide them.</p>
+<p>Attributes that are marked as hidden will only be shown if the "Show Hidden" toggle is enabled while attributes that have no value set (and are empty) will only be shown if the "Show Empty" toggle is enabled. Hidden and empty attributes require both toggles to be enabled.</p>
+
 == 2023-08-28 Markdown support in the Notes View
 <p>The notes can now optionally render markdown text. You can now italicise, bold and strikethrough text. Headings can be added to the note as well as lists and sub lists.</p>
 <p>The new note pop-up window will have a preview tab where you can see how your markdown text will be rendered before adding it as a note.</p>

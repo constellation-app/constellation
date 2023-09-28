@@ -246,10 +246,8 @@ public class AttributeEditorPanel extends BorderPane {
      * Every time that the 'Attribute Editor' is redisplayed, reset the
      * 'Show Empty' toggles to be toggled on.
      */
-    public void refreshShowEmpty()
-    {
-        for (final HeadingType headingType : HeadingType.values())
-        {
+    public void refreshShowEmpty() {
+        for (final HeadingType headingType : HeadingType.values()) {
             final String emptyKey;
             final GraphElementType elementType;
             switch (headingType) {
@@ -269,8 +267,7 @@ public class AttributeEditorPanel extends BorderPane {
 
             // Ensure empty attributes are shown by default  
             prefs.putBoolean(emptyKey, true);
-            if (showEmptyToggles.containsKey(headingType))
-            {
+            if (showEmptyToggles.containsKey(headingType)) {
                 showEmptyToggles.get(headingType).setSelected(true); 
             }
         }
@@ -367,7 +364,7 @@ public class AttributeEditorPanel extends BorderPane {
                 elementType = null;
                 break;
         }
-        showEmptyToggle.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+        showEmptyToggle.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue)
                 -> prefs.putBoolean(emptyKey, newValue));
         showEmptyToggle.setSelected(prefs.getBoolean(emptyKey, false));
         showEmptyToggles.put(headingType, showEmptyToggle);  // Store handle to toggle
@@ -394,7 +391,7 @@ public class AttributeEditorPanel extends BorderPane {
                 hiddenKey = "";
                 break;
         }
-        showHiddenToggle.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
+        showHiddenToggle.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue)
                 -> prefs.putBoolean(hiddenKey, newValue));
         showHiddenToggle.setSelected(prefs.getBoolean(hiddenKey, false));
 
@@ -532,9 +529,13 @@ public class AttributeEditorPanel extends BorderPane {
      */
     private boolean attributeValuesEmpty(final Object[] values)
     {
-        if (values == null) return true;
+        if (values == null) {
+            return true;
+        }
         for (final Object value : values) {
-            if (value != null) return false;
+            if (value != null) {
+                return false;
+            }
         }
         return true;
     }
