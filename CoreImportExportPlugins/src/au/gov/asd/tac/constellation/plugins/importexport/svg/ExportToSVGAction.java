@@ -15,8 +15,11 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
@@ -74,6 +77,8 @@ public final class ExportToSVGAction implements ActionListener {
                         .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 5")
                         .withParameter(ExportToSVGPlugin.SELECTED_NODES_PARAMETER_ID, false)
                         .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, true)
+                        .withParameter(ExportToSVGPlugin.SHOW_TOP_LABELS_PARAMETER_ID, true)
+                        .withParameter(ExportToSVGPlugin.SHOW_BOTTOM_LABELS_PARAMETER_ID, true)
                         .interactively(true)
                         .executeLater(context.getGraph());
             }));

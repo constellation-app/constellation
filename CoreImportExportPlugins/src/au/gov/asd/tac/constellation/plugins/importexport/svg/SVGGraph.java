@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
@@ -112,6 +113,9 @@ public class SVGGraph {
         private String graphTitle = null;
         private boolean selectedNodesOnly = false;
         private boolean showConnections = true;
+        private boolean showTopLabels = true;
+        private boolean showBottomLabels = true;
+        private ConnectionMode connectionMode = VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
       
         /**
          * Specifies the graph to build the SVG from.
@@ -133,16 +137,46 @@ public class SVGGraph {
             return this;
         }
            
+        /**
+         * Specifies if only selected Nodes and related connections are to be included in the output svg.
+         * @param selectedNodesOnly
+         * @return 
+         */
         public SVGGraphBuilder withNodes(Boolean selectedNodesOnly) {
             this.selectedNodesOnly = selectedNodesOnly;
             return this;
         }
         
-        public SVGGraphBuilder withConnections(Boolean selectedTransactionsOnly) {
-            this.showConnections = selectedTransactionsOnly;
+        /**
+         * Controls whether connections are included or excluded from the SVG output file
+         * @param showConnections
+         * @return 
+         */
+        public SVGGraphBuilder includeConnections(Boolean showConnections) {
+            this.showConnections = showConnections;
             return this;
         }
-      
+        
+        /**
+         * Controls whether Node top labels are included or excluded from the SVG output file
+         * @param showTopLabels
+         * @return 
+         */
+        public SVGGraphBuilder includeTopLabels(Boolean showTopLabels) {
+            this.showTopLabels = showTopLabels;
+            return this;
+        }
+        
+        /**
+         * Controls whether Node top labels are included or excluded from the SVG output file
+         * @param showBottomLabels
+         * @return 
+         */
+        public SVGGraphBuilder includeBottomLabels(Boolean showBottomLabels) {
+            this.showBottomLabels = showBottomLabels;
+            return this;
+        }
+
         /**
          * Builds an SVGGraphObject representing the provided graph.
          * @return SVGObject
@@ -151,10 +185,10 @@ public class SVGGraph {
             final SVGGraph svgGraphLayout = buildSVGGraphFromTemplate(SVGFileNameConstant.LAYOUT);
             
             final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
+
             access = new GraphVisualAccess(currentGraph);
             access.beginUpdate();
             access.updateInternally();
-
             defineBoundary();
             buildHeader(svgGraphLayout);
             buildFooter(svgGraphLayout);
@@ -224,13 +258,18 @@ public class SVGGraph {
                 node.setAttribute(SVGAttributeConstant.ID.getKey(), access.getVertexId(vertexPosition));
                 node.setParent(nodesContainer.toSVGObject());
                 
-                //Add labels to the node
                 final SVGContainer nodeContainer = new SVGContainer(node);
-                final SVGContainer bottomLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.BOTTOM_LABELS.id);
-                final SVGContainer topLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.TOP_LABELS.id);
-                buildBottomLabel(vertexPosition, bottomLabelContainer);
-                buildTopLabel(vertexPosition, topLabelContainer);
-  
+                
+                //Add labels to the node
+                if (showTopLabels){
+                    final SVGContainer topLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.TOP_LABELS.id);
+                    buildTopLabel(vertexPosition, topLabelContainer);
+                }
+                if (showBottomLabels){
+                    final SVGContainer bottomLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.BOTTOM_LABELS.id);
+                    buildBottomLabel(vertexPosition, bottomLabelContainer);
+                }
+               
                 //Add images to the node
                 final SVGContainer backgroundContainer = nodeContainer.getContainer(SVGLayoutConstant.BACKGROUND_IMAGE.id);
                 final SVGContainer foregroundContainer = nodeContainer.getContainer(SVGLayoutConstant.FOREGROUND_IMAGE.id);

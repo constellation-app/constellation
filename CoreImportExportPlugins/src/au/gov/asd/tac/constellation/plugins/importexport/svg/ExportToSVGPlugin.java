@@ -16,7 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.file.open.OpenFileDialogFilter;
+import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -28,6 +28,9 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
@@ -36,6 +39,8 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser;
@@ -54,6 +59,9 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String GRAPH_TITLE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "graph_title");
     public static final String SELECTED_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_nodes");
     public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
+    public static final String CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connection_mode");
+    public static final String SHOW_TOP_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_top_labels");
+    public static final String SHOW_BOTTOM_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_bottom_labels");
     private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     
     @Override
@@ -82,6 +90,16 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         showConnectionsParam.setDescription("Export connections between nodes");
         parameters.addParameter(showConnectionsParam);
         
+        final PluginParameter<BooleanParameterValue> showTopNodesParam = BooleanParameterType.build(SHOW_TOP_LABELS_PARAMETER_ID);
+        showTopNodesParam.setName("Show Top Labels");
+        showTopNodesParam.setDescription("Export the top labels of nodes");
+        parameters.addParameter(showTopNodesParam);
+        
+        final PluginParameter<BooleanParameterValue> showBottomNodesParam = BooleanParameterType.build(SHOW_BOTTOM_LABELS_PARAMETER_ID);
+        showBottomNodesParam.setName("Show Bottom Labels");
+        showBottomNodesParam.setDescription("Export the bottom labels of nodes");
+        parameters.addParameter(showBottomNodesParam);
+        
         return parameters;
     }
     
@@ -91,12 +109,19 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
         final Boolean selectedNodes = parameters.getBooleanValue(SELECTED_NODES_PARAMETER_ID);
         final Boolean showConnections = parameters.getBooleanValue(SHOW_CONNECTIONS_PARAMETER_ID);
-        final File imageFile = new File(fnam);     
+        final Boolean showTopLabels = parameters.getBooleanValue(SHOW_TOP_LABELS_PARAMETER_ID);
+        final Boolean showBottomLabels = parameters.getBooleanValue(SHOW_BOTTOM_LABELS_PARAMETER_ID);
+        final ParameterValue connectionMode = parameters.getSingleChoice(CONNECTION_MODE_PARAMETER_ID);
+        
+        final File imageFile = new File(fnam);  
+        
         final SVGObject svg = new SVGGraph.SVGGraphBuilder()
                 .withTitle(title)
                 .withGraph(graph)
                 .withNodes(selectedNodes)
-                .withConnections(showConnections)
+                .includeConnections(showConnections)
+                .includeTopLabels(showTopLabels)
+                .includeBottomLabels(showBottomLabels)
                 .build();
         try {
             exportToSVG(imageFile, svg);
