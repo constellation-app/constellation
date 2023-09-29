@@ -24,6 +24,8 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
@@ -50,6 +52,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "file_name");
     public static final String GRAPH_TITLE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "graph_title");
+    public static final String SELECTED_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_nodes");
     
     private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     
@@ -62,14 +65,18 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         fnamParam.setDescription("File to write to");
         FileParameterType.setKind(fnamParam, FileParameterType.FileParameterKind.SAVE);
         FileParameterType.setFileFilters(fnamParam, new FileChooser.ExtensionFilter("SVG file", "*" + FileExtensionConstants.SVG));
-        
         parameters.addParameter(fnamParam);
         
         final PluginParameter<StringParameterValue> graphTitleParam = StringParameterType.build(GRAPH_TITLE_PARAMETER_ID);
         graphTitleParam.setName("Graph Title");
         graphTitleParam.setDescription("Title of the graph");
         parameters.addParameter(graphTitleParam);
-         
+        
+        final PluginParameter<BooleanParameterValue> selectedNodesParam = BooleanParameterType.build(SELECTED_NODES_PARAMETER_ID);
+        selectedNodesParam.setName("Selected Nodes");
+        selectedNodesParam.setDescription("Export selected nodes");
+        parameters.addParameter(selectedNodesParam);
+        
         return parameters;
     }
     
@@ -77,10 +84,12 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException { 
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
+        final Boolean selectedNodes = parameters.getBooleanValue(SELECTED_NODES_PARAMETER_ID);
         final File imageFile = new File(fnam);     
         final SVGObject svg = new SVGGraph.SVGGraphBuilder()
                 .withTitle(title)
                 .withGraph(graph)
+                .withNodes(selectedNodes)
                 .build();
         try {
             exportToSVG(imageFile, svg);

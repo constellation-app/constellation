@@ -110,6 +110,7 @@ public class SVGGraph {
         private Vector3f maxBound = null;
         private Vector3f minBound = null;
         private String graphTitle = null;
+        private boolean selectedNodesOnly = false;
       
         /**
          * Specifies the graph to build the SVG from.
@@ -128,6 +129,12 @@ public class SVGGraph {
          */
         public SVGGraphBuilder withTitle(final String title) {
             this.graphTitle = title;
+            return this;
+        }
+        
+        
+        public SVGGraphBuilder withNodes(Boolean selectedNodesOnly) {
+            this.selectedNodesOnly = selectedNodesOnly;
             return this;
         }
       
@@ -190,6 +197,12 @@ public class SVGGraph {
             final SVGContainer nodesContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.NODES.id); 
 
             for (int vertexPosition = 0 ; vertexPosition < access.getVertexCount() ; vertexPosition++) {
+                
+                //Do not export this vertex if only selected nodes are being exported and the node is not selected.
+                if (selectedNodesOnly && !access.isVertexSelected(vertexPosition)){
+                    continue;
+                }
+                
                 //Get the values of the attributes relevent to the current node
                 final Tuple<Double, Double> position = getVertexPosition(vertexPosition);
                 final ConstellationColor color = access.getVertexColor(vertexPosition);
@@ -206,7 +219,7 @@ public class SVGGraph {
                 node.setAttribute(SVGAttributeConstant.ID.getKey(), access.getVertexId(vertexPosition));
                 node.setParent(nodesContainer.toSVGObject());
                 
-                //Add labels to the Node
+                //Add labels to the node
                 final SVGContainer nodeContainer = new SVGContainer(node);
                 final SVGContainer bottomLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.BOTTOM_LABELS.id);
                 final SVGContainer topLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.TOP_LABELS.id);
@@ -313,6 +326,11 @@ public class SVGGraph {
                 //Get the source and destination node references
                 final int high =  access.getLinkHighVertex(linkPosition);
                 final int low = access.getLinkLowVertex(linkPosition);
+                
+                //Do not export this link if only selected nodes are being exported and either of the associated nodes are not selected.
+                if (selectedNodesOnly && (!access.isVertexSelected(high) || !access.isVertexSelected(low))){
+                    continue;
+                }
                 
                 //Determine the SVG coordinates of the center of the nodes
                 final Tuple<Double, Double> highCenterPosition = getVertexPosition(high);
