@@ -73,6 +73,7 @@ public final class ExportToSVGAction implements ActionListener {
                         .withParameter(ExportToSVGPlugin.FILE_NAME_PARAMETER_ID, fnam)
                         .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 5")
                         .withParameter(ExportToSVGPlugin.SELECTED_NODES_PARAMETER_ID, false)
+                        .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, true)
                         .interactively(true)
                         .executeLater(context.getGraph());
             }));

@@ -111,6 +111,7 @@ public class SVGGraph {
         private Vector3f minBound = null;
         private String graphTitle = null;
         private boolean selectedNodesOnly = false;
+        private boolean showConnections = true;
       
         /**
          * Specifies the graph to build the SVG from.
@@ -131,10 +132,14 @@ public class SVGGraph {
             this.graphTitle = title;
             return this;
         }
-        
-        
+           
         public SVGGraphBuilder withNodes(Boolean selectedNodesOnly) {
             this.selectedNodesOnly = selectedNodesOnly;
+            return this;
+        }
+        
+        public SVGGraphBuilder withConnections(Boolean selectedTransactionsOnly) {
+            this.showConnections = selectedTransactionsOnly;
             return this;
         }
       
@@ -197,7 +202,7 @@ public class SVGGraph {
             final SVGContainer nodesContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.NODES.id); 
 
             for (int vertexPosition = 0 ; vertexPosition < access.getVertexCount() ; vertexPosition++) {
-                
+                              
                 //Do not export this vertex if only selected nodes are being exported and the node is not selected.
                 if (selectedNodesOnly && !access.isVertexSelected(vertexPosition)){
                     continue;
@@ -317,6 +322,11 @@ public class SVGGraph {
          * @param svgGraph 
          */
         private void buildConnections(final SVGGraph svgGraph) {
+            //Donot export connections if showConnections is disabled
+            if (!showConnections){
+                return;
+            }
+            
             // Get the SVG element that will contain all connections
             final SVGContainer connectionsContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.CONNECTIONS.id);
             

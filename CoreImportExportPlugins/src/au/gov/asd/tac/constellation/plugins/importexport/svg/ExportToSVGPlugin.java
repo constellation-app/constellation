@@ -53,7 +53,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "file_name");
     public static final String GRAPH_TITLE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "graph_title");
     public static final String SELECTED_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_nodes");
-    
+    public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
     private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     
     @Override
@@ -77,6 +77,11 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         selectedNodesParam.setDescription("Export selected nodes");
         parameters.addParameter(selectedNodesParam);
         
+        final PluginParameter<BooleanParameterValue> showConnectionsParam = BooleanParameterType.build(SHOW_CONNECTIONS_PARAMETER_ID);
+        showConnectionsParam.setName("Show Connections");
+        showConnectionsParam.setDescription("Export connections between nodes");
+        parameters.addParameter(showConnectionsParam);
+        
         return parameters;
     }
     
@@ -85,11 +90,13 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
         final Boolean selectedNodes = parameters.getBooleanValue(SELECTED_NODES_PARAMETER_ID);
+        final Boolean showConnections = parameters.getBooleanValue(SHOW_CONNECTIONS_PARAMETER_ID);
         final File imageFile = new File(fnam);     
         final SVGObject svg = new SVGGraph.SVGGraphBuilder()
                 .withTitle(title)
                 .withGraph(graph)
                 .withNodes(selectedNodes)
+                .withConnections(showConnections)
                 .build();
         try {
             exportToSVG(imageFile, svg);
