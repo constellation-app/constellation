@@ -115,7 +115,7 @@ public class SVGGraph {
         private boolean showConnections = true;
         private boolean showTopLabels = true;
         private boolean showBottomLabels = true;
-        private ConnectionMode connectionMode = VisualGraphDefaults.DEFAULT_CONNECTION_MODE;
+        private ConstellationColor backgroundColor = VisualGraphDefaults.DEFAULT_BACKGROUND_COLOR;
       
         /**
          * Specifies the graph to build the SVG from.
@@ -134,6 +134,16 @@ public class SVGGraph {
          */
         public SVGGraphBuilder withTitle(final String title) {
             this.graphTitle = title;
+            return this;
+        }
+        
+        /**
+         * Specifies the color of the graph background being exported.
+         * @param color the color of the graph background.
+         * @return SVGGraphBuilder
+         */
+        public SVGGraphBuilder withBackground(final ConstellationColor color) {
+            this.backgroundColor = color;
             return this;
         }
            
@@ -192,6 +202,7 @@ public class SVGGraph {
             defineBoundary();
             buildHeader(svgGraphLayout);
             buildFooter(svgGraphLayout);
+            buildBackground(svgGraphLayout);
             buildConnections(svgGraphLayout);
             buildNodes(svgGraphLayout);
             setLayoutDimensions(svgGraphLayout);
@@ -224,6 +235,10 @@ public class SVGGraph {
         private void buildFooter(final SVGGraph svg){
             final SVGContainer titleContainer = svg.getContainer(SVGLayoutConstant.FOOTER.id).getContainer(SVGLayoutConstant.FOOTNOTE.id);
             titleContainer.toSVGObject().setContent("The Constellation community. All rights reserved.");
+        }
+        
+        private void buildBackground(final SVGGraph svg){
+             svg.getContainer(SVGLayoutConstant.BACKGROUND.id).toSVGObject().setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), backgroundColor);
         }
         
         /**

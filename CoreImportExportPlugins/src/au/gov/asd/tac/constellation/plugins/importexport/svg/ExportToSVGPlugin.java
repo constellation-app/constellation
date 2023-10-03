@@ -16,7 +16,6 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -26,21 +25,20 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.BooleanParameterType.BooleanParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
-import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
-import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser;
@@ -57,6 +55,7 @@ import org.openide.util.lookup.ServiceProvider;
 public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "file_name");
     public static final String GRAPH_TITLE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "graph_title");
+    public static final String BACKGROUND_COLOR_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "background_color");
     public static final String SELECTED_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_nodes");
     public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
     public static final String CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connection_mode");
@@ -80,9 +79,14 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         graphTitleParam.setDescription("Title of the graph");
         parameters.addParameter(graphTitleParam);
         
+        final PluginParameter<ColorParameterValue> backgroundColorParam = ColorParameterType.build(BACKGROUND_COLOR_PARAMETER_ID);
+        backgroundColorParam.setName("Background Color");
+        backgroundColorParam.setDescription("Set the background color");
+        parameters.addParameter(backgroundColorParam);
+        
         final PluginParameter<BooleanParameterValue> selectedNodesParam = BooleanParameterType.build(SELECTED_NODES_PARAMETER_ID);
         selectedNodesParam.setName("Selected Nodes");
-        selectedNodesParam.setDescription("Export selected nodes");
+        selectedNodesParam.setDescription("Export selected nodes only");
         parameters.addParameter(selectedNodesParam);
         
         final PluginParameter<BooleanParameterValue> showConnectionsParam = BooleanParameterType.build(SHOW_CONNECTIONS_PARAMETER_ID);
@@ -107,17 +111,18 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException { 
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
+        final ConstellationColor color = parameters.getColorValue(BACKGROUND_COLOR_PARAMETER_ID);
         final Boolean selectedNodes = parameters.getBooleanValue(SELECTED_NODES_PARAMETER_ID);
         final Boolean showConnections = parameters.getBooleanValue(SHOW_CONNECTIONS_PARAMETER_ID);
         final Boolean showTopLabels = parameters.getBooleanValue(SHOW_TOP_LABELS_PARAMETER_ID);
         final Boolean showBottomLabels = parameters.getBooleanValue(SHOW_BOTTOM_LABELS_PARAMETER_ID);
-        final ParameterValue connectionMode = parameters.getSingleChoice(CONNECTION_MODE_PARAMETER_ID);
         
         final File imageFile = new File(fnam);  
         
         final SVGObject svg = new SVGGraph.SVGGraphBuilder()
                 .withTitle(title)
                 .withGraph(graph)
+                .withBackground(color)
                 .withNodes(selectedNodes)
                 .includeConnections(showConnections)
                 .includeTopLabels(showTopLabels)

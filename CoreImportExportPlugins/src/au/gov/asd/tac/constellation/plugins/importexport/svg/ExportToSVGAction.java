@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.Connec
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
@@ -71,6 +72,8 @@ public final class ExportToSVGAction implements ActionListener {
                 if (!fnam.toLowerCase().endsWith(FileExtensionConstants.SVG)) {
                     fnam += FileExtensionConstants.SVG;
                 }
+                int colorAttributeID = VisualConcept.GraphAttribute.BACKGROUND_COLOR.get(graph);
+                ConstellationColor color = graph.getObjectValue(colorAttributeID, 0);
                 
                 PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
                         .withParameter(ExportToSVGPlugin.FILE_NAME_PARAMETER_ID, fnam)
@@ -79,6 +82,7 @@ public final class ExportToSVGAction implements ActionListener {
                         .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, true)
                         .withParameter(ExportToSVGPlugin.SHOW_TOP_LABELS_PARAMETER_ID, true)
                         .withParameter(ExportToSVGPlugin.SHOW_BOTTOM_LABELS_PARAMETER_ID, true)
+                        .withParameter(ExportToSVGPlugin.BACKGROUND_COLOR_PARAMETER_ID, color)
                         .interactively(true)
                         .executeLater(context.getGraph());
             }));
