@@ -65,7 +65,12 @@ public class SVGParser {
                 }
                 final boolean openTag = SVGParser.isOpenTag(svgElement);
                 final boolean closeTag = SVGParser.isCloseTag(svgElement);
-
+                
+// This parser curently requires all lines within an SVG tag as it does not support multi line tags.
+                if (!openTag && !closeTag) {
+                    throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
+                }
+                
                 // Create a new SVGObject with the current SVGObject as the parent 
                 if (openTag) {
                         
@@ -76,18 +81,15 @@ public class SVGParser {
                     );
                     currentElement = newObject;
                 }
+
+                if (currentElement != null && currentElement.getParent() == null && !roots.contains(currentElement)){
+                    roots.add(currentElement);
+                }                
+
                 // Move back up one level to the curren objects parent
                 if (closeTag) {
                     currentElement = currentElement.getParent();
                 } 
-                // This parser curently requires all lines with be an SVG tag as it does not support multi line tags.
-                if (!openTag && !closeTag) {
-                    throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
-                }
-                
-                if (currentElement != null && currentElement.getParent() == null && !roots.contains(currentElement)){
-                    roots.add(currentElement);
-                }
             }
         }
         if (roots.size() != 1) {
