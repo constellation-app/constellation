@@ -590,7 +590,7 @@ public class SVGGraph {
         private void defineBoundary() {
             Camera camera = access.getCamera();
             final BoundingBox box = camera.boundingBox;
-            BoundingBoxUtilities.recalculateFromGraph(box, graph, false);
+            BoundingBoxUtilities.recalculateFromGraph(box, graph, selectedNodesOnly);
             maxBound = box.getMax();
             minBound = box.getMin();
             maxBound.scale(128);
