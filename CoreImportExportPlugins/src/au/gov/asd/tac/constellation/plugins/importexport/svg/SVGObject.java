@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -69,22 +70,16 @@ public class SVGObject {
     }
     
     /**
-     * Adds an attribute to the current SVG element. 
-     * Only one attribute value can be provided per key.
-     * Attempting to add a value to an existing key 
-     * will override the last value provided.
+     * Adds a float attribute to the current SVG element. 
      * @param attributeKey 
      * @param attributeValue 
      */
     public final void setAttribute(final String attributeKey, final float attributeValue) {
-        setAttribute(attributeKey, String.format("%s", attributeValue));
+        setAttribute(attributeKey, String.format("%.2f", attributeValue));
     }
     
     /**
-     * Adds an attribute to the current SVG element. 
-     * Only one attribute value can be provided per key.
-     * Attempting to add a value to an existing key 
-     * will override the last value provided.
+     * Adds an int attribute to the current SVG element. 
      * @param attributeKey 
      * @param attributeValue 
      */
@@ -93,15 +88,21 @@ public class SVGObject {
     }
     
     /**
-     * Adds an attribute to the current SVG element. 
-     * Only one attribute value can be provided per key.
-     * Attempting to add a value to an existing key 
-     * will override the last value provided.
+     * Adds a double attribute to the current SVG element. 
      * @param attributeKey 
      * @param attributeValue 
      */
     public final void setAttribute(final String attributeKey, final double attributeValue) {
-        setAttribute(attributeKey, String.format("%s", attributeValue));
+        setAttribute(attributeKey, String.format("%.2f", attributeValue));
+    }
+    
+    /**
+     * Adds a ConstellationColor attribute to the current SVG element. 
+     * @param attributeKey 
+     * @param attributeValue 
+     */
+    public final void setAttribute(final String attributeKey, final ConstellationColor attributeValue) {
+        setAttribute(attributeKey, String.format("%s", attributeValue.getHtmlColor()));
     }
         
     /**
