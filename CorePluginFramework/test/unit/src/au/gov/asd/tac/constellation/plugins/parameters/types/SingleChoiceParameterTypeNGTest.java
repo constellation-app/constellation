@@ -299,7 +299,7 @@ public class SingleChoiceParameterTypeNGTest {
     }
     
     /**
-     * Test of equals method, of class IntegerParameterValue.
+     * Test of equals method, of class SingleChoiceParameterValue.
      */
     @Test
     public void testEquals() {
