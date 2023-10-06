@@ -23,6 +23,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
  * @author capricornunicorn123
  */
 public enum SVGLayoutConstant {
+    ARROW_HEAD("arrow-head"),
     ARROW_SHAFT("arrow-shaft"),
     BACKGROUND("background"),
     BACKGROUND_IMAGE("background-image"),
@@ -35,6 +36,7 @@ public enum SVGLayoutConstant {
     FOREGROUND_IMAGE("foreground-image"),
     HEADER("header"),
     NODES("nodes"),
+    NODE_IMAGES("node-images"),
     NORTH_EAST_DECORATOR("north-east-decorator"),
     NORTH_WEST_DECORATOR("north-west-decorator"),
     SOUTH_WEST_DECORATOR("south-west-decorator"),

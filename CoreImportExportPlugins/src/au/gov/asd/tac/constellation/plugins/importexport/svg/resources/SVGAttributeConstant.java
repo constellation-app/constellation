@@ -27,6 +27,7 @@ public enum SVGAttributeConstant {
     DESTINATION_Y("y2"),
     EXTERNAL_RESOURCE_REFERENCE("xlink:href"),
     FILL_COLOR("fill"),
+    FILTER("filter"),
     FONT_SIZE("font-size"),
     HEIGHT("height"),
     ID("id"),

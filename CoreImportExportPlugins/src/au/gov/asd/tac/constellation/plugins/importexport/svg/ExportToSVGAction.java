@@ -44,7 +44,7 @@ import org.openide.util.NbBundle;
  */
 @ActionID(category = "File", id = "au.gov.asd.tac.constellation.plugins.importexport.image.ExportToSVG")
 @ActionRegistration(displayName = "#CTL_ExportToSVG",
-        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/image/exportToImage.png", // 
+        iconBase = "au/gov/asd/tac/constellation/plugins/importexport/svg/exportToSVG.png",
         surviveFocusChange = true)
 @ActionReference(path = "Menu/File/Export", position = 50)
 @NbBundle.Messages("CTL_ExportToSVG=To SVG")

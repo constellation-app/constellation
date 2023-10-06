@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.logging.Logger;
@@ -61,8 +62,8 @@ public class SVGObject {
      * @param idValue
      * @return SVGObject
      */
-    public final SVGObject getChild(final String idValue) {
-        final SVGData child = this.svgRataReference.getChild(idValue);
+    public final SVGObject getChild(final SVGLayoutConstant id) {
+        final SVGData child = this.svgRataReference.getChild(id.getValue());
         if (child != null){
             return new SVGObject(child); 
         } else {

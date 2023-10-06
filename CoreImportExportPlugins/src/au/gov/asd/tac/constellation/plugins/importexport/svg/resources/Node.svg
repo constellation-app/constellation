@@ -1,12 +1,12 @@
 <svg class="Node" width="256" height="256" overflow="visible" viewBox="0, 0, 256, 256">
         <svg id="top-labels" width="256" height="256" overflow="visible" />
-        <svg id="background-image" width="256" height="256">
-        </svg>
-        <svg id="foreground-image" width="256" height="256">
+        <svg id="node-images">
+            <svg id="background-image" width="256" height="256" />
+            <svg id="foreground-image" width="256" height="256" />        
+            <svg id="north-west-decorator" width="85" height="85" x="0" y="0" />
+            <svg id="north-east-decorator" width="85" height="85" x="171" y="0" />
+            <svg id="south-west-decorator" width="85" height="85" x="0" y="171" />
+            <svg id="south-east-decorator" width="85" height="85" x="171" y="171" />
         </svg>
         <svg id="bottom-labels" width="256" height="256" y="256" overflow="visible" />
-        <svg id="north-west-decorator" width="85" height="85" x="0" y="0" />
-        <svg id="north-east-decorator" width="85" height="85" x="171" y="0" />
-        <svg id="south-west-decorator" width="85" height="85" x="0" y="171" />
-        <svg id="south-east-decorator" width="85" height="85" x="171" y="171" />
 </svg>

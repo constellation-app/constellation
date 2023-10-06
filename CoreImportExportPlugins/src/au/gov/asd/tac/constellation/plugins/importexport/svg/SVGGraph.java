@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -178,9 +177,9 @@ public class SVGGraph {
          * @param svg 
          */
         private void buildHeader(final SVGObject svg){
-            final SVGObject titleContainer = svg.getChild(SVGLayoutConstant.HEADER.getValue()).getChild(SVGLayoutConstant.TITLE.getValue());
+            final SVGObject titleContainer = svg.getChild(SVGLayoutConstant.HEADER).getChild(SVGLayoutConstant.TITLE);
             titleContainer.toSVGData().setContent(graphTitle);
-            final SVGObject subtitleContainer = svg.getChild(SVGLayoutConstant.HEADER.getValue()).getChild(SVGLayoutConstant.SUBTITLE.getValue());
+            final SVGObject subtitleContainer = svg.getChild(SVGLayoutConstant.HEADER).getChild(SVGLayoutConstant.SUBTITLE);
             final ZonedDateTime date = ZonedDateTime.now();
             subtitleContainer.toSVGData().setContent(
                     String.format("Exported: %s %s, %s",
@@ -196,12 +195,12 @@ public class SVGGraph {
          * @param svg 
          */
         private void buildFooter(final SVGObject svg){
-            final SVGObject titleContainer = svg.getChild(SVGLayoutConstant.FOOTER.getValue()).getChild(SVGLayoutConstant.FOOTNOTE.getValue());
+            final SVGObject titleContainer = svg.getChild(SVGLayoutConstant.FOOTER).getChild(SVGLayoutConstant.FOOTNOTE);
             titleContainer.toSVGData().setContent("The Constellation community. All rights reserved.");
         }
         
         private void buildBackground(final SVGObject svg){
-             svg.getChild(SVGLayoutConstant.BACKGROUND.getValue()).setFillColor(backgroundColor);
+             svg.getChild(SVGLayoutConstant.BACKGROUND).setFillColor(backgroundColor);
         }
         
         /**
@@ -211,7 +210,7 @@ public class SVGGraph {
          */
         private void buildNodes(final SVGObject svgGraph) {
             //Retrieve the svg element that holds the nodes as a SVGObject
-            final SVGObject nodesContainer = svgGraph.getChild(SVGLayoutConstant.CONTENT.getValue()).getChild(SVGLayoutConstant.NODES.getValue()); 
+            final SVGObject nodesContainer = svgGraph.getChild(SVGLayoutConstant.CONTENT).getChild(SVGLayoutConstant.NODES); 
             for (int vertexPosition = 0 ; vertexPosition < access.getVertexCount() ; vertexPosition++) {
                               
                 //Do not export this vertex if only selected nodes are being exported and the node is not selected.
@@ -236,27 +235,34 @@ public class SVGGraph {
                 
                 //Add labels to the node
                 if (showTopLabels){
-                    final SVGObject topLabelContainer = node.getChild(SVGLayoutConstant.TOP_LABELS.getValue());
+                    final SVGObject topLabelContainer = node.getChild(SVGLayoutConstant.TOP_LABELS);
                     buildTopLabel(vertexPosition, topLabelContainer);
                 }
                 if (showBottomLabels){
-                    final SVGObject bottomLabelContainer = node.getChild(SVGLayoutConstant.BOTTOM_LABELS.getValue());
+                    final SVGObject bottomLabelContainer = node.getChild(SVGLayoutConstant.BOTTOM_LABELS);
                     buildBottomLabel(vertexPosition, bottomLabelContainer);
                 }
-               
+                
                 //Add images to the node
-                final SVGObject backgroundContainer = node.getChild(SVGLayoutConstant.BACKGROUND_IMAGE.getValue());
-                final SVGObject foregroundContainer = node.getChild(SVGLayoutConstant.FOREGROUND_IMAGE.getValue());
+                final SVGObject nodeImages = node.getChild(SVGLayoutConstant.NODE_IMAGES);
+                
+                //Add dimmed property if dimmed 
+                if (access.isVertexDimmed(vertexPosition)){
+                    nodeImages.setAttribute(SVGAttributeConstant.FILTER, "grayscale(1)");
+                }
+                
+                final SVGObject backgroundContainer = nodeImages.getChild(SVGLayoutConstant.BACKGROUND_IMAGE);
+                final SVGObject foregroundContainer = nodeImages.getChild(SVGLayoutConstant.FOREGROUND_IMAGE);
                 final byte[] backgroundData = backgroundIcon.getIconData().getData(0, color.getJavaColor());
                 final byte[] foregroundData = foregroundIcon.getIconData().getData();
-                this.buildSVGImageFromRasterImageData(backgroundContainer.toSVGData(), backgroundData);
-                this.buildSVGImageFromRasterImageData(foregroundContainer.toSVGData(), foregroundData);
-                
+                this.buildSVGImageFromRasterImageData(backgroundContainer, backgroundData);
+                this.buildSVGImageFromRasterImageData(foregroundContainer, foregroundData);
+
                 //Add decorators to the node       
-                this.buildDecorator(node.getChild(SVGLayoutConstant.NORTH_WEST_DECORATOR.getValue()), access.getNWDecorator(vertexPosition));
-                this.buildDecorator(node.getChild(SVGLayoutConstant.NORTH_EAST_DECORATOR.getValue()), access.getNEDecorator(vertexPosition));
-                this.buildDecorator(node.getChild(SVGLayoutConstant.SOUTH_WEST_DECORATOR.getValue()), access.getSWDecorator(vertexPosition));
-                this.buildDecorator(node.getChild(SVGLayoutConstant.SOUTH_EAST_DECORATOR.getValue()), access.getSEDecorator(vertexPosition));
+                this.buildDecorator(nodeImages.getChild(SVGLayoutConstant.NORTH_WEST_DECORATOR), access.getNWDecorator(vertexPosition));
+                this.buildDecorator(nodeImages.getChild(SVGLayoutConstant.NORTH_EAST_DECORATOR), access.getNEDecorator(vertexPosition));
+                this.buildDecorator(nodeImages.getChild(SVGLayoutConstant.SOUTH_WEST_DECORATOR), access.getSWDecorator(vertexPosition));
+                this.buildDecorator(nodeImages.getChild(SVGLayoutConstant.SOUTH_EAST_DECORATOR), access.getSEDecorator(vertexPosition));
             }
         }
         
@@ -269,7 +275,7 @@ public class SVGGraph {
         private void buildDecorator(final SVGObject decorator, final String decoratorValue) {
             if (decoratorValue != null && !"false_pinned".equals(decoratorValue)){
                 final byte[] decoratorIconData = IconManager.getIcon(decoratorValue).getIconData().getData();
-                this.buildSVGImageFromRasterImageData(decorator.toSVGData(), decoratorIconData);
+                this.buildSVGImageFromRasterImageData(decorator, decoratorIconData);
             }
         }
         
@@ -340,7 +346,7 @@ public class SVGGraph {
             }
             
             // Get the SVG element that will contain all connections
-            final SVGObject connectionsContainer = svgGraph.getChild(SVGLayoutConstant.CONTENT.getValue()).getChild(SVGLayoutConstant.CONNECTIONS.getValue());
+            final SVGObject connectionsContainer = svgGraph.getChild(SVGLayoutConstant.CONTENT).getChild(SVGLayoutConstant.CONNECTIONS);
             
             //Itterate over all connections in the gaph
             for (int linkPosition = 0; linkPosition < access.getLinkCount(); linkPosition++) {
@@ -400,7 +406,7 @@ public class SVGGraph {
         private void buildConnection(final SVGObject connectionsContainer, final Tuple<Double, Double> highPosition, final Tuple<Double, Double> lowPosition, final int connection){
             //Get references to SVG Objects being built within this method 
             final SVGObject connectionSVG = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION);
-            final SVGObject arrowShaft = connectionSVG.getChild(SVGLayoutConstant.ARROW_SHAFT.getValue());
+            final SVGObject arrowShaft = connectionSVG.getChild(SVGLayoutConstant.ARROW_SHAFT);
             final SVGObject highArrowHeadContainer;
             final SVGObject lowArrowHeadContainer;
             
@@ -479,7 +485,7 @@ public class SVGGraph {
             arrowHeadContainer.setID(String.format("arrow-head-%s-%s", position.getFirst(), position.getSecond()));
             
             //Rotate the arrow head polygon around the tip to align it with the angle of the connection
-            final SVGObject arrowHead = arrowHeadContainer.getChild("arrow-head");
+            final SVGObject arrowHead = arrowHeadContainer.getChild(SVGLayoutConstant.ARROW_HEAD);
             arrowHead.setTransformation(String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), arrowHeadWidth, arrowHeadheight/2));
         }
         
@@ -499,11 +505,11 @@ public class SVGGraph {
          * @param parent
          * @param data 
          */
-        private void buildSVGImageFromRasterImageData(final SVGData parent, final byte[] data) {
+        private void buildSVGImageFromRasterImageData(final SVGObject parent, final byte[] data) {
             final String encodedString = Base64.getEncoder().encodeToString(data);
             final SVGData image = SVGData.loadFromTemplate(SVGFileNameConstant.IMAGE);
             image.setAttribute(SVGAttributeConstant.EXTERNAL_RESOURCE_REFERENCE, String.format("data:image/png;base64,%s", encodedString));
-            image.setParent(parent);
+            image.setParent(parent.toSVGData());
         }
  
         /**
@@ -549,16 +555,16 @@ public class SVGGraph {
             
             svg.setDimension(fullWidth, fullHeight);
 
-            svg.getChild(SVGLayoutConstant.HEADER.getValue()).setDimension(fullWidth, topMargin);
-            svg.getChild(SVGLayoutConstant.FOOTER.getValue()).setDimension(fullWidth, bottomMargin);
-            svg.getChild(SVGLayoutConstant.FOOTER.getValue()).setPosition(0F, footerYOffset);
+            svg.getChild(SVGLayoutConstant.HEADER).setDimension(fullWidth, topMargin);
+            svg.getChild(SVGLayoutConstant.FOOTER).setDimension(fullWidth, bottomMargin);
+            svg.getChild(SVGLayoutConstant.FOOTER).setPosition(0F, footerYOffset);
 
-            svg.getChild(SVGLayoutConstant.CONTENT.getValue()).setDimension(contentWidth, contentHeight);
-            svg.getChild(SVGLayoutConstant.CONTENT.getValue()).setPosition(contentXOffset, contentYOffset);
+            svg.getChild(SVGLayoutConstant.CONTENT).setDimension(contentWidth, contentHeight);
+            svg.getChild(SVGLayoutConstant.CONTENT).setPosition(contentXOffset, contentYOffset);
 
-            svg.getChild(SVGLayoutConstant.BACKGROUND.getValue()).setDimension(backgroundWidth, backgroundHeight);
-            svg.getChild(SVGLayoutConstant.BACKGROUND.getValue()).setPosition(xMargin, topMargin);
-            svg.getChild(SVGLayoutConstant.BORDER.getValue()).setDimension(fullWidth, fullHeight);
+            svg.getChild(SVGLayoutConstant.BACKGROUND).setDimension(backgroundWidth, backgroundHeight);
+            svg.getChild(SVGLayoutConstant.BACKGROUND).setPosition(xMargin, topMargin);
+            svg.getChild(SVGLayoutConstant.BORDER).setDimension(fullWidth, fullHeight);
         }
 
         /**
