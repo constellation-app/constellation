@@ -214,7 +214,7 @@ public class SVGGraph {
             for (int vertexPosition = 0 ; vertexPosition < access.getVertexCount() ; vertexPosition++) {
                               
                 //Do not export this vertex if only selected nodes are being exported and the node is not selected.
-                if (selectedNodesOnly && !access.isVertexSelected(vertexPosition)){
+                if (selectedNodesOnly && !access.isVertexSelected(vertexPosition) || access.getVertexVisibility(vertexPosition) == 0){
                     continue;
                 }
                 
@@ -246,7 +246,8 @@ public class SVGGraph {
                 //Add images to the node
                 final SVGObject nodeImages = node.getChild(SVGLayoutConstant.NODE_IMAGES);
                 
-                //Add dimmed property if dimmed 
+                //Add dimmed property if dimmed
+                //This implementation is not an precice sollution, lumocity to alpha conversion would be better
                 if (access.isVertexDimmed(vertexPosition)){
                     nodeImages.setAttribute(SVGAttributeConstant.FILTER, "grayscale(1)");
                 }
