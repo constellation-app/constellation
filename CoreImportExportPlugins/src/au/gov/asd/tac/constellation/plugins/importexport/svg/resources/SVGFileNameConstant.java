@@ -17,24 +17,28 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
 
 /**
  * This class serves to provide references to resource file names as constants. 
- * the class also serves to provide the class path to the resources 
+ * The class also serves to provide the class path to the resources 
  * as it is located within the same package. 
  * 
  * @author capricornunicorn123
  */
 public enum SVGFileNameConstant {
-    NODE("Node.svg"),
     CONNECTION("Connection.svg"),
-    LINK_ARROW_HEAD("LinkArrowHead.svg"),
-    TRANSACTION_ARROW_HEAD("TransactionArrowHead.svg"),
+    IMAGE("Image.svg"),
+    LABEL("Label.svg"),
     LAYOUT("Layout.svg"),
-    BOTTOM_LABEL("BottomLabel.svg"),
-    TOP_LABEL("TopLabel.svg"),
-    IMAGE("Image.svg");
-    
-    public final String resourceName;
+    LINK_ARROW_HEAD("LinkArrowHead.svg"),
+    NODE("Node.svg"),
+    TRANSACTION_ARROW_HEAD("TransactionArrowHead.svg");
+
+    private final String resourceName;
         
     private SVGFileNameConstant(final String resourceName){
         this.resourceName = resourceName;
     }
+    
+    public final String getFileName(){
+        return this.resourceName;
+    }
+        
 }

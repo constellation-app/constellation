@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg.parser;
 
-import au.gov.asd.tac.constellation.plugins.importexport.svg.SVGObject;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.SVGData;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -52,9 +52,9 @@ public class SVGParser {
      * @return
      * @throws IOException 
      */
-    public static SVGObject parse(final InputStream inputStream) throws IOException {
-        SVGObject currentElement = null; 
-        final Collection<SVGObject> roots = new HashSet<>();
+    public static SVGData parse(final InputStream inputStream) throws IOException {
+        SVGData currentElement = null; 
+        final Collection<SVGData> roots = new HashSet<>();
         
         try (final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
@@ -71,10 +71,10 @@ public class SVGParser {
                     throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
                 }
                 
-                // Create a new SVGObject with the current SVGObject as the parent 
+                // Create a new SVGData with the current SVGData as the parent 
                 if (openTag) {
                         
-                    SVGObject newObject = new SVGObject(
+                    SVGData newObject = new SVGData(
                             SVGParser.getElementType(svgElement), 
                             currentElement, 
                             SVGParser.getElementAttributes(svgElement)
@@ -95,7 +95,7 @@ public class SVGParser {
         if (roots.size() != 1) {
             throw new IllegalStateException(String.format("The SVG file has %s outer elements.", roots.size()));
         } else {
-            return (SVGObject) roots.toArray()[0];
+            return (SVGData) roots.toArray()[0];
         }
     }
 

@@ -15,10 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
-import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
@@ -53,7 +51,6 @@ import org.openide.util.NbBundle;
 public final class ExportToSVGAction implements ActionListener {
 
     private static final String TITLE = "Export to SVG";
-    
     private final GraphNode context; 
     
     public ExportToSVGAction(final GraphNode context) {
@@ -62,6 +59,8 @@ public final class ExportToSVGAction implements ActionListener {
    
     @Override
     public void actionPerformed(final ActionEvent e) {
+        
+        //The Action must be bale to interpret the active graph 
         final ReadableGraph graph = context.getGraph().getReadableGraph();
         
         //The graph has data on it so it can be exported
@@ -77,7 +76,7 @@ public final class ExportToSVGAction implements ActionListener {
                 
                 PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
                         .withParameter(ExportToSVGPlugin.FILE_NAME_PARAMETER_ID, fnam)
-                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 5")
+                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 7")
                         .withParameter(ExportToSVGPlugin.SELECTED_NODES_PARAMETER_ID, false)
                         .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, true)
                         .withParameter(ExportToSVGPlugin.SHOW_TOP_LABELS_PARAMETER_ID, true)
@@ -99,7 +98,6 @@ public final class ExportToSVGAction implements ActionListener {
     
     /**
      * Creates a new SVG file chooser.
-     *
      * @return the created file chooser.
      */
     public FileChooserBuilder getExportToSVGFileChooser() {

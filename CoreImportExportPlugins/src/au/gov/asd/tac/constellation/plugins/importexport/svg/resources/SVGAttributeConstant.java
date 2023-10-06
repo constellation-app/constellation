@@ -21,32 +21,34 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
  * @author capricornunicorn123
  */
 public enum SVGAttributeConstant {
-    X("x"),
-    Y("y"),
-    SOURCE_X("x1"),
-    SOURCE_Y("y1"),
+    BASELINE("dominant-baseline"),
+    CLASS("class"),
     DESTINATION_X("x2"),
     DESTINATION_Y("y2"),
-    WIDTH("width"),
-    HEIGHT("height"),
+    EXTERNAL_RESOURCE_REFERENCE("xlink:href"),
     FILL_COLOR("fill"),
-    STROKE_COLOR("stroke"),
-    CLASS("class"),
-    ID("id"),
     FONT_SIZE("font-size"),
-    TRANSFORM("transform");
+    HEIGHT("height"),
+    ID("id"),
+    SOURCE_X("x1"),
+    SOURCE_Y("y1"),
+    STROKE_COLOR("stroke"),
+    TRANSFORM("transform"),
+    WIDTH("width"),
+    X("x"),
+    Y("y");
     
-    private final String key;
+    private final String name;
     
-    private SVGAttributeConstant(final String attributeKey){
-        this.key = attributeKey;
+    private SVGAttributeConstant(final String attributeName){
+        this.name = attributeName;
     }
     
     /**
      * Returns the key value used by SVG attributes.
      * @return 
      */
-    public String getKey(){
-        return this.key;
+    public String getName(){
+        return this.name;
     }
 }

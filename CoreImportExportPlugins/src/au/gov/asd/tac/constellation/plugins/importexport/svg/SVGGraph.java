@@ -15,10 +15,7 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.schema.visual.attribute.objects.ConnectionMode;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
@@ -28,6 +25,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNa
 import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
+import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
@@ -35,11 +33,8 @@ import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Base64;
 import java.time.ZonedDateTime;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -56,44 +51,14 @@ import java.util.logging.Logger;
 public class SVGGraph {
 
     private static final Logger LOGGER = Logger.getLogger(SVGGraph.class.getName());
-    private final SVGContainer svgContainerReference;
     
     /**
      * Wrapper class for a SVGContainer. 
      * Represents the outer most element of a SVG file.
      * @param svg 
      */
-    private SVGGraph(final SVGContainer svg) {
-        this.svgContainerReference = svg;
-    }
-
-    /**
-     * Returns an SVGContainer that represents a primary layout component.
-     * the intent of this method is tightly coupled to the structure of the
-     * Layout.svg file and has no current logical differences from the 
-     * SVGContainer.getContainer() method.
-     * @param idValue
-     * @return 
-     */
-    private SVGContainer getContainer(final String idValue) {
-        return svgContainerReference.getContainer(idValue);
-    }
-    
-    /**
-     * Sets the dimensions of the outermost SVG element.
-     * @param width
-     * @param height 
-     */
-    public void setDimensions(final Float width, final Float height) {
-        svgContainerReference.setDimension(width, height);
-    }
-
-    /**
-     * Removes the SVGGraph wrapper class from the SVGObject.
-     * @return 
-     */
-    private SVGObject toSVGObject() {
-        return svgContainerReference.toSVGObject();
+    private SVGGraph() {
+        throw new IllegalStateException("Utility class");
     }
     
     /**
@@ -102,12 +67,12 @@ public class SVGGraph {
      * Currently the builder requires a graph to be specified using .withGraph()
      * and for the build to be initialized using .build()
      * <pre>
-     * Example Usage: {@code new SVGGraph.SVGGraphBuilder().withGraph(graph).build();}
+     * Example Usage: {@code new SVGGraph.SVGGraphBuilder().withAccess(graph).build();}
      * </pre>
      */
     public static class SVGGraphBuilder {
-        private GraphVisualAccess access;
         private GraphReadMethods graph;
+        private GraphVisualAccess access;
         private Vector3f maxBound = null;
         private Vector3f minBound = null;
         private String graphTitle = null;
@@ -124,6 +89,11 @@ public class SVGGraph {
          */
         public SVGGraphBuilder withGraph(final GraphReadMethods graph) {
             this.graph = graph;
+            return this;
+        }
+        
+        public SVGGraphBuilder withAccess(final GraphVisualAccess access) {
+            this.access = access;
             return this;
         }
         
@@ -189,37 +159,30 @@ public class SVGGraph {
 
         /**
          * Builds an SVGGraphObject representing the provided graph.
-         * @return SVGObject
+         * @return SVGData
          */
-        public SVGObject build() {
-            final SVGGraph svgGraphLayout = buildSVGGraphFromTemplate(SVGFileNameConstant.LAYOUT);
-            
-            final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
-
-            access = new GraphVisualAccess(currentGraph);
-            access.beginUpdate();
-            access.updateInternally();
+        public SVGData build() {
+            final SVGObject svgGraph = SVGObject.loadFromTemplate(SVGFileNameConstant.LAYOUT);
             defineBoundary();
-            buildHeader(svgGraphLayout);
-            buildFooter(svgGraphLayout);
-            buildBackground(svgGraphLayout);
-            buildConnections(svgGraphLayout);
-            buildNodes(svgGraphLayout);
-            setLayoutDimensions(svgGraphLayout);
-            access.endUpdate();
-            return svgGraphLayout.toSVGObject();
+            buildHeader(svgGraph);
+            buildFooter(svgGraph);
+            buildBackground(svgGraph);
+            buildConnections(svgGraph);
+            buildNodes(svgGraph);
+            setLayoutDimensions(svgGraph);
+            return svgGraph.toSVGData();
         }       
         
         /**
          * Builds the header area of the output SVG.
          * @param svg 
          */
-        private void buildHeader(final SVGGraph svg){
-            final SVGContainer titleContainer = svg.getContainer(SVGLayoutConstant.HEADER.id).getContainer(SVGLayoutConstant.TITLE.id);
-            titleContainer.toSVGObject().setContent(graphTitle);
-            final SVGContainer subtitleContainer = svg.getContainer(SVGLayoutConstant.HEADER.id).getContainer(SVGLayoutConstant.SUBTITLE.id);
+        private void buildHeader(final SVGObject svg){
+            final SVGObject titleContainer = svg.getChild(SVGLayoutConstant.HEADER.getValue()).getChild(SVGLayoutConstant.TITLE.getValue());
+            titleContainer.toSVGData().setContent(graphTitle);
+            final SVGObject subtitleContainer = svg.getChild(SVGLayoutConstant.HEADER.getValue()).getChild(SVGLayoutConstant.SUBTITLE.getValue());
             final ZonedDateTime date = ZonedDateTime.now();
-            subtitleContainer.toSVGObject().setContent(
+            subtitleContainer.toSVGData().setContent(
                     String.format("Exported: %s %s, %s",
                             StringUtilities.camelCase(date.getMonth().toString()), 
                             date.getDayOfMonth(), 
@@ -232,13 +195,13 @@ public class SVGGraph {
          * Builds the footer area of the output SVG.
          * @param svg 
          */
-        private void buildFooter(final SVGGraph svg){
-            final SVGContainer titleContainer = svg.getContainer(SVGLayoutConstant.FOOTER.id).getContainer(SVGLayoutConstant.FOOTNOTE.id);
-            titleContainer.toSVGObject().setContent("The Constellation community. All rights reserved.");
+        private void buildFooter(final SVGObject svg){
+            final SVGObject titleContainer = svg.getChild(SVGLayoutConstant.FOOTER.getValue()).getChild(SVGLayoutConstant.FOOTNOTE.getValue());
+            titleContainer.toSVGData().setContent("The Constellation community. All rights reserved.");
         }
         
-        private void buildBackground(final SVGGraph svg){
-             svg.getContainer(SVGLayoutConstant.BACKGROUND.id).toSVGObject().setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), backgroundColor);
+        private void buildBackground(final SVGObject svg){
+             svg.getChild(SVGLayoutConstant.BACKGROUND.getValue()).setFillColor(backgroundColor);
         }
         
         /**
@@ -246,10 +209,9 @@ public class SVGGraph {
          * The template file Node.svg is used to build the node.
          * @param svgGraph
          */
-        private void buildNodes(final SVGGraph svgGraph) {
-            //Retrieve the svg element that holds the nodes as a SVGContainer
-            final SVGContainer nodesContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.NODES.id); 
-
+        private void buildNodes(final SVGObject svgGraph) {
+            //Retrieve the svg element that holds the nodes as a SVGObject
+            final SVGObject nodesContainer = svgGraph.getChild(SVGLayoutConstant.CONTENT.getValue()).getChild(SVGLayoutConstant.NODES.getValue()); 
             for (int vertexPosition = 0 ; vertexPosition < access.getVertexCount() ; vertexPosition++) {
                               
                 //Do not export this vertex if only selected nodes are being exported and the node is not selected.
@@ -267,38 +229,34 @@ public class SVGGraph {
                 access.getBackgroundIcon(vertexPosition);
                 
                 //build the SVGobject representing the node
-                final SVGObject node = buildSVGObjectFromTemplate(SVGFileNameConstant.NODE);
-                node.setAttribute(SVGAttributeConstant.X.getKey(), position.getFirst() - 128);
-                node.setAttribute(SVGAttributeConstant.Y.getKey(), position.getSecond() - 128);
-                node.setAttribute(SVGAttributeConstant.ID.getKey(), access.getVertexId(vertexPosition));
-                node.setParent(nodesContainer.toSVGObject());
-                
-                final SVGContainer nodeContainer = new SVGContainer(node);
+                final SVGObject node = SVGObject.loadFromTemplate(SVGFileNameConstant.NODE);
+                node.setPosition(position.getFirst() - 128, position.getSecond() - 128);
+                node.setID(access.getVertexId(vertexPosition));
+                node.setParent(nodesContainer);
                 
                 //Add labels to the node
                 if (showTopLabels){
-                    final SVGContainer topLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.TOP_LABELS.id);
+                    final SVGObject topLabelContainer = node.getChild(SVGLayoutConstant.TOP_LABELS.getValue());
                     buildTopLabel(vertexPosition, topLabelContainer);
                 }
                 if (showBottomLabels){
-                    final SVGContainer bottomLabelContainer = nodeContainer.getContainer(SVGLayoutConstant.BOTTOM_LABELS.id);
+                    final SVGObject bottomLabelContainer = node.getChild(SVGLayoutConstant.BOTTOM_LABELS.getValue());
                     buildBottomLabel(vertexPosition, bottomLabelContainer);
                 }
                
                 //Add images to the node
-                final SVGContainer backgroundContainer = nodeContainer.getContainer(SVGLayoutConstant.BACKGROUND_IMAGE.id);
-                final SVGContainer foregroundContainer = nodeContainer.getContainer(SVGLayoutConstant.FOREGROUND_IMAGE.id);
+                final SVGObject backgroundContainer = node.getChild(SVGLayoutConstant.BACKGROUND_IMAGE.getValue());
+                final SVGObject foregroundContainer = node.getChild(SVGLayoutConstant.FOREGROUND_IMAGE.getValue());
                 final byte[] backgroundData = backgroundIcon.getIconData().getData(0, color.getJavaColor());
                 final byte[] foregroundData = foregroundIcon.getIconData().getData();
-                this.buildSVGImageFromRasterImageData(backgroundContainer.toSVGObject(), backgroundData);
-                this.buildSVGImageFromRasterImageData(foregroundContainer.toSVGObject(), foregroundData);
+                this.buildSVGImageFromRasterImageData(backgroundContainer.toSVGData(), backgroundData);
+                this.buildSVGImageFromRasterImageData(foregroundContainer.toSVGData(), foregroundData);
                 
                 //Add decorators to the node       
-                
-                this.buildDecorator(nodeContainer.getContainer(SVGLayoutConstant.NORTH_WEST_DECORATOR.id), access.getNWDecorator(vertexPosition));
-                this.buildDecorator(nodeContainer.getContainer(SVGLayoutConstant.NORTH_EAST_DECORATOR.id), access.getNEDecorator(vertexPosition));
-                this.buildDecorator(nodeContainer.getContainer(SVGLayoutConstant.SOUTH_WEST_DECORATOR.id), access.getSWDecorator(vertexPosition));
-                this.buildDecorator(nodeContainer.getContainer(SVGLayoutConstant.SOUTH_EAST_DECORATOR.id), access.getSEDecorator(vertexPosition));
+                this.buildDecorator(node.getChild(SVGLayoutConstant.NORTH_WEST_DECORATOR.getValue()), access.getNWDecorator(vertexPosition));
+                this.buildDecorator(node.getChild(SVGLayoutConstant.NORTH_EAST_DECORATOR.getValue()), access.getNEDecorator(vertexPosition));
+                this.buildDecorator(node.getChild(SVGLayoutConstant.SOUTH_WEST_DECORATOR.getValue()), access.getSWDecorator(vertexPosition));
+                this.buildDecorator(node.getChild(SVGLayoutConstant.SOUTH_EAST_DECORATOR.getValue()), access.getSEDecorator(vertexPosition));
             }
         }
         
@@ -308,10 +266,10 @@ public class SVGGraph {
          * @param vertex
          * @param decoratorContainer 
          */
-        private void buildDecorator(final SVGContainer decoratorContainer, final String decoratorValue) {
+        private void buildDecorator(final SVGObject decorator, final String decoratorValue) {
             if (decoratorValue != null && !"false_pinned".equals(decoratorValue)){
                 final byte[] decoratorIconData = IconManager.getIcon(decoratorValue).getIconData().getData();
-                this.buildSVGImageFromRasterImageData(decoratorContainer.toSVGObject(), decoratorIconData);
+                this.buildSVGImageFromRasterImageData(decorator.toSVGData(), decoratorIconData);
             }
         }
         
@@ -323,20 +281,20 @@ public class SVGGraph {
          * @param vertex
          * @param bottomLabelContainer 
          */
-        private void buildBottomLabel(final int vertex, final SVGContainer bottomLabelContainer){    
+        private void buildBottomLabel(final int vertex, final SVGObject bottomLabelContainer){    
             float offset = 0;
             for (int labelPosition = 0; labelPosition < access.getBottomLabelCount(); labelPosition++) {
                 final String labelString = access.getVertexBottomLabelText(vertex, labelPosition);
                 if (labelString != null){
-                    SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.BOTTOM_LABEL);
+                    SVGObject text = SVGObject.loadFromTemplate(SVGFileNameConstant.LABEL);
                     final float size = access.getBottomLabelSize(labelPosition) * 64;
-                    final ConstellationColor color = access.getBottomLabelColor(labelPosition);
-                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(),  size);
-                    text.setAttribute(SVGAttributeConstant.Y.getKey(), offset);
-                    text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), color.getHtmlColor());
-                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("bottom-label-%s", labelPosition));
-                    text.setContent(SVGParser.sanitisePlanText(labelString));
-                    text.setParent(bottomLabelContainer.toSVGObject());
+                    text.setAttribute(SVGAttributeConstant.FONT_SIZE,  size);
+                    text.setAttribute(SVGAttributeConstant.Y, offset);
+                    text.setFillColor(access.getBottomLabelColor(labelPosition));
+                    text.setAttribute(SVGAttributeConstant.BASELINE, "hanging");
+                    text.setAttribute(SVGAttributeConstant.ID, String.format("bottom-label-%s", labelPosition));
+                    text.setContent(labelString);
+                    text.setParent(bottomLabelContainer);
                     offset = offset + size;
                 }
             }
@@ -350,20 +308,20 @@ public class SVGGraph {
          * @param vertex
          * @param bottomLabelContainer 
          */
-        private void buildTopLabel(final int vertex, final SVGContainer topLabelContainer){
+        private void buildTopLabel(final int vertex, final SVGObject topLabelContainer){
             float offset = 0;
             for (int labelPosition = 0; labelPosition < access.getTopLabelCount(); labelPosition++) {
                 final String labelString = access.getVertexTopLabelText(vertex, labelPosition);
                 if (labelString != null){
-                    final SVGObject text = buildSVGObjectFromTemplate(SVGFileNameConstant.TOP_LABEL);
+                    final SVGObject text = SVGObject.loadFromTemplate(SVGFileNameConstant.LABEL);
                     final float size = access.getTopLabelSize(labelPosition) * 64;
-                    final ConstellationColor color = access.getTopLabelColor(labelPosition);
-                    text.setAttribute(SVGAttributeConstant.FONT_SIZE.getKey(),  size);
-                    text.setAttribute(SVGAttributeConstant.Y.getKey(), offset);
-                    text.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), color.getHtmlColor());
-                    text.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("top-label-%s", labelPosition));
-                    text.setContent(SVGParser.sanitisePlanText(labelString));
-                    text.setParent(topLabelContainer.toSVGObject());
+                    text.setAttribute(SVGAttributeConstant.FONT_SIZE,  size);
+                    text.setAttribute(SVGAttributeConstant.Y, offset);
+                    text.setFillColor(access.getTopLabelColor(labelPosition));
+                    text.setAttribute(SVGAttributeConstant.BASELINE, "after-edge");
+                    text.setAttribute(SVGAttributeConstant.ID, String.format("top-label-%s", labelPosition));
+                    text.setContent(labelString);
+                    text.setParent(topLabelContainer);
                     offset = offset - size;
                 }
             }
@@ -375,14 +333,14 @@ public class SVGGraph {
          * Other graph state factors including maxTransactions and drawFlags are considered.
          * @param svgGraph 
          */
-        private void buildConnections(final SVGGraph svgGraph) {
+        private void buildConnections(final SVGObject svgGraph) {
             //Donot export connections if showConnections is disabled
             if (!showConnections){
                 return;
             }
             
             // Get the SVG element that will contain all connections
-            final SVGContainer connectionsContainer = svgGraph.getContainer(SVGLayoutConstant.CONTENT.id).getContainer(SVGLayoutConstant.CONNECTIONS.id);
+            final SVGObject connectionsContainer = svgGraph.getChild(SVGLayoutConstant.CONTENT.getValue()).getChild(SVGLayoutConstant.CONNECTIONS.getValue());
             
             //Itterate over all connections in the gaph
             for (int linkPosition = 0; linkPosition < access.getLinkCount(); linkPosition++) {
@@ -424,7 +382,7 @@ public class SVGGraph {
                     final Tuple<Double, Double> highPosition = offSetPosition(highCircumferencePosition, paralellOffsetDistance, highConnectionAngle - paralellOffsetAngle);
                     final Tuple<Double, Double> lowPosition = offSetPosition(lowCircumferencePosition, paralellOffsetDistance, lowConnectionAngle + paralellOffsetAngle);
                     
-                    //Create the Transaction/Edge/Link SVGObject
+                    //Create the Transaction/Edge/Link SVGData
                     buildConnection(connectionsContainer, highPosition, lowPosition, connection);  
                 } 
             }
@@ -439,10 +397,10 @@ public class SVGGraph {
          * @param lowPosition
          * @param connection 
          */
-        private void buildConnection(final SVGContainer connectionsContainer, final Tuple<Double, Double> highPosition, final Tuple<Double, Double> lowPosition, final int connection){
+        private void buildConnection(final SVGObject connectionsContainer, final Tuple<Double, Double> highPosition, final Tuple<Double, Double> lowPosition, final int connection){
             //Get references to SVG Objects being built within this method 
-            final SVGObject connectionSVG = buildSVGObjectFromTemplate(SVGFileNameConstant.CONNECTION);
-            final SVGObject arrowShaft = connectionSVG.getChild(SVGLayoutConstant.ARROW_SHAFT.id);
+            final SVGObject connectionSVG = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION);
+            final SVGObject arrowShaft = connectionSVG.getChild(SVGLayoutConstant.ARROW_SHAFT.getValue());
             final SVGObject highArrowHeadContainer;
             final SVGObject lowArrowHeadContainer;
             
@@ -462,11 +420,11 @@ public class SVGGraph {
                 case BIDIRECTED:
                     buildArrowShaft(arrowShaft, highPositionRecessed, lowPositionRecessed);
                     
-                    highArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
+                    highArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
                     buildArrowHead(highArrowHeadContainer, highPosition, highConnectionAngle);
                     highArrowHeadContainer.setParent(connectionSVG);
                     
-                    lowArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
+                    lowArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
                     buildArrowHead(lowArrowHeadContainer, lowPosition, lowConnectionAngle);
                     lowArrowHeadContainer.setParent(connectionSVG);
                     break;
@@ -475,7 +433,7 @@ public class SVGGraph {
                 case LOW_TO_HIGH:
                     buildArrowShaft(arrowShaft, highPositionRecessed, lowPosition);
                     
-                    highArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
+                    highArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
                     buildArrowHead(highArrowHeadContainer, highPosition, highConnectionAngle);
                     highArrowHeadContainer.setParent(connectionSVG);
                     break;
@@ -484,7 +442,7 @@ public class SVGGraph {
                 case HIGH_TO_LOW:
                     buildArrowShaft(arrowShaft, highPosition, lowPositionRecessed); 
                     
-                    lowArrowHeadContainer = buildSVGObjectFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
+                    lowArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
                     buildArrowHead(lowArrowHeadContainer, lowPosition, lowConnectionAngle);
                     lowArrowHeadContainer.setParent(connectionSVG);
                     break;
@@ -496,11 +454,11 @@ public class SVGGraph {
             }
             
             //Set the attributes of the connection and add it to the connections Conatainer  
-            final String color = getConnectionColor(connection);
-            connectionSVG.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("Connection_%s_%s", highPosition, lowPosition));
-            connectionSVG.setAttribute(SVGAttributeConstant.FILL_COLOR.getKey(), color);
-            connectionSVG.setAttribute(SVGAttributeConstant.STROKE_COLOR.getKey(), color);
-            connectionSVG.setParent(connectionsContainer.toSVGObject());
+            final ConstellationColor color = getConnectionColor(connection);
+            connectionSVG.setID(String.format("Connection_%s_%s", highPosition, lowPosition));
+            connectionSVG.setFillColor(color);
+            connectionSVG.setStrokeColor(color);
+            connectionSVG.setParent(connectionsContainer);
         }
         
         /**
@@ -517,13 +475,12 @@ public class SVGGraph {
             final int arrowHeadheight = 32;
             
             //Set arrow head svg attributes
-            arrowHeadContainer.setAttribute(SVGAttributeConstant.X.getKey(), position.getFirst() - arrowHeadWidth);
-            arrowHeadContainer.setAttribute(SVGAttributeConstant.Y.getKey(), position.getSecond() - arrowHeadheight / 2);
-            arrowHeadContainer.setAttribute(SVGAttributeConstant.ID.getKey(), String.format("arrow-head-%s-%s", position.getFirst(), position.getSecond()));
+            arrowHeadContainer.setPosition(position.getFirst() - arrowHeadWidth, position.getSecond() - arrowHeadheight / 2);
+            arrowHeadContainer.setID(String.format("arrow-head-%s-%s", position.getFirst(), position.getSecond()));
             
             //Rotate the arrow head polygon around the tip to align it with the angle of the connection
             final SVGObject arrowHead = arrowHeadContainer.getChild("arrow-head");
-            arrowHead.setAttribute(SVGAttributeConstant.TRANSFORM.getKey(), String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), arrowHeadWidth, arrowHeadheight/2));
+            arrowHead.setTransformation(String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), arrowHeadWidth, arrowHeadheight/2));
         }
         
         /**
@@ -533,10 +490,8 @@ public class SVGGraph {
          * @param destinationPosition 
          */
         private void buildArrowShaft(SVGObject arrowShaft, Tuple<Double,Double> sourcePosition, Tuple<Double,Double> destinationPosition) {
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_X.getKey(), sourcePosition.getFirst());
-            arrowShaft.setAttribute(SVGAttributeConstant.SOURCE_Y.getKey(), sourcePosition.getSecond());
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_X.getKey(), destinationPosition.getFirst());
-            arrowShaft.setAttribute(SVGAttributeConstant.DESTINATION_Y.getKey(), destinationPosition.getSecond());
+            arrowShaft.setSourcePosition(sourcePosition);
+            arrowShaft.setDestinationPosition(destinationPosition);
         }
         
         /**
@@ -544,41 +499,11 @@ public class SVGGraph {
          * @param parent
          * @param data 
          */
-        private void buildSVGImageFromRasterImageData(final SVGObject parent, final byte[] data) {
+        private void buildSVGImageFromRasterImageData(final SVGData parent, final byte[] data) {
             final String encodedString = Base64.getEncoder().encodeToString(data);
-            final SVGObject image = buildSVGObjectFromTemplate(SVGFileNameConstant.IMAGE);
-            image.setAttribute("xlink:href", String.format("data:image/png;base64,%s", encodedString));
+            final SVGData image = SVGData.loadFromTemplate(SVGFileNameConstant.IMAGE);
+            image.setAttribute(SVGAttributeConstant.EXTERNAL_RESOURCE_REFERENCE, String.format("data:image/png;base64,%s", encodedString));
             image.setParent(parent);
-        }
-        
-        /**
-         * Creates a SVGObject from a template SVG file
-         * The object will be returned with no parent.
-         * 
-         * @param templateResource the filename of the template file.
-         * @return 
-         */
-        private SVGObject buildSVGObjectFromTemplate(final SVGFileNameConstant templateResource) {
-            final InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.resourceName);
-            SVGObject templateSVG = null;
-            try {
-                templateSVG = SVGParser.parse(inputStream);
-            } catch (final IOException ex) {
-                LOGGER.log(Level.INFO, ex.getLocalizedMessage());
-            }
-            return templateSVG;
-        }
-        
-        /**
-         * Creates a SVGGraph from a template SVG file.
-         * The object will be returned with no parent.
-         * Note an SVGGraph is a Wrapper around a SVGContainer.
-         * Note an SVGContainer is a wrapper around an SVGObject. 
-         * @param templateResource the filename of the template file.
-         * @return 
-         */
-        private SVGGraph buildSVGGraphFromTemplate(final SVGFileNameConstant templateResource) {
-            return new SVGGraph(new SVGContainer(buildSVGObjectFromTemplate(templateResource)));
         }
  
         /**
@@ -590,6 +515,7 @@ public class SVGGraph {
         private void defineBoundary() {
             Camera camera = access.getCamera();
             final BoundingBox box = camera.boundingBox;
+            CameraUtilities.rotate(camera, 0, 0, 0);
             BoundingBoxUtilities.recalculateFromGraph(box, graph, selectedNodesOnly);
             maxBound = box.getMax();
             minBound = box.getMin();
@@ -605,7 +531,7 @@ public class SVGGraph {
          * based on it's own content.
          * @param svg 
          */
-        private void setLayoutDimensions(final SVGGraph svg) {
+        private void setLayoutDimensions(final SVGObject svg) {
             final float contentWidth = maxBound.getX() - minBound.getX() + 256;
             final float contentHeight = maxBound.getY() - minBound.getY() + 256;
             final float xMargin = 50.0F;
@@ -621,18 +547,18 @@ public class SVGGraph {
             final float contentYOffset = topMargin + yPadding;
             final float contentXOffset = xMargin + xPadding;
             
-            svg.setDimensions(fullWidth, fullHeight);
+            svg.setDimension(fullWidth, fullHeight);
 
-            svg.getContainer(SVGLayoutConstant.HEADER.id).setDimension(fullWidth, topMargin);
-            svg.getContainer(SVGLayoutConstant.FOOTER.id).setDimension(fullWidth, bottomMargin);
-            svg.getContainer(SVGLayoutConstant.FOOTER.id).setPosition(0F, footerYOffset);
+            svg.getChild(SVGLayoutConstant.HEADER.getValue()).setDimension(fullWidth, topMargin);
+            svg.getChild(SVGLayoutConstant.FOOTER.getValue()).setDimension(fullWidth, bottomMargin);
+            svg.getChild(SVGLayoutConstant.FOOTER.getValue()).setPosition(0F, footerYOffset);
 
-            svg.getContainer(SVGLayoutConstant.CONTENT.id).setDimension(contentWidth, contentHeight);
-            svg.getContainer(SVGLayoutConstant.CONTENT.id).setPosition(contentXOffset, contentYOffset);
+            svg.getChild(SVGLayoutConstant.CONTENT.getValue()).setDimension(contentWidth, contentHeight);
+            svg.getChild(SVGLayoutConstant.CONTENT.getValue()).setPosition(contentXOffset, contentYOffset);
 
-            svg.getContainer(SVGLayoutConstant.BACKGROUND.id).setDimension(backgroundWidth, backgroundHeight);
-            svg.getContainer(SVGLayoutConstant.BACKGROUND.id).setPosition(xMargin, topMargin);
-            svg.getContainer(SVGLayoutConstant.BORDER.id).setDimension(fullWidth, fullHeight);
+            svg.getChild(SVGLayoutConstant.BACKGROUND.getValue()).setDimension(backgroundWidth, backgroundHeight);
+            svg.getChild(SVGLayoutConstant.BACKGROUND.getValue()).setPosition(xMargin, topMargin);
+            svg.getChild(SVGLayoutConstant.BORDER.getValue()).setDimension(fullWidth, fullHeight);
         }
 
         /**
@@ -651,7 +577,6 @@ public class SVGGraph {
             
             final Float svgGraphX = (constelationGraphX * halfVertexSize) - minBound.getX() + halfVertexSize;
             final Float svgGraphY = (maxBound.getY() - minBound.getY()) - ((constelationGraphY * halfVertexSize) - minBound.getY()) + halfVertexSize;
-            final Float svgGraphZ = (constelationGraphZ * halfVertexSize) - minBound.getZ() + halfVertexSize;
             
             return new Tuple<>(svgGraphX.doubleValue(), svgGraphY.doubleValue());
         }
@@ -688,14 +613,14 @@ public class SVGGraph {
          * @param connection
          * @return 
          */
-        private String getConnectionColor(final int connection) {
+        private ConstellationColor getConnectionColor(final int connection) {
             final ConstellationColor color;
             if (access.isConnectionDimmed(connection)){
                 color = VisualGraphDefaults.DEFAULT_TRANSACTION_COLOR;
             } else {
                 color = access.getConnectionColor(connection);
             }
-            return color.getHtmlColor();
+            return color;
         }
     }
 }

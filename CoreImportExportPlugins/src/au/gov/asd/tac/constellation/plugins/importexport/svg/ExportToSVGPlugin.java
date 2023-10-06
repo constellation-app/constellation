@@ -15,7 +15,10 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -29,7 +32,6 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
-import au.gov.asd.tac.constellation.plugins.parameters.types.ParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
@@ -46,7 +48,8 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
+ * Exports data stored on an active graph and a .svg file.
+ * A large mount of the SVG generating functionality of this plugin has been abstracted from this class.
  * @author capricornunicorn123
  */
 @ServiceProvider(service = Plugin.class)
@@ -119,8 +122,16 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         
         final File imageFile = new File(fnam);  
         
-        final SVGObject svg = new SVGGraph.SVGGraphBuilder()
+        //This plugin functionality relies heavily on VisualgraphAccess methods to interpret the graph consistenly.
+        final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
+        GraphVisualAccess access = new GraphVisualAccess(currentGraph);
+        access.beginUpdate();
+        access.updateInternally();
+        
+        //Generate the SVG output.
+        final SVGData svg = new SVGGraph.SVGGraphBuilder()
                 .withTitle(title)
+                .withAccess(access)
                 .withGraph(graph)
                 .withBackground(color)
                 .withNodes(selectedNodes)
@@ -133,16 +144,17 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         } catch (final IOException ex) {
             LOGGER.log(Level.INFO, ex.getLocalizedMessage());
         }
+        
+        access.endUpdate();
     }   
     
     /**
-     * Exports a single SVG object to a specified file. 
-     * 
+     * Exports a single SVGData object to a specified file. 
      * @param file
      * @param data
      * @throws IOException 
      */
-    private void exportToSVG(final File file, final SVGObject data) throws IOException {
+    private void exportToSVG(final File file, final SVGData data) throws IOException {
         final boolean fileOverwritten = file.createNewFile();
         try (final FileWriter writer = new FileWriter(file)) {
             writer.write(data.toString());

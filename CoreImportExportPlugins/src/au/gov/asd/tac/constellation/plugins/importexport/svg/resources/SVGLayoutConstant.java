@@ -16,36 +16,44 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
 
 /**
- * Class to capture constant values for stings that indicate a svgContainer
- * element. these element names are tightly coupled to the Layout.svg file and
+ * Class to capture constant values for strings that indicate key SVGdata element in the output SVGGraph.
+ * These element names are tightly coupled to the template SCGfiles and
  * reduce the repetitive use of string literals.
  *
  * @author capricornunicorn123
  */
 public enum SVGLayoutConstant {
-    NODES("nodes"),
+    ARROW_SHAFT("arrow-shaft"),
+    BACKGROUND("background"),
+    BACKGROUND_IMAGE("background-image"),
+    BORDER("border"),
+    BOTTOM_LABELS("bottom-labels"),
     CONNECTIONS("connections"),
     CONTENT("content"),
-    HEADER("header"),
     FOOTER("footer"),
-    BACKGROUND("background"),
-    BORDER("border"),
     FOOTNOTE("footnote"),
-    BOTTOM_LABELS("bottom-labels"),
-    TOP_LABELS("top-labels"),
-    BACKGROUND_IMAGE("background-image"),
     FOREGROUND_IMAGE("foreground-image"),
-    NORTH_WEST_DECORATOR("north-west-decorator"),
+    HEADER("header"),
+    NODES("nodes"),
     NORTH_EAST_DECORATOR("north-east-decorator"),
+    NORTH_WEST_DECORATOR("north-west-decorator"),
     SOUTH_WEST_DECORATOR("south-west-decorator"),
     SOUTH_EAST_DECORATOR("south-east-decorator"),
-    TITLE("title"),
     SUBTITLE("subtitle"),
-    ARROW_SHAFT("arrow-shaft");
+    TITLE("title"),
+    TOP_LABELS("top-labels");
 
-    public final String id;
+    private final String idValue;
 
-    private SVGLayoutConstant(final String id) {
-        this.id = id;
+    private SVGLayoutConstant(final String idValue) {
+        this.idValue = idValue;
+    }
+    
+    /**
+     * Gets the id value of the layout constant.
+     * @return 
+     */
+    public String getValue(){
+        return idValue;
     }
 }

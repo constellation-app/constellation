@@ -15,272 +15,314 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import java.util.logging.Logger;
 
 /**
- * Data structure to store SVG information and associations.
- * Tree-like data structure capable of storing SVG types, attributes and children
- * for ease of translation and modification between code and SVG files.
+ * A wrapper class for SVGData to enable simplified usage.
+ * Provides a set of helper methods to construct SVGData.
+ * The user is prevented from setting unsupported attributes through this SVDObject wrapper.
+ * This class should provide a barrier to prevent unsupported attributes and values from being set.
+ * Custom attributes can bypass this barrier though SVGData 
+ * by converting this class back to a SVGData class with toSVGData();
  * 
  * @author capricornunicorn123
  */
 public class SVGObject {
-
+    
     private static final Logger LOGGER = Logger.getLogger(SVGObject.class.getName());
-    private final String type;
-    private final Map<String, String> attributes;
-    private final Map<String, SVGObject> children;
-    private String content;
-    private SVGObject parent;
-
-    public SVGObject(final String type, final SVGObject parent, final Map<String, String> attributes) {
-        this.type = type;
-        this.attributes = new LinkedHashMap<>(attributes);
-        this.children = new LinkedHashMap<>();
-        this.setParent(parent);
-        this.content = null;
+    private final SVGData svgRataReference;
+    
+    /**
+     * Wrapper class for SVGObjects. 
+     * Provides helper methods to manipulate SVGData efficiently.
+     * @param svg 
+     */
+    private SVGObject(final SVGData svg) {
+        this.svgRataReference = svg;
     }
     
     /**
-     * Returns the SVG type.
-     * @return 
+     * Sets the relationship between child and parent SVGObject through association of respective SVGData references.
+     * Associations can only be made by child element setting their parent element. 
+     * Doing so prompts the parent element to register the child element as its child.
+     * @param parent
      */
-    public final String getType() {
-        return this.type;
+    public void setParent(final SVGObject parent) {
+        svgRataReference.setParent(parent.toSVGData());
     }
     
     /**
-     * Adds an attribute to the current SVG element. 
-     * Only one attribute value can be provided per key.
-     * Attempting to add a value to an existing key 
-     * will override the last value provided.
-     * @param attributeKey such as "height", "width", "fill"
-     * @param attributeValue such as "100", "stroke-width:3", "rgb(0,0,255)".
+     * Returns an SVGObject of matching id nested one level down from the current SVGObject.
+     * @param idValue
+     * @return SVGObject
      */
-    public final void setAttribute(final String attributeKey, final String attributeValue) {
-        this.attributes.put(attributeKey, attributeValue);
-    }
-    
-    /**
-     * Adds a float attribute to the current SVG element. 
-     * @param attributeKey 
-     * @param attributeValue 
-     */
-    public final void setAttribute(final String attributeKey, final float attributeValue) {
-        setAttribute(attributeKey, String.format("%.2f", attributeValue));
-    }
-    
-    /**
-     * Adds an int attribute to the current SVG element. 
-     * @param attributeKey 
-     * @param attributeValue 
-     */
-    public final void setAttribute(final String attributeKey, final int attributeValue) {
-        setAttribute(attributeKey, String.format("%s", attributeValue));
-    }
-    
-    /**
-     * Adds a double attribute to the current SVG element. 
-     * @param attributeKey 
-     * @param attributeValue 
-     */
-    public final void setAttribute(final String attributeKey, final double attributeValue) {
-        setAttribute(attributeKey, String.format("%.2f", attributeValue));
-    }
-    
-    /**
-     * Adds a ConstellationColor attribute to the current SVG element. 
-     * @param attributeKey 
-     * @param attributeValue 
-     */
-    public final void setAttribute(final String attributeKey, final ConstellationColor attributeValue) {
-        setAttribute(attributeKey, String.format("%s", attributeValue.getHtmlColor()));
-    }
-        
-    /**
-     * Adds a child SVGObject to the current SVG element.
-     * To avoid duplication, this method should only be called by the setParent() method.
-     * Child SVGObjects are stored in HashMap based on their id attribute.
-     * @param child 
-     */
-    private void setChild(final SVGObject child) {
-        final String childID = child.getAttributeValue(SVGAttributeConstant.ID.getKey());
-        this.children.put(childID, child);
-    }
-    
-    /**
-     * Returns an SVGObject with a specified id attribute value.
-     * @param idValue 
-     * @return ArrayList
-     */
-    public SVGObject getChild(final String idValue) {
-        return this.children.get(idValue);
-    }
-    
-    /**
-     * Returns an ArrayList of SVGObjects containing all child SVGObject elements.
-     * @return ArrayList
-     */
-    public List<SVGObject> getAllChildren() {
-        final List<SVGObject> allChildren = new ArrayList<>();
-        children.keySet().forEach(key -> allChildren.add(this.children.get(key)));
-        return allChildren;
-    }
-    
-    /**
-     * Associates a SVGObject as parent of this current SVGObject.
-     * By extension the parent sets this object as its child. 
-     * Warning: Child object must have a unique ID.
-     * @param child 
-     */
-    public final void setParent(final SVGObject parent) {
-        this.parent = parent;
-        if (this.parent != null){
-            this.parent.setChild(this);
+    public final SVGObject getChild(final String idValue) {
+        final SVGData child = this.svgRataReference.getChild(idValue);
+        if (child != null){
+            return new SVGObject(child); 
+        } else {
+            return null;
         }
     }
     
     /**
-     * Gets the parent of this SVGObject.
-     * @return 
-     */
-    public final SVGObject getParent() {
-        return this.parent;
-    }
-    
-    /**
-     * Returns the value of an attribute based on a provided attribute key.
-     * @param attributeKey
-     * @return 
-     */
-    public final String getAttributeValue(final String attributeKey) {
-        return this.attributes.get(attributeKey);
-    }
-    
-    /**
-     * Sets the value of an SVG elements content.
+     * Sets the content value of an SVGObjects.
      * Content is considered plain text that lies within a SVG element 
-     * such as is the case with text elmenets.
+     * such as is the case with text elements.
      * @param content
      */
     public void setContent(final String content) {
-        this.content = content;
+        this.svgRataReference.setContent(SVGParser.sanitisePlanText(content));
     }
     
     /**
-     * Returns the value of the content.
-     * @return 
+     * Sets the id value of the SVGObject.
+     * This value must be unique, or may produce undesirable results.
+     * id values should be descriptive.
+     * Uniqueness is not currently enforced.
+     * @param id 
      */
-    public final String getContent(){
-        return this.content;
+    public void setID(final int id){
+        this.setAttribute(SVGAttributeConstant.ID, id);
     }
     
     /**
-     * Generates a string representation of SVG data captured within this object.
-     * will be formatted with indentations and line breaks to be written 
-     * directly to an output file.
-     * @return String in an SVG format.
+     * Sets the id value of the SVGObject.
+     * This value must be unique, or may produce undesirable results.
+     * id values should be descriptive.
+     * Uniqueness is not currently enforced.
+     * @param id 
      */
-    @Override
-    public final String toString() {
-        return toString(null);
+    public void setID(final String id){
+        this.setAttribute(SVGAttributeConstant.ID, id);
     }
     
     /**
-     * Recursive function to generate a string equivalent of complex SVG data 
-     * captured within this object.
-     * @param prefix
-     * @return String representation of the current element and all of it's child elements.
+     * Gets the id value of the SVGObject.
+     * Will be useful when parent element id's prefix their child element id's to reflect their position in the SVGData structure.
+     * @param id 
+     * @return idString
      */
-    private String toString(final String prefix) {
-        final StringBuilder svgString = new StringBuilder();
-        if (this.children.isEmpty() && this.content == null){
-            svgString.append(elementToSVG(prefix));
-        } else {
-            svgString.append(elementHeaderToSVG(prefix));
-            if (this.children.isEmpty()){
-                svgString.append(content);
-            } else {
-                svgString.append(elementChildrenToSVG(prefix));
-            }
-            svgString.append(elementFooterToSVG(prefix));
-        }
-        return svgString.toString();
+    public final String getID(){
+        return svgRataReference.getAttributeValue(SVGAttributeConstant.ID.getName());
+    }
+    
+    /**
+     * Adds a String attribute to the current SVGData. 
+     * NOTE:    This class has been made public to increase the pace of development. 
+     *          Should be made private prior to release to ensure SVGData barrier is enforced in future development.
+     * @param attributeKey 
+     * @param attributeValue 
+     */
+    public final void setAttribute(final SVGAttributeConstant attributeKey, final String attributeValue) {
+        svgRataReference.setAttribute(attributeKey, attributeValue);
+    }
+    
+    /**
+     * Adds a float attribute to the current SVGData. 
+     * NOTE:    This class has been made public to increase the pace of development. 
+     *          Should be made private prior to release to ensure SVGData barrier is enforced in future development.
+     * @param attributeKey 
+     * @param attributeValue 
+     */
+    public final void setAttribute(final SVGAttributeConstant attributeKey, final float attributeValue) {
+        svgRataReference.setAttribute(attributeKey, String.format("%.2f", attributeValue));
+    }
+    
+    /**
+     * Adds an int attribute to the current SVGData. 
+     * NOTE:    This class has been made public to increase the pace of development. 
+     *          Should be made private prior to release to ensure SVGData barrier is enforced in future development.
+     * @param attributeKey 
+     * @param attributeValue 
+     */
+    public final void setAttribute(final SVGAttributeConstant attributeKey, final int attributeValue) {
+        svgRataReference.setAttribute(attributeKey, String.format("%s", attributeValue));
+    }
+    
+    /**
+     * Adds a double attribute to the current SVGData.
+     * NOTE:    This class has been made public to increase the pace of development. 
+     *          Should be made private prior to release to ensure SVGData barrier is enforced in future development.
+     * @param attributeKey 
+     * @param attributeValue 
+     */
+    public final void setAttribute(final SVGAttributeConstant attributeKey, final double attributeValue) {
+        svgRataReference.setAttribute(attributeKey, String.format("%.2f", attributeValue));
+    }
+    
+    /**
+     * Adds a ConstellationColor attribute to the current SVGData.
+     * NOTE:    This class has been made public to increase the pace of development. 
+     *          Should be made private prior to release to ensure SVGData barrier is enforced in future development.
+     * @param attributeKey 
+     * @param attributeValue 
+     */
+    public final void setAttribute(final SVGAttributeConstant attributeKey, final ConstellationColor attributeValue) {
+        svgRataReference.setAttribute(attributeKey, String.format("%s", attributeValue.getHtmlColor()));
+    }
+    
+    /**
+     * Sets the height of the SVGObject.
+     * @param height
+     */
+    private void setHeight(final float height) {
+        this.setAttribute(SVGAttributeConstant.HEIGHT, height);
+    }
+    
+    /**
+     * Sets the width of the SVGObject.
+     * @param width 
+     */
+    private void setWidth(final float width) {
+        this.setAttribute(SVGAttributeConstant.WIDTH, width);
+    }
+    
+    /**
+     * Sets the height and width attributes of the SVGObject.
+     * Current implementations of this method are undesirable. 
+     * Dimensions are defined and set by the SVGGraphBuilder. 
+     * Eventually this method should be able to set its own dimensions 
+     * based off of the dimensions of the elements nested within it.
+     * @param width
+     * @param height
+     */
+    public void setDimension(final float width, final float height) {
+        this.setWidth(width);
+        this.setHeight(height);
+    }
+    
+    /**
+     * Sets the X position of the SVGObject.
+     * With respect to the SVGObject it is contained within.
+     * @param x 
+     */
+    private void setXPosition(final float x) {
+        this.setAttribute(SVGAttributeConstant.X, x);
     }
     /**
-     * Generates an "inline" SVG element.
-     * @param prefix represents indentation prefixes for the element.
-     * @return String representation of the current element
+     * Sets the X position of the SVGObject.
+     * With respect to the SVGObject it is contained within.
+     * @param x 
      */
-    private String elementToSVG(final String prefix) {
-        final StringBuilder attributeBuilder = new StringBuilder();
-        final String linePrefix = SeparatorConstants.NEWLINE + prefix;
-        final Set<String> keys = attributes.keySet();
-        keys.forEach(key -> attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key))));
+    private void setXPosition(final double x) {
+        this.setAttribute(SVGAttributeConstant.X, x);
+    }
+    /**
+     * Sets the Y position of the SVGObject.
+     * With respect to the SVGObject it is contained within.
+     * @param y
+     */
+    private void setYPosition(final float y) {
+        this.setAttribute(SVGAttributeConstant.Y, y);
+    }
+    
+    /**
+     * Sets the Y position of the SVGObject.
+     * With respect to the SVGObject it is contained within.
+     * @param y
+     */
+    private void setYPosition(final double y) {
+        this.setAttribute(SVGAttributeConstant.Y, y);
+    }
+     
+    /**
+     * Sets the position of the SVGObject.
+     * With respect to the SVGObject it is contained within.
+     * @param x
+     * @param y 
+     */
+    public void setPosition(final float x, final float y) {
+        this.setXPosition(x);
+        this.setYPosition(y);
+    }
+    
+    /**
+     * Sets the position of the SVGObject.
+     * With respect to the SVGObject it is contained within.
+     * @param x
+     * @param y 
+     */
+    public void setPosition(final double x, final double y) {
+        this.setXPosition(x);
+        this.setYPosition(y);
+    }
+    
+    /**
+     * Sets the position of the SVGObject.
+     * With respect to the SVGObject it is contained within.
+     * @param position 
+     */
+    public void setPosition(final Tuple<Double, Double> position) {
+        this.setXPosition(position.getFirst());
+        this.setYPosition(position.getSecond());
+    }
+    
+    /**
+     * Sets the source position of the SVGObject.
+     * With respect to the SVGObject it is contained within.
+     * @param posiition
+     */
+    void setSourcePosition(Tuple<Double, Double> position) {
+        this.setAttribute(SVGAttributeConstant.SOURCE_X, position.getFirst());
+        this.setAttribute(SVGAttributeConstant.SOURCE_Y, position.getSecond());
+    }
+    
+    /**
+     * Sets the destination position of the SVGObject.
+     * With respect to the SVGObject it is contained within.
+     * @param position
+     */
+    void setDestinationPosition(Tuple<Double, Double> position) {
+        this.setAttribute(SVGAttributeConstant.DESTINATION_X, position.getFirst());
+        this.setAttribute(SVGAttributeConstant.DESTINATION_Y, position.getSecond());
+    }
+    
+    /**
+     * Sets the transformation values of the SVGObject.
+     * @param position
+     */
+    void setTransformation(String transformationData) {
+        this.setAttribute(SVGAttributeConstant.TRANSFORM,  transformationData);
+    }
+    
+    /**
+     * Sets the color of the SVGObject.
+     * @param color 
+     */
+    public void setFillColor(ConstellationColor color){
+        this.setAttribute(SVGAttributeConstant.FILL_COLOR, color);
+    }
 
-        return String.format("%s<%s%s />", linePrefix, this.type, attributeBuilder.toString());
+    /**
+     * Sets the stoke color of the SVGObject.
+     * @param color 
+     */
+    void setStrokeColor(ConstellationColor color) {
+        this.setAttribute(SVGAttributeConstant.STROKE_COLOR, color);
     }
     
     /**
-     * Generates the header or opening portion of an SVG element. 
-     * The header will contain the element type and 
-     * all of the attributes associated with the element.
-     * @param prefix
-     * @return String representation of element header.
+     * Removes the SVGObject wrapper class from the SVGData.
+     * preserves all relevant SVG elements for generating svgText
+     * @return svgData
      */
-    private String elementHeaderToSVG(final String prefix) {
-        String linePrefix = SeparatorConstants.NEWLINE;
-        if (prefix != null){
-            linePrefix += prefix;
-        }
-        
-        final StringBuilder attributeBuilder = new StringBuilder();
-        
-        final Set<String> keys = attributes.keySet();
-        keys.forEach(key -> attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key))));
-        
-        return String.format("%s<%s%s>", linePrefix, this.type, attributeBuilder.toString());
-    }
+    public final SVGData toSVGData() {
+        return svgRataReference;
+    }       
     
     /**
-     * Generates the footer or closing portion of an SVG element. 
-     * The footer will contain the element type.
-     * @param prefix
-     * @return String representation of element footer.
-     */
-    private String elementFooterToSVG(final String prefix) {
-        String linePrefix = SeparatorConstants.NEWLINE;
-        if (prefix != null){
-            linePrefix += prefix;
-        }
-        return String.format("%s</%s>", linePrefix, this.type);
-    }
-    
-    /**
-     * Generates SVG equivalents for child elements of the current SVG element. 
-     * The prefix of the current element should be provided as this method
-     * manages the indented of child elements
-     * 
-     * @param prefix
-     * @return 
-     */
-    private String elementChildrenToSVG (final String prefix) {
-        final StringBuilder childSVGString = new StringBuilder();
-        String childPrefix = SeparatorConstants.TAB;
-        if (prefix != null){
-            childPrefix += prefix;
-        }
-        for (final SVGObject child : this.getAllChildren()){
-            childSVGString.append(child.toString(childPrefix));
-        }
-        return childSVGString.toString();
-    }
+    * Creates SVGObject from a template SVG file.
+    * The object will be returned with no parent.
+    * @param templateResource the filename of the template file.
+    * @return svgObject
+    */
+    public static final SVGObject loadFromTemplate(final SVGFileNameConstant templateResource) {
+       return new SVGObject(SVGData.loadFromTemplate(templateResource));
+    } 
 }
