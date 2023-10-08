@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.find.advanced;
 
 import java.util.EnumSet;
+import java.util.Set;
 import org.openide.util.NbBundle.Messages;
 
 /**
@@ -70,7 +71,7 @@ public class FindTypeOperators {
          */
         TIME("TIME", Operator.TIME_SET);
         private final String label;
-        private final EnumSet<Operator> operators;
+        private final Set<Operator> operators;
 
         /**
          * Constructs a Type.
@@ -78,7 +79,7 @@ public class FindTypeOperators {
          * @param label The label of the given type.
          * @param operators The set of operators applicable to the given type.
          */
-        private Type(final String label, final EnumSet<Operator> operators) {
+        private Type(final String label, final Set<Operator> operators) {
             this.label = label;
             this.operators = operators;
         }
@@ -110,7 +111,7 @@ public class FindTypeOperators {
          *
          * @return EnumSet operators.
          */
-        public EnumSet<Operator> getOperatorSet() {
+        public Set<Operator> getOperatorSet() {
             return operators;
         }
     }

@@ -331,7 +331,7 @@ public class FindComparisons {
      */
     public static class FloatComparisons {
 
-        public FloatComparisons() {
+        private FloatComparisons() {
         }
 
         /**

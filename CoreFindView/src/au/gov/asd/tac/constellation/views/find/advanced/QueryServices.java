@@ -349,7 +349,6 @@ public class QueryServices {
         private final String content;
         private final GraphElementType type;
 
-        // NOSONAR
         /**
          * Constructs a new <code>ThreadedFind</code>, and prepares it for a
          * 'quick query'.
