@@ -87,7 +87,7 @@ public class FindRule {
         this.type = type;
         this.attribute = attribute;
         this.operator = operator;
-        this.args = args;
+        this.args = args; // NOSONAR
     }
 
     /**
@@ -180,7 +180,7 @@ public class FindRule {
      * @param args Map of arguments.
      */
     public void setArgs(final Map<String, Object> args) {
-        this.args = args;
+        this.args = args; // NOSONAR
     }
 
     /**
@@ -189,7 +189,7 @@ public class FindRule {
      * @return args; Map of arguments.
      */
     public Map<String, Object> getArgs() {
-        return args;
+        return args; // NOSONAR
     }
 
     // <editor-fold defaultstate="collapsed" desc="Default Rule Builder / Retriever Functions">

@@ -48,12 +48,18 @@ import java.util.Date;
  */
 public class FindComparisons {
 
+    private FindComparisons(){        
+    }
+    
     /**
      * Collection of currently allowed Boolean comparison operations.
      *
      * @see FindComparisons
      */
     public static class BooleanComparisons {
+        
+        private BooleanComparisons(){            
+        }
 
         /**
          * Determines whether a given <code>Boolean</code> matches the
@@ -77,6 +83,9 @@ public class FindComparisons {
      * @see Color
      */
     public static class ColorComparisons {
+
+        private ColorComparisons() {
+        }
 
         /**
          * Determines whether a given <code>Color</code> matches the
@@ -114,6 +123,9 @@ public class FindComparisons {
      * @see Date
      */
     public static class DateComparisons {
+
+        private DateComparisons() {
+        }
 
         /**
          * Determines whether a given <code>Date</code> matches the
@@ -213,6 +225,9 @@ public class FindComparisons {
      * @see FindComparisons
      */
     public static class DateTimeComparisons {
+
+        private DateTimeComparisons() {
+        }
 
         /**
          * Determines whether a given <code>Calendar</code> matches the
@@ -316,6 +331,9 @@ public class FindComparisons {
      */
     public static class FloatComparisons {
 
+        public FloatComparisons() {
+        }
+
         /**
          * Determines whether a given <code>Float</code> matches the
          * <code>Float</code> returned for a given element on the active graph.
@@ -392,6 +410,9 @@ public class FindComparisons {
      * @see IntComparisons
      */
     public static class IntComparisons {
+
+        private IntComparisons() {
+        }
 
         /**
          * Determines whether a given <code>Int</code> matches the
@@ -470,6 +491,9 @@ public class FindComparisons {
      */
     public static class IconComparisons {
 
+        private IconComparisons() {
+        }
+
         /**
          * Determines whether a given icon (represented by its
          * <code>String</code> name) matches the icon returned for a given
@@ -505,6 +529,9 @@ public class FindComparisons {
      * @see FindComparisons
      */
     public static class StringComparisons {
+
+        private StringComparisons() {
+        }
 
         /**
          * Determines whether the returned <code>String</code> from the active
@@ -658,6 +685,9 @@ public class FindComparisons {
      * @see FindComparisons
      */
     public static class TimeComparisons {
+
+        private TimeComparisons() {
+        }
 
         /**
          * Determines whether a given <code>Long</code> (which represents a

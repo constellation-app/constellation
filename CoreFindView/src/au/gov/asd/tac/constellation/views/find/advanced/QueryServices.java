@@ -162,7 +162,7 @@ public class QueryServices {
      * @see FindResult
      * @see GraphElementType
      */
-    public List<FindResult> advancedQuery(final ArrayList<FindRule> rules, final GraphElementType type, final boolean isAnd) {
+    public List<FindResult> advancedQuery(final List<FindRule> rules, final GraphElementType type, final boolean isAnd) {
         final ReadableGraph rg = graph.getReadableGraph();
         try {
 
@@ -349,6 +349,7 @@ public class QueryServices {
         private final String content;
         private final GraphElementType type;
 
+        // NOSONAR
         /**
          * Constructs a new <code>ThreadedFind</code>, and prepares it for a
          * 'quick query'.
@@ -868,9 +869,9 @@ public class QueryServices {
                     && !rule.getOperator().equals(FindTypeOperators.Operator.REGEX)) {
                 terms = rule.getStringContent().split(",");
             } else {
-                String[] content = new String[1];
-                content[0] = rule.getStringContent();
-                terms = content;
+                String[] contents = new String[1];
+                contents[0] = rule.getStringContent();
+                terms = contents;
             }
             int i = 0;
 
