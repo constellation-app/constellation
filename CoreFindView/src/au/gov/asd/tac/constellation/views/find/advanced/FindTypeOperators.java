@@ -81,7 +81,7 @@ public class FindTypeOperators {
          */
         private Type(final String label, final Set<Operator> operators) {
             this.label = label;
-            this.operators = operators;
+            this.operators = operators; // NOSONAR
         }
 
         @Override
@@ -112,7 +112,7 @@ public class FindTypeOperators {
          * @return EnumSet operators.
          */
         public Set<Operator> getOperatorSet() {
-            return operators;
+            return operators; // NOSONAR
         }
     }
 
