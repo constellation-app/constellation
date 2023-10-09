@@ -260,13 +260,13 @@ public class SVGData {
     * @return svgData
     */
     public static final SVGData loadFromTemplate(final SVGFileNameConstant templateResource) {
-       final InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.getFileName());
-       SVGData templateSVG = null;
-       try {
-           templateSVG = SVGParser.parse(inputStream);
-       } catch (final IOException ex) {
-           LOGGER.log(Level.INFO, ex.getLocalizedMessage());
-       }
-       return templateSVG;
+        final InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.getFileName());
+        SVGData templateSVG = null;
+        try {
+            templateSVG = SVGParser.parse(inputStream);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.INFO, ex.getLocalizedMessage());
+        }
+        return templateSVG;
     }
 }

@@ -337,6 +337,6 @@ public class SVGObject {
     * @return svgObject
     */
     public static final SVGObject loadFromTemplate(final SVGFileNameConstant templateResource) {
-       return new SVGObject(SVGData.loadFromTemplate(templateResource));
+        return new SVGObject(SVGData.loadFromTemplate(templateResource));
     } 
 }

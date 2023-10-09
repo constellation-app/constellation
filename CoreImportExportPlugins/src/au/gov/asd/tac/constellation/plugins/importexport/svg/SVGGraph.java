@@ -200,7 +200,7 @@ public class SVGGraph {
         }
         
         private void buildBackground(final SVGObject svg){
-             svg.getChild(SVGLayoutConstant.BACKGROUND).setFillColor(backgroundColor);
+            svg.getChild(SVGLayoutConstant.BACKGROUND).setFillColor(backgroundColor);
         }
         
         /**
@@ -579,7 +579,6 @@ public class SVGGraph {
         private Tuple<Double, Double> getVertexPosition(final int vertex) {           
             final Float constelationGraphX = access.getX(vertex);
             final Float constelationGraphY = access.getY(vertex);
-            final Float constelationGraphZ = access.getZ(vertex);
             
             final int halfVertexSize = 128;
             
