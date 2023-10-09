@@ -20,7 +20,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttrib
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.util.logging.Logger;
 
@@ -260,9 +260,9 @@ public class SVGObject {
      * With respect to the SVGObject it is contained within.
      * @param position 
      */
-    public void setPosition(final Tuple<Double, Double> position) {
-        this.setXPosition(position.getFirst());
-        this.setYPosition(position.getSecond());
+    public void setPosition(final Vector3f position) {
+        this.setXPosition(position.getX());
+        this.setYPosition(position.getY());
     }
     
     /**
@@ -270,9 +270,9 @@ public class SVGObject {
      * With respect to the SVGObject it is contained within.
      * @param posiition
      */
-    void setSourcePosition(Tuple<Double, Double> position) {
-        this.setAttribute(SVGAttributeConstant.SOURCE_X, position.getFirst());
-        this.setAttribute(SVGAttributeConstant.SOURCE_Y, position.getSecond());
+    void setSourcePosition(Vector3f position) {
+        this.setAttribute(SVGAttributeConstant.SOURCE_X, position.getX());
+        this.setAttribute(SVGAttributeConstant.SOURCE_Y, position.getY());
     }
     
     /**
@@ -280,9 +280,9 @@ public class SVGObject {
      * With respect to the SVGObject it is contained within.
      * @param position
      */
-    void setDestinationPosition(Tuple<Double, Double> position) {
-        this.setAttribute(SVGAttributeConstant.DESTINATION_X, position.getFirst());
-        this.setAttribute(SVGAttributeConstant.DESTINATION_Y, position.getSecond());
+    void setDestinationPosition(Vector3f position) {
+        this.setAttribute(SVGAttributeConstant.DESTINATION_X, position.getX());
+        this.setAttribute(SVGAttributeConstant.DESTINATION_Y, position.getY());
     }
     
     /**

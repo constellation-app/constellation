@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
@@ -219,7 +218,7 @@ public class SVGGraph {
                 }
                 
                 //Get the values of the attributes relevent to the current node
-                final Tuple<Double, Double> position = getVertexPosition(vertexPosition);
+                final Vector3f position = getVertexPosition(vertexPosition);
                 final ConstellationColor color = access.getVertexColor(vertexPosition);
                 final String bgi = access.getBackgroundIcon(vertexPosition);
                 final String fgi = access.getForegroundIcon(vertexPosition);
@@ -229,7 +228,7 @@ public class SVGGraph {
                 
                 //build the SVGobject representing the node
                 final SVGObject node = SVGObject.loadFromTemplate(SVGFileNameConstant.NODE);
-                node.setPosition(position.getFirst() - 128, position.getSecond() - 128);
+                node.setPosition(position.getX() - 128, position.getY() - 128);
                 node.setID(access.getVertexId(vertexPosition));
                 node.setParent(nodesContainer);
                 
@@ -362,16 +361,16 @@ public class SVGGraph {
                 }
                 
                 //Determine the SVG coordinates of the center of the nodes
-                final Tuple<Double, Double> highCenterPosition = getVertexPosition(high);
-                final Tuple<Double, Double> lowCenterposition = getVertexPosition(low);
+                final Vector3f highCenterPosition = getVertexPosition(high);
+                final Vector3f lowCenterposition = getVertexPosition(low);
                 
                 //Get the SVG angle of the connection between the two nodes
-                final Double highConnectionAngle = calculateConnectionAngle(highCenterPosition, lowCenterposition);
-                final Double lowConnectionAngle = calculateConnectionAngle(lowCenterposition, highCenterPosition);
+                final double highConnectionAngle = calculateConnectionAngle(highCenterPosition, lowCenterposition);
+                final double lowConnectionAngle = calculateConnectionAngle(lowCenterposition, highCenterPosition);
 
                 //Get the coordinates of the points where the connections intersect the node radius
-                final Tuple<Double, Double> highCircumferencePosition = offSetPosition(highCenterPosition, 128, highConnectionAngle);
-                final Tuple<Double, Double> lowCircumferencePosition = offSetPosition(lowCenterposition, 128, lowConnectionAngle);
+                final Vector3f highCircumferencePosition = offSetPosition(highCenterPosition, 128, highConnectionAngle);
+                final Vector3f lowCircumferencePosition = offSetPosition(lowCenterposition, 128, lowConnectionAngle);
                 
                 //Itterate over all of the Transactions/Edges/Links between the two nodes.
                 //Note: the linkConnectionCount factors in the connection mode and the max transaction threshold.
@@ -386,8 +385,8 @@ public class SVGGraph {
                     final double paralellOffsetAngle = Math.toRadians(90) * paralellOffsetDirection;
 
                     //Determine the unique positions for the individual Transation/edge/link.
-                    final Tuple<Double, Double> highPosition = offSetPosition(highCircumferencePosition, paralellOffsetDistance, highConnectionAngle - paralellOffsetAngle);
-                    final Tuple<Double, Double> lowPosition = offSetPosition(lowCircumferencePosition, paralellOffsetDistance, lowConnectionAngle + paralellOffsetAngle);
+                    final Vector3f highPosition = offSetPosition(highCircumferencePosition, paralellOffsetDistance, highConnectionAngle - paralellOffsetAngle);
+                    final Vector3f lowPosition = offSetPosition(lowCircumferencePosition, paralellOffsetDistance, lowConnectionAngle + paralellOffsetAngle);
                     
                     //Create the Transaction/Edge/Link SVGData
                     buildConnection(connectionsContainer, highPosition, lowPosition, connection);  
@@ -404,7 +403,7 @@ public class SVGGraph {
          * @param lowPosition
          * @param connection 
          */
-        private void buildConnection(final SVGObject connectionsContainer, final Tuple<Double, Double> highPosition, final Tuple<Double, Double> lowPosition, final int connection){
+        private void buildConnection(final SVGObject connectionsContainer, final Vector3f highPosition, final Vector3f lowPosition, final int connection){
             //Get references to SVG Objects being built within this method 
             final SVGObject connectionSVG = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION);
             final SVGObject arrowShaft = connectionSVG.getChild(SVGLayoutConstant.ARROW_SHAFT);
@@ -416,8 +415,8 @@ public class SVGGraph {
             final Double lowConnectionAngle = calculateConnectionAngle(lowPosition, highPosition);
             
             //Get the coordinates of the potential shaft extremeties at 64px behind the arrow tip position.
-            final Tuple<Double, Double> highPositionRecessed = offSetPosition(highPosition, 64, highConnectionAngle);
-            final Tuple<Double, Double> lowPositionRecessed = offSetPosition(lowPosition, 64, lowConnectionAngle);
+            final Vector3f highPositionRecessed = offSetPosition(highPosition, 64, highConnectionAngle);
+            final Vector3f lowPositionRecessed = offSetPosition(lowPosition, 64, lowConnectionAngle);
 
             //Assign the positional values of shaft and arrow head/s based on the direction of the Transaction/Edge/Link
             final ConnectionDirection direction = access.getConnectionDirection(connection);            
@@ -476,15 +475,15 @@ public class SVGGraph {
          * @param y
          * @param connectionAngle 
          */
-        private void buildArrowHead(final SVGObject arrowHeadContainer, final Tuple<Double,Double> position, final Double connectionAngle) {
+        private void buildArrowHead(final SVGObject arrowHeadContainer, final Vector3f position, final double connectionAngle) {
             
             //The size of the svgElement containing the arrow head polygon asset
             final int arrowHeadWidth = 128;
             final int arrowHeadheight = 32;
             
             //Set arrow head svg attributes
-            arrowHeadContainer.setPosition(position.getFirst() - arrowHeadWidth, position.getSecond() - arrowHeadheight / 2);
-            arrowHeadContainer.setID(String.format("arrow-head-%s-%s", position.getFirst(), position.getSecond()));
+            arrowHeadContainer.setPosition(position.getX() - arrowHeadWidth, position.getY() - arrowHeadheight / 2);
+            arrowHeadContainer.setID(String.format("arrow-head-%s-%s", position.getX(), position.getY()));
             
             //Rotate the arrow head polygon around the tip to align it with the angle of the connection
             final SVGObject arrowHead = arrowHeadContainer.getChild(SVGLayoutConstant.ARROW_HEAD);
@@ -497,7 +496,7 @@ public class SVGGraph {
          * @param sourcePosition
          * @param destinationPosition 
          */
-        private void buildArrowShaft(SVGObject arrowShaft, Tuple<Double,Double> sourcePosition, Tuple<Double,Double> destinationPosition) {
+        private void buildArrowShaft(SVGObject arrowShaft, Vector3f sourcePosition, Vector3f destinationPosition) {
             arrowShaft.setSourcePosition(sourcePosition);
             arrowShaft.setDestinationPosition(destinationPosition);
         }
@@ -576,16 +575,18 @@ public class SVGGraph {
          * @param vertex
          * @return 
          */
-        private Tuple<Double, Double> getVertexPosition(final int vertex) {           
+        private Vector3f getVertexPosition(final int vertex) {           
             final Float constelationGraphX = access.getX(vertex);
             final Float constelationGraphY = access.getY(vertex);
+            final Float constelationGraphZ = access.getZ(vertex);
             
             final int halfVertexSize = 128;
             
             final Float svgGraphX = (constelationGraphX * halfVertexSize) - minBound.getX() + halfVertexSize;
             final Float svgGraphY = (maxBound.getY() - minBound.getY()) - ((constelationGraphY * halfVertexSize) - minBound.getY()) + halfVertexSize;
+            final Float svgGraphZ = (constelationGraphZ * halfVertexSize) - minBound.getZ() + halfVertexSize;
             
-            return new Tuple<>(svgGraphX.doubleValue(), svgGraphY.doubleValue());
+            return new Vector3f(svgGraphX, svgGraphY, svgGraphZ);
         }
         
         /**
@@ -595,9 +596,9 @@ public class SVGGraph {
          * @param destinationPosition
          * @return 
          */
-        private Double calculateConnectionAngle(final Tuple<Double, Double> sourcePosition, final Tuple<Double, Double> destinationPosition) {
-            final Double xDirectionVector = sourcePosition.getFirst() - destinationPosition.getFirst();
-            final Double yDirectionVector = sourcePosition.getSecond() - destinationPosition.getSecond();
+        private double calculateConnectionAngle(final Vector3f sourcePosition, final Vector3f destinationPosition) {
+            final float xDirectionVector = sourcePosition.getX() - destinationPosition.getX();
+            final float yDirectionVector = sourcePosition.getY() - destinationPosition.getY();
             return Math.atan2(yDirectionVector, xDirectionVector);
         }
 
@@ -608,10 +609,11 @@ public class SVGGraph {
          * @param angle
          * @return 
          */
-        private Tuple<Double, Double> offSetPosition(final Tuple<Double, Double> origin, final int distance, final Double angle) {
-            final Double x = origin.getFirst() - (distance * Math.cos(angle));
-            final Double y = origin.getSecond() - (distance * Math.sin(angle));
-            return new Tuple<>(x,y);
+        private Vector3f offSetPosition(final Vector3f origin, final int distance, final double angle) {
+            final float x = (float) (origin.getX() - (distance * Math.cos(angle)));
+            final float y = (float) (origin.getY() - (distance * Math.sin(angle)));
+            final float z = origin.getZ();
+            return new Vector3f(x,y,z);
         }
 
         /**
