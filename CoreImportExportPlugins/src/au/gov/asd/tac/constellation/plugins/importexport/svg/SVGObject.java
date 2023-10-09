@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNa
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.util.logging.Logger;
 
 /**
@@ -306,6 +307,18 @@ public class SVGObject {
      */
     void setStrokeColor(ConstellationColor color) {
         this.setAttribute(SVGAttributeConstant.STROKE_COLOR, color);
+    }
+    
+    /**
+     * Sets the stroke style of the SVGObject.
+     * @param style 
+     */
+    void setStrokeStyle(LineStyle style) {
+        if (style == LineStyle.DOTTED) {
+            this.setAttribute(SVGAttributeConstant.DASH_ARRAY, "35 35");
+        } else if (style == LineStyle.DASHED) {
+            this.setAttribute(SVGAttributeConstant.DASH_ARRAY, "70 35");
+        }
     }
     
     /**

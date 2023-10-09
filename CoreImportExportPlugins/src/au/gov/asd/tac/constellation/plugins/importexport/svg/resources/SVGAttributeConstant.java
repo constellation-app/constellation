@@ -25,6 +25,7 @@ public enum SVGAttributeConstant {
     CLASS("class"),
     DESTINATION_X("x2"),
     DESTINATION_Y("y2"),
+    DASH_ARRAY("stroke-dasharray"),
     EXTERNAL_RESOURCE_REFERENCE("xlink:href"),
     FILL_COLOR("fill"),
     FILTER("filter"),

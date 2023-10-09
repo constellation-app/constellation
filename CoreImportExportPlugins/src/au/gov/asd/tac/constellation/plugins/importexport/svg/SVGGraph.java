@@ -465,6 +465,7 @@ public class SVGGraph {
             connectionSVG.setID(String.format("Connection_%s_%s", highPosition, lowPosition));
             connectionSVG.setFillColor(color);
             connectionSVG.setStrokeColor(color);
+            connectionSVG.setStrokeStyle(access.getConnectionLineStyle(connection));
             connectionSVG.setParent(connectionsContainer);
         }
         
