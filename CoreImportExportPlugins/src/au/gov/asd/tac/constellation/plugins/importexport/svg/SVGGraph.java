@@ -25,14 +25,20 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNa
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
+import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import java.util.Base64;
 import java.time.ZonedDateTime;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -71,8 +77,8 @@ public class SVGGraph {
     public static class SVGGraphBuilder {
         private GraphReadMethods graph;
         private GraphVisualAccess access;
-        private Vector3f maxBound = null;
-        private Vector3f minBound = null;
+        Matrix44f modelViewProjectionMatrix;
+        int[] viewPort;
         private String graphTitle = null;
         private boolean selectedNodesOnly = false;
         private boolean showConnections = true;
@@ -161,7 +167,7 @@ public class SVGGraph {
          */
         public SVGData build() {
             final SVGObject svgGraph = SVGObject.loadFromTemplate(SVGFileNameConstant.LAYOUT);
-            defineBoundary();
+            preBuild();
             buildHeader(svgGraph);
             buildFooter(svgGraph);
             buildBackground(svgGraph);
@@ -170,6 +176,52 @@ public class SVGGraph {
             setLayoutDimensions(svgGraph);
             return svgGraph.toSVGData();
         }       
+        
+        /**
+         * Sets up the Builder control attributes. 
+         */
+        private void preBuild(){
+            
+            Camera camera = new Camera(access.getCamera());
+            
+            //Set the view port
+            final BoundingBox box = camera.boundingBox;
+            BoundingBoxUtilities.recalculateFromGraph(box, graph, selectedNodesOnly);
+            CameraUtilities.refocusOnZAxis(camera, box, false);
+            Vector3f maxBound = box.getMax();
+            Vector3f minBound = box.getMin();
+            maxBound.scale(256);
+            minBound.scale(256);
+            float viewPortHeight = maxBound.getY() - minBound.getY();
+            float viewPortWidth = maxBound.getX() - minBound.getX();
+            
+            LOGGER.log(Level.SEVERE, String.format("ViewWindow: %s, %s, %s, %s,", viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
+            
+            //Get Model view Matrix from the Camera.
+            final Matrix44f mvMatrix = Graphics3DUtilities.getModelViewMatrix(camera);
+            
+            // Define the view frustum
+            final float FIELD_OF_VIEW = 35;
+            final float PERSPECTIVE_NEAR = 1;
+            final float PERSPECTIVE_FAR = 500000;
+            Frustum viewFrustum = new Frustum();
+            viewFrustum.setPerspective(FIELD_OF_VIEW, viewPortWidth / viewPortHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);
+            
+            //Get the projection matrix from the view frustum
+            Matrix44f pMatrix =  viewFrustum.getProjectionMatrix();
+            
+            //Switch the y sign for exporting to SVG
+            final Matrix44f scaleMatrix = new Matrix44f();
+            scaleMatrix.makeScalingMatrix(new Vector3f(1.0f, -1.0f, 1.0f));
+            pMatrix.multiply(pMatrix, scaleMatrix);
+            
+            //Generate the ModelVieqwprojectionMatrix. 
+            final Matrix44f mvpMatrix = new Matrix44f();
+            mvpMatrix.multiply(pMatrix, mvMatrix);   
+            
+            viewPort = new int[] {Math.round(camera.lookAtEye.getX()),  Math.round(camera.lookAtEye.getY()), Math.round(viewPortWidth),  Math.round(viewPortHeight)};
+            modelViewProjectionMatrix = mvpMatrix;
+        }
         
         /**
          * Builds the header area of the output SVG.
@@ -512,23 +564,6 @@ public class SVGGraph {
             image.setAttribute(SVGAttributeConstant.EXTERNAL_RESOURCE_REFERENCE, String.format("data:image/png;base64,%s", encodedString));
             image.setParent(parent.toSVGData());
         }
- 
-        /**
-         * Retrieves the min and max values for x and y for a given graph. 
-         * Represents the extremities of the graph area that contains render-able objects.
-         * @param graph
-         * @return 
-         */
-        private void defineBoundary() {
-            Camera camera = access.getCamera();
-            final BoundingBox box = camera.boundingBox;
-            CameraUtilities.rotate(camera, 0, 0, 0);
-            BoundingBoxUtilities.recalculateFromGraph(box, graph, selectedNodesOnly);
-            maxBound = box.getMax();
-            minBound = box.getMin();
-            maxBound.scale(128);
-            minBound.scale(128);
-        }
 
         /**
          * Sets the dimensions for container objects within the Layout.svg template file.
@@ -539,8 +574,8 @@ public class SVGGraph {
          * @param svg 
          */
         private void setLayoutDimensions(final SVGObject svg) {
-            final float contentWidth = maxBound.getX() - minBound.getX() + 256;
-            final float contentHeight = maxBound.getY() - minBound.getY() + 256;
+            final float contentWidth = viewPort[2] + 256;
+            final float contentHeight = viewPort[3] + 256;
             final float xMargin = 50.0F;
             final float topMargin = 288.0F;
             final float bottomMargin = 128.0F;
@@ -569,24 +604,30 @@ public class SVGGraph {
         }
 
         /**
-         * Gets the position of the vertex.
-         * Position is normalised with respect to the position of the top-left most vertex.
+         * Gets the normalised position of the vertex.
+         * Position is normalised with respect to a width and hight space of -1 to +1.
          * Position is with respect to the center of the vertex.
          * @param vertex
          * @return 
          */
+
         private Vector3f getVertexPosition(final int vertex) {           
+            
             final Float constelationGraphX = access.getX(vertex);
             final Float constelationGraphY = access.getY(vertex);
             final Float constelationGraphZ = access.getZ(vertex);
             
-            final int halfVertexSize = 128;
+            Vector3f worldPosition = new Vector3f(constelationGraphX, constelationGraphY, constelationGraphZ);
+            Vector4f screenPosition = new Vector4f();
+
             
-            final Float svgGraphX = (constelationGraphX * halfVertexSize) - minBound.getX() + halfVertexSize;
-            final Float svgGraphY = (maxBound.getY() - minBound.getY()) - ((constelationGraphY * halfVertexSize) - minBound.getY()) + halfVertexSize;
-            final Float svgGraphZ = (constelationGraphZ * halfVertexSize) - minBound.getZ() + halfVertexSize;
+            Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
+
+            Vector4f centerOffSet = new Vector4f(128, 128, 0, 0);
+            Vector4f.add(screenPosition, screenPosition, centerOffSet);
             
-            return new Vector3f(svgGraphX, svgGraphY, svgGraphZ);
+            LOGGER.log(Level.SEVERE, String.format("Vertex %s: %s", vertex, screenPosition));
+            return screenPosition.toVector3f();
         }
         
         /**
