@@ -59,6 +59,9 @@ public class MarkerUtilities {
         final double radius = mapWidth / (2 * Math.PI);
         final double lattitude = lat * (Math.PI / 180);
         final double y = Math.log(Math.tan((Math.PI / 4) + (lattitude / 2)));
+        //return ((-1 * lat) + 90) * (mapHeight / 180);
+
+        
         return (mapHeight / 2) - (mapWidth * y / (2 * Math.PI)); // 461
         //return (mapHeight / 2) - (lattitude * mapHeight) / 180;
         //return mapHeight * Math.log(Math.tan((Math.PI / 4))) - (mapWidth * y / (2 * Math.PI));
@@ -68,6 +71,7 @@ public class MarkerUtilities {
         final double maxY = latToY(MapView.MAX_LAT);
 
         return mapHeight * (latToY(lat) - minY) / (maxY - minY);*/
+        //return y;
     }
 
     /**
