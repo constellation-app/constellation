@@ -166,8 +166,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     protected String createStyle() {
         return JavafxStyleManager.isDarkTheme()
                 ? "resources/analytic-view-dark.css"
-                : null;
-
+                : "resources/analytic-view-light.css";
     }
 
     @Override
