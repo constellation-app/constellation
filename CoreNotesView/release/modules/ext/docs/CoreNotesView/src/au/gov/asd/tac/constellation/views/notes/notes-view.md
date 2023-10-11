@@ -87,3 +87,31 @@ view:
 -   *Time range filter*: A time range filter that allows the user to only  
     display notes in a specific time range. Times can be changed to different
     time zones.
+
+## Markdown Support
+
+The notes view supports some markdown text now. There is a checkbox in the new note
+window that allows you to enable and disable markdown. Markdown is a lightweight markup
+language for creating formatted text. As of now the notes view supports MD features like:
+
+    1. Headings
+        Put the 1-6 \# characters and a space before text to create a heading.
+        The higher the number os \#s the smaller the heading.
+    2. Italics
+        You can write italic text by surrounding text with (\_) or (\*). For example \_Italic text\_ or \*Italic text\*.
+    3. Bold
+        You can have bold text by surrounding text with (\__) or (\**). For example \*\*Bold text\*\* or \_\_Bold text\_\_.
+    4. Strikethrough
+        You can have Strikethrough text by surrounding text with (\~~). For example \~~Strikethrough text\~~.
+    5. Lists
+        You can have ordered lists. Lists must start with "1." and space before the item text then every consequent list item must have a number
+        and dot before it to be included in the list. Sublists can also be made, simply make a list item and then in the line under it press tab
+        so that indentation is one more than the parent list item and then write (1. ) to start a new list. Every list item with the same indentation
+        as the first sublist item will be included as part of the sublist.
+        List example
+            1. List item 1
+            2. List item 2
+                1. Sublist item 1
+                2. Notice how sublist starts the same way as regular list just indented
+                    1. Sub-sub list
+            3. List item 3
