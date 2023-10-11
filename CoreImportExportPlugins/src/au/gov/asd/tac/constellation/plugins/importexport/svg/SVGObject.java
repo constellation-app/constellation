@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNa
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
+import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.util.logging.Logger;
 
@@ -270,7 +271,7 @@ public class SVGObject {
      * With respect to the SVGObject it is contained within.
      * @param posiition
      */
-    void setSourcePosition(Vector3f position) {
+    public void setSourcePosition(Vector4f position) {
         this.setAttribute(SVGAttributeConstant.SOURCE_X, position.getX());
         this.setAttribute(SVGAttributeConstant.SOURCE_Y, position.getY());
     }
@@ -280,7 +281,7 @@ public class SVGObject {
      * With respect to the SVGObject it is contained within.
      * @param position
      */
-    void setDestinationPosition(Vector3f position) {
+    public void setDestinationPosition(Vector4f position) {
         this.setAttribute(SVGAttributeConstant.DESTINATION_X, position.getX());
         this.setAttribute(SVGAttributeConstant.DESTINATION_Y, position.getY());
     }
@@ -289,7 +290,7 @@ public class SVGObject {
      * Sets the transformation values of the SVGObject.
      * @param position
      */
-    void setTransformation(String transformationData) {
+    public void setTransformation(String transformationData) {
         this.setAttribute(SVGAttributeConstant.TRANSFORM,  transformationData);
     }
     
@@ -305,7 +306,7 @@ public class SVGObject {
      * Sets the stoke color of the SVGObject.
      * @param color 
      */
-    void setStrokeColor(ConstellationColor color) {
+    public void setStrokeColor(ConstellationColor color) {
         this.setAttribute(SVGAttributeConstant.STROKE_COLOR, color);
     }
     
@@ -313,7 +314,7 @@ public class SVGObject {
      * Sets the stroke style of the SVGObject.
      * @param style 
      */
-    void setStrokeStyle(LineStyle style) {
+    public void setStrokeStyle(LineStyle style) {
         if (style == LineStyle.DOTTED) {
             this.setAttribute(SVGAttributeConstant.DASH_ARRAY, "35 35");
         } else if (style == LineStyle.DASHED) {

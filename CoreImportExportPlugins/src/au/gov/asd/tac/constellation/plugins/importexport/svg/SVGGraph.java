@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
@@ -27,7 +28,6 @@ import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
@@ -193,9 +193,10 @@ public class SVGGraph {
             maxBound.scale(256);
             minBound.scale(256);
             float viewPortHeight = maxBound.getY() - minBound.getY();
-            float viewPortWidth = maxBound.getX() - minBound.getX();
+            viewPortHeight = viewPortHeight == 0 ? 1 : viewPortHeight;
             
-            LOGGER.log(Level.SEVERE, String.format("ViewWindow: %s, %s, %s, %s,", viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
+            float viewPortWidth = maxBound.getX() - minBound.getX();
+            viewPortWidth = viewPortWidth == 0 ? 1 : viewPortWidth;
             
             //Get Model view Matrix from the Camera.
             final Matrix44f mvMatrix = Graphics3DUtilities.getModelViewMatrix(camera);
@@ -220,7 +221,8 @@ public class SVGGraph {
             mvpMatrix.multiply(pMatrix, mvMatrix);   
             
             viewPort = new int[] {Math.round(camera.lookAtEye.getX()),  Math.round(camera.lookAtEye.getY()), Math.round(viewPortWidth),  Math.round(viewPortHeight)};
-            modelViewProjectionMatrix = mvpMatrix;
+            modelViewProjectionMatrix = mvpMatrix; 
+            LOGGER.log(Level.SEVERE, String.format("ViewWindow: %s, %s, %s, %s,", viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
         }
         
         /**
@@ -270,7 +272,8 @@ public class SVGGraph {
                 }
                 
                 //Get the values of the attributes relevent to the current node
-                final Vector3f position = getVertexPosition(vertexPosition);
+                final Vector4f position = getVertexPosition(vertexPosition);
+                final float radius = getVertexScaledRadius(position, vertexPosition);
                 final ConstellationColor color = access.getVertexColor(vertexPosition);
                 final String bgi = access.getBackgroundIcon(vertexPosition);
                 final String fgi = access.getForegroundIcon(vertexPosition);
@@ -280,9 +283,10 @@ public class SVGGraph {
                 
                 //build the SVGobject representing the node
                 final SVGObject node = SVGObject.loadFromTemplate(SVGFileNameConstant.NODE);
-                node.setPosition(position.getX() - 128, position.getY() - 128);
+                node.setPosition(position.getX() - radius, position.getY() - radius);
                 node.setID(access.getVertexId(vertexPosition));
                 node.setParent(nodesContainer);
+                node.setDimension(radius * 2, radius * 2);
                 
                 //Add labels to the node
                 if (showTopLabels){
@@ -413,16 +417,16 @@ public class SVGGraph {
                 }
                 
                 //Determine the SVG coordinates of the center of the nodes
-                final Vector3f highCenterPosition = getVertexPosition(high);
-                final Vector3f lowCenterposition = getVertexPosition(low);
+                final Vector4f highCenterPosition = getVertexPosition(high);
+                final Vector4f lowCenterPosition = getVertexPosition(low);
                 
                 //Get the SVG angle of the connection between the two nodes
-                final double highConnectionAngle = calculateConnectionAngle(highCenterPosition, lowCenterposition);
-                final double lowConnectionAngle = calculateConnectionAngle(lowCenterposition, highCenterPosition);
+                final double highConnectionAngle = calculateConnectionAngle(highCenterPosition, lowCenterPosition);
+                final double lowConnectionAngle = calculateConnectionAngle(lowCenterPosition, highCenterPosition);
 
                 //Get the coordinates of the points where the connections intersect the node radius
-                final Vector3f highCircumferencePosition = offSetPosition(highCenterPosition, 128, highConnectionAngle);
-                final Vector3f lowCircumferencePosition = offSetPosition(lowCenterposition, 128, lowConnectionAngle);
+                final Vector4f highCircumferencePosition = offSetPosition(highCenterPosition, getVertexScaledRadius(highCenterPosition, high), highConnectionAngle);
+                final Vector4f lowCircumferencePosition = offSetPosition(lowCenterPosition, getVertexScaledRadius(lowCenterPosition, low), lowConnectionAngle);
                 
                 //Itterate over all of the Transactions/Edges/Links between the two nodes.
                 //Note: the linkConnectionCount factors in the connection mode and the max transaction threshold.
@@ -437,8 +441,8 @@ public class SVGGraph {
                     final double paralellOffsetAngle = Math.toRadians(90) * paralellOffsetDirection;
 
                     //Determine the unique positions for the individual Transation/edge/link.
-                    final Vector3f highPosition = offSetPosition(highCircumferencePosition, paralellOffsetDistance, highConnectionAngle - paralellOffsetAngle);
-                    final Vector3f lowPosition = offSetPosition(lowCircumferencePosition, paralellOffsetDistance, lowConnectionAngle + paralellOffsetAngle);
+                    final Vector4f highPosition = offSetPosition(highCircumferencePosition, paralellOffsetDistance, highConnectionAngle - paralellOffsetAngle);
+                    final Vector4f lowPosition = offSetPosition(lowCircumferencePosition, paralellOffsetDistance, lowConnectionAngle + paralellOffsetAngle);
                     
                     //Create the Transaction/Edge/Link SVGData
                     buildConnection(connectionsContainer, highPosition, lowPosition, connection);  
@@ -455,7 +459,7 @@ public class SVGGraph {
          * @param lowPosition
          * @param connection 
          */
-        private void buildConnection(final SVGObject connectionsContainer, final Vector3f highPosition, final Vector3f lowPosition, final int connection){
+        private void buildConnection(final SVGObject connectionsContainer, final Vector4f highPosition, final Vector4f lowPosition, final int connection){
             //Get references to SVG Objects being built within this method 
             final SVGObject connectionSVG = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION);
             final SVGObject arrowShaft = connectionSVG.getChild(SVGLayoutConstant.ARROW_SHAFT);
@@ -467,8 +471,8 @@ public class SVGGraph {
             final Double lowConnectionAngle = calculateConnectionAngle(lowPosition, highPosition);
             
             //Get the coordinates of the potential shaft extremeties at 64px behind the arrow tip position.
-            final Vector3f highPositionRecessed = offSetPosition(highPosition, 64, highConnectionAngle);
-            final Vector3f lowPositionRecessed = offSetPosition(lowPosition, 64, lowConnectionAngle);
+            final Vector4f highPositionRecessed = offSetPosition(highPosition, 64, highConnectionAngle);
+            final Vector4f lowPositionRecessed = offSetPosition(lowPosition, 64, lowConnectionAngle);
 
             //Assign the positional values of shaft and arrow head/s based on the direction of the Transaction/Edge/Link
             final ConnectionDirection direction = access.getConnectionDirection(connection);            
@@ -527,8 +531,7 @@ public class SVGGraph {
          * @param y
          * @param connectionAngle 
          */
-        private void buildArrowHead(final SVGObject arrowHeadContainer, final Vector3f position, final double connectionAngle) {
-            
+        private void buildArrowHead(final SVGObject arrowHeadContainer, final Vector4f position, final double connectionAngle) {
             //The size of the svgElement containing the arrow head polygon asset
             final int arrowHeadWidth = 128;
             final int arrowHeadheight = 32;
@@ -548,7 +551,7 @@ public class SVGGraph {
          * @param sourcePosition
          * @param destinationPosition 
          */
-        private void buildArrowShaft(SVGObject arrowShaft, Vector3f sourcePosition, Vector3f destinationPosition) {
+        private void buildArrowShaft(SVGObject arrowShaft, Vector4f sourcePosition, Vector4f destinationPosition) {
             arrowShaft.setSourcePosition(sourcePosition);
             arrowShaft.setDestinationPosition(destinationPosition);
         }
@@ -611,8 +614,7 @@ public class SVGGraph {
          * @return 
          */
 
-        private Vector3f getVertexPosition(final int vertex) {           
-            
+        private Vector4f getVertexPosition(final int vertex) {           
             final Float constelationGraphX = access.getX(vertex);
             final Float constelationGraphY = access.getY(vertex);
             final Float constelationGraphZ = access.getZ(vertex);
@@ -620,14 +622,28 @@ public class SVGGraph {
             Vector3f worldPosition = new Vector3f(constelationGraphX, constelationGraphY, constelationGraphZ);
             Vector4f screenPosition = new Vector4f();
 
-            
             Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
 
             Vector4f centerOffSet = new Vector4f(128, 128, 0, 0);
             Vector4f.add(screenPosition, screenPosition, centerOffSet);
             
             LOGGER.log(Level.SEVERE, String.format("Vertex %s: %s", vertex, screenPosition));
-            return screenPosition.toVector3f();
+            return screenPosition;
+        }
+        
+        /**
+         * Determines the radius of the node.
+         * Note: The position parameter is required to be the out put of a projectionMatrix transformation.
+         * @param position
+         * @param vertexPosition
+         * @return 
+         */
+        private float getVertexScaledRadius(final Vector4f position, int vertexPosition) {  
+            int radiusID = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
+            float radius = graph.getFloatValue(radiusID, access.getVertexId(vertexPosition));
+            float conversionScaleFactor = 128f;
+            float depthScaleFactor = position.getZ();
+            return conversionScaleFactor * radius * depthScaleFactor;            
         }
         
         /**
@@ -637,7 +653,7 @@ public class SVGGraph {
          * @param destinationPosition
          * @return 
          */
-        private double calculateConnectionAngle(final Vector3f sourcePosition, final Vector3f destinationPosition) {
+        private double calculateConnectionAngle(final Vector4f sourcePosition, final Vector4f destinationPosition) {
             final float xDirectionVector = sourcePosition.getX() - destinationPosition.getX();
             final float yDirectionVector = sourcePosition.getY() - destinationPosition.getY();
             return Math.atan2(yDirectionVector, xDirectionVector);
@@ -650,11 +666,11 @@ public class SVGGraph {
          * @param angle
          * @return 
          */
-        private Vector3f offSetPosition(final Vector3f origin, final int distance, final double angle) {
+        private Vector4f offSetPosition(final Vector4f origin, final float distance, final double angle) {
             final float x = (float) (origin.getX() - (distance * Math.cos(angle)));
             final float y = (float) (origin.getY() - (distance * Math.sin(angle)));
             final float z = origin.getZ();
-            return new Vector3f(x,y,z);
+            return new Vector4f(x,y,z, origin.getW());
         }
 
         /**
