@@ -111,7 +111,8 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     }
     
     @Override
-    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException { 
+    protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {        
+        
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
         final ConstellationColor color = parameters.getColorValue(BACKGROUND_COLOR_PARAMETER_ID);
@@ -130,6 +131,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         
         //Generate the SVG output.
         final SVGData svg = new SVGGraph.SVGGraphBuilder()
+                .withInteraction(interaction)
                 .withTitle(title)
                 .withAccess(access)
                 .withGraph(graph)
@@ -140,12 +142,13 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                 .includeBottomLabels(showBottomLabels)
                 .build();
         try {
+            interaction.setExecutionStage(0, -1, "Exporting Graph", "Writing data to file", true);
             exportToSVG(imageFile, svg);
         } catch (final IOException ex) {
             LOGGER.log(Level.INFO, ex.getLocalizedMessage());
         }
-        
         access.endUpdate();
+        interaction.setProgress(1, 0, "Finished", true);
     }   
     
     /**

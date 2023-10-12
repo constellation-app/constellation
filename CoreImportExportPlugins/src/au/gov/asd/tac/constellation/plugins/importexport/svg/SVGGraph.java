@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
+import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
@@ -85,6 +86,7 @@ public class SVGGraph {
      */
     public static class SVGGraphBuilder {
         private GraphReadMethods graph;
+        private PluginInteraction interaction;
         private GraphVisualAccess access;
         Matrix44f modelViewProjectionMatrix;
         int[] viewPort;
@@ -107,6 +109,11 @@ public class SVGGraph {
         
         public SVGGraphBuilder withAccess(final GraphVisualAccess access) {
             this.access = access;
+            return this;
+        }
+        
+        public SVGGraphBuilder  withInteraction(PluginInteraction interaction) {
+            this.interaction = interaction;
             return this;
         }
         
@@ -174,7 +181,7 @@ public class SVGGraph {
          * Builds an SVGGraphObject representing the provided graph.
          * @return SVGData
          */
-        public SVGData build() {
+        public SVGData build() throws InterruptedException {
             final SVGObject svgGraph = SVGObject.loadFromTemplate(SVGFileNameConstant.LAYOUT);
             preBuild();
             buildHeader(svgGraph);
@@ -270,7 +277,9 @@ public class SVGGraph {
          * The template file Node.svg is used to build the node.
          * @param svgGraph
          */
-        private void buildNodes(final SVGObject svgGraph) {
+        private void buildNodes(final SVGObject svgGraph) throws InterruptedException {
+            int progress = 0;
+            interaction.setExecutionStage(progress, access.getVertexCount(), "Building Graph", "Building Nodes", true);
             //Retrieve the svg element that holds the nodes as a SVGObject
             final SVGObject nodesContainer = svgGraph.getChild(SVGLayoutConstant.CONTENT).getChild(SVGLayoutConstant.NODES); 
             for (int vertexPosition = 0 ; vertexPosition < access.getVertexCount() ; vertexPosition++) {
@@ -329,6 +338,8 @@ public class SVGGraph {
                 this.buildDecorator(nodeImages.getChild(SVGLayoutConstant.NORTH_EAST_DECORATOR), access.getNEDecorator(vertexPosition));
                 this.buildDecorator(nodeImages.getChild(SVGLayoutConstant.SOUTH_WEST_DECORATOR), access.getSWDecorator(vertexPosition));
                 this.buildDecorator(nodeImages.getChild(SVGLayoutConstant.SOUTH_EAST_DECORATOR), access.getSEDecorator(vertexPosition));
+                
+                interaction.setProgress(progress++, access.getVertexCount(), true);
             }
         }
         
@@ -449,11 +460,15 @@ public class SVGGraph {
          * Other graph state factors including maxTransactions and drawFlags are considered.
          * @param svgGraph 
          */
-        private void buildConnections(final SVGObject svgGraph) {
+        private void buildConnections(final SVGObject svgGraph) throws InterruptedException {
             //Donot export connections if showConnections is disabled
             if (!showConnections){
+                interaction.setProgress(access.getLinkCount(), access.getLinkCount(), "Created 0 links", true);
                 return;
             }
+            
+            int progress = 0;
+            interaction.setExecutionStage(progress, access.getVertexCount(), "Building Graph", "Building Connections", false);
             
             // Get the SVG element that will contain all connections
             final SVGObject connectionsContainer = svgGraph.getChild(SVGLayoutConstant.CONTENT).getChild(SVGLayoutConstant.CONNECTIONS);
@@ -501,6 +516,7 @@ public class SVGGraph {
                     //Create the Transaction/Edge/Link SVGData
                     buildConnection(connectionsContainer, highPosition, lowPosition, connection);  
                 } 
+                interaction.setProgress(progress++, access.getLinkCount(), true);
             }
         }
         
