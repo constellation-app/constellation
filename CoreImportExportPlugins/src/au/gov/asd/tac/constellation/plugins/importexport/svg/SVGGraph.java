@@ -36,10 +36,19 @@ import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
+import java.awt.Color;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Base64;
 import java.time.ZonedDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import org.openide.util.Exceptions;
 
 /**
  * A Wrapper class for the outer most SVGElement of the output file.
@@ -275,6 +284,7 @@ public class SVGGraph {
                 final Vector4f position = getVertexPosition(vertexPosition);
                 final float radius = getVertexScaledRadius(position, vertexPosition);
                 final ConstellationColor color = access.getVertexColor(vertexPosition);
+                final ConstellationColor colorHalfStrength = ConstellationColor.getColorValue(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()/2);
                 final String bgi = access.getBackgroundIcon(vertexPosition);
                 final String fgi = access.getForegroundIcon(vertexPosition);
                 final ConstellationIcon backgroundIcon = IconManager.getIcon(bgi);
@@ -309,7 +319,7 @@ public class SVGGraph {
                 
                 final SVGObject backgroundContainer = nodeImages.getChild(SVGLayoutConstant.BACKGROUND_IMAGE);
                 final SVGObject foregroundContainer = nodeImages.getChild(SVGLayoutConstant.FOREGROUND_IMAGE);
-                final byte[] backgroundData = backgroundIcon.getIconData().getData(0, color.getJavaColor());
+                final byte[] backgroundData = applyColorFilter(backgroundIcon.getIconData().getData(), color);
                 final byte[] foregroundData = foregroundIcon.getIconData().getData();
                 this.buildSVGImageFromRasterImageData(backgroundContainer, backgroundData);
                 this.buildSVGImageFromRasterImageData(foregroundContainer, foregroundData);
@@ -321,6 +331,50 @@ public class SVGGraph {
                 this.buildDecorator(nodeImages.getChild(SVGLayoutConstant.SOUTH_EAST_DECORATOR), access.getSEDecorator(vertexPosition));
             }
         }
+        
+        /**
+         * Applies a filter to an image byte array. 
+         * A work around as the Constellation application uses an openGL color filtering
+         * and is unavailable to this class.
+         * 
+         * @param original
+         * @param color
+         * @return 
+         */
+        public byte[] applyColorFilter(final byte[] original, ConstellationColor color){
+            ByteArrayInputStream bais = new ByteArrayInputStream(original);
+            try {
+                BufferedImage img =  ImageIO.read(bais);
+                if (img == null || color == null) {
+                    return original;
+                } else {
+                    final BufferedImage coloredImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+                    for (int x = 0; x < img.getWidth(); x++) {
+                        for (int y = 0; y < img.getHeight(); y++) {
+                            final Color pixel = new Color(img.getRGB(x, y), true);
+                            final float redFilter = (color.getRed());
+                            final float blueFilter = (color.getBlue());
+                            final float greenFilter = (color.getGreen());
+
+                            final float blendRed = pixel.getRed()  * redFilter / 255;
+                            final float blendGreen = pixel.getGreen() * greenFilter / 255;
+                            final float blendBlue = pixel.getBlue() * blueFilter / 255;
+                            final Color blend = new Color(blendRed, blendGreen, blendBlue, pixel.getAlpha() / 255.0f);
+                            coloredImage.setRGB(x, y, blend.getRGB());
+                        }
+                    }
+                    final ByteArrayOutputStream os = new ByteArrayOutputStream();
+                    try {
+                        ImageIO.write(coloredImage, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
+                    } catch (IOException ex) {
+                        return original;
+                    }
+                    return os.toByteArray();
+            }
+            } catch (IOException ex) {
+                return original;
+            }
+        } 
         
         /**
          * Generates decorator images for nodes.
