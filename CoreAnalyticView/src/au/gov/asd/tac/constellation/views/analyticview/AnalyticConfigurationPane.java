@@ -31,6 +31,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.analyticview.aggregators.AnalyticAggregator;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
@@ -73,8 +74,7 @@ import javafx.scene.web.WebView;
 import org.openide.util.Lookup;
 
 /**
- * The pane holding gui elements related to configuration of an analytic
- * question.
+ * The pane holding gui elements related to configuration of an analytic question.
  *
  * @author cygnus_x-1
  */
@@ -295,6 +295,9 @@ public class AnalyticConfigurationPane extends VBox {
         final CountDownLatch cdl = new CountDownLatch(1);
         Platform.runLater(() -> {
             this.documentationView = new WebView();
+            if (JavafxStyleManager.isDarkTheme()) {
+                documentationView.getEngine().setUserStyleSheetLocation(getClass().getResource("resources/analytic-view-dark.css").toExternalForm());
+            }        
             populateDocumentationPane(null);
             cdl.countDown();
         });
@@ -329,9 +332,7 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Reset to the initial state for the analytic configuration pane. The
-     * question list will be expanded, the first question selected, and the
-     * analytics list populated based on the selected question.
+     * Reset to the initial state for the analytic configuration pane. The question list will be expanded, the first question selected, and the analytics list populated based on the selected question.
      */
     protected final void reset() {
         Platform.runLater(() -> {
@@ -380,7 +381,7 @@ public class AnalyticConfigurationPane extends VBox {
         if (selectedPlugins.isEmpty()) {
             throw new AnalyticException("You must select at least one analytic!");
         }
-        
+
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
 
         // update the analytic view state
@@ -409,8 +410,7 @@ public class AnalyticConfigurationPane extends VBox {
     /**
      * Updates the AnalyticViewState by running a plugin to save the graph state
      *
-     * @param pluginWasSelected true if the triggered update was from a plugin
-     * being selected
+     * @param pluginWasSelected true if the triggered update was from a plugin being selected
      */
     protected void updateState(final boolean pluginWasSelected) {
         stateChanged = true;
@@ -418,8 +418,7 @@ public class AnalyticConfigurationPane extends VBox {
     }
 
     /**
-     * Saves the state of the graph by fetching all currently selected plugins
-     * and updating the state only when the state has been changed
+     * Saves the state of the graph by fetching all currently selected plugins and updating the state only when the state has been changed
      */
     protected void saveState() {
         if (stateChanged) {

@@ -8,7 +8,11 @@
 }
 
 .titled-pane .hidden{
-    -fx-base:#777777;
+    -fx-base: #a6a6a6;
+}
+
+.titled-pane .hidden .label{
+    -fx-text-fill: white;
 }
 
 #primarykey{
@@ -25,4 +29,16 @@
 
 .hidden#custom{
     -fx-base:#4f7fba;
+}
+
+.menu-item:hover .label {
+    -fx-text-fill: white;
+}
+
+.context-menu .menu-item:hover {
+    -fx-background-color: #0093FF;
+}
+
+.context-menu .menu-item:focused {
+    -fx-background-color: #0093FF;
 }
