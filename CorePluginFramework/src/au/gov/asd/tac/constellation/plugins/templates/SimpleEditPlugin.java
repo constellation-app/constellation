@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginExecutionStageConstants;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,6 +48,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     private static final Logger LOGGER = Logger.getLogger(SimpleEditPlugin.class.getName());
 
     private static final String WAITING_INTERACTION = "Waiting...";
+    private static final String FINISHED = "Finished";
 
     protected SimpleEditPlugin() {
     }
@@ -79,9 +81,9 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     @Override
     public final void run(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException, RuntimeException {
 
-        boolean inControlOfProgress = true;
-
         final Graph graph = graphs.getGraph();
+        final int totalSteps = -1;
+        
         //graph no longer exists
         if (graph == null) {
             LOGGER.log(Level.WARNING, "Null graph not allowed in a {0}", SimpleEditPlugin.class.getSimpleName());
@@ -92,7 +94,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
         interaction.setBusy(graph.getId(), true);
         try {
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+            interaction.setExecutionStage(0, totalSteps, PluginExecutionStageConstants.WAITING, WAITING_INTERACTION, true);
 
             try {
                 boolean cancelled = false;
@@ -100,13 +102,10 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                 WritableGraph writableGraph = graph.getWritableGraph(getName(), isSignificant(), this);
 
                 try {
-                    interaction.setProgress(0, 0, "Editing...", true);
+                    interaction.setExecutionStage(1, totalSteps, PluginExecutionStageConstants.RUNNING, "Editing...", true);
 
                     try {
                         description = describedEdit(writableGraph, interaction, parameters);
-                        if (!"Editing...".equals(interaction.getCurrentMessage())) {
-                            inControlOfProgress = false;
-                        }
                     } catch (final Exception ex) {
                         cancelled = true;
                         throw ex;
@@ -119,7 +118,7 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
                     }
                 }
             } finally {
-                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
+                interaction.setExecutionStage(2, 1, PluginExecutionStageConstants.COMPLETE, FINISHED, true);
             }
 
         } finally {
@@ -135,22 +134,17 @@ public abstract class SimpleEditPlugin extends AbstractPlugin {
     @Override
     public void run(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
 
-        boolean inControlOfProgress = true;
-
         // Make the graph appear busy
         interaction.setBusy(graph.getId(), true);
 
         try {
             // Make the progress bar appear nondeterminent
-            interaction.setProgress(0, 0, WAITING_INTERACTION, true);
+            interaction.setExecutionStage(0, -1, PluginExecutionStageConstants.WAITING, WAITING_INTERACTION, true);
 
             try {
                 edit(graph, interaction, parameters);
-                if (!WAITING_INTERACTION.equals(interaction.getCurrentMessage())) {
-                    inControlOfProgress = false;
-                }
             } finally {
-                interaction.setProgress(2, 1, inControlOfProgress ? "Finished" : interaction.getCurrentMessage(), true);
+                interaction.setExecutionStage(2, 0, PluginExecutionStageConstants.COMPLETE, FINISHED, true);
             }
         } finally {
             interaction.setBusy(graph.getId(), false);

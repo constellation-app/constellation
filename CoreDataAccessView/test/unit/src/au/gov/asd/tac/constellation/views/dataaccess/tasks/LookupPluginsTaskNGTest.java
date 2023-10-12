@@ -115,9 +115,9 @@ public class LookupPluginsTaskNGTest {
             )).when(defaultLookup).lookupAll(DataAccessPlugin.class);
             
             final Map<String, Pair<Integer, List<DataAccessPlugin>>> expectedPlugins = Map.of(
-                    "Developer", new Pair(0, List.of(plugin3)),
-                    "Utility", new Pair(0, List.of(plugin4)),
-                    "Favourites", new Pair(0, List.of(plugin3)));
+                    "Developer", new Pair(Integer.MAX_VALUE, List.of(plugin3)),
+                    "Utility", new Pair(Integer.MAX_VALUE, List.of(plugin4)),
+                    "Favourites", new Pair(Integer.MAX_VALUE, List.of(plugin3)));
 
 
             assertEquals(new LookupPluginsTask().get(), expectedPlugins);

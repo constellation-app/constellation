@@ -100,7 +100,7 @@ public class DateTimeEditorFactory extends AttributeValueEditorFactory<ZonedDate
 
         @Override
         public void updateControlsWithValue(final ZonedDateTime value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 datePicker.setValue(value.toLocalDate());
                 hourSpinner.getValueFactory().setValue(value.toLocalDateTime().get(ChronoField.HOUR_OF_DAY));

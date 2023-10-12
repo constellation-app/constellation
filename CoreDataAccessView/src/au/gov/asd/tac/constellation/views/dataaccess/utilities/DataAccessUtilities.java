@@ -213,7 +213,7 @@ public class DataAccessUtilities {
         // Now fetch the DataAccessPlugin instances.
         final Multimap<String, String> pluginNameToType = ArrayListMultimap.create();
         final List<String> pluginOverrides = new ArrayList<>();
-        Lookup.getDefault().lookupAll(DataAccessPlugin.class).parallelStream()
+        Lookup.getDefault().lookupAll(DataAccessPlugin.class).stream()
                 // If plugin is disabled, ignore the plugin.
                 .filter(DataAccessPlugin::isEnabled)
                 // If a plugin type is invalid (that is, not registered as a DataAccessPluginType),
