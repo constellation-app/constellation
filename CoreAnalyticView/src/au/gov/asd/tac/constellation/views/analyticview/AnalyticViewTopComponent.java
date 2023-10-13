@@ -162,10 +162,13 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             currentGraphId = graph.getId();
         }
         if (analyticViewPane != null) {
-            analyticViewPane.setIsRunnable(graph != null);
             analyticViewPane.reset();
+            analyticViewPane.setIsRunnable(graph != null);
             analyticController.addAttributes();
             analyticController.readState();
+            if (GraphManager.getDefault().getActiveGraph() == null) {
+                analyticViewPane.reset();
+            }
         }
     }
 
@@ -175,6 +178,9 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             analyticViewPane.reset();
             analyticController.addAttributes();
             analyticController.readState();
+            if (GraphManager.getDefault().getActiveGraph() == null) {
+                analyticViewPane.reset();
+            }
         }
     }
 
@@ -187,6 +193,10 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         }
         analyticController.addAttributes();
         analyticController.readState();
+        
+        if (GraphManager.getDefault().getActiveGraph() == null) {
+            analyticViewPane.reset();
+        }
     }
 
     @Override

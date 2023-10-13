@@ -37,7 +37,7 @@ public abstract class AbstractColorTranslator<R extends AnalyticResult<?>, C> ex
     }
 
     public abstract void executePlugin(final boolean reset);
-    
+   
     public abstract HashMap<Integer, ConstellationColor> getVertexColors();
     
     public abstract void setVertexColors(final HashMap<Integer, ConstellationColor> colors);

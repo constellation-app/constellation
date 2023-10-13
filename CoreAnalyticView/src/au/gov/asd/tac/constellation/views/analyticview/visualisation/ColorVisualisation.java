@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractColorTranslator;
+import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -38,11 +39,10 @@ public class ColorVisualisation<C> extends GraphVisualisation {
     private final AbstractColorTranslator<? extends AnalyticResult<?>, C> translator;
     private final ToggleButton colorButton;
     private boolean activated = false;
-    
+
     // Maps of the colors of the vertices and transactions before the plugin is run
     private HashMap<Integer, ConstellationColor> vertexColors = new HashMap<>();
     private HashMap<Integer, ConstellationColor> transactionColors = new HashMap<>();
-
 
     public ColorVisualisation(final AbstractColorTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
@@ -59,7 +59,6 @@ public class ColorVisualisation<C> extends GraphVisualisation {
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
         });
     }
-
 
     @Override
     public void deactivate() {
@@ -81,6 +80,11 @@ public class ColorVisualisation<C> extends GraphVisualisation {
     @Override
     public Node getVisualisation() {
         return colorButton;
+    }
+    
+    @Override 
+    public AnalyticTranslator getTranslator() {
+        return translator;
     }
 
     @Override

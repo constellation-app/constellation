@@ -68,7 +68,7 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                 .withParameter(SizeElementsPlugin.RESET_PARAMETER_ID, reset)
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
-    
+
     @Override
     public HashMap<Integer, Float> getVertexSizes() {
         return (HashMap<Integer, Float>) vertexSizes.clone();

@@ -150,6 +150,8 @@ public class AnalyticViewController {
         } else {
             graphVisualisations.replace(visualisationName, activated);
         }
+        LOGGER.log(Level.SEVERE, "Graph visualisations: " +  String.valueOf(graphVisualisations.size()));
+        
     }
     
     

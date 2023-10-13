@@ -253,7 +253,7 @@ public class AnalyticViewStateIoProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeStartObject();
                 jsonGenerator.writeArrayFieldStart(INTERNAL_VISUALISATIONS);
                 
-                if (!state.getInternalVisualisations().isEmpty()) {
+                if (state.getInternalVisualisations() != null && !state.getInternalVisualisations().isEmpty()) {
                     state.getInternalVisualisations().entrySet().forEach(node -> {
                         try {
                             jsonGenerator.writeString(mapper.writeValueAsString(node.getKey()));

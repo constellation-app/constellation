@@ -75,7 +75,7 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
 
     @Override
     public HashMap<Integer, ConstellationColor> getVertexColors() {
-        return (HashMap<Integer, ConstellationColor>) vertexColors.clone();
+        return vertexColors;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
 
     @Override
     public HashMap<Integer, ConstellationColor> getTransactionColors() {
-        return (HashMap<Integer, ConstellationColor>) transactionColors.clone();
+        return transactionColors;
     }
 
     @Override

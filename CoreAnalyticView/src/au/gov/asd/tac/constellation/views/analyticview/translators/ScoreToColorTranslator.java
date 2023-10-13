@@ -70,10 +70,10 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 .withParameter(ColorElementsPlugin.RESET_PARAMETER_ID, reset)
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
-
+    
     @Override
     public HashMap<Integer, ConstellationColor> getVertexColors() {
-        return (HashMap<Integer, ConstellationColor>) vertexColors.clone();
+        return vertexColors;
     }
 
     @Override
@@ -83,7 +83,7 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
 
     @Override
     public HashMap<Integer, ConstellationColor> getTransactionColors() {
-        return (HashMap<Integer, ConstellationColor>) transactionColors.clone();
+        return transactionColors;
     }
 
     @Override

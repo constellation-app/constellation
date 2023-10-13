@@ -68,7 +68,7 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
                 .withParameter(ColorElementsPlugin.RESET_PARAMETER_ID, reset)
                 .executeLater(GraphManager.getDefault().getActiveGraph());
     }
-    
+
     @Override
     public HashMap<Integer, ConstellationColor> getVertexColors() {
         return (HashMap<Integer, ConstellationColor>) vertexColors.clone();

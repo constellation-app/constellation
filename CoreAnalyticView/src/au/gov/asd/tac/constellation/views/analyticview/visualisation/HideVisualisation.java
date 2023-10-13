@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractHideTranslator;
+import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -78,6 +79,11 @@ public class HideVisualisation<C> extends GraphVisualisation {
     @Override
     public Node getVisualisation() {
         return hidePanel;
+    }
+    
+    @Override 
+    public AnalyticTranslator getTranslator() {
+        return translator;
     }
 
     @Override

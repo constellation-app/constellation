@@ -96,7 +96,11 @@ public class AnalyticViewState {
     }
 
     public HashMap<GraphVisualisation, Boolean> getGraphVisualisations() {
-        return (HashMap<GraphVisualisation, Boolean>) graphVisualisations.clone();
+        if (graphVisualisations != null) {
+            return (HashMap<GraphVisualisation, Boolean>) graphVisualisations.clone();
+        } else {
+            return new HashMap<>();
+        } 
     }
 
     public void setGraphVisualisations(final HashMap<GraphVisualisation, Boolean> graphVisualisations) {
@@ -104,7 +108,11 @@ public class AnalyticViewState {
     }
     
     public HashMap<InternalVisualisation, Node> getInternalVisualisations() {
-        return (HashMap<InternalVisualisation, Node>) internalVisualisations.clone();
+        if (internalVisualisations != null) {
+            return (HashMap<InternalVisualisation, Node>) internalVisualisations.clone();
+        } else {
+            return new HashMap<>();
+        }      
     }
     
     public void setInternalVisualisations(final HashMap<InternalVisualisation, Node> internalVisualisations) {

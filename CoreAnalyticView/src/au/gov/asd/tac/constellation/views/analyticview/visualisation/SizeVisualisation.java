@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractSizeTranslator;
+import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -78,6 +79,11 @@ public class SizeVisualisation<C> extends GraphVisualisation {
     @Override
     public Node getVisualisation() {
         return sizeButton;
+    }
+    
+    @Override 
+    public AnalyticTranslator getTranslator() {
+        return translator;
     }
 
     @Override

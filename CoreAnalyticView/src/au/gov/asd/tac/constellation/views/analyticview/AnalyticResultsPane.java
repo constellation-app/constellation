@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtiliti
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -98,71 +99,53 @@ public class AnalyticResultsPane extends VBox {
         return result;
     }
 
-    protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results, 
+    protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results,
             final HashMap<GraphVisualisation, Boolean> graphVisualisations, final HashMap<InternalVisualisation, Node> internalVisualisations) {
         if (results.getClass().equals(EmptyResult.class) && question != null) {
             result = question.getResult() == null ? new EmptyResult() : question.getResult();
         } else {
             result = results;
-        }   
+        }
         result.setAnalyticViewController(analyticViewController);
 
         Platform.runLater(() -> {
             internalVisualisationPane.getTabs().clear();
-            
-            if (internalVisualisations == null || internalVisualisations.isEmpty()) {
-                AnalyticUtilities.getInternalVisualisationTranslators().forEach(translator -> {
-                    if (translator.getResultType().isAssignableFrom(result.getClass())) {
-                        translator.setQuestion(question);
-                        translator.setResult(result);
-                        final InternalVisualisation internalVisualisation = translator.buildVisualisation();
-                        final Tab visualisationTab = new Tab(internalVisualisation.getName());
-                        visualisationTab.setClosable(false);
-                        visualisationTab.setContent(internalVisualisation.getVisualisation());
-                        internalVisualisationPane.getTabs().add(visualisationTab);
-                        
-                        AnalyticViewController.getDefault().updateInternalVisualisations(internalVisualisation, internalVisualisation.getVisualisation());
-                    }
-                });
-            } else {
-                internalVisualisations.entrySet().forEach(visualisation -> {
-                    final Tab visualisationTab = new Tab(visualisation.getKey().getName());
+
+            AnalyticUtilities.getInternalVisualisationTranslators().forEach(translator -> {
+                if (translator.getResultType().isAssignableFrom(result.getClass())) {
+                    translator.setQuestion(question);
+                    translator.setResult(result);
+                    final InternalVisualisation internalVisualisation = translator.buildVisualisation();
+                    final Tab visualisationTab = new Tab(internalVisualisation.getName());
                     visualisationTab.setClosable(false);
-                    visualisation.getKey().setVisualisation(visualisation.getValue()); 
-                    visualisationTab.setContent(visualisation.getValue());
+                    visualisationTab.setContent(internalVisualisation.getVisualisation());
                     internalVisualisationPane.getTabs().add(visualisationTab);
-                    if (visualisationTab.getText().equals("Table")) {
-                        internalVisualisationPane.getSelectionModel().select(visualisationTab);
-                    }
-                });    
-                AnalyticViewController.getDefault().setInternalVisualisations(internalVisualisations);                                
-            }
-            
+                    AnalyticViewController.getDefault().updateInternalVisualisations(internalVisualisation, internalVisualisation.getVisualisation());
+                }
+            });
+
             graphVisualisationPane.getItems().clear();
             final Label applyResults = new Label("Apply to Results: ");
             graphVisualisationPane.getItems().add(applyResults);
-            
-            if (graphVisualisations == null || graphVisualisations.isEmpty()) {
-                AnalyticUtilities.getGraphVisualisationTranslators().forEach(translator -> {
-                    if (translator.getResultType().isAssignableFrom(result.getClass())) {
-                        translator.setQuestion(question);
-                        translator.setResult(result);
-                        final GraphVisualisation graphVisualisation = translator.buildControl();
-                        final Node visualisationNode = graphVisualisation.getVisualisation();
-                        graphVisualisationPane.getItems().add(visualisationNode);
 
-                        AnalyticViewController.getDefault().updateGraphVisualisations(graphVisualisation, graphVisualisation.isActive());
+            AnalyticUtilities.getGraphVisualisationTranslators().forEach(translator -> {
+                if (translator.getResultType().isAssignableFrom(result.getClass())) {
+                    translator.setQuestion(question);
+                    translator.setResult(result);
+                    translator.setActive(true);
+
+                    final GraphVisualisation graphVisualisation = translator.buildControl();
+                    final Node visualisationNode = graphVisualisation.getVisualisation();
+
+                  //  final HashMap<GraphVisualisation, Boolean> visualisations = AnalyticViewController.getDefault().getGraphVisualisations();
+                    if (graphVisualisations.containsKey(graphVisualisation)) {
+                        graphVisualisation.setSelected(graphVisualisations.get(graphVisualisation));
                     }
-                });
-            } else {
-                graphVisualisations.entrySet().forEach(node -> {
-                    final boolean selected = node.getValue();
-                    node.getKey().setSelected(selected);
-                    final Node visualisationNode = node.getKey().getVisualisation();
+
                     graphVisualisationPane.getItems().add(visualisationNode);
-                });
-                AnalyticViewController.getDefault().setGraphVisualisations(graphVisualisations);
-            }
+                    AnalyticViewController.getDefault().updateGraphVisualisations(graphVisualisation, graphVisualisation.isActive());
+                }
+            });
         });
 
         // add the results to the graph state

@@ -250,7 +250,6 @@ public class AnalyticConfigurationPane extends VBox {
                 if (newValue != null) {
                     populateDocumentationPane(newValue);
                     populateParameterPane(newValue.getAllParameters());
-                    AnalyticViewController.getDefault().updateState(true, pluginList);
                 } else {
                     populateDocumentationPane(null);
                     populateParameterPane(globalAnalyticParameters);
@@ -496,7 +495,6 @@ public class AnalyticConfigurationPane extends VBox {
         updateSelectablePluginsParameters();
         updateGlobalParameters();
         setSuppressedFlag(false);
-        AnalyticViewController.getDefault().updateState(true, pluginList);
     }
 
     /**

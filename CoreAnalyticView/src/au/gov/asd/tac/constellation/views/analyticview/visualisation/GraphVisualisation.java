@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
+import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import java.util.List;
 
 /**
@@ -32,4 +33,6 @@ public abstract class GraphVisualisation extends AnalyticVisualisation {
     public abstract boolean isActive();
 
     public abstract void setSelected(final boolean selected);
+    
+    public abstract AnalyticTranslator getTranslator();
 }

@@ -37,7 +37,6 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisual
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -49,7 +48,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 
 /**
@@ -75,6 +73,7 @@ public class AnalyticViewPane extends BorderPane {
     private final AnalyticResultsPane analyticResultsPane;
     private final AnalyticResult<?> emptyResult = new EmptyResult();
     private HashMap<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
+    private HashMap<InternalVisualisation, Node> internalVisualisations = new HashMap<>();
 
     private static boolean running = false;
     private Thread questionThread = null;
@@ -266,17 +265,15 @@ public class AnalyticViewPane extends BorderPane {
                 if (results != null && resultsVisible && !viewPane.getChildren().contains(analyticResultsPane)) {
                         viewPane.getChildren().add(1, analyticResultsPane);
                         graphVisualisations = state.getGraphVisualisations();
-                        final HashMap<InternalVisualisation, Node> internalVisualisations = state.getInternalVisualisations();
-                        analyticResultsPane.displayResults(question, results, graphVisualisations, internalVisualisations);   
-                        
-                        LOGGER.log(Level.SEVERE, "results size: " + Integer.toString(results.getResult().size()));
+                        controller.setGraphVisualisations(graphVisualisations);
+                        internalVisualisations = state.getInternalVisualisations();
+                        analyticResultsPane.displayResults(question, results, graphVisualisations, internalVisualisations);         
                 }
                 
                 controller.setQuestion(question);
                 controller.updateResults(results);
-                controller.setGraphVisualisations(graphVisualisations);
+                
             }  
         });
-        
     }
 }
