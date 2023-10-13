@@ -44,11 +44,13 @@ public class OptionsMenuBar {
     private static final ImageView LOAD_TEMPLATE_ICON;
     private static final ImageView SAVE_RESULTS_ICON;
     private static final ImageView UNCHECKED_ICON;
+    private static final ImageView LOGGER_ICON;
 
     private static final String LOAD_MENU_ITEM_TEXT = "Load Templates";
     private static final String SAVE_MENU_ITEM_TEXT = "Save Templates";
     private static final String SAVE_RESULTS_MENU_ITEM_TEXT = "Save Results";
     private static final String DESELECT_PLUGINS_ON_EXECUTION_MENU_ITEM_TEXT = "Deselect On Go";
+    private static final String CONNECTION_LOGGER_TEXT = "Connection Logger";
     private static final String TITLE = "Folder to save data access results to";
 
     private static final String OPTIONS_MENU_TEXT = "Workflow Options";
@@ -78,6 +80,11 @@ public class OptionsMenuBar {
                 OptionsMenuBar.class.getResourceAsStream("resources/DataAccessUnchecked.png")));
         UNCHECKED_ICON.setFitHeight(15);
         UNCHECKED_ICON.setFitWidth(15);
+
+        LOGGER_ICON = new ImageView(new Image(
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessLogger.png")));
+        LOGGER_ICON.setFitHeight(15);
+        LOGGER_ICON.setFitWidth(15);
     }
 
     private final DataAccessPane dataAccessPane;
@@ -91,6 +98,7 @@ public class OptionsMenuBar {
 
     private CheckMenuItem saveResultsItem;
     private CheckMenuItem deselectPluginsOnExecutionMenuItem;
+    private CheckMenuItem connectionLoggerMenuItem;
 
     /**
      * Creates a new option menu bar.
@@ -155,12 +163,30 @@ public class OptionsMenuBar {
             event.consume();
         });
 
+        ////////////////////////////////////////
+        // De-Select Plugins On Execution Menu
+        ////////////////////////////////////////
+        connectionLoggerMenuItem = new CheckMenuItem(
+                CONNECTION_LOGGER_TEXT,
+                LOGGER_ICON
+        );
+        connectionLoggerMenuItem.setSelected(
+                DataAccessPreferenceUtilities.isDeselectPluginsOnExecuteEnabled()
+        );
+        connectionLoggerMenuItem.setOnAction(event -> {
+            DataAccessPreferenceUtilities.setDeselectPluginsOnExecute(
+                    connectionLoggerMenuItem.isSelected()
+            );
+
+            event.consume();
+        });
+        
         ////////////////////
         // Menu Setup
         ////////////////////
         optionsMenu = new Menu(OPTIONS_MENU_TEXT, SETTINGS_ICON);
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem,
-                deselectPluginsOnExecutionMenuItem);
+                 connectionLoggerMenuItem, deselectPluginsOnExecutionMenuItem);
         optionsMenu.setStyle("-fx-background-color: #181818; -fx-border-color: #444444");
 
         menuBar = new MenuBar();

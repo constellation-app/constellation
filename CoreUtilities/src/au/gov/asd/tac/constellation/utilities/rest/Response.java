@@ -71,7 +71,9 @@ public abstract class Response {
     private static final Logger LOGGER = Logger.getLogger(Response.class.getName());
 
     protected Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes) throws IOException {
-        this(code, message, headers, bytes, true);
+        this(code, message, headers, bytes, true);        
+        //ConnectionLogger.log(Level.FINE, toString(), null);
+        
     }
 
     protected Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes, final boolean isJson) throws IOException {
