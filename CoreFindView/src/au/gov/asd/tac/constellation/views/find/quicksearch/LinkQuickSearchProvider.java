@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@ public class LinkQuickSearchProvider implements SearchProvider {
             }
 
             final List<FindResult> results = plugin.getResults();
-            for (FindResult item : results) {
+            for (final FindResult item : results) {
                 if (item != null) {
                     // We have a valid result, so report:
                     response.addResult(new SelectContent(graph, item), item.toString());
@@ -104,7 +104,7 @@ public class LinkQuickSearchProvider implements SearchProvider {
         @Override
         @SuppressWarnings("unchecked")
         public void run() {
-            final ArrayList<FindResult> results = new ArrayList<>();
+            final List<FindResult> results = new ArrayList<>();
             results.add(result);
 
             final SelectFindResultsPlugin plugin = new SelectFindResultsPlugin(results, false);

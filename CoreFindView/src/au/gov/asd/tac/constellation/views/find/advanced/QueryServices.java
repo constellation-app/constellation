@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ public class QueryServices {
      * @see GraphElementType
      */
     public List<FindResult> quickQuery(final GraphElementType type, final String content) {
-        ReadableGraph rg = graph.getReadableGraph();
+        final ReadableGraph rg = graph.getReadableGraph();
         try {
             final int sampleSpaceSize = type.getElementCount(rg);
             if (sampleSpaceSize > 0) {
@@ -100,7 +100,7 @@ public class QueryServices {
                 final CyclicBarrier barrier = new CyclicBarrier(neededThreads + 1);
 
                 try {
-                    ThreadedFind[] worker = new ThreadedFind[neededThreads];
+                    final ThreadedFind[] worker = new ThreadedFind[neededThreads];
                     // Create the requisite number of workers:
                     for (int i = 0; i < neededThreads; i++) {
                         final int workloadLBound = i * loadPerThread;
@@ -109,7 +109,7 @@ public class QueryServices {
                         worker[i] = new ThreadedFind(rg, barrier, this, type, content, i, workloadLBound, workloadUBound);
 
                         // Start the worker now that it knows its workload:
-                        Thread t = new Thread(worker[i]);
+                        final Thread t = new Thread(worker[i]);
                         t.start();
                     }
                 } finally {
@@ -122,8 +122,6 @@ public class QueryServices {
                         LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
                     }
                 }
-
-                return findResults; // Successfully found content.
             }
             return findResults;
         } finally {
@@ -141,7 +139,7 @@ public class QueryServices {
      * items on the graph, <code>false</code> to add to them.
      */
     public static void selectOnGraph(final GraphWriteMethods graph, final List<FindResult> content, final boolean clearSelection) {
-        if (!clearSelection) {
+        if (clearSelection) {
             clearSelection(graph);
         }
 
