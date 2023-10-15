@@ -72,7 +72,7 @@ public class TransactionQuickSearchProvider implements SearchProvider {
             }
 
             final List<FindResult> results = plugin.getResults();
-            for (FindResult item : results) {
+            for (final FindResult item : results) {
                 if (item != null) {
                     // We have a valid result, so report:
                     response.addResult(new SelectContent(graph, item), item.toString());
@@ -104,7 +104,7 @@ public class TransactionQuickSearchProvider implements SearchProvider {
         @Override
         @SuppressWarnings("unchecked")
         public void run() {
-            final ArrayList<FindResult> results = new ArrayList<>();
+            final List<FindResult> results = new ArrayList<>();
             results.add(result);
 
             final SelectFindResultsPlugin plugin = new SelectFindResultsPlugin(results, false);
