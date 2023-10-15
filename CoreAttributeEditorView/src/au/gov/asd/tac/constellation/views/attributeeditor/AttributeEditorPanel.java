@@ -238,7 +238,7 @@ public class AttributeEditorPanel extends BorderPane {
             root.getChildren().add(tooltipPane);
             this.setCenter(root);
         });
-        showEmptyToggles = new HashMap<HeadingType, ToggleButton>();
+        showEmptyToggles = new HashMap<>();
         updateEditorPanel(null);
     }
 
@@ -249,7 +249,6 @@ public class AttributeEditorPanel extends BorderPane {
     public void refreshShowEmpty() {
         for (final HeadingType headingType : HeadingType.values()) {
             final String emptyKey;
-            final GraphElementType elementType;
             switch (headingType) {
                 case GRAPH:
                     emptyKey = AttributePreferenceKey.GRAPH_SHOW_EMPTY;
@@ -527,8 +526,7 @@ public class AttributeEditorPanel extends BorderPane {
      * @return True if values is null or all values in the supplied values list
      * are empty (null) or false otherwise.
      */
-    private boolean attributeValuesEmpty(final Object[] values)
-    {
+    private boolean attributeValuesEmpty(final Object[] values) {
         if (values == null) {
             return true;
         }
@@ -551,7 +549,6 @@ public class AttributeEditorPanel extends BorderPane {
      */
     private TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
         final String attributeTitle = attribute.getAttributeName();
-        final boolean noValue = attributeValuesEmpty(values); // does attribute have a null value
         final int spacing = 5;
         final GridPane gridPane = new GridPane();
         gridPane.setHgap(spacing);
