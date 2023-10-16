@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package au.gov.asd.tac.constellation.views.dataaccess.utilities;
+package au.gov.asd.tac.constellation.utilities.rest;
 
+import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,15 +14,14 @@ import java.util.logging.Logger;
  * @author OrionsGuardian
  */
 public class ConnectionLogger {
-
     private static final Logger LOGGER = Logger.getLogger(ConnectionLogger.class.getName());
     private static ConnectionLogger instance = null;
     
-    public ConnectionLogger(){
+    private ConnectionLogger(){
         getInstance().setLogLevel(Level.ALL);
     }
     
-    public ConnectionLogger getInstance(){
+    public static ConnectionLogger getInstance(){
         if (instance == null) {
             instance = new ConnectionLogger();
         }
@@ -33,8 +33,9 @@ public class ConnectionLogger {
     }
     
     public void log(final Level logLevel, final String logMessage, final Object logParams){
-        if (DataAccessPreferenceUtilities.isConnectionLoggingEnabled()) {
+        if (LogPreferences.isConnectionLoggingEnabled()) {
             LOGGER.log(logLevel, logMessage, logParams);
         }
     }
+
 }

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.utilities;
 
+import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import java.io.File;
 import java.util.prefs.Preferences;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +31,6 @@ public class DataAccessPreferenceUtilities {
     private static final String SAVE_DATA_DIR_PREF = "saveDataDir";
     private static final String PREVIOUS_DATA_DIR_PREF = "prevSaveDataDir";
     private static final String DESELECT_PLUGINS_ON_EXECUTE_PREF = "deselectPluginsOnExecute";
-    private static final String CONNECTION_LOGGING_PREF = "connectionLogging";
     
     private static final String EXPAND = "Expand";
     private static final String FAVOURITE = "Favourite";
@@ -146,10 +146,7 @@ public class DataAccessPreferenceUtilities {
      * @return The current preference
      */
     public static boolean isConnectionLoggingEnabled() {
-        final long loggingStartTime = PREFERENCES.getLong(CONNECTION_LOGGING_PREF, 0);
-        final long currentTime = System.currentTimeMillis();
-        final boolean active = (currentTime > loggingStartTime && currentTime - loggingStartTime < 180*1000);
-        return active;
+        return LogPreferences.isConnectionLoggingEnabled();
     }
 
     /**
@@ -160,8 +157,7 @@ public class DataAccessPreferenceUtilities {
      *
      */
     public static void setConnectionLogging(boolean checkChanged) {
-        final long updatedValue = checkChanged ? System.currentTimeMillis() : 0;
-        PREFERENCES.putLong(CONNECTION_LOGGING_PREF, updatedValue);
+        LogPreferences.setConnectionLogging(checkChanged);
     }
 
     /**
