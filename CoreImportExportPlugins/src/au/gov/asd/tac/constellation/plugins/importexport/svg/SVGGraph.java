@@ -293,14 +293,13 @@ public class SVGGraph {
                 final Vector4f position = getVertexPosition(vertexPosition);
                 final float radius = getVertexScaledRadius(position, vertexPosition);
                 final ConstellationColor color = access.getVertexColor(vertexPosition);
-                final ConstellationColor colorHalfStrength = ConstellationColor.getColorValue(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha()/2);
                 final String bgi = access.getBackgroundIcon(vertexPosition);
                 final String fgi = access.getForegroundIcon(vertexPosition);
                 final ConstellationIcon backgroundIcon = IconManager.getIcon(bgi);
                 final ConstellationIcon foregroundIcon = IconManager.getIcon(fgi);
                 access.getBackgroundIcon(vertexPosition);
                 
-                //build the SVGobject representing the node
+                //Build the SVGobject representing the node
                 final SVGObject node = SVGObject.loadFromTemplate(SVGFileNameConstant.NODE);
                 node.setPosition(position.getX() - radius, position.getY() - radius);
                 node.setID(access.getVertexId(vertexPosition));
@@ -608,6 +607,7 @@ public class SVGGraph {
             
             //Set arrow head svg attributes
             arrowHeadContainer.setPosition(position.getX() - arrowHeadWidth, position.getY() - arrowHeadheight / 2);
+            arrowHeadContainer.setDimension(arrowHeadWidth, arrowHeadheight);
             arrowHeadContainer.setID(String.format("arrow-head-%s-%s", position.getX(), position.getY()));
             
             //Rotate the arrow head polygon around the tip to align it with the angle of the connection
@@ -663,17 +663,15 @@ public class SVGGraph {
             final float contentXOffset = xMargin + xPadding;
             
             svg.setDimension(fullWidth, fullHeight);
-
-            svg.getChild(SVGLayoutConstant.HEADER).setDimension(fullWidth, topMargin);
-            svg.getChild(SVGLayoutConstant.FOOTER).setDimension(fullWidth, bottomMargin);
             svg.getChild(SVGLayoutConstant.FOOTER).setPosition(0F, footerYOffset);
-
-            svg.getChild(SVGLayoutConstant.CONTENT).setDimension(contentWidth, contentHeight);
+            svg.getChild(SVGLayoutConstant.HEADER).setMinimumDimension(contentWidth, contentHeight);
+            svg.getChild(SVGLayoutConstant.FOOTER).setMinimumDimension(fullWidth, bottomMargin);  
             svg.getChild(SVGLayoutConstant.CONTENT).setPosition(contentXOffset, contentYOffset);
-
-            svg.getChild(SVGLayoutConstant.BACKGROUND).setDimension(backgroundWidth, backgroundHeight);
+          
             svg.getChild(SVGLayoutConstant.BACKGROUND).setPosition(xMargin, topMargin);
-            svg.getChild(SVGLayoutConstant.BORDER).setDimension(fullWidth, fullHeight);
+            svg.getChild(SVGLayoutConstant.BACKGROUND).setMinimumDimension(backgroundWidth, backgroundHeight);
+//            
+            svg.getChild(SVGLayoutConstant.BORDER).setMinimumDimension(fullWidth, fullHeight);
         }
 
         /**
