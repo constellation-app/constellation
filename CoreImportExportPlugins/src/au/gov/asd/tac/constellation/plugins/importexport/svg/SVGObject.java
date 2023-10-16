@@ -20,10 +20,8 @@ import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttrib
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -230,7 +228,7 @@ public class SVGObject {
      * @param minimumWidth
      * @param minimumHeight 
      */
-    private void setMinimumWidth(float minimumWidth) {
+    private void setMinimumWidth(final float minimumWidth) {
         if (this.getWidth() < minimumWidth){
             this.setWidth(minimumWidth);
             if (this.svgDataReference.getParent() != null){
@@ -274,7 +272,7 @@ public class SVGObject {
      * @param minimumWidth
      * @param minimumHeight 
      */
-    public void setMinimumDimension(float minimumWidth, float minimumHeight) {
+    public void setMinimumDimension(final float minimumWidth, final float minimumHeight) {
         this.setMinimumWidth(minimumWidth);
         this.setMinimumHeight(minimumHeight);
         
@@ -373,7 +371,7 @@ public class SVGObject {
      * With respect to the SVGObject it is contained within.
      * @param posiition
      */
-    public void setSourcePosition(Vector4f position) {
+    public void setSourcePosition(final Vector4f position) {
         if (this.x != null){
                 this.width = Math.abs(this.x - position.getX());
         }
@@ -399,7 +397,7 @@ public class SVGObject {
      * With respect to the SVGObject it is contained within.
      * @param position
      */
-    public void setDestinationPosition(Vector4f position) {
+    public void setDestinationPosition(final Vector4f position) {
         if (this.x != null){
                 this.width = Math.abs(this.x - position.getX());
         }
@@ -424,7 +422,7 @@ public class SVGObject {
      * Sets the transformation values of the SVGObject.
      * @param position
      */
-    public void setTransformation(String transformationData) {
+    public void setTransformation(final String transformationData) {
         this.setAttribute(SVGAttributeConstant.TRANSFORM,  transformationData);
     }
     
@@ -432,7 +430,7 @@ public class SVGObject {
      * Sets the color of the SVGObject.
      * @param color 
      */
-    public void setFillColor(ConstellationColor color){
+    public void setFillColor(final ConstellationColor color){
         this.setAttribute(SVGAttributeConstant.FILL_COLOR, color);
     }
 
@@ -440,7 +438,7 @@ public class SVGObject {
      * Sets the stoke color of the SVGObject.
      * @param color 
      */
-    public void setStrokeColor(ConstellationColor color) {
+    public void setStrokeColor(final ConstellationColor color) {
         this.setAttribute(SVGAttributeConstant.STROKE_COLOR, color);
     }
     
@@ -448,7 +446,7 @@ public class SVGObject {
      * Sets the stroke style of the SVGObject.
      * @param style 
      */
-    public void setStrokeStyle(LineStyle style) {
+    public void setStrokeStyle(final LineStyle style) {
         if (style == LineStyle.DOTTED) {
             this.setAttribute(SVGAttributeConstant.DASH_ARRAY, "35 35");
         } else if (style == LineStyle.DASHED) {
