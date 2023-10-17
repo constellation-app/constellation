@@ -43,13 +43,11 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Base64;
 import java.time.ZonedDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import org.openide.util.Exceptions;
 
 /**
  * A Wrapper class for the outer most SVGElement of the output file.
@@ -663,15 +661,18 @@ public class SVGGraph {
             final float contentXOffset = xMargin + xPadding;
             
             svg.setDimension(fullWidth, fullHeight);
+            
             svg.getChild(SVGLayoutConstant.FOOTER).setPosition(0F, footerYOffset);
             svg.getChild(SVGLayoutConstant.HEADER).setMinimumDimension(contentWidth, contentHeight);
             svg.getChild(SVGLayoutConstant.FOOTER).setMinimumDimension(fullWidth, bottomMargin);  
+            
             svg.getChild(SVGLayoutConstant.CONTENT).setPosition(contentXOffset, contentYOffset);
           
             svg.getChild(SVGLayoutConstant.BACKGROUND).setPosition(xMargin, topMargin);
             svg.getChild(SVGLayoutConstant.BACKGROUND).setMinimumDimension(backgroundWidth, backgroundHeight);
 //            
             svg.getChild(SVGLayoutConstant.BORDER).setMinimumDimension(fullWidth, fullHeight);
+            svg.setDimensionScale("100%", "100%");
         }
 
         /**

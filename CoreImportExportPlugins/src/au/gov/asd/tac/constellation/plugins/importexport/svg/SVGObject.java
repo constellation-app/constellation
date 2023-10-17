@@ -472,4 +472,14 @@ public class SVGObject {
     public static final SVGObject loadFromTemplate(final SVGFileNameConstant templateResource) {
         return new SVGObject(SVGData.loadFromTemplate(templateResource));
     } 
+
+    public void setDimensionScale(final String width, final String height) {
+        this.setViewBox(0, 0, this.width, this.height);
+        this.svgDataReference.setAttribute(SVGAttributeConstant.WIDTH, width);
+        this.svgDataReference.setAttribute(SVGAttributeConstant.HEIGHT, height);
+    }
+    
+    public void setViewBox(final float x, final float y, final float w, final float h){
+        this.setAttribute(SVGAttributeConstant.VIEW_BOX, String.format("%s, %s, %s, %S", x, y, w, h));
+    }
 }
