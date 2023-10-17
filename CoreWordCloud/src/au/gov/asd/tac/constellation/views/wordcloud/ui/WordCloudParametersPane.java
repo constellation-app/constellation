@@ -1,0 +1,205 @@
+/*
+ * Copyright 2010-2023 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.views.wordcloud.ui;
+
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPane;
+import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.ParameterChange;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import javafx.scene.control.Button;
+import javafx.scene.control.TitledPane;
+import javafx.scene.layout.VBox;
+
+/**
+ *
+ * @author twilight_sparkle
+ */
+public class WordCloudParametersPane extends TitledPane implements PluginParametersPaneListener {
+
+    private final PluginParameters params;
+    private final Button run;
+    private static final String EMPTY_STRING = "";
+    private static final ArrayList<String> EMPTY_STRING_LIST = new ArrayList<>(Arrays.asList(EMPTY_STRING));
+    @SuppressWarnings("unchecked") // EMPTY_STRING_LIST is a list of strings
+    private List<String> nodeAttributes = (List<String>) EMPTY_STRING_LIST.clone();
+    @SuppressWarnings("unchecked") // EMPTY_STRING_LIST is a list of strings
+    private List<String> transAttributes = (List<String>) EMPTY_STRING_LIST.clone();
+
+    public void updateParameters(final List<String> nodeAttributes, final List<String> transAttributes) {
+        this.nodeAttributes = nodeAttributes;
+        this.transAttributes = transAttributes;
+        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER is always of type SingleChoiceParameter
+        PluginParameter<SingleChoiceParameterValue> elParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // ATTRIBUTE_TO_ANALYSE_PARAMETER is always of type SingleChoiceParameter 
+        PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
+
+        if (elParam.getStringValue().equals("transaction")) {
+            if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
+                attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
+            } else {
+                attrParam.setStringValue(EMPTY_STRING);
+            }
+            SingleChoiceParameterType.setOptions(attrParam, transAttributes);
+        } else if (elParam.getStringValue().equals("node")) {
+            if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
+                attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
+            } else {
+                attrParam.setStringValue(EMPTY_STRING);
+            }
+            SingleChoiceParameterType.setOptions(attrParam, nodeAttributes);
+        }
+    }
+
+    public WordCloudParametersPane(final WordCloudPane master) {
+        setText("Generate Word Cloud");
+        setExpanded(true);
+        setCollapsible(true);
+
+        params = new PluginParameters();
+        final PhrasiphyContentParameters phrasiphyContentParams = PhrasiphyContentParameters.getDefaultParameters();
+
+        final PluginParameters<SingleChoiceParameterValue> elementType = SingleChoiceParameterType.build(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID);
+        elementType.setName(PhrasiphyContentParameters.ELEMENT_TYPE_NAME);
+        elementType.setDescription(PhrasiphyContentParameters.ELEMENT_TYPE_DESCRIPTION);
+        SingleChoiceParameterType.setOptions(elementType, PhrasiphyContentParameters.ELEMENT_TYPE_CHOICES);
+        SingleChoiceParameterType.setChoice(elementType, PhrasiphyContentParameters.ELEMENT_TYPE_DEFAULT);
+        params.addParameter(elementType);
+
+        final PluginParameters<SingleChoiceParameterValue> attrToAnalyse = SingleChoiceParameterType.build(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
+        attrToAnalyse.setName(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_NAME);
+        attrToAnalyse.setDescription(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DESCRIPTION);
+        SingleChoiceParameterType.setOptions(attrToAnalyse, EMPTY_STRING_LIST);
+        SingleChoiceParameterType.setChoice(attrToAnalyse, EMPTY_STRING);
+        params.addParameter(attrToAnalyse);
+
+        final PluginParameters<SingleChoiceParameterValue> phraseLength = IntegerParameterType.build(PhrasiphyContentParameters.PHRASE_LENGTH_PARAMETER_ID);
+        phraseLength.setName(PhrasiphyContentParameters.PHRASE_LENGTH_NAME);
+        phraseLength.setDescription(PhrasiphyContentParameters.PHRASE_LENGTH_DESCRIPTION);
+        IntegerParameterType.setMinimum(phraseLength, PhrasiphyContentParameters.PHRASE_LENGTH_MIN_VALUE);
+        IntegerParameterType.setMaximum(phraseLength, PhrasiphyContentParameters.PHRASE_LENGTH_MAX_VALUE);
+        params.addParameter(phraseLength);
+
+        final PluginParameters<SingleChoiceParameterValue> proximity = IntegerParameterType.build(PhrasiphyContentParameters.PROXIMITY_PARAMETER_ID);
+        proximity.setName(PhrasiphyContentParameters.PROXIMITY_NAME);
+        proximity.setDescription(PhrasiphyContentParameters.PROXIMITY_DESCRIPTION);
+        proximity.setStringValue(Integer.toString(phrasiphyContentParams.getProximity()));
+        IntegerParameterType.setMinimum(proximity, PhrasiphyContentParameters.PROXIMITY_MIN_VALUE);
+        IntegerParameterType.setMaximum(proximity, PhrasiphyContentParameters.PROXIMITY_MAX_VALUE);
+        params.addParameter(proximity);
+
+        final PluginParameter<IntegerParameterValue> threshold = IntegerParameterType.build(PhrasiphyContentParameters.THRESHOLD_PARAMETER_ID);
+        threshold.setName(PhrasiphyContentParameters.THRESHOLD_NAME);
+        threshold.setDescription(PhrasiphyContentParameters.THRESHOLD_DESCRIPTION);
+        threshold.setStringValue(Integer.toString(phrasiphyContentParams.getThreshold()));
+        IntegerParameterType.setMinimum(threshold, PhrasiphyContentParameters.THRESHOLD_MINIMUM_VALUE);
+        params.addParameter(threshold);
+
+        final PluginParameter<FileParameterValue> backgroundFile = FileParameterType.build(PhrasiphyContentParameters.BACKGROUND_PARAMETER_ID);
+        backgroundFile.setName(PhrasiphyContentParameters.BACKGROUND_NAME);
+        backgroundFile.setDescription(PhrasiphyContentParameters.BACKGROUND_DESCRIPTION);
+        backgroundFile.setStringValue(EMPTY_STRING);
+        params.addParameter(backgroundFile);
+
+        final PluginParameter<SingleChoiceParameterValue> backgroundFilter = SingleChoiceParameterType.build(PhrasiphyContentParameters.BACKGROUND_FILTER_PARAMETER_ID);
+        backgroundFilter.setName(PhrasiphyContentParameters.BACKGROUND_FILTER_NAME);
+        backgroundFilter.setDescription(PhrasiphyContentParameters.BACKGROUND_FILTER_DESCRIPTION);
+        SingleChoiceParameterType.setOptions(backgroundFilter, PhrasiphyContentParameters.BACKGROUND_FILTER_CHOICES);
+        SingleChoiceParameterType.setChoice(backgroundFilter, PhrasiphyContentParameters.BACKGROUND_FILTER_DEFAULT);
+        params.addParameter(backgroundFilter);
+
+        params.addController(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID, (PluginParameter<?> masterParameter, Map<String, PluginParameter<?>> parameters, ParameterChange change) -> {
+            @SuppressWarnings("unchecked") // ATTRIBUTE_TO_ANALYSE_PARAMETER is always of type SingleChoiceParameter
+            final PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) parameters.get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
+            switch (change) {
+                case VALUE:
+                    if (masterParameter.getStringValue().equals("transaction")) {
+                        if (transAttribute.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
+                            attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
+                        } else {
+                            atrrParam.setStringValue(EMPTY_STRING);
+                        }
+                        SingleChoiceParameterType.setOptions(attrParam, transAttributes);
+                    } else if (masterParameter.getStringValue().equals("node")) {
+                        if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
+                            attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
+                        } else {
+                            attrParam.setStringValue(EMPTY_STRING);
+                        }
+                        SingleChoiceParameterType.setOptions(attrParam, nodeAttributes);
+                    }
+                    break;
+            }
+        });
+
+        params.addController(PhrasiphyContentParameters.PHRASE_LENGTH_PARAMETER_ID, (PluginParameter<?> masterParameter, Map<String, PluginParameter<?>> parameters, ParameterChange change) -> {
+            @SuppressWarnings("unchecked") // PROXIMITY_PARAMETER is always of type IntegerParameter 
+            final PluginParameter<IntegerParameterValue> proximityParam = (PluginParameter<IntegerParameterValue>) parameters.get(PhrasiphyContentParameters.PROXIMITY_PARAMETER_ID);
+            switch (change) {
+                case VALUE:
+                    if (masterParameter.getError() != null) {
+                        IntegerParameterType.setMinimum(proximityParam, 0);
+                        break;
+                    }
+                    int currentPhraseLength = Integer.parseInt(masterParameter.getStringValue());
+                    IntegerParameterType.setMinimum(proximityParam, currentPhraseLength);
+                    if (Integer.parseInt(proximityParam.getStringValue()) < currentPhraseLength) {
+                        proximityParam.setStringValue(masterParameter.getStringValue());
+                    }
+                    break;
+            }
+        });
+
+        VBox content = new VBox();
+
+        run = new Button("Generate");
+        run.setOnMouseClicked((MouseEvent) -> {
+            master.runPlugin(params);
+        });
+
+        PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(params, this, null);
+        content.getChildren().add(pluginParametersPane);
+        content.getChildren().add(run);
+        setContent(content);
+    }
+
+    @Override
+    public void validityChanged(final boolean enabled) {
+        run.setDisabled(!enabled);
+    }
+
+    @Override
+    public void hierarchicalUpdate() {
+    }
+
+    public void setAttributeSelectionEnabled(final boolean val) {
+        params.getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID).setEnabled(val);
+    }
+
+    public PluginParameters getParams() {
+        return params;
+    }
+}

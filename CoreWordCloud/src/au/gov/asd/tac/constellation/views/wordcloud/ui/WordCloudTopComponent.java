@@ -1,0 +1,122 @@
+/*
+ * Copyright 2010-2023 Australian Signals Directorate
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package au.gov.asd.tac.constellation.views.wordcloud.ui;
+
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
+import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.util.Properties;
+import javafx.application.Platform;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
+import javafx.scene.paint.Color;
+import org.openide.awt.ActionID;
+import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
+import org.openide.util.NbBundle.Messages;
+import org.openide.windows.TopComponent;
+
+
+/**
+ * Top component which displays the Word Cloud view.
+ * 
+ * @author twilight_sparkle
+ */
+@TopComponent.Description( 
+	preferredID  ="WordCloudTopComponent",
+	iconBase = "WILL NEED TO GET A NEW ICON FOR HERE",
+	persistenceType = TopComponent.PERSISTENCE_ALWAYS
+)
+@TopComponent.Registration( 
+	mode = "explorer",
+	openAtStartup = false
+)
+@ActionID(
+	category = "Window",
+	id = "path for this topcomponent"
+)
+@ActionReferences({
+	@ActionReference(path = "Menu/Views", position = 2000),
+	@ActionReference(path = "Shortcuts", name = "CS-W")
+})
+@TopComponent.OpenActionRegistration(
+	displayName = "#CTL_WordCloudAction",
+	preferredID = "WordCloudTopComponent"
+)
+@Messages({
+	"CTL_WordCloudAction=Word Cloud",
+	"CTL_WordCloudTopComponent=Word Cloud",
+	"HINT_WordCloudTopComponent=Word Cloud"
+})
+public final class WordCloudTopComponent extends TopComponent {
+	
+	private final JFXPanel panel = new JFXPanel();
+	private final WordCloudController controller;
+	private WordCloudPane wordCloudPane;
+	private static final String STYLE = "resources/Style-WordCloud.css";
+	private static final int PREF_WIDTH = 500;
+	private static final int PREF_HEIGHT = 950;
+
+	public WordCloudTopComponent() {
+		initComponents();
+		setName(Bundle.CTL_WordCloudTopComponent());
+		setToolTipText(Bundle.HINT_WordCloudTopComponent());
+	
+		setPreferredSize(new Dimension(PREF_WIDTH, PREF_HEIGHT));
+		setMinimumSize(new Dimension(PREF_WIDTH, PREF_HEIGHT));
+		setLayout(new BorderLayout());
+		add(panel, BorderLayout.CENTER);
+
+		controller = new WordCloudController();
+
+		// Populate the jfx container
+		Platform.setImplicitExit(false);
+		Platform.runLater(() -> {
+			wordCloudPane = new WordCloudPane(controller);
+			controller.setWordCloudPane(wordCloudPane);
+			Scene scene = new Scene(wordCloudPane);
+			//scene.setFill(Color.web(#444444"));
+			//scene.setStylesheets().add(JavafxStyleManager.getMainStyleSheet());
+			//scene.getStyleSheets().add(WordCloudTopComponent.class.getResource(STYLE).toExternalForm());
+			panel.setScene(scene);
+		});
+	}
+
+
+	@Override
+	public void componentOpened() {
+		PreferenceUtilities.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, controller);
+	}
+
+	@Override
+	public void componentClosed() {
+		PreferenceUtilities.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, controller);
+	}
+
+	/**
+	 * Write properties
+	 */
+	void writeProperties(Properties p) {
+	}
+
+	/**
+	 * Read properties
+	 */
+	void readProperties(Properties p) {
+	}
+}
