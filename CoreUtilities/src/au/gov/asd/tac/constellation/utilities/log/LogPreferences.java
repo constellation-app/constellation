@@ -15,6 +15,7 @@ import org.openide.util.NbPreferences;
 public class LogPreferences {
     private static final Preferences PREFERENCES = NbPreferences.forModule(LogPreferences.class);
     private static final String CONNECTION_LOGGING_PREF = "connectionLogging";
+    private static final long LOGGING_DURATION = 150*60*1000; // 2.5 hours
     
     private LogPreferences(){
         throw new IllegalStateException("Utility class");
@@ -26,12 +27,15 @@ public class LogPreferences {
      * @return The current preference
      */
     public static boolean isConnectionLoggingEnabled() {
-        final long loggingStartTime = PREFERENCES.getLong(CONNECTION_LOGGING_PREF, 0);
-        final long currentTime = System.currentTimeMillis();
-        final boolean active = (currentTime > loggingStartTime && currentTime - loggingStartTime < 180*1000); // logging is active for 3 hours from activation time
-        return active;
+        return logTimeRemaining() > 0;
     }
 
+    public static long logTimeRemaining() {
+        final long loggingStartTime = PREFERENCES.getLong(CONNECTION_LOGGING_PREF, 0);
+        final long currentTime = System.currentTimeMillis();
+        return Math.max(0, LOGGING_DURATION - currentTime + loggingStartTime);
+    }
+    
     /**
      * Set the new preference for whether the Connection Logging preference
      * is enabled

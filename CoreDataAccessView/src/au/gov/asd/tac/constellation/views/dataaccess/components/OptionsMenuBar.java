@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
+import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
@@ -171,10 +172,10 @@ public class OptionsMenuBar {
                 LOGGER_ICON
         );
         connectionLoggerMenuItem.setSelected(
-                DataAccessPreferenceUtilities.isDeselectPluginsOnExecuteEnabled()
+                LogPreferences.isConnectionLoggingEnabled()
         );
         connectionLoggerMenuItem.setOnAction(event -> {
-            DataAccessPreferenceUtilities.setDeselectPluginsOnExecute(
+            LogPreferences.setConnectionLogging(
                     connectionLoggerMenuItem.isSelected()
             );
 
@@ -188,6 +189,7 @@ public class OptionsMenuBar {
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem,
                  connectionLoggerMenuItem, deselectPluginsOnExecutionMenuItem);
         optionsMenu.setStyle("-fx-background-color: #181818; -fx-border-color: #444444");
+        optionsMenu.addEventHandler(Menu.ON_SHOWING, event -> updateMenuEntry());
 
         menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
@@ -195,6 +197,16 @@ public class OptionsMenuBar {
         menuBar.setPadding(new Insets(4));
     }
 
+    private void updateMenuEntry() {
+        connectionLoggerMenuItem.setSelected(LogPreferences.isConnectionLoggingEnabled());
+        final long remainingTime = LogPreferences.logTimeRemaining();
+        final long remainingMinutes = remainingTime/60000;
+        final long remainingSeconds = remainingTime/1000;
+        final String remainingText = remainingMinutes > 0 ? "  [" + remainingMinutes + "m]" : "  [" + remainingSeconds + "s]";
+        final String remainingMessage = LogPreferences.isConnectionLoggingEnabled() ? remainingText : "";
+        connectionLoggerMenuItem.setText(CONNECTION_LOGGER_TEXT + remainingMessage);      
+    }
+    
     /**
      * Get the data access pane that this options menu will be attached to.
      *

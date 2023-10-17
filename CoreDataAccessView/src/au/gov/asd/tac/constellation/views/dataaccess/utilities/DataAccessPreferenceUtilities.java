@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.utilities;
 
-import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import java.io.File;
 import java.util.prefs.Preferences;
 import org.apache.commons.lang3.StringUtils;
@@ -140,26 +139,6 @@ public class DataAccessPreferenceUtilities {
         PREFERENCES.putBoolean(DESELECT_PLUGINS_ON_EXECUTE_PREF, checkChanged);
     }
     
-    /**
-     * Whether the Connection Logging preference is enabled
-     *
-     * @return The current preference
-     */
-    public static boolean isConnectionLoggingEnabled() {
-        return LogPreferences.isConnectionLoggingEnabled();
-    }
-
-    /**
-     * Set the new preference for whether the Connection Logging preference
-     * is enabled
-     *
-     * @param checkChanged What the preference has been changed to
-     *
-     */
-    public static void setConnectionLogging(boolean checkChanged) {
-        LogPreferences.setConnectionLogging(checkChanged);
-    }
-
     /**
      * Set an expanded preference.
      * <p>
