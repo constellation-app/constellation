@@ -72,7 +72,6 @@ public abstract class Response {
 
     protected Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes) throws IOException {
         this(code, message, headers, bytes, true);        
-        ConnectionLogger.getInstance().log(Level.FINE, toString(), null);
     }
 
     protected Response(final int code, final String message, final Map<String, List<String>> headers, final byte[] bytes, final boolean isJson) throws IOException {

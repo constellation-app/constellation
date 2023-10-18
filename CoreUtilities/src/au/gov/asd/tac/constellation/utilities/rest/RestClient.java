@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.rest;
 
+import au.gov.asd.tac.constellation.utilities.log.ConnectionLogger;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
 import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
@@ -458,7 +459,7 @@ public abstract class RestClient {
                 }
             }
             sb.append(DASH_STRING);
-            ConnectionLogger.getInstance().log(Level.FINE, "### Connection Response:\n" + sb.toString(), null);
+            ConnectionLogger.getInstance().log(Level.FINE, sb.toString(), null);
         }
     }
 }

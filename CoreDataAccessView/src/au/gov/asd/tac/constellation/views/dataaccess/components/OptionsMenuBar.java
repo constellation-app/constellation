@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -165,7 +165,7 @@ public class OptionsMenuBar {
         });
 
         ////////////////////////////////////////
-        // De-Select Plugins On Execution Menu
+        // Connection Logging Menu
         ////////////////////////////////////////
         connectionLoggerMenuItem = new CheckMenuItem(
                 CONNECTION_LOGGER_TEXT,
@@ -197,12 +197,16 @@ public class OptionsMenuBar {
         menuBar.setPadding(new Insets(4));
     }
 
+    /*
+    * Show the amount of time remaining in which Connection Logging will be active.
+    * After a fixed timeout period, Connection Logging will be automatically disabled.
+    */
     private void updateMenuEntry() {
         connectionLoggerMenuItem.setSelected(LogPreferences.isConnectionLoggingEnabled());
         final long remainingTime = LogPreferences.logTimeRemaining();
         final long remainingMinutes = remainingTime/60000;
         final long remainingSeconds = remainingTime/1000;
-        final String remainingText = remainingMinutes > 0 ? "  [" + remainingMinutes + "m]" : "  [" + remainingSeconds + "s]";
+        final String remainingText = remainingMinutes > 0 ? "  \u23F3 " + remainingMinutes + "m" : "  \u23F3 " + remainingSeconds + "s";
         final String remainingMessage = LogPreferences.isConnectionLoggingEnabled() ? remainingText : "";
         connectionLoggerMenuItem.setText(CONNECTION_LOGGER_TEXT + remainingMessage);      
     }
