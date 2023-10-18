@@ -99,7 +99,7 @@ public class OptionsMenuBar {
 
     private CheckMenuItem saveResultsItem;
     private CheckMenuItem deselectPluginsOnExecutionMenuItem;
-    private CheckMenuItem connectionLoggerMenuItem;
+    private CheckMenuItem connectionLoggingMenuItem;
 
     /**
      * Creates a new option menu bar.
@@ -167,16 +167,16 @@ public class OptionsMenuBar {
         ////////////////////////////////////////
         // Connection Logging Menu
         ////////////////////////////////////////
-        connectionLoggerMenuItem = new CheckMenuItem(
+        connectionLoggingMenuItem = new CheckMenuItem(
                 CONNECTION_LOGGING_TEXT,
                 LOGGER_ICON
         );
-        connectionLoggerMenuItem.setSelected(
+        connectionLoggingMenuItem.setSelected(
                 LogPreferences.isConnectionLoggingEnabled()
         );
-        connectionLoggerMenuItem.setOnAction(event -> {
+        connectionLoggingMenuItem.setOnAction(event -> {
             LogPreferences.setConnectionLogging(
-                    connectionLoggerMenuItem.isSelected()
+                    connectionLoggingMenuItem.isSelected()
             );
 
             event.consume();
@@ -187,7 +187,7 @@ public class OptionsMenuBar {
         ////////////////////
         optionsMenu = new Menu(OPTIONS_MENU_TEXT, SETTINGS_ICON);
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem,
-                 connectionLoggerMenuItem, deselectPluginsOnExecutionMenuItem);
+                 connectionLoggingMenuItem, deselectPluginsOnExecutionMenuItem);
         optionsMenu.setStyle("-fx-background-color: #181818; -fx-border-color: #444444");
         optionsMenu.addEventHandler(Menu.ON_SHOWING, event -> updateMenuEntry());
 
@@ -202,13 +202,13 @@ public class OptionsMenuBar {
     * After a fixed timeout period, Connection Logging will be automatically disabled.
     */
     private void updateMenuEntry() {
-        connectionLoggerMenuItem.setSelected(LogPreferences.isConnectionLoggingEnabled());
+        connectionLoggingMenuItem.setSelected(LogPreferences.isConnectionLoggingEnabled());
         final long remainingTime = LogPreferences.logTimeRemaining();
         final long remainingMinutes = remainingTime/60000;
         final long remainingSeconds = remainingTime/1000;
         final String remainingText = remainingMinutes > 0 ? "  \u23F3 " + remainingMinutes + "m" : "  \u23F3 " + remainingSeconds + "s";
         final String remainingMessage = LogPreferences.isConnectionLoggingEnabled() ? remainingText : "";
-        connectionLoggerMenuItem.setText(CONNECTION_LOGGING_TEXT + remainingMessage);      
+        connectionLoggingMenuItem.setText(CONNECTION_LOGGING_TEXT + remainingMessage);      
     }
     
     /**
@@ -285,7 +285,7 @@ public class OptionsMenuBar {
      * @return the connection logging menu item
      */
     public CheckMenuItem getConnectionLoggingMenuItem() {
-        return connectionLoggerMenuItem;
+        return connectionLoggingMenuItem;
     }
 
     /**

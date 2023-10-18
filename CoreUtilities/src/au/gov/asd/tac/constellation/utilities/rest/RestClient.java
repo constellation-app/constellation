@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.rest;
 
-import au.gov.asd.tac.constellation.utilities.log.ConnectionLogger;
+import au.gov.asd.tac.constellation.utilities.log.ConnectionLogging;
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
 import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
@@ -419,14 +419,14 @@ public abstract class RestClient {
      */
     public void logRequest(final String url, final List<Tuple<String, String>> params, final String messageBody) {
         if (LogPreferences.isConnectionLoggingEnabled()) {
-            ConnectionLogger.getInstance().log(Level.FINE, "### Connection Request URL = " + url, null);
+            ConnectionLogging.getInstance().log(Level.FINE, "### Connection Request URL = " + url, null);
             final StringBuilder sb = new StringBuilder();
             for (final Tuple t : params){
                 sb.append(t.getFirst()).append(" = ").append(t.getSecond()).append("\n");
             }
-            ConnectionLogger.getInstance().log(Level.FINE, "### Connection Request Parameters:\n" + sb.toString(), null);
+            ConnectionLogging.getInstance().log(Level.FINE, "### Connection Request Parameters:\n" + sb.toString(), null);
             if (messageBody != null) {
-                ConnectionLogger.getInstance().log(Level.FINE, "### Connection Request Message Body:\n" + messageBody, null);
+                ConnectionLogging.getInstance().log(Level.FINE, "### Connection Request Message Body:\n" + messageBody, null);
             }
         }
     }
@@ -459,7 +459,7 @@ public abstract class RestClient {
                 }
             }
             sb.append(DASH_STRING);
-            ConnectionLogger.getInstance().log(Level.FINE, sb.toString(), null);
+            ConnectionLogging.getInstance().log(Level.FINE, sb.toString(), null);
         }
     }
 }

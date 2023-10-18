@@ -27,17 +27,17 @@ import java.util.logging.Logger;
  * 
  * @author OrionsGuardian
  */
-public class ConnectionLogger {
-    private static final Logger LOGGER = Logger.getLogger(ConnectionLogger.class.getName());
-    private static ConnectionLogger instance = null;
+public class ConnectionLogging {
+    private static final Logger LOGGER = Logger.getLogger(ConnectionLogging.class.getName());
+    private static ConnectionLogging instance = null;
     
-    private ConnectionLogger(){
+    private ConnectionLogging(){
         getInstance().setLogLevel(Level.ALL);
     }
     
-    public static ConnectionLogger getInstance(){
+    public static ConnectionLogging getInstance(){
         if (instance == null) {
-            instance = new ConnectionLogger();
+            instance = new ConnectionLogging();
         }
         return instance;
     }
