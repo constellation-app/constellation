@@ -31,7 +31,7 @@ public class ConnectionLogging {
     private static ConnectionLogging instance = null;
     
     private ConnectionLogging(){
-        getInstance().setLogLevel(Level.ALL); //NOSONAR
+        getInstance().setLogLevel(Level.ALL); // NOSONAR
     }
     
     public static ConnectionLogging getInstance(){
@@ -42,7 +42,7 @@ public class ConnectionLogging {
     }
     
     private void setLogLevel(final Level newLevel){
-        LOGGER.setLevel(newLevel);
+        LOGGER.setLevel(newLevel); // NOSONAR 
     }
     
     public void log(final Level logLevel, final String logMessage, final Object logParams){
