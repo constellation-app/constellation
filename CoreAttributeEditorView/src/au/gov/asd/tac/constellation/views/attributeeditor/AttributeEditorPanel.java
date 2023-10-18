@@ -144,7 +144,7 @@ public class AttributeEditorPanel extends BorderPane {
     private static final double CELL_ITEM_SPACING = 5;
     private static final int VISIBLE_ROWS = 10;
     private static final String[] HEADING_TITLES = {"Graph  (%d attributes%s)", "Node  (%d attributes%s)", "Transaction  (%d attributes%s)"};
-    private static final String HIDDEN_ATTRIBUTES_INFORMATION = ", %d hidden";
+    private static final String HIDDEN_EMPTY_ATTRIBUTES_INFORMATION = ", %d not shown";
     private static final GraphElementType[] ELEMENT_TYPES = {GraphElementType.GRAPH, GraphElementType.VERTEX, GraphElementType.TRANSACTION};
     private static final String NO_VALUE_TEXT = "<No Value>";
 
@@ -164,11 +164,12 @@ public class AttributeEditorPanel extends BorderPane {
     private final AttributeEditorTopComponent topComponent;
     private final StringProperty[] headingTitleProperties = new StringProperty[3];
     private final Map<GraphElementType, List<String>> currentAttributeNames = new HashMap<>();
-
+    
     private enum HeadingType {
         GRAPH, NODE, TRANSACTION;
     }
-
+    
+    private final Map<HeadingType, ToggleButton> showEmptyToggles; // Access to 'Show Toggle' buttons to allow reset
     private static final AttributeEditorFactory ATTRIBUTE_EDITOR_FACTORY = new AttributeEditorFactory();
     private static final ListSelectionEditorFactory LIST_SELECTION_EDITOR_FACTORY = new ListSelectionEditorFactory();
     private static final TimeZoneEditorFactory UPDATE_TIME_ZONE_EDITOR_FACTORY = new TimeZoneEditorFactory();
@@ -236,8 +237,38 @@ public class AttributeEditorPanel extends BorderPane {
             root.getChildren().add(tooltipPane);
             this.setCenter(root);
         });
-
+        showEmptyToggles = new HashMap<>();
         updateEditorPanel(null);
+    }
+
+    /**
+     * Every time that the 'Attribute Editor' is redisplayed, reset the
+     * 'Show Empty' toggles to be toggled on.
+     */
+    public void refreshShowEmpty() {
+        for (final HeadingType headingType : HeadingType.values()) {
+            final String emptyKey;
+            switch (headingType) {
+                case GRAPH:
+                    emptyKey = AttributePreferenceKey.GRAPH_SHOW_EMPTY;
+                    break;
+                case NODE:
+                    emptyKey = AttributePreferenceKey.NODE_SHOW_EMPTY;
+                    break;
+                case TRANSACTION:
+                    emptyKey = AttributePreferenceKey.TRANSACTION_SHOW_EMPTY;
+                    break;
+                default:
+                    emptyKey = "";
+                    break;
+            }
+
+            // Ensure empty attributes are shown by default  
+            prefs.putBoolean(emptyKey, true);
+            if (showEmptyToggles.containsKey(headingType)) {
+                showEmptyToggles.get(headingType).setSelected(true); 
+            }
+        }
     }
 
     protected void rebuildColorMenu() {
@@ -299,36 +330,64 @@ public class AttributeEditorPanel extends BorderPane {
         final Label heading = new Label();
         heading.textProperty().bind(title);
         heading.setStyle("-fx-font-weight:bold;");
-        final ToggleButton showAllToggle = new ToggleButton("Show all");
-        showAllToggle.setAlignment(Pos.CENTER);
-        showAllToggle.setTextAlignment(TextAlignment.CENTER);
-        showAllToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
-        showAllToggle.setPrefSize(60, 12);
-        showAllToggle.setPadding(new Insets(5));
-        showAllToggle.setTooltip(new Tooltip("Show hidden attributes"));
-        final String key;
+        final ToggleButton showEmptyToggle = new ToggleButton("Show Empty");
+        showEmptyToggle.setAlignment(Pos.CENTER);
+        showEmptyToggle.setTextAlignment(TextAlignment.CENTER);
+        showEmptyToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
+        showEmptyToggle.setPrefSize(80, 12);
+        showEmptyToggle.setPadding(new Insets(5));
+        showEmptyToggle.setTooltip(new Tooltip("Show empty attributes"));
+        final String emptyKey;
+
         final GraphElementType elementType;
         switch (headingType) {
             case GRAPH:
-                key = AttributePreferenceKey.GRAPH_SHOW_ALL;
+                emptyKey = AttributePreferenceKey.GRAPH_SHOW_EMPTY;
                 elementType = GraphElementType.GRAPH;
                 break;
             case NODE:
-                key = AttributePreferenceKey.NODE_SHOW_ALL;
+                emptyKey = AttributePreferenceKey.NODE_SHOW_EMPTY;
                 elementType = GraphElementType.VERTEX;
                 break;
             case TRANSACTION:
-                key = AttributePreferenceKey.TRANSACTION_SHOW_ALL;
+                emptyKey = AttributePreferenceKey.TRANSACTION_SHOW_EMPTY;
                 elementType = GraphElementType.TRANSACTION;
                 break;
             default:
-                key = "";
+                emptyKey = "";
                 elementType = null;
                 break;
         }
-        showAllToggle.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue)
-                -> prefs.putBoolean(key, newValue));
-        showAllToggle.setSelected(prefs.getBoolean(key, false));
+        showEmptyToggle.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue)
+                -> prefs.putBoolean(emptyKey, newValue));
+        showEmptyToggle.setSelected(prefs.getBoolean(emptyKey, false));
+        showEmptyToggles.put(headingType, showEmptyToggle);  // Store handle to toggle
+
+        final ToggleButton showHiddenToggle = new ToggleButton("Show Hidden");
+        showHiddenToggle.setAlignment(Pos.CENTER);
+        showHiddenToggle.setTextAlignment(TextAlignment.CENTER);
+        showHiddenToggle.setStyle("-fx-background-insets: 0, 0; -fx-padding: 0");
+        showHiddenToggle.setPrefSize(80, 12);
+        showHiddenToggle.setPadding(new Insets(5));
+        showHiddenToggle.setTooltip(new Tooltip("Show hidden attributes"));
+        final String hiddenKey;
+        switch (headingType) {
+            case GRAPH:
+                hiddenKey = AttributePreferenceKey.GRAPH_SHOW_HIDDEN;
+                break;
+            case NODE:
+                hiddenKey = AttributePreferenceKey.NODE_SHOW_HIDDEN;
+                break;
+            case TRANSACTION:
+                hiddenKey = AttributePreferenceKey.TRANSACTION_SHOW_HIDDEN;
+                break;
+            default:
+                hiddenKey = "";
+                break;
+        }
+        showHiddenToggle.selectedProperty().addListener((final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue)
+                -> prefs.putBoolean(hiddenKey, newValue));
+        showHiddenToggle.setSelected(prefs.getBoolean(hiddenKey, false));
 
         final Button addMenu = new Button(null, new ImageView(UserInterfaceIconProvider.ADD.buildImage(16)));
         addMenu.setAlignment(Pos.CENTER);
@@ -420,7 +479,7 @@ public class AttributeEditorPanel extends BorderPane {
         }
 
         optionsButtons.maxHeightProperty().bind(addMenu.heightProperty());
-        optionsButtons.getChildren().addAll(showAllToggle, addMenu, editKeyButton);
+        optionsButtons.getChildren().addAll(showEmptyToggle, showHiddenToggle, addMenu, editKeyButton);
         headerGraphic.setLeft(heading);
         headerGraphic.setRight(optionsButtons);
         headerGraphic.prefWidthProperty().bind(scrollPane.widthProperty().subtract(45));
@@ -454,6 +513,25 @@ public class AttributeEditorPanel extends BorderPane {
     }
 
     /**
+     * Determine if the values list is null or all values in the supplied values
+     * list are empty (null).
+     * @param values List of values to check.
+     * @return True if values is null or all values in the supplied values list
+     * are empty (null) or false otherwise.
+     */
+    private boolean attributeValuesEmpty(final Object[] values) {
+        if (values == null) {
+            return true;
+        }
+        for (final Object value : values) {
+            if (value != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
      * Creates individual TitledPane within header title panes.
      *
      * @param attribute the attribute to display.
@@ -462,7 +540,7 @@ public class AttributeEditorPanel extends BorderPane {
      * @param hidden is the pane currently hidden.
      * @return a new TitledPane.
      */
-    public TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
+    private TitledPane createAttributeTitlePane(final AttributeData attribute, final Object[] values, final double longestTitledWidth, final boolean hidden) {
         final String attributeTitle = attribute.getAttributeName();
         final int spacing = 5;
         final GridPane gridPane = new GridPane();
@@ -602,8 +680,8 @@ public class AttributeEditorPanel extends BorderPane {
                 for (int i = 0; i < titledPaneHeadingsContainer.getChildren().size(); i++) {
                     final TitledPane tp = (TitledPane) titledPaneHeadingsContainer.getChildren().get(i);
                     final int count = ((VBox) tp.getContent()).getChildren().size();
-                    final int totalAttrs = state.getAttributeCounts().get(ELEMENT_TYPES[i]);
-                    final String attrCountDisplay = totalAttrs == count ? String.format(HEADING_TITLES[i], totalAttrs, "") : String.format(HEADING_TITLES[i], totalAttrs, String.format(HIDDEN_ATTRIBUTES_INFORMATION, totalAttrs - count));
+                    final int totalAttrs = state.getAttributeCounts().get(ELEMENT_TYPES[i]);                 
+                    final String attrCountDisplay = totalAttrs == count ? String.format(HEADING_TITLES[i], totalAttrs, "") : String.format(HEADING_TITLES[i], totalAttrs, String.format(HIDDEN_EMPTY_ATTRIBUTES_INFORMATION, totalAttrs - count));
                     headingTitleProperties[i].setValue(attrCountDisplay);
                     if (!state.getActiveGraphElements().isEmpty()) {
                         tp.setExpanded(state.getActiveGraphElements().contains(ELEMENT_TYPES[i]));
@@ -725,20 +803,28 @@ public class AttributeEditorPanel extends BorderPane {
     private void populateContentContainer(final AttributeState state, final GraphElementType type, final double longestTitleWidth) {
         final int elementTypeIndex;
 
+        String showEmptyKey = ""; // Key used to indicate state of "Show Empty" key 
         switch (type) {
             case GRAPH:
+                showEmptyKey = AttributePreferenceKey.GRAPH_SHOW_EMPTY;
                 elementTypeIndex = 0;
                 break;
             case VERTEX:
+                showEmptyKey = AttributePreferenceKey.NODE_SHOW_EMPTY;
                 elementTypeIndex = 1;
                 break;
             case TRANSACTION:
+                showEmptyKey = AttributePreferenceKey.TRANSACTION_SHOW_EMPTY;
                 elementTypeIndex = 2;
                 break;
             default:
                 elementTypeIndex = -1;
                 break;
         }
+
+        // Check if we are showing all attributes regardless of hidden state
+        final boolean showEmpty = prefs.getBoolean(showEmptyKey, false);
+      
         if (elementTypeIndex > -1 && state != null) {
             final List<AttributeData> attributeDataList = state.getAttributeNames().get(type);
             if (attributeDataList != null) {
@@ -748,17 +834,20 @@ public class AttributeEditorPanel extends BorderPane {
                 final Set<String> hiddenAttrSet = new HashSet<>(hiddenAttrList);
 
                 currentAttributeNames.put(type, new ArrayList<>());
-                final List<String> attrNameList = currentAttributeNames.get(type);
-
                 for (final AttributeData data : attributeDataList) {
                     final boolean hidden = hiddenAttrSet.contains(data.getElementType().toString() + data.getAttributeName());
                     final Object[] values = state.getAttributeValues().get(type.getLabel() + data.getAttributeName());
-                    attrNameList.add(data.getAttributeName());
-                    final TitledPane attribute = createAttributeTitlePane(data, values, longestTitleWidth, hidden);
-                    attribute.setMinWidth(0);
-                    attribute.maxWidthProperty().bind(header.widthProperty());
+                    final boolean noValue = attributeValuesEmpty(values); // does attribute have a null value
 
-                    header.getChildren().add(attribute);
+                    // If we are NOT showing all attributes and this attribute
+                    // is null, don't add it to the list of children, this will
+                    // have the effect of hiding it
+                    if (showEmpty || !noValue ) {
+                        final TitledPane attribute = createAttributeTitlePane(data, values, longestTitleWidth, hidden);
+                        attribute.setMinWidth(0);
+                        attribute.maxWidthProperty().bind(header.widthProperty());
+                        header.getChildren().add(attribute); 
+                    }
                 }
             }
         }

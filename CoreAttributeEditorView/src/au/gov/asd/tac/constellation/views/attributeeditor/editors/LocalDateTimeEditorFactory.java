@@ -66,11 +66,11 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
         private static final String LABEL_ID = "label";
 
         private DatePicker datePicker;
-        private CheckBox noValueCheckBox;
         private Spinner<Integer> hourSpinner;
         private Spinner<Integer> minSpinner;
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
+        private CheckBox noValueCheckBox;
 
         protected LocalDateTimeEditor(final EditOperation editOperation, final DefaultGetter<LocalDateTime> defaultGetter, final ValueValidator<LocalDateTime> validator, final String editedItemName, final LocalDateTime initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -78,7 +78,7 @@ public class LocalDateTimeEditorFactory extends AttributeValueEditorFactory<Loca
 
         @Override
         public void updateControlsWithValue(final LocalDateTime value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 datePicker.setValue(value.toLocalDate());
                 hourSpinner.getValueFactory().setValue(value.get(ChronoField.HOUR_OF_DAY));
