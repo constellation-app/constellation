@@ -194,7 +194,13 @@ public class SVGData {
         final StringBuilder attributeBuilder = new StringBuilder();
         final String linePrefix = SeparatorConstants.NEWLINE + prefix;
         final Set<String> keys = attributes.keySet();
-        keys.forEach(key -> attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key))));
+        keys.forEach(key -> {
+            if (SVGAttributeConstant.NAME_SPACE.equals(key) && this.parent != null) {
+                //do nothing here
+            } else {
+                attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key)));
+            }
+        });
 
         return String.format("%s<%s%s />", linePrefix, this.type, attributeBuilder.toString());
     }

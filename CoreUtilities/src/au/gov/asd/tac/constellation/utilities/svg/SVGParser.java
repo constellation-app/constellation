@@ -40,6 +40,10 @@ import java.util.regex.Pattern;
  */
 public class SVGParser {
 
+    private static boolean isHeaderTag(String line) {
+        return line.contains("<?") && line.contains("?>");
+    }
+
     private SVGParser() {
         throw new IllegalStateException("Utility class");
     }
@@ -71,6 +75,10 @@ public class SVGParser {
                 
                 // This parser curently requires all lines within an SVG tag as it does not support multi line tags.
                 if (!openTag && !closeTag) {
+                    //If a header tag is found, it is ignored.
+                    if (SVGParser.isHeaderTag(svgElement)){
+                        continue;
+                    }
                     throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
                 }
                 
@@ -104,7 +112,7 @@ public class SVGParser {
 
     /**
      * Ensures plan text string can be rendered by browsers.
-     * @param labelString
+     * @param text
      * @return 
      */
     public static String sanitisePlanText(final String text) {
@@ -208,7 +216,7 @@ public class SVGParser {
      * @return 
      */
     private static boolean isCloseTag(final String line) {
-        return line.contains("/>") || line.contains("</");
+        return (line.contains("/>") || line.contains("</") && !line.contains("?>"));
     }
 
     /**
@@ -218,6 +226,6 @@ public class SVGParser {
      * @return 
      */
     private static boolean isOpenTag(final String line) {
-        return line.contains("<") && !line.contains("</");
+        return line.contains("<") && !line.contains("</") && !line.contains("<?");
     }    
 }

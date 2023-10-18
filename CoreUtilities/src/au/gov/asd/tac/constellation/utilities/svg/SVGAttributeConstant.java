@@ -32,6 +32,7 @@ public enum SVGAttributeConstant {
     FONT_SIZE("font-size"),
     HEIGHT("height"),
     ID("id"),
+    NAME_SPACE("xmlns"),
     SOURCE_X("x1"),
     SOURCE_Y("y1"),
     STROKE_COLOR("stroke"),
