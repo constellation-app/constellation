@@ -56,6 +56,7 @@ public class SizeVisualisation<C> extends GraphVisualisation {
             vertexSizes = this.translator.getVertexSizes();
             transactionSizes = this.translator.getVertexSizes();
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
+            AnalyticViewController.getDefault().writeState();
         });
     }
 
@@ -113,8 +114,7 @@ public class SizeVisualisation<C> extends GraphVisualisation {
         }
         
         final SizeVisualisation newObject = (SizeVisualisation) object;
-        return translator == newObject.translator && sizeButton == newObject.sizeButton && activated == newObject.activated
-                && vertexSizes == newObject.vertexSizes && transactionSizes == newObject.transactionSizes;
+        return translator == newObject.translator && sizeButton == newObject.sizeButton && activated == newObject.activated;
     }
     
     @Override 

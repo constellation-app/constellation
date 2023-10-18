@@ -57,6 +57,7 @@ public class ColorVisualisation<C> extends GraphVisualisation {
             vertexColors = this.translator.getVertexColors();
             transactionColors = this.translator.getVertexColors();
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
+            AnalyticViewController.getDefault().writeState();
         });
     }
 

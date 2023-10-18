@@ -46,7 +46,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
-import org.openide.util.Exceptions;
 
 /**
  * Controls UI when changing between graphs
@@ -150,8 +149,6 @@ public class AnalyticViewController {
         } else {
             graphVisualisations.replace(visualisationName, activated);
         }
-        LOGGER.log(Level.SEVERE, "Graph visualisations: " +  String.valueOf(graphVisualisations.size()));
-        
     }
     
     

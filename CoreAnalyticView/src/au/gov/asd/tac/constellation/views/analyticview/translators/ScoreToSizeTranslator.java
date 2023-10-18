@@ -128,12 +128,16 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                     final int elementId = scoreResult.getElementId();
                     switch (elementType) {
                         case VERTEX:
-                            final float vertexSize = vertexSizes.get(elementId);
-                            graph.setFloatValue(vertexSizeAttribute, elementId, vertexSize);
+                            if (vertexSizes.get(elementId) != null) {
+                                final float vertexSize = vertexSizes.get(elementId);
+                                graph.setFloatValue(vertexSizeAttribute, elementId, vertexSize);
+                            }
                             break;
                         case TRANSACTION:
-                            final float transactionSize = transactionSizes.get(elementId);
-                            graph.setFloatValue(transactionSizeAttribute, elementId, transactionSize);
+                            if (transactionSizes.get(elementId) != null) {
+                                final float transactionSize = transactionSizes.get(elementId);
+                                graph.setFloatValue(transactionSizeAttribute, elementId, transactionSize);
+                            }
                             break;
                         default:
                             throw new InvalidElementTypeException("'Size Elements' is not supported "

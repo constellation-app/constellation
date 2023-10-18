@@ -22,8 +22,8 @@ import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
+import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
 import java.util.HashMap;
-import java.util.Map;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -134,12 +134,16 @@ public class AnalyticResultsPane extends VBox {
                     translator.setResult(result);
                     translator.setActive(true);
 
-                    final GraphVisualisation graphVisualisation = translator.buildControl();
+                    GraphVisualisation graphVisualisation = translator.buildControl();
                     final Node visualisationNode = graphVisualisation.getVisualisation();
 
-                  //  final HashMap<GraphVisualisation, Boolean> visualisations = AnalyticViewController.getDefault().getGraphVisualisations();
                     if (graphVisualisations.containsKey(graphVisualisation)) {
                         graphVisualisation.setSelected(graphVisualisations.get(graphVisualisation));
+                        for (final HashMap.Entry<GraphVisualisation, Boolean> visualisation : graphVisualisations.entrySet()) {
+                            if (visualisation.getKey().getClass() == graphVisualisation.getClass()) {
+                                graphVisualisation = visualisation.getKey();
+                            }
+                        }
                     }
 
                     graphVisualisationPane.getItems().add(visualisationNode);
