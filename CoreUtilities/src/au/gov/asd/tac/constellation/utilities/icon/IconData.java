@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.icon;
 
+import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstant;
+import au.gov.asd.tac.constellation.utilities.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGParser;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -29,7 +32,8 @@ import javax.imageio.ImageIO;
 /**
  * An IconData stores byte data for use as a {@link ConstellationIcon}, provided
  * via an InputStream.
- *
+ * 
+ * @author capricornunicorn123
  * @author cygnus_x-1
  */
 public abstract class IconData {
@@ -37,6 +41,38 @@ public abstract class IconData {
     private static final Logger LOGGER = Logger.getLogger(IconData.class.getName());
 
     private byte[] data = null;
+    private SVGData svgData = null;
+    
+    public SVGData getSVGData(){
+        return getSVGData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+    }
+    
+    public SVGData getSVGData(final int size, final Color color) {
+        if (size != ConstellationIcon.DEFAULT_ICON_SIZE || color != null) {
+            return createSVGData(size, color);
+        }
+
+        if (svgData == null) {
+            svgData = createSVGData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+        }
+        return svgData;
+    }
+    
+    protected SVGData createSVGData(final int size, final Color color) {
+        try {
+            InputStream is = createVectorInputStream();
+            svgData = SVGParser.parse(is);
+            svgData.setAttribute(SVGAttributeConstant.HEIGHT, String.format("%s", size));
+            svgData.setAttribute(SVGAttributeConstant.WIDTH, String.format("%s", size));
+            if (color != null) {
+                svgData.setAttribute(SVGAttributeConstant.FILL_COLOR, String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()));
+            }
+            return svgData;
+        } catch (Exception ex){
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            return null;
+        }
+    }
 
     /**
      * Get an array of bytes representing the data of a
@@ -81,7 +117,7 @@ public abstract class IconData {
     /**
      * Build an array of bytes representing the data of a
      * {@link ConstellationIcon} from the {@link InputStream} specified by
-     * {@link #createInputStream()}.
+     * {@link #createRasterInputStream()}.
      *
      * @param size An integer value representing both the height and width of
      * the icon.
@@ -92,7 +128,7 @@ public abstract class IconData {
     protected byte[] createData(final int size, final Color color) {
         final ByteArrayOutputStream os = new ByteArrayOutputStream();
         try {
-            final InputStream is = createInputStream();
+            final InputStream is = createRasterInputStream();
             if (is != null) {
                 BufferedImage image = ImageIO.read(is);
                 if (color != null) {
@@ -205,5 +241,7 @@ public abstract class IconData {
      * @throws IOException If the {@link InputStream} encounters an issue while
      * transmitting the icon data.
      */
-    protected abstract InputStream createInputStream() throws IOException;
+    protected abstract InputStream createRasterInputStream() throws IOException;
+    
+    protected abstract InputStream createVectorInputStream() throws IOException;
 }

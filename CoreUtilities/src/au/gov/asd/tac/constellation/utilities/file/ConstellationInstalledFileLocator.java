@@ -48,25 +48,30 @@ public class ConstellationInstalledFileLocator {
     public static File locate(String relativePath, String codeNameBase, ProtectionDomain protectedDomain) {
         File locatedFile = InstalledFileLocator.getDefault().locate(relativePath, codeNameBase, false);
         if (locatedFile == null) {
-            // InstalledFileLocator only works in the NetBeans environment.
-            // If we're not there (because we're running unit tests in development, for example), we won't find anything.
-            // Instead, we'll hack our way to what we want. If there's a nicer way, tell me.
-            //
-            // Which JAR are we in?
-            final URL url = protectedDomain.getCodeSource().getLocation();
+            
+            //The below code causes the aplication to hang due to fialing quietly when a file is not at the expected location.
+            //Have deactivated the code when not in headles to prefent this and cause the defaukt behaviour to return null.
+            if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
+                // InstalledFileLocator only works in th NetBeans environment.
+                // If we're not there (because we're running unit tests in development, for example), we won't find anything.
+                // Instead, we'll hack our way to what we want. If there's a nicer way, tell me.
+                //
+                // Which JAR are we in?
+                final URL url = protectedDomain.getCodeSource().getLocation();
 
-            try {
-                locatedFile = Paths.get(url.toURI()).toFile();
-            } catch (URISyntaxException ex) {
-                throw new RuntimeException(ex);
-            }
+                try {
+                    locatedFile = Paths.get(url.toURI()).toFile();
+                } catch (URISyntaxException ex) {
+                    throw new RuntimeException(ex);
+                }
 
-            // Go up two levels to the build\cluster directory so the relative path is correct.
-            locatedFile = locatedFile.getParentFile().getParentFile();
-            locatedFile = new File(locatedFile, relativePath);
+                // Go up two levels to the build\cluster directory so the relative path is correct.
+                locatedFile = locatedFile.getParentFile().getParentFile();
+                locatedFile = new File(locatedFile, relativePath);
 
-            if (!locatedFile.exists()) {
-                throw new RuntimeException(String.format("Couldn't find file %s at %s in module %s", relativePath, locatedFile, codeNameBase));
+                if (!locatedFile.exists()) {
+                    throw new RuntimeException(String.format("Couldn't find file %s at %s in module %s", relativePath, locatedFile, codeNameBase));
+                }
             }
         }
 

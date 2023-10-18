@@ -15,12 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
-import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
+import au.gov.asd.tac.constellation.utilities.svg.SVGFile;
+import au.gov.asd.tac.constellation.utilities.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGParser;
+import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.util.logging.Logger;
 
@@ -469,7 +470,7 @@ public class SVGObject {
     * @param templateResource the filename of the template file.
     * @return svgObject
     */
-    public static final SVGObject loadFromTemplate(final SVGFileNameConstant templateResource) {
+    public static final SVGObject loadFromTemplate(final SVGFile templateResource) {
         return new SVGObject(SVGData.loadFromTemplate(templateResource));
     } 
 

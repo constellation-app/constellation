@@ -13,11 +13,8 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.svg;
+package au.gov.asd.tac.constellation.utilities.svg;
 
-import au.gov.asd.tac.constellation.plugins.importexport.svg.parser.SVGParser;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,8 +44,12 @@ public class SVGData {
 
     public SVGData(final String type, final SVGData parent, final Map<String, String> attributes) {
         this.type = type;
-        this.attributes = new LinkedHashMap<>(attributes);
         this.children = new LinkedHashMap<>();
+        if (attributes == null) {
+            this.attributes = new LinkedHashMap<>();
+        } else {
+            this.attributes = new LinkedHashMap<>(attributes);
+        }        
         this.setParent(parent);
         this.content = null;
     }
@@ -259,7 +260,7 @@ public class SVGData {
     * @param templateResource the filename of the template file.
     * @return svgData
     */
-    public static final SVGData loadFromTemplate(final SVGFileNameConstant templateResource) {
+    public static final SVGData loadFromTemplate(final SVGFile templateResource) {
         final InputStream inputStream = templateResource.getClass().getResourceAsStream(templateResource.getFileName());
         SVGData templateSVG = null;
         try {

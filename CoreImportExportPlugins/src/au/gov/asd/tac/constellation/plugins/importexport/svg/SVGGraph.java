@@ -15,13 +15,14 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGAttributeConstant;
+import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGFileNameConstant;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
@@ -37,17 +38,9 @@ import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
-import java.awt.Color;
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.Base64;
 import java.time.ZonedDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 
 /**
  * A Wrapper class for the outer most SVGElement of the output file.
@@ -324,12 +317,13 @@ public class SVGGraph {
                 }
                 
                 final SVGObject backgroundContainer = nodeImages.getChild(SVGLayoutConstant.BACKGROUND_IMAGE);
+                SVGData bgimage = backgroundIcon.buildSVG(color.getJavaColor());
+                bgimage.setParent(backgroundContainer.toSVGData());
+                
                 final SVGObject foregroundContainer = nodeImages.getChild(SVGLayoutConstant.FOREGROUND_IMAGE);
-                final byte[] backgroundData = applyColorFilter(backgroundIcon.getIconData().getData(), color);
-                final byte[] foregroundData = foregroundIcon.getIconData().getData();
-                this.buildSVGImageFromRasterImageData(backgroundContainer, backgroundData);
-                this.buildSVGImageFromRasterImageData(foregroundContainer, foregroundData);
-
+                SVGData fgimage = foregroundIcon.buildSVG();
+                fgimage.setParent(foregroundContainer.toSVGData());
+                
                 //Add decorators to the node       
                 this.buildDecorator(nodeImages.getChild(SVGLayoutConstant.NORTH_WEST_DECORATOR), access.getNWDecorator(vertexPosition));
                 this.buildDecorator(nodeImages.getChild(SVGLayoutConstant.NORTH_EAST_DECORATOR), access.getNEDecorator(vertexPosition));
@@ -341,50 +335,6 @@ public class SVGGraph {
         }
         
         /**
-         * Applies a filter to an image byte array. 
-         * A work around as the Constellation application uses an openGL color filtering
-         * and is unavailable to this class.
-         * 
-         * @param original
-         * @param color
-         * @return 
-         */
-        public byte[] applyColorFilter(final byte[] original, ConstellationColor color){
-            ByteArrayInputStream bais = new ByteArrayInputStream(original);
-            try {
-                BufferedImage img =  ImageIO.read(bais);
-                if (img == null || color == null) {
-                    return original;
-                } else {
-                    final BufferedImage coloredImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-                    for (int x = 0; x < img.getWidth(); x++) {
-                        for (int y = 0; y < img.getHeight(); y++) {
-                            final Color pixel = new Color(img.getRGB(x, y), true);
-                            final float redFilter = (color.getRed());
-                            final float blueFilter = (color.getBlue());
-                            final float greenFilter = (color.getGreen());
-
-                            final float blendRed = pixel.getRed()  * redFilter / 255;
-                            final float blendGreen = pixel.getGreen() * greenFilter / 255;
-                            final float blendBlue = pixel.getBlue() * blueFilter / 255;
-                            final Color blend = new Color(blendRed, blendGreen, blendBlue, pixel.getAlpha() / 255.0f);
-                            coloredImage.setRGB(x, y, blend.getRGB());
-                        }
-                    }
-                    final ByteArrayOutputStream os = new ByteArrayOutputStream();
-                    try {
-                        ImageIO.write(coloredImage, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
-                    } catch (IOException ex) {
-                        return original;
-                    }
-                    return os.toByteArray();
-            }
-            } catch (IOException ex) {
-                return original;
-            }
-        } 
-        
-        /**
          * Generates decorator images for nodes.
          * @param vertexAttributeReference
          * @param vertex
@@ -392,8 +342,8 @@ public class SVGGraph {
          */
         private void buildDecorator(final SVGObject decorator, final String decoratorValue) {
             if (decoratorValue != null && !"false_pinned".equals(decoratorValue)){
-                final byte[] decoratorIconData = IconManager.getIcon(decoratorValue).getIconData().getData();
-                this.buildSVGImageFromRasterImageData(decorator, decoratorIconData);
+                final SVGData icon = IconManager.getIcon(decoratorValue).buildSVG();
+                icon.setParent(decorator.toSVGData());
             }
         }
         
@@ -623,18 +573,6 @@ public class SVGGraph {
             arrowShaft.setSourcePosition(sourcePosition);
             arrowShaft.setDestinationPosition(destinationPosition);
         }
-        
-        /**
-         * Builds an image element within an SVG element.
-         * @param parent
-         * @param data 
-         */
-        private void buildSVGImageFromRasterImageData(final SVGObject parent, final byte[] data) {
-            final String encodedString = Base64.getEncoder().encodeToString(data);
-            final SVGData image = SVGData.loadFromTemplate(SVGFileNameConstant.IMAGE);
-            image.setAttribute(SVGAttributeConstant.EXTERNAL_RESOURCE_REFERENCE, String.format("data:image/png;base64,%s", encodedString));
-            image.setParent(parent.toSVGData());
-        }
 
         /**
          * Sets the dimensions for container objects within the Layout.svg template file.
@@ -663,7 +601,7 @@ public class SVGGraph {
             svg.setDimension(fullWidth, fullHeight);
             
             svg.getChild(SVGLayoutConstant.FOOTER).setPosition(0F, footerYOffset);
-            svg.getChild(SVGLayoutConstant.HEADER).setMinimumDimension(contentWidth, contentHeight);
+            svg.getChild(SVGLayoutConstant.HEADER).setMinimumDimension(fullWidth, contentHeight);
             svg.getChild(SVGLayoutConstant.FOOTER).setMinimumDimension(fullWidth, bottomMargin);  
             
             svg.getChild(SVGLayoutConstant.CONTENT).setPosition(contentXOffset, contentYOffset);

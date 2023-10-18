@@ -244,7 +244,7 @@ public class IconDataNGTest {
 
     /**
      * Test of createData method, of class IconData, when the output returned
-     * from createInputStream() is null.
+ from createRasterInputStream() is null.
      *
      * @throws java.io.IOException
      */
@@ -253,7 +253,7 @@ public class IconDataNGTest {
         System.out.println("testCreateData_inputStreamIsNull");
 
         final IconData instance = spy(new IconDataImpl());
-        when(instance.createInputStream()).thenReturn(null);
+        when(instance.createRasterInputStream()).thenReturn(null);
 
         final int size = 0;
         final Color color = null;
@@ -269,7 +269,7 @@ public class IconDataNGTest {
 
     /**
      * Test of createData method, of class IconData, when the output returned
-     * from createInputStream() throws IOException.
+ from createRasterInputStream() throws IOException.
      *
      * @throws java.io.IOException
      */
@@ -278,7 +278,7 @@ public class IconDataNGTest {
         System.out.println("testCreateData_inputStreamThrowsException");
 
         final IconData instance = spy(new IconDataImpl());
-        when(instance.createInputStream()).thenThrow(IOExceptionMock);
+        when(instance.createRasterInputStream()).thenThrow(IOExceptionMock);
 
         final int size = 0;
         final Color color = null;
@@ -532,8 +532,13 @@ public class IconDataNGTest {
     private class IconDataImpl extends IconData {
 
         @Override
-        protected InputStream createInputStream() throws IOException {
+        protected InputStream createRasterInputStream() throws IOException {
             return inputStreamMock;
+        }
+
+        @Override
+        protected InputStream createVectorInputStream() throws IOException {
+            throw new UnsupportedOperationException("Not supported yet."); 
         }
     }
 }

@@ -13,9 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.svg.parser;
+package au.gov.asd.tac.constellation.utilities.svg;
 
-import au.gov.asd.tac.constellation.plugins.importexport.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,6 +53,9 @@ public class SVGParser {
      * @throws IOException 
      */
     public static SVGData parse(final InputStream inputStream) throws IOException {
+        if (inputStream == null) {
+            throw new IOException();
+        }
         SVGData currentElement = null; 
         final Collection<SVGData> roots = new HashSet<>();
         
@@ -66,7 +69,7 @@ public class SVGParser {
                 final boolean openTag = SVGParser.isOpenTag(svgElement);
                 final boolean closeTag = SVGParser.isCloseTag(svgElement);
                 
-// This parser curently requires all lines within an SVG tag as it does not support multi line tags.
+                // This parser curently requires all lines within an SVG tag as it does not support multi line tags.
                 if (!openTag && !closeTag) {
                     throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
                 }
