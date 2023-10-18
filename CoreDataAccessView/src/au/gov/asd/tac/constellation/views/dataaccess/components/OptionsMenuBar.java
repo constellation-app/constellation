@@ -51,7 +51,7 @@ public class OptionsMenuBar {
     private static final String SAVE_MENU_ITEM_TEXT = "Save Templates";
     private static final String SAVE_RESULTS_MENU_ITEM_TEXT = "Save Results";
     private static final String DESELECT_PLUGINS_ON_EXECUTION_MENU_ITEM_TEXT = "Deselect On Go";
-    private static final String CONNECTION_LOGGER_TEXT = "Connection Logger";
+    private static final String CONNECTION_LOGGING_TEXT = "Connection Logging";
     private static final String TITLE = "Folder to save data access results to";
 
     private static final String OPTIONS_MENU_TEXT = "Workflow Options";
@@ -83,7 +83,7 @@ public class OptionsMenuBar {
         UNCHECKED_ICON.setFitWidth(15);
 
         LOGGER_ICON = new ImageView(new Image(
-                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessLogger.png")));
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessConnectionLogging.png")));
         LOGGER_ICON.setFitHeight(15);
         LOGGER_ICON.setFitWidth(15);
     }
@@ -168,7 +168,7 @@ public class OptionsMenuBar {
         // Connection Logging Menu
         ////////////////////////////////////////
         connectionLoggerMenuItem = new CheckMenuItem(
-                CONNECTION_LOGGER_TEXT,
+                CONNECTION_LOGGING_TEXT,
                 LOGGER_ICON
         );
         connectionLoggerMenuItem.setSelected(
@@ -208,7 +208,7 @@ public class OptionsMenuBar {
         final long remainingSeconds = remainingTime/1000;
         final String remainingText = remainingMinutes > 0 ? "  \u23F3 " + remainingMinutes + "m" : "  \u23F3 " + remainingSeconds + "s";
         final String remainingMessage = LogPreferences.isConnectionLoggingEnabled() ? remainingText : "";
-        connectionLoggerMenuItem.setText(CONNECTION_LOGGER_TEXT + remainingMessage);      
+        connectionLoggerMenuItem.setText(CONNECTION_LOGGING_TEXT + remainingMessage);      
     }
     
     /**
@@ -277,6 +277,15 @@ public class OptionsMenuBar {
      */
     public CheckMenuItem getDeselectPluginsOnExecutionMenuItem() {
         return deselectPluginsOnExecutionMenuItem;
+    }
+
+    /**
+     * Gets the checkbox menu item to control whether connection logging should occur.
+     *
+     * @return the connection logging menu item
+     */
+    public CheckMenuItem getConnectionLoggingMenuItem() {
+        return connectionLoggerMenuItem;
     }
 
     /**
