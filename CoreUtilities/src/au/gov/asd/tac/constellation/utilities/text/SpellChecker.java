@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,8 +33,9 @@ import org.languagetool.language.AustralianEnglish;
 import org.languagetool.rules.RuleMatch;
 
 /**
- * SpellCheckingTextArea is an InlineCssTextArea from the RichTextFX library
- * with added methods for spell checking functionality.
+ * Handles the SpellChecking functions of SpellCheckingTextArea. SpellChecker
+ * evaluates incorrect words/phrases and pops up the suggestions when the user
+ * prompts
  *
  * @author Auriga2
  */
@@ -48,6 +49,7 @@ public final class SpellChecker {
     private String misspelledTextUnderCursor;
     private final JLanguageTool langTool;
     private Popup popup;
+    private boolean turnOffSpellChecking = false;
 
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
         textArea = spellCheckingTextArea;
@@ -59,7 +61,7 @@ public final class SpellChecker {
      * set a listener on the list views selection model to get the text of the
      * selected row.
      */
-    public void initialize() {
+    private void initialize() {
         popup = new Popup();
         suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
@@ -71,12 +73,12 @@ public final class SpellChecker {
 
     /**
      * Check Spelling of the entire text. This will ensure scenarios like
-     * duplicate words, grammar mistakes etc. triggered
+     * duplicate words, grammar mistakes etc. are triggered
      */
     public void checkSpelling() {
         textArea.clearStyles();
         misspells.clear();
-        if (!StringUtils.isBlank(textArea.getText())) {
+        if (!turnOffSpellChecking && !StringUtils.isBlank(textArea.getText())) {
             try {
                 matches = langTool.check(textArea.getText());
             } catch (IOException ex) {
@@ -84,8 +86,8 @@ public final class SpellChecker {
             }
 
             matches.forEach(match -> {
-                int start = match.getFromPos();
-                int end = match.getToPos();
+                final int start = match.getFromPos();
+                final int end = match.getToPos();
                 String misspell = textArea.getText().substring(start, end);
                 misspells.add(misspell);
                 textArea.highlightText(start, end);
@@ -98,37 +100,40 @@ public final class SpellChecker {
      * misspelled.
      */
     public void popUpSuggestionsListAction(final MouseEvent event) {
-        final ObservableList<String> suggestionsList = FXCollections.observableArrayList();
+        if (!turnOffSpellChecking) {
+            final ObservableList<String> suggestionsList = FXCollections.observableArrayList();
 
-        popup.hide();
-        popup.setAutoFix(true);
-        popup.setAutoHide(true);
-        popup.setHideOnEscape(true);
+            popup.hide();
+            popup.setAutoFix(true);
+            popup.setAutoHide(true);
+            popup.setHideOnEscape(true);
 
-        if (isWordUnderCursorMisspelled()) {
-            suggestionsList.clear();
-            suggestionsList.addAll(matches.get(currentIndex).getSuggestedReplacements());
-            suggestions.setItems(suggestionsList);
+            if (isWordUnderCursorMisspelled()) {
+                suggestionsList.clear();
+                suggestionsList.addAll(matches.get(currentIndex).getSuggestedReplacements());
+                suggestions.setItems(suggestionsList);
 
-            Label popupMsg = new Label("");
-            popupMsg.setStyle(
-                    "-fx-background-color: black;"
-                    + "-fx-text-fill: white;"
-                    + "-fx-padding: 5;");
-            popup.getContent().clear();
-            popup.getContent().add(popupMsg);
-            popup.getContent().add(suggestions);
+                final Label popupMsg = new Label("");
+                popupMsg.setStyle(
+                        "-fx-background-color: black;"
+                        + "-fx-text-fill: white;"
+                        + "-fx-padding: 5;");
+                popup.getContent().clear();
+                popup.getContent().add(popupMsg);
+                popup.getContent().add(suggestions);
 
-            popup.show(textArea, event.getScreenX(), event.getScreenY() + 10);
+                popup.show(textArea, event.getScreenX(), event.getScreenY() + 10);
+            }
         }
     }
 
     /**
-     * Retrieve the word/phrase under the cursor and check if it is misspelled
+     * Retrieve the word/phrase under the cursor and check if it is misspelled.
+     * If it is misspelled the index is populated.
      */
     private boolean isWordUnderCursorMisspelled() {
-        int cursorIndex = textArea.getCaretPosition(); //.GetCharIndexFromPosition(e.getSceneX())
-        String fullText = textArea.getText();
+        final int cursorIndex = textArea.getCaretPosition();
+        final String fullText = textArea.getText();
 
         if (cursorIndex >= fullText.length()) { //= is to avoid the scenario of displaying the suggesttions of the last word (when it's incorrect)
             // when clicking on the empty space below the text
@@ -145,5 +150,9 @@ public final class SpellChecker {
             }
         }
         return false;
+    }
+
+    public void turnOffSpellChecking(boolean turnOffSpellChecking) {
+        this.turnOffSpellChecking = turnOffSpellChecking;
     }
 }

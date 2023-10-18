@@ -56,6 +56,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SpellCheckingTextArea;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCoreType;
@@ -85,7 +86,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -193,7 +193,7 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
 
         final StringParameterValue string2pv = new StringParameterValue();
         string2pv.setGuiInit(control -> {
-            final TextArea field = (TextArea) control;
+            final SpellCheckingTextArea field = (SpellCheckingTextArea) control;
             field.getStylesheets().add(css);
         });
         final PluginParameter<StringParameterValue> string2 = StringParameterType.build(TEST2_PARAMETER_ID, string2pv);
