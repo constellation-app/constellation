@@ -28,7 +28,7 @@ import org.openide.util.NbPreferences;
 public class LogPreferences {
     private static final Preferences PREFERENCES = NbPreferences.forModule(LogPreferences.class);
     private static final String CONNECTION_LOG_DATE_PREF = "connectionLogDate";
-    private static final long LOGGING_TIMEOUT = 151*60*1000; // 2.5 hours
+    private static final long LOGGING_TIMEOUT = 151*60*1000L; // 2.5 hours
     
     private LogPreferences(){
         throw new IllegalStateException("Utility class");

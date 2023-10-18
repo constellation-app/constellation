@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.log;
 
-import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,7 +31,7 @@ public class ConnectionLogging {
     private static ConnectionLogging instance = null;
     
     private ConnectionLogging(){
-        getInstance().setLogLevel(Level.ALL);
+        getInstance().setLogLevel(Level.ALL); //NOSONAR
     }
     
     public static ConnectionLogging getInstance(){

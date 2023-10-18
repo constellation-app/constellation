@@ -74,7 +74,6 @@ public abstract class RestClient {
                 }
             }
         }
-        //ConnectionLogger.log(Level.FINE, new String(os.toByteArray()), null);
         return os.toByteArray();
     }
 
