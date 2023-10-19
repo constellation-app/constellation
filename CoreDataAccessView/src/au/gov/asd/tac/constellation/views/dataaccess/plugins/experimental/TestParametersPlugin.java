@@ -70,7 +70,6 @@ import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoField;
@@ -210,7 +209,6 @@ public class TestParametersPlugin extends RecordStoreQueryPlugin implements Data
         final PluginParameter<LocalDateParameterValue> date = LocalDateParameterType.build(LOCAL_DATE_PARAMETER_ID);
         date.setName("Date");
         date.setDescription("Pick a day");
-        date.setLocalDateValue(LocalDate.of(2001, Month.JANUARY, 1));
         params.addParameter(date);
 
         final List<GraphElementTypeParameterValue> elementTypeOptions = new ArrayList<>();
