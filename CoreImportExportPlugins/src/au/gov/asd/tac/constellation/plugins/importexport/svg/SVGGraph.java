@@ -343,8 +343,10 @@ public class SVGGraph {
          */
         private void buildDecorator(final SVGObject decorator, final String decoratorValue) {
             if (decoratorValue != null && !"false_pinned".equals(decoratorValue)){
-                final SVGData icon = IconManager.getIcon(decoratorValue).buildSVG();
-                icon.setParent(decorator.toSVGData());
+                if (IconManager.iconExists(decoratorValue)){
+                    final SVGData icon = IconManager.getIcon(decoratorValue).buildSVG();
+                    icon.setParent(decorator.toSVGData());
+                }
             }
         }
         
@@ -602,14 +604,14 @@ public class SVGGraph {
             svg.setDimension(fullWidth, fullHeight);
             
             svg.getChild(SVGLayoutConstant.FOOTER.getValue()).setPosition(0F, footerYOffset);
-            svg.getChild(SVGLayoutConstant.HEADER.getValue()).setMinimumDimension(fullWidth, contentHeight);
+            svg.getChild(SVGLayoutConstant.HEADER.getValue()).setMinimumDimension(fullWidth, topMargin);
             svg.getChild(SVGLayoutConstant.FOOTER.getValue()).setMinimumDimension(fullWidth, bottomMargin);  
             
             svg.getChild(SVGLayoutConstant.CONTENT.getValue()).setPosition(contentXOffset, contentYOffset);
           
             svg.getChild(SVGLayoutConstant.BACKGROUND.getValue()).setPosition(xMargin, topMargin);
             svg.getChild(SVGLayoutConstant.BACKGROUND.getValue()).setMinimumDimension(backgroundWidth, backgroundHeight);
-//            
+            
             svg.getChild(SVGLayoutConstant.BORDER.getValue()).setMinimumDimension(fullWidth, fullHeight);
             svg.setDimensionScale("100%", "100%");
         }
