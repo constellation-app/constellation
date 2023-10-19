@@ -221,7 +221,7 @@ public class SVGGraph {
             
             //Switch the y sign for exporting to SVG
             final Matrix44f scaleMatrix = new Matrix44f();
-            scaleMatrix.makeScalingMatrix(new Vector3f(1.0f, -1.0f, 1.0f));
+            scaleMatrix.makeScalingMatrix(new Vector3f(1.0F, -1.0F, 1.0F));
             pMatrix.multiply(pMatrix, scaleMatrix);
             
             //Generate the ModelVieqwprojectionMatrix. 
@@ -230,7 +230,6 @@ public class SVGGraph {
             
             viewPort = new int[] {Math.round(camera.lookAtEye.getX()),  Math.round(camera.lookAtEye.getY()), Math.round(viewPortWidth),  Math.round(viewPortHeight)};
             modelViewProjectionMatrix = mvpMatrix; 
-            LOGGER.log(Level.SEVERE, String.format("ViewWindow: %s, %s, %s, %s,", viewPort[0], viewPort[1], viewPort[2], viewPort[3]));
         }
         
         /**

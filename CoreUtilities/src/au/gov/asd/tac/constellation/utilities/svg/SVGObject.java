@@ -189,7 +189,7 @@ public class SVGObject {
     }
     
     private String getAttribute(final SVGAttributeConstant attributeKey){
-         return svgDataReference.getAttributeValue(attributeKey.name());
+        return svgDataReference.getAttributeValue(attributeKey.name());
     } 
     
     /**
@@ -294,14 +294,6 @@ public class SVGObject {
         this.x = x;
         this.setAttribute(SVGAttributeConstant.X, x);
     }
-    /**
-     * Sets the X position of the SVGObject.
-     * With respect to the SVGObject it is contained within.
-     * @param x 
-     */
-    private void setXPosition(final double x) {
-        this.setXPosition((float) x);
-    }
     
     public float getXPosition(){
         //Attempt to return the localy stored x value;
@@ -325,15 +317,6 @@ public class SVGObject {
     private void setYPosition(final float y) {
         this.y = y;
         this.setAttribute(SVGAttributeConstant.Y, y);
-    }
-    
-    /**
-     * Sets the Y position of the SVGObject.
-     * With respect to the SVGObject it is contained within.
-     * @param y
-     */
-    private void setYPosition(final double y) {
-        this.setYPosition((float) y);
     }
     
     public float getYPosition(){
@@ -376,11 +359,11 @@ public class SVGObject {
     /**
      * Sets the source position of the SVGObject.
      * With respect to the SVGObject it is contained within.
-     * @param posiition
+     * @param position
      */
     public void setSourcePosition(final Vector4f position) {
         if (this.x != null){
-                this.width = Math.abs(this.x - position.getX());
+            this.width = Math.abs(this.x - position.getX());
         }
         
         if (this.x == null || this.x > position.getX()){
@@ -388,7 +371,7 @@ public class SVGObject {
         }
         
         if (this.y != null){
-                this.height = Math.abs(this.y - position.getY());
+            this.height = Math.abs(this.y - position.getY());
         }
         
         if (this.y == null || this.y > position.getY()){
@@ -406,7 +389,7 @@ public class SVGObject {
      */
     public void setDestinationPosition(final Vector4f position) {
         if (this.x != null){
-                this.width = Math.abs(this.x - position.getX());
+            this.width = Math.abs(this.x - position.getX());
         }
         
         if (this.x == null || this.x > position.getX()){
@@ -414,7 +397,7 @@ public class SVGObject {
         }
         
         if (this.y != null){
-                this.height = Math.abs(this.y - position.getY());
+            this.height = Math.abs(this.y - position.getY());
         }
         
         if (this.y == null || this.y > position.getY()){
@@ -427,7 +410,7 @@ public class SVGObject {
     
     /**
      * Sets the transformation values of the SVGObject.
-     * @param position
+     * @param transformationData
      */
     public void setTransformation(final String transformationData) {
         this.setAttribute(SVGAttributeConstant.TRANSFORM,  transformationData);
