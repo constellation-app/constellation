@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.utilities.svg;
 
-import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -97,7 +96,7 @@ public class SVGParser {
                     roots.add(currentElement);
                 }                
 
-                // Move back up one level to the curren objects parent
+                // Move back up one level to the current objects parent
                 if (closeTag) {
                     currentElement = currentElement.getParent();
                 } 

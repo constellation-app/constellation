@@ -13,16 +13,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
  */
-package au.gov.asd.tac.constellation.plugins.importexport.svg;
+package au.gov.asd.tac.constellation.utilities.svg;
 
-import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGLayoutConstant;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
-import au.gov.asd.tac.constellation.utilities.svg.SVGFile;
-import au.gov.asd.tac.constellation.utilities.svg.SVGData;
-import au.gov.asd.tac.constellation.utilities.svg.SVGParser;
-import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Logger;
 
 /**
@@ -38,6 +37,7 @@ import java.util.logging.Logger;
 public class SVGObject {
     
     private static final Logger LOGGER = Logger.getLogger(SVGObject.class.getName());
+    
     private final SVGData svgDataReference;
     private Float x = null;
     private Float y = null;
@@ -73,17 +73,23 @@ public class SVGObject {
     
     /**
      * Returns an SVGObject of matching id nested one level down from the current SVGObject.
-     * @param idValue
+     * @param id
      * @return SVGObject
      */
-    public final SVGObject getChild(final SVGLayoutConstant id) {
-        final SVGData child = this.svgDataReference.getChild(id.getValue());
+    public final SVGObject getChild(final String id) {
+        final SVGData child = this.svgDataReference.getChild(id);
         if (child != null){
             return new SVGObject(child); 
         } else {
             return null;
         }
     }
+    
+    private Collection<SVGObject> getAllChildren(){
+        ArrayList<SVGObject> children = new ArrayList<>();
+        this.svgDataReference.getAllChildren().forEach(child -> children.add(new SVGObject(child)));
+        return children;
+    }   
     
     /**
      * Sets the content value of an SVGObjects.
@@ -473,6 +479,14 @@ public class SVGObject {
     public static final SVGObject loadFromTemplate(final SVGFile templateResource) {
         return new SVGObject(SVGData.loadFromTemplate(templateResource));
     } 
+    
+    public static SVGObject loadFromInputStream(InputStream is) {
+        try{
+            return new SVGObject(SVGParser.parse(is));
+        } catch (IOException e){
+            return null;
+        }
+    }
 
     public void setDimensionScale(final String width, final String height) {
         this.setViewBox(0, 0, this.width, this.height);
@@ -482,5 +496,11 @@ public class SVGObject {
     
     public void setViewBox(final float x, final float y, final float w, final float h){
         this.setAttribute(SVGAttributeConstant.VIEW_BOX, String.format("%s, %s, %s, %S", x, y, w, h));
+    }
+    
+    public void saturateSVG(final ConstellationColor color){
+        this.setFillColor(color);
+        this.setStrokeColor(color);
+        this.getAllChildren().forEach(child -> child.saturateSVG(color));
     }
 }

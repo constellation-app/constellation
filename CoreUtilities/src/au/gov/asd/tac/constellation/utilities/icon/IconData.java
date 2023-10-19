@@ -15,8 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.icon;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.svg.SVGParser;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -61,13 +63,12 @@ public abstract class IconData {
     protected SVGData createSVGData(final int size, final Color color) {
         try {
             InputStream is = createVectorInputStream();
-            svgData = SVGParser.parse(is);
-            svgData.setAttribute(SVGAttributeConstant.HEIGHT, String.format("%s", size));
-            svgData.setAttribute(SVGAttributeConstant.WIDTH, String.format("%s", size));
+            SVGObject svg = SVGObject.loadFromInputStream(is);
+            svg.setDimension(size, size);
             if (color != null) {
-                svgData.setAttribute(SVGAttributeConstant.FILL_COLOR, String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue()));
+                svg.saturateSVG(ConstellationColor.fromJavaColor(color));
             }
-            return svgData;
+            return svg.toSVGData();
         } catch (Exception ex){
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             return null;
