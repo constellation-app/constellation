@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterTyp
 import au.gov.asd.tac.constellation.plugins.parameters.types.IntegerParameterType.IntegerParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
+import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentParameters;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -82,28 +83,28 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         params = new PluginParameters();
         final PhrasiphyContentParameters phrasiphyContentParams = PhrasiphyContentParameters.getDefaultParameters();
 
-        final PluginParameters<SingleChoiceParameterValue> elementType = SingleChoiceParameterType.build(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID);
+        final PluginParameter<SingleChoiceParameterValue> elementType = SingleChoiceParameterType.build(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID);
         elementType.setName(PhrasiphyContentParameters.ELEMENT_TYPE_NAME);
         elementType.setDescription(PhrasiphyContentParameters.ELEMENT_TYPE_DESCRIPTION);
         SingleChoiceParameterType.setOptions(elementType, PhrasiphyContentParameters.ELEMENT_TYPE_CHOICES);
         SingleChoiceParameterType.setChoice(elementType, PhrasiphyContentParameters.ELEMENT_TYPE_DEFAULT);
         params.addParameter(elementType);
 
-        final PluginParameters<SingleChoiceParameterValue> attrToAnalyse = SingleChoiceParameterType.build(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
+        final PluginParameter<SingleChoiceParameterValue> attrToAnalyse = SingleChoiceParameterType.build(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
         attrToAnalyse.setName(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_NAME);
         attrToAnalyse.setDescription(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DESCRIPTION);
         SingleChoiceParameterType.setOptions(attrToAnalyse, EMPTY_STRING_LIST);
         SingleChoiceParameterType.setChoice(attrToAnalyse, EMPTY_STRING);
         params.addParameter(attrToAnalyse);
 
-        final PluginParameters<SingleChoiceParameterValue> phraseLength = IntegerParameterType.build(PhrasiphyContentParameters.PHRASE_LENGTH_PARAMETER_ID);
+        final PluginParameter<IntegerParameterValue> phraseLength = IntegerParameterType.build(PhrasiphyContentParameters.PHRASE_LENGTH_PARAMETER_ID);
         phraseLength.setName(PhrasiphyContentParameters.PHRASE_LENGTH_NAME);
         phraseLength.setDescription(PhrasiphyContentParameters.PHRASE_LENGTH_DESCRIPTION);
         IntegerParameterType.setMinimum(phraseLength, PhrasiphyContentParameters.PHRASE_LENGTH_MIN_VALUE);
         IntegerParameterType.setMaximum(phraseLength, PhrasiphyContentParameters.PHRASE_LENGTH_MAX_VALUE);
         params.addParameter(phraseLength);
 
-        final PluginParameters<SingleChoiceParameterValue> proximity = IntegerParameterType.build(PhrasiphyContentParameters.PROXIMITY_PARAMETER_ID);
+        final PluginParameter<IntegerParameterValue> proximity = IntegerParameterType.build(PhrasiphyContentParameters.PROXIMITY_PARAMETER_ID);
         proximity.setName(PhrasiphyContentParameters.PROXIMITY_NAME);
         proximity.setDescription(PhrasiphyContentParameters.PROXIMITY_DESCRIPTION);
         proximity.setStringValue(Integer.toString(phrasiphyContentParams.getProximity()));
@@ -115,7 +116,7 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         threshold.setName(PhrasiphyContentParameters.THRESHOLD_NAME);
         threshold.setDescription(PhrasiphyContentParameters.THRESHOLD_DESCRIPTION);
         threshold.setStringValue(Integer.toString(phrasiphyContentParams.getThreshold()));
-        IntegerParameterType.setMinimum(threshold, PhrasiphyContentParameters.THRESHOLD_MINIMUM_VALUE);
+        IntegerParameterType.setMinimum(threshold, PhrasiphyContentParameters.THRESHOLD_MIN_VALUE);
         params.addParameter(threshold);
 
         final PluginParameter<FileParameterValue> backgroundFile = FileParameterType.build(PhrasiphyContentParameters.BACKGROUND_PARAMETER_ID);
@@ -137,10 +138,10 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
             switch (change) {
                 case VALUE:
                     if (masterParameter.getStringValue().equals("transaction")) {
-                        if (transAttribute.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
+                        if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
                             attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
                         } else {
-                            atrrParam.setStringValue(EMPTY_STRING);
+                            attrParam.setStringValue(EMPTY_STRING);
                         }
                         SingleChoiceParameterType.setOptions(attrParam, transAttributes);
                     } else if (masterParameter.getStringValue().equals("node")) {
@@ -188,7 +189,7 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
 
     @Override
     public void validityChanged(final boolean enabled) {
-        run.setDisabled(!enabled);
+        run.setDisable(!enabled);
     }
 
     @Override

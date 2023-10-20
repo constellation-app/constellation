@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.plugins.PluginGraphs;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import java.io.File;
@@ -60,7 +61,7 @@ public class PhrasiphyContentPlugin extends SimplePlugin {
         final PhrasiphyContentParameters phrasiphyContentParams = PhrasiphyContentParameters.getDefaultParameters();
 
         // Get a map relating parameter names to parameter values from the PluginParameters object
-        Map<String, PluginParameters<?>> parameters = params.getParameters();
+        Map<String, PluginParameter<?>> parameters = params.getParameters();
 
         // Set the value of the phrase length and proximity parameters
         phrasiphyContentParams.setPhraseLength(parameters.get(PhrasiphyContentParameters.PHRASE_LENGTH_PARAMETER_ID).getIntegerValue());
@@ -99,7 +100,7 @@ public class PhrasiphyContentPlugin extends SimplePlugin {
         // Build a (possible empty) list containing the indices of the currently selected vertices
         int[] selectedElements = new int[elCount];
         final int[] allElements = new int[elCount];
-        final int[] elSelectedAttr = rg.getAttribute(elementType, SELECTED_ATTRIBUTE_NAME);
+        final int elSelectedAttr = rg.getAttribute(elementType, SELECTED_ATTRIBUTE_NAME);
         // DO nothing if the selected attribute is not found
         if (elSelectedAttr == Graph.NOT_FOUND) {
             final String msg = "Attribute Not Found - No Word Cloud Generated";
@@ -129,7 +130,7 @@ public class PhrasiphyContentPlugin extends SimplePlugin {
         rg.release();
 
         @SuppressWarnings("unchecked") //Object returned is a list of files 
-        final List<File> files = (List<Files>) parameters.get(PhrasiphyContentParameters.BACKGROUND_PARAMETER_ID).getObjectValue();
+        final List<File> files = (List<File>) parameters.get(PhrasiphyContentParameters.BACKGROUND_PARAMETER_ID).getObjectValue();
         File file = null;
         if (files != null && !files.isEmpty()) {
             file = files.get(0);

@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.wordcloud.ui;
-
-import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
-import org.openide.util.lookup.ServiceProvider;
+package au.gov.asd.tac.constellation.views.wordcloud.content;
 
 /**
- *
- * @author Delphinus8821
+ * @author twilight_sparkle
  */
-@ServiceProvider(service = AttributeDescription.class)
-public class WordCloudAttributeDescription extends ObjectAttributeDescription {
+public final class ElementSimilarity {
 
-    public static final String ATTRIBUTE_NAME = WordCloud.WORD_CLOUD_ATTR;
+	public final int low;
+	public final int high;
+	public final double score;
 
-    public WordCloudAttributeDescription() {
-        super(ATTRIBUTE_NAME);
-    }
+	public ElementSimilarity(final int low, final int high, final double score) {
+		if (low > high) {
+			this.low = high;
+			this.high = low;
+		} else {
+			this.low = low;
+			this.high = high;
+		}
+		this.score = score;
+	}
 }

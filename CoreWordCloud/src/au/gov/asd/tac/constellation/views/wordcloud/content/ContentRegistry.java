@@ -13,22 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package au.gov.asd.tac.constellation.views.wordcloud.ui;
+package au.gov.asd.tac.constellation.views.wordcloud.content;
 
-import au.gov.asd.tac.constellation.graph.attribute.AttributeDescription;
-import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
-import org.openide.util.lookup.ServiceProvider;
+import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentPlugin;
 
 /**
  *
  * @author Delphinus8821
  */
-@ServiceProvider(service = AttributeDescription.class)
-public class WordCloudAttributeDescription extends ObjectAttributeDescription {
+public class ContentRegistry {
 
-    public static final String ATTRIBUTE_NAME = WordCloud.WORD_CLOUD_ATTR;
-
-    public WordCloudAttributeDescription() {
-        super(ATTRIBUTE_NAME);
-    }
+	public static final String N_GRAM_ANALYSIS = NGramAnalysisPlugin.class.getName();
+	public static final String CLUSTER_DOCUMENTS = ClusterDocumentsPlugin.class.getName();
+	public static final String PHRASIPHY_CONTENT = PhrasiphyContentPlugin.class.getName();
 }

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.wordcloud.ui;
 
+import au.gov.asd.tac.constellation.graph.interaction.plugins.clipboard.ClipboardUtilities;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
 import java.util.HashMap;
@@ -51,6 +52,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
@@ -121,9 +123,9 @@ public class WordCloudPane extends BorderPane {
         content.getChildren().add(cloudStackPane);
         //.setTop(everything);
 
-		// Create the label used to give information about the parameters used to generate the word cloud 
-		queryInfoLabel = new Label("");
-        queryInfoLabel.prefWidthProperty().bid(theCloud.widthProperty());
+        // Create the label used to give information about the parameters used to generate the word cloud 
+        queryInfoLabel = new Label("");
+        queryInfoLabel.prefWidthProperty().bind(theCloud.widthProperty());
         queryInfoLabel.setAlignment(Pos.CENTER);
         queryInfoLabel.setId("query-label");
         theCloud.getChildren().add(queryInfoLabel);
@@ -189,13 +191,18 @@ public class WordCloudPane extends BorderPane {
                     sortingButtons.selectToggle((ToggleButton) t);
                 }
             }
+
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
         });
 
         // Create an anchor pane for the buttons just constructed and add these buttons to the pane 
         buttonBar = new AnchorPane();
         final HBox modeButtonBar = new HBox();
         final HBox sortingButtonBar = new HBox();
-        sortingButtonBar.getChild().addAll(alphabetical, frequency);
+        sortingButtonBar.getChildren().addAll(alphabetical, frequency);
         showTooltipsCheckbox = new CheckBox("Hovering translations");
         showTooltipsCheckbox.setSelected(true);
         showTooltipsCheckbox.setOnAction(new EventHandler<ActionEvent>() {

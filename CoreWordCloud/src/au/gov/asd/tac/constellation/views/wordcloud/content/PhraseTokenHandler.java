@@ -39,7 +39,7 @@ public class PhraseTokenHandler implements TokenHandler {
         return tokenHashes;
     }
 
-    public Map<String, Integer> getTokenHashes() {
+    public Map<Integer, Set<Integer>> getConstituentHashes() {
         return constituentHashes;
     }
 

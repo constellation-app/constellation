@@ -33,8 +33,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import org.graalvm.compiler.serviceprovider.ServiceProvider;
-
+import org.openide.util.lookup.ServiceProvider;
 /**
  * IOProvider to read and write the WordCloud graph attribute to and from file.
  *
@@ -111,7 +110,6 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                     wordSignificances.put(significance, words);
                     Iterator<JsonNode> subIter = iter.next().iterator();
                     while (subIter.hasNext()) {
-// I think this should be subIter but this is what it has written 
                         words.add(iter.next().asText());
                     }
                 }

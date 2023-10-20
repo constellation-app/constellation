@@ -16,6 +16,9 @@
 package au.gov.asd.tac.constellation.views.wordcloud.ui;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.views.wordcloud.content.PhraseTokenHandler;
+import au.gov.asd.tac.constellation.views.wordcloud.content.SparseMatrix;
+import au.gov.asd.tac.constellation.views.wordcloud.content.TaggedSparseMatrix;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -26,6 +29,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import org.apache.commons.math3.stat.descriptive.moment.Mean;
+import org.apache.commons.math3.stat.descriptive.moment.Variance;
 import org.apache.commons.math3.stat.inference.TTest;
 
 /**
@@ -120,7 +124,7 @@ public class WordCloud {
         this.elementType = elementType;
         wordListWithSizes = new TreeMap<>();
         wordSignificances = new TreeMap<>();
-        int maxSum = ((TaggedSparseMatrix<Integer>) hashesToElements).getLargerColumnSumWithTag(false);
+        int maxSum = ((TaggedSparseMatrix<Integer>) hashesToElements).getLargestColumnSumWithTag(false);
         SparseMatrix<Integer> hashesToElementBg = null;
         if (bgHandler != null) {
             hashesToElementBg = null;
@@ -167,7 +171,7 @@ public class WordCloud {
     public static double tTestPhraseAgainstWords(final int key, final Set<Integer> individualWordKeys, final SparseMatrix<Integer> graph, final SparseMatrix<Integer> model, final boolean filterAllWords) {
         // Get all the elements containing the individual words, then get the arrays of phrase frequencies, extended by 0s
         // by the elements containing all constituent individual words but not the phrase 
-        Set<Integer> graphElements = filterAllWords ? graph.ferColumnElementIntersection(individualWordKeys) : graph.getColumnElementUnion(individualWordKeys);
+        Set<Integer> graphElements = filterAllWords ? graph.getColumnElementIntersection(individualWordKeys) : graph.getColumnElementUnion(individualWordKeys);
         Integer[] graphColumn = graph.getConstituentExtendedColumnAsArray(key, graphElements);
         Set<Integer> modelElements = filterAllWords ? model.getColumnElementIntersection(individualWordKeys) : model.getColumnElementUnion(individualWordKeys);
         Integer[] modelColumn = model.getConstituentExtendedColumnAsArray(key, modelElements);
@@ -229,7 +233,8 @@ public class WordCloud {
     }
 
     /**
-     * Gets a map relating word hashes to ID's of element which contain the words
+     * Gets a map relating word hashes to ID's of element which contain the
+     * words
      */
     public Map<Integer, Set<Integer>> getHashedWordSets() {
         return hashedWordSets;
@@ -240,6 +245,13 @@ public class WordCloud {
      */
     public Map<String, Integer> getWordToHashes() {
         return wordsToHashes;
+    }
+    
+    /**
+     * Sets whether or not the selection mode is union.
+     */
+    public void setIsUnionSelect(final boolean val) {
+        isUnionSelect = val;
     }
 
     /**
@@ -257,6 +269,13 @@ public class WordCloud {
         updateCurrentWords(currentSignificance, val);
         currentSignificance = val;
     }
+    
+    /**
+     * Gets whether or not the selection mode is union
+     */
+    public boolean getIsUnionSelect() {
+        return isUnionSelect;
+    }
 
     /**
      * Gets whether or not the sorting mode is by size
@@ -271,7 +290,20 @@ public class WordCloud {
 
     /**
      * Returns the set of graph elements used to generate this cloud that
-     * contain any of the ucrrently selected words in this cloud
+     * contain any of the currently selected words in this cloud
+     */
+    private Set<Integer> getElementsWithAnyWords() {
+        Set<Integer> set = new HashSet<>();
+        for (final String word : selectedWords) {
+            Integer key = wordsToHashes.get(word);
+            set.addAll(hashedWordSets.get(key));
+        }
+        return set;
+    }
+
+    /**
+     * Returns the set of graph elements used to generate this cloud that
+     * contain any of the currently selected words in this cloud
      */
     private Set<Integer> getElementsWithAllWords() {
         Set<Integer> set = new HashSet<>();
@@ -371,7 +403,7 @@ public class WordCloud {
         final boolean remove = oldSig > newSig;
         final double low = remove ? newSig : oldSig;
         final double high = remove ? oldSig : newSig;
-        Map<Double, Set<String>> changeSets = wordSignificances.headMap(high + Double.MIN_NORMAL).tailMap(low, Double.MIN_NORMAL);
+        Map<Double, Set<String>> changeSets = wordSignificances.headMap(high + Double.MIN_NORMAL).tailMap(low + Double.MIN_NORMAL);
         if (remove) {
             for (final Set<String> changeSet : changeSets.values()) {
                 for (final String word : changeSet) {
