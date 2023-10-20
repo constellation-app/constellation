@@ -71,7 +71,12 @@ public class DecoratorsEditorFactory extends AttributeValueEditorFactory<VertexD
         }
 
         @Override
-        public void updateControlsWithValue(final VertexDecorators value) {
+        public void updateControlsWithValue(VertexDecorators value) {
+            // Ensure a null value is translated to an empty/default VertexDecorators object
+            if (value == null ) {
+                value = new VertexDecorators(null, null, null, null);
+            }
+            
             setDecoratorChoice(nwCombo, value.getNorthWestDecoratorAttribute());
             setDecoratorChoice(neCombo, value.getNorthEastDecoratorAttribute());
             setDecoratorChoice(seCombo, value.getSouthEastDecoratorAttribute());
