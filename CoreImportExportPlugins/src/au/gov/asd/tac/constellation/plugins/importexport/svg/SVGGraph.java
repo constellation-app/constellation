@@ -191,31 +191,50 @@ public class SVGGraph {
         private void preBuild(){
             
             Camera camera = new Camera(access.getCamera());
-            
+
             //Set the view port
             final BoundingBox box = camera.boundingBox;
             BoundingBoxUtilities.recalculateFromGraph(box, graph, selectedNodesOnly);
             CameraUtilities.refocusOnZAxis(camera, box, false);
             Vector3f maxBound = box.getMax();
             Vector3f minBound = box.getMin();
+
             maxBound.scale(256);
             minBound.scale(256);
+            
             float viewPortHeight = maxBound.getY() - minBound.getY();
-            viewPortHeight = viewPortHeight == 0 ? 1 : viewPortHeight;
+            viewPortHeight = viewPortHeight < 1 ? 1 : viewPortHeight;
             
             float viewPortWidth = maxBound.getX() - minBound.getX();
-            viewPortWidth = viewPortWidth == 0 ? 1 : viewPortWidth;
+            viewPortWidth = viewPortWidth < 1 ? 1 : viewPortWidth;
             
             //Get Model view Matrix from the Camera.
             final Matrix44f mvMatrix = Graphics3DUtilities.getModelViewMatrix(camera);
             
             // Define the view frustum
-            final float FIELD_OF_VIEW = 35;
-            final float PERSPECTIVE_NEAR = 1;
-            final float PERSPECTIVE_FAR = 500000;
-            Frustum viewFrustum = new Frustum();
-            viewFrustum.setPerspective(FIELD_OF_VIEW, viewPortWidth / viewPortHeight, PERSPECTIVE_NEAR, PERSPECTIVE_FAR);
+            final float fov = 35;
+            final float nearPerspective = 1;
+            final float farPerspective = 500000;
+            final float aspect = viewPortWidth / viewPortHeight;
             
+            final float ymax;
+            final float ymin;
+            final float xmax;
+            final float xmin;
+            
+            if (aspect < 1){
+                ymax = nearPerspective * (float) Math.tan(fov * Math.PI / 360.0);
+                xmax = ymax * viewPortWidth / viewPortHeight;
+            } else {
+                xmax = nearPerspective * (float) Math.tan(fov * Math.PI / 360.0);
+                ymax = xmax * viewPortHeight / viewPortWidth;
+            }
+            
+            ymin = -ymax;
+            xmin = -xmax;
+
+            Frustum viewFrustum = new Frustum(fov, aspect, xmin, xmax, ymin, ymax, nearPerspective, farPerspective);
+
             //Get the projection matrix from the view frustum
             Matrix44f pMatrix =  viewFrustum.getProjectionMatrix();
             
@@ -591,7 +610,7 @@ public class SVGGraph {
             final float topMargin = 288.0F;
             final float bottomMargin = 128.0F;
             final float xPadding = 250.0F;
-            final float yPadding = 250.0F;
+            final float yPadding = 0.0F;
             final float footerYOffset = topMargin + contentHeight + (yPadding * 2);            
             final float fullWidth = (xMargin * 2) + contentWidth + (xPadding * 2);            
             final float fullHeight = (topMargin + bottomMargin) + contentHeight + (yPadding * 2);            
@@ -630,9 +649,9 @@ public class SVGGraph {
             
             Vector3f worldPosition = new Vector3f(constelationGraphX, constelationGraphY, constelationGraphZ);
             Vector4f screenPosition = new Vector4f();
-
+            LOGGER.log(Level.SEVERE, String.format("Vertex %s: %s", vertex, worldPosition));
+            
             Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
-
             Vector4f centerOffSet = new Vector4f(128, 128, 0, 0);
             Vector4f.add(screenPosition, screenPosition, centerOffSet);
             
@@ -651,7 +670,7 @@ public class SVGGraph {
             int radiusID = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
             float radius = graph.getFloatValue(radiusID, access.getVertexId(vertexPosition));
             float conversionScaleFactor = 128f;
-            float depthScaleFactor = position.getZ();
+            float depthScaleFactor = 1/position.getZ();
             return conversionScaleFactor * radius * depthScaleFactor;            
         }
         

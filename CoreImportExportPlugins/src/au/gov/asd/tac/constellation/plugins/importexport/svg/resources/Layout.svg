@@ -11,7 +11,7 @@
     
     <svg id="content" overflow="visible">
 
-        <svg id="connections" >
+        <svg id="connections" overflow="visible">
         </svg>
         <svg id="nodes" overflow="visible" >
         </svg>

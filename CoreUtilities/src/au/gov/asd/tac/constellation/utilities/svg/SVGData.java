@@ -195,7 +195,7 @@ public class SVGData {
         final String linePrefix = SeparatorConstants.NEWLINE + prefix;
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> {
-            if (SVGAttributeConstant.NAME_SPACE.equals(key) && this.parent != null) {
+            if (SVGAttributeConstant.NAME_SPACE.getName().equals(key) && this.parent != null) {
                 //do nothing here
             } else {
                 attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key)));

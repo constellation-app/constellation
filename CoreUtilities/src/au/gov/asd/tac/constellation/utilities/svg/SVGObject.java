@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -302,6 +303,7 @@ public class SVGObject {
             
         //Attempt to get the x value from SVG data
         } else if (this.getAttribute(SVGAttributeConstant.X) != null) {
+            LOGGER.log(Level.SEVERE, String.format("x position %s retrieved as %s", this.getAttribute(SVGAttributeConstant.X), Float.parseFloat(this.getAttribute(SVGAttributeConstant.X))));
             return Float.parseFloat(this.getAttribute(SVGAttributeConstant.X));
         
         //No x value has been set
