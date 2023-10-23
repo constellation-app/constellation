@@ -492,40 +492,39 @@ public class ConstellationIcon {
      * @return 
      */
     private byte[] applyColorFilter(final byte[] original, final Color color){
-        //ConstellationColor color = ConstellationColor.fromJavaColor(inColor);
         ByteArrayInputStream bais = new ByteArrayInputStream(original);
-            try {
-                BufferedImage img =  ImageIO.read(bais);
-                if (img == null || color == null) {
-                    return original;
-                } else {
-                    final BufferedImage coloredImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
-                    for (int x = 0; x < img.getWidth(); x++) {
-                        for (int y = 0; y < img.getHeight(); y++) {
-                            final Color pixel = new Color(img.getRGB(x, y), true);
-                            final float redFilter = (color.getRed() / 255F);
-                            final float blueFilter = (color.getBlue() / 255F);
-                            final float greenFilter = (color.getGreen() / 255F);
-
-                            final float blendRed = pixel.getRed() * redFilter / 255;
-                            final float blendGreen = pixel.getGreen() * greenFilter / 255;
-                            final float blendBlue = pixel.getBlue() * blueFilter / 255;
-                            final Color blend = new Color(blendRed, blendGreen, blendBlue, pixel.getAlpha() / 255.0F);
-                            coloredImage.setRGB(x, y, blend.getRGB());
-                        }
-                    }
-                    final ByteArrayOutputStream os = new ByteArrayOutputStream();
-                    try {
-                        ImageIO.write(coloredImage, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
-                    } catch (IOException ex) {
-                        return original;
-                    }
-                    return os.toByteArray();
-                }
-            
-            } catch (IOException ex) {
+        try {
+            BufferedImage img =  ImageIO.read(bais);
+            if (img == null || color == null) {
                 return original;
+            } else {
+                final BufferedImage coloredImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_4BYTE_ABGR);
+                for (int x = 0; x < img.getWidth(); x++) {
+                    for (int y = 0; y < img.getHeight(); y++) {
+                        final Color pixel = new Color(img.getRGB(x, y), true);
+                        final float redFilter = (color.getRed() / 255F);
+                        final float blueFilter = (color.getBlue() / 255F);
+                        final float greenFilter = (color.getGreen() / 255F);
+
+                        final float blendRed = pixel.getRed() * redFilter / 255;
+                        final float blendGreen = pixel.getGreen() * greenFilter / 255;
+                        final float blendBlue = pixel.getBlue() * blueFilter / 255;
+                        final Color blend = new Color(blendRed, blendGreen, blendBlue, pixel.getAlpha() / 255.0F);
+                        coloredImage.setRGB(x, y, blend.getRGB());
+                    }
+                }
+                final ByteArrayOutputStream os = new ByteArrayOutputStream();
+                try {
+                    ImageIO.write(coloredImage, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
+                } catch (IOException ex) {
+                    return original;
+                }
+                return os.toByteArray();
             }
+
+        } catch (IOException ex) {
+            return original;
+        }
     }
 
     @Override
