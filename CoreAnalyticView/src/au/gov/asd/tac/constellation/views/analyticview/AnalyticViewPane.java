@@ -106,7 +106,6 @@ public class AnalyticViewPane extends BorderPane {
         runButton.setStyle(RUN_START_STYLE);
         runButton.setOnAction(event -> {
             if (running) {
-                deactivateResultChanges();
 
                 // hide results pane
                 if (viewPane.getChildren().contains(analyticResultsPane)) {
@@ -188,19 +187,6 @@ public class AnalyticViewPane extends BorderPane {
         this.setCenter(viewPane);
     }
 
-    /**
-     * Deactivate any changes made by the color, hide and size buttons
-     */
-    public void deactivateResultChanges() {
-        graphVisualisations = AnalyticViewController.getDefault().getGraphVisualisations();
-        if (!graphVisualisations.isEmpty()) {
-            graphVisualisations.entrySet().forEach(node -> {
-                node.getKey().deactivate();
-                AnalyticViewController.getDefault().updateGraphVisualisations(node.getKey(), false);
-            });
-        }
-    }
-
     private void setRunButtonMode(final boolean isRunMode) {
         Platform.runLater(() -> {
             runButton.setText(isRunMode ? RUN_START_TEXT : RUN_STOP_TEXT);
@@ -237,7 +223,6 @@ public class AnalyticViewPane extends BorderPane {
     public void updateView(final AnalyticViewState state) {
         reset();
         
-        
         Platform.runLater(() -> {
             final AnalyticViewController controller = AnalyticViewController.getDefault();
             
@@ -272,7 +257,6 @@ public class AnalyticViewPane extends BorderPane {
                 
                 controller.setQuestion(question);
                 controller.updateResults(results);
-                
             }  
         });
     }

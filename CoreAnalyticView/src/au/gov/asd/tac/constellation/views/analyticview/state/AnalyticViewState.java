@@ -61,6 +61,7 @@ public class AnalyticViewState {
         this.question = state.getQuestion();
         this.activeCategory = state.getActiveCategory();
         this.graphVisualisations = state.getGraphVisualisations();
+        this.internalVisualisations = state.getInternalVisualisations();
     }
     
     public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,

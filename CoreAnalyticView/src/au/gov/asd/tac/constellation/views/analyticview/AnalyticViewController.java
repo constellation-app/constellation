@@ -61,8 +61,8 @@ public class AnalyticViewController {
     private AnalyticViewTopComponent parent;
 
     private int currentAnalyticQuestionIndex = 0;
-    private List<AnalyticQuestionDescription<?>> activeAnalyticQuestions;
-    private List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> activeSelectablePlugins;
+    private final List<AnalyticQuestionDescription<?>> activeAnalyticQuestions;
+    private final List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> activeSelectablePlugins;
     private AnalyticResult<?> result;
     private boolean resultsVisible = false;
     private boolean categoriesVisible = false;
@@ -72,8 +72,6 @@ public class AnalyticViewController {
     private HashMap<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
     private HashMap<InternalVisualisation, Node> internalVisualisations = new HashMap<>();
     
-    private static final Logger LOGGER = Logger.getLogger(AnalyticViewController.class.getName());
-
     public AnalyticViewController() {
         this.activeAnalyticQuestions = new ArrayList<>();
         this.activeSelectablePlugins = new ArrayList<>();
@@ -166,12 +164,6 @@ public class AnalyticViewController {
         }
     }
 
-    public void deactivateResultUpdates() {
-        final AnalyticViewPane pane = parent.createContent();
-        pane.deactivateResultChanges();
-        writeState();
-    }
-
     /**
      * Update the results values and record whether the results pane is currently visible
      *
@@ -228,16 +220,6 @@ public class AnalyticViewController {
     }
 
     /**
-     * Add attributes required by the Analytic View for it to function
-     */
-    public void addAttributes() {
-        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
-        if (activeGraph != null) {
-            PluginExecution.withPlugin(new AddAttributesPlugin()).executeLater(activeGraph);
-        }
-    }
-
-    /**
      * Updates the AnalyticViewState by running a plugin to save the graph state
      *
      * @param pluginWasSelected true if the triggered update was from a plugin
@@ -277,7 +259,6 @@ public class AnalyticViewController {
         if (pane == null || graph == null) {
             return;
         }
-        LOGGER.log(Level.SEVERE, graph.getId());
         PluginExecution.withPlugin(new AnalyticStateReaderPlugin(pane)).executeLater(graph);
 
     }
@@ -294,9 +275,10 @@ public class AnalyticViewController {
         }
 
         // controller out of sync with graph...
-        return PluginExecution.withPlugin(new AnalyticStateWriterPlugin(currentAnalyticQuestionIndex, activeAnalyticQuestions, activeSelectablePlugins, result, resultsVisible, currentQuestion, question, categoriesVisible, activeCategory, graphVisualisations, internalVisualisations)).executeLater(graph);
+        return PluginExecution.withPlugin(new AnalyticStateWriterPlugin(currentAnalyticQuestionIndex, activeAnalyticQuestions, 
+                activeSelectablePlugins, result, resultsVisible, currentQuestion, question, categoriesVisible, activeCategory, 
+                graphVisualisations, internalVisualisations)).executeLater(graph);
     }
-
 
 
     public void selectOnGraph(final GraphElementType elementType, final List<Integer> elementIds) {
@@ -382,23 +364,6 @@ public class AnalyticViewController {
                 default:
                     break;
             }
-        }
-    }
-
-    /**
-     * Plugin to add the required Analytic View attributes.
-     */
-    @PluginInfo(pluginType = PluginType.CREATE, tags = {PluginTags.CREATE})
-    protected class AddAttributesPlugin extends SimpleEditPlugin {
-
-        @Override
-        public String getName() {
-            return "Analytic View: Add Required Attributes";
-        }
-
-        @Override
-        public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.ensure(graph);
         }
     }
 }

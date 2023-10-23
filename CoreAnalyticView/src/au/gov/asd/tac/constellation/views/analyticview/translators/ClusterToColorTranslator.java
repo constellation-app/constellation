@@ -147,8 +147,6 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                 }
                 graph.setObjectValue(vertexColorReferenceAttribute, 0, null);
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
-                vertexColors.clear();
-                transactionColors.clear();
             } else {
                 // find highest and lowest cluster numbers among available cluster data
                 final Set<Integer> clusterNumbers = new HashSet<>();

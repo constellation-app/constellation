@@ -81,9 +81,7 @@ public final class AnalyticStateWriterPlugin extends SimpleEditPlugin {
         AnalyticViewState currentState = graph.getObjectValue(stateAttributeId, 0);
         if (currentState == null) {
             currentState = new AnalyticViewState();
-        } else {
-            currentState = new AnalyticViewState(currentState);
-        }
+        } 
         
         // set all of the values into the current state 
         currentState.setCategoriesPaneVisible(categoriesVisible);

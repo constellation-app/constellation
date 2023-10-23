@@ -143,8 +143,6 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
                 }
                 graph.setObjectValue(vertexColorReferenceAttribute, 0, null);
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
-                vertexColors.clear();
-                transactionColors.clear();
             } else {
                 // color graph elements based on their value
                 for (final ElementFact scoreResult : factResults.get()) {

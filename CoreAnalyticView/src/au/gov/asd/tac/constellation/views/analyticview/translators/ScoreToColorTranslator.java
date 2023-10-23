@@ -145,8 +145,6 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 }
                 graph.setObjectValue(vertexColorReferenceAttribute, 0, null);
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
-                vertexColors.clear();
-                transactionColors.clear();
             } else {
                 // find highest and lowest mean scores among available analytic events
                 float highestMeanScore = 0.0F;

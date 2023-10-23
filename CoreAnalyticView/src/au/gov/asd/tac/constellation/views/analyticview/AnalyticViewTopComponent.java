@@ -164,7 +164,6 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (analyticViewPane != null) {
             analyticViewPane.reset();
             analyticViewPane.setIsRunnable(graph != null);
-            analyticController.addAttributes();
             analyticController.readState();
             if (GraphManager.getDefault().getActiveGraph() == null) {
                 analyticViewPane.reset();
@@ -176,7 +175,6 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     protected void handleGraphOpened(final Graph graph) {
         if (analyticViewPane != null) {
             analyticViewPane.reset();
-            analyticController.addAttributes();
             analyticController.readState();
             if (GraphManager.getDefault().getActiveGraph() == null) {
                 analyticViewPane.reset();
@@ -191,7 +189,6 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (current != null) {
             currentGraphId = current.getId();
         }
-        analyticController.addAttributes();
         analyticController.readState();
         
         if (GraphManager.getDefault().getActiveGraph() == null) {
@@ -206,19 +203,6 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         if (current != null && !current.getId().equals(currentGraphId)) {
             analyticViewPane.reset();
         }
-        analyticController.addAttributes();
         analyticController.readState();
-    }
-
-    @Override
-    protected void handleComponentClosed() {
-        super.handleComponentClosed();
-        analyticController.deactivateResultUpdates();
-        analyticViewPane.reset();
-    }
-    
-    @Override
-    protected void handleGraphClosed(final Graph graph) {
-        analyticController.deactivateResultUpdates();
     }
 }

@@ -135,13 +135,15 @@ public class AnalyticResultsPane extends VBox {
                     translator.setActive(true);
 
                     GraphVisualisation graphVisualisation = translator.buildControl();
-                    final Node visualisationNode = graphVisualisation.getVisualisation();
+                    Node visualisationNode = graphVisualisation.getVisualisation();
 
                     if (graphVisualisations.containsKey(graphVisualisation)) {
                         graphVisualisation.setSelected(graphVisualisations.get(graphVisualisation));
                         for (final HashMap.Entry<GraphVisualisation, Boolean> visualisation : graphVisualisations.entrySet()) {
                             if (visualisation.getKey().getClass() == graphVisualisation.getClass()) {
                                 graphVisualisation = visualisation.getKey();
+                                visualisationNode = graphVisualisation.getVisualisation();
+                                graphVisualisation.setSelected(graphVisualisations.get(graphVisualisation));
                             }
                         }
                     }
