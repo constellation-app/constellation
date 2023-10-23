@@ -72,7 +72,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
 
     @Override
     public HashMap<Integer, Float> getVertexSizes() {
-        return (HashMap<Integer, Float>) vertexSizes.clone();
+        return vertexSizes;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
 
     @Override
     public HashMap<Integer, Float> getTransactionSizes() {
-        return (HashMap<Integer, Float>) transactionSizes.clone();
+        return transactionSizes;
     }
 
     @Override
