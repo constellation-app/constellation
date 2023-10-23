@@ -604,8 +604,8 @@ public class SVGGraph {
          * @param svg 
          */
         private void setLayoutDimensions(final SVGObject svg) {
-            final float contentWidth = viewPort[2] + 256;
-            final float contentHeight = viewPort[3] + 256;
+            final float contentWidth = viewPort[2] + 256.0F;
+            final float contentHeight = viewPort[3] + 256.0F;
             final float xMargin = 50.0F;
             final float topMargin = 288.0F;
             final float bottomMargin = 128.0F;

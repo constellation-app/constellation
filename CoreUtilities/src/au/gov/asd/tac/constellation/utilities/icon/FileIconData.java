@@ -53,7 +53,7 @@ public class FileIconData extends IconData {
 
     @Override
     protected InputStream createRasterInputStream() throws IOException {
-            return new FileInputStream(rasterFile);
+        return new FileInputStream(rasterFile);
     }
     
     @Override
