@@ -59,7 +59,7 @@ public class FileIconData extends IconData {
     @Override
     protected InputStream createVectorInputStream() throws IOException {
         
-        //Not all foiles have SVG alternatives to only return a stream if the alternative was found.
+        //Not all files have SVG alternatives to only return a stream if the alternative was found.
         if (vectorFile != null) {
             return new FileInputStream(vectorFile);
         } else {

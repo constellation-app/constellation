@@ -16,10 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.icon;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
-import au.gov.asd.tac.constellation.utilities.svg.SVGParser;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
