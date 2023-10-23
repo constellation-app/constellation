@@ -248,16 +248,16 @@ public class AnalyticViewPane extends BorderPane {
                 final AnalyticQuestion<?> question = state.getQuestion();
 
                 if (results != null && resultsVisible && !viewPane.getChildren().contains(analyticResultsPane)) {
-                        viewPane.getChildren().add(1, analyticResultsPane);
-                        graphVisualisations = state.getGraphVisualisations();
-                        controller.setGraphVisualisations(graphVisualisations);
-                        internalVisualisations = state.getInternalVisualisations();
-                        analyticResultsPane.displayResults(question, results, graphVisualisations, internalVisualisations);         
+                    viewPane.getChildren().add(1, analyticResultsPane);
+                    graphVisualisations = (HashMap) state.getGraphVisualisations();
+                    controller.setGraphVisualisations(graphVisualisations);
+                    internalVisualisations = (HashMap) state.getInternalVisualisations();
+                    analyticResultsPane.displayResults(question, results, graphVisualisations, internalVisualisations);
                 }
-                
+
                 controller.setQuestion(question);
                 controller.updateResults(results);
-            }  
+            }
         });
     }
 }

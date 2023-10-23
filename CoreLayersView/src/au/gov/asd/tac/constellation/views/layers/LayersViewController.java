@@ -162,7 +162,7 @@ public class LayersViewController {
      * Reads the graph's layers_view_state attribute and populates the Layers
      * View pane.
      */
-     public void readState() {
+    public void readState() {
         if (parent == null) {
             return;
         }

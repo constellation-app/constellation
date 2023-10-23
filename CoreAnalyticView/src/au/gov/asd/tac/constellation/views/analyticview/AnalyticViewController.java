@@ -35,15 +35,13 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateReaderPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateWriterPlugin;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewConcept;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 
@@ -119,20 +117,20 @@ public class AnalyticViewController {
         this.categoriesVisible = categoriesVisible;
     }
 
-    public HashMap<GraphVisualisation, Boolean> getGraphVisualisations() {
+    public Map<GraphVisualisation, Boolean> getGraphVisualisations() {
         return graphVisualisations;
     }
 
-    public void setGraphVisualisations(final HashMap<GraphVisualisation, Boolean> graphVisualisations) {
-        this.graphVisualisations = graphVisualisations;
+    public void setGraphVisualisations(final Map<GraphVisualisation, Boolean> graphVisualisations) {
+        this.graphVisualisations = (HashMap) graphVisualisations;
     }
     
-    public HashMap<InternalVisualisation, Node> getInternalVisualisations() {
+    public Map<InternalVisualisation, Node> getInternalVisualisations() {
         return internalVisualisations;
     }
     
-    public void setInternalVisualisations(final HashMap<InternalVisualisation, Node> internalVisualisations) {
-        this.internalVisualisations = internalVisualisations;
+    public void setInternalVisualisations(final Map<InternalVisualisation, Node> internalVisualisations) {
+        this.internalVisualisations = (HashMap) internalVisualisations;
     }
     
     /**
