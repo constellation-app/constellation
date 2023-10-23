@@ -236,7 +236,7 @@ public class SVGGraph {
             Frustum viewFrustum = new Frustum(fov, aspect, xmin, xmax, ymin, ymax, nearPerspective, farPerspective);
 
             //Get the projection matrix from the view frustum
-            Matrix44f pMatrix =  viewFrustum.getProjectionMatrix();
+            Matrix44f pMatrix = viewFrustum.getProjectionMatrix();
             
             //Switch the y sign for exporting to SVG
             final Matrix44f scaleMatrix = new Matrix44f();
@@ -301,7 +301,7 @@ public class SVGGraph {
                 
                 //Get the values of the attributes relevent to the current node
                 final Vector4f position = getVertexPosition(vertexPosition);
-                final float radius = getVertexScaledRadius(position, vertexPosition);
+                final float radius = getVertexScaledRadius(vertexPosition);
                 final ConstellationColor color = access.getVertexColor(vertexPosition);
                 final String bgi = access.getBackgroundIcon(vertexPosition);
                 final String fgi = access.getForegroundIcon(vertexPosition);
@@ -462,8 +462,8 @@ public class SVGGraph {
                 final double lowConnectionAngle = calculateConnectionAngle(lowCenterPosition, highCenterPosition);
 
                 //Get the coordinates of the points where the connections intersect the node radius
-                final Vector4f highCircumferencePosition = offSetPosition(highCenterPosition, getVertexScaledRadius(highCenterPosition, high), highConnectionAngle);
-                final Vector4f lowCircumferencePosition = offSetPosition(lowCenterPosition, getVertexScaledRadius(lowCenterPosition, low), lowConnectionAngle);
+                final Vector4f highCircumferencePosition = offSetPosition(highCenterPosition, getVertexScaledRadius(high), highConnectionAngle);
+                final Vector4f lowCircumferencePosition = offSetPosition(lowCenterPosition, getVertexScaledRadius(low), lowConnectionAngle);
                 
                 //Itterate over all of the Transactions/Edges/Links between the two nodes.
                 //Note: the linkConnectionCount factors in the connection mode and the max transaction threshold.
@@ -610,7 +610,7 @@ public class SVGGraph {
             final float topMargin = 288.0F;
             final float bottomMargin = 128.0F;
             final float xPadding = 250.0F;
-            final float yPadding = 0.0F;
+            final float yPadding = 250.0F;
             final float footerYOffset = topMargin + contentHeight + (yPadding * 2);            
             final float fullWidth = (xMargin * 2) + contentWidth + (xPadding * 2);            
             final float fullHeight = (topMargin + bottomMargin) + contentHeight + (yPadding * 2);            
@@ -648,30 +648,42 @@ public class SVGGraph {
             final Float constelationGraphZ = access.getZ(vertex);
             
             Vector3f worldPosition = new Vector3f(constelationGraphX, constelationGraphY, constelationGraphZ);
+            return getVertexPosition(worldPosition);
+        }
+        
+        private Vector4f getVertexPosition(final Vector3f worldPosition){
             Vector4f screenPosition = new Vector4f();
-            LOGGER.log(Level.SEVERE, String.format("Vertex %s: %s", vertex, worldPosition));
             
             Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
             Vector4f centerOffSet = new Vector4f(128, 128, 0, 0);
             Vector4f.add(screenPosition, screenPosition, centerOffSet);
             
-            LOGGER.log(Level.SEVERE, String.format("Vertex %s: %s", vertex, screenPosition));
+            LOGGER.log(Level.SEVERE, String.format("Vertex %s", screenPosition));
             return screenPosition;
         }
         
         /**
          * Determines the radius of the node.
-         * Note: The position parameter is required to be the out put of a projectionMatrix transformation.
+         * The scale is determined by projecting a position at the edge of the node
+         * to its correlating screen position. 
+         * A less than ideal solution that will not support alternate export perspectives. 
          * @param position
          * @param vertexPosition
          * @return 
          */
-        private float getVertexScaledRadius(final Vector4f position, int vertexPosition) {  
+        private float getVertexScaledRadius(final int vertex) {  
+            Vector4f screenPosition = getVertexPosition(vertex);
+            
+            final Float x = access.getX(vertex) + 1;
+            final Float y = access.getY(vertex) + 1;
+            final Float z = access.getZ(vertex);
+            
+            Vector4f edgePosition = getVertexPosition(new Vector3f(x,y,z));
+            
             int radiusID = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
-            float radius = graph.getFloatValue(radiusID, access.getVertexId(vertexPosition));
-            float conversionScaleFactor = 128f;
-            float depthScaleFactor = 1/position.getZ();
-            return conversionScaleFactor * radius * depthScaleFactor;            
+            float radius = graph.getFloatValue(radiusID, access.getVertexId(vertex));
+            float depthScaleFactor = Math.abs(edgePosition.getX() - screenPosition.getX());
+            return radius * depthScaleFactor;            
         }
         
         /**
