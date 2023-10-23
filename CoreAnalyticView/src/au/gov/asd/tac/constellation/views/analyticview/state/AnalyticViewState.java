@@ -93,8 +93,8 @@ public class AnalyticViewState {
         this.currentQuestion = currentQuestion;
         this.question = question;
         this.activeCategory = activeCategory;
-        this.graphVisualisations = (HashMap) graphVisualisations;
-        this.internalVisualisations = (HashMap) internalVisualisations;
+        this.graphVisualisations = graphVisualisations;
+        this.internalVisualisations = internalVisualisations;
     }
 
     public Map<GraphVisualisation, Boolean> getGraphVisualisations() {
@@ -106,7 +106,7 @@ public class AnalyticViewState {
     }
 
     public void setGraphVisualisations(final Map<GraphVisualisation, Boolean> graphVisualisations) {
-        this.graphVisualisations = (HashMap) graphVisualisations;
+        this.graphVisualisations = graphVisualisations;
     }
     
     public Map<InternalVisualisation, Node> getInternalVisualisations() {
@@ -118,7 +118,7 @@ public class AnalyticViewState {
     }
     
     public void setInternalVisualisations(final Map<InternalVisualisation, Node> internalVisualisations) {
-        this.internalVisualisations = (HashMap) internalVisualisations;
+        this.internalVisualisations = internalVisualisations;
     }
 
     public String getActiveCategory() {
