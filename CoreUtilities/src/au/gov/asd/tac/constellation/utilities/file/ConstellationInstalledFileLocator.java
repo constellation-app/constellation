@@ -50,8 +50,8 @@ public class ConstellationInstalledFileLocator {
         if (locatedFile == null) {
             
             //The below code causes the aplication to hang due to fialing quietly when a file is not at the expected location.
-            //Have deactivated the code when not in headles to prefent this and cause the defaukt behaviour to return null.
-            if (Boolean.TRUE.toString().equalsIgnoreCase(System.getProperty("java.awt.headless"))){
+            //Have deactivated the code when looking for .svg file as svg equivlents to raster images is not ensured.
+            if (!relativePath.contains(".svg")) {
                 // InstalledFileLocator only works in th NetBeans environment.
                 // If we're not there (because we're running unit tests in development, for example), we won't find anything.
                 // Instead, we'll hack our way to what we want. If there's a nicer way, tell me.
