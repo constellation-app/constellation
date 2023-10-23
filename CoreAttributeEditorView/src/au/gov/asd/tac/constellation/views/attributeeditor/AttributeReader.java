@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
+import org.apache.commons.collections4.ListUtils;
 import org.openide.util.NbPreferences;
 
 /**
@@ -105,12 +106,12 @@ public class AttributeReader {
         boolean selectionModified = false;
         boolean attributeModified = false;
         boolean valueModified = false;
-
-        // show all preferences
-        final Map<GraphElementType, Boolean> showAllPrefs = new HashMap<>();
-        showAllPrefs.put(GraphElementType.GRAPH, prefs.getBoolean(AttributePreferenceKey.GRAPH_SHOW_ALL, false));
-        showAllPrefs.put(GraphElementType.VERTEX, prefs.getBoolean(AttributePreferenceKey.NODE_SHOW_ALL, false));
-        showAllPrefs.put(GraphElementType.TRANSACTION, prefs.getBoolean(AttributePreferenceKey.TRANSACTION_SHOW_ALL, false));
+        
+        // hidden attribute preferences
+        final Map<GraphElementType, Boolean> showHiddenPrefs = new HashMap<>();
+        showHiddenPrefs.put(GraphElementType.GRAPH, prefs.getBoolean(AttributePreferenceKey.GRAPH_SHOW_HIDDEN, false));
+        showHiddenPrefs.put(GraphElementType.VERTEX, prefs.getBoolean(AttributePreferenceKey.NODE_SHOW_HIDDEN, false));
+        showHiddenPrefs.put(GraphElementType.TRANSACTION, prefs.getBoolean(AttributePreferenceKey.TRANSACTION_SHOW_HIDDEN, false));
 
         final List<String> hiddenAttrs = StringUtilities.splitLabelsWithEscapeCharacters(prefs.get(AttributePreferenceKey.HIDDEN_ATTRIBUTES, ""), AttributePreferenceKey.SPLIT_CHAR_SET);
         final Set<String> hiddenAttrsSet = new HashSet<>(hiddenAttrs);
@@ -124,7 +125,7 @@ public class AttributeReader {
             attributeModified = currAttributeModificationCount != lastAttributeModificationCount;
             lastAttributeModificationCount = currAttributeModificationCount;
             if (attributeModified || preferenceChanged) {
-                updateElementAttributeNames(rg, ACCEPTED_ELEMENT_TYPES, hiddenAttrsSet, showAllPrefs);
+                updateElementAttributeNames(rg, ACCEPTED_ELEMENT_TYPES, hiddenAttrsSet, showHiddenPrefs);
             }
             final List<GraphElementType> toPopulate = new ArrayList<>(activeElementTypes);
             toPopulate.add(GraphElementType.GRAPH);
@@ -174,7 +175,6 @@ public class AttributeReader {
                             selectedNodes.add(result.getNextElement());
                         }
                     }
-
                 }
             };
             selectedNodethread.setName(UPDATE_SELECTED_NODE_THREAD_NAME);
@@ -224,20 +224,20 @@ public class AttributeReader {
         }
     }
 
-    private void updateElementAttributeNames(final ReadableGraph rg, final List<GraphElementType> elementTypes, final Set<String> hiddenAttrsSet, final Map<GraphElementType, Boolean> showAllPrefs) {
+    private void updateElementAttributeNames(final ReadableGraph rg, final List<GraphElementType> elementTypes, final Set<String> hiddenAttrsSet, final Map<GraphElementType, Boolean> showHiddenPrefs) {
 
         elementAttributeData.clear();
         for (final GraphElementType elementType : elementTypes) {
 
             final int attributeCount = rg.getAttributeCount(elementType);
             final ArrayList<AttributeData> attributeNames = new ArrayList<>();
-            final boolean showAll = showAllPrefs.get(elementType);
+            final boolean showHidden = showHiddenPrefs.get(elementType);
             for (int i = 0; i < attributeCount; i++) {
 
                 final Attribute attr = new GraphAttribute(rg, rg.getAttribute(elementType, i));
                 // do check only if not showing all
 
-                if (!showAll && hiddenAttrsSet.contains(attr.getElementType().toString() + attr.getName())) {
+                if (!showHidden && hiddenAttrsSet.contains(attr.getElementType().toString() + attr.getName())) {
                     continue;
                 }
 
@@ -259,7 +259,7 @@ public class AttributeReader {
             elementAttributeValues.clear();
         }
         for (final GraphElementType type : ACCEPTED_ELEMENT_TYPES) { // for graphElement Type (graph,vertex,transaction)
-            final List<AttributeData> attributes = elementAttributeData.get(type);
+            final List<AttributeData> attributes = ListUtils.emptyIfNull(elementAttributeData.get(type));
             final IntArray selectedElement;
             if (type.equals(GraphElementType.VERTEX)) {
                 selectedElement = selectedNodes;

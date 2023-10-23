@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.gui.MultiChoiceInputField;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.tooltip.TooltipPane;
@@ -72,7 +73,6 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import org.apache.commons.lang3.StringUtils;
-import org.controlsfx.control.CheckComboBox;
 import org.openide.util.HelpCtx;
 
 /**
@@ -108,7 +108,7 @@ public final class ConversationBox extends StackPane {
 
     // Allow the user to choose the displayed actor name.
     private final ObservableList<String> senderAttributesChoices = FXCollections.observableArrayList();
-    private final CheckComboBox<String> senderAttributesCombo = new CheckComboBox<>(senderAttributesChoices);
+    private final MultiChoiceInputField<String> senderAttributesMultiChoiceInput = new MultiChoiceInputField<>(senderAttributesChoices);
 
     private HBox togglesPane;
 
@@ -150,18 +150,18 @@ public final class ConversationBox extends StackPane {
 
         conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
             isAdjustingSenderLabels = true;
-            senderAttributesCombo.getCheckModel().clearChecks();
+            senderAttributesMultiChoiceInput.getCheckModel().clearChecks();
             possibleSenderAttributes.stream().filter(Objects::nonNull);
             senderAttributesChoices.setAll(possibleSenderAttributes);
             for (final String senderAttribute : senderAttributes) {
-                senderAttributesCombo.getCheckModel().check(senderAttribute);
+                senderAttributesMultiChoiceInput.getCheckModel().check(senderAttribute);
             }
             isAdjustingSenderLabels = false;
         });
 
-        senderAttributesCombo.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
+        senderAttributesMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change<? extends String> c) -> {
             if (!isAdjustingSenderLabels) {
-                updateSenderAttributes(senderAttributesCombo.getCheckModel().getCheckedItems());
+                updateSenderAttributes(senderAttributesMultiChoiceInput.getCheckModel().getCheckedItems());
             }
         });
 
@@ -175,8 +175,8 @@ public final class ConversationBox extends StackPane {
                 -> PluginExecution.withPlugin(new AddContentAttributesPlugin()).executeLater(GraphManager.getDefault().getActiveGraph()));
         final Tooltip aabt = new Tooltip("Adds content related transaction attributes to the graph.");
         addAttributesButton.setTooltip(aabt);
-
-        optionsPane.getItems().addAll(senderAttributesCombo, showToolTip, addAttributesButton, helpButton);
+        
+        optionsPane.getItems().addAll(senderAttributesMultiChoiceInput, showToolTip, addAttributesButton, helpButton);
 
         contributionsPane = new BorderPane();
         contributionsPane.setPadding(new Insets(PADDING));

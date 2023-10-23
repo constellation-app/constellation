@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.find.quicksearch;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
-import au.gov.asd.tac.constellation.views.find.advanced.FindResult;
+import au.gov.asd.tac.constellation.views.find.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find.advanced.QuickFindPlugin;
 import au.gov.asd.tac.constellation.views.find.advanced.SelectFindResultsPlugin;
 import java.util.ArrayList;
@@ -72,7 +72,7 @@ public class TransactionQuickSearchProvider implements SearchProvider {
             }
 
             final List<FindResult> results = plugin.getResults();
-            for (FindResult item : results) {
+            for (final FindResult item : results) {
                 if (item != null) {
                     // We have a valid result, so report:
                     response.addResult(new SelectContent(graph, item), item.toString());
@@ -104,7 +104,7 @@ public class TransactionQuickSearchProvider implements SearchProvider {
         @Override
         @SuppressWarnings("unchecked")
         public void run() {
-            final ArrayList<FindResult> results = new ArrayList<>();
+            final List<FindResult> results = new ArrayList<>();
             results.add(result);
 
             final SelectFindResultsPlugin plugin = new SelectFindResultsPlugin(results, false);

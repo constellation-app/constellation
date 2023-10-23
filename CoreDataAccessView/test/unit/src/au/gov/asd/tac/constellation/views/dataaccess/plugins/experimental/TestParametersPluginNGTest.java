@@ -33,6 +33,10 @@ import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginCor
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.experimental.TestParametersPlugin.GraphElementTypeParameterValue;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
@@ -130,7 +134,8 @@ public class TestParametersPluginNGTest {
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -158,7 +163,8 @@ public class TestParametersPluginNGTest {
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -186,7 +192,8 @@ public class TestParametersPluginNGTest {
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -214,7 +221,8 @@ public class TestParametersPluginNGTest {
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -242,7 +250,8 @@ public class TestParametersPluginNGTest {
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -270,7 +279,8 @@ public class TestParametersPluginNGTest {
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -293,7 +303,8 @@ public class TestParametersPluginNGTest {
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");
@@ -333,7 +344,8 @@ public class TestParametersPluginNGTest {
         final PluginParameters result = instance.createParameters();
 
         final GraphRecordStore recordStore = new GraphRecordStore();
-        final DefaultPluginInteraction interaction = new DefaultPluginInteraction(null, null);
+        final DefaultPluginInteraction interaction = mock(DefaultPluginInteraction.class);
+        doNothing().when(interaction).setProgress(anyInt(), anyInt(), anyBoolean());
 
         // Set plugin query name here before execution
         result.getParameters().get(CoreGlobalParameters.QUERY_NAME_PARAMETER_ID).setStringValue("TESTPARAMETERSPLUGIN");

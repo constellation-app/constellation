@@ -119,19 +119,4 @@ public class ConstellationGlobalThreadPoolNGTest {
         ExecutorService e2 = ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool();
         assertEquals(e1 == e2, true);
     }
-
-    /**
-     * Test of getDefaultPluginEnvPool method, of class
-     * ConstellationGlobalThreadPool.
-     *
-     * Same purpose as the tests above
-     */
-    @Test
-    public void testGetDefaultPluginEnvPool() {
-        System.out.println("getDefaultPluginEnvPool");
-        ExecutorService dep1 = ConstellationGlobalThreadPool.getThreadPool().getDefaultPluginEnvPool();
-        ExecutorService dep2 = ConstellationGlobalThreadPool.getThreadPool().getDefaultPluginEnvPool();
-        assertEquals(dep1 == dep2, true);
-    }
-
 }

@@ -31,11 +31,12 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReport;
 import au.gov.asd.tac.constellation.plugins.reporting.GraphReportManager;
 import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
+import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.threadpool.ConstellationGlobalThreadPool;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,8 +53,11 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     private static final Logger LOGGER = Logger.getLogger(DefaultPluginEnvironment.class.getName());
 
     private static final String THREAD_POOL_NAME = "Default Plugin Environment";
+    
+    private static final List<Integer> recentExceptionAuditHashcodes = new ArrayList<>();
+    private static final List<Integer> recentExceptionReportHashcodes = new ArrayList<>();
 
-    private final ExecutorService pluginExecutor = ConstellationGlobalThreadPool.getThreadPool().getDefaultPluginEnvPool();
+    private final ExecutorService pluginExecutor = ConstellationGlobalThreadPool.getThreadPool().getCachedThreadPool();
 
     private static final String GRAPH_NULL_WARNING_MESSAGE = "{0} plugin was executed on a graph which was null";
 
@@ -402,11 +406,47 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         return pluginExecutor;
     }
 
+    /**
+     * Check if the exception (identified by its hashcode) has been recently audited.
+     * If not, add it to a list of the 10 most recent exceptions that have been audited.
+     * @param exceptionHashcode
+     * @return true if the exception has recently been audited.
+     */
+    private boolean isExceptionAudited(final Integer exceptionHashcode){
+        if (recentExceptionAuditHashcodes.contains(exceptionHashcode)) {
+            return true;
+        }
+        recentExceptionAuditHashcodes.add(exceptionHashcode);
+        while (recentExceptionAuditHashcodes.size() > 10) {
+            recentExceptionAuditHashcodes.remove(0);
+        }
+        return false;
+    }
+
+    /**
+     * Check if the exception (identified by its hashcode) has been recently reported.
+     * If not, add it to a list of the 10 most recent exceptions that have been reported.
+     * @param exceptionHashcode
+     * @return true if the exception has recently been reported.
+     */
+    private boolean isExceptionReported(final Integer exceptionHashcode){
+        if (recentExceptionReportHashcodes.contains(exceptionHashcode)) {
+            return true;
+        }
+        recentExceptionReportHashcodes.add(exceptionHashcode);
+        while (recentExceptionReportHashcodes.size() > 10) {
+            recentExceptionReportHashcodes.remove(0);
+        }
+        return false;
+    }
+    
     private void auditPluginError(final Plugin plugin, final Throwable error) {
-        try {
-            ConstellationLogger.getDefault().pluginError(plugin, error);
-        } catch (final Exception ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+        if (!isExceptionAudited(error.hashCode())) {
+            try {
+                ConstellationLogger.getDefault().pluginError(plugin, error);
+            } catch (final Exception ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            }
         }
     }
 
@@ -426,32 +466,42 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
         if (currentReport != null) {
             currentReport.setError(ex);
         }
+        if (!isExceptionReported(ex.hashCode())) {        
+            if (ex instanceof InterruptedException) {
+                final String message = String.format("Plugin cancelled: %s", pluginName);
+                interaction.notify(PluginNotificationLevel.INFO, message);
+                LOGGER.log(Level.INFO, message, ex);
 
-        if (ex instanceof InterruptedException) {
-            final String message = String.format("Plugin cancelled: %s", pluginName);
-            interaction.notify(PluginNotificationLevel.INFO, message);
-            LOGGER.log(Level.INFO, message, ex);
-        } else if (ex instanceof PluginException) {
-            interaction.notify(level, ex.getLocalizedMessage());
-            LOGGER.log(Level.INFO, String.format("Plugin exception caught in %s", pluginName), ex);
-        } else {
-            final String message = String.format("Unexpected exception caught in %s", pluginName);
-            switch (level) {
-                case FATAL:
-                case ERROR:
-                    LOGGER.log(Level.SEVERE, message, ex);
-                    break;
-                case WARNING:
-                    LOGGER.log(Level.WARNING, message, ex);
-                    break;
-                case INFO:
-                    LOGGER.log(Level.INFO, message, ex);
-                    break;
-                case DEBUG:
-                    LOGGER.log(Level.FINE, message, ex);
-                    break;
-                default:
-                    break;
+            } else if (ex instanceof PluginException) {
+                final String displayMessage;
+                if (ex.getLocalizedMessage() == null) {
+                    displayMessage = "null";
+                } else {
+                    displayMessage = ex.getLocalizedMessage().startsWith(NotifyDisplayer.BLOCK_POPUP_FLAG) ? ex.getLocalizedMessage().substring(NotifyDisplayer.BLOCK_POPUP_FLAG.length()): ex.getLocalizedMessage();
+                }
+                interaction.notify(level, displayMessage);
+                final PluginException nonPopupEx = new PluginException(PluginNotificationLevel.ERROR, NotifyDisplayer.BLOCK_POPUP_FLAG + displayMessage);
+                nonPopupEx.setStackTrace(ex.getStackTrace() != null ? ex.getStackTrace() : new StackTraceElement[]{});
+                LOGGER.log(Level.INFO, String.format("Plugin exception caught in %s", pluginName), nonPopupEx);
+            } else {
+                final String message = String.format("Unexpected exception caught in %s", pluginName);
+                switch (level) {
+                    case FATAL:
+                    case ERROR:
+                        LOGGER.log(Level.SEVERE, message, ex);
+                        break;
+                    case WARNING:
+                        LOGGER.log(Level.WARNING, message, ex);
+                        break;
+                    case INFO:
+                        LOGGER.log(Level.INFO, message, ex);
+                        break;
+                    case DEBUG:
+                        LOGGER.log(Level.FINE, message, ex);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
