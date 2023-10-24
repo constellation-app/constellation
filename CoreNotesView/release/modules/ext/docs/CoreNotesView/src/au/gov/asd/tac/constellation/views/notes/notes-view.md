@@ -90,9 +90,9 @@ view:
 
 ## Markdown Support
 
-The notes view supports some markdown text now. There is a checkbox in the new note
-window that allows you to enable and disable markdown. Markdown is a lightweight markup
-language for creating formatted text. As of now the notes view supports MD features like:
+The Notes View supports some Markdown text now. There is a checkbox in the new note
+window that allows you to enable and disable Markdown. Markdown is a markup language
+for creating formatted text. As of now the notes view supports Markdown features like:
 
     1. Headings
         Put the 1-6 \# characters and a space before text to create a heading.
