@@ -397,9 +397,9 @@ public abstract class RestClient {
             final StringBuilder sb = new StringBuilder();
             if (messageBytes != null && messageBytes.length > 0) {
                 try {
-                    sb.append(new String(bytes, StandardCharsets.UTF_8.name()));
+                    sb.append(new String(messageBytes, StandardCharsets.UTF_8.name()));
                 } catch (final UnsupportedEncodingException ex) {
-                    sb.append(String.format("(message bytes: length %d)", bytes.length));
+                    sb.append(String.format("(message bytes: length %d)", messageBytes.length));
                 }
                 logRequest(url, params, sb.toString());
             } else {

@@ -65,7 +65,7 @@ public class LogPreferences {
      * @param activateLogging Set the preference to be effectively on or off
      *
      */
-    public static void setConnectionLogging(boolean activateLogging) {
+    public static void setConnectionLogging(final boolean activateLogging) {
         final long updatedValue = activateLogging ? System.currentTimeMillis() : 0;
         PREFERENCES.putLong(CONNECTION_LOG_DATE_PREF, updatedValue);
     }

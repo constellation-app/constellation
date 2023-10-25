@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * The ConncetionLogger is used as a portal for logging requests to be processed.
+ * The ConnectionLogging class is used as a portal to provide session logging for api connections.
  * It will log ALL Levels of errors when the ConnectionLogging preference is enabled.
  * It is primarily intended for Data Access plugins using the RestClient,
  * with enabling/disabling done through the Data Access View -> Workflow Options
@@ -31,7 +31,7 @@ public class ConnectionLogging {
     private static ConnectionLogging instance = null;
     
     private ConnectionLogging(){
-        getInstance().setLogLevel(Level.ALL); // NOSONAR
+        LOGGER.setLevel(Level.ALL); // NOSONAR
     }
     
     public static ConnectionLogging getInstance(){
@@ -41,13 +41,13 @@ public class ConnectionLogging {
         return instance;
     }
     
-    private void setLogLevel(final Level newLevel){
-        LOGGER.setLevel(newLevel); // NOSONAR 
-    }
-    
     public void log(final Level logLevel, final String logMessage, final Object logParams){
         if (LogPreferences.isConnectionLoggingEnabled()) {
-            LOGGER.log(logLevel, logMessage, logParams);
+            if (logParams == null) { 
+                LOGGER.log(logLevel, logMessage);
+            } else {
+                LOGGER.log(logLevel, logMessage, logParams);
+            }
         }
     }
 
