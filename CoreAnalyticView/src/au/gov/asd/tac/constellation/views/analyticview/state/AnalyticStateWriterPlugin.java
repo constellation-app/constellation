@@ -29,8 +29,8 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javafx.scene.Node;
 
 /**
@@ -50,14 +50,14 @@ public final class AnalyticStateWriterPlugin extends SimpleEditPlugin {
     private final AnalyticQuestionDescription<?> currentQuestion;
     private final AnalyticQuestion question;
     private final String activeCategory;
-    private final HashMap<GraphVisualisation, Boolean> graphVisualisations;
-    private final HashMap<InternalVisualisation, Node> internalVisualisations;
+    private final Map<GraphVisualisation, Boolean> graphVisualisations;
+    private final Map<InternalVisualisation, Node> internalVisualisations;
 
     public AnalyticStateWriterPlugin(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
             final List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> activePlugins, final AnalyticResult<?> result,
             final boolean resultsVisible, final AnalyticQuestionDescription<?> currentQuestion, final AnalyticQuestion question,
-            final boolean categoriesVisible, final String activeCategory, final HashMap<GraphVisualisation, Boolean> graphVisualisations,
-            final HashMap<InternalVisualisation, Node> internalVisualisations) {
+            final boolean categoriesVisible, final String activeCategory, final Map<GraphVisualisation, Boolean> graphVisualisations,
+            final Map<InternalVisualisation, Node> internalVisualisations) {
         this.currentAnalyticQuestionIndex = currentQuestionIndex;
         this.activeAnalyticQuestions = activeQuestions;
         this.activeSelectablePlugins = activePlugins;

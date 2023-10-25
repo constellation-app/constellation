@@ -191,7 +191,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         }
         analyticController.readState();
         
-        if (GraphManager.getDefault().getActiveGraph() == null) {
+        if (current == null) {
             analyticViewPane.reset();
         }
     }

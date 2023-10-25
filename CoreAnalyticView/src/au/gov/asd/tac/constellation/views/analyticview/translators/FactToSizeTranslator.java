@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.FactResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult.ElementFact;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
 import java.util.HashMap;
+import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -44,8 +45,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, ElementFact> {
 
     // Maps of the sizes of the vertices and transactions before the plugin is run
-    private HashMap<Integer, Float> vertexSizes = new HashMap<>();
-    private HashMap<Integer, Float> transactionSizes = new HashMap<>();
+    private Map<Integer, Float> vertexSizes = new HashMap<>();
+    private Map<Integer, Float> transactionSizes = new HashMap<>();
 
     @Override
     public String getName() {
@@ -70,22 +71,22 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
     }
 
     @Override
-    public HashMap<Integer, Float> getVertexSizes() {
+    public Map<Integer, Float> getVertexSizes() {
         return vertexSizes;
     }
 
     @Override
-    public void setVertexSizes(final HashMap<Integer, Float> sizes) {
+    public void setVertexSizes(final Map<Integer, Float> sizes) {
         vertexSizes = sizes;
     }
 
     @Override
-    public HashMap<Integer, Float> getTransactionSizes() {
+    public Map<Integer, Float> getTransactionSizes() {
         return transactionSizes;
     }
 
     @Override
-    public void setTransactionSizes(final HashMap<Integer, Float> sizes) {
+    public void setTransactionSizes(final Map<Integer, Float> sizes) {
         transactionSizes = sizes;
     }
 

@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.FactResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.FactResult.ElementFact;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.ColorVisualisation;
 import java.util.HashMap;
+import java.util.Map;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -44,8 +45,8 @@ import org.openide.util.lookup.ServiceProvider;
 public class FactColorTranslator extends AbstractColorTranslator<FactResult, ElementFact> {
 
     // Maps of the colors of the vertices and transactions before the plugin is run
-    private HashMap<Integer, ConstellationColor> vertexColors = new HashMap<>();
-    private HashMap<Integer, ConstellationColor> transactionColors = new HashMap<>();
+    private Map<Integer, ConstellationColor> vertexColors = new HashMap<>();
+    private Map<Integer, ConstellationColor> transactionColors = new HashMap<>();
 
     @Override
     public String getName() {
@@ -70,22 +71,22 @@ public class FactColorTranslator extends AbstractColorTranslator<FactResult, Ele
     }
 
     @Override
-    public HashMap<Integer, ConstellationColor> getVertexColors() {
+    public Map<Integer, ConstellationColor> getVertexColors() {
         return vertexColors;
     }
 
     @Override
-    public void setVertexColors(final HashMap<Integer, ConstellationColor> colors) {
+    public void setVertexColors(final Map<Integer, ConstellationColor> colors) {
         vertexColors = colors;
     }
 
     @Override
-    public HashMap<Integer, ConstellationColor> getTransactionColors() {
+    public Map<Integer, ConstellationColor> getTransactionColors() {
         return transactionColors;
     }
 
     @Override
-    public void setTransactionColors(final HashMap<Integer, ConstellationColor> colors) {
+    public void setTransactionColors(final Map<Integer, ConstellationColor> colors) {
         transactionColors = colors;
     }
 

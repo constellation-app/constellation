@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTrans
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
@@ -41,8 +42,8 @@ public class ColorVisualisation<C> extends GraphVisualisation {
     private boolean activated = false;
 
     // Maps of the colors of the vertices and transactions before the plugin is run
-    private HashMap<Integer, ConstellationColor> vertexColors = new HashMap<>();
-    private HashMap<Integer, ConstellationColor> transactionColors = new HashMap<>();
+    private Map<Integer, ConstellationColor> vertexColors = new HashMap<>();
+    private Map<Integer, ConstellationColor> transactionColors = new HashMap<>();
 
     public ColorVisualisation(final AbstractColorTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;

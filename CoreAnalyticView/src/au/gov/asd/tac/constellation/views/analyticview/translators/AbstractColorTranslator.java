@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.analyticview.translators;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.ColorVisualisation;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -38,12 +38,12 @@ public abstract class AbstractColorTranslator<R extends AnalyticResult<?>, C> ex
 
     public abstract void executePlugin(final boolean reset);
    
-    public abstract HashMap<Integer, ConstellationColor> getVertexColors();
+    public abstract Map<Integer, ConstellationColor> getVertexColors();
     
-    public abstract void setVertexColors(final HashMap<Integer, ConstellationColor> colors);
+    public abstract void setVertexColors(final Map<Integer, ConstellationColor> colors);
     
-    public abstract HashMap<Integer, ConstellationColor> getTransactionColors();
+    public abstract Map<Integer, ConstellationColor> getTransactionColors();
     
-    public abstract void setTransactionColors(final HashMap<Integer, ConstellationColor> colors);
+    public abstract void setTransactionColors(final Map<Integer, ConstellationColor> colors);
     
 }

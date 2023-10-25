@@ -22,8 +22,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
-import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
-import java.util.HashMap;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -100,7 +99,7 @@ public class AnalyticResultsPane extends VBox {
     }
 
     protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results,
-            final HashMap<GraphVisualisation, Boolean> graphVisualisations, final HashMap<InternalVisualisation, Node> internalVisualisations) {
+            final Map<GraphVisualisation, Boolean> graphVisualisations, final Map<InternalVisualisation, Node> internalVisualisations) {
         if (results.getClass().equals(EmptyResult.class) && question != null) {
             result = question.getResult() == null ? new EmptyResult() : question.getResult();
         } else {
@@ -139,7 +138,7 @@ public class AnalyticResultsPane extends VBox {
 
                     if (graphVisualisations.containsKey(graphVisualisation)) {
                         graphVisualisation.setSelected(graphVisualisations.get(graphVisualisation));
-                        for (final HashMap.Entry<GraphVisualisation, Boolean> visualisation : graphVisualisations.entrySet()) {
+                        for (final Map.Entry<GraphVisualisation, Boolean> visualisation : graphVisualisations.entrySet()) {
                             if (visualisation.getKey().getClass() == graphVisualisation.getClass()) {
                                 graphVisualisation = visualisation.getKey();
                                 visualisationNode = graphVisualisation.getVisualisation();

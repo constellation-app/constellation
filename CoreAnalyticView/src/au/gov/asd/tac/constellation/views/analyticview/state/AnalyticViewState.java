@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -98,11 +99,7 @@ public class AnalyticViewState {
     }
 
     public Map<GraphVisualisation, Boolean> getGraphVisualisations() {
-        if (graphVisualisations != null) {
-            return graphVisualisations;
-        } else {
-            return new HashMap<>();
-        } 
+        return graphVisualisations != null ? graphVisualisations : Collections.emptyMap();
     }
 
     public void setGraphVisualisations(final Map<GraphVisualisation, Boolean> graphVisualisations) {
@@ -110,11 +107,7 @@ public class AnalyticViewState {
     }
     
     public Map<InternalVisualisation, Node> getInternalVisualisations() {
-        if (internalVisualisations != null) {
-            return internalVisualisations;
-        } else {
-            return new HashMap<>();
-        }      
+        return internalVisualisations != null ? internalVisualisations : Collections.emptyMap();
     }
     
     public void setInternalVisualisations(final Map<InternalVisualisation, Node> internalVisualisations) {

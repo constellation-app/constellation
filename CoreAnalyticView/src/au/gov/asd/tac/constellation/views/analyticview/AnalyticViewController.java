@@ -67,8 +67,8 @@ public class AnalyticViewController {
     private AnalyticQuestionDescription<?> currentQuestion = null;
     private AnalyticQuestion question;
     private String activeCategory;
-    private HashMap<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
-    private HashMap<InternalVisualisation, Node> internalVisualisations = new HashMap<>();
+    private Map<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
+    private Map<InternalVisualisation, Node> internalVisualisations = new HashMap<>();
     
     public AnalyticViewController() {
         this.activeAnalyticQuestions = new ArrayList<>();
@@ -122,7 +122,7 @@ public class AnalyticViewController {
     }
 
     public void setGraphVisualisations(final Map<GraphVisualisation, Boolean> graphVisualisations) {
-        this.graphVisualisations = (HashMap) graphVisualisations;
+        this.graphVisualisations = graphVisualisations;
     }
     
     public Map<InternalVisualisation, Node> getInternalVisualisations() {
@@ -130,7 +130,7 @@ public class AnalyticViewController {
     }
     
     public void setInternalVisualisations(final Map<InternalVisualisation, Node> internalVisualisations) {
-        this.internalVisualisations = (HashMap) internalVisualisations;
+        this.internalVisualisations = internalVisualisations;
     }
     
     /**

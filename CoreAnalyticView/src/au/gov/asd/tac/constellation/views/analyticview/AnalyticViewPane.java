@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisual
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -72,8 +73,8 @@ public class AnalyticViewPane extends BorderPane {
     private final AnalyticConfigurationPane analyticConfigurationPane;
     private final AnalyticResultsPane analyticResultsPane;
     private final AnalyticResult<?> emptyResult = new EmptyResult();
-    private HashMap<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
-    private HashMap<InternalVisualisation, Node> internalVisualisations = new HashMap<>();
+    private Map<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
+    private Map<InternalVisualisation, Node> internalVisualisations = new HashMap<>();
 
     private static boolean running = false;
     private Thread questionThread = null;
