@@ -69,6 +69,8 @@ public class HideVisualisation<C> extends GraphVisualisation {
         if (activated) {
             translator.executePlugin(activated, 0);
             activated = !activated;
+            AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
+            AnalyticViewController.getDefault().writeState();
         }
     }
 
@@ -108,14 +110,7 @@ public class HideVisualisation<C> extends GraphVisualisation {
     
     @Override 
     public boolean equals(final Object object) {
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        } else if (this == object || getClass() == object.getClass()) {
-            return true;
-        }
-        
-        final HideVisualisation newObject = (HideVisualisation) object;
-        return translator == newObject.translator && hideButton == newObject.hideButton && activated == newObject.activated;
+        return (object != null && getClass() == object.getClass());
     }
     
     @Override 

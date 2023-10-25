@@ -70,6 +70,8 @@ public class SizeVisualisation<C> extends GraphVisualisation {
             activated = !activated;
             vertexSizes = translator.getVertexSizes();
             transactionSizes = translator.getVertexSizes();
+            AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
+            AnalyticViewController.getDefault().writeState();
         }
     }
 
@@ -108,14 +110,7 @@ public class SizeVisualisation<C> extends GraphVisualisation {
     
     @Override 
     public boolean equals(final Object object) {
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        } else if (this == object || getClass() == object.getClass()) {
-            return true;
-        }
-        
-        final SizeVisualisation newObject = (SizeVisualisation) object;
-        return translator == newObject.translator && sizeButton == newObject.sizeButton && activated == newObject.activated;
+        return (object != null && getClass() == object.getClass());
     }
     
     @Override 

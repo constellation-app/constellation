@@ -71,6 +71,8 @@ public class ColorVisualisation<C> extends GraphVisualisation {
             activated = !activated;
             vertexColors = translator.getVertexColors();
             transactionColors = translator.getVertexColors();
+            AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
+            AnalyticViewController.getDefault().writeState();
         }
     }
 
@@ -111,14 +113,7 @@ public class ColorVisualisation<C> extends GraphVisualisation {
     
     @Override 
     public boolean equals(final Object object) {
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        } else if (this == object || getClass() == object.getClass()) {
-            return true;
-        }
-        
-        final ColorVisualisation newObject = (ColorVisualisation) object;
-        return translator == newObject.translator && colorButton == newObject.colorButton && activated == newObject.activated;
+        return (object != null && getClass() == object.getClass());
     }
     
     @Override 

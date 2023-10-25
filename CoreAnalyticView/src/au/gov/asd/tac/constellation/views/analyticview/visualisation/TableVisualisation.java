@@ -197,12 +197,7 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
     
     @Override
     public boolean equals(final Object object) {
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        } else if (this == object || getClass() == object.getClass()) {
-            return true;
-        }
-        return false;
+        return (object != null && getClass() == object.getClass());
     }
     
     @Override 
