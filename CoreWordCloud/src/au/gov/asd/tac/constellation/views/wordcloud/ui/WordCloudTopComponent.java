@@ -50,7 +50,7 @@ import org.openide.windows.TopComponent;
         id = "path for this topcomponent"
 )
 @ActionReferences({
-    @ActionReference(path = "Menu/Views", position = 2000),
+    @ActionReference(path = "Menu/Experimental/Views", position = 2000),
     @ActionReference(path = "Shortcuts", name = "CS-W")
 })
 @TopComponent.OpenActionRegistration(

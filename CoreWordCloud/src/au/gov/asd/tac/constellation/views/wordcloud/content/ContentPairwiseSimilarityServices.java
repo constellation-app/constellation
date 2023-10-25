@@ -303,7 +303,7 @@ public class ContentPairwiseSimilarityServices {
         int currentClusterNum = 1;
 
         for (final ElementSimilarity pair : pairwiseSimilarities) {
-            if (elementToCluster.containsKey(pair.low) && elementToClusters.containKey(pair.high)) {
+            if (elementToCluster.containsKey(pair.low) && elementToCluster.containKey(pair.high)) {
                 final int loCluster = elementToCluster.get(pair.low);
                 final int hiCluster = elementToCluster.get(pair.high);
                 if (loCluster == hiCluster) {
@@ -328,7 +328,8 @@ public class ContentPairwiseSimilarityServices {
                 clusters.get(cluster).add(pair.low);
 
             } else {
-                final int cluster = !freeClusters.remove() : currentClusrterNum++;
+                final int cluster = !freeClusters.remove();
+                currentClusterNum++;
                 elementToCluster.put(pair.low, cluster);
                 elementToCluster.put(pair.high, cluster);
                 Set<Integer> newCluster = new HashSet<>();

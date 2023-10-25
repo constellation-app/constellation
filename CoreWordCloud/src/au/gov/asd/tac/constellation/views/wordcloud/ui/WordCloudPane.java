@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.css.converter.StringConverter;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -52,8 +52,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.util.StringConverter;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 /**
  * The main JavaFx Pane with which to visualise word clouds and run the plugin
@@ -192,7 +192,6 @@ public class WordCloudPane extends BorderPane {
                 }
             }
 
-            @Override
             public void stateChanged(ChangeEvent e) {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
@@ -205,11 +204,8 @@ public class WordCloudPane extends BorderPane {
         sortingButtonBar.getChildren().addAll(alphabetical, frequency);
         showTooltipsCheckbox = new CheckBox("Hovering translations");
         showTooltipsCheckbox.setSelected(true);
-        showTooltipsCheckbox.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(final ActionEvent t) {
-                tipsPane.setEnabled(showTooltipsCheckbox.isSelected());
-            }
+        showTooltipsCheckbox.setOnAction((final ActionEvent t) -> {
+            tipsPane.setEnabled(showTooltipsCheckbox.isSelected());
         });
         showTooltipsCheckbox.setStyle("fx-text-fill: white; -fx-padding: 2;");
         buttonBar.getChildren().addAll(modeButtonBar, showTooltipsCheckbox, sortingButtonBar);
@@ -236,16 +232,13 @@ public class WordCloudPane extends BorderPane {
         });
 
         slider.setPrefWidth(400);
-        slider.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(final ObservableValue<? extends Number> obv, Number oldVal, Number newVal) {
-                double newSignificance = newVal.doubleValue();
-                if (newSignificance != 0) {
-                    newSignificance = Math.pow(20, 0 - (Math.log(newSignificance) / Math.log(0.5)));
-                }
-                significanceLabel.setText(String.format("significance: %.2g", newSignificance));
-                controller.setSignificance(newSignificance);
+        slider.valueProperty().addListener((final ObservableValue<? extends Number> obv, final Number oldVal, final Number newVal) -> {
+            double newSignificance = newVal.doubleValue();
+            if (newSignificance != 0) {
+                newSignificance = Math.pow(20, 0 - (Math.log(newSignificance) / Math.log(0.5)));
             }
+            significanceLabel.setText(String.format("significance: %.2g", newSignificance));
+            controller.setSignificance(newSignificance);
         });
 
         sliderBar.getChildren().addAll(significanceLabel, slider);

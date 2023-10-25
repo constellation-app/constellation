@@ -59,7 +59,7 @@ public abstract class ThreadAllocator {
     }
 
     private int calculateNumberOfElementsPerThread() {
-        return (int) Math.cell((double) numberOfElements / (double) numberOfThreads);
+        return (int) Math.ceil((double) numberOfElements / (double) numberOfThreads);
     }
 
     public final ThreadAllocator resetThreadAllocation(final int numberOfElements) {
