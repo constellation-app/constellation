@@ -189,8 +189,17 @@ public class SVGObject {
         svgDataReference.setAttribute(attributeKey, String.format("%s", attributeValue.getHtmlColor()));
     }
     
-    private String getAttribute(final SVGAttributeConstant attributeKey){
-        return svgDataReference.getAttributeValue(attributeKey.name());
+    private String getAttributeString(final SVGAttributeConstant attributeKey){
+        return svgDataReference.getAttributeValue(attributeKey.getName());
+    } 
+    
+    private Float getAttributeFloat(final SVGAttributeConstant attributeKey){
+        String attribute = getAttributeString(attributeKey);
+        if (attribute == null || attribute.contains("%")){
+            return null;
+        } else {
+            return Float.parseFloat(attribute);
+        }
     } 
     
     /**
@@ -217,8 +226,8 @@ public class SVGObject {
         }
     }
     
-    public float getHeight(){
-        return this.height == null ? 0 : this.height;
+    public float getHeight(){        
+        return this.getPositionalData(this.height, SVGAttributeConstant.HEIGHT);
     }
     
     /**
@@ -246,16 +255,22 @@ public class SVGObject {
     }
     
     public float getWidth(){
-        //Attempt to return the localy stored width value;
-        if (this.width != null){
-            return this.width;
-            
-        //Attempt to get the width value from SVG data
-        } else if (this.getAttribute(SVGAttributeConstant.WIDTH) != null) {
-            return Float.parseFloat(this.getAttribute(SVGAttributeConstant.WIDTH));
+        return this.getPositionalData(this.width, SVGAttributeConstant.WIDTH);
+    }
+    
+    private float getPositionalData(final Float quickReference, final SVGAttributeConstant longReference){
         
-        //No width value has been set
+        if (quickReference != null){
+            //Return the localy stored value;
+            return quickReference;
+        }
+            
+        Float attributeFloat = this.getAttributeFloat(longReference);          
+        if (attributeFloat != null) {
+            //Return the value set during parsing;
+            return attributeFloat;
         } else {
+            //No value has been set
             return 0;
         }
     }
@@ -293,23 +308,16 @@ public class SVGObject {
      */
     private void setXPosition(final float x) {
         this.x = x;
-        this.setAttribute(SVGAttributeConstant.X, x);
+        if ("circle".equals(this.toSVGData().getType())){
+            this.setAttribute(SVGAttributeConstant.CX, x);
+        } else {
+            this.setAttribute(SVGAttributeConstant.X, x);
+        }
+        
     }
     
     public float getXPosition(){
-        //Attempt to return the localy stored x value;
-        if (this.x != null){
-            return this.x;
-            
-        //Attempt to get the x value from SVG data
-        } else if (this.getAttribute(SVGAttributeConstant.X) != null) {
-            LOGGER.log(Level.SEVERE, String.format("x position %s retrieved as %s", this.getAttribute(SVGAttributeConstant.X), Float.parseFloat(this.getAttribute(SVGAttributeConstant.X))));
-            return Float.parseFloat(this.getAttribute(SVGAttributeConstant.X));
-        
-        //No x value has been set
-        } else {
-            return 0;
-        }
+        return this.getPositionalData(this.x, SVGAttributeConstant.X);
     }
     /**
      * Sets the Y position of the SVGObject.
@@ -318,22 +326,15 @@ public class SVGObject {
      */
     private void setYPosition(final float y) {
         this.y = y;
-        this.setAttribute(SVGAttributeConstant.Y, y);
+        if ("circle".equals(this.toSVGData().getType())){
+            this.setAttribute(SVGAttributeConstant.CY, y);
+        } else {
+            this.setAttribute(SVGAttributeConstant.Y, y);
+        }
     }
     
     public float getYPosition(){
-        //Attempt to return the localy stored y value;
-        if (this.y != null){
-            return this.y;
-            
-        //Attempt to get the y value from SVG data
-        } else if (this.getAttribute(SVGAttributeConstant.Y) != null) {
-            return Float.parseFloat(this.getAttribute(SVGAttributeConstant.Y));
-        
-        //No y value has been set
-        } else {
-            return 0;
-        }
+        return this.getPositionalData(this.y, SVGAttributeConstant.Y);
     }
      
     /**
@@ -440,10 +441,18 @@ public class SVGObject {
      */
     public void setStrokeStyle(final LineStyle style) {
         if (style == LineStyle.DOTTED) {
-            this.setAttribute(SVGAttributeConstant.DASH_ARRAY, "35 35");
+            this.setStrokeArray(35, 35);
         } else if (style == LineStyle.DASHED) {
-            this.setAttribute(SVGAttributeConstant.DASH_ARRAY, "70 35");
+            this.setStrokeArray(70, 35);
         }
+    }
+    
+    public void setStrokeArray(final float strokeA, final float strokeB){
+        this.setAttribute(SVGAttributeConstant.DASH_ARRAY, String.format("%s %s", strokeA, strokeB));
+    }
+    
+    public void setStrokeArray(final float strokeA, final float strokeB, final float strokeC){
+        this.setAttribute(SVGAttributeConstant.DASH_ARRAY, String.format("%s %s %s", strokeA, strokeB, strokeC));
     }
     
     /**

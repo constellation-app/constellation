@@ -179,8 +179,9 @@ public class SVGGraph {
             buildHeader(svgGraph);
             buildFooter(svgGraph);
             buildBackground(svgGraph);
-            buildConnections(svgGraph);
             buildNodes(svgGraph);
+            buildConnections(svgGraph);
+            
             setLayoutDimensions(svgGraph);
             return svgGraph.toSVGData();
         }       
@@ -471,7 +472,12 @@ public class SVGGraph {
                     
                     //Get the reference tothe current transaction/Edge/Link
                     final int connection = access.getLinkConnection(linkPosition, connectionPosition);
-
+                    
+                    if (high == low) {
+                        final Vector4f loopConnectionCentrePosition = new Vector4f();
+                        Vector4f.add(loopConnectionCentrePosition, highCenterPosition, new Vector4f(getVertexScaledRadius(high), -getVertexScaledRadius(high), 0, 0));
+                        buildLoopedConnection(connectionsContainer, loopConnectionCentrePosition, connection);
+                    } else {
                     //Determine offset controlls for drawing multiple Transactions/Edges in paralell
                     final int paralellOffsetDistance = (connectionPosition / 2 + ((connectionPosition % 2 == 0) ? 0 : 1)) * 16;
                     final double paralellOffsetDirection = Math.pow(-1, connectionPosition);
@@ -480,12 +486,54 @@ public class SVGGraph {
                     //Determine the unique positions for the individual Transation/edge/link.
                     final Vector4f highPosition = offSetPosition(highCircumferencePosition, paralellOffsetDistance, highConnectionAngle - paralellOffsetAngle);
                     final Vector4f lowPosition = offSetPosition(lowCircumferencePosition, paralellOffsetDistance, lowConnectionAngle + paralellOffsetAngle);
-                    
+                    LOGGER.log(Level.SEVERE, String.format("Low: %s, high: %s", lowPosition.toString(), highPosition.toString()));
                     //Create the Transaction/Edge/Link SVGData
-                    buildConnection(connectionsContainer, highPosition, lowPosition, connection);  
+                    buildLinearConnection(connectionsContainer, highPosition, lowPosition, connection);  
+                    }
                 } 
                 interaction.setProgress(progress++, access.getLinkCount(), true);
             }
+        }
+        
+        private void buildLoopedConnection(final SVGObject connectionsContainer, final Vector4f position, final int connectionReference) {
+            final SVGObject connection = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION_LOOP);
+            final SVGObject arrowShaft = connection.getChild(SVGLayoutConstant.ARROW_SHAFT.getValue());
+
+            
+            //Get the coordinates of the potential shaft extremeties at 64px behind the arrow tip position.
+            final ConstellationColor color = getConnectionColor(connectionReference);
+            //Assign the positional values of shaft and arrow head/s based on the direction of the Transaction/Edge/Link
+            final ConnectionDirection direction = access.getConnectionDirection(connectionReference);            
+                
+            switch (direction){
+
+                //Unidirectional connectsions are Transactions, Edges and links with one transaction arrow head    
+                case LOW_TO_HIGH:
+                case HIGH_TO_LOW:
+                    final SVGObject arrowHead = SVGObject.loadFromTemplate(SVGFileNameConstant.ARROW_HEAD_TRANSACTION_LOOP);
+                    Vector4f arrowHeadPosition = new Vector4f(position.getX(), position.getY() + 100, position.getZ(), position.getW());
+                    
+                    arrowHead.setFillColor(color);
+                    buildArrowHead(arrowHead, arrowHeadPosition, 0);
+                    arrowHead.setParent(connection);
+                    break;
+
+                //Undirected connections are Transactions, Edges and Links with no arrow heads.
+                default:
+                    //connection.setDimension(50,50);
+                    arrowShaft.setAttribute(SVGAttributeConstant.RADIUS, "120");
+                    arrowShaft.setStrokeArray(188.5f, 188.5f, 377f);
+                    break;
+            }
+            
+            arrowShaft.setPosition(position.getX(), position.getY());
+            //Set the attributes of the connection and add it to the connections Conatainer  
+            
+            connection.setID(String.format("Connection_%s_%s", position, connectionReference));
+            connection.setStrokeColor(color);
+            
+            connection.setStrokeStyle(access.getConnectionLineStyle(connectionReference));
+            connection.setParent(connectionsContainer);
         }
         
         /**
@@ -497,10 +545,12 @@ public class SVGGraph {
          * @param lowPosition
          * @param connection 
          */
-        private void buildConnection(final SVGObject connectionsContainer, final Vector4f highPosition, final Vector4f lowPosition, final int connection){
+        private void buildLinearConnection(final SVGObject connectionsContainer, final Vector4f highPosition, final Vector4f lowPosition, final int connection){
             //Get references to SVG Objects being built within this method 
-            final SVGObject connectionSVG = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION);
+
+            final SVGObject connectionSVG = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION_LINEAR);
             final SVGObject arrowShaft = connectionSVG.getChild(SVGLayoutConstant.ARROW_SHAFT.getValue());
+
             final SVGObject highArrowHeadContainer;
             final SVGObject lowArrowHeadContainer;
             
@@ -514,39 +564,39 @@ public class SVGGraph {
 
             //Assign the positional values of shaft and arrow head/s based on the direction of the Transaction/Edge/Link
             final ConnectionDirection direction = access.getConnectionDirection(connection);            
-            switch (direction){
                 
+            switch (direction){
                 //Bidirectional connectsions are Links with two link arrow heads
                 case BIDIRECTED:
                     buildArrowShaft(arrowShaft, highPositionRecessed, lowPositionRecessed);
-                    
-                    highArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
-                    buildArrowHead(highArrowHeadContainer, highPosition, highConnectionAngle);
+
+                    highArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.ARROW_HEAD_LINK);
+                    buildArrowHead(highArrowHeadContainer, highPosition, lowConnectionAngle);
                     highArrowHeadContainer.setParent(connectionSVG);
-                    
-                    lowArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.LINK_ARROW_HEAD);
-                    buildArrowHead(lowArrowHeadContainer, lowPosition, lowConnectionAngle);
+
+                    lowArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.ARROW_HEAD_LINK);
+                    buildArrowHead(lowArrowHeadContainer, lowPosition, highConnectionAngle);
                     lowArrowHeadContainer.setParent(connectionSVG);
                     break;
-                
+
                 //Unidirectional connectsions are Transactions, Edges and links with one transaction arrow head    
                 case LOW_TO_HIGH:
                     buildArrowShaft(arrowShaft, highPositionRecessed, lowPosition);
-                    
-                    highArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
-                    buildArrowHead(highArrowHeadContainer, highPosition, highConnectionAngle);
+
+                    highArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.ARROW_HEAD_TRANSACTION);
+                    buildArrowHead(highArrowHeadContainer, highPosition, lowConnectionAngle);
                     highArrowHeadContainer.setParent(connectionSVG);
                     break;
-                   
+
                 //Unidirectional connectsions are Transactions, Edges and links with one transaction arrow head
                 case HIGH_TO_LOW:
                     buildArrowShaft(arrowShaft, highPosition, lowPositionRecessed); 
-                    
-                    lowArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.TRANSACTION_ARROW_HEAD);
-                    buildArrowHead(lowArrowHeadContainer, lowPosition, lowConnectionAngle);
+
+                    lowArrowHeadContainer = SVGObject.loadFromTemplate(SVGFileNameConstant.ARROW_HEAD_TRANSACTION);
+                    buildArrowHead(lowArrowHeadContainer, lowPosition, highConnectionAngle);
                     lowArrowHeadContainer.setParent(connectionSVG);
                     break;
-                
+
                 //Undirected connections are Transactions, Edges and Links with no arrow heads.
                 default:
                     buildArrowShaft(arrowShaft, highPosition, lowPosition);
@@ -570,18 +620,18 @@ public class SVGGraph {
          * @param connectionAngle 
          */
         private void buildArrowHead(final SVGObject arrowHeadContainer, final Vector4f position, final double connectionAngle) {
-            //The size of the svgElement containing the arrow head polygon asset
-            final int arrowHeadWidth = 128;
-            final int arrowHeadheight = 32;
+
+            final float arrowHeadHeight = arrowHeadContainer.getHeight();
+            LOGGER.log(Level.SEVERE, String.format("ARROW HEAD HEIGHT: %s", arrowHeadHeight));
             
             //Set arrow head svg attributes
-            arrowHeadContainer.setPosition(position.getX() - arrowHeadWidth, position.getY() - arrowHeadheight / 2);
-            arrowHeadContainer.setDimension(arrowHeadWidth, arrowHeadheight);
-            arrowHeadContainer.setID(String.format("arrow-head-%s-%s", position.getX(), position.getY()));
+            arrowHeadContainer.setPosition(position.getX() , position.getY() - arrowHeadHeight/2);
+            //arrowHeadContainer.setDimension(arrowHeadWidth, arrowHeadheight);
+            arrowHeadContainer.setID(String.format("arrow-head-%s-%s", position.getX(), position.getY() - arrowHeadHeight/2 ));
             
             //Rotate the arrow head polygon around the tip to align it with the angle of the connection
             final SVGObject arrowHead = arrowHeadContainer.getChild(SVGLayoutConstant.ARROW_HEAD.getValue());
-            arrowHead.setTransformation(String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), arrowHeadWidth, arrowHeadheight/2));
+            arrowHead.setTransformation(String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), 0, arrowHeadHeight/2));
         }
         
         /**
@@ -709,8 +759,7 @@ public class SVGGraph {
         private Vector4f offSetPosition(final Vector4f origin, final float distance, final double angle) {
             final float x = (float) (origin.getX() - (distance * Math.cos(angle)));
             final float y = (float) (origin.getY() - (distance * Math.sin(angle)));
-            final float z = origin.getZ();
-            return new Vector4f(x,y,z, origin.getW());
+            return new Vector4f(x, y, origin.getZ(), origin.getW());
         }
 
         /**

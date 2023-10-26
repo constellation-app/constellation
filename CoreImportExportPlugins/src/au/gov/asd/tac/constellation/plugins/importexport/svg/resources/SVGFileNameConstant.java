@@ -24,13 +24,17 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGFile;
  * 
  * @author capricornunicorn123
  */
+
 public enum SVGFileNameConstant implements SVGFile{
-    CONNECTION("Connection.svg"),
+    ARROW_HEAD_LINK("LinkArrowHead.svg"),
+    ARROW_HEAD_TRANSACTION("TransactionArrowHead.svg"),
+    ARROW_HEAD_TRANSACTION_LOOP("TransactionArrowHeadLoop.svg"),
+    CONNECTION_LOOP("ConnectionLoop.svg"),
+    CONNECTION_LINEAR("ConnectionLinear.svg"),
+    IMAGE("Image.svg"),
     LABEL("Label.svg"),
     LAYOUT("Layout.svg"),
-    LINK_ARROW_HEAD("LinkArrowHead.svg"),
-    NODE("Node.svg"),
-    TRANSACTION_ARROW_HEAD("TransactionArrowHead.svg");
+    NODE("Node.svg");
 
     private final String resourceName;
         

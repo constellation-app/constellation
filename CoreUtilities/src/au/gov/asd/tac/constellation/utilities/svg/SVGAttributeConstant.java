@@ -23,6 +23,8 @@ package au.gov.asd.tac.constellation.utilities.svg;
 public enum SVGAttributeConstant {
     BASELINE("dominant-baseline"),
     CLASS("class"),
+    CX("cx"),
+    CY("cy"),
     DESTINATION_X("x2"),
     DESTINATION_Y("y2"),
     DASH_ARRAY("stroke-dasharray"),
@@ -33,6 +35,7 @@ public enum SVGAttributeConstant {
     HEIGHT("height"),
     ID("id"),
     NAME_SPACE("xmlns"),
+    RADIUS("r"),
     SOURCE_X("x1"),
     SOURCE_Y("y1"),
     STROKE_COLOR("stroke"),
@@ -42,10 +45,10 @@ public enum SVGAttributeConstant {
     X("x"),
     Y("y");
     
-    private final String name;
+    private final String attributeName;
     
     private SVGAttributeConstant(final String attributeName){
-        this.name = attributeName;
+        this.attributeName = attributeName;
     }
     
     /**
@@ -53,6 +56,6 @@ public enum SVGAttributeConstant {
      * @return 
      */
     public String getName(){
-        return this.name;
+        return this.attributeName;
     }
 }
