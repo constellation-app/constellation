@@ -94,7 +94,7 @@ public class StringParameterTypeNGTest {
 
         PluginParameter instance = StringParameterType.build("stringParameter");
 
-        // check the expected result and result equal when postive integers
+        // check the expected result and result equal when positive integers
         Integer expResult = 5;
         instance.setProperty(StringParameterType.LINES, expResult);
         Integer result = StringParameterType.getLines(instance);
@@ -128,7 +128,7 @@ public class StringParameterTypeNGTest {
 
         PluginParameter instance = StringParameterType.build("stringParameter");
 
-        // check the expected result and result equal when postive integers
+        // check the expected result and result equal when positive integers
         Integer expResult = 5;
         StringParameterType.setLines(instance, expResult);
         Integer result = StringParameterType.getLines(instance);
