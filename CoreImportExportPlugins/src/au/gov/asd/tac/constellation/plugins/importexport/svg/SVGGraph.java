@@ -660,14 +660,16 @@ public class SVGGraph {
             final float topMargin = 288.0F;
             final float bottomMargin = 128.0F;
             final float xPadding = 250.0F;
+            final float rPadding = xPadding - 128;
             final float yPadding = 250.0F;
+            final float tPadding = yPadding - 128;
             final float footerYOffset = topMargin + contentHeight + (yPadding * 2);            
             final float fullWidth = (xMargin * 2) + contentWidth + (xPadding * 2);            
             final float fullHeight = (topMargin + bottomMargin) + contentHeight + (yPadding * 2);            
             final float backgroundWidth = contentWidth + (xPadding * 2);
             final float backgroundHeight = contentHeight + (yPadding * 2);
-            final float contentYOffset = topMargin + yPadding;
-            final float contentXOffset = xMargin + xPadding;
+            final float contentYOffset = topMargin + tPadding + yPadding;
+            final float contentXOffset = xMargin + xPadding + rPadding;
             
             svg.setDimension(fullWidth, fullHeight);
             
@@ -685,30 +687,36 @@ public class SVGGraph {
         }
 
         /**
-         * Gets the normalised position of the vertex.
-         * Position is normalised with respect to a width and hight space of -1 to +1.
+         * Gets the normalized position of the vertex.
+         * Position is normalized with respect to a predefined viewWindow 
+         * with horizontal right and vertical down being positive directions.
          * Position is with respect to the center of the vertex.
          * @param vertex
          * @return 
          */
+        private Vector4f getVertexPosition(final int vertex) {         
+            return getScreenPosition(getVertexWorldPosition(vertex));
+        }
 
-        private Vector4f getVertexPosition(final int vertex) {           
-            final Float constelationGraphX = access.getX(vertex);
-            final Float constelationGraphY = access.getY(vertex);
-            final Float constelationGraphZ = access.getZ(vertex);
-            
-            Vector3f worldPosition = new Vector3f(constelationGraphX, constelationGraphY, constelationGraphZ);
-            return getVertexPosition(worldPosition);
+        /**
+         * Retrieves the 3D coordinates of a vertex.
+         * @param vertex
+         * @return 
+         */
+        private Vector3f getVertexWorldPosition(final int vertex){
+            return new Vector3f(access.getX(vertex), access.getY(vertex), access.getZ(vertex));
         }
         
-        private Vector4f getVertexPosition(final Vector3f worldPosition){
+        /**
+         * Translates a 3D coordinate to a 2D projection onto a predefined plane.
+         * The returned position is normalized with respect to a predefined viewWindow 
+         * with horizontal right and vertical down being positive directions.
+         * @param worldPosition
+         * @return 
+         */
+        private Vector4f getScreenPosition(final Vector3f worldPosition){
             Vector4f screenPosition = new Vector4f();
-            
             Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
-            Vector4f centerOffSet = new Vector4f(128, 128, 0, 0);
-            Vector4f.add(screenPosition, screenPosition, centerOffSet);
-            
-            LOGGER.log(Level.SEVERE, String.format("Vertex %s", screenPosition));
             return screenPosition;
         }
         
@@ -722,18 +730,26 @@ public class SVGGraph {
          * @return 
          */
         private float getVertexScaledRadius(final int vertex) {  
-            Vector4f screenPosition = getVertexPosition(vertex);
             
-            final Float x = access.getX(vertex) + 1;
-            final Float y = access.getY(vertex) + 1;
-            final Float z = access.getZ(vertex);
-            
-            Vector4f edgePosition = getVertexPosition(new Vector3f(x,y,z));
-            
+            //Get the radius value of the node
             int radiusID = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
             float radius = graph.getFloatValue(radiusID, access.getVertexId(vertex));
+            
+            //Get the screen position of the node
+            Vector4f screenPosition = getVertexPosition(vertex);
+            
+            //Get the screen position of the edge of the node
+            Vector3f world = this.getVertexWorldPosition(vertex);
+            world.setX(world.getX() + 1);
+            Vector4f edgePosition = getScreenPosition(world);
+            
+            //Determine the natural node radius in terms of screen dimensions
             float depthScaleFactor = Math.abs(edgePosition.getX() - screenPosition.getX());
-            return radius * depthScaleFactor;            
+            
+            //Scale the radius by the scale factor
+            float scaledRadius = radius * depthScaleFactor; 
+            
+            return  scaledRadius;          
         }
         
         /**
