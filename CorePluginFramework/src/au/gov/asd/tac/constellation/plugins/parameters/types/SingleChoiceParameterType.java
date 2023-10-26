@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of ChoiceParameterType.
      */
-    public static PluginParameter<SingleChoiceParameterValue> build(String id) {
+    public static PluginParameter<SingleChoiceParameterValue> build(final String id) {
         return new PluginParameter<>(new SingleChoiceParameterValue(StringParameterValue.class), INSTANCE, id);
     }
 
@@ -79,7 +79,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * of options for the constructed parameter.
      * @return A {@link PluginParameter} of ChoiceParameterType.
      */
-    public static PluginParameter<SingleChoiceParameterValue> build(String id, final Class<? extends ParameterValue> innerClass) {
+    public static PluginParameter<SingleChoiceParameterValue> build(final String id, final Class<? extends ParameterValue> innerClass) {
         return new PluginParameter<>(new SingleChoiceParameterValue(innerClass), INSTANCE, id);
     }
 
@@ -92,7 +92,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * value of the parameter being constructed.
      * @return A {@link PluginParameter} of ChoiceParameterType.
      */
-    public static PluginParameter<SingleChoiceParameterValue> build(String id, final SingleChoiceParameterValue pv) {
+    public static PluginParameter<SingleChoiceParameterValue> build(final String id, final SingleChoiceParameterValue pv) {
         return new PluginParameter<>(pv, INSTANCE, id);
     }
 
@@ -229,8 +229,10 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * @return True if the parameter's choice can be edited by the user, False
      * otherwise.
      */
-    public static boolean isEditable(PluginParameter<?> parameter) {
-        return (Boolean) parameter.getProperty(EDITABLE);
+    public static boolean isEditable(final PluginParameter<?> parameter) {
+        final Boolean isEditable = (Boolean) parameter.getProperty(EDITABLE);
+
+        return isEditable != null && isEditable;
     }
 
     /**
@@ -240,7 +242,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
      * @param editable Whether or not the parameter's choice can be edited by
      * the user.
      */
-    public static void setEditable(PluginParameter<?> parameter, boolean editable) {
+    public static void setEditable(final PluginParameter<?> parameter, boolean editable) {
         parameter.setProperty(EDITABLE, editable);
     }
 
@@ -377,7 +379,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
          * @return A String representing the currently selected value.
          */
         public String getChoice() {
-            return choice.toString();
+            return choice != null ? choice.toString() : null;
         }
 
         /**
@@ -486,6 +488,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
             boolean valueChanged = false;
             if (o == null) {
                 options.clear();
+                choice = null;
                 valueChanged = true;
             } else if (o instanceof SingleChoiceParameterValue) {
                 final SingleChoiceParameterValue sc = (SingleChoiceParameterValue) o;
@@ -515,10 +518,7 @@ public class SingleChoiceParameterType extends PluginParameterType<SingleChoiceP
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             final SingleChoiceParameterValue other = (SingleChoiceParameterValue) obj;
