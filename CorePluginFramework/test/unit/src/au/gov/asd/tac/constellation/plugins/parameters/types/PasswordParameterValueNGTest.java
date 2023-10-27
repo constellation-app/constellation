@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -328,6 +328,7 @@ public class PasswordParameterValueNGTest {
         instance = new PasswordParameterValue(null);
         instance2 = new PasswordParameterValue(null);
         assertTrue(instance.equals(instance2));
+        assertFalse(instance.equals(null));
     }
 
     /**

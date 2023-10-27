@@ -47,8 +47,8 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
     public class HyperlinkEditor extends AbstractEditor<URI> {
 
-        private CheckBox noValueCheckBox;
         private TextField textField;
+        private CheckBox noValueCheckBox;
 
         protected HyperlinkEditor(final EditOperation editOperation, final DefaultGetter<URI> defaultGetter, final ValueValidator<URI> validator, final String editedItemName, final URI initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -56,7 +56,7 @@ public class HyperlinkEditorFactory extends AttributeValueEditorFactory<URI> {
 
         @Override
         public void updateControlsWithValue(final URI value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 textField.setText(String.valueOf(value));
             }
