@@ -53,7 +53,7 @@ public final class ApplyColorblindAction extends SimpleAction {
 
     private static Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     //Retrieve colorblind mode selection preference 
-    public static String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+    public static String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
     public ApplyColorblindAction(GraphNode context) {
         super(context);
@@ -73,7 +73,7 @@ public final class ApplyColorblindAction extends SimpleAction {
     public void run(final WritableGraph graph) {
         final int colorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
         prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+        colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
         // Color the taxonomies so we can see what's going on.
         final int typeAttributeId = AnalyticConcept.VertexAttribute.TYPE.get(graph);
@@ -91,40 +91,40 @@ public final class ApplyColorblindAction extends SimpleAction {
 
                     switch (vertexType.getName()) {
                         case "Telephone Identifier":
-                            caseColor = (COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.EMERALD : ConstellationColor.BUTTERMILK);
+                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.EMERALD : ConstellationColor.BUTTERMILK);
                             graph.setObjectValue(colorAttr, vxId, caseColor);
                             break;
                         case "Machine Identifier":
-                            caseColor = (COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BLUSH);
+                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BLUSH);
                             graph.setObjectValue(colorAttr, vxId, caseColor);
                             break;
                         case "Document":
-                            caseColor = (COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.BANANA : ConstellationColor.DARK_PURPLE);
+                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.BANANA : ConstellationColor.DARK_PURPLE);
                             graph.setObjectValue(colorAttr, vxId, caseColor);
                             break;
                         case "Event":
-                            caseColor = (COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.PEACH : ConstellationColor.BROWN);
+                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.PEACH : ConstellationColor.BROWN);
                             graph.setObjectValue(colorAttr, vxId, caseColor);
                             break;
                         case "Placeholder":
-                            caseColor = (VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.TEAL : ConstellationColor.LIME);
+                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.TEAL : ConstellationColor.LIME);
                             graph.setObjectValue(colorAttr, vxId, caseColor);
                             break;
                         case "Email":
-                            caseColor = (COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.MUSK : ConstellationColor.RED);
+                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.MUSK : ConstellationColor.RED);
                             graph.setObjectValue(colorAttr, vxId, caseColor);
                             break;
                         //Below are types which inherit the same colors from the schema
                         case "Online Identifier":
                         case "User Name":
-                            caseColor = (COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.AZURE : ConstellationColor.MIDNIGHT);
+                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.AZURE : ConstellationColor.MIDNIGHT);
                             graph.setObjectValue(colorAttr, vxId, caseColor);
                             break;
                         case "Location":
                         case "Country":
                         case "Geohash":
                         case "MGRS":
-                            caseColor = (COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE);
+                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE);
                             graph.setObjectValue(colorAttr, vxId, caseColor);
                             break;
                         default:
@@ -150,15 +150,12 @@ public final class ApplyColorblindAction extends SimpleAction {
                     ConstellationColor caseColor;
                     switch (transactionType.getName()) {
                         case "Location":
-                            caseColor = (COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE);
+                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE);
                             graph.setObjectValue(transactionColorAttr, transactionId, caseColor);
                             break;
                         case "Created":
-                            caseColor = (COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BROWN);
-                            graph.setObjectValue(transactionColorAttr, transactionId, caseColor);
-                            break;
                         case "Referenced":
-                            caseColor = (COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BROWN);
+                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BROWN);
                             graph.setObjectValue(transactionColorAttr, transactionId, caseColor);
                             break;
                         default:

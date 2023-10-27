@@ -36,7 +36,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
@@ -55,7 +54,7 @@ public class VisualSchemaFactory extends SchemaFactory {
     public static final String NONE = "None";
     private static Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     //Retrieve colorblind mode selection preference 
-    public static String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+    public static String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
     // Note: changing this value will break backwards compatibility!
     public static final String VISUAL_SCHEMA_ID = "au.gov.asd.tac.constellation.graph.schema.VisualSchemaFactory";
@@ -315,10 +314,10 @@ public class VisualSchemaFactory extends SchemaFactory {
             float randFloat1 = random.nextFloat();
             float randFloat2 = random.nextFloat();
             float randFloat3 = random.nextFloat();
-            COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+            colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
             //Change node color randomiser based on colorblind mode selection
-            switch (COLORMODE) {
+            switch (colorMode) {
                 case NONE:
                     return ConstellationColor.getColorValue(randFloat1, randFloat2, randFloat3, 1.0F);
 
@@ -337,8 +336,9 @@ public class VisualSchemaFactory extends SchemaFactory {
                         randFloat2 += brightenFloat;
                     }
                     return ConstellationColor.getColorValue(randFloat1, randFloat2, 0F, 1.0F);
+                default: 
+                    return null;
             }
-            return null;
         }
     }
 }
