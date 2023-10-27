@@ -203,7 +203,7 @@ public final class ApplicationPreferenceKeys {
      * Colorblind mode.
      */
     public static final String COLORBLIND_MODE_DEFAULT = "None";
-    public static final String COLORBLIND_MODE = "colorblindMode";
+    public static String COLORBLIND_MODE = "colorblindMode";
 
     private ApplicationPreferenceKeys() {
     }

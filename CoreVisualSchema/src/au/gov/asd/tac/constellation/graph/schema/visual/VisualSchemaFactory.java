@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 import org.openide.util.lookup.ServiceProvider;
@@ -52,7 +53,7 @@ public class VisualSchemaFactory extends SchemaFactory {
     private static final String PROTANOPIA = "Protanopia";
     private static final String TRITANOPIA = "Tritanopia";
     public static final String NONE = "None";
-    private static final Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    private static Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     //Retrieve colorblind mode selection preference 
     public static String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
@@ -314,12 +315,13 @@ public class VisualSchemaFactory extends SchemaFactory {
             float randFloat1 = random.nextFloat();
             float randFloat2 = random.nextFloat();
             float randFloat3 = random.nextFloat();
+            COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
             //Change node color randomiser based on colorblind mode selection
             switch (COLORMODE) {
                 case NONE:
                     return ConstellationColor.getColorValue(randFloat1, randFloat2, randFloat3, 1.0F);
-                    
+
                 case DEUTERANOPIA:
                 case PROTANOPIA:
                     //Ensure randomised color does not generate an RGB value which is too dark 

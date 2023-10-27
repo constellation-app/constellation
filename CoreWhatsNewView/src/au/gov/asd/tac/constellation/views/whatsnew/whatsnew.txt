@@ -4,6 +4,7 @@
 == 2023-09-15 Colorblind Mode in Options
 <p>Colorblind mode options have been added and can be found through Setup -&gt; Options -&gt; CONSTELLATION -&gt; Application.</p>
 <p>The random generation of node colors has been adjusted based on the selected colorblind mode. Additionally, the color scheme of specific vertex and transaction types has been adjusted for greater contrast.</p>
+<p>Existing graphs can be displayed in a the selected colorblind scheme through the toolbar with Display -&gt; Apply Colorblind Schema to Open Graphs.</p>
 
 == 2023-08-28 Markdown support in the Notes View
 <p>The notes can now optionally render markdown text. You can now italicise, bold and strikethrough text. Headings can be added to the note as well as lists and sub lists.</p>
