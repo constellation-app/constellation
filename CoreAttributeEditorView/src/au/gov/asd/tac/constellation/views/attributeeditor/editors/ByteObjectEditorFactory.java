@@ -46,7 +46,6 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
     }
 
     public class ByteObjectEditor extends AbstractEditor<Byte> {
-
         private TextField numberField;
         private CheckBox noValueCheckBox;
 
@@ -56,7 +55,7 @@ public class ByteObjectEditorFactory extends AttributeValueEditorFactory<Byte> {
 
         @Override
         public void updateControlsWithValue(final Byte value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 numberField.setText(String.valueOf(value));
             }
