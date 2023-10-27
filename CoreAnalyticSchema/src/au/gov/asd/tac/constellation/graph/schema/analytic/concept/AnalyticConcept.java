@@ -142,44 +142,44 @@ public class AnalyticConcept extends SchemaConcept {
     public static class VertexType {
         public static final SchemaVertexType TELEPHONE_IDENTIFIER = new SchemaVertexType.Builder("Telephone Identifier")
                 .setDescription("A node representing the identifier of a telephony device or service, eg. the phone number +6101234567")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.EMERALD : ConstellationColor.BUTTERMILK)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.EMERALD : ConstellationColor.BUTTERMILK)
                 .setForegroundIcon(AnalyticIconProvider.CALL)
                 .setDetectionRegex(Pattern.compile("\\+?\\d{8,15}", Pattern.CASE_INSENSITIVE))
                 .setValidationRegex(Pattern.compile("^\\+?\\d{8,15}$", Pattern.CASE_INSENSITIVE))
                 .build();
         public static final SchemaVertexType MACHINE_IDENTIFIER = new SchemaVertexType.Builder("Machine Identifier")
                 .setDescription("A node representing the identifier of a physical machine, eg. the MAC address A1:B2:C3:D4:E5:F6")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BLUSH)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BLUSH)
                 .setForegroundIcon(AnalyticIconProvider.MICROPROCESSOR)
                 .build();
         public static final SchemaVertexType ONLINE_IDENTIFIER = new SchemaVertexType.Builder("Online Identifier")
                 .setDescription("A node representing the identifier of an account on a network, eg. the reddit username reddit_user")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.AZURE : ConstellationColor.MIDNIGHT)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.AZURE : ConstellationColor.MIDNIGHT)
                 .setForegroundIcon(AnalyticIconProvider.PERSON)
                 .build();
         public static final SchemaVertexType LOCATION = new SchemaVertexType.Builder("Location")
                 .setDescription("A node representing a geographic location, eg. the country Australia")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE)
                 .setForegroundIcon(AnalyticIconProvider.GLOBE)
                 .build();
         public static final SchemaVertexType DOCUMENT = new SchemaVertexType.Builder("Document")
                 .setDescription("A node representing a document, eg. a text file")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.BANANA : ConstellationColor.DARK_PURPLE)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.BANANA : ConstellationColor.DARK_PURPLE)
                 .setForegroundIcon(AnalyticIconProvider.PAPERCLIP)
                 .build();
         public static final SchemaVertexType EVENT = new SchemaVertexType.Builder("Event")
                 .setDescription("A node representing an event, eg. a stage show")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.PEACH : ConstellationColor.BROWN)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.PEACH : ConstellationColor.BROWN)
                 .setForegroundIcon(AnalyticIconProvider.SIGNAL)
                 .build();
         public static final SchemaVertexType PLACEHOLDER = new SchemaVertexType.Builder("Placeholder")
                 .setDescription("A node representing a placeholder which can be used for special purposes in CONSTELLATION")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.TEAL : ConstellationColor.LIME)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.TEAL : ConstellationColor.LIME)
                 .setForegroundIcon(AnalyticIconProvider.STAR)
                 .build();
         public static final SchemaVertexType EMAIL_ADDRESS = new SchemaVertexType.Builder("Email")
                 .setDescription("A node representing an email address")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.MUSK : ConstellationColor.RED)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.MUSK : ConstellationColor.RED)
                 .setForegroundIcon(AnalyticIconProvider.EMAIL)
                 .setSuperType(ONLINE_IDENTIFIER)
                 .setDetectionRegex(Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")" // user component
@@ -407,7 +407,7 @@ public class AnalyticConcept extends SchemaConcept {
                 .build();
         public static final SchemaTransactionType LOCATION = new SchemaTransactionType.Builder("Location")
                 .setDescription("A transaction representing an entity having a location, eg. a person is located in a country")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE)
                 .build();
         public static final SchemaTransactionType NETWORK = new SchemaTransactionType.Builder("Network")
                 .setDescription("A transaction representing a network connection, eg. an computer sent a request to a server")
@@ -429,11 +429,11 @@ public class AnalyticConcept extends SchemaConcept {
                 .build();
         public static final SchemaTransactionType CREATED = new SchemaTransactionType.Builder("Created")
                 .setDescription("A transaction representing an entity creating another entity, eg. a person created a document")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BROWN)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BROWN)
                 .build();
         public static final SchemaTransactionType REFERENCED = new SchemaTransactionType.Builder("Referenced")
                 .setDescription("A transaction representing an entity referencing another entity, eg. a document referenced its author")
-                .setColor(VisualSchemaFactory.COLORMODE.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BROWN)
+                .setColor(VisualSchemaFactory.colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BROWN)
                 .setStyle(LineStyle.DASHED)
                 .build();
     }
