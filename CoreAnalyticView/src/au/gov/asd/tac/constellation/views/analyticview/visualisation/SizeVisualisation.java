@@ -22,9 +22,7 @@ import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractSizeTranslator;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
@@ -39,10 +37,6 @@ public class SizeVisualisation<C> extends GraphVisualisation {
     private final AbstractSizeTranslator<? extends AnalyticResult<?>, C> translator;
     private final ToggleButton sizeButton;
     private boolean activated = false;
-    
-    // Maps of the sizes of the vertices and transactions before the plugin is run
-    private Map<Integer, Float> vertexSizes = new HashMap<>();
-    private Map<Integer, Float> transactionSizes = new HashMap<>();
 
     public SizeVisualisation(final AbstractSizeTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
@@ -51,27 +45,18 @@ public class SizeVisualisation<C> extends GraphVisualisation {
         sizeButton.setId("size-visualisation-button");
         sizeButton.setOnAction(event -> {
             activated = sizeButton.isSelected(); 
-            this.translator.setVertexSizes(vertexSizes);
-            this.translator.setTransactionSizes(transactionSizes);
             this.translator.executePlugin(!activated);
-            vertexSizes = this.translator.getVertexSizes();
-            transactionSizes = this.translator.getVertexSizes();
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
-            AnalyticViewController.getDefault().writeState();
         });
     }
 
     @Override
-    public void deactivate() {
-        if (activated) {
-            translator.setVertexSizes(vertexSizes);
-            translator.setTransactionSizes(transactionSizes);
-            translator.executePlugin(activated);
-            activated = !activated;
-            vertexSizes = translator.getVertexSizes();
-            transactionSizes = translator.getVertexSizes();
+    public void deactivate(final boolean reset) {
+        if (reset) {
+            translator.executePlugin(reset);
+            activated = !reset;
+            sizeButton.setSelected(activated);
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
-            AnalyticViewController.getDefault().writeState();
         }
     }
 

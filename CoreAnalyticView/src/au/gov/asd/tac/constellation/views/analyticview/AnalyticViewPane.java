@@ -105,9 +105,9 @@ public class AnalyticViewPane extends BorderPane {
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
         this.runButton = new Button(RUN_START_TEXT);
         runButton.setStyle(RUN_START_STYLE);
-        runButton.setOnAction(event -> {
+        runButton.setOnAction(event -> {   
+            //deactivateResultChanges();
             if (running) {
-
                 // hide results pane
                 if (viewPane.getChildren().contains(analyticResultsPane)) {
                     viewPane.getChildren().remove(analyticResultsPane);
@@ -216,6 +216,16 @@ public class AnalyticViewPane extends BorderPane {
 
     protected final void setIsRunnable(final boolean isRunnable) {
         Platform.runLater(() -> runButton.setDisable(!isRunnable));
+    }
+    
+    /**
+     * Deactivate any changes made by the color, hide and size buttons
+     */
+    public void deactivateResultChanges() {
+        graphVisualisations = AnalyticViewController.getDefault().getGraphVisualisations();
+        if (!graphVisualisations.isEmpty()) {
+            graphVisualisations.entrySet().forEach(node -> node.getKey().deactivate(node.getValue()));
+        }
     }
 
     /**

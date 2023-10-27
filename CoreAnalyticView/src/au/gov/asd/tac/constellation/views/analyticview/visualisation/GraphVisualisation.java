@@ -28,7 +28,7 @@ public abstract class GraphVisualisation extends AnalyticVisualisation {
 
     public abstract List<SchemaAttribute> getAffectedAttributes();
 
-    public abstract void deactivate();
+    public abstract void deactivate(final boolean reset);
 
     public abstract boolean isActive();
 

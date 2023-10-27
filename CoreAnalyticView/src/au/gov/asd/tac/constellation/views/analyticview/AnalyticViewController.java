@@ -216,6 +216,12 @@ public class AnalyticViewController {
             activeSelectablePlugins.add(currentAnalyticQuestionIndex, selectablePlugins);
         }
     }
+    
+    public void deactivateResultUpdates() {
+        final AnalyticViewPane pane = parent.createContent();
+        pane.deactivateResultChanges();
+        writeState();
+    }
 
     /**
      * Updates the AnalyticViewState by running a plugin to save the graph state

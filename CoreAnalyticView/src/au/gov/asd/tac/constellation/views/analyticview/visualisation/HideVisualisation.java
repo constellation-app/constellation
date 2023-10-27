@@ -65,12 +65,12 @@ public class HideVisualisation<C> extends GraphVisualisation {
     }
 
     @Override
-    public void deactivate() {
-        if (activated) {
-            translator.executePlugin(activated, 0);
-            activated = !activated;
+    public void deactivate(final boolean reset) {
+        if (reset) {
+            translator.executePlugin(reset, 0);
+            activated = !reset;
+            hideButton.setSelected(activated);
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
-            AnalyticViewController.getDefault().writeState();
         }
     }
 

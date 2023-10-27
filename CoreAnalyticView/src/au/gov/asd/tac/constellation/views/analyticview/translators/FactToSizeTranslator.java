@@ -43,6 +43,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, ElementFact> {
+    
+    private static final Map<String, Map<Integer, Float>> vertexCache = new HashMap<>();
+    private static final Map<String, Map<Integer, Float>> transactionCache = new HashMap<>();
 
     // Maps of the sizes of the vertices and transactions before the plugin is run
     private Map<Integer, Float> vertexSizes = new HashMap<>();
@@ -111,6 +114,19 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
 
             // get parameter values
             final boolean reset = parameters.getBooleanValue(RESET_PARAMETER_ID);
+            
+            final String currentGraphKey = GraphManager.getDefault().getActiveGraph().getId();
+
+            // When a new instance of this class is created, it will not know if the current sizes are at their original values
+            // This means it won't have valid data to use for the reset function ... in a new instance (ie. a new "Run") it will be empty
+            // Using a static cache gets around the issue. We can retrieve and initialise size data from the cache if available.
+            
+            if (vertexCache.containsKey(currentGraphKey)) {
+                vertexSizes = vertexCache.get(currentGraphKey);
+            }
+            if (transactionCache.containsKey(currentGraphKey)) {
+                transactionSizes = transactionCache.get(currentGraphKey);
+            }
 
             // ensure attributes
             final int vertexSizeAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(graph);
@@ -121,26 +137,17 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
             }
 
             final FactResult factResults = result;
+            
+            vertexSizes.keySet().forEach(vertexKey -> 
+                graph.setFloatValue(vertexSizeAttribute, vertexKey, vertexSizes.get(vertexKey)));
+            
+            transactionSizes.keySet().forEach(transactionKey -> 
+                graph.setFloatValue(transactionSizeAttribute, transactionKey, transactionSizes.get(transactionKey)));
+            
+            vertexSizes.clear();
+            transactionSizes.clear();
 
-            if (reset) {
-                for (final ElementFact factResult : factResults.get()) {
-                    final GraphElementType elementType = factResult.getElementType();
-                    final int elementId = factResult.getElementId();
-                    switch (elementType) {
-                        case VERTEX:
-                            final float vertexSize = vertexSizes.get(elementId);
-                            graph.setFloatValue(vertexSizeAttribute, elementId, vertexSize);
-                            break;
-                        case TRANSACTION:
-                            final float transactionSize = transactionSizes.get(elementId);
-                            graph.setFloatValue(transactionSizeAttribute, elementId, transactionSize);
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Size Elements' is not supported "
-                                    + "for the element type associated with this analytic question.");
-                    }
-                }
-            } else {
+            if (!reset) {
                 // estimate size of graph
                 final BBoxf graphBoundingBox = BBoxf.getGraphBoundingBox(graph);
                 float graphEstimatedDiameter = Math.max(graphBoundingBox.getMax()[BBoxf.X] - graphBoundingBox.getMin()[BBoxf.X],
@@ -170,6 +177,17 @@ public class FactToSizeTranslator extends AbstractSizeTranslator<FactResult, Ele
                                     + "for the element type associated with this analytic question.");
                     }
                 }
+            }
+            
+            if (!vertexSizes.isEmpty()) {
+                vertexCache.put(currentGraphKey, vertexSizes);
+            } else {
+                vertexCache.put(currentGraphKey, new HashMap<>());
+            }
+            if (!transactionSizes.isEmpty()) {
+                transactionCache.put(currentGraphKey, transactionSizes);
+            } else {
+                transactionCache.put(currentGraphKey, new HashMap<>());
             }
         }
 

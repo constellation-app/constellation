@@ -45,6 +45,9 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, ElementScore> {
 
+    private static final Map<String, Map<Integer, Float>> vertexCache = new HashMap<>();
+    private static final Map<String, Map<Integer, Float>> transactionCache = new HashMap<>();
+    
     // Maps of the sizes of the vertices and transactions before the plugin is run
     private Map<Integer, Float> vertexSizes = new HashMap<>();
     private Map<Integer, Float> transactionSizes = new HashMap<>();
@@ -113,6 +116,19 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
             // get parameter values
             final boolean reset = parameters.getBooleanValue(RESET_PARAMETER_ID);
 
+            final String currentGraphKey = GraphManager.getDefault().getActiveGraph().getId();
+
+            // When a new instance of this class is created, it will not know if the current sizes are at their original values
+            // This means it won't have valid data to use for the reset function ... in a new instance (ie. a new "Run") it will be empty
+            // Using a static cache gets around the issue. We can retrieve and initialise size data from the cache if available.
+            
+            if (vertexCache.containsKey(currentGraphKey)) {
+                vertexSizes = vertexCache.get(currentGraphKey);
+            }
+            if (transactionCache.containsKey(currentGraphKey)) {
+                transactionSizes = transactionCache.get(currentGraphKey);
+            }
+            
             // ensure attributes
             final int vertexSizeAttribute = VisualConcept.VertexAttribute.NODE_RADIUS.ensure(graph);
             final int transactionSizeAttribute = VisualConcept.TransactionAttribute.WIDTH.ensure(graph);
@@ -123,29 +139,17 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
 
             final ScoreResult scoreResults = result;
 
-            if (reset) {
-                for (final ElementScore scoreResult : scoreResults.get()) {
-                    final GraphElementType elementType = scoreResult.getElementType();
-                    final int elementId = scoreResult.getElementId();
-                    switch (elementType) {
-                        case VERTEX:
-                            if (vertexSizes.get(elementId) != null) {
-                                final float vertexSize = vertexSizes.get(elementId);
-                                graph.setFloatValue(vertexSizeAttribute, elementId, vertexSize);
-                            }
-                            break;
-                        case TRANSACTION:
-                            if (transactionSizes.get(elementId) != null) {
-                                final float transactionSize = transactionSizes.get(elementId);
-                                graph.setFloatValue(transactionSizeAttribute, elementId, transactionSize);
-                            }
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Size Elements' is not supported "
-                                    + "for the element type associated with this analytic question.");
-                    }
-                }
-            } else {
+            vertexSizes.keySet().forEach(vertexKey -> 
+                graph.setFloatValue(vertexSizeAttribute, vertexKey, vertexSizes.get(vertexKey)));
+            
+            transactionSizes.keySet().forEach(transactionKey -> 
+                graph.setFloatValue(transactionSizeAttribute, transactionKey, transactionSizes.get(transactionKey)));
+            
+            vertexSizes.clear();
+            transactionSizes.clear();
+            
+            if (!reset) {
+                // this will backup the current sizes, then set the nodes/transactions to new sizes
                 // estimate size of graph
                 final BBoxf graphBoundingBox = BBoxf.getGraphBoundingBox(graph);
                 float graphEstimatedDiameter = Math.max(graphBoundingBox.getMax()[BBoxf.X] - graphBoundingBox.getMin()[BBoxf.X],
@@ -178,7 +182,7 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                     switch (elementType) {
                         case VERTEX:
                             final float vertexSize = graph.getFloatValue(vertexSizeAttribute, elementId);
-                            vertexSizes.put(elementId, vertexSize);
+                            vertexSizes.put(elementId, vertexSize);                            
                             graph.setFloatValue(vertexSizeAttribute, elementId, sizeIntensity > 1.0F ? sizeIntensity : 1.0F);
                             break;
                         case TRANSACTION:
@@ -191,6 +195,17 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                                     + "for the element type associated with this analytic question.");
                     }
                 }
+            }
+            
+            if (!vertexSizes.isEmpty()) {
+                vertexCache.put(currentGraphKey, vertexSizes);
+            } else {
+                vertexCache.put(currentGraphKey, new HashMap<>());
+            }
+            if (!transactionSizes.isEmpty()) {
+                transactionCache.put(currentGraphKey, transactionSizes);
+            } else {
+                transactionCache.put(currentGraphKey, new HashMap<>());
             }
         }
 

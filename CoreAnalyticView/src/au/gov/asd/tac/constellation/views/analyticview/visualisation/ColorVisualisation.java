@@ -17,15 +17,12 @@ package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractColorTranslator;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.ToggleButton;
@@ -41,10 +38,6 @@ public class ColorVisualisation<C> extends GraphVisualisation {
     private final ToggleButton colorButton;
     private boolean activated = false;
 
-    // Maps of the colors of the vertices and transactions before the plugin is run
-    private Map<Integer, ConstellationColor> vertexColors = new HashMap<>();
-    private Map<Integer, ConstellationColor> transactionColors = new HashMap<>();
-
     public ColorVisualisation(final AbstractColorTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
 
@@ -52,27 +45,19 @@ public class ColorVisualisation<C> extends GraphVisualisation {
         colorButton.setId("color-visualisation-button");
         colorButton.setOnAction(event -> {
             activated = colorButton.isSelected();
-            this.translator.setVertexColors(vertexColors);
-            this.translator.setTransactionColors(transactionColors);
             this.translator.executePlugin(!activated);
-            vertexColors = this.translator.getVertexColors();
-            transactionColors = this.translator.getVertexColors();
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
             AnalyticViewController.getDefault().writeState();
         });
     }
 
     @Override
-    public void deactivate() {
-        if (activated) {
-            translator.setVertexColors(vertexColors);
-            translator.setTransactionColors(transactionColors);
-            translator.executePlugin(activated);
-            activated = !activated;
-            vertexColors = translator.getVertexColors();
-            transactionColors = translator.getVertexColors();
+    public void deactivate(final boolean reset) {
+        if (reset) {
+            translator.executePlugin(reset);
+            activated = !reset;
+            colorButton.setSelected(activated);
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
-            AnalyticViewController.getDefault().writeState();
         }
     }
 

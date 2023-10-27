@@ -205,4 +205,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         }
         analyticController.readState();
     }
+    
+    @Override
+    protected void handleComponentClosed() {
+        super.handleComponentClosed();
+        analyticController.deactivateResultUpdates();
+        analyticViewPane.reset();
+    }
+    
 }

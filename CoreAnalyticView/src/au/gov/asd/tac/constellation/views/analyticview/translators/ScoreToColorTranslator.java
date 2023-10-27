@@ -45,6 +45,9 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult, ElementScore> {
+    
+    private static final Map<String, Map<Integer, ConstellationColor>> vertexCache = new HashMap<>();
+    private static final Map<String, Map<Integer, ConstellationColor>> transactionCache = new HashMap<>();
 
     // Maps of the colors of the vertices and transactions before the plugin is run
     private Map<Integer, ConstellationColor> vertexColors = new HashMap<>();
@@ -113,6 +116,19 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
 
             // get parameter values
             final boolean reset = parameters.getBooleanValue(RESET_PARAMETER_ID);
+            
+            final String currentGraphKey = GraphManager.getDefault().getActiveGraph().getId();
+
+            // When a new instance of this class is created, it will not know if the current colors are at their original values
+            // This means it won't have valid data to use for the reset function ... in a new instance (ie. a new "Run") it will be empty
+            // Using a static cache gets around the issue. We can retrieve and initialise color data from the cache if available.
+            
+            if (vertexCache.containsKey(currentGraphKey)) {
+                vertexColors = vertexCache.get(currentGraphKey);
+            }
+            if (transactionCache.containsKey(currentGraphKey)) {
+                transactionColors = transactionCache.get(currentGraphKey);
+            }
 
             // ensure attributes
             final int vertexOverlayColorAttribute = VisualConcept.VertexAttribute.OVERLAY_COLOR.ensure(graph);
@@ -125,28 +141,19 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
             }
 
             final ScoreResult scoreResults = result;
+            
+            vertexColors.keySet().forEach(vertexKey -> 
+                graph.setObjectValue(vertexOverlayColorAttribute, vertexKey, vertexColors.get(vertexKey)));
+            
+            transactionColors.keySet().forEach(transactionKey -> 
+                graph.setObjectValue(transactionOverlayColorAttribute, transactionKey, transactionColors.get(transactionKey)));
+            
+            vertexColors.clear();
+            transactionColors.clear();
+            graph.setObjectValue(vertexColorReferenceAttribute, 0, null);
+            graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
 
-            if (reset) {
-                for (final ElementScore scoreResult : scoreResults.get()) {
-                    final GraphElementType elementType = scoreResult.getElementType();
-                    final int elementId = scoreResult.getElementId();
-                    switch (elementType) {
-                        case VERTEX:
-                            final ConstellationColor vertexColor = vertexColors.get(elementId);
-                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, vertexColor);
-                            break;
-                        case TRANSACTION:
-                            final ConstellationColor transactionColor = transactionColors.get(elementId);
-                            graph.setObjectValue(vertexOverlayColorAttribute, elementId, transactionColor);
-                            break;
-                        default:
-                            throw new InvalidElementTypeException("'Color Elements' is not supported "
-                                    + "for the element type associated with this analytic question.");
-                    }
-                }
-                graph.setObjectValue(vertexColorReferenceAttribute, 0, null);
-                graph.setObjectValue(transactionColorReferenceAttribute, 0, null);
-            } else {
+            if (!reset) {
                 // find highest and lowest mean scores among available analytic events
                 float highestMeanScore = 0.0F;
                 float lowestMeanScore = 0.0F;
@@ -187,6 +194,17 @@ public class ScoreToColorTranslator extends AbstractColorTranslator<ScoreResult,
                 }
                 graph.setObjectValue(vertexColorReferenceAttribute, 0, VisualConcept.VertexAttribute.OVERLAY_COLOR.getName());
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, VisualConcept.TransactionAttribute.OVERLAY_COLOR.getName());
+            }
+            
+            if (!vertexColors.isEmpty()) {
+                vertexCache.put(currentGraphKey, vertexColors);
+            } else {
+                vertexCache.put(currentGraphKey, new HashMap<>());
+            }
+            if (!transactionColors.isEmpty()) {
+                transactionCache.put(currentGraphKey, transactionColors);
+            } else {
+                transactionCache.put(currentGraphKey, new HashMap<>());
             }
         }
 
