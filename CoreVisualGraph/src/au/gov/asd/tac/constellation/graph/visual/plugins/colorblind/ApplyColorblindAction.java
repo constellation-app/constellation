@@ -53,7 +53,7 @@ public final class ApplyColorblindAction extends SimpleAction {
 
     private static Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     //Retrieve colorblind mode selection preference 
-    public static String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+    private static String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
     public ApplyColorblindAction(GraphNode context) {
         super(context);
