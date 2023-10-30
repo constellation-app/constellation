@@ -1,3 +1,4 @@
-<svg class="connection" id="Circular" overflow="visible" >
+<?xml version="1.0" encoding="UTF-8"?>
+<svg overflow="visible" >
   <circle id="arrow-shaft" stroke-width="8px" cx="50" cy="50" r="100" stroke-dasharray="145 169 315" fill="none" />
 </svg>

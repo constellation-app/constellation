@@ -1,3 +1,4 @@
-<svg class="connection" id="linear" overflow="visible" >
+<?xml version="1.0" encoding="UTF-8"?>
+<svg overflow="visible" >
     <line id="arrow-shaft" stroke-width="8px" />
 </svg>

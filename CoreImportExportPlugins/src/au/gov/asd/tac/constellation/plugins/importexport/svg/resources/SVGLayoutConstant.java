@@ -23,18 +23,21 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
  * @author capricornunicorn123
  */
 public enum SVGLayoutConstant {
+    CONNECTIONS("connections"),
     ARROW_HEAD("arrow-head"),
     ARROW_SHAFT("arrow-shaft"),
     BACKGROUND("background"),
     BACKGROUND_IMAGE("background-image"),
     BORDER("border"),
     BOTTOM_LABELS("bottom-labels"),
-    CONNECTIONS("connections"),
+    LINKS("links"),
     CONTENT("content"),
+    DOMINANT_BASELINE("after-edge"),
     FOOTER("footer"),
     FOOTNOTE("footnote"),
     FOREGROUND_IMAGE("foreground-image"),
     HEADER("header"),
+    LABELS("labels"),
     NODES("nodes"),
     NODE_IMAGES("node-images"),
     NORTH_EAST_DECORATOR("north-east-decorator"),

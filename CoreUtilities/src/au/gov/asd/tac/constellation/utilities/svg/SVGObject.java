@@ -411,6 +411,9 @@ public class SVGObject {
         this.setAttribute(SVGAttributeConstant.DESTINATION_Y, position.getY());
     }
     
+    public void setFontSize(final float size){
+        this.setAttribute(SVGAttributeConstant.FONT_SIZE, size);
+    }
     /**
      * Sets the transformation values of the SVGObject.
      * @param transformationData
@@ -467,6 +470,9 @@ public class SVGObject {
     /**
     * Creates SVGObject from a template SVG file.
     * The object will be returned with no parent.
+    * <pre>
+    * Example Usage: {@code SVGObject.loadFromTemplate(SVGFileNameContant);}
+    * </pre>
     * @param templateResource the filename of the template file.
     * @return svgObject
     */

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg id="graph" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <rect id="border" stroke="#1B1E24" stroke-width="6" fill-opacity="0" />
     <rect id="background" />
@@ -10,8 +11,7 @@
     </svg>
     
     <svg id="content" overflow="visible">
-
-        <svg id="connections" overflow="visible">
+        <svg id="links" overflow="visible">
         </svg>
         <svg id="nodes" overflow="visible" >
         </svg>

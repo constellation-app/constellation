@@ -29,6 +29,7 @@ public enum SVGFileNameConstant implements SVGFile{
     ARROW_HEAD_LINK("LinkArrowHead.svg"),
     ARROW_HEAD_TRANSACTION("TransactionArrowHead.svg"),
     ARROW_HEAD_TRANSACTION_LOOP("TransactionArrowHeadLoop.svg"),
+    LINK("Link.svg"),
     CONNECTION_LOOP("ConnectionLoop.svg"),
     CONNECTION_LINEAR("ConnectionLinear.svg"),
     IMAGE("Image.svg"),

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,11 +46,15 @@ public class SVGData {
     public SVGData(final String type, final SVGData parent, final Map<String, String> attributes) {
         this.type = type;
         this.children = new LinkedHashMap<>();
-        if (attributes == null) {
-            this.attributes = new LinkedHashMap<>();
-        } else {
-            this.attributes = new LinkedHashMap<>(attributes);
-        }        
+        
+        //This implementation ensures significant attributes are at the front of the output svg tag.
+        //Has the draw back of instantiating irrelevnt attributes as null to enforce their order. 
+        //Not memory concius and goes agains the intention for this class to be "bare-bones".
+        //An alternative would be to not used a LinkedHashMap and instead use a custom map with custom sort based on attrbute key.
+        this.attributes = SVGAttributeConstant.initialiseBasicAttributes();
+        if (attributes != null) {
+            this.attributes.putAll(attributes);
+        } 
         this.setParent(parent);
         this.content = null;
     }
@@ -161,7 +166,19 @@ public class SVGData {
      */
     @Override
     public final String toString() {
+        cleanAttributes();
         return toString(null);
+    }
+    
+    /**
+     * Prepares SVGData for export. 
+     * Attributes containing null values are removed.
+     */
+    public void cleanAttributes(){
+        this.attributes.values().removeIf(Objects::isNull);
+        this.getAllChildren().forEach(child -> {
+            child.cleanAttributes();
+        });
     }
     
     /**
