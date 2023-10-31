@@ -50,7 +50,7 @@ public class SVGObject {
      * Provides helper methods to manipulate SVGData efficiently.
      * @param svg 
      */
-    private SVGObject(final SVGData svg) {
+    public SVGObject(final SVGData svg) {
         this.svgDataReference = svg;
     }
     
@@ -127,7 +127,6 @@ public class SVGObject {
     /**
      * Gets the id value of the SVGObject.
      * Will be useful when parent element id's prefix their child element id's to reflect their position in the SVGData structure.
-     * @param id 
      * @return idString
      */
     public final String getID(){

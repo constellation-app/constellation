@@ -36,6 +36,7 @@ import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
+import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
@@ -279,10 +280,8 @@ public class SVGGraph {
                 final Vector4f position = getVertexPosition(vertexIndex);
                 final float radius = getVertexScaledRadius(vertexIndex);
                 final ConstellationColor color = access.getVertexColor(vertexIndex);
-                final String bgi = access.getBackgroundIcon(vertexIndex);
-                final String fgi = access.getForegroundIcon(vertexIndex);
-                final ConstellationIcon backgroundIcon = IconManager.getIcon(bgi);
-                final ConstellationIcon foregroundIcon = IconManager.getIcon(fgi);
+                final ConstellationIcon backgroundIcon = IconManager.getIcon(access.getBackgroundIcon(vertexIndex));
+                final ConstellationIcon foregroundIcon = IconManager.getIcon(access.getForegroundIcon(vertexIndex));
                 
                 // Build the SVGobject representing the node
                 final SVGObject svgNode = SVGObject.loadFromTemplate(SVGFileNameConstant.NODE);
@@ -463,12 +462,9 @@ public class SVGGraph {
                     // Connection is a loop
                     if (highIndex == lowIndex) {
                         
-                        // Build a looped connection on the north east corner of the node 
-                        final Vector4f nodeNorthEastCornerPosition = new Vector4f();
-                        Vector4f.add(nodeNorthEastCornerPosition, highCenterPosition, new Vector4f(getVertexScaledRadius(highIndex), -getVertexScaledRadius(highIndex), 0, 0));
-                        buildLoopedConnection(svgConnections, nodeNorthEastCornerPosition, connection);
+                        buildLoopedConnection(svgConnections, highIndex, connection);
                     
-                    // Connection is not a loop 
+                    // Connection is not a loops
                     } else {
                         
                         // Determine offset controlls for drawing multiple connections in paralell
@@ -558,44 +554,36 @@ public class SVGGraph {
          * Builds a single SVG Transaction/Edge/Link at one point.
          * Generates transactions, links and edges depending on connectionMode.
          * @param svgConnections
-         * @param position
-         * @param connectionReference 
+         * @param vertexIndex
+         * @param connection 
          */
-        private void buildLoopedConnection(final SVGObject svgConnections, final Vector4f position, final int connectionReference) {
-            final SVGObject svgConnection = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION_LOOP);
-            final SVGObject svgArrowShaft = svgConnection.getChild(SVGLayoutConstant.ARROW_SHAFT.getValue());
-
-            final ConstellationColor color = getConnectionColor(connectionReference);
-
-            final ConnectionDirection direction = access.getConnectionDirection(connectionReference);                
+        private void buildLoopedConnection(final SVGObject svgConnections, final int vertexIndex, final int connection) {
+            // Get the location of the north east corner of the node 
+            final Vector4f loopCenterPosition = new Vector4f();
+            Vector4f.add(loopCenterPosition, getVertexPosition(vertexIndex), new Vector4f(getVertexScaledRadius(vertexIndex), -getVertexScaledRadius(vertexIndex), 0, 0));
+            
+            // Create the loopedConnection
+            SVGObject svgLoop = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION_LOOP);
+            svgLoop.setID(access.getConnectionId(connection));
+            svgLoop.setDimension(getVertexDepthScaleFactor(vertexIndex), getVertexDepthScaleFactor(vertexIndex));
+            svgLoop.setPosition(loopCenterPosition.getX() - (svgLoop.getWidth()/2) , loopCenterPosition.getY() - (svgLoop.getHeight()/2));
+            svgLoop.setParent(svgConnections);
+            
+            // Generate the SVG Loop Image
+            final SVGData svgloopImage;
+            final ConnectionDirection direction = access.getConnectionDirection(connection);
             switch (direction){
                 //Directed connections are Transactions, Edges and links with one transaction arrow head    
                 case LOW_TO_HIGH:
                     //This case uses the logic of the following case. 
                 case HIGH_TO_LOW:
-                    
-                    //Build an arrow head from the template file. 
-                    final SVGObject svgArrowHead = SVGObject.loadFromTemplate(SVGFileNameConstant.ARROW_HEAD_TRANSACTION_LOOP);
-                    Vector4f arrowHeadPosition = new Vector4f(position.getX(), position.getY() + 100, position.getZ(), position.getW());
-                    svgArrowHead.setFillColor(color);
-                    buildArrowHead(svgArrowHead, arrowHeadPosition, 0);
-                    svgArrowHead.setParent(svgConnection);
+                    svgloopImage = DefaultIconProvider.LOOP_DIRECTED.buildSVG(access.getConnectionColor(connection).getJavaColor());
                     break;
-
-                //Undirected connections are Transactions, Edges and Links with no arrow heads.
                 default:
-                    //Ajust the arrow shafte to have a radius 20 pixels wider than the default directed arow shaft.
-                    svgArrowShaft.setAttribute(SVGAttributeConstant.RADIUS, "120");
-                    svgArrowShaft.setStrokeArray(188.5f, 188.5f, 377f);
+                    svgloopImage = DefaultIconProvider.LOOP_UNDIRECTED.buildSVG(access.getConnectionColor(connection).getJavaColor());
                     break;
             }
-            
-            svgArrowShaft.setPosition(position.getX(), position.getY());
-            //Set the attributes of the connection and add it to the connections Conatainer   
-            svgConnection.setID(String.format("Connection_%s_%s", position, connectionReference));
-            svgConnection.setStrokeColor(color);
-            svgConnection.setStrokeStyle(access.getConnectionLineStyle(connectionReference));
-            svgConnection.setParent(svgConnections);
+            svgloopImage.setParent(svgLoop.toSVGData());
         }
         
         /**
@@ -608,6 +596,7 @@ public class SVGGraph {
          * @param connection 
          */
         private void buildLinearConnection(final SVGObject svgConnections, final Vector4f highPosition, final Vector4f lowPosition, final int connection){
+
             //Get references to SVG Objects being built within this method 
 
             final SVGObject svgConnection = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION_LINEAR);
@@ -825,6 +814,17 @@ public class SVGGraph {
             //Get the radius value of the node
             int radiusID = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
             float radius = graph.getFloatValue(radiusID, access.getVertexId(vertexIndex));
+            float depthScaleFactor = getVertexDepthScaleFactor(vertexIndex);
+            
+            return radius * depthScaleFactor;         
+        }
+        
+        /**
+         * Determine the normalised node radius in terms of screen dimensions
+         * @param vertexIndex
+         * @return 
+         */
+        private float getVertexDepthScaleFactor(final int vertexIndex){
             
             //Get the screen position of the node
             Vector4f screenPosition = getVertexPosition(vertexIndex);
@@ -833,14 +833,8 @@ public class SVGGraph {
             Vector3f world = this.getVertexWorldPosition(vertexIndex);
             world.setX(world.getX() + 1);
             Vector4f edgePosition = getScreenPosition(world);
-            
-            //Determine the normalised node radius in terms of screen dimensions
-            float depthScaleFactor = Math.abs(edgePosition.getX() - screenPosition.getX());
-            
-            //Scale the radius by the scale factor
-            float scaledRadius = radius * depthScaleFactor; 
-            
-            return  scaledRadius;          
+
+            return Math.abs(edgePosition.getX() - screenPosition.getX());
         }
         
         /**

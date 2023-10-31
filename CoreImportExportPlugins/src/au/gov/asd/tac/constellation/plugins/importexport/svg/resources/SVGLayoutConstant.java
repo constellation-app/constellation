@@ -38,6 +38,7 @@ public enum SVGLayoutConstant {
     FOREGROUND_IMAGE("foreground-image"),
     HEADER("header"),
     LABELS("labels"),
+    LOOPED_CONNECTIONS("looped-connections"),
     NODES("nodes"),
     NODE_IMAGES("node-images"),
     NORTH_EAST_DECORATOR("north-east-decorator"),
