@@ -138,6 +138,15 @@ public class OptionsMenuBarNGTest {
                 ))
         );
 
+        // Connection Logging Menu Item
+        verifyMenuItem(
+                optionsMenuBar.getConnectionLoggingMenuItem(),
+                "Connection Logging",
+                new Image(OptionsMenuBar.class.getResourceAsStream(
+                        "resources/DataAccessConnectionLogging.png"
+                ))
+        );
+
         try (final MockedStatic<DataAccessParametersIoProvider> prefProviderMockedStatic
                 = Mockito.mockStatic(DataAccessParametersIoProvider.class)) {
             final DataAccessTabPane dataAccessTabPane = mock(DataAccessTabPane.class);
@@ -202,6 +211,7 @@ public class OptionsMenuBarNGTest {
                         optionsMenuBar.getLoadMenuItem(),
                         optionsMenuBar.getSaveMenuItem(),
                         optionsMenuBar.getSaveResultsItem(),
+                        optionsMenuBar.getConnectionLoggingMenuItem(),
                         optionsMenuBar.getDeselectPluginsOnExecutionMenuItem()
                 )
         );
