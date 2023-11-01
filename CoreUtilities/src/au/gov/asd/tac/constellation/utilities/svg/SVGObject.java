@@ -217,10 +217,12 @@ public class SVGObject {
      * @param minimumHeight 
      */
     private void setMinimumHeight(float minimumHeight) {
-        if (this.getHeight() < minimumHeight){
-            this.setHeight(minimumHeight);
-            if (this.svgDataReference.getParent() != null){
-                this.getParent().setMinimumHeight(minimumHeight);
+        if (this.getAttributeString(SVGAttributeConstant.HEIGHT) == null || !this.getAttributeString(SVGAttributeConstant.HEIGHT).contains("%")){
+            if (this.getHeight() < minimumHeight){
+                this.setHeight(minimumHeight);
+                if (this.svgDataReference.getParent() != null){
+                    this.getParent().setMinimumHeight(minimumHeight);
+                }
             }
         }
     }
@@ -245,10 +247,12 @@ public class SVGObject {
      * @param minimumHeight 
      */
     private void setMinimumWidth(final float minimumWidth) {
-        if (this.getWidth() < minimumWidth){
-            this.setWidth(minimumWidth);
-            if (this.svgDataReference.getParent() != null){
-                this.getParent().setMinimumWidth(minimumWidth);
+        if (this.getAttributeString(SVGAttributeConstant.WIDTH) == null || !this.getAttributeString(SVGAttributeConstant.WIDTH).contains("%")){      
+            if (this.getWidth() < minimumWidth){
+                this.setWidth(minimumWidth);
+                if (this.svgDataReference.getParent() != null){
+                    this.getParent().setMinimumWidth(minimumWidth);
+                }
             }
         }
     }

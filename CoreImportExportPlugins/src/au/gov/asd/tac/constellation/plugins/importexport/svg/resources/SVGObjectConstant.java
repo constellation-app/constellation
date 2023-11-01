@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
 
+import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
+
 /**
  * Class to capture constant values for strings that indicate key SVGdata element in the output SVGGraph.
  * These element names are tightly coupled to the template SCGfiles and
@@ -22,15 +24,14 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
  *
  * @author capricornunicorn123
  */
-public enum SVGLayoutConstant {
-    CONNECTIONS("connections"),
+public enum SVGObjectConstant {
     ARROW_HEAD("arrow-head"),
     ARROW_SHAFT("arrow-shaft"),
     BACKGROUND("background"),
     BACKGROUND_IMAGE("background-image"),
     BORDER("border"),
     BOTTOM_LABELS("bottom-labels"),
-    LINKS("links"),
+    CONNECTIONS("connections"),
     CONTENT("content"),
     DOMINANT_BASELINE("after-edge"),
     FOOTER("footer"),
@@ -38,6 +39,7 @@ public enum SVGLayoutConstant {
     FOREGROUND_IMAGE("foreground-image"),
     HEADER("header"),
     LABELS("labels"),
+    LINKS("links"),
     LOOPED_CONNECTIONS("looped-connections"),
     NODES("nodes"),
     NODE_IMAGES("node-images"),
@@ -51,15 +53,11 @@ public enum SVGLayoutConstant {
 
     private final String idValue;
 
-    private SVGLayoutConstant(final String idValue) {
+    private SVGObjectConstant(final String idValue) {
         this.idValue = idValue;
     }
     
-    /**
-     * Gets the id value of the layout constant.
-     * @return 
-     */
-    public String getValue(){
-        return idValue;
+    public SVGObject findIn(SVGObject parent){
+        return parent.getChild(idValue);
     }
 }

@@ -15,10 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.svg;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import static java.util.Map.entry;
 
 /**
  * This class serves as a constant to fill the attribute key for SVG attributes.

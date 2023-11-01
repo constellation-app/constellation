@@ -84,7 +84,16 @@ public class SVGData {
      * @return child
      */
     public SVGData getChild(final String idValue) {
-        return this.children.get(idValue);
+        SVGData child = this.children.get(idValue);
+        if (child == null){
+            for (SVGData childIndex : this.getAllChildren()){
+                child = childIndex.getChild(idValue);
+                if (child != null){
+                    return child;
+                }
+            }
+        }
+        return child;
     }
     
     /**
