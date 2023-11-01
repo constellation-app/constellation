@@ -136,7 +136,7 @@ public class PhrasiphyContentPlugin extends SimplePlugin {
             file = files.get(0);
         }
 
-        // Create a ContentAnalysisManager object with reference to the graph, the graph elements to analyse, and the plguin parameters
+        // Create a ContentAnalysisManager object with reference to the graph, the graph elements to analyse, and the plugin parameters
         final ContentAnalysisManager cam = new ContentAnalysisManager(g, selectedElements, null, elCapacity, elementType, phrasiphyContentParams.getOnAttributeID());
         //Get the ContentAnalysisManager to phrasiphy content
         cam.phrasiphyContent(phrasiphyContentParams, file);

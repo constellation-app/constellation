@@ -107,7 +107,7 @@ public class WordCloud {
     }
 
     /**
-     * Consturcts a new word cloud based ont he results of tokenizing from a
+     * Constructs a new word cloud based on the results of tokenizing from a
      * ContentTokenizingServices object, but copying the sorting and selection
      * options from a pre-exisitng word cloud.
      */
@@ -419,7 +419,7 @@ public class WordCloud {
 
     /**
      * Gets the map which relates words to their font sizes, sorted using the
-     * current mehtod of sorting
+     * current method of sorting
      */
     public SortedSet<String> getCurrentWordList() {
         return currentWords;

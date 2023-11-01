@@ -174,7 +174,7 @@ public class ContentAnalysisManager {
         DefaultTokenHandler th = new DefaultTokenHandler();
         ContentTokenizingServices.createDocumentClusteringTokenizingService(th, clusterDocumentsParams, allocator);
 
-        ContentVectprClusteringServices cvcs = ContentVectorClusteringServices.createKMeansClusteringService(th, clusterDocumentsParams, querySize);
+        ContentVectorClusteringServices cvcs = ContentVectorClusteringServices.createKMeansClusteringService(th, clusterDocumentsParams, querySize);
         cvcs.createAndRunThreads(allocator);
 
         ContentAnalysisGraphProcessing gp = new ContentAnalysisGraphProcessing(graph, cvcs, elementType, clusterDocumentsParams.getFollowUpChoice());

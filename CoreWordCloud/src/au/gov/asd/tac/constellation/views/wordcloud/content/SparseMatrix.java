@@ -418,8 +418,9 @@ public class SparseMatrix<N extends Number> {
         data.remove(key);
     }
 
-    /*
-	 * Constructs a view of this matrix which is a map linking tokens to the sets of elements with these tokens. This is a deep constructions, that is changes to the returned map do not affest the matrix from which it was created and vice versa.
+    /**
+     * Constructs a view of this matrix which is a map linking tokens to the sets of elements with these tokens. 
+     * This is a deep constructions, that is changes to the returned map do not affect the matrix from which it was created and vice versa.
      */
     public Map<Integer, Set<Integer>> constructTokenSets() {
         Map<Integer, Set<Integer>> tokenSets = new HashMap<>();

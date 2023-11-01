@@ -76,19 +76,19 @@ public class ContentTokenizingServices {
      * @param allocator The object which connects to the data source to be
      * tokenized and delegates portions thereof to various threads.
      */
-    public static void createDocumentClusteringTokenizingService(final TokenHandler handler, final ClusterDocumentsParameters clusterDocumentParams, final ThreadAllocator allocator) {
+    public static void createDocumentClusteringTokenizingService(final TokenHandler handler, final ClusterDocumentsParameters clusterDocumentsParams, final ThreadAllocator allocator) {
         ContentTokenizingServices cts = new ContentTokenizingServices();
-        switch (clusterDocumentParams.getTokenizingMethod()) {
+        switch (clusterDocumentsParams.getTokenizingMethod()) {
             case NWORDS:
                 cts.tokenizer = new NWordTokenizer(handler, clusterDocumentsParams.getDelimiter().getChar(), clusterDocumentsParams.getTokenLength());
                 break;
             case DELIMITED_NGRAMS:
-                cts.tokenizer = new DelimitedNGramTokenizer(handler, clusterDocumentParams.getTokenLength(), clusterDocumentParams.getDelimiter().getChar());
+                cts.tokenizer = new DelimitedNGramTokenizer(handler, clusterDocumentsParams.getTokenLength(), clusterDocumentsParams.getDelimiter().getChar());
                 break;
             case NGRAMS:
                 cts.tokenizer = new NGramTokenizer(handler, clusterDocumentsParams.getTokenLength());
         }
-        cts.sanitizer = new FilteringSanitizer(clusterDocumentParams.getDelimiter().getChar(), clusterDocumentParams.getToFilterSet()).setInnerSanitizer(new CaseSanitizer(clusterDocumentParams.isCaseSensitive()));
+        cts.sanitizer = new FilteringSanitizer(clusterDocumentsParams.getDelimiter().getChar(), clusterDocumentsParams.getToFilterSet()).setInnerSanitizer(new CaseSanitizer(clusterDocumentsParams.isCaseSensitive()));
         cts.createAndRunThreadsWithAdaptors(allocator);
     }
 
@@ -118,7 +118,6 @@ public class ContentTokenizingServices {
         final String[] excludedWordSetNames = {"English Basic"};
         final String[] wordDelimiterSetNames = {"Word Delimiters"};
         final String[] phraseDelimiterSetNames = {"Phrase Delimiters"};
-        final String[] singleCharacterTokenSetNames = {"Single Characters"};
 
         Set<String> excluded_words = new HashSet<>();
         for (final String setName : excludedWordSetNames) {
@@ -134,12 +133,7 @@ public class ContentTokenizingServices {
         for (final String setName : phraseDelimiterSetNames) {
             phrase_delimiters.addAll(PhraseAnalysisModelLoader.delimiters.get(setName));
         }
-
-        Set<int[]> single_character_tokens = new HashSet<>();
-        for (final String setName : singleCharacterTokenSetNames) {
-            single_character_tokens.addAll(PhraseAnalysisModelLoader.delimiters.get(setName));
-        }
-
+        
         final char phrase_delimiter = '.';
         final char word_delimiter = ' ';
         final Set<Character> apostrophes = new HashSet<>();
@@ -147,8 +141,8 @@ public class ContentTokenizingServices {
 
         // Set the sanitizer to, in the following order, convert to lower case, filter word delimiters, filter apostropes without adding spaces, and insert phrase blocks for phrase delimiters
         cts.sanitizer = new PhraseDelimitingSanitizer(phrase_delimiter, phrase_delimiters).setInnerSanitizer(new FilteringSanitizer(apostrophes).setInnerSanitizer(new FilteringSanitizer(word_delimiter, word_delimiters).setInnerSanitizer(new CaseSanitizer(false))));
-        cts.tokenizer = new PhraseTokenizer(handler, ' ', phrase_length, single_character_tokens, '.', proximity, excluded_words);
-        cts.createAndRunThreadsWithAdaptors(adaptors);
+        cts.tokenizer = new PhraseTokenizer(handler, ' ', phrase_length, '.', proximity, excluded_words);
+        cts.createAndRunThreadsWithAdaptors(allocator);
     }
 
     /**
@@ -223,7 +217,7 @@ public class ContentTokenizingServices {
      * tokens and adding the frequency with which they were seen for given
      * elements to the parent ContentTokenizingServices object's matrix.
      */
-    private static abstract class ContentTokenizer {
+    private abstract static class ContentTokenizer {
 
         protected final TokenHandler handler;
 
@@ -344,6 +338,11 @@ public class ContentTokenizingServices {
     private static class DelimitedNGramTokenizer extends NGramTokenizer {
 
         private final char delimiter;
+        
+        public DelimitedNGramTokenizer(final TokenHandler handler, final int nGramLength, final char delimiter) {
+            super(handler, nGramLength);
+            this.delimiter = delimiter;
+        }
 
         /**
          * Constructs a DelimitedNGramTokenizer
@@ -403,7 +402,7 @@ public class ContentTokenizingServices {
         }
 
         @Override
-        protected TokenizerState getNextState(final char[] phrase) {
+        protected TokenizerState getNewState(final char[] phrase) {
             return new DelimitedNGramTokenizerState(phrase);
         }
     }
@@ -533,11 +532,8 @@ public class ContentTokenizingServices {
 
     private static class NWordWithSingleCharacterWordsTokenizer extends NWordTokenizer {
 
-        protected final Set<int[]> singleCharacterRanges;
-
-        public NWordWithSingleCharacterWordsTokenizer(final TokenHandler handler, final char delimiter, final int numOfWords, final Set<int[]> singleCharacterRanges) {
+        public NWordWithSingleCharacterWordsTokenizer(final TokenHandler handler, final char delimiter, final int numOfWords) {
             super(handler, delimiter, numOfWords);
-            this.singleCharacterRanges = singleCharacterRanges;
         }
 
         @Override
@@ -566,14 +562,6 @@ public class ContentTokenizingServices {
                 // increment the end position until it is a delimiter or a single character word
                 singleCharacterWord = false;
                 while (wordEndPos < phrase.length && phrase[wordEndPos] != delimiter) {
-                    // Check for single character words
-                    for (final int[] range : singleCharacterRanges) {
-                        if (phrase[wordEndPos] >= range[0] && phrase[wordEndPos] <= range[1]) {
-                            singleCharacterWord = true;
-                            wordEndPos++;
-                            return true;
-                        }
-                    }
                     wordEndPos++;
                 }
                 // if the start position is before the end of the phrase, return true
@@ -604,8 +592,8 @@ public class ContentTokenizingServices {
          * equal to the numOfWords - 1.
          * @param excludedWords a list of words which are to be ignored.
          */
-        public PhraseTokenizer(final TokenHandler handler, final char delimiter, final int numOfWords, final Set<int[]> singleCharacterRanges, final char phraseDelimiter, final int proximity, final Set<String> excludedWords) {
-            super(handler, delimiter, numOfWords, singleCharacterRanges);
+        public PhraseTokenizer(final TokenHandler handler, final char delimiter, final int numOfWords, final char phraseDelimiter, final int proximity, final Set<String> excludedWords) {
+            super(handler, delimiter, numOfWords);
             this.phraseDelimiter = phraseDelimiter;
             this.proximity = proximity;
             this.excludedWords = excludedWords;
@@ -617,7 +605,7 @@ public class ContentTokenizingServices {
         }
 
         /**
-         * Tokenize a phrase from a given element and reocrd the data.
+         * Tokenize a phrase from a given element and record the data.
          */
         @Override
         public void tokenizePhrase(final char[] phrase, final int elementPos) {
@@ -644,7 +632,7 @@ public class ContentTokenizingServices {
             protected boolean storeSingleWords;
 
             /**
-             * Construc a Phrasetokenizer state for the specified phrase
+             * Construct a PhraseTokenizer state for the specified phrase
              */
             public PhraseTokenizerState(final char[] phrase) {
                 super(phrase);
@@ -908,7 +896,7 @@ public class ContentTokenizingServices {
 
         @Override
         protected String sanitizeString(final String str) {
-            String newStr = "";
+            String newStr = str;
             for (int i = 0; i < str.length(); i++) {
                 if (toFilter.contains(str.charAt(i))) {
                     newStr = str.substring(0, i) + replacement + str.substring(i + 1, str.length());
@@ -922,7 +910,7 @@ public class ContentTokenizingServices {
     private static class PhraseDelimitingSanitizer extends FilteringSanitizer {
 
         public PhraseDelimitingSanitizer(final char phraseDelimiter, final Set<Character> toDelimitPhrase) {
-            super(" " + String.valueOf(phraseDelimiter) + " " + toDelimitPhrase.toString());
+            super(" " + String.valueOf(phraseDelimiter) + " ", toDelimitPhrase);
         }
     }
 }

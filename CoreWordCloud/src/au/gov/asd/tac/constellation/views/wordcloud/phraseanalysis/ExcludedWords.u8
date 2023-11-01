@@ -1,0 +1,193 @@
+## -----------------English-----------------
+
+#{English Articles}
+the
+a
+an
+
+#{English Prepositions}
+there
+for
+through
+on
+of
+to
+from
+with
+onto
+in
+into
+over
+under
+until
+after
+before
+above
+below
+beneath
+atop
+throughout
+out
+at
+
+#{English Demonstratives}
+this
+that
+these
+those
+which
+
+#{English Pronouns}
+he
+she
+they
+it
+i
+you
+me
+them
+him
+her
+we
+
+## possessive determiners
+#{English Possessives}
+their
+my
+mine
+its
+your
+our
+his
+hers
+
+## Other determiners
+#{English Determiners}
+only
+either
+both
+neither
+
+#{English Quantifiers}
+all
+few
+many
+several
+some
+each
+any
+one
+none
+most
+least
+less
+fewer
+more
+much
+both
+only
+just
+either
+every
+neither
+not
+
+#{English Conjunctions}
+and
+but
+or
+then
+
+## The verb 'to be' with related certainties and negations (some contractions)
+#{English Be}
+be
+is
+am
+are
+arent
+were
+werent
+do
+did
+done
+dont
+didnt
+has
+have
+had
+hasnt
+havent
+was
+will
+would
+wouldve
+wasnt
+wont
+wouldnt
+should
+shouldve
+shouldnt
+can
+cant
+could
+couldve
+may
+might
+im
+id
+ive
+ill
+youre
+youve
+youll
+youd
+
+#{English Interrogatives}
+how
+why
+where
+when
+which
+what
+who
+
+## Evaluative determiners conditionals and responses
+#{English Evaluatives}
+if
+other
+another
+else
+different
+same
+so
+such
+as
+like
+too
+though
+by
+yes
+no
+
+## Other common verbs without great semantic value
+#{English Verbs}
+say
+says
+said
+go
+get
+got
+
+#:{English Basic}
+{English Articles}
+{English Prepositions}
+{English Demonstratives}
+{English Pronouns}
+{English Possessives}
+{English Determiners}
+{English Quantifiers}
+{English Conjunctions}
+{English Be}
+{English Interrogatives}
+{English Evaluatives}
+{English Verbs}

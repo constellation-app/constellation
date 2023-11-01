@@ -105,7 +105,7 @@ public class WordCloudPane extends BorderPane {
     private final Hyperlink noWord;
 
     /**
-     * Constructs a WordCloudPane to be controlled by teh specified controller
+     * Constructs a WordCloudPane to be controlled by the specified controller
      */
     public WordCloudPane(final WordCloudController controller) {
         everything = new StackPane();
@@ -121,7 +121,7 @@ public class WordCloudPane extends BorderPane {
         // add the tips pane and the cloud to content. Place this container at the top
         cloudStackPane.getChildren().add(theCloud);
         content.getChildren().add(cloudStackPane);
-        //.setTop(everything);
+        setTop(everything);
 
         // Create the label used to give information about the parameters used to generate the word cloud 
         queryInfoLabel = new Label("");
@@ -299,7 +299,7 @@ public class WordCloudPane extends BorderPane {
 
     /**
      * Calculates the absolute font size for a word in this cloud based on its
-     * "relative size" and the currnt user font size
+     * "relative size" and the current user font size
      */
     private static int getFontSize(final float relativeSize, final int baseFontSize) {
         return (int) (baseFontSize * (1 + relativeSize * FONT_EXPANSION_FACTOR));

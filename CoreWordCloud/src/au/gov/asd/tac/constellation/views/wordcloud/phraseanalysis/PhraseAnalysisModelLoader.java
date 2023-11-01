@@ -64,7 +64,7 @@ public class PhraseAnalysisModelLoader {
     private static void processLines(final BufferedReader reader, final Map<String, Set> map, final boolean singleCharacterLines) throws IOException {
 
         MODE currentMode = MODE.LOOK_FOR_MODE_TOKEN;
-        Set currentSet = null;
+        Set currentSet = new HashSet<>();
 
         while (true) {
             String line = reader.readLine();

@@ -1,0 +1,53 @@
+.hyperlink { 
+	-fx-skin: "com.sun.javafx.scene.control.skin.HyperlinkSkin";
+	-fx-padding: 0;
+	-fx-cursor: default;
+	-fx-content-disaply: LEFT;
+	-fx-text-fill: white;
+	-fx-border-color: transparent;
+	-fx-border-width: 1px;
+}
+
+.scroll-pane {
+	-fx-background-color: null;
+}
+
+.hyperlink:visited {
+	-fx-text-fill: dodgerblue;
+}
+
+.slider {
+	-fx-skin: "com.sun.javafx.scene.control.skin.SliderSkin";
+	-fx-show-tick-labels: true;
+	-fx-show-tick-marks: false;
+}
+
+.slider > .axis {
+	-fx-tick-label-fill: -fx-text;
+	-fx-tick-unit: 0.25;
+}
+
+
+/***
+* LABEL  *
+***/
+
+#query-label {
+	-fx-text-fill: #20c0ff;
+	-fx-font: bold italic 1.166667em "Arial";
+}
+
+.label {
+	-fx-font: bold 1.000001em "Arial";
+}
+
+.description-label {
+	-fx-font: normal 1.000001em "Arial";
+}
+
+.page-corner {
+	-fx-padding: 4.5 4.5 4.5 4.5;
+	-fx-background-color: linear-gradient(from 0% 0% to 50% 50%, rgba(252, 247, 182, 0.5), rgba(165, 156, 49. 0.5));
+	-fx-shape: "M0, 0H9L0, 9Z";
+	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 4, 0.0, 0, 0);
+}

@@ -100,6 +100,7 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         final PluginParameter<IntegerParameterValue> phraseLength = IntegerParameterType.build(PhrasiphyContentParameters.PHRASE_LENGTH_PARAMETER_ID);
         phraseLength.setName(PhrasiphyContentParameters.PHRASE_LENGTH_NAME);
         phraseLength.setDescription(PhrasiphyContentParameters.PHRASE_LENGTH_DESCRIPTION);
+        phraseLength.setStringValue(Integer.toString(phrasiphyContentParams.getPhraseLength()));
         IntegerParameterType.setMinimum(phraseLength, PhrasiphyContentParameters.PHRASE_LENGTH_MIN_VALUE);
         IntegerParameterType.setMaximum(phraseLength, PhrasiphyContentParameters.PHRASE_LENGTH_MAX_VALUE);
         params.addParameter(phraseLength);

@@ -37,8 +37,6 @@ import org.openide.windows.TopComponent;
  */
 @TopComponent.Description(
         preferredID = "WordCloudTopComponent",
-        //////////////////////////////////////////////////////////////////////////////
-        iconBase = "WILL NEED TO GET A NEW ICON FOR HERE",
         persistenceType = TopComponent.PERSISTENCE_ALWAYS
 )
 @TopComponent.Registration(
@@ -47,7 +45,7 @@ import org.openide.windows.TopComponent;
 )
 @ActionID(
         category = "Window",
-        id = "path for this topcomponent"
+        id = "au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloudTopComponent"
 )
 @ActionReferences({
     @ActionReference(path = "Menu/Experimental/Views", position = 2000),
