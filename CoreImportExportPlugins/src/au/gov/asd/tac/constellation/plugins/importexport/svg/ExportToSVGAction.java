@@ -82,7 +82,8 @@ public final class ExportToSVGAction implements ActionListener {
                         .withParameter(ExportToSVGPlugin.SHOW_TOP_LABELS_PARAMETER_ID, true)
                         .withParameter(ExportToSVGPlugin.SHOW_BOTTOM_LABELS_PARAMETER_ID, true)
                         .withParameter(ExportToSVGPlugin.BACKGROUND_COLOR_PARAMETER_ID, color)
-                        .interactively(false)
+                        .withParameter(ExportToSVGPlugin.EXPORT_PERSPECTIVE_PARAMETER_ID, "Z-Axis")
+                        .interactively(true)
                         .executeLater(context.getGraph());
             }));
         

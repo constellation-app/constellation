@@ -90,7 +90,8 @@ public class SVGGraph {
         private boolean showTopLabels = true;
         private boolean showBottomLabels = true;
         private ConstellationColor backgroundColor = VisualGraphDefaults.DEFAULT_BACKGROUND_COLOR;
-      
+        private String exportPerspective = null;
+        
         /**
          * Specifies the graph to build the SVG from.
          * @param graph The graph to be exported.
@@ -170,6 +171,11 @@ public class SVGGraph {
             this.showBottomLabels = showBottomLabels;
             return this;
         }
+        
+        public SVGGraphBuilder fromPerspective(String exportPerspective) {
+            this.exportPerspective = exportPerspective;
+            return this;
+        }
 
         /**
          * Builds an SVGGraphObject representing the provided graph.
@@ -196,17 +202,35 @@ public class SVGGraph {
             // Set the view port
             final BoundingBox box = camera.boundingBox;
             BoundingBoxUtilities.recalculateFromGraph(box, graph, selectedNodesOnly);
-            CameraUtilities.refocusOnZAxis(camera, box, false);
-            Vector3f maxBound = box.getMax();
-            Vector3f minBound = box.getMin();
-
+            Vector3f maxBound = new Vector3f(box.getMax());
+            Vector3f minBound = new Vector3f(box.getMin());
+            
             maxBound.scale(256);
             minBound.scale(256);
             
-            float viewPortHeight = maxBound.getY() - minBound.getY();
-            viewPortHeight = viewPortHeight < 1 ? 1 : viewPortHeight;
+            float viewPortHeight;
+            float viewPortWidth;
+            switch (exportPerspective) {
+                case "Y-Axis":
+                    CameraUtilities.refocusOnYAxis(camera, box, false);
+                    viewPortHeight = maxBound.getZ() - minBound.getZ();
+                    viewPortWidth = maxBound.getX() - minBound.getX();
+                    break;
+                case "X-Axis":
+                    CameraUtilities.refocusOnXAxis(camera, box, false);
+                    viewPortHeight = maxBound.getY() - minBound.getY();
+                    viewPortWidth = maxBound.getZ() - minBound.getZ();
+                    break;
+                case "Current Perspective":
+                default:
+                    CameraUtilities.refocusOnZAxis(camera, box, false);
+                    viewPortHeight = maxBound.getY() - minBound.getY();
+                    viewPortWidth = maxBound.getX() - minBound.getX();
+                    break;
+            }
             
-            float viewPortWidth = maxBound.getX() - minBound.getX();
+            
+            viewPortHeight = viewPortHeight < 1 ? 1 : viewPortHeight;
             viewPortWidth = viewPortWidth < 1 ? 1 : viewPortWidth;
             
             // Get Model view Matrix from the Camera.
@@ -814,7 +838,15 @@ public class SVGGraph {
             
             //Get the screen position of the edge of the node
             Vector3f world = this.getVertexWorldPosition(vertexIndex);
-            world.setX(world.getX() + 1);
+            
+            switch (exportPerspective) {
+                case "X-Axis":
+                    world.setZ(world.getZ() + 1);
+                    break;
+                default:
+                    world.setX(world.getX() + 1);
+                    break;
+            }
             Vector4f edgePosition = getScreenPosition(world);
 
             return Math.abs(edgePosition.getX() - screenPosition.getX());

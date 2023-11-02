@@ -33,6 +33,8 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.ColorParameterType.ColorParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType;
+import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
@@ -42,6 +44,8 @@ import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.stage.FileChooser;
@@ -65,6 +69,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connection_mode");
     public static final String SHOW_TOP_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_top_labels");
     public static final String SHOW_BOTTOM_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_bottom_labels");
+    public static final String EXPORT_PERSPECTIVE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "export_perspective");
     private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     
     @Override
@@ -108,6 +113,17 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         showBottomNodesParam.setDescription("Export the bottom labels of nodes");
         parameters.addParameter(showBottomNodesParam);
         
+        final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
+        exportPerspectiveParam.setName("Export Perspective");
+        exportPerspectiveParam.setDescription("The perspectove the exported graph will be viewed from");
+        List<String> options = new ArrayList<>();
+        options.add("X-Axis");
+        options.add("Y-Axis");
+        options.add("Z-Axis");
+                
+        SingleChoiceParameterType.setOptions(exportPerspectiveParam, options);
+        parameters.addParameter(exportPerspectiveParam);
+        
         return parameters;
     }
     
@@ -121,6 +137,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final Boolean showConnections = parameters.getBooleanValue(SHOW_CONNECTIONS_PARAMETER_ID);
         final Boolean showTopLabels = parameters.getBooleanValue(SHOW_TOP_LABELS_PARAMETER_ID);
         final Boolean showBottomLabels = parameters.getBooleanValue(SHOW_BOTTOM_LABELS_PARAMETER_ID);
+        final String exportPerspective = parameters.getStringValue(EXPORT_PERSPECTIVE_PARAMETER_ID);
         
         final File imageFile = new File(fnam);  
         
@@ -141,6 +158,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                 .includeConnections(showConnections)
                 .includeTopLabels(showTopLabels)
                 .includeBottomLabels(showBottomLabels)
+                .fromPerspective(exportPerspective)
                 .build();
         try {
             interaction.setExecutionStage(0, -1, "Exporting Graph", "Writing data to file", true);
