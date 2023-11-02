@@ -19,6 +19,8 @@ import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -103,6 +105,17 @@ public class SVGData {
     public List<SVGData> getAllChildren() {
         final List<SVGData> allChildren = new ArrayList<>();
         children.keySet().forEach(key -> allChildren.add(this.children.get(key)));
+        if (!allChildren.isEmpty() && allChildren.get(0).attributes.keySet().contains(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName())){
+            Collections.sort(allChildren, new Comparator<SVGData>(){
+                @Override
+                public int compare(SVGData first, SVGData second){
+                    String firstValue = first.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName());
+                    String secondValue = second.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName());
+                    return Float.compare(Float.parseFloat(secondValue), Float.parseFloat(firstValue));
+                }
+            });
+        }
+        
         return allChildren;
     }
     

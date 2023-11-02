@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -505,5 +507,9 @@ public class SVGObject {
         this.setFillColor(color);
         this.setStrokeColor(color);
         this.getAllChildren().forEach(child -> child.saturateSVG(color));
+    }
+    
+    public void setSortOrderValue(final float sortOrderValue){
+        this.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, sortOrderValue);
     }
 }

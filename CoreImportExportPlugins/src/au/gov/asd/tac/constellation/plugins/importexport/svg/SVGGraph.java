@@ -264,7 +264,7 @@ public class SVGGraph {
             interaction.setExecutionStage(progress, totalSteps, "Building Graph", "Building Nodes", true);
             
             // Retrieve the svg element that holds the nodes as a SVGObject
-            final SVGObject svgNodes = SVGObjectConstant.NODES.findIn(svgGraph);
+            final SVGObject svgNodes = SVGObjectConstant.CONTENT.findIn(svgGraph);
             
             // Itterate over all nodes in the graph
             for (int vertexIndex = 0 ; vertexIndex < access.getVertexCount() ; vertexIndex++) {
@@ -285,6 +285,7 @@ public class SVGGraph {
                 final SVGObject svgNode = SVGObject.loadFromTemplate(SVGFileNameConstant.NODE);
                 svgNode.setPosition(position.getX() - radius, position.getY() - radius);
                 svgNode.setID(String.format("node-%s",access.getVertexId(vertexIndex)));
+                svgNode.setSortOrderValue(position.getW());
                 svgNode.setParent(svgNodes);
                 svgNode.setDimension(radius * 2, radius * 2);
                 
@@ -419,7 +420,7 @@ public class SVGGraph {
             }           
             
             // Get the SVG element form the SVGGraph that will contain all connections
-            final SVGObject svgLinks = SVGObjectConstant.LINKS.findIn(svgGraph);
+            final SVGObject svgLinks = SVGObjectConstant.CONTENT.findIn(svgGraph);
             
             // Itterate over all links in the graph
             for (int linkIndex = 0; linkIndex < access.getLinkCount(); linkIndex++) {
@@ -496,7 +497,8 @@ public class SVGGraph {
                     if (highIndex != lowIndex) {
                         addConnectionLabels(svgLabels, highPosition, lowPosition, connectionIndex, access.getLinkConnectionCount(linkIndex));
                     }
-                } 
+                }
+                svgLink.setSortOrderValue((highCenterPosition.getW() + lowCenterPosition.getW())/2F);
                 interaction.setProgress(progress++, totalSteps, true);
             }
             interaction.setProgress(totalSteps, totalSteps, String.format("Created %s links", progress), true);
@@ -596,7 +598,6 @@ public class SVGGraph {
         private void buildLinearConnection(final SVGObject svgConnections, final Vector4f highPosition, final Vector4f lowPosition, final int connection){
 
             //Get references to SVG Objects being built within this method 
-
             final SVGObject svgConnection = SVGObject.loadFromTemplate(SVGFileNameConstant.CONNECTION_LINEAR);
             final SVGObject svgArrowShaft = SVGObjectConstant.ARROW_SHAFT.findIn(svgConnection);
 

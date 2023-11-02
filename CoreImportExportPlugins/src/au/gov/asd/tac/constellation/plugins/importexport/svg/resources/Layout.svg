@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="graph" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="100%" height="100%">
     <rect id="background" width="100%" height="100%" stroke-width="0"/>
-    <svg id="content" overflow="visible" y="5%" height="95%" width="100%">
-        <svg id="links" overflow="visible">
-        </svg>
-        <svg id="nodes" overflow="visible" >
-        </svg>
-    </svg>
+    <svg id="content" overflow="visible" y="5%" height="95%" width="100%"/>
     <svg id="header" width="100%" height="5%" fill="#fff">
         <rect id="header-background" width="100%" height="100%" stroke-width="0" />
         <svg id="header-text" preserveAspectRatio="xMinYMid" viewBox="0 0 100 100" fill="#000">

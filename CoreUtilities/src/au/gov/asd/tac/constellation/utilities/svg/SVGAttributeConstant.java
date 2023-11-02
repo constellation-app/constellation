@@ -26,6 +26,7 @@ import java.util.Map;
 public enum SVGAttributeConstant {
     BASELINE("dominant-baseline"),
     CLASS("class"),
+    CUSTOM_SORT_ORDER("data-sort-order"),
     CX("cx"),
     CY("cy"),
     DESTINATION_X("x2"),
