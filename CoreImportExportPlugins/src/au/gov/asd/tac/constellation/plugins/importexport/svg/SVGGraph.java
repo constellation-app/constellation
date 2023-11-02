@@ -454,10 +454,13 @@ public class SVGGraph {
                 // Build all of the arrows in the current link 
                 final SVGObject svgConnections = SVGObjectConstant.CONNECTIONS.findIn(svgLink);
                 for (int connectionIndex = 0; connectionIndex < access.getLinkConnectionCount(linkIndex); connectionIndex++){
-                    
+
                     // Get the reference to the current connection
                     final int connection = access.getLinkConnection(linkIndex, connectionIndex);
                     
+                    if (access.getConnectionVisibility(connection) == 0){
+                        continue;
+                    }
                     // Connection is a loop
                     if (highIndex == lowIndex) {
                         
@@ -483,7 +486,9 @@ public class SVGGraph {
                 //Build all of the labels in the current link 
                 final SVGObject svgLabels = SVGObjectConstant.LABELS.findIn(svgLink);
                 for (int connectionIndex = 0; connectionIndex < access.getLinkConnectionCount(linkIndex); connectionIndex++){
-                                     
+                    if (access.getConnectionVisibility(access.getLinkConnection(linkIndex, connectionIndex)) == 0){
+                        continue;
+                    }
                     //Determine offset controlls for drawing multiple Transactions/Edges in paralell
                     final int paralellOffsetDistance = (connectionIndex / 2 + ((connectionIndex % 2 == 0) ? 0 : 1)) * 16;
                     final double paralellOffsetDirection = Math.pow(-1, connectionIndex);
