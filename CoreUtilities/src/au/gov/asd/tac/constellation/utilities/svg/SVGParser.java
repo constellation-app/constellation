@@ -39,7 +39,7 @@ import java.util.regex.Pattern;
  */
 public class SVGParser {
 
-    private static boolean isHeaderTag(String line) {
+    private static boolean isHeaderTag(final String line) {
         return line.contains("<?") && line.contains("?>");
     }
 
@@ -136,7 +136,7 @@ public class SVGParser {
      */
     private static String removeNonLatinCharacters(final String text){
         final StringBuilder builder = new StringBuilder();
-        char[] charArray = text.toCharArray();
+        final char[] charArray = text.toCharArray();
         for (int i = 0 ; i < charArray.length ; i++){
             if (charArray[i] < 127 && charArray[i] > 0 && charArray[i] != 12){
                 builder.append(charArray[i]);
@@ -166,9 +166,9 @@ public class SVGParser {
      */
     private static Map<String,String> getElementAttributes(final String svgString) {
         final Map<String,String> extractedAttributes = new LinkedHashMap<>();
-        String regex = "[-:a-zA-Z0-9]*=\"[,\\-/:%#\\s.a-zA-Z0-9]*\"";
-        Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
-        Matcher svgMatcher = svgAttributeAssignmentRegex.matcher(svgString);
+        final String regex = "[-:a-zA-Z0-9]*=\"[,\\-/:%#\\s.a-zA-Z0-9]*\"";
+        final Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
+        final Matcher svgMatcher = svgAttributeAssignmentRegex.matcher(svgString);
         while (svgMatcher.find()){
             final String potentialAttribute = svgMatcher.group();
             final String[] attribute = potentialAttribute.split("=");

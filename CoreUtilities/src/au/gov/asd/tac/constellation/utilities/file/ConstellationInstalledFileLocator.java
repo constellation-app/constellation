@@ -45,7 +45,7 @@ public class ConstellationInstalledFileLocator {
      * find the location of the JAR.
      * @return the requested {@code File}, if it can be found, else {@code null}
      */
-    public static File locate(String relativePath, String codeNameBase, ProtectionDomain protectedDomain) {
+    public static File locate(final String relativePath, final String codeNameBase, final ProtectionDomain protectedDomain) {
         File locatedFile = InstalledFileLocator.getDefault().locate(relativePath, codeNameBase, false);
         if (locatedFile == null) {
             
@@ -61,7 +61,7 @@ public class ConstellationInstalledFileLocator {
 
                 try {
                     locatedFile = Paths.get(url.toURI()).toFile();
-                } catch (URISyntaxException ex) {
+                } catch (final URISyntaxException ex) {
                     throw new RuntimeException(ex);
                 }
 

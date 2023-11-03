@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
 
 import au.gov.asd.tac.constellation.utilities.svg.SVGFile;
+import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 
 /**
  * This class serves to provide references to resource file names as constants. 
@@ -25,26 +26,34 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGFile;
  * @author capricornunicorn123
  */
 
-public enum SVGFileNameConstant implements SVGFile{
+public enum SVGTemplateConstant implements SVGFile{
     ARROW_HEAD_LINK("LinkArrowHead.svg"),
     ARROW_HEAD_TRANSACTION("TransactionArrowHead.svg"),
     ARROW_HEAD_TRANSACTION_LOOP("TransactionArrowHeadLoop.svg"),
-    LINK("Link.svg"),
     CONNECTION_LOOP("ConnectionLoop.svg"),
     CONNECTION_LINEAR("ConnectionLinear.svg"),
     IMAGE("Image.svg"),
     LABEL("Label.svg"),
     LAYOUT("Layout.svg"),
+    LINK("Link.svg"),
     NODE("Node.svg");
 
     private final String resourceName;
         
-    private SVGFileNameConstant(final String resourceName){
+    private SVGTemplateConstant(final String resourceName){
         this.resourceName = resourceName;
     }
     
+    /**
+     * Helper function to simplify getting SVGObject from SVGTemplate file
+     * @return 
+     */
+    public final SVGObject getSVGObject(){
+        return SVGObject.loadFromTemplate(this);
+    }
+
     @Override
-    public final String getFileName(){
+    public String getFileName() {
         return this.resourceName;
     }
         

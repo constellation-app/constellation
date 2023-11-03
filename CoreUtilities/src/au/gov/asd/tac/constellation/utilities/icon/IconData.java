@@ -60,14 +60,14 @@ public abstract class IconData {
     
     protected SVGData createSVGData(final int size, final Color color) {
         try {
-            InputStream is = createVectorInputStream();
-            SVGObject svg = SVGObject.loadFromInputStream(is);
+            final InputStream is = createVectorInputStream();
+            final SVGObject svg = SVGObject.loadFromInputStream(is);
             svg.setDimension(size, size);
             if (color != null) {
                 svg.saturateSVG(ConstellationColor.fromJavaColor(color));
             }
             return svg.toSVGData();
-        } catch (Exception ex){
+        } catch (final Exception ex){
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             return null;
         }
@@ -164,7 +164,6 @@ public abstract class IconData {
                     coloredImage.setRGB(x, y, blend.getRGB());
                 }
             }
-
             return coloredImage;
         }
     }

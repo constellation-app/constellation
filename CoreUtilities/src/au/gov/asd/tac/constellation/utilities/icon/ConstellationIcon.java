@@ -103,7 +103,7 @@ public class ConstellationIcon {
     }
 
     private String createExtendedName() {
-        StringBuilder fullyQualifiedname = new StringBuilder();
+        final StringBuilder fullyQualifiedname = new StringBuilder();
         if (categories != null) {
             categories.forEach(category -> fullyQualifiedname.append(category).append(DEFAULT_ICON_SEPARATOR));
         }
@@ -176,7 +176,7 @@ public class ConstellationIcon {
      * @param editable True if this ConstellationIcon should be editable, false
      * otherwise.
      */
-    public void setEditable(boolean editable) {
+    public void setEditable(final boolean editable) {
         this.editable = editable;
     }
 
@@ -250,7 +250,7 @@ public class ConstellationIcon {
 
                 // cache the icon data
                 BUFFERED_IMAGE_CACHE.put(key, icon);
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 LOGGER.severe(ex.getLocalizedMessage());
                 icon = null;
             }
@@ -389,7 +389,7 @@ public class ConstellationIcon {
      *
      * @return A {@link SVGData} of the specified size.
      */
-    public final SVGData buildSVG(){
+    public SVGData buildSVG(){
         return buildSVG(DEFAULT_ICON_SIZE, null);
     }
     
@@ -401,7 +401,7 @@ public class ConstellationIcon {
      * the output {@link SVGData}.
      * @return A {@link SVGData} of the specified size.
      */
-    public final SVGData buildSVG(final int size){
+    public SVGData buildSVG(final int size){
         return buildSVG(size, null);
     }
     
@@ -412,7 +412,7 @@ public class ConstellationIcon {
      * @param color A {@link Color} representing the color of the icon.
      * @return A {@link SVGData} of the specified size.
      */
-    public final SVGData buildSVG(final Color color){
+    public SVGData buildSVG(final Color color){
         return buildSVG(DEFAULT_ICON_SIZE, color);
     }
     
@@ -425,7 +425,7 @@ public class ConstellationIcon {
      * @param color A {@link Color} representing the color of the icon.
      * @return A {@link SVGData} of the specified size.
      */
-    public final SVGData buildSVG(final int size, final Color color){
+    public SVGData buildSVG(final int size, final Color color){
         
         //Attempt to export the Constelation icon using a stored SVG image.
         final SVGData vectorImage = this.iconData.getSVGData(size, color);
@@ -492,9 +492,9 @@ public class ConstellationIcon {
      * @return 
      */
     private byte[] applyColorFilter(final byte[] original, final Color color){
-        ByteArrayInputStream bais = new ByteArrayInputStream(original);
+        final ByteArrayInputStream bais = new ByteArrayInputStream(original);
         try {
-            BufferedImage img =  ImageIO.read(bais);
+            final BufferedImage img = ImageIO.read(bais);
             if (img == null || color == null) {
                 return original;
             } else {
@@ -516,13 +516,12 @@ public class ConstellationIcon {
                 final ByteArrayOutputStream os = new ByteArrayOutputStream();
                 try {
                     ImageIO.write(coloredImage, ConstellationIcon.DEFAULT_ICON_FORMAT, os);
-                } catch (IOException ex) {
+                } catch (final IOException ex) {
                     return original;
                 }
                 return os.toByteArray();
             }
-
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             return original;
         }
     }

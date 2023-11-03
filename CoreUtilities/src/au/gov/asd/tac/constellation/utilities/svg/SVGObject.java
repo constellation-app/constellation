@@ -22,9 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -89,7 +86,7 @@ public class SVGObject {
     }
     
     private Collection<SVGObject> getAllChildren(){
-        ArrayList<SVGObject> children = new ArrayList<>();
+        final ArrayList<SVGObject> children = new ArrayList<>();
         this.svgDataReference.getAllChildren().forEach(child -> children.add(new SVGObject(child)));
         return children;
     }   
@@ -137,56 +134,37 @@ public class SVGObject {
     
     /**
      * Adds a String attribute to the current SVGData. 
-     * NOTE:    This class has been made public to increase the pace of development. 
-     *          Should be made private prior to release to ensure SVGData barrier is enforced in future development.
      * @param attributeKey 
      * @param attributeValue 
      */
-    public final void setAttribute(final SVGAttributeConstant attributeKey, final String attributeValue) {
+    private void setAttribute(final SVGAttributeConstant attributeKey, final String attributeValue) {
         svgDataReference.setAttribute(attributeKey, attributeValue);
     }
     
     /**
      * Adds a float attribute to the current SVGData. 
-     * NOTE:    This class has been made public to increase the pace of development. 
-     *          Should be made private prior to release to ensure SVGData barrier is enforced in future development.
      * @param attributeKey 
      * @param attributeValue 
      */
-    public final void setAttribute(final SVGAttributeConstant attributeKey, final float attributeValue) {
+    private void setAttribute(final SVGAttributeConstant attributeKey, final float attributeValue) {
         svgDataReference.setAttribute(attributeKey, String.format("%.2f", attributeValue));
     }
     
     /**
      * Adds an int attribute to the current SVGData. 
-     * NOTE:    This class has been made public to increase the pace of development. 
-     *          Should be made private prior to release to ensure SVGData barrier is enforced in future development.
      * @param attributeKey 
      * @param attributeValue 
      */
-    public final void setAttribute(final SVGAttributeConstant attributeKey, final int attributeValue) {
+    private void setAttribute(final SVGAttributeConstant attributeKey, final int attributeValue) {
         svgDataReference.setAttribute(attributeKey, String.format("%s", attributeValue));
     }
     
     /**
-     * Adds a double attribute to the current SVGData.
-     * NOTE:    This class has been made public to increase the pace of development. 
-     *          Should be made private prior to release to ensure SVGData barrier is enforced in future development.
-     * @param attributeKey 
-     * @param attributeValue 
-     */
-    public final void setAttribute(final SVGAttributeConstant attributeKey, final double attributeValue) {
-        svgDataReference.setAttribute(attributeKey, String.format("%.2f", attributeValue));
-    }
-    
-    /**
      * Adds a ConstellationColor attribute to the current SVGData.
-     * NOTE:    This class has been made public to increase the pace of development. 
-     *          Should be made private prior to release to ensure SVGData barrier is enforced in future development.
      * @param attributeKey 
      * @param attributeValue 
      */
-    public final void setAttribute(final SVGAttributeConstant attributeKey, final ConstellationColor attributeValue) {
+    private void setAttribute(final SVGAttributeConstant attributeKey, final ConstellationColor attributeValue) {
         svgDataReference.setAttribute(attributeKey, String.format("%s", attributeValue.getHtmlColor()));
     }
     
@@ -194,12 +172,18 @@ public class SVGObject {
         return svgDataReference.getAttributeValue(attributeKey.getName());
     } 
     
+    /**
+     * Retrieves an attribute value as a float.
+     * Returns null if the requested value is not a float. 
+     * @param attributeKey
+     * @return 
+     */
     private Float getAttributeFloat(final SVGAttributeConstant attributeKey){
         String attribute = getAttributeString(attributeKey);
-        if (attribute == null || attribute.contains("%")){
-            return null;
-        } else {
+        try {
             return Float.parseFloat(attribute);
+        } catch (final Exception ex){
+             return null; 
         }
     } 
     
@@ -218,7 +202,7 @@ public class SVGObject {
      * @param minimumWidth
      * @param minimumHeight 
      */
-    private void setMinimumHeight(float minimumHeight) {
+    private void setMinimumHeight(final float minimumHeight) {
         if (this.getAttributeString(SVGAttributeConstant.HEIGHT) == null || !this.getAttributeString(SVGAttributeConstant.HEIGHT).contains("%")){
             if (this.getHeight() < minimumHeight){
                 this.setHeight(minimumHeight);
@@ -270,7 +254,7 @@ public class SVGObject {
             return quickReference;
         }
             
-        Float attributeFloat = this.getAttributeFloat(longReference);          
+        final Float attributeFloat = this.getAttributeFloat(longReference);          
         if (attributeFloat != null) {
             //Return the value set during parsing;
             return attributeFloat;
@@ -329,7 +313,7 @@ public class SVGObject {
      * With respect to the SVGObject it is contained within.
      * @param y
      */
-    private void setYPosition(final float y) {
+    public void setYPosition(final float y) {
         this.y = y;
         if ("circle".equals(this.toSVGData().getType())){
             this.setAttribute(SVGAttributeConstant.CY, y);
@@ -511,5 +495,13 @@ public class SVGObject {
     
     public void setSortOrderValue(final float sortOrderValue){
         this.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, sortOrderValue);
+    }
+
+    public void applyGrayScaleFileter() {
+        this.setAttribute(SVGAttributeConstant.FILTER, "grayscale(1)");
+    }
+
+    public void setBaseline(final String baseline) {
+        setAttribute(SVGAttributeConstant.BASELINE, baseline);
     }
 }
