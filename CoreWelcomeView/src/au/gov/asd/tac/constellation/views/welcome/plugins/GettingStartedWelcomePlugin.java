@@ -82,6 +82,7 @@ public class GettingStartedWelcomePlugin implements WelcomePluginInterface {
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         startedBtn.setGraphic(layoutHBox);
+        startedBtn.setId("left-button");
         return startedBtn;
     }
 }

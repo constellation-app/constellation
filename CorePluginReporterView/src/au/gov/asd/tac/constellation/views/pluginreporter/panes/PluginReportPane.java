@@ -282,14 +282,6 @@ public class PluginReportPane extends BorderPane implements PluginReportListener
                 sequencePane.getStyleClass().add("errored");
                 pluginNameLabel.getStyleClass().add(DEFAULT_NAME_TEXT);
                 messageLabel.getStyleClass().add(DEFAULT_MESSAGE_TEXT);
-
-                Writer errorWriter = new CharArrayWriter();
-                try (PrintWriter out = new PrintWriter(errorWriter)) {
-                    out.append(error.getMessage());
-                    out.append("\n\n");
-                    error.printStackTrace(out);
-                }
-                messageLabel.setText(errorWriter.toString());
             }
         }
 

@@ -6,7 +6,6 @@
     -fx-font-weight:bold;
     -fx-background-color: linear-gradient(to bottom, derive(#1c5aa6,100%), derive(#1c5aa6,0%) 5%, derive(#1c5aa6,-25%) 95%, derive(#1c5aa6,50%) 100%);
     -fx-padding: 3;
-    -fx-color: white;
 }
 
 .titled-pane > .title {
@@ -40,4 +39,8 @@
 #invalid {
     -fx-background-color: #8a1d1d;
     -fx-control-inner-background: #8a1d1d;
+}
+
+.check-box > .box {
+    -fx-background-color: linear-gradient(to bottom, derive(#999999,100%), derive(#555555,0%) 5%, derive(#999999,-25%) 95%, derive(#999999,50%) 100%);
 }

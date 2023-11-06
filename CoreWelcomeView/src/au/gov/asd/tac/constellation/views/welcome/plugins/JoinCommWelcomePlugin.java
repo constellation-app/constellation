@@ -89,6 +89,7 @@ public class JoinCommWelcomePlugin implements WelcomePluginInterface {
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         joinBtn.setGraphic(layoutHBox);
+        joinBtn.setId("left-button");
         return joinBtn;
     }
 }

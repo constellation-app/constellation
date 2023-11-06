@@ -151,7 +151,7 @@ public class AttributeEditorPanel extends BorderPane {
     private static final String PRIMARY_KEY_ATTRIBUTE_COLOR = "#8a1d1d";
     private static final String CUSTOM_ATTRIBUTE_COLOR = "#1f4f8a";
     private static final String HIDDEN_ATTRIBUTE_COLOR = "#999999";
-    private static final String SCHEMA_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#333333" : HIDDEN_ATTRIBUTE_COLOR;
+    private static final String SCHEMA_ATTRIBUTE_COLOR = JavafxStyleManager.isDarkTheme() ? "#333333" : "#777777";
 
     private StackPane root;
     private ArrayList<VBox> valueTitledPaneContainers = new ArrayList<>();
@@ -613,7 +613,6 @@ public class AttributeEditorPanel extends BorderPane {
             attributeValueNode.setStyle("-fx-background-color: #111111; ");
         } else {
             attributeValueNode.setStyle("-fx-background-color: #757575; -fx-text-fill: #FFFFFF; ");
-            //FAFAFA
         }
 
         // Edit Functionality

@@ -90,6 +90,7 @@ public class ProvideFeedbackWelcomePlugin implements WelcomePluginInterface {
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         feedbackButton.setGraphic(layoutHBox);
+        feedbackButton.setId("left-button");
         return feedbackButton;
     }
 }

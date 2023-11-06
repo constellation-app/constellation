@@ -4,9 +4,9 @@
 
 .accordion .titled-pane-heading .title, .titled-pane-heading > .title {
     -fx-font-weight:bold;
-    -fx-background-color: white;
+    -fx-background-color: linear-gradient(to bottom, derive(#0093FF,100%), derive(#0093FF,0%) 5%, derive(#0093FF,-25%) 95%, derive(#0093FF,50%) 100%);
     -fx-padding: 3;
-    -fx-text-fill: #ffffff; /* TODO: this isn't working */
+    -fx-color: blue;
 }
 
 .titled-pane-selected > .title {
@@ -41,4 +41,8 @@
 #invalid {
     -fx-background-color: #8a1d1d;
     -fx-control-inner-background: #8a1d1d;
+}
+
+.titled-pane {
+    -fx-text-fill: white;
 }

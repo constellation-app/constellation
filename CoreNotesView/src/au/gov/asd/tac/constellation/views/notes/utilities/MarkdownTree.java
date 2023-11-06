@@ -439,14 +439,8 @@ public class MarkdownTree {
 
         // Base case, make a TextHelper object with the raw text from the NORMAL markdown node and add no formatting and return that in a list
         if (currentNode.getType() == MarkdownNode.Type.NORMAL) {
-            final TextHelper text = new TextHelper(currentNode.getValue());
-            
-            if (JavafxStyleManager.isDarkTheme()) {
-                text.setFill(Color.WHITE);
-            } else {
-                text.setFill(Color.BLACK);
-            }
-            
+            final TextHelper text = new TextHelper(currentNode.getValue());        
+            text.setFill(Color.WHITE);         
             textNodes.add(text);
             return textNodes;
             // If the currentNode is an ordered list then add in a TextHelper signifying the begining of a list

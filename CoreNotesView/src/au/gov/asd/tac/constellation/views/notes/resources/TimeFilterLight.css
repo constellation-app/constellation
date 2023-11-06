@@ -1,11 +1,11 @@
 .custom-menu-item {
     -fx-background-color: #FFFFFF;
-    -fx-text-fill: #111111;
+    -fx-text-fill: FF0000;
 }
 
 .custom-menu-item:focused {
     -fx-background-color: #FFFFFF;
-    -fx-text-fill: #111111;
+    -fx-text-fill: FF0000;
 }
 
 .label {
@@ -134,4 +134,3 @@
     -fx-background-color: white;
     -fx-border-radius: 4px;
 }
-

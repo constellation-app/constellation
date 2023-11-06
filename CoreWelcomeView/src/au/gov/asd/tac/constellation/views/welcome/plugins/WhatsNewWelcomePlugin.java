@@ -33,8 +33,7 @@ import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
 /**
- * The plugin for the Welcome Page that leads to the Whats New in Constellation
- * resources
+ * The plugin for the Welcome Page that leads to the Whats New in Constellation resources
  *
  * @author Delphinus8821
  */
@@ -57,8 +56,7 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
     }
 
     /**
-     * This method describes what action should be taken when the link is
-     * clicked on the Welcome Page
+     * This method describes what action should be taken when the link is clicked on the Welcome Page
      *
      */
     @Override
@@ -94,6 +92,7 @@ public class WhatsNewWelcomePlugin implements WelcomePluginInterface {
         layoutHBox.setSpacing(8);
         layoutHBox.setAlignment(Pos.CENTER_LEFT);
         whatsNewBtn.setGraphic(layoutHBox);
+        whatsNewBtn.setId("left-button");
         return whatsNewBtn;
     }
 }

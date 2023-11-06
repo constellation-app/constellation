@@ -114,6 +114,7 @@ public class WelcomeViewPane extends BorderPane {
             logoView.setFitHeight(100);
             logoView.setFitWidth(150);
             logoHBox.getChildren().add(logoView);
+            logoHBox.setPadding(new Insets(0, 0, 3, 0));
             logoHBox.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(logoHBox);
 
@@ -122,7 +123,8 @@ public class WelcomeViewPane extends BorderPane {
             welcome.setId("title");
             welcome.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(welcome);
-
+            leftVBox.setId("left-pane");
+            
             //Create right VBox for graph controls
             final VBox rightVBox = new VBox();
             rightVBox.setPadding(new Insets(50, 50, 50, 50));

@@ -1,6 +1,10 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2023-11-03 Light and dark mode support
+<p>Light/Dark mode themes have been reworked and now comprehensively cover most of the application.</p>
+<p>The modes can be accessed via SetUp -&gt; Options -&gt; Appearance -&gt; Look and Feel -&gt; FlatLaf Light/FlatLaf Dark respectively.</p>
+
 == 2023-09-28 Hide empty attributes in the Attribute Editor View
 <p>The Attribute Editor view now allows for empty (null) attributes to be hidden to de-clutter the view.</p>
 <p>The heading of each attribute category has replaced the "Show all" toggle with a "Show Hidden" toggle and a new "Show Empty" toggle has been added. The "Show Empty" toggle is enabled each time Constellation is restarted to ensure users make a conscious decision to hide them.</p>

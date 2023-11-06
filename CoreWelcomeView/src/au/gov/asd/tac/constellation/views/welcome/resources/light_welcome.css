@@ -23,3 +23,11 @@
 #infoText {
     -fx-text-fill: #111111;
 }
+
+#left-pane {
+    -fx-background-color: #d6d4d4;
+}
+
+#left-button {
+    -fx-effect: dropshadow(gaussian, #c7c5c5, 5, 0.2, 0, 0);
+}
