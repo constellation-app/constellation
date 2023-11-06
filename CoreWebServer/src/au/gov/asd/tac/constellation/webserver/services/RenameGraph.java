@@ -109,9 +109,7 @@ public class RenameGraph extends RestService {
         if (graphNode != null) {
 
             try {
-                SwingUtilities.invokeAndWait(() -> {
-                    renameGraph(newGraphName, graphNode, out);
-                });
+                SwingUtilities.invokeAndWait(() -> renameGraph(newGraphName, graphNode, out));
             } catch (final InterruptedException ex) {
                 Thread.currentThread().interrupt();
                 throw new RestServiceException(ex);
