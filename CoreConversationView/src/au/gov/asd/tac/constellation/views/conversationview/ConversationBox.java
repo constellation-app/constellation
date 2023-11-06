@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ListChangeListener.Change;
@@ -152,7 +153,7 @@ public final class ConversationBox extends StackPane {
         conversation.setSenderAttributeListener((possibleSenderAttributes, senderAttributes) -> {
             isAdjustingSenderLabels = true;
             senderAttributesMultiChoiceInput.getCheckModel().clearChecks();
-            possibleSenderAttributes.stream().filter(Objects::nonNull);
+            possibleSenderAttributes = possibleSenderAttributes.stream().filter(Objects::nonNull).collect(Collectors.toList());
             senderAttributesChoices.setAll(possibleSenderAttributes);
             for (final String senderAttribute : senderAttributes) {
                 senderAttributesMultiChoiceInput.getCheckModel().check(senderAttribute);
