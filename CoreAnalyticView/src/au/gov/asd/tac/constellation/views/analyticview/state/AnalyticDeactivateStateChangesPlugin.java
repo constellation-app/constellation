@@ -27,8 +27,6 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Plugin to deactivate the changes done to the graph by the analytic view
@@ -40,7 +38,6 @@ import java.util.logging.Logger;
 public class AnalyticDeactivateStateChangesPlugin extends SimpleEditPlugin {
 
     private final AnalyticViewPane pane;
-    private static final Logger LOGGER = Logger.getLogger(AnalyticDeactivateStateChangesPlugin.class.getName());
     
     public AnalyticDeactivateStateChangesPlugin(final AnalyticViewPane pane) {
         this.pane = pane;
