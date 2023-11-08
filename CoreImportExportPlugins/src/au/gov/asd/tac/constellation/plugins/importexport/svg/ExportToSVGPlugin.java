@@ -81,11 +81,13 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         fnamParam.setDescription("File to write to");
         FileParameterType.setKind(fnamParam, FileParameterType.FileParameterKind.SAVE);
         FileParameterType.setFileFilters(fnamParam, new FileChooser.ExtensionFilter("SVG file", "*" + FileExtensionConstants.SVG));
+        fnamParam.setRequired(true);
         parameters.addParameter(fnamParam);
         
         final PluginParameter<StringParameterValue> graphTitleParam = StringParameterType.build(GRAPH_TITLE_PARAMETER_ID);
         graphTitleParam.setName("Graph Title");
         graphTitleParam.setDescription("Title of the graph");
+        graphTitleParam.setRequired(true);
         parameters.addParameter(graphTitleParam);
         
         final PluginParameter<ColorParameterValue> backgroundColorParam = ColorParameterType.build(BACKGROUND_COLOR_PARAMETER_ID);
