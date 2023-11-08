@@ -47,6 +47,7 @@ public class SizeVisualisation<C> extends GraphVisualisation {
             activated = sizeButton.isSelected(); 
             this.translator.executePlugin(!activated);
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
+            AnalyticViewController.getDefault().writeState();
         });
     }
 

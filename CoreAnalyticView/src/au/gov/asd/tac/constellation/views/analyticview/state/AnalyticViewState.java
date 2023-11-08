@@ -21,13 +21,11 @@ import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestio
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
-import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.scene.Node;
 
 /**
  * Stores all AnalyticQuestion currently active and current results in the Analytic View.
@@ -45,11 +43,10 @@ public class AnalyticViewState {
     private AnalyticQuestionDescription<?> currentQuestion;
     private AnalyticQuestion question;
     private String activeCategory;
-    private Map<GraphVisualisation, Boolean> graphVisualisations;
-    private Map<InternalVisualisation, Node> internalVisualisations;
+    private HashMap<GraphVisualisation, Boolean> graphVisualisations;
 
     public AnalyticViewState() {
-        this(0, new ArrayList<>(), new ArrayList<>(), null, null, null, "", false, false, new HashMap<>(), new HashMap<>());
+        this(0, new ArrayList<>(), new ArrayList<>(), null, null, null, "", false, false, new HashMap<>());
     }
 
     public AnalyticViewState(final AnalyticViewState state) {
@@ -62,8 +59,7 @@ public class AnalyticViewState {
         this.currentQuestion = state.getCurrentQuestion();
         this.question = state.getQuestion();
         this.activeCategory = state.getActiveCategory();
-        this.graphVisualisations = state.getGraphVisualisations();
-        this.internalVisualisations = state.getInternalVisualisations();
+        this.graphVisualisations = (HashMap) state.getGraphVisualisations();
     }
     
     public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
@@ -78,13 +74,12 @@ public class AnalyticViewState {
         this.result = new EmptyResult();
         this.question = null;
         this.currentQuestion = null;
-        this.internalVisualisations = new HashMap<>();
     }
 
     public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
             final List<List<SelectableAnalyticPlugin>> activePlugins, final AnalyticResult<?> result, final AnalyticQuestionDescription<?> currentQuestion,
             final AnalyticQuestion question, final String activeCategory, final boolean resultsVisible, final boolean categoriesVisible, 
-            final Map<GraphVisualisation, Boolean> graphVisualisations, final Map<InternalVisualisation, Node> internalVisualisations) {
+            final Map<GraphVisualisation, Boolean> graphVisualisations) {
         this.currentAnalyticQuestionIndex = currentQuestionIndex;
         this.activeAnalyticQuestions = activeQuestions;
         this.activeSelectablePlugins = activePlugins;
@@ -94,24 +89,15 @@ public class AnalyticViewState {
         this.currentQuestion = currentQuestion;
         this.question = question;
         this.activeCategory = activeCategory;
-        this.graphVisualisations = graphVisualisations;
-        this.internalVisualisations = internalVisualisations;
+        this.graphVisualisations = (HashMap) graphVisualisations;
     }
 
     public Map<GraphVisualisation, Boolean> getGraphVisualisations() {
-        return graphVisualisations != null ? graphVisualisations : Collections.emptyMap();
+        return graphVisualisations != null ? (HashMap) graphVisualisations.clone() : Collections.emptyMap();
     }
 
     public void setGraphVisualisations(final Map<GraphVisualisation, Boolean> graphVisualisations) {
-        this.graphVisualisations = graphVisualisations;
-    }
-    
-    public Map<InternalVisualisation, Node> getInternalVisualisations() {
-        return internalVisualisations != null ? internalVisualisations : Collections.emptyMap();
-    }
-    
-    public void setInternalVisualisations(final Map<InternalVisualisation, Node> internalVisualisations) {
-        this.internalVisualisations = internalVisualisations;
+        this.graphVisualisations = (HashMap) graphVisualisations;
     }
 
     public String getActiveCategory() {

@@ -17,22 +17,33 @@ package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
+import au.gov.asd.tac.constellation.graph.interaction.gui.VisualGraphTopComponent;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
+import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateReaderPlugin;
+import java.awt.EventQueue;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
 import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle.Messages;
 import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * The Analytic View Top Component.
@@ -65,11 +76,13 @@ import org.openide.windows.TopComponent;
 })
 public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticViewPane> {
 
+    private static final Logger LOGGER = Logger.getLogger(AnalyticViewTopComponent.class.getName());
+    
     private final AnalyticViewPane analyticViewPane;
     private final AnalyticViewController analyticController;
     private boolean suppressed = false;
     private String currentGraphId = StringUtils.EMPTY;
-    
+
     public AnalyticViewTopComponent() {
         super();
         this.analyticController = AnalyticViewController.getDefault().init(this);
@@ -142,7 +155,6 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     // End of variables declaration//GEN-END:variables
-
     @Override
     protected AnalyticViewPane createContent() {
         return analyticViewPane;
@@ -190,7 +202,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             currentGraphId = current.getId();
         }
         analyticController.readState();
-        
+
         if (current == null) {
             analyticViewPane.reset();
         }
@@ -205,12 +217,31 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
         }
         analyticController.readState();
     }
-    
+
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
-        analyticController.deactivateResultUpdates();
+        final Map<String, Graph> allGraphs = GraphManager.getDefault().getAllGraphs();
+        final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
+
+        Platform.runLater(() -> {
+            if (topComponents != null) {
+                topComponents.forEach(component -> {
+                    allGraphs.values().forEach(graph -> {
+                        if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
+                            try {
+                                // Update each graph and revert any changes made by the analytic view visualisations
+                                EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
+                                PluginExecution.withPlugin(new AnalyticStateReaderPlugin(analyticViewPane)).executeLater(graph);
+                                analyticController.deactivateResultUpdates(graph);
+                            } catch (final InterruptedException | InvocationTargetException ex) {
+                                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                            }  
+                        }
+                    });
+                });
+            }
+        });
         analyticViewPane.reset();
     }
-    
 }

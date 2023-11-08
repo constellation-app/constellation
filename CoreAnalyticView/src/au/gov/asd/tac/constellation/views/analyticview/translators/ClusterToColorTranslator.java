@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ClusterResult.ClusterData;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.ColorVisualisation;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -46,9 +47,6 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterResult, ClusterData> {
-    
-    private static final Map<String, Map<Integer, ConstellationColor>> vertexCache = new HashMap<>();
-    private static final Map<String, Map<Integer, ConstellationColor>> transactionCache = new HashMap<>();
 
     // Maps of the colors of the vertices and transactions before the plugin is run
     private Map<Integer, ConstellationColor> vertexColors = new HashMap<>();
@@ -124,11 +122,15 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
             // This means it won't have valid data to use for the reset function ... in a new instance (ie. a new "Run") it will be empty
             // Using a static cache gets around the issue. We can retrieve and initialise color data from the cache if available.
             
-            if (vertexCache.containsKey(currentGraphKey)) {
-                vertexColors = vertexCache.get(currentGraphKey);
+            if (AnalyticTranslatorUtilities.getVertexColorCache().containsKey(currentGraphKey)) {
+                vertexColors = AnalyticTranslatorUtilities.getVertexColorCache().get(currentGraphKey);
+            } else {
+                vertexColors = new HashMap<>();
             }
-            if (transactionCache.containsKey(currentGraphKey)) {
-                transactionColors = transactionCache.get(currentGraphKey);
+            if (AnalyticTranslatorUtilities.getTransactionColorCache().containsKey(currentGraphKey)) {
+                transactionColors = AnalyticTranslatorUtilities.getTransactionColorCache().get(currentGraphKey);
+            } else {
+                transactionColors = new HashMap<>();
             }
 
             // ensure attributes
@@ -196,16 +198,8 @@ public class ClusterToColorTranslator extends AbstractColorTranslator<ClusterRes
                 graph.setObjectValue(transactionColorReferenceAttribute, 0, VisualConcept.TransactionAttribute.OVERLAY_COLOR.getName());
             }
             
-            if (!vertexColors.isEmpty()) {
-                vertexCache.put(currentGraphKey, vertexColors);
-            } else {
-                vertexCache.put(currentGraphKey, new HashMap<>());
-            }
-            if (!transactionColors.isEmpty()) {
-                transactionCache.put(currentGraphKey, transactionColors);
-            } else {
-                transactionCache.put(currentGraphKey, new HashMap<>());
-            }
+            AnalyticTranslatorUtilities.addToVertexColorCache(currentGraphKey, vertexColors);
+            AnalyticTranslatorUtilities.addToTransactionColorCache(currentGraphKey, transactionColors);
         }
 
         @Override

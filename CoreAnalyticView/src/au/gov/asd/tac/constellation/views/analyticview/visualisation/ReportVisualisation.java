@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import java.util.List;
 import java.util.Objects;
@@ -89,8 +88,6 @@ public class ReportVisualisation extends InternalVisualisation {
         numberOfResultsValue.setText(String.valueOf(numberOfResults));
         aggregationMethodValue.setText(aggregationMethod);
         exceptionsValue.setText(exceptionsString.toString());
-        
-        AnalyticViewController.getDefault().updateInternalVisualisations(this, report);
     }
 
     public void extendReport(final String extensionTitle, final String extensionContent) {
@@ -106,8 +103,6 @@ public class ReportVisualisation extends InternalVisualisation {
         extensionReportBox.getChildren().addAll(extensionLabel, extensionValue);
 
         report.getChildren().addAll(spacerReportBox, extensionReportBox);
-        
-        AnalyticViewController.getDefault().updateInternalVisualisations(this, report);
     }
 
     @Override

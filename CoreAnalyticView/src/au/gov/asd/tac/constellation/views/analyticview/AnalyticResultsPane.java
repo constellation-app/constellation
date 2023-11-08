@@ -99,7 +99,7 @@ public class AnalyticResultsPane extends VBox {
     }
 
     protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results,
-            final Map<GraphVisualisation, Boolean> graphVisualisations, final Map<InternalVisualisation, Node> internalVisualisations) {
+            final Map<GraphVisualisation, Boolean> graphVisualisations) {
         if (results.getClass().equals(EmptyResult.class) && question != null) {
             result = question.getResult() == null ? new EmptyResult() : question.getResult();
         } else {
@@ -119,7 +119,6 @@ public class AnalyticResultsPane extends VBox {
                     visualisationTab.setClosable(false);
                     visualisationTab.setContent(internalVisualisation.getVisualisation());
                     internalVisualisationPane.getTabs().add(visualisationTab);
-                    AnalyticViewController.getDefault().updateInternalVisualisations(internalVisualisation, internalVisualisation.getVisualisation());
                 }
             });
 
@@ -142,7 +141,7 @@ public class AnalyticResultsPane extends VBox {
                             if (visualisation.getKey().getClass() == graphVisualisation.getClass()) {
                                 graphVisualisation = visualisation.getKey();
                                 visualisationNode = graphVisualisation.getVisualisation();
-                                graphVisualisation.setSelected(graphVisualisations.get(graphVisualisation));
+                                graphVisualisation.setSelected(visualisation.getValue());
                             }
                         }
                     }

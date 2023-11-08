@@ -33,6 +33,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult.ElementScore;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,9 +45,6 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = GraphVisualisationTranslator.class)
 public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, ElementScore> {
-
-    private static final Map<String, Map<Integer, Float>> vertexCache = new HashMap<>();
-    private static final Map<String, Map<Integer, Float>> transactionCache = new HashMap<>();
     
     // Maps of the sizes of the vertices and transactions before the plugin is run
     private Map<Integer, Float> vertexSizes = new HashMap<>();
@@ -122,11 +120,15 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
             // This means it won't have valid data to use for the reset function ... in a new instance (ie. a new "Run") it will be empty
             // Using a static cache gets around the issue. We can retrieve and initialise size data from the cache if available.
             
-            if (vertexCache.containsKey(currentGraphKey)) {
-                vertexSizes = vertexCache.get(currentGraphKey);
+            if (AnalyticTranslatorUtilities.getVertexSizeCache().containsKey(currentGraphKey)) {
+                vertexSizes = AnalyticTranslatorUtilities.getVertexSizeCache().get(currentGraphKey);
+            } else {
+                vertexSizes = new HashMap<>();
             }
-            if (transactionCache.containsKey(currentGraphKey)) {
-                transactionSizes = transactionCache.get(currentGraphKey);
+            if (AnalyticTranslatorUtilities.getTransactionSizeCache().containsKey(currentGraphKey)) {
+                transactionSizes = AnalyticTranslatorUtilities.getTransactionSizeCache().get(currentGraphKey);
+            } else {
+                transactionSizes = new HashMap<>();
             }
             
             // ensure attributes
@@ -197,16 +199,8 @@ public class ScoreToSizeTranslator extends AbstractSizeTranslator<ScoreResult, E
                 }
             }
             
-            if (!vertexSizes.isEmpty()) {
-                vertexCache.put(currentGraphKey, vertexSizes);
-            } else {
-                vertexCache.put(currentGraphKey, new HashMap<>());
-            }
-            if (!transactionSizes.isEmpty()) {
-                transactionCache.put(currentGraphKey, transactionSizes);
-            } else {
-                transactionCache.put(currentGraphKey, new HashMap<>());
-            }
+            AnalyticTranslatorUtilities.addToVertexSizeCache(currentGraphKey, vertexSizes);
+            AnalyticTranslatorUtilities.addToTransactionSizeCache(currentGraphKey, transactionSizes);
         }
 
         @Override

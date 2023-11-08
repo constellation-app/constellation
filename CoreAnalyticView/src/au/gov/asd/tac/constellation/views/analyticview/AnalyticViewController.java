@@ -33,16 +33,18 @@ import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticInfo;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
+import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticDeactivateStateChangesPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateReaderPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticStateWriterPlugin;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
-import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import javafx.scene.Node;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.control.ListView;
 
 /**
@@ -53,6 +55,7 @@ import javafx.scene.control.ListView;
 public class AnalyticViewController {
 
     protected static final String SELECT_ON_GRAPH_PLUGIN_NAME = "Analytic View: Update Selection on Graph";
+    private static final Logger LOGGER = Logger.getLogger(AnalyticViewController.class.getName());
 
     // Analytic view controller instance
     private static AnalyticViewController instance = null;
@@ -68,7 +71,6 @@ public class AnalyticViewController {
     private AnalyticQuestion question;
     private String activeCategory;
     private Map<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
-    private Map<InternalVisualisation, Node> internalVisualisations = new HashMap<>();
     
     public AnalyticViewController() {
         this.activeAnalyticQuestions = new ArrayList<>();
@@ -122,15 +124,7 @@ public class AnalyticViewController {
     }
 
     public void setGraphVisualisations(final Map<GraphVisualisation, Boolean> graphVisualisations) {
-        this.graphVisualisations = graphVisualisations;
-    }
-    
-    public Map<InternalVisualisation, Node> getInternalVisualisations() {
-        return internalVisualisations;
-    }
-    
-    public void setInternalVisualisations(final Map<InternalVisualisation, Node> internalVisualisations) {
-        this.internalVisualisations = internalVisualisations;
+        this.graphVisualisations = (HashMap) graphVisualisations;
     }
     
     /**
@@ -147,21 +141,6 @@ public class AnalyticViewController {
         }
     }
     
-    
-    /**
-     * Update which internal visualisations are on the graph and the data they are currently storing
-     * 
-     * @param visualisation
-     * @param visualisationNode
-     */
-    public void updateInternalVisualisations(final InternalVisualisation visualisation, final Node visualisationNode) {
-        if (!internalVisualisations.containsKey(visualisation)) {
-            internalVisualisations.put(visualisation, visualisationNode);
-        } else {
-            internalVisualisations.replace(visualisation, visualisationNode);
-        }
-    }
-
     /**
      * Update the results values and record whether the results pane is currently visible
      *
@@ -189,10 +168,7 @@ public class AnalyticViewController {
      */
     public void removePluginsMatchingCategory(final String currentCategory) {
         if (!activeSelectablePlugins.isEmpty()) {
-            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin
-                    -> (plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class)
-                            .analyticCategory().equals(currentCategory))
-            );
+            activeSelectablePlugins.get(currentAnalyticQuestionIndex).removeIf(plugin -> (plugin.getPlugin().getClass().getAnnotation(AnalyticInfo.class).analyticCategory().equals(currentCategory)));
         }
     }
 
@@ -217,10 +193,18 @@ public class AnalyticViewController {
         }
     }
     
-    public void deactivateResultUpdates() {
-        final AnalyticViewPane pane = parent.createContent();
-        pane.deactivateResultChanges();
-        writeState();
+    /**
+     * Deactivate any changes made to the graph by the color, hide and size buttons
+     * 
+     * @param graph 
+     */
+    public void deactivateResultUpdates(final Graph graph) {
+        final AnalyticViewPane pane = parent.createContent();   
+        try {
+            PluginExecution.withPlugin(new AnalyticDeactivateStateChangesPlugin(pane)).executeLater(graph).get();
+        } catch (final InterruptedException | ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+        } 
     }
 
     /**
@@ -281,9 +265,9 @@ public class AnalyticViewController {
         // controller out of sync with graph...
         return PluginExecution.withPlugin(new AnalyticStateWriterPlugin(currentAnalyticQuestionIndex, activeAnalyticQuestions, 
                 activeSelectablePlugins, result, resultsVisible, currentQuestion, question, categoriesVisible, activeCategory, 
-                graphVisualisations, internalVisualisations)).executeLater(graph);
+                graphVisualisations)).executeLater(graph);
     }
-
+    
 
     public void selectOnGraph(final GraphElementType elementType, final List<Integer> elementIds) {
         PluginExecution.withPlugin(new SelectOnGraphPlugin(elementType, elementIds)).executeLater(GraphManager.getDefault().getActiveGraph());

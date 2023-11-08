@@ -34,14 +34,12 @@ import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticException;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
-import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.image.ImageView;
@@ -74,7 +72,6 @@ public class AnalyticViewPane extends BorderPane {
     private final AnalyticResultsPane analyticResultsPane;
     private final AnalyticResult<?> emptyResult = new EmptyResult();
     private Map<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
-    private Map<InternalVisualisation, Node> internalVisualisations = new HashMap<>();
 
     private static boolean running = false;
     private Thread questionThread = null;
@@ -106,7 +103,7 @@ public class AnalyticViewPane extends BorderPane {
         this.runButton = new Button(RUN_START_TEXT);
         runButton.setStyle(RUN_START_STYLE);
         runButton.setOnAction(event -> {   
-            //deactivateResultChanges();
+            deactiveResultChanges();
             if (running) {
                 // hide results pane
                 if (viewPane.getChildren().contains(analyticResultsPane)) {
@@ -146,14 +143,14 @@ public class AnalyticViewPane extends BorderPane {
                             try {
                                 final AnalyticQuestion<?> question = analyticConfigurationPane.answerCurrentQuestion();
                                 
-                                analyticResultsPane.displayResults(question, emptyResult, new HashMap<>(), new HashMap<>());
+                                analyticResultsPane.displayResults(question, emptyResult, new HashMap<>());
                                 analyticViewController.updateState(true, analyticConfigurationPane.getPluginList());
                                 
                             } catch (final AnalyticException ex) {
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                                 final AnalyticQuestion<?> question = new AnalyticQuestion<>(analyticConfigurationPane.getCurrentQuestion());
                                 question.addException(ex);
-                                analyticResultsPane.displayResults(question, emptyResult, new HashMap<>(), new HashMap<>());
+                                analyticResultsPane.displayResults(question, emptyResult, new HashMap<>());
                                 analyticViewController.updateState(false, analyticConfigurationPane.getPluginList());
                             } finally {
                                 running = false;
@@ -219,11 +216,12 @@ public class AnalyticViewPane extends BorderPane {
     }
     
     /**
-     * Deactivate any changes made by the color, hide and size buttons
+     * Deactivate any changes made by the graph visualisations when the run 
+     * button is active.
      */
-    public void deactivateResultChanges() {
+    public void deactiveResultChanges() {
         graphVisualisations = AnalyticViewController.getDefault().getGraphVisualisations();
-        if (!graphVisualisations.isEmpty()) {
+        if (graphVisualisations != null && !graphVisualisations.isEmpty()) {
             graphVisualisations.entrySet().forEach(node -> node.getKey().deactivate(node.getValue()));
         }
     }
@@ -262,8 +260,7 @@ public class AnalyticViewPane extends BorderPane {
                     viewPane.getChildren().add(1, analyticResultsPane);
                     graphVisualisations = (HashMap) state.getGraphVisualisations();
                     controller.setGraphVisualisations(graphVisualisations);
-                    internalVisualisations = (HashMap) state.getInternalVisualisations();
-                    analyticResultsPane.displayResults(question, results, graphVisualisations, internalVisualisations);
+                    analyticResultsPane.displayResults(question, results, graphVisualisations);
                 }
 
                 controller.setQuestion(question);
