@@ -120,6 +120,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         options.add("X-Axis");
         options.add("Y-Axis");
         options.add("Z-Axis");
+        options.add("Current Perspective");
                 
         SingleChoiceParameterType.setOptions(exportPerspectiveParam, options);
         parameters.addParameter(exportPerspectiveParam);

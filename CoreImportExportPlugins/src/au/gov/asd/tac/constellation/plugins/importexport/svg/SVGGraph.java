@@ -32,6 +32,7 @@ import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
+import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
@@ -79,10 +80,11 @@ public class SVGGraph {
      * </pre>
      */
     public static class SVGGraphBuilder {
+        private Camera camera = null;
         private GraphReadMethods graph;
         private PluginInteraction interaction;
         private GraphVisualAccess access;
-        Matrix44f modelViewProjectionMatrix;
+        Matrix44f modelViewProjectionMatrix = new Matrix44f();
         int[] viewPort;
         private String graphTitle = null;
         private boolean selectedNodesOnly = false;
@@ -211,9 +213,9 @@ public class SVGGraph {
          * Sets up the Builder control attributes. 
          */
         private void preBuild(){
-            
-            final Camera camera = new Camera(access.getCamera());
+            // look at camera frame and localToWorld. should help with translating world positions.
 
+            this.camera = new Camera(access.getCamera());
             // Set the view port
             final BoundingBox box = camera.boundingBox;
             BoundingBoxUtilities.recalculateFromGraph(box, graph, selectedNodesOnly);
@@ -236,20 +238,17 @@ public class SVGGraph {
                     viewPortHeight = maxBound.getY() - minBound.getY();
                     viewPortWidth = maxBound.getZ() - minBound.getZ();
                     break;
-                case "Current Perspective":
-                default:
+                case "Z-Axis":
                     CameraUtilities.refocusOnZAxis(camera, box, false);
+                default:
                     viewPortHeight = maxBound.getY() - minBound.getY();
                     viewPortWidth = maxBound.getX() - minBound.getX();
                     break;
             }
             
-            viewPortHeight = viewPortHeight < 1 ? 1 : viewPortHeight;
-            viewPortWidth = viewPortWidth < 1 ? 1 : viewPortWidth;
-            
             // Get Model view Matrix from the Camera.
             final Matrix44f mvMatrix = Graphics3DUtilities.getModelViewMatrix(camera);
-            
+
             // Define the view frustum
             final float fov = 35;
             final float nearPerspective = 1;
@@ -282,12 +281,12 @@ public class SVGGraph {
             scaleMatrix.makeScalingMatrix(new Vector3f(1.0F, -1.0F, 1.0F));
             pMatrix.multiply(pMatrix, scaleMatrix);
             
-            // Generate the ModelVieqwprojectionMatrix. 
-            final Matrix44f mvpMatrix = new Matrix44f();
-            mvpMatrix.multiply(pMatrix, mvMatrix);   
+            // Generate the ModelViewProjectionMatrix. 
+            modelViewProjectionMatrix.multiply(pMatrix, mvMatrix);   
             
             viewPort = new int[] {Math.round(camera.lookAtEye.getX()),  Math.round(camera.lookAtEye.getY()), Math.round(viewPortWidth),  Math.round(viewPortHeight)};
-            modelViewProjectionMatrix = mvpMatrix; 
+            LOGGER.log(Level.SEVERE, String.format("%s", minBound));
+            LOGGER.log(Level.SEVERE, String.format("%s", maxBound));
         }
         
         /**
@@ -770,19 +769,17 @@ public class SVGGraph {
             final float contentHeight = viewPort[3] + 256.0F;
 
             final float bottomMargin = 128.0F;
-            final float xPadding = 250.0F;
-            final float lPadding = xPadding - 128;
+            final float xPadding = 256.0F + 128F;
             final float yPadding = 250.0F;
-            final float tPadding = yPadding - 128;
+
           
             final float fullWidth = contentWidth + (xPadding * 2);            
             final float fullHeight = (bottomMargin) + contentHeight + (yPadding * 2);            
 
-            final float contentYOffset = tPadding + yPadding;
-            final float contentXOffset = xPadding + lPadding;
+
             
             svgGraph.setDimension(fullWidth, fullHeight);
-            SVGObjectConstant.CONTENT.findIn(svgGraph).setPosition(contentXOffset, contentYOffset);
+
             svgGraph.setDimensionScale("100%", "100%");
         }
 
@@ -804,6 +801,7 @@ public class SVGGraph {
          * @return 
          */
         private Vector3f getVertexWorldPosition(final int vertexIndex){
+
             return new Vector3f(access.getX(vertexIndex), access.getY(vertexIndex), access.getZ(vertexIndex));
         }
         
@@ -817,6 +815,9 @@ public class SVGGraph {
         private Vector4f getScreenPosition(final Vector3f worldPosition){
             final Vector4f screenPosition = new Vector4f();
             Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
+            //move the screen positn by a fixed amount to make it correctly align
+            //dont know why this is needed
+            Vector4f.add(screenPosition, screenPosition, new Vector4f(512F, 128F, 0F, 0F));
             return screenPosition;
         }
         
@@ -850,19 +851,18 @@ public class SVGGraph {
             //Get the screen position of the node
             final Vector4f screenPosition = getVertexPosition(vertexIndex);
             
-            //Get the screen position of the edge of the node
-            final Vector3f worldPosition = this.getVertexWorldPosition(vertexIndex);
-            switch (exportPerspective) {
-                case "X-Axis":
-                    worldPosition.setZ(worldPosition.getZ() + 1);
-                    break;
-                default:
-                    worldPosition.setX(worldPosition.getX() + 1);
-                    break;
-            }
-            final Vector4f edgePosition = getScreenPosition(worldPosition);
+            // Get the world position of the node
+            Vector3f world = getVertexWorldPosition(vertexIndex);
+            
+            // Move the point in the upwards directin by one unit.
+            Vector3f up = camera.lookAtUp;
+            world.add(up);            
+            
+            // Convert this position to screen coordinates.
+            // The is the edge of the node that is durectly above the center of the node.
+            final Vector4f edgePosition = getScreenPosition(world);
 
-            return Math.abs(edgePosition.getX() - screenPosition.getX());
+            return Math.abs(edgePosition.getY() - screenPosition.getY());
         }
         
         /**

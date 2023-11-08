@@ -234,7 +234,6 @@ public class SVGData {
         final String linePrefix = SeparatorConstants.NEWLINE + prefix;
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> {
-            LOGGER.log(Level.SEVERE, String.format("ELEMENT: |%s| KEY: |%s|", this.type, key));
             if (SVGAttributeConstant.NAME_SPACE.getName().equals(key) && this.parent != null) {
                 //do nothing here
             } else {
@@ -262,7 +261,6 @@ public class SVGData {
         
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> {
-            LOGGER.log(Level.SEVERE, String.format("ELEMENT: |%s| KEY: |%s|", this.type, key));
             if (SVGAttributeConstant.NAME_SPACE.getName().equals(key) && this.parent != null) {
                 //do nothing here
             } else {
