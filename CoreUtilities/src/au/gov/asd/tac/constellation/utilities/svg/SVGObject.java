@@ -504,4 +504,8 @@ public class SVGObject {
     public void setBaseline(final String baseline) {
         setAttribute(SVGAttributeConstant.BASELINE, baseline);
     }
+    
+    public void setPoints(final String path){
+        setAttribute(SVGAttributeConstant.POINTS, path);
+    }
 }

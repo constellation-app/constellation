@@ -65,27 +65,19 @@ public final class ExportToSVGAction implements ActionListener {
         
         //The graph has data on it so it can be exported
         if (graph.getVertexCount() > 0){        
-//            FileChooser.openSaveDialog(getExportToSVGFileChooser()).thenAccept(optionalFile -> optionalFile.ifPresent(file -> {
-//                String fnam = file.getAbsolutePath();
-//
-//                if (!fnam.toLowerCase().endsWith(FileExtensionConstants.SVG)) {
-//                    fnam += FileExtensionConstants.SVG;
-//                }
                 int colorAttributeID = VisualConcept.GraphAttribute.BACKGROUND_COLOR.get(graph);
                 ConstellationColor color = graph.getObjectValue(colorAttributeID, 0);
                 
                 PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
-//                        .withParameter(ExportToSVGPlugin.FILE_NAME_PARAMETER_ID, fnam)
                         .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 5 / 6")
                         .withParameter(ExportToSVGPlugin.SELECTED_NODES_PARAMETER_ID, false)
                         .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, true)
                         .withParameter(ExportToSVGPlugin.SHOW_TOP_LABELS_PARAMETER_ID, true)
                         .withParameter(ExportToSVGPlugin.SHOW_BOTTOM_LABELS_PARAMETER_ID, true)
                         .withParameter(ExportToSVGPlugin.BACKGROUND_COLOR_PARAMETER_ID, color)
-                        .withParameter(ExportToSVGPlugin.EXPORT_PERSPECTIVE_PARAMETER_ID, "Z-Axis")
+                        .withParameter(ExportToSVGPlugin.EXPORT_PERSPECTIVE_PARAMETER_ID, "Current Perspective")
                         .interactively(true)
                         .executeLater(context.getGraph());
-//            }));
         
         //The graph has no data on it so prevent the user from exporting
         } else {
@@ -95,51 +87,5 @@ public final class ExportToSVGAction implements ActionListener {
             DialogDisplayer.getDefault().notify(d);
         }
         graph.release();
-    }
-    
-//    /**
-//     * Creates a new SVG file chooser.
-//     * @return the created file chooser.
-//     */
-//    public FileChooserBuilder getExportToSVGFileChooser() {
-//        return new FileChooserBuilder(TITLE)
-//                .setTitle(TITLE)
-//                .setAcceptAllFileFilterUsed(false)
-//                .setFilesOnly(true)
-//                .setFileFilter(new FileFilter() {
-//                    @Override
-//                    public boolean accept(final File file) {
-//                        final String name = file.getName();
-//                        return (file.isFile() && StringUtils.endsWithIgnoreCase(name, FileExtensionConstants.SVG)) || file.isDirectory();
-//                    }
-//
-//                    @Override
-//                    public String getDescription() {
-//                        return "SVG Files (" + FileExtensionConstants.SVG + ")";
-//                    }
-//                })
-//                .setSelectionApprover(new SelectionApprover() {
-//                    @Override
-//                    public boolean approve(final File[] files) {
-//
-//                        for (final File file : files){
-//                            if (file.isFile()){
-//                                
-//                                final String message = String.format("%s already exists.%nDo you want to replace it?", file.getName());
-//                                final Object[] options = new Object[]{
-//                                    NotifyDescriptor.YES_OPTION, NotifyDescriptor.NO_OPTION
-//                                };
-//                                final NotifyDescriptor d = new NotifyDescriptor(message, "Confirm Save", NotifyDescriptor.YES_NO_OPTION, NotifyDescriptor.QUESTION_MESSAGE, options, "Save");
-//                                final Object o = DialogDisplayer.getDefault().notify(d);
-//
-//                                if (NotifyDescriptor.NO_OPTION.equals(o)) {
-//                                    return false;
-//                                }
-//                            }
-//                        }
-//                        return true;
-//                    }
-//                });
-//    }
-    
+    }    
 }

@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg overflow="visible" >
-    <line id="arrow-shaft" stroke-width="8px" />
+    <polygon id="arrow-shaft" stroke-width="0px" />
 </svg>
