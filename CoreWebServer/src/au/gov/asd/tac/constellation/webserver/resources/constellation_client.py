@@ -589,7 +589,7 @@ class Constellation:
         """Rename a graph. If a graph is not specified, the active graph is renamed.
 
         :param graph_id: The optional id of the graph to rename.
-        :param graph_name: The new name for the graph.
+        :param new_graph_name: The new name for the graph.
 
         :returns: The id, previous name and the new name of the graph.
         """
@@ -598,7 +598,7 @@ class Constellation:
         if graph_id:
             params['graph_id'] = graph_id
         
-        params['new_graph_name'] = graph_name
+        params['new_graph_name'] = new_graph_name
         graph = self.call_service('new_graph', verb='post', args=params).json()
 
         return graph['id', 'previous_name', 'new_name']

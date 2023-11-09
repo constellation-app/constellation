@@ -49,7 +49,7 @@ import org.openide.util.lookup.ServiceProvider;
 @ServiceProvider(service = RestService.class)
 public class RenameGraph extends RestService {
 
-    private static final Logger LOGGER = Logger.getLogger(NewGraph.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(RenameGraph.class.getName());
     private static final String NAME = "rename_graph";
     private static final String NEW_GRAPH_NAME_PARAMETER_ID = "new_graph_name";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
