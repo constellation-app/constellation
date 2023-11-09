@@ -33,8 +33,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
-import org.openide.util.Exceptions;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -47,6 +48,8 @@ import org.openide.util.lookup.ServiceProvider;
  */
 @ServiceProvider(service = RestService.class)
 public class RenameGraph extends RestService {
+
+    private static final Logger LOGGER = Logger.getLogger(NewGraph.class.getName());
     private static final String NAME = "rename_graph";
     private static final String NEW_GRAPH_NAME_PARAMETER_ID = "new_graph_name";
     private static final String GRAPH_ID_PARAMETER_ID = "graph_id";
@@ -140,8 +143,8 @@ public class RenameGraph extends RestService {
             root.put("new_name", graphNode.getDisplayName());
             mapper.writeValue(out, root);
 
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
     }
 }
