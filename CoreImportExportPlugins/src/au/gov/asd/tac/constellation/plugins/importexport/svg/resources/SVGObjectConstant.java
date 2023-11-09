@@ -38,6 +38,7 @@ public enum SVGObjectConstant {
     FOOTNOTE("footnote"),
     FOREGROUND_IMAGE("foreground-image"),
     HEADER("header"),
+    LABEL_TEXT("label-text"),
     LABELS("labels"),
     LINKS("links"),
     LOOPED_CONNECTIONS("looped-connections"),

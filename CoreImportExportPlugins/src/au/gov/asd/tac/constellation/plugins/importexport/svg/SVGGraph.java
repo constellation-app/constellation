@@ -15,15 +15,17 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGObjectConstant;
 import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGTemplateConstant;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
@@ -32,16 +34,15 @@ import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
 import au.gov.asd.tac.constellation.utilities.camera.Graphics3DUtilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.graphics.Frustum;
-import au.gov.asd.tac.constellation.utilities.graphics.Matrix33f;
 import au.gov.asd.tac.constellation.utilities.graphics.Matrix44f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector3f;
 import au.gov.asd.tac.constellation.utilities.graphics.Vector4f;
 import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
-import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.time.ZonedDateTime;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,7 +82,8 @@ public class SVGGraph {
      */
     public static class SVGGraphBuilder {
         private Camera camera = null;
-        private GraphReadMethods graph;
+        private Graph graph;
+        private GraphReadMethods readableGraph;
         private PluginInteraction interaction;
         private GraphVisualAccess access;
         Matrix44f modelViewProjectionMatrix = new Matrix44f();
@@ -99,8 +101,18 @@ public class SVGGraph {
          * @param graph The graph to be exported.
          * @return SVGGraphBuilder
          */
-        public SVGGraphBuilder withGraph(final GraphReadMethods graph) {
+        public SVGGraphBuilder withGraph(final Graph graph) {
             this.graph = graph;
+            return this;
+        }
+        
+        /**
+         * Specifies the graph to build the SVG from.
+         * @param graph The graph to be exported.
+         * @return SVGGraphBuilder
+         */
+        public SVGGraphBuilder withReadableGraph(final GraphReadMethods graph) {
+            this.readableGraph = graph;
             return this;
         }
         
@@ -213,36 +225,26 @@ public class SVGGraph {
          * Sets up the Builder control attributes. 
          */
         private void preBuild(){
-            // look at camera frame and localToWorld. should help with translating world positions.
-
             this.camera = new Camera(access.getCamera());
             // Set the view port
             final BoundingBox box = camera.boundingBox;
-            BoundingBoxUtilities.recalculateFromGraph(box, graph, selectedNodesOnly);
-            final Vector3f maxBound = new Vector3f(box.getMax());
-            final Vector3f minBound = new Vector3f(box.getMin());
+            BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
             
-            maxBound.scale(256);
-            minBound.scale(256);
+            final GraphNode graphNode = GraphNode.getGraphNode(graph);
+            final VisualManager visualManager = graphNode.getVisualManager();
+            int viewPortHeight = visualManager.getVisualComponent().getHeight();   
+            int viewPortWidth = visualManager.getVisualComponent().getWidth();
             
-            float viewPortHeight;
-            float viewPortWidth;
             switch (exportPerspective) {
                 case "Y-Axis":
                     CameraUtilities.refocusOnYAxis(camera, box, false);
-                    viewPortHeight = maxBound.getZ() - minBound.getZ();
-                    viewPortWidth = maxBound.getX() - minBound.getX();
                     break;
                 case "X-Axis":
                     CameraUtilities.refocusOnXAxis(camera, box, false);
-                    viewPortHeight = maxBound.getY() - minBound.getY();
-                    viewPortWidth = maxBound.getZ() - minBound.getZ();
                     break;
                 case "Z-Axis":
                     CameraUtilities.refocusOnZAxis(camera, box, false);
                 default:
-                    viewPortHeight = maxBound.getY() - minBound.getY();
-                    viewPortWidth = maxBound.getX() - minBound.getX();
                     break;
             }
             
@@ -253,7 +255,8 @@ public class SVGGraph {
             final float fov = 35;
             final float nearPerspective = 1;
             final float farPerspective = 500000;
-            final float aspect = viewPortWidth / viewPortHeight;
+            final float aspect = viewPortWidth / (float) viewPortHeight;
+            final float aspectInverse = viewPortHeight / (float) viewPortWidth;
             
             final float ymax;
             final float ymin;
@@ -261,11 +264,12 @@ public class SVGGraph {
             final float xmin;
             
             if (aspect < 1){
-                ymax = nearPerspective * (float) Math.tan(fov * Math.PI / 360.0);
-                xmax = ymax * viewPortWidth / viewPortHeight;
-            } else {
+                LOGGER.log(Level.SEVERE, "Im Here");
                 xmax = nearPerspective * (float) Math.tan(fov * Math.PI / 360.0);
-                ymax = xmax * viewPortHeight / viewPortWidth;
+                ymax = xmax * aspectInverse;
+            } else {
+                ymax = nearPerspective * (float) Math.tan(fov * Math.PI / 360.0);
+                xmax = ymax * aspect;
             }
             
             ymin = -ymax;
@@ -283,9 +287,7 @@ public class SVGGraph {
             // Generate the ModelViewProjectionMatrix. 
             modelViewProjectionMatrix.multiply(pMatrix, mvMatrix);   
             
-            viewPort = new int[] {Math.round(camera.lookAtEye.getX()),  Math.round(camera.lookAtEye.getY()), Math.round(viewPortWidth),  Math.round(viewPortHeight)};
-            LOGGER.log(Level.SEVERE, String.format("%s", minBound));
-            LOGGER.log(Level.SEVERE, String.format("%s", maxBound));
+            viewPort = new int[] {Math.round(camera.lookAtEye.getX()),  Math.round(camera.lookAtEye.getY()), viewPortWidth,  viewPortHeight};
         }
         
         /**
@@ -516,7 +518,6 @@ public class SVGGraph {
                         //Determine the unique positions for the individual Transation/edge/link.
                         final Vector4f highPosition = offSetPosition(highCircumferencePosition, paralellOffsetDistance * highScaleFactor, highConnectionAngle - paralellOffsetAngle);
                         final Vector4f lowPosition = offSetPosition(lowCircumferencePosition, paralellOffsetDistance* lowScaleFactor, lowConnectionAngle + paralellOffsetAngle);
-                        LOGGER.log(Level.SEVERE, String.format("Low: %s, high: %s", lowPosition.toString(), highPosition.toString()));
                         //Create the Transaction/Edge/Link SVGData
                         buildLinearConnection(svgConnections, highPosition, lowPosition, connection, highIndex, lowIndex);  
                     }
@@ -555,14 +556,14 @@ public class SVGGraph {
          * @param highPosition
          * @param lowPosition
          * @param connectionIndex
-         * @param totalConnections 
+         * @param connectionCount 
          */
-        private void addConnectionLabels(final SVGObject svgLabels, final Vector4f highPosition, final Vector4f lowPosition, final int connectionIndex, final int totalConnections, final int highIndex, final int lowIndex){
+        private void addConnectionLabels(final SVGObject svgLabels, final Vector4f highPosition, final Vector4f lowPosition, final int connectionIndex, final int connectionCount, final int highIndex, final int lowIndex){
             final int totalSegments;
-            if (totalConnections > 7){
+            if (connectionCount > 7){
                 totalSegments = 8;
             } else{
-                totalSegments = totalConnections + 1;
+                totalSegments = connectionCount + 1;
             }
             
             final int labelSegment = ((connectionIndex % 7)) + 1;
@@ -570,27 +571,27 @@ public class SVGGraph {
             
             //Get the length of the connection
             float distance = getDistance(highPosition, lowPosition); 
-
-            float offsetDistance = distance * labelSegment / totalSegments;
+            float segmentRatio = ((float) labelSegment) / totalSegments;
+            float offsetDistance = distance * segmentRatio;
             
             //get ConnectionAngle
             double angle = this.calculateConnectionAngle(lowPosition, highPosition);
             Vector4f position = this.offSetPosition(lowPosition, offsetDistance, angle);
             final float highScaleFactor = getDepthScaleFactor(getVertexWorldPosition(highIndex));
             final float lowScaleFactor = getDepthScaleFactor(getVertexWorldPosition(lowIndex));
-            final float scaleFactor = (highScaleFactor * (labelSegment / totalSegments)) + (lowScaleFactor * ((totalSegments - labelSegment) / totalSegments));
+            final float scaleFactor = (highScaleFactor * segmentRatio) + (lowScaleFactor * (1 - segmentRatio));
             
             float offset = 0;
-            for (int labelPosition = 0; labelPosition < access.getConnectionLabelCount(connectionIndex); labelPosition++) {
-                final String labelString = access.getConnectionLabelText(connectionIndex, labelPosition);
+            for (int labelIndex = 0; labelIndex < access.getConnectionLabelCount(connectionIndex); labelIndex++) {
+                final String labelString = access.getConnectionLabelText(connectionIndex, labelIndex);
                 if (labelString != null){
                     SVGObject svgLabel = SVGTemplateConstant.LABEL.getSVGObject();
-                    final float size = access.getConnectionLabelSize(labelPosition) * 64 * scaleFactor;
+                    final float size = access.getConnectionLabelSize(labelIndex) * 64 * scaleFactor;
                     svgLabel.setPosition(position.getX(), position.getY() + offset);
                     svgLabel.setFontSize(size);
-                    svgLabel.saturateSVG(access.getConnectionLabelColor(labelPosition));
+                    svgLabel.setFillColor(access.getConnectionLabelColor(labelIndex));
                     svgLabel.setBaseline("middle");
-                    svgLabel.setID(String.format("label-%s-%s", connectionIndex, labelPosition));
+                    svgLabel.setID(String.format("label-%s-%s", connectionIndex, labelIndex));
                     svgLabel.setContent(labelString);
                     svgLabel.setParent(svgLabels);
                     offset = offset + size;
@@ -785,21 +786,18 @@ public class SVGGraph {
          * @param svgGraph The SVGObject holding all generated SVG data 
          */
         private void setLayoutDimensions(final SVGObject svgGraph) {
-            final float contentWidth = viewPort[2] + 256.0F;
-            final float contentHeight = viewPort[3] + 256.0F;
+            final float contentWidth = viewPort[2];
+            final float contentHeight = viewPort[3];
+            
+            final float fullWidth = contentWidth;// + (xPadding * 2);            
+            final float fullHeight =  contentHeight;// + (bottomMargin) +(yPadding * 2);            
 
-            final float bottomMargin = 128.0F;
-            final float xPadding = 256.0F + 128F;
-            final float yPadding = 250.0F;
-
-          
-            final float fullWidth = contentWidth + (xPadding * 2);            
-            final float fullHeight = (bottomMargin) + contentHeight + (yPadding * 2);            
-
-
+            SVGObject content = SVGObjectConstant.CONTENT.findIn(svgGraph);
+                    
+            content.setDimension(contentWidth, contentHeight);
+            content.setDimensionScale("100%", "95%");
             
             svgGraph.setDimension(fullWidth, fullHeight);
-
             svgGraph.setDimensionScale("100%", "100%");
         }
 
@@ -837,7 +835,7 @@ public class SVGGraph {
             Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
             //move the screen positn by a fixed amount to make it correctly align
             //dont know why this is needed
-            Vector4f.add(screenPosition, screenPosition, new Vector4f(512F, 128F, 0F, 0F));
+            //Vector4f.add(screenPosition, screenPosition, new Vector4f(512F, 128F, 0F, 0F));
             return screenPosition;
         }
         
@@ -852,8 +850,7 @@ public class SVGGraph {
         private float getVertexScaledRadius(final int vertexIndex) {  
             
             //Get the radius value of the node
-            final int radiusID = VisualConcept.VertexAttribute.NODE_RADIUS.get(graph);
-            final float radius = graph.getFloatValue(radiusID, access.getVertexId(vertexIndex));
+            final float radius = access.getRadius(vertexIndex);
             
             //Get the scale foactor of the node determined by its depth from the camera.
             final float depthScaleFactor = getDepthScaleFactor(this.getVertexWorldPosition(vertexIndex));
