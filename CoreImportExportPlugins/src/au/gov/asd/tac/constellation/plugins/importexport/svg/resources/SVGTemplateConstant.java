@@ -40,7 +40,7 @@ public enum SVGTemplateConstant implements SVGFile{
 
     private final String resourceName;
         
-    private SVGTemplateConstant(final String resourceName){
+    private SVGTemplateConstant(final String resourceName) {
         this.resourceName = resourceName;
     }
     
@@ -48,7 +48,7 @@ public enum SVGTemplateConstant implements SVGFile{
      * Helper function to simplify getting SVGObject from SVGTemplate file
      * @return 
      */
-    public final SVGObject getSVGObject(){
+    public final SVGObject getSVGObject() {
         return SVGObject.loadFromTemplate(this);
     }
 

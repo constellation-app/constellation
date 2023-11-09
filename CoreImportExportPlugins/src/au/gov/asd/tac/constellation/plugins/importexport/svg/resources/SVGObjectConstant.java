@@ -58,7 +58,7 @@ public enum SVGObjectConstant {
         this.idValue = idValue;
     }
     
-    public SVGObject findIn(SVGObject parent){
+    public SVGObject findIn(SVGObject parent) {
         return parent.getChild(idValue);
     }
 }

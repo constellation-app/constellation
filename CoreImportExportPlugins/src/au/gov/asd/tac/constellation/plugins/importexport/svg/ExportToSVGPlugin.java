@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
+import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -41,6 +42,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -146,6 +148,8 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         
         //This plugin functionality relies heavily on VisualgraphAccess methods to interpret the graph consistenly.
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
+        final GraphNode graphNode = GraphNode.getGraphNode(currentGraph);
+        final VisualManager visualManager = graphNode.getVisualManager();
         GraphVisualAccess access = new GraphVisualAccess(currentGraph);
         access.beginUpdate();
         access.updateInternally();
@@ -155,7 +159,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                 .withInteraction(interaction)
                 .withTitle(title)
                 .withAccess(access)
-                .withGraph(currentGraph)
+                .withVisualManager(visualManager)
                 .withReadableGraph(graph)
                 .withBackground(color)
                 .withNodes(selectedNodes)

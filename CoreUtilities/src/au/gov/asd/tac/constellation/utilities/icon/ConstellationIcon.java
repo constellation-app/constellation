@@ -389,7 +389,7 @@ public class ConstellationIcon {
      *
      * @return A {@link SVGData} of the specified size.
      */
-    public SVGData buildSVG(){
+    public SVGData buildSVG() {
         return buildSVG(DEFAULT_ICON_SIZE, null);
     }
     
@@ -401,7 +401,7 @@ public class ConstellationIcon {
      * the output {@link SVGData}.
      * @return A {@link SVGData} of the specified size.
      */
-    public SVGData buildSVG(final int size){
+    public SVGData buildSVG(final int size) {
         return buildSVG(size, null);
     }
     
@@ -412,7 +412,7 @@ public class ConstellationIcon {
      * @param color A {@link Color} representing the color of the icon.
      * @return A {@link SVGData} of the specified size.
      */
-    public SVGData buildSVG(final Color color){
+    public SVGData buildSVG(final Color color) {
         return buildSVG(DEFAULT_ICON_SIZE, color);
     }
     
@@ -425,11 +425,11 @@ public class ConstellationIcon {
      * @param color A {@link Color} representing the color of the icon.
      * @return A {@link SVGData} of the specified size.
      */
-    public SVGData buildSVG(final int size, final Color color){
+    public SVGData buildSVG(final int size, final Color color) {
         
         //Attempt to export the Constelation icon using a stored SVG image.
         final SVGData vectorImage = this.iconData.getSVGData(size, color);
-        if (vectorImage != null){
+        if (vectorImage != null) {
             return vectorImage;
         
         //The icon does not have a svg equivelant so create one by embedding raster data into an SVG image.
@@ -491,7 +491,7 @@ public class ConstellationIcon {
      * @param color
      * @return 
      */
-    private byte[] applyColorFilter(final byte[] original, final Color color){
+    private byte[] applyColorFilter(final byte[] original, final Color color) {
         final ByteArrayInputStream bais = new ByteArrayInputStream(original);
         try {
             final BufferedImage img = ImageIO.read(bais);

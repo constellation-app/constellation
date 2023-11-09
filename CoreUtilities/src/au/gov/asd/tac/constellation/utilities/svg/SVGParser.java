@@ -66,7 +66,7 @@ public class SVGParser {
             String line;
             while ((line = br.readLine()) != null) {
                 final String svgElement = SVGParser.isolateSVGElement(line);
-                if (svgElement == null){
+                if (svgElement == null) {
                     continue;
                 }
                 final boolean openTag = SVGParser.isOpenTag(svgElement);
@@ -75,7 +75,7 @@ public class SVGParser {
                 // This parser curently requires all lines within an SVG tag as it does not support multi line tags.
                 if (!openTag && !closeTag) {
                     //If a header tag is found, it is ignored.
-                    if (SVGParser.isHeaderTag(svgElement)){
+                    if (SVGParser.isHeaderTag(svgElement)) {
                         continue;
                     }
                     throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
@@ -92,7 +92,7 @@ public class SVGParser {
                     currentElement = newObject;
                 }
 
-                if (currentElement != null && currentElement.getParent() == null && !roots.contains(currentElement)){
+                if (currentElement != null && currentElement.getParent() == null && !roots.contains(currentElement)) {
                     roots.add(currentElement);
                 }                
 
@@ -124,7 +124,7 @@ public class SVGParser {
      * @param text
      * @return 
      */
-    private static String replaceInvalidCharacters(final String text){
+    private static String replaceInvalidCharacters(final String text) {
         return text.replace("&", "&amp;").replace(">", "&gt;").replace("<", "&lt;").replace("\"", "&quot;").replace("'", "&apos;");
     }
     
@@ -134,15 +134,15 @@ public class SVGParser {
      * @param text
      * @return 
      */
-    private static String removeNonLatinCharacters(final String text){
+    private static String removeNonLatinCharacters(final String text) {
         final StringBuilder builder = new StringBuilder();
         final char[] charArray = text.toCharArray();
-        for (int i = 0 ; i < charArray.length ; i++){
-            if (charArray[i] < 127 && charArray[i] > 0 && charArray[i] != 12){
+        for (int i = 0 ; i < charArray.length ; i++) {
+            if (charArray[i] < 127 && charArray[i] > 0 && charArray[i] != 12) {
                 builder.append(charArray[i]);
             }
         }
-        if (builder.length() < text.length()){
+        if (builder.length() < text.length()) {
             builder.append(" (omitted non-latin characters)");
         }
         return builder.toString();
@@ -169,7 +169,7 @@ public class SVGParser {
         final String regex = "[-:a-zA-Z0-9]*=\"[,\\-/:%#\\s.a-zA-Z0-9]*\"";
         final Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
         final Matcher svgMatcher = svgAttributeAssignmentRegex.matcher(svgString);
-        while (svgMatcher.find()){
+        while (svgMatcher.find()) {
             final String potentialAttribute = svgMatcher.group();
             final String[] attribute = potentialAttribute.split("=");
             final String foundKey = attribute[0];
@@ -191,7 +191,7 @@ public class SVGParser {
         final Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
         final Matcher svgMatcher = svgAttributeAssignmentRegex.matcher(line);
         int foundElements = 0;
-        while (svgMatcher.find()){
+        while (svgMatcher.find()) {
             final String potentialElement = svgMatcher.group();
             if (potentialElement.length() < 2) {
                 throw new IllegalStateException("SVG Element wrong");
@@ -199,9 +199,9 @@ public class SVGParser {
             svgElements.add(potentialElement);
             foundElements++;
         }
-        if (foundElements > 1){
+        if (foundElements > 1) {
             throw new UnsupportedOperationException("Found multiple SVG Elements");
-        } else if (foundElements < 1){
+        } else if (foundElements < 1) {
             return null;
         } else {
             return svgElements.get(0);

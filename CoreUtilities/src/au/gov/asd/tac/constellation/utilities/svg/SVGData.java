@@ -87,10 +87,10 @@ public class SVGData {
      */
     public SVGData getChild(final String idValue) {
         SVGData child = this.children.get(idValue);
-        if (child == null){
-            for (SVGData childIndex : this.getAllChildren()){
+        if (child == null) {
+            for (SVGData childIndex : this.getAllChildren()) {
                 child = childIndex.getChild(idValue);
-                if (child != null){
+                if (child != null) {
                     return child;
                 }
             }
@@ -105,10 +105,10 @@ public class SVGData {
     public List<SVGData> getAllChildren() {
         final List<SVGData> allChildren = new ArrayList<>();
         children.keySet().forEach(key -> allChildren.add(this.children.get(key)));
-        if (!allChildren.isEmpty() && allChildren.get(0).attributes.keySet().contains(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName())){
-            Collections.sort(allChildren, new Comparator<SVGData>(){
+        if (!allChildren.isEmpty() && allChildren.get(0).attributes.keySet().contains(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName())) {
+            Collections.sort(allChildren, new Comparator<SVGData>() {
                 @Override
-                public int compare(SVGData first, SVGData second){
+                public int compare(SVGData first, SVGData second) {
                     String firstValue = first.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName());
                     String secondValue = second.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName());
                     return Float.compare(Float.parseFloat(secondValue), Float.parseFloat(firstValue));
@@ -127,7 +127,7 @@ public class SVGData {
      */
     public final void setParent(final SVGData parent) {
         this.parent = parent;
-        if (this.parent != null){
+        if (this.parent != null) {
             this.parent.setChild(this);
         }
     }
@@ -176,7 +176,7 @@ public class SVGData {
      * Returns the value of the content of this SVGData.
      * @return content
      */
-    public final String getContent(){
+    public final String getContent() {
         return this.content;
     }
     
@@ -196,7 +196,7 @@ public class SVGData {
      * Prepares SVGData for export. 
      * Attributes containing null values are removed.
      */
-    public void cleanAttributes(){
+    public void cleanAttributes() {
         this.attributes.values().removeIf(Objects::isNull);
         this.getAllChildren().forEach(child -> {
             child.cleanAttributes();
@@ -211,11 +211,11 @@ public class SVGData {
      */
     private String toString(final String prefix) {
         final StringBuilder svgString = new StringBuilder();
-        if (this.children.isEmpty() && this.content == null){
+        if (this.children.isEmpty() && this.content == null) {
             svgString.append(elementToSVG(prefix));
         } else {
             svgString.append(elementHeaderToSVG(prefix));
-            if (this.children.isEmpty()){
+            if (this.children.isEmpty()) {
                 svgString.append(content);
             } else {
                 svgString.append(elementChildrenToSVG(prefix));
@@ -253,7 +253,7 @@ public class SVGData {
      */
     private String elementHeaderToSVG(final String prefix) {
         String linePrefix = SeparatorConstants.NEWLINE;
-        if (prefix != null){
+        if (prefix != null) {
             linePrefix += prefix;
         }
         
@@ -279,7 +279,7 @@ public class SVGData {
      */
     private String elementFooterToSVG(final String prefix) {
         String linePrefix = SeparatorConstants.NEWLINE;
-        if (prefix != null){
+        if (prefix != null) {
             linePrefix += prefix;
         }
         return String.format("%s</%s>", linePrefix, this.type);
@@ -296,10 +296,10 @@ public class SVGData {
     private String elementChildrenToSVG (final String prefix) {
         final StringBuilder childSVGString = new StringBuilder();
         String childPrefix = SeparatorConstants.TAB;
-        if (prefix != null){
+        if (prefix != null) {
             childPrefix += prefix;
         }
-        for (final SVGData child : this.getAllChildren()){
+        for (final SVGData child : this.getAllChildren()) {
             childSVGString.append(child.toString(childPrefix));
         }
         return childSVGString.toString();

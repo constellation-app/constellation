@@ -43,7 +43,7 @@ public abstract class IconData {
     private byte[] data = null;
     private SVGData svgData = null;
     
-    public SVGData getSVGData(){
+    public SVGData getSVGData() {
         return getSVGData(ConstellationIcon.DEFAULT_ICON_SIZE, null);
     }
     
@@ -67,7 +67,7 @@ public abstract class IconData {
                 svg.saturateSVG(ConstellationColor.fromJavaColor(color));
             }
             return svg.toSVGData();
-        } catch (final Exception ex){
+        } catch (final Exception ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             return null;
         }

@@ -67,7 +67,7 @@ public class SVGObject {
         }
     }
     
-    public SVGObject getParent(){
+    public SVGObject getParent() {
         return new SVGObject(this.svgDataReference.getParent());
     }
     
@@ -78,14 +78,14 @@ public class SVGObject {
      */
     public final SVGObject getChild(final String id) {
         final SVGData child = this.svgDataReference.getChild(id);
-        if (child != null){
+        if (child != null) {
             return new SVGObject(child); 
         } else {
             return null;
         }
     }
     
-    private Collection<SVGObject> getAllChildren(){
+    private Collection<SVGObject> getAllChildren() {
         final ArrayList<SVGObject> children = new ArrayList<>();
         this.svgDataReference.getAllChildren().forEach(child -> children.add(new SVGObject(child)));
         return children;
@@ -108,7 +108,7 @@ public class SVGObject {
      * Uniqueness is not currently enforced.
      * @param id 
      */
-    public void setID(final int id){
+    public void setID(final int id) {
         this.setAttribute(SVGAttributeConstant.ID, id);
     }
     
@@ -119,7 +119,7 @@ public class SVGObject {
      * Uniqueness is not currently enforced.
      * @param id 
      */
-    public void setID(final String id){
+    public void setID(final String id) {
         this.setAttribute(SVGAttributeConstant.ID, id);
     }
     
@@ -128,7 +128,7 @@ public class SVGObject {
      * Will be useful when parent element id's prefix their child element id's to reflect their position in the SVGData structure.
      * @return idString
      */
-    public final String getID(){
+    public final String getID() {
         return svgDataReference.getAttributeValue(SVGAttributeConstant.ID.getName());
     }
     
@@ -168,7 +168,7 @@ public class SVGObject {
         svgDataReference.setAttribute(attributeKey, String.format("%s", attributeValue.getHtmlColor()));
     }
     
-    private String getAttributeString(final SVGAttributeConstant attributeKey){
+    private String getAttributeString(final SVGAttributeConstant attributeKey) {
         return svgDataReference.getAttributeValue(attributeKey.getName());
     } 
     
@@ -178,11 +178,11 @@ public class SVGObject {
      * @param attributeKey
      * @return 
      */
-    private Float getAttributeFloat(final SVGAttributeConstant attributeKey){
+    private Float getAttributeFloat(final SVGAttributeConstant attributeKey) {
         String attribute = getAttributeString(attributeKey);
         try {
             return Float.parseFloat(attribute);
-        } catch (final Exception ex){
+        } catch (final Exception ex) {
              return null; 
         }
     } 
@@ -203,17 +203,17 @@ public class SVGObject {
      * @param minimumHeight 
      */
     private void setMinimumHeight(final float minimumHeight) {
-        if (this.getAttributeString(SVGAttributeConstant.HEIGHT) == null || !this.getAttributeString(SVGAttributeConstant.HEIGHT).contains("%")){
-            if (this.getHeight() < minimumHeight){
+        if (this.getAttributeString(SVGAttributeConstant.HEIGHT) == null || !this.getAttributeString(SVGAttributeConstant.HEIGHT).contains("%")) {
+            if (this.getHeight() < minimumHeight) {
                 this.setHeight(minimumHeight);
-                if (this.svgDataReference.getParent() != null){
+                if (this.svgDataReference.getParent() != null) {
                     this.getParent().setMinimumHeight(minimumHeight);
                 }
             }
         }
     }
     
-    public float getHeight(){        
+    public float getHeight() {        
         return this.getPositionalData(this.height, SVGAttributeConstant.HEIGHT);
     }
     
@@ -233,23 +233,23 @@ public class SVGObject {
      * @param minimumHeight 
      */
     private void setMinimumWidth(final float minimumWidth) {
-        if (this.getAttributeString(SVGAttributeConstant.WIDTH) == null || !this.getAttributeString(SVGAttributeConstant.WIDTH).contains("%")){      
-            if (this.getWidth() < minimumWidth){
+        if (this.getAttributeString(SVGAttributeConstant.WIDTH) == null || !this.getAttributeString(SVGAttributeConstant.WIDTH).contains("%")) {      
+            if (this.getWidth() < minimumWidth) {
                 this.setWidth(minimumWidth);
-                if (this.svgDataReference.getParent() != null){
+                if (this.svgDataReference.getParent() != null) {
                     this.getParent().setMinimumWidth(minimumWidth);
                 }
             }
         }
     }
     
-    public float getWidth(){
+    public float getWidth() {
         return this.getPositionalData(this.width, SVGAttributeConstant.WIDTH);
     }
     
-    private float getPositionalData(final Float quickReference, final SVGAttributeConstant longReference){
+    private float getPositionalData(final Float quickReference, final SVGAttributeConstant longReference) {
         
-        if (quickReference != null){
+        if (quickReference != null) {
             //Return the localy stored value;
             return quickReference;
         }
@@ -297,7 +297,7 @@ public class SVGObject {
      */
     private void setXPosition(final float x) {
         this.x = x;
-        if ("circle".equals(this.toSVGData().getType())){
+        if ("circle".equals(this.toSVGData().getType())) {
             this.setAttribute(SVGAttributeConstant.CX, x);
         } else {
             this.setAttribute(SVGAttributeConstant.X, x);
@@ -305,7 +305,7 @@ public class SVGObject {
         
     }
     
-    public float getXPosition(){
+    public float getXPosition() {
         return this.getPositionalData(this.x, SVGAttributeConstant.X);
     }
     /**
@@ -315,14 +315,14 @@ public class SVGObject {
      */
     public void setYPosition(final float y) {
         this.y = y;
-        if ("circle".equals(this.toSVGData().getType())){
+        if ("circle".equals(this.toSVGData().getType())) {
             this.setAttribute(SVGAttributeConstant.CY, y);
         } else {
             this.setAttribute(SVGAttributeConstant.Y, y);
         }
     }
     
-    public float getYPosition(){
+    public float getYPosition() {
         return this.getPositionalData(this.y, SVGAttributeConstant.Y);
     }
      
@@ -354,19 +354,19 @@ public class SVGObject {
      * @param position
      */
     public void setSourcePosition(final Vector4f position) {
-        if (this.x != null){
+        if (this.x != null) {
             this.width = Math.abs(this.x - position.getX());
         }
         
-        if (this.x == null || this.x > position.getX()){
+        if (this.x == null || this.x > position.getX()) {
             this.x = position.getX();
         }
         
-        if (this.y != null){
+        if (this.y != null) {
             this.height = Math.abs(this.y - position.getY());
         }
         
-        if (this.y == null || this.y > position.getY()){
+        if (this.y == null || this.y > position.getY()) {
             this.y = position.getY();
         }
 
@@ -380,19 +380,19 @@ public class SVGObject {
      * @param position
      */
     public void setDestinationPosition(final Vector4f position) {
-        if (this.x != null){
+        if (this.x != null) {
             this.width = Math.abs(this.x - position.getX());
         }
         
-        if (this.x == null || this.x > position.getX()){
+        if (this.x == null || this.x > position.getX()) {
             this.x = position.getX();
         }
         
-        if (this.y != null){
+        if (this.y != null) {
             this.height = Math.abs(this.y - position.getY());
         }
         
-        if (this.y == null || this.y > position.getY()){
+        if (this.y == null || this.y > position.getY()) {
             this.y = position.getY();
         }
         
@@ -400,7 +400,7 @@ public class SVGObject {
         this.setAttribute(SVGAttributeConstant.DESTINATION_Y, position.getY());
     }
     
-    public void setFontSize(final float size){
+    public void setFontSize(final float size) {
         this.setAttribute(SVGAttributeConstant.FONT_SIZE, size);
     }
     /**
@@ -415,7 +415,7 @@ public class SVGObject {
      * Sets the color of the SVGObject.
      * @param color 
      */
-    public void setFillColor(final ConstellationColor color){
+    public void setFillColor(final ConstellationColor color) {
         this.setAttribute(SVGAttributeConstant.FILL_COLOR, color);
     }
 
@@ -439,11 +439,11 @@ public class SVGObject {
         }
     }
     
-    public void setStrokeArray(final float strokeA, final float strokeB){
+    public void setStrokeArray(final float strokeA, final float strokeB) {
         this.setAttribute(SVGAttributeConstant.DASH_ARRAY, String.format("%s %s", strokeA, strokeB));
     }
     
-    public void setStrokeArray(final float strokeA, final float strokeB, final float strokeC){
+    public void setStrokeArray(final float strokeA, final float strokeB, final float strokeC) {
         this.setAttribute(SVGAttributeConstant.DASH_ARRAY, String.format("%s %s %s", strokeA, strokeB, strokeC));
     }
     
@@ -472,7 +472,7 @@ public class SVGObject {
     public static SVGObject loadFromInputStream(InputStream is) {
         try{
             return new SVGObject(SVGParser.parse(is));
-        } catch (IOException e){
+        } catch (IOException e) {
             return null;
         }
     }
@@ -483,17 +483,17 @@ public class SVGObject {
         this.svgDataReference.setAttribute(SVGAttributeConstant.HEIGHT, height);
     }
     
-    public void setViewBox(final float x, final float y, final float w, final float h){
+    public void setViewBox(final float x, final float y, final float w, final float h) {
         this.setAttribute(SVGAttributeConstant.VIEW_BOX, String.format("%s, %s, %s, %S", x, y, w, h));
     }
     
-    public void saturateSVG(final ConstellationColor color){
+    public void saturateSVG(final ConstellationColor color) {
         this.setFillColor(color);
         this.setStrokeColor(color);
         this.getAllChildren().forEach(child -> child.saturateSVG(color));
     }
     
-    public void setSortOrderValue(final float sortOrderValue){
+    public void setSortOrderValue(final float sortOrderValue) {
         this.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, sortOrderValue);
     }
 
@@ -505,7 +505,7 @@ public class SVGObject {
         setAttribute(SVGAttributeConstant.BASELINE, baseline);
     }
     
-    public void setPoints(final String path){
+    public void setPoints(final String path) {
         setAttribute(SVGAttributeConstant.POINTS, path);
     }
 }

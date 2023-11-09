@@ -15,30 +15,30 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
+import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ImageConcept;
+import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
-import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import javax.swing.filechooser.FileFilter;
-import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionRegistration;
-import org.openide.filesystems.FileChooserBuilder;
-import org.openide.filesystems.FileChooserBuilder.SelectionApprover;
 import org.openide.util.NbBundle;
 
 /**
- * Action responsible for triggering <code>ExportToSVGPlugin</code> that exports Graphs to SVG files.
+ * Action responsible for triggering {@link ExportToSVGPlugin} that exports Graphs to SVG files.
  * 
  * @author capricornunicorn123
  */
@@ -50,7 +50,6 @@ import org.openide.util.NbBundle;
 @NbBundle.Messages("CTL_ExportToSVG=To SVG")
 public final class ExportToSVGAction implements ActionListener {
 
-    private static final String TITLE = "Export to SVG";
     private final GraphNode context; 
     
     public ExportToSVGAction(final GraphNode context) {
@@ -64,12 +63,12 @@ public final class ExportToSVGAction implements ActionListener {
         final ReadableGraph graph = context.getGraph().getReadableGraph();
         
         //The graph has data on it so it can be exported
-        if (graph.getVertexCount() > 0){        
+        if (graph.getVertexCount() > 0) {        
                 int colorAttributeID = VisualConcept.GraphAttribute.BACKGROUND_COLOR.get(graph);
                 ConstellationColor color = graph.getObjectValue(colorAttributeID, 0);
-                
+
                 PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
-                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, "Milestone 5 / 6")
+                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, GraphNode.getGraphNode(graph.getId()).getDisplayName())
                         .withParameter(ExportToSVGPlugin.SELECTED_NODES_PARAMETER_ID, false)
                         .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, true)
                         .withParameter(ExportToSVGPlugin.SHOW_TOP_LABELS_PARAMETER_ID, true)

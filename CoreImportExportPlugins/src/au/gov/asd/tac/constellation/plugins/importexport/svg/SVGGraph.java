@@ -19,9 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
@@ -82,12 +79,12 @@ public class SVGGraph {
      */
     public static class SVGGraphBuilder {
         private Camera camera = null;
-        private Graph graph;
+        private VisualManager visualManager;
         private GraphReadMethods readableGraph;
         private PluginInteraction interaction;
         private GraphVisualAccess access;
-        Matrix44f modelViewProjectionMatrix = new Matrix44f();
-        int[] viewPort;
+        final private Matrix44f modelViewProjectionMatrix = new Matrix44f();
+        private int[] viewPort;
         private String graphTitle = null;
         private boolean selectedNodesOnly = false;
         private boolean showConnections = true;
@@ -97,18 +94,18 @@ public class SVGGraph {
         private String exportPerspective = null;
         
         /**
-         * Specifies the graph to build the SVG from.
-         * @param graph The graph to be exported.
+         * Specifies the {@link VisualManager} to referenced by the current active graph
+         * @param graph Used to retrieve screen dimensions.
          * @return SVGGraphBuilder
          */
-        public SVGGraphBuilder withGraph(final Graph graph) {
-            this.graph = graph;
+        public SVGGraphBuilder withVisualManager(final VisualManager visualManager) {
+            this.visualManager = visualManager;
             return this;
         }
         
         /**
-         * Specifies the graph to build the SVG from.
-         * @param graph The graph to be exported.
+         * Specifies the {@link GraphReadMethods} representing the current active graph.
+         * @param graph used to define the bounding box of the graph
          * @return SVGGraphBuilder
          */
         public SVGGraphBuilder withReadableGraph(final GraphReadMethods graph) {
@@ -117,8 +114,8 @@ public class SVGGraph {
         }
         
         /**
-         * Specifies the GraphVisualAccess instance to use for retrieving graph information.
-         * @param title The title of the graph.
+         * Specifies the {@link GraphVisualAccess} for the current active graph.
+         * @param access utility for retrieving visual graph information.
          * @return SVGGraphBuilder
          */
         public SVGGraphBuilder withAccess(final GraphVisualAccess access) {
@@ -127,8 +124,8 @@ public class SVGGraph {
         }
         
         /**
-         * Specifies the PluginInteraction instance to use for updating on plugin progress.
-         * @param title The title of the graph.
+         * Specifies the {@link PluginInteraction} instance to use for updating on plugin progress.
+         * @param interaction 
          * @return SVGGraphBuilder
          */
         public SVGGraphBuilder  withInteraction(final PluginInteraction interaction) {
@@ -138,7 +135,7 @@ public class SVGGraph {
         
         /**
          * Specifies the title of the graph being exported.
-         * @param title The title of the graph.
+         * @param title 
          * @return SVGGraphBuilder
          */
         public SVGGraphBuilder withTitle(final String title) {
@@ -147,7 +144,7 @@ public class SVGGraph {
         }
         
         /**
-         * Specifies the color of the graph background being exported.
+         * Specifies the {@link ConstellationColor} of the graph background being exported.
          * @param color the color of the graph background.
          * @return SVGGraphBuilder
          */
@@ -157,7 +154,7 @@ public class SVGGraph {
         }
            
         /**
-         * Specifies if only selected Nodes and related connections are to be included in the output svg.
+         * Specifies if only selected Nodes and related connections are to be included in the export.
          * @param selectedNodesOnly
          * @return 
          */
@@ -224,25 +221,28 @@ public class SVGGraph {
         /**
          * Sets up the Builder control attributes. 
          */
-        private void preBuild(){
+        private void preBuild() {
             this.camera = new Camera(access.getCamera());
             // Set the view port
-            final BoundingBox box = camera.boundingBox;
-            BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
             
-            final GraphNode graphNode = GraphNode.getGraphNode(graph);
-            final VisualManager visualManager = graphNode.getVisualManager();
+           
             int viewPortHeight = visualManager.getVisualComponent().getHeight();   
             int viewPortWidth = visualManager.getVisualComponent().getWidth();
-            
+            final BoundingBox box;
             switch (exportPerspective) {
                 case "Y-Axis":
+                    box = camera.boundingBox;
+                    BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
                     CameraUtilities.refocusOnYAxis(camera, box, false);
                     break;
                 case "X-Axis":
+                    box = camera.boundingBox;
+                    BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
                     CameraUtilities.refocusOnXAxis(camera, box, false);
                     break;
                 case "Z-Axis":
+                    box = camera.boundingBox;
+                    BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
                     CameraUtilities.refocusOnZAxis(camera, box, false);
                 default:
                     break;
@@ -263,7 +263,7 @@ public class SVGGraph {
             final float xmax;
             final float xmin;
             
-            if (aspect < 1){
+            if (aspect < 1) {
                 LOGGER.log(Level.SEVERE, "Im Here");
                 xmax = nearPerspective * (float) Math.tan(fov * Math.PI / 360.0);
                 ymax = xmax * aspectInverse;
@@ -308,7 +308,7 @@ public class SVGGraph {
             for (int vertexIndex = 0 ; vertexIndex < access.getVertexCount() ; vertexIndex++) {
                               
                 // Do not export this vertex if only selected nodes are being exported and the node is not selected.
-                if (selectedNodesOnly && !access.isVertexSelected(vertexIndex) || access.getVertexVisibility(vertexIndex) == 0){
+                if (selectedNodesOnly && !access.isVertexSelected(vertexIndex) || access.getVertexVisibility(vertexIndex) == 0) {
                     continue;
                 }
                 
@@ -328,11 +328,11 @@ public class SVGGraph {
                 svgNode.setDimension(radius * 2, radius * 2);
                 
                 // Add labels to the node
-                if (showTopLabels){
+                if (showTopLabels) {
                     final SVGObject svgTopLabel = SVGObjectConstant.TOP_LABELS.findIn(svgNode);
                     buildTopLabel(vertexIndex, svgTopLabel);
                 }
-                if (showBottomLabels){
+                if (showBottomLabels) {
                     final SVGObject svgBottomLabel = SVGObjectConstant.BOTTOM_LABELS.findIn(svgNode);
                     buildBottomLabel(vertexIndex, svgBottomLabel);
                 }
@@ -342,7 +342,7 @@ public class SVGGraph {
                 
                 // Add dimmed property if dimmed
                 // Node, this implementation is not a precice sollution, luminocity to alpha conversion would be better
-                if (access.isVertexDimmed(vertexIndex)){
+                if (access.isVertexDimmed(vertexIndex)) {
                     svgImages.applyGrayScaleFileter();
                 }
                 // Add background image to the node
@@ -373,8 +373,8 @@ public class SVGGraph {
          * @param decoratorContainer 
          */
         private void buildDecorator(final SVGObject decorator, final String decoratorValue) {
-            if (decoratorValue != null && !"false_pinned".equals(decoratorValue)){
-                if (IconManager.iconExists(decoratorValue)){
+            if (decoratorValue != null && !"false_pinned".equals(decoratorValue)) {
+                if (IconManager.iconExists(decoratorValue)) {
                     final SVGData icon = IconManager.getIcon(decoratorValue).buildSVG();
                     icon.setParent(decorator.toSVGData());
                 }
@@ -389,11 +389,11 @@ public class SVGGraph {
          * @param vertexIndex
          * @param svgBottomLabel
          */
-        private void buildBottomLabel(final int vertexIndex, final SVGObject svgBottomLabel){    
+        private void buildBottomLabel(final int vertexIndex, final SVGObject svgBottomLabel) {    
             float offset = 0;
             for (int labelIndex = 0; labelIndex < access.getBottomLabelCount(); labelIndex++) {
                 final String labelString = access.getVertexBottomLabelText(vertexIndex, labelIndex);
-                if (labelString != null){
+                if (labelString != null) {
                     final SVGObject svgLabel = SVGTemplateConstant.LABEL.getSVGObject();
                     final float size = access.getBottomLabelSize(labelIndex) * 64;
                     svgLabel.setFontSize(size);
@@ -416,11 +416,11 @@ public class SVGGraph {
          * @param vertexIndex
          * @param svgTopLabel 
          */
-        private void buildTopLabel(final int vertexIndex, final SVGObject svgTopLabel){
+        private void buildTopLabel(final int vertexIndex, final SVGObject svgTopLabel) {
             float offset = 0;
             for (int labelIndex = 0; labelIndex < access.getTopLabelCount(); labelIndex++) {
                 final String labelString = access.getVertexTopLabelText(vertexIndex, labelIndex);
-                if (labelString != null){
+                if (labelString != null) {
                     final SVGObject svgLabel = SVGTemplateConstant.LABEL.getSVGObject();
                     final float size = access.getTopLabelSize(labelIndex) * 64;
                     svgLabel.setFontSize(size);
@@ -452,7 +452,7 @@ public class SVGGraph {
             interaction.setExecutionStage(progress, totalSteps , "Building Graph", "Building Connections", false);
             
             // Do not export connections if the show connections parameter is disabled
-            if (!showConnections){
+            if (!showConnections) {
                 interaction.setProgress(progress, progress, "Created 0 connections", true);
                 return;
             }           
@@ -473,7 +473,7 @@ public class SVGGraph {
                 final int lowIndex = access.getLinkLowVertex(linkIndex);
                 
                 // Do not export this link if only selected nodes are being exported and either of the associated nodes are not selected.
-                if (selectedNodesOnly && (!access.isVertexSelected(highIndex) || !access.isVertexSelected(lowIndex))){
+                if (selectedNodesOnly && (!access.isVertexSelected(highIndex) || !access.isVertexSelected(lowIndex))) {
                     continue;
                 }
                 
@@ -494,12 +494,12 @@ public class SVGGraph {
                 
                 // Build all of the arrows in the current link 
                 final SVGObject svgConnections = SVGObjectConstant.CONNECTIONS.findIn(svgLink);
-                for (int connectionIndex = 0; connectionIndex < access.getLinkConnectionCount(linkIndex); connectionIndex++){
+                for (int connectionIndex = 0; connectionIndex < access.getLinkConnectionCount(linkIndex); connectionIndex++) {
 
                     // Get the reference to the current connection
                     final int connection = access.getLinkConnection(linkIndex, connectionIndex);
                     
-                    if (access.getConnectionVisibility(connection) == 0){
+                    if (access.getConnectionVisibility(connection) == 0) {
                         continue;
                     }
                     // Connection is a loop
@@ -525,8 +525,8 @@ public class SVGGraph {
                 
                 //Build all of the labels in the current link 
                 final SVGObject svgLabels = SVGObjectConstant.LABELS.findIn(svgLink);
-                for (int connectionIndex = 0; connectionIndex < access.getLinkConnectionCount(linkIndex); connectionIndex++){
-                    if (access.getConnectionVisibility(access.getLinkConnection(linkIndex, connectionIndex)) == 0){
+                for (int connectionIndex = 0; connectionIndex < access.getLinkConnectionCount(linkIndex); connectionIndex++) {
+                    if (access.getConnectionVisibility(access.getLinkConnection(linkIndex, connectionIndex)) == 0) {
                         continue;
                     }
                     //Determine offset controlls for drawing multiple Transactions/Edges in paralell
@@ -558,9 +558,9 @@ public class SVGGraph {
          * @param connectionIndex
          * @param connectionCount 
          */
-        private void addConnectionLabels(final SVGObject svgLabels, final Vector4f highPosition, final Vector4f lowPosition, final int connectionIndex, final int connectionCount, final int highIndex, final int lowIndex){
+        private void addConnectionLabels(final SVGObject svgLabels, final Vector4f highPosition, final Vector4f lowPosition, final int connectionIndex, final int connectionCount, final int highIndex, final int lowIndex) {
             final int totalSegments;
-            if (connectionCount > 7){
+            if (connectionCount > 7) {
                 totalSegments = 8;
             } else{
                 totalSegments = connectionCount + 1;
@@ -584,7 +584,7 @@ public class SVGGraph {
             float offset = 0;
             for (int labelIndex = 0; labelIndex < access.getConnectionLabelCount(connectionIndex); labelIndex++) {
                 final String labelString = access.getConnectionLabelText(connectionIndex, labelIndex);
-                if (labelString != null){
+                if (labelString != null) {
                     SVGObject svgLabel = SVGTemplateConstant.LABEL.getSVGObject();
                     final float size = access.getConnectionLabelSize(labelIndex) * 64 * scaleFactor;
                     svgLabel.setPosition(position.getX(), position.getY() + offset);
@@ -621,7 +621,7 @@ public class SVGGraph {
             // Generate the SVG Loop Image
             final SVGData svgloopImage;
             final ConnectionDirection direction = access.getConnectionDirection(connection);
-            switch (direction){
+            switch (direction) {
                 //Directed connections are Transactions, Edges and links with one transaction arrow head    
                 case LOW_TO_HIGH:
                     //This case uses the logic of the following case. 
@@ -644,7 +644,7 @@ public class SVGGraph {
          * @param lowPosition
          * @param connection 
          */
-        private void buildLinearConnection(final SVGObject svgConnections, final Vector4f highPosition, final Vector4f lowPosition, final int connection, final int highIndex, final int lowIndex){
+        private void buildLinearConnection(final SVGObject svgConnections, final Vector4f highPosition, final Vector4f lowPosition, final int connection, final int highIndex, final int lowIndex) {
 
             //Get references to SVG Objects being built within this method 
             final SVGObject svgConnection = SVGTemplateConstant.CONNECTION_LINEAR.getSVGObject();
@@ -667,7 +667,7 @@ public class SVGGraph {
             //Assign the positional values of shaft and arrow head/s based on the direction of the Transaction/Edge/Link
             final ConnectionDirection direction = access.getConnectionDirection(connection);            
                 
-            switch (direction){
+            switch (direction) {
                 //Bidirectional connectsions are Links with two link arrow heads
                 case BIDIRECTED:
                     buildLinearArrowShaft(svgArrowShaft, highPositionRecessed, lowPositionRecessed, highIndex, lowIndex);
@@ -761,7 +761,7 @@ public class SVGGraph {
          * Builds the header area of the output SVG.
          * @param svgGraph The SVGObject holding all generated SVG data 
          */
-        private void buildHeader(final SVGObject svgGraph){
+        private void buildHeader(final SVGObject svgGraph) {
             final ZonedDateTime date = ZonedDateTime.now();
             final String dateInfo = String.format("Exported: %s %s, %s",
                             StringUtilities.camelCase(date.getMonth().toString()), 
@@ -773,7 +773,7 @@ public class SVGGraph {
             SVGObjectConstant.SUBTITLE.findIn(svgGraph).setContent(dateInfo);
         }
         
-        private void buildBackground(final SVGObject svgGraph){
+        private void buildBackground(final SVGObject svgGraph) {
             SVGObjectConstant.BACKGROUND.findIn(svgGraph).setFillColor(backgroundColor);
         }
         
@@ -818,7 +818,7 @@ public class SVGGraph {
          * @param vertexIndex
          * @return 
          */
-        private Vector3f getVertexWorldPosition(final int vertexIndex){
+        private Vector3f getVertexWorldPosition(final int vertexIndex) {
 
             return new Vector3f(access.getX(vertexIndex), access.getY(vertexIndex), access.getZ(vertexIndex));
         }
@@ -830,7 +830,7 @@ public class SVGGraph {
          * @param worldPosition
          * @return 
          */
-        private Vector4f getScreenPosition(final Vector3f worldPosition){
+        private Vector4f getScreenPosition(final Vector3f worldPosition) {
             final Vector4f screenPosition = new Vector4f();
             Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
             //move the screen positn by a fixed amount to make it correctly align
@@ -864,7 +864,7 @@ public class SVGGraph {
          * @param vertexIndex
          * @return 
          */
-        private float getDepthScaleFactor(final Vector3f worldPosition){
+        private float getDepthScaleFactor(final Vector3f worldPosition) {
             
             // Get the screen position of point
             final Vector4f screenPosition = getScreenPosition(worldPosition);
@@ -918,7 +918,7 @@ public class SVGGraph {
          */
         private ConstellationColor getConnectionColor(final int connectionIndex) {
             final ConstellationColor color;
-            if (access.isConnectionDimmed(connectionIndex)){
+            if (access.isConnectionDimmed(connectionIndex)) {
                 color = VisualGraphDefaults.DEFAULT_TRANSACTION_COLOR;
             } else {
                 color = access.getConnectionColor(connectionIndex);

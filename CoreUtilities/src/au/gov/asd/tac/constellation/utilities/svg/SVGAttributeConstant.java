@@ -52,7 +52,7 @@ public enum SVGAttributeConstant {
     
     private final String attributeName;
     
-    private SVGAttributeConstant(final String attributeName){
+    private SVGAttributeConstant(final String attributeName) {
         this.attributeName = attributeName;
     }
     
@@ -60,7 +60,7 @@ public enum SVGAttributeConstant {
      * Returns the key value used by SVG attributes.
      * @return 
      */
-    public String getName(){
+    public String getName() {
         return this.attributeName;
     }
     
@@ -69,7 +69,7 @@ public enum SVGAttributeConstant {
      * Created for the SVGData constructor to ensure that significant attributes such as id, x and y are forced to the front of the svg tag. 
      * @return 
      */
-    public static Map<String, String> initialiseBasicAttributes(){
+    public static Map<String, String> initialiseBasicAttributes() {
         Map<String, String> map = new LinkedHashMap<>();
         
             //Identity Data
