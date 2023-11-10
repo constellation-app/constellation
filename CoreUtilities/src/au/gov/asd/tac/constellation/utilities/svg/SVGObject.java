@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.logging.Logger;
 
 /**
  * A wrapper class for SVGData to enable simplified usage.
@@ -35,8 +34,6 @@ import java.util.logging.Logger;
  * @author capricornunicorn123
  */
 public class SVGObject {
-    
-    private static final Logger LOGGER = Logger.getLogger(SVGObject.class.getName());
     
     private final SVGData svgDataReference;
     private Float x = null;
@@ -61,10 +58,6 @@ public class SVGObject {
      */
     public void setParent(final SVGObject parent) {
         svgDataReference.setParent(parent.toSVGData());
-        
-        if (parent.toSVGData() != null) {
-            parent.setMinimumDimension(this.getXPosition() + this.getWidth(), this.getYPosition() + this.getHeight());
-        }
     }
     
     public SVGObject getParent() {
@@ -193,7 +186,7 @@ public class SVGObject {
         try {
             return Float.parseFloat(attribute);
         } catch (final Exception ex) {
-             return null; 
+            return null; 
         }
     } 
     
@@ -204,23 +197,6 @@ public class SVGObject {
     private void setHeight(final float height) {
         this.height = height;
         this.setAttribute(SVGAttributeConstant.HEIGHT, height);
-    }
-    
-    /**
-     * Ensures that the SVGObject has width that is greater than or equal to the provided width. 
-     * 
-     * @param minimumWidth
-     * @param minimumHeight 
-     */
-    private void setMinimumHeight(final float minimumHeight) {
-        if (this.getAttributeString(SVGAttributeConstant.HEIGHT) == null || !this.getAttributeString(SVGAttributeConstant.HEIGHT).contains("%")) {
-            if (this.getHeight() < minimumHeight) {
-                this.setHeight(minimumHeight);
-                if (this.svgDataReference.getParent() != null) {
-                    this.getParent().setMinimumHeight(minimumHeight);
-                }
-            }
-        }
     }
     
     public float getHeight() {        
@@ -234,23 +210,6 @@ public class SVGObject {
     private void setWidth(final float width) {
         this.width = width;
         this.setAttribute(SVGAttributeConstant.WIDTH, width);
-    }
-    
-    /**
-     * Ensures that the SVGObject has width that is greater than or equal to the provided width. 
-     * 
-     * @param minimumWidth
-     * @param minimumHeight 
-     */
-    private void setMinimumWidth(final float minimumWidth) {
-        if (this.getAttributeString(SVGAttributeConstant.WIDTH) == null || !this.getAttributeString(SVGAttributeConstant.WIDTH).contains("%")) {      
-            if (this.getWidth() < minimumWidth) {
-                this.setWidth(minimumWidth);
-                if (this.svgDataReference.getParent() != null) {
-                    this.getParent().setMinimumWidth(minimumWidth);
-                }
-            }
-        }
     }
     
     public float getWidth() {
@@ -286,18 +245,6 @@ public class SVGObject {
     public void setDimension(final float width, final float height) {
         this.setWidth(width);
         this.setHeight(height);
-    }
-    
-    /**
-     * Ensures that the SVGObject has dimensions that are greater than or equal two the provided dimensions. 
-     * 
-     * @param minimumWidth
-     * @param minimumHeight 
-     */
-    public void setMinimumDimension(final float minimumWidth, final float minimumHeight) {
-        this.setMinimumWidth(minimumWidth);
-        this.setMinimumHeight(minimumHeight);
-        
     }
     
     /**

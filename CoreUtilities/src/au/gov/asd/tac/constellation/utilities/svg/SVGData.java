@@ -121,13 +121,10 @@ public class SVGData {
         final List<SVGData> allChildren = new ArrayList<>();
         children.keySet().forEach(key -> allChildren.add(this.children.get(key)));
         if (!allChildren.isEmpty() && allChildren.get(0).attributes.keySet().contains(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName())) {
-            Collections.sort(allChildren, new Comparator<SVGData>() {
-                @Override
-                public int compare(SVGData first, SVGData second) {
-                    String firstValue = first.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName());
-                    String secondValue = second.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName());
-                    return Float.compare(Float.parseFloat(secondValue), Float.parseFloat(firstValue));
-                }
+            Collections.sort(allChildren, (SVGData first, SVGData second) -> {
+                String firstValue = first.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName());
+                String secondValue = second.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName());
+                return Float.compare(Float.parseFloat(secondValue), Float.parseFloat(firstValue));
             });
         }
         return allChildren;
@@ -212,9 +209,7 @@ public class SVGData {
      */
     public void cleanAttributes() {
         this.attributes.values().removeIf(Objects::isNull);
-        this.getAllChildren().forEach(child -> {
-            child.cleanAttributes();
-        });
+        this.getAllChildren().forEach(child -> child.cleanAttributes());
     }
     
     /**

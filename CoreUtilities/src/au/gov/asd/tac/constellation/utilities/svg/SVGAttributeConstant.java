@@ -72,29 +72,29 @@ public enum SVGAttributeConstant {
     public static Map<String, String> initialiseBasicAttributes() {
         Map<String, String> map = new LinkedHashMap<>();
         
-            //Identity Data
-            map.put(SVGAttributeConstant.CLASS.getName(), null);
-            map.put(SVGAttributeConstant.ID.getName(), null); 
-            
-            //Positional Data
-            map.put(SVGAttributeConstant.X.getName(), null);
-            map.put(SVGAttributeConstant.Y.getName(), null);
-            map.put(SVGAttributeConstant.SOURCE_X.getName(), null);
-            map.put(SVGAttributeConstant.SOURCE_Y.getName(), null);
-            map.put(SVGAttributeConstant.DESTINATION_X.getName(), null);
-            map.put(SVGAttributeConstant.DESTINATION_Y.getName(), null);
-            map.put(SVGAttributeConstant.CX.getName(), null);
-            map.put(SVGAttributeConstant.CY.getName(), null);
-            
-            //Size Data
-            map.put(SVGAttributeConstant.WIDTH.getName(), null);
-            map.put(SVGAttributeConstant.HEIGHT.getName(), null);
-            map.put(SVGAttributeConstant.RADIUS.getName(), null);
-            
-            //StyleData
-            map.put(SVGAttributeConstant.FONT_SIZE.getName(), null);
-            map.put(SVGAttributeConstant.FILL_COLOR.getName(), null);
-            map.put(SVGAttributeConstant.STROKE_COLOR.getName(), null);
-            return map;
+        //Identity Data
+        map.put(SVGAttributeConstant.CLASS.getName(), null);
+        map.put(SVGAttributeConstant.ID.getName(), null); 
+
+        //Positional Data
+        map.put(SVGAttributeConstant.X.getName(), null);
+        map.put(SVGAttributeConstant.Y.getName(), null);
+        map.put(SVGAttributeConstant.SOURCE_X.getName(), null);
+        map.put(SVGAttributeConstant.SOURCE_Y.getName(), null);
+        map.put(SVGAttributeConstant.DESTINATION_X.getName(), null);
+        map.put(SVGAttributeConstant.DESTINATION_Y.getName(), null);
+        map.put(SVGAttributeConstant.CX.getName(), null);
+        map.put(SVGAttributeConstant.CY.getName(), null);
+
+        //Size Data
+        map.put(SVGAttributeConstant.WIDTH.getName(), null);
+        map.put(SVGAttributeConstant.HEIGHT.getName(), null);
+        map.put(SVGAttributeConstant.RADIUS.getName(), null);
+
+        //StyleData
+        map.put(SVGAttributeConstant.FONT_SIZE.getName(), null);
+        map.put(SVGAttributeConstant.FILL_COLOR.getName(), null);
+        map.put(SVGAttributeConstant.STROKE_COLOR.getName(), null);
+        return map;
     }
 }

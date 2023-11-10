@@ -21,9 +21,6 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.interaction.animation.Animation;
 import au.gov.asd.tac.constellation.graph.interaction.animation.PanAnimation;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewAction;
-import au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin;
-import static au.gov.asd.tac.constellation.graph.interaction.plugins.zoom.ResetViewPlugin.SIGNIFICANT_PARAMETER_ID;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
@@ -259,6 +256,7 @@ public class SVGGraphBuilder {
                 BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
                 CameraUtilities.refocusOnZAxis(camera, box, false);
                 Animation.startAnimation(new PanAnimation("Reset View", oldCamera, camera, true));
+                break;
             default:
                 break;
         }
@@ -381,11 +379,9 @@ public class SVGGraphBuilder {
     private void buildDecorator(final SVGObject svgDecorator, final String decoratorName) {
         
         //Do not build a decorator if the decorator is for a Pinned attribute value of false.
-        if (decoratorName != null && !"false_pinned".equals(decoratorName)) {
-            if (IconManager.iconExists(decoratorName)) {
+        if (decoratorName != null && !"false_pinned".equals(decoratorName) && IconManager.iconExists(decoratorName)) {
                 final SVGData icon = IconManager.getIcon(decoratorName).buildSVG();
                 icon.setParent(svgDecorator.toSVGData());
-            }
         }
     }
 
@@ -578,7 +574,7 @@ public class SVGGraphBuilder {
 
         // Determine which segment this connection label will occupy
         final int labelSegment = ((connectionIndex % 7)) + 1;
-        float segmentRatio = ((float) labelSegment) / totalSegments;
+        float segmentRatio = (float) labelSegment / totalSegments;
         
         // Calculate the position of the label
         float distance = getDistance(highPosition, lowPosition); 
