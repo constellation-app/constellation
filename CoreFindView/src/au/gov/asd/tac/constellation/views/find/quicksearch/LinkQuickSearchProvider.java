@@ -58,7 +58,28 @@ public class LinkQuickSearchProvider implements SearchProvider {
         final Graph graph = graphRetriever.getGraph();
 
         if (graph != null) {
-            final QuickFindPlugin plugin = new QuickFindPlugin(GraphElementType.LINK, request.getText());
+            final String searchRequest = request.getText().replace("\u227a","<").replace("\u227b",">").replace("\uff08","(").replace("\uff09",")");
+            String prevSearch = "";
+            int prevId = -1;
+            // Locally defined Recent searches will start with a specific unicode left bracket in the search term
+            if (searchRequest.startsWith(FindResult.LEFT_BRACKET)) {
+                final int codePos = searchRequest.indexOf(FindResult.LH_SUB_BRACKET) + FindResult.LH_SUB_BRACKET.length();
+                if (codePos > FindResult.LH_SUB_BRACKET.length() && searchRequest.startsWith(FindResult.CIRCLED_L)) {
+                    final int termPos = searchRequest.indexOf(" ") + 1;
+                    prevSearch = searchRequest.substring(termPos, codePos - FindResult.LH_SUB_BRACKET.length()).trim();
+                    final String prevIdText = FindResult.buildIDFromSubscript(searchRequest.substring(codePos, searchRequest.length() - FindResult.RH_SUB_BRACKET.length()));
+                    prevId = Integer.parseInt(prevIdText);
+                    final int attrPos = prevSearch.lastIndexOf(FindResult.SEPARATOR);
+                    if (attrPos > -1) {
+                        prevSearch = prevSearch.substring(0, attrPos);
+                    }                    
+                } else {
+                    // This is a recent search for a different category, so we can end the Link search here
+                    return;
+                }
+            }            
+            final String convertedSearch = !"".equals(prevSearch) ? prevSearch : searchRequest;
+            final QuickFindPlugin plugin = new QuickFindPlugin(GraphElementType.LINK, convertedSearch);
             final Future<?> future = PluginExecution.withPlugin(plugin).interactively(true).executeLater(graph);
 
             // Wait for results:
@@ -72,11 +93,30 @@ public class LinkQuickSearchProvider implements SearchProvider {
             }
 
             final List<FindResult> results = plugin.getResults();
+            final List<FindResult> matchList = new ArrayList<>();
             for (final FindResult item : results) {
                 if (item != null) {
                     // We have a valid result, so report:
-                    response.addResult(new SelectContent(graph, item), item.toString());
+                    final String subscriptId = FindResult.buildSubscriptFromID(Integer.toString(item.getID()));
+                    final String displayText = FindResult.CIRCLED_L + "  " + item.toString().replace("<","\u227a").replace(">","\u227b").replace("(" , "\uff08").replace(")", "\uff09") + "   " + FindResult.LH_SUB_BRACKET + subscriptId + FindResult.RH_SUB_BRACKET;
+                    if ("".equals(prevSearch)) {
+                        response.addResult(new SelectContent(graph, item), displayText);
+                    } else if (item.toString().contains(prevSearch) && item.getID() == prevId) {
+                        // Found the exact recent Node search result. Set it and exit immediately
+                        response.addResult(new SelectContent(graph, item), displayText);
+                        return;
+                    } else if (item.toString().contains(prevSearch)) {
+                        // can potentially match the search term on a different graph, store the matches
+                        matchList.add(item);
+                    }
                 }
+            }
+            if (!matchList.isEmpty()) {
+                // should only return 1 result when using the recent search function
+                final FindResult result = matchList.get(0);
+                final String subscriptId = FindResult.buildSubscriptFromID(Integer.toString(result.getID()));
+                final String displayText = FindResult.CIRCLED_L + "  " + result.toString().replace("<","\u227a").replace(">","\u227b").replace("(" , "\uff08").replace(")", "\uff09") + "   " + FindResult.LH_SUB_BRACKET + subscriptId + FindResult.RH_SUB_BRACKET;
+                response.addResult(new SelectContent(graph, result), displayText);
             }
         }
     }

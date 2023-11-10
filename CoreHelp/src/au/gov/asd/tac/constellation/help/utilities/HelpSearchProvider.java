@@ -33,8 +33,12 @@ import org.netbeans.spi.quicksearch.SearchResponse;
  */
 public class HelpSearchProvider implements SearchProvider {
 
+    public static final String LEFT_BRACKET = "\u276a";
+    public static final String CIRCLED_H = "\u276a\uff28\u276b\u2005"; // u2b9c u2b9e
+
     /**
      * Collects search results for the quick search
+     * Recognise and Process recent HELP searches
      *
      * @param request
      * @param response
@@ -44,9 +48,23 @@ public class HelpSearchProvider implements SearchProvider {
         // Check the request is valid
         final String text;
         if (request != null && StringUtils.isNotBlank(request.getText())) {
-            text = request.getText().toLowerCase();
+            text = request.getText().replace("\u227a","<").replace("\u227b",">").replace("\uff08","(").replace("\uff09",")");
         } else {
             return;
+        }
+        String prevFileName = "";
+        // Locally defined Recent searches will have a diamond character or half diamond character at the end of the search term
+        if (text.startsWith(LEFT_BRACKET)) {
+            final int termEnd = text.length();
+            // A recent HELP search will begin with a (H) character and end with a diamond character
+            if (termEnd > 0 && text.startsWith(CIRCLED_H)) {
+                final int termPos = text.indexOf(" ") + 1;
+                // Convert the search term into a Help file name.
+                prevFileName = text.substring(termPos, termEnd).trim().toLowerCase().replace(" ", "-") + ".md";
+            } else {
+                // This is a recent search for a different category, so we can end the Help search here
+                return;
+            }
         }
 
         // Get the names of all of the help files
@@ -57,17 +75,21 @@ public class HelpSearchProvider implements SearchProvider {
         for (final String value : values) {
             final int index = value.lastIndexOf(File.separator);
             final String fileName = value.substring(index + 1);
-            if (fileName.contains(text)) {
+            
+            // Create a display name that is easier to search
+            String displayName = fileName.replace("-", " ").replace("<","\u227a").replace(">","\u227b").replace("(" , "\uff08").replace(")", "\uff09");
+            final int indexMD = displayName.lastIndexOf(".");
+            displayName = CIRCLED_H + "  " + displayName.substring(0, indexMD);
 
-                // Create a display name that is easier to search
-                String displayName = fileName.replace("-", " ");
-                final int indexMD = displayName.lastIndexOf(".");
-                displayName = displayName.substring(0, indexMD);
-
+            if (fileName.contains(text.toLowerCase()) && "".equals(prevFileName)) {
                 // Display the result and add a runnable for when it is clicked on 
                 if (!response.addResult(new HelpSearchProviderTask(fileName), displayName)) {
                     return;
                 }
+            } else if (!StringUtils.isBlank(prevFileName) && fileName.contains(prevFileName)){
+                // Found the recent Help search result. Set it and exit immediately
+                response.addResult(new HelpSearchProviderTask(fileName), displayName);
+                break;
             }
         }
     }

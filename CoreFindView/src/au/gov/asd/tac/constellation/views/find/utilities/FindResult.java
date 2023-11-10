@@ -33,6 +33,18 @@ import java.util.Objects;
 public class FindResult {
 
     public static final String SEPARATOR = " : ";
+    public static final String LEFT_BRACKET = "\u276a"; // u2b98 u2b9c u301a u276a u3010
+    public static final String RIGHT_BRACKET = "\u276b"; // u2b9a u2b9e u301b u276b u3011
+    public static final String SMALL_SPACE = "\u2005";
+    public static final String CIRCLED_D = LEFT_BRACKET + "\uff24" + RIGHT_BRACKET + SMALL_SPACE; // "\u2b9c\uff24\u2b9e"; uff24
+    public static final String CIRCLED_E = LEFT_BRACKET + "\uff25" + RIGHT_BRACKET + SMALL_SPACE; // \uff25
+    public static final String CIRCLED_H = LEFT_BRACKET + "\uff28" + RIGHT_BRACKET + SMALL_SPACE; // \uff28
+    public static final String CIRCLED_L = LEFT_BRACKET + "\uff2c" + RIGHT_BRACKET + SMALL_SPACE; // \uff2c
+    public static final String CIRCLED_N = LEFT_BRACKET + "\uff2e" + RIGHT_BRACKET + SMALL_SPACE; // \uff2e
+    public static final String CIRCLED_T = LEFT_BRACKET + "\uff34" + RIGHT_BRACKET + SMALL_SPACE; // \uff34
+    //public static final String DIAMOND = "\u2b2b"; // u29c6 u22c4 u2b2b u2727
+    public static final String LH_SUB_BRACKET = "\u208d"; // \u23f4 u3016 u2039 \u200a u25c2 \u200a u276a
+    public static final String RH_SUB_BRACKET = "\u208e"; // \u23f5 u3017 u203a \u200a u25b8 u276b
 
     private int id;
     private long uid;
@@ -174,6 +186,86 @@ public class FindResult {
      */
     public String getGraphId() {
         return graphId;
+    }
+
+    public static String buildSubscriptFromID(final String idData) {
+        final StringBuilder subscriptId = new StringBuilder();
+        for (int i = 0; i < idData.length(); i++) {
+            char currentChar = idData.charAt(i);
+            switch (currentChar) {
+                case '0':
+                    subscriptId.append('\u2080');
+                    break;
+                case '1':
+                    subscriptId.append('\u2081');
+                    break;
+                case '2':
+                    subscriptId.append('\u2082');
+                    break;
+                case '3':
+                    subscriptId.append('\u2083');
+                    break;
+                case '4':
+                    subscriptId.append('\u2084');
+                    break;
+                case '5':
+                    subscriptId.append('\u2085');
+                    break;
+                case '6':
+                    subscriptId.append('\u2086');
+                    break;
+                case '7':
+                    subscriptId.append('\u2087');
+                    break;
+                case '8':
+                    subscriptId.append('\u2088');
+                    break;
+                case '9':
+                    subscriptId.append('\u2089');
+                    break;
+            }
+        }
+        return subscriptId.toString();
+    }
+    
+    public static String buildIDFromSubscript(final String idSubscriptData) {
+        final StringBuilder subscriptId = new StringBuilder();
+        for (int i = 0; i < idSubscriptData.length(); i++) {
+            char currentChar = idSubscriptData.charAt(i);
+            switch (currentChar) {
+                case '\u2080':
+                    subscriptId.append('0');
+                    break;
+                case '\u2081':
+                    subscriptId.append('1');
+                    break;
+                case '\u2082':
+                    subscriptId.append('2');
+                    break;
+                case '\u2083':
+                    subscriptId.append('3');
+                    break;
+                case '\u2084':
+                    subscriptId.append('4');
+                    break;
+                case '\u2085':
+                    subscriptId.append('5');
+                    break;
+                case '\u2086':
+                    subscriptId.append('6');
+                    break;
+                case '\u2087':
+                    subscriptId.append('7');
+                    break;
+                case '\u2088':
+                    subscriptId.append('8');
+                    break;
+                case '\u2089':
+                    subscriptId.append('9');
+                    break;
+            }
+        }
+        return subscriptId.toString();
     }
 
     /**
