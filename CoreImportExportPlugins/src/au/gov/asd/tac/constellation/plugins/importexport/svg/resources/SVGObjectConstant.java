@@ -58,7 +58,22 @@ public enum SVGObjectConstant {
         this.idValue = idValue;
     }
     
+    /**
+     * Finds a SVGobject of a given ID within the parent object.
+     * Uses depth first search.
+     * @param parent
+     * @return 
+     */
     public SVGObject findIn(SVGObject parent) {
         return parent.getChild(idValue);
+    }
+    
+    /**
+     * Removed a SVGobject of a given ID from the parent object.
+     * Uses depth first search.
+     * @param parent 
+     */
+    public void removeFrom(SVGObject parent) {
+        parent.removeChild(idValue);
     }
 }

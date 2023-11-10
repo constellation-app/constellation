@@ -55,8 +55,10 @@ import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- * Exports data stored on an active graph and a .svg file.
- * A large mount of the SVG generating functionality of this plugin has been abstracted from this class.
+ * Exports visual data viewed on an active graph to an Scalar Vector Graphic file.
+ * SVG generating functionality of this plugin has been abstracted to the {@link SVGGraphBuilder} class.
+ * This plugin functionality relies heavily on {@link VisualGraphAccess} methods to interpret the graph consistently.
+ * 
  * @author capricornunicorn123
  */
 @ServiceProvider(service = Plugin.class)
@@ -69,8 +71,8 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String SELECTED_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_nodes");
     public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
     public static final String CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connection_mode");
-    public static final String SHOW_TOP_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_top_labels");
-    public static final String SHOW_BOTTOM_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_bottom_labels");
+    public static final String SHOW_NODE_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_node_labels");
+    public static final String SHOW_CONNECTION_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_transaction_labels");
     public static final String EXPORT_PERSPECTIVE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "export_perspective");
     private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     
@@ -79,8 +81,8 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final PluginParameters parameters = new PluginParameters();
 
         final PluginParameter<FileParameterValue> fnamParam = FileParameterType.build(FILE_NAME_PARAMETER_ID);
-        fnamParam.setName("File Name");
-        fnamParam.setDescription("File to write to");
+        fnamParam.setName("File Location");
+        fnamParam.setDescription("File location and name for export");
         FileParameterType.setKind(fnamParam, FileParameterType.FileParameterKind.SAVE);
         FileParameterType.setFileFilters(fnamParam, new FileChooser.ExtensionFilter("SVG file", "*" + FileExtensionConstants.SVG));
         fnamParam.setRequired(true);
@@ -107,15 +109,15 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         showConnectionsParam.setDescription("Export connections between nodes");
         parameters.addParameter(showConnectionsParam);
         
-        final PluginParameter<BooleanParameterValue> showTopNodesParam = BooleanParameterType.build(SHOW_TOP_LABELS_PARAMETER_ID);
-        showTopNodesParam.setName("Show Top Labels");
-        showTopNodesParam.setDescription("Export the top labels of nodes");
-        parameters.addParameter(showTopNodesParam);
+        final PluginParameter<BooleanParameterValue> showNodeLabelsParam = BooleanParameterType.build(SHOW_NODE_LABELS_PARAMETER_ID);
+        showNodeLabelsParam.setName("Show Node Labels");
+        showNodeLabelsParam.setDescription("Include node labels in the export");
+        parameters.addParameter(showNodeLabelsParam);
         
-        final PluginParameter<BooleanParameterValue> showBottomNodesParam = BooleanParameterType.build(SHOW_BOTTOM_LABELS_PARAMETER_ID);
-        showBottomNodesParam.setName("Show Bottom Labels");
-        showBottomNodesParam.setDescription("Export the bottom labels of nodes");
-        parameters.addParameter(showBottomNodesParam);
+        final PluginParameter<BooleanParameterValue> showConnectionLabelsParam = BooleanParameterType.build(SHOW_CONNECTION_LABELS_PARAMETER_ID);
+        showConnectionLabelsParam.setName("Show Connection Labels");
+        showConnectionLabelsParam.setDescription("Include connection labels in the export");
+        parameters.addParameter(showConnectionLabelsParam);
         
         final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
         exportPerspectiveParam.setName("Export Perspective");
@@ -124,8 +126,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         options.add("X-Axis");
         options.add("Y-Axis");
         options.add("Z-Axis");
-        options.add("Current Perspective");
-                
+        options.add("Current Perspective");      
         SingleChoiceParameterType.setOptions(exportPerspectiveParam, options);
         parameters.addParameter(exportPerspectiveParam);
         
@@ -135,37 +136,28 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     @Override
     protected void read(final GraphReadMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {        
         
+        // Get Parameter Values
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
         final ConstellationColor color = parameters.getColorValue(BACKGROUND_COLOR_PARAMETER_ID);
         final Boolean selectedNodes = parameters.getBooleanValue(SELECTED_NODES_PARAMETER_ID);
         final Boolean showConnections = parameters.getBooleanValue(SHOW_CONNECTIONS_PARAMETER_ID);
-        final Boolean showTopLabels = parameters.getBooleanValue(SHOW_TOP_LABELS_PARAMETER_ID);
-        final Boolean showBottomLabels = parameters.getBooleanValue(SHOW_BOTTOM_LABELS_PARAMETER_ID);
+        final Boolean showNodeLabels = parameters.getBooleanValue(SHOW_NODE_LABELS_PARAMETER_ID);
+        final Boolean showConnectionLabels = parameters.getBooleanValue(SHOW_CONNECTION_LABELS_PARAMETER_ID);
         final String exportPerspective = parameters.getStringValue(EXPORT_PERSPECTIVE_PARAMETER_ID);
         
         final File imageFile = new File(fnam);  
-        
-        //This plugin functionality relies heavily on VisualgraphAccess methods to interpret the graph consistenly.
-        final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
-        final GraphNode graphNode = GraphNode.getGraphNode(currentGraph);
-        final VisualManager visualManager = graphNode.getVisualManager();
-        GraphVisualAccess access = new GraphVisualAccess(currentGraph);
-        access.beginUpdate();
-        access.updateInternally();
-        
-        //Generate the SVG output.
-        final SVGData svg = new SVGGraph.SVGGraphBuilder()
+       
+        // Build a SVG representation of the graph
+        final SVGData svg = new SVGGraphBuilder()
                 .withInteraction(interaction)
                 .withTitle(title)
-                .withAccess(access)
-                .withVisualManager(visualManager)
                 .withReadableGraph(graph)
                 .withBackground(color)
                 .withNodes(selectedNodes)
                 .includeConnections(showConnections)
-                .includeTopLabels(showTopLabels)
-                .includeBottomLabels(showBottomLabels)
+                .includeNodeLabels(showNodeLabels)
+                .includeConnectionLabels(showConnectionLabels)
                 .fromPerspective(exportPerspective)
                 .build();
         try {
@@ -174,7 +166,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         } catch (final IOException ex) {
             LOGGER.log(Level.INFO, ex.getLocalizedMessage());
         }
-        access.endUpdate();
+
         interaction.setProgress(1, 0, "Finished", true);
     }   
     

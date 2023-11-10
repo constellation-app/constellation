@@ -72,7 +72,8 @@ public class SVGObject {
     }
     
     /**
-     * Returns an SVGObject of matching id nested one level down from the current SVGObject.
+     * Returns an SVGObject of matching id from the current SVGObject.
+     * Use depth first search.
      * @param id
      * @return SVGObject
      */
@@ -83,6 +84,15 @@ public class SVGObject {
         } else {
             return null;
         }
+    }
+    
+    /**
+     * Removes an SVGObject of matching id nested from the current SVGObject.
+     * Uses depths first search.
+     * @param id
+     */
+    public final void removeChild(final String id) {
+        this.svgDataReference.removeChild(id);
     }
     
     private Collection<SVGObject> getAllChildren() {

@@ -48,11 +48,6 @@ public class SVGData {
     public SVGData(final String type, final SVGData parent, final Map<String, String> attributes) {
         this.type = type;
         this.children = new LinkedHashMap<>();
-        
-        //This implementation ensures significant attributes are at the front of the output svg tag.
-        //Has the draw back of instantiating irrelevnt attributes as null to enforce their order. 
-        //Not memory concius and goes agains the intention for this class to be "bare-bones".
-        //An alternative would be to not used a LinkedHashMap and instead use a custom map with custom sort based on attrbute key.
         this.attributes = SVGAttributeConstant.initialiseBasicAttributes();
         if (attributes != null) {
             this.attributes.putAll(attributes);
@@ -82,6 +77,7 @@ public class SVGData {
     
     /**
      * Returns an SVGData with a specified id attribute value.
+     * Use depth first search.
      * @param idValue 
      * @return child
      */
@@ -99,7 +95,26 @@ public class SVGData {
     }
     
     /**
-     * Returns an ArrayList of SVGObjects containing all child SVGData elements.
+     * Removes an SVGData with a specified id attribute value.
+     * Use depth first search.
+     * @param idValue 
+     * @return child
+     */
+    public SVGData removeChild(final String idValue) {
+        SVGData child = this.children.remove(idValue);
+        if (child == null) {
+            for (SVGData childIndex : this.getAllChildren()) {
+                child = childIndex.removeChild(idValue);
+                if (child != null) {
+                    return child;
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
+     * Returns a List of SVGObjects containing all child SVGData elements.
      * @return children
      */
     public List<SVGData> getAllChildren() {
@@ -115,7 +130,6 @@ public class SVGData {
                 }
             });
         }
-        
         return allChildren;
     }
     
@@ -256,9 +270,7 @@ public class SVGData {
         if (prefix != null) {
             linePrefix += prefix;
         }
-        
         final StringBuilder attributeBuilder = new StringBuilder();
-        
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> {
             if (SVGAttributeConstant.NAME_SPACE.getName().equals(key) && this.parent != null) {
@@ -267,7 +279,6 @@ public class SVGData {
                 attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key)));
             }
         });
-        
         return String.format("%s<%s%s>", linePrefix, this.type, attributeBuilder.toString());
     }
     

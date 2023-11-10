@@ -15,19 +15,13 @@
  */
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ClusteringConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ContentConcept;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.ImageConcept;
-import au.gov.asd.tac.constellation.graph.schema.concept.SchemaConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.importexport.ImportExportPluginRegistry;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.visual.DrawFlags;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import org.openide.DialogDisplayer;
@@ -59,32 +53,40 @@ public final class ExportToSVGAction implements ActionListener {
     @Override
     public void actionPerformed(final ActionEvent e) {
         
-        //The Action must be bale to interpret the active graph 
+        //The Action must be abale to interpret the active graph to prefill parameters
         final ReadableGraph graph = context.getGraph().getReadableGraph();
         
-        //The graph has data on it so it can be exported
-        if (graph.getVertexCount() > 0) {        
-                int colorAttributeID = VisualConcept.GraphAttribute.BACKGROUND_COLOR.get(graph);
-                ConstellationColor color = graph.getObjectValue(colorAttributeID, 0);
-
-                PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
-                        .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, GraphNode.getGraphNode(graph.getId()).getDisplayName())
-                        .withParameter(ExportToSVGPlugin.SELECTED_NODES_PARAMETER_ID, false)
-                        .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, true)
-                        .withParameter(ExportToSVGPlugin.SHOW_TOP_LABELS_PARAMETER_ID, true)
-                        .withParameter(ExportToSVGPlugin.SHOW_BOTTOM_LABELS_PARAMETER_ID, true)
-                        .withParameter(ExportToSVGPlugin.BACKGROUND_COLOR_PARAMETER_ID, color)
-                        .withParameter(ExportToSVGPlugin.EXPORT_PERSPECTIVE_PARAMETER_ID, "Current Perspective")
-                        .interactively(true)
-                        .executeLater(context.getGraph());
+        //Get the attribute IDs
+        final int graphFlagAttributeID = VisualConcept.GraphAttribute.DRAW_FLAGS.get(graph);
+        final int graphBackgroundAttributeID = VisualConcept.GraphAttribute.BACKGROUND_COLOR.get(graph);
         
-        //The graph has no data on it so prevent the user from exporting
-        } else {
+        //Retrive AtttrbuteValues
+        final DrawFlags flags = graph.getObjectValue(graphFlagAttributeID, 0);
+        final ConstellationColor color = graph.getObjectValue(graphBackgroundAttributeID, 0);
+        final String graphName = GraphNode.getGraphNode(graph.getId()).getDisplayName();
+        
+        //The graph has no visual data on it so prevent the user from exporting
+        if (graph.getVertexCount() < 1) {
             final String message = "Unable to export empty graph.";
             final Object[] options = new Object[]{NotifyDescriptor.OK_OPTION};
             final NotifyDescriptor d = new NotifyDescriptor(message, "Unable To Perform Action", NotifyDescriptor.DEFAULT_OPTION, NotifyDescriptor.INFORMATION_MESSAGE, options, NotifyDescriptor.OK_OPTION);
             DialogDisplayer.getDefault().notify(d);
+        
+        //The graph has visual data so export it
+        } else {
+            PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
+                    .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, graphName)
+                    .withParameter(ExportToSVGPlugin.SELECTED_NODES_PARAMETER_ID, false)
+                    .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, flags.drawConnections())
+                    .withParameter(ExportToSVGPlugin.SHOW_NODE_LABELS_PARAMETER_ID, flags.drawNodeLabels())
+                    .withParameter(ExportToSVGPlugin.SHOW_CONNECTION_LABELS_PARAMETER_ID, flags.drawConnectionLabels())
+                    .withParameter(ExportToSVGPlugin.BACKGROUND_COLOR_PARAMETER_ID, color)
+                    .withParameter(ExportToSVGPlugin.EXPORT_PERSPECTIVE_PARAMETER_ID, "Current Perspective")
+                    .interactively(true)
+                    .executeLater(context.getGraph());
         }
+        
+        //Release the local lock on the graph
         graph.release();
     }    
 }

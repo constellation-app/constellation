@@ -16,11 +16,11 @@
 package au.gov.asd.tac.constellation.utilities.svg;
 
 /**
- *
+ * Interface to permit SVGFile references to be hosted in a different module but be used by utility classes.
+ * 
  * @author capricornunicorn123
  */
 public interface SVGFile {
     
     public String getFileName();
-    
 }
