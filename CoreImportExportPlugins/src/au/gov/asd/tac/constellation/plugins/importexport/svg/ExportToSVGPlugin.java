@@ -162,7 +162,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                 .build();
         try {
             interaction.setExecutionStage(0, -1, "Exporting Graph", "Writing data to file", true);
-            exportToSVG(imageFile, svg);
+            exportToSVG(imageFile, svg, interaction);
         } catch (final IOException ex) {
             LOGGER.log(Level.INFO, ex.getLocalizedMessage());
         }
@@ -176,11 +176,16 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
      * @param data
      * @throws IOException 
      */
-    private void exportToSVG(final File file, final SVGData data) throws IOException {
+    private void exportToSVG(final File file, final SVGData data, final PluginInteraction interaction) throws IOException, InterruptedException {
         final boolean fileOverwritten = file.createNewFile();
         try (final FileWriter writer = new FileWriter(file)) {
             writer.write(data.toString());
             writer.flush();        
+            if (fileOverwritten){
+                interaction.setProgress(0, -1, String.format("File %s has been overwritten", file.getName()), false);
+            } else {
+                interaction.setProgress(0, -1, String.format("File %s has been created", file.getName()), false);
+            }
         }
     }
 }
