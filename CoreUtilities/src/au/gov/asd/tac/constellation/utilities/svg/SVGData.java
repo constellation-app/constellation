@@ -209,7 +209,7 @@ public class SVGData {
      */
     public void cleanAttributes() {
         this.attributes.values().removeIf(Objects::isNull);
-        this.getAllChildren().forEach(child -> child.cleanAttributes());
+        this.getAllChildren().forEach(SVGData::cleanAttributes);
     }
     
     /**

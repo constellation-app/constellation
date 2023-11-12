@@ -63,44 +63,45 @@ public class SVGParser {
         SVGData currentElement = null; 
         final Collection<SVGData> roots = new HashSet<>();
         
-        try (final BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                final String svgElement = SVGParser.isolateSVGElement(line);
-                if (svgElement != null) {
-                    final boolean openTag = SVGParser.isOpenTag(svgElement);
-                    final boolean closeTag = SVGParser.isCloseTag(svgElement);
+        final InputStreamReader isr = new InputStreamReader(inputStream);
+        final BufferedReader br = new BufferedReader(isr);
+        String line;
+        while ((line = br.readLine()) != null) {
+            final String svgElement = SVGParser.isolateSVGElement(line);
+            if (svgElement != null) {
+                final boolean openTag = SVGParser.isOpenTag(svgElement);
+                final boolean closeTag = SVGParser.isCloseTag(svgElement);
 
-                    // This parser curently requires all lines within an SVG tag as it does not support multi line tags.
-                    if (!openTag && !closeTag) {
-                        //If a header tag is found, it is ignored.
-                        if (!SVGParser.isHeaderTag(svgElement)) {
-                            throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
-                        }
+                // This parser curently requires all lines within an SVG tag as it does not support multi line tags.
+                if (!openTag && !closeTag) {
+                    //If a header tag is found, it is ignored.
+                    if (!SVGParser.isHeaderTag(svgElement)) {
+                        throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
                     }
-
-                    // Create a new SVGData with the current SVGData as the parent 
-                    if (openTag) {
-
-                        SVGData newObject = new SVGData(
-                                SVGParser.getElementType(svgElement), 
-                                currentElement, 
-                                SVGParser.getElementAttributes(svgElement)
-                        );
-                        currentElement = newObject;
-                    }
-
-                    if (currentElement != null && currentElement.getParent() == null && !roots.contains(currentElement)) {
-                        roots.add(currentElement);
-                    }                
-
-                    // Move back up one level to the current objects parent
-                    if (closeTag) {
-                        currentElement = currentElement.getParent();
-                    } 
                 }
+
+                // Create a new SVGData with the current SVGData as the parent 
+                if (openTag) {
+
+                    SVGData newObject = new SVGData(
+                            SVGParser.getElementType(svgElement), 
+                            currentElement, 
+                            SVGParser.getElementAttributes(svgElement)
+                    );
+                    currentElement = newObject;
+                }
+
+                if (currentElement != null && currentElement.getParent() == null && !roots.contains(currentElement)) {
+                    roots.add(currentElement);
+                }                
+
+                // Move back up one level to the current objects parent
+                if (closeTag) {
+                    currentElement = currentElement.getParent();
+                } 
             }
         }
+        
         if (roots.size() != 1) {
             throw new IllegalStateException(String.format("The SVG file has %s outer elements.", roots.size()));
         } else {
