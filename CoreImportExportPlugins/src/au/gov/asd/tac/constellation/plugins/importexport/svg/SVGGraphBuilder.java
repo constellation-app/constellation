@@ -69,7 +69,6 @@ public class SVGGraphBuilder {
     
     
     //Variables with default values, customisable by the builder pattern 
-    
     private boolean selectedNodesOnly = false;
     private boolean showConnections = true;
     private boolean showNodeLabels = true;
@@ -91,7 +90,7 @@ public class SVGGraphBuilder {
     * Represents the outer most element of a SVG file.
     * @param svg 
     */
-   public SVGGraphBuilder() {
+    public SVGGraphBuilder() {
         final Graph currentGraph = GraphManager.getDefault().getActiveGraph();
         visualManager = GraphNode.getGraphNode(currentGraph).getVisualManager();
         access = new GraphVisualAccess(currentGraph);
@@ -222,11 +221,11 @@ public class SVGGraphBuilder {
         
         // Thorw errors if attributes without default values have not been set
         if (readableGraph == null ) {
-            throw new Exception("SVGGraphBuilder requires GraphReadMethodsto build");
+            throw new IllegalArgumentException("SVGGraphBuilder requires GraphReadMethodsto build");
         } else if (interaction == null) {
-            throw new Exception("SVGGraphBuilder requires a PluginInteraction to build");
+            throw new IllegalArgumentException("SVGGraphBuilder requires a PluginInteraction to build");
         } else if (graphTitle == null) {
-            throw new Exception("SVGGraphBuilder requires a Graph Title to build");
+            throw new IllegalArgumentException("SVGGraphBuilder requires a Graph Title to build");
         }
         
         // Initialise the VisualGraphAccess
@@ -242,20 +241,20 @@ public class SVGGraphBuilder {
         final Camera oldCamera = new Camera(this.camera);
         final BoundingBox box = new BoundingBox();
         switch (exportPerspective) {
-            case "Y-Axis":
-                BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
-                CameraUtilities.refocusOnYAxis(camera, box, false);
-                Animation.startAnimation(new PanAnimation("Reset View", oldCamera, camera, true));
-                break;
             case "X-Axis":
                 BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
                 CameraUtilities.refocusOnXAxis(camera, box, false);
-                Animation.startAnimation(new PanAnimation("Reset View", oldCamera, camera, true));
+                Animation.startAnimation(new PanAnimation("Reset to X Axis View", oldCamera, camera, true));
+                break;
+            case "Y-Axis":
+                BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
+                CameraUtilities.refocusOnYAxis(camera, box, false);
+                Animation.startAnimation(new PanAnimation("Reset to Y Axis View", oldCamera, camera, true));
                 break;
             case "Z-Axis":
                 BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
                 CameraUtilities.refocusOnZAxis(camera, box, false);
-                Animation.startAnimation(new PanAnimation("Reset View", oldCamera, camera, true));
+                Animation.startAnimation(new PanAnimation("Reset to Z Axis View", oldCamera, camera, true));
                 break;
             default:
                 break;
@@ -380,8 +379,8 @@ public class SVGGraphBuilder {
         
         //Do not build a decorator if the decorator is for a Pinned attribute value of false.
         if (decoratorName != null && !"false_pinned".equals(decoratorName) && IconManager.iconExists(decoratorName)) {
-                final SVGData icon = IconManager.getIcon(decoratorName).buildSVG();
-                icon.setParent(svgDecorator.toSVGData());
+            final SVGData icon = IconManager.getIcon(decoratorName).buildSVG();
+            icon.setParent(svgDecorator.toSVGData());
         }
     }
 
@@ -573,7 +572,7 @@ public class SVGGraphBuilder {
         }
 
         // Determine which segment this connection label will occupy
-        final int labelSegment = ((connectionIndex % 7)) + 1;
+        final int labelSegment = (connectionIndex % 7) + 1;
         float segmentRatio = (float) labelSegment / totalSegments;
         
         // Calculate the position of the label

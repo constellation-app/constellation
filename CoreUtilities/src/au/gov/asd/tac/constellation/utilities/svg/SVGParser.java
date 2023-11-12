@@ -47,18 +47,19 @@ public class SVGParser {
         throw new IllegalStateException("Utility class");
     }
     /**
-     * 
      * Takes an input stream and translates it to an SVG object. 
      * Will only translate to an SVG object if the file data is valid.
      * Does not support multi-line tags.
      * @param inputStream
-     * @return
+     * @return SVGData
      * @throws IOException 
      */
     public static SVGData parse(final InputStream inputStream) throws IOException {
+        
         if (inputStream == null) {
-            throw new IOException();
+            throw new IOException("An input stream has not been provided");
         }
+        
         SVGData currentElement = null; 
         final Collection<SVGData> roots = new HashSet<>();
         
@@ -66,40 +67,38 @@ public class SVGParser {
             String line;
             while ((line = br.readLine()) != null) {
                 final String svgElement = SVGParser.isolateSVGElement(line);
-                if (svgElement == null) {
-                    continue;
-                }
-                final boolean openTag = SVGParser.isOpenTag(svgElement);
-                final boolean closeTag = SVGParser.isCloseTag(svgElement);
-                
-                // This parser curently requires all lines within an SVG tag as it does not support multi line tags.
-                if (!openTag && !closeTag) {
-                    //If a header tag is found, it is ignored.
-                    if (SVGParser.isHeaderTag(svgElement)) {
-                        continue;
+                if (svgElement != null) {
+                    final boolean openTag = SVGParser.isOpenTag(svgElement);
+                    final boolean closeTag = SVGParser.isCloseTag(svgElement);
+
+                    // This parser curently requires all lines within an SVG tag as it does not support multi line tags.
+                    if (!openTag && !closeTag) {
+                        //If a header tag is found, it is ignored.
+                        if (!SVGParser.isHeaderTag(svgElement)) {
+                            throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
+                        }
                     }
-                    throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
-                }
-                
-                // Create a new SVGData with the current SVGData as the parent 
-                if (openTag) {
-                        
-                    SVGData newObject = new SVGData(
-                            SVGParser.getElementType(svgElement), 
-                            currentElement, 
-                            SVGParser.getElementAttributes(svgElement)
-                    );
-                    currentElement = newObject;
-                }
 
-                if (currentElement != null && currentElement.getParent() == null && !roots.contains(currentElement)) {
-                    roots.add(currentElement);
-                }                
+                    // Create a new SVGData with the current SVGData as the parent 
+                    if (openTag) {
 
-                // Move back up one level to the current objects parent
-                if (closeTag) {
-                    currentElement = currentElement.getParent();
-                } 
+                        SVGData newObject = new SVGData(
+                                SVGParser.getElementType(svgElement), 
+                                currentElement, 
+                                SVGParser.getElementAttributes(svgElement)
+                        );
+                        currentElement = newObject;
+                    }
+
+                    if (currentElement != null && currentElement.getParent() == null && !roots.contains(currentElement)) {
+                        roots.add(currentElement);
+                    }                
+
+                    // Move back up one level to the current objects parent
+                    if (closeTag) {
+                        currentElement = currentElement.getParent();
+                    } 
+                }
             }
         }
         if (roots.size() != 1) {

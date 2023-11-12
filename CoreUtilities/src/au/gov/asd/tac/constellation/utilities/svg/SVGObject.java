@@ -185,7 +185,7 @@ public class SVGObject {
         String attribute = getAttributeString(attributeKey);
         try {
             return Float.parseFloat(attribute);
-        } catch (final Exception ex) {
+        } catch (final NumberFormatException ex) {
             return null; 
         }
     } 
@@ -216,13 +216,11 @@ public class SVGObject {
         return this.getPositionalData(this.width, SVGAttributeConstant.WIDTH);
     }
     
-    private float getPositionalData(final Float quickReference, final SVGAttributeConstant longReference) {
-        
+    private float getPositionalData(final Float quickReference, final SVGAttributeConstant longReference) {  
         if (quickReference != null) {
             //Return the localy stored value;
             return quickReference;
         }
-            
         final Float attributeFloat = this.getAttributeFloat(longReference);          
         if (attributeFloat != null) {
             //Return the value set during parsing;
