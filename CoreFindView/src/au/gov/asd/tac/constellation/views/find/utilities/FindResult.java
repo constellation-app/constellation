@@ -33,18 +33,17 @@ import java.util.Objects;
 public class FindResult {
 
     public static final String SEPARATOR = " : ";
-    public static final String LEFT_BRACKET = "\u276a"; // u2b98 u2b9c u301a u276a u3010
-    public static final String RIGHT_BRACKET = "\u276b"; // u2b9a u2b9e u301b u276b u3011
+    public static final String LEFT_BRACKET = "\u276a"; // bold left parenthesis
+    public static final String RIGHT_BRACKET = "\u276b"; // bold right parenthesis
     public static final String SMALL_SPACE = "\u2005";
-    public static final String CIRCLED_D = LEFT_BRACKET + "\uff24" + RIGHT_BRACKET + SMALL_SPACE; // "\u2b9c\uff24\u2b9e"; uff24
-    public static final String CIRCLED_E = LEFT_BRACKET + "\uff25" + RIGHT_BRACKET + SMALL_SPACE; // \uff25
-    public static final String CIRCLED_H = LEFT_BRACKET + "\uff28" + RIGHT_BRACKET + SMALL_SPACE; // \uff28
-    public static final String CIRCLED_L = LEFT_BRACKET + "\uff2c" + RIGHT_BRACKET + SMALL_SPACE; // \uff2c
-    public static final String CIRCLED_N = LEFT_BRACKET + "\uff2e" + RIGHT_BRACKET + SMALL_SPACE; // \uff2e
-    public static final String CIRCLED_T = LEFT_BRACKET + "\uff34" + RIGHT_BRACKET + SMALL_SPACE; // \uff34
-    //public static final String DIAMOND = "\u2b2b"; // u29c6 u22c4 u2b2b u2727
-    public static final String LH_SUB_BRACKET = "\u208d"; // \u23f4 u3016 u2039 \u200a u25c2 \u200a u276a
-    public static final String RH_SUB_BRACKET = "\u208e"; // \u23f5 u3017 u203a \u200a u25b8 u276b
+    public static final String CIRCLED_D = LEFT_BRACKET + "\uff24" + RIGHT_BRACKET + SMALL_SPACE; // (D) - prefix for Data Access Plugin results
+    public static final String CIRCLED_E = LEFT_BRACKET + "\uff25" + RIGHT_BRACKET + SMALL_SPACE; // (E) - prefix for EDGE results
+    public static final String CIRCLED_H = LEFT_BRACKET + "\uff28" + RIGHT_BRACKET + SMALL_SPACE; // (H) - prefix for HELP results
+    public static final String CIRCLED_L = LEFT_BRACKET + "\uff2c" + RIGHT_BRACKET + SMALL_SPACE; // (L) - prefix for LINK results
+    public static final String CIRCLED_N = LEFT_BRACKET + "\uff2e" + RIGHT_BRACKET + SMALL_SPACE; // (N) - prefix for NODE results
+    public static final String CIRCLED_T = LEFT_BRACKET + "\uff34" + RIGHT_BRACKET + SMALL_SPACE; // (T) - prefix for TRANSACTION results 
+    public static final String LH_SUB_BRACKET = "\u208d"; // subscript left bracket
+    public static final String RH_SUB_BRACKET = "\u208e"; // subscript right bracket
 
     private int id;
     private long uid;

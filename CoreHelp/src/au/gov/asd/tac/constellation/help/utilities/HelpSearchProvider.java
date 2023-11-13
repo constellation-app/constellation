@@ -48,12 +48,12 @@ public class HelpSearchProvider implements SearchProvider {
         // Check the request is valid
         final String text;
         if (request != null && StringUtils.isNotBlank(request.getText())) {
-            text = request.getText().replace("\u227a","<").replace("\u227b",">").replace("\uff08","(").replace("\uff09",")");
+            text = request.getText().replace("\uff1c","<").replace("\uff1e",">").replace("\uff08","(").replace("\uff09",")");
         } else {
             return;
         }
         String prevFileName = "";
-        // Locally defined Recent searches will have a diamond character or half diamond character at the end of the search term
+        // Locally defined Recent searches will start with a specific unicode left bracket in the search term
         if (text.startsWith(LEFT_BRACKET)) {
             final int termEnd = text.length();
             // A recent HELP search will begin with a (H) character and end with a diamond character
@@ -77,7 +77,7 @@ public class HelpSearchProvider implements SearchProvider {
             final String fileName = value.substring(index + 1);
             
             // Create a display name that is easier to search
-            String displayName = fileName.replace("-", " ").replace("<","\u227a").replace(">","\u227b").replace("(" , "\uff08").replace(")", "\uff09");
+            String displayName = fileName.replace("-", " ").replace("<","\uff1c").replace(">","\uff1e").replace("(","\uff08").replace(")","\uff09");
             final int indexMD = displayName.lastIndexOf(".");
             displayName = CIRCLED_H + "  " + displayName.substring(0, indexMD);
 
