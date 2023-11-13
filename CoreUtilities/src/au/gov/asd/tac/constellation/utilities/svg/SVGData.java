@@ -240,7 +240,7 @@ public class SVGData {
      */
     private String elementToSVG(final String prefix) {
         final StringBuilder attributeBuilder = new StringBuilder();
-        final String linePrefix = SeparatorConstants.NEWLINE + prefix;
+        final String linePrefix = SeparatorConstants.NEWLINE + (prefix == null ? "" : prefix);
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> {
             if (SVGAttributeConstant.NAME_SPACE.getName().equals(key) && this.parent != null) {
@@ -261,10 +261,7 @@ public class SVGData {
      * @return String representation of element header.
      */
     private String elementHeaderToSVG(final String prefix) {
-        String linePrefix = SeparatorConstants.NEWLINE;
-        if (prefix != null) {
-            linePrefix += prefix;
-        }
+        final String linePrefix = SeparatorConstants.NEWLINE + (prefix == null ? "" : prefix);
         final StringBuilder attributeBuilder = new StringBuilder();
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> {
@@ -284,10 +281,7 @@ public class SVGData {
      * @return String representation of element footer.
      */
     private String elementFooterToSVG(final String prefix) {
-        String linePrefix = SeparatorConstants.NEWLINE;
-        if (prefix != null) {
-            linePrefix += prefix;
-        }
+        final String linePrefix = SeparatorConstants.NEWLINE + (prefix == null ? "" : prefix);
         return String.format("%s</%s>", linePrefix, this.type);
     }
     

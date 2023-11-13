@@ -1,0 +1,8 @@
+<svg id="1">
+    <svg id="2" x="64" y="128">
+        <svg id="3">
+            <rect id="4" customAttribute="somethingCustom"/>
+            <circle id="5" width="128" height="256"/>
+        </svg>
+    </svg>
+</svg>
