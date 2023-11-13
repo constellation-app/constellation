@@ -281,14 +281,14 @@ public class SVGDataTest {
     }
 
     private void testGetSetAttribute() {
-        assertNull(dataSVG1.getAttributeValue(SVGAttributeConstant.X.toString()));
-        assertNull(dataSVG1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.toString()));
+        assertNull(dataSVG1.getAttributeValue(SVGAttributeConstant.WIDTH.getName()));
+        assertNull(dataSVG1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()));
         
-        dataSVG1.setAttribute(SVGAttributeConstant.X, "42");
+        dataSVG1.setAttribute(SVGAttributeConstant.WIDTH, "42");
         dataSVG1.setAttribute(SVGAttributeConstant.VIEW_BOX, "0, 0, 256, 256");
  
-        assertNull(dataSVG1.getAttributeValue(SVGAttributeConstant.X.toString()), "42");
-        assertNull(dataSVG1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.toString()), "0, 0, 256, 256");
+        assertEquals("42", dataSVG1.getAttributeValue(SVGAttributeConstant.WIDTH.getName()));
+        assertEquals(dataSVG1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()), "0, 0, 256, 256");
     }
 
     private void testGetSetParent() {
