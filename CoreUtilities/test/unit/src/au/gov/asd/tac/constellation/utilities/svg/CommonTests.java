@@ -15,24 +15,26 @@
  */
 package au.gov.asd.tac.constellation.utilities.svg;
 
+import static org.junit.Assert.*;
+
 /**
- * Test for {@link SVGFile}
+ * Common testing methods for svg utility classes
  * 
  * @author capricornunicorn123
  */
-public enum TestingSVGFile implements SVGFile{
+public class CommonTests {
     
-    TESTING_TEMPLATE("CommonTestingTemplate.svg");
-    
-    private final String resource; 
-    
-    TestingSVGFile(final String resource){
-        this.resource = resource;
+    public static void testLoadedData(SVGData graph){
+        
+        SVGData background = graph.getChild("background");
+        SVGData content = graph.getChild("content");
+        SVGData header = graph.getChild("header");
+        SVGData node0 = graph.getChild("Node-0");
+        
+        
+        assertTrue(graph.getAllChildren().contains(background));
+        assertTrue(graph.getAllChildren().contains(content));
+        assertTrue(graph.getAllChildren().contains(header));
+        assertFalse(graph.getAllChildren().contains(node0));
     }
-    
-    @Override
-    public String getFileName() {
-        return resource;
-    }
-    
 }

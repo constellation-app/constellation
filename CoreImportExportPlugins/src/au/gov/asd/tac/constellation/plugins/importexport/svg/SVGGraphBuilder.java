@@ -381,6 +381,8 @@ public class SVGGraphBuilder {
         if (decoratorName != null && !"false_pinned".equals(decoratorName) && IconManager.iconExists(decoratorName)) {
             final SVGData icon = IconManager.getIcon(decoratorName).buildSVG();
             icon.setParent(svgDecorator.toSVGData());
+        } else {
+            svgDecorator.getParent().removeChild(svgDecorator.getID());
         }
     }
 

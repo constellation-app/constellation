@@ -24,7 +24,8 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Tests for {@link SVGAttibuteConstant}
+ * 
  * @author capricornunicorn123
  */
 public class SVGAttributeConstantTest {

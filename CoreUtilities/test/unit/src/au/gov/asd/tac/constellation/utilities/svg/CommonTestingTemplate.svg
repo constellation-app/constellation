@@ -1,0 +1,126 @@
+<svg id="graph" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0.0, 0.0, 1168.0, 575.0">
+	<rect id="background" width="100%" height="100%" fill="#1b1e24" stroke-width="0" />
+	<svg id="content" y="5%" width="100%" height="95%" viewBox="0.0, 0.0, 1168.0, 575.0">
+		<svg id="node-2" x="557.52" y="288.77" width="71.81" height="71.81" overflow="visible" viewBox="0, 0, 256, 256" data-sort-order="25.40">
+			<svg id="top-labels" width="256" height="256" overflow="visible" />
+			<svg id="node-images">
+				<svg id="background-image" width="256" height="256">
+					<svg width="256.00" height="256.00" fill="#3573f2" stroke="#3573f2">
+						<rect x="20" y="20" width="216" height="216" fill="#3573f2" stroke="#3573f2" rx="35" ry="35" />
+					</svg>
+				</svg>
+				<svg id="foreground-image" width="256" height="256">
+					<svg id="person" width="256.00" height="256.00" viewBox="0 0 256 256">
+						<path id="body" fill="#fff" d="m128,144.93c-37.07,0-67.12,14.37-67.12,32.1v19.8h134.24v-19.8c0-17.73-30.05-32.1-67.12-32.1Z" stroke-width="0" />
+						<circle id="head" cx="128.63" cy="93.66" r="34.49" fill="#fff" stroke-width="0" />
+					</svg>
+				</svg>
+				<svg id="north-east-decorator" x="171" y="0" width="85" height="85" viewBox="0, 0, 256, 256">
+					<image xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAYAAABccqhmAAALT0lEQVR4Xu3dC4xcVR3H8Za+l9pKKa1AhfAIUHxQsCaiVmoDRCGg0ZiaEKOxrQnGQKCFkogEgtE0iBgV5VUMJQESY6MQjYC2EYSiIhiFgmBbAxpFEWzBlhbav7+z58727J+d2TuzszN3zn4/yT/b3sfMvTf3t52eOfecceMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQMTM7oPg5RTXRrweQKQV+uupq1VrV46rbVUf47QBkRkFfotphQ/um6mC/D4BMKOCP+tQ7j6gW+f0AZMCnvY6XVX1+XwA9SoE+WvWsC/pw/m40EAK9TSGepLrThbusdUYDIdC7FOB/+1S3YJfRQAj0HgV3u09zizYZDYRAb7H2fAKoCQ2El/n3AFBRCuz1qn0uyCMVGgiX+fcCUDEK6ld8ettkr9FACFSbQjpD9XXV64Pz2zahgfBa/74AKkIBPcOndhTQQAhUkcI5VXWpT2yb0UAIVJXCOUH1qgvtaPibapnRixCoFuvML4AgNBDe5t8fQBf5lHZAaCD8hj8OAF1g9ccCGG0f9McCoIMstgF0S2ggXG08Zgx0lkI3WXWc6vkkkG9XzVIdmSzrlNBAOMEfJ4BRoLD9XPW7JIAvJuvCEGGdRgMh0AkK2oo0ecWy2ojA4RmBbupvIFTNGnzUAEZMwXqXxYd2ajYk676l2pOs66aH0+MGMEIW/29/bxKyf6kWFus+kiyvipVGuwAwcgrS+Tb48d9jVJOKdTcly6skNFAe4s8FQBMUopNV/0yCdV+y7kM2ek8EjtR/VQvScwFQksWv+s5MAhVa2s8v1s1TPZmsq6ov+PMCUILCc4EN/ti/xvZ/7L81WV5V61VT/XkBKMFiI1/Nz2ph0s8+1RvJuqo63p8TgAYUmomqA1VXJkFanqx/OlleZTel5wWgBAVnlcWQ7yyCdJ8Vz+CHn7V0VdwfVYf5cwMwDAXnxSRId6smJ+uWJ+uqKoxN8NH0nACUYHGQz5o3kuV/SZZ3U5l2h5npOQEoQcG5TvW/IkTh+/P+B2sszgFYBaGz0edVmy2OP5D2SwizFIUpyG/x5wWgAYuP7z6chOm4ZN2HVf9I1nXD5apz0mOuseIBJAAtUoiuScL2erL8WNUrybpu2JseK4A2UsDOtf2t/UH/V2cWewD+MFneLev8MQMYIQVrturRJGhbknULbHAHoG5anR43gDaw+Nx+TXh+f2mx/ATVn5N13XS/6i3+2AG0yOLz/POTkIVhveYW6y5OlnfbF/2xAxgBhWqO6nHVC0XInlFNS9anHYC6bXx67ABGSKH6bhKw11SfLJaHTwRXJeuqgPH8gHaxOHpPTRhLf3axfLQn9mzFRn/8AFqkQE1X3VWEK/Sie3ey7qWB2FVD+PbhvenxA2iRwnReEq6BufQstrDXuv1WybHp8QNokcVZe7Yl4Rr4f3WyrGoWJ6cAoBUW5+v7URGqJ1SrknWn1dJWNek5AGiBcvRZS8bxS5bPVV1bW14x4SvI96XnAaBJFr/Sey4J1oPJuvBUX1Vm7fEuTs8DQBMsfuRfnATqZit601nsAPT7ZF3VhLEHTvTnBKAki0N1DYyWUywbb/EXQ9oBqIqu8ecDoCQF6B02eLLOgY40+vOXVbuTdVVErz+MXQrAFIuDb5xe/P0U1RKLQ3OflGzX3z/e4kf6sH0YvbfW0h+E5/ovKrY5VPWHZF1VraydHzDmWJzHfpPFHnBhfr2fWBzfLoQ5PLgTRrj9nmqZaoXqHtVWG3qYrjB0Vm347hv9ygoKn0z6H0MGsqeb/a2qCy22xIeHcdol9O3vnwBTP8+26n/kr7nOXyMgSxan0tpmcTTbdgu/UMJw3jMtdvrpBb+x4oEkIFsWx9YL4+51IpgP+QUVdpq/VkA2LA61HXreYWhM3oF8WZxP7yl/16Pfbn+9gGzoBj/D3/EYEEYinuOvGZAFix/7H3M3PfZb4q8ZkAWLXW/Dd/aow18zIBsWO+igvj3+mgFZsPh1Hxr7vr9uQM/Tjb3QqjOVVhWFCUbP9NcNyIJu7l/6Ox6DbLDiGQUgO/5ux5uEEYrm+esG9Dzd2JP83Y43OcBfNyALFp/NR31/8tcMyIpu8vX+rke/G/y1ArKjG32qVWtq7aoIA53M8NcLyJJu9gd8Asa4Zf4aAdnTjX+WT8IYtNlfF2DMUABusTjG31i0S3W2vybAmKMg/NinYwwIvSLn+2sBjDkWGwhXqv4zOCPZ2qta4a8DMKYpFKf6pGTqdtUEf/4AxvX/IgjDdufsCn/OABIKyVpL5vHLzCJ/vgCGYHEq79ysM/r+A+VYfg2E4dHoPn+eAOqwvBoIn1RN9+cIYBgWGwg7MYPQaDvPnxuAEhSew623GwhD78fVVkxlDqAF1tsNhKEz0Bp/TgCaoBCtst5uIORTADASFhsIf+2T1QP2qQ705wOgBRYfMX7ahazq7jJGAwbaw2I/+17yiGqSPw8ATVKQtrlw9YKdqkv8uQBogkI0xSerh+zy5wOgCQrRhT5VPWSfPx8AJSg8M1UbXaB6jj8vACUoO1/1YepRB/lzA9CAQnOoT1FJ4au3u/3CLuPxYKCsEBjVjT5FJc222GhYlR6EtAEAzVBoPmOtDSn+SvIa77fq9CDkEwBQlgJzlU9QCRuszjRcFp/R7xp/PAAaUGZ2+BANI4zDv9C/To3WzVPd6vbppMn+mAA4Csp41fU+PSWUCpi2O9E630BIRyCgDIVlqWq3T9AwtvrXaUTbT1Nd4l9kFG33xwDAUVCOUW3x6RnGHtWn/WuVof0e8i82Sjb59wbgWHx+vhnhk8Jc/zrNstFtIHxN9Qn/ngASCskpPjnDeEZ1un+dVlhsIPyBjc44hJtVs/x7AigoIFf61Azj2/412kWvfY9/sxH6kn8PAAmF5FWfmmEc4l+jXaz9DYSlvp0AxixrrtW/Iy3q1p4Gwi3+dQEkFJKTfGoauNc6POOO3u8cfxAlhb4MjAgM1KOATLcY6rIW+NfoBGu+gfAxa8O3E0C2FJDFqu0uOI3c4V+j06xkA6HfD4CjnPzWB6eB8JXfUf41Os1iA+GlqpcGH94gv/D7AXB8ahp4XvUpv3836Xg+4A+y8ILqPX57AAUF5CiL/6KXcZvfv0p0fOeq1lj8RHC5MQEI0JhCckea8AaeUh3h968iHecJqml+OYCExWG+SvH7AsiAD3odPD0H5EbB/rhP+hBeVi3y+wLoUQr0RNU6F/Sh/FTV5/cH0MMU6uWqvS7sQ3mn3xdAD1Oo+3zKh3CRaqrfF0CPU7Av82kfAuEHcqNgL7LYqNfIc34/ABnwSR/CWmPGHCA/Nvxz9E+oDvf7AciAxYa9uvz2ADJhcVLORjPzPuj3AZABhfsgazwjb/jFcKrfD0AGFO6dPvGJ0BuQr/yAHFmcYKOejUY3XyBPCvfnrP7AmRf47QFkxOLQXfVM8dsDyITFwTLr2ea3B5AJBfxk1Q6f+sINxuQYQL4U8MNUW13wa97mtweQCQX8eNVffeoLV/vtAWREIV/vU29x4I8HVDP89gAy4pNfOEs1328LIBMK+EzVr1zwgyv8tgAyo6B/zSdf7rcOT90NoMMstvp7+/x2ADJjcWafm3365U6/LYDMKOhLffLlWdXRflsAGVLYD1btKsL/Hb8eQOYU/I8V//LP8esAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoKH/A86wU5UDnbwFAAAAAElFTkSuQmCC" />
+				</svg>
+			</svg>
+			<svg id="bottom-labels" y="256" width="256" height="256" overflow="visible">
+				<text id="bottom-label-0" x="50%" y="0.00" font-size="64.00" fill="#ffffff" font-family="sans-serif" text-anchor="middle" dominant-baseline="hanging">Vertex #2&lt;Unknown&gt;
+				</text>
+			</svg>
+		</svg>
+		<svg id="link-0" overflow="visible" data-sort-order="20.40">
+			<svg id="connections" overflow="visible">
+				<svg id="Connection-0" fill="#8439bf" stroke="#8439bf" overflow="visible">
+					<polygon id="arrow-shaft" stroke-width="0px" points="627.37115 314.5687, 626.7445 312.66284, 732.3146 277.26593, 733.34827 280.40973" />
+					<svg id="arrow-head-760.17596-262.4435" x="760.18" y="262.44" width="59.23" height="14.81" overflow="visible" stroke-width="0px" viewBox="0 0 128, 32">
+						<polygon id="arrow-head" points="83.42 32, 0 16, 83.42 0" transform="rotate(161.79931920468243 0 16)" />
+					</svg>
+				</svg>
+			</svg>
+			<svg id="labels" width="256" height="256" overflow="visible">
+				<text id="label-0-0" x="693.86" y="291.65" font-size="23.78" fill="#ffffff" font-family="sans-serif" text-anchor="middle" dominant-baseline="middle">1
+				</text>
+			</svg>
+		</svg>
+		<svg id="node-0" x="296.33" y="162.99" width="118.46" height="118.46" overflow="visible" viewBox="0, 0, 256, 256" data-sort-order="15.40">
+			<svg id="top-labels" width="256" height="256" overflow="visible" />
+			<svg id="node-images">
+				<svg id="background-image" width="256" height="256">
+					<svg width="256.00" height="256.00" fill="#b13a33" stroke="#b13a33">
+						<rect x="20" y="20" width="216" height="216" fill="#b13a33" stroke="#b13a33" rx="35" ry="35" />
+					</svg>
+				</svg>
+				<svg id="foreground-image" width="256" height="256">
+					<svg id="person" width="256.00" height="256.00" viewBox="0 0 256 256">
+						<path id="body" fill="#fff" d="m128,144.93c-37.07,0-67.12,14.37-67.12,32.1v19.8h134.24v-19.8c0-17.73-30.05-32.1-67.12-32.1Z" stroke-width="0" />
+						<circle id="head" cx="128.63" cy="93.66" r="34.49" fill="#fff" stroke-width="0" />
+					</svg>
+				</svg>
+				<svg id="north-east-decorator" x="171" y="0" width="85" height="85" viewBox="0, 0, 256, 256">
+					<image xlink:href="data:image/png;base64,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" />
+				</svg>
+			</svg>
+			<svg id="bottom-labels" y="256" width="256" height="256" overflow="visible">
+				<text id="bottom-label-0" x="50%" y="0.00" font-size="64.00" fill="#ffffff" font-family="sans-serif" text-anchor="middle" dominant-baseline="hanging">Vertex #0&lt;Unknown&gt;
+				</text>
+			</svg>
+		</svg>
+		<svg id="node-1" x="757.21" y="192.12" width="118.46" height="118.46" overflow="visible" viewBox="0, 0, 256, 256" data-sort-order="15.40">
+			<svg id="top-labels" width="256" height="256" overflow="visible" />
+			<svg id="node-images">
+				<svg id="background-image" width="256" height="256">
+					<svg width="256.00" height="256.00" fill="#d0fda5" stroke="#d0fda5">
+						<rect x="20" y="20" width="216" height="216" fill="#d0fda5" stroke="#d0fda5" rx="35" ry="35" />
+					</svg>
+				</svg>
+				<svg id="foreground-image" width="256" height="256">
+					<svg id="person" width="256.00" height="256.00" viewBox="0 0 256 256">
+						<path id="body" fill="#fff" d="m128,144.93c-37.07,0-67.12,14.37-67.12,32.1v19.8h134.24v-19.8c0-17.73-30.05-32.1-67.12-32.1Z" stroke-width="0" />
+						<circle id="head" cx="128.63" cy="93.66" r="34.49" fill="#fff" stroke-width="0" />
+					</svg>
+				</svg>
+			</svg>
+			<svg id="bottom-labels" y="256" width="256" height="256" overflow="visible">
+				<text id="bottom-label-0" x="50%" y="0.00" font-size="64.00" fill="#ffffff" font-family="sans-serif" text-anchor="middle" dominant-baseline="hanging">Vertex #1&lt;Unknown&gt;
+				</text>
+			</svg>
+		</svg>
+		<svg id="link-1" overflow="visible" data-sort-order="15.40">
+			<svg id="connections" overflow="visible">
+				<svg id="Connection-1" fill="#86b861" stroke="#86b861" overflow="visible">
+					<polygon id="arrow-shaft" stroke-width="0px" points="728.70764 244.14413, 728.4989 247.44691, 413.73727 227.55223, 413.94604 224.24945" />
+					<svg id="arrow-head-757.3306-240.20773" x="757.33" y="240.21" width="59.23" height="14.81" overflow="visible" stroke-width="0px" viewBox="0 0 128, 32">
+						<polygon id="arrow-head" points="83.42 32, 0 16, 83.42 0" transform="rotate(-176.38339944144423 0 16)" />
+					</svg>
+				</svg>
+			</svg>
+			<svg id="labels" width="256" height="256" overflow="visible">
+				<text id="label-0-0" x="586.00" y="236.78" font-size="29.61" fill="#ffffff" font-family="sans-serif" text-anchor="middle" dominant-baseline="middle">1
+				</text>
+			</svg>
+		</svg>
+		<svg id="link-2" overflow="visible" data-sort-order="15.40">
+			<svg id="connections" overflow="visible">
+				<svg id="2" x="385.17" y="133.37" width="59.23" height="59.23" overflow="visible" viewBox="0, 0, 256, 256">
+					<svg id="directed-loop" width="256.00" height="256.00" fill="#c7e334" stroke="#c7e334" viewBox="0 0 256 256">
+						<path id="arrow-head" fill="#c7e334" stroke="#c7e334" d="m159.15,175.73l-31.15,49.27c16.32,0,32.23-3.89,46.88-12.04l-15.73-37.22Z" stroke-width="0" />
+						<path id="arrow-shaft" fill="#c7e334" stroke="#c7e334" d="m128,31c-53.49,0-97,43.51-97,97h0s16,0,16,0h0c0-44.66,36.34-81,81-81s81,36.34,81,81c0,33.25-19.93,62.76-50.77,75.17-4.03,1.62-8.16,2.89-12.37,3.84l-17.86,17.86v.13c12.51,0,24.7-2.35,36.21-6.99,36.93-14.87,60.79-50.2,60.79-90.01,0-53.49-43.51-97-97-97Z" stroke-width="0" />
+					</svg>
+				</svg>
+			</svg>
+		</svg>
+		<svg id="link-3" overflow="visible" data-sort-order="15.40">
+			<svg id="connections" overflow="visible">
+				<svg id="3" x="846.05" y="162.51" width="59.23" height="59.23" overflow="visible" viewBox="0, 0, 256, 256">
+					<svg id="loop-undirected" width="256.00" height="256.00" fill="#2c0f09" stroke="#2c0f09" viewBox="0 0 256 256">
+						<path id="arrow-shaft" fill="#2c0f09" stroke="#2c0f09" d="m128,255v-16c61.21,0,111-49.79,111-111S189.21,17,128,17,17,66.79,17,128H1C1,57.97,57.97,1,128,1s127,56.97,127,127-56.97,127-127,127Z" stroke-width="0" />
+					</svg>
+				</svg>
+			</svg>
+		</svg>
+	</svg>
+	<svg id="header" width="100%" height="5%">
+		<svg id="header-text" fill="#fff" preserveAspectRatio="xMinYMid" viewBox="0 0 100 100">
+			<text id="title" x="10px" y="35%" font-size="30" font-family="sans-serif" alignment-baseline="middle">ExportToSVGExample
+			</text>
+			<text id="subtitle" x="10px" y="75%" font-size="30" font-family="sans-serif" alignment-baseline="middle">Exported: November 13, 2023
+			</text>
+		</svg>
+	</svg>
+</svg>

@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.svg;
 
+import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -22,8 +23,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-
 /**
+ * Tests for {@link SVGData}
  * 
  * @author capricornunicorn123
  */
@@ -167,7 +168,16 @@ public class SVGDataTest {
         assertTrue(dataSVG2.getAllChildren().contains(dataRect));
         assertEquals(3, dataSVG2.getAllChildren().size());
         assertTrue(dataRect.getAllChildren().isEmpty());
-    
+        
+        dataSVG3.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "1");
+        dataRect.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "3");
+        dataCircle.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "2");
+        
+        List<SVGData> children = dataSVG2.getAllChildren();
+        
+        assertEquals(children.get(2), dataSVG3);
+        assertEquals(children.get(1), dataCircle);
+        assertEquals(children.get(0), dataRect);
     }
 
     /**
@@ -253,24 +263,9 @@ public class SVGDataTest {
      */
     @Test
     public void testLoadFromTemplate() {
-        SVGData loadedData1 = SVGData.loadFromTemplate(TestingSVGFile.TESTING_TEMPLATE);
-        SVGData loadedData2 = loadedData1.getChild("2");
-        SVGData loadedData3 = loadedData1.getChild("3");
-        SVGData loadedData4 = loadedData1.getChild("4");
-        SVGData loadedData5 = loadedData1.getChild("5");
-        
-        assertTrue(loadedData1.getAllChildren().contains(loadedData2));
-        assertTrue(loadedData2.getAllChildren().contains(loadedData3));
-        assertTrue(loadedData3.getAllChildren().contains(loadedData4));
-        assertTrue(loadedData3.getAllChildren().contains(loadedData5));
-
-        assertFalse(loadedData3.getAllChildren().contains(loadedData1));
-        assertFalse(loadedData1.getAllChildren().contains(loadedData3));
-        assertFalse(loadedData4.getAllChildren().contains(loadedData5));
-        
-        assertEquals(loadedData4.getAttributeValue("customAttribute"),"somethingCustom");
-        assertEquals(loadedData2.getAttributeValue("x"),"64");
-        assertNull(loadedData4.getAttributeValue("y"));
+        SVGData loadedData = SVGData.loadFromTemplate(TestingSVGFile.TESTING_TEMPLATE);
+        assertNotNull(loadedData);
+        CommonTests.testLoadedData(loadedData);
     }
     
     private void testGetSetContent() {
@@ -287,7 +282,7 @@ public class SVGDataTest {
         dataSVG1.setAttribute(SVGAttributeConstant.WIDTH, "42");
         dataSVG1.setAttribute(SVGAttributeConstant.VIEW_BOX, "0, 0, 256, 256");
  
-        assertEquals("42", dataSVG1.getAttributeValue(SVGAttributeConstant.WIDTH.getName()));
+        assertEquals(dataSVG1.getAttributeValue(SVGAttributeConstant.WIDTH.getName()), "42");
         assertEquals(dataSVG1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()), "0, 0, 256, 256");
     }
 
