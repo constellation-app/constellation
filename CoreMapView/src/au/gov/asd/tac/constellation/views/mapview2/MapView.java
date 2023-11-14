@@ -706,38 +706,11 @@ public class MapView extends ScrollPane {
             final double labelYOffset = 11;
             if (scaleFactor > 1.0) {
                 pointMarkerGlobalScale /= 1.08;
-                markerTextLabels.forEach(textLabel -> {
-                    textLabel.getValue().setScaleX(textLabel.getValue().getScaleX() / markerScalingRate);
-                    textLabel.getValue().setScaleY(textLabel.getValue().getScaleY() / markerScalingRate);
-
-
-                    double posX = textLabel.getValue().getBoundsInParent().getCenterX();
-                    double posY = textLabel.getValue().getBoundsInParent().getCenterY();
-
-                    if (textLabel.getKey() instanceof PointMarker) {
-                        textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterY() + textLabel.getKey().getMarker().getBoundsInParent().getHeight() / 2) - posY)));
-                        textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterX()) - posX)));
-                    }
-
-                });
+                scaleMarkerText(markerScalingRate, true);
                 resizeMarkers(true);
             } else {
                 pointMarkerGlobalScale *= 1.08;
-
-                markerTextLabels.forEach(textLabel -> {
-                    textLabel.getValue().setScaleX(textLabel.getValue().getScaleX() * markerScalingRate);
-                    textLabel.getValue().setScaleY(textLabel.getValue().getScaleY() * markerScalingRate);
-
-
-                    double posX = textLabel.getValue().getBoundsInParent().getCenterX();
-                    double posY = textLabel.getValue().getBoundsInParent().getCenterY();
-
-                    if (textLabel.getKey() instanceof PointMarker) {
-                        textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterY() + textLabel.getKey().getMarker().getBoundsInParent().getHeight() / 2) - posY)));
-                        textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterX()) - posX)));
-                    }
-
-                });
+                scaleMarkerText(markerScalingRate, false);
                 resizeMarkers(false);
             }
 
@@ -759,6 +732,33 @@ public class MapView extends ScrollPane {
             if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
                 updateClusterMarkers();
             }
+        });
+    }
+
+    /**
+     * Scale the labels below the markers
+     *
+     * @param markerScalingRate - rate to scale the labels at
+     * @param zoomOut - Whether to zoom out
+     */
+    private void scaleMarkerText(final double markerScalingRate, final boolean zoomOut) {
+        markerTextLabels.forEach(textLabel -> {
+            if (zoomOut) {
+                textLabel.getValue().setScaleX(textLabel.getValue().getScaleX() / markerScalingRate);
+                textLabel.getValue().setScaleY(textLabel.getValue().getScaleY() / markerScalingRate);
+            } else {
+                textLabel.getValue().setScaleX(textLabel.getValue().getScaleX() * markerScalingRate);
+                textLabel.getValue().setScaleY(textLabel.getValue().getScaleY() * markerScalingRate);
+            }
+
+            double posX = textLabel.getValue().getBoundsInParent().getCenterX();
+            double posY = textLabel.getValue().getBoundsInParent().getCenterY();
+
+            if (textLabel.getKey() instanceof PointMarker) {
+                textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterY() + textLabel.getKey().getMarker().getBoundsInParent().getHeight() / 2) - posY)));
+                textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterX()) - posX)));
+            }
+
         });
     }
 
