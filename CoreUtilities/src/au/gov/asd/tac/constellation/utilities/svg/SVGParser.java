@@ -39,13 +39,11 @@ import java.util.regex.Pattern;
  */
 public class SVGParser {
 
+    final static String NON_LATIN_CHARACTER_OMMMISION_TEXT = " (omitted non-latin characters)"; 
     private static boolean isHeaderTag(final String line) {
         return line.contains("<?") && line.contains("?>");
     }
 
-    private SVGParser() {
-        throw new IllegalStateException("Utility class");
-    }
     /**
      * Takes an input stream and translates it to an SVG object. 
      * Will only translate to an SVG object if the file data is valid.
@@ -143,7 +141,7 @@ public class SVGParser {
             }
         }
         if (builder.length() < text.length()) {
-            builder.append(" (omitted non-latin characters)");
+            builder.append(SVGParser.NON_LATIN_CHARACTER_OMMMISION_TEXT);
         }
         return builder.toString();
     }
@@ -185,7 +183,7 @@ public class SVGParser {
      * @param line
      * @return 
      */
-    private static String isolateSVGElement(final String line) {
+    private static String isolateSVGElement(final String line) throws UnsupportedOperationException{
         final List<String> svgElements = new ArrayList<>();
         final String regex = "<.*>";
         final Pattern svgAttributeAssignmentRegex = Pattern.compile(regex);
@@ -193,9 +191,6 @@ public class SVGParser {
         int foundElements = 0;
         while (svgMatcher.find()) {
             final String potentialElement = svgMatcher.group();
-            if (potentialElement.length() < 2) {
-                throw new IllegalStateException("SVG Element wrong");
-            }
             svgElements.add(potentialElement);
             foundElements++;
         }

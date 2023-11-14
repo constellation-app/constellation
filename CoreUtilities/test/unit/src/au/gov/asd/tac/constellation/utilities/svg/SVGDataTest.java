@@ -263,7 +263,7 @@ public class SVGDataTest {
      */
     @Test
     public void testLoadFromTemplate() {
-        SVGData loadedData = SVGData.loadFromTemplate(TestingSVGFile.TESTING_TEMPLATE);
+        SVGData loadedData = SVGData.loadFromTemplate(TestingSVGFile.TESTING_TEMPLATE_COMPLIANT);
         assertNotNull(loadedData);
         CommonTests.testLoadedData(loadedData);
     }

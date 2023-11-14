@@ -51,14 +51,14 @@ public class SVGParserTest {
     @After
     public void tearDown() {
     }
-
+    
     /**
      * Test of parse method, of class SVGParser.
      * @throws java.lang.Exception
      * @throws java.io.IOException
      */
     @Test(expectedExceptions=IOException.class)
-    public void testParseException() throws Exception, IOException {
+    public void testParseIOException() throws Exception, IOException {
         SVGParser.parse(null);
     }
     
@@ -68,13 +68,35 @@ public class SVGParserTest {
      */
     @Test
     public void testParse() throws Exception {
-        
         //Ensure loading template file passes
-        TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE;
+        TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_COMPLIANT;
         final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName());
         SVGData templateSVG = SVGParser.parse(inputStream);
         CommonTests.testLoadedData(templateSVG);
-
+    }
+    
+    /**
+     * Test of parse method, of class SVGParser.
+     * @throws java.lang.Exception
+     */
+        @Test(expectedExceptions=IllegalStateException.class)
+    public void testParseInvalidFile() throws Exception, IllegalStateException{
+        //Ensure loading template file with invalid lines fails
+        TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_INVALID_JSON;
+        final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName());
+        SVGParser.parse(inputStream);
+    }
+    
+    /**
+     * Test of parse method, of class SVGParser.
+     * @throws java.lang.Exception
+     */
+        @Test(expectedExceptions=IllegalStateException.class)
+    public void testParseMultipleRoots() throws Exception, IllegalStateException{
+        //Ensure loading template file with multiple roots fails
+        TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_INVALID_MULTI_ROOT;
+        final InputStream inputStream = template.getClass().getResourceAsStream(template.getFileName());
+        SVGParser.parse(inputStream);
     }
 
     /**
@@ -100,6 +122,10 @@ public class SVGParserTest {
                 assertEquals(sanitisedCharacter, originalCharacter);
             }
         }
+        String fireChineseCharacter = "火";
+        assertEquals(SVGParser.sanitisePlanText(fireChineseCharacter), SVGParser.NON_LATIN_CHARACTER_OMMMISION_TEXT);
+        
+        
     }
     
 }
