@@ -1521,7 +1521,7 @@ public class MapView extends ScrollPane {
      */
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
-            marker.setMarkerPosition(1010.9, 923.75); // 893.6783733826248 939.9363395860635 923.75
+            marker.setMarkerPosition(1010.9, 925.5); // 893.6783733826248 939.9363395860635 923.75
             LOGGER.log(Level.SEVERE, "Map width: " + mapGroupHolder.getPrefWidth() + " map height: " + mapGroupHolder.getPrefHeight());
             //marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {

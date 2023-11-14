@@ -204,8 +204,8 @@ public class PointMarker extends AbstractMarker {
         posRect.setFill(Color.GREEN);
         posRect.setOpacity(0.5);
 
-        x += xOffset;
-        y += yOffset;
+        //x += xOffset;
+        //y += yOffset;
         path = "M " + x + SeparatorConstants.COMMA + " " + y + " Z " + path;
 
 
