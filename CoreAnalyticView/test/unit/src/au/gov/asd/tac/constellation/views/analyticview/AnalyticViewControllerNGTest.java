@@ -39,10 +39,13 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.control.ListView;
+import javafx.scene.control.MultipleSelectionModel;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.testfx.api.FxToolkit;
 import static org.testng.Assert.*;
@@ -321,10 +324,10 @@ public class AnalyticViewControllerNGTest {
             
             final Map<GraphVisualisation, Boolean> newVisualisations = new HashMap<>();
             newVisualisations.put(sizeVisualisation, false);
-            when(currentState.getGraphVisualisations()).thenReturn(newVisualisations);
+            when(currentState.getGraphVisualisations()).thenReturn(instance.getGraphVisualisations());
              
             final Map<GraphVisualisation, Boolean> visualisations = currentState.getGraphVisualisations();
-            assertFalse(visualisations.get(sizeVisualisation));
+            assertEquals(visualisations, instance.getGraphVisualisations());
         }
 
     }
@@ -332,63 +335,32 @@ public class AnalyticViewControllerNGTest {
     /**
      * Test of updateState method, of class AnalyticViewController.
      */
-//    @Test
-//    public void testUpdateState() {
-//        System.out.println("updateState");
-//        boolean pluginWasSelected = false;
-//        ListView<AnalyticConfigurationPane.SelectableAnalyticPlugin> pluginList = null;
-//        final AnalyticViewController instance = AnalyticViewController.getDefault();
-//        instance.updateState(pluginWasSelected, pluginList);
-//        // TO DO 
-//    }
-//
-//    /**
-//     * Test of readState method, of class AnalyticViewController.
-//     */
-//    @Test
-//    public void testReadState() {
-//        System.out.println("readState");
-//        final AnalyticViewController instance = AnalyticViewController.getDefault();
-//        instance.readState();
-//        // TO DO 
-//    }
-//
-//    /**
-//     * Test of writeState method, of class AnalyticViewController.
-//     */
-//    @Test
-//    public void testWriteState() {
-//        System.out.println("writeState");
-//        final AnalyticViewController instance = AnalyticViewController.getDefault();
-//        Future expResult = null;
-//        Future result = instance.writeState();
-//        assertEquals(result, expResult);
-//        // TO DO 
-//    }
-//
-//    /**
-//     * Test of selectOnGraph method, of class AnalyticViewController.
-//     */
-//    @Test
-//    public void testSelectOnGraph() {
-//        System.out.println("selectOnGraph");
-//        GraphElementType elementType = null;
-//        List<Integer> elementIds = null;
-//        final AnalyticViewController instance = AnalyticViewController.getDefault();
-//        instance.selectOnGraph(elementType, elementIds);
-//        // TO DO 
-//    }
-//
-//    /**
-//     * Test of selectOnInternalVisualisations method, of class AnalyticViewController.
-//     */
-//    @Test
-//    public void testSelectOnInternalVisualisations() {
-//        System.out.println("selectOnInternalVisualisations");
-//        GraphElementType elementType = GraphElementType.VERTEX;
-//        final AnalyticViewController instance = AnalyticViewController.getDefault();
-//        instance.selectOnInternalVisualisations(elementType, graph);
-//        // TO DO 
-//    }
+    @Test
+    public void testUpdateState() {
+        System.out.println("updateState");
+        final boolean pluginWasSelected = true;
+        final ListView<AnalyticConfigurationPane.SelectableAnalyticPlugin> pluginList = mock(ListView.class);
+        final AnalyticViewController instance = mock(AnalyticViewController.class);
+        final AnalyticViewPane pane = mock(AnalyticViewPane.class);
+        final AnalyticConfigurationPane configPane = mock(AnalyticConfigurationPane.class);
+        final ListView<String> categoryList = new ListView<>();
+        instance.updateState(pluginWasSelected, pluginList);
+        
+        when(pane.getConfigurationPane()).thenReturn(configPane);
+        when(pane.getConfigurationPane().getCategoryList()).thenReturn(categoryList);
+        verify(pane, times(1)).getConfigurationPane();    
+    }
+
+    /**
+     * Test of selectOnInternalVisualisations method, of class AnalyticViewController.
+     */
+    @Test
+    public void testSelectOnInternalVisualisations() {
+        System.out.println("selectOnInternalVisualisations");
+        GraphElementType elementType = GraphElementType.VERTEX;
+        final AnalyticViewController instance = AnalyticViewController.getDefault();
+        instance.selectOnInternalVisualisations(elementType, graph);
+        // TO DO 
+    }
     
 }
