@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -233,9 +234,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                                 EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
                                 PluginExecution.withPlugin(new AnalyticStateReaderPlugin(analyticViewPane)).executeLater(graph);
                                 analyticController.deactivateResultUpdates(graph);
-                            } catch (final InterruptedException | InvocationTargetException ex) {
+                            } catch (final InterruptedException ex) {
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                            }  
+                                Thread.currentThread().interrupt();
+                            } catch (final InvocationTargetException ex) {
+                                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                            }
                         }
                     });
                 });

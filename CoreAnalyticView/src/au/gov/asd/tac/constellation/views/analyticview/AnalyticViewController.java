@@ -103,6 +103,42 @@ public class AnalyticViewController {
         return parent;
     }
 
+    public int getCurrentAnalyticQuestionIndex() {
+        return currentAnalyticQuestionIndex;
+    }
+
+    public List<AnalyticQuestionDescription<?>> getActiveAnalyticQuestions() {
+        return activeAnalyticQuestions;
+    }
+
+    public List<List<AnalyticConfigurationPane.SelectableAnalyticPlugin>> getActiveSelectablePlugins() {
+        return activeSelectablePlugins;
+    }
+
+    public AnalyticResult<?> getResult() {
+        return result;
+    }
+
+    public boolean isResultsVisible() {
+        return resultsVisible;
+    }
+
+    public boolean isCategoriesVisible() {
+        return categoriesVisible;
+    }
+
+    public AnalyticQuestionDescription<?> getCurrentQuestion() {
+        return currentQuestion;
+    }
+
+    public AnalyticQuestion getQuestion() {
+        return question;
+    }
+
+    public String getActiveCategory() {
+        return activeCategory;
+    }
+
     public void setActiveCategory(final String activeCategory) {
         this.activeCategory = activeCategory;
     }
@@ -124,7 +160,7 @@ public class AnalyticViewController {
     }
 
     public void setGraphVisualisations(final Map<GraphVisualisation, Boolean> graphVisualisations) {
-        this.graphVisualisations = (HashMap) graphVisualisations;
+        this.graphVisualisations = graphVisualisations;
     }
     
     /**
@@ -202,7 +238,10 @@ public class AnalyticViewController {
         final AnalyticViewPane pane = parent.createContent();   
         try {
             PluginExecution.withPlugin(new AnalyticDeactivateStateChangesPlugin(pane)).executeLater(graph).get();
-        } catch (final InterruptedException | ExecutionException ex) {
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            Thread.currentThread().interrupt();
+        } catch (final ExecutionException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         } 
     }

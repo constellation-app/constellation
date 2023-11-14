@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import java.util.Map;
@@ -59,7 +60,7 @@ public class AnalyticDeactivateStateChangesPlugin extends SimpleEditPlugin {
             return;
         }
         
-        Map<GraphVisualisation, Boolean> graphVisualisations = currentState.getGraphVisualisations();
+        final Map<GraphVisualisation, Boolean> graphVisualisations = currentState.getGraphVisualisations();
         if (!graphVisualisations.isEmpty()) {
             graphVisualisations.entrySet().forEach(node -> {
                 node.getKey().deactivate(node.getValue());
