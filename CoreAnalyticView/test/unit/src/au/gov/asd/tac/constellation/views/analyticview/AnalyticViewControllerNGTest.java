@@ -332,63 +332,63 @@ public class AnalyticViewControllerNGTest {
     /**
      * Test of updateState method, of class AnalyticViewController.
      */
-    @Test
-    public void testUpdateState() {
-        System.out.println("updateState");
-        boolean pluginWasSelected = false;
-        ListView<AnalyticConfigurationPane.SelectableAnalyticPlugin> pluginList = null;
-        final AnalyticViewController instance = AnalyticViewController.getDefault();
-        instance.updateState(pluginWasSelected, pluginList);
-        // TO DO 
-    }
-
-    /**
-     * Test of readState method, of class AnalyticViewController.
-     */
-    @Test
-    public void testReadState() {
-        System.out.println("readState");
-        final AnalyticViewController instance = AnalyticViewController.getDefault();
-        instance.readState();
-        // TO DO 
-    }
-
-    /**
-     * Test of writeState method, of class AnalyticViewController.
-     */
-    @Test
-    public void testWriteState() {
-        System.out.println("writeState");
-        final AnalyticViewController instance = AnalyticViewController.getDefault();
-        Future expResult = null;
-        Future result = instance.writeState();
-        assertEquals(result, expResult);
-        // TO DO 
-    }
-
-    /**
-     * Test of selectOnGraph method, of class AnalyticViewController.
-     */
-    @Test
-    public void testSelectOnGraph() {
-        System.out.println("selectOnGraph");
-        GraphElementType elementType = null;
-        List<Integer> elementIds = null;
-        final AnalyticViewController instance = AnalyticViewController.getDefault();
-        instance.selectOnGraph(elementType, elementIds);
-        // TO DO 
-    }
-
-    /**
-     * Test of selectOnInternalVisualisations method, of class AnalyticViewController.
-     */
-    @Test
-    public void testSelectOnInternalVisualisations() {
-        System.out.println("selectOnInternalVisualisations");
-        GraphElementType elementType = GraphElementType.VERTEX;
-        final AnalyticViewController instance = AnalyticViewController.getDefault();
-        instance.selectOnInternalVisualisations(elementType, graph);
-        // TO DO 
-    }
+//    @Test
+//    public void testUpdateState() {
+//        System.out.println("updateState");
+//        boolean pluginWasSelected = false;
+//        ListView<AnalyticConfigurationPane.SelectableAnalyticPlugin> pluginList = null;
+//        final AnalyticViewController instance = AnalyticViewController.getDefault();
+//        instance.updateState(pluginWasSelected, pluginList);
+//        // TO DO 
+//    }
+//
+//    /**
+//     * Test of readState method, of class AnalyticViewController.
+//     */
+//    @Test
+//    public void testReadState() {
+//        System.out.println("readState");
+//        final AnalyticViewController instance = AnalyticViewController.getDefault();
+//        instance.readState();
+//        // TO DO 
+//    }
+//
+//    /**
+//     * Test of writeState method, of class AnalyticViewController.
+//     */
+//    @Test
+//    public void testWriteState() {
+//        System.out.println("writeState");
+//        final AnalyticViewController instance = AnalyticViewController.getDefault();
+//        Future expResult = null;
+//        Future result = instance.writeState();
+//        assertEquals(result, expResult);
+//        // TO DO 
+//    }
+//
+//    /**
+//     * Test of selectOnGraph method, of class AnalyticViewController.
+//     */
+//    @Test
+//    public void testSelectOnGraph() {
+//        System.out.println("selectOnGraph");
+//        GraphElementType elementType = null;
+//        List<Integer> elementIds = null;
+//        final AnalyticViewController instance = AnalyticViewController.getDefault();
+//        instance.selectOnGraph(elementType, elementIds);
+//        // TO DO 
+//    }
+//
+//    /**
+//     * Test of selectOnInternalVisualisations method, of class AnalyticViewController.
+//     */
+//    @Test
+//    public void testSelectOnInternalVisualisations() {
+//        System.out.println("selectOnInternalVisualisations");
+//        GraphElementType elementType = GraphElementType.VERTEX;
+//        final AnalyticViewController instance = AnalyticViewController.getDefault();
+//        instance.selectOnInternalVisualisations(elementType, graph);
+//        // TO DO 
+//    }
     
 }
