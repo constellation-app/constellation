@@ -20,7 +20,7 @@ import time
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 20200326
+__version__ = 20231115
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
