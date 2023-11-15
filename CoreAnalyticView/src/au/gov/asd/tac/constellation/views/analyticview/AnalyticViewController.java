@@ -234,10 +234,9 @@ public class AnalyticViewController {
      * 
      * @param graph 
      */
-    public void deactivateResultUpdates(final Graph graph) {
-        final AnalyticViewPane pane = parent.createContent();   
+    public void deactivateResultUpdates(final Graph graph) {  
         try {
-            PluginExecution.withPlugin(new AnalyticDeactivateStateChangesPlugin(pane)).executeLater(graph).get();
+            PluginExecution.withPlugin(new AnalyticDeactivateStateChangesPlugin()).executeLater(graph).get();
         } catch (final InterruptedException ex) {
             LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             Thread.currentThread().interrupt();
@@ -253,7 +252,7 @@ public class AnalyticViewController {
      * being selected
      */
     public void updateState(final boolean pluginWasSelected, final ListView<AnalyticConfigurationPane.SelectableAnalyticPlugin> pluginList) {
-        final AnalyticViewPane pane = parent.createContent();
+        final AnalyticViewPane pane = getParent().createContent();
         final String currentCategory = pane.getConfigurationPane().getCategoryList().getSelectionModel().getSelectedItem();
 
         if (pluginWasSelected) {

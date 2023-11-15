@@ -24,8 +24,6 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
-import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewPane;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import java.util.Map;
 
@@ -38,15 +36,13 @@ import java.util.Map;
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
 public class AnalyticDeactivateStateChangesPlugin extends SimpleEditPlugin {
 
-    private final AnalyticViewPane pane;
     
-    public AnalyticDeactivateStateChangesPlugin(final AnalyticViewPane pane) {
-        this.pane = pane;
+    public AnalyticDeactivateStateChangesPlugin() {
     }
     
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        if (graph == null || pane == null) {
+        if (graph == null) {
             return;
         }
 
