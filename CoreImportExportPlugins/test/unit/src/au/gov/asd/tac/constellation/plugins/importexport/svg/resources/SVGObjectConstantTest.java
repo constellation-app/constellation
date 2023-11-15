@@ -1,0 +1,70 @@
+/*
+* Copyright 2010-2023 Australian Signals Directorate
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+ */
+package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
+
+import au.gov.asd.tac.constellation.utilities.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+/**
+ *
+ * @author capricornunicorn123
+ */
+public class SVGObjectConstantTest {
+    
+    public SVGObjectConstantTest() {
+    }
+    
+    @BeforeClass
+    public static void setUpClass() {
+    }
+    
+    @AfterClass
+    public static void tearDownClass() {
+    }
+    
+    @Before
+    public void setUp() {
+    }
+    
+    @After
+    public void tearDown() {
+    }
+
+    /**
+     * Test of findIn(), removeFrom(), of class SVGObjectConstant.
+     */
+    @Test
+    public void testFindIn() {
+        
+        final SVGObject obj1 = new SVGObject(new SVGData("svg", null, null));
+        final SVGObject obj2 = new SVGObject(new SVGData("svg", null, null));
+        obj1.setID("parent");
+                
+        for (SVGObjectConstant constant : SVGObjectConstant.values()){
+            obj2.setID(constant.idValue);
+            obj2.setParent(obj1);
+            assertEquals(constant.findIn(obj1).toSVGData().toString(), obj2.toSVGData().toString());
+            constant.removeFrom(obj1);
+            assertNull(constant.findIn(obj1));   
+        }
+    }
+}

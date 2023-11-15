@@ -36,18 +36,7 @@ import org.testng.Assert;
 public class SVGObjectTest {
     final String typeSVG = "svg";
     
-    final SVGData svgDataBlank1;
-    final SVGObject svgObjectBlank1;
-    final SVGObject svgObjectBlank2;
-    final SVGObject svgObjectBlank3;
-    final SVGObject svgObjectBlank4;
-    
     public SVGObjectTest() { 
-        svgDataBlank1 = new SVGData(typeSVG, null, null);
-        svgObjectBlank1 = new SVGObject(svgDataBlank1);
-        svgObjectBlank2 = new SVGObject(new SVGData(typeSVG, null, null));
-        svgObjectBlank3 = new SVGObject(new SVGData(typeSVG, null, null));
-        svgObjectBlank4 = new SVGObject(new SVGData(typeSVG, null, null));
     }
     
     @BeforeClass
@@ -73,6 +62,12 @@ public class SVGObjectTest {
     @Test
     public void testGetSetRemoveParentChild() {
         System.out.println("setParent");
+        
+        final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
+        final SVGObject svgObjectBlank2 = new SVGObject(new SVGData(typeSVG, null, null));
+        final SVGObject svgObjectBlank3 = new SVGObject(new SVGData(typeSVG, null, null));
+        final SVGObject svgObjectBlank4 = new SVGObject(new SVGData(typeSVG, null, null));
+
         
         //Set object IDs
         String id1 = "blank1";
@@ -158,7 +153,10 @@ public class SVGObjectTest {
     @Test(expectedExceptions=ArrayIndexOutOfBoundsException.class)
     public void testSetParentError() throws ArrayIndexOutOfBoundsException {
         System.out.println("setID");
-        
+        final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
+        final SVGObject svgObjectBlank2 = new SVGObject(new SVGData(typeSVG, null, null));
+        final SVGObject svgObjectBlank3 = new SVGObject(new SVGData(typeSVG, null, null));
+
         String id1 = "blank1";
         String id2 = "blank2";
         
@@ -180,6 +178,7 @@ public class SVGObjectTest {
     public void testSetContent() {
         System.out.println("setContent");
         
+        final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
         final String content = "This is some defualt content";
         assertNull(svgObjectBlank1.toSVGData().getContent());
         svgObjectBlank1.setContent(content);
@@ -192,6 +191,9 @@ public class SVGObjectTest {
     @Test
     public void testGetSetID() {
         System.out.println("setID");
+
+        final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
+
         
         String idString = "blank1";
         Integer idInteger = 123;
@@ -218,6 +220,10 @@ public class SVGObjectTest {
     @Test
     public void testGetSetDimensions() {     
         System.out.println("getHeight");
+
+        final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
+
+    
         float height = 256F;
         float width = 128F;
         Assert.assertEquals(0.0F, svgObjectBlank1.getHeight());
@@ -226,7 +232,7 @@ public class SVGObjectTest {
         Assert.assertEquals(height, svgObjectBlank1.getHeight());  
         Assert.assertEquals(width, svgObjectBlank1.getWidth());  
         
-        //TOTO - setDimensionScale() Tests
+        //TODO - setDimensionScale() Tests
     }
 
     /**
@@ -235,6 +241,9 @@ public class SVGObjectTest {
     @Test
     public void testGetSetPosition() {
         System.out.println("getXPosition");
+
+        final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
+    
         float defaultValue = 0.0F;
         float xF = 256F;
         float yF = 128F;
@@ -284,6 +293,10 @@ public class SVGObjectTest {
     @Test
     public void testToSVGData() {
         System.out.println("toSVGData");
+        
+        final SVGData svgDataBlank1 = new SVGData(typeSVG, null, null);
+        final SVGObject svgObjectBlank1 = new SVGObject(svgDataBlank1);
+
         assertEquals(svgObjectBlank1.toSVGData(), svgDataBlank1);
     }
 
@@ -319,13 +332,6 @@ public class SVGObjectTest {
         //TODO
     }
 
-    /**
-     * Test of setSortOrderValue(), of class SVGObject.
-     */
-    @Test
-    public void testSetSortOrderValue() {
-        //TODO
-    }
 
     /**
      * Test of setPoints(), of class SVGObject.

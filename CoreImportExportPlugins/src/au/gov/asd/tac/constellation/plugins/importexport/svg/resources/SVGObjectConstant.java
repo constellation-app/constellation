@@ -52,7 +52,7 @@ public enum SVGObjectConstant {
     TITLE("title"),
     TOP_LABELS("top-labels");
 
-    private final String idValue;
+    protected final String idValue;
 
     private SVGObjectConstant(final String idValue) {
         this.idValue = idValue;
