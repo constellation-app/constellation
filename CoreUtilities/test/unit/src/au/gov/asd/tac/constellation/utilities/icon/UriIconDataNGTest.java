@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.icon;
 import au.gov.asd.tac.constellation.utilities.https.HttpsConnection;
 import au.gov.asd.tac.constellation.utilities.https.HttpsUtilities;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
@@ -241,5 +242,27 @@ public class UriIconDataNGTest {
         final InputStream result = instance.createRasterInputStream();
 
         assertEquals(result, expResult);
+    }
+    
+    /**
+     * Test of createVectorInputStream method, of class UriIconData, when the String
+ constructor is invoked.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test(expectedExceptions=UnsupportedOperationException.class)
+    public void testCreateVectorInputStream() throws UnsupportedOperationException, Exception {
+        System.out.println("testCreateVectorInputStream");
+        
+        when(uriMock.isAbsolute()).thenReturn(true);
+        when(uriMock.getScheme()).thenReturn("HTTPS");
+        when(uriMock.toURL()).thenReturn(urlMock);
+
+        final UriIconData instance = new UriIconData(uriMock);
+
+        httpsConnectionStaticMock.when(() -> HttpsConnection.withUrl(Mockito.any(String.class))).thenReturn(httpsConnectionMock);
+        when(httpsConnectionMock.get()).thenThrow(fileNotFoundExceptionMock);
+        
+        instance.createVectorInputStream();
     }
 }
