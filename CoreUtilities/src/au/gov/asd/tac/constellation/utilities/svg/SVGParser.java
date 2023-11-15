@@ -71,16 +71,12 @@ public class SVGParser {
                 final boolean closeTag = SVGParser.isCloseTag(svgElement);
 
                 // This parser curently requires all lines within an SVG tag as it does not support multi line tags.
-                if (!openTag && !closeTag) {
-                    //If a header tag is found, it is ignored.
-                    if (!SVGParser.isHeaderTag(svgElement)) {
-                        throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
-                    }
+                if (!openTag && !closeTag && !SVGParser.isHeaderTag(svgElement)) {
+                    throw new IllegalStateException(String.format("This line could not be interpreted: %s", svgElement));
                 }
 
                 // Create a new SVGData with the current SVGData as the parent 
                 if (openTag) {
-
                     SVGData newObject = new SVGData(
                             SVGParser.getElementType(svgElement), 
                             currentElement, 
@@ -194,9 +190,7 @@ public class SVGParser {
             svgElements.add(potentialElement);
             foundElements++;
         }
-        if (foundElements > 1) {
-            throw new UnsupportedOperationException("Found multiple SVG Elements");
-        } else if (foundElements < 1) {
+        if (foundElements < 1) {
             return null;
         } else {
             return svgElements.get(0);

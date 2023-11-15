@@ -53,17 +53,17 @@ public class SVGParserTest {
     }
     
     /**
-     * Test of parse method, of class SVGParser.
+     * Test of parse(), of class SVGParser.
      * @throws java.lang.Exception
      * @throws java.io.IOException
      */
     @Test(expectedExceptions=IOException.class)
-    public void testParseIOException() throws Exception, IOException {
+    public void testParseException() throws Exception, IOException {
         SVGParser.parse(null);
     }
     
     /**
-     * Test of parse method, of class SVGParser.
+     * Test of parse(), of class SVGParser.
      * @throws java.lang.Exception
      */
     @Test
@@ -76,10 +76,10 @@ public class SVGParserTest {
     }
     
     /**
-     * Test of parse method, of class SVGParser.
+     * Test of parse(), of class SVGParser.
      * @throws java.lang.Exception
      */
-        @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions=IllegalStateException.class)
     public void testParseInvalidFile() throws Exception, IllegalStateException{
         //Ensure loading template file with invalid lines fails
         TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_INVALID_JSON;
@@ -88,10 +88,10 @@ public class SVGParserTest {
     }
     
     /**
-     * Test of parse method, of class SVGParser.
+     * Test of parse(), of class SVGParser.
      * @throws java.lang.Exception
      */
-        @Test(expectedExceptions=IllegalStateException.class)
+    @Test(expectedExceptions=IllegalStateException.class)
     public void testParseMultipleRoots() throws Exception, IllegalStateException{
         //Ensure loading template file with multiple roots fails
         TestingSVGFile template = TestingSVGFile.TESTING_TEMPLATE_INVALID_MULTI_ROOT;
@@ -100,7 +100,7 @@ public class SVGParserTest {
     }
 
     /**
-     * Test of sanitisePlanText method, of class SVGParser.
+     * Test of sanitisePlanText(), of class SVGParser.
      */
     @Test
     public void testSanitisePlanText() {

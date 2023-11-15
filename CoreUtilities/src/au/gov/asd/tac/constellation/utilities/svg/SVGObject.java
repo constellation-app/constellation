@@ -61,7 +61,12 @@ public class SVGObject {
     }
     
     public SVGObject getParent() {
-        return new SVGObject(this.svgDataReference.getParent());
+        SVGData parent = this.svgDataReference.getParent();
+        if (parent == null){
+            return null;
+        } else {
+            return new SVGObject(this.svgDataReference.getParent());
+        }
     }
     
     /**
@@ -185,7 +190,7 @@ public class SVGObject {
         String attribute = getAttributeString(attributeKey);
         try {
             return Float.parseFloat(attribute);
-        } catch (final NumberFormatException ex) {
+        } catch (final NumberFormatException | NullPointerException e) {
             return null; 
         }
     } 

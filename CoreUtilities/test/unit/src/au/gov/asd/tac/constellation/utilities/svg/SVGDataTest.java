@@ -20,7 +20,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
+import org.testng.annotations.Test;
 import static org.junit.Assert.*;
 
 /**
@@ -29,232 +29,256 @@ import static org.junit.Assert.*;
  * @author capricornunicorn123
  */
 public class SVGDataTest {
+
+        SVGData svgObjectBlank1;
+        SVGData svgObjectBlank2;
+        SVGData svgObjectBlank3;
+        SVGData svgObjectBlank4;
+
         final String typeRect = "rect";
-        final String typeCircle = "circle";
         final String typeSVG = "svg";
         
-        final String id1 = "a";
-        final String id2 = "b";
-        final String id3 = "c";
-        final String id4 = "d";
-        final String id5 = "e";
         
-        final String x1 = "32";
-        final String x2 = "64";
-        final String y1 = "128";
-        final String y2 = "256";
-        
-        final String color1 = "#ffffff";
-        final String color2 = "#000000";
-        
-        final SVGData dataSVG1;
-        final SVGData dataSVG2;
-        final SVGData dataSVG3;
-        final SVGData dataSVG4;
-        final SVGData dataRect;
-        final SVGData dataCircle;
-        
-        final String dataSVG4String = String.format("\n<svg id=\"%s\" x=\"%s\" y=\"%s\" fill=\"%s\" />", id1, x1, y1, color1);
-        
-        
-    public SVGDataTest() {
-        
-        dataSVG1 = new SVGData(typeSVG, null, null);
-        dataSVG2 = new SVGData(typeSVG, null, null);
-        dataSVG3 = new SVGData(typeSVG, null, null);
-        dataSVG4 = new SVGData(typeSVG, null, null);
-        dataRect = new SVGData(typeRect, null, null);
-        dataCircle = new SVGData(typeCircle, null, null);       
+    public SVGDataTest() {    
+
     }
     
     @BeforeClass
     public static void setUpClass() {
-
     }
     
     @AfterClass
     public static void tearDownClass() {
-        
     }
     
     @Before
     public void setUp() {
-        dataSVG1.setAttribute(SVGAttributeConstant.ID, id1);
-        dataSVG2.setAttribute(SVGAttributeConstant.ID, id2);
-        dataSVG3.setAttribute(SVGAttributeConstant.ID, id3);
-        dataCircle.setAttribute(SVGAttributeConstant.ID, id4);
-        dataRect.setAttribute(SVGAttributeConstant.ID, id5);
-        
-        dataSVG2.setParent(dataSVG1);
-        dataSVG3.setParent(dataSVG2);
-        dataRect.setParent(dataSVG2);
-        dataCircle.setParent(dataSVG2);
-        
-        dataSVG4.setAttribute(SVGAttributeConstant.ID, id1);
-        dataSVG4.setAttribute(SVGAttributeConstant.X, x1);
-        dataSVG4.setAttribute(SVGAttributeConstant.Y, y1);
-        dataSVG4.setAttribute(SVGAttributeConstant.FILL_COLOR, color1);
-        
-        dataSVG1.setAttribute(SVGAttributeConstant.X, x2);
-        dataSVG1.setAttribute(SVGAttributeConstant.Y, y2);
-        dataSVG1.setAttribute(SVGAttributeConstant.STROKE_COLOR, color2);
-
-    }
+    }        
     
     @After
     public void tearDown() {
     }
 
     /**
-     * Test of getType method, of class SVGData.
+     * Test of getType(), of class SVGData.
      */
     @Test
     public void testGetType() {
         System.out.println("getType");
+        svgObjectBlank1 = new SVGData(typeSVG, null, null);
+        svgObjectBlank4 = new SVGData(typeRect, null, null);  
         
-        assertEquals(typeSVG, dataSVG1.getType());
-        assertEquals(typeRect, dataRect.getType());
-
+        assertEquals(typeSVG, svgObjectBlank1.getType());
+        assertEquals(typeRect, svgObjectBlank4.getType());
+    }
+    
+    /**
+     * Test of getType(), of class SVGData.
+     */
+    @Test(expectedExceptions=NullPointerException.class)
+    public void testSetType() throws NullPointerException {
+        System.out.println("setType");
+        SVGData badObject = new SVGData(null, null, null);
     }
 
     /**
-     * Test of getChild method, of class SVGData.
+     * Test of getChild(), setChild(), removeChild(), getAllChildren(), customSortOrder() of class SVGData.
      */
     @Test
-    public void testGetChild() {
-        System.out.println("getChild");
+    public void testGetSetChildParent() {
+        System.out.println("getSetChildParent");
         
-        // Test retriving a child 1 level below the element.
-        assertEquals(dataSVG1.getChild(id2), dataSVG2);
+        //Set object IDs
+        String id1 = "blank1";
+        String id2 = "blank2";
+        String id3 = "blank3";
+        String id4 = "blank4";
         
-        // Test retriving a child 2 levels below the element.
-        assertEquals(dataSVG1.getChild(id3), dataSVG3);
+        svgObjectBlank1 = new SVGData(typeSVG, null, null);
+        svgObjectBlank2 = new SVGData(typeSVG, null, null);
+        svgObjectBlank3 = new SVGData(typeRect, null, null);
+        svgObjectBlank4 = new SVGData(typeRect, null, null);  
         
-        // Test retriving a non existant child.
-        assertNull(dataSVG2.getChild(id1));
-    }
-
-    /**
-     * Test of removeChild method, of class SVGData.
-     */
-    @Test
-    public void testRemoveChild() {
-        System.out.println("removeChild");
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.ID,id1);
+        svgObjectBlank2.setAttribute(SVGAttributeConstant.ID,id2);
+        svgObjectBlank3.setAttribute(SVGAttributeConstant.ID,id3);
+        svgObjectBlank4.setAttribute(SVGAttributeConstant.ID,id4);
         
-        // Test retreiving child 2 levels below the element.
-        assertEquals(dataSVG1.getChild(id3), dataSVG3);
+        //Ensure Objects have no parent by default
+        assertNull(svgObjectBlank1.getParent());
+        assertTrue(svgObjectBlank1.getAllChildren().isEmpty());
+        assertNull(svgObjectBlank2.getParent());
+        assertTrue(svgObjectBlank2.getAllChildren().isEmpty());
+        assertNull(svgObjectBlank3.getParent());
+        assertTrue(svgObjectBlank3.getAllChildren().isEmpty());
+        
+        //Set Parent Child Relationship - svgObjectBlank1(svgObjectBlank2(svgObjectBlank3))
+        svgObjectBlank2.setParent(svgObjectBlank1);
+        svgObjectBlank3.setParent(svgObjectBlank2);
+        
+        //Test the parent child relationship structure has been correctly created
+        assertNull(svgObjectBlank1.getParent());
+        assertEquals(svgObjectBlank1.getChild(id2),svgObjectBlank2);
+        assertTrue(svgObjectBlank1.getAllChildren().size() == 1);
+        assertEquals(svgObjectBlank2.getParent(), svgObjectBlank1);
+        assertEquals(svgObjectBlank2.getChild(id3),svgObjectBlank3);
+        assertTrue(svgObjectBlank2.getAllChildren().size() == 1);
+        assertEquals(svgObjectBlank3.getParent(), svgObjectBlank2);
+        assertTrue(svgObjectBlank3.getAllChildren().isEmpty());
+        
+        // Test getting a child 2 levels down 
+        assertEquals(svgObjectBlank1.getChild(id3), svgObjectBlank3);
         
         // Test removing a child 2 level below the element.
-        dataSVG1.removeChild(id3);
-        assertNull(dataSVG1.getChild(id3));
+        svgObjectBlank1.removeChild(id3);
+        assertNull(svgObjectBlank1.getParent());
+        assertEquals(svgObjectBlank1.getChild(id2), svgObjectBlank2);
+        assertTrue(svgObjectBlank1.getAllChildren().size() == 1);
+        assertEquals(svgObjectBlank2.getParent(), svgObjectBlank1);
+        assertNull(svgObjectBlank2.getChild(id3));
+        assertTrue(svgObjectBlank2.getAllChildren().isEmpty());
+        assertNull(svgObjectBlank3.getParent());
+        assertTrue(svgObjectBlank3.getAllChildren().isEmpty());
         
-        // Test retriving a child 1 level below the element.
-        assertEquals(dataSVG1.getChild(id2), dataSVG2);
+        // Test remove a child 1 levels below the element
+        svgObjectBlank1.removeChild(id2);
+        assertNull(svgObjectBlank1.getParent());
+        assertNull(svgObjectBlank1.getChild(id2));
+        assertTrue(svgObjectBlank1.getAllChildren().isEmpty());
+        assertNull(svgObjectBlank2.getParent());
+        assertTrue(svgObjectBlank2.getAllChildren().isEmpty());
         
-        // Test removing a child 1 level below the element.
-        dataSVG1.removeChild(id2);
-        assertNull(dataSVG1.getChild(id2));    
-
+        // Set Parent Child Relationship - svgObjectBlank1(svgObjectBlank2, svgObjectBlank3)
+        svgObjectBlank2.setParent(svgObjectBlank1);
+        svgObjectBlank3.setParent(svgObjectBlank1);
+                
+        //Test the parent child relationship structure has been correctly created
+        assertNull(svgObjectBlank1.getParent());
+        assertEquals(svgObjectBlank1.getChild(id2), svgObjectBlank2);
+        assertTrue(svgObjectBlank1.getAllChildren().size() == 2);
+        assertEquals(svgObjectBlank2.getParent(), svgObjectBlank1);
+        assertTrue(svgObjectBlank2.getAllChildren().isEmpty());
+        assertEquals(svgObjectBlank3.getParent(), svgObjectBlank1);
+        assertTrue(svgObjectBlank3.getAllChildren().isEmpty());
+             
+        // Set Parent Child Relationship - svgObjectBlank1(svgObjectBlank2, svgObjectBlank3, svgObjectBlank4)
+        svgObjectBlank4.setParent(svgObjectBlank1);
+        
+        // Test getAllChildren with a custom sort order.
+        svgObjectBlank4.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "1");
+        svgObjectBlank3.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "3");
+        svgObjectBlank2.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "2");
+        List<SVGData> children = svgObjectBlank1.getAllChildren();
+        assertEquals(children.get(2), svgObjectBlank4);
+        assertEquals(children.get(1), svgObjectBlank2);
+        assertEquals(children.get(0), svgObjectBlank3);
     }
 
     /**
-     * Test of getAllChildren method, of class SVGData.
+     * Test of setAttribute(), getAttribute(), of class SVGData.
      */
     @Test
-    public void testGetAllChildren() {
-        System.out.println("getAllChildren");
-        
-        assertTrue(dataSVG1.getAllChildren().contains(dataSVG2));
-        assertTrue(dataSVG2.getAllChildren().contains(dataRect));
-        assertEquals(3, dataSVG2.getAllChildren().size());
-        assertTrue(dataRect.getAllChildren().isEmpty());
-        
-        dataSVG3.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "1");
-        dataRect.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "3");
-        dataCircle.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "2");
-        
-        List<SVGData> children = dataSVG2.getAllChildren();
-        
-        assertEquals(children.get(2), dataSVG3);
-        assertEquals(children.get(1), dataCircle);
-        assertEquals(children.get(0), dataRect);
-    }
-
-    /**
-     * Test of setParent method, of class SVGData.
-     */
-    @Test
-    public void testSetParent() {
-        System.out.println("setParent");
-        testGetSetParent();
-    }
-
-    /**
-     * Test of getParent method, of class SVGData.
-     */
-    @Test
-    public void testGetParent() {
-        System.out.println("getParent");
-        testGetSetParent();
-
-    }
-
-    /**
-     * Test of setAttribute method, of class SVGData.
-     */
-    @Test
-    public void testSetAttribute() {
+    public void testGetSetAttribute() {
         System.out.println("setAttribute");
-        testGetSetAttribute();
+        
+        svgObjectBlank1 = new SVGData(typeSVG, null, null);
+        
+        final String width = "64";
+        final String color = "#ff00ff";
+        final String x = "256";
+        final String viewbox = "0, 0, 256, 256";
+        final String dashArray = "10 20 10";
+        final String sortOrder = "4"; 
+        
+        //Test attribute values present in attribute map 
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.WIDTH.getName()));
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.X.getName()));
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.FILL_COLOR.getName()));
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.WIDTH, width);
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.X, x);
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.FILL_COLOR, color);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.WIDTH.getName()), width);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.X.getName()), x);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.FILL_COLOR.getName()), color);
+        
+        //Test attribute values not present in attribute map 
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()));
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.DASH_ARRAY.getName()));
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName()));
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.VIEW_BOX, viewbox);
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.DASH_ARRAY, dashArray);
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, sortOrder);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()), viewbox);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.DASH_ARRAY.getName()), dashArray);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName()), sortOrder);
     }
 
     /**
-     * Test of getAttributeValue method, of class SVGData.
+     * Test of setContent(), of class SVGData.
      */
     @Test
-    public void testGetAttributeValue() {
-        System.out.println("getAttributeValue");
-        testGetSetAttribute();
-    }
-
-    /**
-     * Test of setContent method, of class SVGData.
-     */
-    @Test
-    public void testSetContent() {
+    public void testGetSetContent() {
         System.out.println("setContent");
-        testGetSetContent();
+        
+        svgObjectBlank1 = new SVGData(typeSVG, null, null); 
+        
+        final String content = "This is some default content";
+        assertNull(svgObjectBlank1.getContent());
+        svgObjectBlank1.setContent(content);
+        assertEquals(svgObjectBlank1.getContent(), content);
         
     }
 
     /**
-     * Test of getContent method, of class SVGData.
+     * Test of toString(), cleanAttributes(), method, of class SVGData.
      */
     @Test
-    public void testGetContent() {
-        System.out.println("getContent");
-        testGetSetContent();
+    public void testPresentation() {
+        System.out.println("toString");
         
-    }
-
-    /**
-     * Test of toString method, of class SVGData.
-     */
-    @Test
-    public void testToString() {
-        System.out.println("toString");
-        assertEquals(dataSVG4String, dataSVG4.toString());
-    }
-
-    /**
-     * Test of cleanAttributes method, of class SVGData.
-     */
-    @Test
-    public void testCleanAttributes() {
-        System.out.println("cleanAttributes");
-        dataSVG4.setAttribute(SVGAttributeConstant.FILTER, null);
-        System.out.println("toString");
-        assertEquals(dataSVG4String, dataSVG4.toString());
+        svgObjectBlank1 = new SVGData(typeSVG, null, null);
+        svgObjectBlank4 = new SVGData(typeRect, null, null);  
+        
+        final String parentID = "parent";
+        final String childID = "child";
+        final String x = "64";
+        final String y = "32";
+        final String width = "128";     
+        final String height = "256";  
+        final String content = "Some Conent";
+        final String viewBox = "0 0 256 256";      
+        final String expectedString = String.format(""
+                + "\n<%s %s=\"%s\" %s=\"%s\" %s=\"%s\" %s=\"%s\" %s=\"%s\" %s=\"%s\">\n"
+                + "\t<%s %s=\"%s\">%s\n"
+                + "\t</%s>\n"
+                + "</%s>",
+                typeSVG,
+                SVGAttributeConstant.ID.getName(), parentID,
+                SVGAttributeConstant.X.getName(), x,
+                SVGAttributeConstant.Y.getName(), y,
+                SVGAttributeConstant.WIDTH.getName(), width,
+                SVGAttributeConstant.HEIGHT.getName(), height,
+                SVGAttributeConstant.VIEW_BOX.getName(), viewBox,
+                typeRect,
+                SVGAttributeConstant.ID.getName(), childID,
+                content,
+                typeRect,
+                typeSVG
+                );
+        //Set attributes and contnet in a random order.
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.Y, y);
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.HEIGHT, height);
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.VIEW_BOX, viewBox);
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.ID, parentID);
+        
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.WIDTH, width);
+        svgObjectBlank1.setAttribute(SVGAttributeConstant.X, x);
+        
+        svgObjectBlank4.setAttribute(SVGAttributeConstant.ID, childID);
+        svgObjectBlank4.setContent(content);
+        svgObjectBlank4.setParent(svgObjectBlank1);
+        
+        assertEquals(svgObjectBlank1.toString(), expectedString);
 
     }
 
@@ -266,31 +290,5 @@ public class SVGDataTest {
         SVGData loadedData = SVGData.loadFromTemplate(TestingSVGFile.TESTING_TEMPLATE_COMPLIANT);
         assertNotNull(loadedData);
         CommonTests.testLoadedData(loadedData);
-    }
-    
-    private void testGetSetContent() {
-        final String content = "1";
-        assertNull(dataSVG1.getContent());
-        dataSVG1.setContent(content);
-        assertEquals(dataSVG1.getContent(), content);
-    }
-
-    private void testGetSetAttribute() {
-        assertNull(dataSVG1.getAttributeValue(SVGAttributeConstant.WIDTH.getName()));
-        assertNull(dataSVG1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()));
-        
-        dataSVG1.setAttribute(SVGAttributeConstant.WIDTH, "42");
-        dataSVG1.setAttribute(SVGAttributeConstant.VIEW_BOX, "0, 0, 256, 256");
- 
-        assertEquals(dataSVG1.getAttributeValue(SVGAttributeConstant.WIDTH.getName()), "42");
-        assertEquals(dataSVG1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()), "0, 0, 256, 256");
-    }
-
-    private void testGetSetParent() {
-        assertNull(dataSVG4.getParent());
-        dataSVG4.setParent(dataSVG1);
-        assertEquals(dataSVG4.getParent(), dataSVG1);
-        assertTrue(dataSVG1.getAllChildren().contains(dataSVG4));
-    }
-    
+    }    
 }

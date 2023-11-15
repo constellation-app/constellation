@@ -46,6 +46,9 @@ public class SVGData {
     private SVGData parent;
 
     public SVGData(final String type, final SVGData parent, final Map<String, String> attributes) {
+        if (type == null){
+            throw new NullPointerException("SVGData elements cannot have a type Null");
+        }
         this.type = type;
         this.children = new LinkedHashMap<>();
         this.attributes = SVGAttributeConstant.initialiseBasicAttributes();
@@ -100,17 +103,27 @@ public class SVGData {
      * @param idValue 
      * @return child
      */
-    public SVGData removeChild(final String idValue) {
+    public SVGData removeChild(final String idValue) {   
+        //Try and remove the child from this SVGObjects set fo children.
         SVGData child = this.children.remove(idValue);
+        
+        //If the child wasnt removed, recursively itterate through levels of children untill the id is found.
         if (child == null) {
             for (SVGData childIndex : this.getAllChildren()) {
                 child = childIndex.removeChild(idValue);
+
+                //Break out of te search once the ID is found.
                 if (child != null) {
-                    return child;
+                    break;
                 }
             }
         }
-        return null;
+        
+        // If a child was ound sever the childs reference to the parent.
+        if (child != null){
+            child.setParent(null);
+        }
+        return child;
     }
     
     /**
@@ -137,10 +150,19 @@ public class SVGData {
      * @param parent
      */
     public final void setParent(final SVGData parent) {
-        this.parent = parent;
-        if (this.parent != null) {
-            this.parent.setChild(this);
+        final String idAttributeName = SVGAttributeConstant.ID.getName(); 
+        
+        if (parent != null) {            
+            if (parent.getChild(this.getAttributeValue(idAttributeName)) != null){
+                throw new ArrayIndexOutOfBoundsException(String.format("Parent SVGData %s already has a child of id %s", 
+                        parent.getAttributeValue(idAttributeName), 
+                        this.getAttributeValue(idAttributeName)
+                ));
+            }
+            parent.setChild(this);
         }
+        
+        this.parent = parent;
     }
     
     /**
