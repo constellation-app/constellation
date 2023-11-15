@@ -226,7 +226,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
 
         Platform.runLater(() -> {
             if (topComponents != null) {
-                topComponents.forEach(component -> {
+                topComponents.forEach(component -> 
                     allGraphs.values().forEach(graph -> {
                         if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
                             try {
@@ -241,8 +241,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                             }
                         }
-                    });
-                });
+                    }));
             }
         });
         analyticViewPane.reset();

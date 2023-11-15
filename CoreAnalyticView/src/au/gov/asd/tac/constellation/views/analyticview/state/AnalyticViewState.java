@@ -41,7 +41,7 @@ public class AnalyticViewState {
     private boolean resultsVisible;
     private boolean categoriesVisible;
     private AnalyticQuestionDescription<?> currentQuestion;
-    private AnalyticQuestion question;
+    private AnalyticQuestion<?> question;
     private String activeCategory;
     private HashMap<GraphVisualisation, Boolean> graphVisualisations;
 
@@ -78,7 +78,7 @@ public class AnalyticViewState {
 
     public AnalyticViewState(final int currentQuestionIndex, final List<AnalyticQuestionDescription<?>> activeQuestions,
             final List<List<SelectableAnalyticPlugin>> activePlugins, final AnalyticResult<?> result, final AnalyticQuestionDescription<?> currentQuestion,
-            final AnalyticQuestion question, final String activeCategory, final boolean resultsVisible, final boolean categoriesVisible, 
+            final AnalyticQuestion<?> question, final String activeCategory, final boolean resultsVisible, final boolean categoriesVisible, 
             final Map<GraphVisualisation, Boolean> graphVisualisations) {
         this.currentAnalyticQuestionIndex = currentQuestionIndex;
         this.activeAnalyticQuestions = activeQuestions;
@@ -108,11 +108,11 @@ public class AnalyticViewState {
         this.activeCategory = activeCategory;
     }
 
-    public AnalyticQuestion getQuestion() {
+    public AnalyticQuestion<?> getQuestion() {
         return question;
     }
 
-    public void setQuestion(final AnalyticQuestion question) {
+    public void setQuestion(final AnalyticQuestion<?> question) {
         this.question = question;
     }
 

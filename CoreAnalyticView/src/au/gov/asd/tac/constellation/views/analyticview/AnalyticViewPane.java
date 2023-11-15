@@ -71,7 +71,6 @@ public class AnalyticViewPane extends BorderPane {
     private final AnalyticConfigurationPane analyticConfigurationPane;
     private final AnalyticResultsPane analyticResultsPane;
     private final AnalyticResult<?> emptyResult = new EmptyResult();
-    private Map<GraphVisualisation, Boolean> graphVisualisations = new HashMap<>();
 
     private static boolean running = false;
     private Thread questionThread = null;
@@ -220,7 +219,7 @@ public class AnalyticViewPane extends BorderPane {
      * button is active.
      */
     public void deactiveResultChanges() {
-        graphVisualisations = AnalyticViewController.getDefault().getGraphVisualisations();
+        final Map<GraphVisualisation, Boolean> graphVisualisations = AnalyticViewController.getDefault().getGraphVisualisations();
         if (graphVisualisations != null && !graphVisualisations.isEmpty()) {
             graphVisualisations.entrySet().forEach(node -> node.getKey().deactivate(node.getValue()));
         }
@@ -258,7 +257,7 @@ public class AnalyticViewPane extends BorderPane {
 
                 if (results != null && resultsVisible && !viewPane.getChildren().contains(analyticResultsPane)) {
                     viewPane.getChildren().add(1, analyticResultsPane);
-                    graphVisualisations = (HashMap) state.getGraphVisualisations();
+                    final Map<GraphVisualisation, Boolean> graphVisualisations = (HashMap) state.getGraphVisualisations();
                     controller.setGraphVisualisations(graphVisualisations);
                     analyticResultsPane.displayResults(question, results, graphVisualisations);
                 }
