@@ -86,8 +86,7 @@ public class SVGGraphBuilder {
     private int[] viewPort;
        
     /**
-    * Wrapper class for a SVGContainer. 
-    * Represents the outer most element of a SVG file.
+    * Builder that generates the the output SVG file.
     * @param svg 
     */
     public SVGGraphBuilder() {

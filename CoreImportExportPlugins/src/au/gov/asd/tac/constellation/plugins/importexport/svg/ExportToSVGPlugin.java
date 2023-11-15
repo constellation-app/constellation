@@ -16,11 +16,7 @@
 package au.gov.asd.tac.constellation.plugins.importexport.svg;
 
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
@@ -42,7 +38,6 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
-import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
