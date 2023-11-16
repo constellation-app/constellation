@@ -60,7 +60,7 @@ public class QuickSearchUtilities {
     public static String buildSubscriptFromID(final String idData) {
         final StringBuilder subscriptId = new StringBuilder();
         for (int i = 0; i < idData.length(); i++) {
-            char currentChar = idData.charAt(i);
+            final char currentChar = idData.charAt(i);
             switch (currentChar) {
                 case '0':
                     subscriptId.append('\u2080');
@@ -102,7 +102,7 @@ public class QuickSearchUtilities {
     public static String buildIDFromSubscript(final String idSubscriptData) {
         final StringBuilder subscriptId = new StringBuilder();
         for (int i = 0; i < idSubscriptData.length(); i++) {
-            char currentChar = idSubscriptData.charAt(i);
+            final char currentChar = idSubscriptData.charAt(i);
             switch (currentChar) {
                 case '\u2080':
                     subscriptId.append('0');

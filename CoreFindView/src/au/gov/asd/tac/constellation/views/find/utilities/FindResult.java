@@ -33,6 +33,7 @@ import java.util.Objects;
 public class FindResult {
 
     public static final String SEPARATOR = " : ";
+
     private int id;
     private long uid;
     private GraphElementType type;

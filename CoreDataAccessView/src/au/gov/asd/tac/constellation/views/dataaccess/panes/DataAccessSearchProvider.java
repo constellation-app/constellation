@@ -52,7 +52,7 @@ public class DataAccessSearchProvider implements SearchProvider {
         // Locally defined Recent searches will start with a specific unicode left bracket in the search term
         if (text.startsWith(QuickSearchUtilities.LEFT_BRACKET)) {
             final int termEnd = text.length();
-            // A recent DAV plugin search will begin with a (D) character and end with a diamond character
+            // A recent DAV plugin search will begin with a unicode (D) character string
             if (termEnd > 0 && text.startsWith(QuickSearchUtilities.CIRCLED_D)) {
                 final int termPos = text.indexOf(" ") + 1;
                 // Set the recent/previous plugin name to the search term

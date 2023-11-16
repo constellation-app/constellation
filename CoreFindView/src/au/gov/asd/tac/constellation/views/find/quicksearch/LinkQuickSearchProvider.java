@@ -103,7 +103,7 @@ public class LinkQuickSearchProvider implements SearchProvider {
                     if ("".equals(prevSearch)) {
                         response.addResult(new SelectContent(graph, item), displayText);
                     } else if (item.toString().contains(prevSearch) && item.getID() == prevId) {
-                        // Found the exact recent Node search result. Set it and exit immediately
+                        // Found the exact recent Link search result. Set it and exit immediately
                         response.addResult(new SelectContent(graph, item), displayText);
                         return;
                     } else if (item.toString().contains(prevSearch)) {
