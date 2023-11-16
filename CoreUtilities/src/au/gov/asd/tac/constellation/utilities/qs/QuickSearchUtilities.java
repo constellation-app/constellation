@@ -45,6 +45,10 @@ public class QuickSearchUtilities {
     private static final String OB_FULL = "\uff08"; // (
     private static final String CB_FULL = "\uff09"; // )
     
+    private QuickSearchUtilities(){
+        // Should not be instantiated. Should only use the static methods.
+    }
+    
     public static String replaceBrackets(final String source) {
         return source.replace("<", LT_FULL).replace(">", GT_FULL).replace("(", OB_FULL).replace(")", CB_FULL);
     }
@@ -87,6 +91,7 @@ public class QuickSearchUtilities {
                     break;
                 case '9':
                     subscriptId.append('\u2089');
+                    break;
                 default:
                     break;
             }
@@ -128,6 +133,7 @@ public class QuickSearchUtilities {
                     break;
                 case '\u2089':
                     subscriptId.append('9');
+                    break;
                 default:
                     break;
             }
