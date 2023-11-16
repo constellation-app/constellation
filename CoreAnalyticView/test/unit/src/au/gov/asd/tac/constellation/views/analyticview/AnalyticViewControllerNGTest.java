@@ -351,7 +351,7 @@ public class AnalyticViewControllerNGTest {
                 final Graph graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
                 when(graphManager.getActiveGraph()).thenReturn(graph);
                 when(controller.getParent()).thenReturn(topComponent);
-                final AnalyticViewPane pane = mock(AnalyticViewPane.class);
+                final AnalyticViewPane pane = new AnalyticViewPane(controller);
                 when(topComponent.createContent()).thenReturn(pane);
 
                 controller.updateGraphVisualisations(sizeVisualisation, activated);
@@ -361,7 +361,6 @@ public class AnalyticViewControllerNGTest {
 
                 final Map<GraphVisualisation, Boolean> newVisualisations = new HashMap<>();
                 newVisualisations.put(sizeVisualisation, false);
-                final Map<GraphVisualisation, Boolean> controllerVisualisations = controller.getGraphVisualisations();
                 
                 final ReadableGraph rg = graph.getReadableGraph();
                 final int stateAttributeId = AnalyticViewConcept.MetaAttribute.ANALYTIC_VIEW_STATE.get(rg);
@@ -369,7 +368,7 @@ public class AnalyticViewControllerNGTest {
                     final AnalyticViewState currentState = rg.getObjectValue(stateAttributeId, 0);
 
                     final Map<GraphVisualisation, Boolean> visualisations = currentState.getGraphVisualisations();
-                    assertEquals(visualisations, controllerVisualisations);
+                    assertEquals(visualisations, newVisualisations);
                 }
             }
         }
