@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.find.quicksearch;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
+import au.gov.asd.tac.constellation.utilities.qs.QuickSearchUtilities;
 import au.gov.asd.tac.constellation.views.find.utilities.FindResult;
 import au.gov.asd.tac.constellation.views.find.advanced.QuickFindPlugin;
 import au.gov.asd.tac.constellation.views.find.advanced.SelectFindResultsPlugin;
@@ -58,16 +59,16 @@ public class EdgeQuickSearchProvider implements SearchProvider {
         final Graph graph = graphRetriever.getGraph();
 
         if (graph != null) {
-            final String searchRequest = request.getText().replace("\uff1c","<").replace("\uff1e",">").replace("\uff08","(").replace("\uff09",")");
+            final String searchRequest = QuickSearchUtilities.restoreBrackets(request.getText());
             String prevSearch = "";
             int prevId = -1;
             // Locally defined Recent searches will start with a specific unicode left bracket in the search term
-            if (searchRequest.startsWith(FindResult.LEFT_BRACKET)) {
-                final int codePos = searchRequest.indexOf(FindResult.LH_SUB_BRACKET) + FindResult.LH_SUB_BRACKET.length();
-                if (codePos > FindResult.LH_SUB_BRACKET.length() && searchRequest.startsWith(FindResult.CIRCLED_E)) {
+            if (searchRequest.startsWith(QuickSearchUtilities.LEFT_BRACKET)) {
+                final int codePos = searchRequest.indexOf(QuickSearchUtilities.LH_SUB_BRACKET) + QuickSearchUtilities.LH_SUB_BRACKET.length();
+                if (codePos > QuickSearchUtilities.LH_SUB_BRACKET.length() && searchRequest.startsWith(QuickSearchUtilities.CIRCLED_E)) {
                     final int termPos = searchRequest.indexOf(" ") + 1;
-                    prevSearch = searchRequest.substring(termPos, codePos - FindResult.LH_SUB_BRACKET.length()).trim();
-                    final String prevIdText = FindResult.buildIDFromSubscript(searchRequest.substring(codePos, searchRequest.length() - FindResult.RH_SUB_BRACKET.length()));
+                    prevSearch = searchRequest.substring(termPos, codePos - QuickSearchUtilities.LH_SUB_BRACKET.length()).trim();
+                    final String prevIdText = QuickSearchUtilities.buildIDFromSubscript(searchRequest.substring(codePos, searchRequest.length() - QuickSearchUtilities.RH_SUB_BRACKET.length()));
                     prevId = Integer.parseInt(prevIdText);
                     final int attrPos = prevSearch.lastIndexOf(FindResult.SEPARATOR);
                     if (attrPos > -1) {
@@ -97,8 +98,8 @@ public class EdgeQuickSearchProvider implements SearchProvider {
             for (final FindResult item : results) {
                 if (item != null) {
                     // We have a valid result, so report:
-                    final String subscriptId = FindResult.buildSubscriptFromID(Integer.toString(item.getID()));
-                    final String displayText = FindResult.CIRCLED_E + "  " + item.toString().replace("<","\uff1c").replace(">","\uff1e").replace("(" , "\uff08").replace(")", "\uff09") + "   " + FindResult.LH_SUB_BRACKET + subscriptId + FindResult.RH_SUB_BRACKET;
+                    final String subscriptId = QuickSearchUtilities.buildSubscriptFromID(Integer.toString(item.getID()));
+                    final String displayText = QuickSearchUtilities.CIRCLED_E + "  " + QuickSearchUtilities.replaceBrackets(item.toString()) + "   " + QuickSearchUtilities.LH_SUB_BRACKET + subscriptId + QuickSearchUtilities.RH_SUB_BRACKET;
                     if ("".equals(prevSearch)) {
                         response.addResult(new SelectContent(graph, item), displayText);
                     } else if (item.toString().contains(prevSearch) && item.getID() == prevId) {
@@ -114,8 +115,8 @@ public class EdgeQuickSearchProvider implements SearchProvider {
             if (!matchList.isEmpty()) {
                 // should only return 1 result when using the recent search function
                 final FindResult result = matchList.get(0);
-                final String subscriptId = FindResult.buildSubscriptFromID(Integer.toString(result.getID()));
-                final String displayText = FindResult.CIRCLED_E + "  " + result.toString().replace("<","\uff1c").replace(">","\uff1e").replace("(" , "\uff08").replace(")", "\uff09") + "   " + FindResult.LH_SUB_BRACKET + subscriptId + FindResult.RH_SUB_BRACKET;
+                final String subscriptId = QuickSearchUtilities.buildSubscriptFromID(Integer.toString(result.getID()));
+                final String displayText = QuickSearchUtilities.CIRCLED_E + "  " + QuickSearchUtilities.replaceBrackets(result.toString()) + "   " + QuickSearchUtilities.LH_SUB_BRACKET + subscriptId + QuickSearchUtilities.RH_SUB_BRACKET;
                 response.addResult(new SelectContent(graph, result), displayText);
             }
         }

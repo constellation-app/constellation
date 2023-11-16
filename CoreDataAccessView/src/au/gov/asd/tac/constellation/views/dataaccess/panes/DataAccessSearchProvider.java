@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
+import au.gov.asd.tac.constellation.utilities.qs.QuickSearchUtilities;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.ShowDataAccessPluginTask;
@@ -39,23 +40,20 @@ import org.netbeans.spi.quicksearch.SearchResponse;
  */
 public class DataAccessSearchProvider implements SearchProvider {
 
-    public static final String LEFT_BRACKET = "\u276a";
-    public static final String CIRCLED_D = "\u276a\uff24\u276b\u2005";
-
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
         final String text;
         if (request != null && StringUtils.isNotBlank(request.getText())) {
-            text = request.getText().replace("\uff1c","<").replace("\uff1e",">").replace("\uff08","(").replace("\uff09",")");
+            text = QuickSearchUtilities.restoreBrackets(request.getText());
         } else {
             return;
         }
         String prevPluginName = "";
         // Locally defined Recent searches will start with a specific unicode left bracket in the search term
-        if (text.startsWith(LEFT_BRACKET)) {
+        if (text.startsWith(QuickSearchUtilities.LEFT_BRACKET)) {
             final int termEnd = text.length();
             // A recent DAV plugin search will begin with a (D) character and end with a diamond character
-            if (termEnd > 0 && text.startsWith(CIRCLED_D)) {
+            if (termEnd > 0 && text.startsWith(QuickSearchUtilities.CIRCLED_D)) {
                 final int termPos = text.indexOf(" ") + 1;
                 // Set the recent/previous plugin name to the search term
                 prevPluginName = text.substring(termPos, termEnd).trim();
@@ -94,7 +92,7 @@ public class DataAccessSearchProvider implements SearchProvider {
                 .collect(Collectors.toList());
 
         for (final String name : pluginNames) {
-            final String displayName = CIRCLED_D + "  " + name.replace("<","\uff1c").replace(">","\uff1e").replace("(" ,"\uff08").replace(")","\uff09");
+            final String displayName = QuickSearchUtilities.CIRCLED_D + "  " + QuickSearchUtilities.replaceBrackets(name);
             if (!"".equals(prevPluginName) && StringUtils.containsIgnoreCase(name, prevPluginName)) {
                 // Found the recent DAV plugin search result. Set it and exit immediately
                 response.addResult(new ShowDataAccessPluginTask(name), displayName);

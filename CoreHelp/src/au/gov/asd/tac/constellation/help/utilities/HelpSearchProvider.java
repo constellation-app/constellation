@@ -33,9 +33,6 @@ import org.netbeans.spi.quicksearch.SearchResponse;
  */
 public class HelpSearchProvider implements SearchProvider {
 
-    public static final String LEFT_BRACKET = "\u276a";
-    public static final String CIRCLED_H = "\u276a\uff28\u276b\u2005"; // u2b9c u2b9e
-
     /**
      * Collects search results for the quick search
      * Recognise and Process recent HELP searches
@@ -45,19 +42,20 @@ public class HelpSearchProvider implements SearchProvider {
      */
     @Override
     public void evaluate(final SearchRequest request, final SearchResponse response) {
+        final QuickSearchUtils qs = new QuickSearchUtils();
         // Check the request is valid
         final String text;
         if (request != null && StringUtils.isNotBlank(request.getText())) {
-            text = request.getText().replace("\uff1c","<").replace("\uff1e",">").replace("\uff08","(").replace("\uff09",")");
+            text = qs.restoreBrackets(request.getText());
         } else {
             return;
         }
         String prevFileName = "";
         // Locally defined Recent searches will start with a specific unicode left bracket in the search term
-        if (text.startsWith(LEFT_BRACKET)) {
+        if (text.startsWith(QuickSearchUtils.LEFT_BRACKET)) {
             final int termEnd = text.length();
             // A recent HELP search will begin with a (H) character and end with a diamond character
-            if (termEnd > 0 && text.startsWith(CIRCLED_H)) {
+            if (termEnd > 0 && text.startsWith(QuickSearchUtils.CIRCLED_H)) {
                 final int termPos = text.indexOf(" ") + 1;
                 // Convert the search term into a Help file name.
                 prevFileName = text.substring(termPos, termEnd).trim().toLowerCase().replace(" ", "-") + ".md";
@@ -77,9 +75,9 @@ public class HelpSearchProvider implements SearchProvider {
             final String fileName = value.substring(index + 1);
             
             // Create a display name that is easier to search
-            String displayName = fileName.replace("-", " ").replace("<","\uff1c").replace(">","\uff1e").replace("(","\uff08").replace(")","\uff09");
+            String displayName = qs.replaceBrackets(fileName.replace("-", " "));
             final int indexMD = displayName.lastIndexOf(".");
-            displayName = CIRCLED_H + "  " + displayName.substring(0, indexMD);
+            displayName = QuickSearchUtils.CIRCLED_H + "  " + displayName.substring(0, indexMD);
 
             if (fileName.contains(text.toLowerCase()) && "".equals(prevFileName)) {
                 // Display the result and add a runnable for when it is clicked on 
@@ -91,6 +89,30 @@ public class HelpSearchProvider implements SearchProvider {
                 response.addResult(new HelpSearchProviderTask(fileName), displayName);
                 break;
             }
+        }
+    }
+
+    private class QuickSearchUtils {
+        // Cannot import the QuickSearchUtilities class due to cyclic dependency issues,
+        // so the required functions have been put into this stripped down local version of the class.
+        
+        public static final String LEFT_BRACKET = "\u276a"; // bold left parenthesis
+        public static final String RIGHT_BRACKET = "\u276b"; // bold right parenthesis
+        public static final String SMALL_SPACE = "\u2005";
+        public static final String CIRCLED_H = LEFT_BRACKET + "\uff28" + RIGHT_BRACKET + SMALL_SPACE; // (H) - prefix for HELP results
+
+        // Substitution characters for angled brackets and round brackets, used to address a Netbeans issue
+        private static final String LT_FULL = "\uff1c"; // <
+        private static final String GT_FULL = "\uff1e"; // >
+        private static final String OB_FULL = "\uff08"; // (
+        private static final String CB_FULL = "\uff09"; // )
+
+        public String replaceBrackets(final String source) {
+            return source.replace("<", LT_FULL).replace(">", GT_FULL).replace("(", OB_FULL).replace(")", CB_FULL);
+        }
+
+        public String restoreBrackets(final String source) {
+            return source.replace(LT_FULL, "<").replace(GT_FULL, ">").replace(OB_FULL, "(").replace(CB_FULL, ")");
         }
     }
 
