@@ -200,8 +200,17 @@ public class SVGObject {
      * @param height
      */
     private void setHeight(final float height) {
-        this.height = height;
-        this.setAttribute(SVGAttributeConstant.HEIGHT, height);
+        // Get the current height wihtout the local reference. 
+        final float currentWidth = getPositionalData(null, SVGAttributeConstant.HEIGHT);
+        
+        //This evluation will be true if the current height is a percentage so set the width as the viewbox attribute.
+        if (this.height != null && currentWidth != this.height){
+            this.height = height;
+            updateViewBox();
+        } else {
+            this.height = height;
+            this.setAttribute(SVGAttributeConstant.HEIGHT, height);
+        }
     }
     
     public float getHeight() {        
@@ -213,10 +222,20 @@ public class SVGObject {
      * @param width 
      */
     private void setWidth(final float width) {
-        this.width = width;
-        this.setAttribute(SVGAttributeConstant.WIDTH, width);
+        
+        // Get the current width wihtout the local reference. 
+        final float currentWidth = getPositionalData(null, SVGAttributeConstant.WIDTH);
+        
+        //This evluation will be true if the current width is a percentage so set the width as the viewbox attribute.
+        if (this.width != null && currentWidth != this.width){
+            this.width = width;
+            updateViewBox();
+        } else {
+            this.width = width;
+            this.setAttribute(SVGAttributeConstant.WIDTH, width);
+        }
     }
-    
+      
     public float getWidth() {
         return this.getPositionalData(this.width, SVGAttributeConstant.WIDTH);
     }
@@ -392,10 +411,15 @@ public class SVGObject {
      * @param style 
      */
     public void setStrokeStyle(final LineStyle style) {
-        if (style == LineStyle.DOTTED) {
-            this.setStrokeArray(35, 35);
-        } else if (style == LineStyle.DASHED) {
-            this.setStrokeArray(70, 35);
+        if (null != style) switch (style) {
+            case DOTTED:
+                this.setStrokeArray(35, 35);
+                break;
+            case DASHED:
+                this.setStrokeArray(70, 35);
+                break;
+            default:
+                this.svgDataReference.setAttribute(SVGAttributeConstant.DASH_ARRAY, null);
         }
     }
     
@@ -457,7 +481,7 @@ public class SVGObject {
         this.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, sortOrderValue);
     }
 
-    public void applyGrayScaleFileter() {
+    public void applyGrayScaleFilter() {
         this.setAttribute(SVGAttributeConstant.FILTER, "grayscale(1)");
     }
 
@@ -468,4 +492,14 @@ public class SVGObject {
     public void setPoints(final String path) {
         setAttribute(SVGAttributeConstant.POINTS, path);
     }
+    
+    private void updateViewBox() {
+        final float vbx = x == null ? 0F : x;
+        final float vby = y == null ? 0F : y;
+        final float vbw = width == null ? 0F : width;
+        final float vbh = height == null ? 0F : height;
+    
+        this.setAttribute(SVGAttributeConstant.VIEW_BOX, String.format("%s, %s, %s, %S", vbx, vby, vbw, vbh));
+    }
+    
 }

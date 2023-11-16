@@ -361,7 +361,7 @@ public class SVGGraphBuilder {
             // Add dimmed property if dimmed
             // Note, this implementation is not a precice sollution, luminocity to alpha conversion would be better
             if (access.isVertexDimmed(vertexIndex)) {
-                svgImages.applyGrayScaleFileter();
+                svgImages.applyGrayScaleFilter();
             }
             
             interaction.setProgress(progress++, totalSteps, true);

@@ -60,8 +60,8 @@ public class SVGObjectTest {
      * Test of setParent(), getParent(), removeChild(), getAllChildren(), setSortOrderValue() of class SVGObject.
      */
     @Test
-    public void testGetSetRemoveParentChild() {
-        System.out.println("setParent");
+    public void testRelationship() {
+        System.out.println("relationship");
         
         final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
         final SVGObject svgObjectBlank2 = new SVGObject(new SVGData(typeSVG, null, null));
@@ -152,7 +152,7 @@ public class SVGObjectTest {
      */
     @Test(expectedExceptions=ArrayIndexOutOfBoundsException.class)
     public void testSetParentError() throws ArrayIndexOutOfBoundsException {
-        System.out.println("setID");
+        System.out.println("setParentError");
         final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
         final SVGObject svgObjectBlank2 = new SVGObject(new SVGData(typeSVG, null, null));
         final SVGObject svgObjectBlank3 = new SVGObject(new SVGData(typeSVG, null, null));
@@ -190,7 +190,7 @@ public class SVGObjectTest {
      */
     @Test
     public void testGetSetID() {
-        System.out.println("setID");
+        System.out.println("getSetID");
 
         final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
 
@@ -209,30 +209,52 @@ public class SVGObjectTest {
         svgObjectBlank1.setID(idInteger);
         assertEquals(svgObjectBlank1.getID(), idInteger.toString());        
     }
-    
-
-    
-
 
     /**
      * Test of getHeight(), getWidth(), setDimension() setDimensionScale(), of class SVGObject.
      */
     @Test
     public void testGetSetDimensions() {     
-        System.out.println("getHeight");
+        System.out.println("getSetDimensions");
 
         final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
-
     
-        float height = 256F;
-        float width = 128F;
+        final float height = 256F;
+        final float width = 128F;
+        
         Assert.assertEquals(0.0F, svgObjectBlank1.getHeight());
         Assert.assertEquals(0.0F, svgObjectBlank1.getWidth());
         svgObjectBlank1.setDimension(width, height);
         Assert.assertEquals(height, svgObjectBlank1.getHeight());  
-        Assert.assertEquals(width, svgObjectBlank1.getWidth());  
+        Assert.assertEquals(width, svgObjectBlank1.getWidth()); 
+              
+        final String scaleWidth = "50%";
+        final String scaleHeight = "100%";
         
-        //TODO - setDimensionScale() Tests
+        Assert.assertEquals(svgObjectBlank1.toSVGData().getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()), null); 
+        svgObjectBlank1.setDimensionScale(scaleWidth, scaleHeight);
+        Assert.assertEquals(svgObjectBlank1.toSVGData().getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()), String.format("%s, %s, %s, %s", 0.0F, 0.0F, width, height)); 
+        Assert.assertEquals(svgObjectBlank1.toSVGData().getAttributeValue(SVGAttributeConstant.HEIGHT.getName()), scaleHeight); 
+        Assert.assertEquals(svgObjectBlank1.toSVGData().getAttributeValue(SVGAttributeConstant.WIDTH.getName()), scaleWidth); 
+        Assert.assertEquals(svgObjectBlank1.getHeight(), height);
+        Assert.assertEquals(svgObjectBlank1.getWidth(), width);
+        
+        final float alternateWidth = 64F;
+        final float alternateHeight = 32F; 
+        svgObjectBlank1.setDimension(alternateWidth, alternateHeight);
+        Assert.assertEquals(svgObjectBlank1.toSVGData().getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()), String.format("%s, %s, %s, %s", 0.0F, 0.0F, alternateWidth, alternateHeight)); 
+        Assert.assertEquals(svgObjectBlank1.toSVGData().getAttributeValue(SVGAttributeConstant.HEIGHT.getName()), scaleHeight); 
+        Assert.assertEquals(svgObjectBlank1.toSVGData().getAttributeValue(SVGAttributeConstant.WIDTH.getName()), scaleWidth); 
+        Assert.assertEquals(svgObjectBlank1.getHeight(), alternateHeight);
+        Assert.assertEquals(svgObjectBlank1.getWidth(), alternateWidth);
+        
+        svgObjectBlank1.setViewBox(512F, 512F, 512F, 512F);
+        Assert.assertEquals(svgObjectBlank1.getHeight(), alternateHeight);
+        Assert.assertEquals(svgObjectBlank1.getWidth(), alternateWidth);
+        Assert.assertEquals(svgObjectBlank1.getXPosition(), 0F);
+        Assert.assertEquals(svgObjectBlank1.getYPosition(), 0F);
+        Assert.assertEquals(svgObjectBlank1.toSVGData().getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()), String.format("%s, %s, %s, %s", 512F, 512F, 512F, 512F)); 
+        
     }
 
     /**
@@ -240,27 +262,42 @@ public class SVGObjectTest {
      */
     @Test
     public void testGetSetPosition() {
-        System.out.println("getXPosition");
+        System.out.println("getSetPosition");
 
-        final SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
+        SVGObject svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
     
-        float defaultValue = 0.0F;
-        float xF = 256F;
-        float yF = 128F;
+        final float defaultValue = 0F;
+        final float xF = 256F;
+        final float yF = 128F;
         Assert.assertEquals(defaultValue, svgObjectBlank1.getXPosition());
         Assert.assertEquals(defaultValue, svgObjectBlank1.getYPosition());
         svgObjectBlank1.setPosition(xF, yF);
         Assert.assertEquals(xF, svgObjectBlank1.getXPosition());  
         Assert.assertEquals(yF, svgObjectBlank1.getYPosition());
-        svgObjectBlank1.setPosition(defaultValue, defaultValue);
         
-        double xD = 256D;
-        double yD = 128D;
+        
+        final double xD = 256D;
+        final double yD = 128D;
+        svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
         Assert.assertEquals(defaultValue, svgObjectBlank1.getXPosition());
         Assert.assertEquals(defaultValue, svgObjectBlank1.getYPosition());
         svgObjectBlank1.setPosition(xD, yD);
         Assert.assertEquals(xF, svgObjectBlank1.getXPosition());  
         Assert.assertEquals(yF, svgObjectBlank1.getYPosition());  
+        
+        final Vector4f destinationPosition = new Vector4f(32F, 32F, 0F, 0F);
+        final Vector4f sourcePosition = new Vector4f(16F, 64F, 0F, 0F);
+        svgObjectBlank1 = new SVGObject(new SVGData(typeSVG, null, null));
+        Assert.assertEquals(defaultValue, svgObjectBlank1.getXPosition());
+        Assert.assertEquals(defaultValue, svgObjectBlank1.getYPosition());
+        Assert.assertEquals(defaultValue, svgObjectBlank1.getWidth());
+        Assert.assertEquals(defaultValue, svgObjectBlank1.getHeight());
+        svgObjectBlank1.setDestinationPosition(destinationPosition);
+        svgObjectBlank1.setSourcePosition(sourcePosition);
+        Assert.assertEquals(16F, svgObjectBlank1.getXPosition());  
+        Assert.assertEquals(32F, svgObjectBlank1.getYPosition());      
+        Assert.assertEquals(16F, svgObjectBlank1.getWidth());  
+        Assert.assertEquals(32F, svgObjectBlank1.getHeight());  
     }
 
     /**
@@ -268,7 +305,13 @@ public class SVGObjectTest {
      */
     @Test
     public void testFont() {
-        //TODO
+        final SVGObject parent = new SVGObject(new SVGData(typeSVG, null, null));
+   
+        assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstant.FONT_SIZE.getName()));
+        assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstant.BASELINE.getName()));
+        
+        parent.setBaseline("middle");
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.BASELINE.getName()), "middle");
     }
 
     /**
@@ -284,7 +327,24 @@ public class SVGObjectTest {
      */
     @Test
     public void testStroke() {
-        //TODO
+        final SVGObject parent = new SVGObject(new SVGData(typeSVG, null, null));
+ 
+        assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstant.DASH_ARRAY.getName()));
+        parent.setStrokeArray(10F, 20F);
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.DASH_ARRAY.getName()), "10.0 20.0");
+        
+        parent.setStrokeArray(5F, 25F, 30F);
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.DASH_ARRAY.getName()), "5.0 25.0 30.0");
+        
+        parent.setStrokeStyle(LineStyle.SOLID);
+        assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstant.DASH_ARRAY.getName()));
+        
+        parent.setStrokeStyle(LineStyle.DOTTED);
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.DASH_ARRAY.getName()), "35.0 35.0");
+                
+        parent.setStrokeStyle(LineStyle.DASHED);
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.DASH_ARRAY.getName()), "70.0 35.0");
+        
     }
 
     /**
@@ -317,28 +377,51 @@ public class SVGObjectTest {
     }
 
     /**
-     * Test of setViewBox(), of class SVGObject.
-     */
-    @Test
-    public void testSetViewBox() {
-        //TODO
-    }
-
-    /**
-     * Test of saturateSVG(), setFillColor(), setStrokeColor(), applyGrayScaleFileter(), of class SVGObject.
+     * Test of saturateSVG(), setFillColor(), setStrokeColor(), applyGrayScaleFilter(), of class SVGObject.
      */
     @Test
     public void testColor() {
-        //TODO
+        
+        final SVGObject parent = new SVGObject(new SVGData(typeSVG, null, null));
+        final SVGObject child = new SVGObject(new SVGData(typeSVG, null, null));
+        child.setParent(parent);
+        
+        // Enusure no color values have een set
+        assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstant.FILL_COLOR.getName()));
+        assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstant.STROKE_COLOR.getName()));
+        assertNull(child.toSVGData().getAttributeValue(SVGAttributeConstant.FILL_COLOR.getName()));
+        assertNull(child.toSVGData().getAttributeValue(SVGAttributeConstant.STROKE_COLOR.getName()));
+        
+        //Set the stoke and fill of the parent, only parent color should be set
+        parent.setFillColor(ConstellationColor.BLUE);
+        parent.setStrokeColor(ConstellationColor.RED);
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.FILL_COLOR.getName()), ConstellationColor.BLUE.getHtmlColor());
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.STROKE_COLOR.getName()), ConstellationColor.RED.getHtmlColor());
+        assertNull(child.toSVGData().getAttributeValue(SVGAttributeConstant.FILL_COLOR.getName()));
+        assertNull(child.toSVGData().getAttributeValue(SVGAttributeConstant.STROKE_COLOR.getName()));
+        
+        //Saturate the parent, parent and children should be set
+        parent.saturateSVG(ConstellationColor.MELON);
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.FILL_COLOR.getName()), ConstellationColor.MELON.getHtmlColor());
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.STROKE_COLOR.getName()), ConstellationColor.MELON.getHtmlColor());
+        assertEquals(child.toSVGData().getAttributeValue(SVGAttributeConstant.FILL_COLOR.getName()), ConstellationColor.MELON.getHtmlColor());
+        assertEquals(child.toSVGData().getAttributeValue(SVGAttributeConstant.STROKE_COLOR.getName()), ConstellationColor.MELON.getHtmlColor());
+        
+        //Apply a grayscale filter
+        assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstant.FILTER.getName()));
+        parent.applyGrayScaleFilter();
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.FILTER.getName()), "grayscale(1)");
     }
-
 
     /**
      * Test of setPoints(), of class SVGObject.
      */
     @Test
     public void testSetPoints() {
-        //TODO
+        final SVGObject parent = new SVGObject(new SVGData(typeSVG, null, null));
+        assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstant.POINTS.getName()));
+        parent.setPoints("32 64 256 128");
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstant.POINTS.getName()), "32 64 256 128");
     }
    
 }
