@@ -92,7 +92,7 @@ public class HelpSearchProvider implements SearchProvider {
         }
     }
 
-    private class QuickSearchUtils {
+    public class QuickSearchUtils {
         // Cannot import the QuickSearchUtilities class due to cyclic dependency issues,
         // so the required functions have been put into this stripped down local version of the class.
         

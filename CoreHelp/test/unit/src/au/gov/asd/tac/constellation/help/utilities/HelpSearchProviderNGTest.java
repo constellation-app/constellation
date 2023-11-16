@@ -101,12 +101,12 @@ public class HelpSearchProviderNGTest {
         response = mock(SearchResponse.class);
 
         when(request.getText()).thenReturn("help");
-        when(response.addResult(Mockito.any(), Mockito.eq(HelpSearchProvider.CIRCLED_H + "  help options"))).thenReturn(true);
+        when(response.addResult(Mockito.any(), Mockito.eq(HelpSearchProvider.QuickSearchUtils.CIRCLED_H + "  help options"))).thenReturn(true);
 
         HelpSearchProvider instance = new HelpSearchProvider();
         instance.evaluate(request, response);
 
-        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq(HelpSearchProvider.CIRCLED_H + "  help options"));
+        verify(response, times(1)).addResult(Mockito.any(), Mockito.eq(HelpSearchProvider.QuickSearchUtils.CIRCLED_H + "  help options"));
     }
 
 }
