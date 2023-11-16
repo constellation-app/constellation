@@ -350,10 +350,6 @@ public class AnalyticViewControllerNGTest {
                 graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
                 final Graph graph = new DualGraph(SchemaFactoryUtilities.getSchemaFactory(VisualSchemaFactory.VISUAL_SCHEMA_ID).createSchema());
                 when(graphManager.getActiveGraph()).thenReturn(graph);
-                final AnalyticViewTopComponent component = new AnalyticViewTopComponent();
-                when(controller.getParent()).thenReturn(component);
-                final AnalyticViewPane pane = new AnalyticViewPane(controller);
-                when(topComponent.createContent()).thenReturn(pane);
 
                 controller.updateGraphVisualisations(sizeVisualisation, activated);
                 controller.writeState();
