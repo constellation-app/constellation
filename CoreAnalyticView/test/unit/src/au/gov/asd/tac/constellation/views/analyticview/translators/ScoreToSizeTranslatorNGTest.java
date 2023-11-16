@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.views.analyticview.results.ScoreResult;
+import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticTranslatorUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
 import java.util.HashMap;
 import java.util.Map;
@@ -132,33 +133,13 @@ public class ScoreToSizeTranslatorNGTest {
             ScoreResult result = mock(ScoreResult.class);
             instance.setResult(result);
             instance.executePlugin(reset);
-            final boolean vertexSizes = instance.getVertexSizes().isEmpty();
-            final boolean transactionSizes = instance.getTransactionSizes().isEmpty();
+            final boolean vertexSizes = AnalyticTranslatorUtilities.getVertexSizeCache().isEmpty();
+            final boolean transactionSizes = AnalyticTranslatorUtilities.getTransactionSizeCache().isEmpty();
             assertTrue(vertexSizes);
-            assertTrue(transactionSizes);
-            
-
+            assertTrue(transactionSizes);  
+            // TODO: update test to further test the plugin called in executePlugin
         }
-
     }
-    
-    /**
-     * Test of executePlugin method with a reset, of class ScoreToSizeTranslator.
-     */
-//    @Test
-//    public void testExecutePluginWithReset() {
-//        System.out.println("executePlugin");
-//        try (final MockedStatic<GraphManager> graphManagerMockedStatic = Mockito.mockStatic(GraphManager.class)) {
-//            final GraphManager graphManager = spy(GraphManager.class);
-//            graphManagerMockedStatic.when(GraphManager::getDefault).thenReturn(graphManager);
-//            setupGraph();
-//            when(graphManager.getActiveGraph()).thenReturn(graph);
-//
-//            final boolean reset = true;
-//            final ScoreToSizeTranslator instance = new ScoreToSizeTranslator();
-//            instance.executePlugin(reset);
-//        }
-//    }
 
     /**
      * Test of setVertexSizes method, of class ScoreToSizeTranslator.

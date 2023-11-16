@@ -277,10 +277,10 @@ public class AnalyticViewController {
      * Reads the graph's analytic_view_state attribute and populates the Analytic View pane.
      */
     public void readState() {
-        if (parent == null) {
+        if (getParent() == null) {
             return;
         }
-        final AnalyticViewPane pane = parent.createContent();
+        final AnalyticViewPane pane = getParent().createContent();
         final Graph graph = GraphManager.getDefault().getActiveGraph();
         if (pane == null || graph == null) {
             return;
