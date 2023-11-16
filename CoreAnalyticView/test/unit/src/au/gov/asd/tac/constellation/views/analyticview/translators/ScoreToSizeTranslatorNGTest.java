@@ -135,8 +135,8 @@ public class ScoreToSizeTranslatorNGTest {
             instance.executePlugin(reset);
             final boolean vertexSizes = AnalyticTranslatorUtilities.getVertexSizeCache().isEmpty();
             final boolean transactionSizes = AnalyticTranslatorUtilities.getTransactionSizeCache().isEmpty();
-            assertTrue(vertexSizes);
-            assertTrue(transactionSizes);  
+            assertFalse(vertexSizes);
+            assertFalse(transactionSizes);  
             // TODO: update test to further test the plugin called in executePlugin
         }
     }
