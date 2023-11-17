@@ -39,15 +39,15 @@ import java.util.logging.Logger;
 public class SVGData {
 
     private static final Logger LOGGER = Logger.getLogger(SVGData.class.getName());
-    private final String type;
+    private final SVGTypeConstant type;
     private final Map<String, String> attributes;
     private final Map<String, SVGData> children;
     private String content;
     private SVGData parent;
 
-    public SVGData(final String type, final SVGData parent, final Map<String, String> attributes) {
+    public SVGData(final SVGTypeConstant type, final SVGData parent, final Map<String, String> attributes) {
         if (type == null){
-            throw new NullPointerException("SVGData elements cannot have a type Null");
+            throw new IllegalArgumentException("SVGData elements cannot have a type Null");
         }
         this.type = type;
         this.children = new LinkedHashMap<>();
@@ -64,7 +64,7 @@ public class SVGData {
      * @return 
      */
     public final String getType() {
-        return this.type;
+        return this.type.getTypeString();
     }
     
     /**
@@ -272,7 +272,7 @@ public class SVGData {
             }
         });
 
-        return String.format("%s<%s%s />", linePrefix, this.type, attributeBuilder.toString());
+        return String.format("%s<%s%s />", linePrefix, this.getType(), attributeBuilder.toString());
     }
     
     /**
@@ -293,7 +293,7 @@ public class SVGData {
                 attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key)));
             }
         });
-        return String.format("%s<%s%s>", linePrefix, this.type, attributeBuilder.toString());
+        return String.format("%s<%s%s>", linePrefix, this.getType(), attributeBuilder.toString());
     }
     
     /**
@@ -304,7 +304,7 @@ public class SVGData {
      */
     private String elementFooterToSVG(final String prefix) {
         final String linePrefix = SeparatorConstants.NEWLINE + (prefix == null ? "" : prefix);
-        return String.format("%s</%s>", linePrefix, this.type);
+        return String.format("%s</%s>", linePrefix, this.getType());
     }
     
     /**

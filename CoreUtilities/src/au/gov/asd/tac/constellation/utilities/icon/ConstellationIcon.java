@@ -15,10 +15,10 @@
  */
 package au.gov.asd.tac.constellation.utilities.icon;
 
-import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstant;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGTypeConstant;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -438,7 +438,7 @@ public class ConstellationIcon {
             final byte[] colorisedRasterData = this.applyColorFilter(rasterData, color);
             final String encodedString = Base64.getEncoder().encodeToString(colorisedRasterData);
             
-            final SVGData rasterImage = new SVGData("image", null, null);
+            final SVGData rasterImage = new SVGData(SVGTypeConstant.IMAGE, null, null);
             rasterImage.setAttribute(SVGAttributeConstant.EXTERNAL_RESOURCE_REFERENCE, String.format("data:image/png;base64,%s", encodedString));
             return rasterImage;
         }

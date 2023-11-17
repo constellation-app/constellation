@@ -30,14 +30,13 @@ import static org.junit.Assert.*;
  */
 public class SVGDataTest {
 
-        SVGData svgObjectBlank1;
-        SVGData svgObjectBlank2;
-        SVGData svgObjectBlank3;
-        SVGData svgObjectBlank4;
+    SVGData svgObjectBlank1;
+    SVGData svgObjectBlank2;
+    SVGData svgObjectBlank3;
+    SVGData svgObjectBlank4;
 
-        final String typeRect = "rect";
-        final String typeSVG = "svg";
-        
+    final SVGTypeConstant typeRect = SVGTypeConstant.RECT;
+    final SVGTypeConstant typeSVG = SVGTypeConstant.SVG;
         
     public SVGDataTest() {    
 
@@ -75,8 +74,8 @@ public class SVGDataTest {
     /**
      * Test of getType(), of class SVGData.
      */
-    @Test(expectedExceptions=NullPointerException.class)
-    public void testSetType() throws NullPointerException {
+    @Test(expectedExceptions=IllegalArgumentException.class)
+    public void testSetType() throws IllegalArgumentException {
         System.out.println("setType");
         SVGData badObject = new SVGData(null, null, null);
     }

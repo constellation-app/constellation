@@ -91,7 +91,7 @@ public enum SVGAttributeConstant {
         map.put(SVGAttributeConstant.HEIGHT.getName(), null);
         map.put(SVGAttributeConstant.RADIUS.getName(), null);
 
-        //StyleData
+        //Style Data
         map.put(SVGAttributeConstant.FONT_SIZE.getName(), null);
         map.put(SVGAttributeConstant.FILL_COLOR.getName(), null);
         map.put(SVGAttributeConstant.STROKE_COLOR.getName(), null);

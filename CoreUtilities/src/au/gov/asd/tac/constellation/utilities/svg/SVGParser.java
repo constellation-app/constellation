@@ -147,8 +147,9 @@ public class SVGParser {
      * @param svgString
      * @return 
      */
-    private static String getElementType(final String svgString) {
-        return svgString.split(SeparatorConstants.BLANKSPACE)[0].replaceAll("<", "").replaceAll(">", "");
+    private static SVGTypeConstant getElementType(final String svgString) {
+        final String typeString = svgString.split(SeparatorConstants.BLANKSPACE)[0].replaceAll("<", "").replaceAll(">", "");
+        return SVGTypeConstant.getType(typeString);
     }
    
     /**

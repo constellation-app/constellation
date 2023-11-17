@@ -34,7 +34,8 @@ import org.testng.Assert;
  * @author capricornunicorn123
  */
 public class SVGObjectTest {
-    final String typeSVG = "svg";
+
+    final SVGTypeConstant typeSVG = SVGTypeConstant.SVG;
     
     public SVGObjectTest() { 
     }

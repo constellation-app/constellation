@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
 
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
+import au.gov.asd.tac.constellation.utilities.svg.SVGTypeConstant;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -54,9 +55,9 @@ public class SVGObjectConstantTest {
      */
     @Test
     public void testFindIn() {
-        
-        final SVGObject obj1 = new SVGObject(new SVGData("svg", null, null));
-        final SVGObject obj2 = new SVGObject(new SVGData("svg", null, null));
+        SVGTypeConstant typeSVG = SVGTypeConstant.SVG;
+        final SVGObject obj1 = new SVGObject(new SVGData(typeSVG, null, null));
+        final SVGObject obj2 = new SVGObject(new SVGData(typeSVG, null, null));
         obj1.setID("parent");
                 
         for (SVGObjectConstant constant : SVGObjectConstant.values()){
