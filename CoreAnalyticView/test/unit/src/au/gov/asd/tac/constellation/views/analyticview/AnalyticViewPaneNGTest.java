@@ -15,15 +15,9 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview;
 
-import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
-import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestionDescription;
-import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
-import au.gov.asd.tac.constellation.views.analyticview.state.AnalyticViewState;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;

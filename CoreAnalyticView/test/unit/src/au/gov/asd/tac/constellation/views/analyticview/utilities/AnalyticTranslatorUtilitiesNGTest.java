@@ -18,7 +18,7 @@ package au.gov.asd.tac.constellation.views.analyticview.utilities;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.HashMap;
 import java.util.Map;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;

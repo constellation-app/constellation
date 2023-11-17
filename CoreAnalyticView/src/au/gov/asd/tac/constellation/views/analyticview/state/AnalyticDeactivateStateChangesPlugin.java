@@ -38,7 +38,6 @@ public class AnalyticDeactivateStateChangesPlugin extends SimpleEditPlugin {
 
     
     public AnalyticDeactivateStateChangesPlugin() {
-        // Empty as no parameters are required for this plugin to run
     }
     
     @Override
