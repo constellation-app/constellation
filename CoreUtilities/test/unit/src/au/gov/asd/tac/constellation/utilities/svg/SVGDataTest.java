@@ -236,6 +236,7 @@ public class SVGDataTest {
         System.out.println("toString");
         
         svgObjectBlank1 = new SVGData(typeSVG, null, null);
+        svgObjectBlank2 = new SVGData(typeSVG, null, null);
         svgObjectBlank4 = new SVGData(typeRect, null, null);  
         
         final String parentID = "parent";
@@ -248,6 +249,7 @@ public class SVGDataTest {
         final String viewBox = "0 0 256 256";      
         final String expectedString = String.format(""
                 + "\n<%s %s=\"%s\" %s=\"%s\" %s=\"%s\" %s=\"%s\" %s=\"%s\" %s=\"%s\">\n"
+                + "\t<%s %s=\"%s\" />\n"
                 + "\t<%s %s=\"%s\">%s\n"
                 + "\t</%s>\n"
                 + "</%s>",
@@ -258,12 +260,15 @@ public class SVGDataTest {
                 SVGAttributeConstant.WIDTH.getName(), width,
                 SVGAttributeConstant.HEIGHT.getName(), height,
                 SVGAttributeConstant.VIEW_BOX.getName(), viewBox,
+                typeSVG.getTypeString(),
+                SVGAttributeConstant.WIDTH.getName(), width,
                 typeRect.getTypeString(),
                 SVGAttributeConstant.ID.getName(), childID,
                 content,
                 typeRect.getTypeString(),
                 typeSVG.getTypeString()
                 );
+        
         //Set attributes and contnet in a random order.
         svgObjectBlank1.setAttribute(SVGAttributeConstant.Y, y);
         svgObjectBlank1.setAttribute(SVGAttributeConstant.HEIGHT, height);
@@ -275,7 +280,10 @@ public class SVGDataTest {
         
         svgObjectBlank4.setAttribute(SVGAttributeConstant.ID, childID);
         svgObjectBlank4.setContent(content);
+        svgObjectBlank2.setParent(svgObjectBlank1);
         svgObjectBlank4.setParent(svgObjectBlank1);
+        
+        svgObjectBlank2.setAttribute(SVGAttributeConstant.WIDTH, width);
         
         assertEquals(svgObjectBlank1.toString(), expectedString);
 
