@@ -18,21 +18,22 @@ package au.gov.asd.tac.constellation.utilities.svg;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.junit.Assert.*;
 
 /**
  * Tests for {@link SVGParser}
  * 
  * @author capricornunicorn123
  */
-public class SVGParserTest {
+public class SVGParserNGTest {
        
-    public SVGParserTest() {
+    public SVGParserNGTest() {
         
     }
     
@@ -44,11 +45,11 @@ public class SVGParserTest {
     public static void tearDownClass() {
     }
     
-    @Before
+    @BeforeMethod
     public void setUp() {
     }
     
-    @After
+    @AfterMethod
     public void tearDown() {
     }
     

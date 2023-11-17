@@ -16,19 +16,23 @@
 package au.gov.asd.tac.constellation.utilities.svg;
 
 import java.util.List;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-import static org.junit.Assert.*;
+
 
 /**
  * Tests for {@link SVGData}
  * 
  * @author capricornunicorn123
  */
-public class SVGDataTest {
+public class SVGDataNGTest {
 
     SVGData svgObjectBlank1;
     SVGData svgObjectBlank2;
@@ -38,7 +42,7 @@ public class SVGDataTest {
     final SVGTypeConstant typeRect = SVGTypeConstant.RECT;
     final SVGTypeConstant typeSVG = SVGTypeConstant.SVG;
         
-    public SVGDataTest() {    
+    public SVGDataNGTest() {    
 
     }
     
@@ -50,11 +54,11 @@ public class SVGDataTest {
     public static void tearDownClass() {
     }
     
-    @Before
+    @BeforeMethod
     public void setUp() {
     }        
     
-    @After
+    @AfterMethod
     public void tearDown() {
     }
 

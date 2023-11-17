@@ -15,7 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.svg;
 
-import static org.junit.Assert.*;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Common testing methods for svg utility classes
