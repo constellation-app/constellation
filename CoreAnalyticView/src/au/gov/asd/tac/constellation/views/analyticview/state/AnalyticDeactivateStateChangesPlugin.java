@@ -35,10 +35,6 @@ import java.util.Map;
  */
 @PluginInfo(pluginType = PluginType.UPDATE, tags = {PluginTags.LOW_LEVEL, PluginTags.MODIFY})
 public class AnalyticDeactivateStateChangesPlugin extends SimpleEditPlugin {
-
-    
-    public AnalyticDeactivateStateChangesPlugin() {
-    }
     
     @Override
     protected void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
