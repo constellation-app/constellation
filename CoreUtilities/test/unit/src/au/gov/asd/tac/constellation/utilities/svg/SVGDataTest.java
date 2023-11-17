@@ -251,18 +251,18 @@ public class SVGDataTest {
                 + "\t<%s %s=\"%s\">%s\n"
                 + "\t</%s>\n"
                 + "</%s>",
-                typeSVG.toString(),
+                typeSVG.getTypeString(),
                 SVGAttributeConstant.ID.getName(), parentID,
                 SVGAttributeConstant.X.getName(), x,
                 SVGAttributeConstant.Y.getName(), y,
                 SVGAttributeConstant.WIDTH.getName(), width,
                 SVGAttributeConstant.HEIGHT.getName(), height,
                 SVGAttributeConstant.VIEW_BOX.getName(), viewBox,
-                typeRect.toString(),
+                typeRect.getTypeString(),
                 SVGAttributeConstant.ID.getName(), childID,
                 content,
-                typeRect.toString(),
-                typeSVG.toString()
+                typeRect.getTypeString(),
+                typeSVG.getTypeString()
                 );
         //Set attributes and contnet in a random order.
         svgObjectBlank1.setAttribute(SVGAttributeConstant.Y, y);
