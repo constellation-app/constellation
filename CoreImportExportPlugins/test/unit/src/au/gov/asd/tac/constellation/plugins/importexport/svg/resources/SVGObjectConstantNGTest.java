@@ -28,6 +28,7 @@ import org.testng.annotations.Test;
 
 /**
  * Tests for {@link SVGobjectConstant}
+ * 
  * @author capricornunicorn123
  */
 public class SVGObjectConstantNGTest {
