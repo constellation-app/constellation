@@ -67,8 +67,8 @@ public class SVGDataTest {
         svgObjectBlank1 = new SVGData(typeSVG, null, null);
         svgObjectBlank4 = new SVGData(typeRect, null, null);  
         
-        assertEquals(typeSVG, svgObjectBlank1.getType());
-        assertEquals(typeRect, svgObjectBlank4.getType());
+        assertEquals(typeSVG.getTypeString(), svgObjectBlank1.getType());
+        assertEquals(typeRect.getTypeString(), svgObjectBlank4.getType());
     }
     
     /**
