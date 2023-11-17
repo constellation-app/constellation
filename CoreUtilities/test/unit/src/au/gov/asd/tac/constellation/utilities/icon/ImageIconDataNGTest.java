@@ -15,7 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.icon;
 
-import java.io.ByteArrayInputStream;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import static org.testng.Assert.*;
@@ -26,12 +26,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- *
+ * Test for {@link ImageIconData} 
  * @author capricornunicorn123
  */
-public class ByteIconDataNGTest {
+public class ImageIconDataNGTest {
     
-    public ByteIconDataNGTest() {
+    public ImageIconDataNGTest() {
     }
 
     @BeforeClass
@@ -51,27 +51,14 @@ public class ByteIconDataNGTest {
     }
 
     /**
-     * Test of createRasterInputStream method, of class ByteIconData.
-     * @throws java.io.IOException
-     */
-    @Test
-    public void testCreateRasterInputStream() throws IOException {
-        final byte[] b = new byte[] {(byte)0xe0};
-        ByteArrayInputStream bais = new ByteArrayInputStream(b);
-        ByteIconData bid = new ByteIconData(b);
-        InputStream is = bid.createRasterInputStream();
-        assertEquals(bais.readAllBytes(),is.readAllBytes());
-    }
-
-    /**
-     * Test of createVectorInputStream method, of class ByteIconData.
+     * Test of createVectorInputStream method, of class ImageIconData.
      * @throws java.io.IOException
      */
     @Test(expectedExceptions=UnsupportedOperationException.class)
     public void testCreateVectorInputStream() throws IOException {
-        final byte[] b = new byte[] {(byte)0xe0};
-        ByteIconData bid = new ByteIconData(b);
-        bid.createVectorInputStream();
+         final BufferedImage bi = new BufferedImage(1, 1, 1);
+        ImageIconData iid = new ImageIconData(bi);
+        iid.createVectorInputStream();
     }
     
 }
