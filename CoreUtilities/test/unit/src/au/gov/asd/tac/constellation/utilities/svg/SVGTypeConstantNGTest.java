@@ -13,10 +13,9 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
  */
-package au.gov.asd.tac.constellation.utilities.icon;
+package au.gov.asd.tac.constellation.utilities.svg;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -24,12 +23,12 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test for {@link ImageIconData} 
+ *
  * @author capricornunicorn123
  */
-public class ImageIconDataNGTest {
+public class SVGTypeConstantNGTest {
     
-    public ImageIconDataNGTest() {
+    public SVGTypeConstantNGTest() {
     }
 
     @BeforeClass
@@ -49,14 +48,13 @@ public class ImageIconDataNGTest {
     }
 
     /**
-     * Test of createVectorInputStream method, of class ImageIconData.
-     * @throws java.io.IOException
+     * Test of getTypeString(), getType(), of class SVGTypeConstant.
      */
-    @Test(expectedExceptions=UnsupportedOperationException.class)
-    public void testCreateVectorInputStream() throws IOException {
-        final BufferedImage bi = new BufferedImage(1, 1, 1);
-        ImageIconData iid = new ImageIconData(bi);
-        iid.createVectorInputStream();
-    }
-    
+    @Test
+    public void testGetTypeString() {
+        for (SVGTypeConstant constant : SVGTypeConstant.values()){
+            assertEquals(SVGTypeConstant.getType(constant.getTypeString()), constant);
+        }
+        assertNull(SVGTypeConstant.getType(null));
+    }    
 }

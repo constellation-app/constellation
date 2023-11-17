@@ -97,9 +97,11 @@ public enum SVGTypeConstant {
     }
     
     public static SVGTypeConstant getType(final String name){
-        for (SVGTypeConstant constant : SVGTypeConstant.values()){
-            if (name.equals(constant.getTypeString())){
-                return constant;
+        if (name != null) {
+            for (SVGTypeConstant constant : SVGTypeConstant.values()){
+                if (name.equals(constant.getTypeString())){
+                    return constant;
+                }
             }
         }
         return null;
