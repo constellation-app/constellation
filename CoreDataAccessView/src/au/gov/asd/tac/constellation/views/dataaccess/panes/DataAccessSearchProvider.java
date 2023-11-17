@@ -80,7 +80,7 @@ public class DataAccessSearchProvider implements SearchProvider {
 
         plugins.entrySet().forEach(entry -> unorderedPlugins.put(entry.getKey(), entry.getValue().getValue()));
 
-        final String comparisonText = "".equals(prevPluginName) ? text : prevPluginName;
+        final String comparisonText = prevPluginName.isEmpty() ? text : prevPluginName;
         // Find all matching plugin names
         final List<String> pluginNames = unorderedPlugins.values().stream()
                 // Flatten everything to a single stream of plugins
@@ -93,7 +93,7 @@ public class DataAccessSearchProvider implements SearchProvider {
 
         for (final String name : pluginNames) {
             final String displayName = QuickSearchUtilities.CIRCLED_D + "  " + QuickSearchUtilities.replaceBrackets(name);
-            if (!"".equals(prevPluginName) && StringUtils.containsIgnoreCase(name, prevPluginName)) {
+            if (!prevPluginName.isEmpty() && StringUtils.containsIgnoreCase(name, prevPluginName)) {
                 // Found the recent DAV plugin search result. Set it and exit immediately
                 response.addResult(new ShowDataAccessPluginTask(name), displayName);
                 return;

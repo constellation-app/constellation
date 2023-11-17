@@ -84,7 +84,7 @@ public class HelpSearchProvider implements SearchProvider {
                 if (!response.addResult(new HelpSearchProviderTask(fileName), displayName)) {
                     return;
                 }
-            } else if (!StringUtils.isBlank(prevFileName) && fileName.contains(prevFileName)){
+            } else if (StringUtils.isNotBlank(prevFileName) && fileName.contains(prevFileName)){
                 // Found the recent Help search result. Set it and exit immediately
                 response.addResult(new HelpSearchProviderTask(fileName), displayName);
                 break;

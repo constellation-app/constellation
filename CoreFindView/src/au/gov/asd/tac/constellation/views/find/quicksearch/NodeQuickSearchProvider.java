@@ -80,7 +80,7 @@ public class NodeQuickSearchProvider implements SearchProvider {
                     return;
                 }
             }            
-            final String convertedSearch = !"".equals(prevSearch) ? prevSearch : searchRequest;
+            final String convertedSearch = !prevSearch.isEmpty() ? prevSearch : searchRequest;
             final QuickFindPlugin plugin = new QuickFindPlugin(GraphElementType.VERTEX, convertedSearch);
             final Future<?> future = PluginExecution.withPlugin(plugin).interactively(true).executeLater(graph);
 
@@ -101,7 +101,7 @@ public class NodeQuickSearchProvider implements SearchProvider {
                     // We have a valid result, so report:
                     final String subscriptId = QuickSearchUtilities.buildSubscriptFromID(Integer.toString(item.getID()));
                     final String displayText = QuickSearchUtilities.CIRCLED_N + "  " + QuickSearchUtilities.replaceBrackets(item.toString()) + "   " + QuickSearchUtilities.LH_SUB_BRACKET + subscriptId + QuickSearchUtilities.RH_SUB_BRACKET;
-                    if ("".equals(prevSearch)) {
+                    if (prevSearch.isEmpty()) {
                         response.addResult(new SelectContent(graph, item), displayText);
                     } else if (item.toString().contains(prevSearch) && item.getID() == prevId) {
                         // Found the exact recent Node search result. Set it and exit immediately

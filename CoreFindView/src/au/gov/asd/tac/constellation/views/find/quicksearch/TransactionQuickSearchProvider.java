@@ -80,7 +80,7 @@ public class TransactionQuickSearchProvider implements SearchProvider {
                     return;
                 }
             }
-            final String convertedSearch = !"".equals(prevSearch) ? prevSearch : searchRequest;
+            final String convertedSearch = !prevSearch.isEmpty() ? prevSearch : searchRequest;
             final QuickFindPlugin plugin = new QuickFindPlugin(GraphElementType.TRANSACTION, convertedSearch);
             final Future<?> future = PluginExecution.withPlugin(plugin).interactively(true).executeLater(graph);
 
@@ -101,7 +101,7 @@ public class TransactionQuickSearchProvider implements SearchProvider {
                     // We have a valid result, so report:
                     final String subscriptId = QuickSearchUtilities.buildSubscriptFromID(Integer.toString(item.getID()));
                     final String displayText = QuickSearchUtilities.CIRCLED_T + "  " + QuickSearchUtilities.replaceBrackets(item.toString()) + "   " + QuickSearchUtilities.LH_SUB_BRACKET + subscriptId + QuickSearchUtilities.RH_SUB_BRACKET;
-                    if ("".equals(prevSearch)) {
+                    if (prevSearch.isEmpty()) {
                         response.addResult(new SelectContent(graph, item), displayText);
                     } else if (item.toString().contains(prevSearch) && item.getID() == prevId) {
                         // Found the recent Transaction search result. Set it and exit immediately
@@ -117,7 +117,7 @@ public class TransactionQuickSearchProvider implements SearchProvider {
                 // should only return 1 result when using the recent search function
                 final FindResult result = matchList.get(0);
                 final String subscriptId = QuickSearchUtilities.buildSubscriptFromID(Integer.toString(result.getID()));
-                String displayText = QuickSearchUtilities.CIRCLED_T + "  " + QuickSearchUtilities.replaceBrackets(result.toString()) + "   " + QuickSearchUtilities.LH_SUB_BRACKET + subscriptId + QuickSearchUtilities.RH_SUB_BRACKET;
+                final String displayText = QuickSearchUtilities.CIRCLED_T + "  " + QuickSearchUtilities.replaceBrackets(result.toString()) + "   " + QuickSearchUtilities.LH_SUB_BRACKET + subscriptId + QuickSearchUtilities.RH_SUB_BRACKET;
                 response.addResult(new SelectContent(graph, result), displayText);                
             }
         }

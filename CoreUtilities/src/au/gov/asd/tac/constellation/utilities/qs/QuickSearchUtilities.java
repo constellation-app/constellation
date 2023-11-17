@@ -47,6 +47,7 @@ public class QuickSearchUtilities {
     
     private QuickSearchUtilities(){
         // Should not be instantiated. Should only use the static methods.
+        throw new IllegalStateException("Utility Class");
     }
     
     public static String replaceBrackets(final String source) {
