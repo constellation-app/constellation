@@ -164,6 +164,8 @@
                 <package>au.gov.asd.tac.constellation.utilities.memory</package>
                 <package>au.gov.asd.tac.constellation.utilities.nifi</package>
                 <package>au.gov.asd.tac.constellation.utilities.nifi.rest</package>
+                <package>au.gov.asd.tac.constellation.utilities.qs</package>
+                <package>au.gov.asd.tac.constellation.utilities.query</package>
                 <package>au.gov.asd.tac.constellation.utilities.rest</package>
                 <package>au.gov.asd.tac.constellation.utilities.sql</package>
                 <package>au.gov.asd.tac.constellation.utilities.stream</package>

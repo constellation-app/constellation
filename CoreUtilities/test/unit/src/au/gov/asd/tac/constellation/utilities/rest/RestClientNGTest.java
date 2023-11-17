@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.rest;
 
 import au.gov.asd.tac.constellation.utilities.datastructure.Tuple;
+import au.gov.asd.tac.constellation.utilities.log.ConnectionLogging;
+import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URL;
@@ -24,8 +26,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.net.ssl.HttpsURLConnection;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -273,6 +279,51 @@ public class RestClientNGTest {
         // checks it can be called
     }
     
+    /**
+     * Test to confirm that the request and response data is sent to 
+     * the Logger when the Connection Logging option has been enabled.
+     * 
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testConnectionLogging() throws Exception {
+        System.out.println("testConnectionLogging");
+
+        final MockedStatic<LogPreferences> logPrefs = Mockito.mockStatic(LogPreferences.class);
+        logPrefs.when(LogPreferences::isConnectionLoggingEnabled).thenReturn(true);        
+        final MockedStatic<ConnectionLogging> conLoggingStatic = Mockito.mockStatic(ConnectionLogging.class);
+        final ConnectionLogging conLogging = Mockito.mock(ConnectionLogging.class);
+        conLoggingStatic.when(ConnectionLogging::getInstance).thenReturn(conLogging);
+        final StringBuilder outputLog = new StringBuilder();
+        final Answer testAnswer = new Answer(){
+            @Override
+            public Object answer(final InvocationOnMock iom) throws Throwable {
+                outputLog.append(iom.getArgument(1).toString()).append("\n");
+                return null;
+            }            
+        };
+        doAnswer(testAnswer).when(conLogging).log(Mockito.any(), Mockito.anyString(), Mockito.any());
+        
+        final String url = "SAMPLE URL";
+        final List<Tuple<String, String>> params = new ArrayList<>();
+        params.add(new Tuple<>("AAA", "BBB"));
+        params.add(new Tuple<>(null, "CCC"));
+        params.add(new Tuple<>(" ", "DDD"));
+        final String requestBody = "Message Body: Sample Bytes From String";
+        final byte[] requestBytes = requestBody.getBytes();
+        final Map<String, List<String>> headerFields = new HashMap<>();
+        headerFields.put("hdr1", new ArrayList<>());
+        final String responseMessage = "Mocked Response";
+        final RestClientImpl instance = new RestClientImpl(200, responseMessage, headerFields);
+        outputStreamString = new StringBuilder();
+        instance.postWithBytes(url, params, requestBytes);
+
+        // Check that the request body has been sent to the log file
+        assertTrue(outputLog.toString().contains(requestBody));
+        // Check that the response message has been sent to the log file
+        assertTrue(outputLog.toString().contains(responseMessage));
+    }
+        
     /**
      * Implementation of a Rest implementation of a REST client for testing
      * purposes which makes use of Mockito to mock the actual connection.

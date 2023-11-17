@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,7 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of BooleanParameterType.
      */
-    public static PluginParameter<BooleanParameterValue> build(String id) {
+    public static PluginParameter<BooleanParameterValue> build(final String id) {
         return new PluginParameter<>(new BooleanParameterValue(), INSTANCE, id);
     }
 
@@ -72,7 +72,7 @@ public class BooleanParameterType extends PluginParameterType<BooleanParameterVa
      * the parameter being constructed.
      * @return A {@link PluginParameter} of BooleanParameterType.
      */
-    public static PluginParameter<BooleanParameterValue> build(String id, final BooleanParameterValue pv) {
+    public static PluginParameter<BooleanParameterValue> build(final String id, final BooleanParameterValue pv) {
         return new PluginParameter<>(pv, INSTANCE, id);
     }
 
