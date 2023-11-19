@@ -50,6 +50,7 @@ public final class SpellChecker {
     private final JLanguageTool langTool;
     private Popup popup;
     private boolean turnOffSpellChecking = false;
+    private static final Logger LOGGER = Logger.getLogger(SpellChecker.class.getName());
 
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
         textArea = spellCheckingTextArea;
@@ -78,17 +79,17 @@ public final class SpellChecker {
     public void checkSpelling() {
         textArea.clearStyles();
         misspells.clear();
-        if (!turnOffSpellChecking && !StringUtils.isBlank(textArea.getText())) {
+        if (!turnOffSpellChecking && StringUtils.isNotBlank(textArea.getText())) {
             try {
                 matches = langTool.check(textArea.getText());
-            } catch (IOException ex) {
-                Logger.getLogger(SpellChecker.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
 
             matches.forEach(match -> {
                 final int start = match.getFromPos();
                 final int end = match.getToPos();
-                String misspell = textArea.getText().substring(start, end);
+                final String misspell = textArea.getText().substring(start, end);
                 misspells.add(misspell);
                 textArea.highlightText(start, end);
             });
@@ -140,9 +141,9 @@ public final class SpellChecker {
             return false;
         }
 
-        for (RuleMatch match : matches) {
-            int start = match.getFromPos();
-            int end = match.getToPos();
+        for (final RuleMatch match : matches) {
+            final int start = match.getFromPos();
+            final int end = match.getToPos();
             if (cursorIndex >= start && cursorIndex <= end) {
                 misspelledTextUnderCursor = textArea.getText().substring(start, end);
                 currentIndex = misspells.indexOf(misspelledTextUnderCursor);
@@ -152,7 +153,7 @@ public final class SpellChecker {
         return false;
     }
 
-    public void turnOffSpellChecking(boolean turnOffSpellChecking) {
+    public void turnOffSpellChecking(final boolean turnOffSpellChecking) {
         this.turnOffSpellChecking = turnOffSpellChecking;
     }
 }

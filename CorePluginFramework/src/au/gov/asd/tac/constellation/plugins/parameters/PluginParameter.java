@@ -76,6 +76,7 @@ public class PluginParameter<V extends ParameterValue> {
     private boolean isSuppressed = false;
     private String requestBodyExample;
     private boolean isRequired = false;
+    private boolean isSpellCheckEnabled = false;
 
     private final List<ParameterChange> suppressedEvents = new ArrayList<>();
 
@@ -797,7 +798,7 @@ public class PluginParameter<V extends ParameterValue> {
 
     /**
      * Get the swagger Request Body Example value.
-     *    
+     *
      */
     public final String getRequestBodyExampleJson() {
         return requestBodyExample;
@@ -830,5 +831,24 @@ public class PluginParameter<V extends ParameterValue> {
      */
     public void setRequired(final boolean isRequired) {
         this.isRequired = isRequired;
+    }
+
+    /**
+     * Does the parameter require spell checking?
+     *
+     * @return True if the parameter requires spell checking, false otherwise.
+     */
+    public boolean isSpellCheckEnabled() {
+        return isSpellCheckEnabled;
+    }
+
+    /**
+     * Set whether the parameter requires spell checking.
+     *
+     * @param isSpellCheckEnabled A boolean indicating whether the parameter
+     * requires spell checking.
+     */
+    public void setSpellCheckEnabled(final boolean isSpellCheckEnabled) {
+        this.isSpellCheckEnabled = isSpellCheckEnabled;
     }
 }

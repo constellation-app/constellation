@@ -73,7 +73,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         });
 
         // Set the right click context menu
-        ContextMenu contextMenu = addRightClickContextMenu();
+        final ContextMenu contextMenu = addRightClickContextMenu();
         this.setContextMenu(contextMenu);
     }
 
@@ -93,7 +93,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * underline and highlight the text from start to end.
      */
     public void highlightText(final int start, final int end) {
-        String underlineAndHighlight = "-rtfx-background-color:derive(yellow,-30%);"
+        final String underlineAndHighlight = "-rtfx-background-color:derive(yellow,-30%);"
                 + "-rtfx-underline-color: red; "
                 + "-rtfx-underline-dash-array: 2 2;"
                 + "-rtfx-underline-width: 2.0;"
@@ -118,17 +118,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     public final void setPromptText(final String promptText) {
         //TODO
     }
-
-//    public void bindAutoCompletion(List<String> suggestions) {
-//        this.setSpellCheckCallback(word -> {
-//            if (!suggestions.isEmpty()) {
-//                return suggestions.stream()
-//                        .filter(suggestion -> suggestion.startsWith(word))
-//                        .toArray(String[]::new);
-//            }
-//            return null;
-//        });
-//    }
 
     /**
      * Prevent highlighting while still typing at the end of a sentence. It

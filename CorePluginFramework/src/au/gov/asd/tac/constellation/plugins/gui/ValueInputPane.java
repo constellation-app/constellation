@@ -170,7 +170,7 @@ public class ValueInputPane extends HBox implements RecentValuesListener {
 
 
             Platform.runLater(() -> {
-                Text t = (Text) field.lookup(".text");
+                final Text t = (Text) field.lookup(".text");
                 if (t != null) {
                     field.setPrefHeight(numberOfLines * t.getBoundsInLocal().getHeight() + field.EXTRA_HEIGHT);
                 }
