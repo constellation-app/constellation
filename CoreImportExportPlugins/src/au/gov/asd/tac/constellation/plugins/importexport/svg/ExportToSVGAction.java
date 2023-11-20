@@ -59,7 +59,7 @@ public final class ExportToSVGAction implements ActionListener {
         //Get the attribute IDs
         final int graphFlagAttributeID = VisualConcept.GraphAttribute.DRAW_FLAGS.get(graph);
         final int graphBackgroundAttributeID = VisualConcept.GraphAttribute.BACKGROUND_COLOR.get(graph);
-        
+
         //Retrive AtttrbuteValues
         final DrawFlags flags = graph.getObjectValue(graphFlagAttributeID, 0);
         final ConstellationColor color = graph.getObjectValue(graphBackgroundAttributeID, 0);

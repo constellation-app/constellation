@@ -298,7 +298,7 @@ public class SVGObjectNGTest {
         svgObjectBlank1.setSourcePosition(sourcePosition);
         Assert.assertEquals(16F, svgObjectBlank1.getXPosition());  
         Assert.assertEquals(32F, svgObjectBlank1.getYPosition());      
-        Assert.assertEquals(16F, svgObjectBlank1.getWidth());  
+        Assert.assertEquals(16F, svgObjectBlank1.getWidth());
         Assert.assertEquals(32F, svgObjectBlank1.getHeight());  
     }
 
