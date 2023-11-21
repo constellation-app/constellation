@@ -36,7 +36,7 @@ import static org.testng.Assert.assertTrue;
  */
 public class SVGObjectNGTest {
 
-    final SVGTypeConstant typeSVG = SVGTypeConstant.SVG;
+    final SVGTypeConstants typeSVG = SVGTypeConstants.SVG;
     
     public SVGObjectNGTest() { 
     }

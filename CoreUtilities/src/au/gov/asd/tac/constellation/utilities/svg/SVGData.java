@@ -38,13 +38,13 @@ import java.util.logging.Logger;
 public class SVGData {
 
     private static final Logger LOGGER = Logger.getLogger(SVGData.class.getName());
-    private final SVGTypeConstant type;
+    private final SVGTypeConstants type;
     private final Map<String, String> attributes;
     private final Map<String, SVGData> children;
     private String content;
     private SVGData parent;
 
-    public SVGData(final SVGTypeConstant type, final SVGData parent, final Map<String, String> attributes) {
+    public SVGData(final SVGTypeConstants type, final SVGData parent, final Map<String, String> attributes) {
         if (type == null){
             throw new IllegalArgumentException("SVGData elements cannot have a type Null");
         }

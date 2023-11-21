@@ -48,13 +48,14 @@ public class SVGTypeConstantNGTest {
     }
 
     /**
-     * Test of getTypeString(), getType(), of class SVGTypeConstant.
+     * Test of getTypeString(), getType(), of class SVGTypeConstants.
      */
     @Test
     public void testGetTypeString() {
-        for (SVGTypeConstant constant : SVGTypeConstant.values()){
-            assertEquals(SVGTypeConstant.getType(constant.getTypeString()), constant);
+        for (SVGTypeConstants constant : SVGTypeConstants.values()){
+            assertEquals(SVGTypeConstants.getType(constant.getTypeString()), constant);
         }
-        assertNull(SVGTypeConstant.getType(null));
+        assertNull(SVGTypeConstants.getType(null));
+        assertNull(SVGTypeConstants.getType("Not A SVG Type"));
     }    
 }

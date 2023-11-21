@@ -39,8 +39,8 @@ public class SVGDataNGTest {
     SVGData svgObjectBlank3;
     SVGData svgObjectBlank4;
 
-    final SVGTypeConstant typeRect = SVGTypeConstant.RECT;
-    final SVGTypeConstant typeSVG = SVGTypeConstant.SVG;
+    final SVGTypeConstants typeRect = SVGTypeConstants.RECT;
+    final SVGTypeConstants typeSVG = SVGTypeConstants.SVG;
         
     public SVGDataNGTest() {    
 

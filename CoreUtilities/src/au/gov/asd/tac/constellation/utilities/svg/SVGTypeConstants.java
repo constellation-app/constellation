@@ -19,7 +19,7 @@ package au.gov.asd.tac.constellation.utilities.svg;
  *
  * @author capricornunicorn123
  */
-public enum SVGTypeConstant {
+public enum SVGTypeConstants {
     A("a"),
     ANIMATE("animate"),
     ANIMATEMOTION("animateMotion"),
@@ -88,7 +88,7 @@ public enum SVGTypeConstant {
 
     private final String name; 
 
-    private SVGTypeConstant(final String type){
+    private SVGTypeConstants(final String type){
         this.name = type;
     }
 
@@ -96,9 +96,9 @@ public enum SVGTypeConstant {
         return this.name;
     }
     
-    public static SVGTypeConstant getType(final String name){
+    public static SVGTypeConstants getType(final String name){
         if (name != null) {
-            for (SVGTypeConstant constant : SVGTypeConstant.values()){
+            for (SVGTypeConstants constant : SVGTypeConstants.values()){
                 if (name.equals(constant.getTypeString())){
                     return constant;
                 }

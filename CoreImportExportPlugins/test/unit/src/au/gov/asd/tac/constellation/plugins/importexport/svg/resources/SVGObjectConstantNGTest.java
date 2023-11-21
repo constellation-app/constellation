@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
 
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
-import au.gov.asd.tac.constellation.utilities.svg.SVGTypeConstant;
+import au.gov.asd.tac.constellation.utilities.svg.SVGTypeConstants;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
@@ -57,7 +57,7 @@ public class SVGObjectConstantNGTest {
      */
     @Test
     public void testFindIn() {
-        SVGTypeConstant typeSVG = SVGTypeConstant.SVG;
+        SVGTypeConstants typeSVG = SVGTypeConstants.SVG;
         final SVGObject obj1 = new SVGObject(new SVGData(typeSVG, null, null));
         final SVGObject obj2 = new SVGObject(new SVGData(typeSVG, null, null));
         obj1.setID("parent");

@@ -267,7 +267,7 @@ public class ConstellationIconNGTest {
         assertTrue(resultHeight);
         assertTrue(resultWidth);
         assertEquals(Math.round(resultImage.getHeight()), size);
-        assertEquals(Math.round(resultImage.getHeight()), size);
+        assertEquals(Math.round(resultImage.getWidth()), size);
     }
 
     /**
@@ -298,7 +298,7 @@ public class ConstellationIconNGTest {
         assertTrue(resultHeight);
         assertTrue(resultWidth);
         assertEquals(Math.round(result.getHeight()), size);
-        assertEquals(Math.round(result.getHeight()), size);
+        assertEquals(Math.round(result.getWidth()), size);
     }
     
     /**
@@ -327,7 +327,7 @@ public class ConstellationIconNGTest {
         assertTrue(resultHeight);
         assertTrue(resultWidth);
         assertEquals(Math.round(result.getHeight()), size);
-        assertEquals(Math.round(result.getHeight()), size);
+        assertEquals(Math.round(result.getWidth()), size);
     }
 
     /**
@@ -358,7 +358,7 @@ public class ConstellationIconNGTest {
         assertTrue(resultHeight);
         assertTrue(resultWidth);
         assertEquals(Math.round(result.getHeight()), size);
-        assertEquals(Math.round(result.getHeight()), size);
+        assertEquals(Math.round(result.getWidth()), size);
     }
 
     /**
