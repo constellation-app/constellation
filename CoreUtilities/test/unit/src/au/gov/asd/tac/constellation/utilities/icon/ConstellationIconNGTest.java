@@ -16,6 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.icon;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstants;
+import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -39,6 +41,7 @@ import org.testng.annotations.Test;
 public class ConstellationIconNGTest {
 
     private static ConstellationIcon testIcon;
+    private static ConstellationIcon testSVGIcon;
     private final static List<String> aliases = new ArrayList<>();
     private final static List<String> categories = new ArrayList<>();
 
@@ -290,6 +293,66 @@ public class ConstellationIconNGTest {
         final Color color = ConstellationColor.DARK_GREEN.getJavaColor();
         final Image expResult = testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
         final Image result = testIcon.buildImage(size, color);
+        final boolean resultHeight = result.getHeight() != expResult.getHeight();
+        final boolean resultWidth = result.getWidth() != expResult.getWidth();
+        assertTrue(resultHeight);
+        assertTrue(resultWidth);
+        assertEquals(Math.round(result.getHeight()), size);
+        assertEquals(Math.round(result.getHeight()), size);
+    }
+    
+    /**
+     * Test of buildSVG method, of class ConstellationIcon.
+     */
+    @Test
+    public void testBuildSVG_0args() {
+        final SVGObject expResult = new SVGObject(testIcon.buildSVG(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        final SVGObject result = new SVGObject(testIcon.buildSVG());
+        assertEquals(result.getHeight(), expResult.getHeight());
+        assertEquals(result.getWidth(), expResult.getWidth());
+    }
+
+    /**
+     * Test of buildSVG method, of class ConstellationIcon.
+     */
+    @Test
+    public void testBuildSVG_int() {
+        final int size = 50;
+        final SVGObject expResult = new SVGObject(testIcon.buildSVG(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        final SVGObject result = new SVGObject(testIcon.buildSVG(size));
+        // Check that the new image doesn't equal the default one
+        // Both images should have different heights and widths
+        final boolean resultHeight = result.getHeight() != expResult.getHeight();
+        final boolean resultWidth = result.getWidth() != expResult.getWidth();
+        assertTrue(resultHeight);
+        assertTrue(resultWidth);
+        assertEquals(Math.round(result.getHeight()), size);
+        assertEquals(Math.round(result.getHeight()), size);
+    }
+
+    /**
+     * Test of buildSVG method, of class ConstellationIcon.
+     */
+    @Test
+    public void testBuildSVG_Color() {
+        final Color color = ConstellationColor.DARK_GREEN.getJavaColor();
+        final SVGObject expResult = new SVGObject(testIcon.buildSVG(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        final SVGObject result = new SVGObject(testIcon.buildSVG(color));
+        // Check that the new icon doesn't equals the default one
+        // Both images should be the same size
+        assertEquals(result.getHeight(), expResult.getHeight());
+        assertEquals(result.getWidth(), expResult.getWidth());
+    }
+
+    /**
+     * Test of buildSVG method, of class ConstellationIcon.
+     */
+    @Test
+    public void testBuildSVG_int_Color() {
+        final int size = 50;
+        final Color color = ConstellationColor.DARK_GREEN.getJavaColor();
+        final SVGObject expResult = new SVGObject(testIcon.buildSVG(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        final SVGObject result = new SVGObject(testIcon.buildSVG(size, color));
         final boolean resultHeight = result.getHeight() != expResult.getHeight();
         final boolean resultWidth = result.getWidth() != expResult.getWidth();
         assertTrue(resultHeight);

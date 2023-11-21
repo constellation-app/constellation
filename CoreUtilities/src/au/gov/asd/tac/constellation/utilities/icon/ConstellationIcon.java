@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.utilities.icon;
 import au.gov.asd.tac.constellation.utilities.datastructure.ThreeTuple;
 import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstants;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.svg.SVGTypeConstant;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.awt.Color;
@@ -440,6 +441,7 @@ public class ConstellationIcon {
             
             final SVGData rasterImage = new SVGData(SVGTypeConstant.IMAGE, null, null);
             rasterImage.setAttribute(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE, String.format("data:image/png;base64,%s", encodedString));
+            new SVGObject(rasterImage).setDimension(size, size);
             return rasterImage;
         }
     }
