@@ -53,59 +53,59 @@ public class SVGAttributeConstantNGTest {
     }
 
     /**
-     * Test of getName method, of class SVGAttributeConstant.
+     * Test of getName method, of class SVGAttributeConstants.
      */
     @Test
     public void testGetName() {
-        assertEquals(SVGAttributeConstant.BASELINE.getName(),"dominant-baseline");
-        assertEquals(SVGAttributeConstant.CLASS.getName(),"class");
-        assertEquals(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName(),"data-sort-order");
-        assertEquals(SVGAttributeConstant.CX.getName(),"cx");
-        assertEquals(SVGAttributeConstant.CY.getName(),"cy");
-        assertEquals(SVGAttributeConstant.DESTINATION_X.getName(),"x2");
-        assertEquals(SVGAttributeConstant.DESTINATION_Y.getName(),"y2");
-        assertEquals(SVGAttributeConstant.DASH_ARRAY.getName(),"stroke-dasharray");
-        assertEquals(SVGAttributeConstant.EXTERNAL_RESOURCE_REFERENCE.getName(),"xlink:href");
-        assertEquals(SVGAttributeConstant.FILL_COLOR.getName(),"fill");
-        assertEquals(SVGAttributeConstant.FILTER.getName(),"filter");
-        assertEquals(SVGAttributeConstant.FONT_SIZE.getName(),"font-size");
-        assertEquals(SVGAttributeConstant.HEIGHT.getName(),"height");
-        assertEquals(SVGAttributeConstant.ID.getName(),"id");
-        assertEquals(SVGAttributeConstant.NAME_SPACE.getName(),"xmlns");
-        assertEquals(SVGAttributeConstant.POINTS.getName(),"points");
-        assertEquals(SVGAttributeConstant.RADIUS.getName(),"r");
-        assertEquals(SVGAttributeConstant.SOURCE_X.getName(),"x1");
-        assertEquals(SVGAttributeConstant.SOURCE_Y.getName(),"y1");
-        assertEquals(SVGAttributeConstant.STROKE_COLOR.getName(),"stroke");
-        assertEquals(SVGAttributeConstant.TRANSFORM.getName(),"transform");
-        assertEquals(SVGAttributeConstant.VIEW_BOX.getName(),"viewBox");
-        assertEquals(SVGAttributeConstant.WIDTH.getName(),"width");
-        assertEquals(SVGAttributeConstant.X.getName(),"x");
-        assertEquals(SVGAttributeConstant.Y.getName(),"y");
+        assertEquals(SVGAttributeConstants.BASELINE.getName(),"dominant-baseline");
+        assertEquals(SVGAttributeConstants.CLASS.getName(),"class");
+        assertEquals(SVGAttributeConstants.CUSTOM_SORT_ORDER.getName(),"data-sort-order");
+        assertEquals(SVGAttributeConstants.CX.getName(),"cx");
+        assertEquals(SVGAttributeConstants.CY.getName(),"cy");
+        assertEquals(SVGAttributeConstants.DESTINATION_X.getName(),"x2");
+        assertEquals(SVGAttributeConstants.DESTINATION_Y.getName(),"y2");
+        assertEquals(SVGAttributeConstants.DASH_ARRAY.getName(),"stroke-dasharray");
+        assertEquals(SVGAttributeConstants.EXTERNAL_RESOURCE_REFERENCE.getName(),"xlink:href");
+        assertEquals(SVGAttributeConstants.FILL_COLOR.getName(),"fill");
+        assertEquals(SVGAttributeConstants.FILTER.getName(),"filter");
+        assertEquals(SVGAttributeConstants.FONT_SIZE.getName(),"font-size");
+        assertEquals(SVGAttributeConstants.HEIGHT.getName(),"height");
+        assertEquals(SVGAttributeConstants.ID.getName(),"id");
+        assertEquals(SVGAttributeConstants.NAME_SPACE.getName(),"xmlns");
+        assertEquals(SVGAttributeConstants.POINTS.getName(),"points");
+        assertEquals(SVGAttributeConstants.RADIUS.getName(),"r");
+        assertEquals(SVGAttributeConstants.SOURCE_X.getName(),"x1");
+        assertEquals(SVGAttributeConstants.SOURCE_Y.getName(),"y1");
+        assertEquals(SVGAttributeConstants.STROKE_COLOR.getName(),"stroke");
+        assertEquals(SVGAttributeConstants.TRANSFORM.getName(),"transform");
+        assertEquals(SVGAttributeConstants.VIEW_BOX.getName(),"viewBox");
+        assertEquals(SVGAttributeConstants.WIDTH.getName(),"width");
+        assertEquals(SVGAttributeConstants.X.getName(),"x");
+        assertEquals(SVGAttributeConstants.Y.getName(),"y");
     }
 
     /**
-     * Test of initialiseBasicAttributes method, of class SVGAttributeConstant.
+     * Test of initialiseBasicAttributes method, of class SVGAttributeConstants.
      */
     @Test
     public void testInitialiseBasicAttributes() {
-        Map<String, String> attributes = SVGAttributeConstant.initialiseBasicAttributes();
-        assertTrue(attributes.containsKey(SVGAttributeConstant.CLASS.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.CX.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.CY.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.DESTINATION_X.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.DESTINATION_Y.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.FILL_COLOR.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.FONT_SIZE.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.HEIGHT.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.ID.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.RADIUS.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.SOURCE_X.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.SOURCE_Y.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.STROKE_COLOR.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.WIDTH.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.X.getName()));
-        assertTrue(attributes.containsKey(SVGAttributeConstant.Y.getName()));
+        Map<String, String> attributes = SVGAttributeConstants.initialiseBasicAttributes();
+        assertTrue(attributes.containsKey(SVGAttributeConstants.CLASS.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.CX.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.CY.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.DESTINATION_X.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.DESTINATION_Y.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.FILL_COLOR.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.FONT_SIZE.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.HEIGHT.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.ID.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.RADIUS.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.SOURCE_X.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.SOURCE_Y.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.STROKE_COLOR.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.WIDTH.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.X.getName()));
+        assertTrue(attributes.containsKey(SVGAttributeConstants.Y.getName()));
  
         attributes.keySet().forEach(key -> {
             assertNull(attributes.get(key));

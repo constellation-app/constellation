@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +50,7 @@ public class SVGData {
         }
         this.type = type;
         this.children = new LinkedHashMap<>();
-        this.attributes = SVGAttributeConstant.initialiseBasicAttributes();
+        this.attributes = SVGAttributeConstants.initialiseBasicAttributes();
         if (attributes != null) {
             this.attributes.putAll(attributes);
         } 
@@ -74,7 +73,7 @@ public class SVGData {
      * @param child 
      */
     private void setChild(final SVGData child) {
-        final String childID = child.getAttributeValue(SVGAttributeConstant.ID.getName());
+        final String childID = child.getAttributeValue(SVGAttributeConstants.ID.getName());
         this.children.put(childID, child);
     }
     
@@ -87,10 +86,10 @@ public class SVGData {
     public SVGData getChild(final String idValue) {
         SVGData child = this.children.get(idValue);
         if (child == null) {
-            for (SVGData childIndex : this.getAllChildren()) {
+            for (final SVGData childIndex : this.getAllChildren()) {
                 child = childIndex.getChild(idValue);
                 if (child != null) {
-                    return child;
+                    break;
                 }
             }
         }
@@ -109,7 +108,7 @@ public class SVGData {
         
         //If the child wasnt removed, recursively itterate through levels of children untill the id is found.
         if (child == null) {
-            for (SVGData childIndex : this.getAllChildren()) {
+            for (final SVGData childIndex : this.getAllChildren()) {
                 child = childIndex.removeChild(idValue);
 
                 //Break out of te search once the ID is found.
@@ -133,10 +132,10 @@ public class SVGData {
     public List<SVGData> getAllChildren() {
         final List<SVGData> allChildren = new ArrayList<>();
         children.keySet().forEach(key -> allChildren.add(this.children.get(key)));
-        if (!allChildren.isEmpty() && allChildren.get(0).attributes.keySet().contains(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName())) {
+        if (!allChildren.isEmpty() && allChildren.get(0).attributes.keySet().contains(SVGAttributeConstants.CUSTOM_SORT_ORDER.getName())) {
             Collections.sort(allChildren, (SVGData first, SVGData second) -> {
-                String firstValue = first.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName());
-                String secondValue = second.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName());
+                final String firstValue = first.getAttributeValue(SVGAttributeConstants.CUSTOM_SORT_ORDER.getName());
+                final String secondValue = second.getAttributeValue(SVGAttributeConstants.CUSTOM_SORT_ORDER.getName());
                 return Float.compare(Float.parseFloat(secondValue), Float.parseFloat(firstValue));
             });
         }
@@ -150,11 +149,11 @@ public class SVGData {
      * @param parent
      */
     public final void setParent(final SVGData parent) {
-        final String idAttributeName = SVGAttributeConstant.ID.getName(); 
+        final String idAttributeName = SVGAttributeConstants.ID.getName(); 
         
         if (parent != null) {            
             if (parent.getChild(this.getAttributeValue(idAttributeName)) != null){
-                throw new ArrayIndexOutOfBoundsException(String.format("Parent SVGData %s already has a child of id %s", 
+                throw new IllegalStateException(String.format("Parent SVGData %s already has a child of id %s", 
                         parent.getAttributeValue(idAttributeName), 
                         this.getAttributeValue(idAttributeName)
                 ));
@@ -182,7 +181,7 @@ public class SVGData {
      * @param attributeKey such as "height", "width", "fill"
      * @param attributeValue such as "100", "stroke-width:3", "rgb(0,0,255)".
      */
-    public final void setAttribute(final SVGAttributeConstant attributeKey, final String attributeValue) {
+    public final void setAttribute(final SVGAttributeConstants attributeKey, final String attributeValue) {
         this.attributes.put(attributeKey.getName(), attributeValue);
     }
         
@@ -265,7 +264,7 @@ public class SVGData {
         final String linePrefix = SeparatorConstants.NEWLINE + (prefix == null ? "" : prefix);
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> {
-            if (SVGAttributeConstant.NAME_SPACE.getName().equals(key) && this.parent != null) {
+            if (SVGAttributeConstants.NAME_SPACE.getName().equals(key) && this.parent != null) {
                 //do nothing here
             } else {
                 attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key)));
@@ -287,7 +286,7 @@ public class SVGData {
         final StringBuilder attributeBuilder = new StringBuilder();
         final Set<String> keys = attributes.keySet();
         keys.forEach(key -> {
-            if (SVGAttributeConstant.NAME_SPACE.getName().equals(key) && this.parent != null) {
+            if (SVGAttributeConstants.NAME_SPACE.getName().equals(key) && this.parent != null) {
                 //do nothing here
             } else {
                 attributeBuilder.append(String.format(" %s=\"%s\"", key, attributes.get(key)));
@@ -339,7 +338,7 @@ public class SVGData {
         try {
             templateSVG = SVGParser.parse(inputStream);
         } catch (final IOException ex) {
-            LOGGER.log(Level.INFO, ex.getLocalizedMessage());
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
         return templateSVG;
     }

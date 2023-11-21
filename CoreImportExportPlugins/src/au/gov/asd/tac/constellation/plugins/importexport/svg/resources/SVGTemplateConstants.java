@@ -26,7 +26,7 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
  * @author capricornunicorn123
  */
 
-public enum SVGTemplateConstant implements SVGFile{
+public enum SVGTemplateConstants implements SVGFile{
     ARROW_HEAD_LINK("LinkArrowHead.svg"),
     ARROW_HEAD_TRANSACTION("TransactionArrowHead.svg"),
     ARROW_HEAD_TRANSACTION_LOOP("TransactionArrowHeadLoop.svg"),
@@ -40,7 +40,7 @@ public enum SVGTemplateConstant implements SVGFile{
 
     private final String resourceName;
         
-    private SVGTemplateConstant(final String resourceName) {
+    private SVGTemplateConstants(final String resourceName) {
         this.resourceName = resourceName;
     }
     

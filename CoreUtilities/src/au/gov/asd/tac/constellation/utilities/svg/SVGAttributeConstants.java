@@ -23,7 +23,7 @@ import java.util.Map;
  * 
  * @author capricornunicorn123
  */
-public enum SVGAttributeConstant {
+public enum SVGAttributeConstants {
     BASELINE("dominant-baseline"),
     CLASS("class"),
     CUSTOM_SORT_ORDER("data-sort-order"),
@@ -52,7 +52,7 @@ public enum SVGAttributeConstant {
     
     private final String attributeName;
     
-    private SVGAttributeConstant(final String attributeName) {
+    private SVGAttributeConstants(final String attributeName) {
         this.attributeName = attributeName;
     }
     
@@ -70,31 +70,31 @@ public enum SVGAttributeConstant {
      * @return 
      */
     public static Map<String, String> initialiseBasicAttributes() {
-        Map<String, String> map = new LinkedHashMap<>();
+        final Map<String, String> map = new LinkedHashMap<>();
         
         //Identity Data
-        map.put(SVGAttributeConstant.CLASS.getName(), null);
-        map.put(SVGAttributeConstant.ID.getName(), null); 
+        map.put(SVGAttributeConstants.CLASS.getName(), null);
+        map.put(SVGAttributeConstants.ID.getName(), null); 
 
         //Positional Data
-        map.put(SVGAttributeConstant.X.getName(), null);
-        map.put(SVGAttributeConstant.Y.getName(), null);
-        map.put(SVGAttributeConstant.SOURCE_X.getName(), null);
-        map.put(SVGAttributeConstant.SOURCE_Y.getName(), null);
-        map.put(SVGAttributeConstant.DESTINATION_X.getName(), null);
-        map.put(SVGAttributeConstant.DESTINATION_Y.getName(), null);
-        map.put(SVGAttributeConstant.CX.getName(), null);
-        map.put(SVGAttributeConstant.CY.getName(), null);
+        map.put(SVGAttributeConstants.X.getName(), null);
+        map.put(SVGAttributeConstants.Y.getName(), null);
+        map.put(SVGAttributeConstants.SOURCE_X.getName(), null);
+        map.put(SVGAttributeConstants.SOURCE_Y.getName(), null);
+        map.put(SVGAttributeConstants.DESTINATION_X.getName(), null);
+        map.put(SVGAttributeConstants.DESTINATION_Y.getName(), null);
+        map.put(SVGAttributeConstants.CX.getName(), null);
+        map.put(SVGAttributeConstants.CY.getName(), null);
 
         //Size Data
-        map.put(SVGAttributeConstant.WIDTH.getName(), null);
-        map.put(SVGAttributeConstant.HEIGHT.getName(), null);
-        map.put(SVGAttributeConstant.RADIUS.getName(), null);
+        map.put(SVGAttributeConstants.WIDTH.getName(), null);
+        map.put(SVGAttributeConstants.HEIGHT.getName(), null);
+        map.put(SVGAttributeConstants.RADIUS.getName(), null);
 
         //Style Data
-        map.put(SVGAttributeConstant.FONT_SIZE.getName(), null);
-        map.put(SVGAttributeConstant.FILL_COLOR.getName(), null);
-        map.put(SVGAttributeConstant.STROKE_COLOR.getName(), null);
+        map.put(SVGAttributeConstants.FONT_SIZE.getName(), null);
+        map.put(SVGAttributeConstants.FILL_COLOR.getName(), null);
+        map.put(SVGAttributeConstants.STROKE_COLOR.getName(), null);
         return map;
     }
 }

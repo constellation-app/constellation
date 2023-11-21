@@ -21,7 +21,7 @@ import au.gov.asd.tac.constellation.utilities.visual.LineStyle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 /**
  * A wrapper class for SVGData to enable simplified usage.
@@ -61,12 +61,8 @@ public class SVGObject {
     }
     
     public SVGObject getParent() {
-        SVGData parent = this.svgDataReference.getParent();
-        if (parent == null){
-            return null;
-        } else {
-            return new SVGObject(this.svgDataReference.getParent());
-        }
+        final SVGData parent = this.svgDataReference.getParent();
+        return parent != null ? new SVGObject(this.svgDataReference.getParent()) : null;
     }
     
     /**
@@ -77,11 +73,7 @@ public class SVGObject {
      */
     public final SVGObject getChild(final String id) {
         final SVGData child = this.svgDataReference.getChild(id);
-        if (child != null) {
-            return new SVGObject(child); 
-        } else {
-            return null;
-        }
+        return child != null ? new SVGObject(child) : null;
     }
     
     /**
@@ -93,7 +85,7 @@ public class SVGObject {
         this.svgDataReference.removeChild(id);
     }
     
-    private Collection<SVGObject> getAllChildren() {
+    private List<SVGObject> getAllChildren() {
         final ArrayList<SVGObject> children = new ArrayList<>();
         this.svgDataReference.getAllChildren().forEach(child -> children.add(new SVGObject(child)));
         return children;
@@ -117,7 +109,7 @@ public class SVGObject {
      * @param id 
      */
     public void setID(final int id) {
-        this.setAttribute(SVGAttributeConstant.ID, id);
+        this.setAttribute(SVGAttributeConstants.ID, id);
     }
     
     /**
@@ -128,7 +120,7 @@ public class SVGObject {
      * @param id 
      */
     public void setID(final String id) {
-        this.setAttribute(SVGAttributeConstant.ID, id);
+        this.setAttribute(SVGAttributeConstants.ID, id);
     }
     
     /**
@@ -137,7 +129,7 @@ public class SVGObject {
      * @return idString
      */
     public final String getID() {
-        return svgDataReference.getAttributeValue(SVGAttributeConstant.ID.getName());
+        return svgDataReference.getAttributeValue(SVGAttributeConstants.ID.getName());
     }
     
     /**
@@ -145,7 +137,7 @@ public class SVGObject {
      * @param attributeKey 
      * @param attributeValue 
      */
-    private void setAttribute(final SVGAttributeConstant attributeKey, final String attributeValue) {
+    private void setAttribute(final SVGAttributeConstants attributeKey, final String attributeValue) {
         svgDataReference.setAttribute(attributeKey, attributeValue);
     }
     
@@ -154,7 +146,7 @@ public class SVGObject {
      * @param attributeKey 
      * @param attributeValue 
      */
-    private void setAttribute(final SVGAttributeConstant attributeKey, final float attributeValue) {
+    private void setAttribute(final SVGAttributeConstants attributeKey, final float attributeValue) {
         svgDataReference.setAttribute(attributeKey, String.format("%.2f", attributeValue));
     }
     
@@ -163,7 +155,7 @@ public class SVGObject {
      * @param attributeKey 
      * @param attributeValue 
      */
-    private void setAttribute(final SVGAttributeConstant attributeKey, final int attributeValue) {
+    private void setAttribute(final SVGAttributeConstants attributeKey, final int attributeValue) {
         svgDataReference.setAttribute(attributeKey, String.format("%s", attributeValue));
     }
     
@@ -172,11 +164,11 @@ public class SVGObject {
      * @param attributeKey 
      * @param attributeValue 
      */
-    private void setAttribute(final SVGAttributeConstant attributeKey, final ConstellationColor attributeValue) {
+    private void setAttribute(final SVGAttributeConstants attributeKey, final ConstellationColor attributeValue) {
         svgDataReference.setAttribute(attributeKey, String.format("%s", attributeValue.getHtmlColor()));
     }
     
-    private String getAttributeString(final SVGAttributeConstant attributeKey) {
+    private String getAttributeString(final SVGAttributeConstants attributeKey) {
         return svgDataReference.getAttributeValue(attributeKey.getName());
     } 
     
@@ -186,11 +178,14 @@ public class SVGObject {
      * @param attributeKey
      * @return 
      */
-    private Float getAttributeFloat(final SVGAttributeConstant attributeKey) {
-        String attribute = getAttributeString(attributeKey);
+    private Float getAttributeFloat(final SVGAttributeConstants attributeKey) {
+        final String attribute = getAttributeString(attributeKey);
+        if (attribute == null){
+            return null;
+        }
         try {
             return Float.parseFloat(attribute);
-        } catch (final NumberFormatException | NullPointerException e) {
+        } catch (final NumberFormatException e) {
             return null; 
         }
     } 
@@ -201,7 +196,7 @@ public class SVGObject {
      */
     private void setHeight(final float height) {
         // Get the current height wihtout the local reference. 
-        final float currentWidth = getPositionalData(null, SVGAttributeConstant.HEIGHT);
+        final float currentWidth = getPositionalData(null, SVGAttributeConstants.HEIGHT);
         
         //This evluation will be true if the current height is a percentage so set the width as the viewbox attribute.
         if (this.height != null && currentWidth != this.height){
@@ -209,12 +204,12 @@ public class SVGObject {
             updateViewBox();
         } else {
             this.height = height;
-            this.setAttribute(SVGAttributeConstant.HEIGHT, height);
+            this.setAttribute(SVGAttributeConstants.HEIGHT, height);
         }
     }
     
     public float getHeight() {        
-        return this.getPositionalData(this.height, SVGAttributeConstant.HEIGHT);
+        return this.getPositionalData(this.height, SVGAttributeConstants.HEIGHT);
     }
     
     /**
@@ -224,7 +219,7 @@ public class SVGObject {
     private void setWidth(final float width) {
         
         // Get the current width wihtout the local reference. 
-        final float currentWidth = getPositionalData(null, SVGAttributeConstant.WIDTH);
+        final float currentWidth = getPositionalData(null, SVGAttributeConstants.WIDTH);
         
         //This evluation will be true if the current width is a percentage so set the width as the viewbox attribute.
         if (this.width != null && currentWidth != this.width){
@@ -232,15 +227,15 @@ public class SVGObject {
             updateViewBox();
         } else {
             this.width = width;
-            this.setAttribute(SVGAttributeConstant.WIDTH, width);
+            this.setAttribute(SVGAttributeConstants.WIDTH, width);
         }
     }
       
     public float getWidth() {
-        return this.getPositionalData(this.width, SVGAttributeConstant.WIDTH);
+        return this.getPositionalData(this.width, SVGAttributeConstants.WIDTH);
     }
     
-    private float getPositionalData(final Float quickReference, final SVGAttributeConstant longReference) {  
+    private float getPositionalData(final Float quickReference, final SVGAttributeConstants longReference) {  
         if (quickReference != null) {
             //Return the localy stored value;
             return quickReference;
@@ -277,15 +272,15 @@ public class SVGObject {
     private void setXPosition(final float x) {
         this.x = x;
         if ("circle".equals(this.toSVGData().getType())) {
-            this.setAttribute(SVGAttributeConstant.CX, x);
+            this.setAttribute(SVGAttributeConstants.CX, x);
         } else {
-            this.setAttribute(SVGAttributeConstant.X, x);
+            this.setAttribute(SVGAttributeConstants.X, x);
         }
         
     }
     
     public float getXPosition() {
-        return this.getPositionalData(this.x, SVGAttributeConstant.X);
+        return this.getPositionalData(this.x, SVGAttributeConstants.X);
     }
     /**
      * Sets the Y position of the SVGObject.
@@ -295,14 +290,14 @@ public class SVGObject {
     public void setYPosition(final float y) {
         this.y = y;
         if ("circle".equals(this.toSVGData().getType())) {
-            this.setAttribute(SVGAttributeConstant.CY, y);
+            this.setAttribute(SVGAttributeConstants.CY, y);
         } else {
-            this.setAttribute(SVGAttributeConstant.Y, y);
+            this.setAttribute(SVGAttributeConstants.Y, y);
         }
     }
     
     public float getYPosition() {
-        return this.getPositionalData(this.y, SVGAttributeConstant.Y);
+        return this.getPositionalData(this.y, SVGAttributeConstants.Y);
     }
      
     /**
@@ -349,8 +344,8 @@ public class SVGObject {
             this.y = position.getY();
         }
 
-        this.setAttribute(SVGAttributeConstant.SOURCE_X, position.getX());
-        this.setAttribute(SVGAttributeConstant.SOURCE_Y, position.getY());
+        this.setAttribute(SVGAttributeConstants.SOURCE_X, position.getX());
+        this.setAttribute(SVGAttributeConstants.SOURCE_Y, position.getY());
     }
     
     /**
@@ -375,19 +370,19 @@ public class SVGObject {
             this.y = position.getY();
         }
         
-        this.setAttribute(SVGAttributeConstant.DESTINATION_X, position.getX());
-        this.setAttribute(SVGAttributeConstant.DESTINATION_Y, position.getY());
+        this.setAttribute(SVGAttributeConstants.DESTINATION_X, position.getX());
+        this.setAttribute(SVGAttributeConstants.DESTINATION_Y, position.getY());
     }
     
     public void setFontSize(final float size) {
-        this.setAttribute(SVGAttributeConstant.FONT_SIZE, size);
+        this.setAttribute(SVGAttributeConstants.FONT_SIZE, size);
     }
     /**
      * Sets the transformation values of the SVGObject.
      * @param transformationData
      */
     public void setTransformation(final String transformationData) {
-        this.setAttribute(SVGAttributeConstant.TRANSFORM,  transformationData);
+        this.setAttribute(SVGAttributeConstants.TRANSFORM,  transformationData);
     }
     
     /**
@@ -395,7 +390,7 @@ public class SVGObject {
      * @param color 
      */
     public void setFillColor(final ConstellationColor color) {
-        this.setAttribute(SVGAttributeConstant.FILL_COLOR, color);
+        this.setAttribute(SVGAttributeConstants.FILL_COLOR, color);
     }
 
     /**
@@ -403,7 +398,7 @@ public class SVGObject {
      * @param color 
      */
     public void setStrokeColor(final ConstellationColor color) {
-        this.setAttribute(SVGAttributeConstant.STROKE_COLOR, color);
+        this.setAttribute(SVGAttributeConstants.STROKE_COLOR, color);
     }
     
     /**
@@ -419,16 +414,16 @@ public class SVGObject {
                 this.setStrokeArray(70, 35);
                 break;
             default:
-                this.svgDataReference.setAttribute(SVGAttributeConstant.DASH_ARRAY, null);
+                this.svgDataReference.setAttribute(SVGAttributeConstants.DASH_ARRAY, null);
         }
     }
     
     public void setStrokeArray(final float strokeA, final float strokeB) {
-        this.setAttribute(SVGAttributeConstant.DASH_ARRAY, String.format("%s %s", strokeA, strokeB));
+        this.setAttribute(SVGAttributeConstants.DASH_ARRAY, String.format("%s %s", strokeA, strokeB));
     }
     
     public void setStrokeArray(final float strokeA, final float strokeB, final float strokeC) {
-        this.setAttribute(SVGAttributeConstant.DASH_ARRAY, String.format("%s %s %s", strokeA, strokeB, strokeC));
+        this.setAttribute(SVGAttributeConstants.DASH_ARRAY, String.format("%s %s %s", strokeA, strokeB, strokeC));
     }
     
     /**
@@ -453,7 +448,7 @@ public class SVGObject {
         return new SVGObject(SVGData.loadFromTemplate(templateResource));
     } 
     
-    public static SVGObject loadFromInputStream(InputStream is) {
+    public static SVGObject loadFromInputStream(final InputStream is) {
         try{
             return new SVGObject(SVGParser.parse(is));
         } catch (IOException e) {
@@ -463,12 +458,12 @@ public class SVGObject {
 
     public void setDimensionScale(final String width, final String height) {
         this.setViewBox(0, 0, this.width, this.height);
-        this.svgDataReference.setAttribute(SVGAttributeConstant.WIDTH, width);
-        this.svgDataReference.setAttribute(SVGAttributeConstant.HEIGHT, height);
+        this.svgDataReference.setAttribute(SVGAttributeConstants.WIDTH, width);
+        this.svgDataReference.setAttribute(SVGAttributeConstants.HEIGHT, height);
     }
     
     public void setViewBox(final float x, final float y, final float w, final float h) {
-        this.setAttribute(SVGAttributeConstant.VIEW_BOX, String.format("%s, %s, %s, %S", x, y, w, h));
+        this.setAttribute(SVGAttributeConstants.VIEW_BOX, String.format("%s, %s, %s, %S", x, y, w, h));
     }
     
     public void saturateSVG(final ConstellationColor color) {
@@ -478,19 +473,19 @@ public class SVGObject {
     }
     
     public void setSortOrderValue(final float sortOrderValue) {
-        this.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, sortOrderValue);
+        this.setAttribute(SVGAttributeConstants.CUSTOM_SORT_ORDER, sortOrderValue);
     }
 
     public void applyGrayScaleFilter() {
-        this.setAttribute(SVGAttributeConstant.FILTER, "grayscale(1)");
+        this.setAttribute(SVGAttributeConstants.FILTER, "grayscale(1)");
     }
 
     public void setBaseline(final String baseline) {
-        setAttribute(SVGAttributeConstant.BASELINE, baseline);
+        setAttribute(SVGAttributeConstants.BASELINE, baseline);
     }
     
     public void setPoints(final String path) {
-        setAttribute(SVGAttributeConstant.POINTS, path);
+        setAttribute(SVGAttributeConstants.POINTS, path);
     }
     
     private void updateViewBox() {
@@ -499,7 +494,7 @@ public class SVGObject {
         final float vbw = width == null ? 0F : width;
         final float vbh = height == null ? 0F : height;
     
-        this.setAttribute(SVGAttributeConstant.VIEW_BOX, String.format("%s, %s, %s, %S", vbx, vby, vbw, vbh));
+        this.setAttribute(SVGAttributeConstants.VIEW_BOX, String.format("%s, %s, %s, %S", vbx, vby, vbw, vbh));
     }
     
 }

@@ -77,7 +77,7 @@ public class SVGParser {
 
                 // Create a new SVGData with the current SVGData as the parent 
                 if (openTag) {
-                    SVGData newObject = new SVGData(
+                    final SVGData newObject = new SVGData(
                             SVGParser.getElementType(svgElement), 
                             currentElement, 
                             SVGParser.getElementAttributes(svgElement)

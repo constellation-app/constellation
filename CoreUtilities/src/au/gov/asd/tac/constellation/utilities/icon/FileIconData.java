@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.utilities.icon;
 
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public class FileIconData extends IconData {
         final File locatedRasterFile = ConstellationInstalledFileLocator.locate(relativePath, codeNameBase, FileIconData.class.getProtectionDomain());
         this.rasterFile = locatedRasterFile;
         
-        final File locatedVectorFile = ConstellationInstalledFileLocator.locate(relativePath.replaceAll(".png", ".svg"), codeNameBase, FileIconData.class.getProtectionDomain());
+        final File locatedVectorFile = ConstellationInstalledFileLocator.locate(relativePath.replaceAll(FileExtensionConstants.PNG, FileExtensionConstants.SVG), codeNameBase, FileIconData.class.getProtectionDomain());
         this.vectorFile = locatedVectorFile;
     }
 
@@ -58,13 +59,8 @@ public class FileIconData extends IconData {
     
     @Override
     protected InputStream createVectorInputStream() throws IOException {
-        
         //Not all files have SVG alternatives to only return a stream if the alternative was found.
-        if (vectorFile != null) {
-            return new FileInputStream(vectorFile);
-        } else {
-            return null;
-        }
+        return vectorFile != null ? new FileInputStream(vectorFile) : null;
     }
 
     public String getFilePath() {

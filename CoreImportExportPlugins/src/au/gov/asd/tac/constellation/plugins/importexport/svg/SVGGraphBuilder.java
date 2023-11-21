@@ -27,8 +27,8 @@ import au.gov.asd.tac.constellation.graph.visual.framework.GraphVisualAccess;
 import au.gov.asd.tac.constellation.graph.visual.framework.VisualGraphDefaults;
 import au.gov.asd.tac.constellation.graph.visual.utilities.BoundingBoxUtilities;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGObjectConstant;
-import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGTemplateConstant;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGObjectConstants;
+import au.gov.asd.tac.constellation.plugins.importexport.svg.resources.SVGTemplateConstants;
 import au.gov.asd.tac.constellation.utilities.camera.BoundingBox;
 import au.gov.asd.tac.constellation.utilities.camera.Camera;
 import au.gov.asd.tac.constellation.utilities.camera.CameraUtilities;
@@ -191,12 +191,12 @@ public class SVGGraphBuilder {
      */
     public SVGData build() throws InterruptedException {
         
-        final SVGObject svgGraph = SVGTemplateConstant.LAYOUT.getSVGObject();
+        final SVGObject svgGraph = SVGTemplateConstants.LAYOUT.getSVGObject();
         
         try{
             preBuild();
-        } catch (Exception e){
-            LOGGER.log(Level.SEVERE, e.getLocalizedMessage());
+        } catch (IllegalArgumentException ex){
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
             return null;
         }
         
@@ -216,7 +216,7 @@ public class SVGGraphBuilder {
     /**
      * Sets up the Builder control attributes and reference utilities. 
      */
-    private void preBuild() throws Exception {
+    private void preBuild() throws IllegalArgumentException {
         
         // Thorw errors if attributes without default values have not been set
         if (readableGraph == null ) {
@@ -230,10 +230,6 @@ public class SVGGraphBuilder {
         // Initialise the VisualGraphAccess
         access.beginUpdate();
         access.updateInternally();
-        
-        // Determine the height and width of the users InteractiveGraphView pane
-        int paneHeight = visualManager.getVisualComponent().getHeight();   
-        int paneWidth = visualManager.getVisualComponent().getWidth();
         
         //Set the camera position and add repositioning animation 
         this.camera = access.getCamera();
@@ -258,6 +254,10 @@ public class SVGGraphBuilder {
             default:
                 break;
         }
+        
+        // Determine the height and width of the users InteractiveGraphView pane
+        final int paneHeight = visualManager.getVisualComponent().getHeight();   
+        final int paneWidth = visualManager.getVisualComponent().getWidth();
         
         //Set the viewPort dimensions for 3D to 2D projection
         viewPort = new int[] {Math.round(camera.lookAtEye.getX()),  Math.round(camera.lookAtEye.getY()), paneWidth,  paneHeight};
@@ -302,7 +302,7 @@ public class SVGGraphBuilder {
         interaction.setExecutionStage(progress, totalSteps, "Building Graph", "Building Nodes", true);
 
         // Retrieve the svg element that holds the Nodes.
-        final SVGObject svgNodes = SVGObjectConstant.CONTENT.findIn(svgGraph);
+        final SVGObject svgNodes = SVGObjectConstants.CONTENT.findIn(svgGraph);
 
         // Itterate over all vertices in the graph
         for (int vertexIndex = 0 ; vertexIndex < access.getVertexCount() ; vertexIndex++) {
@@ -320,7 +320,7 @@ public class SVGGraphBuilder {
             final ConstellationIcon foregroundIcon = IconManager.getIcon(access.getForegroundIcon(vertexIndex));
 
             // Build the SVGobject representing the Node
-            final SVGObject svgNode = SVGObject.loadFromTemplate(SVGTemplateConstant.NODE);
+            final SVGObject svgNode = SVGObject.loadFromTemplate(SVGTemplateConstants.NODE);
             svgNode.setPosition(position.getX() - radius, position.getY() - radius);
             svgNode.setID(String.format("node-%s",access.getVertexId(vertexIndex)));
             svgNode.setSortOrderValue(position.getW());
@@ -329,34 +329,34 @@ public class SVGGraphBuilder {
 
             // Add labels to the Node if required
             if (showNodeLabels) {
-                final SVGObject svgTopLabel = SVGObjectConstant.TOP_LABELS.findIn(svgNode);
+                final SVGObject svgTopLabel = SVGObjectConstants.TOP_LABELS.findIn(svgNode);
                 buildTopLabel(vertexIndex, svgTopLabel);
                 
-                final SVGObject svgBottomLabel = SVGObjectConstant.BOTTOM_LABELS.findIn(svgNode);
+                final SVGObject svgBottomLabel = SVGObjectConstants.BOTTOM_LABELS.findIn(svgNode);
                 buildBottomLabel(vertexIndex, svgBottomLabel);
             } else {
-                SVGObjectConstant.TOP_LABELS.removeFrom(svgNode);
-                SVGObjectConstant.BOTTOM_LABELS.removeFrom(svgNode);
+                SVGObjectConstants.TOP_LABELS.removeFrom(svgNode);
+                SVGObjectConstants.BOTTOM_LABELS.removeFrom(svgNode);
             }
 
             // Retrieve the svg element containing all node images.
-            final SVGObject svgImages = SVGObjectConstant.NODE_IMAGES.findIn(svgNode);
+            final SVGObject svgImages = SVGObjectConstants.NODE_IMAGES.findIn(svgNode);
 
             // Add background image to the node
-            final SVGObject svgNodeBackground = SVGObjectConstant.BACKGROUND_IMAGE.findIn(svgNode);
+            final SVGObject svgNodeBackground = SVGObjectConstants.BACKGROUND_IMAGE.findIn(svgNode);
             final SVGData svgBackgroundImageimage = backgroundIcon.buildSVG(color.getJavaColor());
             svgBackgroundImageimage.setParent(svgNodeBackground.toSVGData());
 
             // Add foreground image to the node
-            final SVGObject svgNodeForeground = SVGObjectConstant.FOREGROUND_IMAGE.findIn(svgNode);
+            final SVGObject svgNodeForeground = SVGObjectConstants.FOREGROUND_IMAGE.findIn(svgNode);
             final SVGData svgForegroundImage = foregroundIcon.buildSVG();
             svgForegroundImage.setParent(svgNodeForeground.toSVGData());
 
             // Add decorators to the node       
-            this.buildDecorator(SVGObjectConstant.NORTH_WEST_DECORATOR.findIn(svgNode), access.getNWDecorator(vertexIndex));
-            this.buildDecorator(SVGObjectConstant.NORTH_EAST_DECORATOR.findIn(svgNode), access.getNEDecorator(vertexIndex));
-            this.buildDecorator(SVGObjectConstant.SOUTH_WEST_DECORATOR.findIn(svgNode), access.getSWDecorator(vertexIndex));
-            this.buildDecorator(SVGObjectConstant.SOUTH_EAST_DECORATOR.findIn(svgNode), access.getSEDecorator(vertexIndex));
+            this.buildDecorator(SVGObjectConstants.NORTH_WEST_DECORATOR.findIn(svgNode), access.getNWDecorator(vertexIndex));
+            this.buildDecorator(SVGObjectConstants.NORTH_EAST_DECORATOR.findIn(svgNode), access.getNEDecorator(vertexIndex));
+            this.buildDecorator(SVGObjectConstants.SOUTH_WEST_DECORATOR.findIn(svgNode), access.getSWDecorator(vertexIndex));
+            this.buildDecorator(SVGObjectConstants.SOUTH_EAST_DECORATOR.findIn(svgNode), access.getSEDecorator(vertexIndex));
             
             // Add dimmed property if dimmed
             // Note, this implementation is not a precice sollution, luminocity to alpha conversion would be better
@@ -400,7 +400,7 @@ public class SVGGraphBuilder {
             
             //Only add the label if the label value exists.
             if (labelString != null) {
-                final SVGObject svgLabel = SVGTemplateConstant.LABEL.getSVGObject();
+                final SVGObject svgLabel = SVGTemplateConstants.LABEL.getSVGObject();
                 final float size = access.getBottomLabelSize(labelIndex) * 64;
                 svgLabel.setFontSize(size);
                 svgLabel.setYPosition(offset);
@@ -429,7 +429,7 @@ public class SVGGraphBuilder {
             
             //Only add the label if the label value exists.
             if (labelString != null) {
-                final SVGObject svgLabel = SVGTemplateConstant.LABEL.getSVGObject();
+                final SVGObject svgLabel = SVGTemplateConstants.LABEL.getSVGObject();
                 final float size = access.getTopLabelSize(labelIndex) * 64;
                 svgLabel.setFontSize(size);
                 svgLabel.setYPosition(offset);
@@ -464,13 +464,13 @@ public class SVGGraphBuilder {
         }           
 
         // Retrieve the svg element that holds the Nodes.
-        final SVGObject svgLinks = SVGObjectConstant.CONTENT.findIn(svgGraph);
+        final SVGObject svgLinks = SVGObjectConstants.CONTENT.findIn(svgGraph);
 
         // Itterate over all links in the graph
         for (int linkIndex = 0; linkIndex < access.getLinkCount(); linkIndex++) {
 
             // Create a svgLink for all connections in the current link
-            final SVGObject svgLink = SVGTemplateConstant.LINK.getSVGObject();
+            final SVGObject svgLink = SVGTemplateConstants.LINK.getSVGObject();
             svgLink.setID(String.format("link-%s", linkIndex));
             svgLink.setParent(svgLinks);
 
@@ -500,8 +500,8 @@ public class SVGGraphBuilder {
             final float lowScaleFactor = getDepthScaleFactor(getVertexWorldPosition(lowIndex));
             
             // Build all of the connections in the current link 
-            final SVGObject svgConnections = SVGObjectConstant.CONNECTIONS.findIn(svgLink);
-            final SVGObject svgLabels = SVGObjectConstant.LABELS.findIn(svgLink);
+            final SVGObject svgConnections = SVGObjectConstants.CONNECTIONS.findIn(svgLink);
+            final SVGObject svgLabels = SVGObjectConstants.LABELS.findIn(svgLink);
             for (int connectionIndex = 0; connectionIndex < access.getLinkConnectionCount(linkIndex); connectionIndex++) {
 
                 // Get the reference to the current connection
@@ -514,7 +514,7 @@ public class SVGGraphBuilder {
                 
                 if (highIndex == lowIndex) {
                     buildLoopedConnection(svgConnections, highIndex, connection);
-                    SVGObjectConstant.LABELS.removeFrom(svgLink);
+                    SVGObjectConstants.LABELS.removeFrom(svgLink);
 
                 } else {
 
@@ -538,7 +538,7 @@ public class SVGGraphBuilder {
                     if (showConnectionLabels) {
                         addConnectionLabels(svgLabels, highPosition, lowPosition, connectionIndex, access.getLinkConnectionCount(linkIndex), highIndex, lowIndex);
                     } else {
-                        SVGObjectConstant.LABELS.removeFrom(svgLink);
+                        SVGObjectConstants.LABELS.removeFrom(svgLink);
                     }
                 }
             } 
@@ -574,13 +574,13 @@ public class SVGGraphBuilder {
 
         // Determine which segment this connection label will occupy
         final int labelSegment = (connectionIndex % 7) + 1;
-        float segmentRatio = (float) labelSegment / totalSegments;
+        final float segmentRatio = (float) labelSegment / totalSegments;
         
         // Calculate the position of the label
-        float distance = getDistance(highPosition, lowPosition); 
-        float offsetDistance = distance * segmentRatio;
-        double angle = this.calculateConnectionAngle(lowPosition, highPosition);
-        Vector4f position = this.offSetPosition(lowPosition, offsetDistance, angle);
+        final float distance = getDistance(highPosition, lowPosition); 
+        final float offsetDistance = distance * segmentRatio;
+        final double angle = this.calculateConnectionAngle(lowPosition, highPosition);
+        final Vector4f position = this.offSetPosition(lowPosition, offsetDistance, angle);
         
         // Determine the scale factor of the label
         final float highScaleFactor = getDepthScaleFactor(getVertexWorldPosition(highIndex));
@@ -594,7 +594,7 @@ public class SVGGraphBuilder {
             
             //Only add the label if the label value exists.
             if (labelString != null) {
-                SVGObject svgLabel = SVGTemplateConstant.LABEL.getSVGObject();
+                final SVGObject svgLabel = SVGTemplateConstants.LABEL.getSVGObject();
                 final float size = access.getConnectionLabelSize(labelIndex) * 64 * scaleFactor;
                 svgLabel.setPosition(position.getX(), position.getY() + offset);
                 svgLabel.setFontSize(size);
@@ -622,7 +622,7 @@ public class SVGGraphBuilder {
         Vector4f.add(loopCenterPosition, getVertexPosition(vertexIndex), new Vector4f(getVertexScaledRadius(vertexIndex), -getVertexScaledRadius(vertexIndex), 0, 0));
 
         // Create the loopedConnection
-        SVGObject svgLoop = SVGTemplateConstant.CONNECTION_LOOP.getSVGObject();
+        final SVGObject svgLoop = SVGTemplateConstants.CONNECTION_LOOP.getSVGObject();
         svgLoop.setID(access.getConnectionId(connection));
         svgLoop.setDimension(getDepthScaleFactor(getVertexWorldPosition(vertexIndex)) * 128, getDepthScaleFactor(getVertexWorldPosition(vertexIndex)) * 128);
         svgLoop.setPosition(loopCenterPosition.getX() - (svgLoop.getWidth()/2) , loopCenterPosition.getY() - (svgLoop.getHeight()/2));
@@ -658,8 +658,8 @@ public class SVGGraphBuilder {
     private void buildLinearConnection(final SVGObject svgConnections, final Vector4f highPosition, final Vector4f lowPosition, final int connection, final int highIndex, final int lowIndex) {
 
         // Get references to SVG Objects being built within this method 
-        final SVGObject svgConnection = SVGTemplateConstant.CONNECTION_LINEAR.getSVGObject();
-        final SVGObject svgArrowShaft = SVGObjectConstant.ARROW_SHAFT.findIn(svgConnection);
+        final SVGObject svgConnection = SVGTemplateConstants.CONNECTION_LINEAR.getSVGObject();
+        final SVGObject svgArrowShaft = SVGObjectConstants.ARROW_SHAFT.findIn(svgConnection);
         final SVGObject svgArrowHeadHigh;
         final SVGObject svgArrowHeadLow;
 
@@ -682,11 +682,11 @@ public class SVGGraphBuilder {
             case BIDIRECTED:
                 buildLinearArrowShaft(svgArrowShaft, highPositionRecessed, lowPositionRecessed, highIndex, lowIndex);
 
-                svgArrowHeadHigh = SVGTemplateConstant.ARROW_HEAD_LINK.getSVGObject();
+                svgArrowHeadHigh = SVGTemplateConstants.ARROW_HEAD_LINK.getSVGObject();
                 buildArrowHead(svgArrowHeadHigh, highPosition, lowConnectionAngle, highScaleFactor);
                 svgArrowHeadHigh.setParent(svgConnection);
 
-                svgArrowHeadLow = SVGTemplateConstant.ARROW_HEAD_LINK.getSVGObject();
+                svgArrowHeadLow = SVGTemplateConstants.ARROW_HEAD_LINK.getSVGObject();
                 buildArrowHead(svgArrowHeadLow, lowPosition, highConnectionAngle, lowScaleFactor);
                 svgArrowHeadLow.setParent(svgConnection);
                 break;
@@ -695,7 +695,7 @@ public class SVGGraphBuilder {
             case LOW_TO_HIGH:
                 buildLinearArrowShaft(svgArrowShaft, highPositionRecessed, lowPosition, highIndex, lowIndex);
 
-                svgArrowHeadHigh = SVGTemplateConstant.ARROW_HEAD_TRANSACTION.getSVGObject();
+                svgArrowHeadHigh = SVGTemplateConstants.ARROW_HEAD_TRANSACTION.getSVGObject();
                 buildArrowHead(svgArrowHeadHigh, highPosition, lowConnectionAngle, highScaleFactor);
                 svgArrowHeadHigh.setParent(svgConnection);
                 break;
@@ -704,7 +704,7 @@ public class SVGGraphBuilder {
             case HIGH_TO_LOW:
                 buildLinearArrowShaft(svgArrowShaft, highPosition, lowPositionRecessed, highIndex, lowIndex); 
 
-                svgArrowHeadLow = SVGTemplateConstant.ARROW_HEAD_TRANSACTION.getSVGObject();
+                svgArrowHeadLow = SVGTemplateConstants.ARROW_HEAD_TRANSACTION.getSVGObject();
                 buildArrowHead(svgArrowHeadLow, lowPosition, highConnectionAngle, lowScaleFactor);
                 svgArrowHeadLow.setParent(svgConnection);
                 break;
@@ -734,15 +734,15 @@ public class SVGGraphBuilder {
     private void buildArrowHead(final SVGObject svgArrowHead, final Vector4f position, final double connectionAngle, final float scaleFactor) {
         
         //Set arrow head dimensions
-        float arrowHeadHeight = scaleFactor * 32;
-        float arrowHeadWidth = scaleFactor * 128;
+        final float arrowHeadHeight = scaleFactor * 32;
+        final float arrowHeadWidth = scaleFactor * 128;
         svgArrowHead.setDimension(arrowHeadWidth, arrowHeadHeight);
         svgArrowHead.setPosition(position.getX() , position.getY() - arrowHeadHeight/2);
         
         svgArrowHead.setID(String.format("arrow-head-%s-%s", position.getX(), position.getY() - arrowHeadHeight/2 ));
 
         //Rotate the arrow head polygon around the tip to align it with the angle of the connection
-        final SVGObject svgArrowHeadPolygon = SVGObjectConstant.ARROW_HEAD.findIn(svgArrowHead);
+        final SVGObject svgArrowHeadPolygon = SVGObjectConstants.ARROW_HEAD.findIn(svgArrowHead);
         svgArrowHeadPolygon.setTransformation(String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), 0, 16));
     }
 
@@ -757,18 +757,18 @@ public class SVGGraphBuilder {
     private void buildLinearArrowShaft(final SVGObject svgArrowShaft, final Vector4f sourcePosition, final Vector4f destinationPosition, final int sourceIndex, final int destinationIndex) {
         
         // Get the sclae factor of the source and destination vertices
-        float destinationScaleFactor = this.getDepthScaleFactor(getVertexWorldPosition(destinationIndex));
-        float sourceScaleFactor = this.getDepthScaleFactor(getVertexWorldPosition(sourceIndex));
+        final float destinationScaleFactor = this.getDepthScaleFactor(getVertexWorldPosition(destinationIndex));
+        final float sourceScaleFactor = this.getDepthScaleFactor(getVertexWorldPosition(sourceIndex));
 
         // Get the connection angles of the source and destination arrow heads
-        double sourceConnectionAngle = this.calculateConnectionAngle(sourcePosition, destinationPosition);
-        double detinationConnectionAngle = this.calculateConnectionAngle(destinationPosition, sourcePosition);
+        final double sourceConnectionAngle = this.calculateConnectionAngle(sourcePosition, destinationPosition);
+        final double detinationConnectionAngle = this.calculateConnectionAngle(destinationPosition, sourcePosition);
 
         // Calculate the four points of the arrow shaft.
-        Vector4f p1 = this.offSetPosition(sourcePosition, 4 * sourceScaleFactor, sourceConnectionAngle + 90);
-        Vector4f p2 = this.offSetPosition(sourcePosition, 4 * sourceScaleFactor, sourceConnectionAngle - 90);
-        Vector4f p3 = this.offSetPosition(destinationPosition, 4 * destinationScaleFactor, detinationConnectionAngle + 90);
-        Vector4f p4 = this.offSetPosition(destinationPosition, 4 * destinationScaleFactor, detinationConnectionAngle - 90);
+        final Vector4f p1 = this.offSetPosition(sourcePosition, 4 * sourceScaleFactor, sourceConnectionAngle + 90);
+        final Vector4f p2 = this.offSetPosition(sourcePosition, 4 * sourceScaleFactor, sourceConnectionAngle - 90);
+        final Vector4f p3 = this.offSetPosition(destinationPosition, 4 * destinationScaleFactor, detinationConnectionAngle + 90);
+        final Vector4f p4 = this.offSetPosition(destinationPosition, 4 * destinationScaleFactor, detinationConnectionAngle - 90);
         
         svgArrowShaft.setPoints(String.format("%s %s, %s %s, %s %s, %s %s", p1.getX(), p1.getY(), p2.getX(), p2.getY(), p3.getX(), p3.getY(), p4.getX(), p4.getY() ));
     }
@@ -786,8 +786,8 @@ public class SVGGraphBuilder {
                         date.getYear()
                 );
 
-        SVGObjectConstant.TITLE.findIn(svgGraph).setContent(graphTitle);
-        SVGObjectConstant.SUBTITLE.findIn(svgGraph).setContent(dateInfo);
+        SVGObjectConstants.TITLE.findIn(svgGraph).setContent(graphTitle);
+        SVGObjectConstants.SUBTITLE.findIn(svgGraph).setContent(dateInfo);
     }
 
     /**
@@ -797,13 +797,13 @@ public class SVGGraphBuilder {
     private void buildLayout(final SVGObject svgGraph) {
         
         // Set the background color of the output file
-        SVGObjectConstant.BACKGROUND.findIn(svgGraph).setFillColor(backgroundColor);
+        SVGObjectConstants.BACKGROUND.findIn(svgGraph).setFillColor(backgroundColor);
         
         // Get the dimensions of the users window
         final float contentWidth = viewPort[2];
         final float contentHeight = viewPort[3];           
        
-        SVGObject content = SVGObjectConstant.CONTENT.findIn(svgGraph);
+        SVGObject content = SVGObjectConstants.CONTENT.findIn(svgGraph);
 
         content.setDimension(contentWidth, contentHeight);
         content.setDimensionScale("100%", "95%");
@@ -878,7 +878,7 @@ public class SVGGraphBuilder {
         final Vector4f screenPosition = getScreenPosition(worldPosition);
 
         // Move the point in the world equivelent of the screens upwards direction by one unit.
-        Vector3f up = camera.lookAtUp;
+        final Vector3f up = camera.lookAtUp;
         worldPosition.add(up);            
 
         // Convert this translated position to screen coordinates.
@@ -923,14 +923,8 @@ public class SVGGraphBuilder {
      * @param connectionIndex
      * @return 
      */
-    private ConstellationColor getConnectionColor(final int connectionIndex) {
-        final ConstellationColor color;
-        if (access.isConnectionDimmed(connectionIndex)) {
-            color = VisualGraphDefaults.DEFAULT_TRANSACTION_COLOR;
-        } else {
-            color = access.getConnectionColor(connectionIndex);
-        }
-        return color;
+    private ConstellationColor getConnectionColor(final int connectionIndex) {  
+        return access.isConnectionDimmed(connectionIndex) ? VisualGraphDefaults.DEFAULT_TRANSACTION_COLOR : access.getConnectionColor(connectionIndex);
     }
 
     /**
@@ -940,8 +934,8 @@ public class SVGGraphBuilder {
      * @return 
      */
     private float getDistance(final Vector4f a, final Vector4f b) {
-        float xChange = Math.abs(a.getX()-b.getX());
-        float yChange = Math.abs(a.getY()-b.getY());
+        final float xChange = Math.abs(a.getX()-b.getX());
+        final float yChange = Math.abs(a.getY()-b.getY());
         return (float) Math.sqrt(Math.pow(xChange, 2) + Math.pow(yChange, 2));
     }
 }

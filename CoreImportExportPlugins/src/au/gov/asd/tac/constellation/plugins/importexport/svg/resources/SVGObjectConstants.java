@@ -24,7 +24,7 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
  *
  * @author capricornunicorn123
  */
-public enum SVGObjectConstant {
+public enum SVGObjectConstants {
     ARROW_HEAD("arrow-head"),
     ARROW_SHAFT("arrow-shaft"),
     BACKGROUND("background"),
@@ -54,7 +54,7 @@ public enum SVGObjectConstant {
 
     protected final String idValue;
 
-    private SVGObjectConstant(final String idValue) {
+    private SVGObjectConstants(final String idValue) {
         this.idValue = idValue;
     }
     
@@ -64,7 +64,7 @@ public enum SVGObjectConstant {
      * @param parent
      * @return 
      */
-    public SVGObject findIn(SVGObject parent) {
+    public SVGObject findIn(final SVGObject parent) {
         return parent.getChild(idValue);
     }
     
@@ -73,7 +73,7 @@ public enum SVGObjectConstant {
      * Uses depth first search.
      * @param parent 
      */
-    public void removeFrom(SVGObject parent) {
+    public void removeFrom(final SVGObject parent) {
         parent.removeChild(idValue);
     }
 }

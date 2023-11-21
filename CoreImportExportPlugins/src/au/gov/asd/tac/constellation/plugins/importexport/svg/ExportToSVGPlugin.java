@@ -42,6 +42,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -117,12 +118,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
         exportPerspectiveParam.setName("Export Perspective");
         exportPerspectiveParam.setDescription("The perspectove the exported graph will be viewed from");
-        List<String> options = new ArrayList<>();
-        options.add("X-Axis");
-        options.add("Y-Axis");
-        options.add("Z-Axis");
-        options.add("Current Perspective");      
-        SingleChoiceParameterType.setOptions(exportPerspectiveParam, options);
+        SingleChoiceParameterType.setOptions(exportPerspectiveParam, Arrays.asList("X-Axis", "Y-Axis", "Z-Axis", "Current Perspective"));
         parameters.addParameter(exportPerspectiveParam);
         
         return parameters;
@@ -135,10 +131,10 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
         final ConstellationColor color = parameters.getColorValue(BACKGROUND_COLOR_PARAMETER_ID);
-        final Boolean selectedNodes = parameters.getBooleanValue(SELECTED_NODES_PARAMETER_ID);
-        final Boolean showConnections = parameters.getBooleanValue(SHOW_CONNECTIONS_PARAMETER_ID);
-        final Boolean showNodeLabels = parameters.getBooleanValue(SHOW_NODE_LABELS_PARAMETER_ID);
-        final Boolean showConnectionLabels = parameters.getBooleanValue(SHOW_CONNECTION_LABELS_PARAMETER_ID);
+        final boolean selectedNodes = parameters.getBooleanValue(SELECTED_NODES_PARAMETER_ID);
+        final boolean showConnections = parameters.getBooleanValue(SHOW_CONNECTIONS_PARAMETER_ID);
+        final boolean showNodeLabels = parameters.getBooleanValue(SHOW_NODE_LABELS_PARAMETER_ID);
+        final boolean showConnectionLabels = parameters.getBooleanValue(SHOW_CONNECTION_LABELS_PARAMETER_ID);
         final String exportPerspective = parameters.getStringValue(EXPORT_PERSPECTIVE_PARAMETER_ID);
         
         final File imageFile = new File(fnam);  
@@ -159,7 +155,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
             interaction.setExecutionStage(0, -1, "Exporting Graph", "Writing data to file", true);
             exportToSVG(imageFile, svg, interaction);
         } catch (final IOException ex) {
-            LOGGER.log(Level.INFO, ex.getLocalizedMessage());
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage(), ex);
         }
 
         interaction.setProgress(1, 0, "Finished", true);

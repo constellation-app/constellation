@@ -53,7 +53,7 @@ public class SVGObjectConstantNGTest {
     }
 
     /**
-     * Test of findIn(), removeFrom(), of class SVGObjectConstant.
+     * Test of findIn(), removeFrom(), of class SVGObjectConstants.
      */
     @Test
     public void testFindIn() {
@@ -62,7 +62,7 @@ public class SVGObjectConstantNGTest {
         final SVGObject obj2 = new SVGObject(new SVGData(typeSVG, null, null));
         obj1.setID("parent");
                 
-        for (SVGObjectConstant constant : SVGObjectConstant.values()){
+        for (SVGObjectConstants constant : SVGObjectConstants.values()){
             obj2.setID(constant.idValue);
             obj2.setParent(obj1);
             assertEquals(constant.findIn(obj1).toSVGData().toString(), obj2.toSVGData().toString());

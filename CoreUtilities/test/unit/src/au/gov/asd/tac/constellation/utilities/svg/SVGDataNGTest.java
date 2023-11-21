@@ -102,10 +102,10 @@ public class SVGDataNGTest {
         svgObjectBlank3 = new SVGData(typeRect, null, null);
         svgObjectBlank4 = new SVGData(typeRect, null, null);  
         
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.ID,id1);
-        svgObjectBlank2.setAttribute(SVGAttributeConstant.ID,id2);
-        svgObjectBlank3.setAttribute(SVGAttributeConstant.ID,id3);
-        svgObjectBlank4.setAttribute(SVGAttributeConstant.ID,id4);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.ID,id1);
+        svgObjectBlank2.setAttribute(SVGAttributeConstants.ID,id2);
+        svgObjectBlank3.setAttribute(SVGAttributeConstants.ID,id3);
+        svgObjectBlank4.setAttribute(SVGAttributeConstants.ID,id4);
         
         //Ensure Objects have no parent by default
         assertNull(svgObjectBlank1.getParent());
@@ -168,9 +168,9 @@ public class SVGDataNGTest {
         svgObjectBlank4.setParent(svgObjectBlank1);
         
         // Test getAllChildren with a custom sort order.
-        svgObjectBlank4.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "1");
-        svgObjectBlank3.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "3");
-        svgObjectBlank2.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, "2");
+        svgObjectBlank4.setAttribute(SVGAttributeConstants.CUSTOM_SORT_ORDER, "1");
+        svgObjectBlank3.setAttribute(SVGAttributeConstants.CUSTOM_SORT_ORDER, "3");
+        svgObjectBlank2.setAttribute(SVGAttributeConstants.CUSTOM_SORT_ORDER, "2");
         List<SVGData> children = svgObjectBlank1.getAllChildren();
         assertEquals(children.get(2), svgObjectBlank4);
         assertEquals(children.get(1), svgObjectBlank2);
@@ -194,26 +194,26 @@ public class SVGDataNGTest {
         final String sortOrder = "4"; 
         
         //Test attribute values present in attribute map 
-        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.WIDTH.getName()));
-        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.X.getName()));
-        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.FILL_COLOR.getName()));
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.WIDTH, width);
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.X, x);
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.FILL_COLOR, color);
-        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.WIDTH.getName()), width);
-        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.X.getName()), x);
-        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.FILL_COLOR.getName()), color);
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.WIDTH.getName()));
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.X.getName()));
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.FILL_COLOR.getName()));
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.WIDTH, width);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.X, x);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.FILL_COLOR, color);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.WIDTH.getName()), width);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.X.getName()), x);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.FILL_COLOR.getName()), color);
         
         //Test attribute values not present in attribute map 
-        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()));
-        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.DASH_ARRAY.getName()));
-        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName()));
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.VIEW_BOX, viewbox);
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.DASH_ARRAY, dashArray);
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.CUSTOM_SORT_ORDER, sortOrder);
-        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.VIEW_BOX.getName()), viewbox);
-        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.DASH_ARRAY.getName()), dashArray);
-        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstant.CUSTOM_SORT_ORDER.getName()), sortOrder);
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.VIEW_BOX.getName()));
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.DASH_ARRAY.getName()));
+        assertNull(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.CUSTOM_SORT_ORDER.getName()));
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.VIEW_BOX, viewbox);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.DASH_ARRAY, dashArray);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.CUSTOM_SORT_ORDER, sortOrder);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.VIEW_BOX.getName()), viewbox);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.DASH_ARRAY.getName()), dashArray);
+        assertEquals(svgObjectBlank1.getAttributeValue(SVGAttributeConstants.CUSTOM_SORT_ORDER.getName()), sortOrder);
     }
 
     /**
@@ -258,36 +258,36 @@ public class SVGDataNGTest {
                 + "\t</%s>\n"
                 + "</%s>",
                 typeSVG.getTypeString(),
-                SVGAttributeConstant.ID.getName(), parentID,
-                SVGAttributeConstant.X.getName(), x,
-                SVGAttributeConstant.Y.getName(), y,
-                SVGAttributeConstant.WIDTH.getName(), width,
-                SVGAttributeConstant.HEIGHT.getName(), height,
-                SVGAttributeConstant.VIEW_BOX.getName(), viewBox,
+                SVGAttributeConstants.ID.getName(), parentID,
+                SVGAttributeConstants.X.getName(), x,
+                SVGAttributeConstants.Y.getName(), y,
+                SVGAttributeConstants.WIDTH.getName(), width,
+                SVGAttributeConstants.HEIGHT.getName(), height,
+                SVGAttributeConstants.VIEW_BOX.getName(), viewBox,
                 typeSVG.getTypeString(),
-                SVGAttributeConstant.WIDTH.getName(), width,
+                SVGAttributeConstants.WIDTH.getName(), width,
                 typeRect.getTypeString(),
-                SVGAttributeConstant.ID.getName(), childID,
+                SVGAttributeConstants.ID.getName(), childID,
                 content,
                 typeRect.getTypeString(),
                 typeSVG.getTypeString()
                 );
         
         //Set attributes and contnet in a random order.
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.Y, y);
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.HEIGHT, height);
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.VIEW_BOX, viewBox);
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.ID, parentID);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.Y, y);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.HEIGHT, height);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.VIEW_BOX, viewBox);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.ID, parentID);
         
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.WIDTH, width);
-        svgObjectBlank1.setAttribute(SVGAttributeConstant.X, x);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.WIDTH, width);
+        svgObjectBlank1.setAttribute(SVGAttributeConstants.X, x);
         
-        svgObjectBlank4.setAttribute(SVGAttributeConstant.ID, childID);
+        svgObjectBlank4.setAttribute(SVGAttributeConstants.ID, childID);
         svgObjectBlank4.setContent(content);
         svgObjectBlank2.setParent(svgObjectBlank1);
         svgObjectBlank4.setParent(svgObjectBlank1);
         
-        svgObjectBlank2.setAttribute(SVGAttributeConstant.WIDTH, width);
+        svgObjectBlank2.setAttribute(SVGAttributeConstants.WIDTH, width);
         
         assertEquals(svgObjectBlank1.toString(), expectedString);
 
