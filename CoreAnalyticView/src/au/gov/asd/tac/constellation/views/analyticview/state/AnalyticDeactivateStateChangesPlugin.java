@@ -55,7 +55,7 @@ public class AnalyticDeactivateStateChangesPlugin extends SimpleEditPlugin {
         final Map<GraphVisualisation, Boolean> graphVisualisations = currentState.getGraphVisualisations();
         if (!graphVisualisations.isEmpty()) {
             graphVisualisations.entrySet().forEach(node -> {
-                node.getKey().deactivate(node.getValue());
+                node.getKey().deactivate(true);
                 node.setValue(false);
             });
             currentState.setGraphVisualisations(graphVisualisations);
