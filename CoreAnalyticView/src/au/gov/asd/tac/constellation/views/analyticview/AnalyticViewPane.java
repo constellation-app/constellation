@@ -221,7 +221,7 @@ public class AnalyticViewPane extends BorderPane {
     public void deactiveResultChanges() {
         final Map<GraphVisualisation, Boolean> graphVisualisations = AnalyticViewController.getDefault().getGraphVisualisations();
         if (graphVisualisations != null && !graphVisualisations.isEmpty()) {
-            graphVisualisations.entrySet().forEach(node -> node.getKey().deactivate(node.getValue()));
+            graphVisualisations.entrySet().forEach(node -> node.getKey().deactivate(true));
         }
     }
 
