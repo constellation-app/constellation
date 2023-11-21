@@ -27,6 +27,7 @@ import javax.swing.Icon;
 import org.openide.util.ImageUtilities;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -351,8 +352,8 @@ public class ConstellationIconNGTest {
     public void testBuildSVG_int_Color() {
         final int size = 50;
         final Color color = ConstellationColor.DARK_GREEN.getJavaColor();
-        final SVGObject expResult = new SVGObject(testIcon.buildSVG(ConstellationIcon.DEFAULT_ICON_SIZE, null));
-        final SVGObject result = new SVGObject(testIcon.buildSVG(size, color));
+        final SVGObject expResult = new SVGObject(DefaultIconProvider.FLAT_SQUARE.buildSVG(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        final SVGObject result = new SVGObject(DefaultIconProvider.FLAT_SQUARE.buildSVG(size, color));
         final boolean resultHeight = result.getHeight() != expResult.getHeight();
         final boolean resultWidth = result.getWidth() != expResult.getWidth();
         assertTrue(resultHeight);
@@ -361,6 +362,29 @@ public class ConstellationIconNGTest {
         assertEquals(Math.round(result.getWidth()), size);
     }
 
+    /**
+     * Test of clearCache method, of class ConstellationIcon.
+     */
+    @Test
+    public void testClearCache() {
+        testIcon.clearCache();
+        
+        Icon icon = testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+        Image image = testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+        BufferedImage bufferedImage = testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
+        
+        assertEquals(icon, testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        assertEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        assertEquals(bufferedImage, testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        
+        testIcon.clearCache();
+        
+        assertNotEquals(icon, testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        assertNotEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        assertNotEquals(bufferedImage, testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
+        
+    }
+    
     /**
      * Test of toString method, of class ConstellationIcon.
      */
