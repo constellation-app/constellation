@@ -44,12 +44,13 @@ public final class SpellChecker {
     private final SpellCheckingTextArea textArea;
     private static final List<String> misspells = new ArrayList<>();
     private List<RuleMatch> matches = new ArrayList<>();
-    private int currentIndex;       // index for current position in misspells list
+    private int indexOfMisspelledTextUnderCursor;       // position of the current misspelled text in misspells list
     private final ListView<String> suggestions = new ListView<>(FXCollections.observableArrayList());
-    private String misspelledTextUnderCursor;
     private final JLanguageTool langTool;
     private Popup popup;
     private boolean turnOffSpellChecking = false;
+    private int startOfMisspelledTextUnderCursor;
+    private int endOfMisspelledTextUnderCursor;
     private static final Logger LOGGER = Logger.getLogger(SpellChecker.class.getName());
 
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
@@ -66,7 +67,9 @@ public final class SpellChecker {
         popup = new Popup();
         suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
-                textArea.replaceText​(textArea.getText().replace(misspelledTextUnderCursor, newValue));
+                StringBuilder builder = new StringBuilder(textArea.getText());
+                builder.replace(startOfMisspelledTextUnderCursor, endOfMisspelledTextUnderCursor, newValue);
+                textArea.replaceText​(builder.toString());
             }
             popup.hide();
         });
@@ -111,7 +114,7 @@ public final class SpellChecker {
 
             if (isWordUnderCursorMisspelled()) {
                 suggestionsList.clear();
-                suggestionsList.addAll(matches.get(currentIndex).getSuggestedReplacements());
+                suggestionsList.addAll(matches.get(indexOfMisspelledTextUnderCursor).getSuggestedReplacements());
                 suggestions.setItems(suggestionsList);
 
                 final Label popupMsg = new Label("");
@@ -145,8 +148,9 @@ public final class SpellChecker {
             final int start = match.getFromPos();
             final int end = match.getToPos();
             if (cursorIndex >= start && cursorIndex <= end) {
-                misspelledTextUnderCursor = textArea.getText().substring(start, end);
-                currentIndex = misspells.indexOf(misspelledTextUnderCursor);
+                indexOfMisspelledTextUnderCursor = misspells.indexOf(textArea.getText().substring(start, end));
+                startOfMisspelledTextUnderCursor = start;
+                endOfMisspelledTextUnderCursor = end;
                 return true;
             }
         }

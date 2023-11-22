@@ -126,21 +126,21 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * the middle of a sentence.
      */
     private boolean canCheckSpelling(final String newText) {
-        return newText.length() > 0 && !(this.getCaretPosition() == this.getText().length()
+        return !newText.isEmpty() && !(this.getCaretPosition() == this.getText().length()
                 && newText.substring(newText.length() - 1).matches("[a-zA-Z0-9']"));
 
     }
 
     private ContextMenu addRightClickContextMenu() {
-        ContextMenu contextMenu = new ContextMenu();
+        final ContextMenu contextMenu = new ContextMenu();
 
-        MenuItem undoMenuItem = new MenuItem("Undo");
-        MenuItem redoMenuItem = new MenuItem("Redo");
-        MenuItem cutMenuItem = new MenuItem("Cut");
-        MenuItem copyMenuItem = new MenuItem("Copy");
-        MenuItem pasteMenuItem = new MenuItem("Paste");
-        MenuItem deleteMenuItem = new MenuItem("Delete");
-        MenuItem selectAllMenuItem = new MenuItem("Select All");
+        final MenuItem undoMenuItem = new MenuItem("Undo");
+        final MenuItem redoMenuItem = new MenuItem("Redo");
+        final MenuItem cutMenuItem = new MenuItem("Cut");
+        final MenuItem copyMenuItem = new MenuItem("Copy");
+        final MenuItem pasteMenuItem = new MenuItem("Paste");
+        final MenuItem deleteMenuItem = new MenuItem("Delete");
+        final MenuItem selectAllMenuItem = new MenuItem("Select All");
 
         undoMenuItem.setOnAction(e -> this.undo());
         redoMenuItem.setOnAction(e -> this.redo());
@@ -151,7 +151,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         selectAllMenuItem.setOnAction(e -> this.selectAll());
 
         // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
-        CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Turn On Spell Checking");
+        final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Turn On Spell Checking");
         toggleSpellCheckMenuItem.setSelected(true);
         toggleSpellCheckMenuItem.setOnAction(event -> {
             spellChecker.turnOffSpellChecking(!toggleSpellCheckMenuItem.isSelected());
@@ -187,9 +187,9 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     }
 
     public void autoComplete(final List<String> suggestions) {
-        Popup popup = new Popup();
+        final Popup popup = new Popup();
         popup.setWidth(this.getWidth());
-        ListView<String> listView = new ListView<>();
+        final ListView<String> listView = new ListView<>();
         listView.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
                 this.replaceText​(newValue);
@@ -206,7 +206,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             popup.getContent().clear();
             listView.getItems().clear();
 
-            if (!StringUtils.isBlank(input) && !suggestions.isEmpty()) {
+            if (StringUtils.isNotBlank(input) && !suggestions.isEmpty()) {
                 final List<String> filteredSuggestions = suggestions.stream()
                         .filter(suggestion -> suggestion.toLowerCase().startsWith(input.toLowerCase()) && !suggestion.equals(input))
                         .collect(Collectors.toList());
@@ -222,7 +222,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
                 });
 
                 // Show the popup under this text area
-                if (listView.getItems().size() > 0) {
+                if (!listView.getItems().isEmpty()) {
                     popup.show(this, this.localToScreen(0, 0).getX(), this.localToScreen(0, 0).getY() + this.heightProperty().getValue());
                 }
             }
