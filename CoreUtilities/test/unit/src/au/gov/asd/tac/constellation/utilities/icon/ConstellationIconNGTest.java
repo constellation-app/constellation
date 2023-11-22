@@ -37,14 +37,14 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- *
+ * Tests ConstelationIcon
+ * 
  * @author Delphinus8821
  * @author capricornunicorn123
  */
 public class ConstellationIconNGTest {
 
     private static ConstellationIcon testIcon;
-    private static ConstellationIcon testSVGIcon;
     private final static List<String> aliases = new ArrayList<>();
     private final static List<String> categories = new ArrayList<>();
 
@@ -384,7 +384,6 @@ public class ConstellationIconNGTest {
         assertNotEquals(icon, testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null));
         assertNotEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
         assertNotEquals(bufferedImage, testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
-        
     }
     
     /**

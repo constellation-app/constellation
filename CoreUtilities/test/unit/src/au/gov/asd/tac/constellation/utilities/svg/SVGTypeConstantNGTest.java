@@ -47,15 +47,15 @@ public class SVGTypeConstantNGTest {
     public void tearDownMethod() throws Exception {
     }
 
-//    /**
-//     * Test of getTypeString(), getType(), of class SVGTypeConstants.
-//     */
-//    @Test
-//    public void testGetTypeString() {
-//        for (SVGTypeConstants constant : SVGTypeConstants.values()){
-//            assertEquals(SVGTypeConstants.getType(constant.getTypeString()), constant);
-//        }
+    /**
+     * Test of getTypeString(), getType(), of class SVGTypeConstants.
+     */
+    @Test
+    public void testGetTypeString() {
+        for (SVGTypeConstants constant : SVGTypeConstants.values()){
+            assertEquals(SVGTypeConstants.getType(constant.getTypeString()), constant);
+        }
 //        assertNull(SVGTypeConstants.getType(null));
 //        assertNull(SVGTypeConstants.getType("Not A SVG Type"));
-//    }    
+    }    
 }
