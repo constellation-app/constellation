@@ -255,7 +255,7 @@ public class AnalyticViewPane extends BorderPane {
                 final boolean resultsVisible = state.isResultsPaneVisible();
                 final AnalyticQuestion<?> question = state.getQuestion();
 
-                if (results != null && resultsVisible && !viewPane.getChildren().contains(analyticResultsPane)) {
+                if (results != null && resultsVisible && !viewPane.getChildren().contains(analyticResultsPane) && question != null) {
                     viewPane.getChildren().add(1, analyticResultsPane);
                     final Map<GraphVisualisation, Boolean> graphVisualisations = (HashMap) state.getGraphVisualisations();
                     controller.setGraphVisualisations(graphVisualisations);

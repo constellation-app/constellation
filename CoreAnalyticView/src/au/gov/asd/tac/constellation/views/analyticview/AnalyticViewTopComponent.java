@@ -232,12 +232,12 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                             try {
                                 // Update each graph and revert any changes made by the analytic view visualisations
                                 EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
-                                PluginExecution.withPlugin(new AnalyticStateReaderPlugin(analyticViewPane)).executeLater(graph);
+                                PluginExecution.withPlugin(new AnalyticStateReaderPlugin(analyticViewPane)).executeLater(graph).get();
                                 analyticController.deactivateResultUpdates(graph);
                             } catch (final InterruptedException ex) {
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                                 Thread.currentThread().interrupt();
-                            } catch (final InvocationTargetException ex) {
+                            } catch (final InvocationTargetException | ExecutionException ex) {
                                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                             }
                         }
