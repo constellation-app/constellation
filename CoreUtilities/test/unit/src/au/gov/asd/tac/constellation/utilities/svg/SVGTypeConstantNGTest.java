@@ -55,7 +55,7 @@ public class SVGTypeConstantNGTest {
         for (SVGTypeConstants constant : SVGTypeConstants.values()){
             assertEquals(SVGTypeConstants.getType(constant.getTypeString()), constant);
         }
-//        assertNull(SVGTypeConstants.getType(null));
-//        assertNull(SVGTypeConstants.getType("Not A SVG Type"));
+        //assertNull(SVGTypeConstants.getType(null));
+        assertNull(SVGTypeConstants.getType("Not A SVG Type"));
     }    
 }
