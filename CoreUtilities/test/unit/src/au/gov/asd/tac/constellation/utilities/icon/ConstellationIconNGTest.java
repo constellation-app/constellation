@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGAttributeConstants;
 import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.image.Image;
@@ -56,14 +57,14 @@ public class ConstellationIconNGTest {
         categories.add("category1");
         categories.add("category2");
         testIcon = new ConstellationIcon.Builder("Test1",
-                new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
-                        DefaultIconProvider.FLAT_SQUARE.buildBufferedImage(16, ConstellationColor.BLUEBERRY.getJavaColor()),
-                        AnalyticIconProvider.STAR.buildBufferedImage(16), 0, 0)))
-                .addAliases(aliases)
-                .addCategories(categories)
-                .build();
+        new ImageIconData((BufferedImage) ImageUtilities.mergeImages(
+                DefaultIconProvider.FLAT_SQUARE.buildBufferedImage(16, ConstellationColor.BLUEBERRY.getJavaColor()),
+                AnalyticIconProvider.STAR.buildBufferedImage(16), 0, 0)))
+        .addAliases(aliases)
+        .addCategories(categories)
+        .build();
         testIcon.setEditable(true);
-
+    
     }
 
     @AfterClass
@@ -367,7 +368,7 @@ public class ConstellationIconNGTest {
      */
     @Test
     public void testClearCache() {
-        testIcon.clearCache();
+        ConstellationIcon.clearCache();
         
         Icon icon = testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null);
         Image image = testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null);
@@ -377,7 +378,7 @@ public class ConstellationIconNGTest {
         assertEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
         assertEquals(bufferedImage, testIcon.buildBufferedImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));
         
-        testIcon.clearCache();
+        ConstellationIcon.clearCache();
         
         assertNotEquals(icon, testIcon.buildIcon(ConstellationIcon.DEFAULT_ICON_SIZE, null));
         assertNotEquals(image, testIcon.buildImage(ConstellationIcon.DEFAULT_ICON_SIZE, null));

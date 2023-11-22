@@ -71,7 +71,7 @@ public class ConstellationIcon {
     /**
      * A cache to store icons
      */
-    private static final Map<ThreeTuple<Integer, Integer, Color>, Icon> ICON_CACHE = new HashMap<>();
+    private static final Map<ThreeTuple<Integer, Integer, Color>, ImageIcon> ICON_CACHE = new HashMap<>();
     private static final Map<ThreeTuple<Integer, Integer, Color>, Image> IMAGE_CACHE = new HashMap<>();
     private static final Map<ThreeTuple<Integer, Integer, Color>, BufferedImage> BUFFERED_IMAGE_CACHE = new HashMap<>();
 
@@ -306,7 +306,7 @@ public class ConstellationIcon {
         // build the cache key
         final ThreeTuple<Integer, Integer, Color> key = buildCacheKey(size, color);
 
-        final Icon icon;
+        final ImageIcon icon;
         if (ICON_CACHE.containsKey(key)) {
             icon = ICON_CACHE.get(key);
         } else {
@@ -370,7 +370,7 @@ public class ConstellationIcon {
 
         final Image image;
         if (IMAGE_CACHE.containsKey(key)) {
-            image = IMAGE_CACHE.get(key);
+            image = (Image) IMAGE_CACHE.get(key);
         } else {
             // build the image
             LOGGER.log(Level.FINE, BUILDING_ICON_FORMAT, name);
