@@ -308,12 +308,15 @@ public class SVGObjectNGTest {
     @Test
     public void testFont() {
         final SVGObject parent = new SVGObject(new SVGData(typeSVG, null, null));
-   
+        final String baselineValue = "middle";
+        final Float fontSizeValue = 32F;
         assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstants.FONT_SIZE.getName()));
         assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstants.BASELINE.getName()));
         
-        parent.setBaseline("middle");
-        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstants.BASELINE.getName()), "middle");
+        parent.setBaseline(baselineValue);
+        parent.setFontSize(fontSizeValue);
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstants.BASELINE.getName()), baselineValue);
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstants.FONT_SIZE.getName()), "32.00");
     }
 
     /**
@@ -321,7 +324,12 @@ public class SVGObjectNGTest {
      */
     @Test
     public void testSetTransformation() {
-        //TODO
+        final SVGObject parent = new SVGObject(new SVGData(typeSVG, null, null));
+        final String transformationValues = "translate(30,40) rotate(45)";
+        assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstants.TRANSFORM.getName()));
+        
+        parent.setTransformation(transformationValues);
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstants.TRANSFORM.getName()), transformationValues);
     }
 
     /**
@@ -367,7 +375,9 @@ public class SVGObjectNGTest {
      */
     @Test
     public void testLoadFromTemplate() {
-        //TODO
+        SVGObject object = SVGObject.loadFromTemplate(TestingSVGFile.TESTING_TEMPLATE_COMPLIANT);       
+        SVGObject background = object.getChild("background");
+        assertEquals(background.toSVGData().toString(), "\n<rect id=\"background\" width=\"100%\" height=\"100%\" fill=\"#1b1e24\" stroke-width=\"0\" />");
     }
 
     /**

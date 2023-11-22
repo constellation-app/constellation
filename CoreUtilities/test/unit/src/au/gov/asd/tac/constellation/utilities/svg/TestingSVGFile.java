@@ -23,8 +23,8 @@ package au.gov.asd.tac.constellation.utilities.svg;
 public enum TestingSVGFile implements SVGFile{
     
     TESTING_TEMPLATE_COMPLIANT("CommonTestingTemplateA.svg"),
-    TESTING_TEMPLATE_INVALID_MULTI_ROOT("CommonTestingTemplateB.svg"),
-    TESTING_TEMPLATE_INVALID_JSON("CommonTestingTemplateC.svg");
+    TESTING_TEMPLATE_INVALID_MULTI_ROOT("CommonTestingTemplateC.svg"),
+    TESTING_TEMPLATE_INVALID_JSON("CommonTestingTemplateB.svg");
     
     private final String resource; 
     
