@@ -201,7 +201,7 @@ public class SVGObject {
         //This evluation will be true if the current height is a percentage so set the width as the viewbox attribute.
         if (this.height != null && currentWidth != this.height){
             this.height = height;
-            updateViewBox();
+            setViewBox(this.x, this.y, this.width, this.height);
         } else {
             this.height = height;
             this.setAttribute(SVGAttributeConstants.HEIGHT, height);
@@ -224,7 +224,7 @@ public class SVGObject {
         //This evluation will be true if the current width is a percentage so set the width as the viewbox attribute.
         if (this.width != null && currentWidth != this.width){
             this.width = width;
-            updateViewBox();
+            setViewBox(this.x, this.y, this.width, this.height);
         } else {
             this.width = width;
             this.setAttribute(SVGAttributeConstants.WIDTH, width);
@@ -406,7 +406,7 @@ public class SVGObject {
      * @param style 
      */
     public void setStrokeStyle(final LineStyle style) {
-        if (null != style) switch (style) {
+        switch (style) {
             case DOTTED:
                 this.setStrokeArray(35, 35);
                 break;
@@ -415,6 +415,7 @@ public class SVGObject {
                 break;
             default:
                 this.svgDataReference.setAttribute(SVGAttributeConstants.DASH_ARRAY, null);
+                break;
         }
     }
     
@@ -457,13 +458,18 @@ public class SVGObject {
     }
 
     public void setDimensionScale(final String width, final String height) {
-        this.setViewBox(0, 0, this.width, this.height);
+        this.setViewBox(null, null, this.width, this.height);
         this.svgDataReference.setAttribute(SVGAttributeConstants.WIDTH, width);
         this.svgDataReference.setAttribute(SVGAttributeConstants.HEIGHT, height);
     }
     
-    public void setViewBox(final float x, final float y, final float w, final float h) {
-        this.setAttribute(SVGAttributeConstants.VIEW_BOX, String.format("%s, %s, %s, %S", x, y, w, h));
+    public void setViewBox(final Float x, final Float y, final Float w, final Float h) {
+        final float vbx = x == null ? 0F : x;
+        final float vby = y == null ? 0F : y;
+        final float vbw = w == null ? 0F : w;
+        final float vbh = h == null ? 0F : h;
+        
+        this.setAttribute(SVGAttributeConstants.VIEW_BOX, String.format("%s, %s, %s, %S", vbx, vby, vbw, vbh));
     }
     
     public void saturateSVG(final ConstellationColor color) {
@@ -486,15 +492,5 @@ public class SVGObject {
     
     public void setPoints(final String path) {
         setAttribute(SVGAttributeConstants.POINTS, path);
-    }
-    
-    private void updateViewBox() {
-        final float vbx = x == null ? 0F : x;
-        final float vby = y == null ? 0F : y;
-        final float vbw = width == null ? 0F : width;
-        final float vbh = height == null ? 0F : height;
-    
-        this.setAttribute(SVGAttributeConstants.VIEW_BOX, String.format("%s, %s, %s, %S", vbx, vby, vbw, vbh));
-    }
-    
+    }    
 }
