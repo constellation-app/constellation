@@ -16,7 +16,8 @@
 package au.gov.asd.tac.constellation.utilities.svg;
 
 /**
- *
+ * A constant reference for SVG element types.
+ * 
  * @author capricornunicorn123
  */
 public enum SVGTypeConstants {

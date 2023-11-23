@@ -26,9 +26,9 @@ import org.testng.annotations.Test;
  *
  * @author capricornunicorn123
  */
-public class SVGTypeConstantNGTest {
+public class SVGTypeConstantsNGTest {
     
-    public SVGTypeConstantNGTest() {
+    public SVGTypeConstantsNGTest() {
     }
 
     @BeforeClass
@@ -57,7 +57,8 @@ public class SVGTypeConstantNGTest {
         }
         assertNull(SVGTypeConstants.getType(null));
         
-        //Failing in online tests
+        //The below test is failing in CI but passes localy. Test is required to Have 100% code coverage for this class.
+        //CI ir reporting "Error" with no logs so may be un unrelated falure.
         //assertNull(SVGTypeConstants.getType("Not A SVG Type"));
     }    
 }

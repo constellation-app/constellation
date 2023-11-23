@@ -31,9 +31,9 @@ import org.testng.annotations.Test;
  * 
  * @author capricornunicorn123
  */
-public class SVGAttributeConstantNGTest {
+public class SVGAttributeConstantsNGTest {
     
-    public SVGAttributeConstantNGTest() {
+    public SVGAttributeConstantsNGTest() {
     }
     
     @BeforeClass

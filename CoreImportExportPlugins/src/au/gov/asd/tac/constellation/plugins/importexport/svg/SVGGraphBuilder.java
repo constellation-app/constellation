@@ -472,8 +472,7 @@ public class SVGGraphBuilder {
             // Create a svgLink for all connections in the current link
             final SVGObject svgLink = SVGTemplateConstants.LINK.getSVGObject();
             svgLink.setID(String.format("link-%s", linkIndex));
-            svgLink.setParent(svgLinks);
-
+            
             // Get source and destination vertex references
             final int highIndex =  access.getLinkHighVertex(linkIndex);
             final int lowIndex = access.getLinkLowVertex(linkIndex);
@@ -482,6 +481,7 @@ public class SVGGraphBuilder {
             if (selectedNodesOnly && (!access.isVertexSelected(highIndex) || !access.isVertexSelected(lowIndex))) {
                 continue;
             }
+            
 
             // Determine the coordinates of the center of the vertices
             final Vector4f highCenterPosition = getVertexPosition(highIndex);
@@ -545,7 +545,7 @@ public class SVGGraphBuilder {
             
             //Set the sort order as an average of the distance of the source and destination vertex distance from the camera.
             svgLink.setSortOrderValue((highCenterPosition.getW() + lowCenterPosition.getW())/2F);
-            
+            svgLink.setParent(svgLinks);
             interaction.setProgress(progress++, totalSteps, true);
         }
         interaction.setProgress(totalSteps, totalSteps, String.format("Created %s links", progress), true);
