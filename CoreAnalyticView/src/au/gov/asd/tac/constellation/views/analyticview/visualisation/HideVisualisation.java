@@ -71,10 +71,11 @@ public class HideVisualisation<C> extends GraphVisualisation {
     public void deactivate(final boolean reset) {
         if (reset) {
             final float threshold = (float) hideSlider.getMin();
-            hideSlider.setValue(threshold);
             translator.executePlugin(reset, threshold);
             activated = !reset;
             hideButton.setSelected(activated);
+            hideSlider.setDisable(reset);
+            hideSlider.setValue(threshold);
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
         }
     }

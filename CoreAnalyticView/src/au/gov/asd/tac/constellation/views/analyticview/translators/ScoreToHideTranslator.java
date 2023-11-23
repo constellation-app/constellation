@@ -138,7 +138,6 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
             vertexHideValues.clear();
             transactionHideValues.clear();
             
-    
             if (!reset) {
                 // find highest and lowest mean scores among available analytic events
                 float highestMeanScore = 0.0F;
@@ -164,6 +163,8 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                             .reduce((x, y) -> x + y).get() / scoreResult.getNamedScores().size();
                     switch (elementType) {
                         case VERTEX:
+                            final float vertexVisibility = graph.getFloatValue(vertexVisibilityAttribute, elementId);
+                            vertexHideValues.put(elementId, vertexVisibility); 
                             if (elementMeanScore >= normalisedThreshold) {
                                 graph.setFloatValue(vertexVisibilityAttribute, elementId, 1.0F);
                             } else {
@@ -171,6 +172,8 @@ public class ScoreToHideTranslator extends AbstractHideTranslator<ScoreResult, E
                             }
                             break;
                         case TRANSACTION:
+                            final float transactionVisibility = graph.getFloatValue(transactionVisibilityAttribute, elementId);
+                            transactionHideValues.put(elementId, transactionVisibility); 
                             if (elementMeanScore >= normalisedThreshold) {
                                 graph.setFloatValue(transactionVisibilityAttribute, elementId, 1.0F);
                             } else {
