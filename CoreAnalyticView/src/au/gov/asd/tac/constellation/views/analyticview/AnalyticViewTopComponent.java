@@ -229,33 +229,33 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
             if (topComponents != null) {
                 topComponents.forEach(component -> 
                     allGraphs.values().forEach(graph -> {
-                        if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
-                            try {
-                                // Update each graph and revert any changes made by the analytic view visualisations
-                                EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
-                                PluginExecution.withPlugin(new AnalyticStateReaderPlugin(analyticViewPane)).executeLater(graph).get();
-                                analyticController.deactivateResultUpdates(graph);
-                            } catch (final InterruptedException ex) {
-                                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                                Thread.currentThread().interrupt();
-                            } catch (final InvocationTargetException | ExecutionException ex) {
-                                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                            if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(graph.getId())) {
+                                try {
+                                    // Update each graph and revert any changes made by the analytic view visualisations
+                                    EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
+                                    PluginExecution.withPlugin(new AnalyticStateReaderPlugin(analyticViewPane)).executeLater(graph).get();
+                                    analyticController.deactivateResultUpdates(graph);
+                                } catch (final InterruptedException ex) {
+                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                                    Thread.currentThread().interrupt();
+                                } catch (final InvocationTargetException | ExecutionException ex) {
+                                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                                }
                             }
-                        }
-                    }));
-                
+                        }));
+
                 // Make the originally active graph the active graph again.
                 topComponents.forEach(component -> {
-                        if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(activeGraph.getId())) {
-                            try {
-                                EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
-                            } catch (final InterruptedException ex) {
-                                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                                Thread.currentThread().interrupt();
-                            } catch (final InvocationTargetException ex) {
-                                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                            }
+                    if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(activeGraph.getId())) {
+                        try {
+                            EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
+                        } catch (final InterruptedException ex) {
+                            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                            Thread.currentThread().interrupt();
+                        } catch (final InvocationTargetException ex) {
+                            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                         }
+                    }
                 });
             }
         });
