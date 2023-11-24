@@ -221,6 +221,7 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
     @Override
     protected void handleComponentClosed() {
         super.handleComponentClosed();
+        final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
         final Map<String, Graph> allGraphs = GraphManager.getDefault().getAllGraphs();
         final Set<TopComponent> topComponents = WindowManager.getDefault().getRegistry().getOpened();
 
@@ -242,6 +243,20 @@ public final class AnalyticViewTopComponent extends JavaFxTopComponent<AnalyticV
                             }
                         }
                     }));
+                
+                // Make the originally active graph the active graph again.
+                topComponents.forEach(component -> {
+                        if ((component instanceof VisualGraphTopComponent) && ((VisualGraphTopComponent) component).getGraphNode().getGraph().getId().equals(activeGraph.getId())) {
+                            try {
+                                EventQueue.invokeAndWait(((VisualGraphTopComponent) component)::requestActive);
+                            } catch (final InterruptedException ex) {
+                                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                                Thread.currentThread().interrupt();
+                            } catch (final InvocationTargetException ex) {
+                                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                            }
+                        }
+                });
             }
         });
         analyticViewPane.reset();
