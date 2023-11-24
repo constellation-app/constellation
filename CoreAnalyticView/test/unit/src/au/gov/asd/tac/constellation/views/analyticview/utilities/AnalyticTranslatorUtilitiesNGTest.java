@@ -102,4 +102,29 @@ public class AnalyticTranslatorUtilitiesNGTest {
         assertTrue(contains);
     }
     
+    /**
+     * Test of addToVertexHideCache method, of class AnalyticTranslatorUtilities.
+     */
+    @Test
+    public void testAddToVertexHideCache() {
+        System.out.println("addToVertexHideCache");
+        final String currentGraphKey = "vertexHide";
+        final Map<Integer, Float> vertexHideValues = new HashMap<>();
+        AnalyticTranslatorUtilities.addToVertexHideCache(currentGraphKey, vertexHideValues);
+        final boolean contains = AnalyticTranslatorUtilities.getVertexHideCache().containsKey(currentGraphKey);
+        assertTrue(contains);
+    }
+
+    /**
+     * Test of addToTransactionHideCache method, of class AnalyticTranslatorUtilities.
+     */
+    @Test
+    public void testAddToTransactionHideCache() {
+        System.out.println("addToTransactionHideCache");
+        final String currentGraphKey = "transactionHide";
+        final Map<Integer, Float> transactionHideValues = new HashMap<>();
+        AnalyticTranslatorUtilities.addToTransactionHideCache(currentGraphKey, transactionHideValues);
+        final boolean contains = AnalyticTranslatorUtilities.getTransactionHideCache().containsKey(currentGraphKey);
+        assertTrue(contains);
+    }
 }

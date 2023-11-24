@@ -31,6 +31,8 @@ public class AnalyticTranslatorUtilities {
     private static final Map<String, Map<Integer, Float>> transactionSizeCache = new HashMap<>();
     private static final Map<String, Map<Integer, ConstellationColor>> vertexColorCache = new HashMap<>();
     private static final Map<String, Map<Integer, ConstellationColor>> transactionColorCache = new HashMap<>();
+    private static final Map<String, Map<Integer, Float>> vertexHideCache = new HashMap<>();
+    private static final Map<String, Map<Integer, Float>> transactionHideCache = new HashMap<>();
     
     private AnalyticTranslatorUtilities() {
         throw new IllegalStateException("Utility class");
@@ -52,6 +54,14 @@ public class AnalyticTranslatorUtilities {
         return transactionColorCache;
     }
     
+    public static Map<String, Map<Integer, Float>> getVertexHideCache() {
+        return vertexHideCache;
+    }
+    
+    public static Map<String, Map<Integer, Float>> getTransactionHideCache() {
+        return transactionHideCache;
+    }
+    
     public static void addToVertexSizeCache(final String currentGraphKey, final Map<Integer, Float> vertexSizes) {
         vertexSizeCache.put(currentGraphKey, vertexSizes);
     }
@@ -66,6 +76,14 @@ public class AnalyticTranslatorUtilities {
     
     public static void addToTransactionColorCache(final String currentGraphKey, final Map<Integer, ConstellationColor> transactionColors) {
         transactionColorCache.put(currentGraphKey, transactionColors);
+    }
+    
+    public static void addToVertexHideCache(final String currentGraphKey, final Map<Integer, Float> vertexHideValues) {
+        vertexHideCache.put(currentGraphKey, vertexHideValues);
+    }
+    
+    public static void addToTransactionHideCache(final String currentGraphKey, final Map<Integer, Float> transactionHideValues) {
+        transactionHideCache.put(currentGraphKey, transactionHideValues);
     }
     
 }

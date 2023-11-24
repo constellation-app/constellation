@@ -57,6 +57,9 @@ public class HideVisualisation<C> extends GraphVisualisation {
             final float threshold = (float) hideSlider.getValue();
             translator.executePlugin(!activated, threshold);
             hideSlider.setDisable(!activated);
+            if (hideSlider.isDisable()) {
+                hideSlider.setValue(hideSlider.getMin());
+            }
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
             AnalyticViewController.getDefault().writeState();
         });
@@ -67,9 +70,12 @@ public class HideVisualisation<C> extends GraphVisualisation {
     @Override
     public void deactivate(final boolean reset) {
         if (reset) {
-            translator.executePlugin(reset, 0);
+            final float threshold = (float) hideSlider.getMin();
+            translator.executePlugin(reset, threshold);
             activated = !reset;
             hideButton.setSelected(activated);
+            hideSlider.setDisable(reset);
+            hideSlider.setValue(threshold);
             AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
         }
     }
