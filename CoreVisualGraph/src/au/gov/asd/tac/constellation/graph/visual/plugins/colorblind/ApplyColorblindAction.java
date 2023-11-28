@@ -17,12 +17,14 @@ package au.gov.asd.tac.constellation.graph.visual.plugins.colorblind;
 
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.SimpleAction;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
-import au.gov.asd.tac.constellation.graph.schema.visual.VisualSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -30,9 +32,11 @@ import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import java.util.Collection;
 import java.util.prefs.Preferences;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
+import org.openide.awt.ActionReferences;
 import org.openide.awt.ActionRegistration;
 import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
@@ -47,13 +51,15 @@ import org.openide.util.NbPreferences;
  */
 @ActionID(category = "Display", id = "au.gov.asd.tac.constellation.graph.visual.plugins.colorblind.ApplyColorblindAction")
 @ActionRegistration(displayName = "#CTL_ApplyColorblindAction", iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/colorblind/resources/colorblind.png", surviveFocusChange = true)
-@ActionReference(path = "Menu/Display", position = 950, separatorBefore = 901)
+@ActionReferences({
+    @ActionReference(path = "Menu/Display", position = 950, separatorBefore = 901),
+    @ActionReference(path = "Shortcuts", name = "F12")
+})
 @NbBundle.Messages("CTL_ApplyColorblindAction=Apply Selected Colorblind Schema to Graph")
 public final class ApplyColorblindAction extends SimpleAction {
 
-    private static Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    //Retrieve colorblind mode selection preference 
-    private static String colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+    Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+    String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
     public ApplyColorblindAction(GraphNode context) {
         super(context);
@@ -61,109 +67,181 @@ public final class ApplyColorblindAction extends SimpleAction {
 
     @Override
     protected void edit(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-        final Graph graph = graphs.getGraph();
+        final Graph graph = GraphManager.getDefault().getActiveGraph();
         final WritableGraph wg = graph.getWritableGraph("Changing colors", true);
-        try {
-            run(wg);
-        } finally {
-            wg.commit();
-        }
+        run(wg);      
+        wg.commit();
     }
 
     public void run(final WritableGraph graph) {
         final int colorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
-        prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-        colorMode = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
-
-        // Color the taxonomies so we can see what's going on.
-        final int typeAttributeId = AnalyticConcept.VertexAttribute.TYPE.get(graph);
-
-        if (typeAttributeId != Graph.NOT_FOUND) {
-
-            final int vertexCount = graph.getVertexCount();
-            for (int vertex = 0; vertex < vertexCount; vertex++) {
-
-                final int vxId = graph.getVertex(vertex);
-                final SchemaVertexType vertexType = graph.getObjectValue(typeAttributeId, vxId);
-
-                if (typeAttributeId != Graph.NOT_FOUND) {
-                    ConstellationColor caseColor;
-
-                    switch (vertexType.getName()) {
-                        case "Telephone Identifier":
-                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.EMERALD : ConstellationColor.BUTTERMILK);
-                            graph.setObjectValue(colorAttr, vxId, caseColor);
-                            break;
-                        case "Machine Identifier":
-                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BLUSH);
-                            graph.setObjectValue(colorAttr, vxId, caseColor);
-                            break;
-                        case "Document":
-                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.BANANA : ConstellationColor.DARK_PURPLE);
-                            graph.setObjectValue(colorAttr, vxId, caseColor);
-                            break;
-                        case "Event":
-                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.PEACH : ConstellationColor.BROWN);
-                            graph.setObjectValue(colorAttr, vxId, caseColor);
-                            break;
-                        case "Placeholder":
-                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.TEAL : ConstellationColor.LIME);
-                            graph.setObjectValue(colorAttr, vxId, caseColor);
-                            break;
-                        case "Email":
-                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.MUSK : ConstellationColor.RED);
-                            graph.setObjectValue(colorAttr, vxId, caseColor);
-                            break;
-                        //Below are types which inherit the same colors from the schema
-                        case "Online Identifier":
-                        case "User Name":
-                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.AZURE : ConstellationColor.MIDNIGHT);
-                            graph.setObjectValue(colorAttr, vxId, caseColor);
-                            break;
-                        case "Location":
-                        case "Country":
-                        case "Geohash":
-                        case "MGRS":
-                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE);
-                            graph.setObjectValue(colorAttr, vxId, caseColor);
-                            break;
-                        default:
-                            //do nothing, color doesn't require updating
-                            break;
-                    }
-                }
-            }
-        }
-
-        // Color the taxonomies so we can see what's going on.
-        final int transactionTypeId = AnalyticConcept.TransactionAttribute.TYPE.get(graph);
         final int transactionColorAttr = VisualConcept.TransactionAttribute.COLOR.get(graph);
+        final int vxTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.get(graph);
+        final int txTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.get(graph);
 
-        if (transactionTypeId != Graph.NOT_FOUND) {
-            final int transactionCount = graph.getTransactionCount();
-            for (int transaction = 0; transaction < transactionCount; transaction++) {
+        final int vertexCount = graph.getVertexCount();
+        final int transactionCount = graph.getTransactionCount();
 
-                final int transactionId = graph.getTransaction(transaction);
-                final SchemaTransactionType transactionType = graph.getObjectValue(transactionTypeId, transactionId);
+        final Collection<SchemaVertexType> vertexTypes = SchemaVertexTypeUtilities.getTypes();
+        final Collection<SchemaTransactionType> transactionTypes = SchemaTransactionTypeUtilities.getTypes();
 
-                if (transactionTypeId != Graph.NOT_FOUND) {
-                    ConstellationColor caseColor;
-                    switch (transactionType.getName()) {
-                        case "Location":
-                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CARROT : ConstellationColor.BLUE);
-                            graph.setObjectValue(transactionColorAttr, transactionId, caseColor);
-                            break;
-                        case "Created":
-                        case "Referenced":
-                            caseColor = (colorMode.equals(VisualSchemaFactory.NONE) ? ConstellationColor.CHOCOLATE : ConstellationColor.BROWN);
-                            graph.setObjectValue(transactionColorAttr, transactionId, caseColor);
-                            break;
-                        default:
-                            //do nothing, color doesn't require updating
-                            break;
-                    }
-                }
+        resetColors(graph, vertexCount);
+
+        //Iterate through graph vertices. If vertexType is a defined schemaType color will be adjusted if applicable.
+        for (int vertex = 0; vertex < vertexCount; vertex++) {
+            final int vxId = graph.getVertex(vertex);
+            final ConstellationColor vertexColor = graph.getObjectValue(colorAttr, vxId);
+            final SchemaVertexType vertexType = graph.getObjectValue(vxTypeAttributeId, vxId);
+
+            if (vertexTypes.contains(vertexType) && !"None".equals(COLORMODE)) {
+                ConstellationColor newColor = calcColorBrightness(vertexColor);
+                graph.setObjectValue(colorAttr, vxId, newColor);
             }
         }
+
+        for (int transaction = 0; transaction < transactionCount; transaction++) {
+            final int transactionId = graph.getTransaction(transaction);
+            final ConstellationColor transactionColor = graph.getObjectValue(transactionColorAttr, transactionId);
+            final SchemaTransactionType transactionType = graph.getObjectValue(txTypeAttributeId, transactionId);
+
+            if (transactionTypes.contains(transactionType) && !"None".equals(COLORMODE)) {
+                ConstellationColor newColor = calcColorBrightness(transactionColor);
+                graph.setObjectValue(transactionColorAttr, transactionId, newColor);
+            }
+        }
+    }
+
+    public void resetColors(WritableGraph graph, int vertexCount) {
+
+        final int colorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
+        final int vxTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.get(graph);
+
+        for (int vertex = 0; vertex < vertexCount; vertex++) {
+            final int vxId = graph.getVertex(vertex);
+            final SchemaVertexType vertexType = graph.getObjectValue(vxTypeAttributeId, vxId);
+
+            switch (vertexType.getName()) {
+                case "Telephone Identifier":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.EMERALD);
+                    break;
+                case "Machine Identifier":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.CHOCOLATE);
+                    break;
+                case "Document":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.BANANA);
+                    break;
+                case "Event":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.PEACH);
+                    break;
+                case "Placeholder":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.TEAL);
+                    break;
+                case "Email":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.MUSK);
+                    break;
+                case "Person":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.AMETHYST);
+                    break;
+                case "Organisation":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.AMETHYST);
+                    break;
+                case "Word":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.CYAN);
+                    break;
+                case "Online Identifier":
+                case "User Name":
+                case "Constellation Graph":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.AZURE);
+                    break;
+                case "Location":
+                case "Country":
+                case "Geohash":
+                case "MGRS":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.CARROT);
+                    break;
+                case "Network Identifier":
+                case "IP Address":
+                case "IPv4 Address":
+                case "IPv6 Address":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.GREY);
+                    break;
+                case "Online Location":
+                case "Host Name":
+                case "URL":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.BLUEBERRY);
+                    break;
+                case "Hash":
+                case "MD5 Hash":
+                case "SHA1 Hash":
+                case "SHA256 Hash":
+                    graph.setObjectValue(colorAttr, vxId, ConstellationColor.CYAN);
+                    break;
+                default:
+                    //do nothing
+                    break;
+            }
+        }
+    }
+
+    /*Adjust RGB values using the to-be removed RGB value as a proportion of the calculation, acting as contrast booster for brightness adjustments.  
+        Evaluate the selected colorblind mode and adjust contrast if RGB value is high enough; prevents new color from being too dark, then remove imperceivable colors. 
+        Primary colours for the modes are then adjusted at different strengths to improve contrast. I.E. remove 50% red in deut, remove 18% blue for prot.*/
+    public ConstellationColor calcColorBrightness(ConstellationColor vertexColor) {
+        float adjustedRed = vertexColor.getRed();
+        float adjustedGreen = vertexColor.getGreen();
+        float adjustedBlue = vertexColor.getBlue();
+        final float minPrimaryRGBVal = 0.15f;
+        final float minimumRGBVal = 0.25f;
+        final float minimumAdjustedVal = 0.35f;
+        final float minimumCombinedRGB = 0.70f;
+        final float brightenRGB = 0.1f;
+
+        switch (COLORMODE) {
+            case "None":
+                //do nothing
+                break;
+            case "Deuteranopia":
+                //If the constellation color is primarily composed of a single rgb shade (e.g. Blue) do not adjust the value
+                if (vertexColor.getRed() + vertexColor.getBlue() <= minimumCombinedRGB || vertexColor.getBlue() <= minPrimaryRGBVal) {
+                    break;
+                }
+
+                if (vertexColor.getRed() >= minimumRGBVal) {
+                    adjustedRed = vertexColor.getRed() * vertexColor.getGreen();
+                    adjustedRed = adjustedRed <= minimumAdjustedVal ? adjustedRed + brightenRGB : adjustedRed;
+                    adjustedBlue = vertexColor.getBlue() / 1.2f;
+                }
+
+                break;
+            case "Protanopia":
+                if (vertexColor.getGreen() + vertexColor.getBlue() < minimumCombinedRGB || vertexColor.getRed() <= minPrimaryRGBVal) {
+                    break;
+                }
+
+                if (vertexColor.getGreen() >= minimumRGBVal) {
+                    adjustedGreen = vertexColor.getGreen() * vertexColor.getRed();
+                    adjustedGreen = adjustedGreen <= minimumAdjustedVal ? adjustedGreen + brightenRGB : adjustedGreen;
+                    adjustedRed = vertexColor.getRed() / 1.8f;
+
+                }
+                break;
+            case "Tritanopia":
+                if (vertexColor.getBlue() + vertexColor.getRed() <= minimumCombinedRGB || vertexColor.getGreen() <= minPrimaryRGBVal) {
+                    break;
+                }
+
+                if (vertexColor.getBlue() >= minimumRGBVal) {
+                    adjustedBlue = vertexColor.getBlue() * vertexColor.getRed();
+                    adjustedBlue = adjustedBlue <= minimumAdjustedVal ? adjustedBlue + brightenRGB : adjustedBlue;
+                    adjustedGreen = vertexColor.getGreen() / 1.05f;
+                }
+                break;
+            default:
+                //do nothing
+                break;
+        }
+
+        ConstellationColor newColor = ConstellationColor.getColorValue(adjustedRed, adjustedGreen, adjustedBlue, 1.0F);
+        return newColor;
     }
 }
