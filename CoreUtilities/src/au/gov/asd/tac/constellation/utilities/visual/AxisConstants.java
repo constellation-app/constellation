@@ -38,8 +38,10 @@ public enum AxisConstants {
     public static AxisConstants getReference(final String name){
         if (name != null){
             for (AxisConstants value : AxisConstants.values()){
-                if (name.equals(value.toString())){
-                    return value;
+                if (value != null){
+                    if (name.equals(value.toString())){
+                        return value;
+                    }
                 }
             }
         }
