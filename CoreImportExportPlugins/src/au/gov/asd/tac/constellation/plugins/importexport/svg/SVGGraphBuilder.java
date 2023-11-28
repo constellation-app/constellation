@@ -85,7 +85,6 @@ public class SVGGraphBuilder {
     //Variables created during preBuild
     private Camera camera;
     private int[] viewPort;
-    private Frustum viewFrustum;
        
     /**
     * Builder that generates the the output SVG file.
@@ -256,7 +255,7 @@ public class SVGGraphBuilder {
         final float xmax = ymax * aspect;
         final float ymin = -ymax;
         final float xmin = -xmax;
-        viewFrustum = new Frustum(Camera.FIELD_OF_VIEW, aspect, xmin, xmax, ymin, ymax, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
+        Frustum viewFrustum = new Frustum(Camera.FIELD_OF_VIEW, aspect, xmin, xmax, ymin, ymax, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
         
         // Get the projection matrix from the view frustum
         final Matrix44f projectionMatrix = viewFrustum.getProjectionMatrix();
@@ -302,10 +301,6 @@ public class SVGGraphBuilder {
             // Do not export the node if the node is not visable
             // Do not export the node if the node is not within the field of view
             if (!inView(position, radius) || ((selectedNodesOnly && !access.isVertexSelected(vertexIndex)) || access.getVertexVisibility(vertexIndex) == 0)) {
-                continue;
-            }
-
-            if ((selectedNodesOnly && !access.isVertexSelected(vertexIndex)) || access.getVertexVisibility(vertexIndex) == 0) {
                 continue;
             }
             
@@ -974,11 +969,7 @@ public class SVGGraphBuilder {
             return false;
         } 
         
-        LOGGER.log(Level.SEVERE, String.format("Z value: %s, W Value: %s", position.getZ(), position.getW()));
-        if (position.getW() < 0){
-            return false;
-        }
-        return true;
+        return position.getW() >= 0;
     }
 }
 

@@ -39,7 +39,12 @@ import java.util.regex.Pattern;
  */
 public class SVGParser {
 
-    final static String NON_LATIN_CHARACTER_OMMMISION_TEXT = " (omitted non-latin characters)"; 
+    static final String NON_LATIN_CHARACTER_OMMMISION_TEXT = " (omitted non-latin characters)"; 
+    
+    private SVGParser() {
+        throw new IllegalStateException("Utility class");
+    }
+    
     private static boolean isHeaderTag(final String line) {
         return line.contains("<?") && line.contains("?>");
     }

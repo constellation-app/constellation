@@ -147,6 +147,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         if (fnam.isBlank()){
              throw new PluginException(PluginNotificationLevel.ERROR, "File location has not been specified.");
         }
+        
         final File imageFile = new File(fnam);  
        
         // Build a SVG representation of the graph
