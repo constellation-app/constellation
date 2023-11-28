@@ -15,30 +15,17 @@
  */
 package au.gov.asd.tac.constellation.utilities.graphics;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  * A vector of four floating point values.
  *
  * @author algol
  */
 public final class Vector4f {
-
-    private static final Logger LOGGER = Logger.getLogger(Vector4f.class.getName());
     
     /**
      * The length of a vector.
      */
     public static final int LENGTH = 4;
-
-    public static Vector4f reflect(final Vector4f referencePoint, final Vector4f reflectionPoint) {
-        Vector4f distance = new Vector4f();
-        Vector4f.subtract(distance, reflectionPoint, referencePoint);
-        Vector4f out = new Vector4f();
-        Vector4f.add(out, reflectionPoint, distance);
-        return out;
-    }
 
     /**
      * The contents of this vector.
@@ -146,6 +133,16 @@ public final class Vector4f {
         result.a[1] = a.a[1] - b.a[1];
         result.a[2] = a.a[2] - b.a[2];
         result.a[3] = a.a[3] - b.a[3];
+    }
+    
+    public static void reflect(final Vector4f result, final Vector4f referencePoint, final Vector4f reflectionPoint) {
+        
+        // Determine the distance between the reference point and reflection point
+        Vector4f distance = new Vector4f();
+        Vector4f.subtract(distance, reflectionPoint, referencePoint);
+        
+        // Add the distance to the reflecton point
+        Vector4f.add(result, reflectionPoint, distance);
     }
 
     public void getMatrixColumn(final Vector4f dst, final int column) {

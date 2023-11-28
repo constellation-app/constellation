@@ -840,7 +840,8 @@ public class SVGGraphBuilder {
         final Vector4f screenReflectionPoint = new Vector4f(viewPort[2]/2, viewPort[3]/2, 0, 0);
         Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
         if (screenPosition.getW() < 0){
-            Vector4f reflectedPosition = Vector4f.reflect(screenPosition, screenReflectionPoint);
+            Vector4f reflectedPosition = new Vector4f();
+            Vector4f.reflect(reflectedPosition, screenPosition, screenReflectionPoint);
             return new Vector4f(reflectedPosition.getX(), reflectedPosition.getY(), screenPosition.getZ(), screenPosition.getW());
         }
         return screenPosition;
