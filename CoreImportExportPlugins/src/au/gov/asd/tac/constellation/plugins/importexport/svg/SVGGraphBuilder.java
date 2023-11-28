@@ -42,6 +42,7 @@ import au.gov.asd.tac.constellation.utilities.icon.ConstellationIcon;
 import au.gov.asd.tac.constellation.utilities.icon.DefaultIconProvider;
 import au.gov.asd.tac.constellation.utilities.icon.IconManager;
 import au.gov.asd.tac.constellation.utilities.text.StringUtilities;
+import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import au.gov.asd.tac.constellation.utilities.visual.VisualAccess.ConnectionDirection;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.time.ZonedDateTime;
@@ -78,7 +79,7 @@ public class SVGGraphBuilder {
     //Variables without default values, customisable by the builder pattern 
     private GraphReadMethods readableGraph = null;
     private PluginInteraction interaction= null;
-    private String exportPerspective = null;
+    private AxisConstants exportPerspective = null;
     private String graphTitle = null;
     
     //Variables created during preBuild
@@ -181,7 +182,7 @@ public class SVGGraphBuilder {
      * @param exportPerspective
      * @return 
      */
-    public SVGGraphBuilder fromPerspective(final String exportPerspective) {
+    public SVGGraphBuilder fromPerspective(final AxisConstants exportPerspective) {
         this.exportPerspective = exportPerspective;
         return this;
     }
@@ -236,24 +237,10 @@ public class SVGGraphBuilder {
         this.camera = access.getCamera();
         final Camera oldCamera = new Camera(this.camera);
         final BoundingBox box = new BoundingBox();
-        switch (exportPerspective) {
-            case "X-Axis":
+        if (exportPerspective != null) {
                 BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
-                CameraUtilities.refocusOnXAxis(camera, box, false);
-                Animation.startAnimation(new PanAnimation("Reset to X Axis View", oldCamera, camera, true));
-                break;
-            case "Y-Axis":
-                BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
-                CameraUtilities.refocusOnYAxis(camera, box, false);
-                Animation.startAnimation(new PanAnimation("Reset to Y Axis View", oldCamera, camera, true));
-                break;
-            case "Z-Axis":
-                BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
-                CameraUtilities.refocusOnZAxis(camera, box, false);
-                Animation.startAnimation(new PanAnimation("Reset to Z Axis View", oldCamera, camera, true));
-                break;
-            default:
-                break;
+                CameraUtilities.refocus(camera, new Vector3f(exportPerspective.isNegative() ? -1 : 1, 0, 0), new Vector3f(0, 1, 0), box);
+                Animation.startAnimation(new PanAnimation(String.format("Reset to @s View", exportPerspective), oldCamera, camera, true));
         }
         
         // Determine the height and width of the users InteractiveGraphView pane
@@ -483,10 +470,7 @@ public class SVGGraphBuilder {
             // Get source and destination vertex references
             final int highIndex =  access.getLinkHighVertex(linkIndex);
             final int lowIndex = access.getLinkLowVertex(linkIndex);
-
-
             
-
             // Determine the coordinates of the center of the vertices
             final Vector4f highCenterPosition = getVertexPosition(highIndex);
             final Vector4f lowCenterPosition = getVertexPosition(lowIndex);     

@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.plugins.Plugin;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
+import au.gov.asd.tac.constellation.plugins.PluginNotificationLevel;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
@@ -38,6 +39,7 @@ import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
+import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -46,6 +48,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javafx.stage.FileChooser;
 import org.openide.util.NbBundle;
 import org.openide.util.lookup.ServiceProvider;
@@ -118,7 +122,10 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
         exportPerspectiveParam.setName("Export Perspective");
         exportPerspectiveParam.setDescription("The perspectove the exported graph will be viewed from");
-        SingleChoiceParameterType.setOptions(exportPerspectiveParam, Arrays.asList("X-Axis", "Y-Axis", "Z-Axis", "Current Perspective"));
+        ArrayList<String> options = new ArrayList<>();
+        options.add("Current Perspective");
+        options.addAll(Stream.of(AxisConstants.values()).map(AxisConstants::toString).collect(Collectors.toList()));
+        SingleChoiceParameterType.setOptions(exportPerspectiveParam, options);
         parameters.addParameter(exportPerspectiveParam);
         
         return parameters;
@@ -137,6 +144,9 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final boolean showConnectionLabels = parameters.getBooleanValue(SHOW_CONNECTION_LABELS_PARAMETER_ID);
         final String exportPerspective = parameters.getStringValue(EXPORT_PERSPECTIVE_PARAMETER_ID);
         
+        if (fnam.isBlank()){
+             throw new PluginException(PluginNotificationLevel.ERROR, "File location has not been specified.");
+        }
         final File imageFile = new File(fnam);  
        
         // Build a SVG representation of the graph
@@ -149,7 +159,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                 .includeConnections(showConnections)
                 .includeNodeLabels(showNodeLabels)
                 .includeConnectionLabels(showConnectionLabels)
-                .fromPerspective(exportPerspective)
+                .fromPerspective(AxisConstants.getReference(exportPerspective))
                 .build();
         try {
             interaction.setExecutionStage(0, -1, "Exporting Graph", "Writing data to file", true);
