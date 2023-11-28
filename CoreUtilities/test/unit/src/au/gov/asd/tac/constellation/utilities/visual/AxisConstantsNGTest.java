@@ -61,5 +61,8 @@ public class AxisConstantsNGTest {
                 assertFalse(constant.isNegative());
             }
         }
+        assertNull(AxisConstants.getReference("Not an Axis"));
+        assertNull(AxisConstants.getReference(null));
+        
     }
 }
