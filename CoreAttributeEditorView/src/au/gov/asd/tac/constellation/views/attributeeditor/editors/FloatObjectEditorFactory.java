@@ -54,7 +54,7 @@ public class FloatObjectEditorFactory extends AttributeValueEditorFactory<Float>
 
         @Override
         public void updateControlsWithValue(final Float value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 numberField.setText(String.valueOf(value));
             }

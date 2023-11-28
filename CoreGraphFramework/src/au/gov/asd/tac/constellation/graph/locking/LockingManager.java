@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.graph.locking;
 
 import au.gov.asd.tac.constellation.graph.DuplicateKeyException;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReport;
+import au.gov.asd.tac.constellation.graph.reporting.UndoRedoReportManager;
 import au.gov.asd.tac.constellation.graph.undo.UndoGraphEdit;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -54,6 +56,8 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
     private LockingEdit currentEdit = null;
     private LockingEdit initialEdit = null;
     private UndoManager undoManager;
+    public static final String UNDO = "Undo";
+    public static final String REDO = "Redo";
 
     public void setTargets(final T targetA, final T targetB) {
         a = readContext = new Context(targetA);
@@ -269,9 +273,17 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                     // Unlock the global write lock so new write requests can begin on the new write context
                     globalWriteLock.unlock();
                 }
+                fireUndoRedoReport(UNDO, (GraphWriteMethods) writeContext.target, getPresentationName());
             }).start();
 
             update(null, null);
+        }
+
+        private void fireUndoRedoReport(final String actionType, final GraphWriteMethods target, final String presentationName) {
+            UndoRedoReport undoRedoReport = new UndoRedoReport(target.getId());
+            undoRedoReport.setActionDescription(presentationName);
+            undoRedoReport.setActionType(actionType);
+            UndoRedoReportManager.fireNewUndoRedoReport(undoRedoReport);
         }
 
         @Override
@@ -315,6 +327,7 @@ public class LockingManager<T extends LockingTarget> implements Serializable {
                     // Unlock the global write lock so new write requests can begin on the new write context
                     globalWriteLock.unlock();
                 }
+                fireUndoRedoReport(REDO, (GraphWriteMethods) writeContext.target, getPresentationName());
             }).start();
 
             update(null, null);

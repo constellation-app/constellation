@@ -61,7 +61,12 @@ public class DrawFlagsEditorFactory extends AttributeValueEditorFactory<DrawFlag
         }
 
         @Override
-        public void updateControlsWithValue(final DrawFlags value) {
+        public void updateControlsWithValue(DrawFlags value) {
+            // Ensure a null value is translated to an empty/default DrawFlags object
+            if (value == null ) {
+                value = new DrawFlags(false, false, false, false, false);
+            }
+            
             drawNodesCheckBox.setSelected(value.drawNodes());
             drawConnectionsCheckBox.setSelected(value.drawConnections());
             drawNodeLabelsCheckBox.setSelected(value.drawNodeLabels());
