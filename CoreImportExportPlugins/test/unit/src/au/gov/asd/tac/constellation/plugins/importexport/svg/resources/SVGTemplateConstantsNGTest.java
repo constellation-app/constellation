@@ -13,7 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
  */
-package au.gov.asd.tac.constellation.utilities.visual;
+package au.gov.asd.tac.constellation.plugins.importexport.svg.resources;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.AfterClass;
@@ -23,12 +23,13 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 /**
- * Test {@link AcisConstants}
+ * Test {@link SVHTemplateConstants}
+ * 
  * @author capricornunicorn123
  */
-public class AxisConstantsNGTest {
+public class SVGTemplateConstantsNGTest {
     
-    public AxisConstantsNGTest() {
+    public SVGTemplateConstantsNGTest() {
     }
 
     @BeforeClass
@@ -48,18 +49,20 @@ public class AxisConstantsNGTest {
     }
 
     /**
-     * Test of class AxisConstants.
+     * Test of getFileName method, of class SVGTemplateConstants.
      */
     @Test
-    public void testEverything() {
-        System.out.println("testEverything");
-        for (AxisConstants constant : AxisConstants.values()){
-            assertEquals(constant, AxisConstants.getReference(constant.toString()));
-            if(constant.toString().contains("-")){
-                assertTrue(constant.isNegative());
-            } else {
-                assertFalse(constant.isNegative());
-            }
-        }
+    public void testGetFileName() {
+        assertEquals(SVGTemplateConstants.ARROW_HEAD_LINK.getFileName(), "LinkArrowHead.svg");
+        assertEquals(SVGTemplateConstants.ARROW_HEAD_TRANSACTION.getFileName(), "TransactionArrowHead.svg");
+        assertEquals(SVGTemplateConstants.ARROW_HEAD_TRANSACTION_LOOP.getFileName(), "TransactionArrowHeadLoop.svg");
+        assertEquals(SVGTemplateConstants.CONNECTION_LOOP.getFileName(), "ConnectionLoop.svg");
+        assertEquals(SVGTemplateConstants.CONNECTION_LINEAR.getFileName(), "ConnectionLinear.svg");
+        assertEquals(SVGTemplateConstants.IMAGE.getFileName(), "Image.svg");
+        assertEquals(SVGTemplateConstants.LABEL.getFileName(), "Label.svg");
+        assertEquals(SVGTemplateConstants.LAYOUT.getFileName(), "Layout.svg");
+        assertEquals(SVGTemplateConstants.LINK.getFileName(), "Link.svg");
+        assertEquals(SVGTemplateConstants.NODE.getFileName(), "Node.svg");
     }
+    
 }
