@@ -81,9 +81,10 @@ public class SVGGraphBuilder {
     private String exportPerspective = null;
     private String graphTitle = null;
     
-    //variables created during preBuild
+    //Variables created during preBuild
     private Camera camera;
     private int[] viewPort;
+    private Frustum viewFrustum;
        
     /**
     * Builder that generates the the output SVG file.
@@ -268,7 +269,7 @@ public class SVGGraphBuilder {
         final float xmax = ymax * aspect;
         final float ymin = -ymax;
         final float xmin = -xmax;
-        final Frustum viewFrustum = new Frustum(Camera.FIELD_OF_VIEW, aspect, xmin, xmax, ymin, ymax, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
+        viewFrustum = new Frustum(Camera.FIELD_OF_VIEW, aspect, xmin, xmax, ymin, ymax, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
         
         // Get the projection matrix from the view frustum
         final Matrix44f projectionMatrix = viewFrustum.getProjectionMatrix();
@@ -306,15 +307,21 @@ public class SVGGraphBuilder {
 
         // Itterate over all vertices in the graph
         for (int vertexIndex = 0 ; vertexIndex < access.getVertexCount() ; vertexIndex++) {
-
-            // Do not export this vertex if only selected nodes are being exported and the node is not selected.
-            if (selectedNodesOnly && !access.isVertexSelected(vertexIndex) || access.getVertexVisibility(vertexIndex) == 0) {
-                continue;
-            }
-
             // Retrieve values of relevent vertex attributes
             final Vector4f position = getVertexPosition(vertexIndex);
             final float radius = getVertexScaledRadius(vertexIndex);
+            
+            // Do not export this vertex if only selected nodes are being exported and the node is not selected.
+            // Do not export the node if the node is not visable
+            // Do not export the node if the node is not within the field of view
+            if (!inView(position, radius) || ((selectedNodesOnly && !access.isVertexSelected(vertexIndex)) || access.getVertexVisibility(vertexIndex) == 0)) {
+                continue;
+            }
+
+            if ((selectedNodesOnly && !access.isVertexSelected(vertexIndex)) || access.getVertexVisibility(vertexIndex) == 0) {
+                continue;
+            }
+            
             final ConstellationColor color = access.getVertexColor(vertexIndex);
             final ConstellationIcon backgroundIcon = IconManager.getIcon(access.getBackgroundIcon(vertexIndex));
             final ConstellationIcon foregroundIcon = IconManager.getIcon(access.getForegroundIcon(vertexIndex));
@@ -477,23 +484,30 @@ public class SVGGraphBuilder {
             final int highIndex =  access.getLinkHighVertex(linkIndex);
             final int lowIndex = access.getLinkLowVertex(linkIndex);
 
-            // Do not export this link if only selected nodes are being exported and either of the associated nodes are not selected.
-            if (selectedNodesOnly && (!access.isVertexSelected(highIndex) || !access.isVertexSelected(lowIndex))) {
-                continue;
-            }
+
             
 
             // Determine the coordinates of the center of the vertices
             final Vector4f highCenterPosition = getVertexPosition(highIndex);
-            final Vector4f lowCenterPosition = getVertexPosition(lowIndex);
+            final Vector4f lowCenterPosition = getVertexPosition(lowIndex);     
+            
+            final float  highRadius = getVertexScaledRadius(highIndex);
+            final float  lowRadius = getVertexScaledRadius(lowIndex);
+
+            // Do not export this link if only selected nodes are being exported 
+            // Do not export the link if either of the associated nodes are not selected.
+            // Do not export the link if the node is not within the field of view
+            if ((!inView(highCenterPosition, highRadius) &&  !inView(lowCenterPosition, lowRadius))||(selectedNodesOnly && (!access.isVertexSelected(highIndex) || !access.isVertexSelected(lowIndex)))) {
+                continue;
+            }
 
             // Get the SVG angle of the connection between the two vertices
             final double highConnectionAngle = calculateConnectionAngle(highCenterPosition, lowCenterPosition);
             final double lowConnectionAngle = calculateConnectionAngle(lowCenterPosition, highCenterPosition);
 
             // Get the coordinates of the points where the connections intersect the node radius
-            final Vector4f highCircumferencePosition = offSetPosition(highCenterPosition, getVertexScaledRadius(highIndex), highConnectionAngle);
-            final Vector4f lowCircumferencePosition = offSetPosition(lowCenterPosition, getVertexScaledRadius(lowIndex), lowConnectionAngle);
+            final Vector4f highCircumferencePosition = offSetPosition(highCenterPosition, highRadius, highConnectionAngle);
+            final Vector4f lowCircumferencePosition = offSetPosition(lowCenterPosition, lowRadius, lowConnectionAngle);
 
             //Determine the scale factor at each of the vertices
             final float highScaleFactor = getDepthScaleFactor(getVertexWorldPosition(highIndex));
@@ -842,12 +856,26 @@ public class SVGGraphBuilder {
      * @param worldPosition
      * @return 
      */
-    private Vector4f getScreenPosition(final Vector3f worldPosition) {
+    private Vector4f getScreenPosition(final Vector3f worldPosition) {  
         final Vector4f screenPosition = new Vector4f();
+        final Vector4f screenReflectionPoint = new Vector4f(viewPort[2]/2, viewPort[3]/2, 0, 0);
         Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
+        if (screenPosition.getW() < 0){
+            Vector4f reflectedPosition = Vector4f.reflect(screenPosition, screenReflectionPoint);
+            return new Vector4f(reflectedPosition.getX(), reflectedPosition.getY(), screenPosition.getZ(), screenPosition.getW());
+        }
         return screenPosition;
     }
 
+    /**
+     * Translates the node radius from graph units to SVG units.
+     * @param vertexIndex
+     * @return 
+     */
+    private float getVertexRadius(int vertexIndex) {
+        return access.getRadius(vertexIndex)* 128;
+    }
+        
     /**
      * Determines the radius of the node in screen units.
      * The scale is determined by projecting a position at the edge of the node
@@ -858,12 +886,12 @@ public class SVGGraphBuilder {
     private float getVertexScaledRadius(final int vertexIndex) {  
 
         //Get the radius value of the node
-        final float radius = access.getRadius(vertexIndex);
+        final float radius = getVertexRadius(vertexIndex);
 
         //Get the scale foactor of the node determined by its distance from the camera.
         final float depthScaleFactor = getDepthScaleFactor(this.getVertexWorldPosition(vertexIndex));
 
-        return radius * depthScaleFactor * 128;         
+        return radius * depthScaleFactor;         
     }
 
     /**
@@ -937,6 +965,36 @@ public class SVGGraphBuilder {
         final float xChange = Math.abs(a.getX()-b.getX());
         final float yChange = Math.abs(a.getY()-b.getY());
         return (float) Math.sqrt(Math.pow(xChange, 2) + Math.pow(yChange, 2));
+    }
+
+    /**
+     * Determines if a vertex is within the boundaries of the output image.
+     * @param position
+     * @param radius
+     * @return 
+     */
+    private boolean inView(Vector4f position, float radius) {
+        if (position.getX() + radius < 0){
+            return false;
+        } 
+        
+        if (position.getX() - radius > this.viewPort[2]){
+            return false;
+        } 
+        
+        if (position.getY() + radius < 0){
+            return false;
+        } 
+        
+        if (position.getY() - radius > this.viewPort[3]){
+            return false;
+        } 
+        
+        LOGGER.log(Level.SEVERE, String.format("Z value: %s, W Value: %s", position.getZ(), position.getW()));
+        if (position.getW() < 0){
+            return false;
+        }
+        return true;
     }
 }
 

@@ -402,6 +402,22 @@ public final class Frustum {
      * frustum.
      */
     boolean testSphere(final Vector3f point, final float radius) {
+        return inView(point, radius);
+    }
+    
+    /**
+     * Evaluate a point against frustum perimeter.
+     * <p>
+     * A false value means it is entirely outside the frustum.
+     * The radius value allows a test for a point (radius==0) or a sphere.
+     *
+     * @param point
+     * @param radius
+     *
+     * @return False if it is not in the frustum, true if it intersects the
+     * frustum.
+     */
+    public boolean inView(final Vector3f point, final float radius){
         float fDist;
 
         // Near Plane - See if it is behind me

@@ -15,6 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.graphics;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * A vector of four floating point values.
  *
@@ -22,10 +25,24 @@ package au.gov.asd.tac.constellation.utilities.graphics;
  */
 public final class Vector4f {
 
+    private static final Logger LOGGER = Logger.getLogger(Vector4f.class.getName());
+    
     /**
      * The length of a vector.
      */
     public static final int LENGTH = 4;
+
+    public static Vector4f reflect(final Vector4f referencePoint, final Vector4f reflectionPoint) {
+        LOGGER.log(Level.SEVERE, String.format("referencePoint: %s", referencePoint));
+        LOGGER.log(Level.SEVERE, String.format("reflectionPoint: %s", reflectionPoint));
+        Vector4f distance = new Vector4f();
+        Vector4f.subtract(distance, reflectionPoint, referencePoint);
+        Vector4f out = new Vector4f();
+        Vector4f.add(out, reflectionPoint, distance);
+        LOGGER.log(Level.SEVERE, String.format("distance: %s", distance));
+        LOGGER.log(Level.SEVERE, String.format("result: %s", reflectionPoint));
+        return out;
+    }
 
     /**
      * The contents of this vector.
