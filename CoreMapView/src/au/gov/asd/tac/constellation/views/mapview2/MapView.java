@@ -62,6 +62,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -122,11 +123,11 @@ public class MapView extends ScrollPane {
     public static final double MAX_LONG = 190.48712;
 
     // Furthest lattitude to the north and south
-    public static final double MIN_LAT = -89.000389; // -89.000389 -58.488473
+    public static final double MIN_LAT = -89.000389;
     public static final double MAX_LAT = 83.63001;
 
     public static final double MAP_WIDTH = 1010.33;
-    public static final double MAP_HEIGHT = 1224; //1224
+    public static final double MAP_HEIGHT = 1224;
 
     // Two containers that hold queried markers and user drawn markers
     private Map<String, AbstractMarker> markers = new HashMap<>();
@@ -151,6 +152,8 @@ public class MapView extends ScrollPane {
     private final Group polygonMarkerGroup;
     private final Group clusterMarkerGroup;
     private final Group hiddenPointMarkerGroup;
+
+    public static double MAP_ZOOM_LEVEL = 0;
 
     // Groups for the ovelays and layers
     private final Group overlayGroup;
@@ -732,6 +735,10 @@ public class MapView extends ScrollPane {
             if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
                 updateClusterMarkers();
             }
+
+            final Bounds bounds = mapStackPane.getBoundsInParent();
+            final int lowestPixelShown = (int) bounds.getMinX();
+            final int highestPixelShown = (int) bounds.getMaxX();
         });
     }
 
@@ -1498,7 +1505,7 @@ public class MapView extends ScrollPane {
         }
     }
 
-    public List<AbstractMarker> getUserMarkers() {
+    public List<AbstractMarker> getUserCreatedMarkers() {
         return userMarkers;
     }
 
@@ -1515,15 +1522,13 @@ public class MapView extends ScrollPane {
     }
 
     /**
-     * Draw a user created marker on the screen
+     * Draw a marker on the screen
      *
      * @param marker - marker to be added to the map
      */
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
-            marker.setMarkerPosition(1010.9, 925.5); // 893.6783733826248 939.9363395860635 923.75
-            LOGGER.log(Level.SEVERE, "Map width: " + mapGroupHolder.getPrefWidth() + " map height: " + mapGroupHolder.getPrefHeight());
-            //marker.setMarkerPosition(mapGroupHolder.getPrefWidth(), mapGroupHolder.getPrefHeight());
+            marker.setMarkerPosition(1010.9, 925.5);
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 if (marker instanceof GeoShapePolygonMarker) {
                     final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
@@ -1533,22 +1538,11 @@ public class MapView extends ScrollPane {
                         }
                     });
                 } else {
-                    final Rectangle test = new Rectangle();
-                    test.setWidth(1);
-                    test.setHeight(1);
-                    test.setFill(Color.GREEN);
-                    test.setX(marker.getX());
-                    test.setY(marker.getY());
-                    test.setOpacity(0.5);
-
-                    LOGGER.log(Level.SEVERE, "Marker x: " + marker.getX() + " Marker Y: " + marker.getY());
-
                     graphMarkerGroup.getChildren().add(marker.getMarker());
                 }
 
                 if (marker instanceof PointMarker) {
                     final PointMarker pMarker = (PointMarker) marker;
-                    graphMarkerGroup.getChildren().add(pMarker.getPosRect());
                     if (pMarker.getScale() != pointMarkerGlobalScale) {
                         pMarker.scaleAndReposition(pointMarkerGlobalScale);
                     }

@@ -63,6 +63,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
         layer.getChildren().add(arcLayer);
         this.markers = markers;
 
+        // Set up the event queue to order the voronoi event in ascending order based on their Y-coordinate
         eventQueue = new PriorityQueue<>((v1, v2) -> {
             if (v1.getYCoord() > v2.getYCoord()) {
                 return 1;
@@ -77,6 +78,7 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
     public void setUp() {
         layer.getChildren().clear();
 
+        // If there is 1 marker then there is only one zone
         if (markers.size() == 1) {
             final ConstellationColor[] palette = ConstellationColor.createPalette(1);
 
@@ -90,6 +92,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             r.setOpacity(0.5);
             r.setMouseTransparent(true);
             layer.getChildren().add(r);
+
+            // If there are more markers then put the coordinates inside of a SiteEvent and add the to the eventQueue priority queue
         } else if (markers.size() > 1) {
             for (final AbstractMarker m : markers) {
                 if (m instanceof PointMarker || m instanceof UserPointMarker) {
@@ -108,6 +112,10 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
 
     }
 
+    /**
+     * Calculate the zones for each marker and add them to the generatedShapes
+     * display layer
+     */
     private void calculateVoronoi() {
         arcTree = new ArcTree(eventQueue);
         arcTree.run();

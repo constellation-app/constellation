@@ -637,8 +637,8 @@ public class ArcTree {
         }
 
         // Find out where those edges intersect with the arc to figure out the rootLeftEdge and rootRightEdge boundaries
-        Vec3 leftIntersection = getEdgeArcIntersection(leftHalfEdge, arc, directrix);
-        Vec3 rightIntersection = getEdgeArcIntersection(rightHalfEdge, arc, directrix);
+        final Vec3 leftIntersection = getEdgeArcIntersection(leftHalfEdge, arc, directrix);
+        final Vec3 rightIntersection = getEdgeArcIntersection(rightHalfEdge, arc, directrix);
 
         final double leftX = leftIntersection == null ? 0 : leftIntersection.getX();
         final double rightX = rightIntersection == null ? MapView.MAP_WIDTH : rightIntersection.getX();

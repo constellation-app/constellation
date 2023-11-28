@@ -126,14 +126,14 @@ public class MapViewNGTest {
         final MapView instance = Mockito.spy(new MapView(mapViewPane));
 
         final int id = 1;
-        instance.getUserMarkers().clear();
+        instance.getUserCreatedMarkers().clear();
         UserPointMarker usm = new UserPointMarker(instance, id, 4, 4, 0.05, 4, 4);
 
-        instance.getUserMarkers().add(usm);
+        instance.getUserCreatedMarkers().add(usm);
 
         instance.removeUserMarker(id);
 
-        assertEquals(instance.getUserMarkers().isEmpty(), true);
+        assertEquals(instance.getUserCreatedMarkers().isEmpty(), true);
     }
 
     /**
@@ -249,7 +249,7 @@ public class MapViewNGTest {
         final MapView instance = Mockito.spy(new MapView(mapViewPane));
 
         instance.getAllMarkers().clear();
-        instance.getUserMarkers().clear();
+        instance.getUserCreatedMarkers().clear();
 
         final PointMarker p1 = new PointMarker(instance, -999, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
         final PointMarker p2 = new PointMarker(instance, -101, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
@@ -259,7 +259,7 @@ public class MapViewNGTest {
 
         final UserPointMarker usm = new UserPointMarker(instance, 45, 4, 4, 0.05, 4, 4);
 
-        instance.getUserMarkers().add(usm);
+        instance.getUserCreatedMarkers().add(usm);
 
         final List result = instance.getAllMarkersAsList();
         assertEquals(result.size(), 3);
@@ -282,7 +282,7 @@ public class MapViewNGTest {
 
         final UserPointMarker usm = new UserPointMarker(instance, 46, 4, 4, 0.05, 4, 4);
 
-        instance.getUserMarkers().add(usm);
+        instance.getUserCreatedMarkers().add(usm);
 
         instance.clearQueriedMarkers();
 
