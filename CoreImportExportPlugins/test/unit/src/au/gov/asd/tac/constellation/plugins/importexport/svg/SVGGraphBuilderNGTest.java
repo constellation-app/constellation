@@ -355,7 +355,7 @@ public class SVGGraphBuilderNGTest {
             wg.setFloatValue(vertexAttributeIdY, vertexId6, 15.0f);
 
             transactionId1 = wg.addTransaction(vertexId1, vertexId2, false);
-            transactionId2 = wg.addTransaction(vertexId1, vertexId3, false);
+            transactionId2 = wg.addTransaction(vertexId2, vertexId3, false);
             transactionId3 = wg.addTransaction(vertexId2, vertexId4, true);
             transactionId4 = wg.addTransaction(vertexId2, vertexId2, true);
             transactionId5 = wg.addTransaction(vertexId2, vertexId2, false);
