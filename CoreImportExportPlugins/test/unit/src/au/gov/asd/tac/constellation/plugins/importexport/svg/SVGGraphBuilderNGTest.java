@@ -64,7 +64,7 @@ public class SVGGraphBuilderNGTest {
     private int vertexAttributeIdX, vertexAttributeIdY, vertexAttributeIdZ;
     
     // Vertex Ids
-    private int vertexId1, vertexId2, vertexId3, vertexId4, vertexId5, vertexId6, vertexId7, vertexId8;
+    private int vertexId1, vertexId2, vertexId3, vertexId4, vertexId5, vertexId6;
     
     // Transaction Ids
     private int transactionId1, transactionId2, transactionId3, transactionId4, transactionId5;
@@ -356,7 +356,7 @@ public class SVGGraphBuilderNGTest {
 
             transactionId1 = wg.addTransaction(vertexId1, vertexId2, false);
             transactionId2 = wg.addTransaction(vertexId2, vertexId3, false);
-            transactionId3 = wg.addTransaction(vertexId2, vertexId4, true);
+            transactionId3 = wg.addTransaction(vertexId2, vertexId5, true);
             transactionId4 = wg.addTransaction(vertexId2, vertexId2, true);
             transactionId5 = wg.addTransaction(vertexId2, vertexId2, false);
         } finally {
