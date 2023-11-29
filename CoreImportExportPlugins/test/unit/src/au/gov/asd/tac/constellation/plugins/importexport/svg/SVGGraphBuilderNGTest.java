@@ -18,14 +18,22 @@ package au.gov.asd.tac.constellation.plugins.importexport.svg;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
+import au.gov.asd.tac.constellation.graph.WritableGraph;
+import au.gov.asd.tac.constellation.graph.locking.DualGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginInteraction;
+import au.gov.asd.tac.constellation.graph.schema.Schema;
+import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
+import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.svg.SVGData;
+import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
+import java.awt.Component;
 import org.mockito.MockedStatic;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -42,17 +50,27 @@ import org.testng.annotations.Test;
  * @author capricornunicorn123
  */
 public class SVGGraphBuilderNGTest {
-    MockedStatic<GraphManager> graphManagerStaticMock;
-    MockedStatic<GraphNode> graphNodeStaticMock;
-    ReadableGraph readableGraphMock;
-    VisualManager visualManagerMock;
-    GraphManager graphManagerMock;
-    Graph graphMock;
-    PluginInteraction interactionMock;
+    private MockedStatic<GraphManager> graphManagerStaticMock;
+    private MockedStatic<GraphNode> graphNodeStaticMock;
+    private VisualManager visualManagerMock;
+    private GraphManager graphManagerMock;
+    private Graph graph;
+    private PluginInteraction interactionMock;
+    private GraphNode contextMock;
+    private Component visualComponentMock;
+    private final String graphName = "Test Graph 1";
     
-    GraphNode contextMock;
+    // Positional Attributes
+    private int vertexAttributeIdX, vertexAttributeIdY, vertexAttributeIdZ;
     
-    final String graphName = "Test Graph 1";
+    // Vertex Ids
+    private int vertexId1, vertexId2, vertexId3, vertexId4, vertexId5, vertexId6, vertexId7, vertexId8;
+    
+    // Transaction Ids
+    private int transactionId1, transactionId2, transactionId3, transactionId4, transactionId5;
+    
+    // Other Attributea
+    private int vertexAttributeIdSelected, transactionAttributeIdSelected, GraphAttributeIdBackgroundColor;
     
     public SVGGraphBuilderNGTest() {
     }
@@ -67,35 +85,39 @@ public class SVGGraphBuilderNGTest {
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        
+        graph = buildtestableGraph();
         graphNodeStaticMock = mockStatic(GraphNode.class);
         graphManagerStaticMock = mockStatic(GraphManager.class);
-        readableGraphMock = mock(ReadableGraph.class);
         visualManagerMock = mock(VisualManager.class);
-        graphMock = mock(Graph.class);
         contextMock = mock(GraphNode.class);
         graphManagerMock = mock(GraphManager.class);
         interactionMock = mock(DefaultPluginInteraction.class);
+        visualComponentMock = mock(Component.class);
         
         //Getting Graph from GraphNode
         doReturn(graphName).when(contextMock).getDisplayName();
-        doReturn(graphName).when(readableGraphMock).getId();
         graphNodeStaticMock.when(() 
                 -> GraphNode.getGraphNode(graphName))
                 .thenReturn(contextMock);
        
-        doReturn(graphMock).when(contextMock).getGraph();
-        doReturn(readableGraphMock).when(graphMock).getReadableGraph();
+        doReturn(graph).when(contextMock).getGraph();
         
-        doReturn(graphMock).when(graphManagerMock).getActiveGraph(); 
+        doReturn(graph).when(graphManagerMock).getActiveGraph(); 
         
         //Geting VisualManager from GraphNode 
         graphManagerStaticMock.when(() 
                 -> GraphManager.getDefault())
                 .thenReturn(graphManagerMock);
         graphNodeStaticMock.when(() 
-                -> GraphNode.getGraphNode(graphMock))
+                -> GraphNode.getGraphNode(graph))
                 .thenReturn(contextMock);
         doReturn(visualManagerMock).when(contextMock).getVisualManager();
+        
+        // visual manager retruning sizing info 
+        doReturn(visualComponentMock).when(visualManagerMock).getVisualComponent();
+        doReturn(1080).when(visualComponentMock).getHeight();
+        doReturn(1920).when(visualComponentMock).getWidth();
         
     }
 
@@ -219,13 +241,76 @@ public class SVGGraphBuilderNGTest {
      */
     @Test
     public void testBuild() throws Exception {
-//        System.out.println("build");
-//        SVGGraphBuilder instance = new SVGGraphBuilder();
-//        SVGData expResult = null;
-//        SVGData result = instance.build();
-//        assertEquals(result, expResult);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
+        System.out.println("build");
+        SVGGraphBuilder instance = new SVGGraphBuilder()
+                .withInteraction(interactionMock)
+                .withReadableGraph(graph.getReadableGraph())
+                .withTitle(graphName)
+                .fromPerspective(AxisConstants.Z_POSITIVE)
+                .withNodes(true)
+                .includeNodeLabels(false)
+                .includeConnections(true)
+                .includeConnectionLabels(false);
+        
+        SVGObject result = new SVGObject(instance.build());
+        
+        assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
+    }
+    
+    private Graph buildtestableGraph() throws InterruptedException{
+        final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
+        final Graph localGraph = new DualGraph(schema);
+
+        WritableGraph wg = localGraph.getWritableGraph("Autosave", true);
+        try {
+            vertexAttributeIdX = VisualConcept.VertexAttribute.X.ensure(wg);
+            vertexAttributeIdY = VisualConcept.VertexAttribute.Y.ensure(wg);
+            vertexAttributeIdZ = VisualConcept.VertexAttribute.Z.ensure(wg);
+            vertexAttributeIdSelected = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
+            transactionAttributeIdSelected = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
+
+            vertexId1 = wg.addVertex();
+            wg.setFloatValue(vertexAttributeIdX, vertexId1, 1.0f);
+            wg.setFloatValue(vertexAttributeIdY, vertexId1, 1.0f);
+            wg.setBooleanValue(vertexAttributeIdSelected, vertexId1, false);
+            
+            vertexId2 = wg.addVertex();
+            wg.setFloatValue(vertexAttributeIdX, vertexId2, 5.0f);
+            wg.setFloatValue(vertexAttributeIdY, vertexId2, 1.0f);
+            wg.setBooleanValue(vertexAttributeIdSelected, vertexId2, true);
+            
+            vertexId3 = wg.addVertex();
+            wg.setFloatValue(vertexAttributeIdX, vertexId3, 1.0f);
+            wg.setFloatValue(vertexAttributeIdY, vertexId3, 5.0f);
+            wg.setBooleanValue(vertexAttributeIdSelected, vertexId3, false);
+            
+            vertexId4 = wg.addVertex();
+            wg.setFloatValue(vertexAttributeIdX, vertexId4, 5.0f);
+            wg.setFloatValue(vertexAttributeIdY, vertexId4, 5.0f);
+            wg.setBooleanValue(vertexAttributeIdSelected, vertexId4, false);
+            
+            vertexId5 = wg.addVertex();
+            wg.setFloatValue(vertexAttributeIdX, vertexId5, 10.0f);
+            wg.setFloatValue(vertexAttributeIdY, vertexId5, 10.0f);
+            wg.setBooleanValue(vertexAttributeIdSelected, vertexId5, true);
+            
+            vertexId6 = wg.addVertex();
+            wg.setFloatValue(vertexAttributeIdX, vertexId6, 15.0f);
+            wg.setFloatValue(vertexAttributeIdY, vertexId6, 15.0f);
+            
+            vertexId7 = wg.addVertex();
+            wg.setFloatValue(vertexAttributeIdX, vertexId7, 100.0f);
+            wg.setFloatValue(vertexAttributeIdY, vertexId7, 100.0f);
+
+            transactionId1 = wg.addTransaction(vertexId1, vertexId2, false);
+            transactionId2 = wg.addTransaction(vertexId1, vertexId3, false);
+            transactionId3 = wg.addTransaction(vertexId2, vertexId4, true);
+            transactionId4 = wg.addTransaction(vertexId4, vertexId2, true);
+            transactionId5 = wg.addTransaction(vertexId5, vertexId6, false);
+        } finally {
+            wg.commit();
+        }
+        return localGraph;
     }
     
 }
