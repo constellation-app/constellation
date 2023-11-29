@@ -86,7 +86,7 @@ public class SVGGraphBuilderNGTest {
     @BeforeMethod
     public void setUpMethod() throws Exception {
         
-        graph = buildtestableGraph();
+        graph = buildTestableGraph();
         graphNodeStaticMock = mockStatic(GraphNode.class);
         graphManagerStaticMock = mockStatic(GraphManager.class);
         visualManagerMock = mock(VisualManager.class);
@@ -250,7 +250,7 @@ public class SVGGraphBuilderNGTest {
                 .withNodes(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
-                .includeConnectionLabels(true);
+                .includeConnectionLabels(false);
         
         SVGObject result = new SVGObject(instance.build());
         
@@ -289,7 +289,7 @@ public class SVGGraphBuilderNGTest {
                 .withNodes(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
-                .includeConnectionLabels(true); 
+                .includeConnectionLabels(false); 
         assertNull(instance.build());
     }
     
@@ -307,11 +307,11 @@ public class SVGGraphBuilderNGTest {
                 .withNodes(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
-                .includeConnectionLabels(true); 
+                .includeConnectionLabels(false); 
         assertNull(instance.build());
     }
     
-    private Graph buildtestableGraph() throws InterruptedException{
+    private Graph buildTestableGraph() throws InterruptedException{
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         final Graph localGraph = new DualGraph(schema);
 

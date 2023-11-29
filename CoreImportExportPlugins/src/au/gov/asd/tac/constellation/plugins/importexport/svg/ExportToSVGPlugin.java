@@ -121,7 +121,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         
         final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
         exportPerspectiveParam.setName("Export Perspective");
-        exportPerspectiveParam.setDescription("The perspectove the exported graph will be viewed from");
+        exportPerspectiveParam.setDescription("The perspective the exported graph will be viewed from");
         ArrayList<String> options = new ArrayList<>();
         options.add("Current Perspective");
         options.addAll(Stream.of(AxisConstants.values()).map(AxisConstants::toString).collect(Collectors.toList()));
