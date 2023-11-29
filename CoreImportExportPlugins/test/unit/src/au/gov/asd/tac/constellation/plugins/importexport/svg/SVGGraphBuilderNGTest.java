@@ -117,7 +117,7 @@ public class SVGGraphBuilderNGTest {
         // visual manager retruning sizing info 
         doReturn(visualComponentMock).when(visualManagerMock).getVisualComponent();
         doReturn(1080).when(visualComponentMock).getHeight();
-        doReturn(1920).when(visualComponentMock).getWidth();
+        doReturn(1080).when(visualComponentMock).getWidth();
         
     }
 
@@ -353,16 +353,12 @@ public class SVGGraphBuilderNGTest {
             vertexId6 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId6, 15.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId6, 15.0f);
-            
-            vertexId7 = wg.addVertex();
-            wg.setFloatValue(vertexAttributeIdX, vertexId7, 100.0f);
-            wg.setFloatValue(vertexAttributeIdY, vertexId7, 100.0f);
 
             transactionId1 = wg.addTransaction(vertexId1, vertexId2, false);
             transactionId2 = wg.addTransaction(vertexId1, vertexId3, false);
             transactionId3 = wg.addTransaction(vertexId2, vertexId4, true);
-            transactionId4 = wg.addTransaction(vertexId4, vertexId2, true);
-            transactionId5 = wg.addTransaction(vertexId5, vertexId6, false);
+            transactionId4 = wg.addTransaction(vertexId2, vertexId2, true);
+            transactionId5 = wg.addTransaction(vertexId2, vertexId2, false);
         } finally {
             wg.commit();
         }
