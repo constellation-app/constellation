@@ -271,7 +271,7 @@ public class SVGGraphBuilderNGTest {
                 .withNodes(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
-                .includeConnectionLabels(true); 
+                .includeConnectionLabels(false); 
         assertNull(instance.build());
     }
     
