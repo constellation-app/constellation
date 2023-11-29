@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -91,7 +91,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
      */
     public static void setPrototypeParameters(final PluginParameter<ParameterListParameterValue> parameter, final PluginParameters prototypeParameters) {
         parameter.setParameterListValue(new ParameterList(
-                (PluginParameters p) -> PluginParametersPane.buildPane(p, null), prototypeParameters, parameter
+                (final PluginParameters p) -> PluginParametersPane.buildPane(p, null), prototypeParameters, parameter
         ));
     }
 
@@ -174,14 +174,14 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
 
         @Override
         public PluginParameters copy() {
-            PluginParameters copy = new ParameterListLockingPluginParameters();
+            final PluginParameters copy = new ParameterListLockingPluginParameters();
             copyTo(copy);
             return copy;
         }
 
         @Override
         public void startParameterLoading() {
-            for (PluginParameter<?> p : getParameters().values()) {
+            for (final PluginParameter<?> p : getParameters().values()) {
                 if (p.getType() instanceof ParameterListParameterType) {
                     p.getParameterListValue().lockValue();
                 }
@@ -190,7 +190,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
 
         @Override
         public void endParameterLoading() {
-            for (PluginParameter<?> p : getParameters().values()) {
+            for (final PluginParameter<?> p : getParameters().values()) {
                 if (p.getType() instanceof ParameterListParameterType) {
                     p.getParameterListValue().unlockValue();
                 }
@@ -214,7 +214,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
 
         private void linkToEnclosing(final PluginParameter<?> parameter) {
             parameter.setEnclosingParameter(enclosingParameter);
-            parameter.addListener((PluginParameter<?> parameter1, ParameterChange change) -> {
+            parameter.addListener((final PluginParameter<?> parameter1, final ParameterChange change) -> {
                 switch (change) {
                     case ERROR:
                         if (parameter1.getError() == null) {
@@ -257,7 +257,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
         }
 
         public Pane append(final PluginParameters newParams) {
-            newParams.getParameters().values().forEach((PluginParameter<?> param) -> linkToEnclosing(param));
+            newParams.getParameters().values().forEach(param -> linkToEnclosing(param));
             parametersList.add(newParams);
             final Pane newPane = paneFactory.getNewPane(newParams);
             parameterPanes.add(newPane);
@@ -267,8 +267,8 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
 
         public Pane remove(final Pane parameterPane) {
             final int index = parameterPanes.indexOf(parameterPane);
-            PluginParameters oldParams = parametersList.get(index);
-            oldParams.getParameters().values().forEach((PluginParameter<?> param) -> unlinkFromEnclosing(param));
+            final PluginParameters oldParams = parametersList.get(index);
+            oldParams.getParameters().values().forEach(param -> unlinkFromEnclosing(param));
             parametersList.remove(index);
             enclosingParameter.fireChangeEvent(ParameterChange.VALUE);
             return parameterPanes.remove(index);
@@ -276,7 +276,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
 
         public void moveUp(final Pane parameterPane) {
             final int index = parameterPanes.indexOf(parameterPane);
-            PluginParameters pp = parametersList.remove(index);
+            final PluginParameters pp = parametersList.remove(index);
             parametersList.add(index - 1, pp);
             parameterPanes.remove(index);
             parameterPanes.add(index - 1, parameterPane);
@@ -285,7 +285,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
 
         public void moveDown(final Pane parameterPane) {
             final int index = parameterPanes.indexOf(parameterPane);
-            PluginParameters pp = parametersList.remove(index);
+            final PluginParameters pp = parametersList.remove(index);
             parametersList.add(index + 1, pp);
             parameterPanes.remove(index);
             parameterPanes.add(index + 1, parameterPane);
@@ -321,7 +321,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
             throw new UnsupportedOperationException("Not supported.");
         }
 
-        public boolean set(ParameterList val) {
+        public boolean set(final ParameterList val) {
             if (value == null && val == null) {
                 return false;
             }
@@ -354,26 +354,15 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == null) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final ParameterList other = (ParameterList) obj;
-            if (!Objects.equals(value.paneFactory, other.paneFactory)) {
-                return false;
-            }
-            if (!Objects.equals(value.parametersPrototype, other.parametersPrototype)) {
-                return false;
-            }
-            if (!Objects.equals(value.parametersList, other.parametersList)) {
-                return false;
-            }
-            if (!Objects.equals(value.parameterPanes, other.parameterPanes)) {
-                return false;
-            }
-            return Objects.equals(value.enclosingParameter, other.enclosingParameter);
+            final ParameterListParameterValue other = (ParameterListParameterValue) obj;
+            return Objects.equals(value.paneFactory, other.value.paneFactory)
+                    && Objects.equals(value.parametersPrototype, other.value.parametersPrototype)
+                    && Objects.equals(value.parametersList, other.value.parametersList)
+                    && Objects.equals(value.parameterPanes, other.value.parameterPanes)
+                    && Objects.equals(value.enclosingParameter, other.value.enclosingParameter);
         }
 
         public List<PluginParameters> getListOfPluginParameters() {
@@ -386,7 +375,7 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
 
         @Override
         protected ParameterListParameterValue createCopy() {
-            ParameterListParameterValue copy = new ParameterListParameterValue(new ParameterList(value.paneFactory, value.parametersPrototype, value.enclosingParameter));
+            final ParameterListParameterValue copy = new ParameterListParameterValue(new ParameterList(value.paneFactory, value.parametersPrototype, value.enclosingParameter));
             copy.setStringValue(toString());
             copy.locked = locked;
             copy.cachedValue = cachedValue;
@@ -402,10 +391,10 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
             if (value.parametersList.isEmpty()) {
                 return "";
             }
-            StringBuilder strValBuilder = new StringBuilder(String.valueOf(value.parametersList.size()));
-            for (PluginParameters pps : value.parametersList) {
+            final StringBuilder strValBuilder = new StringBuilder(String.valueOf(value.parametersList.size()));
+            for (final PluginParameters pps : value.parametersList) {
                 strValBuilder.append("::");
-                for (Entry<String, PluginParameter<?>> pp : pps.getParameters().entrySet()) {
+                for (final Entry<String, PluginParameter<?>> pp : pps.getParameters().entrySet()) {
                     strValBuilder.append(pp.getKey().replace(SeparatorConstants.SEMICOLON, "\\;").replaceAll(SeparatorConstants.COLON, "\\:"));
                     strValBuilder.append(";;");
                     final String val = pp.getValue().getStringValue();
@@ -441,10 +430,10 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
         }
 
         private void appendPanels(final String strValue) {
-            String[] args = strValue.split("::");
+            final String[] args = strValue.split("::");
             for (int i = 1; i <= Integer.parseInt(args[0]); i++) {
-                PluginParameters newParams = value.getNewItem();
-                String[] keyVals = args[i].split(";;");
+                final PluginParameters newParams = value.getNewItem();
+                final String[] keyVals = args[i].split(";;");
                 for (int j = 0; j < keyVals.length; j += 2) {
                     final String key = keyVals[j].replace("\\;", SeparatorConstants.SEMICOLON).replace("\\:", SeparatorConstants.COLON);
                     final String val = keyVals[j + 1].replace("\\;", SeparatorConstants.SEMICOLON).replace("\\:", SeparatorConstants.COLON);
@@ -485,6 +474,12 @@ public class ParameterListParameterType extends PluginParameterType<ParameterLis
             cachedValue = null;
         }
 
-    }
+        protected boolean isLocked() {
+            return locked;
+        }
 
+        protected String getCachedValue() {
+            return cachedValue;
+        }       
+    }
 }

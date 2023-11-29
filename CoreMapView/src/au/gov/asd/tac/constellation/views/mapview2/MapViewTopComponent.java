@@ -296,7 +296,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     protected static class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
         private static final double POINT_MARKER_X_OFFSET = 95;
-        private static final double POINT_MARKER_Y_OFFSET = 245;
+        private static final double POINT_MARKER_Y_OFFSET = -96.5;
 
         private MapViewTopComponent mapViewTopComponent;
 

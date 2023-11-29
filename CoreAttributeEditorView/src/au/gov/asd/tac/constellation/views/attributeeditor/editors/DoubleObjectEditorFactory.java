@@ -56,7 +56,7 @@ public class DoubleObjectEditorFactory extends AttributeValueEditorFactory<Doubl
 
         @Override
         public void updateControlsWithValue(final Double value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 numberField.setText(String.valueOf(value));
             }

@@ -43,6 +43,7 @@ import org.testfx.api.FxToolkit;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -59,13 +60,15 @@ public class TabContextMenuNGTest {
     
     private TabContextMenu tabContextMenu;
 
-    @BeforeClass
+    @BeforeClass   
     public void setUpClass() throws Exception {
+     
         if (!FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.registerPrimaryStage();
         }
     }
-
+    
+// Causing issues with headless tests 
     @AfterClass
     public void tearDownClass() throws Exception {
         try {
@@ -85,7 +88,9 @@ public class TabContextMenuNGTest {
     
     @Test
     public void init() {
+
         tabContextMenu.init();
+
         
         // Deactivate All Plugins
         

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractTable
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -55,7 +56,7 @@ import org.apache.commons.lang3.StringUtils;
 public class TableVisualisation<C extends AnalyticData> extends InternalVisualisation implements ResultListener<C> {
 
     private final AbstractTableTranslator<? extends AnalyticResult<?>, C> translator;
-    private final VBox visualisation;
+    private VBox visualisation;
     private final TextField tableFilter;
     private final TableView<C> table;
     private final Map<String, TableColumn<C, Object>> tableColumns = new HashMap<>();
@@ -151,6 +152,11 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
     public Node getVisualisation() {
         return visualisation;
     }
+    
+    @Override
+    public void setVisualisation(final Node visualisation) {
+        this.visualisation = (VBox) visualisation;
+    }
 
     @Override
     public void resultChanged(final List<C> selectedItems, final List<C> ignoredItems) {
@@ -183,4 +189,14 @@ public class TableVisualisation<C extends AnalyticData> extends InternalVisualis
         // add the selection change listener back
         setSelectionModelListener(listener);
     }
+    
+    @Override
+    public boolean equals(final Object object) {
+        return (object != null && getClass() == object.getClass());
+    }
+    
+    @Override 
+    public int hashCode() {
+        return Objects.hash(this.getClass());
+    }    
 }

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 package au.gov.asd.tac.constellation.views.mapview2.polygons.utilities;
-
-import au.gov.asd.tac.constellation.views.mapview2.utilities.Edge;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 
 /**

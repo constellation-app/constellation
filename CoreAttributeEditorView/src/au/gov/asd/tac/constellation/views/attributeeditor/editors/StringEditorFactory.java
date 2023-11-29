@@ -53,8 +53,8 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
         private static final int CONTROLS_SPACING = 10;
 
-        private CheckBox noValueCheckBox;
         private TextArea textArea;
+        private CheckBox noValueCheckBox;
 
         protected StringEditor(final EditOperation editOperation, final DefaultGetter<String> defaultGetter, final ValueValidator<String> validator, final String editedItemName, final String initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -62,7 +62,7 @@ public class StringEditorFactory extends AttributeValueEditorFactory<String> {
 
         @Override
         public void updateControlsWithValue(final String value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 textArea.setText(value);
             }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.components;
 
 import au.gov.asd.tac.constellation.utilities.gui.filechooser.FileChooser;
+import au.gov.asd.tac.constellation.utilities.log.LogPreferences;
 import au.gov.asd.tac.constellation.views.dataaccess.io.DataAccessParametersIoProvider;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessPane;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
@@ -44,11 +45,13 @@ public class OptionsMenuBar {
     private static final ImageView LOAD_TEMPLATE_ICON;
     private static final ImageView SAVE_RESULTS_ICON;
     private static final ImageView UNCHECKED_ICON;
+    private static final ImageView LOGGER_ICON;
 
     private static final String LOAD_MENU_ITEM_TEXT = "Load Templates";
     private static final String SAVE_MENU_ITEM_TEXT = "Save Templates";
     private static final String SAVE_RESULTS_MENU_ITEM_TEXT = "Save Results";
     private static final String DESELECT_PLUGINS_ON_EXECUTION_MENU_ITEM_TEXT = "Deselect On Go";
+    private static final String CONNECTION_LOGGING_TEXT = "Connection Logging";
     private static final String TITLE = "Folder to save data access results to";
 
     private static final String OPTIONS_MENU_TEXT = "Workflow Options";
@@ -78,6 +81,11 @@ public class OptionsMenuBar {
                 OptionsMenuBar.class.getResourceAsStream("resources/DataAccessUnchecked.png")));
         UNCHECKED_ICON.setFitHeight(15);
         UNCHECKED_ICON.setFitWidth(15);
+
+        LOGGER_ICON = new ImageView(new Image(
+                OptionsMenuBar.class.getResourceAsStream("resources/DataAccessConnectionLogging.png")));
+        LOGGER_ICON.setFitHeight(15);
+        LOGGER_ICON.setFitWidth(15);
     }
 
     private final DataAccessPane dataAccessPane;
@@ -91,6 +99,7 @@ public class OptionsMenuBar {
 
     private CheckMenuItem saveResultsItem;
     private CheckMenuItem deselectPluginsOnExecutionMenuItem;
+    private CheckMenuItem connectionLoggingMenuItem;
 
     /**
      * Creates a new option menu bar.
@@ -155,12 +164,32 @@ public class OptionsMenuBar {
             event.consume();
         });
 
+        ////////////////////////////////////////
+        // Connection Logging Menu
+        ////////////////////////////////////////
+        connectionLoggingMenuItem = new CheckMenuItem(
+                CONNECTION_LOGGING_TEXT,
+                LOGGER_ICON
+        );
+        connectionLoggingMenuItem.setSelected(
+                LogPreferences.isConnectionLoggingEnabled()
+        );
+        connectionLoggingMenuItem.setOnAction(event -> {
+            LogPreferences.setConnectionLogging(
+                    connectionLoggingMenuItem.isSelected()
+            );
+
+            event.consume();
+        });
+        
         ////////////////////
         // Menu Setup
         ////////////////////
         optionsMenu = new Menu(OPTIONS_MENU_TEXT, SETTINGS_ICON);
         optionsMenu.getItems().addAll(loadMenuItem, saveMenuItem, saveResultsItem,
-                deselectPluginsOnExecutionMenuItem);
+                 connectionLoggingMenuItem, deselectPluginsOnExecutionMenuItem);
+        optionsMenu.setStyle("-fx-background-color: #181818; -fx-border-color: #444444");
+        optionsMenu.addEventHandler(Menu.ON_SHOWING, event -> updateMenuEntry());
 
         menuBar = new MenuBar();
         menuBar.getMenus().add(optionsMenu);
@@ -168,6 +197,20 @@ public class OptionsMenuBar {
         menuBar.setPadding(new Insets(4));
     }
 
+    /*
+    * Show the amount of time remaining in which Connection Logging will be active.
+    * After a fixed timeout period, Connection Logging will be automatically disabled.
+    */
+    private void updateMenuEntry() {
+        connectionLoggingMenuItem.setSelected(LogPreferences.isConnectionLoggingEnabled());
+        final long remainingTime = LogPreferences.logTimeRemaining();
+        final long remainingMinutes = remainingTime/60000;
+        final long remainingSeconds = remainingTime/1000;
+        final String remainingText = remainingMinutes > 0 ? "  \u23F3 " + remainingMinutes + "m" : "  \u23F3 " + remainingSeconds + "s";
+        final String remainingMessage = LogPreferences.isConnectionLoggingEnabled() ? remainingText : "";
+        connectionLoggingMenuItem.setText(CONNECTION_LOGGING_TEXT + remainingMessage);      
+    }
+    
     /**
      * Get the data access pane that this options menu will be attached to.
      *
@@ -234,6 +277,15 @@ public class OptionsMenuBar {
      */
     public CheckMenuItem getDeselectPluginsOnExecutionMenuItem() {
         return deselectPluginsOnExecutionMenuItem;
+    }
+
+    /**
+     * Gets the checkbox menu item to control whether connection logging should occur.
+     *
+     * @return the connection logging menu item
+     */
+    public CheckMenuItem getConnectionLoggingMenuItem() {
+        return connectionLoggingMenuItem;
     }
 
     /**

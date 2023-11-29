@@ -21,7 +21,6 @@ package au.gov.asd.tac.constellation.views.mapview2.polygons.utilities;
  */
 public class BlineElement {
 
-    public int test = 0;
     private BlineElement parent = null;
     private BlineElement left = null;
     private BlineElement right = null;
@@ -59,7 +58,7 @@ public class BlineElement {
         return leftEdge;
     }
 
-    public void setLeftEdge(HalfEdge leftEdge) {
+    public void setLeftEdge(final HalfEdge leftEdge) {
         this.leftEdge = leftEdge;
     }
 
@@ -67,7 +66,7 @@ public class BlineElement {
         return rightEdge;
     }
 
-    public void setRightEdge(HalfEdge rightEdge) {
+    public void setRightEdge(final HalfEdge rightEdge) {
         this.rightEdge = rightEdge;
     }
 

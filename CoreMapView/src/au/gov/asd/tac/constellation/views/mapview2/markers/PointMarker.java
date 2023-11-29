@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -53,6 +54,8 @@ public class PointMarker extends AbstractMarker {
 
     private String identifierAttr = null;
     private int identifierCount = 0;
+
+    private Rectangle posRect = new Rectangle();
 
     public PointMarker(final MapView parent, final int markerID, final int nodeId, final double lattitude, final double longitude, final double scale, final double xOffset, final double yOffset, final String attrColour) {
         super(parent, markerID, nodeId, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
@@ -188,15 +191,30 @@ public class PointMarker extends AbstractMarker {
      */
     @Override
     public void setMarkerPosition(final double mapWidth, final double mapHeight) {
-        x = MarkerUtilities.longToX(longitude, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG) + xOffset;
-        y = MarkerUtilities.latToY(lattitude, mapWidth, mapHeight) - yOffset;
+        x = MarkerUtilities.longToX(longitude, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG) /*+ xOffset*/;
+        y = MarkerUtilities.latToY(lattitude, mapWidth, mapHeight) /*- yOffset*/;
 
         super.setX(x);
         super.setY(y);
 
+        posRect.setX(x);
+        posRect.setY(y);
+        posRect.setWidth(1);
+        posRect.setHeight(1);
+        posRect.setFill(Color.GREEN);
+        posRect.setOpacity(0.5);
+
+        x += xOffset;
+        y += yOffset;
         path = "M " + x + SeparatorConstants.COMMA + " " + y + " Z " + path;
 
+
         markerPath.setContent(path);
+    }
+
+    public void applyOffsets(final double xOffset, final double yOffset) {
+        x += xOffset;
+        y += yOffset;
     }
 
     /**
@@ -228,12 +246,18 @@ public class PointMarker extends AbstractMarker {
         return blazeColour;
     }
 
+    @Override
     public double getX() {
-        return x;
+        return this.x;
     }
 
+    @Override
     public double getY() {
-        return y;
+        return this.y;
+    }
+
+    public Rectangle getPosRect() {
+        return posRect;
     }
 
     public void setLabelAttr(final String labelAttribute) {

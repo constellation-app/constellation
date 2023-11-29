@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import java.util.List;
+import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -30,7 +31,7 @@ import javafx.scene.layout.VBox;
  */
 public class ReportVisualisation extends InternalVisualisation {
 
-    private final VBox report;
+    private VBox report;
     private final Label pluginsRunValue;
     private final Label numberOfResultsValue;
     private final Label aggregationMethodValue;
@@ -65,7 +66,7 @@ public class ReportVisualisation extends InternalVisualisation {
         exceptionsValue.setWrapText(true);
         exceptionsReportBox.getChildren().addAll(exceptionsLabel, exceptionsValue);
 
-        this.report = new VBox(pluginsReportBox, numberOfResultsReportBox, aggregationMethodReportBox, exceptionsReportBox);
+        this.report = new VBox(pluginsReportBox, numberOfResultsReportBox, aggregationMethodReportBox, exceptionsReportBox);  
     }
 
     public void populateReport(final List<AnalyticPlugin<?>> plugins, final int numberOfResults, final String aggregationMethod, final List<Exception> exceptions) {
@@ -112,5 +113,20 @@ public class ReportVisualisation extends InternalVisualisation {
     @Override
     public Node getVisualisation() {
         return report;
+    }
+    
+    @Override
+    public void setVisualisation(final Node report) {
+        this.report = (VBox) report;
+    }
+    
+    @Override
+    public boolean equals(final Object object) {
+        return (object != null && getClass() == object.getClass());
+    }
+    
+    @Override 
+    public int hashCode() {
+        return Objects.hash(this.getClass());
     }
 }

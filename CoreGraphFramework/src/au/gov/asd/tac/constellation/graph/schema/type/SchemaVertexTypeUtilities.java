@@ -196,9 +196,23 @@ public class SchemaVertexTypeUtilities {
 
         SchemaVertexType type = SchemaVertexTypeUtilities.getType(name);
         if (type.equals(defaultType)) {
-            type = new SchemaVertexType.Builder(defaultType, name)
-                    .setIncomplete(true)
-                    .build();
+            String hierarchicalName = name;
+            int lastHSCPos = hierarchicalName.lastIndexOf(SchemaElementType.HIERARCHY_SEPARATOR_CHARACTER);
+            boolean foundMatch = false;
+            SchemaVertexType ancestorType = null;
+            while (lastHSCPos > -1 && !foundMatch) {
+                ancestorType = SchemaVertexTypeUtilities.getType(hierarchicalName.substring(0, lastHSCPos));
+                if (!ancestorType.equals(defaultType)) {
+                    foundMatch = true;
+                }
+                hierarchicalName = hierarchicalName.substring(0, lastHSCPos);
+                lastHSCPos = hierarchicalName.lastIndexOf(SchemaElementType.HIERARCHY_SEPARATOR_CHARACTER);
+            }
+            if (foundMatch) {
+                type = new SchemaVertexType.Builder(ancestorType, name).build();
+            } else {
+                type = new SchemaVertexType.Builder(defaultType, name).setIncomplete(true).build();
+            }
         }
 
         return type;

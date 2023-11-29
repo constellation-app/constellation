@@ -22,17 +22,18 @@ import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
  * @author altair1673
  */
 public class HalfEdge {
-    private Arc parentArc = null;
-    private BlineElement homeArc = null;
+    private Vec3 parentFocus = null;
+    private Vec3 homeFocus = null;
 
     private Vec3 start;
     private Vec3 dirVect;
 
     private boolean extendsUp = false;
+    private boolean complete = false;
 
-    public HalfEdge(final Arc parentArc, final BlineElement homeArc, final Vec3 start, final Vec3 dirVect) {
-        this.parentArc = parentArc;
-        this.homeArc = homeArc;
+    public HalfEdge(final Vec3 parentArc, final Vec3 homeArc, final Vec3 start, final Vec3 dirVect) {
+        this.parentFocus = parentArc;
+        this.homeFocus = homeArc;
         this.start = start;
         this.dirVect = dirVect;
     }
@@ -53,20 +54,20 @@ public class HalfEdge {
         this.dirVect = dirVect;
     }
 
-    public Arc getParentArc() {
-        return parentArc;
+    public Vec3 getParentFocus() {
+        return parentFocus;
     }
 
-    public void setParentArc(Arc parentArc) {
-        this.parentArc = parentArc;
+    public void setParentFocus(final Vec3 parentFocus) {
+        this.parentFocus = parentFocus;
     }
 
-    public BlineElement getHomeArc() {
-        return homeArc;
+    public Vec3 getHomeFocus() {
+        return homeFocus;
     }
 
-    public void setHomeArc(BlineElement homeArc) {
-        this.homeArc = homeArc;
+    public void setHomeFocus(final Vec3 homeFocus) {
+        this.homeFocus = homeFocus;
     }
 
     public boolean extendsUp() {
@@ -76,5 +77,14 @@ public class HalfEdge {
     public void setExtendsUp(boolean extendsUp) {
         this.extendsUp = extendsUp;
     }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
+
 
 }

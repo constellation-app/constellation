@@ -27,6 +27,7 @@ import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -126,43 +127,50 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
     public void setProgress(final int currentStep, final int totalSteps, final String message, final boolean cancellable) throws InterruptedException {
 
         if (pluginReport != null) {
-            pluginReport.setCurrentStep(currentStep);
-            pluginReport.setTotalSteps(totalSteps);
-            pluginReport.setMessage(message);
-            pluginReport.firePluginReportChangedEvent();
+            pluginReport.addMessage(message);
         }
 
         currentMessage = message;
+        
+        this.setProgress(currentStep, totalSteps, cancellable);
+    }
+
+    @Override
+    public void setProgress(final int currentStep, final int totalSteps, final boolean cancellable) throws InterruptedException {     
+        if (pluginReport != null) {
+            pluginReport.setCurrentStep(currentStep);
+            pluginReport.setTotalSteps(totalSteps);
+            pluginReport.firePluginReportChangedEvent();
+        }
 
         // Allow the plugin to be interrupted
         if (cancellable && Thread.interrupted()) {
             throw new InterruptedException();
         }
+        // If the plugin is indeterminate...
+        if (totalSteps < 0) {
 
-        // If the plugin has finished....
-        if (currentStep > totalSteps) {
+            if (progress == null) {
+                progress = ProgressHandle.createHandle(createProgressTitle(), this);
+                progress.start();
+                timer = new Timer();
+                progress.progress(timer.getTime() + " " + currentMessage);
+                timer.start();
+            } else {
+                progress.switchToIndeterminate();
+                progress.progress(timer.getTime() + " " + currentMessage);
+            }
+            
+        // If the plugin has finished....    
+        } else if (currentStep > totalSteps) {
 
             if (progress != null) {
                 timer.interrupt();
                 progress.finish();
                 progress = null;
             }
-
-            // If the plugin is indeterminate...
-        } else if (totalSteps <= 0) {
-
-            if (progress == null) {
-                progress = ProgressHandle.createHandle(createProgressTitle(), this);
-                progress.start();
-                timer = new Timer();
-                progress.progress(timer.getTime() + " " + message);
-                timer.start();
-            } else {
-                progress.switchToIndeterminate();
-                progress.progress(timer.getTime() + " " + message);
-            }
-
-            // If the plugin is determinate...
+            
+        // If the plugin is determinate...
         } else {
 
             if (progress == null) {
@@ -170,16 +178,26 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
                 progress.start();
                 timer = new Timer();
                 progress.switchToDeterminate(totalSteps);
-                progress.progress(timer.getTime() + " " + message, currentStep);
+                progress.progress(timer.getTime() + " " + currentMessage, currentStep);
                 timer.start();
             } else {
                 progress.switchToDeterminate(totalSteps);
-                progress.progress(timer.getTime() + " " + message, currentStep);
+                progress.progress(timer.getTime() + " " + currentMessage, currentStep);
             }
 
         }
     }
-
+    
+    @Override
+    public void setExecutionStage(final int currentStep, final int totalSteps, final String executionStage, final String message, final boolean cancellable) throws InterruptedException {
+        if (pluginReport != null) {
+            pluginReport.setExecutionStage(executionStage);
+            pluginReport.setRunningStateMessage(message);
+        }
+        currentMessage = message;
+        this.setProgress(currentStep, totalSteps, cancellable);
+    }
+    
     @Override
     public void notify(final PluginNotificationLevel level, final String message) {
         final String title = pluginManager.getPlugin().getName();

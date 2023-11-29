@@ -54,7 +54,7 @@ public class LongObjectEditorFactory extends AttributeValueEditorFactory<Long> {
 
         @Override
         public void updateControlsWithValue(final Long value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 numberField.setText(String.valueOf(value));
             }

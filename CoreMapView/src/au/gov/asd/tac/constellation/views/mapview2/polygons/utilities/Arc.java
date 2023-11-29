@@ -27,11 +27,14 @@ public class Arc extends BlineElement {
     private final Vec3 focus;
 
     private final Polyline pl = new Polyline();
+    private int id = 0;
 
 
-    public Arc(final Vec3 focus) {
+    public Arc(final Vec3 focus, final int id) {
         this.focus = focus;
-        pl.setStroke(Color.RED);
+        pl.setStroke(Color.BLACK);
+        this.id = id;
+        pl.setId(Integer.toString(id));
     }
 
     public Vec3 getFocus() {
@@ -40,16 +43,11 @@ public class Arc extends BlineElement {
 
     public double getY(final double x, final double directtrix) {
         return (Math.pow((x - focus.getX()), 2) / (2 * (focus.getY() - directtrix))) + ((focus.getY() + directtrix) / 2);
-        /*final double a = 1.0 / (2.0 * (focus.getY() - directtrix));
-        double c = (focus.getY() + directtrix) * 0.5;
-
-        final double w = x - focus.getX();
-
-        return a * w * w - c;*/
     }
 
-    public void calculateArc(final double directrix) {
-        for (double i = focus.getX() - 500; i < focus.getX() + 500; ++i) {
+    public void calculateArc(final double min, final double max, final double directrix) {
+        pl.getPoints().clear();
+        for (double i = min; i <= max; i = i + 0.05) {
             pl.getPoints().addAll(new Double[]{i, getY(i, directrix)});
         }
     }
@@ -57,5 +55,11 @@ public class Arc extends BlineElement {
     public Polyline getArc() {
         return pl;
     }
+
+    public int getId() {
+        return id;
+    }
+
+
 
 }

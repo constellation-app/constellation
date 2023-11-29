@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.analyticview.translators;
 
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.SizeVisualisation;
+import java.util.Map;
 
 /**
  *
@@ -35,4 +36,13 @@ public abstract class AbstractSizeTranslator<R extends AnalyticResult<?>, C> ext
     }
 
     public abstract void executePlugin(final boolean reset);
+    
+    public abstract Map<Integer, Float> getVertexSizes();
+    
+    public abstract void setVertexSizes(final Map<Integer, Float> sizes);
+    
+    public abstract Map<Integer, Float> getTransactionSizes();
+    
+    public abstract void setTransactionSizes(final Map<Integer, Float> sizes);
+    
 }

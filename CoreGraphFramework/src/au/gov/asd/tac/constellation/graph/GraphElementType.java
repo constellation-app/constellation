@@ -785,8 +785,10 @@ public enum GraphElementType {
             return EDGE;
         } else if (label.equalsIgnoreCase(TRANSACTION_LABEL) || label.equalsIgnoreCase(TRANSACTION_SHORT_LABEL)) {
             return TRANSACTION;
-        } else {
+        } else if (label.equalsIgnoreCase(GRAPH_LABEL)) {
             return GRAPH;
+        } else {
+            throw new IllegalArgumentException("Label given is not a valid graph element type!");
         }
     }
 }

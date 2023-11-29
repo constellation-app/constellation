@@ -20,7 +20,7 @@ package au.gov.asd.tac.constellation.views.mapview2.utilities;
  *
  * @author altair1673
  */
-public class Vec3 {
+public class Vec3 implements Comparable<Vec3> {
     private double x;
     private double y;
     private double z;
@@ -76,7 +76,7 @@ public class Vec3 {
     }
 
     public static double getDistance(final Vec3 v1, final Vec3 v2) {
-        return Math.sqrt(Math.pow(v2.x + v1.x, 2) + Math.pow(v2.y + v1.y, 2));
+        return Math.sqrt(Math.pow(v2.x - v1.x, 2) + Math.pow(v2.y - v1.y, 2));
     }
 
     public Vec3 cross(final Vec3 v) {
@@ -122,5 +122,16 @@ public class Vec3 {
         final double temp = x;
         x = x / Math.sqrt(x * x + y * y);
         y = y / Math.sqrt(temp * temp + y * y);
+    }
+
+    @Override
+    public int compareTo(final Vec3 o) {
+        if (this.x != o.getX() && this.y != o.getY() && this.z != o.getZ()) {
+            return -1;
+        } else if (this.x == o.getX() && this.y == o.getY() && this.z == o.getZ()) {
+            return -1;
+        }
+
+        return 1;
     }
 }
