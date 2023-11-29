@@ -19,7 +19,7 @@
 <tr class="even">
 <td>Export to SVG</td>
 <td></td>
-<td>File -&gt; Export -&gt; To SVGe...</td>
+<td>File -&gt; Export -&gt; To SVG...</td>
 <td style="text-align: center;"><img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/exportToSVG.png" alt="Export to SVG Image Icon" /></td>
 </tr>
 <tr class="odd">
