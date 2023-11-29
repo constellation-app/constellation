@@ -70,7 +70,7 @@ public class SVGGraphBuilderNGTest {
     private int transactionId1, transactionId2, transactionId3, transactionId4, transactionId5;
     
     // Other Attributea
-    private int vertexAttributeIdSelected, transactionAttributeIdSelected, GraphAttributeIdBackgroundColor;
+    private int vertexAttributeIdSelected, transactionAttributeIdSelected, vertexAttributeIdPinned;
     
     public SVGGraphBuilderNGTest() {
     }
@@ -248,13 +248,67 @@ public class SVGGraphBuilderNGTest {
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
                 .withNodes(true)
-                .includeNodeLabels(false)
+                .includeNodeLabels(true)
                 .includeConnections(true)
-                .includeConnectionLabels(false);
+                .includeConnectionLabels(true);
         
         SVGObject result = new SVGObject(instance.build());
         
         assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
+    }
+    
+    /**
+     * Test of build method, of class SVGGraphBuilder.
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testBuild_withoutReadableGraph() throws InterruptedException {
+        System.out.println("build");
+        SVGGraphBuilder instance = new SVGGraphBuilder()
+                .withInteraction(interactionMock)
+                .withTitle(graphName)
+                .fromPerspective(AxisConstants.Z_POSITIVE)
+                .withNodes(true)
+                .includeNodeLabels(true)
+                .includeConnections(true)
+                .includeConnectionLabels(true); 
+        assertNull(instance.build());
+    }
+    
+    /**
+     * Test of build method, of class SVGGraphBuilder.
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testBuild_withoutInteraction() throws InterruptedException {
+        System.out.println("build");
+        SVGGraphBuilder instance = new SVGGraphBuilder()
+                .withReadableGraph(graph.getReadableGraph())
+                .withTitle(graphName)
+                .fromPerspective(AxisConstants.Z_POSITIVE)
+                .withNodes(true)
+                .includeNodeLabels(true)
+                .includeConnections(true)
+                .includeConnectionLabels(true); 
+        assertNull(instance.build());
+    }
+    
+    /**
+     * Test of build method, of class SVGGraphBuilder.
+     * @throws java.lang.InterruptedException
+     */
+    @Test
+    public void testBuild_graphTitle() throws InterruptedException {
+        System.out.println("build");
+        SVGGraphBuilder instance = new SVGGraphBuilder()
+                .withInteraction(interactionMock)
+                .withReadableGraph(graph.getReadableGraph())
+                .fromPerspective(AxisConstants.Z_POSITIVE)
+                .withNodes(true)
+                .includeNodeLabels(true)
+                .includeConnections(true)
+                .includeConnectionLabels(true); 
+        assertNull(instance.build());
     }
     
     private Graph buildtestableGraph() throws InterruptedException{
@@ -266,6 +320,7 @@ public class SVGGraphBuilderNGTest {
             vertexAttributeIdX = VisualConcept.VertexAttribute.X.ensure(wg);
             vertexAttributeIdY = VisualConcept.VertexAttribute.Y.ensure(wg);
             vertexAttributeIdZ = VisualConcept.VertexAttribute.Z.ensure(wg);
+            vertexAttributeIdPinned = VisualConcept.VertexAttribute.PINNED.ensure(wg);
             vertexAttributeIdSelected = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
             transactionAttributeIdSelected = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
 
@@ -278,6 +333,7 @@ public class SVGGraphBuilderNGTest {
             wg.setFloatValue(vertexAttributeIdX, vertexId2, 5.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId2, 1.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId2, true);
+            wg.setBooleanValue(vertexAttributeIdPinned, vertexId2, true);
             
             vertexId3 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId3, 1.0f);
