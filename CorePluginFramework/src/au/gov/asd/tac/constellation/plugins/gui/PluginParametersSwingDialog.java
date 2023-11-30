@@ -52,7 +52,7 @@ public class PluginParametersSwingDialog {
     private volatile String result;
 
     private final String title;
-    private final static String[] acceptanceKeyWords = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename"};
+    private static final String[] acceptanceKeyWords = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename"};
     private final JFXPanel xp;
 
     /**
@@ -215,9 +215,7 @@ public class PluginParametersSwingDialog {
         final DialogDescriptor dd = new DialogDescriptor(xp, title, true, options, focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
         
         // Create an action listener for the custom button
-        final ActionListener al = (ActionEvent e) -> {
-            dd.setValue(NotifyDescriptor.OK_OPTION);
-        };
+        final ActionListener al = (ActionEvent e) -> dd.setValue(NotifyDescriptor.OK_OPTION);
         acceptanceOption.addActionListener(al);
 
         return dd;
