@@ -4,15 +4,15 @@
 }
 
 .element-source {
-    -fx-background-color: rgba(153, 179, 255, 0.25);
+    -fx-background-color: rgba(153, 179, 255, 0.5);
 }
 
 .element-transaction{
-    -fx-background-color: rgba(255, 230, 153, 0.25);
+    -fx-background-color: rgba(255, 230, 153, 0.5);
 }
 
 .element-destination {
-    -fx-background-color: rgba(179, 230, 179, 0.25);
+    -fx-background-color: rgba(179, 230, 179, 0.5);
 }
 
 .pagination {
@@ -58,4 +58,12 @@
 .check-box .box {
     -fx-background-color: white;
     -fx-border-color: #444444;
+}
+.button {
+    -fx-background-color: #3391D6;
+}
+
+.menu-button {
+    -fx-background-color: #3391D6;
+    -fx-text-color: white;
 }

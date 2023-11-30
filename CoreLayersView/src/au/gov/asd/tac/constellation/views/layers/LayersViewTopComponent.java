@@ -97,12 +97,7 @@ public final class LayersViewTopComponent extends JavaFxTopComponent<LayersViewP
 
     @Override
     protected String createStyle() {
-        if (JavafxStyleManager.isDarkTheme()) {
-            return "resources/layers-view-dark.css";
-        } else {
-            return "resources/layers-view-light.css";
-        }
- 
+        return JavafxStyleManager.isDarkTheme() ? "resources/layers-view-dark.css" : "resources/layers-view-light.css";
     }
 
     @Override

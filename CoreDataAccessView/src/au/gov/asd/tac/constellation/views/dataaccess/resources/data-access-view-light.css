@@ -46,3 +46,11 @@
 .titled-pane {
     -fx-text-fill: white;
 }
+
+#options-menu {
+    -fx-background-color: linear-gradient(to bottom, derive(#0093FF,100%), derive(#0093FF,0%) 5%, derive(#0093FF,-25%) 95%, derive(#0093FF,50%) 100%);
+    -fx-padding: 3;
+    -fx-color: blue;
+    -fx-border-color: #444444
+}
+

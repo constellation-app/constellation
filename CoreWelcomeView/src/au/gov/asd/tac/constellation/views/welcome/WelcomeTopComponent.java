@@ -145,11 +145,7 @@ public final class WelcomeTopComponent extends JavaFxTopComponent<WelcomeViewPan
 
     @Override
     protected String createStyle() {
-        if (JavafxStyleManager.isDarkTheme()) {
-            return "resources/dark_welcome.css";
-        } else {
-            return "resources/light_welcome.css";
-        }
+        return JavafxStyleManager.isDarkTheme() ? "resources/dark_welcome.css" : "resources/light_welcome.css";
     }
 
     @Override

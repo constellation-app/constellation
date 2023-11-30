@@ -121,7 +121,7 @@ public final class ConversationBox extends StackPane {
     private int searchCount;
 
     private static final String FOUND_TEXT = "Showing ";
-    private static final String FOUND_PASS_COLOR = "-fx-text-fill: yellow;";
+    private static final String FOUND_PASS_COLOR = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: yellow;" : "-fx-text-fill: blue;";
     private static final String FOUND_FAIL_COLOR = "-fx-text-fill: red;";
     private final Label foundLabel = new Label();
 

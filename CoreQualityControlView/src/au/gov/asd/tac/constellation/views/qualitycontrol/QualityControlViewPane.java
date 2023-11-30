@@ -380,7 +380,7 @@ public final class QualityControlViewPane extends BorderPane {
      * @return a javafx style based on the given quality value.
      */
     public static String qualityStyle(final QualityCategory category) {
-        return qualityStyle(category, 0.75F);
+        return qualityStyle(category, 1.0F);
     }
 
     /**
@@ -400,11 +400,11 @@ public final class QualityControlViewPane extends BorderPane {
                 style = String.format("%s -fx-background-color: rgba(90,150,255,%f);", textColor, alpha);
                 break;
             case MEDIUM:
-                style = String.format("%s -fx-background-color: rgba(255,215,0,%f);", textColor, alpha);
+                style = String.format("%s -fx-background-color: rgba(255,215,0,%f);", "-fx-text-fill: black;", alpha);
                 break;
             case MAJOR:
                 intensity = 255 - (255 * QualityControlEvent.MAJOR_VALUE) / 100;
-                style = String.format("%s -fx-background-color: rgba(255,%d,0,%f);", textColor, intensity, alpha);
+                style = String.format("%s -fx-background-color: rgba(255,%d,0,%f);", "-fx-text-fill: black;", intensity, alpha);
                 break;
             case SEVERE:
                 intensity = 255 - (255 * QualityControlEvent.SEVERE_VALUE) / 100;
