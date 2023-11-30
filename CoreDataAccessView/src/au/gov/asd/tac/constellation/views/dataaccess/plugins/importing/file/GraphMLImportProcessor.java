@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.xml.XmlUtilities;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.RETRIEVE_TRANSACTIONS_PARAMETER_ID;
@@ -83,7 +84,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
 
     @Override
     public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("GraphML files", "*.graphml");
+        return new ExtensionFilter("GraphML files", FileExtensionConstants.GRAPHML);
     }
 
     @Override
