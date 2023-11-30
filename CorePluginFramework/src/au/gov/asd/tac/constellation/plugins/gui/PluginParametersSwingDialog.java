@@ -17,6 +17,8 @@ package au.gov.asd.tac.constellation.plugins.gui;
 
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
@@ -26,8 +28,11 @@ import javafx.embed.swing.JFXPanel;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javax.swing.JButton;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
 
 /**
@@ -42,19 +47,20 @@ public class PluginParametersSwingDialog {
     
     private static final Logger LOGGER = Logger.getLogger(PluginParametersSwingDialog.class.getName());
 
-    public static final String OK = "OK";
     public static final String CANCEL = "Cancel";
 
     private volatile String result;
 
     private final String title;
+    private final static String[] acceptanceKeyWords = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename"};
     private final JFXPanel xp;
 
     /**
      * Display a dialog box containing the parameters that allows the user to
      * enter values.
      * <p>
-     * "OK" and "Cancel" buttons are displayed.
+     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load" or "Rename"
+     * Rejection Button displayed as "Cancel".
      *
      * @param title The dialog box title.
      * @param parameters The plugin parameters.
@@ -67,7 +73,8 @@ public class PluginParametersSwingDialog {
      * Display a dialog box containing the parameters that allows the user to
      * enter values.
      * <p>
-     * "OK" and "Cancel" buttons are displayed.
+     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load" or "Rename"
+     * Rejection Button displayed as "Cancel".
      *
      * @param title The dialog box title.
      * @param parameters The plugin parameters.
@@ -82,7 +89,8 @@ public class PluginParametersSwingDialog {
      * Display a dialog box containing the parameters that allows the user to
      * enter values.
      * <p>
-     * "OK" and "Cancel" buttons are displayed.
+     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load" or "Rename"
+     * Rejection Button displayed as "Cancel".
      *
      * @param title The dialog box title.
      * @param parameters The plugin parameters.
@@ -96,8 +104,8 @@ public class PluginParametersSwingDialog {
      * Display a dialog box containing the parameters that allows the user to
      * enter values.
      * <p>
-     * "OK" and "Cancel" (and "Help" if helpID is non-null) buttons are
-     * displayed.
+     * Acceptance Button displayed as "OK" or "Import" or "Export" or "Save" or "Open" or "Build" or "Create" or "Load" or "Rename"
+     * Rejection Button displayed as "Cancel".
      *
      * @param title The dialog box title.
      * @param parameters The plugin parameters.
@@ -143,25 +151,76 @@ public class PluginParametersSwingDialog {
         xp.setPreferredSize(dimension);
     }
 
+    /**
+     * Generates a DialogDescripter window and waits until the user
+     * to select an option (the acceptance option will be highlighted). 
+     * The acceptance option is "OK" by default.
+     * The rejectionoOption is "Cancel" by default. 
+     * If a keyword is present in the title of the DialogDisplayer
+     * the acceptance option will adjust dynamically to express that keyword 
+     * (i.e. "Build", "Save", "Export")
+     */
     public void showAndWait() {
-        final DialogDescriptor dd = new DialogDescriptor(xp, title);
+        final DialogDescriptor dd = createDialogDescriptor(true);  
         final Object r = DialogDisplayer.getDefault().notify(dd);
         if (r == DialogDescriptor.OK_OPTION) {
-            result = OK;
+            result = getAcceptanceButton();
         } else {
             result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
         }
     }
 
+    /**
+     * Generates a DialogDescripter window and waits until the user
+     * to select an option (No option will be highlighted). 
+     * The acceptance option is "OK" by default.
+     * The rejectionoOption is "Cancel" by default. 
+     * If a keyword is present in the title of the DialogDisplayer
+     * the acceptance option will adjust dynamically to express that keyword 
+     * (i.e. "Build", "Save", "Export")
+     */
     public void showAndWaitNoFocus() {
-        //Having 'No' button as initial value means focus is off of 'OK' and 'Cancel' buttons
-        final DialogDescriptor dd = new DialogDescriptor(xp, title, true, DialogDescriptor.OK_CANCEL_OPTION, DialogDescriptor.NO_OPTION, null);
+        final DialogDescriptor dd = createDialogDescriptor(true);  
         final Object r = DialogDisplayer.getDefault().notify(dd);
         if (r == DialogDescriptor.OK_OPTION) {
-            result = OK;
+            result = getAcceptanceButton();
         } else {
             result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
         }
+    }
+    
+    /**
+     * Generates a DialogDescripter window and dynamically sets the 
+     * acceptance option based on the title. 
+     * The acceptance option is "OK" by default.
+     * The rejectionoOption is "Cancel" by default. 
+     * If a keyword is present in the title of the DialogDisplayer
+     * the acceptance option will adjust dynamically to express that keyword 
+     * (i.e. "Build", "Save", "Export")
+     * @param focused a Boolean representing if the 
+     * acceptance option should be highlighted by default
+     * @Return
+     */
+    private DialogDescriptor createDialogDescriptor(final boolean focused) {
+        // Generate options
+        final Object[] options = new Object[2];
+        final JButton acceptanceOption = new JButton(getAcceptanceButton());
+        
+        options[0] = acceptanceOption; 
+        options[1] = DialogDescriptor.CANCEL_OPTION; 
+        
+        //Having 'No' button as initial value means focus is off of 'OK' and 'Cancel' buttons
+        final Object focus = focused ? acceptanceOption : DialogDescriptor.NO_OPTION;
+        
+        final DialogDescriptor dd = new DialogDescriptor(xp, title, true, options, focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
+        
+        // Create an action listener for the custom button
+        final ActionListener al = (ActionEvent e) -> {
+            dd.setValue(NotifyDescriptor.OK_OPTION);
+        };
+        acceptanceOption.addActionListener(al);
+
+        return dd;
     }
 
     /**
@@ -172,6 +231,38 @@ public class PluginParametersSwingDialog {
      */
     public String getResult() {
         return result;
+    }
+
+    /**
+     * Generates the text of the PluginParameterPane acceptance button based on keywords in the Pane title.
+     * This implementation is useful as it does not require the convoluted work of enabling developers to set 
+     * the acceptance button text at the plugin creation level.
+     * 
+     * @param title
+     * @return 
+     */
+    private String getAcceptanceButton() {
+        for (final String keyWord : acceptanceKeyWords){
+            if (StringUtils.containsIgnoreCase(title, keyWord)){
+                return keyWord;
+            }
+        }
+        return "OK";
+    }
+    
+    /**
+     * Checks to see if the acceptance button was selected.
+     * 
+     * @param result
+     * @return 
+     */
+    public static boolean isAccepted(String result) {
+        for (final String keyWord : acceptanceKeyWords){
+            if (keyWord.equals(result)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static class JFXPanelWithHelp extends JFXPanel implements HelpCtx.Provider {

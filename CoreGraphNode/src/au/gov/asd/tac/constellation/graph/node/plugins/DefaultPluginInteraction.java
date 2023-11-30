@@ -296,7 +296,7 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         } else {
             dialog.showAndWaitNoFocus();
         }
-        if (PluginParametersDialog.OK.equals(dialog.getResult())) {
+        if (PluginParametersSwingDialog.isAccepted((dialog.getResult()))) {
             result = true;
         }
 
