@@ -66,7 +66,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "file_name");
     public static final String GRAPH_TITLE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "graph_title");
     public static final String BACKGROUND_COLOR_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "background_color");
-    public static final String SELECTED_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_elements");
+    public static final String SELECTED_ELEMENTS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_elements");
     public static final String CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connection_mode");
     public static final String SHOW_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_nodes");
     public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
@@ -98,9 +98,9 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         backgroundColorParam.setDescription("Set the background color");
         parameters.addParameter(backgroundColorParam);
         
-        final PluginParameter<BooleanParameterValue> selectedElementsParam = BooleanParameterType.build(SELECTED_NODES_PARAMETER_ID);
-        selectedElementsParam.setName("Selected Nodes");
-        selectedElementsParam.setDescription("Export selected nodes only");
+        final PluginParameter<BooleanParameterValue> selectedElementsParam = BooleanParameterType.build(SELECTED_ELEMENTS_PARAMETER_ID);
+        selectedElementsParam.setName("Selected Elements");
+        selectedElementsParam.setDescription("Export selected elements only");
         parameters.addParameter(selectedElementsParam);
         
         final PluginParameter<BooleanParameterValue> showNodesParam = BooleanParameterType.build(SHOW_NODES_PARAMETER_ID);
@@ -142,7 +142,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final String fnam = parameters.getStringValue(FILE_NAME_PARAMETER_ID);
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
         final ConstellationColor color = parameters.getColorValue(BACKGROUND_COLOR_PARAMETER_ID);
-        final boolean selectedNodes = parameters.getBooleanValue(SELECTED_NODES_PARAMETER_ID);
+        final boolean selectedElements = parameters.getBooleanValue(SELECTED_ELEMENTS_PARAMETER_ID);
         final boolean showNodes = parameters.getBooleanValue(SHOW_NODES_PARAMETER_ID);
         final boolean showConnections = parameters.getBooleanValue(SHOW_CONNECTIONS_PARAMETER_ID);
         final boolean showNodeLabels = parameters.getBooleanValue(SHOW_NODE_LABELS_PARAMETER_ID);
@@ -161,7 +161,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                 .withTitle(title)
                 .withReadableGraph(graph)
                 .withBackground(color)
-                .withNodes(selectedNodes)
+                .withElements(selectedElements)
                 .includeNodes(showNodes)
                 .includeConnections(showConnections)
                 .includeNodeLabels(showNodeLabels)

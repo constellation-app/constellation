@@ -174,14 +174,14 @@ public class SVGGraphBuilderNGTest {
     }
 
     /**
-     * Test of withNodes method, of class SVGGraphBuilder.
+     * Test of withElements method, of class SVGGraphBuilder.
      */
     @Test
     public void testWithNodes() {
         System.out.println("withNodes");
         Boolean selectedNodesOnly = true;
         SVGGraphBuilder instance = new SVGGraphBuilder();
-        SVGGraphBuilder result = instance.withNodes(selectedNodesOnly);
+        SVGGraphBuilder result = instance.withElements(selectedNodesOnly);
         assertEquals(result, instance);
     }
 
@@ -245,7 +245,7 @@ public class SVGGraphBuilderNGTest {
                 .withReadableGraph(graph.getReadableGraph())
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withNodes(true)
+                .withElements(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
                 .includeConnectionLabels(false);
@@ -266,7 +266,7 @@ public class SVGGraphBuilderNGTest {
                 .withInteraction(interactionMock)
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withNodes(true)
+                .withElements(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
                 .includeConnectionLabels(false); 
@@ -284,7 +284,7 @@ public class SVGGraphBuilderNGTest {
                 .withReadableGraph(graph.getReadableGraph())
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withNodes(true)
+                .withElements(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
                 .includeConnectionLabels(false); 
@@ -302,7 +302,7 @@ public class SVGGraphBuilderNGTest {
                 .withInteraction(interactionMock)
                 .withReadableGraph(graph.getReadableGraph())
                 .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withNodes(true)
+                .withElements(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
                 .includeConnectionLabels(false); 

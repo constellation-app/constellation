@@ -70,7 +70,7 @@ public class SVGGraphBuilder {
     
     
     //Variables with default values, customisable by the builder pattern 
-    private boolean selectedNodesOnly = false;
+    private boolean selectedElementsOnly = false;
     private boolean showNodes = true;
     private boolean showConnections = true;
     private boolean showNodeLabels = true;
@@ -139,11 +139,11 @@ public class SVGGraphBuilder {
 
     /**
      * Specifies if only selected Nodes and related connections are to be included in the export.
-     * @param selectedNodesOnly
+     * @param selectedElementsOnly
      * @return 
      */
-    public SVGGraphBuilder withNodes(final Boolean selectedNodesOnly) {
-        this.selectedNodesOnly = selectedNodesOnly;
+    public SVGGraphBuilder withElements(final Boolean selectedElementsOnly) {
+        this.selectedElementsOnly = selectedElementsOnly;
         return this;
     }
 
@@ -248,7 +248,7 @@ public class SVGGraphBuilder {
         final Camera oldCamera = new Camera(this.camera);
         final BoundingBox box = new BoundingBox();
         if (exportPerspective != null) {
-                BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedNodesOnly);
+                BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedElementsOnly);
                 CameraUtilities.refocus(camera, new Vector3f(exportPerspective.isNegative() ? -1 : 1, 0, 0), new Vector3f(0, 1, 0), box);
                 Animation.startAnimation(new PanAnimation(String.format("Reset to @s View", exportPerspective), oldCamera, camera, true));
         }
@@ -316,7 +316,7 @@ public class SVGGraphBuilder {
             // Do not export this vertex if only selected nodes are being exported and the node is not selected.
             // Do not export the node if the node is not visable
             // Do not export the node if the node is not within the field of view
-            if (!inView(position, radius) || ((selectedNodesOnly && !access.isVertexSelected(vertexIndex)) || access.getVertexVisibility(vertexIndex) == 0)) {
+            if (!inView(position, radius) || ((selectedElementsOnly && !access.isVertexSelected(vertexIndex)) || access.getVertexVisibility(vertexIndex) == 0)) {
                 continue;
             }
             
@@ -489,10 +489,8 @@ public class SVGGraphBuilder {
             final float  highRadius = getVertexScaledRadius(highIndex);
             final float  lowRadius = getVertexScaledRadius(lowIndex);
 
-            // Do not export this link if only selected nodes are being exported 
-            // Do not export the link if either of the associated nodes are not selected.
-            // Do not export the link if the node is not within the field of view
-            if ((!inView(highCenterPosition, highRadius) &&  !inView(lowCenterPosition, lowRadius))||(selectedNodesOnly && (!access.isVertexSelected(highIndex) || !access.isVertexSelected(lowIndex)))) {
+            // Do not export the link if the nodes are not within the field of view
+            if (!inView(highCenterPosition, highRadius) &&  !inView(lowCenterPosition, lowRadius)) {
                 continue;
             }
 
@@ -512,9 +510,14 @@ public class SVGGraphBuilder {
             final SVGObject svgConnections = SVGObjectConstants.CONNECTIONS.findIn(svgLink);
             final SVGObject svgLabels = SVGObjectConstants.LABELS.findIn(svgLink);
             for (int connectionIndex = 0; connectionIndex < access.getLinkConnectionCount(linkIndex); connectionIndex++) {
-
+                
                 // Get the reference to the current connection
                 final int connection = access.getLinkConnection(linkIndex, connectionIndex);
+                
+                //Do not export the conection if only selected element are being exported and the connection is not selected
+                if(selectedElementsOnly && (!access.isConnectionSelected(connection))){
+                    continue;
+                }
                 
                 // Do not export the onnection if it is invisable 
                 if (access.getConnectionVisibility(connection) == 0) {

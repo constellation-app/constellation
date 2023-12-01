@@ -155,7 +155,7 @@ public class ExportToSVGActionNGTest {
         instance.actionPerformed(e);
         
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.EXPORT_PERSPECTIVE_PARAMETER_ID, "Current Perspective");
-        verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SELECTED_NODES_PARAMETER_ID, false);
+        verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SELECTED_ELEMENTS_PARAMETER_ID, false);
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SHOW_NODE_LABELS_PARAMETER_ID, true);
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SHOW_CONNECTION_LABELS_PARAMETER_ID, true);
         verify(pluginExecutionMock, times(1)).withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, true);
