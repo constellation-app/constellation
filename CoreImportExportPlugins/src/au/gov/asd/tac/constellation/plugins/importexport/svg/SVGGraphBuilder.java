@@ -71,6 +71,7 @@ public class SVGGraphBuilder {
     
     //Variables with default values, customisable by the builder pattern 
     private boolean selectedNodesOnly = false;
+    private boolean showNodes = true;
     private boolean showConnections = true;
     private boolean showNodeLabels = true;
     private boolean showConnectionLabels = true;
@@ -146,6 +147,16 @@ public class SVGGraphBuilder {
         return this;
     }
 
+    /**
+     * Controls whether nodes are included or excluded from the SVG output file
+     * @param showNodes
+     * @return 
+     */
+    public SVGGraphBuilder includeNodes(final boolean showNodes) {
+        this.showNodes = showNodes;
+        return this;
+    }
+        
     /**
      * Controls whether connections are included or excluded from the SVG output file
      * @param showConnections
@@ -290,7 +301,12 @@ public class SVGGraphBuilder {
 
         // Retrieve the svg element that holds the Nodes.
         final SVGObject svgNodes = SVGObjectConstants.CONTENT.findIn(svgGraph);
-
+        
+        if (!showNodes) {
+            interaction.setProgress(progress, progress, "Created 0 nodes", true);
+            return;
+        }  
+        
         // Itterate over all vertices in the graph
         for (int vertexIndex = 0 ; vertexIndex < access.getVertexCount() ; vertexIndex++) {
             // Retrieve values of relevent vertex attributes

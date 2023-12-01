@@ -77,6 +77,7 @@ public final class ExportToSVGAction implements ActionListener {
             PluginExecution.withPlugin(ImportExportPluginRegistry.EXPORT_SVG)
                     .withParameter(ExportToSVGPlugin.GRAPH_TITLE_PARAMETER_ID, graphName)
                     .withParameter(ExportToSVGPlugin.SELECTED_NODES_PARAMETER_ID, false)
+                    .withParameter(ExportToSVGPlugin.SHOW_NODES_PARAMETER_ID, flags.drawNodes())
                     .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, flags.drawConnections())
                     .withParameter(ExportToSVGPlugin.SHOW_NODE_LABELS_PARAMETER_ID, flags.drawNodeLabels())
                     .withParameter(ExportToSVGPlugin.SHOW_CONNECTION_LABELS_PARAMETER_ID, flags.drawConnectionLabels())

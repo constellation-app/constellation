@@ -44,8 +44,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -68,9 +66,10 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String FILE_NAME_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "file_name");
     public static final String GRAPH_TITLE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "graph_title");
     public static final String BACKGROUND_COLOR_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "background_color");
-    public static final String SELECTED_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_nodes");
-    public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
+    public static final String SELECTED_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "selected_elements");
     public static final String CONNECTION_MODE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "connection_mode");
+    public static final String SHOW_NODES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_nodes");
+    public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
     public static final String SHOW_NODE_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_node_labels");
     public static final String SHOW_CONNECTION_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_transaction_labels");
     public static final String EXPORT_PERSPECTIVE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "export_perspective");
@@ -99,14 +98,19 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         backgroundColorParam.setDescription("Set the background color");
         parameters.addParameter(backgroundColorParam);
         
-        final PluginParameter<BooleanParameterValue> selectedNodesParam = BooleanParameterType.build(SELECTED_NODES_PARAMETER_ID);
-        selectedNodesParam.setName("Selected Nodes");
-        selectedNodesParam.setDescription("Export selected nodes only");
-        parameters.addParameter(selectedNodesParam);
+        final PluginParameter<BooleanParameterValue> selectedElementsParam = BooleanParameterType.build(SELECTED_NODES_PARAMETER_ID);
+        selectedElementsParam.setName("Selected Nodes");
+        selectedElementsParam.setDescription("Export selected nodes only");
+        parameters.addParameter(selectedElementsParam);
+        
+        final PluginParameter<BooleanParameterValue> showNodesParam = BooleanParameterType.build(SHOW_NODES_PARAMETER_ID);
+        showNodesParam.setName("Show Nodes");
+        showNodesParam.setDescription("Include Nodes in export");
+        parameters.addParameter(showNodesParam);
         
         final PluginParameter<BooleanParameterValue> showConnectionsParam = BooleanParameterType.build(SHOW_CONNECTIONS_PARAMETER_ID);
         showConnectionsParam.setName("Show Connections");
-        showConnectionsParam.setDescription("Export connections between nodes");
+        showConnectionsParam.setDescription("Include connections in export");
         parameters.addParameter(showConnectionsParam);
         
         final PluginParameter<BooleanParameterValue> showNodeLabelsParam = BooleanParameterType.build(SHOW_NODE_LABELS_PARAMETER_ID);
@@ -139,6 +143,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final String title = parameters.getStringValue(GRAPH_TITLE_PARAMETER_ID);
         final ConstellationColor color = parameters.getColorValue(BACKGROUND_COLOR_PARAMETER_ID);
         final boolean selectedNodes = parameters.getBooleanValue(SELECTED_NODES_PARAMETER_ID);
+        final boolean showNodes = parameters.getBooleanValue(SHOW_NODES_PARAMETER_ID);
         final boolean showConnections = parameters.getBooleanValue(SHOW_CONNECTIONS_PARAMETER_ID);
         final boolean showNodeLabels = parameters.getBooleanValue(SHOW_NODE_LABELS_PARAMETER_ID);
         final boolean showConnectionLabels = parameters.getBooleanValue(SHOW_CONNECTION_LABELS_PARAMETER_ID);
@@ -157,6 +162,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                 .withReadableGraph(graph)
                 .withBackground(color)
                 .withNodes(selectedNodes)
+                .includeNodes(showNodes)
                 .includeConnections(showConnections)
                 .includeNodeLabels(showNodeLabels)
                 .includeConnectionLabels(showConnectionLabels)
