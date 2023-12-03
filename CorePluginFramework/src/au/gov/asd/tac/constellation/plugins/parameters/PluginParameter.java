@@ -458,6 +458,7 @@ public class PluginParameter<V extends ParameterValue> {
         copy.setRequired(isRequired);
         copy.enclosingParameter = enclosingParameter;
         copy.properties = new HashMap<>(properties);
+        copy.setSpellCheckEnabled(isSpellCheckEnabled);
         return copy;
     }
 

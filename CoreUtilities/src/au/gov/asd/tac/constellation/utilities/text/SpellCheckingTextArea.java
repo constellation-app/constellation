@@ -15,7 +15,9 @@
  */
 package au.gov.asd.tac.constellation.utilities.text;
 
+import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import java.util.List;
+import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -37,6 +39,7 @@ import javafx.stage.Popup;
 import org.apache.commons.lang3.StringUtils;
 import org.fxmisc.richtext.InlineCssTextArea;
 import org.fxmisc.richtext.util.UndoUtils;
+import org.openide.util.NbPreferences;
 
 /**
  * SpellCheckingTextArea is an InlineCssTextArea from the RichTextFX library
@@ -45,6 +48,8 @@ import org.fxmisc.richtext.util.UndoUtils;
  * @author Auriga2
  */
 public class SpellCheckingTextArea extends InlineCssTextArea {
+
+    private static final Preferences PREFERENCES = NbPreferences.forModule(ApplicationPreferenceKeys.class);
     private final SpellChecker spellChecker = new SpellChecker(this);
     private final Insets insets = new Insets(4, 8, 4, 8);
     public static final double EXTRA_HEIGHT = 3;
@@ -52,7 +57,10 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     /**
      * Default constructor.
      */
-    public SpellCheckingTextArea() {
+    public SpellCheckingTextArea(final boolean isSpellCheckEnabled) {
+        final boolean enableSpellChecking = PREFERENCES.getBoolean(ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING, ApplicationPreferenceKeys.ENABLE_SPELL_CHECKING_DEFAULT) && isSpellCheckEnabled;
+        spellChecker.turnOffSpellChecking(!enableSpellChecking);
+
         this.setAutoHeight(false);
         this.setWrapText(true);
         this.setPadding(insets);
@@ -73,15 +81,15 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         });
 
         // Set the right click context menu
-        final ContextMenu contextMenu = addRightClickContextMenu();
+        final ContextMenu contextMenu = addRightClickContextMenu(enableSpellChecking);
         this.setContextMenu(contextMenu);
     }
 
     /**
      * Constructor with input text.
      */
-    public SpellCheckingTextArea(final String text) {
-        this();
+    public SpellCheckingTextArea(final boolean isSpellCheckEnabled, final String text) {
+        this(isSpellCheckEnabled);
         setText(text);
     }
 
@@ -131,7 +139,7 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
 
     }
 
-    private ContextMenu addRightClickContextMenu() {
+    private ContextMenu addRightClickContextMenu(final boolean enableSpellChecking) {
         final ContextMenu contextMenu = new ContextMenu();
 
         final MenuItem undoMenuItem = new MenuItem("Undo");
@@ -153,6 +161,8 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         // CheckMenuItem to toggle turn On/Off Spell Checking. On by default
         final CheckMenuItem toggleSpellCheckMenuItem = new CheckMenuItem("Turn On Spell Checking");
         toggleSpellCheckMenuItem.setSelected(true);
+        toggleSpellCheckMenuItem.setDisable(!enableSpellChecking);
+        toggleSpellCheckMenuItem.setVisible(enableSpellChecking);
         toggleSpellCheckMenuItem.setOnAction(event -> {
             spellChecker.turnOffSpellChecking(!toggleSpellCheckMenuItem.isSelected());
             spellChecker.checkSpelling();

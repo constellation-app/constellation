@@ -297,7 +297,7 @@ public class JDBCSourcePane extends SourcePane {
         final Label queryLabel = new Label("Query:");
         GridPane.setConstraints(queryLabel, 0, 3, 1, 1, HPos.LEFT, VPos.TOP);
 
-        final SpellCheckingTextArea query = new SpellCheckingTextArea();
+        final SpellCheckingTextArea query = new SpellCheckingTextArea(true);
         query.setPrefHeight(80);
 
         GridPane.setConstraints(query, 1, 3, 2, 1, HPos.LEFT, VPos.TOP);

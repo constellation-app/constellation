@@ -123,6 +123,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         StringParameterType.setLines(text, 15);
         text.setName("Words to Extract");
         text.setDescription("Whitelist of words to extract from content (new line delimited, extract all words if empty)");
+        text.setSpellCheckEnabled(true);
         params.addParameter(text);
 
         final PluginParameter<BooleanParameterValue> useRegex = BooleanParameterType.build(USE_REGEX_PARAMETER_ID);
@@ -300,11 +301,11 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
         final int transactionCount = wg.getTransactionCount();
 
         if (regexOnly) {
-            /* 
-             This choice ignores several other parameters, so is a bit simpler 
+            /*
+             This choice ignores several other parameters, so is a bit simpler
              even if there code commonalities, but combining the if/else
              code would make things even more complex.
-            
+
              The input words are treated as trusted regular expressions,
              so the caller has to know what they're doing.
              This is power-use mode.
