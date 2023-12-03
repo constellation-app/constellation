@@ -66,18 +66,18 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
             final int version = jnode.has(VERSION) ? jnode.get(VERSION).asInt() : 0;
 
             Iterator<JsonNode> iter = jnode.get(WORDTOHASH).iterator();
-            Map<String, Integer> wordsToHashes = new HashMap<>();
+            final Map<String, Integer> wordsToHashes = new HashMap<>();
             while (iter.hasNext()) {
                 wordsToHashes.put(iter.next().asText(), iter.next().asInt());
             }
 
-            GraphElementType elementType = GraphElementType.getValue(jnode.get(ELTYPE).asText());
-            Map<Integer, Set<Integer>> hashedWordSets = new HashMap<>();
+            final GraphElementType elementType = GraphElementType.getValue(jnode.get(ELTYPE).asText());
+            final Map<Integer, Set<Integer>> hashedWordSets = new HashMap<>();
             iter = jnode.get(WORDSETS).iterator();
             while (iter.hasNext()) {
-                int hash = iter.next().asInt();
-                int setSize = iter.next().asInt();
-                Set<Integer> wordSet = new HashSet<>();
+                final int hash = iter.next().asInt();
+                final int setSize = iter.next().asInt();
+                final Set<Integer> wordSet = new HashSet<>();
                 for (int i = 0; i < setSize; i++) {
                     int elID = iter.next().asInt();
                     if (elementType == GraphElementType.VERTEX) {
@@ -90,7 +90,7 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                 hashedWordSets.put(hash, wordSet);
             }
 
-            SortedMap<String, Float> wordListWithSizes;
+            final SortedMap<String, Float> wordListWithSizes;
 
             iter = jnode.get(WORDLIST).iterator();
             wordListWithSizes = new TreeMap<>();
@@ -101,35 +101,35 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                 wordListWithSizes.put(word, size);
             }
 
-            SortedMap<Double, Set<String>> wordSignificances = new TreeMap<>();
+            final SortedMap<Double, Set<String>> wordSignificances = new TreeMap<>();
             if (jnode.has(WORDSIGNIFICANCES)) {
                 iter = jnode.get(WORDSIGNIFICANCES).iterator();
                 while (iter.hasNext()) {
                     double significance = iter.next().asDouble();
-                    Set<String> words = new HashSet<>();
+                    final Set<String> words = new HashSet<>();
                     wordSignificances.put(significance, words);
-                    Iterator<JsonNode> subIter = iter.next().iterator();
+                    final Iterator<JsonNode> subIter = iter.next().iterator();
                     while (subIter.hasNext()) {
                         words.add(iter.next().asText());
                     }
                 }
             }
 
-            double currentSignificance = jnode.has(CURRENTSIGNIFICANCE) ? jnode.get(CURRENTSIGNIFICANCE).asDouble() : 0.05;
+            final double currentSignificance = jnode.has(CURRENTSIGNIFICANCE) ? jnode.get(CURRENTSIGNIFICANCE).asDouble() : 0.05;
 
-            String queryString = jnode.get(INFO).asText();
-            long modcount = jnode.get(MODCOUNT).asLong();
+            final String queryString = jnode.get(INFO).asText();
+            final long modcount = jnode.get(MODCOUNT).asLong();
 
-            Set<String> selectedWords = new HashSet<>();
+            final Set<String> selectedWords = new HashSet<>();
             iter = jnode.get(SELECTED).iterator();
             while (iter.hasNext()) {
                 selectedWords.add(iter.next().asText());
             }
 
-            boolean isUnionSelect = jnode.get(ISUNION).asBoolean();
-            boolean isSizeSorted = jnode.get(ISSIZE).asBoolean();
+            final boolean isUnionSelect = jnode.get(ISUNION).asBoolean();
+            final boolean isSizeSorted = jnode.get(ISSIZE).asBoolean();
 
-            WordCloud cloud = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryString, modcount, selectedWords, isUnionSelect, isSizeSorted);
+            final WordCloud cloud = new WordCloud(wordsToHashes, hashedWordSets, elementType, wordListWithSizes, wordSignificances, currentSignificance, queryString, modcount, selectedWords, isUnionSelect, isSizeSorted);
 
             graph.setObjectValue(attributeId, elementId, cloud);
         }
@@ -138,29 +138,29 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
     @Override
     public void writeObject(final Attribute attr, final int elementId, final JsonGenerator jsonGenerator, final GraphReadMethods graph, final GraphByteWriter byterWriter, final boolean verbose) throws IOException {
         if (verbose || !graph.isDefaultValue(attr.getId(), elementId)) {
-            WordCloud cloud = (WordCloud) graph.getObjectValue(attr.getId(), elementId);
+            final WordCloud cloud = (WordCloud) graph.getObjectValue(attr.getId(), elementId);
             if (cloud == null) {
                 jsonGenerator.writeNullField(attr.getName());
             } else {
                 jsonGenerator.writeObjectFieldStart(attr.getName());
 				jsonGenerator.writeNumberField(VERSION, 2);
 
-                Iterator<Map.Entry<String, Integer>> iterMap = cloud.getWordToHashes().entrySet().iterator();
+                final Iterator<Map.Entry<String, Integer>> iterMap = cloud.getWordToHashes().entrySet().iterator();
                 jsonGenerator.writeArrayFieldStart(WORDTOHASH);
                 while (iterMap.hasNext()) {
-                    Map.Entry<String, Integer> entry = iterMap.next();
+                    final Map.Entry<String, Integer> entry = iterMap.next();
                     jsonGenerator.writeString(entry.getKey());
                     jsonGenerator.writeNumber(entry.getValue());
                 }
                 jsonGenerator.writeEndArray();
 
-                Iterator<Map.Entry<Integer, Set<Integer>>> iterMapSet = cloud.getHashedWordSets().entrySet().iterator();
+                final Iterator<Map.Entry<Integer, Set<Integer>>> iterMapSet = cloud.getHashedWordSets().entrySet().iterator();
                 jsonGenerator.writeArrayFieldStart(WORDSETS);
                 while (iterMapSet.hasNext()) {
-                    Map.Entry<Integer, Set<Integer>> entry = iterMapSet.next();
+                    final Map.Entry<Integer, Set<Integer>> entry = iterMapSet.next();
                     jsonGenerator.writeNumber(entry.getKey());
-                    Set<Integer> set = entry.getValue();
-                    Set<Integer> toWrite = new HashSet<>();
+                    final Set<Integer> set = entry.getValue();
+                    final Set<Integer> toWrite = new HashSet<>();
                     for (final int elID : set) {
                         if ((cloud.getElementType() == GraphElementType.VERTEX && graph.vertexExists(elID)) || (cloud.getElementType() == GraphElementType.TRANSACTION && graph.transactionExists(elID))) {
                             toWrite.add(elID);
@@ -168,7 +168,7 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                     }
 
                     jsonGenerator.writeNumber(toWrite.size());
-                    Iterator<Integer> iterSet = toWrite.iterator();
+                    final Iterator<Integer> iterSet = toWrite.iterator();
                     while (iterSet.hasNext()) {
                         jsonGenerator.writeNumber(iterSet.next());
                     }
@@ -177,22 +177,22 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
 
                 jsonGenerator.writeStringField(ELTYPE, cloud.getElementType().getLabel());
 
-                Iterator<Map.Entry<String, Float>> iterMapFloat = cloud.getWordListWithSizes().entrySet().iterator();
+                final Iterator<Map.Entry<String, Float>> iterMapFloat = cloud.getWordListWithSizes().entrySet().iterator();
                 jsonGenerator.writeArrayFieldStart(WORDLIST);
                 while (iterMapFloat.hasNext()) {
-                    Map.Entry<String, Float> entry = iterMapFloat.next();
+                    final Map.Entry<String, Float> entry = iterMapFloat.next();
                     jsonGenerator.writeString(entry.getKey());
                     jsonGenerator.writeNumber(entry.getValue());
                 }
                 jsonGenerator.writeEndArray();
 
-                Iterator<Map.Entry<Double, Set<String>>> iterMapDouble = cloud.getWordSignificances().entrySet().iterator();
+                final Iterator<Map.Entry<Double, Set<String>>> iterMapDouble = cloud.getWordSignificances().entrySet().iterator();
                 jsonGenerator.writeArrayFieldStart(WORDSIGNIFICANCES);
                 while (iterMapDouble.hasNext()) {
-                    Map.Entry<Double, Set<String>> entry = iterMapDouble.next();
+                    final Map.Entry<Double, Set<String>> entry = iterMapDouble.next();
                     jsonGenerator.writeNumber(entry.getKey());
                     jsonGenerator.writeStartArray();
-                    Iterator<String> iterStr = entry.getValue().iterator();
+                    final Iterator<String> iterStr = entry.getValue().iterator();
                     while (iterStr.hasNext()) {
                         jsonGenerator.writeString(iterStr.next());
                     }
@@ -205,7 +205,7 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeStringField(INFO, cloud.getQueryInfo());
                 jsonGenerator.writeNumberField(MODCOUNT, cloud.modCount);
 
-                Iterator<String> iterStr = cloud.getSelectedWords().iterator();
+                final Iterator<String> iterStr = cloud.getSelectedWords().iterator();
                 jsonGenerator.writeArrayFieldStart(SELECTED);
                 while (iterStr.hasNext()) {
                     jsonGenerator.writeString(iterStr.next());

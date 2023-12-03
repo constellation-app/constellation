@@ -54,9 +54,9 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         this.nodeAttributes = nodeAttributes;
         this.transAttributes = transAttributes;
         @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER is always of type SingleChoiceParameter
-        PluginParameter<SingleChoiceParameterValue> elParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID);
+        final PluginParameter<SingleChoiceParameterValue> elParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID);
         @SuppressWarnings("unchecked") // ATTRIBUTE_TO_ANALYSE_PARAMETER is always of type SingleChoiceParameter 
-        PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
+        final PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
 
         if (elParam.getStringValue().equals("transaction")) {
             if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
@@ -178,9 +178,7 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         VBox content = new VBox();
 
         run = new Button("Generate");
-        run.setOnMouseClicked((MouseEvent) -> {
-            master.runPlugin(params);
-        });
+        run.setOnMouseClicked((MouseEvent) -> master.runPlugin(params));
 
         PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(params, this, null);
         content.getChildren().add(pluginParametersPane);

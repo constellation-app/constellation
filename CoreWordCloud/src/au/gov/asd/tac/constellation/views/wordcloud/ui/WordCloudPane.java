@@ -24,10 +24,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -53,7 +51,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.StringConverter;
-import javax.swing.event.ChangeEvent;
 
 /**
  * The main JavaFx Pane with which to visualise word clouds and run the plugin
@@ -103,6 +100,9 @@ public class WordCloudPane extends BorderPane {
     protected CheckBox showTooltipsCheckbox;
 
     private final Hyperlink noWord;
+    
+    // The mutlaplicitive size difference between the smallest and largest words in the cloud 
+    private static final int FONT_EXPANSION_FACTOR = 3;
 
     /**
      * Constructs a WordCloudPane to be controlled by the specified controller
@@ -149,21 +149,18 @@ public class WordCloudPane extends BorderPane {
         intersection.setToggleGroup(modeButtons);
 
         // Add the change listener to the toggle group which sets selection mode in the controller 
-        modeButtons.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-            @Override
-            public void changed(final ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1) {
-				if (t1 != null) {
-                    if (((ToggleButton) t1).equals(union)) {
-                        controller.setIsUnionSelect(true);
-                    } else if (((ToggleButton) t1).equals(intersection)) {
-                        controller.setIsUnionSelect(false);
-                    }
+        modeButtons.selectedToggleProperty().addListener((final ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1) -> {
+            if (t1 != null) {
+                if (((ToggleButton) t1).equals(union)) {
+                    controller.setIsUnionSelect(true);
+                } else if (((ToggleButton) t1).equals(intersection)) {
+                    controller.setIsUnionSelect(false);
                 }
-
-                // Disallow deselection
-                if (t1 == null) {
-                    modeButtons.selectToggle((ToggleButton) t);
-                }
+            }
+            
+            // Disallow deselection
+            if (t1 == null) {
+                modeButtons.selectToggle(t);
             }
         });
 
@@ -175,38 +172,32 @@ public class WordCloudPane extends BorderPane {
         frequency.setToggleGroup(sortingButtons);
 
         // Add the change listener to the toggle group which sets sorting mode in the controller
-        sortingButtons.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-            @Override
-            public void changed(final ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1) {
-                if (t1 != null) {
-                    if (((ToggleButton) t1).equals(alphabetical)) {
-                        controller.setIsSizeSorted(false);
-                    } else if (((ToggleButton) t1).equals(frequency)) {
-                        controller.setIsSizeSorted(true);
-                    }
-                }
-
-                // Disallow deselection 
-                if (t1 == null) {
-                    sortingButtons.selectToggle((ToggleButton) t);
+        sortingButtons.selectedToggleProperty().addListener((final ObservableValue<? extends Toggle> ov, Toggle t, Toggle t1) -> {
+            if (t1 != null) {
+                if (((ToggleButton) t1).equals(alphabetical)) {
+                    controller.setIsSizeSorted(false);
+                } else if (((ToggleButton) t1).equals(frequency)) {
+                    controller.setIsSizeSorted(true);
                 }
             }
-
-            public void stateChanged(ChangeEvent e) {
-                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            
+            // Disallow deselection
+            if (t1 == null) {
+                sortingButtons.selectToggle(t);
             }
         });
 
         // Create an anchor pane for the buttons just constructed and add these buttons to the pane 
         buttonBar = new AnchorPane();
         final HBox modeButtonBar = new HBox();
+        modeButtonBar.getChildren().addAll(union, intersection);
         final HBox sortingButtonBar = new HBox();
         sortingButtonBar.getChildren().addAll(alphabetical, frequency);
         showTooltipsCheckbox = new CheckBox("Hovering translations");
         showTooltipsCheckbox.setSelected(true);
-        showTooltipsCheckbox.setOnAction((final ActionEvent t) -> {
-            tipsPane.setEnabled(showTooltipsCheckbox.isSelected());
-        });
+        showTooltipsCheckbox.setOnAction((final ActionEvent t) -> 
+            tipsPane.setEnabled(showTooltipsCheckbox.isSelected()));
+        
         showTooltipsCheckbox.setStyle("fx-text-fill: white; -fx-padding: 2;");
         buttonBar.getChildren().addAll(modeButtonBar, showTooltipsCheckbox, sortingButtonBar);
         AnchorPane.setLeftAnchor(modeButtonBar, BUTTON_INSET);
@@ -265,6 +256,7 @@ public class WordCloudPane extends BorderPane {
 
     public void setProgressComplete() {
         cloudStackPane.getChildren().remove(spinner);
+        WordCloudController.getDefault().updateGraph();
     }
 
     /**
@@ -293,9 +285,6 @@ public class WordCloudPane extends BorderPane {
             theCloud.getChildren().remove(sliderBar);
         }
     }
-
-    // The mutlaplicitive size difference between the smallest and largest words in the cloud 
-    private static final int FONT_EXPANSION_FACTOR = 3;
 
     /**
      * Calculates the absolute font size for a word in this cloud based on its
@@ -351,59 +340,50 @@ public class WordCloudPane extends BorderPane {
         if (wordListWithSizes == null) {
             return;
         }
-        // For each word to display 
-        for (final String word : wordListWithSizes.keySet()) {
+        // For each word to display
+        wordListWithSizes.keySet().forEach(word -> {
             // Create a hyperlink for the word
-            Hyperlink h = new Hyperlink(word);
+            final Hyperlink h = new Hyperlink(word);
             h.setWrapText(true);
             h.setMaxWidth(CLOUD_WIDTH);
             // Set the word's font based on its prescribed size 
-            Font f = Font.font("Arial", FontWeight.BOLD, getFontSize(wordListWithSizes.get(word), baseFontSize));
+            final Font f = Font.font("Arial", FontWeight.BOLD, getFontSize(wordListWithSizes.get(word), baseFontSize));
             h.setFont(f);
-
+            
             // Set the context menu for copying 
-            ContextMenu menu = new ContextMenu();
-            MenuItem copy = new MenuItem("copy");
-            copy.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(final ActionEvent event) {
-                    ClipboardUtilities.copyToClipboard(word);
-                }
-            });
+            final ContextMenu menu = new ContextMenu();
+            final MenuItem copy = new MenuItem("copy");
+            copy.setOnAction((final ActionEvent event) -> 
+                ClipboardUtilities.copyToClipboard(word));
             menu.getItems().add(copy);
             h.setContextMenu(menu);
             // Add the event handler for clicking the word. This handler tells the controller to add teh wrod to its word cloud's currently selected word list 
-            h.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(final MouseEvent event) {
-                    if (event.getButton().equals(MouseButton.PRIMARY)) {
-                        Hyperlink source = (Hyperlink) event.getSource();
-                        boolean deselect = false;
-                        // If the control button is not down, display all words as deselected
-                        if (!event.isControlDown()) {
-                            for (final Node h : words.getChildren()) {
-                                ((Hyperlink) h).setVisited(false);
-                            }
-                        } else {
-                            // If the control button is down, check whether the current click is a deselection of the word rather than a selection
-                            deselect = source.isVisited();
-                        }
-
-                        // Set the selected/deselected display of the clicked work correctly 
-                        source.setVisited(!deselect);
-                        // Inform the controller of the selection change 
-                        controller.alterSelection(source.getText(), event.isControlDown(), deselect);
+            h.setOnMouseClicked((final MouseEvent event) -> {
+                if (event.getButton().equals(MouseButton.PRIMARY)) {
+                    final Hyperlink source = (Hyperlink) event.getSource();
+                    boolean deselect = false;
+                    // If the control button is not down, display all words as deselected
+                    if (!event.isControlDown()) {
+                        words.getChildren().forEach(h1 -> {
+                            ((Hyperlink) h1).setVisited(false);
+                        });
+                    } else {
+                        // If the control button is down, check whether the current click is a deselection of the word rather than a selection
+                        deselect = source.isVisited();
                     }
+                    // Set the selected/deselected display of the clicked work correctly
+                    source.setVisited(!deselect);
+                    // Inform the controller of the selection change
+                    controller.alterSelection(source.getText(), event.isControlDown(), deselect);
                 }
             });
             wordButtons.put(word, h);
-        }
+        });
     }
 
     public void updateSelection(final Set<String> selectedWords) {
-        for (final Hyperlink h : wordButtons.values()) {
-            h.setVisited(false);
-        }
+        wordButtons.values().forEach(h -> 
+            h.setVisited(false));
 
         if (selectedWords == null) {
             return;
@@ -433,8 +413,8 @@ public class WordCloudPane extends BorderPane {
         }
 
         int i = 0;
-        List<Node> wordList = words.getChildren();
-        boolean remove = wordsToDisplay.size() < wordList.size();
+        final List<Node> wordList = words.getChildren();
+        final boolean remove = wordsToDisplay.size() < wordList.size();
 
         for (final String word : wordsToDisplay) {
             final Hyperlink h = wordButtons.get(word);

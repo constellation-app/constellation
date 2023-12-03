@@ -22,14 +22,10 @@ import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.manager.GraphManagerListener;
-import au.gov.asd.tac.constellation.graph.monitor.GraphChangeEvent;
-import au.gov.asd.tac.constellation.graph.monitor.GraphChangeListener;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleEditPlugin;
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentPlugin;
 import java.util.ArrayList;
@@ -40,10 +36,9 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.prefs.PreferenceChangeEvent;
-import java.util.prefs.PreferenceChangeListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
-import org.openide.util.Exceptions;
 
 /**
  * Acts as the controller for a WordCloudPane, serving requests from the UI with
@@ -51,25 +46,66 @@ import org.openide.util.Exceptions;
  * update the WordCloud object, and in turn, the WordCloudPane.
  *
  * @author twilight_sparkle
+ * @author Delphinus8821
  */
-public class WordCloudController implements GraphManagerListener, GraphChangeListener, PreferenceChangeListener {
+public class WordCloudController {
 
+    private static final Logger LOGGER = Logger.getLogger(WordCloudController.class.getName());
+    private static WordCloudController instance = null;
+    private WordCloudTopComponent parent;
     private static final String ATTR_STRING_TYPE = "string";
     private static final String SELECTED_ATTRIBUTE = "selected";
     static final String EMPTY_STRING = "";
     static final ArrayList<String> EMPTY_STRING_LIST = new ArrayList<>(Arrays.asList(EMPTY_STRING));
-    public long attrModCount;
+    private long attrModCount;
     private WordCloudPane pane = null;
     private Graph graph = null;
     private WordCloud cloud = null;
     private boolean controllerIsInitialising = false;
-    private int currentFontSize;
+    private final int currentFontSize;
+    
+    private List<String> vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+    private List<String> transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
 
     /**
      * Construct the controller
      */
-    public WordCloudController() {
+    private WordCloudController() {
         currentFontSize = FontUtilities.getOutputFontSize();
+    }
+    
+    /**
+     * Singleton instance retrieval
+     *
+     * @return the instance, if one is not made, it will make one.
+     */
+    public static synchronized WordCloudController getDefault() {
+        if (instance == null) {
+            instance = new WordCloudController();
+        }
+        return instance;
+    }
+    
+    /**
+     *
+     * @param parent the TopComponent which this controller controls.
+     * @return the instance to allow chaining
+     */
+    public WordCloudController init(final WordCloudTopComponent parent) {
+        this.parent = parent;
+        return instance;
+    }
+
+    public List<String> getVertTextAttributes() {
+        return vertTextAttributes;
+    }
+
+    public List<String> getTransTextAttributes() {
+        return transTextAttributes;
+    }
+    
+    public boolean isControllerIntialising() {
+        return controllerIsInitialising;
     }
 
     /**
@@ -106,15 +142,18 @@ public class WordCloudController implements GraphManagerListener, GraphChangeLis
         final Thread waitingThread = new Thread(() -> {
             try {
                 f.get();
-            } catch (final InterruptedException | ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final InterruptedException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                Thread.currentThread().interrupt();
+            } catch (final ExecutionException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
-            Platform.runLater(() -> {
-                pane.setProgressComplete();
-            });
+            Platform.runLater(() -> 
+                pane.setProgressComplete());
         });
         waitingThread.setName("Word Cloud Worker");
         waitingThread.start();
+        
     }
 
     /**
@@ -132,16 +171,16 @@ public class WordCloudController implements GraphManagerListener, GraphChangeLis
      */
     public void setWordCloudPane(final WordCloudPane pane) {
         this.pane = pane;
-        GraphManager.getDefault().addGraphManagerListener(this);
+        GraphManager.getDefault().addGraphManagerListener(parent);
         controllerIsInitialising = true;
 
         // Fire a new active graph event the first time a pane is attached
-        newActiveGraph(GraphManager.getDefault().getActiveGraph());
+        parent.handleNewGraph(GraphManager.getDefault().getActiveGraph());
         controllerIsInitialising = false;
     }
 
     /**
-     * Called by teh WordCloudPane being controller when a word is clicked.
+     * Called by the WordCloudPane being controller when a word is clicked.
      * Modifies the controller WordCloud appropriately and then select the
      * relevant elements on the graph
      */
@@ -185,58 +224,80 @@ public class WordCloudController implements GraphManagerListener, GraphChangeLis
                     for (int i = 0; i < graph.getTransactionCount(); i++) {
                         graph.setBooleanValue(transSelectedAttr, graph.getTransaction(i), false);
                     }
-
                 }
 
-                for (final int el : elementsToSelect) {
-                    graph.setBooleanValue(selectedAttr, el, true);
-                }
+                elementsToSelect.forEach(el -> 
+                    graph.setBooleanValue(selectedAttr, el, true));
             }
         }).executeLater(graph);
     }
 
     /**
-     * Manages a graph open event. Does nothing sine this requires no special
-     * processing different from newActiveGraph.
-     */
-    @Override
-    public void graphOpened(final Graph graph) {
-    }
-
-    /**
-     * Manages a graph close event. Does nothing since this requires no special
-     * processing different from newActiveGraph
-     */
-    @Override
-    public void graphClosed(final Graph graph) {
-    }
-
-    /**
      * Manages a new graph becoming active in the application
      */
-    public void newActiveGraph(final Graph graph) {
-        if (this.graph != graph || controllerIsInitialising) {
-            final List<String> vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
-            final List<String> transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+    public void updateActiveGraph(final Graph graph) {
+        vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+        transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+        final ReadableGraph rg = graph.getReadableGraph();
+        try {
+            // Retrieve the cloud attribute from the new graph if present
+            final int cloudAttr = rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR);
+            cloud = cloudAttr != Graph.NOT_FOUND ? (WordCloud) rg.getObjectValue(cloudAttr, 0) : null;
 
-            // Remove change listener from previous graph
-            if (this.graph != null) {
-                this.graph.removeGraphChangeListener(this);
-                this.graph = null;
+            // Retrieve list of strin attributes from new graph for nodes and transactions 
+            for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
+                final Attribute attr = new GraphAttribute(rg, rg.getAttribute(GraphElementType.VERTEX, i));
+                if (attr.getAttributeType().equals(ATTR_STRING_TYPE)) {
+                    vertTextAttributes.add(attr.getName());
+                }
             }
+            for (int i = 0; i < rg.getAttributeCount(GraphElementType.TRANSACTION); i++) {
+                final Attribute attr = new GraphAttribute(rg, rg.getAttribute(GraphElementType.TRANSACTION, i));
+                if (attr.getAttributeType().equals(ATTR_STRING_TYPE)) {
+                    transTextAttributes.add(attr.getName());
+                }
+            }
+            setAttributeSelectionEnabled(true);
+        } finally {
+            rg.release();
+        }
+    }
 
-            if (graph != null) {
-                // Add listener to new graph 
-                this.graph = graph;
-                this.graph.addGraphChangeListener(this);
-                final ReadableGraph rg = graph.getReadableGraph();
+    /**
+     * Manages a graph change and updates the word cloud pane 
+     */
+    public void updateGraph() {
+        vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+        transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
+        final long amc;
+        final long mc;
+        boolean doCloudUpdate = false;
+        boolean doParamUpdate = false;
+        graph = GraphManager.getDefault().getActiveGraph();
+        if (graph != null) {
+            final ReadableGraph rg = graph.getReadableGraph();
+            try {
+                // Check for updates to the word cloud 
+                final int cloudAttr = rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR);
+                amc = rg.getAttributeModificationCounter();
+                WordCloud newCloud = cloud;
+                if (cloudAttr != Graph.NOT_FOUND) {
+                    mc = rg.getValueModificationCounter(cloudAttr);
+                    if (cloud == null || mc != cloud.modCount) {
+                        newCloud = rg.getObjectValue(cloudAttr, 0);
+                    }
+                } else {
+                    mc = -1;
+                    newCloud = null;
+                }
 
-                try {
-                    // Retrieve the cloud attribute from the new graph if present
-                    final int cloudAttr = rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR);
-                    cloud = cloudAttr != Graph.NOT_FOUND ? (WordCloud) rg.getObjectValue(cloudAttr, 0) : null;
+                if (cloud != newCloud) {
+                    cloud = newCloud;
+                    doCloudUpdate = true;
+                }
 
-                    // Retrieve list of strin attributes from new graph for nodes and transactions 
+                // If the attributes of the graph have changed, retrieve the new list of string attributes for nodes and transactions 
+                if (amc != attrModCount) {
                     for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
                         final Attribute attr = new GraphAttribute(rg, rg.getAttribute(GraphElementType.VERTEX, i));
                         if (attr.getAttributeType().equals(ATTR_STRING_TYPE)) {
@@ -249,107 +310,36 @@ public class WordCloudController implements GraphManagerListener, GraphChangeLis
                             transTextAttributes.add(attr.getName());
                         }
                     }
-                    setAttributeSelectionEnabled(true);
-                } finally {
-                    rg.release();
+                    doParamUpdate = true;
+                    attrModCount = amc;
                 }
-            } else {
-                setAttributeSelectionEnabled(false);
+            } finally {
+                rg.release();
             }
 
-            // Update the word cloud, button state and parameters on the controlled WordCloudPane.
-            createWordsOnPane();
-            updateButtonsOnPane();
-            updateParametersOnPane(vertTextAttributes, transTextAttributes);
-        }
-    }
-
-    /**
-     * Manages a graph change
-     */
-    @Override
-    public void graphChanged(final GraphChangeEvent event) {
-        final List<String> vertTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
-        final List<String> transTextAttributes = new ArrayList<>(EMPTY_STRING_LIST);
-        final long amc;
-        final long mc;
-        boolean doCloudUpdate = false;
-        boolean doParamUpdate = false;
-
-        final ReadableGraph rg = graph.getReadableGraph();
-        try {
-            // Check for updates to the word cloud 
-            final int cloudAttr = rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR);
-            amc = rg.getAttributeModificationCounter();
-            WordCloud newCloud = cloud;
-            if (cloudAttr != Graph.NOT_FOUND) {
-                mc = rg.getValueModificationCounter(cloudAttr);
-                if (cloud == null || mc != cloud.modCount) {
-                    newCloud = rg.getObjectValue(cloudAttr, 0);
-                }
-            } else {
-                mc = -1;
-                newCloud = null;
+            if (cloud != null) {
+                cloud.modCount = mc;
             }
 
-            if (cloud != newCloud) {
-                cloud = newCloud;
-                doCloudUpdate = true;
+            // Update parameters on the WordCloudPane if necessary 
+            if (doParamUpdate) {
+                updateParametersOnPane(vertTextAttributes, transTextAttributes);
             }
-
-            // If the attributes of the graph have changed, retrieve the new list of string attributes for nodes and transactions 
-            if (amc != attrModCount) {
-                for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
-                    final Attribute attr = new GraphAttribute(rg, rg.getAttribute(GraphElementType.VERTEX, i));
-                    if (attr.getAttributeType().equals(ATTR_STRING_TYPE)) {
-                        vertTextAttributes.add(attr.getName());
-                    }
-                }
-                for (int i = 0; i < rg.getAttributeCount(GraphElementType.TRANSACTION); i++) {
-                    final Attribute attr = new GraphAttribute(rg, rg.getAttribute(GraphElementType.TRANSACTION, i));
-                    if (attr.getAttributeType().equals(ATTR_STRING_TYPE)) {
-                        transTextAttributes.add(attr.getName());
-                    }
-                }
-                doParamUpdate = true;
-                attrModCount = amc;
+            // Update the word cloud and button state on the WordCloudPane if necessary 
+            if (doCloudUpdate) {
+                createWordsOnPane();
+                updateButtonsOnPane();
             }
-
-        } finally {
-            rg.release();
-        }
-
-        if (cloud != null) {
-            cloud.modCount = mc;
-        }
-
-        // Update parameters on the WordCloudPane if necessary 
-        if (doParamUpdate) {
-            updateParametersOnPane(vertTextAttributes, transTextAttributes);
-        }
-        // Update the word cloud and button state on the WordCloudPane if necessary 
-        if (doCloudUpdate) {
-            createWordsOnPane();
-            updateButtonsOnPane();
-        }
+        }        
     }
 
     /**
      * Enables the attribute combo box on the WordCloudPane when the current
      * active graph is not null
      */
-    private void setAttributeSelectionEnabled(final boolean val) {
-        Platform.runLater(() -> {
-            pane.setAttributeSelectionEnabled(val);
-        });
-    }
-
-    @Override
-    public void preferenceChange(final PreferenceChangeEvent evt) {
-        if (evt.getKey().equals(ApplicationPreferenceKeys.OUTPUT2_FONT_SIZE)) {
-            currentFontSize = FontUtilities.getOutputFontSize();
-            createWordsOnPane();
-        }
+    public void setAttributeSelectionEnabled(final boolean val) {
+        Platform.runLater(() -> 
+            pane.setAttributeSelectionEnabled(val));
     }
 
     /**
@@ -360,9 +350,8 @@ public class WordCloudController implements GraphManagerListener, GraphChangeLis
         final SortedMap<String, Float> wordList = cloud == null ? null : cloud.getAllWords();
         final String queryInfo = cloud == null ? "" : cloud.getQueryInfo();
         // Run an update to the WordCloudPane, based on the retrieved information, on the javafx thread
-        Platform.runLater(() -> {
-            pane.createWords(wordList, queryInfo, currentFontSize);
-        });
+        Platform.runLater(() -> 
+            pane.createWords(wordList, queryInfo, currentFontSize));
         updateWordsOnPane();
     }
 
@@ -374,9 +363,8 @@ public class WordCloudController implements GraphManagerListener, GraphChangeLis
         // Retrieve the list of all words, currently selected words and info string from the WordCloud
         final SortedSet<String> currentWords = cloud == null ? null : cloud.getCurrentWordList();
         // Run an update to the WordCloudPane, based on the retrieved information, on the javafx thread
-        Platform.runLater(() -> {
-            pane.updateWords(currentWords, true);
-        });
+        Platform.runLater(() -> 
+            pane.updateWords(currentWords, true));
     }
 
     /**
@@ -387,9 +375,8 @@ public class WordCloudController implements GraphManagerListener, GraphChangeLis
         // Retrieve the list of all words, currently selected words and info string from the WordCloud
         final SortedSet<String> currentWords = cloud == null ? null : cloud.getCurrentWordList();
         // Run an update to the WordCloudPane, based on the retrieved information, on the javafx thread
-        Platform.runLater(() -> {
-            pane.updateWords(currentWords, true);
-        });
+        Platform.runLater(() -> 
+            pane.updateWords(currentWords, true));
     }
 
     /**
@@ -400,9 +387,8 @@ public class WordCloudController implements GraphManagerListener, GraphChangeLis
         // Retrieve the list of all words, currently selected words and info string from the WordCloud
         final Set<String> selectedWords = cloud == null ? null : cloud.getSelectedWords();
         // Run an update to the WordCloudPane, based on the retrieved information, on the javafx thread
-        Platform.runLater(() -> {
-            pane.updateSelection(selectedWords);
-        });
+        Platform.runLater(() -> 
+            pane.updateSelection(selectedWords));
     }
 
     /**
@@ -430,9 +416,8 @@ public class WordCloudController implements GraphManagerListener, GraphChangeLis
      * the WordCloudPane
      */
     public void updateParametersOnPane(final List<String> vertTextAttributes, final List<String> transTextAttributes) {
-        // Run an update to teh WordCloudPane on the javafx thread
-        Platform.runLater(() -> {
-            pane.updateParameters(vertTextAttributes, transTextAttributes);
-        });
+        // Run an update to the WordCloudPane on the javafx thread
+        Platform.runLater(() -> 
+            pane.updateParameters(vertTextAttributes, transTextAttributes));
     }
 }

@@ -36,9 +36,6 @@ public abstract class ThreadedPhraseAdaptor {
     // Removes the lock this adaptor has on its underlying data source
     public abstract void disconnect();
 
-    // Constructs and returns a new ThreadedPhraseAdaptor that refers to the same underlying data source as this, but whose local fields suggest that it is the next adaptor in sequence
-    // and will access the next partition of the underlying data
-    // protected abstract ThreadedPhraseAdaptor createNextAdaptor();
     // Returns the 'id' of the element (phrase or somethign with reference to a phrase) currently being accessed in the data. This id should be unique for each element.
     // It need not represent anything about the structure of the underlying data, although the underlying data should be able to interpret this id to process results from objects that this phraseAdaptor connects to.
     public abstract int getCurrentElementID();

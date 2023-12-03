@@ -25,7 +25,8 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Set;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Provies services for tokenizing string attributes from graph elements using a
@@ -36,6 +37,8 @@ import org.openide.util.Exceptions;
  * @author twilight_sparkle
  */
 public class ContentTokenizingServices {
+
+    private static final Logger LOGGER = Logger.getLogger(ContentTokenizingServices.class.getName());
 
     private ContentSanitizer sanitizer;
     private ContentTokenizer tokenizer;
@@ -111,7 +114,7 @@ public class ContentTokenizingServices {
         try {
             PhraseAnalysisModelLoader.loadMap();
         } catch (final IOException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
 
         // These four lines can now easily be converted into a parameter as desired rather than hard coded

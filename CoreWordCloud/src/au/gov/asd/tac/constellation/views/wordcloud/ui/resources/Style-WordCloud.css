@@ -1,5 +1,4 @@
 .hyperlink { 
-	-fx-skin: "com.sun.javafx.scene.control.skin.HyperlinkSkin";
 	-fx-padding: 0;
 	-fx-cursor: default;
 	-fx-content-disaply: LEFT;
@@ -17,7 +16,6 @@
 }
 
 .slider {
-	-fx-skin: "com.sun.javafx.scene.control.skin.SliderSkin";
 	-fx-show-tick-labels: true;
 	-fx-show-tick-marks: false;
 }
@@ -47,7 +45,6 @@
 
 .page-corner {
 	-fx-padding: 4.5 4.5 4.5 4.5;
-	-fx-background-color: linear-gradient(from 0% 0% to 50% 50%, rgba(252, 247, 182, 0.5), rgba(165, 156, 49. 0.5));
 	-fx-shape: "M0, 0H9L0, 9Z";
 	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 4, 0.0, 0, 0);
 }

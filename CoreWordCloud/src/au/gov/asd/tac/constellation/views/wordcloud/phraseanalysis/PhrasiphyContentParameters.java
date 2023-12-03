@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis;
 
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import java.util.Arrays;
 import java.util.List;
 

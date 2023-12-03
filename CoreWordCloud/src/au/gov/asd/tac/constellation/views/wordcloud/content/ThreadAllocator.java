@@ -17,25 +17,26 @@ package au.gov.asd.tac.constellation.views.wordcloud.content;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-import org.openide.util.Exceptions;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author Delphinus8821
+ * @author twilight_sparkle
  */
 public abstract class ThreadAllocator {
 
+    private static final Logger LOGGER = Logger.getLogger(ThreadAllocator.class.getName());
+    
     protected int numberOfElements = -1;
     protected int numberOfThreads = -1;
     protected int numberOfElementsPerThread = -1;
     protected int numAllocated = 0;
     private CyclicBarrier barrier = null;
 
-    // Note that the implementation of this methdo can be anything, but usually either a constant, or some expression involving numberOfElements
+    // Note that the implementation of this method can be anything, but usually either a constant, or some expression involving numberOfElements
     protected abstract int calculateNumberOfThreads();
 
-    // These two methods may be overwritten to throw UnsupportedOperationExceptions if the ThreadAllocator is not being used in conjunction with adaptors. 
-    // protected abstract ThreadPhraseAdaptor getAdaptor();
     public abstract ThreadedPhraseAdaptor nextAdaptor();
 
     public final boolean hasMore() {
@@ -79,9 +80,10 @@ public abstract class ThreadAllocator {
         try {
             barrier.await();
         } catch (final InterruptedException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            Thread.currentThread().interrupt();
         } catch (final BrokenBarrierException ex) {
-            Exceptions.printStackTrace(ex);
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
     }
 
@@ -100,7 +102,7 @@ public abstract class ThreadAllocator {
                 if (numAllocated == numberOfThreads) {
                     return null;
                 }
-                ThreadedPhraseAdaptor adaptor = adaptorConnector.getAdaptor(this);
+                final ThreadedPhraseAdaptor adaptor = adaptorConnector.getAdaptor(this);
                 indicateAllocated();
                 return adaptor;
             }

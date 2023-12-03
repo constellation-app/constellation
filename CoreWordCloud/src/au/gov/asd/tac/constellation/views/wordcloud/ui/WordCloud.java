@@ -38,7 +38,7 @@ import org.apache.commons.math3.stat.inference.TTest;
  * which words, the frequencies with which each word occurred, and stative data
  * relating to the selection, sorting and display of words on a WordCloudPane.
  *
- * @author twilighti_sparkle
+ * @author twilight_sparkle
  */
 public class WordCloud {
 
@@ -62,7 +62,7 @@ public class WordCloud {
     private final boolean hasSignificances;
 
     /**
-     * Constructor with all data explicity provided - used for saving and
+     * Constructor with all data explicily provided - used for saving and
      * loading
      *
      */
@@ -80,12 +80,9 @@ public class WordCloud {
         this.isSizeSorted = isSizeSorted;
 
         // Form a map of the words sorted by size
-        wordListBySize = new TreeMap<>(new Comparator<String>() {
-            @Override
-            public int compare(final String o1, final String o2) {
-                int wordSizeCompare = WordCloud.this.wordListWithSizes.get(o2).compareTo(WordCloud.this.wordListWithSizes.get(o1)); // Larger sized words should be earlier in the list 
-                return wordSizeCompare != 0 ? wordSizeCompare : o1.compareTo(o2); // For words with the same size, sort alphabectically.
-            }
+        wordListBySize = new TreeMap<>((final String o1, final String o2) -> {
+            int wordSizeCompare = WordCloud.this.wordListWithSizes.get(o2).compareTo(WordCloud.this.wordListWithSizes.get(o1)); // Larger sized words should be earlier in the list
+            return wordSizeCompare != 0 ? wordSizeCompare : o1.compareTo(o2); // For words with the same size, sort alphabectically.
         });
         wordListBySize.putAll(wordListWithSizes);
         hasSignificances = !wordSignificances.isEmpty();
@@ -109,7 +106,7 @@ public class WordCloud {
     /**
      * Constructs a new word cloud based on the results of tokenizing from a
      * ContentTokenizingServices object, but copying the sorting and selection
-     * options from a pre-exisitng word cloud.
+     * options from a pre-existing word cloud.
      */
     public WordCloud(final PhraseTokenHandler handler, final PhraseTokenHandler bgHandler, final GraphElementType elementType, final int threshold, final boolean filterAllWords, final WordCloud prevCloud) {
         if (prevCloud != null) {
@@ -124,26 +121,25 @@ public class WordCloud {
         this.elementType = elementType;
         wordListWithSizes = new TreeMap<>();
         wordSignificances = new TreeMap<>();
-        int maxSum = ((TaggedSparseMatrix<Integer>) hashesToElements).getLargestColumnSumWithTag(false);
+        final int maxSum = ((TaggedSparseMatrix<Integer>) hashesToElements).getLargestColumnSumWithTag(false);
         SparseMatrix<Integer> hashesToElementBg = null;
         if (bgHandler != null) {
             hashesToElementBg = null;
         }
         for (final String word : wordsToHashes.keySet()) {
-            int key = wordsToHashes.get(word);
+            final int key = wordsToHashes.get(word);
 
-            // Skip this word if it is tagged as a single word constituent" of a phrase, or if it doesn't meet the threshold
+            // Skip this word if it is tagged as a single word constituent of a phrase, or if it doesn't meet the threshold
             if (((TaggedSparseMatrix) hashesToElements).getTag(key) || hashedWordSets.get(key).size() < threshold) {
                 continue;
             }
 
-            Set<Integer> individualWordKeys = handler.getConstituentHashes().get(key);
-
-            float relativeSize = ((float) hashesToElements.getColumnSum(key)) / maxSum;
+            final Set<Integer> individualWordKeys = handler.getConstituentHashes().get(key);
+            final float relativeSize = ((float) hashesToElements.getColumnSum(key)) / maxSum;
             wordListWithSizes.put(word, relativeSize);
 
             if (bgHandler != null) {
-                double sig = tTestPhraseAgainstWords(key, individualWordKeys, hashesToElements, hashesToElementBg, filterAllWords);
+                final double sig = tTestPhraseAgainstWords(key, individualWordKeys, hashesToElements, hashesToElementBg, filterAllWords);
                 Set<String> l = wordSignificances.get(sig);
                 if (l == null) {
                     l = new HashSet<>();
@@ -154,12 +150,9 @@ public class WordCloud {
         }
 
         // Form a map of the words sorted by size 
-        wordListBySize = new TreeMap<>(new Comparator<String>() {
-            @Override
-            public int compare(final String o1, final String o2) {
-                int wordSizeCompare = wordListWithSizes.get(o2).compareTo(wordListWithSizes.get(o1)); // Larger sized words should be earlier in the list 
-                return wordSizeCompare != 0 ? wordSizeCompare : o1.compareTo(o2); // For words with the same size, sort alphabetically 
-            }
+        wordListBySize = new TreeMap<>((final String o1, final String o2) -> {
+            final int wordSizeCompare = wordListWithSizes.get(o2).compareTo(wordListWithSizes.get(o1)); // Larger sized words should be earlier in the list
+            return wordSizeCompare != 0 ? wordSizeCompare : o1.compareTo(o2); // For words with the same size, sort alphabetically 
         });
         wordListBySize.putAll(wordListWithSizes);
         hasSignificances = !wordSignificances.isEmpty();
@@ -171,44 +164,44 @@ public class WordCloud {
     public static double tTestPhraseAgainstWords(final int key, final Set<Integer> individualWordKeys, final SparseMatrix<Integer> graph, final SparseMatrix<Integer> model, final boolean filterAllWords) {
         // Get all the elements containing the individual words, then get the arrays of phrase frequencies, extended by 0s
         // by the elements containing all constituent individual words but not the phrase 
-        Set<Integer> graphElements = filterAllWords ? graph.getColumnElementIntersection(individualWordKeys) : graph.getColumnElementUnion(individualWordKeys);
+        final Set<Integer> graphElements = filterAllWords ? graph.getColumnElementIntersection(individualWordKeys) : graph.getColumnElementUnion(individualWordKeys);
         Integer[] graphColumn = graph.getConstituentExtendedColumnAsArray(key, graphElements);
-        Set<Integer> modelElements = filterAllWords ? model.getColumnElementIntersection(individualWordKeys) : model.getColumnElementUnion(individualWordKeys);
+        final Set<Integer> modelElements = filterAllWords ? model.getColumnElementIntersection(individualWordKeys) : model.getColumnElementUnion(individualWordKeys);
         Integer[] modelColumn = model.getConstituentExtendedColumnAsArray(key, modelElements);
 
         // Do dummy resampling if the sample size of the graph was 1 or the sample size fo the model was 0 or 1
         if (graphColumn.length == 1) {
-            Integer[] dummyResample = {graphColumn[0], graphColumn[0]};
+            final Integer[] dummyResample = {graphColumn[0], graphColumn[0]};
             graphColumn = dummyResample;
         }
         if (modelColumn == null) {
-            Integer[] dummyResample = {0, 0};
+            final Integer[] dummyResample = {0, 0};
             modelColumn = dummyResample;
         } else if (modelColumn.length == 1) {
-            Integer[] dummyResample = {modelColumn[0], modelColumn[0]};
+            final Integer[] dummyResample = {modelColumn[0], modelColumn[0]};
             modelColumn = dummyResample;
         }
 
         // Convert the arrays to their primitive types 
-        double[] graphColumnD = new double[graphColumn.length];
+        final double[] graphColumnD = new double[graphColumn.length];
         for (int i = 0; i < graphColumnD.length; i++) {
             graphColumnD[i] = graphColumn[i];
         }
 
-        double[] modelColumnD = new double[modelColumn.length];
+        final double[] modelColumnD = new double[modelColumn.length];
         for (int i = 0; i < modelColumnD.length; i++) {
             modelColumnD[i] = modelColumn[i];
         }
 
         // Return default values when both distributions have zero variance to avoid NaNs.
-        Variance v = new Variance();
-        Mean m = new Mean();
+        final Variance v = new Variance();
+        final Mean m = new Mean();
         if (v.evaluate(graphColumnD) == 0 && v.evaluate(modelColumnD) == 0) {
             return m.evaluate(graphColumnD) == m.evaluate(modelColumnD) ? 1 : 0;
         }
 
         // Run Welch's t-test through the apache common-math T-Testing framework
-        TTest t = new TTest();
+        final TTest t = new TTest();
         return t.tTest(graphColumnD, modelColumnD);
     }
 
@@ -260,7 +253,7 @@ public class WordCloud {
     public void setIsSizeSorted(final boolean val) {
         isSizeSorted = val;
         @SuppressWarnings("unchecked") //Comparator will be of strings
-        SortedSet<String> copy = new TreeSet<>((Comparator<String>) (isSizeSorted ? wordListBySize.comparator() : wordListWithSizes.comparator()));
+        final SortedSet<String> copy = new TreeSet<>((Comparator<String>) (isSizeSorted ? wordListBySize.comparator() : wordListWithSizes.comparator()));
         copy.addAll(currentWords);
         currentWords = copy;
     }
@@ -293,11 +286,9 @@ public class WordCloud {
      * contain any of the currently selected words in this cloud
      */
     private Set<Integer> getElementsWithAnyWords() {
-        Set<Integer> set = new HashSet<>();
-        for (final String word : selectedWords) {
-            Integer key = wordsToHashes.get(word);
-            set.addAll(hashedWordSets.get(key));
-        }
+        final Set<Integer> set = new HashSet<>();
+        selectedWords.stream().map(word -> wordsToHashes.get(word)).forEachOrdered(key -> 
+            set.addAll(hashedWordSets.get(key)));
         return set;
     }
 
@@ -306,20 +297,20 @@ public class WordCloud {
      * contain any of the currently selected words in this cloud
      */
     private Set<Integer> getElementsWithAllWords() {
-        Set<Integer> set = new HashSet<>();
+        final Set<Integer> set = new HashSet<>();
         boolean firstSet = true;
         for (final String word : selectedWords) {
-            Integer key = wordsToHashes.get(word);
-            Set<Integer> wordSet = hashedWordSets.get(key);
+            final Integer key = wordsToHashes.get(word);
+            final Set<Integer> wordSet = hashedWordSets.get(key);
             if (firstSet) {
                 set.addAll(wordSet);
                 firstSet = false;
             } else if (set.isEmpty()) {
                 break;
             } else {
-                Iterator<Integer> iter = set.iterator();
+                final Iterator<Integer> iter = set.iterator();
                 while (iter.hasNext()) {
-                    Integer el = iter.next();
+                    final Integer el = iter.next();
                     if (!wordSet.contains(el)) {
                         iter.remove();
                     }
@@ -389,7 +380,7 @@ public class WordCloud {
      * Gets the map which relates words to their font sizes, sorted
      */
     public SortedMap<String, Float> getWordListWithSizes() {
-        return wordListBySize;
+        return wordListWithSizes;
     }
 
     /**
@@ -403,13 +394,11 @@ public class WordCloud {
         final boolean remove = oldSig > newSig;
         final double low = remove ? newSig : oldSig;
         final double high = remove ? oldSig : newSig;
-        Map<Double, Set<String>> changeSets = wordSignificances.headMap(high + Double.MIN_NORMAL).tailMap(low + Double.MIN_NORMAL);
+        final Map<Double, Set<String>> changeSets = wordSignificances.headMap(high + Double.MIN_NORMAL).tailMap(low + Double.MIN_NORMAL);
         if (remove) {
-            for (final Set<String> changeSet : changeSets.values()) {
-                for (final String word : changeSet) {
-                    currentWords.add(word);
-                }
-            }
+            changeSets.values().forEach(changeSet -> 
+                changeSet.forEach(word -> 
+                    currentWords.add(word)));
         }
     }
 

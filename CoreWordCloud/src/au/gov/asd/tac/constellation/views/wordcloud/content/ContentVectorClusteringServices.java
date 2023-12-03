@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentSkipListMap;
 
 /**
  *
- * @author Delphinus8821
+ * @author twilight_sparkle
  */
 public class ContentVectorClusteringServices {
 
@@ -54,7 +54,7 @@ public class ContentVectorClusteringServices {
     }
 
     public static ContentVectorClusteringServices createKMeansClusteringService(final DefaultTokenHandler handler, final ClusterDocumentsParameters clusterDocumentsParams, final int numberOfElements) {
-        ContentVectorClusteringServices cvcs = new ContentVectorClusteringServices(handler.getTokenElementMatrix());
+        final ContentVectorClusteringServices cvcs = new ContentVectorClusteringServices(handler.getTokenElementMatrix());
         cvcs.clusteringMethod = cvcs.new KMeansClustering(clusterDocumentsParams.getNumberOfMeans());
         if (clusterDocumentsParams.getThresholdMethod().equals(TokenThresholdMethod.APPEARANCE)) {
             cvcs.weightingCalculator = cvcs.new CountAppearancesCalculator(numberOfElements, clusterDocumentsParams.getThresholdPercentage(), true, clusterDocumentsParams.isBinarySpace(), clusterDocumentsParams.isSignificantAboveThreshold(), clusterDocumentsParams.getWeightingExponent());
@@ -97,14 +97,14 @@ public class ContentVectorClusteringServices {
 
             // K-Means++ initialisation
             for (int i = 1; i < k; i++) {
-                ProbabilityDensityFunction pdf = new ProbabilityDensityFunction(numberOfColumns);
+                final ProbabilityDensityFunction pdf = new ProbabilityDensityFunction(numberOfColumns);
                 float totalDistance = 0;
                 for (int j = 0; j < columnKeys.length; j++) {
-                    Iterator<Integer> iter = clusterCentres.iterator();
+                    final Iterator<Integer> iter = clusterCentres.iterator();
                     float smallestDistanceSoFar = Float.MAX_VALUE;
                     while (iter.hasNext()) {
-                        int centreKey = iter.next();
-                        float currentDistance = elementTokenMatrix.getCommonalityDistanceBetweenColumns(centreKey, columnKeys[j]);
+                        final int centreKey = iter.next();
+                        final float currentDistance = elementTokenMatrix.getCommonalityDistanceBetweenColumns(centreKey, columnKeys[j]);
                         if (currentDistance < smallestDistanceSoFar) {
                             smallestDistanceSoFar = currentDistance;
                         }
@@ -128,12 +128,12 @@ public class ContentVectorClusteringServices {
                 totalError = 0;
 
                 for (int j = 0; j < columnKeys.length; j++) {
-                    Iterator<Integer> iter = clusterCentres.iterator();
+                    final Iterator<Integer> iter = clusterCentres.iterator();
                     float smallestDistanceSoFar = Float.MAX_VALUE;
                     int closestCentre = -1;
                     while (iter.hasNext()) {
-                        int centreKey = iter.next();
-                        float currentDistance = elementTokenMatrix.getCommonalityDistanceBetweenColumns(centreKey, columnKeys[j]);
+                        final int centreKey = iter.next();
+                        final float currentDistance = elementTokenMatrix.getCommonalityDistanceBetweenColumns(centreKey, columnKeys[j]);
                         if (currentDistance < smallestDistanceSoFar || (currentDistance == smallestDistanceSoFar && r.nextBoolean())) {
                             smallestDistanceSoFar = currentDistance;
                             closestCentre = centreKey;
@@ -154,9 +154,9 @@ public class ContentVectorClusteringServices {
                 // Update the cluster centre
                 clusterCentres.clear();
                 int clusterNumber = 0;
-                Iterator<Integer> iter = clusters.keySet().iterator();
+                final Iterator<Integer> iter = clusters.keySet().iterator();
                 while (iter.hasNext()) {
-                    List<Integer> clusterList = clusters.get(iter.next());
+                    final List<Integer> clusterList = clusters.get(iter.next());
                     elementTokenMatrix.calculateCentreOfColumns(clusterList.toArray(new Integer[0]), --clusterNumber);
                     clusterCentres.add(clusterNumber);
                 }
@@ -192,8 +192,8 @@ public class ContentVectorClusteringServices {
     public void createAndRunThreads(final ThreadAllocator allocator) {
         allocator.resetThreadAllocation(tokenElementMatrix.getNumColumns());
         while (allocator.hasMore()) {
-            ThreadedElementVectorComputation vectorComp = new ThreadedElementVectorComputation(allocator);
-            Thread t = new Thread(vectorComp);
+            final ThreadedElementVectorComputation vectorComp = new ThreadedElementVectorComputation(allocator);
+            final Thread t = new Thread(vectorComp);
             t.start();
             allocator.indicateAllocated();
         }
@@ -223,12 +223,12 @@ public class ContentVectorClusteringServices {
         }
 
         private void computeElements() {
-            Integer[] tokensKeySet = tokenElementMatrix.getColumnKeys();
+            final Integer[] tokensKeySet = tokenElementMatrix.getColumnKeys();
             // For each token bin in this thread's work load
             for (int tokenBinPos = tokenLowPos; tokenBinPos < tokenLowPos + workLoad; tokenBinPos++) {
                 // Iterator over the list of elements seen with this token
-                int token = tokensKeySet[tokenBinPos];
-                SparseMatrix<Integer>.MatrixColumnIterator tokenIter = tokenElementMatrix.getColumn(token);
+                final int token = tokensKeySet[tokenBinPos];
+                final SparseMatrix<Integer>.MatrixColumnIterator tokenIter = tokenElementMatrix.getColumn(token);
                 while (tokenIter.hasNext()) {
                     SparseMatrix.ElementValuePair<Integer> element = tokenIter.next();
                     // Calculate the modulii of each element
@@ -274,7 +274,7 @@ public class ContentVectorClusteringServices {
         }
 
         public float getWeight(final int elementFrequency, final int tokenFrequency) {
-            float weighting = (float) Math.pow(tokenFrequency / (float) numberOfElements, weightingExponent);
+            final float weighting = (float) Math.pow(tokenFrequency / (float) numberOfElements, weightingExponent);
             return binarySpace ? weighting : elementFrequency * weighting;
         }
 
@@ -296,7 +296,7 @@ public class ContentVectorClusteringServices {
         // If thresholdIsPercentage is true, then threshold is an integer between 1 and 100 representing a percentage
         public RankTokenCalculator(final int numberOfElements, final int numberOfFeatures, final int threshold, final boolean thresholdIsPercentage, final boolean binarySpace, final boolean significantAboveThreshold, final float weightingExponent) {
             super(binarySpace, numberOfElements, significantAboveThreshold, weightingExponent);
-            int thresholdIndex = thresholdIsPercentage ? (threshold * numberOfFeatures) / 100 : threshold;
+            final int thresholdIndex = thresholdIsPercentage ? (threshold * numberOfFeatures) / 100 : threshold;
             this.threshold = (Integer) moduli.values().toArray()[thresholdIndex];
         }
     }

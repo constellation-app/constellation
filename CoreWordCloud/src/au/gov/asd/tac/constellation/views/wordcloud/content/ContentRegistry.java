@@ -19,11 +19,9 @@ import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyCont
 
 /**
  *
- * @author Delphinus8821
+ * @author twilight_sparkle
  */
 public class ContentRegistry {
 
-	//public static final String N_GRAM_ANALYSIS = NGramAnalysisPlugin.class.getName();
-	//public static final String CLUSTER_DOCUMENTS = ClusterDocumentsPlugin.class.getName();
 	public static final String PHRASIPHY_CONTENT = PhrasiphyContentPlugin.class.getName();
 }

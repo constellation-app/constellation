@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.wordcloud.content;
 
 /**
  *
- * @author Delphinus8821
+ * @author twilight_sparkle
  */
 public class DistanceCalculation {
 

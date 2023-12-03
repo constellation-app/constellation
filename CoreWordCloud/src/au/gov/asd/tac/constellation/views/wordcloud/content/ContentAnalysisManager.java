@@ -40,11 +40,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * @author twilight_sparkle
  */
 public class ContentAnalysisManager {
+
+    private static final Logger LOGGER = Logger.getLogger(ContentAnalysisManager.class.getName());
 
     private static final int AVAILABLE_THREADS = Math.max(1, Runtime.getRuntime().availableProcessors() - 1);
     private static final int MAX_THRESHOLD = 50; // The maximum number of items to assign each thread (until we don't have enough threads anyway).
@@ -171,7 +175,7 @@ public class ContentAnalysisManager {
 
     public void clusterDocuments(final ClusterDocumentsParameters clusterDocumentsParams) {
         final ThreadAllocator allocator = getGraphElementThreadAllocator();
-        DefaultTokenHandler th = new DefaultTokenHandler();
+        final DefaultTokenHandler th = new DefaultTokenHandler();
         ContentTokenizingServices.createDocumentClusteringTokenizingService(th, clusterDocumentsParams, allocator);
 
         ContentVectorClusteringServices cvcs = ContentVectorClusteringServices.createKMeansClusteringService(th, clusterDocumentsParams, querySize);
@@ -183,7 +187,7 @@ public class ContentAnalysisManager {
 
     public void compareNodesWithNGrams(final NGramAnalysisParameters nGramParams) {
         final ThreadAllocator allocator = getGraphElementThreadAllocator();
-        PairwiseComparisonTokenHandler th = new PairwiseComparisonTokenHandler(graphElementCapacity, elementsOfInterest);
+        final PairwiseComparisonTokenHandler th = new PairwiseComparisonTokenHandler(graphElementCapacity, elementsOfInterest);
         ContentTokenizingServices.computeNGrams(th, nGramParams, allocator);
 
         if (nGramParams.getFollowUpChoice().equals(ContentAnalysisOptions.FollowUpChoice.ADD_TRANSACTIONS)) {
@@ -211,22 +215,22 @@ public class ContentAnalysisManager {
             return null;
         }
 
-        BufferedReader background;
+        final BufferedReader background;
         try {
             background = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8.name()));
-        } catch (final FileNotFoundException ex) {
+        } catch (final FileNotFoundException | UnsupportedEncodingException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             return null;
-        } catch (final UnsupportedEncodingException ex) {
-            return null;
-        }
+        } 
 
-        List<String> lines = new ArrayList<>();
+        final List<String> lines = new ArrayList<>();
         String line = "";
         while (line != null) {
             lines.add(line);
             try {
                 line = background.readLine();
             } catch (final IOException ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 break;
             }
         }
@@ -235,7 +239,7 @@ public class ContentAnalysisManager {
 
     public void phrasiphyContent(final PhrasiphyContentParameters phrasiphyContentParams, final File background) {
         final PhraseTokenHandler bgHandler;
-        List<String> lines = processBackground(background);
+        final List<String> lines = processBackground(background);
         if (lines != null) {
             final ThreadAllocator bgAllocator = getStringListAllocator(lines);
             bgHandler = new PhraseTokenHandler();
@@ -267,8 +271,11 @@ public class ContentAnalysisManager {
 
         try {
             f.get();
-        } catch (final InterruptedException | ExecutionException ex) {
-            // Do something here 
+        } catch (final InterruptedException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+            Thread.currentThread().interrupt();
+        } catch (final ExecutionException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
     }
 }

@@ -22,7 +22,7 @@ import java.util.Set;
 
 /**
  *
- * @author Delphinus8821
+ * @author twilight_sparkle
  */
 public class PairwiseComparisonTokenHandler implements TokenHandler {
 

@@ -25,8 +25,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
- * @author Delphinus8821
+ * @author twilight_sparkle
  */
 public class PhraseAnalysisModelLoader {
 
@@ -35,7 +34,6 @@ public class PhraseAnalysisModelLoader {
 
     private static final String COMMENT_TOKEN = "##";
     private static final String SET_TOKEN = "#{";
-    private static final String SET_OF_SETS_TOKEN = "#:";
     private static final String UNICODE_RANGE_TOKEN = "#|";
     private static final String OPEN_SET = "{";
     private static final String CLOSE_SET = "}";
@@ -48,10 +46,10 @@ public class PhraseAnalysisModelLoader {
             return;
         }
 
-        BufferedReader excludedWordsReader = new BufferedReader(new InputStreamReader(PhraseAnalysisModelLoader.class.getResourceAsStream("ExcludedWords.u8"), StandardCharsets.UTF_8.name()));
+        final BufferedReader excludedWordsReader = new BufferedReader(new InputStreamReader(PhraseAnalysisModelLoader.class.getResourceAsStream("ExcludedWords.u8"), StandardCharsets.UTF_8.name()));
         processLines(excludedWordsReader, excludedWords, false);
 
-        BufferedReader delimitersReader = new BufferedReader(new InputStreamReader(PhraseAnalysisModelLoader.class.getResourceAsStream("Delimiters.u8"), StandardCharsets.UTF_8.name()));
+        final BufferedReader delimitersReader = new BufferedReader(new InputStreamReader(PhraseAnalysisModelLoader.class.getResourceAsStream("Delimiters.u8"), StandardCharsets.UTF_8.name()));
         processLines(delimitersReader, delimiters, true);
 
         isLoaded = true;
@@ -88,13 +86,13 @@ public class PhraseAnalysisModelLoader {
                     }
                     break;
                 case ADD_UNICODE_RANGE:
-                    String rangeStart = line.substring(line.indexOf(OPEN_SET) + 1, line.indexOf(CLOSE_SET));
-                    String rangeEnd = line.substring(line.indexOf(OPEN_SET, line.indexOf(CLOSE_SET) + 1) + 1, line.indexOf(CLOSE_SET, line.indexOf(CLOSE_SET)) + 1);
+                    final String rangeStart = line.substring(line.indexOf(OPEN_SET) + 1, line.indexOf(CLOSE_SET));
+                    final String rangeEnd = line.substring(line.indexOf(OPEN_SET, line.indexOf(CLOSE_SET) + 1) + 1, line.indexOf(CLOSE_SET, line.indexOf(CLOSE_SET)) + 1);
 					int[] range = {Integer.parseInt(rangeStart, 16), Integer.parseInt(rangeEnd, 16)};
                     currentSet.add(range);
                     break;
                 case LOOK_FOR_MODE_TOKEN:
-                    String token_type = line.substring(0, 2);
+                    final String token_type = line.substring(0, 2);
                     if (token_type.equals(COMMENT_TOKEN)) {
                         continue;
                     } else {

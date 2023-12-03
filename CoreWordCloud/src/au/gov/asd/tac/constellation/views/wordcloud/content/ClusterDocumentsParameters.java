@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptio
 import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptions.FollowUpScope;
 import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptions.TokenThresholdMethod;
 import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptions.TokenizingMethod;
-import static au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptions.TokenizingMethod.NGRAMS;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -152,7 +151,7 @@ public class ClusterDocumentsParameters {
 
     @Override
     public String toString() {
-        return String.format("ContentAnalysisParameters[onAttributeID:%d, caseSensitive:%b, toFilter:%b, tokenizingMethod:%s, delimiter:%s, tokenLength:%d, binarySpace:%b, threshold:%d, thresholdMethod:%s, weightingExponent:%F, numberOfMeans:%d, followUpChoice:%s, followUpScope:%s]",
+        return String.format("ContentAnalysisParameters[onAttributeID:%d, caseSensitive:%b, toFilter:%b, tokenizingMethod:%s, delimiter:%s, tokenLength:%d, binarySpace:%b, threshold:%d, thresholdMethod:%s, weightingExponent:%f, numberOfMeans:%d, followUpChoice:%s, followUpScope:%s]",
                 onAttributeID, caseSensitive, toFilter, tokenizingMethod, delimiter, tokenLength, binarySpace, threshold, thresholdMethod, weightingExponent, numberOfMeans, followUpChoice, followUpScope);
     }
 

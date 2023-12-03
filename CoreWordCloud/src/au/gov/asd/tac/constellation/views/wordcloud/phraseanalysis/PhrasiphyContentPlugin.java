@@ -61,7 +61,7 @@ public class PhrasiphyContentPlugin extends SimplePlugin {
         final PhrasiphyContentParameters phrasiphyContentParams = PhrasiphyContentParameters.getDefaultParameters();
 
         // Get a map relating parameter names to parameter values from the PluginParameters object
-        Map<String, PluginParameter<?>> parameters = params.getParameters();
+        final Map<String, PluginParameter<?>> parameters = params.getParameters();
 
         // Set the value of the phrase length and proximity parameters
         phrasiphyContentParams.setPhraseLength(parameters.get(PhrasiphyContentParameters.PHRASE_LENGTH_PARAMETER_ID).getIntegerValue());
@@ -71,9 +71,9 @@ public class PhrasiphyContentPlugin extends SimplePlugin {
         phrasiphyContentParams.setBackgroundFilter(parameters.get(PhrasiphyContentParameters.BACKGROUND_FILTER_PARAMETER_ID).getStringValue());
 
         // Attempt to retrieve the attribute ID from the graph corresponding to the value of the attribute to analyse parameter
-        Graph g = graph.getGraph();
-        ReadableGraph rg = g.getReadableGraph();
-        GraphElementType elementType = phrasiphyContentParams.getElementType();
+        final Graph g = graph.getGraph();
+        final ReadableGraph rg = g.getReadableGraph();
+        final GraphElementType elementType = phrasiphyContentParams.getElementType();
         final int attributeIDToAnalyse = rg.getAttribute(elementType, parameters.get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID).getStringValue());
         final int elCount = elementType.equals(GraphElementType.VERTEX) ? rg.getVertexCount() : rg.getTransactionCount();
         final int elCapacity = elementType.equals(GraphElementType.VERTEX) ? rg.getVertexCapacity() : rg.getTransactionCapacity();
@@ -138,7 +138,7 @@ public class PhrasiphyContentPlugin extends SimplePlugin {
 
         // Create a ContentAnalysisManager object with reference to the graph, the graph elements to analyse, and the plugin parameters
         final ContentAnalysisManager cam = new ContentAnalysisManager(g, selectedElements, null, elCapacity, elementType, phrasiphyContentParams.getOnAttributeID());
-        //Get the ContentAnalysisManager to phrasiphy content
+        // Get the ContentAnalysisManager to phrasiphy content
         cam.phrasiphyContent(phrasiphyContentParams, file);
     }
 }

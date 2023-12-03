@@ -15,11 +15,12 @@
  */
 package au.gov.asd.tac.constellation.views.wordcloud.ui;
 
-import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
-import au.gov.asd.tac.constellation.preferences.utilities.PreferenceUtilities;
+import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.List;
 import javafx.application.Platform;
 import javafx.embed.swing.JFXPanel;
 import javafx.scene.Scene;
@@ -34,6 +35,7 @@ import org.openide.windows.TopComponent;
  * Top component which displays the Word Cloud view.
  *
  * @author twilight_sparkle
+ * @author Delphinus8821
  */
 @TopComponent.Description(
         preferredID = "WordCloudTopComponent",
@@ -60,7 +62,7 @@ import org.openide.windows.TopComponent;
     "CTL_WordCloudTopComponent=Word Cloud",
     "HINT_WordCloudTopComponent=Word Cloud"
 })
-public final class WordCloudTopComponent extends TopComponent {
+public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPane> {
 
     private final JFXPanel panel = new JFXPanel();
     private final WordCloudController controller;
@@ -68,6 +70,7 @@ public final class WordCloudTopComponent extends TopComponent {
     private static final String STYLE = "resources/Style-WordCloud.css";
     private static final int PREF_WIDTH = 500;
     private static final int PREF_HEIGHT = 950;
+    private Graph graph = null;
 
     public WordCloudTopComponent() {
         initComponents();
@@ -79,32 +82,69 @@ public final class WordCloudTopComponent extends TopComponent {
         setLayout(new BorderLayout());
         add(panel, BorderLayout.CENTER);
 
-        controller = new WordCloudController();
+        controller = WordCloudController.getDefault().init(WordCloudTopComponent.this);
 
         // Populate the jfx container
         Platform.setImplicitExit(false);
         Platform.runLater(() -> {
-            wordCloudPane = new WordCloudPane(controller);
+            wordCloudPane = createContent();
             controller.setWordCloudPane(wordCloudPane);
-            Scene scene = new Scene(wordCloudPane);
+            final Scene scene = new Scene(wordCloudPane);
             scene.setFill(Color.web("#444444"));
             scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
             scene.getStylesheets().add(WordCloudTopComponent.class.getResource(STYLE).toExternalForm());
             panel.setScene(scene);
         });
     }
-
+    
     @Override
-    public void componentOpened() {
-        PreferenceUtilities.addPreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, controller);
+    protected String createStyle() {
+        return STYLE;
     }
 
     @Override
-    public void componentClosed() {
-        PreferenceUtilities.removePreferenceChangeListener(ApplicationPreferenceKeys.OUTPUT2_PREFERENCE, controller);
+    protected WordCloudPane createContent() {
+         wordCloudPane = new WordCloudPane(controller);
+         return wordCloudPane;
     }
+    
+    @Override
+    public void handleNewGraph(final Graph graph) {
+        if (this.graph != graph || controller.isControllerIntialising()) {
 
+            // Remove change listener from previous graph
+            if (this.graph != null) {
+                this.graph.removeGraphChangeListener(this);
+                this.graph = null;
+            }
 
+            if (graph != null) {
+                // Add listener to new graph 
+                this.graph = graph;
+                this.graph.addGraphChangeListener(this);
+
+                controller.updateActiveGraph(graph);
+
+            } else {
+                controller.setAttributeSelectionEnabled(false);
+            }
+
+            final List<String> vertTextAttributes = controller.getVertTextAttributes();
+            final List<String> transTextAttributes = controller.getTransTextAttributes();
+            
+            // Update the word cloud, button state and parameters on the controlled WordCloudPane.
+            controller.createWordsOnPane();
+            controller.updateButtonsOnPane();
+            controller.updateParametersOnPane(vertTextAttributes, transTextAttributes);
+        }
+    }
+    
+    @Override 
+    public void handleGraphOpened(final Graph graph) {
+        controller.updateGraph();
+    }
+    
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always

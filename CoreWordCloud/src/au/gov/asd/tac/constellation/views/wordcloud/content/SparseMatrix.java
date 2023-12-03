@@ -33,7 +33,7 @@ public class SparseMatrix<N extends Number> {
     private final N noEntryVal;
     private final ArithmeticHandler<N> calc;
 
-    protected static abstract class ArithmeticHandler<N extends Number> {
+    protected abstract static class ArithmeticHandler<N extends Number> {
 
         public abstract N getZero();
 
@@ -190,7 +190,7 @@ public class SparseMatrix<N extends Number> {
     }
 
     public N getCellPrimitive(final int i, final int j) {
-        N cell = getCell(i, j);
+        final N cell = getCell(i, j);
         return cell == null ? noEntryVal : cell;
     }
 
@@ -203,7 +203,7 @@ public class SparseMatrix<N extends Number> {
     }
 
     public Integer[] getColumnKeys() {
-        Integer[] keys = new Integer[0];
+        final Integer[] keys = new Integer[0];
         return data.keySet().toArray(keys);
     }
 
@@ -228,8 +228,8 @@ public class SparseMatrix<N extends Number> {
             return 0;
         }
 
-        MatrixColumnIterator iter1 = getColumn(key1);
-        MatrixColumnIterator iter2 = getColumn(key2);
+        final MatrixColumnIterator iter1 = getColumn(key1);
+        final MatrixColumnIterator iter2 = getColumn(key2);
         N distance = calc.getZero();
         N commonality = calc.getZero();
         ElementValuePair<N> entry1 = iter1.next();
@@ -290,12 +290,12 @@ public class SparseMatrix<N extends Number> {
     }
 
     public void calculateCentreOfColumns(final Integer[] keys, final int keyToPlaceCentre) {
-        ConcurrentNavigableMap<Integer, N> centreMap = new ConcurrentSkipListMap<>();
-        int numberOfColumns = keys.length;
+        final ConcurrentNavigableMap<Integer, N> centreMap = new ConcurrentSkipListMap<>();
+        final int numberOfColumns = keys.length;
         for (int i = 0; i < keys.length; i++) {
-            MatrixColumnIterator iter = getColumn(keys[i]);
+            final MatrixColumnIterator iter = getColumn(keys[i]);
             while (iter.hasNext()) {
-                ElementValuePair<N> entry = iter.next();
+                final ElementValuePair<N> entry = iter.next();
                 if (centreMap.get(entry.el) == null) {
                     centreMap.put(entry.el, calc.scale(entry.val, numberOfColumns));
                 } else {
@@ -319,21 +319,21 @@ public class SparseMatrix<N extends Number> {
     }
 
     public N[] getColumnAsExpandedArray(final int key, final int fullColumnSize) {
-        N[] column = calc.makeArray(fullColumnSize);
+        final N[] column = calc.makeArray(fullColumnSize);
         data.get(key).values().toArray(column);
         Arrays.fill(column, getColumnSize(key), column.length, calc.getZero());
         return column;
     }
 
     public N[] getColumnAsArray(final int key) {
-        N[] column = calc.makeArray(getColumnSize(key));
+        final N[] column = calc.makeArray(getColumnSize(key));
         data.get(key).values().toArray(column);
         return column;
     }
 
     public N getColumnSum(final int key) {
         N sum = noEntryVal;
-        MatrixColumnIterator iter = getColumn(key);
+        final MatrixColumnIterator iter = getColumn(key);
         while (iter.hasNext()) {
             sum = calc.add(sum, iter.next().val);
         }
@@ -341,7 +341,7 @@ public class SparseMatrix<N extends Number> {
     }
 
     public Set<Integer> getColumnElementUnion(final Set<Integer> keySet) {
-        Set<Integer> elements = new HashSet<>();
+        final Set<Integer> elements = new HashSet<>();
         for (final int key : keySet) {
             if (data.containsKey(key)) {
                 elements.addAll(data.get(key).keySet());
@@ -351,12 +351,12 @@ public class SparseMatrix<N extends Number> {
     }
 
     public Set<Integer> getColumnElementIntersection(final Set<Integer> keySet) {
-        Set<Integer> elements = new HashSet<>();
+        final Set<Integer> elements = new HashSet<>();
         for (final int key : keySet) {
             if (elements.isEmpty() && data.containsKey(key)) {
                 elements.addAll(data.get(key).keySet());
             } else {
-                Iterator<Integer> iter = elements.iterator();
+                final Iterator<Integer> iter = elements.iterator();
                 while (iter.hasNext()) {
                     int element = iter.next();
                     if (!data.containsKey(key) || !data.get(key).containsKey(element)) {
@@ -375,13 +375,13 @@ public class SparseMatrix<N extends Number> {
         if (data.get(key) == null) {
             return null;
         }
-        Map<Integer, N> subcolumn = new ConcurrentSkipListMap<>(data.get(key));
+        final Map<Integer, N> subcolumn = new ConcurrentSkipListMap<>(data.get(key));
         for (final int element : elements) {
             if (!subcolumn.keySet().contains(element)) {
                 subcolumn.put(element, calc.getZero());
             }
         }
-        N[] subcolumnAsArray = calc.makeArray(subcolumn.size());
+        final N[] subcolumnAsArray = calc.makeArray(subcolumn.size());
         subcolumn.values().toArray(subcolumnAsArray);
         return subcolumnAsArray;
     }
@@ -393,7 +393,7 @@ public class SparseMatrix<N extends Number> {
     public N getLargestColumnSum(final Set<Integer> keys) {
         N largestColumnSum = noEntryVal;
         for (final int i : keys) {
-            N colSum = getColumnSum(i);
+            final N colSum = getColumnSum(i);
             largestColumnSum = calc.max(colSum, largestColumnSum);
         }
         return largestColumnSum;
@@ -423,11 +423,11 @@ public class SparseMatrix<N extends Number> {
      * This is a deep constructions, that is changes to the returned map do not affect the matrix from which it was created and vice versa.
      */
     public Map<Integer, Set<Integer>> constructTokenSets() {
-        Map<Integer, Set<Integer>> tokenSets = new HashMap<>();
-        Integer[] tokens = getColumnKeys();
+        final Map<Integer, Set<Integer>> tokenSets = new HashMap<>();
+        final Integer[] tokens = getColumnKeys();
         for (final Integer token : tokens) {
-            Set<Integer> tokenSet = new HashSet<>();
-            SparseMatrix<N>.MatrixColumnIterator iter = getColumn(token);
+            final Set<Integer> tokenSet = new HashSet<>();
+            final SparseMatrix<N>.MatrixColumnIterator iter = getColumn(token);
             while (iter.hasNext()) {
                 tokenSet.add(iter.next().el);
             }
@@ -478,7 +478,7 @@ public class SparseMatrix<N extends Number> {
         @Override
         public ElementValuePair<N> next() {
             currentKey = keyIter.next();
-            N val = valIter.next();
+            final N val = valIter.next();
             return new ElementValuePair<>(currentKey, val);
         }
 

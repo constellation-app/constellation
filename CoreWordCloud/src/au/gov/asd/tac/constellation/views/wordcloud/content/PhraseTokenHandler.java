@@ -22,7 +22,7 @@ import java.util.Set;
 
 /**
  *
- * @author Delphinus8821
+ * @author twilight_sparkle
  */
 public class PhraseTokenHandler implements TokenHandler {
 
@@ -50,20 +50,20 @@ public class PhraseTokenHandler implements TokenHandler {
 
     public void registerToken(final String token, final int element, final Set<String> singleWords, final boolean storeSingleWords) {
         // Hash the token and add it to the map 
-        int key = DefaultTokenHandler.oneAtATimeHash(token.toCharArray());
+        final int key = DefaultTokenHandler.oneAtATimeHash(token.toCharArray());
         synchronized (tokenHashes) {
             tokenHashes.put(token, key);
         }
 
         // Look up the current frequency related to the given hash and element, and increment it by one
         synchronized (tokenElementMatrix) {
-            int currentFreq = tokenElementMatrix.getCellPrimitive(key, element);
+            final int currentFreq = tokenElementMatrix.getCellPrimitive(key, element);
             tokenElementMatrix.putCell(key, element, currentFreq + 1);
             ((TaggedSparseMatrix) tokenElementMatrix).tagColumn(key, storeSingleWords);
         }
         synchronized (constituentHashes) {
             if (!constituentHashes.containsKey(key)) {
-                Set<Integer> hashes = new HashSet<>();
+                final Set<Integer> hashes = new HashSet<>();
                 for (final String word : singleWords) {
                     hashes.add(DefaultTokenHandler.oneAtATimeHash(word.toCharArray()));
                 }

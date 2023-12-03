@@ -42,14 +42,17 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
-import org.openide.util.Exceptions;
 
 /*
  * @author twilight_sparkle
  */
 public class ContentAnalysisGraphProcessing {
 
+    private static final Logger LOGGER = Logger.getLogger(ContentAnalysisGraphProcessing.class.getName());
+    
     private final Graph graph;
     private final GraphElementType graphElementType;
     private final List<Plugin> followUpPlugins = new LinkedList<>();
@@ -99,9 +102,9 @@ public class ContentAnalysisGraphProcessing {
             try {
                 f.get();
             } catch (final InterruptedException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             } catch (final ExecutionException ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
     }
@@ -179,14 +182,13 @@ public class ContentAnalysisGraphProcessing {
                 }
 
                 // Record the clusters 
-                Iterator<Integer> iter = elementToCluster.keySet().iterator();
+                final Iterator<Integer> iter = elementToCluster.keySet().iterator();
                 while (iter.hasNext()) {
-                    int elID = iter.next();
-                    int cluster = elementToCluster.get(elID);
+                    final int elID = iter.next();
                     wg.setStringValue(clusterElementAttr, elID, elementToCluster.get(elID).toString());
                 }
             } catch (final Exception ex) {
-                Exceptions.printStackTrace(ex);
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
 
@@ -209,11 +211,11 @@ public class ContentAnalysisGraphProcessing {
 
         @Override
         public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
-            Map<Integer, List<Integer>> namedSelections = new ConcurrentHashMap<>();
+            final Map<Integer, List<Integer>> namedSelections = new ConcurrentHashMap<>();
             Iterator<Integer> iter = elementToCluster.keySet().iterator();
             while (iter.hasNext()) {
-                int vxID = iter.next();
-                int cluster = elementToCluster.get(vxID);
+                final int vxID = iter.next();
+                final int cluster = elementToCluster.get(vxID);
 
                 List<Integer> selection = namedSelections.get(cluster);
                 if (selection == null) {
@@ -229,9 +231,9 @@ public class ContentAnalysisGraphProcessing {
             iter = namedSelections.keySet().iterator();
             int selectionNumber = 0;
             while (iter.hasNext()) {
-                List<Integer> selection = namedSelections.get(iter.next());
-                int[] selectionArray = new int[selection.size()];
-                Iterator<Integer> listIter = selection.iterator();
+                final List<Integer> selection = namedSelections.get(iter.next());
+                final int[] selectionArray = new int[selection.size()];
+                final Iterator<Integer> listIter = selection.iterator();
                 int i = 0;
                 while (listIter.hasNext()) {
                     selectionArray[i++] = listIter.next();
@@ -287,21 +289,21 @@ public class ContentAnalysisGraphProcessing {
 
             try {
                 // Note: this sort of stuff should be implemented using schema lookup once the attribute schema is introduced for constellation
-                int nGramSimilarityAttr = wg.addAttribute(GraphElementType.TRANSACTION, SIMILARITY_ATTR_TYPE, SIMILARITY_ATTRIBUTE_NAME, SIMILARITY_ATTR_DESCRIPTION, 0F, null);
-                int typeAttr = wg.addAttribute(GraphElementType.TRANSACTION, TYPE_ATTR_TYPE, TYPE_ATTRIBUTE_NAME, TYPE_ATTR_DESCRIPTION, null, null);
-                int subtypeAttr = wg.addAttribute(GraphElementType.TRANSACTION, SUBTYPE_ATTR_TYPE, SUBTYPE_ATTRIBUTE_NAME, SUBTYPE_ATTR_DESCRIPTION, null, null);
-                int name = wg.addAttribute(GraphElementType.TRANSACTION, NAME_ATTR_TYPE, NAME_ATTRIBUTE_NAME, NAME_ATTR_DESCRIPTION, null, null);
-                int colorAttr = wg.addAttribute(GraphElementType.TRANSACTION, COLOR_ATTR_TYPE, COLOR_ATTRIBUTE_NAME, COLOR_ATTR_DESCRIPTION, null, null);
+                final int nGramSimilarityAttr = wg.addAttribute(GraphElementType.TRANSACTION, SIMILARITY_ATTR_TYPE, SIMILARITY_ATTRIBUTE_NAME, SIMILARITY_ATTR_DESCRIPTION, 0F, null);
+                final int typeAttr = wg.addAttribute(GraphElementType.TRANSACTION, TYPE_ATTR_TYPE, TYPE_ATTRIBUTE_NAME, TYPE_ATTR_DESCRIPTION, null, null);
+                final int subtypeAttr = wg.addAttribute(GraphElementType.TRANSACTION, SUBTYPE_ATTR_TYPE, SUBTYPE_ATTRIBUTE_NAME, SUBTYPE_ATTR_DESCRIPTION, null, null);
+                final int name = wg.addAttribute(GraphElementType.TRANSACTION, NAME_ATTR_TYPE, NAME_ATTRIBUTE_NAME, NAME_ATTR_DESCRIPTION, null, null);
+                final int colorAttr = wg.addAttribute(GraphElementType.TRANSACTION, COLOR_ATTR_TYPE, COLOR_ATTRIBUTE_NAME, COLOR_ATTR_DESCRIPTION, null, null);
 
                 int currentLinkNum = 0;
 
-                for (ElementSimilarity entry : pairwiseSimilarities) {
+                for (final ElementSimilarity entry : pairwiseSimilarities) {
                     final int srcID = entry.low;
                     final int destID = entry.high;
                     final double similarity = entry.score;
 
                     // Add the transaction
-                    int link = wg.addTransaction(srcID, destID, false);
+                    final int link = wg.addTransaction(srcID, destID, false);
 
                     // Add the relevant attributes to the transaction
                     wg.setDoubleValue(nGramSimilarityAttr, link, similarity);
@@ -311,8 +313,8 @@ public class ContentAnalysisGraphProcessing {
                     wg.setObjectValue(colorAttr, link, ConstellationColor.PURPLE);
                 }
 
-            } catch (Exception ex) {
-                Exceptions.printStackTrace(ex);
+            } catch (final Exception ex) {
+                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
         }
 

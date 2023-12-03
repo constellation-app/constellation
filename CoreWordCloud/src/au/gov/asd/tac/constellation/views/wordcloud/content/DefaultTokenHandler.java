@@ -20,7 +20,7 @@ import java.util.Map;
 
 /**
  *
- * @author Delphinus8821
+ * @author twilight_sparkle
  */
 public class DefaultTokenHandler implements TokenHandler {
 
@@ -55,14 +55,14 @@ public class DefaultTokenHandler implements TokenHandler {
     @Override
     public void registerToken(final String token, final int element) {
         // Hash the token and add it to the map
-        int key = oneAtATimeHash(token.toCharArray());
+        final int key = oneAtATimeHash(token.toCharArray());
         synchronized (tokenHashes) {
             tokenHashes.put(token, key);
         }
 
         // Look up the current frequency related to the given hash and element, and increment it by one
         synchronized (tokenElementMatrix) {
-            int currentFreq = tokenElementMatrix.getCellPrimitive(key, element);
+            final int currentFreq = tokenElementMatrix.getCellPrimitive(key, element);
             tokenElementMatrix.putCell(key, element, currentFreq + 1);
         }
     }

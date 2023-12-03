@@ -27,6 +27,7 @@ import java.util.Set;
 
 /**
  *
+ * @author twilight_sparkle
  * @author Delphinus8821
  */
 public class ContentPairwiseSimilarityServices {
@@ -59,7 +60,7 @@ public class ContentPairwiseSimilarityServices {
     }
 
     private static ContentPairwiseSimilarityServices pairwiseComparison(final PairwiseComparisonTokenHandler handler, final NGramAnalysisParameters nGramParams) {
-        ContentPairwiseSimilarityServices cpss = new ContentPairwiseSimilarityServices(handler);
+        final ContentPairwiseSimilarityServices cpss = new ContentPairwiseSimilarityServices(handler);
         if (nGramParams.isBinarySpace()) {
             cpss.similarityCalculator = new BinarySpaceTaxicabNormCalculator();
         } else {
@@ -74,11 +75,7 @@ public class ContentPairwiseSimilarityServices {
         if (similarityCalculator.computeModulii()) {
             for (int i = 0; i < handler.totalChunks; i++) {
                 final int currentChunk = i;
-                handler.tokenElementFrequencies.values().parallelStream().forEach(
-                        (value) -> {
-                            computeModulii(value[currentChunk]);
-                        }
-                );
+                handler.tokenElementFrequencies.values().parallelStream().forEach(value -> computeModulii(value[currentChunk]));
             }
         }
 
@@ -95,12 +92,7 @@ public class ContentPairwiseSimilarityServices {
             for (; j < max; j++) {
                 final int chunk1 = i;
                 final int chunk2 = j;
-                handler.tokenElementFrequencies.values().parallelStream().forEach(
-                        (value) -> {
-                            processPairsWithToken(value[chunk1], value[chunk2]);
-
-                        }
-                );
+                handler.tokenElementFrequencies.values().parallelStream().forEach(value -> processPairsWithToken(value[chunk1], value[chunk2]));
                 for (int k = 0; k < pairwiseSimilaritiesCalculation.length; k++) {
                     Map<Integer, MutableDouble> elementSimilarities = pairwiseSimilaritiesCalculation[k];
                     if (elementSimilarities != null) {
@@ -163,7 +155,7 @@ public class ContentPairwiseSimilarityServices {
         }
     }
 
-    public static abstract class PairwiseSimilarityCalculator {
+    public abstract static class PairwiseSimilarityCalculator {
 
         // Called whenever two elements share a token to progressively update their similarity score
         public abstract double updateSimilarity(final double currentSimilarity, final int element1Freq, final int element2Freq);
@@ -309,7 +301,7 @@ public class ContentPairwiseSimilarityServices {
                 if (loCluster == hiCluster) {
                     continue;
                 }
-                Set<Integer> clusterToMove = clusters.remove(hiCluster);
+                final Set<Integer> clusterToMove = clusters.remove(hiCluster);
                 clusters.get(loCluster).addAll(clusterToMove);
                 for (final int el : clusterToMove) {
                     elementToCluster.put(el, loCluster);
@@ -331,7 +323,7 @@ public class ContentPairwiseSimilarityServices {
                 final int cluster = !freeClusters.isEmpty() ? freeClusters.remove() : currentClusterNum++;
                 elementToCluster.put(pair.low, cluster);
                 elementToCluster.put(pair.high, cluster);
-                Set<Integer> newCluster = new HashSet<>();
+                final Set<Integer> newCluster = new HashSet<>();
                 newCluster.add(pair.low);
                 newCluster.add(pair.high);
                 clusters.put(cluster, newCluster);

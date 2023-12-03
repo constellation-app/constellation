@@ -27,9 +27,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class TaggedSparseMatrix<N extends Number> extends SparseMatrix<N> {
 
-    protected ConcurrentNavigableMap<Integer, Boolean> tags;
+    protected final ConcurrentNavigableMap<Integer, Boolean> tags;
     private final Map<Boolean, Set<Integer>> taggedColumns;
-    private Set<Integer> negativelyTaggedColumns;
 
     public TaggedSparseMatrix(final N noEntryVal, final ArithmeticHandler<N> typer) {
         super(noEntryVal, typer);

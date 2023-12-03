@@ -20,8 +20,7 @@ import au.gov.asd.tac.constellation.graph.attribute.ObjectAttributeDescription;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
- *
- * @author Delphinus8821
+ * @author twilight_sparkle
  */
 @ServiceProvider(service = AttributeDescription.class)
 public class WordCloudAttributeDescription extends ObjectAttributeDescription {
