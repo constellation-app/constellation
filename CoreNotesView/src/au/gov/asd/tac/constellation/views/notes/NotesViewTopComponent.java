@@ -154,8 +154,8 @@ public class NotesViewTopComponent extends JavaFxTopComponent<NotesViewPane> imp
     @Override
     protected String createStyle() {
         return JavafxStyleManager.isDarkTheme()
-                ? "resources/TimeFilterDark.css"
-                : "resources/TimeFilterLight.css";
+                ? "resources/time-filter-dark.css"
+                : "resources/time-filter-light.css";
     }
 
     /**

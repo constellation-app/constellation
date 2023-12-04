@@ -3,31 +3,31 @@
     -fx-text-fill: #666666;
 }
 
-.titled-pane .graphic-container .text .hidden{
+.titled-pane .graphic-container .text .hidden {
     -fx-text-fill: #999999;
 }
 
-.titled-pane .hidden{
+.titled-pane .hidden {
     -fx-base: #a6a6a6;
 }
 
-.titled-pane .hidden .label{
+.titled-pane .hidden .label {
     -fx-text-fill: white;
 }
 
-#primarykey{
+#primarykey {
     -fx-base:#8a1d1d;
 }
 
-.hidden#primarykey{
+.hidden#primarykey {
     -fx-base:#ba4d4d;
 }
 
-#custom{
+#custom {
     -fx-base:#1f4f8a;
 }
 
-.hidden#custom{
+.hidden#custom {
     -fx-base:#4f7fba;
 }
 

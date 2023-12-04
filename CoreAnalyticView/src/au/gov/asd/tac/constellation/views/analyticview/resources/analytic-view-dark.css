@@ -3,11 +3,11 @@
  * Slider                                                                      *
  *                                                                             *
  ******************************************************************************/
-#hide-visualisation-slider .track{
+#hide-visualisation-slider .track {
     -fx-background-color: #d6d6d6;
 }
 
-#hide-visualisation-slider .thumb{
+#hide-visualisation-slider .thumb {
     -fx-background-color: #333333;
     -fx-border-color: #999999;
     -fx-border-radius: 20px;
@@ -15,7 +15,7 @@
 
 /*******************************************************************************
  *                                                                             *
- * Pane                                                                        *
+ * Document Pane                                                               *
  *                                                                             *
  ******************************************************************************/
 .text-input {
@@ -23,7 +23,25 @@
     -fx-text-fill: black;
 }
 
-.body { 
+body { 
     background-color: #111111; 
     color: #e0e0e0; 
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Question Pane                                                               *
+ *                                                                             *
+ ******************************************************************************/
+.titled-pane > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#1c5aa6,100%), derive(#1c5aa6,0%) 5%, derive(#1c5aa6,-25%) 95%, derive(#1c5aa6,50%) 100%);
+    -fx-font-weight: bold;
+}
+
+.titled-pane {
+    -fx-text-fill: white;
+}
+
+.titled-pane > .title > .arrow-button > .arrow {
+    -fx-background-color: white;
 }

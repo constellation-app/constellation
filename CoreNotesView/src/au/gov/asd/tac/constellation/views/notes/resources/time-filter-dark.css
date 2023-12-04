@@ -47,13 +47,11 @@
     -fx-min-height: 25px;
 }
 
-.combo-box-base:hover
-{
+.combo-box-base:hover {
     -fx-color: -fx-hover-base;
 }
 
-.combo-box-base:showing 
-{
+.combo-box-base:showing {
     -fx-color: -fx-pressed-base;
 }
 
@@ -63,17 +61,16 @@
  *                                                                             *
  ******************************************************************************/
 
-.spinner{
+.spinner {
     -fx-base: black;
 }
 
-.spinner .increment-arrow-button, 
-.spinner .decrement-arrow-button{
+.spinner .increment-arrow-button, .spinner .decrement-arrow-button {
     -fx-body-color: #1c5aa6;
     -fx-border-color: #444444;
 }
 
-.spinner:focused{
+.spinner:focused {
     -fx-border-color: transparent;
 }
 

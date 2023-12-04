@@ -1,8 +1,8 @@
-#label{
+#label {
     -fx-fill: #D3D3D3;
 }
 
-#primary{
+#primary {
     -fx-background-radius: 5;
     -fx-background-insets: 0,1,2,0;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 7, 0.0, 1, 1);
@@ -11,14 +11,14 @@
     -fx-text-fill: #ffffff;
 }
 
-.vbox{
+.vbox {
     -fx-background-color: rgba(0,0,0,0);
 }
 
-#header{
+#header {
     -fx-fill: #ffffff;
     -fx-text-fill: #ffffff;
-    -fx-font: bold 1.083333em "Arial"; /* 13pt */
+    -fx-font: bold 1.083333em "Arial";
     -fx-padding: 0 0 10 0;
 }
 
@@ -30,7 +30,7 @@
     -fx-background-color: transparent;
 }
 
-#hiddenSplitter *.split-pane-divider{
+#hiddenSplitter *.split-pane-divider {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-padding: 5px;

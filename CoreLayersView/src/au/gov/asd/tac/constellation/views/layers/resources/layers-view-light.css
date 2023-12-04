@@ -10,7 +10,7 @@
     -fx-border-color: #444444;
 }
 
-.menu:hover{
+.menu:hover {
     -fx-background-color: #0093FF;
 }
 
@@ -75,13 +75,12 @@
     -fx-text-fill: #111111;
 }
 
-.combo-box 
-{
+.combo-box {
     -fx-background-color: white;
     -fx-border-color: #999999
 }
 
-.scroll-bar:vertical .track{
+.scroll-bar:vertical .track {
     -fx-background-color: white;
     -fx-border-color: white;
 }
