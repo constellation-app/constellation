@@ -41,6 +41,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.util.lookup.ServiceProvider;
 
 /**
@@ -58,6 +59,7 @@ public class NewGraph extends RestService {
 
     private static final String NAME = "new_graph";
     private static final String SCHEMA_PARAMETER_ID = "schema_name";
+    private static final String GRAPH_NAME_PARAMETER_ID = "graph_name";
 
     @Override
     public String getName() {
@@ -83,6 +85,11 @@ public class NewGraph extends RestService {
         schemaParam.setDescription("The schema used to create the new graph.");
         parameters.addParameter(schemaParam);
 
+        final PluginParameter<StringParameterValue> graphNameParam = StringParameterType.build(GRAPH_NAME_PARAMETER_ID);
+        graphNameParam.setName("Graph name");
+        graphNameParam.setDescription("The name for the new graph. (If left blank, the default name `analytic graph1` etc. will be used.)");
+        parameters.addParameter(graphNameParam);
+
         return parameters;
     }
 
@@ -94,6 +101,7 @@ public class NewGraph extends RestService {
     @Override
     public void callService(final PluginParameters parameters, final InputStream in, final OutputStream out) throws IOException {
         final String schemaParam = parameters.getStringValue(SCHEMA_PARAMETER_ID);
+        final String graphNameParam = parameters.getStringValue(GRAPH_NAME_PARAMETER_ID);
 
         String schemaName = null;
         for (final SchemaFactory schemaFactory : SchemaFactoryUtilities.getSchemaFactories().values()) {
@@ -117,8 +125,15 @@ public class NewGraph extends RestService {
         schema.newGraph(sg);
         final Graph dualGraph = new DualGraph(sg, false);
 
-        final String graphName = SchemaFactoryUtilities.getSchemaFactory(schemaName).getLabel().trim().toLowerCase();
-        GraphOpener.getDefault().openGraph(dualGraph, graphName);
+        if (StringUtils.isBlank(graphNameParam)) {
+            GraphOpener.getDefault().openGraph(dualGraph, SchemaFactoryUtilities.getSchemaFactory(schemaName).getLabel().trim().toLowerCase());
+        } else {
+            if (GraphNode.fileNameExists(graphNameParam)) {
+                throw new RestServiceException(HTTP_UNPROCESSABLE_ENTITY, String.format("A graph with the name %s already exists.", graphNameParam));
+            }
+            GraphOpener.getDefault().openGraph(dualGraph, graphNameParam, false);
+        }
+
 
         String newId = "";
 

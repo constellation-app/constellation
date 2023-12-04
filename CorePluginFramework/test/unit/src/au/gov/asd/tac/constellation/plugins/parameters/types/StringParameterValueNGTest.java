@@ -329,6 +329,7 @@ public class StringParameterValueNGTest {
         instance = new StringParameterValue(null);
         instance2 = new StringParameterValue(null);
         assertTrue(instance.equals(instance2));
+        assertFalse(instance.equals(null));
     }
 
     /**

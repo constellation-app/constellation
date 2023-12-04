@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 package au.gov.asd.tac.constellation.views.analyticview;
 
 import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
-import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewTopComponent.AnalyticController;
 import au.gov.asd.tac.constellation.views.analyticview.questions.AnalyticQuestion;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.results.EmptyResult;
 import au.gov.asd.tac.constellation.views.analyticview.utilities.AnalyticUtilities;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.GraphVisualisation;
 import au.gov.asd.tac.constellation.views.analyticview.visualisation.InternalVisualisation;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -44,12 +44,12 @@ public class AnalyticResultsPane extends VBox {
     private final TabPane internalVisualisationPane;
     private final ToolBar graphVisualisationPane;
     private AnalyticResult<?> result;
-    private final AnalyticController analyticController;
+    private final AnalyticViewController analyticViewController;
 
-    public AnalyticResultsPane(final AnalyticController analyticController) {
+    public AnalyticResultsPane(final AnalyticViewController analyticViewController) {
 
         // the analytic controller
-        this.analyticController = analyticController;
+        this.analyticViewController = analyticViewController;
 
         // the progress indicator pane
         this.progressIndicatorPane = new BorderPane();
@@ -94,16 +94,22 @@ public class AnalyticResultsPane extends VBox {
         return graphVisualisationPane;
     }
 
-    protected final AnalyticResult<?> getResult() {
+    public final AnalyticResult<?> getResult() {
         return result;
     }
 
-    protected final void displayResults(final AnalyticQuestion<?> question) {
-        result = question.getResult() == null ? new EmptyResult() : question.getResult();
-        result.setAnalyticController(analyticController);
+    protected final void displayResults(final AnalyticQuestion<?> question, final AnalyticResult results,
+            final Map<GraphVisualisation, Boolean> graphVisualisations) {
+        if (results.getClass().equals(EmptyResult.class) && question != null) {
+            result = question.getResult() == null ? new EmptyResult() : question.getResult();
+        } else {
+            result = results;
+        }
+        result.setAnalyticViewController(analyticViewController);
 
         Platform.runLater(() -> {
             internalVisualisationPane.getTabs().clear();
+
             AnalyticUtilities.getInternalVisualisationTranslators().forEach(translator -> {
                 if (translator.getResultType().isAssignableFrom(result.getClass())) {
                     translator.setQuestion(question);
@@ -115,18 +121,38 @@ public class AnalyticResultsPane extends VBox {
                     internalVisualisationPane.getTabs().add(visualisationTab);
                 }
             });
+
             graphVisualisationPane.getItems().clear();
             final Label applyResults = new Label("Apply to Results: ");
             graphVisualisationPane.getItems().add(applyResults);
+
             AnalyticUtilities.getGraphVisualisationTranslators().forEach(translator -> {
                 if (translator.getResultType().isAssignableFrom(result.getClass())) {
                     translator.setQuestion(question);
                     translator.setResult(result);
-                    final GraphVisualisation graphVisualisation = translator.buildControl();
-                    final Node visualisationNode = graphVisualisation.getVisualisation();
+                    translator.setActive(true);
+
+                    GraphVisualisation graphVisualisation = translator.buildControl();
+                    Node visualisationNode = graphVisualisation.getVisualisation();
+
+                    if (graphVisualisations.containsKey(graphVisualisation)) {
+                        graphVisualisation.setSelected(graphVisualisations.get(graphVisualisation));
+                        for (final Map.Entry<GraphVisualisation, Boolean> visualisation : graphVisualisations.entrySet()) {
+                            if (visualisation.getKey().getClass() == graphVisualisation.getClass()) {
+                                graphVisualisation = visualisation.getKey();
+                                visualisationNode = graphVisualisation.getVisualisation();
+                                graphVisualisation.setSelected(visualisation.getValue());
+                            }
+                        }
+                    }
+
                     graphVisualisationPane.getItems().add(visualisationNode);
+                    AnalyticViewController.getDefault().updateGraphVisualisations(graphVisualisation, graphVisualisation.isActive());
                 }
             });
         });
+
+        // add the results to the graph state
+        AnalyticViewController.getDefault().updateResults(result);
     }
 }

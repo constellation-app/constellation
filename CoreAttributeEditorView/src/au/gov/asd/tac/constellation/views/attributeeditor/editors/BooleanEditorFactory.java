@@ -58,7 +58,8 @@ public class BooleanEditorFactory extends AttributeValueEditorFactory<Boolean> {
 
         @Override
         public void updateControlsWithValue(final Boolean value) {
-            checkBox.setSelected(value);
+            // A null boolean is treated as false
+            checkBox.setSelected((value != null) && value);
         }
 
         @Override

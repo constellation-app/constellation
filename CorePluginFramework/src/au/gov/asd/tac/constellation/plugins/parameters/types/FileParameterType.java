@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of FileParameterType.
      */
-    public static PluginParameter<FileParameterValue> build(String id) {
+    public static PluginParameter<FileParameterValue> build(final String id) {
         return new PluginParameter<>(new FileParameterValue(), INSTANCE, id);
     }
 
@@ -84,7 +84,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
      * the parameter being constructed.
      * @return A {@link PluginParameter} of FileParameterType.
      */
-    public static PluginParameter<FileParameterValue> build(String id, final FileParameterValue pv) {
+    public static PluginParameter<FileParameterValue> build(final String id, final FileParameterValue pv) {
         return new PluginParameter<>(pv, INSTANCE, id);
     }
 
@@ -211,6 +211,8 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
          * false otherwise.
          */
         public boolean set(final List<File> newFiles) {
+            // TODO: determine a better if condition
+            // this one is comparing List<String> with List<File>
             if (!Objects.equals(files, newFiles)) {
                 final List<File> nf = newFiles != null ? newFiles : Collections.emptyList();
                 files.clear();
@@ -228,7 +230,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
          * holding.
          */
         public List<File> get() {
-            List<File> fileObjects = new ArrayList<>();
+            final List<File> fileObjects = new ArrayList<>();
             files.forEach(f -> fileObjects.add(new File(f.trim())));
             return Collections.unmodifiableList(fileObjects);
         }
@@ -322,14 +324,10 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
 
         @Override
         public boolean equals(final Object obj) {
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
+            if (obj == null || getClass() != obj.getClass()) {
                 return false;
             }
             final FileParameterValue other = (FileParameterValue) obj;
-
             return files.equals(other.files);
         }
 

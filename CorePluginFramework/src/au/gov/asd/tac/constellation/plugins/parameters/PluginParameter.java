@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -75,7 +75,7 @@ public class PluginParameter<V extends ParameterValue> {
     private String helpID;
     private boolean isSuppressed = false;
     private String requestBodyExample;
-    private boolean isRequired = false;
+    private boolean required = false;
 
     private final List<ParameterChange> suppressedEvents = new ArrayList<>();
 
@@ -454,7 +454,7 @@ public class PluginParameter<V extends ParameterValue> {
         copy.setEnabled(enabled);
         copy.setVisible(visible);
         copy.setError(error);
-        copy.setRequired(isRequired);
+        copy.setRequired(required);
         copy.enclosingParameter = enclosingParameter;
         copy.properties = new HashMap<>(properties);
         return copy;
@@ -820,15 +820,15 @@ public class PluginParameter<V extends ParameterValue> {
      * @return True if the parameter is required, false otherwise.
      */
     public boolean isRequired() {
-        return isRequired;
+        return required;
     }
 
     /**
      * Set whether the parameter is required.
      *
-     * @param isRequired A boolean indicating whether the parameter is required.
+     * @param required A boolean indicating whether the parameter is required.
      */
-    public void setRequired(final boolean isRequired) {
-        this.isRequired = isRequired;
+    public void setRequired(final boolean required) {
+        this.required = required;
     }
 }
