@@ -119,8 +119,8 @@ public class MapView extends ScrollPane {
     private boolean drawingPolygonMarker = false;
 
     // Furthest longitude to the east and west
-    public static final double MIN_LONG = -169.1110266;
-    public static final double MAX_LONG = 190.48712;
+    public static final double MIN_LONG = -169.511123;
+    public static final double MAX_LONG = 190.519684;
 
     // Furthest lattitude to the north and south
     public static final double MIN_LAT = -89.000389;
@@ -735,10 +735,6 @@ public class MapView extends ScrollPane {
             if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
                 updateClusterMarkers();
             }
-
-            final Bounds bounds = mapStackPane.getBoundsInParent();
-            final int lowestPixelShown = (int) bounds.getMinX();
-            final int highestPixelShown = (int) bounds.getMaxX();
         });
     }
 
@@ -930,6 +926,11 @@ public class MapView extends ScrollPane {
         addClusterMarkers(clusterMarkerBuilder.getClusterMarkers(), clusterMarkerBuilder.getClusterValues());
     }
 
+    /**
+     * Change size of markers based on whether user has zoomed in or out
+     *
+     * @param zoomIn - check for zoom in/out
+     */
     private void resizeMarkers(final boolean zoomIn) {
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
@@ -1136,6 +1137,10 @@ public class MapView extends ScrollPane {
         mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.getY());
     }
 
+    /**
+     * Pans the map to have the average coordinates of all selected nodes to be
+     * at the the center of the screen
+     */
     public void panToSelection() {
         int markerCounter = 0;
         double averageX = 0;
