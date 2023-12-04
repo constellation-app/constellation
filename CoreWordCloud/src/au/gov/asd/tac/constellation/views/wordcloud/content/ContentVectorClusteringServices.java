@@ -175,7 +175,7 @@ public class ContentVectorClusteringServices {
         }
 
         public void addProbability(final double probability) {
-            double cumulativeProbability = (currentIndex == -1) ? 0 : function[currentIndex];
+            final double cumulativeProbability = (currentIndex == -1) ? 0 : function[currentIndex];
             function[++currentIndex] = cumulativeProbability + probability;
         }
 

@@ -107,7 +107,7 @@ public class ContentPairwiseSimilarityServices {
     private final Map[] pairwiseSimilaritiesCalculation;
 
     private void computeModulii(final Map<Integer, Integer> freqMap) {
-        for (Entry<Integer, Integer> elementEntry : freqMap.entrySet()) {
+        for (final Entry<Integer, Integer> elementEntry : freqMap.entrySet()) {
             final int element = elementEntry.getKey();
             final int freq = elementEntry.getValue();
             synchronized (modulii) {
@@ -145,7 +145,7 @@ public class ContentPairwiseSimilarityServices {
 
     private void processPairwiseSimilarities(final int loElement, Map<Integer, MutableDouble> elementSimilarities, final double threshold) {
         final double loModulii = similarityCalculator.computeModulii() ? modulii.get(loElement) : handler.elementCardinalities.get(loElement);
-        for (Entry<Integer, MutableDouble> similarity : elementSimilarities.entrySet()) {
+        for (final Entry<Integer, MutableDouble> similarity : elementSimilarities.entrySet()) {
             final int hiElement = similarity.getKey();
             final double hiModulii = similarityCalculator.computeModulii() ? modulii.get(hiElement) : handler.elementCardinalities.get(hiElement);
             final double score = similarity.getValue().val / (Math.sqrt(loModulii * hiModulii));

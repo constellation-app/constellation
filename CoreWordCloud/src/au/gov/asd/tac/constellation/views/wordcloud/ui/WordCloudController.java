@@ -153,7 +153,6 @@ public class WordCloudController {
         });
         waitingThread.setName("Word Cloud Worker");
         waitingThread.start();
-        
     }
 
     /**

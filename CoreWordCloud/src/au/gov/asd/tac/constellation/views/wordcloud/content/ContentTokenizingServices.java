@@ -59,7 +59,7 @@ public class ContentTokenizingServices {
      * tokenized and delegates portions thereof to various threads.
      */
     public static void computeNGrams(final TokenHandler handler, final NGramAnalysisParameters nGramParams, final ThreadAllocator allocator) {
-        ContentTokenizingServices cts = new ContentTokenizingServices();
+        final ContentTokenizingServices cts = new ContentTokenizingServices();
         final char[] nGramTrimCharactersWithAt = {'@', ','};
         final char[] nGramTrimCharacters = {','};
         final char[] trimCharacters = nGramParams.isRemoveDomain() ? nGramTrimCharactersWithAt : nGramTrimCharacters;
@@ -80,7 +80,7 @@ public class ContentTokenizingServices {
      * tokenized and delegates portions thereof to various threads.
      */
     public static void createDocumentClusteringTokenizingService(final TokenHandler handler, final ClusterDocumentsParameters clusterDocumentsParams, final ThreadAllocator allocator) {
-        ContentTokenizingServices cts = new ContentTokenizingServices();
+        final ContentTokenizingServices cts = new ContentTokenizingServices();
         switch (clusterDocumentsParams.getTokenizingMethod()) {
             case NWORDS:
                 cts.tokenizer = new NWordTokenizer(handler, clusterDocumentsParams.getDelimiter().getChar(), clusterDocumentsParams.getTokenLength());
@@ -107,7 +107,7 @@ public class ContentTokenizingServices {
      * tokenized and delegates portions thereof to various threads.
      */
     public static void createPhraseAnalysisTokenizingService(final TokenHandler handler, final PhrasiphyContentParameters phrasiphyContentParams, final ThreadAllocator allocator) {
-        ContentTokenizingServices cts = new ContentTokenizingServices();
+        final ContentTokenizingServices cts = new ContentTokenizingServices();
         final int phrase_length = phrasiphyContentParams.getPhraseLength();
         final int proximity = phrasiphyContentParams.getProximity();
 
@@ -122,17 +122,17 @@ public class ContentTokenizingServices {
         final String[] wordDelimiterSetNames = {"Word Delimiters"};
         final String[] phraseDelimiterSetNames = {"Phrase Delimiters"};
 
-        Set<String> excluded_words = new HashSet<>();
+        final Set<String> excluded_words = new HashSet<>();
         for (final String setName : excludedWordSetNames) {
             excluded_words.addAll(PhraseAnalysisModelLoader.excludedWords.get(setName));
         }
 
-        Set<Character> word_delimiters = new HashSet<>();
+        final Set<Character> word_delimiters = new HashSet<>();
         for (final String setName : wordDelimiterSetNames) {
             word_delimiters.addAll(PhraseAnalysisModelLoader.delimiters.get(setName));
         }
 
-        Set<Character> phrase_delimiters = new HashSet<>();
+        final Set<Character> phrase_delimiters = new HashSet<>();
         for (final String setName : phraseDelimiterSetNames) {
             phrase_delimiters.addAll(PhraseAnalysisModelLoader.delimiters.get(setName));
         }
@@ -156,8 +156,8 @@ public class ContentTokenizingServices {
      */
     public void createAndRunThreadsWithAdaptors(final ThreadAllocator allocator) {
         while (allocator.hasMore()) {
-            ThreadedTokenization tokenization = new ThreadedTokenization(allocator);
-            Thread t = new Thread(tokenization);
+            final ThreadedTokenization tokenization = new ThreadedTokenization(allocator);
+            final Thread t = new Thread(tokenization);
             t.start();
         }
         allocator.waitOnOthers();
@@ -203,9 +203,9 @@ public class ContentTokenizingServices {
         private void extractTokensFromElements() {
             // For each phrase in the work package 
             for (int i = 0; i < phraseAdaptor.getWorkload(); i++) {
-                String uncleanPhrase = phraseAdaptor.getNextPhrase();
+                final String uncleanPhrase = phraseAdaptor.getNextPhrase();
                 // Sanitize the attribute value and convert to a character array
-                char[] phrase = (uncleanPhrase == null) ? null : sanitizer.getSanitizedString(uncleanPhrase).toCharArray();
+                final char[] phrase = (uncleanPhrase == null) ? null : sanitizer.getSanitizedString(uncleanPhrase).toCharArray();
                 // If the sanitized phrase is not null, tokenize the phrase
                 if (phrase != null) {
                     tokenizer.tokenizePhrase(phrase, phraseAdaptor.getCurrentElementID());
@@ -232,7 +232,7 @@ public class ContentTokenizingServices {
          * Tokenize a phrase from a given element and record the data
          */
         public void tokenizePhrase(final char[] phrase, final int elementPos) {
-            TokenizerState state = getNewState(phrase);
+            final TokenizerState state = getNewState(phrase);
             while (state.findNextToken()) {
                 handler.registerToken(new String(state.getToken()), elementPos);
             }
@@ -512,7 +512,7 @@ public class ContentTokenizingServices {
             @Override
             protected char[] getToken() {
                 // The token has length equals to the length of the current n words in the state plus room for the delimiter between words.
-                char[] token = new char[wordsLength + numOfWords - 1];
+                final char[] token = new char[wordsLength + numOfWords - 1];
                 int currentPos = 0;
                 // Copy each current word in the state into the token
                 for (int i = 0; i < numOfWords; i++) {
@@ -747,7 +747,7 @@ public class ContentTokenizingServices {
                 }
 
                 // Find out the length of the phrase
-                char[] token;
+                final char[] token;
                 int length = leadWord.length;
                 for (int i = 0; i < pgs.permutation.length; i++) {
                     length += words[pgs.permutation[i]].length + (delimitersBeforeWord[pgs.permutation[i]] ? 1 : 0);
@@ -762,7 +762,7 @@ public class ContentTokenizingServices {
                     if (delimitersBeforeWord[pgs.permutation[i]]) {
                         token[currentPos++] = delimiter;
                     }
-                    char[] word = words[pgs.permutation[i]];
+                    final char[] word = words[pgs.permutation[i]];
                     currentSingleWords.add(new String(word));
                     System.arraycopy(word, 0, token, currentPos, word.length);
                     currentPos += word.length;
@@ -802,14 +802,14 @@ public class ContentTokenizingServices {
                     }
 
                     // put back the candidate object and in its place take the next highest 
-                    int putBack = permutation[currentIndex];
+                    final int putBack = permutation[currentIndex];
                     permutation[currentIndex] = availableObjects.nextSetBit(putBack);
                     availableObjects.set(putBack);
                     availableObjects.clear(permutation[currentIndex]);
                     currentIndex++;
                     // fill up the rest of the available positions
                     while (currentIndex < k) {
-                        int nextAvailable = availableObjects.nextSetBit(0);
+                        final int nextAvailable = availableObjects.nextSetBit(0);
                         permutation[currentIndex++] = nextAvailable;
                         availableObjects.clear(nextAvailable);
                     }
@@ -819,7 +819,7 @@ public class ContentTokenizingServices {
         }
     }
 
-    private static abstract class ContentSanitizer {
+    private abstract static class ContentSanitizer {
 
         private ContentSanitizer innerSanitizer = null;
 
@@ -870,7 +870,7 @@ public class ContentTokenizingServices {
             // Find the lowest trim point based on all trimming characters
             int trimPoint = str.length();
             for (int i = 0; i < toTrim.length; i++) {
-                int index = str.indexOf(toTrim[i]);
+                final int index = str.indexOf(toTrim[i]);
                 if (index != -1 && index < trimPoint) {
                     trimPoint = index;
                 }
