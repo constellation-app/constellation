@@ -34,7 +34,7 @@ public class DefaultConversationBackgroundProvider implements ConversationBackgr
     @Override
     public void updateMessageBackgrounds(GraphReadMethods graph, List<ConversationMessage> messages) {
 
-        String[] colors = new String[]{"transparent", JavafxStyleManager.isDarkTheme() ? "rgb(60, 60, 60)" : "rgb(200, 200, 200)"};
+        final String[] colors = new String[]{"transparent", JavafxStyleManager.isDarkTheme() ? "rgb(60, 60, 60)" : "rgb(200, 200, 200)"};
         int currentColor = 1;
         int currentDay = -1;
 

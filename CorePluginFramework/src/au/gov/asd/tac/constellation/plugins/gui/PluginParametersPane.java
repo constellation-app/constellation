@@ -747,11 +747,11 @@ public final class PluginParametersPane extends GridPane {
             final Label description = new Label(parameter.getDescription());
             label.setMinWidth(145);
             label.setWrapText(true);
-            label.setStyle("-fx-font-weight: bold"); // TODO: temporary fix until the main and dynamic style sheets are loaded
-            description.setId("smallInfoText"); // TODO: this is not being used because the style sheets are not loaded
-            description.getStyleClass().add("description-label"); // TODO: this is not being used because the style sheets are not loaded
+            label.setStyle("-fx-font-weight: bold");
+            description.setId("smallInfoText"); 
+            description.getStyleClass().add("description-label");
             description.setWrapText(true);
-            description.setStyle("-fx-font-size: smaller"); // TODO: temporary fix until the main and dynamic style sheets are loaded
+            description.setStyle("-fx-font-size: smaller"); 
             final LabelDescriptionBox labels = new LabelDescriptionBox(label, description);
             labels.setVisible(parameter.isVisible());
             labels.setManaged(parameter.isVisible());

@@ -123,7 +123,7 @@ public final class QualityControlViewPane extends BorderPane {
 
     private static final String DISABLE = "Disable";
     private static final String ENABLE = "Enable";
-    private static String enableTextColor = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : "-fx-text-fill: black; ";
+    private static final String enableTextColor = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : "-fx-text-fill: black; ";
 
     /*firstClick is a workaround for currently a existing bug within ControlsFX object, which causes two clicks 
     to be registered upon the user's first click within the view pane when calling value.getClickCount()*/
@@ -393,7 +393,7 @@ public final class QualityControlViewPane extends BorderPane {
     public static String qualityStyle(final QualityCategory category, final float alpha) {
         final int intensity;
         final String style;
-        String textColor = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : "-fx-text-fill: black;";
+        final String textColor = JavafxStyleManager.isDarkTheme() ? "-fx-text-fill: white; " : "-fx-text-fill: black;";
 
         switch (category) {
             case MINOR:
