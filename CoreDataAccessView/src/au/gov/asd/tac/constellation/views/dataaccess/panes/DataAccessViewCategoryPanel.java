@@ -60,12 +60,12 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         visibleListModel = new DefaultListModel<>();
         hiddenListModel = new DefaultListModel<>();
 
-        final String davHiddenString = LookupPluginsTask.DAV_CATS;
-        final String davVisibleString = LookupPluginsTask.VISIBLE_CATS;
-        
+        final String davHiddenString = LookupPluginsTask.HIDDEN_CATEGORIES;
+        final String davVisibleString = LookupPluginsTask.VISIBLE_CATEGORIES;
+
         if (StringUtils.isBlank(davVisibleString) && StringUtils.isBlank(davHiddenString)) {
             visibleResultList = new ArrayList<>();
-            
+
             for (final String pluginType : DataAccessPluginType.getTypes()) {
                 if (DAV_CATEGORIES.indexOf(pluginType) != -1) {
                     visibleResultList.add(pluginType);
@@ -74,7 +74,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         } else if (StringUtils.isBlank(davHiddenString)) {
             visibleResultList = DAV_CATEGORIES;
         } else {
-            final List<String> davHiddenList = Arrays.asList(LookupPluginsTask.addCategoryToList(davHiddenString));
+            final List<String> davHiddenList = Arrays.asList((davHiddenString.substring(1, davHiddenString.length() - 1)).split(SeparatorConstants.COMMA));
             visibleResultList = ListUtils.subtract(DAV_CATEGORIES, davHiddenList);
         }
     }
@@ -285,7 +285,6 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-
     private void buttonRightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRightActionPerformed
 
         if (visibleList.getSelectedIndex() == -1) {
@@ -404,4 +403,3 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private javax.swing.JList<String> visibleList;
     // End of variables declaration//GEN-END:variables
 }
-

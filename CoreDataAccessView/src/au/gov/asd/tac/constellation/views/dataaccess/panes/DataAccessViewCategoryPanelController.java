@@ -66,8 +66,8 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
             final DataAccessViewCategoryPanel panel = getPanel();
             if (!panelRefreshed) {
                 panel.setVisibleCategory(panel.getVisibleResultList().toString());
-                panel.setVisibleCategory(prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT));
-                panel.setHiddenCategory(prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT));
+                panel.setVisibleCategory(prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV));
+                panel.setHiddenCategory(prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV));
             }
         });
     }
@@ -83,8 +83,8 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
                 final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
                 final DataAccessViewCategoryPanel panel = getPanel();
                 visibleNow = panel.getVisibleCategory();
-                prefs.put(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, panel.getHiddenCategory().toString().replace("[,", "["));
-                prefs.put(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, panel.getVisibleCategory().toString().replace("[,", "["));
+                prefs.put(DataAccessViewPreferenceKeys.HIDDEN_DAV, panel.getHiddenCategory().toString().replace("[,", "["));
+                prefs.put(DataAccessViewPreferenceKeys.VISIBLE_DAV, panel.getVisibleCategory().toString().replace("[,", "["));
                 orderChanged = false;
                 reorderButtonPressed = false;
                 moveButtonPressed = false;
@@ -98,8 +98,8 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
         final DataAccessViewCategoryPanel panel = getPanel();
         final Preferences prefs = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
 
-        final String visibleItems = prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
-        final String hiddenItems = prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW, DataAccessViewPreferenceKeys.HIDDEN_DA_VIEW_DEFAULT);
+        final String visibleItems = prefs.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+        final String hiddenItems = prefs.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
 
         if (StringUtils.isBlank(visibleItems.replace("[", "").replace("]", "")) && StringUtils.isBlank(hiddenItems.replace("[", "").replace("]", ""))) {
             panel.setVisibleCategory(visibleOnFirstLoad.toString());
@@ -196,6 +196,4 @@ public final class DataAccessViewCategoryPanelController extends OptionsPanelCon
     public void setMoveButtonPressed(final boolean moveButtonPressed) {
         this.moveButtonPressed = moveButtonPressed;
     }
-
-
 }

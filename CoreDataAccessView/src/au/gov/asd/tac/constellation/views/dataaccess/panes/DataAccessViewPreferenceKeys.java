@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 /**
+ * Data Access View preference keys.
  *
  * @author mimosa
  */
@@ -23,9 +24,9 @@ public class DataAccessViewPreferenceKeys {
 
     private DataAccessViewPreferenceKeys() {
     }
-    public static final String VISIBLE_DA_VIEW = "dataaccessview.visible";
-    public static final String HIDDEN_DA_VIEW = "dataaccessview.hidden";
 
-    public static final String HIDDEN_DA_VIEW_DEFAULT = "";
+    public static final String VISIBLE_DAV = "dataaccessview.visible";
+    public static final String HIDDEN_DAV = "dataaccessview.hidden";
 
+    public static final String DEFAULT_DAV = "";
 }
