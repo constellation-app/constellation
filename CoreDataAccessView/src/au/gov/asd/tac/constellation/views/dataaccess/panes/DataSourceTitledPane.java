@@ -405,4 +405,10 @@ public class DataSourceTitledPane extends TitledPane implements PluginParameters
 
         return !paramNames.isEmpty();
     }
+
+    @Override
+    public void notifyRequiredParameterChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
+        // Must be overriden to implement PluginParametersPaneListener
+    }
+
 }

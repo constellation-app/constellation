@@ -48,6 +48,8 @@ import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -72,6 +74,7 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
+import org.apache.commons.lang3.StringUtils;
 import org.openide.awt.StatusDisplayer;
 import org.openide.util.HelpCtx;
 
@@ -786,6 +789,8 @@ public final class PluginParametersPane extends GridPane {
         }
 
         public void linkParameterWidgetToTop(final PluginParameter<?> parameter) {
+            updateTop(parameter);
+            
             parameter.addListener((parameter1, change) -> {
                 switch (change) {
                     case ERROR:
@@ -802,9 +807,21 @@ public final class PluginParametersPane extends GridPane {
                     default:
                         break;
                 }
+                updateTop(parameter);
             });
         }
-
+        
+        private void updateTop(PluginParameter<?> parameter){
+            parameter.getStringValue();
+            if (parameter.isRequired()){
+                if (StringUtils.isBlank(parameter.getStringValue())) {
+                    top.notifyRequiredParameterChange(parameter, false);  
+                } else {
+                    top.notifyRequiredParameterChange(parameter, true);
+                }
+            }
+        }
+            
         @Override
         @SuppressWarnings("unchecked") //All casts in this method are checked prior to casting.
         public final Pane buildParameterPane(final PluginParameter<?> parameter) {

@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.views.dataaccess.panes;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.views.dataaccess.CoreGlobalParameters;
 import au.gov.asd.tac.constellation.views.dataaccess.DataAccessViewTopComponent;
 import au.gov.asd.tac.constellation.views.dataaccess.api.DataAccessPaneState;
@@ -316,6 +317,11 @@ public class DataAccessPane extends AnchorPane implements PluginParametersPaneLi
 
     @Override
     public void validityChanged(boolean enabled) {
+        // Must be overriden to implement PluginParametersPaneListener
+    }
+    
+    @Override
+    public void notifyRequiredParameterChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
         // Must be overriden to implement PluginParametersPaneListener
     }
 
