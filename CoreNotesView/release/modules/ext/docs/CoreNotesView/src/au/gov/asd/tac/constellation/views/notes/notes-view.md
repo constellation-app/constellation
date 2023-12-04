@@ -95,14 +95,14 @@ window that allows you to enable and disable Markdown. Markdown is a markup lang
 for creating formatted text. As of now the notes view supports Markdown features like:
 
     1. Headings
-        Put the 1-6 \# characters and a space before text to create a heading.
-        The higher the number os \#s the smaller the heading.
+        Put the 1-6 # characters and a space before text to create a heading.
+        The higher the number os #s the smaller the heading.
     2. Italics
-        You can write italic text by surrounding text with (\_) or (\*). For example \_Italic text\_ or \*Italic text\*.
+        You can write italic text by surrounding text with (_) or (*). For example _Italic text_ or *Italic text*.
     3. Bold
-        You can have bold text by surrounding text with (\__) or (\**). For example \*\*Bold text\*\* or \_\_Bold text\_\_.
+        You can have bold text by surrounding text with (__) or (**). For example **Bold text** or __Bold text__.
     4. Strikethrough
-        You can have Strikethrough text by surrounding text with (\~~). For example \~~Strikethrough text\~~.
+        You can have Strikethrough text by surrounding text with (~~). For example ~~Strikethrough text~~.
     5. Lists
         You can have ordered lists. Lists must start with "1." and space before the item text then every consequent list item must have a number
         and dot before it to be included in the list. Sublists can also be made, simply make a list item and then in the line under it press tab
