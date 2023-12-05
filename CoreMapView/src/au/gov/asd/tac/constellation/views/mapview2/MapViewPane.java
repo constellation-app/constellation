@@ -495,6 +495,8 @@ public class MapViewPane extends BorderPane {
         anchorPane.prefWidthProperty().bind(this.widthProperty());
         viewPortRectangle.setWidth(MapView.MAP_VIEWPORT_WIDTH);
         viewPortRectangle.setHeight(MapView.MAP_VIEWPORT_HEIGHT);
+        viewPortRectangle.setStroke(Color.RED);
+        viewPortRectangle.setStrokeWidth(10);
 
         viewPortRectangle.setFill(Color.TRANSPARENT);
         viewPortRectangle.setStroke(Color.TRANSPARENT);

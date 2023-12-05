@@ -21,6 +21,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
@@ -33,7 +34,6 @@ import org.apache.commons.lang3.StringUtils;
 public class PointMarker extends AbstractMarker {
 
     // The actual marker path raw string
-    //private String path = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
     private String path = "l-75-200 l150 0 Z";
     private double lattitude;
     private double longitude;
@@ -64,7 +64,6 @@ public class PointMarker extends AbstractMarker {
         this.lattitude = lattitude;
         this.longitude = longitude;
         this.scale = scale;
-        this.scale = 1.0;
         this.attributeColour = StringUtils.isBlank(attrColour) ? defaultColour : attrColour;
 
         markerPath.setScaleX(scale);

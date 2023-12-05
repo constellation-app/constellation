@@ -36,8 +36,8 @@ import java.util.Map;
  */
 public class LocationPathsLayer extends AbstractPathsLayer {
 
-    static final double LINE_MARKER_X_OFFSET = 1;
-    static final double LINE_MARKER_Y_OFFSET = 149;
+    static final double LINE_MARKER_X_OFFSET = 0;
+    static final double LINE_MARKER_Y_OFFSET = 0;
 
     public LocationPathsLayer(final MapView parent, final int id, final Map<String, AbstractMarker> queriedMarkers) {
         super(parent, id, queriedMarkers);

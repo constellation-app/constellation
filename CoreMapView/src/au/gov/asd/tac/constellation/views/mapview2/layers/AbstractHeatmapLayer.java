@@ -32,8 +32,8 @@ public abstract class AbstractHeatmapLayer extends AbstractMapLayer {
     // Group to hold all heatmap graphical elements
     protected Group layerGroup;
 
-    private static final double X_OFFSET = 96;
-    private static final double Y_OFFSET = 92;
+    private static final double X_OFFSET = 0;
+    private static final double Y_OFFSET = 0;
 
     protected AbstractHeatmapLayer(final MapView parent, final int id) {
         super(parent, id);
