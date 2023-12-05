@@ -288,19 +288,14 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             throw new IllegalStateException("Plugins should not be run on the EDT!");
         }
 
-        boolean result = false;
-
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(promptName, parameters);
         if (!parameters.hasMultiLineStringParameter()) {
             dialog.showAndWait();
         } else {
             dialog.showAndWaitNoFocus();
         }
-        if (PluginParametersSwingDialog.isAccepted((dialog.getResult()))) {
-            result = true;
-        }
 
-        return result;
+        return dialog.isAccepted();
     }
 
     protected class Timer extends Thread {
