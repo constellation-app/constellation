@@ -19,7 +19,6 @@ import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphConstants;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.GraphReadMethods;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
@@ -28,8 +27,6 @@ import au.gov.asd.tac.constellation.plugins.PluginInfo;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
-import au.gov.asd.tac.constellation.plugins.reporting.GraphReportListener;
-import au.gov.asd.tac.constellation.plugins.reporting.PluginReport;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
@@ -52,12 +49,9 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.openide.awt.ActionID;
 import org.openide.awt.ActionReference;
 import org.openide.awt.ActionReferences;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.windows.TopComponent;
 
@@ -295,8 +289,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @NbBundle.Messages("ExtractCoordsFromGraphPlugin=Extracts Coordinates from Graph")
     protected static class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
-        private static final double POINT_MARKER_X_OFFSET = 95;
-        private static final double POINT_MARKER_Y_OFFSET = -96.5;
+        private static final double POINT_MARKER_X_OFFSET = 0;
+        private static final double POINT_MARKER_Y_OFFSET = 0;
 
         private MapViewTopComponent mapViewTopComponent;
 
@@ -463,7 +457,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey) && !processingGeoShape) {
 
                                 // Create a new point marker and add it to the map
-                                final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour); //244
+                                final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 0.05, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour);
                                 mapViewTopComponent.addMarker(coordinateKey, p);
 
                                 // Set colours and labels if they are available

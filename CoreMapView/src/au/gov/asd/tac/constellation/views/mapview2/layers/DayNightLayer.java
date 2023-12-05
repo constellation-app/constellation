@@ -39,7 +39,6 @@ public class DayNightLayer extends AbstractMapLayer {
 
     private static final int EARTH_RADIUS_M = 6_371_008;
 
-    private static final double SHADOW_LOCATION_Y_OFFSET = 149;
     private static final double SUN_RADIUS = 5;
 
 
@@ -147,7 +146,7 @@ public class DayNightLayer extends AbstractMapLayer {
         locations.forEach(location -> {
 
             location.setX(MarkerUtilities.longToX(location.getX(), MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG));
-            location.setY(MarkerUtilities.latToY(location.getY(), MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - SHADOW_LOCATION_Y_OFFSET);
+            location.setY(MarkerUtilities.latToY(location.getY(), MapView.MAP_WIDTH, MapView.MAP_HEIGHT));
         });
     }
 
@@ -194,7 +193,7 @@ public class DayNightLayer extends AbstractMapLayer {
 
         // Calculate x and y from lat and lon
         final double sunX = MarkerUtilities.longToX(sunLocation.getLon(), MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        final double sunY = MarkerUtilities.latToY(sunLocation.getLat(), MapView.MAP_WIDTH, MapView.MAP_HEIGHT) - SHADOW_LOCATION_Y_OFFSET;
+        final double sunY = MarkerUtilities.latToY(sunLocation.getLat(), MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
 
         sun.setTranslateX(sunX);
         sun.setTranslateY(sunY);

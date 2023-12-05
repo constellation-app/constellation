@@ -33,6 +33,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 
 /**
+ * Overview overlay - NOT FULLY IMPLEMENTED
  *
  * @author altair1673
  */
@@ -46,13 +47,13 @@ public class OverviewOverlay extends AbstractOverlay {
     public OverviewOverlay(final double positionX, final double positionY, final List<SVGPath> countrySVGPaths) {
         super(positionX, positionY);
 
-        overlayPane.setMinWidth(MapView.MAP_WIDTH * MAP_SCALE);
-        overlayPane.setMaxWidth(MapView.MAP_WIDTH * MAP_SCALE);
-        overlayPane.setMinHeight(MapView.MAP_HEIGHT * MAP_SCALE);
-        overlayPane.setMaxHeight(MapView.MAP_HEIGHT * MAP_SCALE);
+        overlayPane.setMinWidth(MapView.MAP_VIEWPORT_WIDTH * MAP_SCALE);
+        overlayPane.setMaxWidth(MapView.MAP_VIEWPORT_WIDTH * MAP_SCALE);
+        overlayPane.setMinHeight(MapView.MAP_VIEWPORT_HEIGHT * MAP_SCALE);
+        overlayPane.setMaxHeight(MapView.MAP_VIEWPORT_HEIGHT * MAP_SCALE);
 
         panningRect.setWidth(1600 * MAP_SCALE);
-        panningRect.setHeight(MapView.MAP_HEIGHT * MAP_SCALE);
+        panningRect.setHeight(MapView.MAP_VIEWPORT_HEIGHT * MAP_SCALE);
         panningRect.setFill(Color.TRANSPARENT);
         panningRect.setStroke(Color.RED);
         panningRect.setStrokeWidth(3);

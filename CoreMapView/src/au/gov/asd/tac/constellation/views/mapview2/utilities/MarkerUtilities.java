@@ -43,10 +43,6 @@ public class MarkerUtilities {
         return (longitude - minLong) * (mapWidth / lonDelta);
     }
 
-    private static double latToY(final double lat) {
-        return Math.log(Math.tan((lat / 360 * Math.PI) + (Math.PI / 4)));
-    }
-
     /**
      * Convert latitude to y coordinate
      *
