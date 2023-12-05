@@ -136,7 +136,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
     }
     
     /**
-     * Determine if the "All Files" selection filter should be enables for the given parameter. 
+     * Determine if the "All Files" selection filter should be enabled for the given parameter. 
      * This will be active by default when the user is presented with a file selection window. 
      *
      * @param parameter A {@link PluginParameter} of this type.
@@ -191,7 +191,7 @@ public class FileParameterType extends PluginParameterType<FileParameterValue> {
         
         private final String text;
         
-        FileParameterKind(final String text){
+        private FileParameterKind(final String text){
             this.text = text;
         }
         

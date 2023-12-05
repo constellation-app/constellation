@@ -104,7 +104,7 @@ public class FileInputPane extends HBox {
                     break;
                 case OPEN_MULTIPLE:
                 case OPEN_MULTIPLE_OBSCURED:
-                    dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open Multiple")).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
+                    dialogFuture = FileChooser.openMultiDialog(getFileChooser(parameter, "Open File(s)")).thenAccept(optionalFile -> optionalFile.ifPresent(openFiles -> {
                         if (openFiles != null) {
                             files.addAll(openFiles);
                         }
@@ -114,10 +114,8 @@ public class FileInputPane extends HBox {
                 case SAVE_OBSCURED:
                     dialogFuture = FileChooser.openSaveDialog(getFileChooser(parameter, "Save")).thenAccept(optionalFile -> optionalFile.ifPresent(saveFile -> {
                         if (saveFile != null) {
-                            
                             //Save files may have been typed by the user and an extension may not have been specified.
                             final String fnam = saveFile.getAbsolutePath();
-
                             final String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
                             if (!fnam.toLowerCase().endsWith(expectedExtension)) {
                                 saveFile = new File(fnam + expectedExtension);
@@ -137,10 +135,10 @@ public class FileInputPane extends HBox {
             if (dialogFuture != null){
                 try {
                     dialogFuture.get();
-                } catch (InterruptedException ex){
+                } catch (final InterruptedException ex){
                     Thread.currentThread().interrupt();
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                } catch (ExecutionException ex) {
+                } catch (final ExecutionException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
             }

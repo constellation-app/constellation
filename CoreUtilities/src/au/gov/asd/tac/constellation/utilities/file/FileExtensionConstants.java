@@ -19,7 +19,7 @@ package au.gov.asd.tac.constellation.utilities.file;
  *
  * @author aldebaran30701
  */
-public class FileExtensionConstants{
+public class FileExtensionConstants {
 
     private FileExtensionConstants() {
         throw new IllegalStateException("Utility class");
@@ -35,7 +35,6 @@ public class FileExtensionConstants{
     public static final String CLUSTER = ".clu";
     public static final String RANK = ".rank";
     public static final String FLOW = ".flow";
-    public static final String GRAPHML = ".graphml";
 
     // Value file extensions
     public static final String TAB_SEPARATED_VALUE = ".tsv";
@@ -58,7 +57,6 @@ public class FileExtensionConstants{
     public static final String CLASS = ".class";
     public static final String JAVASCRIPT = ".js";
     public static final String JSON = ".json";
-    
     public static final String MARKDOWN = ".md";
     public static final String HTML = ".html";
     public static final String PYTHON = ".py";
@@ -66,16 +64,20 @@ public class FileExtensionConstants{
     public static final String BINARY = ".bin";
     public static final String BACKUP = ".bak";
     
-    //Geographical file extensiona
+    //Geographical file extensions
     public static final String GEO_PACKAGE = ".gpkg";
     public static final String KML = ".kml";
     public static final String SHAPE = ".shp";
-    public static final String GML = ".gml";
     
+    //Graph file extensions
+    public static final String GML = ".gml";
+    public static final String PAJEK = ".net";
+    public static final String GRAPHML = ".graphml";
+        
     // Image extensions
     public static final String JPG = ".jpg";
     public static final String PNG = ".png";
     public static final String GIF = ".gif";
     public static final String SVG = ".svg"; 
-    public static final String PAJEK = ".net";
+    
 }
