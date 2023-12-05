@@ -49,8 +49,8 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         double yTotal = 0;
         double coordinateCount = 0;
         for (int j = 0; j + 1 < longLatValues.length; j = j + 2) {
-            geoShape.getPoints().addAll(MarkerUtilities.longToX(Double.parseDouble(longLatValues[j]), MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG) - 0.0625,
-                    MarkerUtilities.latToY(Double.parseDouble(longLatValues[j + 1]), MapView.MAP_WIDTH, MapView.MAP_HEIGHT) + geoShapeYOffset);
+            geoShape.getPoints().addAll(MarkerUtilities.longToX(Double.parseDouble(longLatValues[j]), MapView.MIN_LONG, MapView.MAP_VIEWPORT_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG) - 0.0625,
+                    MarkerUtilities.latToY(Double.parseDouble(longLatValues[j + 1]), MapView.MAP_VIEWPORT_WIDTH, MapView.MAP_VIEWPORT_HEIGHT) + geoShapeYOffset);
             xTotal += geoShape.getPoints().get(geoShape.getPoints().size() - 2);
             yTotal += geoShape.getPoints().get(geoShape.getPoints().size() - 1);
             ++coordinateCount;

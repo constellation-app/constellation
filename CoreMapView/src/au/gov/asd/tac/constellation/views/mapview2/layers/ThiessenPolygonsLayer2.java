@@ -85,8 +85,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             Rectangle r = new Rectangle();
             r.setX(0);
             r.setY(0);
-            r.setWidth(MapView.MAP_WIDTH);
-            r.setHeight(MapView.MAP_HEIGHT);
+            r.setWidth(MapView.MAP_VIEWPORT_WIDTH);
+            r.setHeight(MapView.MAP_VIEWPORT_HEIGHT);
             r.setFill(palette[0].getJavaFXColor());
             r.setStroke(palette[0].getJavaFXColor());
             r.setOpacity(0.5);

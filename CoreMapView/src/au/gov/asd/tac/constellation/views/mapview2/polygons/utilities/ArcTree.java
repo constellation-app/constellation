@@ -66,20 +66,20 @@ public class ArcTree {
 
     private static final Logger LOGGER = Logger.getLogger(ArcTree.class.getName());
 
-    private final Vec3 rootFocus = new Vec3(MapView.MAP_WIDTH / 2, -MapView.MAP_HEIGHT - 200);
+    private final Vec3 rootFocus = new Vec3(MapView.MAP_VIEWPORT_WIDTH / 2, -MapView.MAP_VIEWPORT_HEIGHT - 200);
     private final Vec3 edgeCaseFocus;
 
     // The boundaries of the map used to cut shapes that go over the edge
     private final HalfEdge leftBorder = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(0, 1));
-    private final HalfEdge rightBorder = new HalfEdge(null, null, new Vec3(MapView.MAP_WIDTH, 0), new Vec3(0, 0.95));
+    private final HalfEdge rightBorder = new HalfEdge(null, null, new Vec3(MapView.MAP_VIEWPORT_WIDTH, 0), new Vec3(0, 0.95));
     private final HalfEdge topBorder = new HalfEdge(null, null, new Vec3(0, 0), new Vec3(1, 0));
-    private final HalfEdge bottomBorder = new HalfEdge(null, null, new Vec3(0, MapView.MAP_HEIGHT), new Vec3(1, 0));
+    private final HalfEdge bottomBorder = new HalfEdge(null, null, new Vec3(0, MapView.MAP_VIEWPORT_HEIGHT), new Vec3(1, 0));
 
     // The corners of the map that are manually assigned to shapes since they are eisting and do not form naturally
     private final Vec3 topLeft = new Vec3(0, 0);
-    private final Vec3 topRight = new Vec3(MapView.MAP_WIDTH, 0);
-    private final Vec3 bottomLeft = new Vec3(0, MapView.MAP_HEIGHT);
-    private final Vec3 bottomRight = new Vec3(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+    private final Vec3 topRight = new Vec3(MapView.MAP_VIEWPORT_WIDTH, 0);
+    private final Vec3 bottomLeft = new Vec3(0, MapView.MAP_VIEWPORT_HEIGHT);
+    private final Vec3 bottomRight = new Vec3(MapView.MAP_VIEWPORT_WIDTH, MapView.MAP_VIEWPORT_HEIGHT);
 
     // Map of corner coords with an array containing there closest intersection points
     private final Map<Vec3, List<Pair<Double, Vec3>>> cornerMap = new HashMap<>();
@@ -641,7 +641,7 @@ public class ArcTree {
         final Vec3 rightIntersection = getEdgeArcIntersection(rightHalfEdge, arc, directrix);
 
         final double leftX = leftIntersection == null ? 0 : leftIntersection.getX();
-        final double rightX = rightIntersection == null ? MapView.MAP_WIDTH : rightIntersection.getX();
+        final double rightX = rightIntersection == null ? MapView.MAP_VIEWPORT_WIDTH : rightIntersection.getX();
 
 
         if (x > rightX) {
@@ -791,7 +791,7 @@ public class ArcTree {
             boundaryIntersectionPoints.add(topLineIntersection);
         }
         if (bottomLineInteraction != null) {
-            bottomLineInteraction.setY(MapView.MAP_HEIGHT);
+            bottomLineInteraction.setY(MapView.MAP_VIEWPORT_HEIGHT);
             bottomLineInteraction.setZ(Vec3.getDistance(edge.getStart(), bottomLineInteraction));
             boundaryIntersectionPoints.add(bottomLineInteraction);
         }
@@ -801,7 +801,7 @@ public class ArcTree {
             boundaryIntersectionPoints.add(leftLineInteraction);
         }
         if (rightLineInteraction != null) {
-            rightLineInteraction.setX(MapView.MAP_WIDTH);
+            rightLineInteraction.setX(MapView.MAP_VIEWPORT_WIDTH);
             rightLineInteraction.setZ(Vec3.getDistance(edge.getStart(), rightLineInteraction));
             boundaryIntersectionPoints.add(rightLineInteraction);
         }
@@ -828,8 +828,8 @@ public class ArcTree {
                     final double distanceToTopLeft = Vec3.getDistance(topLeft, topLineIntersection);
                     final double distanceToTopRight = Vec3.getDistance(topRight, topLineIntersection);
 
-                    final double distanceToBottomLeft = distanceToTopLeft + MapView.MAP_HEIGHT;
-                    final double distanceToBottomRight = distanceToTopRight + MapView.MAP_HEIGHT;
+                    final double distanceToBottomLeft = distanceToTopLeft + MapView.MAP_VIEWPORT_HEIGHT;
+                    final double distanceToBottomRight = distanceToTopRight + MapView.MAP_VIEWPORT_HEIGHT;
 
                     setRelatedPointToCorner(edge, distanceToTopLeft, topLeft, 1);
                     setRelatedPointToCorner(edge, distanceToTopRight, topRight, 1);
@@ -839,8 +839,8 @@ public class ArcTree {
                     final double distanceToTopLeft = Vec3.getDistance(topLeft, leftLineInteraction);
                     final double distanceToBottomLeft = Vec3.getDistance(bottomLeft, leftLineInteraction);
 
-                    final double distanceToTopRight = distanceToTopLeft + MapView.MAP_WIDTH;
-                    final double distanceToBottomRight = distanceToBottomLeft + MapView.MAP_WIDTH;
+                    final double distanceToTopRight = distanceToTopLeft + MapView.MAP_VIEWPORT_WIDTH;
+                    final double distanceToBottomRight = distanceToBottomLeft + MapView.MAP_VIEWPORT_WIDTH;
 
                     setRelatedPointToCorner(edge, distanceToTopLeft, topLeft, 0);
                     setRelatedPointToCorner(edge, distanceToBottomLeft, bottomLeft, 0);
@@ -850,8 +850,8 @@ public class ArcTree {
                     final double distanceToBottomRight = Vec3.getDistance(bottomRight, bottomLineInteraction);
                     final double distanceToBottomLeft = Vec3.getDistance(bottomLeft, bottomLineInteraction);
 
-                    final double distanceToTopLeft = distanceToBottomLeft + MapView.MAP_HEIGHT;
-                    final double distanceToTopRight = distanceToBottomLeft + MapView.MAP_HEIGHT;
+                    final double distanceToTopLeft = distanceToBottomLeft + MapView.MAP_VIEWPORT_HEIGHT;
+                    final double distanceToTopRight = distanceToBottomLeft + MapView.MAP_VIEWPORT_HEIGHT;
 
                     setRelatedPointToCorner(edge, distanceToBottomLeft, bottomLeft, 1);
                     setRelatedPointToCorner(edge, distanceToBottomRight, bottomRight, 1);
@@ -861,8 +861,8 @@ public class ArcTree {
                     final double distanceToTopRight = Vec3.getDistance(topRight, rightLineInteraction);
                     final double distanceToBottomRight = Vec3.getDistance(bottomRight, rightLineInteraction);
 
-                    final double distanceToTopLeft = distanceToTopRight + MapView.MAP_WIDTH;
-                    final double distanceToBottomLeft = distanceToBottomRight + MapView.MAP_WIDTH;
+                    final double distanceToTopLeft = distanceToTopRight + MapView.MAP_VIEWPORT_WIDTH;
+                    final double distanceToBottomLeft = distanceToBottomRight + MapView.MAP_VIEWPORT_WIDTH;
 
                     setRelatedPointToCorner(edge, distanceToTopRight, topRight, 0);
                     setRelatedPointToCorner(edge, distanceToBottomRight, bottomRight, 0);
@@ -1188,7 +1188,7 @@ public class ArcTree {
      * @return
      */
     private boolean isOutsideMap(final Vec3 point) {
-        return point.getX() < 0 || point.getX() > MapView.MAP_WIDTH || point.getY() < 0 || point.getY() > MapView.MAP_HEIGHT;
+        return point.getX() < 0 || point.getX() > MapView.MAP_VIEWPORT_WIDTH || point.getY() < 0 || point.getY() > MapView.MAP_VIEWPORT_HEIGHT;
     }
 
     /**
