@@ -47,7 +47,7 @@ public class PluginParametersSwingDialog {
     
     private static final Logger LOGGER = Logger.getLogger(PluginParametersSwingDialog.class.getName());
     
-    private static final String[] acceptanceButtonLabels = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename"};
+    public static final String[] acceptanceButtonLabels = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename"};
     public static final String CANCEL = "Cancel";
     public static final String OK = "OK";
 
