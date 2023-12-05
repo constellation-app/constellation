@@ -118,7 +118,7 @@ public class FileInputPane extends HBox {
                             //Save files may have been typed by the user and an extension may not have been specified.
                             final String fnam = saveFile.getAbsolutePath();
 
-                            String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
+                            final String expectedExtension = FileParameterType.getFileFilters(parameter).getExtensions().get(0);
                             if (!fnam.toLowerCase().endsWith(expectedExtension)) {
                                 saveFile = new File(fnam + expectedExtension);
                             }
@@ -137,14 +137,16 @@ public class FileInputPane extends HBox {
             if (dialogFuture != null){
                 try {
                     dialogFuture.get();
-                } catch (InterruptedException | ExecutionException ex) {
+                } catch (InterruptedException ex){
+                    Thread.currentThread().interrupt();
+                    LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                } catch (ExecutionException ex) {
                     LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
                 }
             }
             if (!files.isEmpty()) { 
                 parameter.setObjectValue(files);
             }
-
         });
 
         if (suggestedHeight > 1) {
