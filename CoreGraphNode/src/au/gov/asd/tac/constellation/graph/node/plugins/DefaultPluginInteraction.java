@@ -288,8 +288,6 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
             throw new IllegalStateException("Plugins should not be run on the EDT!");
         }
 
-        boolean result = false;
-
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(promptName, parameters, helpID);
 
         if (!parameters.hasMultiLineStringParameter()) {
