@@ -45,18 +45,19 @@ public class ImportExportPluginsHelpProvider extends HelpPageProvider {
         final String importExportModulePath = ".." + sep + "ext" + sep + "docs" + sep + "CoreImportExportPlugins" + sep + "src" + sep + "au" + sep + "gov"
                 + sep + "asd" + sep + "tac" + sep + CODEBASE_NAME + sep + "plugins" + sep + "importexport" + sep;
 
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane", importExportModulePath + "import-from-file.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.export", importExportModulePath + "export-from-constellation.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToGeoJsonPlugin", importExportModulePath + "export-from-constellation.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToGeoJsonPlugin", importExportModulePath + "export-from-constellation.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToImagePlugin", importExportModulePath + "export-from-constellation.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToJsonPlugin", importExportModulePath + "export-from-constellation.md");
-        
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToGeoPackagePlugin", importExportModulePath + "export-from-constellation.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToShapefilePlugin", importExportModulePath + "export-from-constellation.md");
-        map.put("au.gov.asd.tac.constellation.plugins.importexport.svg.ExportToKmlPlugin", importExportModulePath + "export-from-constellation.md");
-        
+        //Import Plugins
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.delimited.DelimitedImportPane", importExportModulePath + "import-from-file.md");        
         map.put("au.gov.asd.tac.constellation.plugins.importexport.jdbc.JDBCImportPane", importExportModulePath + "import-from-database.md");
+        
+        //Export Plugins
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.export", importExportModulePath + "export-from-constellation.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToGeoJsonPlugin", importExportModulePath + "export-from-constellation.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial..ExportToImagePlugin", importExportModulePath + "export-from-constellation.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToJsonPlugin", importExportModulePath + "export-from-constellation.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial..ExportToGeoPackagePlugin", importExportModulePath + "export-from-constellation.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToShapefilePlugin", importExportModulePath + "export-from-constellation.md");
+        map.put("au.gov.asd.tac.constellation.plugins.importexport.geospatial.ExportToKmlPlugin", importExportModulePath + "export-from-constellation.md");
+        
         return map;
     }
 
