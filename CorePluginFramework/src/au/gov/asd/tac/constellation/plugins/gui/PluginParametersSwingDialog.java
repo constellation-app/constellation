@@ -47,7 +47,7 @@ public class PluginParametersSwingDialog {
     
     private static final Logger LOGGER = Logger.getLogger(PluginParametersSwingDialog.class.getName());
     
-    public static final String[] acceptanceButtonLabels = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename"};
+    private final String[] acceptanceButtonLabels = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename"};
     public static final String CANCEL = "Cancel";
     public static final String OK = "OK";
 
@@ -163,7 +163,13 @@ public class PluginParametersSwingDialog {
     public void showAndWait() {
         final DialogDescriptor dd = createDialogDescriptor(true);  
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : r == DialogDescriptor.OK_OPTION ?  OK : null;
+        if (r == DialogDescriptor.CANCEL_OPTION){
+            result = CANCEL;
+        } else if (r == DialogDescriptor.OK_OPTION){
+            result = OK;
+        } else {
+            result = null;
+        }
     }
 
     /**
@@ -178,7 +184,13 @@ public class PluginParametersSwingDialog {
     public void showAndWaitNoFocus() {
         final DialogDescriptor dd = createDialogDescriptor(true);  
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : r == DialogDescriptor.OK_OPTION ?  OK : null;
+        if (r == DialogDescriptor.CANCEL_OPTION){
+            result = CANCEL;
+        } else if (r == DialogDescriptor.OK_OPTION){
+            result = OK;
+        } else {
+            result = null;
+        }
     }
     
     /**
