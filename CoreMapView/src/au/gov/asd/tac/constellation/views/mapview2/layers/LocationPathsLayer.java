@@ -109,7 +109,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
                             final LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, LINE_MARKER_X_OFFSET, LINE_MARKER_Y_OFFSET);
                             if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
 
-                                l.setMarkerPosition(MapView.MAP_VIEWPORT_WIDTH, MapView.MAP_VIEWPORT_HEIGHT);
+                                l.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
                                 entityPaths.getChildren().add(l.getMarker());
                             }
                         }

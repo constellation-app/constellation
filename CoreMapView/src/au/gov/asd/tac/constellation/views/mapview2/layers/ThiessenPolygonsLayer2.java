@@ -20,10 +20,7 @@ import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.UserPointMarker;
-import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.Arc;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.ArcTree;
-import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.BlineElement;
-import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.HalfEdge;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.SiteEvent;
 import au.gov.asd.tac.constellation.views.mapview2.polygons.utilities.VoronoiEvent;
 
@@ -34,8 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
@@ -85,8 +80,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             Rectangle r = new Rectangle();
             r.setX(0);
             r.setY(0);
-            r.setWidth(MapView.MAP_VIEWPORT_WIDTH);
-            r.setHeight(MapView.MAP_VIEWPORT_HEIGHT);
+            r.setWidth(MapView.MAP_WIDTH);
+            r.setHeight(MapView.MAP_HEIGHT);
             r.setFill(palette[0].getJavaFXColor());
             r.setStroke(palette[0].getJavaFXColor());
             r.setOpacity(0.5);
@@ -98,8 +93,8 @@ public class ThiessenPolygonsLayer2 extends AbstractMapLayer {
             for (final AbstractMarker m : markers) {
                 if (m instanceof PointMarker || m instanceof UserPointMarker) {
 
-                    double x = m.getX() - 97;
-                    double y = m.getY() + 93;
+                    double x = m.getX();
+                    double y = m.getY();
 
                     final SiteEvent siteEvent = new SiteEvent(y, new Vec3(x, y));
 

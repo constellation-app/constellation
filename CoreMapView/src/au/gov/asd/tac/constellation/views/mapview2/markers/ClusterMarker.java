@@ -17,7 +17,6 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
-import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
