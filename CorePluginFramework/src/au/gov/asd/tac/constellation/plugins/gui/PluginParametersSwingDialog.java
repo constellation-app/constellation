@@ -254,7 +254,7 @@ public class PluginParametersSwingDialog {
      * @param result
      * @return 
      */
-    public static boolean isAccepted(String result) {
+    public static boolean isAccepted(final String result) {
         for (final String keyWord : acceptanceKeyWords){
             if (keyWord.equals(result)) {
                 return true;
