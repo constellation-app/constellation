@@ -97,7 +97,7 @@ public class PluginParametersSwingDialog {
      * @param helpID The JavaHelp ID of the help.
      */
     public PluginParametersSwingDialog(final String title, final PluginParameters parameters, final String helpID) {
-        this(title, parameters, null, null);
+        this(title, parameters, null, helpID);
     }
 
     /**
@@ -211,7 +211,6 @@ public class PluginParametersSwingDialog {
         
         //Having 'No' button as initial value means focus is off of 'OK' and 'Cancel' buttons
         final Object focus = focused ? acceptanceOption : DialogDescriptor.NO_OPTION;
-        
         final DialogDescriptor dd = new DialogDescriptor(xp, title, true, options, focus, DialogDescriptor.DEFAULT_ALIGN, null, null);
         
         // Create an action listener for the custom button

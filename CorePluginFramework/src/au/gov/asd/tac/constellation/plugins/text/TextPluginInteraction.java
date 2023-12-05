@@ -81,9 +81,9 @@ public class TextPluginInteraction implements PluginInteraction {
     public boolean confirm(final String message) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
-
+     
     @Override
-    public boolean prompt(final String promptName, final PluginParameters parameters) {
+    public boolean prompt(final String promptName, final PluginParameters parameters, final String helpID) {
         throw new UnsupportedOperationException(NOT_SUPPORTED); //To change body of generated methods, choose Tools | Templates.
     }
 
