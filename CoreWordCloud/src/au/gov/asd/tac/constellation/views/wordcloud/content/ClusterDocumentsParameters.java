@@ -50,7 +50,7 @@ public class ClusterDocumentsParameters {
     static final String ELEMENT_TYPE_NAME = "Element Type";
     static final String ELEMENT_TYPE_DESCRIPTION = "The type of graph element to cluster";
     static final String ELEMENT_TYPE_DEFAULT = "transaction";
-    static final List<String> ELEMENT_TYPE_CHOICES = Arrays.asList("transaction", "node");
+    static final List<String> ELEMENT_TYPE_CHOICES = Arrays.asList(ELEMENT_TYPE_DEFAULT, "node");
 
     static final String ATTRIBUTE_TO_ANALYSE_PARAMETER_ID = PluginParameter.buildId(ClusterDocumentsParameters.class, "attribute_to_analyse");
     static final String ATTRIBUTE_TO_ANALYSE_NAME = "Attribute to Analyse";
@@ -130,7 +130,7 @@ public class ClusterDocumentsParameters {
     public ClusterDocumentsParameters(final boolean caseSensitive, final char[] toFilter, final TokenizingMethod tokenizingMethod, final Delimiter delimiter, final int tokenLength, final boolean binarySpace, final float threshold, final TokenThresholdMethod thresholdMethod, final boolean significantAboveThreshold, final float weightingExponent, final int numberOfMeans, final FollowUpChoice followUpChoice, final FollowUpScope followUpScope, final GraphElementType elementType) {
         this.onAttributeID = -1;
         this.caseSensitive = caseSensitive;
-        this.toFilter = toFilter;
+        this.toFilter = toFilter.clone();
         this.tokenizingMethod = tokenizingMethod;
         this.delimiter = delimiter;
         this.tokenLength = tokenLength;
@@ -164,7 +164,7 @@ public class ClusterDocumentsParameters {
     }
 
     public char[] getToFilter() {
-        return toFilter;
+        return toFilter.clone();
     }
 
     public Set<Character> getToFilterSet() {
@@ -232,7 +232,7 @@ public class ClusterDocumentsParameters {
     }
 
     public void setToFilter(final char[] value) {
-        toFilter = value;
+        toFilter = value.clone();
     }
 
     public void setCaseSensitive(final boolean value) {

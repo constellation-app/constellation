@@ -122,19 +122,19 @@ public class ContentTokenizingServices {
         final String[] wordDelimiterSetNames = {"Word Delimiters"};
         final String[] phraseDelimiterSetNames = {"Phrase Delimiters"};
 
-        final Set<String> excluded_words = new HashSet<>();
+        final Set<String> excludedWords = new HashSet<>();
         for (final String setName : excludedWordSetNames) {
-            excluded_words.addAll(PhraseAnalysisModelLoader.excludedWords.get(setName));
+            excludedWords.addAll(PhraseAnalysisModelLoader.getExcludedWords().get(setName));
         }
 
-        final Set<Character> word_delimiters = new HashSet<>();
+        final Set<Character> wordDelimiters = new HashSet<>();
         for (final String setName : wordDelimiterSetNames) {
-            word_delimiters.addAll(PhraseAnalysisModelLoader.delimiters.get(setName));
+            wordDelimiters.addAll(PhraseAnalysisModelLoader.getDelimiters().get(setName));
         }
 
-        final Set<Character> phrase_delimiters = new HashSet<>();
+        final Set<Character> phraseDelimiters = new HashSet<>();
         for (final String setName : phraseDelimiterSetNames) {
-            phrase_delimiters.addAll(PhraseAnalysisModelLoader.delimiters.get(setName));
+            phraseDelimiters.addAll(PhraseAnalysisModelLoader.getDelimiters().get(setName));
         }
         
         final char phrase_delimiter = '.';
@@ -143,8 +143,8 @@ public class ContentTokenizingServices {
         apostrophes.add('\'');
 
         // Set the sanitizer to, in the following order, convert to lower case, filter word delimiters, filter apostropes without adding spaces, and insert phrase blocks for phrase delimiters
-        cts.sanitizer = new PhraseDelimitingSanitizer(phrase_delimiter, phrase_delimiters).setInnerSanitizer(new FilteringSanitizer(apostrophes).setInnerSanitizer(new FilteringSanitizer(word_delimiter, word_delimiters).setInnerSanitizer(new CaseSanitizer(false))));
-        cts.tokenizer = new PhraseTokenizer(handler, ' ', phrase_length, '.', proximity, excluded_words);
+        cts.sanitizer = new PhraseDelimitingSanitizer(phrase_delimiter, phraseDelimiters).setInnerSanitizer(new FilteringSanitizer(apostrophes).setInnerSanitizer(new FilteringSanitizer(word_delimiter, wordDelimiters).setInnerSanitizer(new CaseSanitizer(false))));
+        cts.tokenizer = new PhraseTokenizer(handler, ' ', phrase_length, '.', proximity, excludedWords);
         cts.createAndRunThreadsWithAdaptors(allocator);
     }
 
@@ -251,7 +251,7 @@ public class ContentTokenizingServices {
             /**
              * Construct a TokenizerState with a given phrase
              */
-            public TokenizerState(final char[] phrase) {
+            protected TokenizerState(final char[] phrase) {
                 this.phrase = phrase;
             }
 
@@ -304,8 +304,8 @@ public class ContentTokenizingServices {
         public class NGramTokenizerState extends TokenizerState {
 
             // Stores the current position in the phrase being tokenized 
-            public int pos = -1;
-
+            private int pos = -1;
+            
             /**
              * Construct an NGramTokenizer state for the specified phrase
              */
@@ -324,6 +324,14 @@ public class ContentTokenizingServices {
                 // The next token is found by incrementing the position and checking that there are at least n characters left in the phrase 
                 pos++;
                 return (pos < +phrase.length - nGramLength);
+            }
+
+            public int getPos() {
+                return pos;
+            }
+
+            public void setPos(final int pos) {
+                this.pos = pos;
             }
         }
 
@@ -362,7 +370,7 @@ public class ContentTokenizingServices {
          */
         public class DelimitedNGramTokenizerState extends NGramTokenizerState {
 
-            public boolean skip = true;
+            private boolean skip = true;
 
             /**
              * Construct a DelimitedNGramTokenizer state for the specified
@@ -375,16 +383,16 @@ public class ContentTokenizingServices {
             @Override
             protected boolean findNextToken() {
                 // Increment position, and check that there are at least n characters left, returning false if not.
-                pos++;
-                if (pos > phrase.length - nGramLength) {
+                setPos(getPos() + 1);
+                if (getPos() > phrase.length - nGramLength) {
                     return false;
                 }
 
                 // If we are not at the beginning and did not just skip over a delimiter, we only need to check that the last character in the current n-gram is not a delimiter.
                 if (!skip) {
                     // If we find a delimiter, move pos to the delimiter and continue searching.
-                    if (phrase[pos + nGramLength - 1] == delimiter) {
-                        pos += (nGramLength - 1);
+                    if (phrase[getPos() + nGramLength - 1] == delimiter) {
+                        setPos(getPos() + (nGramLength - 1));
                         skip = true;
                         return findNextToken();
                     }
@@ -394,8 +402,8 @@ public class ContentTokenizingServices {
                 // If we are at the beginning or did just skip over a delimier, we need to check all n characters starting from pos.
                 for (int i = 0; i < nGramLength; i++) {
                     // If we find a delimiter, move pos to the delimiter and continue searching.
-                    if (phrase[pos + i] == delimiter) {
-                        pos = pos + i;
+                    if (phrase[getPos() + i] == delimiter) {
+                        setPos(getPos() + i);
                         return findNextToken();
                     }
                 }
@@ -438,10 +446,10 @@ public class ContentTokenizingServices {
          */
         public class NWordTokenizerState extends TokenizerState {
 
-            public int wordEndPos = -1;
-            public int wordStartPos;
-            public int wordsLength = 0;
-            public char[][] words;
+            private int wordEndPos = -1;
+            private int wordStartPos;
+            private int wordsLength = 0;
+            private char[][] words;
 
             /**
              * Construct an NWordTokenizer state for the specified phrase
@@ -449,6 +457,38 @@ public class ContentTokenizingServices {
             public NWordTokenizerState(final char[] phrase) {
                 super(phrase);
                 words = new char[numOfWords][];
+            }
+
+            public int getWordEndPos() {
+                return wordEndPos;
+            }
+
+            public void setWordEndPos(final int wordEndPos) {
+                this.wordEndPos = wordEndPos;
+            }
+
+            public int getWordStartPos() {
+                return wordStartPos;
+            }
+
+            public void setWordStartPos(final int wordStartPos) {
+                this.wordStartPos = wordStartPos;
+            }
+
+            public int getWordsLength() {
+                return wordsLength;
+            }
+
+            public void setWordsLength(final int wordsLength) {
+                this.wordsLength = wordsLength;
+            }
+
+            public char[][] getWords() {
+                return words;
+            }
+
+            public void setWords(final char[][] words) {
+                this.words = words;
             }
 
             protected void resetState() {
@@ -555,20 +595,20 @@ public class ContentTokenizingServices {
             @Override
             protected boolean findNextWord() {
                 // set the start position to be just after the end of the last word.
-                wordStartPos = singleCharacterWord ? wordEndPos : wordEndPos + 1;
+                setWordStartPos(singleCharacterWord ? getWordEndPos() : getWordEndPos() + 1);
                 // increment the start position while it is at a delimiter 
-                while (wordStartPos < phrase.length && phrase[wordStartPos] == delimiter) {
-                    wordStartPos++;
+                while (getWordStartPos() < phrase.length && phrase[getWordStartPos()] == delimiter) {
+                    setWordStartPos(getWordStartPos() + 1);
                 }
                 // set the end position to be one more than the start position
-                wordEndPos = wordStartPos;
+                setWordEndPos(getWordStartPos());
                 // increment the end position until it is a delimiter or a single character word
                 singleCharacterWord = false;
-                while (wordEndPos < phrase.length && phrase[wordEndPos] != delimiter) {
-                    wordEndPos++;
+                while (getWordEndPos() < phrase.length && phrase[getWordEndPos()] != delimiter) {
+                    setWordEndPos(getWordEndPos() + 1);
                 }
                 // if the start position is before the end of the phrase, return true
-                return wordStartPos < phrase.length;
+                return getWordStartPos() < phrase.length;
             }
         }
     }
@@ -639,7 +679,7 @@ public class ContentTokenizingServices {
              */
             public PhraseTokenizerState(final char[] phrase) {
                 super(phrase);
-                words = new char[proximity - 1][];
+                setWords(new char[proximity - 1][]);
                 delimitersBeforeWord = new boolean[proximity - 1];
                 skips = new int[proximity - 1];
                 storeSingleWords = (numOfWords != 1);
@@ -648,7 +688,7 @@ public class ContentTokenizingServices {
             @Override
             protected void resetState() {
                 super.resetState();
-                words = new char[proximity - 1][];
+                setWords(new char[proximity - 1][]);
                 delimitersBeforeWord = new boolean[proximity - 1];
                 skips = new int[proximity - 1];
                 currentWord = 0;
@@ -691,12 +731,14 @@ public class ContentTokenizingServices {
                     newPhraseBlock = false;
                 } else {
                     // Otherwise, shift the words and decrement the current span
-                    leadWord = words[0];
+                    leadWord = getWords()[0];
                     currentSpan -= skips[0] + 1;
-                    words[0] = null;
+                    final char[][] newWords = getWords();
+                    newWords[0] = null;
+                    setWords(newWords);
                     delimitersBeforeWord[0] = false;
                     skips[0] = 0;
-                    System.arraycopy(words, 1, words, 0, currentWord - 1);
+                    System.arraycopy(getWords(), 1, getWords(), 0, currentWord - 1);
                     System.arraycopy(delimitersBeforeWord, 1, delimitersBeforeWord, 0, currentWord - 1);
                     System.arraycopy(skips, 1, skips, 0, skips.length - 1);
                     currentWord--;
@@ -719,7 +761,7 @@ public class ContentTokenizingServices {
                         break;
                     } else {
                         delimitersBeforeWord[currentWord] = !singleCharacterWord;
-                        words[currentWord++] = word;
+                        getWords()[currentWord++] = word;
                     }
                 }
 
@@ -750,7 +792,7 @@ public class ContentTokenizingServices {
                 final char[] token;
                 int length = leadWord.length;
                 for (int i = 0; i < pgs.permutation.length; i++) {
-                    length += words[pgs.permutation[i]].length + (delimitersBeforeWord[pgs.permutation[i]] ? 1 : 0);
+                    length += getWords()[pgs.permutation[i]].length + (delimitersBeforeWord[pgs.permutation[i]] ? 1 : 0);
                 }
 
                 token = new char[length];
@@ -762,7 +804,7 @@ public class ContentTokenizingServices {
                     if (delimitersBeforeWord[pgs.permutation[i]]) {
                         token[currentPos++] = delimiter;
                     }
-                    final char[] word = words[pgs.permutation[i]];
+                    final char[] word = getWords()[pgs.permutation[i]];
                     currentSingleWords.add(new String(word));
                     System.arraycopy(word, 0, token, currentPos, word.length);
                     currentPos += word.length;
@@ -777,7 +819,7 @@ public class ContentTokenizingServices {
                 private boolean ordered;
                 private BitSet availableObjects;
                 private int currentIndex = 0;
-                public int[] permutation;
+                private int[] permutation;
 
                 public PermutationGenerationState(final int n, final int k, final boolean ordered) {
                     this.n = n;
@@ -851,7 +893,7 @@ public class ContentTokenizingServices {
         protected String sanitizeString(final String str) {
             String newStr = "";
             if (!caseSensitive) {
-                 newStr = str.toLowerCase();
+                newStr = str.toLowerCase();
             }
             return newStr;
         }
@@ -862,7 +904,7 @@ public class ContentTokenizingServices {
         private final char[] toTrim;
 
         public TrimmingSanitizer(final char[] toTrim) {
-            this.toTrim = toTrim;
+            this.toTrim = toTrim.clone();
         }
 
         @Override
@@ -913,7 +955,7 @@ public class ContentTokenizingServices {
     private static class PhraseDelimitingSanitizer extends FilteringSanitizer {
 
         public PhraseDelimitingSanitizer(final char phraseDelimiter, final Set<Character> toDelimitPhrase) {
-            super(" " + String.valueOf(phraseDelimiter) + " ", toDelimitPhrase);
+            super(" " + phraseDelimiter + " ", toDelimitPhrase);
         }
     }
 }

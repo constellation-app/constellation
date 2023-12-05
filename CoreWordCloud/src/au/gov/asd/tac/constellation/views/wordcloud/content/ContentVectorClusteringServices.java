@@ -48,7 +48,7 @@ public class ContentVectorClusteringServices {
         clusters = new ConcurrentSkipListMap<>();
     }
 
-    public static enum WeightingMethod {
+    public enum WeightingMethod {
         APPEARANCE,
         RANK;
     }

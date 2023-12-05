@@ -104,8 +104,8 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
 
     @Override
     protected WordCloudPane createContent() {
-         wordCloudPane = new WordCloudPane(controller);
-         return wordCloudPane;
+        wordCloudPane = new WordCloudPane(controller);
+        return wordCloudPane;
     }
     
     @Override

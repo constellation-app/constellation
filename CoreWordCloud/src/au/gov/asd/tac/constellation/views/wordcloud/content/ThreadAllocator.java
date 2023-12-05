@@ -40,7 +40,7 @@ public abstract class ThreadAllocator {
     public abstract ThreadedPhraseAdaptor nextAdaptor();
 
     public final boolean hasMore() {
-        return !(numAllocated == numberOfThreads);
+        return numAllocated != numberOfThreads;
     }
 
     public final int getNumAllocated() {

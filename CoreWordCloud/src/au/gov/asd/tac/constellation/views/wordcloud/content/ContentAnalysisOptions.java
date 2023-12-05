@@ -23,8 +23,12 @@ import java.util.List;
  * @author twilight_sparkle
  */
 public class ContentAnalysisOptions {
+    
+    private ContentAnalysisOptions() {
+        throw new IllegalStateException("Utility class");
+    }
 
-    public static enum Delimiter {
+    public enum Delimiter {
 
         SPACE {
             @Override
@@ -115,7 +119,7 @@ public class ContentAnalysisOptions {
         }
     }
 
-    public static enum TokenThresholdMethod {
+    public enum TokenThresholdMethod {
         APPEARANCE {
             @Override
             public String toString() {
@@ -151,7 +155,7 @@ public class ContentAnalysisOptions {
         }
     }
 
-    public static enum TokenizingMethod {
+    public enum TokenizingMethod {
 
         NGRAMS {
             @Override
@@ -201,7 +205,7 @@ public class ContentAnalysisOptions {
      * An enumeration of options for the follow up action to be performed upon
      * executing the n-grams analysis plugin
      */
-    public static enum FollowUpChoice {
+    public enum FollowUpChoice {
 
         CLUSTER {
             @Override
@@ -250,7 +254,7 @@ public class ContentAnalysisOptions {
         }
     }
 
-    public static enum FollowUpScope {
+    public enum FollowUpScope {
 
         ALL {
             @Override

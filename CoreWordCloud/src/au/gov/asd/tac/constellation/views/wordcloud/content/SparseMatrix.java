@@ -160,7 +160,7 @@ public class SparseMatrix<N extends Number> {
         this.calc = typer;
     }
 
-    public static SparseMatrix<?> constructMatrix(final Number noEntryVal) {
+    public static SparseMatrix constructMatrix(final Number noEntryVal) {
         if (noEntryVal instanceof Integer) {
             return new SparseMatrix<>((Integer) noEntryVal, IntegerArithmeticHandler.INSTANCE);
         } else if (noEntryVal instanceof Float) {
@@ -340,7 +340,7 @@ public class SparseMatrix<N extends Number> {
         return sum;
     }
 
-    public Set<Integer> getColumnElementUnion(final Set<Integer> keySet) {
+    public Set<Integer> getColumnElementUnion(final Iterable<Integer> keySet) {
         final Set<Integer> elements = new HashSet<>();
         for (final int key : keySet) {
             if (data.containsKey(key)) {
@@ -350,7 +350,7 @@ public class SparseMatrix<N extends Number> {
         return elements;
     }
 
-    public Set<Integer> getColumnElementIntersection(final Set<Integer> keySet) {
+    public Set<Integer> getColumnElementIntersection(final Iterable<Integer> keySet) {
         final Set<Integer> elements = new HashSet<>();
         for (final int key : keySet) {
             if (elements.isEmpty() && data.containsKey(key)) {
@@ -371,7 +371,7 @@ public class SparseMatrix<N extends Number> {
         return elements;
     }
 
-    public N[] getConstituentExtendedColumnAsArray(final int key, final Set<Integer> elements) {
+    public N[] getConstituentExtendedColumnAsArray(final int key, final Iterable<Integer> elements) {
         if (data.get(key) == null) {
             return null;
         }
@@ -455,7 +455,7 @@ public class SparseMatrix<N extends Number> {
         private final int size;
         private final ConcurrentNavigableMap<Integer, N> submap;
 
-        private MatrixColumnIterator(ConcurrentNavigableMap<Integer, N> submap) {
+        private MatrixColumnIterator(final ConcurrentNavigableMap<Integer, N> submap) {
             this.submap = submap;
             this.size = submap.size();
             keyIter = submap.keySet().iterator();

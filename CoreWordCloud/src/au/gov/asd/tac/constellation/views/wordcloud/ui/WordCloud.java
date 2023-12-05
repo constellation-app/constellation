@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -54,7 +55,7 @@ public class WordCloud {
     private SortedSet<String> currentWords;
     private String queryInfoString;
     // Stative data 
-    public long modCount = 0;
+    private long modCount = 0;
     private final Set<String> selectedWords;
     private double currentSignificance = 0.05;
     private boolean isUnionSelect = true;
@@ -62,7 +63,7 @@ public class WordCloud {
     private final boolean hasSignificances;
 
     /**
-     * Constructor with all data explicily provided - used for saving and
+     * Constructor with all data explicity provided - used for saving and
      * loading
      *
      */
@@ -124,28 +125,27 @@ public class WordCloud {
         final int maxSum = ((TaggedSparseMatrix<Integer>) hashesToElements).getLargestColumnSumWithTag(false);
         SparseMatrix<Integer> hashesToElementBg = null;
         if (bgHandler != null) {
-            hashesToElementBg = null;
+            hashesToElementBg = bgHandler.getTokenElementMatrix();
         }
-        for (final String word : wordsToHashes.keySet()) {
-            final int key = wordsToHashes.get(word);
+        for (final Entry<String, Integer> word : wordsToHashes.entrySet()) {
 
             // Skip this word if it is tagged as a single word constituent of a phrase, or if it doesn't meet the threshold
-            if (((TaggedSparseMatrix) hashesToElements).getTag(key) || hashedWordSets.get(key).size() < threshold) {
+            if (((TaggedSparseMatrix) hashesToElements).getTag(word.getValue()) || hashedWordSets.get(word.getValue()).size() < threshold) {
                 continue;
             }
 
-            final Set<Integer> individualWordKeys = handler.getConstituentHashes().get(key);
-            final float relativeSize = ((float) hashesToElements.getColumnSum(key)) / maxSum;
-            wordListWithSizes.put(word, relativeSize);
+            final Set<Integer> individualWordKeys = handler.getConstituentHashes().get(word.getValue());
+            final float relativeSize = ((float) hashesToElements.getColumnSum(word.getValue())) / maxSum;
+            wordListWithSizes.put(word.getKey(), relativeSize);
 
             if (bgHandler != null) {
-                final double sig = tTestPhraseAgainstWords(key, individualWordKeys, hashesToElements, hashesToElementBg, filterAllWords);
+                final double sig = tTestPhraseAgainstWords(word.getValue(), individualWordKeys, hashesToElements, hashesToElementBg, filterAllWords);
                 Set<String> l = wordSignificances.get(sig);
                 if (l == null) {
                     l = new HashSet<>();
                     wordSignificances.put(sig, l);
                 }
-                l.add(word);
+                l.add(word.getKey());
             }
         }
 
@@ -161,6 +161,14 @@ public class WordCloud {
         updateCurrentWords(1, currentSignificance);
     }
 
+    public long getModCount() {
+        return modCount;
+    }
+    
+    public void setModCount(final long modCount) {
+        this.modCount = modCount;
+    }
+    
     public static double tTestPhraseAgainstWords(final int key, final Set<Integer> individualWordKeys, final SparseMatrix<Integer> graph, final SparseMatrix<Integer> model, final boolean filterAllWords) {
         // Get all the elements containing the individual words, then get the arrays of phrase frequencies, extended by 0s
         // by the elements containing all constituent individual words but not the phrase 
@@ -287,7 +295,7 @@ public class WordCloud {
      */
     private Set<Integer> getElementsWithAnyWords() {
         final Set<Integer> set = new HashSet<>();
-        selectedWords.stream().map(word -> wordsToHashes.get(word)).forEachOrdered(key -> 
+        selectedWords.stream().map(wordsToHashes::get).forEachOrdered(key -> 
             set.addAll(hashedWordSets.get(key)));
         return set;
     }

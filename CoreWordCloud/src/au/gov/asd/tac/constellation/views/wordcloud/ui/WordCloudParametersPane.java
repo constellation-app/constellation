@@ -58,14 +58,14 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         @SuppressWarnings("unchecked") // ATTRIBUTE_TO_ANALYSE_PARAMETER is always of type SingleChoiceParameter 
         final PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
 
-        if (elParam.getStringValue().equals("transaction")) {
+        if ("transaction".equals(elParam.getStringValue())) {
             if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
                 attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
             } else {
                 attrParam.setStringValue(EMPTY_STRING);
             }
             SingleChoiceParameterType.setOptions(attrParam, transAttributes);
-        } else if (elParam.getStringValue().equals("node")) {
+        } else if ("node".equals(elParam.getStringValue())) {
             if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
                 attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
             } else {
@@ -138,14 +138,14 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
             final PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) parameters.get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
             switch (change) {
                 case VALUE:
-                    if (masterParameter.getStringValue().equals("transaction")) {
+                    if ("transaction".equals(masterParameter.getStringValue())) {
                         if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
                             attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
                         } else {
                             attrParam.setStringValue(EMPTY_STRING);
                         }
                         SingleChoiceParameterType.setOptions(attrParam, transAttributes);
-                    } else if (masterParameter.getStringValue().equals("node")) {
+                    } else if ("node".equals(masterParameter.getStringValue())) {
                         if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
                             attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
                         } else {
@@ -178,7 +178,7 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         VBox content = new VBox();
 
         run = new Button("Generate");
-        run.setOnMouseClicked((MouseEvent) -> master.runPlugin(params));
+        run.setOnMouseClicked(event -> master.runPlugin(params));
 
         PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(params, this, null);
         content.getChildren().add(pluginParametersPane);
@@ -193,6 +193,7 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
 
     @Override
     public void hierarchicalUpdate() {
+         // Does nothing as not required
     }
 
     public void setAttributeSelectionEnabled(final boolean val) {

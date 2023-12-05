@@ -34,7 +34,7 @@ public class PhrasiphyContentParameters {
     public static final String ELEMENT_TYPE_NAME = "Element Type";
     public static final String ELEMENT_TYPE_DESCRIPTION = "The type of graph element.";
     public static final String ELEMENT_TYPE_DEFAULT = "transaction";
-    public static final List<String> ELEMENT_TYPE_CHOICES = Arrays.asList("transaction", "node");
+    public static final List<String> ELEMENT_TYPE_CHOICES = Arrays.asList(ELEMENT_TYPE_DEFAULT, "node");
 
     public static final String ATTRIBUTE_TO_ANALYSE_PARAMETER_ID = PluginParameter.buildId(PhrasiphyContentParameters.class, "attribute_to_analyse");
     public static final String ATTRIBUTE_TO_ANALYSE_NAME = "Attribute";
@@ -62,7 +62,7 @@ public class PhrasiphyContentParameters {
     public static final String BACKGROUND_FILTER_NAME = "Background Filter";
     public static final String BACKGROUND_FILTER_DESCRIPTION = "Filter on the sentences to use for comparison.";
     public static final String BACKGROUND_FILTER_DEFAULT = "Contain all words in phrase";
-    public static final List<String> BACKGROUND_FILTER_CHOICES = Arrays.asList("Contain any word in phrase", "Contain all words in phrase");
+    public static final List<String> BACKGROUND_FILTER_CHOICES = Arrays.asList("Contain any word in phrase", BACKGROUND_FILTER_DEFAULT);
 
     public static final int PHRASE_LENGTH_MIN_VALUE = 1;
     public static final int PHRASE_LENGTH_MAX_VALUE = 10;
@@ -113,7 +113,7 @@ public class PhrasiphyContentParameters {
         return threshold;
     }
 
-    public boolean getFilterAllWords() {
+    public boolean hasFilterAllWords() {
         return filterAllWords;
     }
 

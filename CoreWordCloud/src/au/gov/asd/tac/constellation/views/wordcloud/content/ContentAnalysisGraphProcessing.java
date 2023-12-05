@@ -103,6 +103,7 @@ public class ContentAnalysisGraphProcessing {
                 f.get();
             } catch (final InterruptedException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+                Thread.currentThread().interrupt();
             } catch (final ExecutionException ex) {
                 LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
             }
@@ -114,19 +115,13 @@ public class ContentAnalysisGraphProcessing {
 
         private static final String PLUGIN_NAME = "Show Clusters on Histogram";
 
-        public ShowClustersOnHistogramPlugin() {
-        }
-
         @Override
         public void execute(final PluginGraphs graphs, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
 
-            SwingUtilities.invokeLater(new Runnable() {
-                @Override
-                public void run() {
-                    HistogramAccess ha = HistogramAccess.getAccess();
-                    ha.requestHistogramActive();
-                    ha.setHistogramAttribute(graphElementType, ClusteringConcept.VertexAttribute.NAMED_CLUSTER.getName());
-                }
+            SwingUtilities.invokeLater(() -> {
+                final HistogramAccess ha = HistogramAccess.getAccess();
+                ha.requestHistogramActive();
+                ha.setHistogramAttribute(graphElementType, ClusteringConcept.VertexAttribute.NAMED_CLUSTER.getName());
             });
         }
 

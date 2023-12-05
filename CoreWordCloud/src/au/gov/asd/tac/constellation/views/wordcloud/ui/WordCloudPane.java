@@ -79,7 +79,6 @@ public class WordCloudPane extends BorderPane {
     private final ToggleButton alphabetical;
     private final ToggleButton frequency;
     private final Map<String, Hyperlink> wordButtons;
-    private final Map<String, Integer> wordPositions;
 
     private final ProgressIndicator spinner = new ProgressIndicator();
     private final WordCloudParametersPane paramPane;
@@ -244,7 +243,6 @@ public class WordCloudPane extends BorderPane {
 
         spinner.setMaxSize(50, 50);
         wordButtons = new HashMap<>();
-        wordPositions = new HashMap<>();
         noWord = new Hyperlink();
         noWord.setMaxSize(0, 0);
     }
@@ -364,9 +362,7 @@ public class WordCloudPane extends BorderPane {
                     boolean deselect = false;
                     // If the control button is not down, display all words as deselected
                     if (!event.isControlDown()) {
-                        words.getChildren().forEach(h1 -> {
-                            ((Hyperlink) h1).setVisited(false);
-                        });
+                        words.getChildren().forEach(h1 -> ((Hyperlink) h1).setVisited(false));
                     } else {
                         // If the control button is down, check whether the current click is a deselection of the word rather than a selection
                         deselect = source.isVisited();

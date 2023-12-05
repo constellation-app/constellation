@@ -59,7 +59,7 @@ public class DistanceCalculation {
 
         private final int threshold;
 
-        public SimilarityAdjustmentCalculator(final int threshold) {
+        protected SimilarityAdjustmentCalculator(final int threshold) {
             this.threshold = threshold;
         }
 
@@ -78,7 +78,7 @@ public class DistanceCalculation {
 
         @Override
         public int getAdjustedSimilarity(final int similarity, final int modulus1, final int modulus2) {
-            return Math.round(similarity * 100 / (float) Math.sqrt(modulus1 * modulus2));
+            return Math.round(similarity * 100 / (float) Math.sqrt((double) modulus1 * (double) modulus2));
         }
     }
 }

@@ -282,7 +282,7 @@ public class WordCloudController {
                 WordCloud newCloud = cloud;
                 if (cloudAttr != Graph.NOT_FOUND) {
                     mc = rg.getValueModificationCounter(cloudAttr);
-                    if (cloud == null || mc != cloud.modCount) {
+                    if (cloud == null || mc != cloud.getModCount()) {
                         newCloud = rg.getObjectValue(cloudAttr, 0);
                     }
                 } else {
@@ -317,7 +317,7 @@ public class WordCloudController {
             }
 
             if (cloud != null) {
-                cloud.modCount = mc;
+                cloud.setModCount(mc);
             }
 
             // Update parameters on the WordCloudPane if necessary 

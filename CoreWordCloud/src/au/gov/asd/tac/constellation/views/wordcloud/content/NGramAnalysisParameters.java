@@ -91,7 +91,7 @@ public class NGramAnalysisParameters {
 
     @Override
     public String toString() {
-        return String.format("NGramAnalysisParameters[onAttributeID:%s, caseSensitive:%b, removeDomain:%b, nGramLength:%b. threshold:%s, followUpChoice:%s, followUpScope:%s]",
+        return String.format("NGramAnalysisParameters[onAttributeID:%s, caseSensitive:%b, removeDomain:%b, nGramLength:%b, binarySpace:%b, threshold:%s, followUpChoice:%s, followUpScope:%s]",
                 onAttributeID, caseSensitive, removeDomain, nGramLength, binarySpace, threshold, followUpChoice, followUpScope);
     }
 

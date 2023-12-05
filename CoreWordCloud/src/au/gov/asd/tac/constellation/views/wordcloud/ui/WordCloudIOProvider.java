@@ -203,7 +203,7 @@ public class WordCloudIOProvider extends AbstractGraphIOProvider {
                 jsonGenerator.writeNumberField(CURRENTSIGNIFICANCE, cloud.getCurrentSignificance());
 
                 jsonGenerator.writeStringField(INFO, cloud.getQueryInfo());
-                jsonGenerator.writeNumberField(MODCOUNT, cloud.modCount);
+                jsonGenerator.writeNumberField(MODCOUNT, cloud.getModCount());
 
                 final Iterator<String> iterStr = cloud.getSelectedWords().iterator();
                 jsonGenerator.writeArrayFieldStart(SELECTED);

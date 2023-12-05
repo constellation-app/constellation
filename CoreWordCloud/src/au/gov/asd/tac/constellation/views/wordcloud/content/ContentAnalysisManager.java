@@ -35,6 +35,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -42,6 +43,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.openide.util.Exceptions;
 
 /*
  * @author twilight_sparkle
@@ -62,7 +64,7 @@ public class ContentAnalysisManager {
 
     public ContentAnalysisManager(final Graph graph, final int[] performOnElements, final Set<Integer> elementsOfInterest, final int graphElementCapacity, final GraphElementType elementType, final int performOnAttributeID) {
         this.graph = graph;
-        this.performOnElements = performOnElements;
+        this.performOnElements = performOnElements.clone();
         this.elementsOfInterest = elementsOfInterest;
         this.graphElementCapacity = graphElementCapacity;
         this.performOnAttributeID = performOnAttributeID;
@@ -100,10 +102,12 @@ public class ContentAnalysisManager {
 
         @Override
         public void connect() {
+            // Does nothing as not required
         }
 
         @Override
         public void disconnect() {
+            // Does nothing as not required
         }
 
         @Override
@@ -113,12 +117,7 @@ public class ContentAnalysisManager {
     }
 
     public ThreadAllocator getStringListAllocator(final List<String> list) {
-        return ThreadAllocator.buildThreadAllocator(AVAILABLE_THREADS, MAX_THRESHOLD, list.size(), new AdaptorFactory() {
-            @Override
-            public ThreadedPhraseAdaptor getAdaptor(final ThreadAllocator forAllocator) {
-                return new StringListThreadedPhraseAdaptor(forAllocator, list);
-            }
-        });
+        return ThreadAllocator.buildThreadAllocator(AVAILABLE_THREADS, MAX_THRESHOLD, list.size(), (final ThreadAllocator forAllocator) -> new StringListThreadedPhraseAdaptor(forAllocator, list));
     }
 
     private class GraphElementThreadedPhraseAdaptor extends ThreadedPhraseAdaptor {
@@ -212,27 +211,18 @@ public class ContentAnalysisManager {
 
     private List<String> processBackground(final File file) {
         if (file == null) {
-            return null;
+            return Collections.emptyList();
         }
-
-        final BufferedReader background;
-        try {
-            background = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8.name()));
-        } catch (final FileNotFoundException | UnsupportedEncodingException ex) {
-            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-            return null;
-        } 
-
         final List<String> lines = new ArrayList<>();
-        String line = "";
-        while (line != null) {
-            lines.add(line);
-            try {
+
+        try (final BufferedReader background = new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8.name()))) {
+            String line = "";
+            while (line != null) {
+                lines.add(line);
                 line = background.readLine();
-            } catch (final IOException ex) {
-                LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
-                break;
             }
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
         }
         return lines;
     }
@@ -259,9 +249,9 @@ public class ContentAnalysisManager {
                 final WordCloud wordCloud;
                 if (cloudAttr == Graph.NOT_FOUND) {
                     cloudAttr = graph.addAttribute(GraphElementType.META, WordCloudAttributeDescription.ATTRIBUTE_NAME, WordCloud.WORD_CLOUD_ATTR, WordCloud.WORD_CLOUD_DESCR, null, null);
-                    wordCloud = new WordCloud(handler, bgHandler, elementType, phrasiphyContentParams.getThreshold(), phrasiphyContentParams.getFilterAllWords());
+                    wordCloud = new WordCloud(handler, bgHandler, elementType, phrasiphyContentParams.getThreshold(), phrasiphyContentParams.hasFilterAllWords());
                 } else {
-                    wordCloud = new WordCloud(handler, bgHandler, elementType, phrasiphyContentParams.getThreshold(), phrasiphyContentParams.getFilterAllWords(), (WordCloud) graph.getObjectValue(cloudAttr, 0));
+                    wordCloud = new WordCloud(handler, bgHandler, elementType, phrasiphyContentParams.getThreshold(), phrasiphyContentParams.hasFilterAllWords(), (WordCloud) graph.getObjectValue(cloudAttr, 0));
                 }
 
                 wordCloud.setQueryInfo(phrasiphyContentParams.getPhraseLength(), phrasiphyContentParams.getProximity(), graph.getAttributeName(phrasiphyContentParams.getOnAttributeID()));

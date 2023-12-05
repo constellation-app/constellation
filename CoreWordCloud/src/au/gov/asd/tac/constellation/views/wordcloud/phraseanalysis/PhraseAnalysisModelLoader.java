@@ -29,8 +29,8 @@ import java.util.Set;
  */
 public class PhraseAnalysisModelLoader {
 
-    public static final Map<String, Set> excludedWords = new HashMap<>();
-    public static final Map<String, Set> delimiters = new HashMap<>();
+    private static final Map<String, Set> excludedWords = new HashMap<>();
+    private static final Map<String, Set> delimiters = new HashMap<>();
 
     private static final String COMMENT_TOKEN = "##";
     private static final String SET_TOKEN = "#{";
@@ -39,7 +39,19 @@ public class PhraseAnalysisModelLoader {
     private static final String CLOSE_SET = "}";
 
     private static boolean isLoaded = false;
+    
+    private PhraseAnalysisModelLoader() {
+        throw new IllegalStateException("Utility class");
+    }
 
+    public static Map<String, Set> getExcludedWords() {
+        return excludedWords;
+    }
+
+    public static Map<String, Set> getDelimiters() {
+        return delimiters;
+    }
+    
     public static void loadMap() throws IOException {
 
         if (isLoaded) {
@@ -55,7 +67,7 @@ public class PhraseAnalysisModelLoader {
         isLoaded = true;
     }
 
-    private static enum MODE {
+    private enum MODE {
         ADD_CHARACTERS, ADD_SET_OF_SETS, ADD_UNICODE_RANGE, LOOK_FOR_MODE_TOKEN
     }
 
@@ -93,16 +105,11 @@ public class PhraseAnalysisModelLoader {
                     break;
                 case LOOK_FOR_MODE_TOKEN:
                     final String token_type = line.substring(0, 2);
-                    if (token_type.equals(COMMENT_TOKEN)) {
-                        continue;
-                    } else {
+                    if (!token_type.equals(COMMENT_TOKEN)) {
                         String currentString = line.substring(line.indexOf(OPEN_SET) + 1, line.indexOf(CLOSE_SET));
                         if (token_type.equals(UNICODE_RANGE_TOKEN)) {
                             currentSet = new HashSet<>();
                             currentMode = MODE.ADD_UNICODE_RANGE;
-                        } else if (singleCharacterLines) {
-                            currentSet = new HashSet<>();
-                            currentMode = token_type.equals(SET_TOKEN) ? MODE.ADD_CHARACTERS : MODE.ADD_SET_OF_SETS;
                         } else {
                             currentSet = new HashSet<>();
                             currentMode = token_type.equals(SET_TOKEN) ? MODE.ADD_CHARACTERS : MODE.ADD_SET_OF_SETS;

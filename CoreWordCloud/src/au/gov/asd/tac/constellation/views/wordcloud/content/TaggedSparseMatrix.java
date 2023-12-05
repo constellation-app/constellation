@@ -38,7 +38,7 @@ public class TaggedSparseMatrix<N extends Number> extends SparseMatrix<N> {
         taggedColumns.put(false, new HashSet<>());
     }
 
-    public static TaggedSparseMatrix<?> constructMatrix(final Number noEntryValue) {
+    public static TaggedSparseMatrix constructMatrix(final Number noEntryValue) {
         if (noEntryValue instanceof Integer) {
             return new TaggedSparseMatrix<>((Integer) noEntryValue, IntegerArithmeticHandler.INSTANCE);
         } else if (noEntryValue instanceof Float) {

@@ -25,7 +25,7 @@ import java.util.Map;
 public class DefaultTokenHandler implements TokenHandler {
 
     @SuppressWarnings("unchecked") // type of SparseMatrix will be integer
-    private final SparseMatrix<Integer> tokenElementMatrix = (SparseMatrix<Integer>) SparseMatrix.constructMatrix((Integer) 0);
+    private final SparseMatrix<Integer> tokenElementMatrix = (SparseMatrix<Integer>) SparseMatrix.constructMatrix(0);
     private final Map<String, Integer> tokenHashes = new HashMap<>();
 
     public SparseMatrix<Integer> getTokenElementMatrix() {
