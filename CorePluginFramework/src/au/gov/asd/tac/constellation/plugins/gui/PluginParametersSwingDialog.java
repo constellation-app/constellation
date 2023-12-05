@@ -48,13 +48,13 @@ import org.openide.util.HelpCtx;
 public class PluginParametersSwingDialog implements PluginParametersPaneListener {
     
     private static final Logger LOGGER = Logger.getLogger(PluginParametersSwingDialog.class.getName());
-
+    
+    private final String[] acceptanceButtonLabels = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename"};
     public static final String CANCEL = "Cancel";
+    public static final String OK = "OK";
 
     private volatile String result;
-
     private final String title;
-    private static final String[] acceptanceKeyWords = {"OK", "Import", "Export", "Save", "Open", "Build", "Create", "Load", "Rename"};
     private final JFXPanel xp;
     
     final HashMap<PluginParameter<?>, Boolean> requiredParameters = new HashMap();
@@ -169,10 +169,12 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     public void showAndWait() {
         final DialogDescriptor dd = createDialogDescriptor(true);  
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        if (r == DialogDescriptor.OK_OPTION) {
-            result = getAcceptanceButton(title);
+        if (r == DialogDescriptor.CANCEL_OPTION){
+            result = CANCEL;
+        } else if (r == DialogDescriptor.OK_OPTION){
+            result = OK;
         } else {
-            result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+            result = null;
         }
     }
 
@@ -186,12 +188,14 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * (i.e. "Build", "Save", "Export")
      */
     public void showAndWaitNoFocus() {
-        final DialogDescriptor dd = createDialogDescriptor(true);  
+        final DialogDescriptor dd = createDialogDescriptor(false);  
         final Object r = DialogDisplayer.getDefault().notify(dd);
-        if (r == DialogDescriptor.OK_OPTION) {
-            result = getAcceptanceButton(title);
+        if (r == DialogDescriptor.CANCEL_OPTION){
+            result = CANCEL;
+        } else if (r == DialogDescriptor.OK_OPTION){
+            result = OK;
         } else {
-            result = r == DialogDescriptor.CANCEL_OPTION ? CANCEL : null;
+            result = null;
         }
     }
     
@@ -264,8 +268,8 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * @param title
      * @return 
      */
-    private String getAcceptanceButton(final String title) {
-        for (final String keyWord : acceptanceKeyWords){
+    private String getAcceptanceButton() {
+        for (final String keyWord : acceptanceButtonLabels){
             if (StringUtils.containsIgnoreCase(title, keyWord)){
                 return keyWord;
             }
@@ -275,17 +279,10 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
     
     /**
      * Checks to see if the acceptance button was selected.
-     * 
-     * @param result
      * @return 
      */
-    public static boolean isAccepted(String result) {
-        for (final String keyWord : acceptanceKeyWords){
-            if (keyWord.equals(result)) {
-                return true;
-            }
-        }
-        return false;
+    public boolean isAccepted() {
+        return OK.equals(this.result);
     }
 
     private static class JFXPanelWithHelp extends JFXPanel implements HelpCtx.Provider {
