@@ -115,7 +115,7 @@ public interface PluginInteraction {
      *
      * @param promptName the name of the dialog box.
      * @param parameters the parameters to be displayed and edited.
-     * @param helpID the help IDof the plugin.
+     * @param helpID the help ID of the plugin.
      * @return true if the user selected "OK" or false if the user selected
      * "Cancel".
      */
