@@ -291,16 +291,14 @@ public class DefaultPluginInteraction implements PluginInteraction, Cancellable 
         boolean result = false;
 
         final PluginParametersSwingDialog dialog = new PluginParametersSwingDialog(promptName, parameters, helpID);
+
         if (!parameters.hasMultiLineStringParameter()) {
             dialog.showAndWait();
         } else {
             dialog.showAndWaitNoFocus();
         }
-        if (PluginParametersSwingDialog.isAccepted((dialog.getResult()))) {
-            result = true;
-        }
 
-        return result;
+        return dialog.isAccepted();
     }
 
     protected class Timer extends Thread {
