@@ -182,7 +182,7 @@ public class PluginParametersSwingDialog {
      * (i.e. "Build", "Save", "Export")
      */
     public void showAndWaitNoFocus() {
-        final DialogDescriptor dd = createDialogDescriptor(true);  
+        final DialogDescriptor dd = createDialogDescriptor(false);  
         final Object r = DialogDisplayer.getDefault().notify(dd);
         if (r == DialogDescriptor.CANCEL_OPTION){
             result = CANCEL;
