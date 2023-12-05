@@ -1548,7 +1548,8 @@ public class MapView extends ScrollPane {
 
                 if (marker instanceof PointMarker) {
                     final PointMarker pMarker = (PointMarker) marker;
-                    graphMarkerGroup.getChildren().add(pMarker.getPosRect());
+                    // The line below is to verify the positioning of the marker
+                    //graphMarkerGroup.getChildren().add(pMarker.getPosRect());
                     if (pMarker.getScale() != pointMarkerGlobalScale) {
                         pMarker.scaleAndReposition(pointMarkerGlobalScale);
                     }
