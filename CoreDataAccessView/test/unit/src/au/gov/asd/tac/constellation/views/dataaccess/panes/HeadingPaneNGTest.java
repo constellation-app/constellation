@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.plugins.gui.PluginParametersPaneListener;
+import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessPreferenceUtilities;
 import java.util.Arrays;
@@ -174,6 +175,11 @@ public class HeadingPaneNGTest {
         @Override
         public void hierarchicalUpdate() {
             didHierarchicalUpdate = true;
+        }
+
+        @Override
+        public void notifyRequiredParameterChange(PluginParameter<?> parameter, boolean currentlySatisfied) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
         }
 
     }
