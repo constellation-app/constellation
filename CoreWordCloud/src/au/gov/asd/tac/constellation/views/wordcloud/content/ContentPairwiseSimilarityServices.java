@@ -31,6 +31,8 @@ import java.util.Set;
  * @author Delphinus8821
  */
 public class ContentPairwiseSimilarityServices {
+    
+    private static final String UNSUPPORTED = "This calculator does not compute modulii";
 
     public static class MutableDouble {
 
@@ -249,12 +251,12 @@ public class ContentPairwiseSimilarityServices {
 
         @Override
         public double updateModulus(final double currentModulus, final int element1Freq) {
-            throw new UnsupportedOperationException("This calculator does not compute modulii");
+            throw new UnsupportedOperationException(UNSUPPORTED);
         }
 
         @Override
         public double finalizeModulus(final double modulus) {
-            throw new UnsupportedOperationException("This calculator does not compute modulii");
+            throw new UnsupportedOperationException(UNSUPPORTED);
         }
 
     }
@@ -278,12 +280,12 @@ public class ContentPairwiseSimilarityServices {
 
         @Override
         public double updateModulus(final double currentModulus, final int element1Freq) {
-            throw new UnsupportedOperationException("This calculator does not compute modulii");
+            throw new UnsupportedOperationException(UNSUPPORTED);
         }
 
         @Override
         public double finalizeModulus(final double modulus) {
-            throw new UnsupportedOperationException("This calculator does not compute modulii");
+            throw new UnsupportedOperationException(UNSUPPORTED);
         }
     }
 

@@ -130,7 +130,7 @@ public class WordCloud {
         for (final Entry<String, Integer> word : wordsToHashes.entrySet()) {
 
             // Skip this word if it is tagged as a single word constituent of a phrase, or if it doesn't meet the threshold
-            if (((TaggedSparseMatrix) hashesToElements).getTag(word.getValue()) || hashedWordSets.get(word.getValue()).size() < threshold) {
+            if (((TaggedSparseMatrix) hashesToElements).isTag(word.getValue()) || hashedWordSets.get(word.getValue()).size() < threshold) {
                 continue;
             }
 

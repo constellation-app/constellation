@@ -69,7 +69,7 @@ public class TaggedSparseMatrix<N extends Number> extends SparseMatrix<N> {
         return tags.containsKey(key);
     }
 
-    public boolean getTag(final int key) {
+    public boolean isTag(final int key) {
         return tags.get(key);
     }
 

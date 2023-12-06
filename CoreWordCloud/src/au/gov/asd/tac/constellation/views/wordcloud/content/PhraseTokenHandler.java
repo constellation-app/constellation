@@ -27,7 +27,7 @@ import java.util.Set;
 public class PhraseTokenHandler implements TokenHandler {
 
     @SuppressWarnings("unchecked") // type of SparseMatrix is integer
-    private final SparseMatrix<Integer> tokenElementMatrix = (TaggedSparseMatrix<Integer>) TaggedSparseMatrix.constructMatrix(0);
+    private final SparseMatrix<Integer> tokenElementMatrix = TaggedSparseMatrix.constructMatrix(0);
     private final Map<String, Integer> tokenHashes = new HashMap<>();
     private final Map<Integer, Set<Integer>> constituentHashes = new HashMap<>();
 

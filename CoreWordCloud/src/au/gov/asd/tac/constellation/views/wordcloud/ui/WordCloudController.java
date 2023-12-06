@@ -396,9 +396,9 @@ public class WordCloudController {
      */
     public void updateButtonsOnPane() {
         // Retrieve the button states from the WordCloud 
-        final boolean isSizeSorted = cloud == null ? true : cloud.getIsSizeSorted();
-        final boolean isUnionSelect = cloud == null ? true : cloud.getIsUnionSelect();
-        final boolean hasSignificances = cloud == null ? false : cloud.getHasSignificances();
+        final boolean isSizeSorted = cloud != null && cloud.getIsSizeSorted();
+        final boolean isUnionSelect = cloud != null && cloud.getIsUnionSelect();
+        final boolean hasSignificances = cloud != null && cloud.getHasSignificances();
 
         // Run an update to the WordCloudPane, based on the retrieved information, on the javafx thread 
         Platform.runLater(() -> {

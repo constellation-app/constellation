@@ -142,7 +142,7 @@ public class WordCloudPane extends BorderPane {
 
         // Create two toggle buttons in a toggle group to change the selection mode
         union = new ToggleButton("Union");
-        intersection = new ToggleButton("intersection");
+        intersection = new ToggleButton("Intersection");
         modeButtons = new ToggleGroup();
         union.setToggleGroup(modeButtons);
         intersection.setToggleGroup(modeButtons);
@@ -207,27 +207,12 @@ public class WordCloudPane extends BorderPane {
         // Create a slider beneath the buttons to be displayed when significance levels are in play 
         sliderBar = new AnchorPane();
         slider = new Slider(0, 1, 0.5);
-        final Label significanceLabel = new Label(String.format("significance: %.2g", 0.05));
+        final Label significanceLabel = new Label(String.format("Significance: %.2g", 0.5));
         significanceLabel.setStyle("-fx-text-fill: #d4d4d4;");
-        slider.setLabelFormatter(new StringConverter<Double>() {
-            @Override
-            public String toString(final Double val) {
-                return String.format("%.2f", Math.pow(20, 0 - (Math.log(val) / Math.log(0.5))));
-            }
-
-            @Override
-            public Double fromString(final String arg0) {
-                return 0.0;
-            }
-        });
-
         slider.setPrefWidth(400);
         slider.valueProperty().addListener((final ObservableValue<? extends Number> obv, final Number oldVal, final Number newVal) -> {
             double newSignificance = newVal.doubleValue();
-            if (newSignificance != 0) {
-                newSignificance = Math.pow(20, 0 - (Math.log(newSignificance) / Math.log(0.5)));
-            }
-            significanceLabel.setText(String.format("significance: %.2g", newSignificance));
+            significanceLabel.setText(String.format("Significance: %.2g", newSignificance));
             controller.setSignificance(newSignificance);
         });
 
@@ -385,12 +370,9 @@ public class WordCloudPane extends BorderPane {
             return;
         }
 
-        for (final String word : selectedWords) {
-            // Display the word as selected if necessary 
-            if (selectedWords.contains(word)) {
-                wordButtons.get(word).setVisited(true);
-            }
-        }
+        // Display the word as selected if necessary
+        selectedWords.stream().filter(word -> (selectedWords.contains(word))).forEachOrdered(word -> 
+            wordButtons.get(word).setVisited(true)); 
     }
 
     /**

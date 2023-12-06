@@ -29,10 +29,8 @@ import au.gov.asd.tac.constellation.views.wordcloud.ui.WordCloudAttributeDescrip
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,7 +41,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.openide.util.Exceptions;
 
 /*
  * @author twilight_sparkle
@@ -164,12 +161,7 @@ public class ContentAnalysisManager {
     }
 
     public ThreadAllocator getGraphElementThreadAllocator() {
-        return ThreadAllocator.buildThreadAllocator(AVAILABLE_THREADS, MAX_THRESHOLD, querySize, new AdaptorFactory() {
-            @Override
-            public ThreadedPhraseAdaptor getAdaptor(final ThreadAllocator forAllocator) {
-                return new GraphElementThreadedPhraseAdaptor(forAllocator);
-            }
-        });
+        return ThreadAllocator.buildThreadAllocator(AVAILABLE_THREADS, MAX_THRESHOLD, querySize, (final ThreadAllocator forAllocator) -> new GraphElementThreadedPhraseAdaptor(forAllocator));
     }
 
     public void clusterDocuments(final ClusterDocumentsParameters clusterDocumentsParams) {
@@ -242,7 +234,7 @@ public class ContentAnalysisManager {
         final PhraseTokenHandler handler = new PhraseTokenHandler();
         ContentTokenizingServices.createPhraseAnalysisTokenizingService(handler, phrasiphyContentParams, allocator);
 
-        Future<?> f = PluginExecution.withPlugin(new SimpleEditPlugin("Display Word Cloud") {
+        final Future<?> f = PluginExecution.withPlugin(new SimpleEditPlugin("Display Word Cloud") {
             @Override
             public void edit(final GraphWriteMethods graph, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException {
                 int cloudAttr = graph.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR);

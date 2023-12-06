@@ -136,51 +136,46 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         params.addController(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID, (PluginParameter<?> masterParameter, Map<String, PluginParameter<?>> parameters, ParameterChange change) -> {
             @SuppressWarnings("unchecked") // ATTRIBUTE_TO_ANALYSE_PARAMETER is always of type SingleChoiceParameter
             final PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) parameters.get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
-            switch (change) {
-                case VALUE:
-                    if ("transaction".equals(masterParameter.getStringValue())) {
-                        if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
-                            attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
-                        } else {
-                            attrParam.setStringValue(EMPTY_STRING);
-                        }
-                        SingleChoiceParameterType.setOptions(attrParam, transAttributes);
-                    } else if ("node".equals(masterParameter.getStringValue())) {
-                        if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
-                            attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
-                        } else {
-                            attrParam.setStringValue(EMPTY_STRING);
-                        }
-                        SingleChoiceParameterType.setOptions(attrParam, nodeAttributes);
+            if (change == ParameterChange.VALUE) {
+                if ("transaction".equals(masterParameter.getStringValue())) {
+                    if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
+                        attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
+                    } else {
+                        attrParam.setStringValue(EMPTY_STRING);
                     }
-                    break;
+                    SingleChoiceParameterType.setOptions(attrParam, transAttributes);
+                } else if ("node".equals(masterParameter.getStringValue())) {
+                    if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
+                        attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
+                    } else {
+                        attrParam.setStringValue(EMPTY_STRING);
+                    }
+                    SingleChoiceParameterType.setOptions(attrParam, nodeAttributes);
+                }
             }
         });
 
         params.addController(PhrasiphyContentParameters.PHRASE_LENGTH_PARAMETER_ID, (PluginParameter<?> masterParameter, Map<String, PluginParameter<?>> parameters, ParameterChange change) -> {
             @SuppressWarnings("unchecked") // PROXIMITY_PARAMETER is always of type IntegerParameter 
             final PluginParameter<IntegerParameterValue> proximityParam = (PluginParameter<IntegerParameterValue>) parameters.get(PhrasiphyContentParameters.PROXIMITY_PARAMETER_ID);
-            switch (change) {
-                case VALUE:
-                    if (masterParameter.getError() != null) {
-                        IntegerParameterType.setMinimum(proximityParam, 0);
-                        break;
-                    }
+            if (change == ParameterChange.VALUE) {
+                if (masterParameter.getError() != null) {
+                    IntegerParameterType.setMinimum(proximityParam, 0);
+                } else {
                     int currentPhraseLength = Integer.parseInt(masterParameter.getStringValue());
                     IntegerParameterType.setMinimum(proximityParam, currentPhraseLength);
                     if (Integer.parseInt(proximityParam.getStringValue()) < currentPhraseLength) {
                         proximityParam.setStringValue(masterParameter.getStringValue());
                     }
-                    break;
+                }
             }
         });
 
-        VBox content = new VBox();
-
+        final VBox content = new VBox();
         run = new Button("Generate");
         run.setOnMouseClicked(event -> master.runPlugin(params));
 
-        PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(params, this, null);
+        final PluginParametersPane pluginParametersPane = PluginParametersPane.buildPane(params, this, null);
         content.getChildren().add(pluginParametersPane);
         content.getChildren().add(run);
         setContent(content);
