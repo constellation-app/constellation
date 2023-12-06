@@ -268,7 +268,7 @@ public class PluginParametersSwingDialog implements PluginParametersPaneListener
      * @param title
      * @return 
      */
-    private String getAcceptanceButton() {
+    private String getAcceptanceButton(final String title) {
         for (final String keyWord : acceptanceButtonLabels){
             if (StringUtils.containsIgnoreCase(title, keyWord)){
                 return keyWord;
