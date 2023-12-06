@@ -37,11 +37,9 @@ public enum AxisConstants {
     
     public static AxisConstants getReference(final String name){
         if (name != null){
-            for (AxisConstants value : AxisConstants.values()){
-                if (value != null){
-                    if (name.equals(value.toString())){
-                        return value;
-                    }
+            for (final AxisConstants value : AxisConstants.values()){
+                if (value != null && name.equals(value.toString())){
+                    return value;
                 }
             }
         }

@@ -44,6 +44,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -126,7 +127,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
         exportPerspectiveParam.setName("Export Perspective");
         exportPerspectiveParam.setDescription("The perspective the exported graph will be viewed from");
-        ArrayList<String> options = new ArrayList<>();
+        List<String> options = new ArrayList<>();
         options.add("Current Perspective");
         options.addAll(Stream.of(AxisConstants.values()).map(AxisConstants::toString).collect(Collectors.toList()));
         SingleChoiceParameterType.setOptions(exportPerspectiveParam, options);

@@ -138,7 +138,7 @@ public final class Vector4f {
     public static void reflect(final Vector4f result, final Vector4f referencePoint, final Vector4f reflectionPoint) {
         
         // Determine the distance between the reference point and reflection point
-        Vector4f distance = new Vector4f();
+        final Vector4f distance = new Vector4f();
         Vector4f.subtract(distance, reflectionPoint, referencePoint);
         
         // Add the distance to the reflecton point

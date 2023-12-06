@@ -68,7 +68,6 @@ public class SVGGraphBuilder {
     private final VisualManager visualManager;
     private final GraphVisualAccess access;
     
-    
     //Variables with default values, customisable by the builder pattern 
     private boolean selectedElementsOnly = false;
     private boolean showNodes = true;
@@ -142,7 +141,7 @@ public class SVGGraphBuilder {
      * @param selectedElementsOnly
      * @return 
      */
-    public SVGGraphBuilder withElements(final Boolean selectedElementsOnly) {
+    public SVGGraphBuilder withElements(final boolean selectedElementsOnly) {
         this.selectedElementsOnly = selectedElementsOnly;
         return this;
     }
@@ -266,7 +265,7 @@ public class SVGGraphBuilder {
         final float xmax = ymax * aspect;
         final float ymin = -ymax;
         final float xmin = -xmax;
-        Frustum viewFrustum = new Frustum(Camera.FIELD_OF_VIEW, aspect, xmin, xmax, ymin, ymax, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
+        final Frustum viewFrustum = new Frustum(Camera.FIELD_OF_VIEW, aspect, xmin, xmax, ymin, ymax, Camera.PERSPECTIVE_NEAR, Camera.PERSPECTIVE_FAR);
         
         // Get the projection matrix from the view frustum
         final Matrix44f projectionMatrix = viewFrustum.getProjectionMatrix();
@@ -486,8 +485,8 @@ public class SVGGraphBuilder {
             final Vector4f highCenterPosition = getVertexPosition(highIndex);
             final Vector4f lowCenterPosition = getVertexPosition(lowIndex);     
             
-            final float  highRadius = getVertexScaledRadius(highIndex);
-            final float  lowRadius = getVertexScaledRadius(lowIndex);
+            final float highRadius = getVertexScaledRadius(highIndex);
+            final float lowRadius = getVertexScaledRadius(lowIndex);
 
             // Do not export the link if the nodes are not within the field of view
             if (!inView(highCenterPosition, highRadius) &&  !inView(lowCenterPosition, lowRadius)) {
@@ -858,7 +857,7 @@ public class SVGGraphBuilder {
         final Vector4f screenPosition = new Vector4f();
         final Vector4f screenReflectionPoint = new Vector4f(viewPort[2]/2, viewPort[3]/2, 0, 0);
         Graphics3DUtilities.project(worldPosition, modelViewProjectionMatrix, viewPort, screenPosition);
-        if (screenPosition.getW() < 0){
+        if (screenPosition.getW() < 0) {
             Vector4f reflectedPosition = new Vector4f();
             Vector4f.reflect(reflectedPosition, screenPosition, screenReflectionPoint);
             return new Vector4f(reflectedPosition.getX(), reflectedPosition.getY(), screenPosition.getZ(), screenPosition.getW());
@@ -871,7 +870,7 @@ public class SVGGraphBuilder {
      * @param vertexIndex
      * @return 
      */
-    private float getVertexRadius(int vertexIndex) {
+    private float getVertexRadius(final int vertexIndex) {
         return access.getRadius(vertexIndex)* 128;
     }
         
@@ -972,24 +971,12 @@ public class SVGGraphBuilder {
      * @param radius
      * @return 
      */
-    private boolean inView(Vector4f position, float radius) {
-        if (position.getX() + radius < 0){
-            return false;
-        } 
-        
-        if (position.getX() - radius > this.viewPort[2]){
-            return false;
-        } 
-        
-        if (position.getY() + radius < 0){
-            return false;
-        } 
-        
-        if (position.getY() - radius > this.viewPort[3]){
-            return false;
-        } 
-        
-        return position.getW() >= 0;
+    private boolean inView(final Vector4f position, final float radius) {
+        return (!(position.getX() + radius < 0) &&
+                !(position.getX() - radius > this.viewPort[2]) &&
+                !(position.getY() + radius < 0) &&
+                !(position.getY() - radius > this.viewPort[3]) &&
+                !(position.getW() < 0));
     }
 }
 

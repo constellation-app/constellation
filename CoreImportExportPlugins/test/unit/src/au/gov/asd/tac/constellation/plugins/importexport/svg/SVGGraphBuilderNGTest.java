@@ -36,7 +36,9 @@ import org.mockito.MockedStatic;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -59,16 +61,30 @@ public class SVGGraphBuilderNGTest {
     private final String graphName = "Test Graph 1";
     
     // Positional Attributes
-    private int vertexAttributeIdX, vertexAttributeIdY, vertexAttributeIdZ;
+    private int vertexAttributeIdX;
+    private int vertexAttributeIdY;
+    private int vertexAttributeIdZ;
     
     // Vertex Ids
-    private int vertexId1, vertexId2, vertexId3, vertexId4, vertexId5, vertexId6;
+    private int vertexId1;
+    private int vertexId2;
+    private int vertexId3;
+    private int vertexId4;
+    private int vertexId5;
+    private int vertexId6;
     
     // Transaction Ids
-    private int transactionId1, transactionId2, transactionId3, transactionId4, transactionId5;
+    private int transactionId1;
+    private int transactionId2;
+    private int transactionId3;
+    private int transactionId4;
+    private int transactionId5;
+    
     
     // Other Attributea
-    private int vertexAttributeIdSelected, transactionAttributeIdSelected, vertexAttributeIdPinned;
+    private int vertexAttributeIdSelected;
+    private int transactionAttributeIdSelected;
+    private int vertexAttributeIdPinned;
     
     public SVGGraphBuilderNGTest() {
     }
