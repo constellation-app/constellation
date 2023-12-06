@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg overflow="visible" viewBox="0, 0, 256, 256">
     <svg id="top-labels" width="256" height="256" overflow="visible" />
+    <svg id="blaze" overflow="visable" />
     <svg id="node-images">
         <svg id="background-image" width="256" height="256" />
         <svg id="foreground-image" width="256" height="256" />        

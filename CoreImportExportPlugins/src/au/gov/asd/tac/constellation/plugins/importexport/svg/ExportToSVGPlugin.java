@@ -73,6 +73,7 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
     public static final String SHOW_CONNECTIONS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_connections");
     public static final String SHOW_NODE_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_node_labels");
     public static final String SHOW_CONNECTION_LABELS_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_transaction_labels");
+    public static final String SHOW_BLAZES_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "show_blases");
     public static final String EXPORT_PERSPECTIVE_PARAMETER_ID = PluginParameter.buildId(ExportToSVGPlugin.class, "export_perspective");
     private static final Logger LOGGER = Logger.getLogger(ExportToSVGPlugin.class.getName());
     
@@ -124,6 +125,11 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         showConnectionLabelsParam.setDescription("Include connection labels in the export");
         parameters.addParameter(showConnectionLabelsParam);
         
+        final PluginParameter<BooleanParameterValue> showBlazesParam = BooleanParameterType.build(SHOW_BLAZES_PARAMETER_ID);
+        showBlazesParam.setName("Show Blazes");
+        showBlazesParam.setDescription("Include Blazes in the export");
+        parameters.addParameter(showBlazesParam);
+        
         final PluginParameter<SingleChoiceParameterValue> exportPerspectiveParam = SingleChoiceParameterType.build(EXPORT_PERSPECTIVE_PARAMETER_ID);
         exportPerspectiveParam.setName("Export Perspective");
         exportPerspectiveParam.setDescription("The perspective the exported graph will be viewed from");
@@ -148,10 +154,11 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
         final boolean showConnections = parameters.getBooleanValue(SHOW_CONNECTIONS_PARAMETER_ID);
         final boolean showNodeLabels = parameters.getBooleanValue(SHOW_NODE_LABELS_PARAMETER_ID);
         final boolean showConnectionLabels = parameters.getBooleanValue(SHOW_CONNECTION_LABELS_PARAMETER_ID);
+        final boolean showBlazes = parameters.getBooleanValue(SHOW_BLAZES_PARAMETER_ID);
         final String exportPerspective = parameters.getStringValue(EXPORT_PERSPECTIVE_PARAMETER_ID);
         
         if (fnam.isBlank()){
-             throw new PluginException(PluginNotificationLevel.ERROR, "File location has not been specified.");
+            throw new PluginException(PluginNotificationLevel.ERROR, "File location has not been specified.");
         }
         
         final File imageFile = new File(fnam);  
@@ -162,11 +169,12 @@ public class ExportToSVGPlugin extends SimpleReadPlugin {
                 .withTitle(title)
                 .withReadableGraph(graph)
                 .withBackground(color)
-                .withElements(selectedElements)
+                .withSelectedElementsOnly(selectedElements)
                 .includeNodes(showNodes)
                 .includeConnections(showConnections)
                 .includeNodeLabels(showNodeLabels)
                 .includeConnectionLabels(showConnectionLabels)
+                .includeBlazes(showBlazes)
                 .fromPerspective(AxisConstants.getReference(exportPerspective))
                 .build();
         try {

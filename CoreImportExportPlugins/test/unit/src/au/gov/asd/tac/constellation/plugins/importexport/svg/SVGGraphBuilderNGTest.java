@@ -147,9 +147,9 @@ public class SVGGraphBuilderNGTest {
     @Test
     public void testWithReadableGraph() {
         System.out.println("withReadableGraph");
-        GraphReadMethods graph = GraphNode.getGraphNode(graphName).getGraph().getReadableGraph();
-        SVGGraphBuilder instance = new SVGGraphBuilder();
-        SVGGraphBuilder result = instance.withReadableGraph(graph);
+        final GraphReadMethods localGraph = GraphNode.getGraphNode(graphName).getGraph().getReadableGraph();
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.withReadableGraph(localGraph);
         assertEquals(result, instance);
     }
 
@@ -159,9 +159,9 @@ public class SVGGraphBuilderNGTest {
     @Test
     public void testWithInteraction() {
         System.out.println("withInteraction");
-        PluginInteraction interaction = interactionMock;
-        SVGGraphBuilder instance = new SVGGraphBuilder();
-        SVGGraphBuilder result = instance.withInteraction(interaction);
+        final PluginInteraction interaction = interactionMock;
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.withInteraction(interaction);
         assertEquals(result, instance);
     }
 
@@ -171,9 +171,9 @@ public class SVGGraphBuilderNGTest {
     @Test
     public void testWithTitle() {
         System.out.println("withTitle");
-        String title = "Test Title";
-        SVGGraphBuilder instance = new SVGGraphBuilder();
-        SVGGraphBuilder result = instance.withTitle(title);
+        final String title = "Test Title";
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.withTitle(title);
         assertEquals(result, instance);
     }
 
@@ -183,33 +183,45 @@ public class SVGGraphBuilderNGTest {
     @Test
     public void testWithBackground() {
         System.out.println("withBackground");
-        ConstellationColor color = ConstellationColor.BANANA;
-        SVGGraphBuilder instance = new SVGGraphBuilder();
-        SVGGraphBuilder result = instance.withBackground(color);
+        final ConstellationColor color = ConstellationColor.BANANA;
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.withBackground(color);
         assertEquals(result, instance);
     }
 
     /**
-     * Test of withElements method, of class SVGGraphBuilder.
+     * Test of withSelectedElementsOnly method, of class SVGGraphBuilder.
      */
     @Test
-    public void testWithNodes() {
-        System.out.println("withNodes");
-        Boolean selectedNodesOnly = true;
-        SVGGraphBuilder instance = new SVGGraphBuilder();
-        SVGGraphBuilder result = instance.withElements(selectedNodesOnly);
+    public void testWithElements() {
+        System.out.println("withElements");
+        final Boolean selectedElementsOnly = true;
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.withSelectedElementsOnly(selectedElementsOnly);
         assertEquals(result, instance);
     }
 
+    /**
+     * Test of includeNodes method, of class SVGGraphBuilder.
+     */
+    @Test
+    public void testIncludeNodes() {
+        System.out.println("includeNodes");
+        final Boolean showNodes = true;
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.includeNodes(showNodes);
+        assertEquals(result, instance);
+    }
+    
     /**
      * Test of includeConnections method, of class SVGGraphBuilder.
      */
     @Test
     public void testIncludeConnections() {
         System.out.println("includeConnections");
-        Boolean showConnections = true;
-        SVGGraphBuilder instance = new SVGGraphBuilder();
-        SVGGraphBuilder result = instance.includeConnections(showConnections);
+        final Boolean showConnections = true;
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.includeConnections(showConnections);
         assertEquals(result, instance);
     }
 
@@ -219,9 +231,9 @@ public class SVGGraphBuilderNGTest {
     @Test
     public void testIncludeNodeLabels() {
         System.out.println("includeNodeLabels");
-        Boolean showNodeLabels = true;
-        SVGGraphBuilder instance = new SVGGraphBuilder();
-        SVGGraphBuilder result = instance.includeNodeLabels(showNodeLabels);
+        final Boolean showNodeLabels = true;
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.includeNodeLabels(showNodeLabels);
         assertEquals(result, instance);
     }
 
@@ -231,23 +243,34 @@ public class SVGGraphBuilderNGTest {
     @Test
     public void testIncludeConnectionLabels() {
         System.out.println("includeConnectionLabels");
-        Boolean showConnectionLabels = true;
-        SVGGraphBuilder instance = new SVGGraphBuilder();
-        SVGGraphBuilder result = instance.includeConnectionLabels(showConnectionLabels);
+        final Boolean showConnectionLabels = true;
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.includeConnectionLabels(showConnectionLabels);
         assertEquals(result, instance);
     }
 
+     /**
+     * Test of includeBlazes method, of class SVGGraphBuilder.
+     */
+    @Test
+    public void testIncludeBlazes() {
+        System.out.println("includeBlazes");
+        final Boolean showBlazes = true;
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.includeBlazes(showBlazes);
+        assertEquals(result, instance);
+    }
+    
     /**
      * Test of fromPerspective method, of class SVGGraphBuilder.
      */
     @Test
     public void testFromPerspective() {
         System.out.println("fromPerspective");
-        AxisConstants exportPerspective = AxisConstants.X_POSITIVE;
-        SVGGraphBuilder instance = new SVGGraphBuilder();
-        SVGGraphBuilder result = instance.fromPerspective(exportPerspective);
+        final AxisConstants exportPerspective = AxisConstants.X_POSITIVE;
+        final SVGGraphBuilder instance = new SVGGraphBuilder();
+        final SVGGraphBuilder result = instance.fromPerspective(exportPerspective);
         assertEquals(result, instance);
-
     }
 
     /**
@@ -256,18 +279,19 @@ public class SVGGraphBuilderNGTest {
     @Test
     public void testBuild() throws Exception {
         System.out.println("build");
-        SVGGraphBuilder instance = new SVGGraphBuilder()
+        final SVGGraphBuilder instance = new SVGGraphBuilder()
                 .withInteraction(interactionMock)
                 .withReadableGraph(graph.getReadableGraph())
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withElements(true)
+                .withSelectedElementsOnly(false)
+                .includeNodes(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
-                .includeConnectionLabels(false);
+                .includeConnectionLabels(false)
+                .includeBlazes(false);
         
-        SVGObject result = new SVGObject(instance.build());
-        
+        final SVGObject result = new SVGObject(instance.build());
         assertNotNull(result.getChild(String.format("node-%s",vertexId2)));
     }
     
@@ -278,14 +302,16 @@ public class SVGGraphBuilderNGTest {
     @Test
     public void testBuild_withoutReadableGraph() throws InterruptedException {
         System.out.println("build");
-        SVGGraphBuilder instance = new SVGGraphBuilder()
+        final SVGGraphBuilder instance = new SVGGraphBuilder()
                 .withInteraction(interactionMock)
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withElements(true)
+                .withSelectedElementsOnly(false)
+                .includeNodes(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
-                .includeConnectionLabels(false); 
+                .includeConnectionLabels(false)
+                .includeBlazes(false); 
         assertNull(instance.build());
     }
     
@@ -296,14 +322,16 @@ public class SVGGraphBuilderNGTest {
     @Test
     public void testBuild_withoutInteraction() throws InterruptedException {
         System.out.println("build");
-        SVGGraphBuilder instance = new SVGGraphBuilder()
+        final SVGGraphBuilder instance = new SVGGraphBuilder()
                 .withReadableGraph(graph.getReadableGraph())
                 .withTitle(graphName)
                 .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withElements(true)
+                .withSelectedElementsOnly(false)
+                .includeNodes(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
-                .includeConnectionLabels(false); 
+                .includeConnectionLabels(false)
+                .includeBlazes(false); 
         assertNull(instance.build());
     }
     
@@ -314,14 +342,16 @@ public class SVGGraphBuilderNGTest {
     @Test
     public void testBuild_graphTitle() throws InterruptedException {
         System.out.println("build");
-        SVGGraphBuilder instance = new SVGGraphBuilder()
+        final SVGGraphBuilder instance = new SVGGraphBuilder()
                 .withInteraction(interactionMock)
                 .withReadableGraph(graph.getReadableGraph())
                 .fromPerspective(AxisConstants.Z_POSITIVE)
-                .withElements(true)
+                .withSelectedElementsOnly(false)
+                .includeNodes(true)
                 .includeNodeLabels(true)
                 .includeConnections(true)
-                .includeConnectionLabels(false); 
+                .includeConnectionLabels(false)
+                .includeBlazes(false); 
         assertNull(instance.build());
     }
     
@@ -329,11 +359,12 @@ public class SVGGraphBuilderNGTest {
         final Schema schema = SchemaFactoryUtilities.getSchemaFactory(AnalyticSchemaFactory.ANALYTIC_SCHEMA_ID).createSchema();
         final Graph localGraph = new DualGraph(schema);
 
-        WritableGraph wg = localGraph.getWritableGraph("Autosave", true);
+        final WritableGraph wg = localGraph.getWritableGraph("Autosave", true);
         try {
             vertexAttributeIdX = VisualConcept.VertexAttribute.X.ensure(wg);
             vertexAttributeIdY = VisualConcept.VertexAttribute.Y.ensure(wg);
             vertexAttributeIdZ = VisualConcept.VertexAttribute.Z.ensure(wg);
+            VisualConcept.VertexAttribute.BLAZE.ensure(wg);
             vertexAttributeIdPinned = VisualConcept.VertexAttribute.PINNED.ensure(wg);
             vertexAttributeIdSelected = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
             transactionAttributeIdSelected = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
@@ -341,38 +372,45 @@ public class SVGGraphBuilderNGTest {
             vertexId1 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId1, 1.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId1, 1.0f);
+            wg.setFloatValue(vertexAttributeIdZ, vertexId1, 1.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId1, false);
             
             vertexId2 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId2, 5.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId2, 1.0f);
+            wg.setFloatValue(vertexAttributeIdZ, vertexId2, 1.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId2, true);
             wg.setBooleanValue(vertexAttributeIdPinned, vertexId2, true);
             
             vertexId3 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId3, 1.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId3, 5.0f);
+            wg.setFloatValue(vertexAttributeIdZ, vertexId3, 1.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId3, false);
             
             vertexId4 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId4, 5.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId4, 5.0f);
+            wg.setFloatValue(vertexAttributeIdZ, vertexId4, 5.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId4, false);
             
             vertexId5 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId5, 10.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId5, 10.0f);
+            wg.setFloatValue(vertexAttributeIdZ, vertexId5, 10.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId5, true);
             
             vertexId6 = wg.addVertex();
-            wg.setFloatValue(vertexAttributeIdX, vertexId6, 15.0f);
-            wg.setFloatValue(vertexAttributeIdY, vertexId6, 15.0f);
+            wg.setFloatValue(vertexAttributeIdX, vertexId6, 0.0f);
+            wg.setFloatValue(vertexAttributeIdY, vertexId6, 0.0f);
+            wg.setFloatValue(vertexAttributeIdZ, vertexId6, 15.0f);
 
             transactionId1 = wg.addTransaction(vertexId1, vertexId2, false);
             transactionId2 = wg.addTransaction(vertexId2, vertexId3, false);
             transactionId3 = wg.addTransaction(vertexId2, vertexId5, true);
             transactionId4 = wg.addTransaction(vertexId2, vertexId2, true);
             transactionId5 = wg.addTransaction(vertexId2, vertexId2, false);
+            
         } finally {
             wg.commit();
         }

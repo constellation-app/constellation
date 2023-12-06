@@ -81,6 +81,7 @@ public final class ExportToSVGAction implements ActionListener {
                     .withParameter(ExportToSVGPlugin.SHOW_CONNECTIONS_PARAMETER_ID, flags.drawConnections())
                     .withParameter(ExportToSVGPlugin.SHOW_NODE_LABELS_PARAMETER_ID, flags.drawNodeLabels())
                     .withParameter(ExportToSVGPlugin.SHOW_CONNECTION_LABELS_PARAMETER_ID, flags.drawConnectionLabels())
+                    .withParameter(ExportToSVGPlugin.SHOW_BLAZES_PARAMETER_ID, flags.drawBlazes())
                     .withParameter(ExportToSVGPlugin.BACKGROUND_COLOR_PARAMETER_ID, color)
                     .withParameter(ExportToSVGPlugin.EXPORT_PERSPECTIVE_PARAMETER_ID, "Current Perspective")
                     .interactively(true)

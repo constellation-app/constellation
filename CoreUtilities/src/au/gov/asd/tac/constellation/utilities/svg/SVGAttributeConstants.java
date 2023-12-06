@@ -39,6 +39,7 @@ public enum SVGAttributeConstants {
     HEIGHT("height"),
     ID("id"),
     NAME_SPACE("xmlns"),
+    OPACITY("opacity"),
     POINTS("points"),
     RADIUS("r"),
     SOURCE_X("x1"),

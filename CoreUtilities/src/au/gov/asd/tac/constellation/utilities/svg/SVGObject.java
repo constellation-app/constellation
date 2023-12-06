@@ -237,12 +237,12 @@ public class SVGObject {
     
     private float getPositionalData(final Float quickReference, final SVGAttributeConstants longReference) {  
         if (quickReference != null) {
-            //Return the localy stored value;
+            //The localy stored value;
             return quickReference;
         }
         final Float attributeFloat = this.getAttributeFloat(longReference);          
         if (attributeFloat != null) {
-            //Return the value set during parsing;
+            //The value set during parsing;
             return attributeFloat;
         } else {
             //No value has been set
@@ -493,4 +493,8 @@ public class SVGObject {
     public void setPoints(final String path) {
         setAttribute(SVGAttributeConstants.POINTS, path);
     }    
+
+    public void setOpacity(final float opacity) {
+        setAttribute(SVGAttributeConstants.OPACITY, opacity);
+    }
 }

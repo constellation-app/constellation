@@ -74,6 +74,7 @@ public class SVGGraphBuilder {
     private boolean showConnections = true;
     private boolean showNodeLabels = true;
     private boolean showConnectionLabels = true;
+    private boolean showBlazes = true;
     private ConstellationColor backgroundColor = VisualGraphDefaults.DEFAULT_BACKGROUND_COLOR;
         
     //Variables without default values, customisable by the builder pattern 
@@ -141,7 +142,7 @@ public class SVGGraphBuilder {
      * @param selectedElementsOnly
      * @return 
      */
-    public SVGGraphBuilder withElements(final boolean selectedElementsOnly) {
+    public SVGGraphBuilder withSelectedElementsOnly(final boolean selectedElementsOnly) {
         this.selectedElementsOnly = selectedElementsOnly;
         return this;
     }
@@ -183,6 +184,16 @@ public class SVGGraphBuilder {
      */
     public SVGGraphBuilder includeConnectionLabels(final Boolean showConnectionLabels) {
         this.showConnectionLabels = showConnectionLabels;
+        return this;
+    }
+    
+    /**
+     * Controls whether Blases are included or excluded from the SVG output file
+     * @param showBlazes
+     * @return 
+     */
+    public SVGGraphBuilder includeBlazes(final Boolean showBlazes) {
+        this.showBlazes = showBlazes;
         return this;
     }
 
@@ -247,9 +258,9 @@ public class SVGGraphBuilder {
         final Camera oldCamera = new Camera(this.camera);
         final BoundingBox box = new BoundingBox();
         if (exportPerspective != null) {
-                BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedElementsOnly);
-                CameraUtilities.refocus(camera, new Vector3f(exportPerspective.isNegative() ? -1 : 1, 0, 0), new Vector3f(0, 1, 0), box);
-                Animation.startAnimation(new PanAnimation(String.format("Reset to @s View", exportPerspective), oldCamera, camera, true));
+            BoundingBoxUtilities.recalculateFromGraph(box, readableGraph, selectedElementsOnly);
+            CameraUtilities.refocus(camera, new Vector3f(exportPerspective.isNegative() ? -1 : 1, 0, 0), new Vector3f(0, 1, 0), box);
+            Animation.startAnimation(new PanAnimation(String.format("Reset to @s View", exportPerspective), oldCamera, camera, true));
         }
         
         // Determine the height and width of the users InteractiveGraphView pane
@@ -297,7 +308,7 @@ public class SVGGraphBuilder {
         int progress = 0;
         final int totalSteps = access.getVertexCount();
         interaction.setExecutionStage(progress, totalSteps, "Building Graph", "Building Nodes", true);
-
+        
         // Retrieve the svg element that holds the Nodes.
         final SVGObject svgNodes = SVGObjectConstants.CONTENT.findIn(svgGraph);
         
@@ -367,7 +378,11 @@ public class SVGGraphBuilder {
             if (access.isVertexDimmed(vertexIndex)) {
                 svgImages.applyGrayScaleFilter();
             }
-            
+            if (showBlazes && access.isBlazed(vertexIndex)) {
+                this.buildBlaze(svgGraph, vertexIndex);
+            } else {
+                SVGObjectConstants.BLAZE.removeFrom(svgNode);
+            }     
             interaction.setProgress(progress++, totalSteps, true);
         } 
         interaction.setProgress(totalSteps, totalSteps, String.format("Created %s nodes", progress), true);
@@ -417,7 +432,7 @@ public class SVGGraphBuilder {
             }
         }
     }
-
+    
     /**
      * Constructs top label SVG elements for a given vertex.
      * This method considers the bottom label requirements for nodes.
@@ -445,6 +460,30 @@ public class SVGGraphBuilder {
                 offset = offset - size;
             }
         }
+    }
+    
+    /**
+     * Builds SVG representation of a Blaze.
+     * Blaze size, angle color and opacity are supported. 
+     * Blazes are exported as discrete SVG content so that they can overlay all exported elements. 
+     * @param svgGraph
+     * @param vertexIndex 
+     */
+    private void buildBlaze(final SVGObject svgGraph, final int vertexIndex) {   
+        final int blazeAngle = access.getBlazeAngle(vertexIndex);
+        final float blazeSize = access.getBlazeSize();
+        final float blazeWidth = 512 * blazeSize;
+        final float blazeHeight = 128 * blazeSize;
+        final Vector4f edgePosition = this.offSetPosition(this.getVertexPosition(vertexIndex), this.getVertexScaledRadius(vertexIndex), Math.toRadians(blazeAngle + 90));
+        
+        final SVGObject svgBlaze = SVGTemplateConstants.BLAZE.getSVGObject();
+        svgBlaze.setID(String.format("Blaze%s", vertexIndex));
+        svgBlaze.setParent(SVGObjectConstants.CONTENT.findIn(svgGraph));
+        svgBlaze.setSortOrderValue(0);
+        svgBlaze.setFillColor(access.getBlazeColor(vertexIndex));
+        svgBlaze.setOpacity(access.getBlazeOpacity());svgBlaze.setDimension(blazeWidth, blazeHeight);
+        svgBlaze.setPosition(edgePosition.getX() , edgePosition.getY() - blazeHeight / 2);
+        SVGObjectConstants.ARROW_HEAD.findIn(svgBlaze).setTransformation(String.format("rotate(%s %s %s)", blazeAngle - 90, 0, 16));
     }
 
     /**
@@ -514,12 +553,8 @@ public class SVGGraphBuilder {
                 final int connection = access.getLinkConnection(linkIndex, connectionIndex);
                 
                 //Do not export the conection if only selected element are being exported and the connection is not selected
-                if(selectedElementsOnly && (!access.isConnectionSelected(connection))){
-                    continue;
-                }
-                
                 // Do not export the onnection if it is invisable 
-                if (access.getConnectionVisibility(connection) == 0) {
+                if((selectedElementsOnly && !access.isConnectionSelected(connection)) || access.getConnectionVisibility(connection) == 0) {
                     continue;
                 }
                 
@@ -753,8 +788,7 @@ public class SVGGraphBuilder {
         svgArrowHead.setID(String.format("arrow-head-%s-%s", position.getX(), position.getY() - arrowHeadHeight/2 ));
 
         //Rotate the arrow head polygon around the tip to align it with the angle of the connection
-        final SVGObject svgArrowHeadPolygon = SVGObjectConstants.ARROW_HEAD.findIn(svgArrowHead);
-        svgArrowHeadPolygon.setTransformation(String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), 0, 16));
+        SVGObjectConstants.ARROW_HEAD.findIn(svgArrowHead).setTransformation(String.format("rotate(%s %s %s)", Math.toDegrees(connectionAngle), 0, 16));
     }
 
     /**
@@ -972,11 +1006,11 @@ public class SVGGraphBuilder {
      * @return 
      */
     private boolean inView(final Vector4f position, final float radius) {
-        return (!(position.getX() + radius < 0) &&
-                !(position.getX() - radius > this.viewPort[2]) &&
-                !(position.getY() + radius < 0) &&
-                !(position.getY() - radius > this.viewPort[3]) &&
-                !(position.getW() < 0));
+        return position.getX() + radius >= 0 &&
+                position.getX() - radius <= this.viewPort[2] &&
+                position.getY() + radius >= 0 &&
+                position.getY() - radius <= this.viewPort[3] &&
+                position.getW() > 0;
     }
 }
 
