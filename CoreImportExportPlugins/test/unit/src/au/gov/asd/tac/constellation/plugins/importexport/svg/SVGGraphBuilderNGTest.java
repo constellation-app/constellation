@@ -25,6 +25,8 @@ import au.gov.asd.tac.constellation.graph.node.plugins.DefaultPluginInteraction;
 import au.gov.asd.tac.constellation.graph.schema.Schema;
 import au.gov.asd.tac.constellation.graph.schema.SchemaFactoryUtilities;
 import au.gov.asd.tac.constellation.graph.schema.analytic.AnalyticSchemaFactory;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabel;
+import au.gov.asd.tac.constellation.graph.schema.visual.GraphLabels;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginInteraction;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
@@ -32,6 +34,7 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
 import au.gov.asd.tac.constellation.utilities.visual.AxisConstants;
 import au.gov.asd.tac.constellation.utilities.visual.VisualManager;
 import java.awt.Component;
+import java.util.ArrayList;
 import org.mockito.MockedStatic;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -86,6 +89,8 @@ public class SVGGraphBuilderNGTest {
     private int vertexAttributeIdLabel;
     private int transactionAttributeIdSelected;
     private int vertexAttributeIdPinned;
+    private int graphAttributeIdTopLabels;
+    private int graphAttributeIdBottomLabels;
     
     public SVGGraphBuilderNGTest() {
     }
@@ -362,6 +367,21 @@ public class SVGGraphBuilderNGTest {
 
         final WritableGraph wg = localGraph.getWritableGraph("Autosave", true);
         try {
+            
+            GraphLabel testLabel1 = new GraphLabel("Label", ConstellationColor.CLOUDS);
+            GraphLabel testLabel2 = new GraphLabel("x", ConstellationColor.BANANA);
+            ArrayList testLabelsList = new ArrayList<>();
+            testLabelsList.add(testLabel1);
+            testLabelsList.add(testLabel2);
+            GraphLabels topLabels = new GraphLabels(testLabelsList);
+            GraphLabels bottomLabels = new GraphLabels(testLabelsList);
+            
+            graphAttributeIdTopLabels = VisualConcept.GraphAttribute.TOP_LABELS.ensure(wg);
+            wg.setObjectValue(graphAttributeIdTopLabels, 0, topLabels);
+            
+            graphAttributeIdBottomLabels = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(wg);
+            wg.setObjectValue(graphAttributeIdBottomLabels, 0, bottomLabels);
+            
             vertexAttributeIdX = VisualConcept.VertexAttribute.X.ensure(wg);
             vertexAttributeIdY = VisualConcept.VertexAttribute.Y.ensure(wg);
             vertexAttributeIdZ = VisualConcept.VertexAttribute.Z.ensure(wg);
@@ -415,7 +435,7 @@ public class SVGGraphBuilderNGTest {
 
             transactionId1 = wg.addTransaction(vertexId1, vertexId2, false);
             transactionId2 = wg.addTransaction(vertexId2, vertexId3, false);
-            transactionId3 = wg.addTransaction(vertexId2, vertexId5, true);
+            transactionId3 = wg.addTransaction(vertexId5, vertexId2, true);
             transactionId4 = wg.addTransaction(vertexId2, vertexId2, true);
             transactionId5 = wg.addTransaction(vertexId2, vertexId2, false);
             
