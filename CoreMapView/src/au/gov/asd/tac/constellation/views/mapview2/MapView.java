@@ -615,7 +615,7 @@ public class MapView extends ScrollPane {
                     polygonMarkerGroup.getChildren().clear();
 
                     // If the user is not drawing any type of marker then generate point marker where they clicked
-                } else {
+                } else if (event.getButton().equals(MouseButton.PRIMARY)) {
                     final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 1, 0, 0);
                     //LOGGER.log(Level.SEVERE, "User point marker x: " + x + " User point marker y: " + y);
                     marker.setMarkerPosition(0, 0);
