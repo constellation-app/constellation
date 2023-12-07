@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.GeoShape;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,8 +46,8 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         double yTotal = 0;
         double coordinateCount = 0;
         for (int j = 0; j + 1 < longLatValues.length; j = j + 2) {
-            geoShape.getPoints().addAll(MarkerUtilities.longToX(Double.parseDouble(longLatValues[j]), MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG) - 0.0625,
-                    MarkerUtilities.latToY(Double.parseDouble(longLatValues[j + 1]), MapView.MAP_WIDTH, MapView.MAP_HEIGHT));
+            geoShape.getPoints().addAll(MapConversions.lonToMapX(Double.parseDouble(longLatValues[j])) - 0.0625,
+                    MapConversions.latToMapY(Double.parseDouble(longLatValues[j + 1])));
             xTotal += geoShape.getPoints().get(geoShape.getPoints().size() - 2);
             yTotal += geoShape.getPoints().get(geoShape.getPoints().size() - 1);
             ++coordinateCount;

@@ -19,9 +19,8 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
@@ -192,8 +191,8 @@ public class PointMarker extends AbstractMarker {
      */
     @Override
     public void setMarkerPosition(final double mapWidth, final double mapHeight) {
-        x = MarkerUtilities.longToX(longitude, MapView.MIN_LONG, mapWidth, MapView.MAX_LONG - MapView.MIN_LONG);
-        y = MarkerUtilities.latToY(lattitude, mapWidth, mapHeight);
+        x = MapConversions.lonToMapX(longitude);
+        y = MapConversions.latToMapY(lattitude);
 
         super.setX(x);
         super.setY(y);

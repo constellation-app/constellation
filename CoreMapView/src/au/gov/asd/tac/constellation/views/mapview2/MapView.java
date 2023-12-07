@@ -38,7 +38,7 @@ import au.gov.asd.tac.constellation.views.mapview2.overlays.OverviewOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.overlays.ToolsOverlay;
 import au.gov.asd.tac.constellation.views.mapview2.plugins.SelectOnGraphPlugin;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.GeoShape;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import gov.nasa.worldwind.geom.coords.MGRSCoord;
 import java.io.BufferedReader;
@@ -327,6 +327,8 @@ public class MapView extends ScrollPane {
         // Add the country group the the the pane
         mapGroupHolder.setPrefWidth(MAP_WIDTH);
         mapGroupHolder.setPrefHeight(MAP_HEIGHT);
+        MapConversions.initMapDimensions(MAP_WIDTH, MAP_HEIGHT, MAX_LAT, MIN_LONG, MIN_LAT, MAX_LONG);
+        
         mapGroupHolder.getChildren().add(countryGroup);
 
         // Put overlays in map
@@ -1409,8 +1411,8 @@ public class MapView extends ScrollPane {
                         return;
                     }
 
-                    final double x = MarkerUtilities.longToX(longitude, MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
-                    final double y = MarkerUtilities.latToY(lattitude, MAP_WIDTH, MAP_HEIGHT);
+                    final double x = MapConversions.lonToMapX(longitude);
+                    final double y = MapConversions.latToMapY(lattitude);
 
                     if (StringUtils.isNotBlank(radiusText) && NumberUtils.isParsable(radiusText.strip())) {
                         radius = Double.parseDouble(radiusText.strip());
@@ -1436,8 +1438,8 @@ public class MapView extends ScrollPane {
                 } else if (selectedGeoType.equals(MGRS) && StringUtils.isNotBlank(mgrsInput.getText())) {
 
                     final MGRSCoord coordinate = MGRSCoord.fromString(mgrsInput.getText().strip(), null);
-                    double x = MarkerUtilities.longToX(coordinate.getLongitude().degrees, MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
-                    double y = MarkerUtilities.latToY(coordinate.getLatitude().degrees, MAP_WIDTH, MAP_HEIGHT);
+                    double x = MapConversions.lonToMapX(coordinate.getLongitude().degrees);
+                    double y = MapConversions.latToMapY(coordinate.getLatitude().degrees);
 
                     UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, mgrsZoomUserMarkerXOffset, mgrsZoomUserMarkerYOffset);
                     marker.setMarkerPosition(0, 0);
@@ -1450,8 +1452,8 @@ public class MapView extends ScrollPane {
                 } else if (selectedGeoType.equals(GEOHASH) && StringUtils.isNotBlank(geoHashInput.getText())) {
 
                     final double[] geohashCoordinates = Geohash.decode(geoHashInput.getText().strip(), Geohash.Base.B32);
-                    final double x = MarkerUtilities.longToX(geohashCoordinates[1] - geohashCoordinates[3], MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
-                    final double y = MarkerUtilities.latToY(geohashCoordinates[0] - geohashCoordinates[2], MAP_WIDTH, MAP_HEIGHT);
+                    double x = MapConversions.lonToMapX(geohashCoordinates[1] - geohashCoordinates[3]);
+                    double y = MapConversions.latToMapY(geohashCoordinates[0] - geohashCoordinates[2]);
 
                     final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
                     marker.setMarkerPosition(0, 0);

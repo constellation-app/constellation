@@ -16,8 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.overlays;
 
 import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
-import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import javafx.beans.property.BooleanProperty;
@@ -160,11 +159,11 @@ public class ToolsOverlay extends AbstractOverlay {
      */
     public void setDistanceText(final double startX, final double startY, final double endX, final double endY) {
         // Calculate lattitude and longitude from coordinates
-        final double startLon = MarkerUtilities.xToLong(startX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        final double endLon = MarkerUtilities.xToLong(endX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        final double startLon = MapConversions.mapXToLon(startX);
+        final double endLon = MapConversions.mapXToLon(endX);
 
-        final double startLat = MarkerUtilities.yToLat(startY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
-        final double endLat = MarkerUtilities.yToLat(endY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final double startLat = MapConversions.mapYToLat(startY);
+        final double endLat = MapConversions.mapYToLat(endY);
 
         double distance = 0;
 
