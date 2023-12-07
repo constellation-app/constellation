@@ -493,8 +493,10 @@ public class MapViewPane extends BorderPane {
 
         anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.getOverviewOverlay().getOverlayPane());
         anchorPane.prefWidthProperty().bind(this.widthProperty());
-        viewPortRectangle.setWidth(MapView.MAP_WIDTH);
-        viewPortRectangle.setHeight(MapView.MAP_HEIGHT);
+        viewPortRectangle.setWidth(MapView.MAP_VIEWPORT_WIDTH);
+        viewPortRectangle.setHeight(MapView.MAP_VIEWPORT_HEIGHT);
+        viewPortRectangle.setStroke(Color.RED);
+        viewPortRectangle.setStrokeWidth(10);
 
         viewPortRectangle.setFill(Color.TRANSPARENT);
         viewPortRectangle.setStroke(Color.TRANSPARENT);
@@ -503,7 +505,7 @@ public class MapViewPane extends BorderPane {
         borderRectangle.setStroke(Color.TRANSPARENT);
 
         borderRectangle.widthProperty().bind(this.widthProperty().subtract(20));
-        borderRectangle.setHeight(MapView.MAP_HEIGHT);
+        borderRectangle.setHeight(MapView.MAP_VIEWPORT_HEIGHT);
         borderRectangle.setStrokeWidth(3);
 
         AnchorPane.setTopAnchor(borderRectangle, 0.0);

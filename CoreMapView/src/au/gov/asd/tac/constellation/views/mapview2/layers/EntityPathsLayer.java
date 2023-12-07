@@ -76,8 +76,8 @@ public class EntityPathsLayer extends AbstractPathsLayer {
 
         final List<Integer> idList = new ArrayList<>();
 
-        final double lineMarkerXOffset = 1;
-        final double lineMarkerYOffset = 149;
+        final double lineMarkerXOffset = 0;
+        final double lineMarkerYOffset = 0;
 
         extractQueriedMarkersAndNeighbours(idList);
 

@@ -22,9 +22,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.event.EventHandler;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -46,8 +44,6 @@ public class ToolsOverlay extends AbstractOverlay {
     private static final String ENABLED_STRING = "Enabled";
 
     private final Label measureToggleText = new Label(DISABLED_STRING);
-
-    private static final double LOCATION_Y_OFFSET = 149;
     private final String[] units = {"km", "nmi", "mi"};
     private int unitSelected = 0;
 
@@ -167,8 +163,8 @@ public class ToolsOverlay extends AbstractOverlay {
         final double startLon = MarkerUtilities.xToLong(startX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
         final double endLon = MarkerUtilities.xToLong(endX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
 
-        final double startLat = MarkerUtilities.yToLat(startY + LOCATION_Y_OFFSET, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
-        final double endLat = MarkerUtilities.yToLat(endY + LOCATION_Y_OFFSET, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final double startLat = MarkerUtilities.yToLat(startY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final double endLat = MarkerUtilities.yToLat(endY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
 
         double distance = 0;
 

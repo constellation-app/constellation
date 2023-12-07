@@ -56,13 +56,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
@@ -119,15 +116,18 @@ public class MapView extends ScrollPane {
     private boolean drawingPolygonMarker = false;
 
     // Furthest longitude to the east and west
-    public static final double MIN_LONG = -169.1110266;
-    public static final double MAX_LONG = 190.48712;
+    public static final double MIN_LONG = -180;
+    public static final double MAX_LONG = 180;
 
     // Furthest lattitude to the north and south
-    public static final double MIN_LAT = -89.000389;
-    public static final double MAX_LAT = 83.63001;
+    public static final double MIN_LAT = -85.0511;
+    public static final double MAX_LAT = 85.0511;
 
-    public static final double MAP_WIDTH = 1010.33;
-    public static final double MAP_HEIGHT = 1224;
+    public static final double MAP_VIEWPORT_WIDTH = 1010;
+    public static final double MAP_VIEWPORT_HEIGHT = 1224;
+
+    public static final double MAP_WIDTH = 400;
+    public static final double MAP_HEIGHT = 400;
 
     // Two containers that hold queried markers and user drawn markers
     private Map<String, AbstractMarker> markers = new HashMap<>();
@@ -302,8 +302,8 @@ public class MapView extends ScrollPane {
             countryGroup.getChildren().add(countrySVGPaths.get(i));
         }
         overviewOverlay = new OverviewOverlay(0, 0, countrySVGPaths);
-        enclosingRectangle.setWidth(MAP_WIDTH);
-        enclosingRectangle.setHeight(MAP_HEIGHT);
+        enclosingRectangle.setWidth(MAP_VIEWPORT_WIDTH);
+        enclosingRectangle.setHeight(MAP_VIEWPORT_HEIGHT);
 
         enclosingRectangle.setStroke(Color.RED);
         enclosingRectangle.setStrokeWidth(8);
@@ -396,7 +396,7 @@ public class MapView extends ScrollPane {
 
         // When mouse is dragged
         mapGroupHolder.setOnMouseDragged(event -> {
-            // If the user is draing a selection rectangle
+            // If the user is drawing a selection rectangle
             if (event.isPrimaryButtonDown()) {
                 isSelectingMultiple = true;
                 final double x = event.getX();
@@ -438,8 +438,6 @@ public class MapView extends ScrollPane {
                 LOGGER.log(Level.SEVERE, "Selecting multiple");
                 selectedNodeList.clear();
 
-                final double pointMarkerXOffset = 95.5;
-                final double pointMarkerYOffset = 95.5;
                 final List<Integer> idList = new ArrayList<>();
 
                 // Loop through all the markers
@@ -449,7 +447,7 @@ public class MapView extends ScrollPane {
                         p.deselect();
 
                         // If marker is within the selection rectangle then select the marker
-                        if (selectionRectangle.contains(p.getX() - pointMarkerXOffset, p.getY() + pointMarkerYOffset)) {
+                        if (selectionRectangle.contains(p.getX(), p.getY())) {
                             p.select();
                             idList.addAll(p.getConnectedNodeIdList());
                             selectedNodeList.add(p.getMarkerId());
@@ -735,10 +733,6 @@ public class MapView extends ScrollPane {
             if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
                 updateClusterMarkers();
             }
-
-            final Bounds bounds = mapStackPane.getBoundsInParent();
-            final int lowestPixelShown = (int) bounds.getMinX();
-            final int highestPixelShown = (int) bounds.getMaxX();
         });
     }
 
@@ -930,6 +924,11 @@ public class MapView extends ScrollPane {
         addClusterMarkers(clusterMarkerBuilder.getClusterMarkers(), clusterMarkerBuilder.getClusterValues());
     }
 
+    /**
+     * Change size of markers based on whether user has zoomed in or out
+     *
+     * @param zoomIn - check for zoom in/out
+     */
     private void resizeMarkers(final boolean zoomIn) {
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
@@ -1070,8 +1069,8 @@ public class MapView extends ScrollPane {
         // Add the positions of all queried markers
         for (final AbstractMarker m : markers.values()) {
             if (m instanceof PointMarker) {
-                averageX += (m.getX() - 95.5);
-                averageY += (m.getY() + 95.5);
+                averageX += m.getX();
+                averageY += m.getY();
                 ++markerCounter;
             }
         }
@@ -1136,6 +1135,10 @@ public class MapView extends ScrollPane {
         mapStackPane.setTranslateY(mapStackPane.getTranslateY() + dirVect.getY());
     }
 
+    /**
+     * Pans the map to have the average coordinates of all selected nodes to be
+     * at the the center of the screen
+     */
     public void panToSelection() {
         int markerCounter = 0;
         double averageX = 0;
@@ -1144,8 +1147,8 @@ public class MapView extends ScrollPane {
         // Add coordinates of the all selected markers
         for (final AbstractMarker m : markers.values()) {
             if (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId())) {
-                averageX += (m.getX() - 95.5);
-                averageY += (m.getY() + 95.5);
+                averageX += m.getX();
+                averageY += m.getY();
                 ++markerCounter;
             }
         }
@@ -1162,6 +1165,14 @@ public class MapView extends ScrollPane {
         zoom(averageX, averageY, false);
     }
 
+    /**
+     * Zoom on a certain point
+     *
+     * @param x
+     * @param y
+     * @param allMarkers - If all markers should be visible before zooming is
+     * stopped
+     */
     public void zoom(final double x, final double y, final boolean allMarkers) {
         double scaleFactor = 1.05;
         boolean zoomIn = true;
@@ -1193,6 +1204,7 @@ public class MapView extends ScrollPane {
             mapStackPane.setScaleX(newXScale);
             mapStackPane.setScaleY(newYScale);
             redrawQueriedMarkers();
+
             // When required markers are no longer in view then zoom out untill they are and break
             if (!selectedMarkersInView(allMarkers) && zoomIn) {
                 scaleFactor = 1 / 1.05;
@@ -1212,9 +1224,10 @@ public class MapView extends ScrollPane {
      */
     private boolean selectedMarkersInView(final boolean allMarkers) {
         for (final AbstractMarker m : markers.values()) {
+            // If All markers need to be shown OR if the current marker is selected and all markers do not need to be shown
             if ((m instanceof PointMarker && allMarkers) || (m instanceof PointMarker && selectedNodeList.contains(m.getMarkerId()) && !allMarkers)) {
-                final double x = (m.getX() - 100);
-                final double y = (m.getY() + 80);
+                final double x = (m.getX());
+                final double y = (m.getY());
 
                 final Rectangle r = new Rectangle();
                 r.setWidth(10);
@@ -1364,14 +1377,14 @@ public class MapView extends ScrollPane {
                 okButton.setTextFill(Color.BLACK);
             });
 
-            final double zoomCircleMarkerXOffset = 100;
-            final double zoomCircleMarkerYOffset = 100;
+            final double zoomCircleMarkerXOffset = 0;
+            final double zoomCircleMarkerYOffset = 0;
 
-            final double zoomUserMarkerXOffset = 95;
-            final double zoomUserMarkerYOffset = -95;
+            final double zoomUserMarkerXOffset = 0;
+            final double zoomUserMarkerYOffset = 0;
 
-            final double mgrsZoomUserMarkerXOffset = 96.05;
-            final double mgrsZoomUserMarkerYOffset = -96.15;
+            final double mgrsZoomUserMarkerXOffset = 0;
+            final double mgrsZoomUserMarkerYOffset = 0;
 
             okButton.setOnAction(event -> {
                 String selectedGeoType = geoTypeMenu.getSelectionModel().getSelectedItem();
@@ -1397,7 +1410,7 @@ public class MapView extends ScrollPane {
                     }
 
                     final double x = MarkerUtilities.longToX(longitude, MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
-                    final double y = MarkerUtilities.latToY(lattitude, MAP_WIDTH, MAP_HEIGHT) - 149;
+                    final double y = MarkerUtilities.latToY(lattitude, MAP_WIDTH, MAP_HEIGHT);
 
                     if (StringUtils.isNotBlank(radiusText) && NumberUtils.isParsable(radiusText.strip())) {
                         radius = Double.parseDouble(radiusText.strip());
@@ -1424,7 +1437,7 @@ public class MapView extends ScrollPane {
 
                     final MGRSCoord coordinate = MGRSCoord.fromString(mgrsInput.getText().strip(), null);
                     double x = MarkerUtilities.longToX(coordinate.getLongitude().degrees, MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
-                    double y = MarkerUtilities.latToY(coordinate.getLatitude().degrees, MAP_WIDTH, MAP_HEIGHT) - 149;
+                    double y = MarkerUtilities.latToY(coordinate.getLatitude().degrees, MAP_WIDTH, MAP_HEIGHT);
 
                     UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, mgrsZoomUserMarkerXOffset, mgrsZoomUserMarkerYOffset);
                     marker.setMarkerPosition(0, 0);
@@ -1438,7 +1451,7 @@ public class MapView extends ScrollPane {
 
                     final double[] geohashCoordinates = Geohash.decode(geoHashInput.getText().strip(), Geohash.Base.B32);
                     final double x = MarkerUtilities.longToX(geohashCoordinates[1] - geohashCoordinates[3], MIN_LONG, MAP_WIDTH, MAX_LONG - MIN_LONG);
-                    final double y = MarkerUtilities.latToY(geohashCoordinates[0] - geohashCoordinates[2], MAP_WIDTH, MAP_HEIGHT) - 149;
+                    final double y = MarkerUtilities.latToY(geohashCoordinates[0] - geohashCoordinates[2], MAP_WIDTH, MAP_HEIGHT);
 
                     final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
                     marker.setMarkerPosition(0, 0);
@@ -1528,7 +1541,7 @@ public class MapView extends ScrollPane {
      */
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
-            marker.setMarkerPosition(1010.9, 925.5);
+            marker.setMarkerPosition(MAP_WIDTH, MAP_HEIGHT);
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 if (marker instanceof GeoShapePolygonMarker) {
                     final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
@@ -1543,6 +1556,8 @@ public class MapView extends ScrollPane {
 
                 if (marker instanceof PointMarker) {
                     final PointMarker pMarker = (PointMarker) marker;
+                    // The line below is to verify the positioning of the marker
+                    //graphMarkerGroup.getChildren().add(pMarker.getPosRect());
                     if (pMarker.getScale() != pointMarkerGlobalScale) {
                         pMarker.scaleAndReposition(pointMarkerGlobalScale);
                     }
@@ -1585,7 +1600,7 @@ public class MapView extends ScrollPane {
         // Read map from file
         try {
 
-            final File map = ConstellationInstalledFileLocator.locate("modules/ext/data/MercratorMapView4.txt", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain());
+            final File map = ConstellationInstalledFileLocator.locate("modules/ext/data/MercratorMapView6.txt", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain());
             try (final BufferedReader bFileReader = new BufferedReader(new FileReader(map))) {
                 String path = "";
                 String line = "";

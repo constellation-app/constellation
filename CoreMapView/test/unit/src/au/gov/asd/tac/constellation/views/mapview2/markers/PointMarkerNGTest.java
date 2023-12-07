@@ -161,7 +161,7 @@ public class PointMarkerNGTest {
         final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
         final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
-        final String expResult = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
+        final String expResult = "l-75-200 l150 0 Z";
         final String result = instance.getPath();
         assertEquals(result, expResult);
     }
@@ -195,8 +195,8 @@ public class PointMarkerNGTest {
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView parent = Mockito.spy(new MapView(mapViewPane));
 
-        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
-        instance.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final PointMarker instance = new PointMarker(parent, -99, -99, 85.0511, -180, 1, 0, 0, "#ffffff");
+        instance.setMarkerPosition(MapView.MAP_VIEWPORT_WIDTH, MapView.MAP_VIEWPORT_HEIGHT);
         final double expResult = 0.0;
         final double result = instance.getX();
         assertEquals(result, expResult, 0.0);
