@@ -123,38 +123,35 @@ public class ContentPairwiseSimilarityServices {
     }
 
     private void processPairsWithToken(final Map<Integer, Integer> freqMap1, final Map<Integer, Integer> freqMap2) {
-        freqMap1.keySet().forEach(loElement -> {
-            for (final int hiElement : freqMap2.keySet()) {
-                if (loElement >= hiElement) {
-                    continue;
-                }
+        freqMap1.keySet().forEach(loElement -> 
+            freqMap2.keySet().forEach(hiElement -> {
+                if (loElement <= hiElement) {
+                    synchronized (pairwiseSimilaritiesCalculation) {
+                        if (pairwiseSimilaritiesCalculation[loElement] == null) {
+                            pairwiseSimilaritiesCalculation[loElement] = new HashMap<>();
+                        }
 
-                synchronized (pairwiseSimilaritiesCalculation) {
-                    if (pairwiseSimilaritiesCalculation[loElement] == null) {
-                        pairwiseSimilaritiesCalculation[loElement] = new HashMap<>();
-                    }
-
-                    Map<Integer, MutableDouble> elementMap = pairwiseSimilaritiesCalculation[loElement];
+                        Map<Integer, MutableDouble> elementMap = pairwiseSimilaritiesCalculation[loElement];
                     if (!elementMap.containsKey(hiElement)) {
                         elementMap.put(hiElement, new MutableDouble(0.0));
-                    } else {
+                        } else {
                         elementMap.get(hiElement).val += (freqMap1.get(loElement) * freqMap2.get(hiElement));
+                        }
                     }
                 }
-            }
-        });
+            }));
     }
 
     private void processPairwiseSimilarities(final int loElement, Map<Integer, MutableDouble> elementSimilarities, final double threshold) {
         final double loModulii = similarityCalculator.computeModulii() ? (double) modulii.get(loElement) : (double) handler.elementCardinalities.get(loElement);
-        for (final Entry<Integer, MutableDouble> similarity : elementSimilarities.entrySet()) {
+        elementSimilarities.entrySet().forEach(similarity -> {
             final int hiElement = similarity.getKey();
             final double hiModulii = similarityCalculator.computeModulii() ? (double) modulii.get(hiElement) : (double) handler.elementCardinalities.get(hiElement);
             final double score = similarity.getValue().val / (Math.sqrt(loModulii * hiModulii));
             if (score >= threshold) {
                 pairwiseSimilarities.add(new ElementSimilarity(loElement, hiElement, score));
             }
-        }
+        });
     }
 
     public abstract static class PairwiseSimilarityCalculator {

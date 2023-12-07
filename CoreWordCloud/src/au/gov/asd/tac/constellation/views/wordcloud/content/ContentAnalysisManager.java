@@ -34,6 +34,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,7 +63,7 @@ public class ContentAnalysisManager {
     public ContentAnalysisManager(final Graph graph, final int[] performOnElements, final Set<Integer> elementsOfInterest, final int graphElementCapacity, final GraphElementType elementType, final int performOnAttributeID) {
         this.graph = graph;
         this.performOnElements = performOnElements.clone();
-        this.elementsOfInterest = elementsOfInterest;
+        this.elementsOfInterest = new HashSet<>(elementsOfInterest);
         this.graphElementCapacity = graphElementCapacity;
         this.performOnAttributeID = performOnAttributeID;
         this.elementType = elementType;
@@ -77,7 +78,7 @@ public class ContentAnalysisManager {
         private final int workload;
 
         private StringListThreadedPhraseAdaptor(final ThreadAllocator allocator, final List<String> list) {
-            this.list = list;
+            this.list = new ArrayList<>(list);
             elCurrentPosition = elLowPosition = allocator.getLowerPos();
             workload = allocator.getWorkload();
         }

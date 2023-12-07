@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.templates.SimplePlugin;
 import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisManager;
 import java.io.File;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import org.openide.DialogDisplayer;
@@ -137,7 +138,7 @@ public class PhrasiphyContentPlugin extends SimplePlugin {
         }
 
         // Create a ContentAnalysisManager object with reference to the graph, the graph elements to analyse, and the plugin parameters
-        final ContentAnalysisManager cam = new ContentAnalysisManager(g, selectedElements, null, elCapacity, elementType, phrasiphyContentParams.getOnAttributeID());
+        final ContentAnalysisManager cam = new ContentAnalysisManager(g, selectedElements, new HashSet<>(), elCapacity, elementType, phrasiphyContentParams.getOnAttributeID());
         // Get the ContentAnalysisManager to phrasiphy content
         cam.phrasiphyContent(phrasiphyContentParams, file);
     }

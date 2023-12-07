@@ -36,11 +36,11 @@ public class PhraseTokenHandler implements TokenHandler {
     }
 
     public Map<String, Integer> getTokenHashes() {
-        return tokenHashes;
+        return new HashMap<>(tokenHashes);
     }
 
     public Map<Integer, Set<Integer>> getConstituentHashes() {
-        return constituentHashes;
+        return new HashMap<>(constituentHashes);
     }
 
     @Override

@@ -34,7 +34,9 @@ import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.histogram.access.HistogramAccess;
 import au.gov.asd.tac.constellation.views.namedselection.NamedSelectionManager;
 import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisOptions.FollowUpChoice;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -137,7 +139,7 @@ public class ContentAnalysisGraphProcessing {
         private final Map<Integer, Integer> elementToCluster;
 
         public ClusterElementsPlugin(final Map<Integer, Integer> elementToCluster) {
-            this.elementToCluster = elementToCluster;
+            this.elementToCluster = new HashMap<>(elementToCluster);
         }
 
         @Override
@@ -201,7 +203,7 @@ public class ContentAnalysisGraphProcessing {
         private final Map<Integer, Integer> elementToCluster;
 
         public MakeSelectionsPlugin(final Map<Integer, Integer> elementToCluster) {
-            this.elementToCluster = elementToCluster;
+            this.elementToCluster = new HashMap<>(elementToCluster);
         }
 
         @Override
@@ -270,7 +272,7 @@ public class ContentAnalysisGraphProcessing {
         private final List<ElementSimilarity> pairwiseSimilarities;
 
         public AddTransactionsPlugin(final List<ElementSimilarity> pairwiseSimilarities) {
-            this.pairwiseSimilarities = pairwiseSimilarities;
+            this.pairwiseSimilarities = new ArrayList<>(pairwiseSimilarities);
         }
 
         @Override

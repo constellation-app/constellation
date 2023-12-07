@@ -20,6 +20,7 @@ import au.gov.asd.tac.constellation.views.wordcloud.content.PhraseTokenHandler;
 import au.gov.asd.tac.constellation.views.wordcloud.content.SparseMatrix;
 import au.gov.asd.tac.constellation.views.wordcloud.content.TaggedSparseMatrix;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -67,16 +68,18 @@ public class WordCloud {
      * loading
      *
      */
-    public WordCloud(final Map<String, Integer> wordsToHashes, final Map<Integer, Set<Integer>> hashedWordSets, final GraphElementType elementType, final SortedMap<String, Float> wordListWithSizes, final SortedMap<Double, Set<String>> wordSignificances, final double currentSignificance, final String queryInfoString, final long modCount, final Set<String> selectedWords, final boolean isUnionSelect, final boolean isSizeSorted) {
-        this.wordsToHashes = wordsToHashes;
-        this.hashedWordSets = hashedWordSets;
+    public WordCloud(final Map<String, Integer> wordsToHashes, final Map<Integer, Set<Integer>> hashedWordSets, final GraphElementType elementType, 
+            final SortedMap<String, Float> wordListWithSizes, final SortedMap<Double, Set<String>> wordSignificances, final double currentSignificance, 
+            final String queryInfoString, final long modCount, final Set<String> selectedWords, final boolean isUnionSelect, final boolean isSizeSorted) {
+        this.wordsToHashes = new HashMap<>(wordsToHashes);
+        this.hashedWordSets = new HashMap<>(hashedWordSets);
         this.elementType = elementType;
-        this.wordListWithSizes = wordListWithSizes;
-        this.wordSignificances = wordSignificances;
+        this.wordListWithSizes = new TreeMap<>(wordListWithSizes);
+        this.wordSignificances = new TreeMap<>(wordSignificances);
         this.currentSignificance = currentSignificance;
         this.queryInfoString = queryInfoString;
         this.modCount = modCount;
-        this.selectedWords = selectedWords;
+        this.selectedWords = new HashSet<>(selectedWords);
         this.isUnionSelect = isUnionSelect;
         this.isSizeSorted = isSizeSorted;
 
@@ -238,14 +241,14 @@ public class WordCloud {
      * words
      */
     public Map<Integer, Set<Integer>> getHashedWordSets() {
-        return hashedWordSets;
+        return new HashMap<>(hashedWordSets);
     }
 
     /**
      * Gets a map relating words to their hashes
      */
     public Map<String, Integer> getWordToHashes() {
-        return wordsToHashes;
+        return new HashMap<>(wordsToHashes);
     }
     
     /**
@@ -367,7 +370,7 @@ public class WordCloud {
      * Gets a set containing all the currently selected words
      */
     public Set<String> getSelectedWords() {
-        return selectedWords;
+        return new HashSet<>(selectedWords);
     }
 
     /**
@@ -381,21 +384,21 @@ public class WordCloud {
      * Gets the map which relates words to their significance
      */
     public SortedMap<Double, Set<String>> getWordSignificances() {
-        return wordSignificances;
+        return new TreeMap<>(wordSignificances);
     }
 
     /**
      * Gets the map which relates words to their font sizes, sorted
      */
     public SortedMap<String, Float> getWordListWithSizes() {
-        return wordListWithSizes;
+        return new TreeMap<>(wordListWithSizes);
     }
 
     /**
      * Gets the map which relates words to their font sizes, sorted by size
      */
     public SortedMap<String, Float> getWordListBySize() {
-        return wordListBySize;
+        return new TreeMap<>(wordListBySize);
     }
 
     private void updateCurrentWords(final double oldSig, final double newSig) {
@@ -419,6 +422,6 @@ public class WordCloud {
      * current method of sorting
      */
     public SortedSet<String> getCurrentWordList() {
-        return currentWords;
+        return new TreeSet<>(currentWords);
     }
 }

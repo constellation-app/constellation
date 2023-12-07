@@ -484,11 +484,11 @@ public class ContentTokenizingServices {
             }
 
             public char[][] getWords() {
-                return words;
+                return words.clone();
             }
 
             public void setWords(final char[][] words) {
-                this.words = words;
+                this.words = words.clone();
             }
 
             protected void resetState() {
@@ -639,7 +639,7 @@ public class ContentTokenizingServices {
             super(handler, delimiter, numOfWords);
             this.phraseDelimiter = phraseDelimiter;
             this.proximity = proximity;
-            this.excludedWords = excludedWords;
+            this.excludedWords = new HashSet<>(excludedWords);
         }
 
         @Override
@@ -936,7 +936,7 @@ public class ContentTokenizingServices {
 
         public FilteringSanitizer(final String replacement, final Set<Character> toFilter) {
             this.replacement = replacement;
-            this.toFilter = toFilter;
+            this.toFilter = new HashSet<>(toFilter);
         }
 
         @Override

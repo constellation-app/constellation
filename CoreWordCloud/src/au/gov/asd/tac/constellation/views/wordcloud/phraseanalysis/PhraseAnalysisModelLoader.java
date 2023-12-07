@@ -45,11 +45,11 @@ public class PhraseAnalysisModelLoader {
     }
 
     public static Map<String, Set> getExcludedWords() {
-        return excludedWords;
+        return new HashMap<>(excludedWords);
     }
 
     public static Map<String, Set> getDelimiters() {
-        return delimiters;
+        return new HashMap<>(delimiters);
     }
     
     public static void loadMap() throws IOException {

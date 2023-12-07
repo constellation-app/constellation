@@ -97,11 +97,11 @@ public class WordCloudController {
     }
 
     public List<String> getVertTextAttributes() {
-        return vertTextAttributes;
+        return new ArrayList<>(vertTextAttributes);
     }
 
     public List<String> getTransTextAttributes() {
-        return transTextAttributes;
+        return new ArrayList<>(transTextAttributes);
     }
     
     public boolean isControllerIntialising() {

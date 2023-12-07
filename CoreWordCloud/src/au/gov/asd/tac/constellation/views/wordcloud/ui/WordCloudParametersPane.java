@@ -51,8 +51,8 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
     private List<String> transAttributes = (List<String>) EMPTY_STRING_LIST.clone();
 
     public void updateParameters(final List<String> nodeAttributes, final List<String> transAttributes) {
-        this.nodeAttributes = nodeAttributes;
-        this.transAttributes = transAttributes;
+        this.nodeAttributes = new ArrayList<>(nodeAttributes);
+        this.transAttributes = new ArrayList<>(transAttributes);
         @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER is always of type SingleChoiceParameter
         final PluginParameter<SingleChoiceParameterValue> elParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID);
         @SuppressWarnings("unchecked") // ATTRIBUTE_TO_ANALYSE_PARAMETER is always of type SingleChoiceParameter 
