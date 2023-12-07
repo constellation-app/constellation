@@ -427,6 +427,56 @@ public class SVGObject {
         this.setAttribute(SVGAttributeConstants.DASH_ARRAY, String.format("%s %s %s", strokeA, strokeB, strokeC));
     }
     
+    public void setDimensionScale(final String width, final String height) {
+        this.setViewBox(null, null, this.width, this.height);
+        this.svgDataReference.setAttribute(SVGAttributeConstants.WIDTH, width);
+        this.svgDataReference.setAttribute(SVGAttributeConstants.HEIGHT, height);
+    }
+    
+    public void setViewBox(final Float x, final Float y, final Float w, final Float h) {
+        final float vbx = x == null ? 0F : x;
+        final float vby = y == null ? 0F : y;
+        final float vbw = w == null ? 0F : w;
+        final float vbh = h == null ? 0F : h;
+        
+        this.setAttribute(SVGAttributeConstants.VIEW_BOX, String.format("%s, %s, %s, %S", vbx, vby, vbw, vbh));
+    }
+    
+    public void saturateSVG(final ConstellationColor color) {
+        this.setFillColor(color);
+        this.setStrokeColor(color);
+        this.getAllChildren().forEach(child -> child.saturateSVG(color));
+    }
+    
+    /**
+     * Sets the order at which svg elements will be rendered to the screen.
+     * Elements with lower sortOrderValues will render on top of elements with larger sortOrderValues. 
+     * @param sortOrderValue 
+     */
+    public void setSortOrderValue(final float sortOrderValue) {
+        this.setAttribute(SVGAttributeConstants.CUSTOM_SORT_ORDER, sortOrderValue);
+    }
+
+    public void applyGrayScaleFilter() {
+        this.setAttribute(SVGAttributeConstants.FILTER, "grayscale(1)");
+    }
+
+    public void setBaseline(final String baseline) {
+        setAttribute(SVGAttributeConstants.BASELINE, baseline);
+    }
+    
+    public void setPoints(final String path) {
+        setAttribute(SVGAttributeConstants.POINTS, path);
+    } 
+    
+    /**
+     * Sets the opacity of a SVGObject.
+     * @param opacity value between 0.0 and 1.0
+     */
+    public void setOpacity(final float opacity) {
+        setAttribute(SVGAttributeConstants.OPACITY, opacity);
+    }
+    
     /**
      * Removes the SVGObject wrapper class from the SVGData.
      * preserves all relevant SVG elements for generating svgText
@@ -455,46 +505,5 @@ public class SVGObject {
         } catch (IOException e) {
             return null;
         }
-    }
-
-    public void setDimensionScale(final String width, final String height) {
-        this.setViewBox(null, null, this.width, this.height);
-        this.svgDataReference.setAttribute(SVGAttributeConstants.WIDTH, width);
-        this.svgDataReference.setAttribute(SVGAttributeConstants.HEIGHT, height);
-    }
-    
-    public void setViewBox(final Float x, final Float y, final Float w, final Float h) {
-        final float vbx = x == null ? 0F : x;
-        final float vby = y == null ? 0F : y;
-        final float vbw = w == null ? 0F : w;
-        final float vbh = h == null ? 0F : h;
-        
-        this.setAttribute(SVGAttributeConstants.VIEW_BOX, String.format("%s, %s, %s, %S", vbx, vby, vbw, vbh));
-    }
-    
-    public void saturateSVG(final ConstellationColor color) {
-        this.setFillColor(color);
-        this.setStrokeColor(color);
-        this.getAllChildren().forEach(child -> child.saturateSVG(color));
-    }
-    
-    public void setSortOrderValue(final float sortOrderValue) {
-        this.setAttribute(SVGAttributeConstants.CUSTOM_SORT_ORDER, sortOrderValue);
-    }
-
-    public void applyGrayScaleFilter() {
-        this.setAttribute(SVGAttributeConstants.FILTER, "grayscale(1)");
-    }
-
-    public void setBaseline(final String baseline) {
-        setAttribute(SVGAttributeConstants.BASELINE, baseline);
-    }
-    
-    public void setPoints(final String path) {
-        setAttribute(SVGAttributeConstants.POINTS, path);
-    }    
-
-    public void setOpacity(final float opacity) {
-        setAttribute(SVGAttributeConstants.OPACITY, opacity);
     }
 }
