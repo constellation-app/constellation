@@ -37,6 +37,7 @@ public class PolygonMarker extends AbstractMarker {
     public PolygonMarker(final MapView parent, final int markerID, final int xOffset, final int yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
 
+        markerPath.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
         markerPath.setStroke(Color.BLACK);
         markerPath.setFill(Color.ORANGE);
         markerPath.setOpacity(0.4);
@@ -55,7 +56,9 @@ public class PolygonMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseClicked((final MouseEvent e) -> {
-            parent.removeUserMarker(markerID);
+            if (parent.TOOLS_OVERLAY.getDrawingEnabled().get()) {
+                parent.removeUserMarker(markerID);
+            }
             e.consume();
         });
 
@@ -81,6 +84,7 @@ public class PolygonMarker extends AbstractMarker {
         currentLine.setStartY(prevLineEndY);
         setEnd(prevLineEndX, prevLineEndY);
         currentLine.setStroke(Color.BLACK);
+        currentLine.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
         return currentLine;
     }
 
@@ -124,6 +128,7 @@ public class PolygonMarker extends AbstractMarker {
         }
 
         rawPath = path;
+        markerPath.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
         markerPath.setContent(path);
     }
 

@@ -85,6 +85,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -110,6 +111,7 @@ public class MapView extends ScrollPane {
     private int drawnMarkerId = 0;
 
     private double pointMarkerGlobalScale = 0.05;
+    private double scaledMapLineWidth = 0.05;
 
     // Flags for the different drawing modes
     private boolean drawingCircleMarker = false;
@@ -123,11 +125,11 @@ public class MapView extends ScrollPane {
     public static final double MIN_LAT = -85.0511;
     public static final double MAX_LAT = 85.0511;
 
-    public static final double MAP_VIEWPORT_WIDTH = 1010;
-    public static final double MAP_VIEWPORT_HEIGHT = 1224;
+    public static final double MAP_VIEWPORT_WIDTH = 1200;
+    public static final double MAP_VIEWPORT_HEIGHT = 1200;
 
-    public static final double MAP_WIDTH = 400;
-    public static final double MAP_HEIGHT = 400;
+    public static final double MAP_WIDTH = 1200;
+    public static final double MAP_HEIGHT = 1200;
 
     // Two containers that hold queried markers and user drawn markers
     private Map<String, AbstractMarker> markers = new HashMap<>();
@@ -260,6 +262,7 @@ public class MapView extends ScrollPane {
         // Clear any existing paths and read the SVG paths of countries from the files
         countrySVGPaths.clear();
         parseMapSVG();
+        countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
 
         // The stackPane to store
         mapStackPane = new StackPane();
@@ -613,8 +616,8 @@ public class MapView extends ScrollPane {
 
                     // If the user is not drawing any type of marker then generate point marker where they clicked
                 } else {
-                    final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, 95, -95);
-                    LOGGER.log(Level.SEVERE, "User point marker x: " + x + " User point marker y: " + y);
+                    final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 1, 0, 0);
+                    //LOGGER.log(Level.SEVERE, "User point marker x: " + x + " User point marker y: " + y);
                     marker.setMarkerPosition(0, 0);
                     addUserDrawnMarker(marker);
                     userMarkers.add(marker);
@@ -706,17 +709,20 @@ public class MapView extends ScrollPane {
             final double xAdjust = (newXScale / oldXScale) - 1;
             final double yAdjust = (newYScale / oldYScale) - 1;
             final double markerScalingRate = 1.1;
-            final double labelYOffset = 11;
             if (scaleFactor > 1.0) {
                 pointMarkerGlobalScale /= 1.08;
+                scaledMapLineWidth /= 1.08;
                 scaleMarkerText(markerScalingRate, true);
                 resizeMarkers(true);
             } else {
                 pointMarkerGlobalScale *= 1.08;
+                scaledMapLineWidth *= 1.08;
                 scaleMarkerText(markerScalingRate, false);
                 resizeMarkers(false);
             }
 
+            countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
+            
             // Calculate how much the map will have to move
             final double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
             final double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
@@ -783,7 +789,7 @@ public class MapView extends ScrollPane {
         final Text t = new Text(markerText);
         t.setX(gs.getCenterX() - 37);
         t.setY(gs.getCenterY());
-        final UserPointMarker tempMarker = new UserPointMarker(this, -99, gs.getCenterX(), gs.getCenterY(), 0.05, 99, 99);
+        final UserPointMarker tempMarker = new UserPointMarker(this, -99, gs.getCenterX(), gs.getCenterY(), 0.05, 0, 0);
         markerTextLabels.add(new Pair(tempMarker, t));
         pointMarkerTextGroup.getChildren().add(t);
     }
@@ -940,6 +946,8 @@ public class MapView extends ScrollPane {
                 } else {
                     marker.scaleAndReposition(marker.getScale() * 1.08);
                 }
+            } else {
+                abstractMarker.getMarker().setStrokeWidth(scaledMapLineWidth * 20);
             }
         });
 
@@ -951,6 +959,14 @@ public class MapView extends ScrollPane {
                 } else {
                     marker.scaleAndReposition(marker.getScale() * 1.08);
                 }
+            } else {
+                abstractMarker.getMarker().setStrokeWidth(scaledMapLineWidth * 20);
+            }
+        });
+        
+        graphMarkerGroup.getChildren().forEach(marker -> {
+            if (marker instanceof Shape) {
+                ((Shape) marker).setStrokeWidth(scaledMapLineWidth * 20);
             }
         });
     }
@@ -1563,6 +1579,8 @@ public class MapView extends ScrollPane {
                     if (pMarker.getScale() != pointMarkerGlobalScale) {
                         pMarker.scaleAndReposition(pointMarkerGlobalScale);
                     }
+                } else {
+                    marker.getMarker().setStrokeWidth(scaledMapLineWidth * 20);
                 }
             }
         }
@@ -1593,6 +1611,10 @@ public class MapView extends ScrollPane {
         return markersShowing;
     }
 
+    public double getScaledMapLineWidth() {
+        return scaledMapLineWidth;
+    }
+    
     /**
      * Load the world map
      */
@@ -1602,7 +1624,7 @@ public class MapView extends ScrollPane {
         // Read map from file
         try {
 
-            final File map = ConstellationInstalledFileLocator.locate("modules/ext/data/MercratorMapView6.txt", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain());
+            final File map = ConstellationInstalledFileLocator.locate("modules/ext/data/worldmap1200.txt", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain());
             try (final BufferedReader bFileReader = new BufferedReader(new FileReader(map))) {
                 String path = "";
                 String line = "";

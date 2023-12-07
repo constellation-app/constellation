@@ -33,7 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 public class PointMarker extends AbstractMarker {
 
     // The actual marker path raw string
-    private String path = "l-75-200 l150 0 Z";
+    private String path = "l-35-90 l-45-80 l-10-30 l0-45 l10-25 l15-20 l50-20 l30 0 l50 20 l15 20 l10 25 l0 45 l-10 30 l-45 80 l-35 90 m0-194 l-22-22 l22-22 l22 22 l-22 22 m0-8 l-14-14 l14-14 l14 14 l-14 14 m0-8 l-6-6 l6-6 l6 6 l-6 6";
     private double lattitude;
     private double longitude;
     private double x = 0;
@@ -70,8 +70,8 @@ public class PointMarker extends AbstractMarker {
 
         markerPath.setFill(Color.web(currentColour));
         markerPath.setStroke(Color.BLACK);
-        markerPath.setOpacity(0.6);
-        markerPath.setStrokeWidth(5);
+        markerPath.setOpacity(0.45);
+        markerPath.setStrokeWidth(7);
 
         // Event handlers for the marker
         markerPath.setOnMouseEntered((final MouseEvent e) -> {
@@ -206,7 +206,7 @@ public class PointMarker extends AbstractMarker {
 
         x += xOffset;
         y += yOffset;
-        path = "M " + x + SeparatorConstants.COMMA + " " + y + " Z " + path;
+        path = "M " + x + SeparatorConstants.COMMA + " " + y + " " + path;
 
 
         markerPath.setContent(path);

@@ -48,7 +48,7 @@ public class LineMarker extends AbstractMarker {
         lon2 = longitude2;
 
         markerPath.setStroke(Color.BLACK);
-        markerPath.setStrokeWidth(1);
+        markerPath.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
 
         // Set event handlers for the line marker
         markerPath.setOnMouseEntered(e -> {

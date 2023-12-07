@@ -55,7 +55,7 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         geoShape.setCenterX(xTotal / coordinateCount);
         geoShape.setCenterY(yTotal / coordinateCount);
         geoShape.setFill(Color.RED);
-        geoShape.setStrokeWidth(0.1);
+        geoShape.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
         geoShape.setStroke(Color.BLACK);
         geoShape.setOpacity(0.5);
 

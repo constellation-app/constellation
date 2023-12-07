@@ -154,6 +154,7 @@ public class ClusterMarker extends AbstractMarker {
         cluster.setFill(Color.DARKBLUE);
         cluster.setOpacity(0.6);
         cluster.setMouseTransparent(true);
+        cluster.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
 
         numNodes = new Text(clusterCenter.getX() - 5, clusterCenter.getY() + 5, "" + nodes.size());
         numNodes.setFill(Color.YELLOW);

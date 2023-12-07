@@ -55,16 +55,21 @@ public class CircleMarker extends AbstractMarker {
         line.setEndY(this.centerY);
 
         line.setStroke(Color.YELLOW);
+        line.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
 
         circle.setRadius(radius);
         circle.setOpacity(0.5);
         circle.setFill(Color.BLACK);
         circle.setStroke(Color.BLACK);
+        circle.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
+
 
         // Set up the SVG path to represent the projected circle
         markerPath.setStroke(Color.BLACK);
         markerPath.setFill(Color.ORANGE);
         markerPath.setOpacity(0.4);
+        markerPath.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
+
 
         // Event handler for changing colours when mouse hovers over the projected circle
         markerPath.setOnMouseEntered(e -> {
@@ -79,7 +84,9 @@ public class CircleMarker extends AbstractMarker {
 
         // Event handler for removing handler when clicked
         markerPath.setOnMouseClicked(e -> {
-            parent.removeUserMarker(markerID);
+            if (parent.TOOLS_OVERLAY.getDrawingEnabled().get()) {
+                parent.removeUserMarker(markerID);
+            }
             e.consume();
         });
 

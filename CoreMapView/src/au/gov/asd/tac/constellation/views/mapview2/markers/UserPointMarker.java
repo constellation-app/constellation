@@ -28,7 +28,7 @@ import javafx.scene.paint.Color;
 public class UserPointMarker extends AbstractMarker {
 
     // Raw marker string for the user point marker
-    private String path = "c-20.89-55.27-83.59-81.74-137-57.59-53.88,24.61-75.7,87.77-47.83,140.71,12.54,23.69,26.47,46.44,39.93,70.12,15.79,27.4,32,55.27,50.16,87.31a101.37,101.37,0,0,1,4.65-9.76c27.86-49.23,56.66-98,84-147.68,14.86-26,16.72-54.8,6-83.12z";
+    private String path = "l-35-90 l-45-80 l-10-30 l0-45 l10-25 l15-20 l50-20 l30 0 l50 20 l15 20 l10 25 l0 45 l-10 30 l-45 80 l-35 90";
     private double x;
     private double y;
     private double originalClickY = 0;
@@ -44,7 +44,7 @@ public class UserPointMarker extends AbstractMarker {
 
         markerPath.setScaleX(scale);
         markerPath.setScaleY(scale);
-        markerPath.setOpacity(0.5);
+        markerPath.setOpacity(0.4);
 
         markerPath.setFill(Color.ORANGE);
         markerPath.setStroke(Color.BLACK);
@@ -63,7 +63,9 @@ public class UserPointMarker extends AbstractMarker {
         });
 
         markerPath.setOnMouseClicked((final MouseEvent e) -> {
-            parent.removeUserMarker(markerID);
+            if (parent.TOOLS_OVERLAY.getDrawingEnabled().get()) {
+                parent.removeUserMarker(markerID);
+            }
 
             e.consume();
         });
@@ -84,7 +86,7 @@ public class UserPointMarker extends AbstractMarker {
         super.setX(x);
         super.setY(y);
 
-        path = "M " + x + SeparatorConstants.COMMA + " " + y + " Z " + path;
+        path = "M " + x + SeparatorConstants.COMMA + " " + y + " " + path;
 
         markerPath.setContent(path);
     }
@@ -118,7 +120,7 @@ public class UserPointMarker extends AbstractMarker {
         markerPath.setScaleX(scale);
         markerPath.setScaleY(scale);
 
-        final double heightDifference = originalClickY - (markerPath.getBoundsInParent().getCenterY() + (markerPath.getBoundsInParent().getHeight() / 2));
+        final double heightDifference = (getY()) - (markerPath.getBoundsInParent().getCenterY() + (markerPath.getBoundsInParent().getHeight() / 2));
         markerPath.setTranslateY(markerPath.getTranslateY() + heightDifference);
     }
 }
