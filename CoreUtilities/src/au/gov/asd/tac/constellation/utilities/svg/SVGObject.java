@@ -479,7 +479,7 @@ public class SVGObject {
     
     /**
      * Removes the SVGObject wrapper class from the SVGData.
-     * preserves all relevant SVG elements for generating svgText
+     * Preserves all relevant SVG elements for generating svgText
      * @return svgData
      */
     public final SVGData toSVGData() {

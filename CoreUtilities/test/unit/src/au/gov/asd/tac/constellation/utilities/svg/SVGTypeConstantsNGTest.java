@@ -57,8 +57,6 @@ public class SVGTypeConstantsNGTest {
         }
         assertNull(SVGTypeConstants.getType(null));
         
-        //The below test is failing in CI but passes localy. Test is required to Have 100% code coverage for this class.
-        //CI ir reporting "Error" with no logs so may be un unrelated falure.
         assertNull(SVGTypeConstants.getType("Not A SVG Type"));
     }    
 }
