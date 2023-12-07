@@ -17,7 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -109,9 +109,9 @@ public class CircleMarker extends AbstractMarker {
      * Generates the projected circle
      */
     public void generateCircle() {
-        // Calculate lattitude and longitude fro x and y
-        final double centerYLat = MarkerUtilities.yToLat(centerY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
-        final double centerXLon = MarkerUtilities.xToLong(centerX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
+        // Calculate lattitude and longitude from x and y
+        final double centerYLat = MapConversions.mapYToLat(centerY);
+        final double centerXLon = MapConversions.mapXToLon(centerX);
 
         boolean first = true;
         final StringBuilder pathStringBuilder = new StringBuilder();
@@ -128,8 +128,8 @@ public class CircleMarker extends AbstractMarker {
             final double vertexY = centerYLat + radius * Math.sin(angle);
 
             // Convert edge to x and y from geo coordinates
-            final double convertedVertexX = MarkerUtilities.longToX(vertexX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-            final double convertedVertexY = MarkerUtilities.latToY(vertexY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+            final double convertedVertexX = MapConversions.lonToMapX(vertexX);
+            final double convertedVertexY = MapConversions.latToMapY(vertexY);
 
             if (Double.isNaN(convertedVertexX) || Double.isNaN(convertedVertexY)) {
                 continue;
@@ -164,18 +164,15 @@ public class CircleMarker extends AbstractMarker {
      * @param eY - y coordinate of edge
      */
     public void setRadius(final double eX, final double eY) {
-        double edgeX = eX;
-        double edgeY = eY;
         // Set on screen radius to the circle marker
-        circle.setRadius(Math.sqrt(Math.pow(edgeX - centerX, 2) + Math.pow(edgeY - centerY, 2)));
+        circle.setRadius(Math.sqrt(Math.pow(eX - centerX, 2) + Math.pow(eY - centerY, 2)));
 
         // Calculate radius in geo coordinates
-        edgeX = MarkerUtilities.xToLong(edgeX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        edgeY = MarkerUtilities.yToLat(edgeY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final double edgeX = MapConversions.mapXToLon(eX);
+        final double edgeY = MapConversions.mapYToLat(eY);
 
-        final double newCenterY = centerY;
-        final double x = MarkerUtilities.xToLong(centerX, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        final double y = MarkerUtilities.yToLat(newCenterY, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final double x = MapConversions.mapXToLon(centerX);
+        final double y = MapConversions.mapYToLat(centerY);
 
         // Caclulate distance with geo coordinates
         this.radius = Math.sqrt(

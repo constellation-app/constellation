@@ -19,7 +19,7 @@ import au.gov.asd.tac.constellation.utilities.geospatial.Distance;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Location;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.Group;
@@ -144,9 +144,8 @@ public class DayNightLayer extends AbstractMapLayer {
     private void projectShadowCoordinates(final List<Location> locations) {
         // For every location calculate its x and y coordinate
         locations.forEach(location -> {
-
-            location.setX(MarkerUtilities.longToX(location.getX(), MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG));
-            location.setY(MarkerUtilities.latToY(location.getY(), MapView.MAP_WIDTH, MapView.MAP_HEIGHT));
+            location.setX(MapConversions.lonToMapX(location.getX()));
+            location.setY(MapConversions.latToMapY(location.getY()));
         });
     }
 
@@ -192,8 +191,8 @@ public class DayNightLayer extends AbstractMapLayer {
         sun.setRadius(SUN_RADIUS);
 
         // Calculate x and y from lat and lon
-        final double sunX = MarkerUtilities.longToX(sunLocation.getLon(), MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        final double sunY = MarkerUtilities.latToY(sunLocation.getLat(), MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final double sunX = MapConversions.lonToMapX(sunLocation.getLon());
+        final double sunY = MapConversions.latToMapY(sunLocation.getLat());
 
         sun.setTranslateX(sunX);
         sun.setTranslateY(sunY);

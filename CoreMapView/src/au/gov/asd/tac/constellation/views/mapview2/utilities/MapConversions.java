@@ -123,6 +123,7 @@ public class MapConversions {
      * Private default constructor.
      */
     private MapConversions() {   
+        throw new IllegalStateException("Invalid constructior");
     }
     
     /**

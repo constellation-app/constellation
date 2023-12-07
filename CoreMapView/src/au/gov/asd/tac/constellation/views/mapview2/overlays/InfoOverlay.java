@@ -15,8 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.overlays;
 
-import au.gov.asd.tac.constellation.views.mapview2.MapView;
-import au.gov.asd.tac.constellation.views.mapview2.utilities.MarkerUtilities;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import javafx.scene.control.Label;
@@ -55,8 +54,8 @@ public class InfoOverlay extends AbstractOverlay {
      * @param y
      */
     public void updateLocation(final double x, final double y) {
-        final double lon = MarkerUtilities.xToLong(x, MapView.MIN_LONG, MapView.MAP_WIDTH, MapView.MAX_LONG - MapView.MIN_LONG);
-        final double lat = MarkerUtilities.yToLat(y, MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
+        final double lon = MapConversions.mapXToLon(x);
+        final double lat = MapConversions.mapYToLat(y);
 
         final DecimalFormat df = new DecimalFormat("#.###");
         df.setRoundingMode(RoundingMode.CEILING);
