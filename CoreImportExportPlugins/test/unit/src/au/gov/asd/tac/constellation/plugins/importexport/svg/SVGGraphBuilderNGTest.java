@@ -83,6 +83,7 @@ public class SVGGraphBuilderNGTest {
     
     // Other Attributea
     private int vertexAttributeIdSelected;
+    private int vertexAttributeIdLabel;
     private int transactionAttributeIdSelected;
     private int vertexAttributeIdPinned;
     
@@ -364,6 +365,7 @@ public class SVGGraphBuilderNGTest {
             vertexAttributeIdX = VisualConcept.VertexAttribute.X.ensure(wg);
             vertexAttributeIdY = VisualConcept.VertexAttribute.Y.ensure(wg);
             vertexAttributeIdZ = VisualConcept.VertexAttribute.Z.ensure(wg);
+            vertexAttributeIdLabel = VisualConcept.VertexAttribute.LABEL.ensure(wg);
             VisualConcept.VertexAttribute.BLAZE.ensure(wg);
             vertexAttributeIdPinned = VisualConcept.VertexAttribute.PINNED.ensure(wg);
             vertexAttributeIdSelected = VisualConcept.VertexAttribute.SELECTED.ensure(wg);
@@ -374,6 +376,7 @@ public class SVGGraphBuilderNGTest {
             wg.setFloatValue(vertexAttributeIdY, vertexId1, 1.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId1, 1.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId1, false);
+            wg.setStringValue(vertexAttributeIdLabel, vertexId1, "vertex1");
             
             vertexId2 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId2, 5.0f);
@@ -381,29 +384,34 @@ public class SVGGraphBuilderNGTest {
             wg.setFloatValue(vertexAttributeIdZ, vertexId2, 1.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId2, true);
             wg.setBooleanValue(vertexAttributeIdPinned, vertexId2, true);
+            wg.setStringValue(vertexAttributeIdLabel, vertexId2, "vertex2");
             
             vertexId3 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId3, 1.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId3, 5.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId3, 1.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId3, false);
+            wg.setStringValue(vertexAttributeIdLabel, vertexId3, "vertex3");
             
             vertexId4 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId4, 5.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId4, 5.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId4, 5.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId4, false);
+            wg.setStringValue(vertexAttributeIdLabel, vertexId4, "vertex4");
             
             vertexId5 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId5, 10.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId5, 10.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId5, 10.0f);
             wg.setBooleanValue(vertexAttributeIdSelected, vertexId5, true);
+            wg.setStringValue(vertexAttributeIdLabel, vertexId5, "vertex5");
             
             vertexId6 = wg.addVertex();
             wg.setFloatValue(vertexAttributeIdX, vertexId6, 0.0f);
             wg.setFloatValue(vertexAttributeIdY, vertexId6, 0.0f);
             wg.setFloatValue(vertexAttributeIdZ, vertexId6, 15.0f);
+            wg.setStringValue(vertexAttributeIdLabel, vertexId6, "vertex6");
 
             transactionId1 = wg.addTransaction(vertexId1, vertexId2, false);
             transactionId2 = wg.addTransaction(vertexId2, vertexId3, false);
