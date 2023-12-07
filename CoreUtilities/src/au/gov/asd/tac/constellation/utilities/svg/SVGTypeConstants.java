@@ -100,7 +100,7 @@ public enum SVGTypeConstants {
     public static SVGTypeConstants getType(final String name){
         if (name != null) {
             for (SVGTypeConstants constant : SVGTypeConstants.values()){
-                if (constant != null && name.equals(constant.getTypeString())){
+                if (name.equals(constant.getTypeString())){
                     return constant;
                 }
             }
