@@ -133,7 +133,7 @@ public class SVGDataNGTest {
         assertEquals(svgObjectBlank1.getChild(id3), svgObjectBlank3);
         
         // Test removing a child 2 level below the element.
-        svgObjectBlank1.removeChild(id3);
+        assertEquals(svgObjectBlank3, svgObjectBlank1.removeChild(id3));
         assertNull(svgObjectBlank1.getParent());
         assertEquals(svgObjectBlank1.getChild(id2), svgObjectBlank2);
         assertTrue(svgObjectBlank1.getAllChildren().size() == 1);
@@ -144,12 +144,15 @@ public class SVGDataNGTest {
         assertTrue(svgObjectBlank3.getAllChildren().isEmpty());
         
         // Test remove a child 1 levels below the element
-        svgObjectBlank1.removeChild(id2);
+        assertEquals(svgObjectBlank2, svgObjectBlank1.removeChild(id2));
         assertNull(svgObjectBlank1.getParent());
         assertNull(svgObjectBlank1.getChild(id2));
         assertTrue(svgObjectBlank1.getAllChildren().isEmpty());
         assertNull(svgObjectBlank2.getParent());
         assertTrue(svgObjectBlank2.getAllChildren().isEmpty());
+        
+        // Test removeing a non existant child.
+        assertNull(svgObjectBlank1.removeChild(id2));
         
         // Set Parent Child Relationship - svgObjectBlank1(svgObjectBlank2, svgObjectBlank3)
         svgObjectBlank2.setParent(svgObjectBlank1);

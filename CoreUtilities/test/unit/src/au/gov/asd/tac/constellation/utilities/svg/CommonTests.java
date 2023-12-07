@@ -31,8 +31,7 @@ public class CommonTests {
         SVGData content = graph.getChild("content");
         SVGData header = graph.getChild("header");
         SVGData node0 = graph.getChild("Node-0");
-        
-        
+
         assertTrue(graph.getAllChildren().contains(background));
         assertTrue(graph.getAllChildren().contains(content));
         assertTrue(graph.getAllChildren().contains(header));
