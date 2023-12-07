@@ -474,7 +474,7 @@ public class SVGGraphBuilder {
         final float blazeSize = access.getBlazeSize();
         final float blazeWidth = 512 * blazeSize;
         final float blazeHeight = 128 * blazeSize;
-        final Vector4f edgePosition = this.offSetPosition(this.getVertexPosition(vertexIndex), this.getVertexScaledRadius(vertexIndex), Math.toRadians(blazeAngle + 90));
+        final Vector4f edgePosition = this.offSetPosition(this.getVertexPosition(vertexIndex), this.getVertexScaledRadius(vertexIndex), Math.toRadians(blazeAngle + 90D));
         
         final SVGObject svgBlaze = SVGTemplateConstants.BLAZE.getSVGObject();
         svgBlaze.setID(String.format("Blaze%s", vertexIndex));

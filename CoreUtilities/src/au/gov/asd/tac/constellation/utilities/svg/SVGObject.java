@@ -221,7 +221,7 @@ public class SVGObject {
         // Get the current width wihtout the local reference. 
         final float currentWidth = getPositionalData(null, SVGAttributeConstants.WIDTH);
         
-        //This evluation will be true if the current width is a percentage so set the width as the viewbox attribute.
+        // This evluation will be true if the current width is a percentage so set the width as the viewbox attribute.
         if (this.width != null && currentWidth != this.width){
             this.width = width;
             setViewBox(this.x, this.y, this.width, this.height);
@@ -237,15 +237,15 @@ public class SVGObject {
     
     private float getPositionalData(final Float quickReference, final SVGAttributeConstants longReference) {  
         if (quickReference != null) {
-            //The localy stored value;
+            // The localy stored value
             return quickReference;
         }
         final Float attributeFloat = this.getAttributeFloat(longReference);          
         if (attributeFloat != null) {
-            //The value set during parsing;
+            // The value set during parsing
             return attributeFloat;
         } else {
-            //No value has been set
+            // No value has been set
             return 0;
         }
     }

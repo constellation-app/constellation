@@ -91,6 +91,7 @@ public class SVGGraphBuilderNGTest {
     private int vertexAttributeIdPinned;
     private int graphAttributeIdTopLabels;
     private int graphAttributeIdBottomLabels;
+    private int graphAttributeIdTransactionLabels;
     
     public SVGGraphBuilderNGTest() {
     }
@@ -370,17 +371,26 @@ public class SVGGraphBuilderNGTest {
             
             GraphLabel testLabel1 = new GraphLabel("Label", ConstellationColor.CLOUDS);
             GraphLabel testLabel2 = new GraphLabel("x", ConstellationColor.BANANA);
-            ArrayList testLabelsList = new ArrayList<>();
-            testLabelsList.add(testLabel1);
-            testLabelsList.add(testLabel2);
-            GraphLabels topLabels = new GraphLabels(testLabelsList);
-            GraphLabels bottomLabels = new GraphLabels(testLabelsList);
+            GraphLabel testLabel3 = new GraphLabel("color", ConstellationColor.BLUE);
+            
+            ArrayList testNodeLabelsList = new ArrayList<>();
+            testNodeLabelsList.add(testLabel1);
+            testNodeLabelsList.add(testLabel2);
+            GraphLabels topLabels = new GraphLabels(testNodeLabelsList);
+            GraphLabels bottomLabels = new GraphLabels(testNodeLabelsList);
             
             graphAttributeIdTopLabels = VisualConcept.GraphAttribute.TOP_LABELS.ensure(wg);
             wg.setObjectValue(graphAttributeIdTopLabels, 0, topLabels);
+            ArrayList testTransactionLabelsList = new ArrayList<>();
+            testTransactionLabelsList.add(testLabel1);
+            testTransactionLabelsList.add(testLabel2);
+            GraphLabels transactionLabels = new GraphLabels(testTransactionLabelsList);
             
             graphAttributeIdBottomLabels = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(wg);
             wg.setObjectValue(graphAttributeIdBottomLabels, 0, bottomLabels);
+            
+            graphAttributeIdTransactionLabels = VisualConcept.GraphAttribute.TRANSACTION_LABELS.ensure(wg);
+            wg.setObjectValue(graphAttributeIdTransactionLabels, 0, transactionLabels);
             
             vertexAttributeIdX = VisualConcept.VertexAttribute.X.ensure(wg);
             vertexAttributeIdY = VisualConcept.VertexAttribute.Y.ensure(wg);
