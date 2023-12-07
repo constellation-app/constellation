@@ -383,7 +383,7 @@ public class SVGGraphBuilderNGTest {
             wg.setObjectValue(graphAttributeIdTopLabels, 0, topLabels);
             ArrayList testTransactionLabelsList = new ArrayList<>();
             testTransactionLabelsList.add(testLabel1);
-            testTransactionLabelsList.add(testLabel2);
+            testTransactionLabelsList.add(testLabel3);
             GraphLabels transactionLabels = new GraphLabels(testTransactionLabelsList);
             
             graphAttributeIdBottomLabels = VisualConcept.GraphAttribute.BOTTOM_LABELS.ensure(wg);
