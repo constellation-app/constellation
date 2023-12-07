@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 
@@ -132,10 +131,10 @@ public class ContentPairwiseSimilarityServices {
                         }
 
                         Map<Integer, MutableDouble> elementMap = pairwiseSimilaritiesCalculation[loElement];
-                    if (!elementMap.containsKey(hiElement)) {
-                        elementMap.put(hiElement, new MutableDouble(0.0));
+                        if (!elementMap.containsKey(hiElement)) {
+                            elementMap.put(hiElement, new MutableDouble(0.0));
                         } else {
-                        elementMap.get(hiElement).val += (freqMap1.get(loElement) * freqMap2.get(hiElement));
+                            elementMap.get(hiElement).val += (freqMap1.get(loElement) * freqMap2.get(hiElement));
                         }
                     }
                 }

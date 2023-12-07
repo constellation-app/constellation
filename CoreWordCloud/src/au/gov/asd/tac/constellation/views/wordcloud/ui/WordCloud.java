@@ -180,8 +180,11 @@ public class WordCloud {
         final Set<Integer> modelElements = filterAllWords ? model.getColumnElementIntersection(individualWordKeys) : model.getColumnElementUnion(individualWordKeys);
         Integer[] modelColumn = model.getConstituentExtendedColumnAsArray(key, modelElements);
 
-        // Do dummy resampling if the sample size of the graph was 1 or the sample size fo the model was 0 or 1
-        if (graphColumn.length == 1) {
+        // Do dummy resampling if the sample size of the graph was 0 or 1 or the sample size for the model was 0 or 1
+        if (graphColumn == null) {
+            final Integer[] dummyResample = {0, 0};
+            graphColumn = dummyResample;
+        }  else if (graphColumn.length == 1) {
             final Integer[] dummyResample = {graphColumn[0], graphColumn[0]};
             graphColumn = dummyResample;
         }
