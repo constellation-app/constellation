@@ -28,7 +28,7 @@ def _test_post():
         ['4.3.2.1<IP Address>', '9.8.7.5<IP Address>', 'Online Location', datetime.datetime(2016, 1, 1, 3, 4, 5, 0)]
     ]
     df = pd.DataFrame(columns=columns, data=data)
-    cc.put_dataframe(df, arrange=False)
+    cc.put_dataframe(df, arrange='')
     cc.run_plugin('ArrangeInTrees')
     cc.run_plugin('ResetView')
 
