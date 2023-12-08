@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,10 +46,10 @@ public class MapConversions {
     // The latitudes and longitudes bordering the visibleMap 
     private static double mapTopLat = 0.0; // Latitude (in degrees) of the top left point on map being viewed. Refer
                                            // to (c) on diagram below.
-    private static double mapLeftLon = 0.0; // Longitude (in degrees) of the top left point on map being viewed. Refer
-                                            // to (c) on diagram below.
     private static double mapBottomLat = 0.0; // Latitude (in degrees) of the bottom right point on map being viewed.
                                               // Refer to (d) on diagram below.
+    private static double mapLeftLon = 0.0; // Longitude (in degrees) of the top left point on map being viewed. Refer
+                                            // to (c) on diagram below.
     private static double mapRightLon = 0.0; // Longitude (in degrees) of the bottom right point on map being viewed.
                                              // Refer to (d) on diagram below.
     
@@ -63,32 +64,31 @@ public class MapConversions {
                                                     // circumference of the earth. The radius us calculated from this
                                                     // circumference value.
     
-    private static double mapLeftOffsetFromFullWorldMapCentre = 0.0; // The horizontal offset of the supplied maps top
-                                                                     // left corner (c) in the diagram below, to the
-                                                                     // centre of the world map (x) in the diagram
-                                                                     // below in the units used to describe mapWidth and
-                                                                     // mapHeight.
+    // Offsets from world map centre of the map edges
     private static double mapTopOffsetFromFullWorldMapCentre = 0.0; // The vertical offset of the supplied maps top left
                                                                     // corner (c) in the diagram below, to the centre
                                                                     // of the world map (x) in the diagram below in
                                                                     // the units used to describe mapWidth and mapHeight.
-    private static double mapRightOffsetFromFullWorldMapCentre = 0.0; // The horizontal offset of the supplied maps
-                                                                     // bottom right corner (d) in the diagram below, to
-                                                                     // the centre of the world map (x) in the diagram
-                                                                     // below in the units used to describe mapWidth and
-                                                                     // mapHeight.
     private static double mapBottomOffsetFromFullWorldMapCentre = 0.0; // The vertical offset of the supplied maps
                                                                      // bottom right corner (d) in the diagram below, to
                                                                      // the centre of the world map (x) in the diagram
                                                                      // below in the units used to describe mapWidth and
                                                                      // mapHeight.
-    
+    private static double mapLeftOffsetFromFullWorldMapCentre = 0.0; // The horizontal offset of the supplied maps top
+                                                                     // left corner (c) in the diagram below, to the
+                                                                     // centre of the world map (x) in the diagram
+                                                                     // below in the units used to describe mapWidth and
+                                                                     // mapHeight.
+    private static double mapRightOffsetFromFullWorldMapCentre = 0.0; // The horizontal offset of the supplied maps
+                                                                     // bottom right corner (d) in the diagram below, to
+                                                                     // the centre of the world map (x) in the diagram
+                                                                     // below in the units used to describe mapWidth and
+                                                                     // mapHeight.
     
     private static boolean initialized = false; // Confirm that a map has been loaded to operate on.
     
     // The following diagram attempts to identify the various points and concepts stored by calculations in this class.
     // Refer to comments above for referecnes to points on the diagram.
-    
     //
     //  |<--------------------------------- e ------------------------------->|
     //
@@ -136,11 +136,11 @@ public class MapConversions {
      * @param width The width of the map to calculate values for.
      * @param height The height of the map to calculate values for. This is only required to provide sanity checks.
      * @param topLat The latitude corresponding to the top left corner of the map.
-     * @param leftLon The longitude corresponding to the top left corner of the map.
      * @param bottomLat The latitude corresponding to the bottom right corner of the map.
+     * @param leftLon The longitude corresponding to the top left corner of the map.
      * @param rightLon  The longitude corresponding to the bottom right corner of the map.
      */
-    public static void initMapDimensions(final double width, final double height, final double topLat, final double leftLon, final double bottomLat, final double rightLon) {
+    public static void initMapDimensions(final double width, final double height, final double topLat, final double bottomLat, final double leftLon, final double rightLon) {
         resetMapDimensions();
         
         // Validate map size
@@ -231,7 +231,19 @@ public class MapConversions {
      * @param bottomRight The location corresponding to the bottom right corner of the map.
      */
     public static void initMapDimensions(final double width, final double height, final Location topLeft, final Location bottomRight) {
-        initMapDimensions(width, height, topLeft.getLat(), topLeft.getLon(), bottomRight.getLat(), bottomRight.getLon());
+        initMapDimensions(width, height, topLeft.getLat(), bottomRight.getLat(), topLeft.getLon(), bottomRight.getLon());
+    }
+    
+    /**
+     * Initialize the static class with details of the selected map. This performs all the common calculations used to
+     * support various transformations between lat, long and X, Y coordinates.
+     * As discussed above, a 'virtual' full world map is generated assuming a LONGITUDINAL RANGE OF -180 TO 180, ie the
+     * full world.
+     * 
+     * @param mapDetails MapDetails object containing all details of the map.
+     */
+    public static void initMapDimensions(final MapDetails mapDetails) {
+        initMapDimensions(mapDetails.getWidth(), mapDetails.getHeight(), mapDetails.getTopLat(), mapDetails.getBottomLat(), mapDetails.getLeftLon(), mapDetails.getRightLon());
     }
     
     /**
@@ -497,6 +509,11 @@ public class MapConversions {
         }
         location.setX(lonToMapX(location.getLon()));
         location.setY(latToMapY(location.getLat())); 
+    }
+    
+    
+    public static boolean isPointOnMap(final double lat, final double lon) {
+        return (lat >= mapBottomLat && lat <= mapTopLat && lon >= mapLeftLon && lon <= mapRightLon);
     }
     
     /**

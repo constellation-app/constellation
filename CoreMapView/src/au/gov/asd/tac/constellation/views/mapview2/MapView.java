@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.mapview2;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
-import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
 import au.gov.asd.tac.constellation.utilities.geospatial.Geohash;
 
 
@@ -85,7 +84,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -110,27 +108,31 @@ public class MapView extends ScrollPane {
     // ID of the next user drawn marker
     private int drawnMarkerId = 0;
 
-    private double pointMarkerGlobalScale = 0.05;
-    private double scaledMapLineWidth = 0.05;
+    private double pointMarkerGlobalScale = 0.1;
+    private double scaledMapLineWidth = 0.1;
 
     // Flags for the different drawing modes
     private boolean drawingCircleMarker = false;
     private boolean drawingPolygonMarker = false;
 
-    // Furthest longitude to the east and west
-    public static final double MIN_LONG = -180;
-    public static final double MAX_LONG = 180;
-
-    // Furthest lattitude to the north and south
-    public static final double MIN_LAT = -85.0511;
-    public static final double MAX_LAT = 85.0511;
-
     public static final double MAP_VIEWPORT_WIDTH = 1200;
     public static final double MAP_VIEWPORT_HEIGHT = 1200;
 
-    public static final double MAP_WIDTH = 1200;
-    public static final double MAP_HEIGHT = 1200;
+    // TODO: look to remove these constants and instead read lats, longs, and width/height from mapDetails object.
+    // Furthest longitude to the east and west
+    public static double MIN_LONG = 0;
+    public static double MAX_LONG = 0;
 
+    // Furthest latitude to the north and south
+    public static double MIN_LAT = 0;
+    public static double MAX_LAT = 0;
+
+    // Size of the map
+    public static double MAP_WIDTH = 0;
+    public static double MAP_HEIGHT = 0;
+    
+    private static MapDetails mapDetails = new MapDetails(0, 0, 0, 0, 0, 0, "", null);
+     
     // Two containers that hold queried markers and user drawn markers
     private Map<String, AbstractMarker> markers = new HashMap<>();
     private final List<AbstractMarker> userMarkers = new ArrayList<>();
@@ -231,8 +233,25 @@ public class MapView extends ScrollPane {
 
     private final Rectangle enclosingRectangle = new Rectangle();
 
-    public MapView(final MapViewPane parent) {
+    /**
+     * Construct MapView object using the map identified by mspDetails.
+     * 
+     * @param parent The parent view pane.
+     * @param mapDetails Details of he map being loaded.
+     */
+    public MapView(final MapViewPane parent, final MapDetails mapDetails) {
         this.parent = parent;
+        this.mapDetails = mapDetails;
+        
+        // TODO: hack for now, would like to remove these (and all references to them). Previously MapView stored all
+        // dimensions as public constants and other classes pulled from there. Intention is to instead use MapDetails
+        // object
+        MIN_LONG = mapDetails.getLeftLon();
+        MAX_LONG = mapDetails.getRightLon();
+        MIN_LAT = mapDetails.getBottomLat();
+        MAX_LAT = mapDetails.getTopLat();
+        MAP_WIDTH = mapDetails.getWidth();
+        MAP_HEIGHT = mapDetails.getHeight();
 
         clusterMarkerBuilder = new ClusterMarkerBuilder(this);
 
@@ -280,7 +299,6 @@ public class MapView extends ScrollPane {
         clipRectangle.setFill(Color.TRANSPARENT);
 
         setScrollEventHandler();
-
         setMousePressedEventHandler();
 
         // When user drags the mouse
@@ -328,9 +346,11 @@ public class MapView extends ScrollPane {
         this.setVvalue(this.getVmin() + (this.getVmax() - this.getVmin()) / 2);
 
         // Add the country group the the the pane
-        mapGroupHolder.setPrefWidth(MAP_WIDTH);
-        mapGroupHolder.setPrefHeight(MAP_HEIGHT);
-        MapConversions.initMapDimensions(MAP_WIDTH, MAP_HEIGHT, MAX_LAT, MIN_LONG, MIN_LAT, MAX_LONG);
+        mapGroupHolder.setPrefWidth(mapDetails.getWidth());
+        mapGroupHolder.setPrefHeight(mapDetails.getHeight());
+        
+        // Initialize the MapConversions class to align with the map being loaded.
+        MapConversions.initMapDimensions(mapDetails);
         
         mapGroupHolder.getChildren().add(countryGroup);
 
@@ -340,6 +360,13 @@ public class MapView extends ScrollPane {
         overlayMap.put(MapViewPane.OVERVIEW_OVERLAY, overviewOverlay);
 
         markerColourProperty.set(parent.DEFAULT_COLOURS);
+
+        // TODO this is triggered from Paintbrush menu, where user can aselect:
+        //           - Default Colours
+        //           - Use Color Attribute
+        //           - Use Overlay Color
+        //           - Use Blaze Color
+
         // Event listener for what colour point markers should be
         markerColourProperty.addListener((observable, oldValue, newValue) -> {
             // Loop through all markers on screen
@@ -360,7 +387,7 @@ public class MapView extends ScrollPane {
             final double x = event.getX();
             final double y = event.getY();
 
-            // Change lattitude and logitude text on info overlay if its showing
+            // Change latitude and logitude text on info overlay if its showing
             if (INFO_OVERLAY.isShowing()) {
                 INFO_OVERLAY.updateLocation(x, y);
                 parent.setLatFieldText(INFO_OVERLAY.getLatText().getText());
@@ -482,7 +509,6 @@ public class MapView extends ScrollPane {
         overlayGroup.getChildren().addAll(INFO_OVERLAY.getOverlayPane());
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
         mapGroupHolder.getChildren().addAll(viewPortRectangleGroup);
-
     }
 
     /**
@@ -946,8 +972,6 @@ public class MapView extends ScrollPane {
                 } else {
                     marker.scaleAndReposition(marker.getScale() * 1.08);
                 }
-            } else {
-                abstractMarker.getMarker().setStrokeWidth(scaledMapLineWidth * 20);
             }
         });
 
@@ -959,14 +983,6 @@ public class MapView extends ScrollPane {
                 } else {
                     marker.scaleAndReposition(marker.getScale() * 1.08);
                 }
-            } else {
-                abstractMarker.getMarker().setStrokeWidth(scaledMapLineWidth * 20);
-            }
-        });
-        
-        graphMarkerGroup.getChildren().forEach(marker -> {
-            if (marker instanceof Shape) {
-                ((Shape) marker).setStrokeWidth(scaledMapLineWidth * 20);
             }
         });
     }
@@ -1126,8 +1142,8 @@ public class MapView extends ScrollPane {
         final double centerY = this.getHeight() / 2;
 
 
-        mapStackPane.setTranslateX(centerX - MAP_WIDTH / 2);
-        mapStackPane.setTranslateY(centerY - MAP_HEIGHT / 2);
+        mapStackPane.setTranslateX(centerX - mapDetails.getWidth() / 2);
+        mapStackPane.setTranslateY(centerY - mapDetails.getHeight() / 2);
 
     }
 
@@ -1139,7 +1155,7 @@ public class MapView extends ScrollPane {
      */
     private void pan(final double x, final double y) {
 
-        final Vec3 center = new Vec3(MAP_WIDTH / 2, MAP_HEIGHT / 2);
+        final Vec3 center = new Vec3(mapDetails.getWidth() / 2, mapDetails.getHeight() / 2);
 
         final Point2D averageMarkerPosition = mapStackPane.localToParent(x, y);
 
@@ -1294,8 +1310,8 @@ public class MapView extends ScrollPane {
             final ComboBox<String> geoTypeMenu = new ComboBox<>(FXCollections.observableList(Arrays.asList(COORDINATE, GEOHASH, MGRS)));
             geoTypeMenu.getSelectionModel().selectFirst();
 
-            final Text lattitudeLabel = new Text("Lattitude");
-            lattitudeLabel.setFill(Color.WHITE);
+            final Text latitudeLabel = new Text("Latitude");
+            latitudeLabel.setFill(Color.WHITE);
 
             final Text longitudeLabel = new Text("Longitude");
             longitudeLabel.setFill(Color.WHITE);
@@ -1303,11 +1319,11 @@ public class MapView extends ScrollPane {
             final Text radiusLabel = new Text("Radius");
             radiusLabel.setFill(Color.WHITE);
 
-            final TextField lattitudeInput = new TextField();
-            lattitudeInput.setBorder(new Border(new BorderStroke(Color.WHITE, null, null, null)));
-            lattitudeInput.setStyle(textFillStyle);
+            final TextField latitudeInput = new TextField();
+            latitudeInput.setBorder(new Border(new BorderStroke(Color.WHITE, null, null, null)));
+            latitudeInput.setStyle(textFillStyle);
 
-            lattitudeInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor(backgroundFill).getJavaFXColor(), null, null)));
+            latitudeInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor(backgroundFill).getJavaFXColor(), null, null)));
 
             final TextField longitudeInput = new TextField();
             longitudeInput.setBackground(new Background(new BackgroundFill(ConstellationColor.fromHtmlColor(backgroundFill).getJavaFXColor(), null, null)));
@@ -1323,11 +1339,11 @@ public class MapView extends ScrollPane {
             coordinateGridPane.setHgap(10);
             coordinateGridPane.setPadding(new Insets(0, 0, 0, 10));
 
-            coordinateGridPane.add(lattitudeLabel, 0, 0);
+            coordinateGridPane.add(latitudeLabel, 0, 0);
             coordinateGridPane.add(longitudeLabel, 1, 0);
             coordinateGridPane.add(radiusLabel, 2, 0);
 
-            coordinateGridPane.add(lattitudeInput, 0, 1);
+            coordinateGridPane.add(latitudeInput, 0, 1);
             coordinateGridPane.add(longitudeInput, 1, 1);
             coordinateGridPane.add(radiusInput, 2, 1);
 
@@ -1348,11 +1364,11 @@ public class MapView extends ScrollPane {
                 final String selectedItem = geoTypeMenu.getSelectionModel().getSelectedItem();
 
                 if (selectedItem.equals(COORDINATE)) {
-                    coordinateGridPane.add(lattitudeLabel, 0, 0);
+                    coordinateGridPane.add(latitudeLabel, 0, 0);
                     coordinateGridPane.add(longitudeLabel, 1, 0);
                     coordinateGridPane.add(radiusLabel, 2, 0);
 
-                    coordinateGridPane.add(lattitudeInput, 0, 1);
+                    coordinateGridPane.add(latitudeInput, 0, 1);
                     coordinateGridPane.add(longitudeInput, 1, 1);
                     coordinateGridPane.add(radiusInput, 2, 1);
 
@@ -1410,16 +1426,16 @@ public class MapView extends ScrollPane {
                 // Convert coordinate input to x and y coordinates
                 if (selectedGeoType.equals(COORDINATE)) {
 
-                    double lattitude = -3000;
+                    double latitude = -3000;
                     double longitude = -3000;
                     double radius = -3000;
 
-                    final String lattitudeText = lattitudeInput.getText();
+                    final String latitudeText = latitudeInput.getText();
                     final String longitudeText = longitudeInput.getText();
                     final String radiusText = radiusInput.getText();
 
-                    if (StringUtils.isNotBlank(lattitudeText) && NumberUtils.isParsable(lattitudeText.strip()) && StringUtils.isNotBlank(longitudeText) && NumberUtils.isParsable(longitudeText.strip())) {
-                        lattitude = Double.parseDouble(lattitudeText.strip());
+                    if (StringUtils.isNotBlank(latitudeText) && NumberUtils.isParsable(latitudeText.strip()) && StringUtils.isNotBlank(longitudeText) && NumberUtils.isParsable(longitudeText.strip())) {
+                        latitude = Double.parseDouble(latitudeText.strip());
                         longitude = Double.parseDouble(longitudeText.strip());
                     } else {
                         showingZoomToLocationPane = false;
@@ -1428,7 +1444,7 @@ public class MapView extends ScrollPane {
                     }
 
                     final double x = MapConversions.lonToMapX(longitude);
-                    final double y = MapConversions.latToMapY(lattitude);
+                    final double y = MapConversions.latToMapY(latitude);
 
                     if (StringUtils.isNotBlank(radiusText) && NumberUtils.isParsable(radiusText.strip())) {
                         radius = Double.parseDouble(radiusText.strip());
@@ -1559,7 +1575,7 @@ public class MapView extends ScrollPane {
      */
     public void drawMarker(final AbstractMarker marker) {
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
-            marker.setMarkerPosition(MAP_WIDTH, MAP_HEIGHT);
+            marker.setMarkerPosition(mapDetails.getWidth(), mapDetails.getHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
                 if (marker instanceof GeoShapePolygonMarker) {
                     final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
@@ -1580,7 +1596,7 @@ public class MapView extends ScrollPane {
                         pMarker.scaleAndReposition(pointMarkerGlobalScale);
                     }
                 } else {
-                    marker.getMarker().setStrokeWidth(scaledMapLineWidth * 20);
+//                    marker.getMarker().setStrokeWidth(scaledMapLineWidth * 20);
                 }
             }
         }
@@ -1624,8 +1640,7 @@ public class MapView extends ScrollPane {
         // Read map from file
         try {
 
-            final File map = ConstellationInstalledFileLocator.locate("modules/ext/data/worldmap1200.txt", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain());
-            try (final BufferedReader bFileReader = new BufferedReader(new FileReader(map))) {
+            try (final BufferedReader bFileReader = new BufferedReader(new FileReader(mapDetails.getMapFile()))) {
                 String path = "";
                 String line = "";
 

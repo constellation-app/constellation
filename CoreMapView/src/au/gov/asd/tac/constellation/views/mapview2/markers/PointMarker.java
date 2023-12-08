@@ -22,7 +22,6 @@ import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -34,56 +33,57 @@ public class PointMarker extends AbstractMarker {
 
     // The actual marker path raw string
     private String path = "l-35-90 l-45-80 l-10-30 l0-45 l10-25 l15-20 l50-20 l30 0 l50 20 l15 20 l10 25 l0 45 l-10 30 l-45 80 l-35 90 m0-194 l-22-22 l22-22 l22 22 l-22 22 m0-8 l-14-14 l14-14 l14 14 l-14 14 m0-8 l-6-6 l6-6 l6 6 l-6 6";
-    private double lattitude;
-    private double longitude;
-    private double x = 0;
-    private double y = 0;
+    private double latitude;  // The latitude to display marker at
+    private double longitude;  // The longitude to display marker at
     private double scale;
 
-    private String defaultColour = "#FF0000";
-    private String multiValCol = "#D3D3D3";
-    private String attributeColour = defaultColour;
+    private String attributeColour = DEFAULT_MARKER_COLOUR;  // Set a default colour for marker if using colour stored in
+                                                             // nodes colour attribute. This will get overridden by extracted
+                                                             // value
     private String blazeColour = null;
     private int blazeColourCount = 0;
     private int overlayColourCount = 0;
     private String overlayColour = null;
-    private String currentColour = defaultColour;
+    private String currentColour = DEFAULT_MARKER_COLOUR;
 
     private String labelAttr = null;
     private int labelAttrCount = 0;
 
     private String identifierAttr = null;
     private int identifierCount = 0;
-
-    private Rectangle posRect = new Rectangle();
-
-    public PointMarker(final MapView parent, final int markerID, final int nodeId, final double lattitude, final double longitude, final double scale, final double xOffset, final double yOffset, final String attrColour) {
+    
+    public PointMarker(final MapView parent, final int markerID, final int nodeId, final double latitude, final double longitude, final double scale, final double xOffset, final double yOffset, final String attrColour) {
         super(parent, markerID, nodeId, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
 
-        this.lattitude = lattitude;
+        this.latitude = latitude;
         this.longitude = longitude;
-        this.scale = scale;
-        this.attributeColour = StringUtils.isBlank(attrColour) ? defaultColour : attrColour;
+        setScale(scale);
+        this.attributeColour = StringUtils.isBlank(attrColour) ? DEFAULT_MARKER_COLOUR : attrColour;
 
-        markerPath.setScaleX(scale);
-        markerPath.setScaleY(scale);
+        markerPath.setScaleX(this.scale);
+        markerPath.setScaleY(this.scale);
 
-        markerPath.setFill(Color.web(currentColour));
-        markerPath.setStroke(Color.BLACK);
-        markerPath.setOpacity(0.45);
-        markerPath.setStrokeWidth(7);
+        markerPath.setFill(webColorWithOpacity(DEFAULT_MARKER_COLOUR));        
+        markerPath.setStroke(Color.web(MARKER_STROKE_COLOUR));
+        markerPath.setStrokeWidth(14);
 
         // Event handlers for the marker
         markerPath.setOnMouseEntered((final MouseEvent e) -> {
-            if (!isSelected) {
-                markerPath.setFill(Color.ORANGE);
-            }
+            markerPath.setFill(webColorWithOpacity(MARKER_HIGHLIGHTED_COLOUR));
             e.consume();
         });
 
+        /**
+         * On mouse leaving the marker shape reset its colour back to what it was before. This will depend on whether
+         * the marker was selected or not. If it was selected, then use the selected colour, if it wasn't selected, use
+         * the colour it was before, which is dependent on what mode is being used to set node colours - however the
+         * member variable currentColour stores the most recently set colour (when not selected) of the node.
+         */
         markerPath.setOnMouseExited((final MouseEvent e) -> {
-            if (!isSelected) {
-                markerPath.setFill(Color.web(currentColour));
+            if (isSelected) {
+                markerPath.setFill(webColorWithOpacity(MARKER_SELECTED_COLOUR));
+            } else {
+                markerPath.setFill(webColorWithOpacity(currentColour));
             }
             e.consume();
         });
@@ -94,19 +94,28 @@ public class PointMarker extends AbstractMarker {
             parent.addMarkerIdToSelectedList(markerID, idList, true);
             e.consume();
         });
-
+    }
+    
+    /**
+     * Generate colour object using supplied web colour and using configured opacity value.
+     * 
+     * @param webColorCode Colour code to base colour on.
+     * @return Constructed colour object.
+     */
+    private Color webColorWithOpacity(final String webColorCode) {
+        return Color.web(webColorCode, MARKER_OPACTIY);
     }
 
     @Override
     public void deselect() {
-        markerPath.setFill(Color.web(currentColour));
+        markerPath.setFill(webColorWithOpacity(currentColour));
         isSelected = false;
     }
 
     @Override
     public void select() {
         isSelected = true;
-        markerPath.setFill(Color.BLUE);
+        markerPath.setFill(Color.web(MARKER_SELECTED_COLOUR, MARKER_OPACTIY));
     }
 
     /**
@@ -116,55 +125,37 @@ public class PointMarker extends AbstractMarker {
      */
     @Override
     public void changeMarkerColour(final String option) {
-        // Depending on the option change the colour of the marker
+        
+        // There are multiple methods for setting marker colour, either using default colours, or extracting colours
+        // from associated nodes, depending on selection, set the appropriate colour and update the currentColour value.
         if (option.equals(MapViewPane.DEFAULT_COLOURS)) {
-            currentColour = defaultColour;
-            markerPath.setFill(Color.web(currentColour));
+            // Using the default colour palette to colour unselected markers. 
+            currentColour = DEFAULT_MARKER_COLOUR;
         } else if (option.equals(MapViewPane.USE_COLOUR_ATTR)) {
-            if (idList.size() > 1) {
-                currentColour = multiValCol;
-                markerPath.setFill(Color.web(currentColour));
-            } else {
-
-                markerPath.setFill(Color.web(attributeColour));
-                currentColour = attributeColour;
-
-            }
+            // The colour to use will come from the store eattributeColour for the marker (which comes from the 'color'
+            // attribute of the vertex the marker is tied to. If multiple vertexes share the same location (and hence
+            // marker) then a seperate color is used to indicate multiple values.
+            currentColour = (idList.size() > 1) ? MARKER_MULTI_COLOUR : attributeColour;
         } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
             if (blazeColour != null) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
-                if (blazeColourCount == 1) {
-                    currentColour = colour.getHtmlColor();
-                    markerPath.setFill(Color.web(currentColour));
-                } else {
-                    markerPath.setFill(Color.web(multiValCol));
-                    currentColour = multiValCol;
-                }
-
+                currentColour = (blazeColourCount == 1) ? colour.getHtmlColor() :MARKER_MULTI_COLOUR;
             } else {
-                markerPath.setFill(Color.web(defaultColour));
+                currentColour = DEFAULT_MARKER_COLOUR;
             }
         } else if (option.equals(MapViewPane.USE_OVERLAY_COL)) {
             if (overlayColour != null) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(overlayColour);
-
-                if (overlayColourCount == 1) {
-                    currentColour = colour.getHtmlColor();
-                    markerPath.setFill(Color.web(currentColour));
-                } else {
-                    markerPath.setFill(Color.web(multiValCol));
-                    currentColour = multiValCol;
-                }
-
+                currentColour = (overlayColourCount == 1) ? colour.getHtmlColor() : MARKER_MULTI_COLOUR;
             } else {
-                markerPath.setFill(Color.web(defaultColour));
+                currentColour = DEFAULT_MARKER_COLOUR;
             }
         }
-
+        markerPath.setFill(webColorWithOpacity(currentColour));
     }
 
     public double getLattitude() {
-        return lattitude;
+        return latitude;
     }
 
     public double getLongitude() {
@@ -191,30 +182,10 @@ public class PointMarker extends AbstractMarker {
      */
     @Override
     public void setMarkerPosition(final double mapWidth, final double mapHeight) {
-        x = MapConversions.lonToMapX(longitude);
-        y = MapConversions.latToMapY(lattitude);
-
-        super.setX(x);
-        super.setY(y);
-
-        posRect.setX(x);
-        posRect.setY(y);
-        posRect.setWidth(1);
-        posRect.setHeight(1);
-        posRect.setFill(Color.GREEN);
-        posRect.setOpacity(0.5);
-
-        x += xOffset;
-        y += yOffset;
+        x = MapConversions.lonToMapX(longitude) + xOffset;
+        y = MapConversions.latToMapY(latitude) + yOffset;
         path = "M " + x + SeparatorConstants.COMMA + " " + y + " " + path;
-
-
         markerPath.setContent(path);
-    }
-
-    public void applyOffsets(final double xOffset, final double yOffset) {
-        x += xOffset;
-        y += yOffset;
     }
 
     /**
@@ -223,7 +194,7 @@ public class PointMarker extends AbstractMarker {
      * @param blazeCol
      */
     public void setBlazeColour(final String blaze) {
-        // Get the blaze colure in the correct format
+        // Get the blaze colour in the correct format
         final String blazeCol = blaze.split(SeparatorConstants.SEMICOLON)[1];
 
         if (blazeColourCount == 0) {
@@ -254,10 +225,6 @@ public class PointMarker extends AbstractMarker {
     @Override
     public double getY() {
         return this.y;
-    }
-
-    public Rectangle getPosRect() {
-        return posRect;
     }
 
     public void setLabelAttr(final String labelAttribute) {
@@ -300,14 +267,12 @@ public class PointMarker extends AbstractMarker {
         return currentColour;
     }
 
-    public String getDefaultColour() {
-        return defaultColour;
-    }
-
+    // TODO, this seems to override original scaling - however code in MapViews drawMarker function seems to override the value
+    // anyway, so is this even needed
     public void scaleAndReposition(final double scale) {
         setScale(scale);
-        markerPath.setScaleX(scale);
-        markerPath.setScaleY(scale);
+        markerPath.setScaleX(this.scale);
+        markerPath.setScaleY(this.scale);
 
         final double heightDifference = (getY()) - (markerPath.getBoundsInParent().getCenterY() + (markerPath.getBoundsInParent().getHeight() / 2));
         markerPath.setTranslateY(markerPath.getTranslateY() + heightDifference);

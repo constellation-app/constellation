@@ -34,6 +34,7 @@ import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.GeoShapePolygonMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
+import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import java.awt.Component;
 import java.util.List;
 import java.util.Map;
@@ -94,8 +95,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     // The mapview itself
     private final MapViewPane mapViewPane;
-
     private final Consumer<Graph> updateMarkers;
+    private Graph currentGraph;  // store the currently viewed graph to allow recalcultion of points if map changes
 
     private int markerID = 0;
 
@@ -110,7 +111,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         initComponents();
         mapViewPane = new MapViewPane(this);
         mapViewPane.setUpMap();
-        initContent2();
+        super.initContent();
 
         updateMarkers = graph -> {
             mapViewPane.clearQuerriesMarkers();
@@ -122,11 +123,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         addAttributeValueChangeHandler(SpatialConcept.VertexAttribute.SHAPE, updateMarkers);
         addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LATITUDE, updateMarkers);
         addAttributeValueChangeHandler(SpatialConcept.TransactionAttribute.LONGITUDE, updateMarkers);
-    }
-
-
-    public void initContent2() {
-        super.initContent();
     }
 
     /**
@@ -178,14 +174,11 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
             jfxContainer.add(mapComponent);
             validate();
         });
-
-
     }
 
     public JFXPanel getJfxContainer() {
         return jfxContainer;
     }
-
 
     /**
      * When a graph is opened handle toggling the find view disabled state
@@ -202,6 +195,13 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         return mapViewPane.getAllMarkers();
     }
 
+    /**
+     * Re-extract all coordinates from the graph and determine their position on the map. If map changes, or displayed
+     * graph changes markers need recalculation.
+     */
+    public void recalculateCoords() {
+      runExtractCoordsFromGraphPlugin(currentGraph);
+    }
 
     /**
      * When a new graph is created handle updating the UI
@@ -210,8 +210,9 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
      */
     @Override
     protected void handleNewGraph(final Graph graph) {
+        currentGraph = graph;
         super.handleNewGraph(graph);
-        runExtractCoordsFromGraphPlugin(graph);
+        recalculateCoords();
     }
 
     public void runExtractCoordsFromGraphPlugin(final Graph graph) {
@@ -249,10 +250,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
         return mapViewPane;
     }
 
-    public MapProvider getDefaultProvider() {
-        return mapViewPane.getDefaultProvider();
-    }
-
     public boolean shouldUpdate() {
         return this.needsUpdate();
     }
@@ -275,10 +272,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
 
     public int getContentHeight() {
         return getHeight();
-    }
-
-    public List<? extends MapProvider> getProviders() {
-        return mapViewPane.getProviders();
     }
 
     public ScrollPane getScrollPane() {
@@ -364,6 +357,12 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             // Get lattitude and longitude
                             final Float elementLat = graph.getObjectValue(latID, elementID);
                             final Float elementLon = graph.getObjectValue(lonID, elementID);
+                            
+                            // Only render elements that are within the geographical bounds of the selected map 
+                            if (!MapConversions.isPointOnMap(elementLat, elementLon)) {
+                                continue;
+                            }
+                            
                             String elementShape = null;
 
                             if (geoShapeID != GraphConstants.NOT_FOUND) {
@@ -373,7 +372,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             if (elementShape != null) {
                                 processingGeoShape = true;
                             }
-
 
                             if ((elementLat == null || elementLon == null) && StringUtils.isEmpty(elementShape)) {
                                 continue;
@@ -448,16 +446,14 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                     if (identAttr != null) {
                                         addedMarker.setIdentAttr(identAttr, latLongList.getJSONArray(0).toString());
                                     }
-
                                 }
-
                             }
 
                             // If another vertext of the same location hasn't been queried yet
                             if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey) && !processingGeoShape) {
 
                                 // Create a new point marker and add it to the map
-                                final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 1.0, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour);
+                                final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 10.0, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour);
                                 mapViewTopComponent.addMarker(coordinateKey, p);
 
                                 // Set colours and labels if they are available
@@ -476,19 +472,15 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                 if (identAttr != null) {
                                     p.setIdentAttr(identAttr);
                                 }
-
-
                             } else if (!processingGeoShape) {
 
                                 if (blazeColour != null) {
                                     ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setBlazeColour(blazeColour);
-
                                 }
 
                                 if (overlayColour != null) {
 
                                     ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setOverlayColour(overlayColour);
-
                                 }
 
                                 if (labelAttr != null) {
@@ -502,22 +494,14 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                 if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getConnectedNodeIdList().get(0) != elementID) {
                                     mapViewTopComponent.getAllMarkers().get(coordinateKey).addNodeID(elementID);
                                 }
-
                             }
-
                         }
                         processingGeoShape = false;
-
                     }
-
                 }
-
             }
         }
-
     }
-
-
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

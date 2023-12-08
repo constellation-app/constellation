@@ -16,9 +16,9 @@
 package au.gov.asd.tac.constellation.views.mapview2;
 
 import au.gov.asd.tac.constellation.graph.Graph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import au.gov.asd.tac.constellation.utilities.icon.UserInterfaceIconProvider;
 import au.gov.asd.tac.constellation.views.mapview.exporters.GeoJsonExporter;
@@ -26,7 +26,6 @@ import au.gov.asd.tac.constellation.views.mapview.exporters.GeoPackageExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.KmlExporter;
 import au.gov.asd.tac.constellation.views.mapview.exporters.MapExporter.MapExporterWrapper;
 import au.gov.asd.tac.constellation.views.mapview.exporters.ShapefileExporter;
-import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.ActivityHeatmapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
@@ -65,7 +64,6 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
-import org.openide.util.Lookup;
 
 /**
  * MapViewPane holds container of the MapView and the entire toolbar All toolbar
@@ -126,12 +124,8 @@ public class MapViewPane extends BorderPane {
     public static final String KML = "KML";
     public static final String SHAPEFILE = "Shapefile";
 
-    // Map providers
-    private final MapProvider defaultProvider;
-    private final List<? extends MapProvider> providers;
-
     // All the toolbar UI elements
-    private final ChoiceBox<MapProvider> mapProviderDropDown;
+    private final ChoiceBox mapsDropDown;
     private final MenuButton zoomDropDown;
 
     private final Button helpButton;
@@ -141,6 +135,14 @@ public class MapViewPane extends BorderPane {
     private final Label latField = new Label("0.00");
     private final Label lonField = new Label("0.00");
 
+    // Store list of available maps. The first in the list is the default map
+    private final List<MapDetails> maps = Arrays.asList(
+            new MapDetails(1200, 1045, 20, -50, 90, 180, "South East Asia",
+                           ConstellationInstalledFileLocator.locate("modules/ext/data/SouthEastAsia.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
+            new MapDetails(1200, 1200, 85.0511, -85.0511, -180, 180, "Full World (default)",
+                           ConstellationInstalledFileLocator.locate("modules/ext/data/worldmap1200.txt", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()))
+    );
+    
     private MapView mapView;
 
     // A map of all the layers
@@ -169,17 +171,23 @@ public class MapViewPane extends BorderPane {
         latField.setFont(Font.font(15));
         lonField.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
         lonField.setFont(Font.font(15));
+        
+        // Add map names to dropdown to allow their selection. Select the first (default) entry as the default map to view
+        mapsDropDown = new ChoiceBox();
+        maps.forEach(map -> {
+            mapsDropDown.getItems().add(map.getMapName());
+        });
+        mapsDropDown.getSelectionModel().selectFirst();
+        mapView = new MapView(this, maps.get(mapsDropDown.getSelectionModel().getSelectedIndex()));
 
-        defaultProvider = Lookup.getDefault().lookup(MapProvider.class);
-        providers = new ArrayList<>(Lookup.getDefault().lookupAll(MapProvider.class));
-
-        // get all the map types in string form from the providers
-        providers.forEach(p -> dropDownOptions.add(p.toString()));
-
-        // Add the providers to the toolbar
-        mapProviderDropDown = new ChoiceBox(FXCollections.observableList(providers));
-        mapProviderDropDown.getSelectionModel().selectFirst();
-        mapProviderDropDown.setTooltip(new Tooltip("Select a basemap for the Map View"));
+        // Set up action to ensure that changing the map selection triggers new map to be loaded and displayed with
+        // refreshed content.
+        mapsDropDown.setOnAction((event) -> {
+            parentStackPane.getChildren().remove(mapView);
+            mapView = new MapView(this, maps.get(mapsDropDown.getSelectionModel().getSelectedIndex()));
+            parent.recalculateCoords();
+            parentStackPane.getChildren().add(mapView);
+        });
 
         final MenuButtonCheckCombobox layersMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(DAY_NIGHT, HEATMAP_STANDARD, HEATMAP_POPULARITY, HEATMAP_ACTIVITY, ENTITY_PATHS, LOCATION_PATHS, THIESSEAN_POLYGONS), false, false);
         layersMenuButton.getMenuButton().setTooltip(new Tooltip("Select layers to render over the map in the Map View"));
@@ -350,7 +358,7 @@ public class MapViewPane extends BorderPane {
         helpButton.setOnAction(event -> new HelpCtx(this.getClass().getName()).display());
         helpButton.setTooltip(new Tooltip("Help on using the Map View"));
 
-        toolBarGridPane.add(mapProviderDropDown, 0, 0);
+        toolBarGridPane.add(mapsDropDown, 0, 0);
         toolBarGridPane.add(layersMenuButton.getMenuButton(), 1, 0);
         toolBarGridPane.add(overlaysMenuButton.getMenuButton(), 2, 0);
         toolBarGridPane.add(zoomDropDown, 3, 0);
@@ -474,7 +482,6 @@ public class MapViewPane extends BorderPane {
      */
     public void setUpMap() {
         // Create the actual map display area
-        mapView = new MapView(this);
         parentStackPane.getChildren().add(mapView);
 
         // Set position of "viewport" rectangle
@@ -556,14 +563,5 @@ public class MapViewPane extends BorderPane {
             mapView.drawMarker(marker);
 
         }
-    }
-
-    public MapProvider getDefaultProvider() {
-        return defaultProvider;
-    }
-
-
-    public List<? extends MapProvider> getProviders() {
-        return providers;
     }
 }

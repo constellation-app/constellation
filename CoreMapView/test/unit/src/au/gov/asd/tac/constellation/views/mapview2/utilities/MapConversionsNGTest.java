@@ -59,7 +59,7 @@ public class MapConversionsNGTest {
         final List<Double> invalidDimensions = Arrays.asList(0.0, -1.0, -100.0);
         invalidDimensions.forEach(dimension -> { 
             try {
-                MapConversions.initMapDimensions(dimension, 1000.0, 85.0, -180.0, -85.0, 180.0);
+                MapConversions.initMapDimensions(dimension, 1000.0, 85.0, -85.0, -180.0, 180.0);
                 fail ("Width validation failed");
             }
             catch (IllegalArgumentException ex){
@@ -67,7 +67,7 @@ public class MapConversionsNGTest {
             }
 
             try {
-                MapConversions.initMapDimensions(1000.0, dimension, 85.0, -180.0, -85.0, 180.0);
+                MapConversions.initMapDimensions(1000.0, dimension, 85.0, -85.0, -180.0, 180.0);
                 fail ("Height validation failed");
             }
             catch (IllegalArgumentException ex){
@@ -77,7 +77,7 @@ public class MapConversionsNGTest {
 
         // Check latitudes of top left, and bottom right are checked and in the allowable range
         try {
-            MapConversions.initMapDimensions(1000.0, 1000.0, 90.1, -180.0, -85.0, 180.0);
+            MapConversions.initMapDimensions(1000.0, 1000.0, 90.1, -85.0, -180.0, 180.0);
             fail ("Top latitude validation failed");
         }
         catch (IllegalArgumentException ex){
@@ -86,7 +86,7 @@ public class MapConversionsNGTest {
 
         // Check that an invalid bottom right latitude is detected
         try {
-            MapConversions.initMapDimensions(1000.0, 1000.0, 85.0, -180.0, -90.1, 180.0);
+            MapConversions.initMapDimensions(1000.0, 1000.0, 85.0, -90.1, -180.0, 180.0);
             fail ("Bottom validation failed");
         }
         catch (IllegalArgumentException ex){
@@ -97,7 +97,7 @@ public class MapConversionsNGTest {
         final List<Double> topLeftLatitudes = Arrays.asList(-80.0, -85.0);
         topLeftLatitudes.forEach(latitude -> {  
             try {
-                MapConversions.initMapDimensions(1000.0, 1000.0, latitude, -180.0, -80.0, 180.0);
+                MapConversions.initMapDimensions(1000.0, 1000.0, latitude, -80.0, -180.0, 180.0);
                 fail ("Latitude order validation failed");
             }
             catch (IllegalArgumentException ex){
@@ -108,7 +108,7 @@ public class MapConversionsNGTest {
         // Check longitudes of top left, and bottom right are checked and in the allowable range
         // Check invalid minimum longitude is detected
         try {
-            MapConversions.initMapDimensions(1.0, 1.0, 50.0, -180.1, -50.0, 180.0);
+            MapConversions.initMapDimensions(1.0, 1.0, 50.0, -50.0, -180.1, 180.0);
             fail ("Left longitude validation failed");
         }
         catch (IllegalArgumentException ex){
@@ -117,7 +117,7 @@ public class MapConversionsNGTest {
 
         // Check invalid maximum longitude is detected
         try {
-            MapConversions.initMapDimensions(1.0, 1.0, 50.0, -180, -50.0, 180.1);
+            MapConversions.initMapDimensions(1.0, 1.0, 50.0, -50.0, -180, 180.1);
             fail ("Right longitude validation failed");
         }
         catch (IllegalArgumentException ex){
@@ -142,7 +142,7 @@ public class MapConversionsNGTest {
     public void testInitMapDimensions_validDimensions() {
         
         // Try a map which is the basically the full world
-        MapConversions.initMapDimensions(1000.0, 998.0, 85.0, -180.0, -85.0, 180.0);
+        MapConversions.initMapDimensions(1000.0, 998.0, 85.0, -85.0, -180.0, 180.0);
         assertTrue(MapConversions.getIsInitialized());
         assertEquals(df.format(MapConversions.getFullWorldWidth()), "1000.000");
         assertEquals(df.format(MapConversions.getFullWorldRadius()), "159.155");
@@ -156,7 +156,7 @@ public class MapConversionsNGTest {
         assertEquals(df.format(MapConversions.getMapRightOffsetFromWorldCentre()), "500.000");
         
         // Try map with only half of full world width
-        MapConversions.initMapDimensions(500.0, 998.0, 85.0, -90.0, -85.0, 90.0);
+        MapConversions.initMapDimensions(500.0, 998.0, 85.0, -85.0, -90.0, 90.0);
         assertTrue(MapConversions.getIsInitialized());
         assertEquals(df.format(MapConversions.getFullWorldWidth()), "1000.000");
         assertEquals(df.format(MapConversions.getFullWorldRadius()), "159.155");
@@ -189,7 +189,7 @@ public class MapConversionsNGTest {
     public void testLatLongsToXYInMapArea() {
         
         // Reuse map dimensions tested above
-        MapConversions.initMapDimensions(500.0, 998.0, 85.0, -90.0, -85.0, 90.0);
+        MapConversions.initMapDimensions(500.0, 998.0, 85.0, -85.0, -90.0, 90.0);
         
         // Check longitudes matching left of map have an X offset of 0 and latitudes matching top of map have a Y offset of 0
         double lat = 85.0;
@@ -267,7 +267,7 @@ public class MapConversionsNGTest {
         double minLat = -85.0;
         double maxLon = 90.0;
         double minLon = -90.0;
-        MapConversions.initMapDimensions(width, height, maxLat, minLon, minLat, maxLon);
+        MapConversions.initMapDimensions(width, height, maxLat, minLat, minLon, maxLon);
         for (double lon=-180.0; lon <= 180.0; lon = lon + 10.0) {
             assertEquals(df.format(MapConversions.mapXToLon(MapConversions.lonToMapX(lon))), df.format(lon));
             assertEquals(MapConversions.isXInMap(MapConversions.lonToMapX(lon)), (lon >= minLon && lon <= maxLon));
@@ -280,7 +280,7 @@ public class MapConversionsNGTest {
         minLat = 10.0;
         maxLon = 55.0;
         minLon = 10.0;
-        MapConversions.initMapDimensions(width, height, maxLat, minLon, minLat, maxLon);
+        MapConversions.initMapDimensions(width, height, maxLat, minLat, minLon, maxLon);
         for (double lon=-180.0; lon <= 180.0; lon = lon + 10.0) {
             assertEquals(df.format(MapConversions.mapXToLon(MapConversions.lonToMapX(lon))), df.format(lon));
             assertEquals(MapConversions.isXInMap(MapConversions.lonToMapX(lon)), (lon >= minLon && lon <= maxLon));
@@ -308,7 +308,7 @@ public class MapConversionsNGTest {
         double minLat = -85.0;
         double maxLon = 90.0;
         double minLon = -90.0;
-        MapConversions.initMapDimensions(width, height, maxLat, minLon, minLat, maxLon);
+        MapConversions.initMapDimensions(width, height, maxLat, minLat, minLon, maxLon);
         for (double lat=-90; lat <= 90.0; lat = lat + 1.0) {
             assertEquals(df.format(MapConversions.mapYToLat(MapConversions.latToMapY(lat))), df.format(lat));
             assertEquals(MapConversions.isYInMap(MapConversions.latToMapY(lat)), (lat >= minLat && lat <= maxLat));
@@ -321,7 +321,7 @@ public class MapConversionsNGTest {
         minLat = 10.0;
         maxLon = 55.0;
         minLon = 10.0;
-        MapConversions.initMapDimensions(width, height, maxLat, minLon, minLat, maxLon);
+        MapConversions.initMapDimensions(width, height, maxLat, minLat, minLon, maxLon);
         assertEquals(df.format(MapConversions.mapYToLat(MapConversions.latToMapY(0.0))), "-0.000");
         for (double lat=-90; lat <= 90.0; lat = lat + 1.0) {
             assertEquals(MapConversions.isYInMap(MapConversions.latToMapY(lat)), (lat >= minLat && lat <= maxLat));
@@ -337,7 +337,7 @@ public class MapConversionsNGTest {
     public void testSetLocationXY() {
 
         // Reuse map dimensions tested above
-        MapConversions.initMapDimensions(500.0, 998.0, 85.0, -90.0, -85.0, 90.0);
+        MapConversions.initMapDimensions(500.0, 998.0, 85.0, -85.0, -90.0, 90.0);
         
         Location location = new Location(85.0, -90.0);
         MapConversions.setLocationXY(location);
@@ -387,7 +387,7 @@ public class MapConversionsNGTest {
         double minLat = -85.0;
         double maxLon = 90.0;
         double minLon = -90.0;
-        MapConversions.initMapDimensions(width, height, maxLat, minLon, minLat, maxLon);
+        MapConversions.initMapDimensions(width, height, maxLat, minLat, minLon, maxLon);
         for (double lat=-90; lat <= 90.0; lat = lat + 1.0) {
             for (double lon=-180.0; lon <= 180.0; lon = lon + 10.0) {
                 final Location location = new Location(lat, lon);
@@ -403,7 +403,7 @@ public class MapConversionsNGTest {
         minLat = 10.0;
         maxLon = 55.0;
         minLon = 10.0;
-        MapConversions.initMapDimensions(width, height, maxLat, minLon, minLat, maxLon);
+        MapConversions.initMapDimensions(width, height, maxLat, minLat, minLon, maxLon);
         for (double lat=-90; lat <= 90.0; lat = lat + 1.0) {
             for (double lon=-180.0; lon <= 180.0; lon = lon + 10.0) {
                 final Location location = new Location(lat, lon);

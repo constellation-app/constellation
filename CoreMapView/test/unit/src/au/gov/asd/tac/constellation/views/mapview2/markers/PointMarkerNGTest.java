@@ -79,7 +79,7 @@ public class PointMarkerNGTest {
 
         // Test default Colour
         instance.changeMarkerColour(option);
-        assertEquals(instance.getCurrentColour(), instance.getDefaultColour());
+        assertEquals(instance.getCurrentColour(), instance.DEFAULT_MARKER_COLOUR);
 
         instance.changeMarkerColour(MapViewPane.USE_COLOUR_ATTR);
         assertEquals(instance.getCurrentColour(), "#ffffff");
