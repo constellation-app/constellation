@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
+import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
@@ -37,6 +39,10 @@ import org.testng.annotations.Test;
 public class LineMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(LineMarkerNGTest.class.getName());
+
+    private static final MapDetails mapDetails = new MapDetails(1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+                           ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()));
+    
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -71,7 +77,7 @@ public class LineMarkerNGTest {
 
         final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        final MapView parent = Mockito.spy(new MapView(mapViewPane));
+        final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
         final double mapWidth = MapView.MAP_VIEWPORT_WIDTH;
         final double mapHeight = MapView.MAP_VIEWPORT_HEIGHT;

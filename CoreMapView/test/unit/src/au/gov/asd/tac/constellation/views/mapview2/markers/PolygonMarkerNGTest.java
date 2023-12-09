@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
+import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewTopComponent;
@@ -38,6 +40,10 @@ import org.testng.annotations.Test;
 public class PolygonMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(PolygonMarkerNGTest.class.getName());
+
+    private static final MapDetails mapDetails = new MapDetails(1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+                           ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()));
+    
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -72,7 +78,7 @@ public class PolygonMarkerNGTest {
 
         final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        final MapView map = Mockito.spy(new MapView(mapViewPane));
+        final MapView map = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
         final double prevLineEndX = 54;
         final double prevLineEndY = 54;
@@ -92,7 +98,7 @@ public class PolygonMarkerNGTest {
         System.out.println("endDrawing");
         final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        final MapView map = Mockito.spy(new MapView(mapViewPane));
+        final MapView map = Mockito.spy(new MapView(mapViewPane, mapDetails));
         final PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
         instance.endDrawing();
 
@@ -108,7 +114,7 @@ public class PolygonMarkerNGTest {
         System.out.println("setEnd");
         final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        final MapView map = Mockito.spy(new MapView(mapViewPane));
+        final MapView map = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
         final double xNewLine = 3;
         final double yNewLine = 3;
@@ -135,7 +141,7 @@ public class PolygonMarkerNGTest {
         System.out.println("generatePath");
         final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
-        final MapView map = Mockito.spy(new MapView(mapViewPane));
+        final MapView map = Mockito.spy(new MapView(mapViewPane, mapDetails));
         final PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
 
         instance.addNewLine(640.5983769798281, 654.7539097213746);
