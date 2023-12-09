@@ -1206,16 +1206,19 @@ public class GraphRecordStoreUtilities {
      * @return The normalized type e.g. Email
      */
 
-    private static String normalizeType(final String vx_label) {
-        final String[] parts = vx_label.split("<");
+    private static String normalizeType(final String vxLabel) {
+        final String[] parts = vxLabel.split("<");
         final String type = parts.length != 2 ? parts[0] : parts[1].substring(0, parts[1].length()-1);
+        
+        // Identify a type that is spelt the same regardless of case.
         if (ApprovedTypes.indexOf(type) == -1) {
             Optional<String> foundType = ApprovedTypes.stream().filter(i -> i.toLowerCase().equals(type.toLowerCase())).findFirst();
             if(foundType.isPresent()){
                 return parts.length != 2 ? foundType.get() : parts[0] + "<"+ foundType.get()+">";
             }
         }
-        return vx_label;
+        
+        return vxLabel;
     }
 
     /**
