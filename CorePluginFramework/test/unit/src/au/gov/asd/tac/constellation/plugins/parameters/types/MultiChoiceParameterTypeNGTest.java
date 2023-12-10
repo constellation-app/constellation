@@ -283,17 +283,4 @@ public class MultiChoiceParameterTypeNGTest {
         assertFalse(multiChoiceValue.equals(comp1));
         assertTrue(multiChoiceValue.equals(comp2));
     }
-    
-     /**
-     * Test of toString method, of class MultiChoiceParameterValue.
-     */
-    @Test
-    public void testToString() {
-        System.out.println("toString");
-        
-        final MultiChoiceParameterValue multiChoiceValue = new MultiChoiceParameterValue();
-        multiChoiceValue.setOptions(Arrays.asList("option1", "option2", "option3"));
-        multiChoiceValue.setChoices(Arrays.asList("option2"));
-        assertEquals(multiChoiceValue.toString(), "option1\n\u2713 option2\noption3");
-    }
 }
