@@ -1201,15 +1201,14 @@ public class GraphRecordStoreUtilities {
     /**
      * Normalize a type to existing schema types based on case sensitivity
      * e.g. person, PERSON, Person, will all normalize to the schema Type Person.
-     * @param label The {@link String} representing the complete label of a vertex
-     * e.g. def@example2.com<email>.
+     * @param vxLabel The {@link String} representing the complete label of a vertex
+     * e.g. def@example2.com&lt;email&gt;.
      * @return The normalized type e.g. Email
      */
 
     private static String normalizeType(final String vxLabel) {
         final String[] parts = vxLabel.split("<");
         final String type = parts.length != 2 ? parts[0] : parts[1].substring(0, parts[1].length()-1);
-        
         // Identify a type that is spelt the same regardless of case.
         if (ApprovedTypes.indexOf(type) == -1) {
             Optional<String> foundType = ApprovedTypes.stream().filter(i -> i.equalsIgnoreCase(type)).findFirst();
@@ -1217,7 +1216,6 @@ public class GraphRecordStoreUtilities {
                 return parts.length != 2 ? foundType.get() : parts[0] + "<"+ foundType.get()+">";
             }
         }
-        
         return vxLabel;
     }
 
