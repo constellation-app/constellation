@@ -88,7 +88,7 @@ public class GraphRecordStoreUtilities {
             "source.Type",
             "destination.Type"
     );
-    private static final List<String> ApprovedTypes = SchemaVertexTypeUtilities.getTypes().stream().map(i -> i.getName()).collect(Collectors.toList());;
+    private static final List<String> ApprovedTypes = SchemaVertexTypeUtilities.getTypes().stream().map(i -> i.getName()).collect(Collectors.toList());
 
 
     private static int addVertex(final GraphWriteMethods graph, final Map<String, String> values,
@@ -1212,7 +1212,7 @@ public class GraphRecordStoreUtilities {
         
         // Identify a type that is spelt the same regardless of case.
         if (ApprovedTypes.indexOf(type) == -1) {
-            Optional<String> foundType = ApprovedTypes.stream().filter(i -> i.toLowerCase().equals(type.toLowerCase())).findFirst();
+            Optional<String> foundType = ApprovedTypes.stream().filter(i -> i.equalsIgnoreCase(type)).findFirst();
             if(foundType.isPresent()){
                 return parts.length != 2 ? foundType.get() : parts[0] + "<"+ foundType.get()+">";
             }
