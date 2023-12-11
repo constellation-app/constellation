@@ -30,8 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.languagetool.JLanguageTool;
 import org.languagetool.MultiThreadedJLanguageTool;
 import org.languagetool.language.AustralianEnglish;
+import org.languagetool.rules.Rule;
 import org.languagetool.rules.RuleMatch;
-
 /**
  * Handles the SpellChecking functions of SpellCheckingTextArea. SpellChecker
  * evaluates incorrect words/phrases and pops up the suggestions when the user
@@ -56,6 +56,7 @@ public final class SpellChecker {
     public SpellChecker(final SpellCheckingTextArea spellCheckingTextArea) {
         textArea = spellCheckingTextArea;
         langTool = new MultiThreadedJLanguageTool(new AustralianEnglish()); //Can pass in the language when supporting multiple languages
+
         initialize();
     }
 
@@ -64,6 +65,20 @@ public final class SpellChecker {
      * selected row.
      */
     private void initialize() {
+        for (Rule rule : langTool.getAllRules()) {
+            if (rule.getId().equals("UPPERCASE_SENTENCE_START")) {
+                langTool.disableRule(rule.getId());
+            }
+        }
+
+        //initialize langtool to prevent the spell checking being too slow at the first word after loading costy
+        try {
+            matches = langTool.check("random text");
+        } catch (final IOException ex) {
+            LOGGER.log(Level.SEVERE, ex.getLocalizedMessage());
+        }
+
+        //initialize popup
         popup = new Popup();
         suggestions.getSelectionModel().selectedItemProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue != null) {
@@ -72,6 +87,7 @@ public final class SpellChecker {
                 textArea.replaceText​(builder.toString());
             }
             popup.hide();
+            checkSpelling();
         });
     }
 
@@ -137,10 +153,10 @@ public final class SpellChecker {
      */
     private boolean isWordUnderCursorMisspelled() {
         final int cursorIndex = textArea.getCaretPosition();
-        final String fullText = textArea.getText();
 
-        if (cursorIndex >= fullText.length()) { //= is to avoid the scenario of displaying the suggesttions of the last word (when it's incorrect)
-            // when clicking on the empty space below the text
+        if (cursorIndex <= 0 || cursorIndex >= textArea.getText().length()) {
+            //= is to avoid the scenario of displaying the suggesttions of the first/last word
+            // (if they are incorrect) when clicking on the empty space right/below the text
             return false;
         }
 
@@ -155,6 +171,23 @@ public final class SpellChecker {
             }
         }
         return false;
+    }
+
+    /**
+     * Prevents highlighting while still typing. When a highlighted word is
+     * corrected manually it'll be marked as correct, similar to that in
+     * Microsoft Word.
+     */
+    public boolean canCheckSpelling(final String newText) {
+        final int caretPosition = textArea.getCaretPosition();
+        if (caretPosition == 0) {
+            return true;
+        } else if (caretPosition <= newText.length()) {
+            final String charAtCaret = Character.toString(textArea.getText().charAt(caretPosition - 1));
+            return !newText.isEmpty() && (textArea.isWordUnderCursorHighlighted(caretPosition - 1) || !charAtCaret.matches("[a-zA-Z0-9']"));
+        } else {
+            return false;
+        }
     }
 
     public void turnOffSpellChecking(final boolean turnOffSpellChecking) {

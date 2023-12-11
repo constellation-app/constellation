@@ -54,6 +54,16 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
     private final Insets insets = new Insets(4, 8, 4, 8);
     public static final double EXTRA_HEIGHT = 3;
 
+    private final String underlineAndHighlightStyle = "-rtfx-background-color:derive(yellow,-30%);"
+            + "-rtfx-underline-color: red; "
+            + "-rtfx-underline-dash-array: 2 2;"
+            + "-rtfx-underline-width: 2.0;"
+            + "-fx-fill: black;";
+
+    private final String clearStyle = "-rtfx-background-color: transparent;"
+            + "-rtfx-underline-color: transparent;";
+
+
     /**
      * Default constructor.
      */
@@ -74,8 +84,8 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
             }
         });
 
-        this.textProperty().addListener((observable, oldText, newText) -> {
-            if (canCheckSpelling(newText)) {
+        this.setOnKeyReleased((final KeyEvent event) -> {
+            if (spellChecker.canCheckSpelling(this.getText())) {
                 spellChecker.checkSpelling();
             }
         });
@@ -101,23 +111,22 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
      * underline and highlight the text from start to end.
      */
     public void highlightText(final int start, final int end) {
-        final String underlineAndHighlight = "-rtfx-background-color:derive(yellow,-30%);"
-                + "-rtfx-underline-color: red; "
-                + "-rtfx-underline-dash-array: 2 2;"
-                + "-rtfx-underline-width: 2.0;"
-                + "-fx-fill: black;";
 
-        this.setStyle(start, end, underlineAndHighlight);
+
+        this.setStyle(start, end, underlineAndHighlightStyle);
     }
 
     /**
      * Clear any previous highlighting.
      */
     public void clearStyles() {
-        this.setStyle(0, this.getText().length(),
-                "-rtfx-background-color: transparent;"
-                + "-rtfx-underline-color: transparent;");
+        this.setStyle(0, this.getText().length(), clearStyle);
     }
+
+    public boolean isWordUnderCursorHighlighted(int index) {
+        return this.getStyleOfChar(index) == underlineAndHighlightStyle;
+    }
+
 
     public final void setTooltip(final Tooltip tooltip) {
         Tooltip.install(this, tooltip);
@@ -127,17 +136,6 @@ public class SpellCheckingTextArea extends InlineCssTextArea {
         //TODO
     }
 
-    /**
-     * Prevent highlighting while still typing at the end of a sentence. It
-     * checks only after a non alpha numeric character except apostrophe symbol
-     * (') is typed at the end. This checks spelling when the user is typing in
-     * the middle of a sentence.
-     */
-    private boolean canCheckSpelling(final String newText) {
-        return !newText.isEmpty() && !(this.getCaretPosition() == this.getText().length()
-                && newText.substring(newText.length() - 1).matches("[a-zA-Z0-9']"));
-
-    }
 
     private ContextMenu addRightClickContextMenu(final boolean enableSpellChecking) {
         final ContextMenu contextMenu = new ContextMenu();
