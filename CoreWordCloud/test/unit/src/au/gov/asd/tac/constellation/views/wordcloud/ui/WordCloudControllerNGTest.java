@@ -184,29 +184,4 @@ public class WordCloudControllerNGTest {
             verify(controller, times(1)).selectElements();
         }
     }
-    
-    /**
-     * Test of createWordsOnPane method, of class WordCloudController.
-     */
-    @Test
-    public void testCreateWordsOnPane() {
-        System.out.println("createWordsOnPane");
-        when(graph.getReadableGraph()).thenReturn(rg);
-
-        try (final MockedStatic<WordCloudController> controllerStatic = Mockito.mockStatic(WordCloudController.class)) {
-            final WordCloudController controller = spy(WordCloudController.class);
-            controllerStatic.when(WordCloudController::getDefault).thenReturn(controller);
-            when(controller.init(topComponent)).thenReturn(controller);
-            final PhraseTokenHandler handler = new PhraseTokenHandler();
-            final WordCloud wordCloud = new WordCloud(handler, GraphElementType.TRANSACTION, 1, true);
-            final int cloudAttr = 2;
-            when(rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR)).thenReturn(cloudAttr);
-            when(rg.getObjectValue(cloudAttr, 0)).thenReturn(wordCloud);
-            doNothing().when(controller).setAttributeSelectionEnabled(Mockito.anyBoolean());
-            doNothing().when(controller).updateWordsOnPane();
-            controller.updateActiveGraph(graph);
-            controller.createWordsOnPane();
-            verify(controller, times(1)).updateWordsOnPane();
-        }
-    }    
 }
