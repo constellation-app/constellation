@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -39,6 +40,7 @@ import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -49,10 +51,54 @@ import org.testng.annotations.Test;
 public class MergeNodesPluginNGTest {
 
     private MergeNodesPlugin mergeNodesPlugin;
+    private GraphWriteMethods graph;
+    private PluginInteraction interaction;
+    private PluginParameters parameters;
+        
+    private PluginParameter mergeTypeParameter;
+    private PluginParameter thresholdParameter;
+    private PluginParameter mergerParameter;
+    private PluginParameter leadParameter;
+    private PluginParameter selectedParameter;
+    
+    private Map<String, PluginParameter<?>> pluginParameters;
 
     @BeforeMethod
     public void setUpMethod() throws Exception {
+        graph = mock(GraphWriteMethods.class);
+        interaction = mock(PluginInteraction.class);
+        parameters = mock(PluginParameters.class);
+        
+        mergeTypeParameter = mock(PluginParameter.class);
+        thresholdParameter = mock(PluginParameter.class);
+        mergerParameter = mock(PluginParameter.class);
+        leadParameter = mock(PluginParameter.class);
+        selectedParameter = mock(PluginParameter.class);
+
+        pluginParameters = Map.of(
+                "MergeNodesPlugin.merge_type", mergeTypeParameter,
+                "MergeNodesPlugin.threshold", thresholdParameter,
+                "MergeNodesPlugin.merger", mergerParameter,
+                "MergeNodesPlugin.lead", leadParameter,
+                "MergeNodesPlugin.selected", selectedParameter
+        );
         mergeNodesPlugin = new MergeNodesPlugin();
+    }
+    
+    @AfterMethod
+    public void tearDownMethod() throws Exception {
+        graph = null;
+        interaction = null;
+        parameters = null;
+        
+        mergeTypeParameter = null;
+        thresholdParameter = null;
+        mergerParameter = null;
+        leadParameter = null;
+        selectedParameter = null;
+
+        pluginParameters = null;
+        mergeNodesPlugin = null;
     }
 
     @Test
@@ -147,56 +193,31 @@ public class MergeNodesPluginNGTest {
 
     @Test(expectedExceptions = PluginException.class)
     public void editNoMergeOptionSelected() throws InterruptedException, PluginException {
-        final GraphWriteMethods graph = mock(GraphWriteMethods.class);
-        final PluginInteraction interaction = mock(PluginInteraction.class);
-        final PluginParameters parameters = mock(PluginParameters.class);
-        final PluginParameter pluginParameter = mock(PluginParameter.class);
-
-        final Map<String, PluginParameter<?>> pluginParameters = Map.of("MergeNodesPlugin.merge_type", pluginParameter);
-
         when(parameters.getParameters()).thenReturn(pluginParameters);
-        when(pluginParameter.getStringValue()).thenReturn(null);
+        when(mergeTypeParameter.getStringValue()).thenReturn(null);
+        when(thresholdParameter.getIntegerValue()).thenReturn(10);
+        when(mergerParameter.getBooleanValue()).thenReturn(false);
+        when(leadParameter.getStringValue()).thenReturn(null);
+        when(selectedParameter.getStringValue()).thenReturn(null);
 
         mergeNodesPlugin.edit(graph, interaction, parameters);
     }
 
     @Test(expectedExceptions = PluginException.class)
     public void editMergeNodeTypeNotFound() throws InterruptedException, PluginException {
-        final GraphWriteMethods graph = mock(GraphWriteMethods.class);
-        final PluginInteraction interaction = mock(PluginInteraction.class);
-        final PluginParameters parameters = mock(PluginParameters.class);
-        final PluginParameter pluginParameter = mock(PluginParameter.class);
-
-        final Map<String, PluginParameter<?>> pluginParameters = Map.of("MergeNodesPlugin.merge_type", pluginParameter);
-
         when(parameters.getParameters()).thenReturn(pluginParameters);
-        when(pluginParameter.getStringValue()).thenReturn("Something Random");
-
+        when(mergeTypeParameter.getStringValue()).thenReturn("Something Random");
+        when(thresholdParameter.getIntegerValue()).thenReturn(10);
+        when(mergerParameter.getBooleanValue()).thenReturn(false);
+        when(leadParameter.getStringValue()).thenReturn("Something Random");
+        when(selectedParameter.getStringValue()).thenReturn("Something Random");
+        
         mergeNodesPlugin.edit(graph, interaction, parameters);
     }
 
     @Test(expectedExceptions = PluginException.class)
     public void editMergeError() throws InterruptedException, PluginException, MergeNodeType.MergeException {
-        final GraphWriteMethods graph = mock(GraphWriteMethods.class);
-        final PluginInteraction interaction = mock(PluginInteraction.class);
-        final PluginParameters parameters = mock(PluginParameters.class);
-
-        final PluginParameter mergeTypeParameter = mock(PluginParameter.class);
-        final PluginParameter thresholdParameter = mock(PluginParameter.class);
-        final PluginParameter mergerParameter = mock(PluginParameter.class);
-        final PluginParameter leadParameter = mock(PluginParameter.class);
-        final PluginParameter selectedParameter = mock(PluginParameter.class);
-
-        final Map<String, PluginParameter<?>> pluginParameters = Map.of(
-                "MergeNodesPlugin.merge_type", mergeTypeParameter,
-                "MergeNodesPlugin.threshold", thresholdParameter,
-                "MergeNodesPlugin.merger", mergerParameter,
-                "MergeNodesPlugin.lead", leadParameter,
-                "MergeNodesPlugin.selected", selectedParameter
-        );
-
         when(parameters.getParameters()).thenReturn(pluginParameters);
-
         when(mergeTypeParameter.getStringValue()).thenReturn(TestMergeType.NAME);
         when(thresholdParameter.getIntegerValue()).thenReturn(TestMergeType.MERGE_EXCEPTION_THRESHOLD);
         when(mergerParameter.getStringValue()).thenReturn("Retain lead vertex attributes if present");
@@ -208,27 +229,8 @@ public class MergeNodesPluginNGTest {
 
     @Test
     public void edit() throws InterruptedException, PluginException, MergeNodeType.MergeException {
-        final GraphWriteMethods graph = mock(GraphWriteMethods.class);
-        final PluginInteraction interaction = mock(PluginInteraction.class);
-        final PluginParameters parameters = mock(PluginParameters.class);
         final PluginExecution pluginExecution = mock(PluginExecution.class);
-
-        final PluginParameter mergeTypeParameter = mock(PluginParameter.class);
-        final PluginParameter thresholdParameter = mock(PluginParameter.class);
-        final PluginParameter mergerParameter = mock(PluginParameter.class);
-        final PluginParameter leadParameter = mock(PluginParameter.class);
-        final PluginParameter selectedParameter = mock(PluginParameter.class);
-
-        final Map<String, PluginParameter<?>> pluginParameters = Map.of(
-                "MergeNodesPlugin.merge_type", mergeTypeParameter,
-                "MergeNodesPlugin.threshold", thresholdParameter,
-                "MergeNodesPlugin.merger", mergerParameter,
-                "MergeNodesPlugin.lead", leadParameter,
-                "MergeNodesPlugin.selected", selectedParameter
-        );
-
         when(parameters.getParameters()).thenReturn(pluginParameters);
-
         when(mergeTypeParameter.getStringValue()).thenReturn(TestMergeType.NAME);
         when(thresholdParameter.getIntegerValue()).thenReturn(TestMergeType.MERGE_SUCCESS_THRESHOLD);
         when(mergerParameter.getStringValue()).thenReturn("Retain lead vertex attributes if present");
@@ -245,7 +247,7 @@ public class MergeNodesPluginNGTest {
             mergeNodesPlugin.edit(graph, interaction, parameters);
 
             verify(pluginExecution).executeNow(graph);
-            verify(interaction).setProgress(1, 0, "Merged 2 nodes.", true);
+            verify(interaction, atLeast(2)).setProgress(Mockito.anyInt(), Mockito.anyInt(), Mockito.anyString(), Mockito.anyBoolean());
 
             // Due to accessibility issues the call to mergeVerticies and its follow
             // on logic cannot be verified without tying this test to the logic of

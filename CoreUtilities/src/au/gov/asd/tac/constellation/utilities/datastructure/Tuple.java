@@ -92,7 +92,7 @@ public class Tuple<F, S> implements Serializable, Comparable<Tuple<F, S>> {
     @Override
     public String toString() {
         return String.format("(%s, %s)",
-                first.toString(), second.toString());
+                first == null ? "[null]" : first.toString(), second == null ? "[null]" : second.toString());
     }
 
     /**

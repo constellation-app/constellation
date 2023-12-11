@@ -45,7 +45,7 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
     public class BooleanObjectEditor extends AbstractEditor<Boolean> {
 
         private CheckBox checkBox;
-        private CheckBox noValueCheckBox;
+        protected CheckBox noValueCheckBox;
 
         protected BooleanObjectEditor(final EditOperation editOperation, final DefaultGetter<Boolean> defaultGetter, final ValueValidator<Boolean> validator, final String editedItemName, final Boolean initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -54,7 +54,7 @@ public class BooleanObjectEditorFactory extends AttributeValueEditorFactory<Bool
         @Override
         public void updateControlsWithValue(final Boolean value) {
             checkBox.setDisable(value == null);
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             checkBox.setSelected(value != null && value);
         }
 

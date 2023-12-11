@@ -47,6 +47,7 @@ import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParamet
 import au.gov.asd.tac.constellation.plugins.parameters.types.SingleChoiceParameterType.SingleChoiceParameterValue;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterType;
 import au.gov.asd.tac.constellation.plugins.parameters.types.StringParameterValue;
+import au.gov.asd.tac.constellation.plugins.reporting.PluginReportUtilities;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleQueryPlugin;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
@@ -259,47 +260,50 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
     @Override
     public void edit(final GraphWriteMethods wg, final PluginInteraction interaction, final PluginParameters parameters) throws InterruptedException, PluginException {
-        interaction.setProgress(0, 0, "Extracting...", true);
-
-        // Retrieving attributes
-        final Map<String, PluginParameter<?>> extractEntityParameters = parameters.getParameters();
-        final String contentAttribute = extractEntityParameters.get(ATTRIBUTE_PARAMETER_ID).getStringValue();
-        final String words = extractEntityParameters.get(WORDS_PARAMETER_ID).getStringValue() == null
-                ? null : extractEntityParameters.get(WORDS_PARAMETER_ID).getStringValue().trim();
-        final boolean useRegex = extractEntityParameters.get(USE_REGEX_PARAMETER_ID).getBooleanValue();
-        final boolean wholeWordOnly = extractEntityParameters.get(WHOLE_WORDS_ONLY_PARAMETER_ID).getBooleanValue();
+        
+        // Retrieve PluginParameter values 
+        final String contentAttribute = parameters.getParameters().get(ATTRIBUTE_PARAMETER_ID).getStringValue();
+        final boolean wholeWordOnly = parameters.getParameters().get(WHOLE_WORDS_ONLY_PARAMETER_ID).getBooleanValue();
         final int wordLength = parameters.getParameters().get(MIN_WORD_LENGTH_PARAMETER_ID).getIntegerValue();
-        final boolean removeSpecialChars = extractEntityParameters.get(REMOVE_SPECIAL_CHARS_PARAMETER_ID).getBooleanValue();
-        final boolean toLowerCase = extractEntityParameters.get(LOWER_CASE_PARAMETER_ID).getBooleanValue();
-        final boolean types = extractEntityParameters.get(SCHEMA_TYPES_PARAMETER_ID).getBooleanValue();
-        final String inOrOut = extractEntityParameters.get(IN_OR_OUT_PARAMETER_ID).getStringValue();
-        final boolean selectedOnly = extractEntityParameters.get(SELECTED_ONLY_PARAMETER_ID).getBooleanValue();
-
-        final boolean regexOnly = extractEntityParameters.get(REGEX_ONLY_PARAMETER_ID).getBooleanValue();
-
-        if (!OUTGOING.equals(inOrOut) && !INCOMING.equals(inOrOut)) {
-            final String msg = String.format("Parameter %s must be '%s' or '%s'", REGEX_ONLY_PARAMETER_ID, OUTGOING, INCOMING);
-            throw new PluginException(PluginNotificationLevel.ERROR, msg);
-        }
-
-        final boolean outgoing = OUTGOING.equals(inOrOut);
-
-        // Retrieving attribute IDs
+        final boolean removeSpecialChars = parameters.getParameters().get(REMOVE_SPECIAL_CHARS_PARAMETER_ID).getBooleanValue();
+        final boolean toLowerCase = parameters.getParameters().get(LOWER_CASE_PARAMETER_ID).getBooleanValue();
+        final boolean types = parameters.getParameters().get(SCHEMA_TYPES_PARAMETER_ID).getBooleanValue();
+        final String inOrOut = parameters.getParameters().get(IN_OR_OUT_PARAMETER_ID).getStringValue();
+        final boolean selectedOnly = parameters.getParameters().get(SELECTED_ONLY_PARAMETER_ID).getBooleanValue();
+        final boolean regexOnly = parameters.getParameters().get(REGEX_ONLY_PARAMETER_ID).getBooleanValue();
+        final boolean useRegex = parameters.getParameters().get(USE_REGEX_PARAMETER_ID).getBooleanValue();
+        final String words = parameters.getParameters().get(WORDS_PARAMETER_ID).getStringValue() == null
+                ? null : parameters.getParameters().get(WORDS_PARAMETER_ID).getStringValue().trim();
+        
+        // Retrieve Attribute values
         final int vertexIdentifierAttributeId = VisualConcept.VertexAttribute.IDENTIFIER.ensure(wg);
         final int vertexTypeAttributeId = AnalyticConcept.VertexAttribute.TYPE.ensure(wg);
         final int transactionTypeAttributeId = AnalyticConcept.TransactionAttribute.TYPE.ensure(wg);
         final int transactionDatetimeAttributeId = TemporalConcept.TransactionAttribute.DATETIME.ensure(wg);
         final int transactionContentAttributeId = wg.getAttribute(GraphElementType.TRANSACTION, contentAttribute);
         final int transactionSelectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.ensure(wg);
-
-        // Verify that the content transaction attribute exists.
+        
+        // Throw Errors
+        if (!OUTGOING.equals(inOrOut) && !INCOMING.equals(inOrOut)) {
+            final String msg = String.format("Parameter %s must be '%s' or '%s'", REGEX_ONLY_PARAMETER_ID, OUTGOING, INCOMING);
+            throw new PluginException(PluginNotificationLevel.ERROR, msg);
+        }
         if (transactionContentAttributeId == Graph.NOT_FOUND) {
             NotifyDisplayer.display(String.format("The specified attribute %s does not exist.", contentAttribute), NotifyDescriptor.WARNING_MESSAGE);
             return;
         }
-
+        
         final int transactionCount = wg.getTransactionCount();
-
+        final boolean outgoing = OUTGOING.equals(inOrOut);
+        final Set<String> newNodes = new HashSet<>();
+        
+        // Local process-tracking varables.
+        int currentProcessStep = 0;
+        final int totalProcessSteps = transactionCount; 
+        int newTransactionCount = 0;
+        int newNodeCount = 0;
+        interaction.setProgress(currentProcessStep, totalProcessSteps, "Extracting...", true);
+        
         if (regexOnly) {
             /*
              This choice ignores several other parameters, so is a bit simpler
@@ -331,6 +335,10 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
 
                 // Iterate over all the transactions in the graph.
                 for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
+                    
+                    // Update progress for each transaction
+                    interaction.setProgress(++currentProcessStep, totalProcessSteps, true);
+                    
                     final int transactionId = wg.getTransaction(transactionPosition);
 
                     final boolean selectedTx = wg.getBooleanValue(transactionSelectedAttributeId, transactionId);
@@ -374,7 +382,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                         final int destinationVertexId = wg.getTransactionDestinationVertex(transactionId);
                         final ZonedDateTime datetime = wg.getObjectValue(transactionDatetimeAttributeId, transactionId);
 
-                        matched.forEach(word -> {
+                        for (final String word : matched){
                             final int newVertexId = wg.addVertex();
                             wg.setStringValue(vertexIdentifierAttributeId, newVertexId, word);
                             wg.setObjectValue(vertexTypeAttributeId, newVertexId, AnalyticConcept.VertexType.WORD);
@@ -385,9 +393,11 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                             wg.setObjectValue(transactionDatetimeAttributeId, newTransactionId, datetime);
                             wg.setObjectValue(transactionTypeAttributeId, newTransactionId, AnalyticConcept.TransactionType.REFERENCED);
                             wg.setStringValue(transactionContentAttributeId, newTransactionId, content);
-                        });
+                            newTransactionCount++;
+                        }
                     }
                 }
+                newNodeCount = matched.size();
             }
             // End of regexOnly.
         } else { // The original logic.
@@ -396,8 +406,11 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
             // Iterating over all the transactions in the graph
             final List<String> foundWords = new ArrayList<>();
             for (int transactionPosition = 0; transactionPosition < transactionCount; transactionPosition++) {
-                foundWords.clear();
 
+                // Update progress for each transaction
+                interaction.setProgress(++currentProcessStep, totalProcessSteps, true);
+                
+                foundWords.clear();
                 final int transactionId = wg.getTransaction(transactionPosition);
 
                 final boolean selectedTx = wg.getBooleanValue(transactionSelectedAttributeId, transactionId);
@@ -480,6 +493,7 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                     if (types && typesExtracted.contains(word.toLowerCase())) {
                         continue;
                     }
+                    newNodes.add(word);
                     final int newVertexId = wg.addVertex();
                     wg.setStringValue(vertexIdentifierAttributeId, newVertexId, word);
                     wg.setObjectValue(vertexTypeAttributeId, newVertexId, AnalyticConcept.VertexType.WORD);
@@ -490,17 +504,27 @@ public class ExtractWordsFromTextPlugin extends SimpleQueryPlugin implements Dat
                     wg.setObjectValue(transactionDatetimeAttributeId, newTransactionId, datetime);
                     wg.setObjectValue(transactionTypeAttributeId, newTransactionId, AnalyticConcept.TransactionType.REFERENCED);
                     wg.setStringValue(transactionContentAttributeId, newTransactionId, content);
+                    newTransactionCount++;
                 }
             }
+            newNodeCount = newNodes.size();
         }
-
+ 
+        // Set process to complete
+        interaction.setProgress(currentProcessStep, 
+                0, 
+                String.format("Created %s & %s.", 
+                        PluginReportUtilities.getNodeCountString(newNodeCount),
+                        PluginReportUtilities.getTransactionCountString(newTransactionCount)
+                ), 
+                true
+        );
+        
         PluginExecutor.startWith(VisualSchemaPluginRegistry.COMPLETE_SCHEMA)
                 .followedBy(InteractiveGraphPluginRegistry.RESET_VIEW)
                 .executeNow(wg);
-
-        interaction.setProgress(1, 0, "Completed successfully", true);
     }
-
+        
     /**
      * The input words are transformed into pre-determined regular expressions.
      *

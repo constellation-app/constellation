@@ -20,7 +20,7 @@ import time
 # For example, if a new function is added, clients that require that function
 # to be present can check the version.
 #
-__version__ = 20200326
+__version__ = 20231115
 
 # The HTTP header to be used to convey the server secret (if HTTP is used).
 #
@@ -564,12 +564,14 @@ class Constellation:
 
         return graph['id']
 
-    def new_graph(self, schema_name=None):
-        """Open a new graph using the given schema.
+    def new_graph(self, schema_name=None, graph_name=None):
+        """Open a new graph using the given schema and optional graph name.
 
         The default schema is whatever CONSTELLATION's default schema is.
+        If the graph name is left blank, the default name `analytic graph1` etc. will be used.
 
         :param schema_name: The optional schema of the new graph.
+        :param graph_name: The optional graph name for the new graph.
 
         :returns: The id of the new graph.
         """
@@ -577,9 +579,28 @@ class Constellation:
         params = {}
         if schema_name:
             params['schema_name'] = schema_name
+        if graph_name:
+            params['graph_name'] = graph_name
         graph = self.call_service('new_graph', verb='post', args=params).json()
 
         return graph['id']
+  
+    def rename_graph(self, new_graph_name, graph_id=None):
+        """Rename a graph. If a graph is not specified, the active graph is renamed.
+
+        :param graph_id: The optional id of the graph to rename.
+        :param new_graph_name: The new name for the graph.
+
+        :returns: The id, previous name and the new name of the graph.
+        """
+
+        params = {}
+        if graph_id:
+            params['graph_id'] = graph_id
+        
+        params['new_graph_name'] = new_graph_name
+        
+        return self.call_service('rename_graph', verb='post', args=params).json()
 
     def get_graph_image(self):
         """Get the visualisation of the current active graph as an image encoded in PNG format.

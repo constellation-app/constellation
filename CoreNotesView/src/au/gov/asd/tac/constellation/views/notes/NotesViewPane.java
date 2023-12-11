@@ -472,7 +472,7 @@ public class NotesViewPane extends BorderPane {
             final NotesViewEntry note = new NotesViewEntry(
                     Long.toString(pluginReport.getStartTime()),
                     pluginReport.getPluginName(),
-                    pluginReport.getMessage(),
+                    pluginReport.getLastMessage(),
                     false,
                     false,
                     "#ffffff",

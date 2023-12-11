@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
      * @param id The String id of the parameter to construct.
      * @return A {@link PluginParameter} of LocalDateParameterType.
      */
-    public static PluginParameter<LocalDateParameterValue> build(String id) {
+    public static PluginParameter<LocalDateParameterValue> build(final String id) {
         return new PluginParameter<>(new LocalDateParameterValue(), INSTANCE, id);
     }
 
@@ -80,7 +80,7 @@ public class LocalDateParameterType extends PluginParameterType<LocalDateParamet
      * of the parameter being constructed.
      * @return A {@link PluginParameter} of LocalDateParameterType.
      */
-    public static PluginParameter<LocalDateParameterValue> build(String id, final LocalDateParameterValue pv) {
+    public static PluginParameter<LocalDateParameterValue> build(final String id, final LocalDateParameterValue pv) {
         return new PluginParameter<>(pv, INSTANCE, id);
     }
 

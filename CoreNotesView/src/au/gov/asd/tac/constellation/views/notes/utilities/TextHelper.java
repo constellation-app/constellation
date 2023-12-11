@@ -33,7 +33,7 @@ public class TextHelper {
     private String family = "Helvetica";
     private FontWeight weight = FontWeight.NORMAL;
     private FontPosture posture = FontPosture.REGULAR;
-    private double size = 12.28;
+    private double size = 13;
 
     private boolean isListStart = false;
     private boolean isListEnd = false;

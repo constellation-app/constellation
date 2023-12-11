@@ -463,15 +463,15 @@ public class DefaultPluginEnvironment extends PluginEnvironment {
     private void reportException(final String pluginName,
             final PluginInteraction interaction, final PluginReport currentReport,
             final PluginNotificationLevel level, final Exception ex) {
-        if (!isExceptionReported(ex.hashCode())) {
-            if (currentReport != null) {
-                currentReport.setError(ex);
-            }
-
+        if (currentReport != null) {
+            currentReport.setError(ex);
+        }
+        if (!isExceptionReported(ex.hashCode())) {        
             if (ex instanceof InterruptedException) {
                 final String message = String.format("Plugin cancelled: %s", pluginName);
                 interaction.notify(PluginNotificationLevel.INFO, message);
                 LOGGER.log(Level.INFO, message, ex);
+
             } else if (ex instanceof PluginException) {
                 final String displayMessage;
                 if (ex.getLocalizedMessage() == null) {

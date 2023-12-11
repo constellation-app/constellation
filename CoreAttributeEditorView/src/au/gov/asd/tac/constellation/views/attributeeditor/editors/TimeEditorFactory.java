@@ -58,11 +58,11 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
 
         private static final String LABEL = "label";
 
-        private CheckBox noValueCheckBox;
         private Spinner<Integer> hourSpinner;
         private Spinner<Integer> minSpinner;
         private Spinner<Integer> secSpinner;
         private Spinner<Integer> milliSpinner;
+        private CheckBox noValueCheckBox;
 
         protected TimeEditor(final EditOperation editOperation, final DefaultGetter<LocalTime> defaultGetter, final ValueValidator<LocalTime> validator, final String editedItemName, final LocalTime initialValue) {
             super(editOperation, defaultGetter, validator, editedItemName, initialValue);
@@ -70,7 +70,7 @@ public class TimeEditorFactory extends AttributeValueEditorFactory<LocalTime> {
 
         @Override
         public void updateControlsWithValue(final LocalTime value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 hourSpinner.getValueFactory().setValue(value.getHour());
                 minSpinner.getValueFactory().setValue(value.getMinute());

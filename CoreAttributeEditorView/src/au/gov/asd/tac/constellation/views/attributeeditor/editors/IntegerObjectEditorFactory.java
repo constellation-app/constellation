@@ -54,7 +54,7 @@ public class IntegerObjectEditorFactory extends AttributeValueEditorFactory<Inte
 
         @Override
         public void updateControlsWithValue(final Integer value) {
-            noValueCheckBox.setSelected(value == null);
+            noValueCheckBox.setSelected(false);
             if (value != null) {
                 numberField.setText(String.valueOf(value));
             }

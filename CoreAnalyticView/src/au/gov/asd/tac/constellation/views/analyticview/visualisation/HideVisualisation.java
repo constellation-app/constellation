@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,13 @@ package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
 import au.gov.asd.tac.constellation.graph.schema.attribute.SchemaAttribute;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
+import au.gov.asd.tac.constellation.views.analyticview.AnalyticViewController;
 import au.gov.asd.tac.constellation.views.analyticview.results.AnalyticResult;
 import au.gov.asd.tac.constellation.views.analyticview.translators.AbstractHideTranslator;
+import au.gov.asd.tac.constellation.views.analyticview.translators.AnalyticTranslator;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import javafx.scene.Node;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
@@ -37,6 +40,7 @@ public class HideVisualisation<C> extends GraphVisualisation {
     private final HBox hidePanel;
     private final Slider hideSlider;
     private final ToggleButton hideButton;
+    private boolean activated = false;
 
     public HideVisualisation(final AbstractHideTranslator<? extends AnalyticResult<?>, C> translator) {
         this.translator = translator;
@@ -49,13 +53,31 @@ public class HideVisualisation<C> extends GraphVisualisation {
         this.hideButton = new ToggleButton("Hide");
         hideButton.setId("hide-visualisation-button");
         hideButton.setOnAction(event -> {
-            final boolean reset = !hideButton.isSelected();
+            activated = hideButton.isSelected();
             final float threshold = (float) hideSlider.getValue();
-            translator.executePlugin(reset, threshold);
-            hideSlider.setDisable(reset);
+            translator.executePlugin(!activated, threshold);
+            hideSlider.setDisable(!activated);
+            if (hideSlider.isDisable()) {
+                hideSlider.setValue(hideSlider.getMin());
+            }
+            AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
+            AnalyticViewController.getDefault().writeState();
         });
 
         this.hidePanel = new HBox(5.0, hideButton, hideSlider);
+    }
+
+    @Override
+    public void deactivate(final boolean reset) {
+        if (reset) {
+            final float threshold = (float) hideSlider.getMin();
+            translator.executePlugin(reset, threshold);
+            activated = !reset;
+            hideButton.setSelected(activated);
+            hideSlider.setDisable(reset);
+            hideSlider.setValue(threshold);
+            AnalyticViewController.getDefault().updateGraphVisualisations(this, activated);
+        }
     }
 
     @Override
@@ -67,11 +89,38 @@ public class HideVisualisation<C> extends GraphVisualisation {
     public Node getVisualisation() {
         return hidePanel;
     }
+    
+    @Override 
+    public AnalyticTranslator getTranslator() {
+        return translator;
+    }
 
     @Override
     public List<SchemaAttribute> getAffectedAttributes() {
         return Arrays.asList(
                 VisualConcept.VertexAttribute.VISIBILITY,
                 VisualConcept.TransactionAttribute.VISIBILITY);
+    }
+
+    @Override
+    public boolean isActive() {
+        return activated;
+    }
+
+    @Override
+    public void setSelected(final boolean selected) {
+        hideButton.setSelected(selected);
+        hideSlider.setDisable(selected);
+        activated = selected;
+    }
+    
+    @Override 
+    public boolean equals(final Object object) {
+        return (object != null && getClass() == object.getClass());
+    }
+    
+    @Override 
+    public int hashCode() {
+        return Objects.hash(hideButton.getClass());
     }
 }
