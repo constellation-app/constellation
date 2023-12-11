@@ -91,6 +91,7 @@ public class WordCloudControllerNGTest {
             final int cloudAttr = 2;
             when(rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR)).thenReturn(cloudAttr);
             when(rg.getObjectValue(cloudAttr, 0)).thenReturn(wordCloud);
+            doNothing().when(controller).updateWordsOnPane();
             doNothing().when(controller).setAttributeSelectionEnabled(Mockito.anyBoolean());
             controller.updateActiveGraph(graph);
             
@@ -119,6 +120,7 @@ public class WordCloudControllerNGTest {
             when(rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR)).thenReturn(cloudAttr);
             when(rg.getObjectValue(cloudAttr, 0)).thenReturn(wordCloud);
             doNothing().when(controller).setAttributeSelectionEnabled(Mockito.anyBoolean());
+            doNothing().when(controller).updateSignificanceOnPane();
             controller.updateActiveGraph(graph);
 
             final double significance = 0.2;
@@ -201,6 +203,7 @@ public class WordCloudControllerNGTest {
             when(rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR)).thenReturn(cloudAttr);
             when(rg.getObjectValue(cloudAttr, 0)).thenReturn(wordCloud);
             doNothing().when(controller).setAttributeSelectionEnabled(Mockito.anyBoolean());
+            doNothing().when(controller).updateWordsOnPane();
             controller.updateActiveGraph(graph);
             controller.createWordsOnPane();
             verify(controller, times(1)).updateWordsOnPane();
