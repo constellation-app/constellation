@@ -377,6 +377,7 @@ public class SVGGraphBuilder {
             // Note, this implementation is not a precice sollution, luminocity to alpha conversion would be better
             if (access.isVertexDimmed(vertexIndex)) {
                 svgImages.applyGrayScaleFilter();
+                svgNodeBackground.setOpacity(0.5F);
             }
             if (showBlazes && access.isBlazed(vertexIndex)) {
                 this.buildBlaze(svgGraph, vertexIndex);
