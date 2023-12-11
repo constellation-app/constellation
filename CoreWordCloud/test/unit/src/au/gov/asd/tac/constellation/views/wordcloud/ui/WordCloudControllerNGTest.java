@@ -91,6 +91,7 @@ public class WordCloudControllerNGTest {
             final int cloudAttr = 2;
             when(rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR)).thenReturn(cloudAttr);
             when(rg.getObjectValue(cloudAttr, 0)).thenReturn(wordCloud);
+            doNothing().when(controller).setAttributeSelectionEnabled(Mockito.anyBoolean());
             controller.updateActiveGraph(graph);
             
             final boolean val = false;
@@ -117,6 +118,7 @@ public class WordCloudControllerNGTest {
             final int cloudAttr = 2;
             when(rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR)).thenReturn(cloudAttr);
             when(rg.getObjectValue(cloudAttr, 0)).thenReturn(wordCloud);
+            doNothing().when(controller).setAttributeSelectionEnabled(Mockito.anyBoolean());
             controller.updateActiveGraph(graph);
 
             final double significance = 0.2;
@@ -142,6 +144,7 @@ public class WordCloudControllerNGTest {
             final int cloudAttr = 2;
             when(rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR)).thenReturn(cloudAttr);
             when(rg.getObjectValue(cloudAttr, 0)).thenReturn(wordCloud);
+            doNothing().when(controller).setAttributeSelectionEnabled(Mockito.anyBoolean());
             controller.updateActiveGraph(graph);
             
             final boolean val = true;
@@ -167,12 +170,13 @@ public class WordCloudControllerNGTest {
             final int cloudAttr = 2;
             when(rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR)).thenReturn(cloudAttr);
             when(rg.getObjectValue(cloudAttr, 0)).thenReturn(wordCloud);
-            controller.updateActiveGraph(graph);
             final String word = "";
             final boolean accumulativeSelection = false;
             final boolean deselect = true;
             doNothing().when(controller).selectElements();
             doNothing().when(controller).updateSelectedWordsOnPane();
+            doNothing().when(controller).setAttributeSelectionEnabled(Mockito.anyBoolean());
+            controller.updateActiveGraph(graph);
             controller.alterSelection(word, accumulativeSelection, deselect);
             verify(controller, times(1)).updateSelectedWordsOnPane();
             verify(controller, times(1)).selectElements();
