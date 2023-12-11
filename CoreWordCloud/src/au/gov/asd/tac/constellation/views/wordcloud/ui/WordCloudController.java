@@ -107,6 +107,10 @@ public class WordCloudController {
     public boolean isControllerIntialising() {
         return controllerIsInitialising;
     }
+    
+    public WordCloud getWordCloud() {
+        return cloud;
+    }
 
     /**
      * Change the sorting method for the word cloud.
@@ -243,7 +247,7 @@ public class WordCloudController {
             final int cloudAttr = rg.getAttribute(GraphElementType.META, WordCloud.WORD_CLOUD_ATTR);
             cloud = cloudAttr != Graph.NOT_FOUND ? (WordCloud) rg.getObjectValue(cloudAttr, 0) : null;
 
-            // Retrieve list of strin attributes from new graph for nodes and transactions 
+            // Retrieve list of string attributes from new graph for nodes and transactions 
             for (int i = 0; i < rg.getAttributeCount(GraphElementType.VERTEX); i++) {
                 final Attribute attr = new GraphAttribute(rg, rg.getAttribute(GraphElementType.VERTEX, i));
                 if (attr.getAttributeType().equals(ATTR_STRING_TYPE)) {
