@@ -50,7 +50,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.util.StringConverter;
 
 /**
  * The main JavaFx Pane with which to visualise word clouds and run the plugin
@@ -230,6 +229,30 @@ public class WordCloudPane extends BorderPane {
         wordButtons = new HashMap<>();
         noWord = new Hyperlink();
         noWord.setMaxSize(0, 0);
+    }
+    
+    protected StackPane getCloudStackPane() {
+        return cloudStackPane;
+    }
+    
+    protected ProgressIndicator getSpinner() {
+        return spinner;
+    }
+    
+    protected VBox getTheCloud() {
+        return theCloud;
+    }
+    
+    protected AnchorPane getSliderBar() {
+        return sliderBar;
+    }
+    
+    protected Map<String, Hyperlink> getWordButtons() {
+        return wordButtons;
+    }
+    
+    protected FlowPane getWords() {
+        return words;
     }
 
     public void setInProgress() {
