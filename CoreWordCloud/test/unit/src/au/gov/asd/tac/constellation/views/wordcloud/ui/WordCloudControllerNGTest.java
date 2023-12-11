@@ -18,7 +18,6 @@ package au.gov.asd.tac.constellation.views.wordcloud.ui;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
 import au.gov.asd.tac.constellation.graph.ReadableGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.views.wordcloud.content.PhraseTokenHandler;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
@@ -173,6 +172,7 @@ public class WordCloudControllerNGTest {
             final boolean accumulativeSelection = false;
             final boolean deselect = true;
             doNothing().when(controller).selectElements();
+            doNothing().when(controller).updateSelectedWordsOnPane();
             controller.alterSelection(word, accumulativeSelection, deselect);
             verify(controller, times(1)).updateSelectedWordsOnPane();
             verify(controller, times(1)).selectElements();
