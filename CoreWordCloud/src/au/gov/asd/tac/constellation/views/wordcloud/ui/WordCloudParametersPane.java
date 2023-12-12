@@ -50,31 +50,6 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
     @SuppressWarnings("unchecked") // EMPTY_STRING_LIST is a list of strings
     private List<String> transAttributes = (List<String>) EMPTY_STRING_LIST.clone();
 
-    public void updateParameters(final List<String> nodeAttributes, final List<String> transAttributes) {
-        this.nodeAttributes = new ArrayList<>(nodeAttributes);
-        this.transAttributes = new ArrayList<>(transAttributes);
-        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER is always of type SingleChoiceParameter
-        final PluginParameter<SingleChoiceParameterValue> elParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID);
-        @SuppressWarnings("unchecked") // ATTRIBUTE_TO_ANALYSE_PARAMETER is always of type SingleChoiceParameter 
-        final PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
-
-        if ("transaction".equals(elParam.getStringValue())) {
-            if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
-                attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
-            } else {
-                attrParam.setStringValue(EMPTY_STRING);
-            }
-            SingleChoiceParameterType.setOptions(attrParam, transAttributes);
-        } else if ("node".equals(elParam.getStringValue())) {
-            if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
-                attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
-            } else {
-                attrParam.setStringValue(EMPTY_STRING);
-            }
-            SingleChoiceParameterType.setOptions(attrParam, nodeAttributes);
-        }
-    }
-
     public WordCloudParametersPane(final WordCloudPane master) {
         setText("Generate Word Cloud");
         setExpanded(true);
@@ -179,6 +154,43 @@ public class WordCloudParametersPane extends TitledPane implements PluginParamet
         content.getChildren().add(pluginParametersPane);
         content.getChildren().add(run);
         setContent(content);
+    }
+    
+    public void updateParameters(final List<String> nodeAttributes, final List<String> transAttributes) {
+        this.nodeAttributes = new ArrayList<>(nodeAttributes);
+        this.transAttributes = new ArrayList<>(transAttributes);
+        @SuppressWarnings("unchecked") // ELEMENT_TYPE_PARAMETER is always of type SingleChoiceParameter
+        final PluginParameter<SingleChoiceParameterValue> elParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ELEMENT_TYPE_PARAMETER_ID);
+        @SuppressWarnings("unchecked") // ATTRIBUTE_TO_ANALYSE_PARAMETER is always of type SingleChoiceParameter 
+        final PluginParameter<SingleChoiceParameterValue> attrParam = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_PARAMETER_ID);
+
+        if ("transaction".equals(elParam.getStringValue())) {
+            if (transAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS)) {
+                attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_TRANSACTIONS);
+            } else {
+                attrParam.setStringValue(EMPTY_STRING);
+            }
+            SingleChoiceParameterType.setOptions(attrParam, transAttributes);
+        } else if ("node".equals(elParam.getStringValue())) {
+            if (nodeAttributes.contains(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES)) {
+                attrParam.setStringValue(PhrasiphyContentParameters.ATTRIBUTE_TO_ANALYSE_DEFAULT_NODES);
+            } else {
+                attrParam.setStringValue(EMPTY_STRING);
+            }
+            SingleChoiceParameterType.setOptions(attrParam, nodeAttributes);
+        }
+    }
+    
+    protected Button getRun() {
+        return run;
+    }
+    
+    protected List<String> getNodeAttributes() {
+        return new ArrayList<>(nodeAttributes);
+    }
+    
+    protected List<String> getTransAttributes() {
+        return new ArrayList<>(transAttributes);
     }
 
     @Override
