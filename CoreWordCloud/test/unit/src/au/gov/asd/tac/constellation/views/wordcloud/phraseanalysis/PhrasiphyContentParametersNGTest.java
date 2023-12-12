@@ -30,9 +30,6 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class PhrasiphyContentParametersNGTest {
-    
-    public PhrasiphyContentParametersNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
