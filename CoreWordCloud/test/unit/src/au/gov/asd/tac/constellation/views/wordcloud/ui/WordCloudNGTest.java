@@ -15,23 +15,18 @@
  */
 package au.gov.asd.tac.constellation.views.wordcloud.ui;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphElementType;
-import au.gov.asd.tac.constellation.views.wordcloud.content.ContentAnalysisManager;
 import au.gov.asd.tac.constellation.views.wordcloud.content.PhraseTokenHandler;
 import au.gov.asd.tac.constellation.views.wordcloud.content.SparseMatrix;
-import au.gov.asd.tac.constellation.views.wordcloud.content.ThreadAllocator;
-import au.gov.asd.tac.constellation.views.wordcloud.phraseanalysis.PhrasiphyContentParameters;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
-import java.util.SortedSet;
 import java.util.TreeMap;
-import static org.mockito.Mockito.mock;
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
