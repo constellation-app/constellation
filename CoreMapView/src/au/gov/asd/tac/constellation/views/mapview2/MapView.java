@@ -1636,6 +1636,12 @@ public class MapView extends ScrollPane {
      */
     private void parseMapSVG() {
         countryGroup.getChildren().clear();
+        
+        // You will need to adequately prepare the map data before it can be processed here.
+        // This parser only collects PATH data from the source file.
+        // The entire PATH data content needs to be on a single line, and the PATH tag needs to be the first tag of the line.
+        // It does not read in polygons, lines, shapes, or anything else from the file.
+        // It also doesn't apply any svg internally defined matrix transformations (fixed x and y scaling and offsets to the supplied data).
 
         // Read map from file
         try {
@@ -1647,20 +1653,19 @@ public class MapView extends ScrollPane {
                 // While there is more to read
                 while ((line = bFileReader.readLine()) != null) {
                     // Strip the line read in
-                    line = line.strip();
+                    line = line.strip().replace("\t", "  ");;
 
                     // Extract the svg path segment from the line
                     if (line.startsWith("<path")) {
-                        final int startIndex = line.indexOf("d=");
+                        final int startIndex = line.indexOf(" d=") + 4;
+                        final int endIndex = line.substring(startIndex).indexOf("\"");
 
-                        final int endIndex = line.indexOf(">");
-
-                        path = line.substring(startIndex + 3, endIndex - 2);
+                        path = line.substring(startIndex, startIndex + endIndex);
 
                         // Create the SVGPath object and add it to an array
                         final SVGPath svgPath = new SVGPath();
                         svgPath.setFill(Color.WHITE);
-                        svgPath.setStrokeWidth(0.025);
+                        svgPath.setStrokeWidth(scaledMapLineWidth);
                         svgPath.setStroke(Color.BLACK);
                         svgPath.setContent(path);
 
