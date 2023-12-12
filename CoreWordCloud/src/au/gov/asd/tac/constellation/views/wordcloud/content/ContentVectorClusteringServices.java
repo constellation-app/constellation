@@ -39,6 +39,7 @@ public class ContentVectorClusteringServices {
     private final Map<Integer, Integer> elementToCluster;
     private final Map<Integer, List<Integer>> clusters;
     private final List<Integer> clusterCentres;
+    private static final Random r = new Random();
 
     private ContentVectorClusteringServices(final SparseMatrix<Integer> tokenElementMatrix) {
         this.tokenElementMatrix = tokenElementMatrix;
@@ -90,8 +91,7 @@ public class ContentVectorClusteringServices {
             if (numberOfColumns == 0) {
                 return;
             }
-
-            final Random r = new Random();
+            
             final int firstCentreIndex = r.nextInt(numberOfColumns);
             final float[] minimumDistances = new float[numberOfColumns];
             clusterCentres.add(columnKeys[firstCentreIndex]);

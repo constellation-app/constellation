@@ -109,7 +109,7 @@ public class ContentAnalysisOptions {
         }
 
         public static List<String> getChoices() {
-            final ArrayList<String> list = new ArrayList<>();
+            final List<String> list = new ArrayList<>();
             list.add(SPACE.toString());
             list.add(COMMA.toString());
             list.add(BACKSLASH.toString());
@@ -148,7 +148,7 @@ public class ContentAnalysisOptions {
         }
 
         public static List<String> getChoices() {
-            final ArrayList<String> list = new ArrayList<>();
+            final List<String> list = new ArrayList<>();
             list.add(APPEARANCE.toString());
             list.add(RANK.toString());
             return list;
@@ -193,7 +193,7 @@ public class ContentAnalysisOptions {
         }
 
         public static List<String> getChoices() {
-            final ArrayList<String> list = new ArrayList<>();
+            final List<String> list = new ArrayList<>();
             list.add(NGRAMS.toString());
             list.add(DELIMITED_NGRAMS.toString());
             list.add(NWORDS.toString());
@@ -241,14 +241,14 @@ public class ContentAnalysisOptions {
         }
 
         public static List<String> getDocumentClusteringChoices() {
-            final ArrayList<String> list = new ArrayList<>();
+            final List<String> list = new ArrayList<>();
             list.add(CLUSTER.toString());
             list.add(MAKE_SELECTIONS.toString());
             return list;
         }
 
         public static List<String> getNodeSimilarityChoices() {
-            final ArrayList<String> list = new ArrayList<>();
+            final List<String> list = new ArrayList<>();
             list.add(ADD_TRANSACTIONS.toString());
             return list;
         }
@@ -292,7 +292,7 @@ public class ContentAnalysisOptions {
         }
 
         public static List<String> getChoices() {
-            final ArrayList<String> list = new ArrayList<>();
+            final List<String> list = new ArrayList<>();
             list.add(ALL.toString());
             list.add(SELECTED.toString());
             list.add(SIMILAR_TO_SELECTED.toString());
