@@ -32,8 +32,8 @@ public class DefaultTokenHandler implements TokenHandler {
         return tokenElementMatrix;
     }
 
-    /*
-	 * Hash function for n-grams by Bob Jenkins
+    /** 
+     * Hash function for n-grams by Bob Jenkins
      */
     static int oneAtATimeHash(final char[] token) {
         int hash = 0;
