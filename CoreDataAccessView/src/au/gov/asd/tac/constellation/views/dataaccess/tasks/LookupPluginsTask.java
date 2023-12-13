@@ -73,7 +73,7 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                 }
             }
         } else { // Add available categories if no visible categories exist in the preferences.
-            if (availableCategories.size() > 0) {
+            if (!availableCategories.isEmpty()) {
                 for (int i = 0; i < availableCategories.size(); i++) {
                     orderedPlugins.put(availableCategories.get(i), new Pair<>(i, allPlugins.get(availableCategories.get(i))));
                 }
