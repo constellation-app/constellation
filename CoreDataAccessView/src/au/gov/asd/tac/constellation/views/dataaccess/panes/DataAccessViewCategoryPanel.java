@@ -16,67 +16,40 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
-import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;
-import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
-import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
-import org.apache.commons.collections4.ListUtils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * UI panel for the Data Access View categories.
  *
  * @author mimosa
+ * @author sol695510
  */
 final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
 
     private final DataAccessViewCategoryPanelController controller;
-    private static final Map<String, List<DataAccessPlugin>> ALL_PLUGINS = DataAccessUtilities.getAllPlugins();
-    private static final Map<String, List<DataAccessPlugin>> CATEGORIES = ALL_PLUGINS.entrySet()
-            .stream()
-            .filter(entry -> !entry.getValue().isEmpty())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    private static final List<String> DAV_CATEGORIES = new ArrayList<>(CATEGORIES.keySet());
-    private final List<String> visibleResultList;
 
     private final DefaultListModel<String> visibleListModel;
     private final DefaultListModel<String> hiddenListModel;
 
+    private final List<String> visibleResultList;
+
     DataAccessViewCategoryPanel(final DataAccessViewCategoryPanelController controller) {
         this.controller = controller;
         initComponents();
+
         visibleList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         hiddenList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         visibleListModel = new DefaultListModel<>();
         hiddenListModel = new DefaultListModel<>();
 
-        final String davHiddenString = LookupPluginsTask.HIDDEN_CATEGORIES;
-        final String davVisibleString = LookupPluginsTask.VISIBLE_CATEGORIES;
-
-        if (StringUtils.isBlank(davVisibleString) && StringUtils.isBlank(davHiddenString)) {
-            visibleResultList = new ArrayList<>();
-
-            for (final String pluginType : DataAccessPluginType.getTypes()) {
-                if (DAV_CATEGORIES.indexOf(pluginType) != -1) {
-                    visibleResultList.add(pluginType);
-                }
-            }
-        } else if (StringUtils.isBlank(davHiddenString)) {
-            visibleResultList = DAV_CATEGORIES;
-        } else {
-            final List<String> davHiddenList = Arrays.asList((davHiddenString.substring(1, davHiddenString.length() - 1)).split(SeparatorConstants.COMMA));
-            visibleResultList = ListUtils.subtract(DAV_CATEGORIES, davHiddenList);
-        }
+        visibleResultList = new ArrayList<>(new LookupPluginsTask().get().keySet());
     }
 
     public List<String> getVisibleCategory() {
@@ -102,14 +75,12 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     }
 
     public void setVisibleCategory(final String categories) {
-//      Set visible list with the dynamic list of categories
+        // Set visible list with the dynamic list of categories.
         if (!categories.trim().isEmpty()) {
             getlistModelLeft().removeAllElements();
-            final String visibleCategories = categories.replace("[", "");
-            final String visibleCategoriesFinal = visibleCategories.replace("]", "");
-            final String[] visibleArray = visibleCategoriesFinal.split(SeparatorConstants.COMMA);
-            for (int i = 0; i < visibleArray.length; i++) {
-                getlistModelLeft().addElement(visibleArray[i].trim());
+            final String[] visibleCategoryArray = (categories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
+            for (String visibleCategory : visibleCategoryArray) {
+                getlistModelLeft().addElement(visibleCategory.trim());
             }
         }
         visibleList.removeAll();
@@ -117,14 +88,12 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     }
 
     public void setHiddenCategory(final String categories) {
-//      Set hidden list with the preference file options OR default
+        // Set hidden list with the preference file options OR default.
         if (!categories.trim().isEmpty()) {
             getlistModelRight().removeAllElements();
-            final String hiddenCatergories = categories.replace("[", "");
-            final String hiddenCatergoriesFinal = hiddenCatergories.replace("]", "");
-            final String[] hiddenArray = hiddenCatergoriesFinal.split(SeparatorConstants.COMMA);
-            for (int i = 0; i < hiddenArray.length; i++) {
-                getlistModelRight().addElement(hiddenArray[i].trim());
+            final String[] hiddenCategoryArray = (categories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
+            for (String hiddenCategory : hiddenCategoryArray) {
+                getlistModelRight().addElement(hiddenCategory.trim());
             }
         }
         hiddenList.removeAll();
@@ -290,7 +259,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         if (visibleList.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
         } else {
-            //Add selected options to hidden list
+            // Add selected options to hidden list.
             final List<String> selectedValues = visibleList.getSelectedValuesList();
             ListIterator<String> selectedValuesIterator = selectedValues.listIterator();
             while (selectedValuesIterator.hasNext()) {
@@ -298,7 +267,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
             }
             hiddenList.setModel(hiddenListModel);
 
-            //Remove seleted options from visible list
+            // Remove seleted options from visible list.
             if (visibleListModel.getSize() != 0) {
                 selectedValuesIterator = selectedValues.listIterator();
                 while (selectedValuesIterator.hasNext()) {
@@ -315,7 +284,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         if (hiddenList.getSelectedIndex() == -1) {
             JOptionPane.showMessageDialog(OptionPanel, "No Category selected...", "Error", 1);
         } else {
-            //Add selected options to visible list
+            // Add selected options to visible list.
             final List<String> selectedValues = hiddenList.getSelectedValuesList();
             ListIterator<String> selectedValuesIterator = selectedValues.listIterator();
             while (selectedValuesIterator.hasNext()) {
@@ -323,7 +292,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
             }
             visibleList.setModel(visibleListModel);
 
-            //Remove selected options from hidden list
+            // Remove selected options from hidden list.
             if (hiddenListModel.getSize() != 0) {
                 selectedValuesIterator = selectedValues.listIterator();
                 while (selectedValuesIterator.hasNext()) {
