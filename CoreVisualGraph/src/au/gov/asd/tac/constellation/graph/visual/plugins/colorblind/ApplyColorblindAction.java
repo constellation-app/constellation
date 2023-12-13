@@ -21,7 +21,6 @@ import au.gov.asd.tac.constellation.graph.WritableGraph;
 import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.node.GraphNode;
 import au.gov.asd.tac.constellation.graph.node.plugins.SimpleAction;
-import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.PluginException;
 import au.gov.asd.tac.constellation.plugins.PluginGraphs;
@@ -88,15 +87,23 @@ public final class ApplyColorblindAction extends SimpleAction {
             for (int vertex = 0; vertex < vertexCount; vertex++) {
                 final int vxId = graph.getVertex(vertex);
                 final ConstellationColor vertexColor = graph.getObjectValue(vxColorAttr, vxId);
-                ConstellationColor newColor = calcColorBrightness(vertexColor);
-                graph.setObjectValue(vxColorblindAttr, vxId, newColor);
+                final ConstellationColor vxColorblindAlpha = graph.getObjectValue(vxColorblindAttr, vxId);
+
+                if (vxColorblindAlpha == null || vxColorblindAlpha.getAlpha() == 0.99F) {
+                    ConstellationColor newColor = calcColorBrightness(vertexColor);
+                    graph.setObjectValue(vxColorblindAttr, vxId, newColor);
+                }
             }
 
             for (int transaction = 0; transaction < transactionCount; transaction++) {
                 final int transactionId = graph.getTransaction(transaction);
                 final ConstellationColor transactionColor = graph.getObjectValue(txColorAttr, transactionId);
-                ConstellationColor newColor = calcColorBrightness(transactionColor);
-                graph.setObjectValue(txColorblindAttr, transactionId, newColor);
+                final ConstellationColor txColorblindAlpha = graph.getObjectValue(vxColorblindAttr, transactionId);
+
+                if (txColorblindAlpha == null || txColorblindAlpha.getAlpha() == 0.99F) {
+                    ConstellationColor newColor = calcColorBrightness(transactionColor);
+                    graph.setObjectValue(txColorblindAttr, transactionId, newColor);
+                }
             }
             setColorRef(graph, graph.getAttributeName(vxColorblindAttr), graph.getAttributeName(txColorblindAttr));
         } else {
