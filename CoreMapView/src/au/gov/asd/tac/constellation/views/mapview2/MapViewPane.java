@@ -137,15 +137,15 @@ public class MapViewPane extends BorderPane {
 
     // Store list of available maps and an object to store the currently selected map.
     private final List<MapDetails> maps = Arrays.asList(
-            new MapDetails(1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
-            new MapDetails(1000, 1018, 38, -36, -18, 60, "Africa & Middle East",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 1018, 38, -36, -18, 60, "Africa & Middle East",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/AfricaAndMiddleEast1000x1018.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
-            new MapDetails(1000, 1491, 84, -57, -170, 84, "The Americas",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 1491, 84, -57, -170, 84, "The Americas",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/Americas1000x1491.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
-            new MapDetails(1000, 1443, 72, 33, 13, 62, "Europe & UK",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 1443, 72, 33, 13, 62, "Europe & UK",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/EuropeAndUK1000x1443.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
-            new MapDetails(1000, 1090, 10, -55, 110, 180, "South East Asia",
+            new MapDetails(MapDetails.MapType.SVG, 1000, 1090, 10, -55, 110, 180, "South East Asia",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/SEAsia1000x1090.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()))
     );
     private MapDetails selectedMap;

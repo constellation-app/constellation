@@ -127,7 +127,7 @@ public class MapView extends ScrollPane {
     public static double MAP_WIDTH = 0;
     public static double MAP_HEIGHT = 0;
     
-    private static MapDetails mapDetails = new MapDetails(0, 0, 0, 0, 0, 0, "", null);
+    private static MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 0, 0, 0, 0, 0, 0, "", null);
      
     // Two containers that hold queried markers and user drawn markers
     private Map<String, AbstractMarker> markers = new HashMap<>();

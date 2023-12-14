@@ -24,6 +24,7 @@ import java.io.File;
  */
 public class MapDetails {
     
+    private final MapType type;  // The type of map layer that is being described
     private final double width;  // Width in "map units" of the map. Units may vary based on map type.
     private final double height;  // Height in "map units" of the map. Units may vary based on map type.
     private final double topLat;  // Latitude of the top edge of the map.
@@ -36,6 +37,7 @@ public class MapDetails {
     /**
      * Create a MapDetails object corresponding to the supplied values.
      * 
+     * @param type  // The type of map layer being described
      * @param width  // Width in "map units" of the map. Units may vary based on map type.
      * @param height  // Height in "map units" of the map. Units may vary based on map type.
      * @param topLat  // Latitude of the top edge of the map.
@@ -45,8 +47,10 @@ public class MapDetails {
      * @param name  // Name to identify the map by.
      * @param mapFile  // File object containing the map.
      */
-    public MapDetails(final double width, final double height, final double topLat, final double bottomLat,
-                      final double leftLon, final double rightLon, final String name, final File mapFile) {
+    public MapDetails(final MapType type, final double width, final double height,
+                      final double topLat, final double bottomLat, final double leftLon, final double rightLon,
+                      final String name, final File mapFile) {
+        this.type = type;
         this.width = width;
         this.height = height;
         this.topLat = topLat;
@@ -125,5 +129,13 @@ public class MapDetails {
      */
     public File getMapFile() {
         return mapFile;
+    }
+    
+    /**
+     * Provides future scope to display base map layers of formats other than SVG paths.
+     */
+    enum MapType {
+        SVG,
+        RASTER  // ie JPG, PNG etc. THese may provide greater details of a specific area but are unable to scale well
     }
 }
