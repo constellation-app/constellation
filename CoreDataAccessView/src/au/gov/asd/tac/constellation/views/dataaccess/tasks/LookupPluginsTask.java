@@ -18,11 +18,13 @@ package au.gov.asd.tac.constellation.views.dataaccess.tasks;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.dataaccess.panes.DataAccessViewPreferenceKeys;
 import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPluginType;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -45,7 +47,7 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
     @Override
     public Map<String, Pair<Integer, List<DataAccessPlugin>>> get() {
         final Map<String, List<DataAccessPlugin>> allPlugins = DataAccessUtilities.getAllPlugins();
-        final Map<String, Pair<Integer, List<DataAccessPlugin>>> orderedPlugins = new HashMap<>();
+        final Map<String, Pair<Integer, List<DataAccessPlugin>>> orderedPlugins = new LinkedHashMap<>();
 
         final List<String> availableCategories = new ArrayList<>(allPlugins
                 .entrySet()
@@ -74,9 +76,14 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
             }
         } else { // Add available categories if no visible categories exist in the preferences.
             if (!availableCategories.isEmpty()) {
-                for (int i = 0; i < availableCategories.size(); i++) {
-                    orderedPlugins.put(availableCategories.get(i), new Pair<>(i, allPlugins.get(availableCategories.get(i))));
-                }
+
+                final Set<String> remainingCategories = allPlugins.keySet();
+                remainingCategories.retainAll(availableCategories);
+
+                remainingCategories.forEach(plugin -> {
+                    final int position = DataAccessPluginType.getTypeWithPosition().get(plugin);
+                    orderedPlugins.put(plugin, new Pair<>(position, allPlugins.get(plugin)));
+                });
             }
         }
 
