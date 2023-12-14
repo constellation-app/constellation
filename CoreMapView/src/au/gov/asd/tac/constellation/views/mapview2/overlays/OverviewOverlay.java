@@ -15,17 +15,11 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.overlays;
 
-import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import java.util.List;
 import javafx.scene.Group;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -41,26 +35,22 @@ public class OverviewOverlay extends AbstractOverlay {
 
     private static final double MAP_SCALE = 0.2;
 
-    private final Rectangle panningRect = new Rectangle();
-    private final Group panRectGroup = new Group();
+    private final Rectangle borderRect = new Rectangle();  // A rectangle to wrap the overview pane in
+    private final Rectangle panningRect = new Rectangle();  // Rectangle to show the viewPane with
 
-    public OverviewOverlay(final double positionX, final double positionY, final List<SVGPath> countrySVGPaths) {
-        super(positionX, positionY);
 
-        overlayPane.setMinWidth(MapView.MAP_VIEWPORT_WIDTH * MAP_SCALE);
-        overlayPane.setMaxWidth(MapView.MAP_VIEWPORT_WIDTH * MAP_SCALE);
-        overlayPane.setMinHeight(MapView.MAP_VIEWPORT_HEIGHT * MAP_SCALE);
-        overlayPane.setMaxHeight(MapView.MAP_VIEWPORT_HEIGHT * MAP_SCALE);
-
-        panningRect.setWidth(1600 * MAP_SCALE);
-        panningRect.setHeight(MapView.MAP_VIEWPORT_HEIGHT * MAP_SCALE);
-        panningRect.setFill(Color.TRANSPARENT);
-        panningRect.setStroke(Color.RED);
-        panningRect.setStrokeWidth(3);
-        panRectGroup.getChildren().add(panningRect);
-
+    public OverviewOverlay(final Vec3 posVect, final Vec3 mapSizeVect, final Vec3 viewPanePosVect, final Vec3 viewPaneSizeVect, final List<SVGPath> countrySVGPaths) {
+        super(posVect.getX(), posVect.getY());
+        
+        overlayPane.setMinWidth(mapSizeVect.getX() * MAP_SCALE);
+        overlayPane.setMaxWidth(mapSizeVect.getX() * MAP_SCALE);
+        overlayPane.setMinHeight(mapSizeVect.getY() * MAP_SCALE);
+        overlayPane.setMaxHeight(mapSizeVect.getY() * MAP_SCALE);
+                
         overlayPane.getChildren().clear();
         overlayPane.setBackground(new Background(new BackgroundFill(new Color(0.722, 0.871, 0.902, 1), null, null)));
+
+        final StackPane stackPane = new StackPane();
         final Group countryGroup = new Group();
         for (int i = 0; i < countrySVGPaths.size(); i++) {
             final SVGPath p = new SVGPath();
@@ -70,26 +60,74 @@ public class OverviewOverlay extends AbstractOverlay {
             p.setStrokeWidth(0.025);
             countryGroup.getChildren().add(p);
         }
-        overlayPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
         countryGroup.setScaleX(MAP_SCALE);
         countryGroup.setScaleY(MAP_SCALE);
-
-        final StackPane stackPane = new StackPane();
         stackPane.getChildren().add(countryGroup);
+        
+        panningRect.setWidth(500 * MAP_SCALE);
+        panningRect.setHeight(500 * MAP_SCALE);
+        panningRect.setTranslateX(0 * MAP_SCALE);
+        panningRect.setTranslateY(0 * MAP_SCALE);
+        panningRect.setFill(Color.TRANSPARENT);
+        panningRect.setStroke(Color.RED);
+        panningRect.setStrokeWidth(2);
+        panningRect.setMouseTransparent(true);
         stackPane.getChildren().add(panningRect);
-        panRectGroup.setMouseTransparent(true);
+
+        borderRect.setWidth(mapSizeVect.getX() * MAP_SCALE);
+        borderRect.setHeight(mapSizeVect.getY() * MAP_SCALE);
+        borderRect.setFill(Color.TRANSPARENT);
+        borderRect.setStroke(Color.BLACK);
+        borderRect.setStrokeWidth(5);
+        borderRect.setMouseTransparent(true);
+        stackPane.getChildren().add(borderRect);
+        
         overlayPane.setCenter(stackPane);
     }
-
+    
     @Override
     public Pane getOverlayPane() {
         return overlayPane;
     }
-
-    public void update(final Vec3 moveVect, final double width) {
-        panningRect.setTranslateX(moveVect.getX() * MAP_SCALE + 65);
-        panningRect.setTranslateY(moveVect.getY() * MAP_SCALE);
-        panningRect.setWidth(width * MAP_SCALE);
-    }
-
+    
+   public void update(final Vec3 viewPanePosVect, final Vec3 viewPaneSizeVect) {
+       
+       final double centerMapX = (overlayPane.getWidth() / 2);
+       final double centerMapY = (overlayPane.getHeight() / 2);
+       
+       double width = viewPaneSizeVect.getX() * MAP_SCALE;
+       double height = viewPaneSizeVect.getY() * MAP_SCALE;
+       double x = -viewPanePosVect.getX() * MAP_SCALE;
+       double y = -viewPanePosVect.getY() * MAP_SCALE;
+       
+       if (x < 0) {
+           width = width + x;
+           x = 0;
+       } else if (x > overlayPane.getWidth()) {
+           width = 0;
+           x = overlayPane.getWidth();
+       }
+       if (x + width > overlayPane.getWidth()) {
+           width = overlayPane.getWidth() - x;
+       }
+       
+       if (y < 0) {
+           height = height + y;
+           y = 0;
+       } else if (y > overlayPane.getHeight()) {
+           height = 0;
+           y = overlayPane.getHeight();
+       }
+       if (y + height > overlayPane.getHeight()) {
+           height = overlayPane.getHeight() - y;
+       }
+       
+       double centreViewPaneX = x + width/2;
+       double centreViewPaneY = y + height/2;
+       
+        panningRect.setWidth(width);
+        panningRect.setHeight(height);
+        panningRect.setTranslateX(centreViewPaneX - centerMapX);
+        panningRect.setTranslateY(centreViewPaneY - centerMapY);
+   }
 }

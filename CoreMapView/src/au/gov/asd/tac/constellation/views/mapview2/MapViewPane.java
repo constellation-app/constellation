@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -74,19 +76,15 @@ import org.openide.util.HelpCtx;
  */
 public class MapViewPane extends BorderPane {
 
+    private static final Logger LOGGER = Logger.getLogger(MapViewPane.class.getName());
+
     private final MapViewTopComponent parent;
-    private final GridPane toolBarGridPane;
+    public final GridPane toolBarGridPane;
     // Stackpane to hold the map
     private final StackPane parentStackPane;
 
     // Holds various overlays
     private final AnchorPane anchorPane = new AnchorPane();
-
-    // Rectangle to repesent the view port
-    private final Rectangle viewPortRectangle;
-
-    // Rectangle to represent border of scene
-    private final Rectangle borderRectangle;
 
     // String for all the menu options
     private static final String MARKER_TYPE_POINT = "Point Markers";
@@ -97,6 +95,8 @@ public class MapViewPane extends BorderPane {
     private static final String ZOOM_ALL = "Zoom to All";
     private static final String ZOOM_SELECTION = "Zoom to Selection";
     private static final String ZOOM_LOCATION = "Zoom to Location";
+    private static final String ZOOM_IN = "Zoom In";
+    private static final String ZOOM_OUT = "Zoom Out";
 
     private static final String DAY_NIGHT = "Day / Night";
     private static final String HEATMAP_STANDARD = "Heatmap (Standard)";
@@ -135,7 +135,7 @@ public class MapViewPane extends BorderPane {
     private final Label latField = new Label("0.00");
     private final Label lonField = new Label("0.00");
 
-//    // Store list of available maps. The first in the list is the default map
+    // Store list of available maps and an object to store the currently selected map.
     private final List<MapDetails> maps = Arrays.asList(
             new MapDetails(1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain())),
@@ -148,6 +148,7 @@ public class MapViewPane extends BorderPane {
             new MapDetails(1000, 1090, 10, -55, 110, 180, "South East Asia",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/SEAsia1000x1090.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()))
     );
+    private MapDetails selectedMap;
     
     private MapView mapView;
 
@@ -159,11 +160,6 @@ public class MapViewPane extends BorderPane {
         parent = parentComponent;
 
         parentStackPane = new StackPane();
-        viewPortRectangle = new Rectangle();
-        borderRectangle = new Rectangle();
-
-        viewPortRectangle.setMouseTransparent(true);
-        borderRectangle.setMouseTransparent(true);
 
         toolBarGridPane = new GridPane();
         toolBarGridPane.setHgap(5);
@@ -184,13 +180,15 @@ public class MapViewPane extends BorderPane {
             mapsDropDown.getItems().add(map.getMapName());
         });
         mapsDropDown.getSelectionModel().selectFirst();
+        selectedMap = maps.get(0);
         mapView = new MapView(this, maps.get(mapsDropDown.getSelectionModel().getSelectedIndex()));
 
         // Set up action to ensure that changing the map selection triggers new map to be loaded and displayed with
         // refreshed content.
         mapsDropDown.setOnAction((event) -> {
             parentStackPane.getChildren().remove(mapView);
-            mapView = new MapView(this, maps.get(mapsDropDown.getSelectionModel().getSelectedIndex()));
+            selectedMap = maps.get(mapsDropDown.getSelectionModel().getSelectedIndex());
+            mapView = new MapView(this, selectedMap);
             parent.recalculateCoords();
             parentStackPane.getChildren().add(mapView);
         });
@@ -208,29 +206,23 @@ public class MapViewPane extends BorderPane {
         layersMenuButton.setIcon(parent.getClass().getResource("resources/layers2.png").toString());
 
         // Add overlays to toolbar
-        final MenuButtonCheckCombobox overlaysMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY), false, false);
+        final MenuButtonCheckCombobox overlaysMenuButton = new MenuButtonCheckCombobox(FXCollections.observableArrayList(INFO_OVERLAY, TOOLS_OVERLAY, OVERVIEW_OVERLAY), false, false);
         overlaysMenuButton.getMenuButton().setTooltip(new Tooltip("Select overlays to render over the map in the Map View"));
         overlaysMenuButton.setIcon(parent.getClass().getResource("resources/overlays.png").toString());
         // Overlay event handler
         overlaysMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
-            if (parent.getCurrentGraph() != null) {
-                overlaysMenuButton.getOptionMap().keySet().forEach(key -> {
-                    toggleOverlay(key, overlaysMenuButton.getOptionMap().get(key).isSelected());
+            overlaysMenuButton.getOptionMap().keySet().forEach(key -> {
+                toggleOverlay(key, overlaysMenuButton.getOptionMap().get(key).isSelected());
 
-                    if (key.equals(INFO_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected() && !toolBarGridPane.getChildren().contains(latLabel)) {
-                        toolBarGridPane.add(latLabel, 0, 1);
-                        toolBarGridPane.add(latField, 1, 1);
-                        toolBarGridPane.add(lonLabel, 2, 1);
-                        toolBarGridPane.add(lonField, 3, 1);
-                    } else if (key.equals(INFO_OVERLAY) && !overlaysMenuButton.getOptionMap().get(key).isSelected()) {
-                        toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
-                    }
-
-                });
-            } else {
-                overlaysMenuButton.revertLastAction();
-                NotifyDisplayer.display("Overlay options require a graph to be open!", NotifyDescriptor.INFORMATION_MESSAGE);
-            }
+                if (key.equals(INFO_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected() && !toolBarGridPane.getChildren().contains(latLabel)) {
+                    toolBarGridPane.add(latLabel, 0, 1);
+                    toolBarGridPane.add(latField, 1, 1);
+                    toolBarGridPane.add(lonLabel, 2, 1);
+                    toolBarGridPane.add(lonField, 3, 1);
+                } else if (key.equals(INFO_OVERLAY) && !overlaysMenuButton.getOptionMap().get(key).isSelected()) {
+                    toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
+                }
+            });
         });
 
         // Zoom menu set up and event handling
@@ -239,8 +231,10 @@ public class MapViewPane extends BorderPane {
         final MenuItem zoomAll = new MenuItem(ZOOM_ALL);
         final MenuItem zoomSelection = new MenuItem(ZOOM_SELECTION);
         final MenuItem zoomLocation = new MenuItem(ZOOM_LOCATION);
+        final MenuItem zoomIn = new MenuItem(ZOOM_IN);
+        final MenuItem zoomOut = new MenuItem(ZOOM_OUT);
 
-        zoomDropDown.getItems().addAll(zoomAll, zoomSelection, zoomLocation);
+        zoomDropDown.getItems().addAll(zoomAll, zoomSelection, zoomLocation, zoomIn, zoomOut);
         zoomDropDown.setTooltip(new Tooltip("Zoom based on markers or locations in the Map View"));
 
         final String zoomError = "Zoom options require a graph to be open!";
@@ -269,6 +263,20 @@ public class MapViewPane extends BorderPane {
             } else {
                 NotifyDisplayer.display(zoomError, NotifyDescriptor.INFORMATION_MESSAGE);
             }
+        });
+
+        /**
+         * Menu item allowing map to be zoomed in by a zoom factor.
+         */
+        zoomIn.setOnAction(event -> {
+            mapView.zoomIn();
+        });
+
+        /**
+         * Menu item allowing map to be zoomed out by a zoom factor.
+         */
+        zoomOut.setOnAction(event -> {
+            mapView.zoomOut();
         });
 
         // Menu to show/hide markers        
@@ -490,13 +498,10 @@ public class MapViewPane extends BorderPane {
         // Create the actual map display area
         parentStackPane.getChildren().add(mapView);
 
-        // Set position of "viewport" rectangle
-        viewPortRectangle.setX(0);
-        viewPortRectangle.setY(0);
-
         AnchorPane.setTopAnchor(parentStackPane, 0.0);
         AnchorPane.setRightAnchor(parentStackPane, 0.0);
         AnchorPane.setLeftAnchor(parentStackPane, 0.0);
+        AnchorPane.setBottomAnchor(parentStackPane, 0.0);
 
         AnchorPane.setTopAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
         AnchorPane.setLeftAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
@@ -506,42 +511,13 @@ public class MapViewPane extends BorderPane {
 
         anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.getOverviewOverlay().getOverlayPane());
         anchorPane.prefWidthProperty().bind(this.widthProperty());
-        viewPortRectangle.setWidth(MapView.MAP_VIEWPORT_WIDTH);
-        viewPortRectangle.setHeight(MapView.MAP_VIEWPORT_HEIGHT);
-        viewPortRectangle.setStroke(Color.RED);
-        viewPortRectangle.setStrokeWidth(10);
 
-        viewPortRectangle.setFill(Color.TRANSPARENT);
-        viewPortRectangle.setStroke(Color.TRANSPARENT);
-
-        borderRectangle.setFill(Color.TRANSPARENT);
-        borderRectangle.setStroke(Color.TRANSPARENT);
-
-        borderRectangle.widthProperty().bind(this.widthProperty().subtract(20));
-        borderRectangle.setHeight(MapView.MAP_VIEWPORT_HEIGHT);
-        borderRectangle.setStrokeWidth(3);
-
-        AnchorPane.setTopAnchor(borderRectangle, 0.0);
-        AnchorPane.setLeftAnchor(borderRectangle, 0.0);
-
-        anchorPane.getChildren().add(borderRectangle);
-
-        // Adds the mapView and viewport rect underneath the toolbar
-        parentStackPane.getChildren().add(viewPortRectangle);
         Platform.runLater(() -> setCenter(anchorPane));
     }
 
 
     public StackPane getParentStackPane() {
         return parentStackPane;
-    }
-
-    public Rectangle getBorderRectangle() {
-        return borderRectangle;
-    }
-
-    public Rectangle getViewPortRectangle() {
-        return viewPortRectangle;
     }
 
     /**

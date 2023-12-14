@@ -19,10 +19,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.plugins.PluginExecution;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.geospatial.Geohash;
-
-
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
-
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.CircleMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.ClusterMarker;
@@ -41,8 +38,6 @@ import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import gov.nasa.worldwind.geom.coords.MGRSCoord;
 import java.io.BufferedReader;
-import java.io.File;
-
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,17 +54,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -104,12 +98,14 @@ public class MapView extends ScrollPane {
     private final MapViewPane parent;
 
     private final StackPane mapStackPane;
+    private final Group scrollContent;
 
     // ID of the next user drawn marker
     private int drawnMarkerId = 0;
 
+    private double scaleValue = 1.0;  // Scale of overall map display
+    private double scaledMapLineWidth = 0.1;  // Scaled witdth of lines on maps (for SVF maps) to account for any overall map scale
     private double pointMarkerGlobalScale = 0.1;
-    private double scaledMapLineWidth = 0.1;
 
     // Flags for the different drawing modes
     private boolean drawingCircleMarker = false;
@@ -210,7 +206,6 @@ public class MapView extends ScrollPane {
     // Pane that hold all the groups for all the different graphical outputs
     private final Pane mapGroupHolder = new Pane();
 
-    private final Rectangle clipRectangle = new Rectangle();
 
     // All the layers are stored here
     private final List<AbstractMapLayer> layers = new ArrayList<>();
@@ -288,31 +283,25 @@ public class MapView extends ScrollPane {
         mapStackPane.setBorder(Border.EMPTY);
         mapStackPane.setBackground(new Background(new BackgroundFill(Color.BROWN, null, null)));
 
-
         mapStackPane.getChildren().addAll(mapGroupHolder);
         mapStackPane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
-
-        clipRectangle.setWidth(parent.getWidth());
-        clipRectangle.setHeight(parent.getHeight());
-        clipRectangle.setX(0);
-        clipRectangle.setY(0);
-        clipRectangle.setFill(Color.TRANSPARENT);
 
         setScrollEventHandler();
         setMousePressedEventHandler();
 
         // When user drags the mouse
         mapStackPane.setOnMouseDragged(event -> {
-            // Check they are dragging the right mouse button
-            if (event.isSecondaryButtonDown()) {
-                // Move the map
-                mapStackPane.setTranslateX(transalateX + (event.getSceneX() - mouseAnchorX));
-                mapStackPane.setTranslateY(transalateY + (event.getSceneY() - mouseAnchorY));
-                enclosingRectangle.setTranslateX(enclosingRectangle.getTranslateX() - (event.getSceneX() - mouseAnchorX));
-                enclosingRectangle.setTranslateY(enclosingRectangle.getTranslateY() - (event.getSceneY() - mouseAnchorY));
-                updateOverviewOverlay();
-                event.consume();
-            }
+// TODO: commented out for now as this is being handled by mapView ScrollPane
+//            // Check they are dragging the right mouse button
+//            if (event.isSecondaryButtonDown()) {
+//                // Move the map      
+//                mapStackPane.setTranslateX(transalateX + (event.getSceneX() - mouseAnchorX));
+//                mapStackPane.setTranslateY(transalateY + (event.getSceneY() - mouseAnchorY));
+//                enclosingRectangle.setTranslateX(enclosingRectangle.getTranslateX() - (event.getSceneX() - mouseAnchorX));
+//                enclosingRectangle.setTranslateY(enclosingRectangle.getTranslateY() - (event.getSceneY() - mouseAnchorY));
+//                updateOverviewOverlay();
+//                event.consume();
+//            }
         });
 
         // Clear any country grpahics that already exist within group
@@ -322,7 +311,8 @@ public class MapView extends ScrollPane {
         for (int i = 0; i < countrySVGPaths.size(); ++i) {
             countryGroup.getChildren().add(countrySVGPaths.get(i));
         }
-        overviewOverlay = new OverviewOverlay(0, 0, countrySVGPaths);
+        overviewOverlay = new OverviewOverlay(new Vec3(0, -120), new Vec3(mapDetails.getWidth(), mapDetails.getHeight()), new Vec3(-200,-300), new Vec3(200,200), countrySVGPaths);
+        updateOverviewOverlay();
         enclosingRectangle.setWidth(MAP_VIEWPORT_WIDTH);
         enclosingRectangle.setHeight(MAP_VIEWPORT_HEIGHT);
 
@@ -332,14 +322,14 @@ public class MapView extends ScrollPane {
         enclosingRectangle.setMouseTransparent(true);
         enclosingRectangleGroup.getChildren().add(enclosingRectangle);
 
-        // Set default pan behaviour to false
-        this.setPannable(false);
+        // Setup mapView ScrollPane to be pannable and have scrollbars
+        this.setPannable(true);
+        this.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        this.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 
-        // No scroll bars allowed!!
-        this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        this.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-
-        setContent(mapStackPane);
+        scrollContent = new Group(mapStackPane);  // wrap mapStackPane in a Group as Group dimensions are understood by 
+                                                  // ScrollPane container.
+        setContent(scrollContent);
 
         // Center content
         this.setHvalue(this.getHmin() + (this.getHmax() - this.getHmin()) / 2);
@@ -510,7 +500,23 @@ public class MapView extends ScrollPane {
         mapGroupHolder.getChildren().add(selectionRectangleGroup);
         mapGroupHolder.getChildren().addAll(viewPortRectangleGroup);
     }
-
+    
+    /**
+     * Helper routine used to dump key details for testing of positions. Can be removed once code is complete and
+     * proper tests are in place.
+     * Must be triggered by a callback with a MouseEvent.
+     * @param event 
+     */
+    private void dumpDetails(javafx.scene.input.MouseEvent event) {
+        LOGGER.log(Level.SEVERE, "dumpDetails: mapSize:(" + mapDetails.getWidth() + " x " + mapDetails.getHeight() + "). "
+                   + "mapView size: (" + this.getWidth() + " x " + this.getHeight() + "). ");
+        LOGGER.log(Level.SEVERE, "dumpDetails: ScrollPane click pos:(" + event.getX() + ", " + event.getY() + "). "
+                   + "Scene click pos:(" + event.getSceneX() + ", " + event.getSceneY() + "). ");
+        LOGGER.log(Level.SEVERE, "dumpDetails: scrollContent size:(" + scrollContent.getLayoutBounds().getWidth() + " x " + scrollContent.getLayoutBounds().getHeight() + "). "
+                   +  " viewport size:(" + this.getViewportBounds().getWidth() + ", " + this.getViewportBounds().getHeight() + "). ");
+        LOGGER.log(Level.SEVERE, "dumpDetails: Scaling: " + scaleValue + " lineScale=" + scaledMapLineWidth);
+    }
+    
     /**
      * Mouse pressed events for stack pane and the mapGroupHolder
      */
@@ -519,20 +525,18 @@ public class MapView extends ScrollPane {
         // Panning code
         // Record where the mouse has been pressed
         mapStackPane.setOnMousePressed(event -> {
-            // Coordinate within scene
+            dumpDetails(event);
+            
+            // Determine the position of the mouse relative to the top left of the mapStackPane when the mouse button is
+            // pressed. The Top left 0,0 position reflects top left of MapViewPane which adds a toolBarGridPane across
+            // the top and the anchorPane as the main content (center). The anchor panel holds the parentStackPane which
+            // holds the mapView.
             mouseAnchorX = event.getSceneX();
             mouseAnchorY = event.getSceneY();
 
             // Position of map when moise is clicked
             transalateX = mapStackPane.getTranslateX();
             transalateY = mapStackPane.getTranslateY();
-
-            final Rectangle viewPortRect = parent.getViewPortRectangle();
-
-            clipRectangle.setX(viewPortRect.getX());
-            clipRectangle.setY(viewPortRect.getY());
-            clipRectangle.setWidth(viewPortRect.getWidth());
-            clipRectangle.setHeight(viewPortRect.getHeight());
 
         });
 
@@ -554,25 +558,13 @@ public class MapView extends ScrollPane {
     }
 
     private void updateOverviewOverlay() {
-        final Rectangle borderRect = parent.getBorderRectangle();
+        
+            if (this.getScene() == null) {
+                return;
+            }
 
-        final Point2D mapPos = mapStackPane.getParent().getParent().localToParent(mapStackPane.getTranslateX(), mapStackPane.getTranslateY());
-        final Point2D viewPortPos = new Point2D(borderRect.getX(), borderRect.getY());
-        final Vec3 mapTopRight = new Vec3(mapPos.getX() + mapStackPane.getWidth(), mapPos.getY());
-        final Vec3 topRightViewPort = new Vec3(borderRect.getX() + borderRect.getWidth(), borderRect.getY());
-
-        final Point2D screenViewPortTopLeft = borderRect.localToScreen(borderRect.getX(), borderRect.getY());
-        final Point2D screenViewPortTopRight = borderRect.localToScreen(borderRect.getX() + borderRect.getWidth(), borderRect.getY());
-
-        final Vec3 topLeftVect = new Vec3((viewPortPos.getX() - mapPos.getX()), viewPortPos.getY() - mapPos.getY());
-        final Vec3 topRightVect = new Vec3(topRightViewPort.getX() - mapTopRight.getX(), topRightViewPort.getY() - mapTopRight.getY());
-
-        final Vec3 newTopLeft = new Vec3(clipRectangle.getX() + topLeftVect.getX(), clipRectangle.getY() + topLeftVect.getY());
-        final Vec3 newTopRight = new Vec3((clipRectangle.getX() + clipRectangle.getWidth()) + topRightVect.getX(), clipRectangle.getY() + topRightVect.getY());
-
-        final double width = screenViewPortTopRight.getX() - screenViewPortTopLeft.getX();
-
-        overviewOverlay.update(topLeftVect, parent.getBorderRectangle().getWidth());
+            Bounds boundsInParent = mapStackPane.getBoundsInParent();
+            overviewOverlay.update(new Vec3(boundsInParent.getMinX(), boundsInParent.getMinY()), new Vec3(this.getScene().getWidth(), this.getScene().getHeight()));
     }
 
     /**
@@ -581,96 +573,97 @@ public class MapView extends ScrollPane {
     private void setMouseClickedEventHandler() {
 
         mapGroupHolder.setOnMouseClicked(event -> {
-            // If left clicked
-            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                // if double clicked desekect all marekers from both the map and the graph in consty
-                deselectAllMarkers();
-                selectedNodeList.clear();
-                PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
-                event.consume();
-                return;
-
-            }
-
-            // Record location of mouse click
-            final double x = event.getX();
-            final double y = event.getY();
-
-            // If drawing is enabled and measurment is disabled
-            if (TOOLS_OVERLAY.getDrawingEnabled().get() && !TOOLS_OVERLAY.getMeasureEnabled().get()) {
-
-                // If shift is down then display circle drawing
-                if (event.isShiftDown()) {
-                    drawingCircleMarker = true;
-                    circleMarker = new CircleMarker(self, drawnMarkerId++, x, y, 0, 100, 100);
-                    polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
-                    polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
-
-                    // If user is drawing a circle then add it to the map and clear any UI elements
-                } else if (drawingCircleMarker) {
-                    circleMarker.generateCircle();
-                    drawnMarkerGroup.getChildren().add(circleMarker.getMarker());
-                    userMarkers.add(circleMarker);
-                    circleMarker = null;
-                    polygonMarkerGroup.getChildren().clear();
-                    drawingCircleMarker = false;
-
-                    // Reset the distance shown on the tools ovelay
-                    TOOLS_OVERLAY.resetMeasureText();
-
-                    // If control is down
-                } else if (event.isControlDown()) {
-                    // if user is not current;y drawing a polygon marker or a circle marker then show UI to draw a polygon on screen
-                    if (!drawingPolygonMarker) {
-                        polygonMarker = new PolygonMarker(self, drawnMarkerId++, 0, 0);
-
-                        drawingPolygonMarker = true;
-                    }
-                    polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
-
-                    TOOLS_OVERLAY.resetMeasureText();
-
-                    // If the user is drawing a polygon marker then add the polygon to the screen and clear any UI elements
-                } else if (drawingPolygonMarker) {
-                    drawingPolygonMarker = false;
-                    polygonMarker.generatePath();
-                    addUserDrawnMarker(polygonMarker);
-                    TOOLS_OVERLAY.resetMeasureText();
-                    userMarkers.add(polygonMarker);
-                    polygonMarker.endDrawing();
-                    polygonMarkerGroup.getChildren().clear();
-
-                    // If the user is not drawing any type of marker then generate point marker where they clicked
-                } else if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 1, 0, 0);
-                    //LOGGER.log(Level.SEVERE, "User point marker x: " + x + " User point marker y: " + y);
-                    marker.setMarkerPosition(0, 0);
-                    addUserDrawnMarker(marker);
-                    userMarkers.add(marker);
-                    updateClusterMarkers();
-                }
-
-                // If drawing is not enabled but measuring is
-            } else if (!TOOLS_OVERLAY.getDrawingEnabled().get() && TOOLS_OVERLAY.getMeasureEnabled().get()) {
-                if (!drawingMeasureLine) {
-                    measureLine = new Line();
-                    measureLine.setStroke(Color.RED);
-                    measureLine.setStartX(event.getX());
-                    measureLine.setStartY(event.getY());
-                    measureLine.setEndX(event.getX());
-                    measureLine.setEndY(event.getY());
-                    measureLine.setStrokeWidth(1);
-                    polygonMarkerGroup.getChildren().add(measureLine);
-                    drawingMeasureLine = true;
-                } else {
-                    polygonMarkerGroup.getChildren().clear();
-                    TOOLS_OVERLAY.resetMeasureText();
-                    drawingMeasureLine = false;
-                    measureLine = null;
-                }
-
-            }
-            event.consume();
+// TODO: commented out for now - wil lbe readded as verified
+//            // If left clicked
+//            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
+//                // if double clicked desekect all marekers from both the map and the graph in consty
+//                deselectAllMarkers();
+//                selectedNodeList.clear();
+//                PluginExecution.withPlugin(new SelectOnGraphPlugin(selectedNodeList, true)).executeLater(GraphManager.getDefault().getActiveGraph());
+//  //              event.consume();
+//                return;
+//
+//            }
+//
+//            // Record location of mouse click
+//            final double x = event.getX();
+//            final double y = event.getY();
+//
+//            // If drawing is enabled and measurment is disabled
+//            if (TOOLS_OVERLAY.getDrawingEnabled().get() && !TOOLS_OVERLAY.getMeasureEnabled().get()) {
+//
+//                // If shift is down then display circle drawing
+//                if (event.isShiftDown()) {
+//                    drawingCircleMarker = true;
+//                    circleMarker = new CircleMarker(self, drawnMarkerId++, x, y, 0, 100, 100);
+//                    polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
+//                    polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
+//
+//                    // If user is drawing a circle then add it to the map and clear any UI elements
+//                } else if (drawingCircleMarker) {
+//                    circleMarker.generateCircle();
+//                    drawnMarkerGroup.getChildren().add(circleMarker.getMarker());
+//                    userMarkers.add(circleMarker);
+//                    circleMarker = null;
+//                    polygonMarkerGroup.getChildren().clear();
+//                    drawingCircleMarker = false;
+//
+//                    // Reset the distance shown on the tools ovelay
+//                    TOOLS_OVERLAY.resetMeasureText();
+//
+//                    // If control is down
+//                } else if (event.isControlDown()) {
+//                    // if user is not current;y drawing a polygon marker or a circle marker then show UI to draw a polygon on screen
+//                    if (!drawingPolygonMarker) {
+//                        polygonMarker = new PolygonMarker(self, drawnMarkerId++, 0, 0);
+//
+//                        drawingPolygonMarker = true;
+//                    }
+//                    polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
+//
+//                    TOOLS_OVERLAY.resetMeasureText();
+//
+//                    // If the user is drawing a polygon marker then add the polygon to the screen and clear any UI elements
+//                } else if (drawingPolygonMarker) {
+//                    drawingPolygonMarker = false;
+//                    polygonMarker.generatePath();
+//                    addUserDrawnMarker(polygonMarker);
+//                    TOOLS_OVERLAY.resetMeasureText();
+//                    userMarkers.add(polygonMarker);
+//                    polygonMarker.endDrawing();
+//                    polygonMarkerGroup.getChildren().clear();
+//
+//                    // If the user is not drawing any type of marker then generate point marker where they clicked
+//                } else if (event.getButton().equals(MouseButton.PRIMARY)) {
+//                    final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 1, 0, 0);
+//                    //LOGGER.log(Level.SEVERE, "User point marker x: " + x + " User point marker y: " + y);
+//                    marker.setMarkerPosition(0, 0);
+//                    addUserDrawnMarker(marker);
+//                    userMarkers.add(marker);
+//                    updateClusterMarkers();
+//                }
+//
+//                // If drawing is not enabled but measuring is
+//            } else if (!TOOLS_OVERLAY.getDrawingEnabled().get() && TOOLS_OVERLAY.getMeasureEnabled().get()) {
+//                if (!drawingMeasureLine) {
+//                    measureLine = new Line();
+//                    measureLine.setStroke(Color.RED);
+//                    measureLine.setStartX(event.getX());
+//                    measureLine.setStartY(event.getY());
+//                    measureLine.setEndX(event.getX());
+//                    measureLine.setEndY(event.getY());
+//                    measureLine.setStrokeWidth(1);
+//                    polygonMarkerGroup.getChildren().add(measureLine);
+//                    drawingMeasureLine = true;
+//                } else {
+//                    polygonMarkerGroup.getChildren().clear();
+//                    TOOLS_OVERLAY.resetMeasureText();
+//                    drawingMeasureLine = false;
+//                    measureLine = null;
+//                }
+//
+//            }
+//     //       event.consume();
         });
     }
 
@@ -702,71 +695,121 @@ public class MapView extends ScrollPane {
     }
 
     /**
+     * Perform scaling of all map content. Overall maps are scaled by the scale factor, while some components within maps
+     * - such as SVG map lines are scaled by the inverse to ensure they remain a constant width.
+     * @param scaleFactor Scale factor to apply to content.
+     */
+    private void scale(final double scaleFactor) {
+        
+        // First determine if we are zooming out and the result of the zoom would mean that the map was smaller than
+        // the mapview ScrollPane in both axis.
+        final Bounds contentBounds = scrollContent.getLayoutBounds();
+        final Bounds viewportBounds = this.getViewportBounds();
+        if ((contentBounds.getWidth() * scaleFactor <= viewportBounds.getWidth()) &&
+            (contentBounds.getHeight() * scaleFactor <= viewportBounds.getHeight())) {
+            return;
+        }
+        
+        // Determine the new scale value and line width value. The scaledMapLineWidth value is designed to counteract
+        // the value of scaleFactor and ensure that map lines remain at the same width
+        scaleValue = scaleValue * scaleFactor;
+        scaledMapLineWidth = scaledMapLineWidth / scaleFactor;
+        LOGGER.log(Level.FINE, "Set scale to " + scaleValue + " and line scale to " + scaledMapLineWidth);
+
+        // Scale mapStackPane to the new zoom factor and update map line widths to counter it 
+        mapStackPane.setScaleX(scaleValue);
+        mapStackPane.setScaleY(scaleValue);
+        countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
+    }
+    
+    /***
+     * Perform a zoom in by a zoom factor.
+     */
+    public void zoomIn() {
+        scale(MAP_SCALE_FACTOR);
+    }
+    
+    /***
+     * Perform a zoom out by a zoom factor.
+     */
+    public void zoomOut() {
+        scale(1 / MAP_SCALE_FACTOR);
+    }
+    
+    /**
      * Set scroll events
      */
     private void setScrollEventHandler() {
         // Scoll to zoom
         mapStackPane.setOnScroll(e -> {
-            e.consume();
-
-            if (e.getDeltaY() == 0) {
-                return;
+            if (e.isControlDown()) {
+                scale((e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR);
             }
-
-            final Rectangle viewPortRect = parent.getViewPortRectangle();
-
-            clipRectangle.setX(viewPortRect.getX());
-            clipRectangle.setY(viewPortRect.getY());
-            clipRectangle.setWidth(viewPortRect.getWidth());
-            clipRectangle.setHeight(viewPortRect.getHeight());
-
-            // Scroll factor is more or less than 1 depending on which way the scroll wheele is scrolled
-            final double scaleFactor = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
-
-            // Get the current scale of the map view
-            final double oldXScale = mapStackPane.getScaleX();
-            final double oldYScale = mapStackPane.getScaleY();
-
-            // Change the scale based on which way the scroll wheel is turned
-            final double newXScale = oldXScale * scaleFactor;
-            final double newYScale = oldYScale * scaleFactor;
-
-            // Calculate how much the map will have to move
-            final double xAdjust = (newXScale / oldXScale) - 1;
-            final double yAdjust = (newYScale / oldYScale) - 1;
-            final double markerScalingRate = 1.1;
-            if (scaleFactor > 1.0) {
-                pointMarkerGlobalScale /= 1.08;
-                scaledMapLineWidth /= 1.08;
-                scaleMarkerText(markerScalingRate, true);
-                resizeMarkers(true);
-            } else {
-                pointMarkerGlobalScale *= 1.08;
-                scaledMapLineWidth *= 1.08;
-                scaleMarkerText(markerScalingRate, false);
-                resizeMarkers(false);
-            }
-
-            countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
-            
-            // Calculate how much the map will have to move
-            final double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
-            final double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
-
-            // Move the map
-            mapStackPane.setTranslateX(mapStackPane.getTranslateX() - xAdjust * moveX);
-            mapStackPane.setTranslateY(mapStackPane.getTranslateY() - yAdjust * moveY);
-
-            // Scale the map
-            mapStackPane.setScaleX(newXScale);
-            mapStackPane.setScaleY(newYScale);
-
-            updateOverviewOverlay();
-
-            // If cluster markers are showing then update them based on distance between markers
-            if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
-                updateClusterMarkers();
-            }
+    
+// TODO: This is old acaling code, commented out for now to ensure other elements are picked up such as marker scaling
+//            if (e.isControlDown() && e.isShiftDown()) {
+//                
+//                e.consume();
+//
+//                if (e.getDeltaY() == 0) {
+//                    return;
+//                }
+//
+//
+//
+//                // Scroll factor is more or less than 1 depending on which way the scroll wheele is scrolled
+//                final double scaleFactor = (e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR;
+//
+//                // Get the current scale of the map view
+//                final double oldXScale = mapStackPane.getScaleX();
+//                final double oldYScale = mapStackPane.getScaleY();
+//
+//                // Change the scale based on which way the scroll wheel is turned
+//                final double newXScale = oldXScale * scaleFactor;
+//                final double newYScale = oldYScale * scaleFactor;
+//
+//                // Calculate how much the map will have to move
+//                final double xAdjust = (newXScale / oldXScale) - 1;
+//                final double yAdjust = (newYScale / oldYScale) - 1;
+//                final double markerScalingRate = 1.1;
+//                if (scaleFactor > 1.0) {
+//                    pointMarkerGlobalScale /= 1.08;
+//                    scaledMapLineWidth /= 1.08;
+//                    scaleMarkerText(markerScalingRate, true);
+//                    resizeMarkers(true);
+//                } else {
+//                    pointMarkerGlobalScale *= 1.08;
+//                    scaledMapLineWidth *= 1.08;
+//                    scaleMarkerText(markerScalingRate, false);
+//                    resizeMarkers(false);
+//                }
+//
+//                countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
+//
+//                // Calculate how much the map will have to move
+//                final double moveX = e.getSceneX() - (mapStackPane.getBoundsInParent().getWidth() / 2 + mapStackPane.getBoundsInParent().getMinX());
+//                final double moveY = e.getSceneY() - (mapStackPane.getBoundsInParent().getHeight() / 2 + mapStackPane.getBoundsInParent().getMinY());
+//
+//
+//                double transX = mapStackPane.getTranslateX();
+//                double transY = mapStackPane.getTranslateY();
+//
+//                // Move the map
+//                mapStackPane.setTranslateX(0); //mapStackPane.getTranslateX() - xAdjust * moveX);
+//                mapStackPane.setTranslateY(0); //mapStackPane.getTranslateY() - yAdjust * moveY);
+//
+//                // Scale the map
+//                mapStackPane.setScaleX(newXScale);
+//                mapStackPane.setScaleY(newYScale);
+//
+//                Bounds boundsInParent = mapStackPane.getBoundsInParent();
+//                updateOverviewOverlay();
+//
+//                // If cluster markers are showing then update them based on distance between markers
+//                if (markersShowing.contains(AbstractMarker.MarkerType.CLUSTER_MARKER)) {
+//                    updateClusterMarkers();
+//                }
+//            }
         });
     }
 
@@ -1269,10 +1312,11 @@ public class MapView extends ScrollPane {
                 r.setX(x);
                 r.setY(y);
 
-                return (parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y))
-                        && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y))
-                        && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y + r.getHeight()))
-                        && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y + r.getHeight())));
+// TODO: rework this to use mapView ScrollPane checks
+//                return (parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y))
+//                        && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y))
+//                        && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x, y + r.getHeight()))
+//                        && parent.getViewPortRectangle().contains(mapStackPane.localToParent(x + r.getWidth(), y + r.getHeight())));
             }
         }
 
