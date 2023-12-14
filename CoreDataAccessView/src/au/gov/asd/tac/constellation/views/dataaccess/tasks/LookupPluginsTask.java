@@ -81,7 +81,7 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                 remainingCategories.retainAll(availableCategories);
 
                 remainingCategories.forEach(plugin -> {
-                    final int position = DataAccessPluginType.getTypeWithPosition().get(plugin);
+                    final int position = DataAccessPluginType.getTypeWithPosition().get(plugin) == null ? Integer.MAX_VALUE : DataAccessPluginType.getTypeWithPosition().get(plugin);
                     orderedPlugins.put(plugin, new Pair<>(position, allPlugins.get(plugin)));
                 });
             }
