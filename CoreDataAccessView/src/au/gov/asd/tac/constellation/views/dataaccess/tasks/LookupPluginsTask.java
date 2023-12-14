@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Supplier;
 import java.util.prefs.Preferences;
 import java.util.stream.Collectors;
@@ -41,8 +40,8 @@ import org.openide.util.NbPreferences;
 public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, List<DataAccessPlugin>>>> {
 
     private static final Preferences PREFERENCES = NbPreferences.forModule(DataAccessViewPreferenceKeys.class);
-    public static final String VISIBLE_CATEGORIES = PREFERENCES.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
-    public static final String HIDDEN_CATEGORIES = PREFERENCES.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+    private static final String VISIBLE_CATEGORIES = PREFERENCES.get(DataAccessViewPreferenceKeys.VISIBLE_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
+    private static final String HIDDEN_CATEGORIES = PREFERENCES.get(DataAccessViewPreferenceKeys.HIDDEN_DAV, DataAccessViewPreferenceKeys.DEFAULT_DAV);
 
     @Override
     public Map<String, Pair<Integer, List<DataAccessPlugin>>> get() {
@@ -75,16 +74,13 @@ public class LookupPluginsTask implements Supplier<Map<String, Pair<Integer, Lis
                 }
             }
         } else { // Add available categories if no visible categories exist in the preferences.
-            if (!availableCategories.isEmpty()) {
+            final List<String> orderedCategories = new ArrayList<>(allPlugins.keySet());
+            orderedCategories.retainAll(availableCategories);
 
-                final Set<String> remainingCategories = allPlugins.keySet();
-                remainingCategories.retainAll(availableCategories);
-
-                remainingCategories.forEach(plugin -> {
-                    final int position = DataAccessPluginType.getTypeWithPosition().get(plugin) == null ? Integer.MAX_VALUE : DataAccessPluginType.getTypeWithPosition().get(plugin);
-                    orderedPlugins.put(plugin, new Pair<>(position, allPlugins.get(plugin)));
-                });
-            }
+            orderedCategories.forEach(category -> {
+                final int position = DataAccessPluginType.getTypeWithPosition().getOrDefault(category, Integer.MAX_VALUE);
+                orderedPlugins.put(category, new Pair<>(position, allPlugins.get(category)));
+            });
         }
 
         return orderedPlugins;
