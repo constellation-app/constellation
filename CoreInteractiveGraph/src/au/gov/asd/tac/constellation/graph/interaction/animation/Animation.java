@@ -191,6 +191,7 @@ public abstract class Animation {
 
     private void editGraph(final VisualManager manager, WritableGraph wg) {
         initialise(wg);
+
         while (true) {
             final List<VisualChange> changes = animate(wg);
             if (!changes.isEmpty() && manager != null) {
