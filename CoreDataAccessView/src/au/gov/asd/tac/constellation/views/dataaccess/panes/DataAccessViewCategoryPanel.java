@@ -79,7 +79,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         if (!categories.trim().isEmpty()) {
             getlistModelLeft().removeAllElements();
             final String[] visibleCategoryArray = (categories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
-            for (String visibleCategory : visibleCategoryArray) {
+            for (final String visibleCategory : visibleCategoryArray) {
                 getlistModelLeft().addElement(visibleCategory.trim());
             }
         }
@@ -92,7 +92,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         if (!categories.trim().isEmpty()) {
             getlistModelRight().removeAllElements();
             final String[] hiddenCategoryArray = (categories.replace("[", "").replace("]", "")).split(SeparatorConstants.COMMA);
-            for (String hiddenCategory : hiddenCategoryArray) {
+            for (final String hiddenCategory : hiddenCategoryArray) {
                 getlistModelRight().addElement(hiddenCategory.trim());
             }
         }
