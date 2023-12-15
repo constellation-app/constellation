@@ -107,12 +107,6 @@ public final class ApplicationPreferenceKeys {
     public static final String JUPYTER_NOTEBOOK_DIR_DEFAULT = new File(System.getProperty("user.dir")).getPath();
 
     /**
-     * Remember Open and Save location.
-     */
-    public static final String REMEMBER_OPEN_AND_SAVE_LOCATION = "rememberOpenAndSaveLocation";
-    public static final boolean REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT = true;
-
-    /**
      * File Save location.
      */
     public static final String FILE_OPEN_AND_SAVE_LOCATION = "fileOpenAndSaveLocation";

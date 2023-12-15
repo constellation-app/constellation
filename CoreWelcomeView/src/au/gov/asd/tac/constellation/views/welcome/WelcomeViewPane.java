@@ -306,9 +306,8 @@ public class WelcomeViewPane extends BorderPane {
      */
     private static void saveCurrentDirectory(final String path) {
         final String lastFileOpenAndSaveLocation = PREFERENCES.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
-        final boolean rememberOpenAndSaveLocation = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-
-        if (!lastFileOpenAndSaveLocation.equals(path) && rememberOpenAndSaveLocation) {
+        
+        if (!lastFileOpenAndSaveLocation.equals(path)) {
             PREFERENCES.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, path);
         }
     }
