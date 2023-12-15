@@ -2,7 +2,7 @@
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
 
-== 2023-XX-XX Light and dark mode support
+== 2024-01-08 Light and dark mode support
 <p>Light/Dark mode themes have been reworked and now comprehensively cover most of the application.</p>
 <p>The modes can be accessed via SetUp -&gt; Options -&gt; Appearance -&gt; Look and Feel -&gt; FlatLaf Light/FlatLaf Dark respectively.</p>
 
