@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.RETRIEVE_TRANSACTIONS_PARAMETER_ID;
 import java.io.BufferedReader;
@@ -65,7 +66,7 @@ public class GMLImportProcessor implements GraphFileImportProcessor {
 
     @Override
     public ExtensionFilter getExtensionFilter() {
-        return new ExtensionFilter("GML files", "*.gml");
+        return new ExtensionFilter("GML files", FileExtensionConstants.GML);
     }
 
     @Override

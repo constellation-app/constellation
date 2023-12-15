@@ -75,12 +75,12 @@ public class ImportGraphFilePluginNGTest {
         // now to test that the controller works as expected
         final PluginParameter<FileParameterValue> fileName = (PluginParameter<FileParameterValue>) params.getParameters().get("ImportGraphFilePlugin.file_name");
         final ExtensionFilter filterTypesBeforeTypeChange = FileParameterType.getFileFilters(fileName);
-        assertEquals(filterTypesBeforeTypeChange.getExtensions(), Arrays.asList("*.gml"));
+        assertEquals(filterTypesBeforeTypeChange.getExtensions(), Arrays.asList(".gml"));
         
         final PluginParameter<SingleChoiceParameterValue> fileType = (PluginParameter<SingleChoiceParameterValue>) params.getParameters().get("ImportGraphFilePlugin.file_type");
         SingleChoiceParameterType.setChoice(fileType, "GraphML");
         final ExtensionFilter filterTypesAfterTypeChange = FileParameterType.getFileFilters(fileName);
-        assertEquals(filterTypesAfterTypeChange.getExtensions(), Arrays.asList("*.graphml"));
+        assertEquals(filterTypesAfterTypeChange.getExtensions(), Arrays.asList(".graphml"));
     }
 
     /**

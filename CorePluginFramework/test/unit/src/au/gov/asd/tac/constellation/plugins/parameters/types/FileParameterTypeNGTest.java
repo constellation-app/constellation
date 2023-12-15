@@ -18,6 +18,7 @@ package au.gov.asd.tac.constellation.plugins.parameters.types;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameter;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterKind;
 import au.gov.asd.tac.constellation.plugins.parameters.types.FileParameterType.FileParameterValue;
+import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,7 +110,7 @@ public class FileParameterTypeNGTest {
         final PluginParameter<FileParameterValue> fileParam = FileParameterType.build("My File");
         assertNull(FileParameterType.getFileFilters(fileParam));
         
-        final ExtensionFilter filter = new ExtensionFilter("test", "test");
+        final ExtensionFilter filter = new ExtensionFilter("test", FileExtensionConstants.TEXT);
         FileParameterType.setFileFilters(fileParam, filter);
         assertEquals(FileParameterType.getFileFilters(fileParam), filter);
     }
