@@ -16,11 +16,15 @@
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.dataaccess.plugins.DataAccessPlugin;
 import au.gov.asd.tac.constellation.views.dataaccess.tasks.LookupPluginsTask;
+import au.gov.asd.tac.constellation.views.dataaccess.utilities.DataAccessUtilities;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
+import java.util.stream.Collectors;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -39,6 +43,14 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private final DefaultListModel<String> hiddenListModel;
 
     private final List<String> visibleResultList;
+    
+    private final Map<String, List<DataAccessPlugin>> allPlugins = DataAccessUtilities.getAllPlugins();
+    private final List<String> availableCategories = new ArrayList<>(allPlugins
+                .entrySet()
+                .stream()
+                .filter(category -> !category.getValue().isEmpty())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
+                .keySet());
 
     DataAccessViewCategoryPanel(final DataAccessViewCategoryPanelController controller) {
         this.controller = controller;
@@ -111,6 +123,13 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     public List<String> getVisibleResultList() {
         return this.visibleResultList;
     }
+    
+    protected void restoreDefaults(){
+        visibleListModel.clear();
+        visibleListModel.addAll(availableCategories);
+        hiddenListModel.clear();
+        controller.setMoveButtonPressed(true);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -133,6 +152,7 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         buttonLeft = new javax.swing.JButton();
         buttonUp = new javax.swing.JButton();
         buttonDown = new javax.swing.JButton();
+        buttonRestore = new javax.swing.JButton();
 
         jScrollPane1.setViewportView(visibleList);
 
@@ -175,6 +195,13 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
             }
         });
 
+        org.openide.awt.Mnemonics.setLocalizedText(buttonRestore, org.openide.util.NbBundle.getMessage(DataAccessViewCategoryPanel.class, "DataAccessViewCategoryPanel.buttonRestore.text")); // NOI18N
+        buttonRestore.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonRestoreActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout OptionPanelLayout = new javax.swing.GroupLayout(OptionPanel);
         OptionPanel.setLayout(OptionPanelLayout);
         OptionPanelLayout.setHorizontalGroup(
@@ -202,7 +229,8 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                                     .addComponent(buttonRight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(buttonLeft, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(46, 46, 46)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(buttonRestore)))
                     .addGroup(OptionPanelLayout.createSequentialGroup()
                         .addGap(75, 75, 75)
                         .addComponent(buttonUp)
@@ -233,7 +261,9 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
                     .addComponent(buttonDown))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
                 .addComponent(jLabel4)
-                .addGap(53, 53, 53))
+                .addGap(15, 15, 15)
+                .addComponent(buttonRestore)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -356,10 +386,15 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_buttonDownActionPerformed
 
+    private void buttonRestoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonRestoreActionPerformed
+        restoreDefaults();
+    }//GEN-LAST:event_buttonRestoreActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel OptionPanel;
     private javax.swing.JButton buttonDown;
     private javax.swing.JButton buttonLeft;
+    private javax.swing.JButton buttonRestore;
     private javax.swing.JButton buttonRight;
     private javax.swing.JButton buttonUp;
     private javax.swing.JList<String> hiddenList;
