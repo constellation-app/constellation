@@ -33,6 +33,8 @@ public class MapDetails {
     public static final Color MARKER_DEFAULT_FILL_COLOUR = Color.web("#3F7FFF", MARKER_OPACTIY);
     public static final Color MARKER_SELECTED_FILL_COLOUR = Color.web("#FF0000", MARKER_OPACTIY);
     public static final Color MARKER_HIGHLIGHTED_FILL_COLOUR = Color.web("#FFFF00", MARKER_OPACTIY);
+    public static final Color MARKER_USER_DRAWN_LINE_COLOUR = Color.web("#FF8C00");
+    public static final Color MARKER_USER_DRAWN_LINE_SELECTED_COLOUR = Color.web("#FF0000");
     public static final Color MARKER_USER_DRAWING_FILL_COLOUR = Color.web("#000000", MARKER_OPACTIY);
     public static final Color MARKER_USER_DRAWN_FILL_COLOUR = Color.web("#FF8C00", MARKER_OPACTIY);
 

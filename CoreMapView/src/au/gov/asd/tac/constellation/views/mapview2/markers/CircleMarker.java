@@ -190,7 +190,6 @@ public class CircleMarker extends AbstractMarker {
         line.setEndX(x);
         line.setEndY(y);
     }
-
     
     @Override
     public void scaleMarker(final double scalingFactor) {

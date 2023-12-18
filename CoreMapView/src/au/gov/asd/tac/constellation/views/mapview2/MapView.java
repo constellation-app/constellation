@@ -1066,12 +1066,8 @@ public class MapView extends ScrollPane {
             if (abstractMarker instanceof UserPointMarker) {
                 final UserPointMarker marker = (UserPointMarker) abstractMarker;
                 marker.scaleAndReposition(pointMarkerGlobalScale);
-            } else if (abstractMarker instanceof GeoShapePolygonMarker) {
-                final GeoShapePolygonMarker marker = (GeoShapePolygonMarker) abstractMarker;
-                marker.scaleMarker(scaleValue);
-            } else if (abstractMarker instanceof CircleMarker) {
-                final CircleMarker marker = (CircleMarker) abstractMarker;
-                marker.scaleMarker(scaleValue);
+            } else {
+                 abstractMarker.scaleMarker(scaleValue);
             }
         });
     }

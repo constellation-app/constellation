@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import javafx.scene.input.MouseEvent;
@@ -41,26 +42,26 @@ public class LineMarker extends AbstractMarker {
 
     public LineMarker(final MapView parent, final int markerID, final int id, final double lattitude1, final double longitude1, final double lattitude2, final double longitude2, final double xOffset, final double yOffset) {
         super(parent, markerID, id, xOffset, yOffset, AbstractMarker.MarkerType.LINE_MARKER);
-
+        this.scalingFactor = 1 / parent.getScalingFactor();
         lat1 = lattitude1;
         lon1 = longitude1;
         lat2 = lattitude2;
         lon2 = longitude2;
 
-        markerPath.setStroke(Color.BLACK);
-        markerPath.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
+        markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
+        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
 
         // Set event handlers for the line marker
         markerPath.setOnMouseEntered(e -> {
             if (!isSelected) {
-                markerPath.setStroke(Color.ORANGE);
+                markerPath.setStroke(MapDetails.MARKER_USER_DRAWN_LINE_COLOUR);
             }
             e.consume();
         });
 
         markerPath.setOnMouseExited((final MouseEvent e) -> {
             if (!isSelected) {
-                markerPath.setStroke(Color.BLACK);
+                markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
             }
 
             e.consume();
@@ -68,7 +69,7 @@ public class LineMarker extends AbstractMarker {
 
         markerPath.setOnMouseClicked((final MouseEvent e) -> {
             isSelected = true;
-            markerPath.setStroke(Color.BLUE);
+            markerPath.setStroke(MapDetails.MARKER_USER_DRAWN_LINE_SELECTED_COLOUR);
             parent.addMarkerIdToSelectedList(markerID, idList, false);
             e.consume();
         });

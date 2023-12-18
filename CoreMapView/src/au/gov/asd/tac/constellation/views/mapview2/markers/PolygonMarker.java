@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,21 +37,21 @@ public class PolygonMarker extends AbstractMarker {
 
     public PolygonMarker(final MapView parent, final int markerID, final int xOffset, final int yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
+        this.scalingFactor = 1 / parent.getScalingFactor();
 
-        markerPath.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
-        markerPath.setStroke(Color.BLACK);
-        markerPath.setFill(Color.ORANGE);
-        markerPath.setOpacity(0.4);
+        markerPath.setFill(MapDetails.MARKER_USER_DRAWING_FILL_COLOUR);
+        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
+        markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
 
         // Event handler for the polygon marker
         markerPath.setOnMouseEntered((final MouseEvent e) -> {
-            markerPath.setFill(Color.YELLOW);
+            markerPath.setFill(MapDetails.MARKER_HIGHLIGHTED_FILL_COLOUR);
 
             e.consume();
         });
 
         markerPath.setOnMouseExited((final MouseEvent e) -> {
-            markerPath.setFill(Color.ORANGE);
+            markerPath.setFill(MapDetails.MARKER_USER_DRAWN_FILL_COLOUR);
 
             e.consume();
         });
@@ -83,8 +84,8 @@ public class PolygonMarker extends AbstractMarker {
         currentLine.setStartX(prevLineEndX);
         currentLine.setStartY(prevLineEndY);
         setEnd(prevLineEndX, prevLineEndY);
-        currentLine.setStroke(Color.BLACK);
-        currentLine.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
+        currentLine.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
+        currentLine.setStroke(MapDetails.MARKER_STROKE_COLOUR);
         return currentLine;
     }
 
@@ -128,7 +129,7 @@ public class PolygonMarker extends AbstractMarker {
         }
 
         rawPath = path;
-        markerPath.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
+        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
         markerPath.setContent(path);
     }
 
@@ -138,5 +139,12 @@ public class PolygonMarker extends AbstractMarker {
 
     public String getRawPath() {
         return rawPath;
+    }
+    
+    @Override
+    public void scaleMarker(final double scalingFactor) {
+        // As the map increases in scale, marker lines need to reduce to ensure they continue to appear the same size.
+        this.scalingFactor = 1 / scalingFactor;
+        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
     }
 }
