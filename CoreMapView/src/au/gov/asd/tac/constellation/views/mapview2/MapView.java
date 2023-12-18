@@ -201,12 +201,6 @@ public class MapView extends ScrollPane {
     private boolean drawingMeasureLine = false;
     private Line measureLine = null;
 
-    // Panning variables
-    private double mouseAnchorX;
-    private double mouseAnchorY;
-    private double transalateX;
-    private double transalateY;
-
     // Pane that hold all the groups for all the different graphical outputs
     private final Pane mapGroupHolder = new Pane();
 
@@ -1049,23 +1043,20 @@ public class MapView extends ScrollPane {
      * Iterate over all markers and resize them based on current zoom level to ensure they remain constant.
      */
     private void resizeMarkers() {
+        // TODO: once all markers have scaleMarker() set up, just call scaleMarker()
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
-                marker.scaleAndReposition(scaleValue);
-            } else if (abstractMarker instanceof GeoShapePolygonMarker) {
-                final GeoShapePolygonMarker marker = (GeoShapePolygonMarker) abstractMarker;
                 marker.scaleMarker(scaleValue);
-            } else if (abstractMarker instanceof CircleMarker) {
-                final CircleMarker marker = (CircleMarker) abstractMarker;
-                marker.scaleMarker(scaleValue);
+            } else {
+                abstractMarker.scaleMarker(scaleValue);
             }
         });
 
         userMarkers.forEach(abstractMarker -> {
             if (abstractMarker instanceof UserPointMarker) {
                 final UserPointMarker marker = (UserPointMarker) abstractMarker;
-                marker.scaleAndReposition(scaleValue);
+                marker.scaleMarker(scaleValue);
             } else {
                  abstractMarker.scaleMarker(scaleValue);
             }
@@ -1680,16 +1671,7 @@ public class MapView extends ScrollPane {
                     graphMarkerGroup.getChildren().add(marker.getMarker());
                 }
 
-                if (marker instanceof PointMarker) {
-                    // Rescale point markers is they dont match target marker scaling
-                    final PointMarker pointMarker = (PointMarker) marker;
-                    if (pointMarker.getScale() != pointMarkerGlobalScale) {
-                        pointMarker.scaleAndReposition(pointMarkerGlobalScale);
-                    }
-                } else {
-                    // Resize the non point markers by adjusting line widths
-                    marker.getMarker().setStrokeWidth(scaledMapLineWidth);
-                }
+                marker.scaleMarker(this.scaleValue);
             }
         }
     }

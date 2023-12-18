@@ -26,7 +26,7 @@ import javafx.scene.paint.Color;
 public class MapDetails {
     
     // For now define these values as static, but potentially allow diferent maps to adjust
-    public static final double MARKER_LINE_WIDTH = 1;
+    public static final double MARKER_LINE_WIDTH = 0.5;
     public static final double MARKER_OPACTIY = 0.55;
     public static final Color MARKER_STROKE_COLOUR = Color.web("#000000");
     public static final Color MARKER_MULTI_FILL_COLOUR = Color.web("#FFFFFF", MARKER_OPACTIY);

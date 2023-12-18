@@ -193,6 +193,10 @@ public class CircleMarker extends AbstractMarker {
     
     @Override
     public void scaleMarker(final double scalingFactor) {
+        if (this.scalingFactor == 1 / scalingFactor) {
+            return;
+        }
+
         // As the map increases in scale, marker lines need to reduce to ensure they continue to appear the same size.
         this.scalingFactor = 1 / scalingFactor;
         markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
