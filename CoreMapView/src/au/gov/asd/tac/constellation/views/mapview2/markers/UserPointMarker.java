@@ -35,7 +35,7 @@ public class UserPointMarker extends AbstractMarker {
     private double scale = 1.0;
 
     public UserPointMarker(final MapView parent, final int markerID, final double x, final double y, final double scale, final double xOffset, final double yOffset) {
-        super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
+        super(parent, markerID, NO_MARKER_NODE_ID, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
 
         originalClickY = y;
         this.x = x;

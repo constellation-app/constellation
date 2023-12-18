@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PointMarker extends AbstractMarker {
 
+    private static double MARKER_PATH_SCALING = 14;
     // The actual marker path raw string
     private String path = "l-35-90 l-45-80 l-10-30 l0-45 l10-25 l15-20 l50-20 l30 0 l50 20 l15 20 l10 25 l0 45 l-10 30 l-45 80 l-35 90 m0-194 l-22-22 l22-22 l22 22 l-22 22 m0-8 l-14-14 l14-14 l14 14 l-14 14 m0-8 l-6-6 l6-6 l6 6 l-6 6";
     private double latitude;  // The latitude to display marker at
@@ -106,7 +107,7 @@ public class PointMarker extends AbstractMarker {
     @Override
     public void select() {
         isSelected = true;
-        markerPath.setFill(Color.web(MARKER_SELECTED_COLOUR, MARKER_OPACTIY));
+        markerPath.setFill(MapDetails.MARKER_SELECTED_FILL_COLOUR);
     }
 
     /**

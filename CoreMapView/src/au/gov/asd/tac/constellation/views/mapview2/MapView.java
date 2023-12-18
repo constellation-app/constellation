@@ -1052,7 +1052,7 @@ public class MapView extends ScrollPane {
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
-                marker.scaleAndReposition(pointMarkerGlobalScale);
+                marker.scaleAndReposition(scaleValue);
             } else if (abstractMarker instanceof GeoShapePolygonMarker) {
                 final GeoShapePolygonMarker marker = (GeoShapePolygonMarker) abstractMarker;
                 marker.scaleMarker(scaleValue);
@@ -1065,7 +1065,7 @@ public class MapView extends ScrollPane {
         userMarkers.forEach(abstractMarker -> {
             if (abstractMarker instanceof UserPointMarker) {
                 final UserPointMarker marker = (UserPointMarker) abstractMarker;
-                marker.scaleAndReposition(pointMarkerGlobalScale);
+                marker.scaleAndReposition(scaleValue);
             } else {
                  abstractMarker.scaleMarker(scaleValue);
             }

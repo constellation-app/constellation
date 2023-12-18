@@ -43,7 +43,7 @@ public class ClusterMarker extends AbstractMarker {
     private final List<Node> nodes;
 
     public ClusterMarker(final MapView parent, final List<Node> nodes) {
-        super(parent, -99, -99, 0, 0, AbstractMarker.MarkerType.CLUSTER_MARKER);
+        super(parent, NO_MARKER_ID, NO_MARKER_NODE_ID, 0, 0, AbstractMarker.MarkerType.CLUSTER_MARKER);
 
         isSelected = false;
         this.nodes = nodes;

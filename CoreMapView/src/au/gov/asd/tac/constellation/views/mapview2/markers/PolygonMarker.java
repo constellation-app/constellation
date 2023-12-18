@@ -36,7 +36,7 @@ public class PolygonMarker extends AbstractMarker {
     private String rawPath = "";
 
     public PolygonMarker(final MapView parent, final int markerID, final int xOffset, final int yOffset) {
-        super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
+        super(parent, markerID, NO_MARKER_NODE_ID, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
         this.scalingFactor = 1 / parent.getScalingFactor();
 
         markerPath.setFill(MapDetails.MARKER_USER_DRAWING_FILL_COLOUR);

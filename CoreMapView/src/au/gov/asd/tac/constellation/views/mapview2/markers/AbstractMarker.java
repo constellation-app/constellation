@@ -28,13 +28,8 @@ import javafx.scene.shape.Shape;
  */
 public abstract class AbstractMarker {
 
-    // TODO: these defaults may need to move into PointMarker
-    protected double MARKER_OPACTIY = 0.55;
-    protected String MARKER_SELECTED_COLOUR = "#FF0000";  // the color of selected markers
-    protected String MARKER_HIGHLIGHTED_COLOUR = "#FFFF00";  // the color of highlighted markers
-    protected String MARKER_MULTI_COLOUR = "#FFFFFF";  // the color to display to represent multiple markers in same spot with different colors
-    protected String MARKER_STROKE_COLOUR = "#000000";  // the color of marker edges
-    protected String DEFAULT_MARKER_COLOUR = "#3F7FFF";  // the color of default unselected markers
+    public static final int NO_MARKER_ID = -1107;  // A flag to indicate that no marker Id exists.
+    public static final int NO_MARKER_NODE_ID = -1107;  // A flag to indicate that no marker node Id exists.
 
     // The svg path for the actual marker
     protected final SVGPath markerPath;
