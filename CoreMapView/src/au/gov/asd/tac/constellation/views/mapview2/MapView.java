@@ -329,6 +329,7 @@ public class MapView extends ScrollPane {
                                                   // ScrollPane container.
         setContent(scrollContent);
 
+        overviewOverlay = new OverviewOverlay(mapDetails.getWidth(), mapDetails.getHeight(), countrySVGPaths);
 
         // Center content
         this.setHvalue(this.getHmin() + (this.getHmax() - this.getHmin()) / 2);
