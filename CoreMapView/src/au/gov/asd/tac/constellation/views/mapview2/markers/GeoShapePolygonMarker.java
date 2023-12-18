@@ -72,7 +72,7 @@ public class GeoShapePolygonMarker extends AbstractMarker {
 
         geoShape.setOnMouseExited((final MouseEvent e) -> {
             if (!isSelected) {
-                geoShape.setFill(Color.web(geoShape.getCurrentColour()));
+                geoShape.setFill(geoShape.getCurrentColour());
             }
             e.consume();
         });
@@ -101,7 +101,7 @@ public class GeoShapePolygonMarker extends AbstractMarker {
 
     @Override
     public void deselect() {
-        geoShapes.values().forEach(shapePair -> shapePair.getKey().setFill(Color.web(shapePair.getKey().getCurrentColour())));
+        geoShapes.values().forEach(shapePair -> shapePair.getKey().setFill(shapePair.getKey().getCurrentColour()));
         isSelected = false;
     }
 

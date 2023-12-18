@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.views.mapview2.utilities;
 
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +30,12 @@ import javafx.scene.shape.Polygon;
  */
 public class GeoShape extends Polygon {
 
-    private String defaultColour = "#FF0000";
-    private String multiValCol = "#D3D3D3";
     private final List<String> attributeColours = new ArrayList<>();
     private final List<String> blazeColours = new ArrayList<>();
     private final List<String> overlayColours = new ArrayList<>();
     private final List<String> labels = new ArrayList<>();
     private final List<String> identifiers = new ArrayList<>();
-    private String currentColour = defaultColour;
+    private Color currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;
 
     private double centerX;
     private double centerY;
@@ -45,7 +44,7 @@ public class GeoShape extends Polygon {
 
     }
 
-    public String getCurrentColour() {
+    public Color getCurrentColour() {
         return currentColour;
     }
 
@@ -78,48 +77,37 @@ public class GeoShape extends Polygon {
     public void changeColour(final String option) {
         // Depending on the option change the colour of the marker
         if (option.equals(MapViewPane.DEFAULT_COLOURS)) {
-            currentColour = defaultColour;
-            setFill(Color.web(currentColour));
+            currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;
         } else if (option.equals(MapViewPane.USE_COLOUR_ATTR)) {
             if (attributeColours.size() > 1) {
-                currentColour = multiValCol;
-                setFill(Color.web(currentColour));
+                currentColour = MapDetails.MARKER_MULTI_FILL_COLOUR;
             } else if (attributeColours.size() == 1) {
-                currentColour = attributeColours.get(0);
-                setFill(Color.web(currentColour));
+                currentColour = Color.web(attributeColours.get(0), MapDetails.MARKER_OPACTIY);
             }
-
         } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
             if (!blazeColours.isEmpty()) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(blazeColours.get(0));
                 if (blazeColours.size() == 1) {
-                    currentColour = colour.getHtmlColor();
-                    setFill(Color.web(currentColour));
+                    currentColour = Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACTIY);
                 } else {
-                    setFill(Color.web(multiValCol));
-                    currentColour = multiValCol;
+                    currentColour = MapDetails.MARKER_MULTI_FILL_COLOUR;
                 }
             } else {
-                setFill(Color.web(defaultColour));
+                currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;
             }
-
         } else if (option.equals(MapViewPane.USE_OVERLAY_COL)) {
             if (!overlayColours.isEmpty()) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(overlayColours.get(0));
-
                 if (overlayColours.size() == 1) {
-                    currentColour = colour.getHtmlColor();
-                    setFill(Color.web(currentColour));
+                    currentColour = Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACTIY);
                 } else {
-                    setFill(Color.web(multiValCol));
-                    currentColour = multiValCol;
+                    currentColour = MapDetails.MARKER_MULTI_FILL_COLOUR;
                 }
-
             } else {
-                setFill(Color.web(defaultColour));
+                currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;
             }
         }
-
+        setFill(currentColour);
     }
 
     public void setLabelAttr(final String labelAttribute) {
