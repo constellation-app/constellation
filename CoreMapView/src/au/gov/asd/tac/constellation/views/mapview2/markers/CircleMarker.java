@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import javafx.scene.paint.Color;
@@ -38,7 +39,7 @@ public class CircleMarker extends AbstractMarker {
 
     public CircleMarker(final MapView parent, final int markerID, final double centerX, final double centerY, final double radius, final double xOffset, final double yOffset) {
         super(parent, markerID, -99, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
-
+        this.scalingFactor = 1 / parent.getScalingFactor();
         this.centerX = centerX;
         this.centerY = centerY;
         this.radius = radius;
@@ -54,31 +55,29 @@ public class CircleMarker extends AbstractMarker {
         line.setEndX(this.centerX);
         line.setEndY(this.centerY);
 
-        line.setStroke(Color.YELLOW);
-        line.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
+        line.setStroke(MapDetails.MARKER_STROKE_COLOUR);
+        line.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
 
         circle.setRadius(radius);
-        circle.setOpacity(0.5);
-        circle.setFill(Color.BLACK);
-        circle.setStroke(Color.BLACK);
-        circle.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
+        circle.setFill(MapDetails.MARKER_USER_DRAWING_FILL_COLOUR);
+        circle.setStroke(MapDetails.MARKER_STROKE_COLOUR);
+        circle.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
 
 
         // Set up the SVG path to represent the projected circle
-        markerPath.setStroke(Color.BLACK);
-        markerPath.setFill(Color.ORANGE);
-        markerPath.setOpacity(0.4);
-        markerPath.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
+        markerPath.setFill(MapDetails.MARKER_USER_DRAWN_FILL_COLOUR);
+        markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
+        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
 
 
         // Event handler for changing colours when mouse hovers over the projected circle
         markerPath.setOnMouseEntered(e -> {
-            markerPath.setFill(Color.YELLOW);
+            markerPath.setFill(MapDetails.MARKER_HIGHLIGHTED_FILL_COLOUR);
             e.consume();
         });
 
         markerPath.setOnMouseExited(e -> {
-            markerPath.setFill(Color.ORANGE);
+            markerPath.setFill(MapDetails.MARKER_USER_DRAWN_FILL_COLOUR);
             e.consume();
         });
 
@@ -192,4 +191,11 @@ public class CircleMarker extends AbstractMarker {
         line.setEndY(y);
     }
 
+    
+    @Override
+    public void scaleMarker(final double scalingFactor) {
+        // As the map increases in scale, marker lines need to reduce to ensure they continue to appear the same size.
+        this.scalingFactor = 1 / scalingFactor;
+        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
+    }
 }

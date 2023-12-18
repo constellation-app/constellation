@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import javafx.util.Pair;
 
 /**
