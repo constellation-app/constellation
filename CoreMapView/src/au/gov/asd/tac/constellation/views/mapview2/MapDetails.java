@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2;
 
 import java.io.File;
+import javafx.scene.paint.Color;
 
 /**
  * Store details of maps available for selection within the MapView.
@@ -24,6 +25,15 @@ import java.io.File;
  */
 public class MapDetails {
     
+    // For now define these values as static, but potentially allow diferent maps to adjust
+    public static final double MARKER_LINE_WIDTH = 1;
+    public static final double MARKER_OPACTIY = 0.55;
+    public static final Color MARKER_STROKE_COLOUR = Color.web("#000000");
+    public static final Color MARKER_MULTI_FILL_COLOUR = Color.web("#FFFFFF", MARKER_OPACTIY);
+    public static final Color MARKER_DEFAULT_FILL_COLOUR = Color.web("#3F7FFF", MARKER_OPACTIY);
+    public static final Color MARKER_SELECTED_FILL_COLOUR = Color.web("#FF0000", MARKER_OPACTIY);
+    public static final Color MARKER_HIGHLIGHTED_FILL_COLOUR = Color.web("#FFFF00", MARKER_OPACTIY);
+
     private final MapType type;  // The type of map layer that is being described
     private final double width;  // Width in "map units" of the map. Units may vary based on map type.
     private final double height;  // Height in "map units" of the map. Units may vary based on map type.

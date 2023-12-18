@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.GeoShape;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
@@ -31,13 +32,16 @@ import javafx.util.Pair;
  * @author altair1673
  */
 public class GeoShapePolygonMarker extends AbstractMarker {
+
     private final Map<String, Pair<GeoShape, List<Integer>>> geoShapes = new HashMap<>();
+    private double edgeScalingFactor;
 
     public GeoShapePolygonMarker(MapView parent, int markerID, int nodeId, double xOffset, double yOffset) {
         super(parent, markerID, nodeId, xOffset, yOffset, MarkerType.POLYGON_MARKER);
     }
 
     public void addGeoShape(final String coordinateList, final int elementID) {
+        this.scalingFactor = 1 / parent.getScalingFactor();
         final GeoShape geoShape = new GeoShape();
         geoShapes.put(coordinateList, new Pair(geoShape, new ArrayList<>()));
         geoShapes.get(coordinateList).getValue().add(elementID);
@@ -54,15 +58,14 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         }
         geoShape.setCenterX(xTotal / coordinateCount);
         geoShape.setCenterY(yTotal / coordinateCount);
-        geoShape.setFill(Color.RED);
-        geoShape.setStrokeWidth(parent.getScaledMapLineWidth() * 20);
-        geoShape.setStroke(Color.BLACK);
-        geoShape.setOpacity(0.5);
+        geoShape.setFill(MapDetails.MARKER_DEFAULT_FILL_COLOUR);
+        geoShape.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
+        geoShape.setStroke(MapDetails.MARKER_STROKE_COLOUR);
 
         // Event handlers for the marker
         geoShape.setOnMouseEntered((final MouseEvent e) -> {
             if (!isSelected) {
-                geoShape.setFill(Color.ORANGE);
+                geoShape.setFill(MapDetails.MARKER_HIGHLIGHTED_FILL_COLOUR);
             }
             e.consume();
         });
@@ -82,6 +85,13 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         });
 
     }
+    
+    @Override
+    public void scaleMarker(final double scalingFactor) {
+        // As the map increases in scale, marker lines need to reduce to ensure they continue to appear the same size.
+        this.scalingFactor = 1 / scalingFactor;
+        geoShapes.values().forEach(shapePair -> shapePair.getKey().setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor));
+    }
 
     @Override
     public void changeMarkerColour(final String option) {
@@ -98,12 +108,13 @@ public class GeoShapePolygonMarker extends AbstractMarker {
     @Override
     public void select() {
         isSelected = true;
-        geoShapes.values().forEach(shapePair -> shapePair.getKey().setFill(Color.BLUE));
+        geoShapes.values().forEach(shapePair -> shapePair.getKey().setFill(MapDetails.MARKER_SELECTED_FILL_COLOUR));
     }
 
     public Map<String, Pair<GeoShape, List<Integer>>> getGeoShapes() {
         return geoShapes;
     }
+
 
     public void setBlazeColour(final String blaze, final String coordinateKey) {
         geoShapes.get(coordinateKey).getKey().setBlazeColour(blaze);

@@ -66,6 +66,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -148,8 +149,8 @@ public class MapView extends ScrollPane {
     private final Group countryGroup;
 
     // The two groups that hold the queried and user marker groups
-    private final Group graphMarkerGroup;
-    private final Group drawnMarkerGroup;
+    private final Group graphMarkerGroup;  // markers sourced from the graph content
+    private final Group drawnMarkerGroup;  // markers drawn by user
 
     // Groups for user drawn polygons, cluster markers and "hidden" point markers used for cluster calculations
     private final Group polygonMarkerGroup;
@@ -613,7 +614,6 @@ public class MapView extends ScrollPane {
     private void setMouseClickedEventHandler() {
 
         mapGroupHolder.setOnMouseClicked(event -> {
-// TODO: commented out for now - wil lbe readded as verified
 //            // If left clicked
 //            if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
 //                // if double clicked desekect all marekers from both the map and the graph in consty
@@ -754,7 +754,7 @@ public class MapView extends ScrollPane {
         // the value of scaleFactor and ensure that map lines remain at the same width
         scaleValue = scaleValue * scaleFactor;
         scaledMapLineWidth = scaledMapLineWidth / scaleFactor;
-        LOGGER.log(Level.FINE, "Set scale to " + scaleValue + " and line scale to " + scaledMapLineWidth);
+        pointMarkerGlobalScale = pointMarkerGlobalScale / scaleFactor;
 
         // Scale mapStackPane to the new zoom factor and update map line widths to counter it 
         mapStackPane.setScaleX(scaleValue);
@@ -762,6 +762,9 @@ public class MapView extends ScrollPane {
         if (!testUsingCanvas) {
             countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
         }
+         
+        // Resize markers
+        resizeMarkers();
     }
     
     /***
@@ -787,7 +790,6 @@ public class MapView extends ScrollPane {
             if (e.isControlDown()) {
                 scale((e.getDeltaY() > 0) ? MAP_SCALE_FACTOR : 1 / MAP_SCALE_FACTOR);
             }
-    
 // TODO: This is old acaling code, commented out for now to ensure other elements are picked up such as marker scaling
 //            if (e.isControlDown() && e.isShiftDown()) {
 //                
@@ -906,7 +908,7 @@ public class MapView extends ScrollPane {
     }
 
     /**
-     * Deselects all markers
+     * Deselects all markers.
      */
     public void deselectAllMarkers() {
         for (final AbstractMarker value : markers.values()) {
@@ -1044,30 +1046,26 @@ public class MapView extends ScrollPane {
     }
 
     /**
-     * Change size of markers based on whether user has zoomed in or out
-     *
-     * @param zoomIn - check for zoom in/out
+     * Iterate over all markers and resize them based on current zoom level to ensure they remain constant.
      */
-    private void resizeMarkers(final boolean zoomIn) {
+    private void resizeMarkers() {
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
-                if (zoomIn) {
-                    marker.scaleAndReposition(marker.getScale() / 1.08);
-                } else {
-                    marker.scaleAndReposition(marker.getScale() * 1.08);
-                }
+                marker.scaleAndReposition(pointMarkerGlobalScale);
+            } else if (abstractMarker instanceof GeoShapePolygonMarker) {
+                final GeoShapePolygonMarker marker = (GeoShapePolygonMarker) abstractMarker;
+                marker.scaleMarker(scaleValue);
             }
         });
 
         userMarkers.forEach(abstractMarker -> {
             if (abstractMarker instanceof UserPointMarker) {
                 final UserPointMarker marker = (UserPointMarker) abstractMarker;
-                if (zoomIn) {
-                    marker.scaleAndReposition(marker.getScale() / 1.08);
-                } else {
-                    marker.scaleAndReposition(marker.getScale() * 1.08);
-                }
+                marker.scaleAndReposition(pointMarkerGlobalScale);
+            } else if (abstractMarker instanceof GeoShapePolygonMarker) {
+                final GeoShapePolygonMarker marker = (GeoShapePolygonMarker) abstractMarker;
+                marker.scaleMarker(scaleValue);
             }
         });
     }
@@ -1125,10 +1123,6 @@ public class MapView extends ScrollPane {
      */
     public void redrawQueriedMarkers() {
         graphMarkerGroup.getChildren().clear();
-
-        if (markers.isEmpty()) {
-            LOGGER.log(Level.INFO, "Marker map is empty");
-        }
 
         // Redraw all queried markers
         for (final AbstractMarker value : markers.values()) {
@@ -1285,6 +1279,10 @@ public class MapView extends ScrollPane {
     }
 
     /**
+     * TODO: This code zooming n iteratively until it zooms to the pont that not all markers are visible, then it
+     * zooms back out one level to bring everything back into view. can this be done in a better way by calculating
+     * map extents and then zooming to a level that covers it all ?
+     * 
      * Zoom on a certain point
      *
      * @param x
@@ -1660,10 +1658,16 @@ public class MapView extends ScrollPane {
      * @param marker - marker to be added to the map
      */
     public void drawMarker(final AbstractMarker marker) {
+        
+        // Determine if the marker should be drawn. This decision depends on several factors. The first check is to
+        // ensure that the marker type has been selected for display from the available types. The second factor is to
+        // ensure that only selected markers are shown if only SELECTED markers should be displayed.
         if (markersShowing.contains(marker.getType()) && ((markersShowing.contains(AbstractMarker.MarkerType.SELECTED) && marker.isSelected()) || !markersShowing.contains(AbstractMarker.MarkerType.SELECTED))) {
             marker.setMarkerPosition(mapDetails.getWidth(), mapDetails.getHeight());
             if (!graphMarkerGroup.getChildren().contains(marker.getMarker())) {
+                
                 if (marker instanceof GeoShapePolygonMarker) {
+                    // Handle markers that contain GeoJson in the Geo.Shape attribute which is a more complex marker type
                     final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) marker;
                     gsp.getGeoShapes().values().forEach(shapePair -> {
                         if (!graphMarkerGroup.getChildren().contains(shapePair.getKey())) {
@@ -1675,14 +1679,14 @@ public class MapView extends ScrollPane {
                 }
 
                 if (marker instanceof PointMarker) {
-                    final PointMarker pMarker = (PointMarker) marker;
-                    // The line below is to verify the positioning of the marker
-                    //graphMarkerGroup.getChildren().add(pMarker.getPosRect());
-                    if (pMarker.getScale() != pointMarkerGlobalScale) {
-                        pMarker.scaleAndReposition(pointMarkerGlobalScale);
+                    // Rescale point markers is they dont match target marker scaling
+                    final PointMarker pointMarker = (PointMarker) marker;
+                    if (pointMarker.getScale() != pointMarkerGlobalScale) {
+                        pointMarker.scaleAndReposition(pointMarkerGlobalScale);
                     }
                 } else {
-//                    marker.getMarker().setStrokeWidth(scaledMapLineWidth * 20);
+                    // Resize the non point markers by adjusting line widths
+                    marker.getMarker().setStrokeWidth(scaledMapLineWidth);
                 }
             }
         }
@@ -1716,7 +1720,16 @@ public class MapView extends ScrollPane {
     public double getScaledMapLineWidth() {
         return scaledMapLineWidth;
     }
- 
+
+    /**
+     * Return details of current scaling factor (zoom) of the map.
+     *
+     * @return Current scaling factor (zoom) of the map.
+     */
+    public double getScalingFactor() {
+        return this.scaleValue; 
+    }
+    
     /**
      * Load the world map
      */

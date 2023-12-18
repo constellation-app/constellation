@@ -48,6 +48,7 @@ public abstract class AbstractMarker {
     protected double y = 0;
     protected double xOffset;
     protected double yOffset;
+    protected double scalingFactor;
 
     protected MapView parent;
 
@@ -141,7 +142,12 @@ public abstract class AbstractMarker {
     }
 
     public void changeMarkerColour(final String option) {
-
     }
 
+    /**
+     * Default function to be overridden by child classes which require special handling when map scale changes.
+     * @param scalingFactor The scaling factor to apply to the markers.
+     */
+    public void scaleMarker(final double scalingFactor) {
+    }
 }
