@@ -65,6 +65,14 @@ public class ContentVectorClusteringServices {
         }
         return cvcs;
     }
+    
+    protected VectorWeightingCalculator getWeightingCalculator() {
+        return weightingCalculator;
+    }
+    
+    protected SparseMatrix<Integer> getTokenElementMatrix() {
+        return tokenElementMatrix;
+    }
 
     private interface Clustering {
 
@@ -202,7 +210,7 @@ public class ContentVectorClusteringServices {
         clusteringMethod.cluster();
     }
 
-    private class ThreadedElementVectorComputation implements Runnable {
+    protected class ThreadedElementVectorComputation implements Runnable {
 
         private final ThreadAllocator allocator;
         private final int threadID;
@@ -255,7 +263,7 @@ public class ContentVectorClusteringServices {
         }
     }
 
-    private class VectorWeightingCalculator {
+    protected class VectorWeightingCalculator {
 
         private final boolean binarySpace;
         protected int threshold;
@@ -284,7 +292,7 @@ public class ContentVectorClusteringServices {
         }
     }
 
-    private class CountAppearancesCalculator extends VectorWeightingCalculator {
+    protected class CountAppearancesCalculator extends VectorWeightingCalculator {
 
         public CountAppearancesCalculator(final int numberOfElements, final int threshold, final boolean thresholdIsPercentage, final boolean binarySpace, final boolean significantAboveThreshold, final float weightingExponent) {
             super(binarySpace, numberOfElements, significantAboveThreshold, weightingExponent);
@@ -292,13 +300,17 @@ public class ContentVectorClusteringServices {
         }
     }
 
-    private class RankTokenCalculator extends VectorWeightingCalculator {
+    protected class RankTokenCalculator extends VectorWeightingCalculator {
 
         // If thresholdIsPercentage is true, then threshold is an integer between 1 and 100 representing a percentage
         public RankTokenCalculator(final int numberOfElements, final int numberOfFeatures, final int threshold, final boolean thresholdIsPercentage, final boolean binarySpace, final boolean significantAboveThreshold, final float weightingExponent) {
             super(binarySpace, numberOfElements, significantAboveThreshold, weightingExponent);
             final int thresholdIndex = thresholdIsPercentage ? (threshold * numberOfFeatures) / 100 : threshold;
-            this.threshold = (Integer) moduli.values().toArray()[thresholdIndex];
+            if (moduli.isEmpty()) {
+                this.threshold = 1;
+            } else {
+                this.threshold = (Integer) moduli.values().toArray()[thresholdIndex];
+            }
         }
     }
 }

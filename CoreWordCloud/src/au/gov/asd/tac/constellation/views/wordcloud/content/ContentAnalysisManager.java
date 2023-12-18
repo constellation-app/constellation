@@ -70,14 +70,14 @@ public class ContentAnalysisManager {
         querySize = performOnElements.length;
     }
 
-    private class StringListThreadedPhraseAdaptor extends ThreadedPhraseAdaptor {
+    protected class StringListThreadedPhraseAdaptor extends ThreadedPhraseAdaptor {
 
         private final int elLowPosition;
         private int elCurrentPosition;
         private final List<String> list;
         private final int workload;
 
-        private StringListThreadedPhraseAdaptor(final ThreadAllocator allocator, final List<String> list) {
+        protected StringListThreadedPhraseAdaptor(final ThreadAllocator allocator, final List<String> list) {
             this.list = new ArrayList<>(list);
             elCurrentPosition = elLowPosition = allocator.getLowerPos();
             workload = allocator.getWorkload();

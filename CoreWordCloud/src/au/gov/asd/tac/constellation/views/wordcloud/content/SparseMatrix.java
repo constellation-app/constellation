@@ -29,130 +29,9 @@ import java.util.concurrent.ConcurrentSkipListMap;
  */
 public class SparseMatrix<N extends Number> {
 
-    protected ConcurrentNavigableMap<Integer, ConcurrentNavigableMap<Integer, N>> data;
+    private final ConcurrentNavigableMap<Integer, ConcurrentNavigableMap<Integer, N>> data;
     private final N noEntryVal;
     private final ArithmeticHandler<N> calc;
-
-    protected abstract static class ArithmeticHandler<N extends Number> {
-
-        public abstract N getZero();
-
-        public abstract N max(final N n1, final N n2);
-
-        public abstract N min(final N n1, final N n2);
-
-        public abstract N add(final N n1, final N n2);
-
-        public abstract N difference(final N n1, final N n2);
-
-        public abstract N square(final N n1);
-
-        public abstract N sqrt(final N n1);
-
-        public abstract N scale(final N val, final float scale);
-
-        public abstract N[] makeArray(final int size);
-    }
-
-    protected static class IntegerArithmeticHandler extends ArithmeticHandler<Integer> {
-
-        protected static final ArithmeticHandler<Integer> INSTANCE = new IntegerArithmeticHandler();
-
-        @Override
-        public Integer getZero() {
-            return 0;
-        }
-
-        @Override
-        public Integer max(final Integer n1, final Integer n2) {
-            return Math.max(n1, n2);
-        }
-
-        @Override
-        public Integer min(final Integer n1, final Integer n2) {
-            return Math.min(n1, n2);
-        }
-
-        @Override
-        public Integer add(final Integer n1, final Integer n2) {
-            return n1 + n2;
-        }
-
-        @Override
-        public Integer difference(final Integer n1, final Integer n2) {
-            return Math.abs(n1 - n2);
-        }
-
-        @Override
-        public Integer square(final Integer n1) {
-            return (int) Math.round(Math.pow(n1.doubleValue(), 2.0));
-        }
-
-        @Override
-        public Integer sqrt(final Integer n1) {
-            return (int) Math.round(Math.sqrt(n1.doubleValue()));
-        }
-
-        @Override
-        public Integer scale(final Integer val, final float scale) {
-            return Math.round(val / scale);
-        }
-
-        @Override
-        public Integer[] makeArray(final int size) {
-            return new Integer[size];
-        }
-    }
-
-    protected static class FloatArithmeticHandler extends ArithmeticHandler<Float> {
-
-        protected static final ArithmeticHandler<Float> INSTANCE = new FloatArithmeticHandler();
-
-        @Override
-        public Float getZero() {
-            return 0.0F;
-        }
-
-        @Override
-        public Float max(final Float n1, final Float n2) {
-            return Math.max(n1, n2);
-        }
-
-        @Override
-        public Float min(final Float n1, final Float n2) {
-            return Math.min(n1, n2);
-        }
-
-        @Override
-        public Float add(final Float n1, final Float n2) {
-            return n1 + n2;
-        }
-
-        @Override
-        public Float difference(final Float n1, final Float n2) {
-            return Math.abs(n1 - n2);
-        }
-
-        @Override
-        public Float square(final Float n1) {
-            return (float) Math.round(Math.pow(n1.doubleValue(), 2.0));
-        }
-
-        @Override
-        public Float sqrt(final Float n1) {
-            return (float) Math.round(Math.sqrt(n1.doubleValue()));
-        }
-
-        @Override
-        public Float scale(final Float val, final float scale) {
-            return val / scale;
-        }
-
-        @Override
-        public Float[] makeArray(final int size) {
-            return new Float[size];
-        }
-    }
 
     public SparseMatrix(final N noEntryVal, final ArithmeticHandler<N> typer) {
         data = new ConcurrentSkipListMap<>();
@@ -168,6 +47,14 @@ public class SparseMatrix<N extends Number> {
         } else {
             return null;
         }
+    }
+    
+    public ArithmeticHandler<N> getCalc() {
+        return calc;
+    }
+    
+    public ConcurrentNavigableMap<Integer, ConcurrentNavigableMap<Integer, N>> getData() {
+        return data;
     }
 
     public void putCell(final int i, final int j, final N val) {
@@ -292,8 +179,8 @@ public class SparseMatrix<N extends Number> {
     public void calculateCentreOfColumns(final Integer[] keys, final int keyToPlaceCentre) {
         final ConcurrentNavigableMap<Integer, N> centreMap = new ConcurrentSkipListMap<>();
         final int numberOfColumns = keys.length;
-        for (int i = 0; i < keys.length; i++) {
-            final MatrixColumnIterator iter = getColumn(keys[i]);
+        for (final Integer key : keys) {
+            final MatrixColumnIterator iter = getColumn(key);
             while (iter.hasNext()) {
                 final ElementValuePair<N> entry = iter.next();
                 if (centreMap.get(entry.el) == null) {
@@ -446,6 +333,131 @@ public class SparseMatrix<N extends Number> {
             this.val = val;
         }
     }
+    
+    
+    protected abstract static class ArithmeticHandler<N extends Number> {
+
+        public abstract N getZero();
+
+        public abstract N max(final N n1, final N n2);
+
+        public abstract N min(final N n1, final N n2);
+
+        public abstract N add(final N n1, final N n2);
+
+        public abstract N difference(final N n1, final N n2);
+
+        public abstract N square(final N n1);
+
+        public abstract N sqrt(final N n1);
+
+        public abstract N scale(final N val, final float scale);
+
+        public abstract N[] makeArray(final int size);
+    }
+    
+
+    protected static class IntegerArithmeticHandler extends ArithmeticHandler<Integer> {
+
+        protected static final ArithmeticHandler<Integer> INSTANCE = new IntegerArithmeticHandler();
+
+        @Override
+        public Integer getZero() {
+            return 0;
+        }
+
+        @Override
+        public Integer max(final Integer n1, final Integer n2) {
+            return Math.max(n1, n2);
+        }
+
+        @Override
+        public Integer min(final Integer n1, final Integer n2) {
+            return Math.min(n1, n2);
+        }
+
+        @Override
+        public Integer add(final Integer n1, final Integer n2) {
+            return n1 + n2;
+        }
+
+        @Override
+        public Integer difference(final Integer n1, final Integer n2) {
+            return Math.abs(n1 - n2);
+        }
+
+        @Override
+        public Integer square(final Integer n1) {
+            return (int) Math.round(Math.pow(n1.doubleValue(), 2.0));
+        }
+
+        @Override
+        public Integer sqrt(final Integer n1) {
+            return (int) Math.round(Math.sqrt(n1.doubleValue()));
+        }
+
+        @Override
+        public Integer scale(final Integer val, final float scale) {
+            return Math.round(val / scale);
+        }
+
+        @Override
+        public Integer[] makeArray(final int size) {
+            return new Integer[size];
+        }
+    }
+    
+
+    protected static class FloatArithmeticHandler extends ArithmeticHandler<Float> {
+
+        protected static final ArithmeticHandler<Float> INSTANCE = new FloatArithmeticHandler();
+
+        @Override
+        public Float getZero() {
+            return 0.0F;
+        }
+
+        @Override
+        public Float max(final Float n1, final Float n2) {
+            return Math.max(n1, n2);
+        }
+
+        @Override
+        public Float min(final Float n1, final Float n2) {
+            return Math.min(n1, n2);
+        }
+
+        @Override
+        public Float add(final Float n1, final Float n2) {
+            return n1 + n2;
+        }
+
+        @Override
+        public Float difference(final Float n1, final Float n2) {
+            return Math.abs(n1 - n2);
+        }
+
+        @Override
+        public Float square(final Float n1) {
+            return (float) Math.round(Math.pow(n1.doubleValue(), 2.0));
+        }
+
+        @Override
+        public Float sqrt(final Float n1) {
+            return (float) Math.round(Math.sqrt(n1.doubleValue()));
+        }
+
+        @Override
+        public Float scale(final Float val, final float scale) {
+            return val / scale;
+        }
+
+        @Override
+        public Float[] makeArray(final int size) {
+            return new Float[size];
+        }
+    }
+    
 
     public class MatrixColumnIterator implements Iterator {
 
@@ -455,7 +467,7 @@ public class SparseMatrix<N extends Number> {
         private final int size;
         private final ConcurrentNavigableMap<Integer, N> submap;
 
-        private MatrixColumnIterator(final ConcurrentNavigableMap<Integer, N> submap) {
+        protected MatrixColumnIterator(final ConcurrentNavigableMap<Integer, N> submap) {
             this.submap = submap;
             this.size = submap.size();
             keyIter = submap.keySet().iterator();

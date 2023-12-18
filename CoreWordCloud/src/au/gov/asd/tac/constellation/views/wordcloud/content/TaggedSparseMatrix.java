@@ -50,7 +50,7 @@ public class TaggedSparseMatrix<N extends Number> extends SparseMatrix<N> {
 
     public void tagColumn(final int key, final boolean tag) {
         // You can't tag a column which doesn't exist, or which is already tagged
-        if (!data.containsKey(key) || tags.containsKey(key)) {
+        if (!getData().containsKey(key) || tags.containsKey(key)) {
             return;
         }
         tags.put(key, tag);
@@ -82,7 +82,7 @@ public class TaggedSparseMatrix<N extends Number> extends SparseMatrix<N> {
     @Override
     public void clearCell(final int i, final int j) {
         super.clearCell(i, j);
-        if (!data.containsKey(i)) {
+        if (!getData().containsKey(i)) {
             tags.remove(i);
         }
     }
