@@ -46,6 +46,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
@@ -221,6 +222,8 @@ public class MapViewPane extends BorderPane {
                     toolBarGridPane.add(lonField, 3, 1);
                 } else if (key.equals(INFO_OVERLAY) && !overlaysMenuButton.getOptionMap().get(key).isSelected()) {
                     toolBarGridPane.getChildren().removeAll(latLabel, latField, lonLabel, lonField);
+                } else if (key.equals(OVERVIEW_OVERLAY) && overlaysMenuButton.getOptionMap().get(key).isSelected()) {
+                    mapView.updateOverviewOverlay();
                 }
             });
         });
@@ -506,8 +509,8 @@ public class MapViewPane extends BorderPane {
         AnchorPane.setTopAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
         AnchorPane.setLeftAnchor(mapView.TOOLS_OVERLAY.getOverlayPane(), 5.0);
 
-        AnchorPane.setBottomAnchor(mapView.getOverviewOverlay().getOverlayPane(), 290.0);
-        AnchorPane.setRightAnchor(mapView.getOverviewOverlay().getOverlayPane(), 100.0);
+        AnchorPane.setBottomAnchor(mapView.getOverviewOverlay().getOverlayPane(), 20.0);
+        AnchorPane.setRightAnchor(mapView.getOverviewOverlay().getOverlayPane(), 20.0);
 
         anchorPane.getChildren().addAll(parentStackPane, mapView.TOOLS_OVERLAY.getOverlayPane(), mapView.getOverviewOverlay().getOverlayPane());
         anchorPane.prefWidthProperty().bind(this.widthProperty());

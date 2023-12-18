@@ -237,7 +237,7 @@ public class MapView extends ScrollPane {
     public MapView(final MapViewPane parent, final MapDetails mapDetails) {
         this.parent = parent;
         this.mapDetails = mapDetails;
-        
+
         // TODO: hack for now, would like to remove these (and all references to them). Previously MapView stored all
         // dimensions as public constants and other classes pulled from there. Intention is to instead use MapDetails
         // object
@@ -311,8 +311,6 @@ public class MapView extends ScrollPane {
         for (int i = 0; i < countrySVGPaths.size(); ++i) {
             countryGroup.getChildren().add(countrySVGPaths.get(i));
         }
-        overviewOverlay = new OverviewOverlay(new Vec3(0, -120), new Vec3(mapDetails.getWidth(), mapDetails.getHeight()), new Vec3(-200,-300), new Vec3(200,200), countrySVGPaths);
-        updateOverviewOverlay();
         enclosingRectangle.setWidth(MAP_VIEWPORT_WIDTH);
         enclosingRectangle.setHeight(MAP_VIEWPORT_HEIGHT);
 
@@ -330,6 +328,7 @@ public class MapView extends ScrollPane {
         scrollContent = new Group(mapStackPane);  // wrap mapStackPane in a Group as Group dimensions are understood by 
                                                   // ScrollPane container.
         setContent(scrollContent);
+
 
         // Center content
         this.setHvalue(this.getHmin() + (this.getHmax() - this.getHmin()) / 2);
@@ -485,6 +484,36 @@ public class MapView extends ScrollPane {
             }
         });
 
+        
+        /**
+         * Catch changes to mapView visible width and trigger overlay update.
+         */
+        this.widthProperty().addListener((obs, oldVal, newVal) -> {
+            this.updateOverviewOverlay(); 
+        });
+        
+        /**
+         * Catch changes to mapView visible height and trigger overlay update.
+         */
+        this.heightProperty().addListener((obs, oldVal, newVal) -> {
+            this.updateOverviewOverlay(); 
+        });
+        
+        /**
+         * Catch changes to mapView visible horizontal scroll position and trigger overlay update.
+         */
+        this.hvalueProperty().addListener((obs, oldVal, newVal) -> {
+            this.updateOverviewOverlay(); 
+        });
+        
+        /**
+         * Catch changes to mapView visible vertical scroll position and trigger overlay update.
+         */
+        this.vvalueProperty().addListener((obs, oldVal, newVal) -> {
+            this.updateOverviewOverlay(); 
+        });
+        
+
         // Add all garphical groups to pane
         mapGroupHolder.getChildren().add(hiddenPointMarkerGroup);
         mapGroupHolder.getChildren().add(graphMarkerGroup);
@@ -502,22 +531,6 @@ public class MapView extends ScrollPane {
     }
     
     /**
-     * Helper routine used to dump key details for testing of positions. Can be removed once code is complete and
-     * proper tests are in place.
-     * Must be triggered by a callback with a MouseEvent.
-     * @param event 
-     */
-    private void dumpDetails(javafx.scene.input.MouseEvent event) {
-        LOGGER.log(Level.SEVERE, "dumpDetails: mapSize:(" + mapDetails.getWidth() + " x " + mapDetails.getHeight() + "). "
-                   + "mapView size: (" + this.getWidth() + " x " + this.getHeight() + "). ");
-        LOGGER.log(Level.SEVERE, "dumpDetails: ScrollPane click pos:(" + event.getX() + ", " + event.getY() + "). "
-                   + "Scene click pos:(" + event.getSceneX() + ", " + event.getSceneY() + "). ");
-        LOGGER.log(Level.SEVERE, "dumpDetails: scrollContent size:(" + scrollContent.getLayoutBounds().getWidth() + " x " + scrollContent.getLayoutBounds().getHeight() + "). "
-                   +  " viewport size:(" + this.getViewportBounds().getWidth() + ", " + this.getViewportBounds().getHeight() + "). ");
-        LOGGER.log(Level.SEVERE, "dumpDetails: Scaling: " + scaleValue + " lineScale=" + scaledMapLineWidth);
-    }
-    
-    /**
      * Mouse pressed events for stack pane and the mapGroupHolder
      */
     private void setMousePressedEventHandler() {
@@ -525,7 +538,6 @@ public class MapView extends ScrollPane {
         // Panning code
         // Record where the mouse has been pressed
         mapStackPane.setOnMousePressed(event -> {
-            dumpDetails(event);
             
             // Determine the position of the mouse relative to the top left of the mapStackPane when the mouse button is
             // pressed. The Top left 0,0 position reflects top left of MapViewPane which adds a toolBarGridPane across
@@ -557,14 +569,15 @@ public class MapView extends ScrollPane {
         });
     }
 
-    private void updateOverviewOverlay() {
+    /**
+     * Update the contents of the overview overlay screen.
+     */
+    public void updateOverviewOverlay() {
         
-            if (this.getScene() == null) {
-                return;
-            }
-
-            Bounds boundsInParent = mapStackPane.getBoundsInParent();
-            overviewOverlay.update(new Vec3(boundsInParent.getMinX(), boundsInParent.getMinY()), new Vec3(this.getScene().getWidth(), this.getScene().getHeight()));
+        if (this.getScene() == null) {
+            return;
+        }
+        overviewOverlay.update(this.getViewportBounds().getWidth()/scaleValue, this.getViewportBounds().getHeight()/scaleValue, this.getHvalue(), this.getVvalue());
     }
 
     /**
@@ -1674,7 +1687,7 @@ public class MapView extends ScrollPane {
     public double getScaledMapLineWidth() {
         return scaledMapLineWidth;
     }
-    
+ 
     /**
      * Load the world map
      */
@@ -1723,9 +1736,5 @@ public class MapView extends ScrollPane {
         } catch (final IOException e) {
             LOGGER.log(Level.SEVERE, "Exception thrown: {0}", e.getMessage());
         }
-
     }
-
-
-
 }
