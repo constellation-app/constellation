@@ -37,6 +37,7 @@ import au.gov.asd.tac.constellation.views.mapview2.utilities.GeoShape;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.Vec3;
 import gov.nasa.worldwind.geom.coords.MGRSCoord;
+import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -54,6 +55,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingNode;
 import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
@@ -82,6 +84,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import org.apache.batik.swing.JSVGCanvas;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -227,6 +230,10 @@ public class MapView extends ScrollPane {
     private final StringProperty markerTextProperty = new SimpleStringProperty();
 
     private final Rectangle enclosingRectangle = new Rectangle();
+    
+    private final boolean testUsingCanvas = false; // Set this to true to test using the SVGCanvas 
+    //  NOTE ... this is currently BUGGED ... The Netbean Swing interface becomes inoperative
+    // when trying to use a SwingNode inside a Javafx component
 
     /**
      * Construct MapView object using the map identified by mspDetails.
@@ -275,9 +282,11 @@ public class MapView extends ScrollPane {
 
         // Clear any existing paths and read the SVG paths of countries from the files
         countrySVGPaths.clear();
-        parseMapSVG();
-        countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
-
+        if (!testUsingCanvas) {
+            parseMapSVG();
+            countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
+        }
+        
         // The stackPane to store
         mapStackPane = new StackPane();
         mapStackPane.setBorder(Border.EMPTY);
@@ -307,9 +316,11 @@ public class MapView extends ScrollPane {
         // Clear any country grpahics that already exist within group
         countryGroup.getChildren().clear();
 
-        // Add paths to group to display them on screen
-        for (int i = 0; i < countrySVGPaths.size(); ++i) {
-            countryGroup.getChildren().add(countrySVGPaths.get(i));
+        if (!testUsingCanvas) {
+            // Add paths to group to display them on screen
+            for (int i = 0; i < countrySVGPaths.size(); ++i) {
+                countryGroup.getChildren().add(countrySVGPaths.get(i));
+            }
         }
         enclosingRectangle.setWidth(MAP_VIEWPORT_WIDTH);
         enclosingRectangle.setHeight(MAP_VIEWPORT_HEIGHT);
@@ -342,8 +353,23 @@ public class MapView extends ScrollPane {
         // Initialize the MapConversions class to align with the map being loaded.
         MapConversions.initMapDimensions(mapDetails);
         
-        mapGroupHolder.getChildren().add(countryGroup);
-
+        if (testUsingCanvas) {
+            final SwingNode swingNode = new SwingNode();
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    JSVGCanvas svgCanvas = new JSVGCanvas();
+                    String svgFileName = "file:///" + mapDetails.getMapFile().getAbsolutePath();
+                    svgCanvas.setURI(svgFileName);
+                    svgCanvas.setPreferredSize(new Dimension((int)mapDetails.getWidth(), (int)mapDetails.getHeight()));
+                    swingNode.setContent(svgCanvas);
+                }
+            });    
+            mapGroupHolder.getChildren().add(swingNode);
+        } else {
+            mapGroupHolder.getChildren().add(countryGroup);
+        }
+        
         // Put overlays in map
         overlayMap.put(MapViewPane.TOOLS_OVERLAY, TOOLS_OVERLAY);
         overlayMap.put(MapViewPane.INFO_OVERLAY, INFO_OVERLAY);
@@ -733,7 +759,9 @@ public class MapView extends ScrollPane {
         // Scale mapStackPane to the new zoom factor and update map line widths to counter it 
         mapStackPane.setScaleX(scaleValue);
         mapStackPane.setScaleY(scaleValue);
-        countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
+        if (!testUsingCanvas) {
+            countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
+        }
     }
     
     /***
