@@ -30,7 +30,7 @@ import javafx.scene.shape.Polygon;
  */
 public class GeoShape extends Polygon {
 
-    private final List<String> attributeColours = new ArrayList<>();
+    private final List<Color> attributeFillColours = new ArrayList<>();
     private final List<String> blazeColours = new ArrayList<>();
     private final List<String> overlayColours = new ArrayList<>();
     private final List<String> labels = new ArrayList<>();
@@ -66,12 +66,12 @@ public class GeoShape extends Polygon {
         overlayColours.add(overlayCol);
     }
 
-    public void setAttributeColour(final String attributeColour) {
-        if (attributeColours.size() > 1) {
+    public void setAttributeColour(final ConstellationColor attributeColour) {
+        if (attributeFillColours.size() > 1) {
             return;
         }
-
-        attributeColours.add(attributeColour);
+        
+        attributeFillColours.add(Color.web(attributeColour.getHtmlColor(), MapDetails.MARKER_OPACTIY));
     }
 
     public void changeColour(final String option) {
@@ -79,11 +79,7 @@ public class GeoShape extends Polygon {
         if (option.equals(MapViewPane.DEFAULT_COLOURS)) {
             currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;
         } else if (option.equals(MapViewPane.USE_COLOUR_ATTR)) {
-            if (attributeColours.size() > 1) {
-                currentColour = MapDetails.MARKER_MULTI_FILL_COLOUR;
-            } else if (attributeColours.size() == 1) {
-                currentColour = Color.web(attributeColours.get(0), MapDetails.MARKER_OPACTIY);
-            }
+            currentColour = (attributeFillColours.size() > 1) ? MapDetails.MARKER_MULTI_FILL_COLOUR : attributeFillColours.get(0);
         } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
             if (!blazeColours.isEmpty()) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(blazeColours.get(0));

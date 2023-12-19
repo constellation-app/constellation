@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.GeoShape;
@@ -127,7 +128,7 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         geoShapes.get(coordinateKey).getKey().setOverlayColour(overlayCol);
     }
 
-    public void setAttributeColour(final String attributeColour, final String coordinateKey) {
+    public void setAttributeColour(final ConstellationColor attributeColour, final String coordinateKey) {
         geoShapes.get(coordinateKey).getKey().setAttributeColour(attributeColour);
     }
 

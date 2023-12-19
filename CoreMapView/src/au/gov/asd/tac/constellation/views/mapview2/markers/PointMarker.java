@@ -45,9 +45,9 @@ public class PointMarker extends AbstractMarker {
     private double latitude;  // The latitude to display marker at
     private double longitude;  // The longitude to display marker at
 
-    private Color attributeColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;  // Set a default colour for marker if using colour stored in
-                                                                            // nodes colour attribute. This will get overridden by extracted
-                                                                            // value
+    private Color attributeFillColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;  // Set a default colour for marker if using colour stored in
+                                                                                // nodes colour attribute. This will get overridden by extracted
+                                                                                // value
     private String blazeColour = null;
     private int blazeColourCount = 0;
     private int overlayColourCount = 0;
@@ -60,7 +60,7 @@ public class PointMarker extends AbstractMarker {
     private String identifierAttr = null;
     private int identifierCount = 0;
     
-    public PointMarker(final MapView parent, final int markerID, final int nodeId, final double latitude, final double longitude, final double scale, final double xOffset, final double yOffset, final String attrColour) {
+    public PointMarker(final MapView parent, final int markerID, final int nodeId, final double latitude, final double longitude, final double scale, final double xOffset, final double yOffset, final ConstellationColor attrColour) {
         super(parent, markerID, nodeId, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
         this.scalingFactor = 1 / parent.getScalingFactor();
 
@@ -68,12 +68,12 @@ public class PointMarker extends AbstractMarker {
         this.longitude = longitude;
           
             
-        this.attributeColour = StringUtils.isBlank(attrColour) ? MapDetails.MARKER_DEFAULT_FILL_COLOUR : Color.web(attrColour, MapDetails.MARKER_OPACTIY);
+        this.attributeFillColour = Color.web(attrColour.getHtmlColor(), MapDetails.MARKER_OPACTIY);
 
         markerPath.setScaleX(this.scalingFactor / MARKER_PATH_SCALING);
         markerPath.setScaleY(this.scalingFactor / MARKER_PATH_SCALING);
 
-        markerPath.setFill(MapDetails.MARKER_DEFAULT_FILL_COLOUR);        
+        markerPath.setFill(MapDetails.MARKER_DEFAULT_FILL_COLOUR);
         markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
         markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * MARKER_PATH_SCALING * this.scalingFactor);
 
@@ -135,7 +135,7 @@ public class PointMarker extends AbstractMarker {
             // The colour to use will come from the store eattributeColour for the marker (which comes from the 'color'
             // attribute of the vertex the marker is tied to. If multiple vertexes share the same location (and hence
             // marker) then a seperate color is used to indicate multiple values.
-            currentColour = (idList.size() > 1) ? MapDetails.MARKER_MULTI_FILL_COLOUR : attributeColour;
+            currentColour = (idList.size() > 1) ? MapDetails.MARKER_MULTI_FILL_COLOUR : attributeFillColour;
         } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
             if (blazeColour != null) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);

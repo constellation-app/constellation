@@ -29,6 +29,7 @@ import au.gov.asd.tac.constellation.plugins.PluginType;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
 import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
@@ -378,7 +379,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             }
 
                             // Get the nodes colour
-                            final String elementColour = graph.getStringValue(colourID, elementID);
+                            final ConstellationColor elementColour = graph.getObjectValue(colourID, elementID);
 
                             String blazeColour = null;
                             String overlayColour = null;
