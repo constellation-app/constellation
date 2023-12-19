@@ -123,7 +123,7 @@ public class PolygonMarker extends AbstractMarker {
             // Connect polygon mmarker back to the start to complete the shape
             path += "L" + polygonLineUI.get(0).getStartX() + SeparatorConstants.COMMA + polygonLineUI.get(0).getStartY();
             if (polygonLineUI.size() == 1) {
-                markerPath.setStroke(Color.RED);
+                markerPath.setStroke(MapDetails.MARKER_USER_DRAWN_LINE_COLOUR);
                 this.type = AbstractMarker.MarkerType.LINE_MARKER;
             }
         }

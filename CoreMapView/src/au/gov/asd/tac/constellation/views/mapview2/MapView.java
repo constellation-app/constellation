@@ -656,7 +656,6 @@ public class MapView extends ScrollPane {
                     // if user is not currently drawing a polygon marker or a circle marker then show UI to draw a polygon on screen
                     if (!drawingPolygonMarker) {
                         polygonMarker = new PolygonMarker(self, drawnMarkerId++);
-
                         drawingPolygonMarker = true;
                     }
                     polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
@@ -665,6 +664,7 @@ public class MapView extends ScrollPane {
 
                     // If the user is drawing a polygon marker then add the polygon to the screen and clear any UI elements
                 } else if (drawingPolygonMarker) {
+                    polygonMarkerGroup.getChildren().add(polygonMarker.addNewLine(x, y));
                     drawingPolygonMarker = false;
                     polygonMarker.generatePath();
                     addUserDrawnMarker(polygonMarker);
