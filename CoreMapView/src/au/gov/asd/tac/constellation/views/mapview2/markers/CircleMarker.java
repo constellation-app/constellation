@@ -130,8 +130,8 @@ public class CircleMarker extends AbstractMarker {
             final double angle = spacing * i;
 
             // Edge of circle
-            final double vertexX = centerXLon + radius * Math.cos(angle);
-            final double vertexY = centerYLat + radius * Math.sin(angle);
+            final double vertexX = Math.max(Math.min(centerXLon + radius * Math.cos(angle), MapView.MAX_LONG), MapView.MIN_LONG);
+            final double vertexY = Math.max(Math.min(centerYLat + radius * Math.sin(angle), MapView.MAX_LAT), MapView.MIN_LAT);
 
             // Convert edge to x and y from geo coordinates
             final double convertedVertexX = MapConversions.lonToMapX(vertexX);
