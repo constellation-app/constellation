@@ -66,7 +66,7 @@ public class PointMarker extends AbstractMarker {
         this.latitude = latitude;
         this.longitude = longitude;
 
-        this.attributeFillColour = Color.web(attrColour.getHtmlColor(), MapDetails.MARKER_OPACTIY);
+        this.attributeFillColour = Color.web(attrColour.getHtmlColor(), MapDetails.MARKER_OPACITY);
 
         markerPath.setFill(MapDetails.MARKER_DEFAULT_FILL_COLOUR);
         markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
@@ -135,14 +135,14 @@ public class PointMarker extends AbstractMarker {
         } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
             if (blazeColour != null) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
-                currentColour = (blazeColourCount == 1) ? Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACTIY) : MapDetails.MARKER_MULTI_FILL_COLOUR;
+                currentColour = (blazeColourCount == 1) ? Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACITY) : MapDetails.MARKER_MULTI_FILL_COLOUR;
             } else {
                 currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;;
             }
         } else if (option.equals(MapViewPane.USE_OVERLAY_COL)) {
             if (overlayColour != null) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(overlayColour);
-                currentColour = (overlayColourCount == 1) ? Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACTIY) : MapDetails.MARKER_MULTI_FILL_COLOUR;
+                currentColour = (overlayColourCount == 1) ? Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACITY) : MapDetails.MARKER_MULTI_FILL_COLOUR;
             } else {
                 currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;;
             }

@@ -124,6 +124,7 @@ public class PolygonMarker extends AbstractMarker {
             path += "L" + polygonLineUI.get(0).getStartX() + SeparatorConstants.COMMA + polygonLineUI.get(0).getStartY();
             if (polygonLineUI.size() == 1) {
                 markerPath.setStroke(Color.RED);
+                markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
                 this.type = AbstractMarker.MarkerType.LINE_MARKER;
             }
         }
@@ -143,10 +144,6 @@ public class PolygonMarker extends AbstractMarker {
     
     @Override
     public void scaleMarker(final double scalingFactor) {
-        if (this.scalingFactor == 1 / scalingFactor) {
-            return;
-        }
-
         // As the map increases in scale, marker lines need to reduce to ensure they continue to appear the same size.
         this.scalingFactor = 1 / scalingFactor;
         markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);

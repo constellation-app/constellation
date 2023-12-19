@@ -653,7 +653,7 @@ public class MapView extends ScrollPane {
 
                     // If control is down
                 } else if (event.isControlDown()) {
-                    // if user is not current;y drawing a polygon marker or a circle marker then show UI to draw a polygon on screen
+                    // if user is not currently drawing a polygon marker or a circle marker then show UI to draw a polygon on screen
                     if (!drawingPolygonMarker) {
                         polygonMarker = new PolygonMarker(self, drawnMarkerId++);
 

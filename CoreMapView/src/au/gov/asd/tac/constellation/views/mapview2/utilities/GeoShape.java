@@ -71,7 +71,7 @@ public class GeoShape extends Polygon {
             return;
         }
         
-        attributeFillColours.add(Color.web(attributeColour.getHtmlColor(), MapDetails.MARKER_OPACTIY));
+        attributeFillColours.add(Color.web(attributeColour.getHtmlColor(), MapDetails.MARKER_OPACITY));
     }
 
     public void changeColour(final String option) {
@@ -84,7 +84,7 @@ public class GeoShape extends Polygon {
             if (!blazeColours.isEmpty()) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(blazeColours.get(0));
                 if (blazeColours.size() == 1) {
-                    currentColour = Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACTIY);
+                    currentColour = Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACITY);
                 } else {
                     currentColour = MapDetails.MARKER_MULTI_FILL_COLOUR;
                 }
@@ -95,7 +95,7 @@ public class GeoShape extends Polygon {
             if (!overlayColours.isEmpty()) {
                 final ConstellationColor colour = ConstellationColor.getColorValue(overlayColours.get(0));
                 if (overlayColours.size() == 1) {
-                    currentColour = Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACTIY);
+                    currentColour = Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACITY);
                 } else {
                     currentColour = MapDetails.MARKER_MULTI_FILL_COLOUR;
                 }
