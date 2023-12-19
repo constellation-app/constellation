@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentNavigableMap;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -69,6 +68,10 @@ public class SparseMatrixNGTest {
         result = SparseMatrix.constructMatrix(noEntryVal);
         calc = result.getCalc();
         assertEquals(calc.getClass(), FloatArithmeticHandler.class);
+        
+        noEntryVal = null;
+        result = SparseMatrix.constructMatrix(noEntryVal);
+        assertEquals(result, null);
     }
 
     /**
@@ -386,4 +389,73 @@ public class SparseMatrixNGTest {
         assertEquals(result.size(), expResult);
     }
     
+    /**
+     * Tests for IntegerArithmeticHandler
+     */
+    @Test
+    public void testIntegerArithmeticHandler() {
+        final ArithmeticHandler instance = IntegerArithmeticHandler.INSTANCE;
+        
+        // Test getZero
+        assertEquals(instance.getZero(), 0);
+        
+        // Test max
+        assertEquals(instance.max(2, 4), 4);
+        
+        // Test min
+        assertEquals(instance.min(2, 4), 2);
+        
+        // Test add
+        assertEquals(instance.add(1, 3), 4);
+        
+        // Test difference
+        assertEquals(instance.difference(3, 7), 4);
+        
+        // Test square
+        assertEquals(instance.square(3), 9);
+        
+        // Test sqrt
+        assertEquals(instance.sqrt(9), 3);
+        
+        // Test scale
+        assertEquals(instance.scale(2, 1), 2);
+        
+        // Test makeArray
+        assertEquals(instance.makeArray(2).length, 2);
+    }
+    
+    /**
+     * Tests for FloatArithmeticHandler
+     */
+    @Test
+    public void testFloatArithmeticHandler() {
+        final ArithmeticHandler instance = FloatArithmeticHandler.INSTANCE;
+        
+        // Test getZero
+        assertEquals(instance.getZero(), 0.0F);
+        
+        // Test max
+        assertEquals(instance.max(2.2F, 4.2F), 4.2F);
+        
+        // Test min
+        assertEquals(instance.min(2.5F, 4.8F), 2.5F);
+        
+        // Test add
+        assertEquals(instance.add(1.0F, 3.0F), 4.0F);
+        
+        // Test difference
+        assertEquals(instance.difference(3.7F, 7.7F), 3.9999998F);
+        
+        // Test square
+        assertEquals(instance.square(3.0F), 9.0F);
+        
+        // Test sqrt
+        assertEquals(instance.sqrt(9.0F), 3.0F);
+        
+        // Test scale
+        assertEquals(instance.scale(2.2F, 1.5F), 1.4666667F);
+        
+        // Test makeArray
+        assertEquals(instance.makeArray(2).length, 2);        
+    }
 }
