@@ -107,7 +107,7 @@ public class MapView extends ScrollPane {
     // ID of the next user drawn marker
     private int drawnMarkerId = 0;
 
-    private double scaleValue = 1.0;  // Scale of overall map display
+    private double currentScale = 1.0;  // Scale of overall map display
     private double scaledMapLineWidth = 0.1;  // Scaled witdth of lines on maps (for SVF maps) to account for any overall map scale
     private double pointMarkerGlobalScale = 0.1;
 
@@ -605,7 +605,7 @@ public class MapView extends ScrollPane {
         if (this.getScene() == null) {
             return;
         }
-        overviewOverlay.update(this.getViewportBounds().getWidth()/scaleValue, this.getViewportBounds().getHeight()/scaleValue, this.getHvalue(), this.getVvalue());
+        overviewOverlay.update(this.getViewportBounds().getWidth()/this.currentScale, this.getViewportBounds().getHeight()/this.currentScale, this.getHvalue(), this.getVvalue());
     }
 
     /**
@@ -635,7 +635,7 @@ public class MapView extends ScrollPane {
                 // If shift is down then display circle drawing
                 if (event.isShiftDown()) {
                     drawingCircleMarker = true;
-                    circleMarker = new CircleMarker(self, drawnMarkerId++, x, y, 0, 100, 100);
+                    circleMarker = new CircleMarker(self, drawnMarkerId++, x, y, 0);
                     polygonMarkerGroup.getChildren().add(circleMarker.getUICircle());
                     polygonMarkerGroup.getChildren().add(circleMarker.getUILine());
 
@@ -655,7 +655,7 @@ public class MapView extends ScrollPane {
                 } else if (event.isControlDown()) {
                     // if user is not current;y drawing a polygon marker or a circle marker then show UI to draw a polygon on screen
                     if (!drawingPolygonMarker) {
-                        polygonMarker = new PolygonMarker(self, drawnMarkerId++, 0, 0);
+                        polygonMarker = new PolygonMarker(self, drawnMarkerId++);
 
                         drawingPolygonMarker = true;
                     }
@@ -675,8 +675,7 @@ public class MapView extends ScrollPane {
 
                     // If the user is not drawing any type of marker then generate point marker where they clicked
                 } else if (event.getButton().equals(MouseButton.PRIMARY)) {
-                    final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 1, 0, 0);
-                    //LOGGER.log(Level.SEVERE, "User point marker x: " + x + " User point marker y: " + y);
+                    final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 1);
                     marker.setMarkerPosition(0, 0);
                     addUserDrawnMarker(marker);
                     userMarkers.add(marker);
@@ -737,28 +736,28 @@ public class MapView extends ScrollPane {
     /**
      * Perform scaling of all map content. Overall maps are scaled by the scale factor, while some components within maps
      * - such as SVG map lines are scaled by the inverse to ensure they remain a constant width.
-     * @param scaleFactor Scale factor to apply to content.
+     * @param scalingFactor Scale factor to apply to content.
      */
-    private void scale(final double scaleFactor) {
+    private void scale(final double scalingFactor) {
         
         // First determine if we are zooming out and the result of the zoom would mean that the map was smaller than
         // the mapview ScrollPane in both axis.
         final Bounds contentBounds = scrollContent.getLayoutBounds();
         final Bounds viewportBounds = this.getViewportBounds();
-        if ((contentBounds.getWidth() * scaleFactor <= viewportBounds.getWidth()) &&
-            (contentBounds.getHeight() * scaleFactor <= viewportBounds.getHeight())) {
+        if ((contentBounds.getWidth() * scalingFactor <= viewportBounds.getWidth()) &&
+            (contentBounds.getHeight() * scalingFactor <= viewportBounds.getHeight())) {
             return;
         }
         
         // Determine the new scale value and line width value. The scaledMapLineWidth value is designed to counteract
         // the value of scaleFactor and ensure that map lines remain at the same width
-        scaleValue = scaleValue * scaleFactor;
-        scaledMapLineWidth = scaledMapLineWidth / scaleFactor;
-        pointMarkerGlobalScale = pointMarkerGlobalScale / scaleFactor;
+        this.currentScale = this.currentScale * scalingFactor;
+        scaledMapLineWidth = scaledMapLineWidth / scalingFactor;
+        pointMarkerGlobalScale = pointMarkerGlobalScale / scalingFactor;
 
         // Scale mapStackPane to the new zoom factor and update map line widths to counter it 
-        mapStackPane.setScaleX(scaleValue);
-        mapStackPane.setScaleY(scaleValue);
+        mapStackPane.setScaleX(this.currentScale);
+        mapStackPane.setScaleY(this.currentScale);
         if (!testUsingCanvas) {
             countrySVGPaths.forEach(svgPath -> svgPath.setStrokeWidth(scaledMapLineWidth));
         }
@@ -902,7 +901,7 @@ public class MapView extends ScrollPane {
         final Text t = new Text(markerText);
         t.setX(gs.getCenterX() - 37);
         t.setY(gs.getCenterY());
-        final UserPointMarker tempMarker = new UserPointMarker(this, -99, gs.getCenterX(), gs.getCenterY(), 0.05, 0, 0);
+        final UserPointMarker tempMarker = new UserPointMarker(this, AbstractMarker.NO_MARKER_ID, gs.getCenterX(), gs.getCenterY(), 0.05);
         markerTextLabels.add(new Pair(tempMarker, t));
         pointMarkerTextGroup.getChildren().add(t);
     }
@@ -1053,18 +1052,18 @@ public class MapView extends ScrollPane {
         markers.values().forEach(abstractMarker -> {
             if (abstractMarker instanceof PointMarker) {
                 final PointMarker marker = (PointMarker) abstractMarker;
-                marker.scaleMarker(scaleValue);
+                marker.scaleMarker(this.currentScale);
             } else {
-                abstractMarker.scaleMarker(scaleValue);
+                abstractMarker.scaleMarker(this.currentScale);
             }
         });
 
         userMarkers.forEach(abstractMarker -> {
             if (abstractMarker instanceof UserPointMarker) {
                 final UserPointMarker marker = (UserPointMarker) abstractMarker;
-                marker.scaleMarker(scaleValue);
+                marker.scaleMarker(this.currentScale);
             } else {
-                 abstractMarker.scaleMarker(scaleValue);
+                 abstractMarker.scaleMarker(this.currentScale);
             }
         });
     }
@@ -1494,15 +1493,6 @@ public class MapView extends ScrollPane {
                 okButton.setTextFill(Color.BLACK);
             });
 
-            final double zoomCircleMarkerXOffset = 0;
-            final double zoomCircleMarkerYOffset = 0;
-
-            final double zoomUserMarkerXOffset = 0;
-            final double zoomUserMarkerYOffset = 0;
-
-            final double mgrsZoomUserMarkerXOffset = 0;
-            final double mgrsZoomUserMarkerYOffset = 0;
-
             okButton.setOnAction(event -> {
                 String selectedGeoType = geoTypeMenu.getSelectionModel().getSelectedItem();
 
@@ -1533,7 +1523,7 @@ public class MapView extends ScrollPane {
                         radius = Double.parseDouble(radiusText.strip());
 
                         // draw circle at entered location
-                        final CircleMarker zoomCircleMarker = new CircleMarker(self, drawnMarkerId++, x, y, radius, zoomCircleMarkerXOffset, zoomCircleMarkerYOffset);
+                        final CircleMarker zoomCircleMarker = new CircleMarker(self, drawnMarkerId++, x, y, radius);
 
                         zoomCircleMarker.generateCircle();
                         drawnMarkerGroup.getChildren().add(zoomCircleMarker.getMarker());
@@ -1541,7 +1531,7 @@ public class MapView extends ScrollPane {
 
                         // If no radius is provided then draw point marker at location
                     } else {
-                        final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
+                        final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05);
                         marker.setMarkerPosition(0, 0);
 
                         addUserDrawnMarker(marker);
@@ -1556,7 +1546,7 @@ public class MapView extends ScrollPane {
                     double x = MapConversions.lonToMapX(coordinate.getLongitude().degrees);
                     double y = MapConversions.latToMapY(coordinate.getLatitude().degrees);
 
-                    UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, mgrsZoomUserMarkerXOffset, mgrsZoomUserMarkerYOffset);
+                    UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05);
                     marker.setMarkerPosition(0, 0);
 
                     addUserDrawnMarker(marker);
@@ -1570,7 +1560,7 @@ public class MapView extends ScrollPane {
                     double x = MapConversions.lonToMapX(geohashCoordinates[1] - geohashCoordinates[3]);
                     double y = MapConversions.latToMapY(geohashCoordinates[0] - geohashCoordinates[2]);
 
-                    final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05, zoomUserMarkerXOffset, zoomUserMarkerYOffset);
+                    final UserPointMarker marker = new UserPointMarker(self, drawnMarkerId++, x, y, 0.05);
                     marker.setMarkerPosition(0, 0);
 
                     addUserDrawnMarker(marker);
@@ -1677,7 +1667,7 @@ public class MapView extends ScrollPane {
                     graphMarkerGroup.getChildren().add(marker.getMarker());
                 }
 
-                marker.scaleMarker(this.scaleValue);
+                marker.scaleMarker(this.currentScale);
             }
         }
     }
@@ -1716,8 +1706,8 @@ public class MapView extends ScrollPane {
      *
      * @return Current scaling factor (zoom) of the map.
      */
-    public double getScalingFactor() {
-        return this.scaleValue; 
+    public double getCurrentScale() {
+        return this.currentScale; 
     }
     
     /**

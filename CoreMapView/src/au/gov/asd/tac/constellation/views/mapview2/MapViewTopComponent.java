@@ -283,9 +283,6 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
     @NbBundle.Messages("ExtractCoordsFromGraphPlugin=Extracts Coordinates from Graph")
     protected static class ExtractCoordsFromGraphPlugin extends SimpleReadPlugin {
 
-        private static final double POINT_MARKER_X_OFFSET = 0;
-        private static final double POINT_MARKER_Y_OFFSET = 0;
-
         private MapViewTopComponent mapViewTopComponent;
 
         public ExtractCoordsFromGraphPlugin(final MapViewTopComponent topComponent) {
@@ -410,7 +407,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             if (processingGeoShape) {
                                 final JSONObject json = new JSONObject(elementShape);
                                 final JSONArray featureList = json.getJSONArray("features");
-                                final GeoShapePolygonMarker gsp = new GeoShapePolygonMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET);
+                                final GeoShapePolygonMarker gsp = new GeoShapePolygonMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID);
                                 for (int i = 0; i < featureList.length(); ++i) {
                                     final JSONObject latLongObj = featureList.getJSONObject(i).getJSONObject("geometry");
                                     final JSONArray latLongList = latLongObj.getJSONArray("coordinates");
@@ -454,7 +451,7 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                             if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey) && !processingGeoShape) {
 
                                 // Create a new point marker and add it to the map
-                                final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, 10.0, POINT_MARKER_X_OFFSET, POINT_MARKER_Y_OFFSET, elementColour);
+                                final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, elementColour);
                                 mapViewTopComponent.addMarker(coordinateKey, p);
 
                                 // Set colours and labels if they are available

@@ -36,9 +36,6 @@ import java.util.Map;
  */
 public class LocationPathsLayer extends AbstractPathsLayer {
 
-    static final double LINE_MARKER_X_OFFSET = 0;
-    static final double LINE_MARKER_Y_OFFSET = 0;
-
     public LocationPathsLayer(final MapView parent, final int id, final Map<String, AbstractMarker> queriedMarkers) {
         super(parent, id, queriedMarkers);
     }
@@ -106,7 +103,7 @@ public class LocationPathsLayer extends AbstractPathsLayer {
                             final String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
 
                             // Draw line beteeen the two vertices
-                            final LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, LINE_MARKER_X_OFFSET, LINE_MARKER_Y_OFFSET);
+                            final LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon);
                             if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
 
                                 l.getMarker().setStrokeWidth(parent.getScaledMapLineWidth() * 20);

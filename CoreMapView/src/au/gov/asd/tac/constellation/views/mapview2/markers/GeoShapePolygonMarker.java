@@ -36,12 +36,12 @@ public class GeoShapePolygonMarker extends AbstractMarker {
     private final Map<String, Pair<GeoShape, List<Integer>>> geoShapes = new HashMap<>();
     private double edgeScalingFactor;
 
-    public GeoShapePolygonMarker(MapView parent, int markerID, int nodeId, double xOffset, double yOffset) {
-        super(parent, markerID, nodeId, xOffset, yOffset, MarkerType.POLYGON_MARKER);
+    public GeoShapePolygonMarker(MapView parent, int markerID, int nodeId) {
+        super(parent, markerID, nodeId, MarkerType.POLYGON_MARKER);
     }
 
     public void addGeoShape(final String coordinateList, final int elementID) {
-        this.scalingFactor = 1 / parent.getScalingFactor();
+        this.scalingFactor = 1 / parent.getCurrentScale();
         final GeoShape geoShape = new GeoShape();
         geoShapes.put(coordinateList, new Pair(geoShape, new ArrayList<>()));
         geoShapes.get(coordinateList).getValue().add(elementID);

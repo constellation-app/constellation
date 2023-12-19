@@ -37,9 +37,9 @@ public class CircleMarker extends AbstractMarker {
     private final Circle circle = new Circle();
     private final Line line = new Line();
 
-    public CircleMarker(final MapView parent, final int markerID, final double centerX, final double centerY, final double radius, final double xOffset, final double yOffset) {
-        super(parent, markerID, NO_MARKER_NODE_ID, xOffset, yOffset, AbstractMarker.MarkerType.POLYGON_MARKER);
-        this.scalingFactor = 1 / parent.getScalingFactor();
+    public CircleMarker(final MapView parent, final int markerID, final double centerX, final double centerY, final double radius) {
+        super(parent, markerID, NO_MARKER_NODE_ID, AbstractMarker.MarkerType.POLYGON_MARKER);
+        this.scalingFactor = 1 / parent.getCurrentScale();
         this.centerX = centerX;
         this.centerY = centerY;
         this.radius = radius;

@@ -41,7 +41,7 @@ public class PolygonMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(PolygonMarkerNGTest.class.getName());
 
-    private static final MapDetails mapDetails = new MapDetails(1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+    private static final MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()));
     
 
@@ -82,7 +82,7 @@ public class PolygonMarkerNGTest {
 
         final double prevLineEndX = 54;
         final double prevLineEndY = 54;
-        final PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
+        final PolygonMarker instance = new PolygonMarker(map, 65);
 
         final Line result = instance.addNewLine(prevLineEndX, prevLineEndY);
 
@@ -99,7 +99,7 @@ public class PolygonMarkerNGTest {
         final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView map = Mockito.spy(new MapView(mapViewPane, mapDetails));
-        final PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
+        final PolygonMarker instance = new PolygonMarker(map, 65);
         instance.endDrawing();
 
         assertEquals(instance.getCurrentLine() == null, true);
@@ -121,7 +121,7 @@ public class PolygonMarkerNGTest {
 
         final double x = 23;
         final double y = 23;
-        final PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
+        final PolygonMarker instance = new PolygonMarker(map, 65);
 
         instance.addNewLine(xNewLine, yNewLine);
 
@@ -142,7 +142,7 @@ public class PolygonMarkerNGTest {
         final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView map = Mockito.spy(new MapView(mapViewPane, mapDetails));
-        final PolygonMarker instance = new PolygonMarker(map, 65, 0, 0);
+        final PolygonMarker instance = new PolygonMarker(map, 65);
 
         instance.addNewLine(640.5983769798281, 654.7539097213746);
         instance.addNewLine(707.6983769798281, 702.0539097213747);

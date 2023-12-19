@@ -76,9 +76,6 @@ public class EntityPathsLayer extends AbstractPathsLayer {
 
         final List<Integer> idList = new ArrayList<>();
 
-        final double lineMarkerXOffset = 0;
-        final double lineMarkerYOffset = 0;
-
         extractQueriedMarkersAndNeighbours(idList);
 
         // For all connected neighbours
@@ -181,7 +178,7 @@ public class EntityPathsLayer extends AbstractPathsLayer {
 
                                 final String coordinateKey = (double) sourceLat + "," + (double) sourceLon + "," + (double) destLat + "," + (double) destLon;
 
-                                final LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon, lineMarkerXOffset, lineMarkerYOffset);
+                                final LineMarker l = new LineMarker(parent, parent.getNewMarkerID(), vertexID, (float) sourceLat, (float) sourceLon, (float) destLat, (float) destLon);
                                 if (!parent.getAllMarkers().keySet().contains(coordinateKey)) {
                                     l.setMarkerPosition(MapView.MAP_WIDTH, MapView.MAP_HEIGHT);
                                     entityPaths.getChildren().add(l.getMarker());

@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcep
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.TemporalConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
@@ -102,7 +103,7 @@ public class EntityPathsLayerNGTest {
         final ReadableGraph graph = Mockito.mock(ReadableGraph.class);
 
         final Map<String, AbstractMarker> queriedMarkers = new HashMap<>();
-        final PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, 0.05, 0, 0, "#ffffff");
+        final PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, ConstellationColor.WHITE);
         queriedMarkers.put("5,5", pMarker);
 
         //Mockito.when(parent.getCurrentGraph()).thenReturn(graphMock);

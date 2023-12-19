@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
 import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
@@ -40,7 +41,7 @@ public class PointMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(PointMarkerNGTest.class.getName());
 
-    private static final MapDetails mapDetails = new MapDetails(1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+    private static final MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()));
     
 
@@ -81,27 +82,11 @@ public class PointMarkerNGTest {
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
         final String option = MapViewPane.DEFAULT_COLOURS;
-        final PointMarker instance = new PointMarker(parent, -99, -99, 0, 0, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 0, 0, ConstellationColor.WHITE);
 
         // Test default Colour
         instance.changeMarkerColour(option);
-        assertEquals(instance.getCurrentColour(), instance.DEFAULT_MARKER_COLOUR);
-
-        instance.changeMarkerColour(MapViewPane.USE_COLOUR_ATTR);
-        assertEquals(instance.getCurrentColour(), "#ffffff");
-
-        instance.setBlazeColour("Yellow;#cccccc");
-        instance.changeMarkerColour(MapViewPane.USE_BLAZE_COL);
-        assertEquals(instance.getCurrentColour(), "#cccccc");
-
-        instance.setBlazeColour("Yellow;#gggggg");
-        instance.changeMarkerColour(MapViewPane.USE_BLAZE_COL);
-        assertEquals(instance.getCurrentColour(), "#FFFFFF");
-
-        instance.setOverlayColour("#990a0a");
-        instance.changeMarkerColour(MapViewPane.USE_OVERLAY_COL);
-        assertEquals(instance.getCurrentColour(), "#990a0a");
-
+        assertEquals(instance.getCurrentColour(), MapDetails.MARKER_DEFAULT_FILL_COLOUR);
     }
 
     /**
@@ -115,7 +100,7 @@ public class PointMarkerNGTest {
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
-        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, ConstellationColor.WHITE); 
         final double expResult = 108;
         final double result = instance.getLattitude();
         assertEquals(result, expResult, 0.0);
@@ -132,7 +117,7 @@ public class PointMarkerNGTest {
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
-        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, ConstellationColor.WHITE);
         final double expResult = 56;
         final double result = instance.getLongitude();
         assertEquals(result, expResult, 0.0);
@@ -148,10 +133,13 @@ public class PointMarkerNGTest {
         final MapViewTopComponent component = Mockito.mock(MapViewTopComponent.class);
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
+        parent.zoomIn();
+        parent.zoomIn();
+        parent.zoomIn();
 
-        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
-        final double expResult = 0.05;
-        final double result = instance.getScale();
+        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, ConstellationColor.WHITE);
+        final double expResult = 0.7513148009015775;
+        final double result = instance.getScalingFactor();
         assertEquals(result, expResult, 0.0);
     }
 
@@ -166,7 +154,7 @@ public class PointMarkerNGTest {
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
-        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, ConstellationColor.WHITE);
         final String expResult = "l-35-90 l-45-80 l-10-30 l0-45 l10-25 l15-20 l50-20 l30 0 l50 20 l15 20 l10 25 l0 45 l-10 30 l-45 80 l-35 90 m0-194 l-22-22 l22-22 l22 22 l-22 22 m0-8 l-14-14 l14-14 l14 14 l-14 14 m0-8 l-6-6 l6-6 l6 6 l-6 6";
         final String result = instance.getPath();
         assertEquals(result, expResult);
@@ -183,7 +171,7 @@ public class PointMarkerNGTest {
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
-        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 108, 56, ConstellationColor.WHITE);
         instance.setBlazeColour("Green;#gggggg");
         final String expResult = "#gggggg";
         final String result = instance.getBlazeColour();
@@ -201,7 +189,7 @@ public class PointMarkerNGTest {
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
-        final PointMarker instance = new PointMarker(parent, -99, -99, 85.0511, -180, 1, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 85.0511, -180, ConstellationColor.WHITE);
         instance.setMarkerPosition(MapView.MAP_VIEWPORT_WIDTH, MapView.MAP_VIEWPORT_HEIGHT);
         final double expResult = 0.0;
         final double result = instance.getX();
@@ -219,7 +207,7 @@ public class PointMarkerNGTest {
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
-        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, ConstellationColor.WHITE);
         final double expResult = 0.0;
         final double result = instance.getY();
         assertEquals(result, expResult, 0.0);
@@ -237,7 +225,7 @@ public class PointMarkerNGTest {
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
         final String labelAttribute = "Example Label";
-        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, ConstellationColor.WHITE);
         instance.setLabelAttr(labelAttribute);
         assertEquals(instance.getLabelAttr(), "Example Label");
 
@@ -258,7 +246,7 @@ public class PointMarkerNGTest {
         final MapView parent = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
         final String identAttribute = "Example Identifier";
-        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, ConstellationColor.WHITE);
         instance.setIdentAttr(identAttribute);
         assertEquals(instance.getIdentAttr(), "Example Identifier");
 
@@ -274,7 +262,7 @@ public class PointMarkerNGTest {
         System.out.println("getIdentAttr");
 
         final MapView parent = Mockito.mock(MapView.class);
-        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, 0.05, 0, 0, "#ffffff");
+        final PointMarker instance = new PointMarker(parent, -99, -99, 83.63001, -169.1110266, ConstellationColor.WHITE);
 
         String expResult = "TestIdentity";
 

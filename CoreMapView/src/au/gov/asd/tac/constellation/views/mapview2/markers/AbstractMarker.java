@@ -41,8 +41,6 @@ public abstract class AbstractMarker {
 
     protected double x = 0;
     protected double y = 0;
-    protected double xOffset;
-    protected double yOffset;
     protected double scalingFactor;
 
     protected MapView parent;
@@ -58,12 +56,10 @@ public abstract class AbstractMarker {
 
     protected MarkerType type;
 
-    protected AbstractMarker(final MapView parent, final int markerID, final int nodeId, final double xOffset, final double yOffset, final MarkerType type) {
+    protected AbstractMarker(final MapView parent, final int markerID, final int nodeId, final MarkerType type) {
         this.markerID = markerID;
         this.parent = parent;
         idList.add(nodeId);
-        this.xOffset = xOffset;
-        this.yOffset = yOffset;
         this.type = type;
 
         markerPath = new SVGPath();
@@ -144,5 +140,9 @@ public abstract class AbstractMarker {
      * @param scalingFactor The scaling factor to apply to the markers.
      */
     public void scaleMarker(final double scalingFactor) {
+    }
+    
+    public double getScalingFactor() {
+        return this.scalingFactor;
     }
 }

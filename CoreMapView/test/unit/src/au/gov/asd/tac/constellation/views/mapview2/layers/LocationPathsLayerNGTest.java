@@ -22,6 +22,7 @@ import au.gov.asd.tac.constellation.graph.manager.GraphManager;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.AnalyticConcept;
 import au.gov.asd.tac.constellation.graph.schema.analytic.concept.SpatialConcept;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexType;
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
@@ -125,7 +126,7 @@ public class LocationPathsLayerNGTest {
         Mockito.when(graph.getObjectValue(lonID2, neighbourID)).thenReturn(70f);
 
         final Map<String, AbstractMarker> queriedMarkers = new HashMap<>();
-        final PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, 0.05, 0, 0, "#ffffff");
+        final PointMarker pMarker = new PointMarker(parent, vertexID, vertexID, 0, 0, ConstellationColor.WHITE);
         queriedMarkers.put("5,5", pMarker);
 
         try (MockedStatic<GraphManager> graphManagerMock = Mockito.mockStatic(GraphManager.class)) {

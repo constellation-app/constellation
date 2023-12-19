@@ -39,9 +39,9 @@ public class LineMarker extends AbstractMarker {
     private double y2;
 
 
-    public LineMarker(final MapView parent, final int markerID, final int id, final double lattitude1, final double longitude1, final double lattitude2, final double longitude2, final double xOffset, final double yOffset) {
-        super(parent, markerID, id, xOffset, yOffset, AbstractMarker.MarkerType.LINE_MARKER);
-        this.scalingFactor = 1 / parent.getScalingFactor();
+    public LineMarker(final MapView parent, final int markerID, final int id, final double lattitude1, final double longitude1, final double lattitude2, final double longitude2) {
+        super(parent, markerID, id, AbstractMarker.MarkerType.LINE_MARKER);
+        this.scalingFactor = 1 / parent.getCurrentScale();
         lat1 = lattitude1;
         lon1 = longitude1;
         lat2 = lattitude2;
@@ -83,11 +83,11 @@ public class LineMarker extends AbstractMarker {
      */
     @Override
     public void setMarkerPosition(final double mapWidth, final double mapHeight) {
-        x1 = MapConversions.lonToMapX(lon1) + xOffset;
-        y1 = MapConversions.latToMapY(lat1) - yOffset;
+        x1 = MapConversions.lonToMapX(lon1);
+        y1 = MapConversions.latToMapY(lat1);
 
-        x2 = MapConversions.lonToMapX(lon2) + xOffset;
-        y2 = MapConversions.latToMapY(lat2) - yOffset;
+        x2 = MapConversions.lonToMapX(lon2);
+        y2 = MapConversions.latToMapY(lat2);
 
         final String path = "M " + x1 + SeparatorConstants.COMMA + " " + y1 + " Z L " + x2 + SeparatorConstants.COMMA + y2 + " z";
 

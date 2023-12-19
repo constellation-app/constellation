@@ -40,7 +40,7 @@ public class LineMarkerNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(LineMarkerNGTest.class.getName());
 
-    private static final MapDetails mapDetails = new MapDetails(1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+    private static final MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()));
     
 
@@ -81,7 +81,7 @@ public class LineMarkerNGTest {
 
         final double mapWidth = MapView.MAP_VIEWPORT_WIDTH;
         final double mapHeight = MapView.MAP_VIEWPORT_HEIGHT;
-        final LineMarker instance = new LineMarker(parent, -99, -99, 85.0511, -180, -85.0511, 180, 0, 0);
+        final LineMarker instance = new LineMarker(parent, -99, -99, 85.0511, -180, -85.0511, 180);
         instance.setMarkerPosition(mapWidth, mapHeight);
         assertEquals(instance.getStartX(), 0.0);
     }

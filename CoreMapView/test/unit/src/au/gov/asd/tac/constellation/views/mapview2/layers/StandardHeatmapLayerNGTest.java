@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2.layers;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
@@ -71,7 +72,7 @@ public class StandardHeatmapLayerNGTest {
 
         final MapView mapView = Mockito.mock(MapView.class);
 
-        final AbstractMarker marker = Mockito.spy(new PointMarker(mapView, -99, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000"));
+        final AbstractMarker marker = Mockito.spy(new PointMarker(mapView, -99, 0, (double) -1, (double) -2, ConstellationColor.WHITE));
         Mockito.when(marker.getConnectedNodeIdList()).thenCallRealMethod();
         Mockito.doCallRealMethod().when(marker).addNodeID(1);
         Mockito.when(marker.getWeight()).thenCallRealMethod();

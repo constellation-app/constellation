@@ -60,9 +60,9 @@ public class PointMarker extends AbstractMarker {
     private String identifierAttr = null;
     private int identifierCount = 0;
     
-    public PointMarker(final MapView parent, final int markerID, final int nodeId, final double latitude, final double longitude, final double scale, final double xOffset, final double yOffset, final ConstellationColor attrColour) {
-        super(parent, markerID, nodeId, xOffset, yOffset, AbstractMarker.MarkerType.POINT_MARKER);
-        this.scalingFactor = 1 / parent.getScalingFactor();
+    public PointMarker(final MapView parent, final int markerID, final int nodeId, final double latitude, final double longitude, final ConstellationColor attrColour) {
+        super(parent, markerID, nodeId, AbstractMarker.MarkerType.POINT_MARKER);
+        this.scalingFactor = 1 / parent.getCurrentScale();
 
         this.latitude = latitude;
         this.longitude = longitude;
@@ -153,6 +153,10 @@ public class PointMarker extends AbstractMarker {
         }
         markerPath.setFill(currentColour);
     }
+    
+    public Color getCurrentColour() {
+        return this.currentColour;
+    }
 
     public double getLattitude() {
         return latitude;
@@ -175,8 +179,8 @@ public class PointMarker extends AbstractMarker {
      */
     @Override
     public void setMarkerPosition(final double mapWidth, final double mapHeight) {
-        x = MapConversions.lonToMapX(longitude) + xOffset;
-        y = MapConversions.latToMapY(latitude) + yOffset;
+        x = MapConversions.lonToMapX(longitude);
+        y = MapConversions.latToMapY(latitude);
         path = "M " + x + SeparatorConstants.COMMA + " " + y + " " + path;
         markerPath.setContent(path);
     }

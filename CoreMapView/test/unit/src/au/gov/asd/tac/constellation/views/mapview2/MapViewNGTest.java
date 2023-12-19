@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.views.mapview2;
 
+import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import au.gov.asd.tac.constellation.utilities.file.ConstellationInstalledFileLocator;
 import au.gov.asd.tac.constellation.views.mapview2.layers.AbstractMapLayer;
 import au.gov.asd.tac.constellation.views.mapview2.layers.DayNightLayer;
@@ -45,7 +46,7 @@ public class MapViewNGTest {
 
     private static final Logger LOGGER = Logger.getLogger(MapViewNGTest.class.getName());
 
-    private static final MapDetails mapDetails = new MapDetails(1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
+    private static final MapDetails mapDetails = new MapDetails(MapDetails.MapType.SVG, 1000, 999, 85.0511, -85.0511, -180, 180, "Full World (default)",
                            ConstellationInstalledFileLocator.locate("modules/ext/data/WorldMap1000x999.svg", "au.gov.asd.tac.constellation.views.mapview", MapView.class.getProtectionDomain()));
     
     @BeforeClass
@@ -86,8 +87,8 @@ public class MapViewNGTest {
         final String coordinateKey = "-1" + "," + "-2";
         final String coordinateKey2 = "-3" + "," + "-4";
 
-        final PointMarker p1 = new PointMarker(instance, -99, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
-        final PointMarker p2 = new PointMarker(instance, -100, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+        final PointMarker p1 = new PointMarker(instance, -99, 0, (double) -1, (double) -2, ConstellationColor.BLACK);
+        final PointMarker p2 = new PointMarker(instance, -100, 1, (double) -3, (double) -4, ConstellationColor.BLACK);
 
         instance.addMarkerToHashMap(coordinateKey, p1);
         instance.addMarkerToHashMap(coordinateKey2, p2);
@@ -131,7 +132,7 @@ public class MapViewNGTest {
 
         final int id = 1;
         instance.getUserCreatedMarkers().clear();
-        UserPointMarker usm = new UserPointMarker(instance, id, 4, 4, 0.05, 4, 4);
+        UserPointMarker usm = new UserPointMarker(instance, id, 4, 4, 0.05);
 
         instance.getUserCreatedMarkers().add(usm);
 
@@ -230,8 +231,8 @@ public class MapViewNGTest {
 
         instance.getAllMarkers().clear();
 
-        final PointMarker p1 = new PointMarker(instance, -999, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
-        final PointMarker p2 = new PointMarker(instance, -101, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+        final PointMarker p1 = new PointMarker(instance, -999, 0, (double) -1, (double) -2, ConstellationColor.BLACK);
+        final PointMarker p2 = new PointMarker(instance, -101, 1, (double) -3, (double) -4, ConstellationColor.BLACK);
 
         instance.addMarkerToHashMap("testCoord1", p1);
         instance.addMarkerToHashMap("testCoord2", p2);
@@ -255,13 +256,13 @@ public class MapViewNGTest {
         instance.getAllMarkers().clear();
         instance.getUserCreatedMarkers().clear();
 
-        final PointMarker p1 = new PointMarker(instance, -999, 0, (double) -1, (double) -2, 0.05, 0, 0, "#000000");
-        final PointMarker p2 = new PointMarker(instance, -101, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+        final PointMarker p1 = new PointMarker(instance, -999, 0, (double) -1, (double) -2, ConstellationColor.BLACK);
+        final PointMarker p2 = new PointMarker(instance, -101, 1, (double) -3, (double) -4, ConstellationColor.BLACK);
 
         instance.addMarkerToHashMap("testCoord1", p1);
         instance.addMarkerToHashMap("testCoord2", p2);
 
-        final UserPointMarker usm = new UserPointMarker(instance, 45, 4, 4, 0.05, 4, 4);
+        final UserPointMarker usm = new UserPointMarker(instance, 45, 4, 4, 0.05);
 
         instance.getUserCreatedMarkers().add(usm);
 
@@ -280,11 +281,11 @@ public class MapViewNGTest {
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView instance = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
-        final PointMarker p2 = new PointMarker(instance, -107, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+        final PointMarker p2 = new PointMarker(instance, -107, 1, (double) -3, (double) -4, ConstellationColor.BLACK);
 
         instance.addMarkerToHashMap("testCoord2", p2);
 
-        final UserPointMarker usm = new UserPointMarker(instance, 46, 4, 4, 0.05, 4, 4);
+        final UserPointMarker usm = new UserPointMarker(instance, 46, 4, 4, 0.05);
 
         instance.getUserCreatedMarkers().add(usm);
 
@@ -308,7 +309,7 @@ public class MapViewNGTest {
         final List<Integer> selectedNodes = new ArrayList<Integer>();
         final boolean selectingVertex = true;
 
-        final PointMarker p2 = new PointMarker(instance, markerID, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+        final PointMarker p2 = new PointMarker(instance, markerID, 1, (double) -3, (double) -4, ConstellationColor.BLACK);
 
         instance.addMarkerToHashMap("testCoord2", p2);
 
@@ -328,7 +329,7 @@ public class MapViewNGTest {
         final MapViewPane mapViewPane = Mockito.spy(new MapViewPane(component));
         final MapView instance = Mockito.spy(new MapView(mapViewPane, mapDetails));
 
-        final AbstractMarker marker = new PointMarker(instance, -32, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+        final AbstractMarker marker = new PointMarker(instance, -32, 1, (double) -3, (double) -4, ConstellationColor.BLACK);
 
         assertEquals(instance.getGraphMarkerGroup().getChildren().size(), 0);
 
@@ -350,7 +351,7 @@ public class MapViewNGTest {
 
         final String key = "60,89";
 
-        final AbstractMarker e = new PointMarker(instance, 32, 1, (double) -3, (double) -4, 0.05, 0, 0, "#000000");
+        final AbstractMarker e = new PointMarker(instance, 32, 1, (double) -3, (double) -4, ConstellationColor.BLACK);
 
         instance.addMarkerToHashMap(key, e);
 
