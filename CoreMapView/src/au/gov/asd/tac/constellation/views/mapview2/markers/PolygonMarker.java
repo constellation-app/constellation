@@ -37,11 +37,11 @@ public class PolygonMarker extends AbstractMarker {
 
     public PolygonMarker(final MapView parent, final int markerID) {
         super(parent, markerID, NO_MARKER_NODE_ID, AbstractMarker.MarkerType.POLYGON_MARKER);
-        this.scalingFactor = 1 / parent.getCurrentScale();
 
         markerPath.setFill(MapDetails.MARKER_USER_DRAWING_FILL_COLOUR);
-        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
         markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
+        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
+        this.scaleMarker(parent.getCurrentScale());
 
         // Event handler for the polygon marker
         markerPath.setOnMouseEntered((final MouseEvent e) -> {
@@ -124,13 +124,12 @@ public class PolygonMarker extends AbstractMarker {
             path += "L" + polygonLineUI.get(0).getStartX() + SeparatorConstants.COMMA + polygonLineUI.get(0).getStartY();
             if (polygonLineUI.size() == 1) {
                 markerPath.setStroke(Color.RED);
-                markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
                 this.type = AbstractMarker.MarkerType.LINE_MARKER;
             }
         }
 
         rawPath = path;
-        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * this.scalingFactor);
+        markerPath.setFill(MapDetails.MARKER_USER_DRAWN_FILL_COLOUR);
         markerPath.setContent(path);
     }
 
