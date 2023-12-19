@@ -68,7 +68,7 @@ public class PointMarker extends AbstractMarker {
         this.longitude = longitude;
           
             
-        this.attributeColour = StringUtils.isBlank(attrColour) ? MapDetails.MARKER_DEFAULT_FILL_COLOUR : Color.web(attrColour), MapDetails.MARKER_OPACTIY);
+        this.attributeColour = StringUtils.isBlank(attrColour) ? MapDetails.MARKER_DEFAULT_FILL_COLOUR : Color.web(attrColour, MapDetails.MARKER_OPACTIY);
 
         markerPath.setScaleX(this.scalingFactor / MARKER_PATH_SCALING);
         markerPath.setScaleY(this.scalingFactor / MARKER_PATH_SCALING);
