@@ -201,6 +201,12 @@ public class MapView extends ScrollPane {
     private boolean drawingMeasureLine = false;
     private Line measureLine = null;
 
+    // Panning variables
+    private double mouseAnchorX;
+    private double mouseAnchorY;
+    private double translateX;
+    private double translateY;
+
     // Pane that hold all the groups for all the different graphical outputs
     private final Pane mapGroupHolder = new Pane();
 
@@ -299,8 +305,8 @@ public class MapView extends ScrollPane {
 //            // Check they are dragging the right mouse button
 //            if (event.isSecondaryButtonDown()) {
 //                // Move the map      
-//                mapStackPane.setTranslateX(transalateX + (event.getSceneX() - mouseAnchorX));
-//                mapStackPane.setTranslateY(transalateY + (event.getSceneY() - mouseAnchorY));
+//                mapStackPane.setTranslateX(translateX + (event.getSceneX() - mouseAnchorX));
+//                mapStackPane.setTranslateY(translateY + (event.getSceneY() - mouseAnchorY));
 //                enclosingRectangle.setTranslateX(enclosingRectangle.getTranslateX() - (event.getSceneX() - mouseAnchorX));
 //                enclosingRectangle.setTranslateY(enclosingRectangle.getTranslateY() - (event.getSceneY() - mouseAnchorY));
 //                updateOverviewOverlay();
@@ -569,8 +575,8 @@ public class MapView extends ScrollPane {
             mouseAnchorY = event.getSceneY();
 
             // Position of map when moise is clicked
-            transalateX = mapStackPane.getTranslateX();
-            transalateY = mapStackPane.getTranslateY();
+            translateX = mapStackPane.getTranslateX();
+            translateY = mapStackPane.getTranslateY();
 
         });
 
