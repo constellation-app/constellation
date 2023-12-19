@@ -62,20 +62,16 @@ public class PointMarker extends AbstractMarker {
     
     public PointMarker(final MapView parent, final int markerID, final int nodeId, final double latitude, final double longitude, final ConstellationColor attrColour) {
         super(parent, markerID, nodeId, AbstractMarker.MarkerType.POINT_MARKER);
-        this.scalingFactor = 1 / parent.getCurrentScale();
 
         this.latitude = latitude;
         this.longitude = longitude;
-          
-            
-        this.attributeFillColour = Color.web(attrColour.getHtmlColor(), MapDetails.MARKER_OPACTIY);
 
-        markerPath.setScaleX(this.scalingFactor / MARKER_PATH_SCALING);
-        markerPath.setScaleY(this.scalingFactor / MARKER_PATH_SCALING);
+        this.attributeFillColour = Color.web(attrColour.getHtmlColor(), MapDetails.MARKER_OPACTIY);
 
         markerPath.setFill(MapDetails.MARKER_DEFAULT_FILL_COLOUR);
         markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
         markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * MARKER_PATH_SCALING * this.scalingFactor);
+        this.scaleMarker(parent.getCurrentScale());
 
         // Event handlers for the marker
         markerPath.setOnMouseEntered((final MouseEvent e) -> {
@@ -264,8 +260,6 @@ public class PointMarker extends AbstractMarker {
     @Override
     public void scaleMarker(final double scalingFactor) {
         // As the map increases in scale, marker lines need to reduce to ensure they continue to appear the same size.
-        if (this.scalingFactor == 1 / scalingFactor) return;
-
         this.scalingFactor = 1 / scalingFactor;
         markerPath.setScaleX(this.scalingFactor / MARKER_PATH_SCALING);
         markerPath.setScaleY(this.scalingFactor / MARKER_PATH_SCALING);

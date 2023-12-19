@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.mapview2.markers;
 
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
+import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -27,6 +28,10 @@ import javafx.scene.paint.Color;
  */
 public class UserPointMarker extends AbstractMarker {
 
+    private static double MARKER_PATH_SCALING = 14;  // Factor by with the size of the marker (in the path string) needs
+                                                     // to be shrunk to be a reasonable size. The line needs to be scaled
+                                                     // to counter this.
+    
     // Raw marker string for the user point marker
     private String path = "l-35-90 l-45-80 l-10-30 l0-45 l10-25 l15-20 l50-20 l30 0 l50 20 l15 20 l10 25 l0 45 l-10 30 l-45 80 l-35 90";
     private double x;
@@ -42,12 +47,10 @@ public class UserPointMarker extends AbstractMarker {
         this.y = y;
         this.scale = scale;
 
-        markerPath.setScaleX(scale);
-        markerPath.setScaleY(scale);
-        markerPath.setOpacity(0.4);
-
-        markerPath.setFill(Color.ORANGE);
-        markerPath.setStroke(Color.BLACK);
+        markerPath.setFill(MapDetails.MARKER_USER_DRAWN_FILL_COLOUR);
+        markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
+        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * MARKER_PATH_SCALING * this.scalingFactor);
+        this.scaleMarker(parent.getCurrentScale());
 
         // Set up event handlers for user draw point marker
         markerPath.setOnMouseEntered((final MouseEvent e) -> {
@@ -112,12 +115,14 @@ public class UserPointMarker extends AbstractMarker {
         return originalClickY;
     }
 
-    public void scaleAndReposition(final double scale) {
-        setScale(scale);
-        markerPath.setScaleX(scale);
-        markerPath.setScaleY(scale);
+    public void scaleMarker(final double scalingFactor) {
+        // As the map increases in scale, marker lines need to reduce to ensure they continue to appear the same size.        
+        this.scalingFactor = 1 / scalingFactor;
+        markerPath.setScaleX(this.scalingFactor / MARKER_PATH_SCALING);
+        markerPath.setScaleY(this.scalingFactor / MARKER_PATH_SCALING);
+        markerPath.setStrokeWidth(MapDetails.MARKER_LINE_WIDTH * MARKER_PATH_SCALING * this.scalingFactor);
 
         final double heightDifference = (getY()) - (markerPath.getBoundsInParent().getCenterY() + (markerPath.getBoundsInParent().getHeight() / 2));
-        markerPath.setTranslateY(markerPath.getTranslateY() + heightDifference);
+        markerPath.setTranslateY(markerPath.getTranslateY() + heightDifference); 
     }
 }

@@ -935,9 +935,7 @@ public class MapView extends ScrollPane {
 
             if (marker instanceof UserPointMarker) {
                 final UserPointMarker uMarker = (UserPointMarker) marker;
-                if (uMarker.getScale() != pointMarkerGlobalScale) {
-                    uMarker.scaleAndReposition(pointMarkerGlobalScale);
-                }
+                uMarker.scaleMarker(this.currentScale);
             }
 
             drawnMarkerGroup.getChildren().addAll(marker.getMarker());
