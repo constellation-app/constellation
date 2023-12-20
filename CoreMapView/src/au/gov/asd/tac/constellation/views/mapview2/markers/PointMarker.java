@@ -21,11 +21,10 @@ import au.gov.asd.tac.constellation.views.mapview2.MapDetails;
 import au.gov.asd.tac.constellation.views.mapview2.MapView;
 import au.gov.asd.tac.constellation.views.mapview2.MapViewPane;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Point marker that represents a geo coordinate on the map
@@ -34,8 +33,7 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class PointMarker extends AbstractMarker {
 
-    private static final Logger LOGGER = Logger.getLogger(PointMarker.class.getName());
-
+    private static final String MULTIPLE_VALUES_LABEL = "<Multiple Values>";
     private static double MARKER_PATH_SCALING = 14;  // Factor by with the size of the marker (in the path string) needs
                                                      // to be shrunk to be a reasonable size. The line needs to be scaled
                                                      // to counter this.
@@ -48,25 +46,21 @@ public class PointMarker extends AbstractMarker {
     private Color attributeFillColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;  // Set a default colour for marker if using colour stored in
                                                                                 // nodes colour attribute. This will get overridden by extracted
                                                                                 // value
-    private String blazeColour = null;
-    private int blazeColourCount = 0;
-    private int overlayColourCount = 0;
-    private String overlayColour = null;
+    private final List<ConstellationColor> attributeColours = new ArrayList<>();
+    private final List<ConstellationColor> blazeColours = new ArrayList<>();
+    private final List<ConstellationColor> overlayColours = new ArrayList<>();
+    private final List<String> labels = new ArrayList<>();
+    private final List<String> identifiers = new ArrayList<>();
     private Color currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;
-
-    private String labelAttr = null;
-    private int labelAttrCount = 0;
-
-    private String identifierAttr = null;
-    private int identifierCount = 0;
     
-    public PointMarker(final MapView parent, final int markerID, final int nodeId, final double latitude, final double longitude, final ConstellationColor attrColour) {
+    public PointMarker(final MapView parent, final int markerID, final int nodeId, final double latitude, final double longitude, final ConstellationColor attributeColour) {
         super(parent, markerID, nodeId, AbstractMarker.MarkerType.POINT_MARKER);
 
         this.latitude = latitude;
         this.longitude = longitude;
 
-        this.attributeFillColour = Color.web(attrColour.getHtmlColor(), MapDetails.MARKER_OPACITY);
+        this.attributeFillColour = Color.web(attributeColour.getHtmlColor(), MapDetails.MARKER_OPACITY);
+        this.attributeColours.add(attributeColour);
 
         markerPath.setFill(MapDetails.MARKER_DEFAULT_FILL_COLOUR);
         markerPath.setStroke(MapDetails.MARKER_STROKE_COLOUR);
@@ -133,18 +127,14 @@ public class PointMarker extends AbstractMarker {
             // marker) then a seperate color is used to indicate multiple values.
             currentColour = (idList.size() > 1) ? MapDetails.MARKER_MULTI_FILL_COLOUR : attributeFillColour;
         } else if (option.equals(MapViewPane.USE_BLAZE_COL)) {
-            if (blazeColour != null) {
-                final ConstellationColor colour = ConstellationColor.getColorValue(blazeColour);
-                currentColour = (blazeColourCount == 1) ? Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACITY) : MapDetails.MARKER_MULTI_FILL_COLOUR;
-            } else {
-                currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;;
+            currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;
+            if (!blazeColours.isEmpty()) {
+                currentColour = blazeColours.size() == 1 ? Color.web(blazeColours.get(0).getHtmlColor(), MapDetails.MARKER_OPACITY) : MapDetails.MARKER_MULTI_FILL_COLOUR;
             }
         } else if (option.equals(MapViewPane.USE_OVERLAY_COL)) {
-            if (overlayColour != null) {
-                final ConstellationColor colour = ConstellationColor.getColorValue(overlayColour);
-                currentColour = (overlayColourCount == 1) ? Color.web(colour.getHtmlColor(), MapDetails.MARKER_OPACITY) : MapDetails.MARKER_MULTI_FILL_COLOUR;
-            } else {
-                currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;;
+            currentColour = MapDetails.MARKER_DEFAULT_FILL_COLOUR;
+            if (!overlayColours.isEmpty()) {
+                currentColour = overlayColours.size() == 1 ? Color.web(overlayColours.get(0).getHtmlColor(), MapDetails.MARKER_OPACITY) : MapDetails.MARKER_MULTI_FILL_COLOUR;
             }
         }
         markerPath.setFill(currentColour);
@@ -186,29 +176,24 @@ public class PointMarker extends AbstractMarker {
      *
      * @param blazeCol
      */
-    public void setBlazeColour(final String blaze) {
-        // Get the blaze colour in the correct format
-        final String blazeCol = blaze.split(SeparatorConstants.SEMICOLON)[1];
-
-        if (blazeColourCount == 0) {
-            blazeColour = blazeCol;
+    public void setBlazeColour(final ConstellationColor colour) {
+        // If there is more than one colour found for this marker then we will be using MARKER_MULTI_FILL_COLOUR, so
+        // all that needs to be done is to store the first two unique colours found. If only one is found, then that
+        // colour can be used, otehrwise if two are stored we know that we need to use MARKER_MULTI_FILL_COLOUR
+        if (colour != null && !blazeColours.contains(colour) && blazeColours.size() <= 1) {
+            blazeColours.add(colour);
         }
-
-        blazeColourCount++;
     }
 
-    public void setOverlayColour(final String overlayCol) {
-
-        if (overlayColourCount == 0) {
-            overlayColour = overlayCol;
+    public void setOverlayColour(final ConstellationColor colour) {
+        // If there is more than one colour found for this marker then we will be using MARKER_MULTI_FILL_COLOUR, so
+        // all that needs to be done is to store the first two unique colours found. If only one is found, then that
+        // colour can be used, otehrwise if two are stored we know that we need to use MARKER_MULTI_FILL_COLOUR
+        if (colour != null && !overlayColours.contains(colour) && overlayColours.size() <= 1) {
+            overlayColours.add(colour); 
         }
-
-        overlayColourCount++;
     }
 
-    public String getBlazeColour() {
-        return blazeColour;
-    }
 
     @Override
     public double getX() {
@@ -220,42 +205,49 @@ public class PointMarker extends AbstractMarker {
         return this.y;
     }
 
-    public void setLabelAttr(final String labelAttribute) {
-
-        if (labelAttrCount == 0) {
-            labelAttr = labelAttribute;
+    /**
+     * Add another label to the set allocated to the marker. If more than one distinct label is allocated then the label
+     * MULTIPLE_VALUES_LABEL will be used to represent the label.
+     * @param label The label to allocate to the marker.
+     */
+    public void setLabelAttr(final String label) {
+        if (label != null && !labels.contains(label) && labels.size() <= 1) {
+            labels.add(label);   
         }
-
-        labelAttrCount++;
     }
 
-    public void setIdentAttr(final String identAttribute) {
-
-        if (identifierCount == 0) {
-            identifierAttr = identAttribute;
+    /**
+     * Add another identifier to the set allocated to the marker. If more than one distinct label is allocated then the
+     * label MULTIPLE_VALUES_LABEL will be used to represent the label.
+     * @param identifier The identifier to allocate to the marker.
+     */
+    public void setIdentAttr(final String identifier) {
+        if (identifier != null && !identifiers.contains(identifier) && identifiers.size() <= 1) {
+            identifiers.add(identifier);   
         }
-
-        identifierCount++;
     }
 
+    /**
+     * Return the currently used label string.
+     * @return The currently used label string.
+     */
     public String getLabelAttr() {
-
-        if (labelAttrCount > 1) {
-            return "<Multiple Values>";
+        if (labels.isEmpty()) {
+            return null;
         }
-
-        return labelAttr;
+        return (labels.size() > 1 ? MULTIPLE_VALUES_LABEL : labels.get(0));
     }
 
+    /**
+     * Return the currently used identifier string.
+     * @return The currently used identifier string.
+     */
     public String getIdentAttr() {
-
-        if (identifierCount > 1) {
-            return "<Multiple Values>";
+        if (identifiers.isEmpty()) {
+            return null;
         }
-
-        return identifierAttr;
+        return (identifiers.size() > 1 ? MULTIPLE_VALUES_LABEL : identifiers.get(0));
     }
-
     
     @Override
     public void scaleMarker(final double scalingFactor) {

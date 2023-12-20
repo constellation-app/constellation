@@ -99,7 +99,7 @@ public class GeoShapePolygonMarker extends AbstractMarker {
 
     @Override
     public void changeMarkerColour(final String option) {
-        geoShapes.values().forEach(shapePair -> shapePair.getKey().changeColour(option));
+        geoShapes.values().forEach(shapePair -> shapePair.getKey().changeColourSource(option));
     }
 
 
@@ -119,17 +119,22 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         return geoShapes;
     }
 
-
-    public void setBlazeColour(final String blaze, final String coordinateKey) {
-        geoShapes.get(coordinateKey).getKey().setBlazeColour(blaze);
+    public void setAttributeColour(final ConstellationColor colour, final String coordinateKey) {
+        if (colour != null) {  
+            geoShapes.get(coordinateKey).getKey().setAttributeColour(colour);
+        }
     }
 
-    public void setOverlayColour(final String overlayCol, final String coordinateKey) {
-        geoShapes.get(coordinateKey).getKey().setOverlayColour(overlayCol);
+    public void setBlazeColour(final ConstellationColor colour, final String coordinateKey) {
+        if (colour != null) {  
+            geoShapes.get(coordinateKey).getKey().setBlazeColour(colour);
+        }
     }
 
-    public void setAttributeColour(final ConstellationColor attributeColour, final String coordinateKey) {
-        geoShapes.get(coordinateKey).getKey().setAttributeColour(attributeColour);
+    public void setOverlayColour(final ConstellationColor colour, final String coordinateKey) {
+        if (colour != null) {  
+            geoShapes.get(coordinateKey).getKey().setOverlayColour(colour);
+        }
     }
 
     public String getLabelAttr(final String coordinateKey) {
@@ -140,11 +145,15 @@ public class GeoShapePolygonMarker extends AbstractMarker {
         return geoShapes.get(coordinateKey).getKey().getIdentAttr();
     }
 
-    public void setLabelAttr(final String labelAttribute, final String coordinateKey) {
-        geoShapes.get(coordinateKey).getKey().setLabelAttr(labelAttribute);
+    public void setLabelAttr(final String label, final String coordinateKey) {
+        if (label != null) {  
+            geoShapes.get(coordinateKey).getKey().setLabelAttr(label);
+        }
     }
 
-    public void setIdentAttr(final String identAttribute, final String coordinateKey) {
-        geoShapes.get(coordinateKey).getKey().setIdentAttr(identAttribute);
+    public void setIdentAttr(final String identifier, final String coordinateKey) {
+        if (identifier != null) {  
+            geoShapes.get(coordinateKey).getKey().setIdentAttr(identifier);
+        }
     }
 }

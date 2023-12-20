@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -108,5 +108,9 @@ public class LineMarker extends AbstractMarker {
 
     public double getEndY() {
         return y2;
+    }
+
+    @Override
+    public void scaleMarker(final double scalingFactor) {
     }
 }

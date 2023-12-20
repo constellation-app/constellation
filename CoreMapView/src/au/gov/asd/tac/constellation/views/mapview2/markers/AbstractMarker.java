@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -139,8 +139,7 @@ public abstract class AbstractMarker {
      * Default function to be overridden by child classes which require special handling when map scale changes.
      * @param scalingFactor The scaling factor to apply to the markers.
      */
-    public void scaleMarker(final double scalingFactor) {
-    }
+    public abstract void scaleMarker(final double scalingFactor);
     
     public double getScalingFactor() {
         return this.scalingFactor;

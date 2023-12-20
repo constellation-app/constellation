@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2023 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,14 +30,13 @@ import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.plugins.templates.PluginTags;
 import au.gov.asd.tac.constellation.plugins.templates.SimpleReadPlugin;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.JavaFxTopComponent;
-import au.gov.asd.tac.constellation.views.mapview.providers.MapProvider;
 import au.gov.asd.tac.constellation.views.mapview2.markers.AbstractMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.GeoShapePolygonMarker;
 import au.gov.asd.tac.constellation.views.mapview2.markers.PointMarker;
 import au.gov.asd.tac.constellation.views.mapview2.utilities.MapConversions;
 import java.awt.Component;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -60,6 +59,7 @@ import org.openide.windows.TopComponent;
 /**
  * Top component for the MapView
  *
+ * @author serpens24
  * @author altair1673
  */
 @TopComponent.Description(
@@ -375,21 +375,23 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                 continue;
                             }
 
-                            // Get the nodes colour
-                            final ConstellationColor elementColour = graph.getObjectValue(colourID, elementID);
-
-                            String blazeColour = null;
-                            String overlayColour = null;
+                            // Get the colour defined in the nodes color attribute
+                            final ConstellationColor attributeColour = graph.getObjectValue(colourID, elementID);
+                            ConstellationColor blazeColour = null;
+                            ConstellationColor overlayColour = null;
                             String labelAttr = null;
                             String identAttr = null;
 
-                            // Get other ccolous if they are available
+                            // Get other colours if they are available
                             if (blazeID != GraphConstants.NOT_FOUND) {
-                                blazeColour = graph.getStringValue(blazeID, elementID);
+                                final String colourStr = graph.getStringValue(blazeID, elementID);
+                                if (colourStr != null) {
+                                    blazeColour = ConstellationColor.getColorValue(colourStr.split(SeparatorConstants.SEMICOLON)[1]);
+                                }
                             }
 
                             if (overlayID != GraphConstants.NOT_FOUND) {
-                                overlayColour = graph.getStringValue(overlayID, elementID);
+                                overlayColour = graph.getObjectValue(overlayID, elementID);
                             }
 
                             // Get label text if they are available
@@ -413,6 +415,8 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                     final JSONArray latLongList = latLongObj.getJSONArray("coordinates");
 
                                     for (int j = 0; j < latLongList.length(); ++j) {
+                                        
+                                        // This is the euqivalent key for geomarker
                                         final String keyString = latLongList.getJSONArray(j).toString();
                                         if (!mapViewTopComponent.getAllMarkers().containsKey(keyString)) {
                                             gsp.addGeoShape(keyString, elementID);
@@ -424,74 +428,35 @@ public final class MapViewTopComponent extends JavaFxTopComponent<MapViewPane> {
                                         }
                                     }
 
-                                    final GeoShapePolygonMarker addedMarker = (GeoShapePolygonMarker) mapViewTopComponent.getAllMarkers().get(latLongList.getJSONArray(0).toString());
-                                    addedMarker.setAttributeColour(elementColour, latLongList.getJSONArray(0).toString());
-
-                                    // Set colours and labels if they are available
-                                    if (blazeColour != null) {
-                                        addedMarker.setBlazeColour(blazeColour, latLongList.getJSONArray(0).toString());
-                                    }
-
-                                    if (overlayColour != null) {
-                                        addedMarker.setOverlayColour(overlayColour, latLongList.getJSONArray(0).toString());
-                                    }
-
-
-                                    if (labelAttr != null) {
-                                        addedMarker.setLabelAttr(labelAttr, latLongList.getJSONArray(0).toString());
-                                    }
-
-                                    if (identAttr != null) {
-                                        addedMarker.setIdentAttr(identAttr, latLongList.getJSONArray(0).toString());
+                                    final String markerKey = latLongList.getJSONArray(0).toString();
+                                    final GeoShapePolygonMarker addedMarker = (GeoShapePolygonMarker) mapViewTopComponent.getAllMarkers().get(markerKey);
+                                    addedMarker.setAttributeColour(attributeColour, markerKey);
+                                    addedMarker.setBlazeColour(blazeColour, markerKey);
+                                    addedMarker.setOverlayColour(overlayColour, markerKey);
+                                    addedMarker.setLabelAttr(labelAttr, markerKey);
+                                    addedMarker.setIdentAttr(identAttr, markerKey);
+                                }
+                            } else {
+                                
+                                // We are processing a PointMarker. Either a PointMarker already exists with corresponding location  coordinateKey)
+                                // in which case we re-use this marker, or we are adding a new marker.
+                                final PointMarker p;
+                                if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey)) {
+                                    // Create a new point marker and add it to the map
+                                    p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, attributeColour);
+                                    mapViewTopComponent.addMarker(coordinateKey, p);
+                                } else {
+                                    p = (PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey);
+                                    if (p.getConnectedNodeIdList().get(0) != elementID) {
+                                        p.addNodeID(elementID);
                                     }
                                 }
-                            }
-
-                            // If another vertext of the same location hasn't been queried yet
-                            if (!mapViewTopComponent.getAllMarkers().keySet().contains(coordinateKey) && !processingGeoShape) {
-
-                                // Create a new point marker and add it to the map
-                                final PointMarker p = new PointMarker(mapViewTopComponent.getMapViewPane().getMap(), mapViewTopComponent.getNewMarkerID(), elementID, (double) elementLat, (double) elementLon, elementColour);
-                                mapViewTopComponent.addMarker(coordinateKey, p);
-
+                                
                                 // Set colours and labels if they are available
-                                if (blazeColour != null) {
-                                    p.setBlazeColour(blazeColour);
-                                }
-
-                                if (overlayColour != null) {
-                                    p.setOverlayColour(overlayColour);
-                                }
-
-                                if (labelAttr != null) {
-                                    p.setLabelAttr(labelAttr);
-                                }
-
-                                if (identAttr != null) {
-                                    p.setIdentAttr(identAttr);
-                                }
-                            } else if (!processingGeoShape) {
-
-                                if (blazeColour != null) {
-                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setBlazeColour(blazeColour);
-                                }
-
-                                if (overlayColour != null) {
-
-                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setOverlayColour(overlayColour);
-                                }
-
-                                if (labelAttr != null) {
-                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setLabelAttr(labelAttr);
-                                }
-
-                                if (identAttr != null) {
-                                    ((PointMarker) mapViewTopComponent.getAllMarkers().get(coordinateKey)).setIdentAttr(identAttr);
-                                }
-
-                                if (mapViewTopComponent.getAllMarkers().get(coordinateKey).getConnectedNodeIdList().get(0) != elementID) {
-                                    mapViewTopComponent.getAllMarkers().get(coordinateKey).addNodeID(elementID);
-                                }
+                                p.setBlazeColour(blazeColour);
+                                p.setOverlayColour(overlayColour);
+                                p.setLabelAttr(labelAttr);
+                                p.setIdentAttr(identAttr);
                             }
                         }
                         processingGeoShape = false;
