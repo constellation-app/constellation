@@ -323,7 +323,7 @@ public class MapViewPane extends BorderPane {
         final MenuButtonCheckCombobox labelsMenuButton = new MenuButtonCheckCombobox(FXCollections.observableList(Arrays.asList(NO_LABELS, USE_LABEL_ATTR, USE_IDENT_ATTR)), true, false);
         labelsMenuButton.setIcon(parent.getClass().getResource("resources/price-label.png").toString());
         labelsMenuButton.selectItem(NO_LABELS);
-        labelsMenuButton.getMenuButton().setTooltip(new Tooltip("Chose the label for markers displayed in the Map View"));
+        labelsMenuButton.getMenuButton().setTooltip(new Tooltip("Choose the label for markers displayed in the Map View"));
         labelsMenuButton.getItemClicked().addListener((obs, oldVal, newVal) -> {
             if (parent.getCurrentGraph() != null) {
                 labelsMenuButton.getOptionMap().keySet().forEach(key -> {

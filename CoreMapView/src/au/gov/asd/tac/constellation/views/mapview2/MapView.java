@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2022 Australian Signals Directorate
+ * Copyright 2010-2023s Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
@@ -90,14 +89,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 
 /**
- * This class holds the actual MapView vector graphic and all panes asscoiated
+ * This class holds the actual MapView vector graphic and all panes associated
  * with it Its got all of the event handlers for drawing, labels, colours,
  * markers etc... It has all the groups that hold all other graphical elements
  * such as cluster markers, daynight layer and thiessen polygon layer
  *
+ * @author serpens24
  * @author altair1673
  */
 public class MapView extends ScrollPane {
+
+    private static final Logger LOGGER = Logger.getLogger(MapView.class.getName());
 
     private final MapViewPane parent;
 
@@ -176,8 +178,6 @@ public class MapView extends ScrollPane {
 
     // Flag for zoom to location menu
     private boolean showingZoomToLocationPane = false;
-
-    private static final Logger LOGGER = Logger.getLogger(MapView.class.getName());
 
     Vec3 medianPositionOfMarkers = null;
 
@@ -706,10 +706,15 @@ public class MapView extends ScrollPane {
         });
     }
 
+    /**
+     * Generate labels for markers based on the selected marker label content type option.
+     * @param option String indicating the type of content to be displayed in marker labels.
+     */
     private void renderMarkerText(final String option) {
         // Clear any existing text
         pointMarkerTextGroup.getChildren().clear();
         markerTextLabels.clear();
+
         // Loop through all the markers
         for (final AbstractMarker value : markers.values()) {
             // If its a point marker change its text
@@ -719,18 +724,84 @@ public class MapView extends ScrollPane {
                     setPointMarkerText(p.getLabelAttr(), p);
                 } else if (option.equals(MapViewPane.USE_IDENT_ATTR)) {
                     setPointMarkerText(p.getIdentAttr(), p);
-                }
+                }  
             } else if (value instanceof GeoShapePolygonMarker) {
                 final GeoShapePolygonMarker gsp = (GeoShapePolygonMarker) value;
-
                 if (option.equals(MapViewPane.USE_LABEL_ATTR)) {
                     gsp.getGeoShapes().values().forEach(shapePair -> setPolygonMarkerText(shapePair.getKey().getLabelAttr(), shapePair.getKey()));
                 } else if (option.equals(MapViewPane.USE_IDENT_ATTR)) {
                     gsp.getGeoShapes().values().forEach(shapePair -> setPolygonMarkerText(shapePair.getKey().getIdentAttr(), shapePair.getKey()));
                 }
             }
-
         }
+    }
+
+    /**
+     * Adjust the scaling of marker text to take into account the current map scale.
+     * This requires that the scale of the marker text to be 1/currentScale to allow them to remain the same size.
+     * @param textLabel The Marker/Text pair containing the marker text and linked Marker object. Note that when the
+     * marker text is set to be paired with a GeoShape, that the MArker object in the pair is a dummy UserText marker.
+     */
+     private void resizeMarkerText(Pair<AbstractMarker, Text> textLabel) {
+        textLabel.getValue().setScaleX(1/this.currentScale);
+        textLabel.getValue().setScaleY(1/this.currentScale);
+     }
+    
+     /**
+      * Iterate over all marker text labels and resize them to account for current map scaling.
+      */
+    private void resizeAllText() {
+        markerTextLabels.forEach(textLabel -> {
+            resizeMarkerText(textLabel);
+        });
+    }
+    
+    /**
+     * Display marker label text for the given PointMarker.
+     *
+     * @param markerText - Text to appear below the marker.
+     * @param p - The marker itself.
+     */
+    private void setPointMarkerText(final String markerText, final PointMarker p) {
+ 
+        final Pair<AbstractMarker, Text> textLabel = new Pair(p,  new Text(markerText));        
+        markerTextLabels.add(textLabel);
+        pointMarkerTextGroup.getChildren().add(textLabel.getValue());
+        resizeMarkerText(textLabel);
+
+        final double posX = textLabel.getValue().getBoundsInParent().getCenterX();
+        final double posY = textLabel.getValue().getBoundsInParent().getCenterY();
+        final double markerCentreX = textLabel.getKey().getMarker().getBoundsInParent().getCenterX();
+        final double markerCentreY = textLabel.getKey().getMarker().getBoundsInParent().getCenterY();
+        final double markerHeight = textLabel.getKey().getMarker().getBoundsInParent().getHeight();
+        if (textLabel.getKey() instanceof PointMarker) {
+            textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() + (markerCentreY + markerHeight / 2) - posY);
+            textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() + markerCentreX - posX);
+        }
+    }
+    
+    /**
+     * Display marker label text for the given GeoShape. This GeoShape will represent a GeoShape tied to a
+     * GeoShapePolygonMarker, noting that a GeoShapePolygonMarker may contain multiple GeoShapes. The location to
+     * display labels attempts to be near the centre of the shape.
+     *
+     * @param markerText - Text to appear below the marker.
+     * @param p - The marker itself.
+     */
+    private void setPolygonMarkerText(final String markerText, final GeoShape gs) {
+        final Text t = new Text(markerText);      
+        final UserPointMarker tempMarker = new UserPointMarker(this, AbstractMarker.NO_MARKER_ID, gs.getCenterX(), gs.getCenterY(), 0.05);
+        
+        final Pair<AbstractMarker, Text> textLabel = new Pair(tempMarker,  t); 
+        markerTextLabels.add(textLabel);
+        pointMarkerTextGroup.getChildren().add(textLabel.getValue());
+        resizeMarkerText(textLabel);
+            
+        final double markerCentreX = gs.getBoundsInParent().getCenterX();
+        final double markerCentreY = gs.getBoundsInParent().getCenterY();
+        final double textWidth = t.getBoundsInParent().getWidth() * this.currentScale;
+        t.setX(markerCentreX - textWidth/2);
+        t.setY(markerCentreY);      
     }
 
     /**
@@ -764,6 +835,7 @@ public class MapView extends ScrollPane {
          
         // Resize markers
         resizeMarkers();
+        resizeAllText();
     }
     
     /***
@@ -854,56 +926,6 @@ public class MapView extends ScrollPane {
 //                }
 //            }
         });
-    }
-
-    /**
-     * Scale the labels below the markers
-     *
-     * @param markerScalingRate - rate to scale the labels at
-     * @param zoomOut - Whether to zoom out
-     */
-    private void scaleMarkerText(final double markerScalingRate, final boolean zoomOut) {
-        markerTextLabels.forEach(textLabel -> {
-            if (zoomOut) {
-                textLabel.getValue().setScaleX(textLabel.getValue().getScaleX() / markerScalingRate);
-                textLabel.getValue().setScaleY(textLabel.getValue().getScaleY() / markerScalingRate);
-            } else {
-                textLabel.getValue().setScaleX(textLabel.getValue().getScaleX() * markerScalingRate);
-                textLabel.getValue().setScaleY(textLabel.getValue().getScaleY() * markerScalingRate);
-            }
-
-            double posX = textLabel.getValue().getBoundsInParent().getCenterX();
-            double posY = textLabel.getValue().getBoundsInParent().getCenterY();
-
-            if (textLabel.getKey() instanceof PointMarker) {
-                textLabel.getValue().setTranslateY(textLabel.getValue().getTranslateY() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterY() + textLabel.getKey().getMarker().getBoundsInParent().getHeight() / 2) - posY)));
-                textLabel.getValue().setTranslateX(textLabel.getValue().getTranslateX() + (((textLabel.getKey().getMarker().getBoundsInParent().getCenterX()) - posX)));
-            }
-
-        });
-    }
-
-    /**
-     * Sets text on the map at a specific location
-     *
-     * @param markerText - Text to appear below the marker
-     * @param p - The marker itself
-     */
-    private void setPointMarkerText(final String markerText, final PointMarker p) {
-        final Text t = new Text(markerText);
-        t.setX(p.getMarker().getBoundsInParent().getCenterX() - 20);
-        t.setY(p.getMarker().getBoundsInParent().getCenterY() + 20);
-        markerTextLabels.add(new Pair(p, t));
-        pointMarkerTextGroup.getChildren().add(t);
-    }
-
-    private void setPolygonMarkerText(final String markerText, final GeoShape gs) {
-        final Text t = new Text(markerText);
-        t.setX(gs.getCenterX() - 37);
-        t.setY(gs.getCenterY());
-        final UserPointMarker tempMarker = new UserPointMarker(this, AbstractMarker.NO_MARKER_ID, gs.getCenterX(), gs.getCenterY(), 0.05);
-        markerTextLabels.add(new Pair(tempMarker, t));
-        pointMarkerTextGroup.getChildren().add(t);
     }
 
     /**
@@ -1672,10 +1694,6 @@ public class MapView extends ScrollPane {
 
     public Group getGraphMarkerGroup() {
         return graphMarkerGroup;
-    }
-
-    public void testAddingGeoMarker(final Polygon p) {
-        Platform.runLater(() -> graphMarkerGroup.getChildren().add(p));
     }
 
     public void addMarkerToHashMap(final String key, final AbstractMarker e) {
