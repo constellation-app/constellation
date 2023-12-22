@@ -242,21 +242,21 @@ public class MapViewPane extends BorderPane {
 
         final String zoomError = "Zoom options require a graph to be open!";
 
+        /**
+         * Handle a request to zoom to a zoom level covering the entire map region. 
+         */
         zoomAll.setOnAction(event -> {
-            if (parent.getCurrentGraph() != null) {
-                mapView.panToCenter();
-                mapView.panToAll();
-            } else {
-                NotifyDisplayer.display(zoomError, NotifyDescriptor.INFORMATION_MESSAGE);
-            }
+            mapView.zoomToAll();
         });
 
+        /**
+         * Handle a request to zoom to view a region selected with a rectangle and centre the map on it.
+         */
         zoomSelection.setOnAction(event -> {
-            if (parent.getCurrentGraph() != null) {
-                mapView.panToCenter();
-                mapView.panToSelection();
+            if (!mapView.isSelectionMade()) {
+                NotifyDisplayer.display("A map selection has not been made", NotifyDescriptor.INFORMATION_MESSAGE);
             } else {
-                NotifyDisplayer.display(zoomError, NotifyDescriptor.INFORMATION_MESSAGE);
+                mapView.zoomToSelection();  
             }
         });
 
