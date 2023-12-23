@@ -26,6 +26,7 @@ import au.gov.asd.tac.constellation.utilities.datastructure.ImmutableObjectCache
 import static au.gov.asd.tac.constellation.views.tableview.TableViewTopComponent.TABLE_LOCK;
 import au.gov.asd.tac.constellation.views.tableview.api.ActiveTableReference;
 import au.gov.asd.tac.constellation.views.tableview.api.Column;
+import au.gov.asd.tac.constellation.views.tableview.api.UpdateMethod;
 import au.gov.asd.tac.constellation.views.tableview.factory.TableCellFactory;
 import au.gov.asd.tac.constellation.views.tableview.listeners.SelectedOnlySelectionListener;
 import au.gov.asd.tac.constellation.views.tableview.listeners.TableSelectionListener;
@@ -36,6 +37,7 @@ import au.gov.asd.tac.constellation.views.tableview.tasks.UpdateDataTask;
 import au.gov.asd.tac.constellation.views.tableview.utilities.ColumnIndexSort;
 import au.gov.asd.tac.constellation.views.tableview.utilities.TableViewUtilities;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -59,9 +61,7 @@ import javax.swing.SwingUtilities;
 import org.apache.commons.lang3.tuple.Pair;
 
 /**
- * Representation of the table. This wraps the JavaFX UI {@link TableView}
- * component and provides methods for performing updates based on the current
- * state and graph.
+ * Representation of the table. This wraps the JavaFX UI {@link TableView} component and provides methods for performing updates based on the current state and graph.
  *
  * @author formalhaunt
  */
@@ -75,12 +75,15 @@ public class Table {
     private final TablePane tablePane;
     private final TableView<ObservableList<String>> tableView;
 
+    private boolean firstTime = true;
+    private boolean vertextFirstTime = true;
+    private boolean edgeFirstTime = true;
+
     private final ChangeListener<ObservableList<String>> tableSelectionListener;
     private final ListChangeListener selectedOnlySelectionListener;
 
     /**
-     * Cache strings used in table cells to significantly reduce memory used by
-     * the same string repeated in columns and rows.
+     * Cache strings used in table cells to significantly reduce memory used by the same string repeated in columns and rows.
      */
     private final ImmutableObjectCache displayTextCache;
 
@@ -132,25 +135,15 @@ public class Table {
     }
 
     /**
-     * Update the columns in the table using the graph and state. This will
-     * clear and refresh the column index and then trigger a refresh of the
-     * table view, populating from the new column index.
+     * Update the columns in the table using the graph and state. This will clear and refresh the column index and then trigger a refresh of the table view, populating from the new column index.
      * <p/>
-     * If the table's state has an element type of VERTEX then all the columns
-     * will be prefixed with ".source".
+     * If the table's state has an element type of VERTEX then all the columns will be prefixed with ".source".
      * <p/>
-     * If the element type is TRANSACTION then the attributes belonging to
-     * transactions will be prefixed with ".transaction". The vertex attributes
-     * will also be added as columns in this case. When the state's element type
-     * is TRANSACTION the vertex attributes will be prefixed with both ".source"
-     * and ".destination" so that it is distinguishable on which end of the
-     * transaction those values are present.
+     * If the element type is TRANSACTION then the attributes belonging to transactions will be prefixed with ".transaction". The vertex attributes will also be added as columns in this case. When the state's element type is TRANSACTION the vertex attributes will be prefixed with both ".source" and ".destination" so that it is distinguishable on which end of the transaction those values are present.
      * <p/>
-     * Note that column references are reused where possible to ensure certain
-     * toolbar/menu operations to work correctly.
+     * Note that column references are reused where possible to ensure certain toolbar/menu operations to work correctly.
      * <p/>
-     * The entire method is synchronized so it should be thread safe and keeps
-     * the locking logic simpler. Maybe this method could be broken out further.
+     * The entire method is synchronized so it should be thread safe and keeps the locking logic simpler. Maybe this method could be broken out further.
      *
      * @param graph the graph to retrieve data from.
      * @param state the current table view state.
@@ -183,11 +176,22 @@ public class Table {
                 // Update columnIndex based on graph attributes
                 final ReadableGraph readableGraph = graph.getReadableGraph();
                 try {
-                    // Creates "source." columns from vertex attributes
-                    getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
-                            GraphRecordStoreUtilities.SOURCE, columnReferenceMap));
+                    LOGGER.log(Level.SEVERE, "Called update Columns");
 
-                    if (state.getElementType() == GraphElementType.TRANSACTION) {
+                    // Creates "source." columns from vertex attributes
+                    final List<Column> source = createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
+                            GraphRecordStoreUtilities.SOURCE, columnReferenceMap);
+
+                    if (state.getElementType() == GraphElementType.LINK) {
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
+                                GraphRecordStoreUtilities.LINK2, columnReferenceMap));
+
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
+                                GraphRecordStoreUtilities.LINK, columnReferenceMap));
+
+                    } else if (state.getElementType() == GraphElementType.TRANSACTION) {
+                        getColumnIndex().addAll(source);
+
                         // Creates "transaction." columns from transaction attributes
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.TRANSACTION,
                                 GraphRecordStoreUtilities.TRANSACTION, columnReferenceMap));
@@ -195,15 +199,49 @@ public class Table {
                         // Creates "destination." columns from vertex attributes
                         getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.VERTEX,
                                 GraphRecordStoreUtilities.DESTINATION, columnReferenceMap));
+
+                    } else if (state.getElementType() == GraphElementType.EDGE) {
+
+                        // Creates "transaction." columns from transaction attributes
+                        getColumnIndex().addAll(createColumnIndexPart(readableGraph, GraphElementType.EDGE,
+                                GraphRecordStoreUtilities.EDGE, columnReferenceMap));
+                    } else {
+                        getColumnIndex().addAll(source);
                     }
                 } finally {
                     readableGraph.release();
                 }
 
+                //Prevents infinite loop of column updating
+                if (state.getElementType() == GraphElementType.LINK && firstTime) {
+                    LOGGER.log(Level.SEVERE, "running once");
+                    state.setColumnAttributes(null);
+                    firstTime = false;
+                } else {
+                    firstTime = true;
+                }
+
+                if (state.getElementType() == GraphElementType.VERTEX && vertextFirstTime) {
+                    state.setColumnAttributes(null);
+                    vertextFirstTime = false;
+                } else {
+                    vertextFirstTime = true;
+                }
+
+                if (state.getElementType() == GraphElementType.EDGE && edgeFirstTime) {
+                    state.setColumnAttributes(null);
+                    edgeFirstTime = false;
+                } else {
+                    edgeFirstTime = true;
+                }
+
                 // If there are no visible columns specified, write the key columns to the state
                 if (state.getColumnAttributes() == null) {
+                    LOGGER.log(Level.SEVERE, "running for" + state.getElementType().getLabel());
                     openColumnVisibilityMenu();
                     return;
+                } else {
+                    LOGGER.log(Level.SEVERE, "Column attributes updated therefore no refresh");
                 }
 
                 // Sort columns in columnIndex by state, prefix and attribute name
@@ -242,15 +280,11 @@ public class Table {
     /**
      * Update the data in the table using the graph and state.
      * <p/>
-     * If the table is in "Selection Only" mode then only the elements on the
-     * graph that are selected will be loaded into the table, otherwise they all
-     * will.
+     * If the table is in "Selection Only" mode then only the elements on the graph that are selected will be loaded into the table, otherwise they all will.
      * <p/>
-     * Which elements are loaded also depends on which element type the table
-     * state is currently set to, vertex or transaction.
+     * Which elements are loaded also depends on which element type the table state is currently set to, vertex or transaction.
      * <p/>
-     * The entire method is synchronized so it should be thread safe and keeps
-     * the locking logic simpler. Maybe this method could be broken out further.
+     * The entire method is synchronized so it should be thread safe and keeps the locking logic simpler. Maybe this method could be broken out further.
      *
      * @param graph the graph to retrieve data from.
      * @param state the current table view state.
@@ -298,7 +332,7 @@ public class Table {
                                 rows.add(getRowDataForTransaction(readableGraph, transactionId));
                             }
                         });
-                    } else {
+                    } else if (state.getElementType() == GraphElementType.VERTEX) {
                         final int selectedAttributeId = VisualConcept.VertexAttribute.SELECTED.get(readableGraph);
                         final int vertexCount = readableGraph.getVertexCount();
 
@@ -314,6 +348,34 @@ public class Table {
                             // in selected only mode, only add the ones that are selected in the graph
                             if (!state.isSelectedOnly() || isSelected) {
                                 rows.add(getRowDataForVertex(readableGraph, vertexId));
+                            }
+                        });
+                    } else if (state.getElementType() == GraphElementType.LINK) {
+                        IntStream.range(0, readableGraph.getLinkCount()).forEach(linkPosition -> {
+                            final int linkId = readableGraph.getLink(linkPosition);
+                            boolean isSelected = false;
+
+                            if (!state.isSelectedOnly() || isSelected) {
+                                rows.add(getRowDataForLink(readableGraph, linkId));
+                            }
+                        });
+                    } else if (state.getElementType() == GraphElementType.EDGE) {
+
+                        final int selectedAttributeId = VisualConcept.TransactionAttribute.SELECTED.get(readableGraph);
+                        final int edgeCount = readableGraph.getEdgeCount();
+
+                        IntStream.range(0, edgeCount).forEach(edgePosition -> {
+                            final int edgeId = readableGraph.getEdge(edgePosition);
+                            boolean isSelected = false;
+
+                            if (edgeId != Graph.NOT_FOUND) {
+                                isSelected = readableGraph.getBooleanValue(selectedAttributeId, edgeId);
+                            }
+
+                            // If it is not in selected only mode then just add every row but if it is
+                            // in selected only mode, only add the ones that are selected in the graph
+                            if (!state.isSelectedOnly() || isSelected) {
+                                rows.add(getRowDataForTransaction(readableGraph, edgeId));
                             }
                         });
                     }
@@ -342,14 +404,11 @@ public class Table {
     }
 
     /**
-     * Update the table selection using the graph and state. The selection will
-     * only be updated if the graph and state are not null.
+     * Update the table selection using the graph and state. The selection will only be updated if the graph and state are not null.
      * <p/>
-     * The table selection will only be updated if it <b>IS NOT</b> in "Selected
-     * Only Mode" because the selection is extracted from the graph.
+     * The table selection will only be updated if it <b>IS NOT</b> in "Selected Only Mode" because the selection is extracted from the graph.
      * <p/>
-     * An illegal state will be created if this method is called by either the
-     * JavaFX or Swing Event threads.
+     * An illegal state will be created if this method is called by either the JavaFX or Swing Event threads.
      * <p/>
      * The entire method is synchronized to ensure thread safety.
      *
@@ -403,8 +462,7 @@ public class Table {
     }
 
     /**
-     * If the sort has been saved in the currently loaded table preferences,
-     * then re-apply it to the table.
+     * If the sort has been saved in the currently loaded table preferences, then re-apply it to the table.
      *
      */
     public void updateSortOrder() {
@@ -424,9 +482,7 @@ public class Table {
     }
 
     /**
-     * Gets a listener that listens for table selections and updates the
-     * selection in the graph if "Selected Only Mode" <b>IS NOT</b> active.
-     * Otherwise this listener does nothing.
+     * Gets a listener that listens for table selections and updates the selection in the graph if "Selected Only Mode" <b>IS NOT</b> active. Otherwise this listener does nothing.
      *
      * @return the table selection listener
      * @see TableSelectionListener
@@ -436,10 +492,7 @@ public class Table {
     }
 
     /**
-     * Gets a listener that listens for table selections and updates the
-     * {@link ActiveTableReference#selectedOnlySelectedRows} list with the
-     * current selection. This listener only does this if the "Selected Only
-     * Mode" <b>IS</>
+     * Gets a listener that listens for table selections and updates the {@link ActiveTableReference#selectedOnlySelectedRows} list with the current selection. This listener only does this if the "Selected Only Mode" <b>IS</>
      * active.
      *
      * @return the "Selected Only Mode" selection listener
@@ -477,9 +530,7 @@ public class Table {
     }
 
     /**
-     * For a given vertex on the graph construct a row for the table give the
-     * current column settings. If the column is a transaction column then a
-     * null value will be inserted for that element of the row.
+     * For a given vertex on the graph construct a row for the table give the current column settings. If the column is a transaction column then a null value will be inserted for that element of the row.
      *
      * @param readableGraph the graph to build the row from
      * @param vertexId the ID of the vertex in the graph to build the row from
@@ -508,18 +559,129 @@ public class Table {
         return rowData;
     }
 
+    protected ObservableList<String> getRowDataForLink(final ReadableGraph readableGraph,
+            final int linkId) {
+        final ObservableList<String> rowData = FXCollections.observableArrayList();
+
+        getColumnIndex().forEach(column -> {
+            final int attributeId = readableGraph
+                    .getAttribute(column.getAttribute().getElementType(),
+                            column.getAttribute().getName());
+
+            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction
+                    .getInteraction(column.getAttribute().getAttributeType());
+
+            Object attributeValue = null;
+
+            if (attributeId != Graph.NOT_FOUND) {
+                switch (column.getAttributeNamePrefix()) {
+                    case GraphRecordStoreUtilities.LINK:
+                        final int sourceVertexId = readableGraph.getLinkLowVertex(linkId);
+                        attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
+                        break;
+                    case GraphRecordStoreUtilities.LINK2:
+                        final int destinationVertexIdd = readableGraph.getLinkHighVertex(linkId);
+                        attributeValue = readableGraph.getObjectValue(attributeId, destinationVertexIdd);
+                        break;
+                    default:
+                        attributeValue = null;
+                }
+            } else {
+                attributeValue = null;
+            }
+
+            final String displayableValue = attributeValue != null ? interaction.getDisplayText(attributeValue) : "No Value";
+            rowData.add(displayableValue);
+
+        });
+
+        getActiveTableReference().getElementIdToRowIndex().put(linkId, rowData);
+        getActiveTableReference().getRowToElementIdIndex().put(rowData, linkId);
+
+        return rowData;
+    }
+
+//    protected ObservableList<String> getRowDataForEdge(final ReadableGraph readableGraph,
+//            final int edgeId) {
+//////        final ObservableList<String> rowData = FXCollections.observableArrayList();
+//////
+//////        getColumnIndex().forEach(column -> {
+//////            final int attributeId = readableGraph
+//////                    .getAttribute(column.getAttribute().getElementType(),
+//////                            column.getAttribute().getName());
+//////
+//////            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction
+//////                    .getInteraction(column.getAttribute().getAttributeType());
+//////
+//////            Object attributeValue = null;
+//////
+//////            if (attributeId != Graph.NOT_FOUND) {
+//////                switch (column.getAttributeNamePrefix()) {
+//////                    case GraphRecordStoreUtilities.EDGE:
+//////                        final int sourceVertexId = readableGraph.getLinkLowVertex(edgeId);
+//////                        attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
+//////                        break;
+//////                    default:
+//////                        attributeValue = null;
+//////                }
+//////            } else {
+//////                attributeValue = null;
+//////            }
+//////
+//////            final String displayableValue = attributeValue != null ? interaction.getDisplayText(attributeValue) : "No Value";
+//////            rowData.add(displayableValue);
+//////
+//////        });
+//////
+//////        getActiveTableReference().getElementIdToRowIndex().put(edgeId, rowData);
+//////        getActiveTableReference().getRowToElementIdIndex().put(rowData, edgeId);
+//////
+//////        return rowData;
+////
+////        final ObservableList<String> rowData = FXCollections.observableArrayList();
+////
+////        getColumnIndex().forEach(column -> {
+////            final int attributeId = readableGraph
+////                    .getAttribute(column.getAttribute().getElementType(),
+////                            column.getAttribute().getName());
+////
+////            final AbstractAttributeInteraction<?> interaction = AbstractAttributeInteraction
+////                    .getInteraction(column.getAttribute().getAttributeType());
+////
+////            Object attributeValue = null;
+////
+////            if (attributeId != Graph.NOT_FOUND) {
+////                switch (column.getAttributeNamePrefix()) {
+////                    case GraphRecordStoreUtilities.EDGE:
+////                        final int sourceVertexId = readableGraph.getLinkLowVertex(edgeId);
+////                        attributeValue = readableGraph.getObjectValue(attributeId, sourceVertexId);
+////                        break;
+////                    default:
+////                        attributeValue = null;
+////                }
+////            } else {
+////                attributeValue = null;
+////            }
+////
+////            final String displayableValue = attributeValue != null ? interaction.getDisplayText(attributeValue) : "No Value";
+////            rowData.add(displayableValue);
+////
+////        });
+////
+////        getActiveTableReference().getElementIdToRowIndex().put(edgeId, rowData);
+////        getActiveTableReference().getRowToElementIdIndex().put(rowData, edgeId);
+////
+////        return rowData;
+//          return;
+//    }
+
     /**
-     * For a given transaction on the graph construct a row for the table given
-     * the current column settings. In the case of source and destination
-     * columns the value entered will be sourced from the source and destination
-     * vertices respectively.
+     * For a given transaction on the graph construct a row for the table given the current column settings. In the case of source and destination columns the value entered will be sourced from the source and destination vertices respectively.
      * <p/>
-     * During this the {@link ActiveTableReference#elementIdToRowIndex} and
-     * {@link ActiveTableReference#rowToElementIdIndex} maps are populated.
+     * During this the {@link ActiveTableReference#elementIdToRowIndex} and {@link ActiveTableReference#rowToElementIdIndex} maps are populated.
      *
      * @param readableGraph the graph to build the row from
-     * @param transactionId the ID of the transaction in the graph to build the
-     * row from
+     * @param transactionId the ID of the transaction in the graph to build the row from
      * @return the built row
      */
     protected ObservableList<String> getRowDataForTransaction(final ReadableGraph readableGraph,
@@ -554,7 +716,7 @@ public class Table {
             } else {
                 attributeValue = null;
             }
-            
+
             // avoid duplicate strings objects and make a massivse saving on memory use
             final String displayableValue = displayTextCache.deduplicate(interaction.getDisplayText(attributeValue));
             rowData.add(displayableValue);
@@ -567,27 +729,16 @@ public class Table {
     }
 
     /**
-     * For the specified element type (vertex or transaction), iterates through
-     * that element types attributes in the graph and generates columns for each
-     * one.
+     * For the specified element type (vertex or transaction), iterates through that element types attributes in the graph and generates columns for each one.
      * <p/>
-     * The column name will be the attribute name prefixed by the passed
-     * {@code attributeNamePrefix} parameter. This parameter will be one of
-     * "source.", "destination." or "transaction.".
+     * The column name will be the attribute name prefixed by the passed {@code attributeNamePrefix} parameter. This parameter will be one of "source.", "destination." or "transaction.".
      * <p/>
-     * The column reference map contains previously generated columns and is
-     * used as a reference so that new column objects are not created
-     * needlessly.
+     * The column reference map contains previously generated columns and is used as a reference so that new column objects are not created needlessly.
      *
      * @param readableGraph the graph to extract the attributes from
-     * @param elementType the type of elements that the attributes will be
-     * extracted from, {@link GraphElementType#VERTEX} or
-     * {@link GraphElementType#TRANSACTION}
-     * @param attributeNamePrefix the string that will prefix the attribute name
-     * in the column name, will be one of "source.", "destination." or
-     * "transaction."
-     * @param columnReferenceMap a map of existing columns that can be used
-     * instead of creating new ones if the column names match up
+     * @param elementType the type of elements that the attributes will be extracted from, {@link GraphElementType#VERTEX} or {@link GraphElementType#TRANSACTION}
+     * @param attributeNamePrefix the string that will prefix the attribute name in the column name, will be one of "source.", "destination." or "transaction."
+     * @param columnReferenceMap a map of existing columns that can be used instead of creating new ones if the column names match up
      */
     protected List<Column> createColumnIndexPart(final ReadableGraph readableGraph,
             final GraphElementType elementType,
@@ -617,9 +768,7 @@ public class Table {
     }
 
     /**
-     * Creates a new column with the given name. This has been primarily created
-     * for unit testing to allow the insertion of mocked versions into the
-     * calling code.
+     * Creates a new column with the given name. This has been primarily created for unit testing to allow the insertion of mocked versions into the calling code.
      *
      * @param attributeName the name of the column
      * @return the newly created column
@@ -631,13 +780,12 @@ public class Table {
     }
 
     /**
-     * Gets the context menu describing the columns that make a vertex or
-     * transaction unique. In other words the primary columns. Then manually
-     * triggers a click event causing those columns to be made visible.
+     * Gets the context menu describing the columns that make a vertex or transaction unique. In other words the primary columns. Then manually triggers a click event causing those columns to be made visible.
      *
      * @see ColumnVisibilityContextMenu#getShowPrimaryColumnsMenu()
      */
     protected void openColumnVisibilityMenu() {
+        LOGGER.log(Level.SEVERE, "Open visibility menu");
         final ColumnVisibilityContextMenu columnVisibilityContextMenu
                 = new ColumnVisibilityContextMenu(this);
         columnVisibilityContextMenu.init();
