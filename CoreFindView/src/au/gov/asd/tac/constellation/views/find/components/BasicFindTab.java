@@ -104,6 +104,7 @@ public class BasicFindTab extends Tab {
     private final Button findNextButton = new Button("Find Next");
     private final Button findPrevButton = new Button("Find Previous");
     private final Button findAllButton = new Button("Find All");
+    private final Button findAllZoomButton = new Button("Find All and Zoom");
     private final Button deleteResultsButton = new Button("Delete Results From Graph(s)");
 
     protected static final int LABEL_WIDTH = 90;
@@ -156,6 +157,7 @@ public class BasicFindTab extends Tab {
 
         //Set the actions for the 3 bottom buttons
         findAllButton.setOnAction(action -> findAllAction());
+        findAllZoomButton.setOnAction(action -> findAllZoomAction(true));
         findNextButton.setOnAction(action -> findNextAction());
         findPrevButton.setOnAction(action -> findPrevAction());
         deleteResultsButton.setOnAction(action -> deleteResultsAction());
@@ -267,7 +269,7 @@ public class BasicFindTab extends Tab {
         buttonsHBox.setAlignment(Pos.CENTER_LEFT);
         buttonsHBox.setPadding(new Insets(5, 10, 5, 10));
         buttonsHBox.setSpacing(5);
-        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findAllZoomButton, findPrevButton, findNextButton);
         buttonsHBox.setAlignment(Pos.CENTER_RIGHT);
 
         deleteResultsButton.setDisable(true);
@@ -301,7 +303,7 @@ public class BasicFindTab extends Tab {
          * to the buttonsHbox
          */
         buttonsHBox.getChildren().clear();
-        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findPrevButton, findNextButton);
+        buttonsHBox.getChildren().addAll(deleteResultsButton, findAllButton, findAllZoomButton, findPrevButton, findNextButton);
         parentComponent.getParentComponent().setBottom(buttonsVBox);
     }
 
@@ -540,6 +542,12 @@ public class BasicFindTab extends Tab {
             getDeleteResultsButton().setDisable(false);
         }
     }
+    public void findAllZoomAction(final boolean zoom) {
+        if (!getFindTextField().getText().isEmpty()) {
+            findAllAction();
+            FindViewController.getDefault().zoomToSelection();
+        }
+    }
 
     /**
      * This is run when the user presses the find next button. It confirms the
@@ -625,6 +633,15 @@ public class BasicFindTab extends Tab {
      */
     public Button getFindAllButton() {
         return findAllButton;
+    }
+
+    /**
+     * Gets and returns the findAllButton
+     *
+     * @return findAllButton
+     */
+    public Button getFindAllZoomButton() {
+        return findAllZoomButton;
     }
 
     /**

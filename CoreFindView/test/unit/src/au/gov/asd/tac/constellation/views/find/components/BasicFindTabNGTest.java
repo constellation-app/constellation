@@ -15,10 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.find.components;
 
-import au.gov.asd.tac.constellation.views.find.components.BasicFindTab;
-import au.gov.asd.tac.constellation.views.find.components.ReplaceTab;
-import au.gov.asd.tac.constellation.views.find.components.FindViewTabs;
-import au.gov.asd.tac.constellation.views.find.components.FindViewPane;
 import au.gov.asd.tac.constellation.graph.Attribute;
 import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphAttribute;
@@ -158,8 +154,9 @@ public class BasicFindTabNGTest {
         basicFindTab.updateButtons();
         assertEquals(basicFindTab.buttonsHBox.getChildren().get(0), basicFindTab.getDeleteResultsButton());
         assertEquals(basicFindTab.buttonsHBox.getChildren().get(1), basicFindTab.getFindAllButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindPrevButton());
-        assertEquals(basicFindTab.buttonsHBox.getChildren().get(3), basicFindTab.getFindNextButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(2), basicFindTab.getFindAllZoomButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(3), basicFindTab.getFindPrevButton());
+        assertEquals(basicFindTab.buttonsHBox.getChildren().get(4), basicFindTab.getFindNextButton());
     }
 
     /**
