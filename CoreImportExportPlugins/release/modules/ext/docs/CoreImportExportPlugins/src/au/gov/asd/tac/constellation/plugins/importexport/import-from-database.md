@@ -36,11 +36,37 @@ Importer" />
 The following is a high level workflow an analyst can follow (explained
 in detail later on):
 
-1.  Add the relevant JDBC Driver via "Manage Connections" -> "Drivers"
-    tab.
-2.  Add the Connection details in "Manage Connections" -> "Connections"
-    tab. If the username and password are not required, leave them
-    blank.
+1.  Add the relevant JDBC Driver via "Manage Connections" -&gt; "Drivers"
+    tab. These drivers will be specific to the database that you are
+    connecting to. You only need one driver for each database type e.g.
+    MySQL, PostgresQL, SQLite Example drivers:
+
+    -   MySQL -
+        [mysql-connector-java-8.0.23.jar](https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.23/mysql-connector-java-8.0.23.jar)
+    -   SQLite -
+        [sqlite-jdbc-3.36.0.3.jar](https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.36.0.3/sqlite-jdbc-3.36.0.3.jar)
+
+    <div style="text-align: center">
+        <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/DBDriversExample.png" alt="Database
+drivers example" />
+
+    </div>
+
+2.  Add the Connection details in "Manage Connections" -&gt; "Connections"
+    tab. The connection will be an instance to a specific database.
+
+    -   *Connection name* - user specified name for the connection
+    -   *Driver* - Pick the database driver needed to connect to the db
+    -   *Connection String* - It will contain the database type, host, port,
+        and database of the db in the format `jdbc:[database
+        name]://[host]:[port]/[database name]`
+    -   e.g. `jdbc:mysql://localhost:3306/employees` for mysql or
+        `jdbc:postgresql://localhost:5432/test` for postgres.
+    -   If the username and password are not required, leave them blank.
+
+    <div style="text-align: center">
+        <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/DBConnections.png" alt="Database Importer Connection example" />
+    </div>
 3.  Select the connection from the "Connection" drop-down in the main
     Import window.
 4.  Enter the username and password if the connection requires them.
@@ -59,6 +85,13 @@ Hints:
 -   Filter in the Configuration Pane by adding searches of the form
     \<column_name> =="\<search text>" E.g. first_name=="Nick".
 
+Full Example:
+
+<div style="text-align: center">
+    <img src="../ext/docs/CoreImportExportPlugins/src/au/gov/asd/tac/constellation/plugins/importexport/resources/ImportDatabaseFullExample.png" alt="Database Importer Connection
+    example with all details" />
+</div>
+<br/>
 ## Add and Remove Connections to Import Queries From
 
 Once you select a connection and submit a query, the "Configuration"
