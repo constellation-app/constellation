@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.utilities.log;
 
+import java.util.logging.Handler;
+import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 import org.openide.util.NbPreferences;
 
@@ -29,6 +31,17 @@ public class LogPreferences {
     private static final Preferences PREFERENCES = NbPreferences.forModule(LogPreferences.class);
     private static final String CONNECTION_LOG_DATE_PREF = "connectionLogDate";
     private static final long LOGGING_TIMEOUT = 151*60*1000L; // 2.5 hours
+    private static final Logger LOGGER = Logger.getLogger(LogPreferences.class.getName());
+    
+    
+    static {
+        if(LOGGER.getUseParentHandlers()){
+            Handler[] parentHandlers = LOGGER.getParent().getHandlers();
+            for (final Handler handler : parentHandlers) {
+                handler.setFormatter(new ConstellationLogFormatter());
+            }
+        }
+    }
     
     private LogPreferences(){
         throw new IllegalStateException("Utility class");
