@@ -33,11 +33,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javax.xml.transform.TransformerException;
 import org.apache.commons.lang3.StringUtils;
@@ -49,7 +53,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
 /**
  * Importer for the GraphML file type
  *
@@ -108,6 +111,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
         final Map<String, String> nodeAttributes = new HashMap<>();
         final Map<String, String> transactionAttributes = new HashMap<>();
         final Map<String, String> defaultAttributes = new HashMap<>();
+        final ArrayList<String> processingErrors = new ArrayList<>();
 
         try (final InputStream in = new FileInputStream(input)) {
             final XmlUtilities xml = new XmlUtilities();
@@ -159,9 +163,14 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                             switch (childNode.getNodeName()) {
                                 case NODE_TAG: {
                                     final NamedNodeMap attributes = childNode.getAttributes();
-                                    final String id = attributes.getNamedItem(ID_TAG).getNodeValue();
+                                    final Node id = attributes.getNamedItem(ID_TAG);
+                                    if (id == null){
+                                        processingErrors.add("Node(s) don't have a required identifier field.");
+                                        continue;
+                                    }
+                                    final String stringID = id.getNodeValue();
                                     nodeRecords.add();
-                                    nodeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, id);
+                                    nodeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, stringID);
                                     nodeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE, SchemaVertexType.unknownType().getName());
                                     nodeRecords.set(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.SOURCE, filename);
                                     for (final Entry<String, String> nodeAttributeEntry : nodeAttributes.entrySet()) {
@@ -178,20 +187,39 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                     }
                                     //store the type of each node id so that an edge can be matched to the correct source and destination
                                     if (retrieveTransactions) {
-                                        nodeIdToType.put(id, nodeRecords.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE));
+                                        nodeIdToType.put(stringID, nodeRecords.get(GraphRecordStoreUtilities.SOURCE + AnalyticConcept.VertexAttribute.TYPE));
                                     }
                                     break;
                                 }
                                 case EDGE_TAG: {
                                     if (retrieveTransactions) {
                                         final NamedNodeMap attributes = childNode.getAttributes();
-                                        final String id = attributes.getNamedItem(ID_TAG).getNodeValue();
-                                        final String source = attributes.getNamedItem(EDGE_SRC_TAG).getNodeValue();
-                                        final String target = attributes.getNamedItem(EDGE_DST_TAG).getNodeValue();
+                                        Node id = attributes.getNamedItem(ID_TAG);
+
+                                        // Constellation requires edgeIDs but this isn't a requirement in the graphML specification
+                                        // If no edgeID is given a UUID will be assigned.
+                                        final String stringID = (id == null) ? UUID.randomUUID().toString() : id.getNodeValue();
+                                        final Node source = attributes.getNamedItem(EDGE_SRC_TAG);
+                                        final Node target = attributes.getNamedItem(EDGE_DST_TAG);
+
+                                        // Error checking for required edge fields
+                                        if(source == null){
+                                            processingErrors.add("Edge(s) don't have a required source field.");
+                                            continue;
+                                        }
+                                        if(target == null){
+                                            processingErrors.add("Edge(s) don't have a required target field.");
+                                            continue;
+                                        }
+
+                                        final String targetString = target.getNodeValue();
+                                        final String sourceString = source.getNodeValue();
+                                        
+                                        
                                         edgeRecords.add();
-                                        edgeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, source);
-                                        edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, target);
-                                        edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.IDENTIFIER, id);
+                                        edgeRecords.set(GraphRecordStoreUtilities.SOURCE + VisualConcept.VertexAttribute.IDENTIFIER, sourceString);
+                                        edgeRecords.set(GraphRecordStoreUtilities.DESTINATION + VisualConcept.VertexAttribute.IDENTIFIER, targetString);
+                                        edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.IDENTIFIER, stringID);
                                         edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + AnalyticConcept.TransactionAttribute.SOURCE, filename);
                                         if (undirected) {
                                             edgeRecords.set(GraphRecordStoreUtilities.TRANSACTION + VisualConcept.TransactionAttribute.DIRECTED, false);
@@ -246,6 +274,24 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
 
         output.add(nodeRecords);
         output.add(edgeRecords);
+
+        // Add a warning for nodes and edges that were invalid snd not imported
+        if(!processingErrors.isEmpty()){
+            
+            // Count distinct processing errors
+            Map<String, Long> processingErrorTypes = processingErrors.stream()
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+            String errorMsg = processingErrorTypes.entrySet().stream()
+                .map(e -> e.getValue() + " " + e.getKey())
+                .collect(Collectors.joining("\n"));
+
+            NotifyDisplayer.display(new NotifyDescriptor("Warning - Some elements weren't able to be imported:\n" + errorMsg,
+                    "Import GraphML File", DEFAULT_OPTION,
+                    NotifyDescriptor.WARNING_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
+            final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
+            LOGGER.log(Level.WARNING, errorMsg, ioEx);
+        }
     }
     
 }
