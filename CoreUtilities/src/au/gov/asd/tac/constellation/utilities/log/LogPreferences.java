@@ -36,7 +36,7 @@ public class LogPreferences {
     
     static {
         if(LOGGER.getUseParentHandlers()){
-            Handler[] parentHandlers = LOGGER.getParent().getHandlers();
+            final Handler[] parentHandlers = LOGGER.getParent().getHandlers();
             for (final Handler handler : parentHandlers) {
                 handler.setFormatter(new ConstellationLogFormatter());
             }

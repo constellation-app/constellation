@@ -25,8 +25,8 @@ import java.util.logging.LogRecord;
  */
 public class ConstellationLogFormatter extends Formatter{
     @Override
-    public String format(LogRecord record) {
-        StringBuilder sb = new StringBuilder();
+    public final String format(final LogRecord record) {
+        final StringBuilder sb = new StringBuilder();
         sb.append("[");
         sb.append(Instant.now().toString().substring(0,22).replace("T"," "));
         sb.append("Z] - ");
