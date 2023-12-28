@@ -196,8 +196,11 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                         final NamedNodeMap attributes = childNode.getAttributes();
                                         Node id = attributes.getNamedItem(ID_TAG);
 
-                                        // Constellation requires edgeIDs but this isn't a requirement in the graphML specification
-                                        // If no edgeID is given a UUID will be assigned.
+                                        /* Constellation requires edge Idenitifers 
+                                        ** but this isn't a requirement in the graphML specification
+                                        ** http://graphml.graphdrawing.org/specification/xsd.html
+                                        ** If no edge ID is given a UUID will be geenrated and assigned.
+                                        */
                                         final String stringID = (id == null) ? UUID.randomUUID().toString() : id.getNodeValue();
                                         final Node source = attributes.getNamedItem(EDGE_SRC_TAG);
                                         final Node target = attributes.getNamedItem(EDGE_DST_TAG);
@@ -289,8 +292,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
             NotifyDisplayer.display(new NotifyDescriptor("Warning - Some elements weren't able to be imported:\n" + errorMsg,
                     "Import GraphML File", DEFAULT_OPTION,
                     NotifyDescriptor.WARNING_MESSAGE, new Object[]{NotifyDescriptor.OK_OPTION}, NotifyDescriptor.OK_OPTION));
-            final Throwable ioEx = new IOException(NotifyDisplayer.BLOCK_POPUP_FLAG + errorMsg);
-            LOGGER.log(Level.WARNING, errorMsg, ioEx);
+            LOGGER.log(Level.WARNING, errorMsg);
         }
     }
     
