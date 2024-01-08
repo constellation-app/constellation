@@ -82,8 +82,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     private static final Insets ATTIRUBTEPANE_PADDING = new Insets(5);
     private static final int ATTRIBUTE_GAP = 5;
     private static final int TABLECOLUMN_PREFWIDTH = 50;
-    private static final String FILTER_STYLE = "-fx-background-color: black; -fx-text-fill: white;-fx-prompt-text-fill:grey;";
-    private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;-fx-prompt-text-fill:grey;";
+    private static final String FILTER_STYLE_ALERT = "-fx-background-color: red; -fx-text-fill: black;";
 
     private final ImportController importController;
     private final TableView<TableRow> sampleDataView = new TableView<>();
@@ -188,7 +187,6 @@ public final class RunPane extends BorderPane implements KeyListener {
         filterField = new TextField();
         filterField.setFocusTraversable(false);
         filterField.setMinHeight(USE_PREF_SIZE);
-        filterField.setStyle(FILTER_STYLE);
         filterField.textProperty().addListener((observable, oldValue, newValue) -> setFilterStyle(newValue));
 
         filterField.setPromptText("Currently unavailable. The filter will be ready to use shortly");
@@ -262,7 +260,6 @@ public final class RunPane extends BorderPane implements KeyListener {
         attributeFilterTextField.setFocusTraversable(false);
         attributeFilterTextField.setMinHeight(USE_PREF_SIZE);
         attributeFilterTextField.setPromptText("Start typing to search attributes");
-        attributeFilterTextField.setStyle(FILTER_STYLE);
         attributeFilterTextField.textProperty().addListener((observable, oldValue, newValue) -> {
             importController.setAttributeFilter(attributeFilterTextField.getText());
             importController.setDestination(null);
@@ -309,7 +306,7 @@ public final class RunPane extends BorderPane implements KeyListener {
     }
 
     private void setFilterStyle(final String value) {
-        filterField.setStyle(setFilter(value) ? FILTER_STYLE : FILTER_STYLE_ALERT);
+        filterField.setStyle(setFilter(value) ? "" : FILTER_STYLE_ALERT);
     }
 
     /**

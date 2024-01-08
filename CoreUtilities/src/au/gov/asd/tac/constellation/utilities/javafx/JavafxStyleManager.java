@@ -20,11 +20,14 @@ import au.gov.asd.tac.constellation.utilities.font.FontUtilities;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.UIManager;
 
 /**
- * Manages the CSS style sheet common to all CONSTELLATION JavaFX components.
+ * Manages the CSS style sheet common to all Constellation JavaFX components.
  *
  * @author twinkle2_little
  * @author arcturus
@@ -33,22 +36,19 @@ public class JavafxStyleManager {
 
     private static final Logger LOGGER = Logger.getLogger(JavafxStyleManager.class.getName());
 
-    public static final String CSS_BASE_STYLE_PREFIX = "-fx-base:";
-    public static final String CSS_FONT_WEIGHT_BOLD = "-fx-font-weight: bold";
-    public static final String CSS_BACKGROUND_COLOR_TRANSPARENT = "-fx-background-color: transparent;";
-
-    public static final String UNEDITABLE_COMBOBOX = "uneditableCombo";
-    public static final String HIDDEN = "hidden";
-    public static final String LIGHT_NAME_TEXT = "lightNameText";
-    public static final String LIGHT_MESSAGE_TEXT = "lightMessageText";
-
     private static String dynamicStyleSheet = null;
-
     private static String currentFontFamily = null;
     private static int currentFontSize = 0;
 
-    public static String getMainStyleSheet() {
-        return JavafxStyleManager.class.getResource("main.css").toExternalForm();
+    public static Collection<String> getMainStyleSheet() {
+        return Arrays.asList(
+                JavafxStyleManager.class.getResource("main.css").toExternalForm(), 
+                JavafxStyleManager.class.getResource(isDarkTheme() ? "dark.css" : "light.css").toExternalForm()
+        );
+    }
+    
+    public static boolean isDarkTheme(){
+        return UIManager.getLookAndFeel().getName().toUpperCase().contains("DARK");
     }
 
     /**
@@ -63,6 +63,7 @@ public class JavafxStyleManager {
     public static String getDynamicStyleSheet() {
         final double titleSize = FontUtilities.getApplicationFontSize() * 1.5;
         final double smallInfoTextSize = FontUtilities.getApplicationFontSize() * 0.8;
+        final double infoTextSize = FontUtilities.getApplicationFontSize() * 0.8;
 
         if (dynamicStyleSheet == null || hasFontChanged()) {
             currentFontSize = FontUtilities.getApplicationFontSize();
@@ -76,6 +77,7 @@ public class JavafxStyleManager {
                 try (final PrintWriter printWriter = new PrintWriter(tempStyleClass)) {
                     printWriter.println(String.format("#title { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", titleSize, currentFontFamily));
                     printWriter.println(String.format("#smallInfoText { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", smallInfoTextSize, currentFontFamily));
+                    printWriter.println(String.format("#infoText { -fx-font-size: %fpx; -fx-font-family:\"%s\"; }", infoTextSize, currentFontFamily));
                     printWriter.println(String.format(".button { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", currentFontSize, currentFontFamily));
                     printWriter.println(String.format(".label { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", currentFontSize, currentFontFamily));
                     printWriter.println(String.format(".root { -fx-font-size: %dpx; -fx-font-family:\"%s\"; }", currentFontSize, currentFontFamily));
@@ -92,6 +94,6 @@ public class JavafxStyleManager {
 
     private static boolean hasFontChanged() {
         return FontUtilities.getApplicationFontSize() != currentFontSize
-                || FontUtilities.getApplicationFontFamily() != currentFontFamily;
+                || !FontUtilities.getApplicationFontFamily().equals(currentFontFamily);
     }
 }

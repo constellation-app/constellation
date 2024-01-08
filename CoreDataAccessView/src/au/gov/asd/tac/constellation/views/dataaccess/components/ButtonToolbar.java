@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -76,15 +76,15 @@ public class ButtonToolbar {
     private static final String EXECUTE_CONTINUE = "Continue";
     private static final String EXECUTE_CALCULATING = "Calculating";
 
-    private static final String GO_STYLE = "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;";
-    private static final String STOP_STYLE = "-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;";
-    private static final String CONTINUE_STYLE = "-fx-background-color: rgb(255,180,0); -fx-padding: 2 5 2 5;";
-    private static final String CALCULATING_STYLE = "-fx-background-color: rgb(0,100,255); -fx-padding: 2 5 2 5;";
-    private static final String HELP_STYLE = "-fx-border-color: transparent;-fx-background-color: transparent;";
+    private static final String GO_STYLE = "-fx-background-color: rgb(64,180,64);";
+    private static final String STOP_STYLE = "-fx-background-color: rgb(180,64,64);";
+    private static final String CONTINUE_STYLE = "-fx-background-color: rgb(255,180,0);";
+    private static final String CALCULATING_STYLE = "-fx-background-color: rgb(0,100,255);";
+    private static final String HELP_STYLE = "-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null;";
 
-    private static final ImageView HELP_ICON = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor()));
+    private static final ImageView HELP_ICON = new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor()));
     private static final ImageView ADD_ICON = new ImageView(UserInterfaceIconProvider.ADD.buildImage(16));
-    private static final ImageView FAVOURITE_ICON = new ImageView(AnalyticIconProvider.STAR.buildImage(16, ConstellationColor.YELLOW.getJavaColor()));
+    private static final ImageView FAVOURITE_ICON = new ImageView(AnalyticIconProvider.STAR.buildImage(16));
 
     private static final String HELP_TOOLTIP = "Display help for Data Access";
     private static final String ADD_TOOLTIP = "Add new run tab";

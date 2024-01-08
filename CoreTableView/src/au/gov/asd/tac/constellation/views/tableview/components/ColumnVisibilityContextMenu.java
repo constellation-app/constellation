@@ -352,6 +352,7 @@ public class ColumnVisibilityContextMenu {
      */
     protected CustomMenuItem createColumnFilterMenu(final List<CustomMenuItem> columnCheckboxes) {
         final Label label = new Label(FILTER_CAPTION);
+        label.setId("filter-label");
         final TextField textField = new TextField();
         final HBox box = new HBox();
 

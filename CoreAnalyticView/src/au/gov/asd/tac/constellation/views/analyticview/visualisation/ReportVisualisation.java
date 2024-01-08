@@ -15,7 +15,6 @@
  */
 package au.gov.asd.tac.constellation.views.analyticview.visualisation;
 
-import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.views.analyticview.analytics.AnalyticPlugin;
 import java.util.List;
@@ -36,32 +35,33 @@ public class ReportVisualisation extends InternalVisualisation {
     private final Label numberOfResultsValue;
     private final Label aggregationMethodValue;
     private final Label exceptionsValue;
+    private static final String CSS_FONT_WEIGHT_BOLD = "-fx-font-weight: bold";
 
     public ReportVisualisation() {
         final HBox pluginsReportBox = new HBox();
         final Label pluginsRunLabel = new Label("Plugins Run: ");
-        pluginsRunLabel.setStyle(JavafxStyleManager.CSS_FONT_WEIGHT_BOLD);
+        pluginsRunLabel.setStyle(CSS_FONT_WEIGHT_BOLD);
         this.pluginsRunValue = new Label();
         pluginsRunValue.setWrapText(true);
         pluginsReportBox.getChildren().addAll(pluginsRunLabel, pluginsRunValue);
 
         final HBox numberOfResultsReportBox = new HBox();
         final Label numberOfResultsLabel = new Label("Number of Results: ");
-        numberOfResultsLabel.setStyle(JavafxStyleManager.CSS_FONT_WEIGHT_BOLD);
+        numberOfResultsLabel.setStyle(CSS_FONT_WEIGHT_BOLD);
         this.numberOfResultsValue = new Label();
         numberOfResultsValue.setWrapText(true);
         numberOfResultsReportBox.getChildren().addAll(numberOfResultsLabel, numberOfResultsValue);
 
         final HBox aggregationMethodReportBox = new HBox();
         final Label aggregationMethodLabel = new Label("Aggregation Method: ");
-        aggregationMethodLabel.setStyle(JavafxStyleManager.CSS_FONT_WEIGHT_BOLD);
+        aggregationMethodLabel.setStyle(CSS_FONT_WEIGHT_BOLD);
         this.aggregationMethodValue = new Label();
         aggregationMethodValue.setWrapText(true);
         aggregationMethodReportBox.getChildren().addAll(aggregationMethodLabel, aggregationMethodValue);
 
         final HBox exceptionsReportBox = new HBox();
         final Label exceptionsLabel = new Label("Exceptions: ");
-        exceptionsLabel.setStyle(JavafxStyleManager.CSS_FONT_WEIGHT_BOLD);
+        exceptionsLabel.setStyle(CSS_FONT_WEIGHT_BOLD);
         this.exceptionsValue = new Label();
         exceptionsValue.setWrapText(true);
         exceptionsReportBox.getChildren().addAll(exceptionsLabel, exceptionsValue);
@@ -97,7 +97,7 @@ public class ReportVisualisation extends InternalVisualisation {
 
         final HBox extensionReportBox = new HBox();
         final Label extensionLabel = new Label(String.format("%s: ", extensionTitle));
-        extensionLabel.setStyle(JavafxStyleManager.CSS_FONT_WEIGHT_BOLD);
+        extensionLabel.setStyle(CSS_FONT_WEIGHT_BOLD);
         final Label extensionValue = new Label(extensionContent);
         extensionValue.setWrapText(true);
         extensionReportBox.getChildren().addAll(extensionLabel, extensionValue);

@@ -17,6 +17,7 @@ package au.gov.asd.tac.constellation.plugins.importexport;
 
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.file.FilenameEncoder;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import java.io.File;
 import java.util.Locale;
 import java.util.Optional;
@@ -70,6 +71,7 @@ public class TemplateListDialog {
         final String[] templateLabels = getFileLabels(delimIoDir);
 
         final Alert dialog = new Alert(Alert.AlertType.CONFIRMATION);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
         dialog.initModality(Modality.APPLICATION_MODAL);
         dialog.initOwner(owner);
         final TextField label = new TextField();
@@ -102,6 +104,7 @@ public class TemplateListDialog {
             if (!isLoading && f.exists()) {
                 final String msg = String.format("'%s' already exists. Do you want to overwrite it?", name);
                 final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+                dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
                 alert.setHeaderText("Import template exists");
                 alert.setContentText(msg);
                 alert.initModality(Modality.WINDOW_MODAL);
