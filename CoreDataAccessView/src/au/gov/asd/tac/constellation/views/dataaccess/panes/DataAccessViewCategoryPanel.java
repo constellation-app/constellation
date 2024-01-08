@@ -45,12 +45,13 @@ final class DataAccessViewCategoryPanel extends javax.swing.JPanel {
     private final List<String> visibleResultList;
     
     private final Map<String, List<DataAccessPlugin>> allPlugins = DataAccessUtilities.getAllPlugins();
-    private final List<String> availableCategories = new ArrayList<>(allPlugins
-                .entrySet()
-                .stream()
-                .filter(category -> !category.getValue().isEmpty())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
-                .keySet());
+
+    private final List<String> availableCategories = allPlugins
+            .entrySet()
+            .stream()
+            .filter(category -> !category.getValue().isEmpty())
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
 
     DataAccessViewCategoryPanel(final DataAccessViewCategoryPanelController controller) {
         this.controller = controller;
