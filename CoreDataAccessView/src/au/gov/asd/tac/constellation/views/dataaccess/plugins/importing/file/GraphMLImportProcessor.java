@@ -25,6 +25,7 @@ import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
 import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.utilities.file.FileExtensionConstants;
 import au.gov.asd.tac.constellation.utilities.gui.NotifyDisplayer;
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import au.gov.asd.tac.constellation.utilities.xml.XmlUtilities;
 import static au.gov.asd.tac.constellation.views.dataaccess.plugins.importing.ImportGraphFilePlugin.RETRIEVE_TRANSACTIONS_PARAMETER_ID;
 import au.gov.asd.tac.constellation.views.dataaccess.utilities.GraphMLUtilities;
@@ -35,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -111,7 +113,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
         final Map<String, String> nodeAttributes = new HashMap<>();
         final Map<String, String> transactionAttributes = new HashMap<>();
         final Map<String, String> defaultAttributes = new HashMap<>();
-        final ArrayList<String> processingErrors = new ArrayList<>();
+        final List<String> processingErrors = new ArrayList<>();
 
         try (final InputStream in = new FileInputStream(input)) {
             final XmlUtilities xml = new XmlUtilities();
@@ -194,12 +196,12 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                 case EDGE_TAG: {
                                     if (retrieveTransactions) {
                                         final NamedNodeMap attributes = childNode.getAttributes();
-                                        Node id = attributes.getNamedItem(ID_TAG);
+                                        final Node id = attributes.getNamedItem(ID_TAG);
 
                                         /* Constellation requires edge Idenitifers 
                                         ** but this isn't a requirement in the graphML specification
                                         ** http://graphml.graphdrawing.org/specification/xsd.html
-                                        ** If no edge ID is given a UUID will be geenrated and assigned.
+                                        ** If no edge ID is given a UUID will be generated and assigned.
                                         */
                                         final String stringID = (id == null) ? UUID.randomUUID().toString() : id.getNodeValue();
                                         final Node source = attributes.getNamedItem(EDGE_SRC_TAG);
@@ -282,12 +284,12 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
         if(!processingErrors.isEmpty()){
             
             // Count distinct processing errors
-            Map<String, Long> processingErrorTypes = processingErrors.stream()
+            final Map<String, Long> processingErrorTypes = processingErrors.stream()
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-            String errorMsg = processingErrorTypes.entrySet().stream()
+            final String errorMsg = processingErrorTypes.entrySet().stream()
                 .map(e -> e.getValue() + " " + e.getKey())
-                .collect(Collectors.joining("\n"));
+                .collect(Collectors.joining(SeparatorConstants.NEWLINE));
 
             NotifyDisplayer.display(new NotifyDescriptor("Warning - Some elements weren't able to be imported:\n" + errorMsg,
                     "Import GraphML File", DEFAULT_OPTION,
