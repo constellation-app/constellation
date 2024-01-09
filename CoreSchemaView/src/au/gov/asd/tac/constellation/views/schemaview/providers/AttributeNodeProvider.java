@@ -193,7 +193,7 @@ public class AttributeNodeProvider implements SchemaViewNodeProvider, GraphManag
             if (p.getValue().keyIx >= 0) {
                 label.setStyle("-fx-background-color: #8a1d1d; -fx-text-fill: white;");
             }
-
+            
             final GraphElementType et = p.getValue().attr.getElementType();
             switch (et) {
                 case VERTEX:

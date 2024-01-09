@@ -7,6 +7,8 @@ and open the template in the editor.
     Created on : 16 Feb. 2023, 3:25:16 pm
     Author     : OrionsGuardian
 */
+
+
 #errorReport {
     -fx-background-radius: 3;
     -fx-border-color: #ff8888;
@@ -90,8 +92,16 @@ and open the template in the editor.
     -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 4 , 0.0 , 0 , 0 );
 }
 
-
 .titled-pane-datetime > .title {
     -fx-base: #5E9656;
+}
+
+#outer-pane {
+    -fx-background-color: black;
+}
+
+.check-box .box {
+    -fx-background-color: #D3D3D3;
+    -fx-mark-color: black;
 }
 

@@ -16,6 +16,7 @@
 package au.gov.asd.tac.constellation.views.attributeeditor;
 
 import au.gov.asd.tac.constellation.functionality.dialog.ConstellationDialog;
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
 import au.gov.asd.tac.constellation.views.attributeeditor.editors.AbstractEditorFactory.AbstractEditor;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -38,7 +39,7 @@ import javafx.scene.paint.Color;
  */
 public class AttributeEditorDialog extends ConstellationDialog {
 
-    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/attributeeditor/resources/editor-dark.css";
+    private static final String DARK_THEME = "/au/gov/asd/tac/constellation/views/attributeeditor/resources/attribute-editor-dialog-dark.css";
     private final HBox okCancelHBox;
     private final Label errorLabel;
     private final Button okButton;
@@ -85,7 +86,10 @@ public class AttributeEditorDialog extends ConstellationDialog {
 
         final Scene scene = new Scene(root);
         scene.setFill(Color.rgb(0, 0, 0, 0));
-        scene.getStylesheets().add(AttributeEditorDialog.class.getResource(DARK_THEME).toExternalForm());
+        scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
+        if (JavafxStyleManager.isDarkTheme()) {
+            scene.getStylesheets().add(AttributeEditorDialog.class.getResource(DARK_THEME).toExternalForm());
+        }
         fxPanel.setScene(scene);
     }
 }
