@@ -167,7 +167,7 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                                     final NamedNodeMap attributes = childNode.getAttributes();
                                     final Node id = attributes.getNamedItem(ID_TAG);
                                     if (id == null){
-                                        processingErrors.add("Node(s) don't have a required identifier field.");
+                                        processingErrors.add("%s Node%s have a required identifier field.");
                                         continue;
                                     }
                                     final String stringID = id.getNodeValue();
@@ -209,11 +209,11 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
 
                                         // Error checking for required edge fields
                                         if(source == null){
-                                            processingErrors.add("Edge(s) don't have a required source field.");
+                                            processingErrors.add("%s Edge%s have a required source field.");
                                             continue;
                                         }
                                         if(target == null){
-                                            processingErrors.add("Edge(s) don't have a required target field.");
+                                            processingErrors.add("%s Edge%s have a required target field.");
                                             continue;
                                         }
 
@@ -288,8 +288,16 @@ public class GraphMLImportProcessor implements GraphFileImportProcessor {
                 .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
             final String errorMsg = processingErrorTypes.entrySet().stream()
-                .map(e -> e.getValue() + " " + e.getKey())
-                .collect(Collectors.joining(SeparatorConstants.NEWLINE));
+                    .map(e -> {
+                        String plural = " doesn't ";
+                        final long errorCount = e.getValue();
+                        if(errorCount > 1){
+                            plural = "s don't ";
+                        }
+                        
+                        return String.format(e.getKey(), errorCount, plural);
+                    })
+                    .collect(Collectors.joining(SeparatorConstants.NEWLINE));
 
             NotifyDisplayer.display(new NotifyDescriptor("Warning - Some elements weren't able to be imported:\n" + errorMsg,
                     "Import GraphML File", DEFAULT_OPTION,
