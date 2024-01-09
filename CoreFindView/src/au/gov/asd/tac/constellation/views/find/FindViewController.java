@@ -260,12 +260,13 @@ public class FindViewController {
      * Updates the view to the bounding box of the currently selected nodes.
      */
     public void zoomToSelection() {
-        final Graph graph = GraphManager.getDefault().getAllGraphs().get(ActiveFindResultsList.getBasicResultsList().get(ActiveFindResultsList.getBasicResultsList().getCurrentIndex()).getGraphId());
-
+        ActiveFindResultsList.getBasicResultsList().stream().forEach(graph -> {
+            if (graph != null) {
+                PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(GraphManager.getDefault().getAllGraphs().get(graph.getGraphId()));
+            }
+        });
         // check to see the graph is not null
-        if (graph != null) {
-            PluginExecution.withPlugin(InteractiveGraphPluginRegistry.ZOOM_TO_SELECTION).executeLater(graph);
-        }
+        
     }
 
     /**

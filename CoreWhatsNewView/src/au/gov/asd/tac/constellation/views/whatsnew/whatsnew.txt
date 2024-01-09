@@ -2,8 +2,8 @@
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
 
-== 2024-01-08 Added Find and Zoom to BasicFind
-<p> Added a "Find All and Zoom" button to the BasicFind dialog</p>
+== 2024-01-08 Added Find and Zoom to Basic Find
+<p> Added a "Find All and Zoom" button to the Basic Find dialog</p>
 
 == 2023-11-15 Rename graphs through REST API and Jupyter Notebooks
 <p>Jupyter notebook users can now specify or change Constellation graph title names within scripts using the client.</p>
