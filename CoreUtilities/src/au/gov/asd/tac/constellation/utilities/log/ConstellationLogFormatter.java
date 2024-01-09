@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2021 Australian Signals Directorate
+ * Copyright 2010-2024 Australian Signals Directorate
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package au.gov.asd.tac.constellation.utilities.log;
 
+import au.gov.asd.tac.constellation.utilities.text.SeparatorConstants;
 import java.time.Instant;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -23,15 +24,19 @@ import java.util.logging.LogRecord;
  *
  * @author Guilty-Spark-343
  */
-public class ConstellationLogFormatter extends Formatter{
+public class ConstellationLogFormatter extends Formatter {
     @Override
     public final String format(final LogRecord record) {
         final StringBuilder sb = new StringBuilder();
         sb.append("[");
         sb.append(Instant.now().toString().substring(0,22).replace("T"," "));
         sb.append("Z] - ");
+        sb.append(record.getLevel());
+        sb.append(" [");
+        sb.append(record.getLoggerName());
+        sb.append("]: ");
         sb.append(record.getMessage());
-        sb.append("\n");
+        sb.append(SeparatorConstants.NEWLINE);
         return sb.toString();
     }
 }
