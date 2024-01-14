@@ -1,6 +1,8 @@
 == 3030-12-31 Getting Started
 <p>If you're new to Constellation, read the <a href="" helpId="au.gov.asd.tac.constellation.functionality.gettingstarted">getting started guide</a>.</p>
 
+== 2024-01-09 Data Access View Categories change
+<p>Added a new "Restore to Default" button to the Data Access View Categories </p>
 
 == 2024-01-08 Light and dark mode support
 <p>Light/Dark mode themes have been reworked and now comprehensively cover most of the application.</p>
