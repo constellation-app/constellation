@@ -15,6 +15,8 @@
  */
 package au.gov.asd.tac.constellation.views.dataaccess.panes;
 
+import au.gov.asd.tac.constellation.utilities.javafx.JavafxStyleManager;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -36,7 +38,7 @@ import org.apache.commons.lang3.StringUtils;
 /**
  * Present the user with a list of plugins and allow it to select one, then
  * expand that plugin.
- * <p/>
+ * <p>
  * This saves users from having to hunt through the various sections for a
  * plugin when they don't know where it is.
  *
@@ -50,7 +52,7 @@ public class PluginFinder {
 
     /**
      * Build a cooperative TextArea and ListView.
-     * <p/>
+     * <p>
      * The TextArea acts as a filter on the ListView. If there is only one item
      * in the filtered list, it will be used when the user fires the OK action.
      *
@@ -90,6 +92,7 @@ public class PluginFinder {
         dialog.setTitle(PLUGIN_FINDER_TITLE);
         dialog.setHeaderText(PLUGIN_FINDER_HEADER);
         dialog.setResizable(true);
+        dialog.getDialogPane().getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
 
         return dialog;
     }

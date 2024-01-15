@@ -374,8 +374,8 @@ public class ScatterChartPane extends BorderPane {
      * secondary selection.
      */
     protected void selectElementsOnChart(final Set<ScatterData> primarySelection, final Set<ScatterData> secondarySelection) {
-        final DropShadow primarySelectionShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.RED, 20.0, 0.85, 0.0, 0.0);
-        final DropShadow secondarySelectionShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.YELLOW, 20.0, 0.85, 0.0, 0.0);
+        final DropShadow primarySelectionShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.BLUE, 20.0, 0.85, 0.0, 0.0);
+        final DropShadow secondarySelectionShadow = new DropShadow(BlurType.THREE_PASS_BOX, Color.RED, 20.0, 0.85, 0.0, 0.0);
 
         Platform.runLater(() -> {
             synchronized (currentData) {

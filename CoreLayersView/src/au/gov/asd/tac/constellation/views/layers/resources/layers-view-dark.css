@@ -22,14 +22,14 @@
 }
 
 .accordion .titled-pane-heading .title, .titled-pane-heading > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#cd853f,100%), derive(#cd853f,0%) 5%, derive(#cd853f,-25%) 95%, derive(#cd853f,50%) 100%);
-    -fx-text-fill: white;
+    -fx-background-color: linear-gradient(to bottom, derive(#1f6fba,100%), derive(#1f6fba,0%) 5%, derive(#1f6fba,-25%) 95%, derive(#1f6fba,50%) 100%);
     -fx-padding: 3;
 }
 
 .titled-pane > .title {
     -fx-base: #333333;
 }
+
 .titled-pane-selected > .title {
     -fx-background-color: linear-gradient(to bottom, derive(#5E9656,100%), derive(#5E9656,0%) 5%, derive(#5E9656,-25%) 95%, derive(#5E9656,50%) 100%);
 }
@@ -38,10 +38,8 @@
     -fx-background-color: linear-gradient(to bottom, derive(#5E9656,0%), derive(#5E9656,0%) 60%, derive(#B31D2F,0%) 85%, derive(#B31D2F,0%) 100%);
 }
 
-
-
 .titled-pane-matched > .title {
-    -fx-background-color: linear-gradient(to bottom, derive(#5E96EE,100%), derive(#5E96EE,0%) 5%, derive(#5E96EE,-25%) 95%, derive(#5E96EE,50%) 100%);
+    -fx-background-color: linear-gradient(to bottom, derive(#1c5aa6,100%), derive(#1c5aa6,0%) 5%, derive(#1c5aa6,-25%) 95%, derive(#1c5aa6,50%) 100%);
 }
 
 .titled-pane-invalid > .title {

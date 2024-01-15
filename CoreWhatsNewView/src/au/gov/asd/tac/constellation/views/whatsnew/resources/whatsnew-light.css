@@ -3,20 +3,10 @@
 }
 
 body {
-    background-color: #333333;
-    color: #c8c8c8;
     font-family: "Arial Unicode MS", sans-serif;
 }
 
-h2 {
-    color: white;
-    text-align: center;
-    font-size: 20px;
-}
-
 strong {
-    /* For some reason font-weight doesn't seem to work. Use color instead. */
-    color: lightsteelblue;
     font-weight: bold;
 }
 

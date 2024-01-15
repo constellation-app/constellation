@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2021 Australian Signals Directorate
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -145,9 +145,9 @@ public class ButtonToolbarNGTest {
         verifyButton(
                 buttonToolbar.getHelpButton(),
                 "",
-                "-fx-border-color: transparent;-fx-background-color: transparent;",
+                "-fx-border-color: transparent; -fx-background-color: transparent; -fx-effect: null;",
                 "Display help for Data Access",
-                UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())
+                UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())
         );
         assertEquals(buttonToolbar.getHelpButton().getPadding(), new Insets(0, 8, 0, 0));
 
@@ -168,7 +168,7 @@ public class ButtonToolbarNGTest {
                 "",
                 "",
                 "Manage your favourites",
-                AnalyticIconProvider.STAR.buildImage(16, ConstellationColor.YELLOW.getJavaColor())
+                AnalyticIconProvider.STAR.buildImage(16)
         );
 
         doNothing().when(buttonToolbar).manageFavourites();
@@ -183,7 +183,7 @@ public class ButtonToolbarNGTest {
         verifyButton(
                 buttonToolbar.getExecuteButtonTop(),
                 "Go",
-                "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;",
+                "-fx-background-color: rgb(64,180,64);",
                 null,
                 null
         );
@@ -191,7 +191,7 @@ public class ButtonToolbarNGTest {
         verifyButton(
                 buttonToolbar.getExecuteButtonBottom(),
                 "Go",
-                "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;",
+                "-fx-background-color: rgb(64,180,64);",
                 null,
                 null
         );
@@ -269,7 +269,7 @@ public class ButtonToolbarNGTest {
         WaitForAsyncUtils.waitForFxEvents();
 
         verify(executeButton, times(2)).setText("Stop");
-        verify(executeButton, times(2)).setStyle("-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
+        verify(executeButton, times(2)).setStyle("-fx-background-color: rgb(180,64,64);");
         verify(executeButton, times(2)).setDisable(false);
     }
 
@@ -284,7 +284,7 @@ public class ButtonToolbarNGTest {
         WaitForAsyncUtils.waitForFxEvents();
 
         verify(executeButton, times(2)).setText("Stop");
-        verify(executeButton, times(2)).setStyle("-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
+        verify(executeButton, times(2)).setStyle("-fx-background-color: rgb(180,64,64);");
         verify(executeButton, times(2)).setDisable(false);
     }
 
@@ -374,16 +374,16 @@ public class ButtonToolbarNGTest {
     @Test
     public void executeButtonStates() {
         assertEquals(ButtonToolbar.ExecuteButtonState.GO.getText(), "Go");
-        assertEquals(ButtonToolbar.ExecuteButtonState.GO.getStyle(), "-fx-background-color: rgb(64,180,64); -fx-padding: 2 5 2 5;");
+        assertEquals(ButtonToolbar.ExecuteButtonState.GO.getStyle(), "-fx-background-color: rgb(64,180,64);");
 
         assertEquals(ButtonToolbar.ExecuteButtonState.STOP.getText(), "Stop");
-        assertEquals(ButtonToolbar.ExecuteButtonState.STOP.getStyle(), "-fx-background-color: rgb(180,64,64); -fx-padding: 2 5 2 5;");
+        assertEquals(ButtonToolbar.ExecuteButtonState.STOP.getStyle(), "-fx-background-color: rgb(180,64,64);");
 
         assertEquals(ButtonToolbar.ExecuteButtonState.CONTINUE.getText(), "Continue");
-        assertEquals(ButtonToolbar.ExecuteButtonState.CONTINUE.getStyle(), "-fx-background-color: rgb(255,180,0); -fx-padding: 2 5 2 5;");
+        assertEquals(ButtonToolbar.ExecuteButtonState.CONTINUE.getStyle(), "-fx-background-color: rgb(255,180,0);");
 
         assertEquals(ButtonToolbar.ExecuteButtonState.CALCULATING.getText(), "Calculating");
-        assertEquals(ButtonToolbar.ExecuteButtonState.CALCULATING.getStyle(), "-fx-background-color: rgb(0,100,255); -fx-padding: 2 5 2 5;");
+        assertEquals(ButtonToolbar.ExecuteButtonState.CALCULATING.getStyle(), "-fx-background-color: rgb(0,100,255);");
     }
 
     /**
@@ -426,9 +426,9 @@ public class ButtonToolbarNGTest {
                     .thenAnswer(iom -> {
                         final NotifyDescriptor descriptor = iom.getArgument(0);
 
-                final String expectedMessage = "Add or remove plugins from your Favourites category.\n\n"
-                        + "The following plugins were selected:\n" + pluginTitle + "\n"
-                        + "\nNote, Favourites will be updated the next time you start " + BrandingUtilities.APPLICATION_NAME;
+                        final String expectedMessage = "Add or remove plugins from your Favourites category.\n\n"
+                                + "The following plugins were selected:\n" + pluginTitle + "\n"
+                                + "\nNote, Favourites will be updated the next time you start " + BrandingUtilities.APPLICATION_NAME;
 
                         assertEquals(descriptor.getMessage(), expectedMessage);
                         assertEquals(descriptor.getTitle(), "Manage Favourites");
