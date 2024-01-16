@@ -15,100 +15,60 @@
  */
 package au.gov.asd.tac.constellation.graph.visual.plugins.colorblind;
 
-import au.gov.asd.tac.constellation.graph.Graph;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
-import au.gov.asd.tac.constellation.graph.WritableGraph;
-import au.gov.asd.tac.constellation.graph.manager.GraphManager;
-import au.gov.asd.tac.constellation.graph.node.GraphNode;
-import au.gov.asd.tac.constellation.graph.node.plugins.SimpleAction;
 import au.gov.asd.tac.constellation.graph.schema.visual.concept.VisualConcept;
-import au.gov.asd.tac.constellation.plugins.PluginException;
-import au.gov.asd.tac.constellation.plugins.PluginGraphs;
-import au.gov.asd.tac.constellation.plugins.PluginInteraction;
-import au.gov.asd.tac.constellation.plugins.parameters.PluginParameters;
 import au.gov.asd.tac.constellation.preferences.ApplicationPreferenceKeys;
 import au.gov.asd.tac.constellation.utilities.color.ConstellationColor;
 import java.util.prefs.Preferences;
-import org.openide.awt.ActionID;
-import org.openide.awt.ActionReference;
-import org.openide.awt.ActionReferences;
-import org.openide.awt.ActionRegistration;
-import org.openide.util.NbBundle;
 import org.openide.util.NbPreferences;
 
 /**
  *
  * @author centauri0320001
  */
+public class ColorblindUtilities {
 
-/*
- * toolbar options containing set of colourblind actions
- */
-@ActionID(category = "Display", id = "au.gov.asd.tac.constellation.graph.visual.plugins.colorblind.ApplyColorblindAction")
-@ActionRegistration(displayName = "#CTL_ApplyColorblindAction",
-        iconBase = "au/gov/asd/tac/constellation/graph/visual/plugins/colorblind/resources/colorblind.png",
-        surviveFocusChange = true)
-@ActionReferences({
-    @ActionReference(path = "Menu/Display", position = 950, separatorBefore = 901)
-})
-@NbBundle.Messages({
-    "CTL_ApplyColorblindAction=Apply Selected Colorblind Schema to Graph"
-})
-public final class ApplyColorblindAction extends SimpleAction {
-
-    Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
-    String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
-
-    public ApplyColorblindAction(GraphNode context) {
-        super(context);
+    private ColorblindUtilities() {
+        throw new IllegalStateException("Utility class");
     }
 
-    @Override
-    protected void edit(PluginGraphs graphs, PluginInteraction interaction, PluginParameters parameters) throws InterruptedException, PluginException {
-        final Graph graph = GraphManager.getDefault().getActiveGraph();
-        final WritableGraph wg = graph.getWritableGraph("Changing colors", true);
-        run(wg);
-        wg.commit();
-    }
+    public static void colorNodes(final GraphWriteMethods wg, final int vxColorblindAttr, final int txColorblindAttr) {
+        Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
 
-    public void run(final WritableGraph graph) {
-        final int vxColorAttr = VisualConcept.VertexAttribute.COLOR.get(graph);
-        final int txColorAttr = VisualConcept.TransactionAttribute.COLOR.get(graph);
+        final int vxColorAttr = VisualConcept.VertexAttribute.COLOR.get(wg);
+        final int txColorAttr = VisualConcept.TransactionAttribute.COLOR.get(wg);
 
-        //Populate the nodes with the colorblind_layer attribute
-        final int vxColorblindAttr = VisualConcept.VertexAttribute.COLORBLIND_LAYER.ensure(graph);
-        final int txColorblindAttr = VisualConcept.TransactionAttribute.COLORBLIND_LAYER.ensure(graph);
-
-        final int vertexCount = graph.getVertexCount();
-        final int transactionCount = graph.getTransactionCount();
+        final int vertexCount = wg.getVertexCount();
+        final int transactionCount = wg.getTransactionCount();
 
         if (!"None".equals(COLORMODE)) {
             //Iterate through graph vertices. If vertexType is a defined schemaType color will be adjusted if applicable.
             for (int vertex = 0; vertex < vertexCount; vertex++) {
-                final int vxId = graph.getVertex(vertex);
-                final ConstellationColor vertexColor = graph.getObjectValue(vxColorAttr, vxId);
-                final ConstellationColor vxColorblindAlpha = graph.getObjectValue(vxColorblindAttr, vxId);
+                final int vxId = wg.getVertex(vertex);
+                final ConstellationColor vertexColor = wg.getObjectValue(vxColorAttr, vxId);
+                final ConstellationColor vxColorblindAlpha = wg.getObjectValue(vxColorblindAttr, vxId);
 
                 if (vxColorblindAlpha == null || vxColorblindAlpha.getAlpha() == 0.99F) {
                     ConstellationColor newColor = calcColorBrightness(vertexColor);
-                    graph.setObjectValue(vxColorblindAttr, vxId, newColor);
+                    wg.setObjectValue(vxColorblindAttr, vxId, newColor);
                 }
             }
 
             for (int transaction = 0; transaction < transactionCount; transaction++) {
-                final int transactionId = graph.getTransaction(transaction);
-                final ConstellationColor transactionColor = graph.getObjectValue(txColorAttr, transactionId);
-                final ConstellationColor txColorblindAlpha = graph.getObjectValue(vxColorblindAttr, transactionId);
+                final int transactionId = wg.getTransaction(transaction);
+                final ConstellationColor transactionColor = wg.getObjectValue(txColorAttr, transactionId);
+                final ConstellationColor txColorblindAlpha = wg.getObjectValue(vxColorblindAttr, transactionId);
 
                 if (txColorblindAlpha == null || txColorblindAlpha.getAlpha() == 0.99F) {
                     ConstellationColor newColor = calcColorBrightness(transactionColor);
-                    graph.setObjectValue(txColorblindAttr, transactionId, newColor);
+                    wg.setObjectValue(txColorblindAttr, transactionId, newColor);
                 }
             }
-            setColorRef(graph, graph.getAttributeName(vxColorblindAttr), graph.getAttributeName(txColorblindAttr));
+            setColorRef(wg, wg.getAttributeName(vxColorblindAttr), wg.getAttributeName(txColorblindAttr));
         } else {
-            graph.removeAttribute(vxColorblindAttr);
-            graph.removeAttribute(txColorblindAttr);
+            wg.removeAttribute(vxColorblindAttr);
+            wg.removeAttribute(txColorblindAttr);
         }
     }
 
@@ -123,7 +83,10 @@ public final class ApplyColorblindAction extends SimpleAction {
     /*Adjust RGB values using the to-be removed RGB value as a proportion of the calculation, acting as contrast booster for brightness adjustments.  
         Evaluate the selected colorblind mode and adjust contrast if RGB value is high enough; prevents new color from being too dark, then remove imperceivable colors. 
         Primary colors for the modes are then adjusted at different strengths to improve contrast. I.E. remove 50% red in deut, remove 18% blue for prot.*/
-    public ConstellationColor calcColorBrightness(ConstellationColor vertexColor) {
+    public static ConstellationColor calcColorBrightness(ConstellationColor vertexColor) {
+        Preferences prefs = NbPreferences.forModule(ApplicationPreferenceKeys.class);
+        String COLORMODE = prefs.get(ApplicationPreferenceKeys.COLORBLIND_MODE, ApplicationPreferenceKeys.COLORBLIND_MODE_DEFAULT);
+
         float adjustedRed = vertexColor.getRed();
         float adjustedGreen = vertexColor.getGreen();
         float adjustedBlue = vertexColor.getBlue();
@@ -148,7 +111,6 @@ public final class ApplyColorblindAction extends SimpleAction {
                     adjustedRed = adjustedRed <= minimumAdjustedVal ? adjustedRed + brightenRGB : adjustedRed;
                     adjustedBlue = vertexColor.getBlue() / 1.2f;
                 }
-
                 break;
             case "Protanopia":
                 if (vertexColor.getGreen() + vertexColor.getBlue() < minimumCombinedRGB || vertexColor.getRed() <= minPrimaryRGBVal) {
@@ -180,4 +142,5 @@ public final class ApplyColorblindAction extends SimpleAction {
         ConstellationColor newColor = ConstellationColor.getColorValue(adjustedRed, adjustedGreen, adjustedBlue, 0.99F);
         return newColor;
     }
+
 }
