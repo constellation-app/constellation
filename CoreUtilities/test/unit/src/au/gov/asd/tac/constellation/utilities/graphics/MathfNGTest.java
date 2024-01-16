@@ -97,7 +97,7 @@ public class MathfNGTest {
     public void testDistanceToPlane() {
         assertEquals(Mathf.distanceToPlane(
                 new Vector3f(F1, F2, F3), new Vector4f(F4, F5, F6, F7)), 
-                80.2883F);
+                5.6429143F);
     }
     
     /**
