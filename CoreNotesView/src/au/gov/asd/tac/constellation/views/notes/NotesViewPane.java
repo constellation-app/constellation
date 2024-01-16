@@ -113,11 +113,11 @@ public class NotesViewPane extends BorderPane {
 
     private final VBox notesListVBox;
     private final ScrollPane notesListScrollPane;
-
-    private static final double NOTE_HEIGHT = 147.0;
+    private static final double NOTE_HEIGHT = 157.0;
     private static final double NOTE_INFO_SPACING = 1;
     private static final double NOTE_BODY_SPACING = 5;
     private static final int DEFAULT_BUTTON_SPACING = 10;
+
     private static final String SHOW_MORE = "Show more";
     private static final String SHOW_LESS = "Show less";
 
@@ -135,8 +135,9 @@ public class NotesViewPane extends BorderPane {
 
     private static final Object LOCK = new Object();
 
-    private final String fontStyle = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
+    private final String fontStyle = String.format("-fx-text-fill: #fff; -fx-font-size:%d;", FontUtilities.getApplicationFontSize());
     private static final String BOLD_STYLE = "-fx-font-weight: bold;";
+    private static String fontSize = String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize());
 
     private final List<Integer> nodesSelected = new ArrayList<>();
     private final List<Integer> transactionsSelected = new ArrayList<>();
@@ -170,15 +171,15 @@ public class NotesViewPane extends BorderPane {
         selectedFilters.add(USER_NOTES_FILTER); // Only user notes are selected by default.
 
         // CheckComboBox to select and deselect various filters for note rendering.
+
         filterSelectionMultiChoiceInput = new MultiChoiceInputField(availableFilters);
         filterSelectionMultiChoiceInput.setTitle("Select a filter...");
         filterSelectionMultiChoiceInput.setMinWidth(165);
-        filterSelectionMultiChoiceInput.setMaxWidth(165);
-        filterSelectionMultiChoiceInput.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+
+        filterSelectionMultiChoiceInput.setStyle(fontSize);
         filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isSelectedFiltersUpdating) {
                 setFilters(filterSelectionMultiChoiceInput.getCheckModel().getCheckedItems());
-
                 final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
                 if (activeGraph != null) {
                     updateNotesUI();
@@ -205,8 +206,9 @@ public class NotesViewPane extends BorderPane {
         tagsFiltersList = FXCollections.observableArrayList(tagsUpdater);
 
         // CheckComboBox for the Auto Note filters.
+
         autoFilterCheckComboBox = new MultiChoiceInputField(tagsFiltersList);
-        autoFilterCheckComboBox.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        autoFilterCheckComboBox.setStyle(fontSize);
         autoFilterCheckComboBox.getCheckModel().getCheckedItems().addListener((final ListChangeListener.Change event) -> {
             if (!isAutoSelectedFiltersUpdating) {
                 updateSelectedTagsCombo(autoFilterCheckComboBox.getCheckModel().getCheckedItems());
@@ -246,12 +248,12 @@ public class NotesViewPane extends BorderPane {
             event.consume();
         });
 
-        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.BLUEBERRY.getJavaColor())));
+        final Button helpButton = new Button("", new ImageView(UserInterfaceIconProvider.HELP.buildImage(16, ConstellationColor.SKY.getJavaColor())));
         helpButton.paddingProperty().set(new Insets(2, 0, 0, 0));
         helpButton.setTooltip(new Tooltip("Display help for Notes View"));
         helpButton.setOnAction(event -> new HelpCtx(NotesViewTopComponent.class.getName()).display());
         // Get rid of the ugly button look so the icon stands alone.
-        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent;");
+        helpButton.setStyle("-fx-border-color: transparent;-fx-background-color: transparent; -fx-effect: null; ");
 
         // FlowPane to store control items used to filter notes.
         final ToolBar toolBar = new ToolBar();
@@ -259,10 +261,10 @@ public class NotesViewPane extends BorderPane {
         // Create the actual node that allows user to add new notes
         newNotePane = new NewNotePane(USER_CHOSEN_COLOUR);
 
+
         // Button to trigger pop-up window to make a new note
         createNewNoteButton.setText("Create Note");
-        createNewNoteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
-        createNewNoteButton.setStyle("-fx-text-fill: #00FF00;");
+        createNewNoteButton.setStyle(fontStyle);
 
         createNewNoteButton.setOnAction(event -> {
             if (creatingFirstNote) {
@@ -275,8 +277,10 @@ public class NotesViewPane extends BorderPane {
             newNotePane.showPopUp();
         });
 
+
         // Event handler to add new note
         newNotePane.getAddButtion().setOnAction(event -> {
+
             final Graph activeGraph = GraphManager.getDefault().getActiveGraph();
             if (activeGraph != null) {
                 newNotePane.getColourPicker().setValue(ConstellationColor.fromHtmlColor(USER_COLOR).getJavaFXColor());
@@ -800,7 +804,7 @@ public class NotesViewPane extends BorderPane {
         final Label titleLabel = new Label(newNote.getNoteTitle());
         titleLabel.setWrapText(true);
         titleLabel.setStyle(BOLD_STYLE + fontStyle);
-        titleLabel.setStyle("-fx-font-color: #FFFFFF;");
+        titleLabel.setStyle("-fx-text-fill: #FFFFFF;");
 
         // Define content label
         final Label contentLabel = new Label(newNote.getNoteContent());
@@ -808,6 +812,7 @@ public class NotesViewPane extends BorderPane {
         contentLabel.setWrapText(true);
         contentLabel.setMinWidth(50);
         contentLabel.setAlignment(Pos.TOP_LEFT);
+        contentLabel.setStyle(fontStyle);
 
         final MarkdownTree md = new MarkdownTree(newNote.getNoteTitle() + "\n\n" + newNote.getNoteContent());
         md.setMarkdownEnabled(newNote.isInMarkdown());
@@ -875,11 +880,11 @@ public class NotesViewPane extends BorderPane {
         // Define buttons (edit, save, add, renove, delete)
         final Button editTextButton = new Button("Edit");
         editTextButton.setMinWidth(92);
-        editTextButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        editTextButton.setStyle(fontStyle);
 
         final Button deleteButton = new Button("Delete Note");
         deleteButton.setMinWidth(92);
-        deleteButton.setStyle(String.format("-fx-font-size:%d;", FontUtilities.getApplicationFontSize()));
+        deleteButton.setStyle(fontStyle);
 
 
         // If the note to be created is in edit mode, ensure it is created with

@@ -60,7 +60,7 @@ public class WelcomeTopComponentNGTest {
         final WelcomeTopComponent instance = mock(WelcomeTopComponent.class);
         doCallRealMethod().when(instance).createStyle();
 
-        String expResult = "resources/welcome_theme.css";
+        String expResult = "resources/light_welcome.css";
 
         assertEquals(instance.createStyle(), expResult);
     }

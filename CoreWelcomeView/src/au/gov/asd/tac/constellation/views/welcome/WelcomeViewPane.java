@@ -114,6 +114,7 @@ public class WelcomeViewPane extends BorderPane {
             logoView.setFitHeight(100);
             logoView.setFitWidth(150);
             logoHBox.getChildren().add(logoView);
+            logoHBox.setPadding(new Insets(0, 0, 3, 0));
             logoHBox.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(logoHBox);
 
@@ -122,11 +123,11 @@ public class WelcomeViewPane extends BorderPane {
             welcome.setId("title");
             welcome.setAlignment(Pos.CENTER);
             leftVBox.getChildren().add(welcome);
-
+            leftVBox.setId("left-pane");
+            
             //Create right VBox for graph controls
             final VBox rightVBox = new VBox();
             rightVBox.setPadding(new Insets(50, 50, 50, 50));
-            rightVBox.setBackground(new Background(new BackgroundFill(Color.valueOf("#14161a"), CornerRadii.EMPTY, Insets.EMPTY)));
             splitPane.getItems().add(rightVBox);
 
             //Create HBoxes for the right_vbox
@@ -267,7 +268,6 @@ public class WelcomeViewPane extends BorderPane {
     public void setButtonProps(final Button button) {
         button.setPrefSize(135, 135);
         button.setMaxSize(150, 150);
-        button.setStyle("-fx-background-color: #2e4973;");
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
     }
@@ -280,7 +280,7 @@ public class WelcomeViewPane extends BorderPane {
     public void createRecentButtons(final Button button) {
         button.setPrefSize(160, 160);
         button.setMaxSize(175, 175);
-        button.setStyle("-fx-background-color: #333333; -fx-background-radius: 10px; -fx-text-fill: white;");
+        button.setId("recent-button");
         button.setCursor(Cursor.HAND);
         button.setContentDisplay(ContentDisplay.TOP);
     }
@@ -306,9 +306,8 @@ public class WelcomeViewPane extends BorderPane {
      */
     private static void saveCurrentDirectory(final String path) {
         final String lastFileOpenAndSaveLocation = PREFERENCES.get(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, "");
-        final boolean rememberOpenAndSaveLocation = PREFERENCES.getBoolean(ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION, ApplicationPreferenceKeys.REMEMBER_OPEN_AND_SAVE_LOCATION_DEFAULT);
-
-        if (!lastFileOpenAndSaveLocation.equals(path) && rememberOpenAndSaveLocation) {
+        
+        if (!lastFileOpenAndSaveLocation.equals(path)) {
             PREFERENCES.put(ApplicationPreferenceKeys.FILE_OPEN_AND_SAVE_LOCATION, path);
         }
     }

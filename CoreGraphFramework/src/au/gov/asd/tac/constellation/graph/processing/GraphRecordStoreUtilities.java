@@ -23,6 +23,7 @@ import au.gov.asd.tac.constellation.graph.GraphReadMethods;
 import au.gov.asd.tac.constellation.graph.GraphWriteMethods;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionType;
 import au.gov.asd.tac.constellation.graph.schema.type.SchemaTransactionTypeUtilities;
+import au.gov.asd.tac.constellation.graph.schema.type.SchemaVertexTypeUtilities;
 import au.gov.asd.tac.constellation.graph.utilities.CompositeTransactionId;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -36,10 +37,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -75,6 +78,18 @@ public class GraphRecordStoreUtilities {
     private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     private static final Logger LOGGER = Logger.getLogger(GraphRecordStoreUtilities.class.getName());
+    
+    // Columns that contain the type, either through the Identifier or Type.
+    private static final List<String> LabelTypes = Arrays.asList(
+            "source.Identifier",
+            "source.Label",
+            "destination.Identifier",
+            "destination.Label",
+            "source.Type",
+            "destination.Type"
+    );
+    private static final List<String> ApprovedTypes = SchemaVertexTypeUtilities.getTypes().stream().map(i -> i.getName()).collect(Collectors.toList());
+
 
     private static int addVertex(final GraphWriteMethods graph, final Map<String, String> values,
             final Map<String, Integer> vertexMap, final boolean initializeWithSchema, boolean completeWithSchema,
@@ -405,13 +420,18 @@ public class GraphRecordStoreUtilities {
             final Map<String, String> transactionValues = new TreeMap<>();
             for (String key : keys) {
                 if (recordStore.hasValue(key)) {
-                    final String value = recordStore.get(key);
+                    String value = recordStore.get(key);
                     final int dividerPosition = key.indexOf('.');
 
                     if (dividerPosition > 0) {
                         final String keyDescriptor = key.substring(0, dividerPosition).toLowerCase();
                         final String keyAttribute = key.substring(dividerPosition + 1);
-                        final String[] parts = keyDescriptor.split("\\$"); // TODO: what ??
+                        final String[] parts = keyDescriptor.split("\\.");
+                        final String label = key.split("<")[0];
+                        
+                        if(LabelTypes.indexOf(label) > -1){
+                            value = normalizeType(value);
+                        }
 
                         switch (parts[0]) {
                             case "source":
@@ -1176,6 +1196,27 @@ public class GraphRecordStoreUtilities {
         for (int key : graph.getPrimaryKey(GraphElementType.VERTEX)) {
             recordStore.set(DESTINATION + graph.getAttributeName(key), graph.getStringValue(key, vertex));
         }
+    }
+    
+    /**
+     * Normalize a type to existing schema types based on case sensitivity
+     * e.g. person, PERSON, Person, will all normalize to the schema Type Person.
+     * @param vxLabel The {@link String} representing the complete label of a vertex
+     * e.g. def@example2.com&lt;email&gt;.
+     * @return The normalized type e.g. Email
+     */
+
+    private static String normalizeType(final String vxLabel) {
+        final String[] parts = vxLabel.split("<");
+        final String type = parts.length != 2 ? parts[0] : parts[1].substring(0, parts[1].length()-1);
+        // Identify a type that is spelt the same regardless of case.
+        if (ApprovedTypes.indexOf(type) == -1) {
+            Optional<String> foundType = ApprovedTypes.stream().filter(i -> i.equalsIgnoreCase(type)).findFirst();
+            if(foundType.isPresent()){
+                return parts.length != 2 ? foundType.get() : parts[0] + "<"+ foundType.get()+">";
+            }
+        }
+        return vxLabel;
     }
 
     /**

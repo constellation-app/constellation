@@ -50,7 +50,7 @@ public class ImportPane extends BorderPane {
     private final static int GRIDPANE_CONSTRAINT = 200;
     private final static int ACTIONPANE_MIN_HEIGHT = 40;
     private final static Image HELP_IMAGE = UserInterfaceIconProvider.HELP.buildImage(16,
-            ConstellationColor.BLUEBERRY.getJavaColor());
+            ConstellationColor.SKY.getJavaColor());
 
     protected final Preferences importExportPrefs = NbPreferences.forModule(ImportExportPreferenceKeys.class);
     protected final CheckBox showSchemaAttributesCheckBox;

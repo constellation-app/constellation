@@ -1,0 +1,8 @@
+.rulesScrollPane {
+    -fx-min-height: 138px;
+}
+
+.button:default {
+    -fx-base: #1c5aa6;
+    -fx-text-fill: #ffffff;
+}

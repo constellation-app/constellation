@@ -79,7 +79,7 @@ public final class DelimitedImportTopComponent extends ImportTopComponent {
 
     @Override
     protected String createStyle() {
-        return "resources/delimited-import.css";
+        return null;
     }
 
     @Override

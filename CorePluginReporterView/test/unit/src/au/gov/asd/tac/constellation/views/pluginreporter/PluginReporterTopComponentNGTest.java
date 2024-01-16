@@ -116,6 +116,6 @@ public class PluginReporterTopComponentNGTest {
         final PluginReporterTopComponent instance = mock(PluginReporterTopComponent.class);
         doCallRealMethod().when(instance).createStyle();
 
-        assertEquals("resources/plugin-reporter.css", instance.createStyle());
+        assertEquals("resources/plugin-reporter-light.css", instance.createStyle());
     }
 }

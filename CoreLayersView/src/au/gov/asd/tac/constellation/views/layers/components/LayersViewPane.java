@@ -30,6 +30,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.StringUtils;
 
@@ -91,6 +92,7 @@ public class LayersViewPane extends BorderPane {
         layersHeading.setExpanded(true);
         layersHeading.setCollapsible(false);
         layersHeading.getStyleClass().add("titled-pane-heading");
+        layersHeading.setId("title-style");
         
         // Add Layers Dynamically
         final VBox layersnew = new VBox();

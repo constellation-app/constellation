@@ -42,7 +42,7 @@ public class FileExtensionConstants {
     public static final String XLSX = ".xlsx";
     public static final String XLS = ".xls";
     public static final String XML = ".xml";
-
+    
     // Font extensions
     public static final String OPEN_TYPE_FONT = ".otf";
     public static final String TRUE_TYPE_FONT = ".ttf";
@@ -63,10 +63,21 @@ public class FileExtensionConstants {
     public static final String CASCADING_STYLE_SHEET = ".css";
     public static final String BINARY = ".bin";
     public static final String BACKUP = ".bak";
-
+    
+    //Geographical file extensions
+    public static final String GEO_PACKAGE = ".gpkg";
+    public static final String KML = ".kml";
+    public static final String SHAPE = ".shp";
+    
+    //Graph file extensions
+    public static final String GML = ".gml";
+    public static final String PAJEK = ".net";
+    public static final String GRAPHML = ".graphml";
+        
     // Image extensions
     public static final String JPG = ".jpg";
     public static final String PNG = ".png";
     public static final String GIF = ".gif";
-    public static final String SVG = ".svg";
+    public static final String SVG = ".svg"; 
+    
 }

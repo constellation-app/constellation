@@ -1,0 +1,17 @@
+/*******************************************************************************
+ *                                                                             *
+ * Question Pane                                                               *
+ *                                                                             *
+ ******************************************************************************/
+.titled-pane > .title {
+    -fx-background-color: linear-gradient(to bottom, derive(#1f99f0,100%), derive(#1f99f0,0%) 5%, derive(#1f99f0,-25%) 95%, derive(#1f99f0,50%) 100%);
+    -fx-font-weight:bold;
+}
+
+.titled-pane {
+    -fx-text-fill: white;
+}
+
+.titled-pane > .title > .arrow-button > .arrow {
+    -fx-background-color: white;
+}
