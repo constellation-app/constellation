@@ -87,8 +87,8 @@ public abstract class ThreadAllocator {
         }
     }
 
-    /*
-	 * Factory for building threadallocators with a specific type of adaptor
+    /** 
+     * Factory for building thread allocators with a specific type of adaptor
      */
     public static ThreadAllocator buildThreadAllocator(final int maxThreads, final int maxElementsPerThread, final int numOfElements, final AdaptorFactory adaptorConnector) {
         return new ThreadAllocator() {

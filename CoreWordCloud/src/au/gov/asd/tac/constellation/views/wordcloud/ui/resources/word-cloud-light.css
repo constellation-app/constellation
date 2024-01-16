@@ -2,13 +2,9 @@
 	-fx-padding: 0;
 	-fx-cursor: default;
 	-fx-content-disaply: LEFT;
-	-fx-text-fill: white;
+	-fx-text-fill: black;
 	-fx-border-color: transparent;
 	-fx-border-width: 1px;
-}
-
-.scroll-pane {
-	-fx-background-color: null;
 }
 
 .hyperlink:visited {
@@ -25,22 +21,21 @@
 	-fx-tick-unit: 0.25;
 }
 
-
-/***
+/*********
 * LABEL  *
-***/
+**********/
 
 #query-label {
 	-fx-text-fill: #20c0ff;
-	-fx-font: bold italic 1.166667em "Arial";
+	-fx-font: bold italic 1.166667em;
 }
 
 .label {
-	-fx-font: bold 1.000001em "Arial";
+	-fx-font: bold;
 }
 
 .description-label {
-	-fx-font: normal 1.000001em "Arial";
+	-fx-font: normal;
 }
 
 .page-corner {

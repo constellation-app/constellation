@@ -67,7 +67,6 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
     private final JFXPanel panel = new JFXPanel();
     private final WordCloudController controller;
     private WordCloudPane wordCloudPane;
-    private static final String STYLE = "resources/Style-WordCloud.css";
     private static final int PREF_WIDTH = 500;
     private static final int PREF_HEIGHT = 950;
     private Graph graph = null;
@@ -90,16 +89,16 @@ public final class WordCloudTopComponent extends JavaFxTopComponent<WordCloudPan
             wordCloudPane = createContent();
             controller.setWordCloudPane(wordCloudPane);
             final Scene scene = new Scene(wordCloudPane);
-            scene.setFill(Color.web("#444444"));
-            scene.getStylesheets().add(JavafxStyleManager.getMainStyleSheet());
-            scene.getStylesheets().add(WordCloudTopComponent.class.getResource(STYLE).toExternalForm());
+            scene.getStylesheets().addAll(JavafxStyleManager.getMainStyleSheet());
             panel.setScene(scene);
         });
     }
     
     @Override
     protected String createStyle() {
-        return STYLE;
+        return JavafxStyleManager.isDarkTheme()
+                ? "resources/word-cloud-dark.css"
+                : "resources/word-cloud-light.css";
     }
 
     @Override

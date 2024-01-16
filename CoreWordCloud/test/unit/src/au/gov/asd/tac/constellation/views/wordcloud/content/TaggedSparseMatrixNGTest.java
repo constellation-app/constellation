@@ -31,9 +31,6 @@ import org.testng.annotations.Test;
  * @author Delphinus8821
  */
 public class TaggedSparseMatrixNGTest {
-    
-    public TaggedSparseMatrixNGTest() {
-    }
 
     @BeforeClass
     public static void setUpClass() throws Exception {
