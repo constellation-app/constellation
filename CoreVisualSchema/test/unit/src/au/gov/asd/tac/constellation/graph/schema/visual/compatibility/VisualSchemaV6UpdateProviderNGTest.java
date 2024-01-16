@@ -106,7 +106,7 @@ public class VisualSchemaV6UpdateProviderNGTest {
         instance.schemaUpdate(mockStoreGraph);
         Mockito.verify(mockStoreGraph, times(1)).setStringValue(0, 0, "strBottom");
         Mockito.verify(mockStoreGraph, times(1)).setStringValue(0, 0, "strTop");
-        Mockito.verify(mockStoreGraph, times(1)).setStringValue(0, 0, "strTrans");
+        Mockito.verify(mockStoreGraph, times(1)).setStringValue(25, 0, "strTrans");
         Mockito.verify(mockStoreGraph, times(1)).removeAttribute(23);
         Mockito.verify(mockStoreGraph, times(1)).removeAttribute(24);
         Mockito.verify(mockStoreGraph, times(1)).removeAttribute(25);
