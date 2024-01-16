@@ -465,8 +465,16 @@ public class SVGObject {
         setAttribute(SVGAttributeConstants.BASELINE, baseline);
     }
     
-    public void setPoints(final String path) {
-        setAttribute(SVGAttributeConstants.POINTS, path);
+    /**
+     * Takes a set of Vector4f objects representing points in 2d space and stores them as a points attribute in the SVGObject
+     * @param points 
+     */
+    public void setPoints(final Vector4f... points) {
+        StringBuilder sb = new StringBuilder();
+        for (Vector4f point : points){
+            sb.append(String.format("%s %s, ", point.getX(), point.getY()));
+        }
+        setAttribute(SVGAttributeConstants.POINTS, sb.toString().substring(0, sb.length()-2));
     } 
     
     /**

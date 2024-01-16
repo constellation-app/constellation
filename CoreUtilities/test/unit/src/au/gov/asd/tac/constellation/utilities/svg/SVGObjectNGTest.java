@@ -432,8 +432,10 @@ public class SVGObjectNGTest {
     public void testSetPoints() {
         final SVGObject parent = new SVGObject(new SVGData(typeSVG, null, null));
         assertNull(parent.toSVGData().getAttributeValue(SVGAttributeConstants.POINTS.getName()));
-        parent.setPoints("32 64 256 128");
-        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstants.POINTS.getName()), "32 64 256 128");
+        Vector4f point1 = new Vector4f(32F, 64F, 0F, 0F);
+        Vector4f point2 = new Vector4f(256F, 128F, 0F, 0F);
+        parent.setPoints(point1, point2);
+        assertEquals(parent.toSVGData().getAttributeValue(SVGAttributeConstants.POINTS.getName()), "32.0 64.0, 256.0 128.0");
     }
    
 }

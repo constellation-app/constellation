@@ -29,7 +29,7 @@ public enum SVGObjectConstants {
     ARROW_SHAFT("arrow-shaft"),
     BACKGROUND("background"),
     BACKGROUND_IMAGE("background-image"),
-    BLAZE("blaze"),
+    INDICATOR("indicator"),
     BORDER("border"),
     BOTTOM_LABELS("bottom-labels"),
     CONNECTIONS("connections"),

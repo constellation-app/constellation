@@ -118,9 +118,9 @@ public class SVGData {
             }
         }
         
-        // If a child was ound sever the childs reference to the parent.
+        // If a child was found sever the childs reference to the parent.
         if (child != null){
-            child.setParent(null);
+            child.parent = null;
         }
         return child;
     }
@@ -162,6 +162,16 @@ public class SVGData {
         }
         
         this.parent = parent;
+    }
+    
+    /**
+     * Associates SVGObject as a parent of this SVGData.
+     * By extension the parent sets this object as its child. 
+     * Warning: Child object must have a unique ID.
+     * @param parent
+     */
+    public final void setParent(final SVGObject parent) {
+        this.setParent(parent.toSVGData());
     }
     
     /**

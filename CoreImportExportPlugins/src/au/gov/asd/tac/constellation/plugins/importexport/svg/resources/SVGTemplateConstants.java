@@ -26,10 +26,9 @@ import au.gov.asd.tac.constellation.utilities.svg.SVGObject;
  * @author capricornunicorn123
  */
 
-public enum SVGTemplateConstants implements SVGFile{
-    ARROW_HEAD_LINK("Diamond.svg"),
-    ARROW_HEAD_TRANSACTION("Triangle.svg"),
-    BLAZE("Triangle.svg"),
+public enum SVGTemplateConstants implements SVGFile {
+    ARROW_HEAD("ArrowHead.svg"),
+    BLAZE("Blaze.svg"),
     CONNECTION_LOOP("ConnectionLoop.svg"),
     CONNECTION_LINEAR("ConnectionLinear.svg"),
     IMAGE("Image.svg"),

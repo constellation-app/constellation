@@ -53,9 +53,8 @@ public class SVGTemplateConstantsNGTest {
      */
     @Test
     public void testGetFileName() {
-        assertEquals(SVGTemplateConstants.ARROW_HEAD_LINK.getFileName(), "Diamond.svg");
-        assertEquals(SVGTemplateConstants.ARROW_HEAD_TRANSACTION.getFileName(), "Triangle.svg");
-        assertEquals(SVGTemplateConstants.BLAZE.getFileName(), "Triangle.svg");
+        assertEquals(SVGTemplateConstants.ARROW_HEAD.getFileName(), "ArrowHead.svg");
+        assertEquals(SVGTemplateConstants.BLAZE.getFileName(), "Blaze.svg");
         assertEquals(SVGTemplateConstants.CONNECTION_LOOP.getFileName(), "ConnectionLoop.svg");
         assertEquals(SVGTemplateConstants.CONNECTION_LINEAR.getFileName(), "ConnectionLinear.svg");
         assertEquals(SVGTemplateConstants.IMAGE.getFileName(), "Image.svg");

@@ -112,6 +112,38 @@ public class MathfNGTest {
             -0.59782124F, 2.4200084F});
     }
     
+    
+    @Test
+    public void testPlaneIntersectionPoint() {
+        
+        // Initialise a plane that sits verticaly y and horisintaly x at z = 1
+        final Vector4f plane = new Vector4f();
+        final Vector3f planePoint1 = new Vector3f(0,0,1);
+        final Vector3f planePoint2 = new Vector3f(0,1,1);
+        final Vector3f planePoint3 = new Vector3f(1,0,1);
+        Mathf.planeEquation(plane, planePoint1, planePoint2, planePoint3);
+        
+        // Initialise a line that does not pass through the plane at
+        final Vector3f invalidLineIntitialPoint = new Vector3f(3,2,-2);
+        final Vector3f invalidLineFinalPoint = new Vector3f(2,2,-2);
+        
+        // Test for invalid point
+        final Vector3f invalidIntersectionPoint = Mathf.planeIntersectionPoint(invalidLineIntitialPoint, invalidLineFinalPoint, plane);
+        assertEquals(invalidIntersectionPoint.getX(), Float.NEGATIVE_INFINITY);
+        assertEquals(invalidIntersectionPoint.getY(), Float.NaN);
+        assertEquals(invalidIntersectionPoint.getZ(), Float.NaN);
+        
+        // Initialise a line that does passes thorugh at point (3, 2, 1)
+        final Vector3f validLineIntitialPoint = new Vector3f(3,2,-2);
+        final Vector3f validLineFinalPoint = new Vector3f(3,2,2);
+        
+        // Test for valid point
+        final Vector3f validIntersectionPoint = Mathf.planeIntersectionPoint(validLineIntitialPoint, validLineFinalPoint, plane);
+        assertEquals(validIntersectionPoint.getX(), 3.0F);
+        assertEquals(validIntersectionPoint.getY(), 2.0F);
+        assertEquals(validIntersectionPoint.getZ(), 1.0F);
+    }
+    
     /**
      * Can test the distance of a ray to the center of a sphere.
      */
