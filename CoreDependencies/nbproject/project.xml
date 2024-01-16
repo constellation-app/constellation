@@ -37,7 +37,6 @@
                 <package>Lib.xml.sax</package>
                 <package>Lib.xml.sax.drivers2</package>
                 <package>au.com.objectix.jgridshift</package>
-                <package>au.com.objectix.jgridshift.jca</package>
                 <package>com.ctc.wstx.api</package>
                 <package>com.ctc.wstx.cfg</package>
                 <package>com.ctc.wstx.compat</package>
@@ -89,6 +88,8 @@
                 <package>com.fasterxml.jackson.databind.ser.std</package>
                 <package>com.fasterxml.jackson.databind.type</package>
                 <package>com.fasterxml.jackson.databind.util</package>
+                <package>com.github.benmanes.caffeine.cache</package>
+                <package>com.github.benmanes.caffeine.cache.stats</package>
                 <package>com.github.rjeschke.txtmark</package>
                 <package>com.github.rjeschke.txtmark.cmd</package>
                 <package>com.google.common.annotations</package>
@@ -209,31 +210,14 @@
                 <package>com.microsoft.schemas.office.visio.x2012.main.impl</package>
                 <package>com.microsoft.schemas.office.x2006.digsig</package>
                 <package>com.microsoft.schemas.office.x2006.digsig.impl</package>
-                <package>com.microsoft.schemas.office.x2006.encryption</package>
-                <package>com.microsoft.schemas.office.x2006.encryption.impl</package>
-                <package>com.microsoft.schemas.office.x2006.keyEncryptor.certificate</package>
-                <package>com.microsoft.schemas.office.x2006.keyEncryptor.certificate.impl</package>
-                <package>com.microsoft.schemas.office.x2006.keyEncryptor.password</package>
-                <package>com.microsoft.schemas.office.x2006.keyEncryptor.password.impl</package>
                 <package>com.microsoft.schemas.vml</package>
                 <package>com.microsoft.schemas.vml.impl</package>
-                <package>com.sun.activation.registries</package>
-                <package>com.sun.activation.viewers</package>
                 <package>com.sun.glass.ui.monocle</package>
                 <package>com.sun.istack</package>
                 <package>com.sun.istack.localization</package>
                 <package>com.sun.istack.logging</package>
                 <package>com.sun.java.help.impl</package>
                 <package>com.sun.java.help.search</package>
-                <package>com.sun.mail.auth</package>
-                <package>com.sun.mail.handlers</package>
-                <package>com.sun.mail.iap</package>
-                <package>com.sun.mail.imap</package>
-                <package>com.sun.mail.imap.protocol</package>
-                <package>com.sun.mail.pop3</package>
-                <package>com.sun.mail.smtp</package>
-                <package>com.sun.mail.util</package>
-                <package>com.sun.mail.util.logging</package>
                 <package>com.sun.media.imageio.plugins.bmp</package>
                 <package>com.sun.media.imageio.plugins.jpeg2000</package>
                 <package>com.sun.media.imageio.plugins.pnm</package>
@@ -411,7 +395,6 @@
                 <package>impl.org.controlsfx.tools</package>
                 <package>impl.org.controlsfx.tools.rectangle</package>
                 <package>impl.org.controlsfx.tools.rectangle.change</package>
-                <package>impl.org.controlsfx.version</package>
                 <package>impl.org.controlsfx.worldmap</package>
                 <package>it.geosolutions.imageio.core</package>
                 <package>it.geosolutions.imageio.imageioimpl</package>
@@ -488,54 +471,6 @@
                 <package>javax.annotation.meta</package>
                 <package>javax.annotation.security</package>
                 <package>javax.annotation.sql</package>
-                <package>javax.batch.api</package>
-                <package>javax.batch.api.chunk</package>
-                <package>javax.batch.api.chunk.listener</package>
-                <package>javax.batch.api.listener</package>
-                <package>javax.batch.api.partition</package>
-                <package>javax.batch.operations</package>
-                <package>javax.batch.runtime</package>
-                <package>javax.batch.runtime.context</package>
-                <package>javax.decorator</package>
-                <package>javax.ejb</package>
-                <package>javax.ejb.embeddable</package>
-                <package>javax.ejb.spi</package>
-                <package>javax.el</package>
-                <package>javax.enterprise.concurrent</package>
-                <package>javax.enterprise.context</package>
-                <package>javax.enterprise.context.spi</package>
-                <package>javax.enterprise.deploy.model</package>
-                <package>javax.enterprise.deploy.model.exceptions</package>
-                <package>javax.enterprise.deploy.shared</package>
-                <package>javax.enterprise.deploy.shared.factories</package>
-                <package>javax.enterprise.deploy.spi</package>
-                <package>javax.enterprise.deploy.spi.exceptions</package>
-                <package>javax.enterprise.deploy.spi.factories</package>
-                <package>javax.enterprise.deploy.spi.status</package>
-                <package>javax.enterprise.event</package>
-                <package>javax.enterprise.inject</package>
-                <package>javax.enterprise.inject.spi</package>
-                <package>javax.enterprise.util</package>
-                <package>javax.faces</package>
-                <package>javax.faces.application</package>
-                <package>javax.faces.bean</package>
-                <package>javax.faces.component</package>
-                <package>javax.faces.component.behavior</package>
-                <package>javax.faces.component.html</package>
-                <package>javax.faces.component.visit</package>
-                <package>javax.faces.context</package>
-                <package>javax.faces.convert</package>
-                <package>javax.faces.el</package>
-                <package>javax.faces.event</package>
-                <package>javax.faces.flow</package>
-                <package>javax.faces.flow.builder</package>
-                <package>javax.faces.lifecycle</package>
-                <package>javax.faces.model</package>
-                <package>javax.faces.render</package>
-                <package>javax.faces.validator</package>
-                <package>javax.faces.view</package>
-                <package>javax.faces.view.facelets</package>
-                <package>javax.faces.webapp</package>
                 <package>javax.help</package>
                 <package>javax.help.event</package>
                 <package>javax.help.plaf</package>
@@ -545,67 +480,10 @@
                 <package>javax.help.search</package>
                 <package>javax.help.tagext</package>
                 <package>javax.inject</package>
-                <package>javax.interceptor</package>
-                <package>javax.jms</package>
-                <package>javax.json</package>
-                <package>javax.json.spi</package>
-                <package>javax.json.stream</package>
-                <package>javax.jws</package>
-                <package>javax.jws.soap</package>
-                <package>javax.mail</package>
-                <package>javax.mail.event</package>
-                <package>javax.mail.internet</package>
-                <package>javax.mail.search</package>
-                <package>javax.mail.util</package>
-                <package>javax.management.j2ee</package>
-                <package>javax.management.j2ee.statistics</package>
                 <package>javax.measure</package>
                 <package>javax.measure.format</package>
                 <package>javax.measure.quantity</package>
                 <package>javax.measure.spi</package>
-                <package>javax.persistence</package>
-                <package>javax.persistence.criteria</package>
-                <package>javax.persistence.metamodel</package>
-                <package>javax.persistence.spi</package>
-                <package>javax.resource</package>
-                <package>javax.resource.cci</package>
-                <package>javax.resource.spi</package>
-                <package>javax.resource.spi.endpoint</package>
-                <package>javax.resource.spi.security</package>
-                <package>javax.resource.spi.work</package>
-                <package>javax.security.auth.message</package>
-                <package>javax.security.auth.message.callback</package>
-                <package>javax.security.auth.message.config</package>
-                <package>javax.security.auth.message.module</package>
-                <package>javax.security.jacc</package>
-                <package>javax.servlet</package>
-                <package>javax.servlet.annotation</package>
-                <package>javax.servlet.descriptor</package>
-                <package>javax.servlet.http</package>
-                <package>javax.servlet.jsp</package>
-                <package>javax.servlet.jsp.el</package>
-                <package>javax.servlet.jsp.jstl.core</package>
-                <package>javax.servlet.jsp.jstl.fmt</package>
-                <package>javax.servlet.jsp.jstl.sql</package>
-                <package>javax.servlet.jsp.jstl.tlv</package>
-                <package>javax.servlet.jsp.tagext</package>
-                <package>javax.transaction</package>
-                <package>javax.transaction.xa</package>
-                <package>javax.validation</package>
-                <package>javax.validation.bootstrap</package>
-                <package>javax.validation.constraints</package>
-                <package>javax.validation.constraintvalidation</package>
-                <package>javax.validation.executable</package>
-                <package>javax.validation.groups</package>
-                <package>javax.validation.metadata</package>
-                <package>javax.validation.spi</package>
-                <package>javax.websocket</package>
-                <package>javax.websocket.server</package>
-                <package>javax.ws.rs</package>
-                <package>javax.ws.rs.client</package>
-                <package>javax.ws.rs.container</package>
-                <package>javax.ws.rs.core</package>
-                <package>javax.ws.rs.ext</package>
                 <package>javax.xml</package>
                 <package>javax.xml.bind</package>
                 <package>javax.xml.bind.annotation</package>
@@ -616,16 +494,6 @@
                 <package>javax.xml.datatype</package>
                 <package>javax.xml.namespace</package>
                 <package>javax.xml.parsers</package>
-                <package>javax.xml.registry</package>
-                <package>javax.xml.registry.infomodel</package>
-                <package>javax.xml.rpc</package>
-                <package>javax.xml.rpc.encoding</package>
-                <package>javax.xml.rpc.handler</package>
-                <package>javax.xml.rpc.handler.soap</package>
-                <package>javax.xml.rpc.holders</package>
-                <package>javax.xml.rpc.server</package>
-                <package>javax.xml.rpc.soap</package>
-                <package>javax.xml.soap</package>
                 <package>javax.xml.stream</package>
                 <package>javax.xml.stream.events</package>
                 <package>javax.xml.stream.util</package>
@@ -635,14 +503,6 @@
                 <package>javax.xml.transform.stax</package>
                 <package>javax.xml.transform.stream</package>
                 <package>javax.xml.validation</package>
-                <package>javax.xml.ws</package>
-                <package>javax.xml.ws.handler</package>
-                <package>javax.xml.ws.handler.soap</package>
-                <package>javax.xml.ws.http</package>
-                <package>javax.xml.ws.soap</package>
-                <package>javax.xml.ws.spi</package>
-                <package>javax.xml.ws.spi.http</package>
-                <package>javax.xml.ws.wsaddressing</package>
                 <package>javax.xml.xpath</package>
                 <package>jj2000.j2k</package>
                 <package>jj2000.j2k.codestream</package>
@@ -1020,18 +880,6 @@
                 <package>org.apache.commons.codec.language</package>
                 <package>org.apache.commons.codec.language.bm</package>
                 <package>org.apache.commons.codec.net</package>
-                <package>org.apache.commons.collections</package>
-                <package>org.apache.commons.collections.bag</package>
-                <package>org.apache.commons.collections.bidimap</package>
-                <package>org.apache.commons.collections.buffer</package>
-                <package>org.apache.commons.collections.collection</package>
-                <package>org.apache.commons.collections.comparators</package>
-                <package>org.apache.commons.collections.functors</package>
-                <package>org.apache.commons.collections.iterators</package>
-                <package>org.apache.commons.collections.keyvalue</package>
-                <package>org.apache.commons.collections.list</package>
-                <package>org.apache.commons.collections.map</package>
-                <package>org.apache.commons.collections.set</package>
                 <package>org.apache.commons.collections4</package>
                 <package>org.apache.commons.collections4.bag</package>
                 <package>org.apache.commons.collections4.bidimap</package>
@@ -1359,7 +1207,6 @@
                 <package>org.apache.poi.schemas.vmldrawing</package>
                 <package>org.apache.poi.schemas.vmldrawing.impl</package>
                 <package>org.apache.poi.sl.draw</package>
-                <package>org.apache.poi.sl.draw.binding</package>
                 <package>org.apache.poi.sl.draw.geom</package>
                 <package>org.apache.poi.sl.extractor</package>
                 <package>org.apache.poi.sl.image</package>
@@ -1377,7 +1224,6 @@
                 <package>org.apache.poi.ss.formula.ptg</package>
                 <package>org.apache.poi.ss.formula.udf</package>
                 <package>org.apache.poi.ss.usermodel</package>
-                <package>org.apache.poi.ss.usermodel.charts</package>
                 <package>org.apache.poi.ss.usermodel.helpers</package>
                 <package>org.apache.poi.ss.util</package>
                 <package>org.apache.poi.ss.util.cellwalk</package>
@@ -1408,7 +1254,6 @@
                 <package>org.apache.poi.xssf.model</package>
                 <package>org.apache.poi.xssf.streaming</package>
                 <package>org.apache.poi.xssf.usermodel</package>
-                <package>org.apache.poi.xssf.usermodel.charts</package>
                 <package>org.apache.poi.xssf.usermodel.extensions</package>
                 <package>org.apache.poi.xssf.usermodel.helpers</package>
                 <package>org.apache.poi.xssf.util</package>
@@ -1507,18 +1352,6 @@
                 <package>org.apache.xmlbeans.impl.config</package>
                 <package>org.apache.xmlbeans.impl.inst2xsd</package>
                 <package>org.apache.xmlbeans.impl.inst2xsd.util</package>
-                <package>org.apache.xmlbeans.impl.jam</package>
-                <package>org.apache.xmlbeans.impl.jam.annotation</package>
-                <package>org.apache.xmlbeans.impl.jam.internal</package>
-                <package>org.apache.xmlbeans.impl.jam.internal.classrefs</package>
-                <package>org.apache.xmlbeans.impl.jam.internal.elements</package>
-                <package>org.apache.xmlbeans.impl.jam.internal.javadoc</package>
-                <package>org.apache.xmlbeans.impl.jam.internal.parser</package>
-                <package>org.apache.xmlbeans.impl.jam.internal.reflect</package>
-                <package>org.apache.xmlbeans.impl.jam.mutable</package>
-                <package>org.apache.xmlbeans.impl.jam.provider</package>
-                <package>org.apache.xmlbeans.impl.jam.visitor</package>
-                <package>org.apache.xmlbeans.impl.jam.xml</package>
                 <package>org.apache.xmlbeans.impl.regex</package>
                 <package>org.apache.xmlbeans.impl.repackage</package>
                 <package>org.apache.xmlbeans.impl.richParser</package>
@@ -1545,7 +1378,6 @@
                 <package>org.apache.xmlbeans.impl.xpath.saxon</package>
                 <package>org.apache.xmlbeans.impl.xpath.xmlbeans</package>
                 <package>org.apache.xmlbeans.impl.xpathgen</package>
-                <package>org.apache.xmlbeans.impl.xquery.saxon</package>
                 <package>org.apache.xmlbeans.impl.xsd2inst</package>
                 <package>org.apache.xmlbeans.metadata.system.sXMLCONFIG</package>
                 <package>org.apache.xmlbeans.metadata.system.sXMLLANG</package>
@@ -1554,7 +1386,6 @@
                 <package>org.apache.xmlbeans.soap</package>
                 <package>org.apache.xmlbeans.xml.stream</package>
                 <package>org.apache.xmlbeans.xml.stream.events</package>
-                <package>org.apache.xmlbeans.xml.stream.utils</package>
                 <package>org.apache.xmlcommons</package>
                 <package>org.apache.xmlgraphics.fonts</package>
                 <package>org.apache.xmlgraphics.image</package>
@@ -1869,27 +1700,21 @@
                 <package>org.checkerframework.checker.calledmethods.qual</package>
                 <package>org.checkerframework.checker.compilermsgs.qual</package>
                 <package>org.checkerframework.checker.fenum.qual</package>
-                <package>org.checkerframework.checker.formatter</package>
                 <package>org.checkerframework.checker.formatter.qual</package>
                 <package>org.checkerframework.checker.guieffect.qual</package>
                 <package>org.checkerframework.checker.i18n.qual</package>
-                <package>org.checkerframework.checker.i18nformatter</package>
                 <package>org.checkerframework.checker.i18nformatter.qual</package>
                 <package>org.checkerframework.checker.index.qual</package>
                 <package>org.checkerframework.checker.initialization.qual</package>
                 <package>org.checkerframework.checker.interning.qual</package>
                 <package>org.checkerframework.checker.lock.qual</package>
-                <package>org.checkerframework.checker.nullness</package>
                 <package>org.checkerframework.checker.nullness.qual</package>
                 <package>org.checkerframework.checker.optional.qual</package>
                 <package>org.checkerframework.checker.propkey.qual</package>
-                <package>org.checkerframework.checker.regex</package>
                 <package>org.checkerframework.checker.regex.qual</package>
                 <package>org.checkerframework.checker.signature.qual</package>
-                <package>org.checkerframework.checker.signedness</package>
                 <package>org.checkerframework.checker.signedness.qual</package>
                 <package>org.checkerframework.checker.tainting.qual</package>
-                <package>org.checkerframework.checker.units</package>
                 <package>org.checkerframework.checker.units.qual</package>
                 <package>org.checkerframework.common.aliasing.qual</package>
                 <package>org.checkerframework.common.initializedfields.qual</package>
@@ -1900,7 +1725,6 @@
                 <package>org.checkerframework.common.value.qual</package>
                 <package>org.checkerframework.dataflow.qual</package>
                 <package>org.checkerframework.framework.qual</package>
-                <package>org.checkerframework.framework.util</package>
                 <package>org.codehaus.jackson</package>
                 <package>org.codehaus.jackson.annotate</package>
                 <package>org.codehaus.jackson.impl</package>
@@ -1976,14 +1800,12 @@
                 <package>org.eclipse.jetty.server.handler.gzip</package>
                 <package>org.eclipse.jetty.server.handler.jmx</package>
                 <package>org.eclipse.jetty.server.jmx</package>
-                <package>org.eclipse.jetty.server.nio</package>
                 <package>org.eclipse.jetty.server.resource</package>
                 <package>org.eclipse.jetty.server.session</package>
                 <package>org.eclipse.jetty.servlet</package>
                 <package>org.eclipse.jetty.servlet.jmx</package>
                 <package>org.eclipse.jetty.servlet.listener</package>
                 <package>org.eclipse.jetty.util</package>
-                <package>org.eclipse.jetty.util.ajax</package>
                 <package>org.eclipse.jetty.util.annotation</package>
                 <package>org.eclipse.jetty.util.component</package>
                 <package>org.eclipse.jetty.util.compression</package>
@@ -2341,21 +2163,6 @@
                 <package>org.jdesktop.swingx.tree</package>
                 <package>org.jdesktop.swingx.treetable</package>
                 <package>org.jdesktop.swingx.util</package>
-                <package>org.jdom2</package>
-                <package>org.jdom2.adapters</package>
-                <package>org.jdom2.filter</package>
-                <package>org.jdom2.input</package>
-                <package>org.jdom2.input.sax</package>
-                <package>org.jdom2.input.stax</package>
-                <package>org.jdom2.internal</package>
-                <package>org.jdom2.located</package>
-                <package>org.jdom2.output</package>
-                <package>org.jdom2.output.support</package>
-                <package>org.jdom2.transform</package>
-                <package>org.jdom2.util</package>
-                <package>org.jdom2.xpath</package>
-                <package>org.jdom2.xpath.jaxen</package>
-                <package>org.jdom2.xpath.util</package>
                 <package>org.json</package>
                 <package>org.json.simple</package>
                 <package>org.json.simple.parser</package>
@@ -2452,21 +2259,9 @@
                 <package>org.locationtech.jts.triangulate.quadedge</package>
                 <package>org.locationtech.jts.util</package>
                 <package>org.mockito</package>
-                <package>org.mockito.asm</package>
-                <package>org.mockito.asm.tree</package>
-                <package>org.mockito.asm.tree.analysis</package>
-                <package>org.mockito.asm.util</package>
-                <package>org.mockito.cglib.beans</package>
-                <package>org.mockito.cglib.core</package>
-                <package>org.mockito.cglib.proxy</package>
-                <package>org.mockito.cglib.reflect</package>
-                <package>org.mockito.cglib.transform</package>
-                <package>org.mockito.cglib.transform.impl</package>
-                <package>org.mockito.cglib.util</package>
                 <package>org.mockito.codegen</package>
                 <package>org.mockito.configuration</package>
                 <package>org.mockito.creation.instance</package>
-                <package>org.mockito.exceptions</package>
                 <package>org.mockito.exceptions.base</package>
                 <package>org.mockito.exceptions.misusing</package>
                 <package>org.mockito.exceptions.stacktrace</package>
@@ -2482,7 +2277,6 @@
                 <package>org.mockito.internal.configuration.plugins</package>
                 <package>org.mockito.internal.creation</package>
                 <package>org.mockito.internal.creation.bytebuddy</package>
-                <package>org.mockito.internal.creation.cglib</package>
                 <package>org.mockito.internal.creation.instance</package>
                 <package>org.mockito.internal.creation.settings</package>
                 <package>org.mockito.internal.creation.util</package>
@@ -2496,7 +2290,6 @@
                 <package>org.mockito.internal.invocation</package>
                 <package>org.mockito.internal.invocation.finder</package>
                 <package>org.mockito.internal.invocation.mockref</package>
-                <package>org.mockito.internal.invocation.realmethod</package>
                 <package>org.mockito.internal.junit</package>
                 <package>org.mockito.internal.junit.util</package>
                 <package>org.mockito.internal.listeners</package>
@@ -2515,7 +2308,6 @@
                 <package>org.mockito.internal.util.collections</package>
                 <package>org.mockito.internal.util.concurrent</package>
                 <package>org.mockito.internal.util.io</package>
-                <package>org.mockito.internal.util.junit</package>
                 <package>org.mockito.internal.util.reflection</package>
                 <package>org.mockito.internal.verification</package>
                 <package>org.mockito.internal.verification.api</package>
@@ -2530,7 +2322,6 @@
                 <package>org.mockito.runners</package>
                 <package>org.mockito.session</package>
                 <package>org.mockito.stubbing</package>
-                <package>org.mockito.stubbing.answers</package>
                 <package>org.mockito.verification</package>
                 <package>org.objenesis</package>
                 <package>org.objenesis.instantiator</package>
@@ -2538,7 +2329,6 @@
                 <package>org.objenesis.instantiator.annotations</package>
                 <package>org.objenesis.instantiator.basic</package>
                 <package>org.objenesis.instantiator.gcj</package>
-                <package>org.objenesis.instantiator.jrockit</package>
                 <package>org.objenesis.instantiator.perc</package>
                 <package>org.objenesis.instantiator.sun</package>
                 <package>org.objenesis.instantiator.util</package>
@@ -3101,34 +2891,12 @@
                 <package>processing.event</package>
                 <package>processing.javafx</package>
                 <package>processing.opengl</package>
-                <package>schemaorg_apache_xmlbeans.system.s8C3F193EE11A2F798ACF65489B9E6078</package>
-                <package>schemaorg_apache_xmlbeans.system.sD023D6490046BA0250A839A9AD24C443</package>
-                <package>schemaorg_apache_xmlbeans.system.sXMLCONFIG</package>
-                <package>schemaorg_apache_xmlbeans.system.sXMLLANG</package>
-                <package>schemaorg_apache_xmlbeans.system.sXMLSCHEMA</package>
-                <package>schemaorg_apache_xmlbeans.system.sXMLTOOLS</package>
                 <package>si.uom</package>
-                <package>si.uom.impl</package>
-                <package>si.uom.impl.quantity</package>
                 <package>si.uom.quantity</package>
                 <package>si.uom.quantity.impl</package>
                 <package>systems.uom.common</package>
                 <package>systems.uom.common.ancient</package>
-                <package>systems.uom.common.internal</package>
                 <package>systems.uom.common.spi</package>
-                <package>tec.uom.lib.common</package>
-                <package>tec.uom.lib.common.function</package>
-                <package>tec.uom.lib.common.util</package>
-                <package>tec.uom.se</package>
-                <package>tec.uom.se.format</package>
-                <package>tec.uom.se.function</package>
-                <package>tec.uom.se.internal</package>
-                <package>tec.uom.se.internal.format</package>
-                <package>tec.uom.se.internal.format.l10n</package>
-                <package>tec.uom.se.quantity</package>
-                <package>tec.uom.se.quantity.time</package>
-                <package>tec.uom.se.spi</package>
-                <package>tec.uom.se.unit</package>
                 <package>tech.units.indriya</package>
                 <package>tech.units.indriya.format</package>
                 <package>tech.units.indriya.function</package>
@@ -3305,8 +3073,12 @@
                 <binary-origin>release/modules/ext/byte-buddy-agent-1.11.3.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
-                <runtime-relative-path>ext/checker-qual-3.8.0.jar</runtime-relative-path>
-                <binary-origin>release/modules/ext/checker-qual-3.8.0.jar</binary-origin>
+                <runtime-relative-path>ext/caffeine-3.0.1.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/caffeine-3.0.1.jar</binary-origin>
+            </class-path-extension>
+            <class-path-extension>
+                <runtime-relative-path>ext/checker-qual-3.11.0.jar</runtime-relative-path>
+                <binary-origin>release/modules/ext/checker-qual-3.11.0.jar</binary-origin>
             </class-path-extension>
             <class-path-extension>
                 <runtime-relative-path>ext/commons-codec-1.15.jar</runtime-relative-path>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
     <info organisation="au.gov.asd.tac" module="third-party-dependencies"/>
-    
+
     <configurations defaultconfmapping="*->default,master">
         <conf name="compile" description="Compile-time dependencies" visibility="public"/>
         <conf name="runtime" description="Runtime dependencies" visibility="public" extends="compile"/>
@@ -63,7 +63,7 @@
         <dependency org="org.apache.poi" name="poi-ooxml" rev="5.0.0"/>
 
         <!-- Other -->
-        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.12.3"/> 
+        <dependency org="com.fasterxml.jackson.core" name="jackson-annotations" rev="2.12.3"/>
         <dependency org="com.fasterxml.jackson.core" name="jackson-core" rev="2.12.3"/>
         <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.12.3"/>
         <dependency org="com.fifesoft" name="rsyntaxtextarea" rev="3.1.3"/>
@@ -81,17 +81,18 @@
         <dependency org="org.python" name="jython-standalone" rev="2.7.2"/>
         <dependency org="org.swinglabs" name="swingx" rev="1.6.1"/>
         <dependency org="org.fxmisc.richtext" name="richtextfx" rev="0.10.6"/>
-        
+
         <!-- Testing -->
         <dependency org="nl.jqno.equalsverifier" name="equalsverifier" rev="3.7"/>
         <dependency org="org.testfx" name="openjfx-monocle" rev="jdk-11+26" transitive="false" />
         <dependency org="org.testfx" name="testfx-core" rev="4.0.16-alpha" />
-        
+
         <!-- Downloaded Manually -->
         <!--<dependency org="unfolding" name="unfolding" rev="0.9.6"/>-->
         <!--<dependency org="org.processing" name="core" rev="3.3.7"/>-->
-        
+
         <dependency org="com.github.rjeschke" name="txtmark" rev="0.13"/>
+        <dependency org="com.github.ben-manes.caffeine" name="caffeine" rev="3.0.1" />
 
         <!-- Exclusions -->
         <exclude org="javax.media" module="jai_core"/>
